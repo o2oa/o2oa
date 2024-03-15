@@ -450,18 +450,12 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
     },
 	getFormToolbarHTML: function(callback){
 		var toolbarUrl = this.path+this.options.style+"/toolbars.html";
-		var r = new Request.HTML({
-			url: toolbarUrl,
-			method: "get",
-			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-				var toolbarNode = responseTree[0];
-				if (callback) callback(toolbarNode);
-			}.bind(this),
-			onFailure: function(xhr){
-				this.notice("request processToolbars error: "+xhr.responseText, "error");
-			}.bind(this)
-		});
-		r.send();
+        MWF.getRequestText(toolbarUrl, function(responseText, responseXML){
+            var htmlString = responseText;
+            htmlString = o2.bindJson(htmlString, {"lp": this.lp.formToolbar});
+            var temp = new Element('div').set('html', htmlString);
+            if (callback) callback( temp.childNodes[0] );
+        }.bind(this));
 	},
     maxOrReturnEditor: function(){
         if (!this.isMax){
@@ -611,9 +605,11 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
             var id = this.propertyExecuteButton.retrieve("id");
             if( id )o2.Actions.load("x_program_center").AgentAction.execute(id, function () {
                 this.notice( this.lp.runSuccess, "success");
-            }.bind(this), function () {
-                this.notice("request processToolbars error: "+xhr.responseText, "error");
             }.bind(this));
+            //, function (xhr) {
+            //     var responseJSON = JSON.parse( xhr.responseText );
+            //     this.notice("request error: "+responseJSON.message, "error");
+            // }.bind(this));
         }.bind(this));
         this.propertyExecuteButton.setStyle("margin","0px");
 

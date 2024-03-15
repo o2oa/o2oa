@@ -1,0 +1,121 @@
+<div class="cc-mask cc-mask-show" id="scheduleFormBox">
+  <!-- header -->
+  <div class="sl-dialog" id="scheduleFormDialog">
+    <div class="sl-dialog-header">
+      <span class="title">{{$.lp.scheduleForm.title}}</span>
+      <button class="close" @click="closeSelf"><i class="o2icon-icon_close"></i></button>
+    </div>
+    <!-- content -->
+    <div class="sl-dialog-content">
+      <!-- toolbar -->
+      <!-- 班次选择 -->
+      <div class="schedule_tool_line">
+        <div class="flex_wrap">
+          <div >{{$.lp.scheduleForm.shift}}</div>
+          <!-- 操作班次按钮 -->
+          <div @click="openShiftSelector" class="margin-left">
+            <div class="icon"><i class="o2icon-icon_bianji primary_color"></i></div>
+          </div>
+        </div>
+        <div class="margin-left flex_wrap margin-top" >
+          <div class="row-box  margin-left" oo-each="$.shiftSelector.shiftSelected" oo-item="shift">
+            <div class="{{this.shiftIndexClassName(shift.index)}}"></div>
+            <div class="margin-left-s">{{shift.value.shiftName}}</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 班次周期 -->
+      <div class="schedule_tool_line">
+        <div class="flex_wrap">
+          <div >{{$.lp.scheduleForm.cycle}}</div>
+          <div @click="this.clickScheduleBox(null, null, true, $event)" class="margin-left">
+            <div class="icon"><i class="o2icon-icon_zengjia_blue2_click primary_color"></i></div>
+          </div>
+        </div>
+        <div class="flex_wrap margin-top">
+          <div class="schedule_cycle_list_item"  oo-each="$.shiftCycleList"  oo-item="cycle" @click="this.deleteCycleShift(cycle.value)">
+            <span class="margin-right">{{$.lp.scheduleForm.section}}{{cycle.index + 1}}{{$.lp.scheduleForm.day}}</span>
+            <span class="margin-right"> {{cycle.value.shiftName}}</span>
+            <div class="icon"><i class="o2icon-icon_off_round color-999"></i></div>
+          </div>
+        </div>
+      </div>
+      
+       <!-- 月份选择 -->
+       <div>
+        <div class="flex_wrap margin-top margin-bottom" style="float: left;">
+          <div class="schedule-date-picker">
+            <div class="schedule-date-picker-input">
+              <span class="input" >{{$.month}}</span>
+              <div class="icon" ><i class="o2icon-icon_rili"></i></div>
+            </div>
+          </div>
+          <div class="text_hint_info">{{$.lp.scheduleForm.monthInfo}}</div>
+        </div>
+        <div style="margin: 10px 0;float: right;">
+          <button class="light-border-button mainColor_border primary_color"
+              @click="copyFromLastMonth">{{$.lp.scheduleForm.copyFromLastMonthBtn}}</button>
+        </div>
+        <div style="clear: both;"></div>
+       </div>
+      <!-- table -->
+      <div class="schedule_table_container" id="scheduleContainer">
+        <!-- header -->
+        <div class="schedule_table_header">
+          <div class="schedule_table_name"></div>
+          <div class="schedule_table_day" oo-each="$.dateList" oo-item="h">
+            <div class="date">{{h.value.text}}</div>
+            <div class="weekTitle">{{ h.value.day }}</div>
+          </div>
+        </div>
+        <!-- row -->
+        <div class="schedule_table_row" oo-each="$.trueParticipantList" oo-item="person">
+          <div class="schedule_table_name">
+            <div class="name_text">{{ $m.personName(person.value) }}</div>
+          </div>
+          <div class="schedule_table_day" oo-each="$.dateList" oo-item="h"
+            @click="this.clickScheduleBox(h.value.dateString, person.value, false, $event)">
+            <div class="{{this.scheduleDateClass(h.value.dateString, person.value, $.scheduleList)}}">
+              <div class="schedule_cell_text">{{ $m.scheduleDateShow(h.value.dateString, person.value, $.scheduleList) }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- 选择班次的弹出框 -->
+        <div class="schedule_selectedFrame" id="selectedFrame" style="display: none;">
+          <div style="position: absolute; top: 0px; left: 0px; width: 100%;">
+            <div class="t-popup" style="position: absolute;margin: 0px;">
+              <div class="t-popup__content" style="margin: 0px; padding: 0px; border-radius: 8px;">
+                <div class="selected_popup">
+                  <div class="schedule_list">
+                    <!-- 班次列表 -->
+                    <div class="schedule_list_item" oo-each="$.shiftSelector.shiftSelected" oo-item="shift" @click="this.chooseShiftOnDate(shift.value)">
+                      {{shift.value.shiftName}}
+                    </div>
+                  </div>
+                  <div class="schedule_clear" @click="clearShiftOnDate" oo-if="!$.clickForCycle">
+                    {{$.lp.scheduleForm.clear}}
+                  </div>
+                  <div class="schedule_clear" @click="scheduleByCycle" oo-if=" !$.clickForCycle && $.shiftCycleList.length > 0 ">
+                    {{$.lp.scheduleForm.cycleBtnLabel}}
+                  </div>
+                  <div class="schedule_clear" @click="clearShiftOnDate" oo-if="$.clickForCycle">
+                    {{$.lp.scheduleForm.restShift}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- footer -->
+    <div class="sl-dialog-footer">
+      <span>
+        <button class="lightColor_bg" @click="closeSelf">{{$.lp.cancel}}</button>
+        <button class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
+      </span>
+    </div>
+  </div>
+  <select-shift-multiple oo-prop="$.shiftSelector" oo-if="$.shiftSelectorOpen"></select-shift-multiple>
+</div>

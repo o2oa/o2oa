@@ -1,26 +1,26 @@
 package com.x.server.console.server.application;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
-
-import javax.servlet.DispatcherType;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.annotation.ModuleCategory;
+import com.x.base.core.project.annotation.ModuleType;
+import com.x.base.core.project.config.ApplicationServer;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.jaxrs.ApiAccessFilter;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.*;
+import com.x.server.console.node.RegistApplicationsEvent;
+import com.x.server.console.node.UpdateApplicationsEvent;
+import com.x.server.console.server.JettySeverTools;
+import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.ServerRequestLogBody;
+import com.x.server.console.server.center.CenterServerTools;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.file.PathUtils;
@@ -40,34 +40,20 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.w3c.dom.Document;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.annotation.ModuleCategory;
-import com.x.base.core.project.annotation.ModuleType;
-import com.x.base.core.project.config.ApplicationServer;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ClassLoaderTools;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.JarTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PathTools;
-import com.x.base.core.project.tools.StringTools;
-import com.x.server.console.node.RegistApplicationsEvent;
-import com.x.server.console.node.UpdateApplicationsEvent;
-import com.x.server.console.server.JettySeverTools;
-import com.x.server.console.server.ServerRequestLog;
-import com.x.server.console.server.ServerRequestLogBody;
-import com.x.server.console.server.center.CenterServerTools;
-
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
+import javax.servlet.DispatcherType;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ApplicationServerTools extends JettySeverTools {
 
@@ -191,7 +177,7 @@ public class ApplicationServerTools extends JettySeverTools {
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 							BooleanUtils.toStringTrueFalse(false));
 					setStat(applicationServer, webApp);
-					setExposeJest(applicationServer, webApp);
+					setExposeJest(webApp);
 					handlers.addHandler(webApp);
 					webApp.start();
 				} else if (Files.exists(dir)) {
@@ -203,12 +189,10 @@ public class ApplicationServerTools extends JettySeverTools {
 		});
 	}
 
-	private static void setExposeJest(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
-		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
-			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
-		}
+	private static void setExposeJest(QuickStartWebApp webApp) {
+		FilterHolder denialOfServiceFilterHolder = new FilterHolder(new ApiAccessFilter());
+		webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
+		webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
 	}
 
 	private static void setStat(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
@@ -251,7 +235,7 @@ public class ApplicationServerTools extends JettySeverTools {
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 							BooleanUtils.toStringTrueFalse(false));
 					setStat(applicationServer, webApp);
-					setExposeJest(applicationServer, webApp);
+					setExposeJest(webApp);
 					handlers.addHandler(webApp);
 					webApp.start();
 				} else if (Files.exists(dir)) {

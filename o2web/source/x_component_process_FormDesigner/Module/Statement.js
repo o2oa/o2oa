@@ -152,7 +152,7 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
             this.node.set("id", this.json.id);
         }
         if(name=="actionbar"){
-            this.json.actionbar === "show" ? this._showActionbar() : this._hideActionbar();
+            (this.viewData && this.json.actionbar === "show") ? this._showActionbar() : this._hideActionbar();
         }
 
         this._setEditStyle_custom(name, input, oldValue);

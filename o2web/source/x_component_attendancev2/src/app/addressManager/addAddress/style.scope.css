@@ -1,6 +1,29 @@
-.bd-map {
+.bd-map-container {
   height: 400px;
   margin: 10px 0;
+  position: relative;
+}
+.bd-map-container-fixed {
+  position: fixed;
+  inset: 100px 510px 10px 100px;
+  margin: 10px 0;
+}
+.bd-map-btn {
+  z-index: 9999;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  line-height: 32px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 0 16px 0 16px;
+  cursor: pointer;
+}
+.bd-map {
+  height: 100%;
   border-radius: 16px;
   border: 1px solid #E6E6E6;
 }

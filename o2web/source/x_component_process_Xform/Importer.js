@@ -114,6 +114,9 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
             "styles": this.form.json.buttonStyle || this.form.css.buttonStyles,
             "MWFType": this.json.type
         });
+        if( this.json.properties ){
+            this.node.set(this.json.properties )
+        }
         this.node.addEvent("click", function(){
             this.upload();
         }.bind(this));

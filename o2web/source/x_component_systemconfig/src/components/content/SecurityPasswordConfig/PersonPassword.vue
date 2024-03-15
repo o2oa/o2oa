@@ -74,6 +74,22 @@
       </div>
     </div>
 
+    <div>
+      <div class="item_title">{{lp._passwordConfig.passwordCheck}}</div>
+      <div class="item_info">{{lp._passwordConfig.passwordCheckInfo}}</div>
+      <div class="item">
+        <label class="item_label">{{lp._passwordConfig.passwordCheck}}</label>
+        <div class="item_input_area">
+          <el-switch
+              @change="saveFirstLoginModifyPwdConfig"
+              v-model="firstLoginModifyPwd"
+              :active-text="lp.operation.enable"
+              :inactive-text="lp.operation.disable">
+          </el-switch>
+        </div>
+      </div>
+    </div>
+
 <!--    <div>-->
 <!--      <div class="item_title">{{lp._passwordConfig.tokenEncryptType}}</div>-->
 <!--      <div class="item_info" v-html="lp._passwordConfig.tokenEncryptTypeInfo"></div>-->
@@ -116,6 +132,7 @@ const passwordRuleValues = ref({
   useSpecial: false
 });
 const rsaEnable = ref(false);
+const firstLoginModifyPwd = ref(false);
 const encryptType = ref('');
 
 
@@ -148,6 +165,12 @@ const transformCode = async (code) => {
 const saveRsaEnableConfig = async ()=>{
   await saveConfig('token', 'rsaEnable', rsaEnable.value);
 }
+
+const saveFirstLoginModifyPwdConfig = async ()=>{
+  personData.value.firstLoginModifyPwd = firstLoginModifyPwd.value;
+  await saveConfigData('person', personData.value);
+}
+
 const savePasswordRuleConfig = async ()=>{
   personData.value.extension.passwordRuleValues = passwordRuleValues.value;
   personData.value.extension.passwordLength = passwordLength.value;
@@ -258,6 +281,8 @@ getConfigData('person').then((data)=>{
   passwordLength.value = personData.value.extension.passwordLength;
   passwordRuleValues.value = personData.value.extension.passwordRuleValues;
   encryptType.value = data.encryptType || 'default';
+
+  firstLoginModifyPwd.value = personData.value.firstLoginModifyPwd;
 });
 getConfig('token', 'rsaEnable').then((data)=>{
   rsaEnable.value = !!data;

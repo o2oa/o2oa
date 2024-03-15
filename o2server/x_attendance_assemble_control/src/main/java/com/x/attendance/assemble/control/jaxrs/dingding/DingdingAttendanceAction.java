@@ -30,7 +30,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 
 @Path("dingding")
-@JaxrsDescribe("钉钉打卡数据管理")
+@JaxrsDescribe("钉钉打卡数据管理（已弃用）")
 public class DingdingAttendanceAction extends StandardJaxrsAction {
 
 

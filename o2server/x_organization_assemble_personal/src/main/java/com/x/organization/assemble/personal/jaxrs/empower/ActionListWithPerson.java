@@ -52,7 +52,7 @@ class ActionListWithPerson extends BaseAction {
 
 	private List<Wo> list(Business business, String distinguishedName) throws Exception {
 
-		List<Empower> os = business.entityManagerContainer().listEqual(Empower.class, Empower.fromPerson_FIELDNAME,
+		List<Empower> os = business.entityManagerContainer().listEqual(Empower.class, Empower.FROMPERSON_FIELDNAME,
 				distinguishedName);
 		return Wo.copier.copy(os);
 

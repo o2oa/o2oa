@@ -1,7 +1,5 @@
 package com.x.portal.assemble.designer.jaxrs.script;
 
-import java.util.Date;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -14,8 +12,12 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.portal.assemble.designer.Business;
+import com.x.portal.assemble.designer.ThisApplication;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Script;
+import com.x.portal.core.entity.ScriptVersion;
+
+import java.util.Date;
 
 class ActionCreate extends BaseAction {
 
@@ -39,6 +41,8 @@ class ActionCreate extends BaseAction {
 			emc.persist(script, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Script.class);
+			// 保存历史版本
+			ThisApplication.scriptVersionQueue.send(new ScriptVersion(script.getId(), jsonElement, effectivePerson.getDistinguishedName()));
 			Wo wo = new Wo();
 			wo.setId(script.getId());
 			result.setData(wo);

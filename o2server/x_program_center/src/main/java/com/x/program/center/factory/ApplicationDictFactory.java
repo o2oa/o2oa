@@ -1,19 +1,20 @@
 package com.x.program.center.factory;
 
 
-import com.x.general.core.entity.ApplicationDict;
-import com.x.general.core.entity.ApplicationDict_;
-import com.x.program.center.AbstractFactory;
-import com.x.program.center.Business;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.ApplicationDict_;
+import com.x.program.center.AbstractFactory;
+import com.x.program.center.Business;
 
 public class ApplicationDictFactory extends AbstractFactory {
 

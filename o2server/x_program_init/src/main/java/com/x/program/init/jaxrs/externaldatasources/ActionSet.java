@@ -3,6 +3,7 @@ package com.x.program.init.jaxrs.externaldatasources;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -47,6 +48,8 @@ class ActionSet extends BaseAction {
 	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -1714043928097428688L;
+
+		@FieldDescribe("外部数据源.")
 		private ExternalDataSources externalDataSources;
 
 		public ExternalDataSources getExternalDataSources() {

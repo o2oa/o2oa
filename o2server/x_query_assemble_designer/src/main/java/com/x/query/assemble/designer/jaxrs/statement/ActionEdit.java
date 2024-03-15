@@ -73,7 +73,7 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Statement.class);
 			statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			statement.setLastUpdateTime(new Date());
-			this.checkDuplicate(business, query, statement);
+			this.checkDuplicate(business, statement);
 			emc.check(statement, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Statement.class);

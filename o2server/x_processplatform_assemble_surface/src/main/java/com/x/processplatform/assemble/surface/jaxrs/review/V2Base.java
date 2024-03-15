@@ -107,6 +107,11 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("关键字")
 		private String key;
 
+		@FieldDescribe("排序字段，默认根据创建时间倒叙")
+		private String orderBy;
+		@FieldDescribe("是否升序排序，默认false")
+		private Boolean ascOrder;
+
 
 		@FieldDescribe("业务数据String值01")
 		private String stringValue01;
@@ -150,6 +155,21 @@ abstract class V2Base extends StandardJaxrsAction {
 		public void setStringValue09(String stringValue09) { this.stringValue09 = stringValue09; }
 		public void setStringValue10(String stringValue10) { this.stringValue10 = stringValue10; }
 
+		public String getOrderBy() {
+			return orderBy;
+		}
+
+		public void setOrderBy(String orderBy) {
+			this.orderBy = orderBy;
+		}
+
+		public Boolean getAscOrder() {
+			return ascOrder;
+		}
+
+		public void setAscOrder(Boolean ascOrder) {
+			this.ascOrder = ascOrder;
+		}
 
 		public Boolean getNotCompleted() {
 			return notCompleted;

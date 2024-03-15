@@ -29,7 +29,7 @@ import com.x.base.core.project.logger.LoggerFactory;
  * Copyright © 2020 O2. All rights reserved.
  */
 @Path("dingdingstatistic")
-@JaxrsDescribe("钉钉打卡数据统计管理")
+@JaxrsDescribe("钉钉打卡数据统计管理（已弃用）")
 public class DingdingAttendanceStatisticAction extends StandardJaxrsAction {
     private static final Logger logger = LoggerFactory.getLogger(DingdingAttendanceStatisticAction.class);
 

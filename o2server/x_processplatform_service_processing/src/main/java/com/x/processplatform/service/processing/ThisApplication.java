@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing;
 
 import java.util.concurrent.ForkJoinPool;
 
+import com.x.processplatform.service.processing.schedule.*;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
@@ -11,17 +12,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxrsInvokeQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxwsInvokeQueue;
-import com.x.processplatform.service.processing.schedule.ArchiveHadoop;
-import com.x.processplatform.service.processing.schedule.CleanEvent;
-import com.x.processplatform.service.processing.schedule.DeleteDraft;
-import com.x.processplatform.service.processing.schedule.Expire;
-import com.x.processplatform.service.processing.schedule.LogLongDetained;
-import com.x.processplatform.service.processing.schedule.Merge;
-import com.x.processplatform.service.processing.schedule.PassExpired;
-import com.x.processplatform.service.processing.schedule.TouchDelay;
-import com.x.processplatform.service.processing.schedule.TouchDetained;
-import com.x.processplatform.service.processing.schedule.UpdateTable;
-import com.x.processplatform.service.processing.schedule.Urge;
 
 public class ThisApplication {
 
@@ -58,6 +48,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
+			ProcessPlatformKeyClassifyExecutorFactory.init(10);
 			CacheManager.init(context.clazz().getSimpleName());
 			MessageConnector.start(context());
 			context().startQueue(syncJaxrsInvokeQueue);
@@ -70,20 +61,12 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.processPlatform().getDeleteDraft().getEnable())) {
 				context.schedule(DeleteDraft.class, Config.processPlatform().getDeleteDraft().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getExpire().getEnable())) {
-				context.schedule(Expire.class, Config.processPlatform().getExpire().getCron());
-			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getLogLongDetained().getEnable())) {
 				context.schedule(LogLongDetained.class, Config.processPlatform().getLogLongDetained().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getPassExpired().getEnable())) {
-				context.schedule(PassExpired.class, Config.processPlatform().getPassExpired().getCron());
-			}
+
 			if (BooleanUtils.isTrue(Config.processPlatform().getTouchDelay().getEnable())) {
 				context.schedule(TouchDelay.class, Config.processPlatform().getTouchDelay().getCron());
-			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getTouchDetained().getEnable())) {
-				context.schedule(TouchDetained.class, Config.processPlatform().getTouchDetained().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
 				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
@@ -93,6 +76,9 @@ public class ThisApplication {
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getArchiveHadoop().getEnable())) {
 				context.schedule(ArchiveHadoop.class, Config.processPlatform().getArchiveHadoop().getCron());
+			}
+			if (BooleanUtils.isTrue(Config.processPlatform().getHandoverConfig().getEnable())) {
+				context.schedule(HandoverJob.class, Config.processPlatform().getHandoverConfig().getCron());
 			}
 			context.schedule(CleanEvent.class, "40 40 * * * ?");
 		} catch (Exception e) {
@@ -105,6 +91,7 @@ public class ThisApplication {
 			FORKJOINPOOL.shutdown();
 			CacheManager.shutdown();
 			MessageConnector.stop();
+			ProcessPlatformKeyClassifyExecutorFactory.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

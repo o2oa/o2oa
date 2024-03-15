@@ -27,15 +27,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Agent", description = "服务管理代理.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Agent.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Agent.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Agent.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Agent.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Agent extends SliceJpaObject {
 
 	private static final long serialVersionUID = 4614564724280586452L;
-	private static final String TABLE = PersistenceProperties.Agent.table;
+	private static final String TABLE = PersistenceProperties.Agent.TABLE;
 
 	public String getId() {
 		return id;

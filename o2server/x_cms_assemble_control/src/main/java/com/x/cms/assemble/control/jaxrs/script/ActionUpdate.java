@@ -14,9 +14,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.element.Script;
+import com.x.cms.core.entity.element.ScriptVersion;
 
 import java.util.Date;
 import java.util.List;
@@ -65,6 +67,9 @@ class ActionUpdate extends BaseAction {
 				Wo wo = new Wo();
 				wo.setId(script.getId());
 				result.setData(wo);
+
+				// 保存历史版本
+				ThisApplication.scriptVersionQueue.send(new ScriptVersion(wo.getId(), jsonElement, effectivePerson.getDistinguishedName()));
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);

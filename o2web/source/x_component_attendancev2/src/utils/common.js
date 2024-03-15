@@ -128,11 +128,17 @@ const formatDate = (date) => {
     day < 10 ? "0" + day : day
   }`;
 };
+// 格式化日期为  YYYY-MM
+const formatMonth = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  return `${year}-${month < 10 ? "0" + month : month}`;
+}
 
 // 格式化分钟数为 xx小时xx分钟
 const convertMinutesToHoursAndMinutes = (minutes) => {
   var hours = Math.floor(minutes / 60); // 取得小时数
-  var remainingMinutes = minutes % 60; // 取得剩余的分钟数
+  var remainingMinutes = Math.floor(minutes % 60); // 取得剩余的分钟数
   var result = "";
 
   if (hours > 0) {
@@ -183,8 +189,71 @@ const hideLoading = async (component) => {
   }
 }
 
+/**
+ * 
+ * @param {*} person 
+ * @returns 
+ */
+const formatPersonName = (person) => {
+  if (person && person.indexOf("@") > -1) {
+    return person.split("@")[0];
+  }
+  return person;
+}
+/**
+ * 获取传入日期所在的月份所有日期
+ * @param {Date} inputDate 
+ * @returns []
+ */
+const getAllDatesInMonth = (inputDate) => {
+  const result = [];
+  const currentDate = new Date(inputDate);
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  // 确定月份的第一天
+  const firstDayOfMonth = new Date(year, month, 1);
+  // 从第一天开始，递增日期直到月份变化
+  let currentDateInMonth = firstDayOfMonth;
+  while (currentDateInMonth.getMonth() === month) {
+    result.push(new Date(currentDateInMonth));
+    currentDateInMonth.setDate(currentDateInMonth.getDate() + 1);
+  }
+  return result;
+}
+/**
+ * localStorage 存储
+ * @param {*} key 
+ * @param {*} item 
+ */
+const storageSet = (key, item) => {
+  localStorage.setItem(key, JSON.stringify(item));
+}
+/**
+ * localStorage 获取存储数据
+ * @param {*} key 
+ * @returns 
+ */
+const storageGet = (key) => {
+  const item = localStorage.getItem(key);
+  // 使用JSON.parse将字符串还原为JavaScript对象
+  return JSON.parse(item);
+}
+
+/**
+ * 替换字符串特定内容
+ * @param {*} originalString 原字符串
+ * @param {*} searchString  被替换的内容
+ * @param {*} replacement 替换成的内容
+ * @returns 
+ */
+const replaceCustomString = (originalString, searchString, replacement) => {
+  var replacedString = originalString.replace(new RegExp(searchString, 'g'), replacement);
+  return replacedString;
+}
 
 export {
+  getAllDatesInMonth,
+  formatPersonName,
   setJSONValue,
   lpFormat,
   isInt,
@@ -192,8 +261,12 @@ export {
   isPositiveInt,
   isEmpty,
   formatDate,
+  formatMonth,
   convertMinutesToHoursAndMinutes,
   convertTo2DArray,
   showLoading,
-  hideLoading
+  hideLoading,
+  storageSet,
+  storageGet,
+  replaceCustomString,
 };

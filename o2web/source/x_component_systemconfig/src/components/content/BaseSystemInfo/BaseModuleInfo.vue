@@ -188,7 +188,10 @@ load();
 .item_server_item_slot{
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 90%;
+}
+.el-collapse-item__header{
+  width: 100%;
 }
 </style>

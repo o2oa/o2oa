@@ -1,9 +1,9 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { personalAction } from "../../utils/actions";
+import { myAction } from "../../utils/actions";
 import { EventBus } from "../../utils/eventBus";
 import template from "./template.html";
-import style from "./style.css";
+import style from "./style.scope.css";
 import myMenu from "../menu";
 
 export default content({
@@ -58,7 +58,7 @@ export default content({
     const c = (await import('../recordManager/detail/index.js')).default;
     this.openFomVm(c, bindData);
   },
-  // 打开 打卡地点表单
+  // 打开 原始记录
   async openRecordListVm(bind) {
     this.closeFormVm();
     const bindData = bind || {};
@@ -78,7 +78,6 @@ export default content({
     const bindData = bind || {};
     const c = (await import('../addressManager/addAddress/index.js')).default;
     this.openFomVm(c, bindData);
-    debugger;
   },
   // 打开班次表单
   async openShiftForm(bind) {
@@ -98,6 +97,7 @@ export default content({
   async openFomVm(c, bindData) {
     this.formVm = await c.generate("#form", bindData, this);
     this.dom.querySelector("#form").classList.add("index_page_form_container");
+    this.dom.querySelector("#formMask").classList.replace("cc-mask-hide", "cc-mask-show");
   },
   // 关闭表单
   closeFormVm() {
@@ -105,30 +105,45 @@ export default content({
       this.formVm.destroy();
     }
     this.dom.querySelector("#form").classList.remove("index_page_form_container");
+    this.dom.querySelector("#formMask").classList.replace("cc-mask-show", "cc-mask-hide");
   },
   
   async loadCurrentPersonInfo() {
     content.myDutyList = [];
     this.bind.admin = "";
-    if (o2.AC.isAttendanceManager() || o2.AC.isAdministrator()) {
-      this.bind.admin = "admin";
-    } else {
-      const personInfo = await personalAction("get");
-      let isReadAdmin = false;
-      let dutyList = [];
-      if (personInfo && personInfo.woIdentityList) {
-        for (const { woUnitDutyList } of personInfo.woIdentityList) {
-          if (woUnitDutyList && woUnitDutyList.some((duty) => duty.name === "考勤管理员")) {
-            dutyList.push(...woUnitDutyList.filter((duty) => duty.name === "考勤管理员"));
-            isReadAdmin = true;
-          }
+    const controls = await myAction("controls");
+    if (controls) {
+      if (controls.admin) { // 管理员
+        this.bind.admin = "admin";
+      } else {
+        if (controls.readAdmin) { // 有考勤管理员职务 查看统计权限
+          this.bind.admin = "readAdmin";
+          content.myDutyList = controls.unitDutyList || [];
         }
-      }
-      if (isReadAdmin) {
-        this.bind.admin = "readAdmin";
-        content.myDutyList = dutyList;
+        if (controls.assistAdmin) { // 考勤组协助管理员
+          this.bind.assistAdmin = true;
+        } 
       }
     }
+    // if (o2.AC.isAttendanceManager() || o2.AC.isAdministrator()) {
+    //   this.bind.admin = "admin";
+    // } else {
+    //   const personInfo = await personalAction("get");
+    //   let isReadAdmin = false;
+    //   let dutyList = [];
+    //   if (personInfo && personInfo.woIdentityList) {
+    //     for (const { woUnitDutyList } of personInfo.woIdentityList) {
+    //       if (woUnitDutyList && woUnitDutyList.some((duty) => duty.name === "考勤管理员")) {
+    //         dutyList.push(...woUnitDutyList.filter((duty) => duty.name === "考勤管理员"));
+    //         isReadAdmin = true;
+    //       }
+    //     }
+    //   }
+    //   if (isReadAdmin) {
+    //     this.bind.admin = "readAdmin";
+    //     content.myDutyList = dutyList;
+    //   }
+    // }
   },
   // 普通菜单数据
   getCurrentPersonMenu() {
@@ -139,7 +154,26 @@ export default content({
     } else if (this.bind.admin === "admin") {
       access = 2;
     }
-    return menus.filter((menu) => menu.access <= access);
+    let accessMenus = menus.filter((menu) => menu.access <= access);
+    if (this.bind.assistAdmin) { // 协助管理员 添加考勤组管理菜单
+      if ( !accessMenus.some((m)=> m.access == 2) ) {
+        accessMenus.push(
+          {
+            title: lp.menu.config,
+            access: 2,
+            sub: [
+              {
+                id: "3-2",
+                title: lp.menu.groupmanager,
+                action: "groupManager",
+                icon: "o2icon-icon_kaoqinzu"
+              }
+            ],
+          }
+        );
+      }
+    }
+    return accessMenus;
   },
   menuDataAll() {
     return [

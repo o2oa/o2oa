@@ -69,7 +69,7 @@
       "hasLetter" : false, //字母
       "hasTop" : true, //可选、已选的标题
       "level1Indent" : 0,
-      "indent" : 0, //46
+      "indent" : 14, //46
       "tabStyle" : "blue_flat_mobile",
       "hasShuttle" : false, //穿梭按钮
       "searchbarInTopNode" : false,
@@ -77,7 +77,7 @@
       "contentUrl" : "../x_component_Selector/$Selector/blue_flat_mobile/selector.html",
       "injectToBody" : true,
       "itemHeight" : 44,
-      "flatCategory" : true
+      "flatCategory" : false
     },
     "addressStyle": {
       "style": "blue",

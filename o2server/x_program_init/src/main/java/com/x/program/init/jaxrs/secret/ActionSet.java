@@ -1,6 +1,7 @@
 package com.x.program.init.jaxrs.secret;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -37,6 +38,7 @@ class ActionSet extends BaseAction {
 
 		private static final long serialVersionUID = -5726130517002102825L;
 
+		@FieldDescribe("口令.")
 		private String secret;
 
 		public String getSecret() {

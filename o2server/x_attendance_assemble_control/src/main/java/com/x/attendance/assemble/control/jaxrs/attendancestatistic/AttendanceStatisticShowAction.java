@@ -27,7 +27,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("statisticshow")
-@JaxrsDescribe("考勤数据统计信息管理服务")
+@JaxrsDescribe("考勤数据统计信息管理服务（已弃用）")
 public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceStatisticShowAction.class);

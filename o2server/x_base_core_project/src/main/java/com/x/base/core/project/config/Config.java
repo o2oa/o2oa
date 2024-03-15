@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.InitialContext;
@@ -90,6 +89,7 @@ public class Config {
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
+	public static final String PATH_COMMONS_COMMONSCRIPT = "commons/commonScript.js";
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
 	public static final String NAME_CONFIG_JPUSH = "jpushConfig.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
@@ -180,8 +180,6 @@ public class Config {
 	public static final String RESOURCE_NODE_CENTERSPRIMARYNODE = RESOURCE_NODE_PREFIX + "centersPrimaryNode";
 	public static final String RESOURCE_NODE_CENTERSPRIMARYPORT = RESOURCE_NODE_PREFIX + "centersPrimaryPort";
 	public static final String RESOURCE_NODE_CENTERSPRIMARYSSLENABLE = RESOURCE_NODE_PREFIX + "centersPrimarySslEnable";
-	public static final String RESOURCE_NODE_PROCESSPLATFORMEXECUTORS = RESOURCE_NODE_PREFIX
-			+ "processPlatformExecutors";
 	public static final String RESOURCE_NODE_TOKENTHRESHOLDS = RESOURCE_NODE_PREFIX + "tokenThresholds";
 
 	public static final String RESOURCE_COMMANDTERMINATEDSIGNAL_PREFIX = "commandTerminatedSignal/";
@@ -718,7 +716,7 @@ public class Config {
 
 	/**
 	 * dumpRestoreData配置不考虑进行缓存,每次直接取值
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -732,7 +730,7 @@ public class Config {
 
 	private String initialScriptText;
 
-	public static synchronized String initialScriptText() throws IOException, URISyntaxException {
+	public static synchronized String initialScriptText() throws IOException {
 		if (null == instance().initialScriptText) {
 			instance().initialScriptText = BaseTools.readString(PATH_COMMONS_INITIALSCRIPTTEXT);
 		}
@@ -741,11 +739,21 @@ public class Config {
 
 	private String initialServiceScriptText;
 
-	public static synchronized String initialServiceScriptText() throws IOException, URISyntaxException {
+	public static synchronized String initialServiceScriptText() throws IOException {
 		if (null == instance().initialServiceScriptText) {
 			instance().initialServiceScriptText = BaseTools.readString(PATH_COMMONS_INITIALSERVICESCRIPTTEXT);
 		}
 		return instance().initialServiceScriptText;
+	}
+
+	private String commonScript;
+
+	public static synchronized String commonScript() throws IOException {
+		if (null == instance().commonScript) {
+			instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
+		}
+		instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
+		return instance().commonScript;
 	}
 
 	private MimeTypes mimeTypes;
@@ -1160,7 +1168,7 @@ public class Config {
 
 	public General general;
 
-	public static synchronized General general() throws Exception {
+	public static synchronized General general() {
 		if (null == instance().general) {
 			General obj = BaseTools.readConfigObject(PATH_CONFIG_GENERAL, General.class);
 			if (null == obj) {
@@ -1194,6 +1202,11 @@ public class Config {
 				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG + "/" + configName + ".json", JsonObject.class);
 				if (obj != null) {
 					instance().customConfig.put(configName, obj);
+				} else {
+					obj = BaseTools.readConfigObject(DIR_CONFIGSAMPLE + "/" + configName + ".json", JsonObject.class);
+					if (obj != null) {
+						instance().customConfig.put(configName, obj);
+					}
 				}
 			}
 			return instance().customConfig.get(configName);
@@ -1285,19 +1298,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
-	}
-
-	public static synchronized ExecutorService[] resource_node_processPlatformExecutors() throws Exception {
-		Object o = initialContext().lookup(RESOURCE_NODE_PROCESSPLATFORMEXECUTORS);
-		if (null != o) {
-			return (ExecutorService[]) o;
-		}
-		return null;
-	}
-
-	public static synchronized void resource_node_processPlatformExecutors(ExecutorService[] executorServices)
-			throws Exception {
-		initialContext().rebind(RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, executorServices);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1568,7 +1568,7 @@ public class Config {
 
 	public static Path pathLocalRepositoryData(boolean force) {
 		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_DATA);
-		if ((!Files.exists(path)) && force)	 {
+		if ((!Files.exists(path)) && force) {
 			createDirectories(path);
 		}
 		return path;
@@ -1576,7 +1576,7 @@ public class Config {
 
 	/**
 	 * 创建层级目录,将IOException转换为UncheckedIOException
-	 * 
+	 *
 	 * @param path
 	 */
 	private static void createDirectories(Path path) {

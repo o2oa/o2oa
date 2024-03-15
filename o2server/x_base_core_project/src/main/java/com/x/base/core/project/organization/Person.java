@@ -56,6 +56,16 @@ public class Person extends GsonPropertyObject {
 	private String zhengwuDingdingId;
 	@FieldDescribe("华为WeLink id")
 	private String weLinkId;
+	@FieldDescribe("主体密级标识.")
+	private Integer subjectSecurityClearance;
+
+	public Integer getSubjectSecurityClearance() {
+		return subjectSecurityClearance;
+	}
+
+	public void setSubjectSecurityClearance(Integer subjectSecurityClearance) {
+		this.subjectSecurityClearance = subjectSecurityClearance;
+	}
 
 	public String getMatchKey() {
 		return matchKey;

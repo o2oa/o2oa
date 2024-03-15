@@ -2,12 +2,14 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +28,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -59,9 +60,10 @@ class V2ListActivityGoBack extends BaseAction {
 
 			Business business = new Business(emc);
 
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowGoBack().build();
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowGoBack().build();
 
-			if (BooleanUtils.isNotTrue(control.getAllowGoBack())) {
+			if (BooleanUtils.isNotTrue(control.getAllowGoBack()) && BooleanUtils.isNotTrue(control.getAllowManage())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 
@@ -71,51 +73,33 @@ class V2ListActivityGoBack extends BaseAction {
 				throw new ExceptionEntityExist(work.getActivity());
 			}
 
-			// 1.允许goBack,2.多待办允许goBack或待办只有一条
-			if (BooleanUtils.isNotFalse(manual.getAllowGoBack())
-					&& (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
-							|| emc.countEqualAndEqual(Task.class, Task.activityToken_FIELDNAME, work.getActivityToken(),
-									Task.job_FIELDNAME, work.getJob()) <= 1)) {
-				WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
-				Node node = workLogTree.location(work);
-				if (null != node) {
-					Nodes nodes = workLogTree.up(node);
-					List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
-					// 过滤掉未链接的,过滤掉退回操作,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
-					workLogs = workLogs.stream()
-							.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
-									&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
-									&& BooleanUtils.isTrue(o.getConnected())
-									&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
-							.collect(Collectors.groupingBy(WorkLog::getFromActivity, LinkedHashMap::new, // 生成一个新的LinkedHashMap来存储结果
-									Collectors.toList()))
-							.entrySet().stream().map(o -> o.getValue().get(0)).collect(Collectors.toList());
-					wos = this.list(manual, workLogs);
-					wos = this.supplement(business, wos);
-				}
+			// 条件判断在前面的control中已经判断
+			WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
+			Node node = workLogTree.location(work);
+			if (null != node) {
+				Nodes nodes = workLogTree.up(node);
+//				List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
+				List<WorkLog> workLogs = nodes.stream().map(Node::getWorkLog).collect(Collectors.toList());
+				// 过滤掉未链接的,过滤掉退回操作,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
+				workLogs = workLogs.stream()
+						.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
+								&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
+								&& BooleanUtils.isTrue(o.getConnected())
+								&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
+						.collect(Collectors.groupingBy(WorkLog::getFromActivity, LinkedHashMap::new, // 生成一个新的LinkedHashMap来存储结果
+								Collectors.toList()))
+						.entrySet().stream()
+						.map(o -> o.getValue().stream()
+								.sorted(Comparator.comparing(WorkLog::getCreateTime,
+										Comparator.nullsFirst(Date::compareTo).reversed()))
+								.findFirst())
+						.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+				wos = this.list(manual, workLogs);
+				wos = this.supplement(business, wos);
 			}
 		}
 		result.setData(wos);
 		return result;
-	}
-
-	/**
-	 * 如果有记录goBackActivityToken值,那么仅从这个位置开始.
-	 * 
-	 * @param nodes
-	 * @param activityToken
-	 * @return
-	 */
-	private List<WorkLog> truncateWorkLog(Nodes nodes, String activityToken) {
-		List<WorkLog> list = new ArrayList<>();
-		nodes.forEach(o -> {
-			if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
-				list.clear();
-			} else {
-				list.add(o.getWorkLog());
-			}
-		});
-		return list;
 	}
 
 	private List<Wo> list(Manual manual, List<WorkLog> workLogs) {
@@ -178,11 +162,20 @@ class V2ListActivityGoBack extends BaseAction {
 		// 拼装上最后一次环节处理人
 		list.stream().forEach(o -> {
 			try {
-				o.setLastIdentityList(business.entityManagerContainer()
-						.fetchEqualAndEqual(TaskCompleted.class, Arrays.asList(TaskCompleted.identity_FIELDNAME),
-								TaskCompleted.activityToken_FIELDNAME, o.getActivityToken(),
-								TaskCompleted.joinInquire_FIELDNAME, true)
-						.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList()));
+				List<String> identities = business.entityManagerContainer()
+						.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME, o.getActivityToken())
+						.stream().filter(t -> StringUtils.equalsIgnoreCase(t.getAct(), TaskCompleted.ACT_CREATE))
+						.flatMap(t -> Stream.of(t.getDistinguishedName(), t.getIdentity()))
+						.filter(StringUtils::isNotBlank).distinct().collect(Collectors.toList());
+				if (identities.isEmpty()) {
+					identities = business.entityManagerContainer()
+							.fetchEqualAndEqual(TaskCompleted.class, Arrays.asList(TaskCompleted.identity_FIELDNAME),
+									TaskCompleted.activityToken_FIELDNAME, o.getActivityToken(),
+									TaskCompleted.joinInquire_FIELDNAME, true)
+							.stream().map(TaskCompleted::getIdentity).filter(StringUtils::isNotBlank).distinct()
+							.collect(Collectors.toList());
+				}
+				o.setLastIdentityList(identities);
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}

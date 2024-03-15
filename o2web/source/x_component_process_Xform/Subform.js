@@ -106,6 +106,9 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
     },
     clean: function(){
         (this.modules || []).each(function(module){
+            if( module.json && module.json.type === "Subform" ){
+                if(module.clean)module.clean();
+            }
             if (this.form.all[module.json.id]) delete this.form.all[module.json.id];
             if (this.form.forms[module.json.id])delete this.form.forms[module.json.id];
             this.form.modules.erase(module);
@@ -241,6 +244,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                         var moduleNode = this.node.getElement("#" + key);
                         if (moduleNode) moduleNode.set("id", formKey);
                         module.id = formKey;
+                        module._originId = key;
+                        module._subform = this.json.id;
                     }
                     this.form.json.moduleList[formKey] = module;
                     this.moduleList[formKey] = module;
@@ -415,6 +420,8 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                         var moduleNode = this.node.getElement("#" + key);
                         if (moduleNode) moduleNode.set("id", formKey);
                         module.id = formKey;
+                        module._originId = key;
+                        module._subform = this.json.id;
                     }
                     this.form.json.moduleList[formKey] = module;
                 }.bind(this));

@@ -24,7 +24,7 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 
 class ActionListPrev extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPrev.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String flag, Integer count) throws Exception {
@@ -51,10 +51,10 @@ class ActionListPrev extends BaseAction {
 						|| business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
 								OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
 					result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
-							business.personPredicateWithTopUnit(effectivePerson));
+							business.personPredicateWithTopUnit(effectivePerson, false));
 				} else {
 					result = this.standardListPrev(Wo.copier2, id, count, JpaObject.sequence_FIELDNAME, DESC,
-							business.personPredicateWithTopUnit(effectivePerson));
+							business.personPredicateWithTopUnit(effectivePerson, false));
 					List<String> list = ListTools.extractField(result.getData(), JpaObject.id_FIELDNAME, String.class,
 							true, true);
 					List<Wo> wos = Wo.copier.copy(business.person().pick(list));

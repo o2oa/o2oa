@@ -38,7 +38,7 @@ class ActionGetWithWorkCompleted extends BaseAction {
 						workCompleted.getTitle(), workCompleted.getId());
 			}
 			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-				result.setData(XGsonBuilder.convert(workCompleted.getProperties().getData(), JsonElement.class));
+				result.setData(XGsonBuilder.convert(workCompleted.getData(), JsonElement.class));
 			} else {
 				result.setData(this.getData(business, workCompleted.getJob()));
 			}

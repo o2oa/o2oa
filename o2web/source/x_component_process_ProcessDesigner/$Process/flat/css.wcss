@@ -880,6 +880,14 @@
 		"line-height": "24px",
 		"border-bottom": "1px dashed #CCC"
 	},
+	"editTableTitle80": {
+		"width": "80px",
+		"font-weight": "bold",
+		"font-size": "12px",
+		"height": "24px",
+		"line-height": "24px",
+		"border-bottom": "1px dashed #CCC"
+	},
 	"editTableHeadTitle": {
         "color": "#bf6364",
         "font-weight": "bold",

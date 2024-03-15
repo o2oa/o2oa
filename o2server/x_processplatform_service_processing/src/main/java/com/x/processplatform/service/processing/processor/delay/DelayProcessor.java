@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.script.CompiledScript;
+import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Delay;
@@ -102,9 +102,14 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	}
 
 	private Date untilDelayScript(AeiObjects aeiObjects, Delay delay) throws Exception {
-		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-				delay, Business.EVENT_DELAY);
-		return DateTools.parse(JsonScriptingExecutor.evalString(cs, aeiObjects.scriptContext()));
+		Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), delay,
+				Business.EVENT_DELAY);
+		Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, aeiObjects.bindings());
+		if (opt.isPresent()) {
+			return DateTools.parse(opt.get());
+		} else {
+			return null;
+		}
 	}
 
 	private Integer minute(AeiObjects aeiObjects, Delay delay) throws Exception {
@@ -115,9 +120,12 @@ public class DelayProcessor extends AbstractDelayProcessor {
 					.intValue();
 		} else if (StringUtils.isNotEmpty(delay.getDelayScript())
 				|| StringUtils.isNotEmpty(delay.getDelayScriptText())) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					delay, Business.EVENT_DELAY);
-			return JsonScriptingExecutor.evalInteger(cs, aeiObjects.scriptContext());
+			Optional<Integer> opt = GraalvmScriptingFactory.evalAsInteger(source, aeiObjects.bindings());
+			if (opt.isPresent()) {
+				return opt.get();
+			}
 		}
 		return null;
 	}
@@ -128,12 +136,10 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Delay delay) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Delay delay) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.delayInquire(aeiObjects.getWork().getActivityToken(), delay));
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override

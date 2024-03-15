@@ -419,9 +419,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                 opinion = task.properties.opinion || MWF.xApplication.process.Xform.LP.rollbackTo+": "+task.arrivedActivityName;
                 break;
             case "reset":
-                var resetUser = task.properties.nextManualTaskIdentityList.erase(task.identity);
-                resetUserText = o2.name.cns(resetUser).join(",");
-                router = MWF.xApplication.process.Xform.LP.resetTo+":"+resetUserText;
+                // var resetUser = task.properties.nextManualTaskIdentityList.erase(task.identity);
+                // resetUserText = o2.name.cns(resetUser).join(",");
+                router = task.properties.routeName || MWF.xApplication.process.Xform.LP.reset;
                 opinion = task.properties.opinion || ""
                 break;
             case "appendTask":
@@ -578,10 +578,16 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                     opinion = task.properties.opinion || MWF.xApplication.process.Xform.LP.rollbackTo+": "+task.arrivedActivityName;
                     break;
                 case "reset":
-                    var resetUser = task.properties.nextManualTaskIdentityList.erase(task.identity);
-                    resetUserText = o2.name.cns(resetUser).join(",");
-                    router = MWF.xApplication.process.Xform.LP.resetTo+":"+resetUserText;
-                    opinion = task.properties.opinion || ""
+                    // var resetUser = task.properties.nextManualTaskIdentityList.erase(task.identity);
+                    // resetUserText = o2.name.cns(resetUser).join(",");
+                    // router = MWF.xApplication.process.Xform.LP.resetTo+":"+resetUserText;
+                    router = task.properties.routeName || MWF.xApplication.process.Xform.LP.reset;
+                    opinion = task.properties.opinion || "";
+                    break;
+                case "workTriggerProcessing":
+                    router = task.properties.routeName || MWF.xApplication.process.Xform.LP.systemSubmit;
+                    opinion = task.properties.opinion || MWF.xApplication.process.Xform.LP.autoFlowHtml.replace(/{time}/g, task.recordTime);
+                    person = person || MWF.xApplication.process.Xform.LP.system;
                     break;
                 case "appendTask":
                 case "back":

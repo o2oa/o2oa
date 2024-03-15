@@ -145,6 +145,73 @@
         "font-size": "14px"
 	},
 
+	"selectedWrapNodeMobile": {
+		"position": "absolute",
+		"bottom": "0px",
+		"left": "0px",
+		"width": "100%",
+		"height": "80%",
+		"border-radius": "15px 15px 0px 0px",
+		"background": "#F5F5F5",
+		"z-index":1003
+	},
+	"selectedScrollNodeMobile": {
+		"overflow": "auto",
+		"height": "calc( 100% - 30px )"
+	},
+	"selectedNodeMobile": {
+		"margin-bottom": "20px",
+		"background": "#fff"
+	},
+	"selectedTitleNodeMobile": {
+		"text-align": "center",
+		"font-size": "16px",
+		"border-radius": "15px 15px 0px 0px",
+		"height": "30px",
+		"line-height": "30px"
+	},
+	"selectedCountNodeMobile":{
+		"height": "40px",
+		"line-height": "40px",
+		"overflow": "hidden",
+		"padding-left": "10px",
+		"background": "url(../x_component_Selector/$Selector/default/icon/arrow_up.png) no-repeat right center",
+		"background-size": "32px 32px"
+	},
+	"selectedCountLabelNodeMobile": {
+		"float":"left",
+		"font-weight":"bold",
+		"padding-right":"5px"
+	},
+	"selectedCountTextNodeMobile": {
+		"float":"left",
+		"padding-left":"5px"
+	},
+	"selectedMaskNodeMobile": {
+		"background-color": "#666",
+		"opacity": 0.4,
+		"z-index":1002,
+		"height": "100%",
+		"width": "100%",
+		"position":"absolute",
+		"top": "0px",
+		"left": "0px"
+	},
+	"selectedItemActionNodeMobile": {
+		"width": "auto",
+		"height": "auto",
+		"line-height": "16px",
+		"padding": "5px 10px",
+		"float": "right",
+		"background": "#eee",
+		"border-radius": "5px"
+	},
+	"selectorItemMobile": {
+		"padding-top": "5px",
+		"padding-bottom": "5px",
+		"border-bottom": "1px solid #ccc"
+	},
+
 	"contentNode": {
 		"overflow": "hidden"
 	},
@@ -207,7 +274,7 @@
 	"okActionNode": {
 		"width": "100px",
 		"height": "30px",
-		"background": "url("+"../x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
+		"background": "url(../x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
 		"border": "0px",
 		"color": "#FFF",
 		"font-size": "18px",
@@ -218,7 +285,7 @@
 	"cancelActionNode": {
 		"width": "72px",
 		"height": "30px",
-		"background": "url("+"../x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
+		"background": "url(../x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
 		"border": "0px",
 		"color": "#FFF",
 		"font-size": "18px",
@@ -256,20 +323,33 @@
 	},
 	"searchInputDiv": {
 		"height": "30px",
-		"border-bottom": "1px solid #999"
+		"border-bottom": "1px solid #999",
+		"position": "relative"
 	},
 	"searchInput": {
-		"width": "325px",
+		"width": "303px",
 		"height": "24px",
 		"border": "0px",
 		"margin": "3px",
-		"outline": "none"
+		"outline": "none",
+		"padding-right" : "22px"
 	},
 	"searchInputSingle": {
-		"width": "325px",
+		"width": "303px",
 		"height": "24px",
 		"border": "0px",
-		"margin": "3px"
+		"margin": "3px",
+		"padding-right" : "22px"
+	},
+	"searchCancelAction": {
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/cancel.png) center center / 14px 14px no-repeat rgb(255, 255, 255)",
+		"position": "absolute",
+		"right": "0px",
+		"top": "0px",
+		"height": "28px",
+		"width": "22px",
+		"cursor": "pointer",
+		"display": "none"
 	},
 	"letterAreaMobileNode": {
         "padding": "0px 9px",
@@ -383,10 +463,10 @@
         "float": "left"
 	},
 	"selectorItemLevelNode_expand":{
-        "background": "url("+"../x_component_Selector/$Selector/default/icon/expand.png) no-repeat center right"
+        "background": "url(../x_component_Selector/$Selector/default/icon/expand.png) no-repeat center right"
     },
 	"selectorItemLevelNode_collapse":{
-	    "background": "url("+"../x_component_Selector/$Selector/default/icon/collapse.png) no-repeat center right"
+	    "background": "url(../x_component_Selector/$Selector/default/icon/collapse.png) no-repeat center right"
 	},
 	"selectorItemIconNode": {
 		"width": "28px",
@@ -405,37 +485,37 @@
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"../x_component_Selector/$Selector/default/icon/remove.png) no-repeat center center"
+        "background": "url(../x_component_Selector/$Selector/default/icon/remove.png) no-repeat center center"
     },
 	"selectorItemActionNode_over": {
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"../x_component_Selector/$Selector/default/icon/right.png) no-repeat center center"
+        "background": "url(../x_component_Selector/$Selector/default/icon/right.png) no-repeat center center"
     },
 	"selectorItemActionNode_selected": {
 		"width": "28px",
 		"height": "28px",
 		"float": "right",
-		"background": "url("+"../x_component_Selector/$Selector/default/icon/check.png) no-repeat center center"
+		"background": "url(../x_component_Selector/$Selector/default/icon/check.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_expand": {
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"../x_component_Selector/$Selector/default/icon/minus.png) no-repeat center center"
+        "background": "url(../x_component_Selector/$Selector/default/icon/minus.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_collapse": {
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"../x_component_Selector/$Selector/default/icon/add.png) no-repeat center center"
+        "background": "url(../x_component_Selector/$Selector/default/icon/add.png) no-repeat center center"
     },
   	"selectorItemCategoryActionNode_selectAll": {
 	  "width": "28px",
 	  "height": "28px",
 	  "float": "right",
-	  "background": "url("+"../x_component_Selector/$Selector/default/icon/selectall.png) no-repeat center center"
+	  "background": "url(../x_component_Selector/$Selector/default/icon/selectall.png) no-repeat center center"
 	},
 
 	"selectorItemTextNode": {

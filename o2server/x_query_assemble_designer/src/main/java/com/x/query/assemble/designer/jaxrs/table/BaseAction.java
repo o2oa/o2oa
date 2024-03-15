@@ -24,9 +24,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected void checkDuplicate(Business business, Query query, Table table) throws Exception {
+	protected void checkDuplicate(Business business, Table table) throws Exception {
 		Optional<Triple<Table, Field, Object>> opt = business.entityManagerContainer().conflict(Table.class, table);
 		if (opt.isPresent()) {
+			Query query = business.entityManagerContainer().find(opt.get().first().getQuery(), Query.class);
 			throw new ExceptionDuplicate(query.getName(), opt.get().second().getName(), opt.get().third());
 		}
 	}

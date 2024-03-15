@@ -80,7 +80,7 @@ class ActionUpdate extends BaseAction {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
 			emc.beginTransaction(Attachment.class);
-			attachment.updateContent(mapping, bytes, fileName);
+			attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
 			if (BooleanUtils.isTrue(Config.query().getExtractImage())

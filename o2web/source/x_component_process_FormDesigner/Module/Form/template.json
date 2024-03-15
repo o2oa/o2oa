@@ -99,6 +99,14 @@
           "code": "",
           "html": ""
         },
+        "beforeGoBack": {
+          "code": "",
+          "html": ""
+        },
+        "afterGoBack": {
+          "code": "",
+          "html": ""
+        },
         "help": {
           "code": "",
           "html": ""

@@ -1236,7 +1236,10 @@ window.O2Processor = new Class({
             }
 
             this.form.submitWork(routeName, opinion, medias, function () {
-                if( this.status === "popup" )this.close();
+                if( this.status === "popup" ){
+                    this.node.unmask();
+                    this.close();
+                }
             }.bind(this), this, null, appandTaskIdentityList, this.orgItems, function(){
                 if(appendTaskOrgItem)appendTaskOrgItem.setData([]);
                 this.setData("inputTextarea", "");

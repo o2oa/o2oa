@@ -77,6 +77,7 @@ export default content({
           offDutyTime: shift.properties.timeList[0].offDutyTime || "18:00",
           offDutyTimeBeforeLimit: shift.properties.timeList[0].offDutyTimeBeforeLimit || "",
           offDutyTimeAfterLimit: shift.properties.timeList[0].offDutyTimeAfterLimit || "",
+          offDutyNextDay: shift.properties.timeList[0].offDutyNextDay || false,
         };
         if (shift.properties.timeList.length > 1) {
           shiftData.time2  = {
@@ -86,6 +87,7 @@ export default content({
             offDutyTime: shift.properties.timeList[1].offDutyTime || "",
             offDutyTimeBeforeLimit: shift.properties.timeList[1].offDutyTimeBeforeLimit || "",
             offDutyTimeAfterLimit: shift.properties.timeList[1].offDutyTimeAfterLimit || "",
+            offDutyNextDay: shift.properties.timeList[1].offDutyNextDay || false,
           };
         }
         if (shift.properties.timeList.length > 2) {
@@ -96,6 +98,7 @@ export default content({
             offDutyTime: shift.properties.timeList[2].offDutyTime || "",
             offDutyTimeBeforeLimit: shift.properties.timeList[2].offDutyTimeBeforeLimit || "",
             offDutyTimeAfterLimit: shift.properties.timeList[2].offDutyTimeAfterLimit || "",
+            offDutyNextDay: shift.properties.timeList[2].offDutyNextDay || false,
           };
         }
         // 修改

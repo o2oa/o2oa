@@ -51,6 +51,7 @@ public class ActionListWithWorkPlaceObject extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 3497915092528751450L;
 		@FieldDescribe("工作地点id")
 		private List<String> idList = new ArrayList<>();
 

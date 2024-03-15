@@ -5,8 +5,6 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -16,14 +14,12 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -33,11 +29,11 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.WorkDataHelper;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.WorkContext;
-import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 class ActionProcessing extends BaseAction {
@@ -63,7 +59,8 @@ class ActionProcessing extends BaseAction {
 			job = task.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(id, wi)).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(new CallableExecute(id, wi)).get(300,
+				TimeUnit.SECONDS);
 
 	}
 
@@ -99,18 +96,17 @@ class ActionProcessing extends BaseAction {
 		private void evalCallManualBeforeTaskScript(Business business, Task task, Manual manual, Process process,
 				boolean processHasManualBeforeTaskScript, boolean hasManualBeforeTaskScript, Work work)
 				throws Exception {
-			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-					new ProcessingAttributes());
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT)).bindTask(task);
+			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
+			((WorkContext) bindings.get(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT)).bindTask(task);
 			WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 			if (processHasManualBeforeTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), process,
-						Business.EVENT_MANUALBEFORETASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(task.getApplication(), process,
+						Business.EVENT_MANUALBEFORETASK), bindings);
 			}
 			if (hasManualBeforeTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), manual,
-						Business.EVENT_MANUALBEFORETASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(task.getApplication(), manual,
+						Business.EVENT_MANUALBEFORETASK), bindings);
 			}
 			workDataHelper.update(aeiObjects.getData());
 			business.entityManagerContainer().commit();
@@ -147,20 +143,18 @@ class ActionProcessing extends BaseAction {
 		private void evalCallManualAfterTaskScript(Business business, TaskCompleted taskCompleted, Manual manual,
 				Process process, boolean processHasManualAfterTaskScript, boolean hasManualAfterTaskScript, Work work)
 				throws Exception {
-			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-					new ProcessingAttributes());
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT))
+			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
+			((WorkContext) bindings.get(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT))
 					.bindTaskCompleted(taskCompleted);
 			if (processHasManualAfterTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(taskCompleted.getApplication(), process,
-						Business.EVENT_MANUALAFTERTASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(taskCompleted.getApplication(),
+						process, Business.EVENT_MANUALAFTERTASK), bindings);
 			}
 			if (hasManualAfterTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(taskCompleted.getApplication(), manual,
-						Business.EVENT_MANUALAFTERTASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(taskCompleted.getApplication(),
+						manual, Business.EVENT_MANUALAFTERTASK), bindings);
 			}
-
 		}
 
 		private boolean hasManualAfterTaskScript(Manual manual) {
@@ -248,7 +242,7 @@ class ActionProcessing extends BaseAction {
 		private static final long serialVersionUID = 1L;
 	}
 
-	public static class Wi extends ProcessingWi {
+	public static class Wi extends ActionProcessingWi {
 
 		private static final long serialVersionUID = -6828623155146710691L;
 

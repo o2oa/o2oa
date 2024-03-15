@@ -29,7 +29,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("attendancedetail/mobile")
-@JaxrsDescribe("移动考勤打卡信息管理服务")
+@JaxrsDescribe("移动考勤打卡信息管理服务（已弃用）")
 public class AttendanceDetailMobileAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceDetailMobileAction.class);
@@ -73,8 +73,8 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction {
 				result = new ActionListMyMobileRecordToday().execute( request, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceDetailProcess(e, "查询登录者当天的所有移动打卡信息记录时发生异常！");
-				result.error(exception);
+				// Exception exception = new ExceptionAttendanceDetailProcess(e, "查询登录者当天的所有移动打卡信息记录时发生异常！");
+				result.error(e);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
@@ -128,8 +128,8 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction {
 				result = new ActionReciveAttendanceMobile().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceDetailProcess(e, "接入上下班打卡信息时发生异常！");
-				result.error(exception);
+				// Exception exception = new ExceptionAttendanceDetailProcess(e, "接入上下班打卡信息时发生异常！");
+				result.error(e);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}

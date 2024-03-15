@@ -9,6 +9,7 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Label"],
         ["process.Xform", "Textfield"],
         ["process.Xform", "Number"],
+        ["process.Xform", "Currency"],
         ["process.Xform", "Personfield"],
         ["process.Xform", "Orgfield"],
         ["process.Xform", "Org"],
@@ -59,7 +60,8 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Importer"],
         ["process.Xform", "ReadLog"],
         ["process.Xform", "Relatedlink"],
-        ["process.Xform", "AssociatedDocument"]
+        ["process.Xform", "AssociatedDocument"],
+        ["process.Xform", "Security"]
     ];
     MWF.xDesktop.requireApp(modules, null, function(){
         if (callback) callback();

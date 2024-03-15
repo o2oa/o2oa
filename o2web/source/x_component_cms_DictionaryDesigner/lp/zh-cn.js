@@ -45,5 +45,13 @@ MWF.xApplication.cms.DictionaryDesigner.LP = {
             "jsonParseError" : "json格式错误，请先修正"
 		},
         "isSave": "正在保存，请稍候...",
-        "selectOrganizationByDblclick" : "双击从选择组织"
+        "selectOrganizationByDblclick" : "双击从选择组织",
+        "formToolbar":{
+            "save": "保存数据字典",
+            "saveas": "数据字典另存为",
+            "help": "帮助",
+            "search": "搜索",
+            "autoSave": "自动保存"
+        }
+
 };

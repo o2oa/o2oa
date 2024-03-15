@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../o2_core/o2.js"></script>
+    <!--    <script src="js/sso.min.js"></script>-->
+    <script>
+        o2.addReady(function(){
+            var uri = new URI(window.location.toString());
+            var redirect = uri.getData("redirect");
+
+            sendRequest("/x_organization_assemble_authentication/jaxrs/authentication", "GET", function(json){
+                if (json.data.tokenType==='anonymous'){
+                    toRedirect()
+                }else{
+                    debugger;
+                    sendRequest("/x_organization_assemble_authentication/jaxrs/authentication", "DELETE", toRedirect, toRedirect);
+                }
+            }, toRedirect)
+
+            function toRedirect(){
+                if (redirect){
+                    window.location = redirect;
+                }else{
+                    window.location = "/";
+                }
+            }
+            function sendRequest(url, method, success, error){
+                var res = new Request.JSON({
+                    url: o2.filterUrl(url),
+                    secure: false,
+                    noCache: true,
+                    method: method,
+                    emulation: false,
+                    withCredentials: true,
+                    onSuccess: function(responseJSON){
+                        success(responseJSON);
+                    }.bind(this),
+                    onFailure: function(){
+                        error()
+                    }.bind(this),
+                    onError: function(){
+                        error()
+                    }.bind(this)
+                });
+                res.setHeader("Content-Type", "application/json; charset=utf-8");
+                res.send();
+            }
+        });
+    </script>
+</head>
+<body>
+
+</body>
+</html>

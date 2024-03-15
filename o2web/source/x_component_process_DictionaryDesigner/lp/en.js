@@ -43,5 +43,12 @@ MWF.xApplication.process.DictionaryDesigner.LP = {
         "noModifyName": "Cannot modify the name or alias",
         "jsonParseError": "json format error, please correct it first"
     },
-    "isSave": "Saving, please wait..."
+    "isSave": "Saving, please wait...",
+    "formToolbar":{
+        "save": "Save data dictionary",
+        "saveas": "Save data dictionary as",
+        "help": "help",
+        "search": "search",
+        "autoSave": "AutoSave"
+    }
 };

@@ -303,7 +303,7 @@ public class DocFunction {
         List<Item> items = null;
         try {
             if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-                Data data = workCompleted.getProperties().getData();
+                Data data = workCompleted.getData();
                 items = CONVERTER.disassemble(gson.toJsonTree(data));
             } else {
                 items = business.entityManagerContainer().listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME,

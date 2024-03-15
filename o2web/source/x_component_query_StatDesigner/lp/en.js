@@ -119,5 +119,12 @@ MWF.xApplication.query.StatDesigner.LP = {
         "sum1": "Collection of column view calculation and specified category value",
         "groupSpecifiedList":"Specified category value",
         "conversion": "Row and column conversion"
+    },
+    "formToolbar":{
+        "save": "Save",
+        "saveAs": "Save As",
+        "autoSave": "Auto Save",
+        "preview": "preview",
+        "help": "help"
     }
 };

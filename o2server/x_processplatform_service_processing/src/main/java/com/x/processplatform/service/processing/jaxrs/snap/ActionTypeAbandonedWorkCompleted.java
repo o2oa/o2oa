@@ -9,7 +9,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -27,6 +26,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.message.WorkCompletedEvent;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.query.core.entity.Item;
 
 class ActionTypeAbandonedWorkCompleted extends BaseAction {
@@ -45,7 +45,7 @@ class ActionTypeAbandonedWorkCompleted extends BaseAction {
 			}
 			job = workCompleted.getJob();
 		}
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableImpl(workCompletedId)).get(300,
+		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(new CallableImpl(workCompletedId)).get(300,
 				TimeUnit.SECONDS);
 	}
 

@@ -35,18 +35,18 @@ public class CalendarAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(CalendarAction.class);
 
-	@JaxrsMethodDescribe(value = "获取我能访问到的所有日历信息列表", action = ActionListWhatICanView.class)
+	@JaxrsMethodDescribe(value = "获取我能访问到的所有日历信息列表", action = ActionListMyCalendar.class)
 	@GET
 	@Path("list/my")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listMyCalendar(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionListWhatICanView.Wo> result = new ActionResult<>();
+		ActionResult<ActionListMyCalendar.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		if (check) {
 			try {
-				result = new ActionListWhatICanView().execute(request, effectivePerson);
+				result = new ActionListMyCalendar().execute(request, effectivePerson);
 //				result = ((ActionListWhatICanView) proxy.getProxy(ActionListWhatICanView.class)).execute(request,
 //						effectivePerson);
 			} catch (Exception e) {

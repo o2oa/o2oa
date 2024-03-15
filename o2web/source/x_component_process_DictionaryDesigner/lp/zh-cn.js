@@ -43,5 +43,12 @@ MWF.xApplication.process.DictionaryDesigner.LP = {
         "noModifyName": "不能修改名称或者别名",
         "jsonParseError" : "json格式错误，请先修正"
     },
-    "isSave": "正在保存，请稍候..."
+    "isSave": "正在保存，请稍候...",
+    "formToolbar":{
+        "save": "保存数据字典",
+        "saveas": "数据字典另存为",
+        "help": "帮助",
+        "search": "搜索",
+        "autoSave": "自动保存"
+    }
 };

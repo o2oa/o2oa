@@ -92,7 +92,7 @@ class ActionManageBatchUpload extends BaseAction {
 					}
 					if (mainAtt != null) {
 						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-						mainAtt.saveContent(mapping, bytes, fileName);
+						mainAtt.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 						mainAtt.setType((new Tika()).detect(bytes, fileName));
 						if (BooleanUtils.isTrue(
 								Config.query().getExtractImage() && ExtractTextTools.supportImage(mainAtt.getName()))
@@ -144,7 +144,8 @@ class ActionManageBatchUpload extends BaseAction {
 							attachment.setFromId(mainAtt.getId());
 							attachment.setFromPath(mainAtt.path());
 						} else {
-							attachment.saveContent(mapping, bytes, fileName);
+							attachment.saveContent(mapping, bytes, fileName,
+									Config.general().getStorageEncrypt());
 							attachment.setType((new Tika()).detect(bytes, fileName));
 							if (BooleanUtils.isTrue(Config.query().getExtractImage())
 									&& ExtractTextTools.supportImage(attachment.getName())

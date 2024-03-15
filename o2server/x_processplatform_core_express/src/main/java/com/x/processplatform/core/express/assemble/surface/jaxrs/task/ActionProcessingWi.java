@@ -17,9 +17,9 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	@Schema(description = "待办选择路由名称.")
 	private String routeName;
 
-	@FieldDescribe("决策.")
-	@Schema(description = "决策.")
-	private String decision;
+//	@FieldDescribe("决策.")
+//	@Schema(description = "决策.")
+//	private String decision;
 
 	@FieldDescribe("待办办理意见.")
 	@Schema(description = "待办办理意见.")
@@ -32,6 +32,10 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	@FieldDescribe("路由数据.")
 	@Schema(description = "路由数据.")
 	private JsonElement routeData;
+
+	@FieldDescribe("新添加的待办处理人组织专用标识.")
+	@Schema(description = "新添加的待办处理人组织专用标识.")
+	private List<String> distinguishedNameList;
 
 	@FieldDescribe("新添加的待办处理人身份.")
 	@Schema(description = "新添加的待办处理人身份.")
@@ -49,12 +53,20 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	@Schema(description = "action的参数对象.")
 	private JsonElement option;
 
-	public String getDecision() {
-		return decision;
+//	public String getDecision() {
+//		return decision;
+//	}
+//
+//	public void setDecision(String decision) {
+//		this.decision = decision;
+//	}
+
+	public List<String> getAppendTaskIdentityList() {
+		return appendTaskIdentityList;
 	}
 
-	public void setDecision(String decision) {
-		this.decision = decision;
+	public void setAppendTaskIdentityList(List<String> appendTaskIdentityList) {
+		this.appendTaskIdentityList = appendTaskIdentityList;
 	}
 
 	public String getAction() {
@@ -73,16 +85,16 @@ public class ActionProcessingWi extends GsonPropertyObject {
 		this.option = option;
 	}
 
-	public List<String> getAppendTaskIdentityList() {
-		return ListTools.trim(appendTaskIdentityList, true, true);
+	public List<String> getDistinguishedNameList() {
+		return distinguishedNameList;
+	}
+
+	public void setDistinguishedNameList(List<String> distinguishedNameList) {
+		this.distinguishedNameList = distinguishedNameList;
 	}
 
 	public List<String> getIgnoreEmpowerIdentityList() {
 		return ListTools.trim(ignoreEmpowerIdentityList, true, true);
-	}
-
-	public void setAppendTaskIdentityList(List<String> appendTaskIdentityList) {
-		this.appendTaskIdentityList = appendTaskIdentityList;
 	}
 
 	public String getRouteName() {

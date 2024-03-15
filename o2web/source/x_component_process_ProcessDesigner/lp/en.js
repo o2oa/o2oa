@@ -247,7 +247,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"instanceMode": "instance",
 		"draftMode": "draft",
 		"instanceModeInfo": "(Create a process instance directly when creating a new process, and generate to-do for the drafter)",
-		"draftModeInfo": "(When creating a new process, no process instance is created, no to-do is generated, a draft document is generated, and the process instance is not created until the transfer)",
+		"draftModeInfo": "(When creating a new process, no process instance is created, no to-do is generated, a draft document is generated, and the process instance is not created until the transfer.Attachments cannot be uploaded in draft mode.)",
 
 		"checkDraft": "Check Draft",
 		"checkDraftInfo": "(Select \"Yes\": unsaved process instances will not be retained)",
@@ -257,6 +257,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"starGroup": "Start Group",
 		"manager": "Manager",
 		"maintenanceIdentity": "Maintainer",
+		"defaultIdentity": "Default handler",
+		"managerScript": "Maintainer Script",
 
 		"number": "Number",
 		"numberActivity": "NumberActivity",
@@ -318,6 +320,16 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"reviewer": "Review",
 		"reviewerId": "Review Id",
 		"unit": "Unit",
+
+		"participant": "Process role",
+		"participant_creator": "initiator",
+		"participant_activity": "Participant",
+		"participant_maintenance": "Maintainer",
+		"participant_none": "None",
+
+		"participant_creator_info": "Set the initiator of the process instance as the handler of the current activity",
+		"participant_maintenance_info": "Set the maintainer of the process as the handler of the current activity",
+		"participant_activity_info": "Set the handler of the activity that the process instance has transferred as the handler of the current activity. Please select the activity below",
 
 		"splitScript": "Split Value Script",
 		"embed": "Embed",
@@ -408,6 +420,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"setTimeoutAfterWorkHours": "Set timeout after a few work hours",
 		"activityPower": "Power",
 		"allowDelete": "Allow Delete",
+		"allowTerminate": "Allow Terminate",
 		"allowReset": "Allow Reset",
 		"resetCount": "Reset Count",
 		"resetRange": "Reset Range",
@@ -478,6 +491,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"opinionRequired": "Opinion Required",
 		"routeType": "RouteType",
 		"defaultRoute": "Default Route",
+		"sole": "Selected by default",
+		"defaultRouteSelected": "Default Route",
 		"backRoute": "Back Route",
 		"appendTask": "AppendTask（Must point to the same activity）",
 		"appendTaskInfo": "The AppendTask does not trigger the activity event",

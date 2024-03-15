@@ -59,6 +59,8 @@ public class ActionRecordListByDetailId  extends BaseAction {
     }
 
     public static class WoRecord extends AttendanceV2CheckInRecord {
+        private static final long serialVersionUID = -4639650669016226001L;
+
         @FieldDescribe("外出请假记录")
         private AttendanceV2LeaveData leaveData;
 

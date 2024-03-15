@@ -3,8 +3,10 @@ package com.x.base.core.project.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
+import com.google.gson.JsonObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,8 +37,11 @@ public class AppStyle extends ConfigObject {
 		this.indexCentered = false;
 		this.systemMessageSwitch = true;
 		this.systemMessageCanClick = true;
+		this.needGray = false;
 		this.appExitAlert = "";
 		this.contactPermissionView = "addressPowerView"; // 默认视图名 addressPowerView 可到应用市场下载通讯录应用查看
+		this.speechScript = "";
+		this.promotionPageScript = "";
 
 	}
 
@@ -138,6 +143,9 @@ public class AppStyle extends ConfigObject {
 	private Boolean systemMessageSwitch;
 	@FieldDescribe(("移动App系统通知是否可点击打开"))
 	private Boolean systemMessageCanClick;
+	
+	@FieldDescribe(("是否需要全局黑白"))
+	private Boolean needGray;
 
 	@FieldDescribe("app退出提示")
 	private String appExitAlert;
@@ -157,8 +165,46 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("首页信息中心，分类过滤条件.")
 	private List<String> cmsCategoryFilterList = new ArrayList<>();
 
+	@FieldDescribe("语音助手 invoke 脚本")
+	private String speechScript;
 
-	
+	@FieldDescribe("推广页 invoke 脚本")
+	private String promotionPageScript;
+
+	@FieldDescribe("扩展参数")
+	private JsonObject extendParam;
+
+	public JsonObject getExtendParam() {
+		return extendParam;
+	}
+
+	public void setExtendParam(JsonObject extendParam) {
+		this.extendParam = extendParam;
+	}
+
+	public String getSpeechScript() {
+		return speechScript;
+	}
+
+	public void setSpeechScript(String speechScript) {
+		this.speechScript = speechScript;
+	}
+
+	public String getPromotionPageScript() {
+		return promotionPageScript;
+	}
+
+	public void setPromotionPageScript(String promotionPageScript) {
+		this.promotionPageScript = promotionPageScript;
+	}
+
+	public Boolean getNeedGray() {
+		return needGray;
+	}
+
+	public void setNeedGray(Boolean needGray) {
+		this.needGray = needGray;
+	}
 
 	public Boolean getIndexCentered() {
     return indexCentered;
@@ -400,6 +446,7 @@ public class AppStyle extends ConfigObject {
 		private Integer id;
 		private String key;
 		private String name;
+		private String displayName;
 		private Boolean enable;
 		private IOS iOS = new IOS();
 
@@ -427,6 +474,7 @@ public class AppStyle extends ConfigObject {
 			this.name = name;
 		}
 
+		
 		public Boolean getEnable() {
 			return enable;
 		}
@@ -512,7 +560,7 @@ public class AppStyle extends ConfigObject {
 			NativeApp o = new NativeApp();
 			o.setId(6);
 			o.setKey("yunpan");
-			o.setName("云盘");
+			o.setName("企业网盘");
 			o.setEnable(true);
 			o.getiOS().setCategory("native");
 			o.getiOS().setSubcategory("coding");
@@ -525,7 +573,7 @@ public class AppStyle extends ConfigObject {
 			NativeApp o = new NativeApp();
 			o.setId(7);
 			o.setKey("bbs");
-			o.setName("论坛");
+			o.setName("企业论坛");
 			o.setEnable(true);
 			o.getiOS().setCategory("native");
 			o.getiOS().setSubcategory("coding");
@@ -638,6 +686,14 @@ public class AppStyle extends ConfigObject {
 			} else if (!id.equals(other.id))
 				return false;
 			return true;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+
+		public void setDisplayName(String displayName) {
+			this.displayName = displayName;
 		}
 
 	}

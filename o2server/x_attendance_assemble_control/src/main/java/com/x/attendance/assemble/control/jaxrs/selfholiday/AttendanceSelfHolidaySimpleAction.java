@@ -26,7 +26,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("selfholidaysimple")
-@JaxrsDescribe("员工休假申请信息管理服务")
+@JaxrsDescribe("员工休假申请信息管理服务（已弃用）")
 public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceSelfHolidaySimpleAction.class);

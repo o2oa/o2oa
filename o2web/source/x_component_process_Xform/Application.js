@@ -38,22 +38,41 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
          * @memberOf MWF.xApplication.process.Xform.Application#
          */
         this.node.empty();
-        if( !o2.api ){
-            MWF.require("MWF.framework", function () {
+        if( this.json.activeType !== "delay" ){
+            if( !o2.api ){
+                MWF.require("MWF.framework", function () {
+                    this.loadApplication();
+                }.bind(this));
+            }else{
                 this.loadApplication();
-            }.bind(this));
-        }else{
-            this.loadApplication();
+            }
+        }
+    },
+    /**
+     * @summary 当组件被设置为延迟激活，通过active方法激活
+     * @param {Function} callback 激活后的回调方法（不保证组件加载完成），另外已经激活过该方法还会被执行。
+     * @example
+     * var app = this.form.get("fieldId");
+     * app.active(function(){
+     *     //do someting
+     * })
+     */
+    active: function(callback){
+        if (!this.loaded) {
+            this.reload(callback);
+        } else {
+            if (callback) callback();
         }
     },
     /**
      * @summary 重新加载嵌入对象
+     * @param {Function} callback 重载后的回调
      * @example
      * this.form.get("fieldId").reload()
      */
-    reload: function(){
+    reload: function(callback){
         this.clean();
-        this.loadApplication();
+        this.loadApplication( callback );
     },
     /**
      * @summary 清除当前嵌入的对象
@@ -77,7 +96,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             this.iframe = null;
         }
     },
-    loadApplication: function ( ) {
+    loadApplication: function ( callback ) {
         this.clean();
         if(this.node){
             this.node.empty();
@@ -92,9 +111,9 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         var options = this.getComponentOptions() || {};
         this.getComponentPath(function (componentPath) {
             if( componentPath && componentPath.indexOf("@url:") === 0 ){
-                this.loadIframe( componentPath.substring(5, componentPath.length ) );
+                this.loadIframe( componentPath.substring(5, componentPath.length ), callback );
             }else{
-                this.loadComponent( componentPath, status, options );
+                this.loadComponent( componentPath, status, options, callback );
             }
         }.bind(this))
     },
@@ -105,7 +124,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      * this.form.get("fieldId").clean(); //清除当前嵌入的对象
      * this.form.get("fieldId").loadIframe('https://www.baidu.com/'); //加载iframe
      */
-    loadIframe: function( src ){
+    loadIframe: function( src, callback ){
         var attr = {
             "src": src,
             "width": "100%",
@@ -123,6 +142,8 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
          * iframe.src; //获取iframe的地址
          */
         this.iframe = new Element("iframe", attr).inject( this.node );
+        this.loaded = true;
+        if(callback)callback();
     },
     /**
      * @summary 加载系统组件
@@ -138,7 +159,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      *  "columnId":"25434995-45d2-4c9a-a344-55ad0deff071"
      *  }); //加载id为25434995-45d2-4c9a-a344-55ad0deff071的内容管理栏目
      */
-    loadComponent: function ( path, status, options ) {
+    loadComponent: function ( path, status, options, callback ) {
         var clazz = MWF.xApplication;
         if( o2.typeOf(path) !== "string" )return;
         path.split(".").each(function (a) {
@@ -186,6 +207,8 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                     this.form.app.notice(this.form.app.lp.applicationNotFound+":"+path, "error");
                 }
             }
+            this.loaded = true;
+            if(callback)callback();
         }.bind(this);
 
         try{

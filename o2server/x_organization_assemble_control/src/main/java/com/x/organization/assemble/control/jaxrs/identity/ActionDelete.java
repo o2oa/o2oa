@@ -1,8 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.identity;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -11,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.organization.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -26,11 +25,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
 
 public class ActionDelete extends BaseAction {
 
@@ -74,17 +68,28 @@ public class ActionDelete extends BaseAction {
                     .stream().filter(o -> !StringUtils.equals(id, o.getId()))
                     .sorted(Comparator.comparing(Identity::getCreateTime, Comparator.nullsLast(Date::compareTo)))
                     .collect(Collectors.toList());
+            Set<String> topUnits = new HashSet<>();
             for (int i = 0; i < others.size(); i++) {
                 if (i == 0) {
                     others.get(i).setMajor(true);
                 } else {
                     others.get(i).setMajor(false);
                 }
+                Unit u = business.unit().pick(others.get(i).getUnit());
+                if (u != null) {
+                    topUnits.add(this.topUnit(business, u).getId());
+                }
             }
+            Person person = emc.find(identity.getPerson(), Person.class);
             emc.beginTransaction(Identity.class);
             emc.remove(identity, CheckRemoveType.all);
+            if(person != null){
+                emc.beginTransaction(Person.class);
+                person.setTopUnitList(new ArrayList<>(topUnits));
+            }
             emc.commit();
             CacheManager.notify(Identity.class);
+            CacheManager.notify(Person.class);
 
             Wo wo = new Wo();
             wo.setId(identity.getId());

@@ -8,9 +8,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +24,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
@@ -72,16 +69,15 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AeiObjects.class);
 
-	public AeiObjects(Business business, Work work, Activity activity, ProcessingConfigurator processingConfigurator,
-			ProcessingAttributes processingAttributes) throws Exception {
+	public AeiObjects(Business business, Work work, Activity activity, ProcessingAttributes processingAttributes)
+			throws Exception {
 		this.business = business;
 		this.work = work;
 		this.oldWork = new Work();
 		this.work.copyTo(this.oldWork);
 		this.activity = activity;
+		this.activityProcessingConfigurator = (new ProcessingConfigurator()).get(activity.getActivityType());
 		this.processingAttributes = processingAttributes;
-		this.processingConfigurator = processingConfigurator;
-		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
 	}
 
 	private transient Business business;
@@ -91,8 +87,6 @@ public class AeiObjects extends GsonPropertyObject {
 	private transient ActivityProcessingConfigurator activityProcessingConfigurator;
 
 	private ProcessingAttributes processingAttributes;
-
-	private List<Route> selectRoutes = new ArrayList<>();
 
 	private Work work;
 
@@ -140,8 +134,6 @@ public class AeiObjects extends GsonPropertyObject {
 	private transient WorkDataHelper workDataHelper = null;
 	// 使用用懒加载,初始为null
 	private Data data = null;
-	// 使用用懒加载,初始为null
-	private transient ScriptContext scriptContext = null;
 
 	private List<Work> createWorks = new ArrayList<>();
 	private List<Work> updateWorks = new ArrayList<>();
@@ -490,10 +482,6 @@ public class AeiObjects extends GsonPropertyObject {
 		this.getCreateReviews().add(review);
 	}
 
-	public void addSelectRoutes(List<Route> selectRoutes) {
-		this.selectRoutes.addAll(selectRoutes);
-	}
-
 	public void deleteReview(Review review) {
 		this.getDeleteReviews().add(review);
 	}
@@ -521,10 +509,6 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public ProcessingAttributes getProcessingAttributes() {
 		return processingAttributes;
-	}
-
-	public List<Route> getSelectRoutes() {
-		return selectRoutes;
 	}
 
 	public Work getWork() {
@@ -1268,10 +1252,12 @@ public class AeiObjects extends GsonPropertyObject {
 		// 去重可能的在同一次提交中产生的对同一个人的多份Review
 		this.getCreateReviews().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson()))
 				.entrySet()
-				.forEach(entry -> entry.getValue().stream()
-						.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
-								.reversed().thenComparing(
-										Comparator.comparing(Review::getId, Comparator.nullsLast(String::compareTo))))
+				.forEach(entry -> entry.getValue().stream().sorted(Comparator
+						.comparing(Review::getPermissionWrite, Comparator.nullsFirst(Boolean::compareTo).reversed())
+						.thenComparing(Comparator
+								.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo)).reversed()
+								.thenComparing(
+										Comparator.comparing(Review::getId, Comparator.nullsLast(String::compareTo)))))
 						.findFirst().ifPresent(o -> {
 							try {
 								Optional<Review> existOptional = this.getReviews().stream()
@@ -1282,7 +1268,11 @@ public class AeiObjects extends GsonPropertyObject {
 									this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 								} else {
 									// 如果逻辑上相同的已阅已经存在,覆盖内容.
+									boolean permissionWrite = BooleanUtils
+											.isTrue(existOptional.get().getPermissionWrite())
+											|| BooleanUtils.isTrue(o.getPermissionWrite());
 									o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
+									existOptional.get().setPermissionWrite(permissionWrite);
 								}
 							} catch (Exception e) {
 								LOGGER.error(e);
@@ -1848,20 +1838,16 @@ public class AeiObjects extends GsonPropertyObject {
 
 	}
 
-	public ScriptContext scriptContext() throws Exception {
-		if (null == this.scriptContext) {
-			this.scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
-		}
-		Bindings bindings = this.scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+	public GraalvmScriptingFactory.Bindings bindings() throws Exception {
 		Resources resources = new Resources();
 		resources.setApplications(ThisApplication.context().applications());
 		resources.setOrganization(this.business().organization());
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setContext(ThisApplication.context());
-		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this));
-		bindings.put(ScriptingFactory.BINDING_NAME_DATA, this.getData());
-		return this.scriptContext;
+		return new GraalvmScriptingFactory.Bindings()
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_RESOURCES, resources)
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this))
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_DATA, this.getData());
 	}
 
 }

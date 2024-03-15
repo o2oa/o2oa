@@ -75,6 +75,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
             this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
         }else{
+            debugger;
             this.toolbarNode = new Element("div").inject(this.node);
 
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
@@ -82,10 +83,10 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             o2.xhr_get(this.path+"toolbars.json", function(xhr){
                 var jsonStr = xhr.responseText;
                 this.json.multiTools = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
+                this.json.multiTools = this.json.multiTools.filter(function (d) { return !d.hidden; });
 
                 jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.FormDesigner.LP.actionBar});
                 this.multiToolsJson = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
-
                 this.setToolbars(this.multiToolsJson, this.toolbarNode);
                 this.toolbarWidget.load();
             }.bind(this), null,null,true);
@@ -215,12 +216,14 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             o2.xhr_get(this.path+"toolbars.json", function(xhr){
                 var jsonStr = xhr.responseText;
                 this.json.multiTools = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
+                this.json.multiTools = this.json.multiTools.filter(function (d) { return !d.hidden; });
                 if (MWF.xApplication.process.FormDesigner.LP.actionBar){
                     jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.FormDesigner.LP.actionBar});
                     this.multiToolsJson = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
                 }else{
                     this.multiToolsJson = this.json.multiTools;
                 }
+                this.multiToolsJson = this.multiToolsJson.filter(function (d) { return !d.hidden; });
 
                 this.setMultiToolbars(Array.clone(this.multiToolsJson), this.toolbarNode);
 

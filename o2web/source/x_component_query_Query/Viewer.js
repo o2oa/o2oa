@@ -38,6 +38,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         "isloadSearchbar": true,
         "export": false,
         "lazy": false,
+        "defaultBundles": [],
         "moduleEvents": [
             /**
              * 加载前触发。可通过this.target获取当前对象。
@@ -202,9 +203,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this));
     },
     _loadUserInterface: function( callback ){
-
         this.viewJson = this.bindLP( this.viewJson );
+
+        var defaultSelectedScript, selectedAbleScript;
+        if( typeOf(this.json.defaultSelectedScript) === "function" )defaultSelectedScript = this.json.defaultSelectedScript;
+        if( typeOf(this.json.selectedAbleScript) === "function" )selectedAbleScript = this.json.selectedAbleScript;
         this.json = this.bindLP( this.json );
+        if(defaultSelectedScript)this.json.defaultSelectedScript = defaultSelectedScript;
+        if(selectedAbleScript)this.json.selectedAbleScript = selectedAbleScript;
 
         this.loadLayout();
         if( this.options.isloadActionbar )this.createActionbarNode();
@@ -392,7 +398,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
                             return false;
                         }
-                        debugger;
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
                         this._exportView(start, end, filename);
@@ -764,11 +769,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     this._initPage();
                     if (this.bundleItems.length){
                         if( this.noDataTextNode )this.noDataTextNode.destroy();
-                        this.loadCurrentPageData( function () {
-                            this.fireEvent("postLoad"); //用户配置的事件
-                            this.lookuping = false;
-                            if(callback)callback(this);
-                        }.bind(this));
+                            if( this.options.defaultBundles.length && !this.isDefaultDataLoaded ){
+                                this.loadDefaultData(function () {
+                                    this.loadCurrentPageData( function () {
+                                        this.fireEvent("postLoad"); //用户配置的事件
+                                        this.lookuping = false;
+                                        if(callback)callback(this);
+                                    }.bind(this));
+                                }.bind(this))
+                            }else{
+                                this.loadCurrentPageData( function () {
+                                    this.fireEvent("postLoad"); //用户配置的事件
+                                    this.lookuping = false;
+                                    if(callback)callback(this);
+                                }.bind(this));
+                            }
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();
@@ -794,6 +809,36 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }.bind(this));
             }
         }.bind(this));
+    },
+    loadDefaultData: function( callback ){
+        debugger;
+        var d = {};
+        d.bundleList = this.options.defaultBundles;
+        d.key = this.bundleKey;
+        this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+            var resultJson, viewData = json.data;
+
+            if (this.viewJson.group.column){
+                resultJson = [];
+                json.data.groupGrid.each(function (g) {
+                    resultJson = resultJson.concat( g.list );
+                })
+            }else{
+                resultJson = json.data.grid;
+            }
+
+            resultJson.each(function (data) {
+                this.selectedItems.push({
+                    data: data
+                })
+            }.bind(this));
+
+            this.isDefaultDataLoaded = true;
+            if(callback)callback();
+        }.bind(this), function () {
+            this.isDefaultDataLoaded = true;
+            if(callback)callback();
+        }, true );
     },
     loadCurrentPageData: function( callback, async ){
         //是否需要在翻页的时候清空之前的items ?
@@ -873,8 +918,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if( d.bundleList.length ){
             this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
                 var resultJson, viewData = json.data;
-
-                debugger;
 
                 if (this.viewJson.group.column){
                     resultJson = [];
@@ -2110,6 +2153,80 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     notice: function (content, type, target, where, offset, option) {
         this.app.notice(content, type, target, where, offset, option)
     },
+    dialog: function( options ){
+        if( !options )options = {};
+        var opts = {
+            "style" : options.style || "user",
+            "title": options.title || "",
+            "width": options.width || 300,
+            "height" : options.height || 150,
+            "isMax": o2.typeOf( options.isMax ) === "boolean" ? options.isMax : false,
+            "isClose": o2.typeOf( options.isClose ) === "boolean"  ? options.isClose : true,
+            "isResize": o2.typeOf( options.isResize ) === "boolean"  ? options.isResize : true,
+            "isMove": o2.typeOf( options.isMove ) === "boolean"  ? options.isMove : true,
+            "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
+            "offset": options.offset || null,
+            "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
+            "container": options.container ||  ( layout.mobile ? $(document.body) : this.app.content ),
+            "duration": options.duration || 200,
+            "lp": options.lp || null,
+            "zindex": ( options.zindex || 100 ).toInt(),
+            "buttonList": options.buttonList || [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        if(options.ok){
+                            var flag = options.ok.call( this );
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+
+                    }
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){
+                        if(options.close){
+                            var flag = options.close.call(this);
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+                    }
+                }
+            ]
+        };
+
+        var positionNode;
+        if( options.content ) {
+            opts.content = options.content;
+            var parent = opts.content.getParent();
+            if(parent)positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+        }
+
+        opts.onQueryClose = function(){
+            if( positionNode && opts.content ){
+                opts.content.inject( positionNode, "after" );
+                positionNode.destroy();
+            }
+            if( o2.typeOf(options.onQueryClose) === "function" )options.onQueryClose.call( this );
+        }
+
+        for( var key in options ){
+            if( !opts.hasOwnProperty( key ) ){
+                opts[key] = options[key];
+            }
+        }
+        var dialog;
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            dialog = o2.DL.open(opts)
+        }, null, false);
+        return dialog;
+    },
+
     //api 使用 结束
 
     loadObserver: function(){
@@ -2299,6 +2416,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                 "width": "30px",
                 "text-align": "center"
             });
+            if (this.view.json.itemStyles) this.sequenceTd.setStyles(this.view.json.itemStyles);
             this.sequenceTd.set("text", sequence);
         }
 
@@ -2355,6 +2473,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }
 
         //默认选中
+        debugger;
         var selectedFlag;
         var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
         if( !this.isSelected && defaultSelectedScript ){
@@ -2449,29 +2568,33 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         layout.desktop.openApplication(e, "cms.Document", options);
     },
     openWorkAndCompleted: function(e){
-        MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
-            var workCompletedCount = json.data.workCompletedList.length;
-            var workCount = json.data.workList.length;
-            var count = workCount+workCompletedCount;
-            if (count===1){
-                if (workCompletedCount) {
-                    this.openWorkCompleted(json.data.workCompletedList[0].id, e);
-                }else{
-                    this.openWork(json.data.workList[0].id, e);
-                }
-            }else if (count>1){
-                var worksAreaNode = this.createWorksArea();
-                json.data.workCompletedList.each(function(work){
-                    this.createWorkCompletedNode(work, worksAreaNode);
-                }.bind(this));
-                json.data.workList.each(function(work){
-                    this.createWorkNode(work, worksAreaNode);
-                }.bind(this));
-                this.showWorksArea(worksAreaNode, e);
-            }else{
+        var options = {"jobId": this.data.bundle};
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        layout.desktop.openApplication(e, "process.Work", options);
 
-            }
-        }.bind(this));
+        // MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
+        //     var workCompletedCount = json.data.workCompletedList.length;
+        //     var workCount = json.data.workList.length;
+        //     var count = workCount+workCompletedCount;
+        //     if (count===1){
+        //         if (workCompletedCount) {
+        //             this.openWorkCompleted(json.data.workCompletedList[0].id, e);
+        //         }else{
+        //             this.openWork(json.data.workList[0].id, e);
+        //         }
+        //     }else if (count>1){
+        //         var worksAreaNode = this.createWorksArea();
+        //         json.data.workCompletedList.each(function(work){
+        //             this.createWorkCompletedNode(work, worksAreaNode);
+        //         }.bind(this));
+        //         json.data.workList.each(function(work){
+        //             this.createWorkNode(work, worksAreaNode);
+        //         }.bind(this));
+        //         this.showWorksArea(worksAreaNode, e);
+        //     }else{
+        //
+        //     }
+        // }.bind(this));
     },
     createWorkNode: function(work, worksAreaNode){
         var worksAreaContentNode = worksAreaNode.getLast();
@@ -2607,7 +2730,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
     },
 
     select: function(  force ){
-        debugger
         // var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
         var flag = force || this.view.getSelectFlag();
         if (this.isSelected){
@@ -3688,9 +3810,7 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
             this.sequenceTd.set("text", sequence);
         }
 
-        debugger;
         Object.each(this.view.entries, function(c, k){
-            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
@@ -3742,7 +3862,6 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
         }
 
         //默认选中
-
         //判断是不是在selectedItems中，用户手工选择
 
         this.setEvent();

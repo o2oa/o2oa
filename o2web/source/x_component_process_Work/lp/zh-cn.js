@@ -32,6 +32,7 @@ MWF.xApplication.process.Work.LP = {
     "mail": "邮箱",
     "save": "保存",
     "process": "继续流转",
+    "flowWork": "继续流转",
     "handwriting": "手写",
     "audioRecord": "录音",
 
@@ -48,6 +49,7 @@ MWF.xApplication.process.Work.LP = {
 
     "rollbackConfirmTitle": "流程回溯确认",
     "rollbackConfirmContent": "您确定要将流程回溯到“{log}”状态吗？（流程回溯会清除此状态之后的所有信息）",
+    "rollbackSuccess" : "回溯成功",
 
     "recoverFileConfirmTitle": "恢复正文确认",
     "recoverFileConfirmContent": "您确定要将正文恢复到 “{att}”版本吗？（恢复后，已保存的临时文件将被删除，您无法再次恢复）",
@@ -77,6 +79,47 @@ MWF.xApplication.process.Work.LP = {
     "selectIdentityInfo": "检测到当前工作您有多个不同身份的待办，请选择一个身份处理此工作",
 
     "org": "组织",
-    "duty": "职务"
+    "duty": "职务",
+
+    "flowActions": {
+        "addTask": "加签",
+        "reset": "重置",
+        "process": "提交",
+        "goBack": "退回"
+    },
+    "modeType": "处理方式",
+    "single": "单人",
+    "queue": "串行",
+    "parallel": "并行",
+    "addTaskType": "加签方式",
+    "addTaskBefore": "前加签",
+    "addTaskAfter": "后加签",
+    "opinion": "意见",
+    "addTaskPerson": "加签人",
+    "inputOpinionNote": "请在此处填写意见",
+    "inputAddTaskPeople": "请选择加签人",
+    "inputResetPeople": "请选择重置人",
+    "inputAddTaskType": "请选择加签方式",
+    "inputModeType": "请选择处理方式",
+    "resetTo": "重置给",
+    "keepTask": "保留我的待办",
+    "quickSelect": "快速选择",
+    "empowerTo": "授权给",
+    "selectAll": "全选",
+    "ok1": "确定",
+    "not": "不",
+    "selectPerson1": "请选择人员",
+    "noQuickSelectDataNote": "系统还未记录您在当前节点选择的数据。",
+    "submitQuickText": "选择[{route}]，意见：{opinion}{org}。",
+    "addTaskQuickText": "选择[{route}{mode}]，意见：{opinion}，加签人：{org}。",
+    "resetQuickText": "意见：{opinion}，重置给：{org}。",
+
+    "users": "处理人",
+    "goBackActivity": "退回到活动",
+    "goBackActivityWay": "退回后处理：",
+    "goBackActivityWayStep": "按流程正常流转",
+    "goBackActivityWayJump": "直接回到退回人",
+    "goBackTo": "退回到：",
+    "selectGoBackActivity": "请选择要退回的活动"
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

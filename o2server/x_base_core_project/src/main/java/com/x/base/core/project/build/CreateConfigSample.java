@@ -33,7 +33,6 @@ import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.config.ExternalStorageSources;
 import com.x.base.core.project.config.General;
-import com.x.base.core.project.config.HuaweiPushConfig;
 import com.x.base.core.project.config.JpushConfig;
 import com.x.base.core.project.config.Messages;
 import com.x.base.core.project.config.Mpweixin;
@@ -72,7 +71,6 @@ public class CreateConfigSample {
 		classes.add(DumpRestoreData.class);
 		classes.add(Exmail.class);
 		classes.add(ExternalStorageSources.class);
-		classes.add(HuaweiPushConfig.class);
 		classes.add(JpushConfig.class);
 		classes.add(Messages.class);
 		classes.add(Mpweixin.class);

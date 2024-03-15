@@ -33,7 +33,7 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 
 class ActionListLikePinyin extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListLikePinyin.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -103,8 +103,8 @@ class ActionListLikePinyin extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.like(root.get(Person_.pinyin), str + "%");
-		p = cb.or(p, cb.like(root.get(Person_.pinyinInitial), str + "%"));
+		Predicate p = cb.like(root.get(Person_.pinyin), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+		p = cb.or(p, cb.like(root.get(Person_.pinyinInitial), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
 		} else {
@@ -112,7 +112,7 @@ class ActionListLikePinyin extends BaseAction {
 				return wos;
 			}
 		}
-		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson, false));
 		List<String> ids = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList().stream().distinct()
 				.collect(Collectors.toList());
 		List<Person> os = business.entityManagerContainer().list(Person.class, ids);

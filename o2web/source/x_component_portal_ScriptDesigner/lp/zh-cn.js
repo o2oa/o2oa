@@ -26,5 +26,24 @@ MWF.xApplication.portal.ScriptDesigner.LP = {
             "numberKey": "项目名称不能为数字，请重新输入",
 
             "inputName": "请输入脚本名称"
-		}
+		},
+        "version" : {
+            "title" : "查看脚本版本记录",
+            "close" : "关闭",
+            "no":"序号",
+            "updateTime":"更新时间",
+            "op":"操作",
+            "resume" : "恢复",
+            "resumeConfirm" : "恢复确认",
+            "resumeInfo" : "您确认是否需要执行脚本恢复操作？确认恢复后当前脚本会更新，需要手动保存当前脚本才会生效。",
+            "resumeSuccess" :"恢复成功"
+        },
+        "formToolbar":{
+            "save": "保存脚本",
+            "autoSave": "自动保存",
+            "fontSize": "字体大小",
+            "style": "样式",
+            "scriptEditor": "脚本编辑器",
+            "viewAllVersions": "查看所有脚本版本"
+        }
 };

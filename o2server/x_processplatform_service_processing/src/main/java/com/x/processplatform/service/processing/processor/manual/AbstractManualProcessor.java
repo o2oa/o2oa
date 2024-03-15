@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.manual;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,16 +43,16 @@ abstract class AbstractManualProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Manual manual = (Manual) aeiObjects.getActivity();
-		return inquiring(aeiObjects, manual);
+		return inquiring(aeiObjects, manual).orElse(null);
 	}
 
 	protected abstract Work arriving(AeiObjects aeiObjects, Manual manual) throws Exception;
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Manual manual) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Manual manual) throws Exception;
 
 	@Override
 	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {

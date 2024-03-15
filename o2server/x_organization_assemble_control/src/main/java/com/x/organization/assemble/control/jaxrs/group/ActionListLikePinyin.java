@@ -108,8 +108,8 @@ class ActionListLikePinyin extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Group> root = cq.from(Group.class);
-		Predicate p = cb.like(root.get(Group_.pinyin), str + "%");
-		p = cb.or(p, cb.like(root.get(Group_.pinyinInitial), str + "%"));
+		Predicate p = cb.like(root.get(Group_.pinyin), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+		p = cb.or(p, cb.like(root.get(Group_.pinyinInitial), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(groupIds)) {
 			p = cb.and(p, root.get(Group_.id).in(groupIds));
 		}

@@ -2,13 +2,13 @@ package com.x.processplatform.service.processing.processor.agent;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.script.CompiledScript;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Route;
@@ -46,9 +46,9 @@ abstract class AbstractAgentProcessor extends AbstractProcessor {
 			return os;
 		} catch (Exception e) {
 			if (this.hasAgentInterruptScript(agent)) {
-				CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_AGENTINTERRUPT);
-				JsonScriptingExecutor.eval(compiledScript, aeiObjects.scriptContext());
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						aeiObjects.getActivity(), Business.EVENT_AGENTINTERRUPT);
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			throw e;
 		}
@@ -61,9 +61,9 @@ abstract class AbstractAgentProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Agent agent = (Agent) aeiObjects.getActivity();
-		return inquiring(aeiObjects, agent);
+		return inquiring(aeiObjects, agent).orElse(null);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ abstract class AbstractAgentProcessor extends AbstractProcessor {
 
 	protected abstract void executingCommitted(AeiObjects aeiObjects, Agent agent, List<Work> works) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Agent agent) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Agent agent) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Agent agent) throws Exception;
 

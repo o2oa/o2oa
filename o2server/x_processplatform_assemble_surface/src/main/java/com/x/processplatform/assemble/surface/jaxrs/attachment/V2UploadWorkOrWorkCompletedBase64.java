@@ -89,7 +89,7 @@ class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 		if (null != attachment) {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
-			attachment.updateContent(mapping, bytes);
+			attachment.updateContent(mapping, bytes, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes));
 			this.updateText(attachment, bytes);
 			business.entityManagerContainer().beginTransaction(Attachment.class);
@@ -98,7 +98,7 @@ class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 		} else {
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			attachment = this.concreteAttachmentOfWork(work, effectivePerson, site);
-			attachment.saveContent(mapping, bytes, fileName);
+			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			this.updateText(attachment, bytes);
 			business.entityManagerContainer().beginTransaction(Attachment.class);
@@ -121,7 +121,7 @@ class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 		if (null != attachment) {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
-			attachment.updateContent(mapping, bytes);
+			attachment.updateContent(mapping, bytes, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes));
 			this.updateText(attachment, bytes);
 			business.entityManagerContainer().beginTransaction(Attachment.class);
@@ -139,7 +139,7 @@ class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 			}
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			attachment = this.concreteAttachmentOfWorkCompleted(workCompleted, effectivePerson, site, ends.get(0));
-			attachment.saveContent(mapping, bytes, fileName);
+			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			business.entityManagerContainer().beginTransaction(Attachment.class);
 			business.entityManagerContainer().persist(attachment, CheckPersistType.all);

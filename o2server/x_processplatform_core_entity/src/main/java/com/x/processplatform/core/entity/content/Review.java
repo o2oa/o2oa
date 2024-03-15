@@ -36,7 +36,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = PersistenceProperties.Content.Review.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.Review.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }),
+		@UniqueConstraint(name = PersistenceProperties.Content.Review.table + JpaObject.IndexNameMiddle
+				+ "JP", columnNames = { JpaObject.ColumnNamePrefix + Review.job_FIELDNAME,
+						JpaObject.ColumnNamePrefix + Review.person_FIELDNAME }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Review extends SliceJpaObject implements ProjectionInterface {
 
@@ -96,6 +99,7 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 
 	public Review() {
 		this.properties = new ReviewProperties();
+		this.permissionWrite = false;
 	}
 
 	public Review(Work work, String person) {
@@ -313,6 +317,12 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String currentActivityName;
+
+	public static final String PERMISSIONWRITE_FIELDNAME = "permissionWrite";
+	@FieldDescribe("编辑权限.")
+	@Column(name = ColumnNamePrefix + PERMISSIONWRITE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean permissionWrite;
 
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -545,6 +555,14 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + timeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
+
+	public Boolean getPermissionWrite() {
+		return permissionWrite;
+	}
+
+	public void setPermissionWrite(Boolean permissionWrite) {
+		this.permissionWrite = permissionWrite;
+	}
 
 	public String getProcess() {
 		return process;

@@ -18,7 +18,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
         Extends: MWF.APP$Module,
         isActive: false,
         options:{
-            "version": "v2.0.2",
+            "version": "wpsWebOffice",
             /**
              * 文档打开前事件。
              * @since V8.0
@@ -40,6 +40,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             ]
         },
         initialize: function(node, json, form, options){
+
             this.node = $(node);
             this.node.store("module", this);
             this.json = json;
@@ -59,6 +60,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             };
 
             this.appToken = "x_processplatform_assemble_surface";
+            this.version = this.options.version;
         },
         _loadUserInterface: function(){
             this.node.empty();
@@ -188,9 +190,16 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
         },
         loadApi : function (callback){
 
-            o2.load(["../x_component_WpsOfficeEditor/web-office-sdk-solution-v2.0.2.umd.min.js"], {"sequence": true}, function () {
-                if (callback) callback();
-            }.bind(this));
+            if(this.version === "wpsWebOffice"){
+                o2.load(["../x_component_WpsOfficeEditor/web-office-sdk-solution-v2.0.2.umd.min.js"], {"sequence": true}, function () {
+                    if (callback) callback();
+                }.bind(this));
+            }else {
+                o2.load(["../x_component_WpsOfficeEditor/web-office-sdk-v1.1.19.umd.js"], {"sequence": true}, function () {
+                    if (callback) callback();
+                }.bind(this));
+            }
+
         },
         getEditor: function (callback) {
             if (this.isReadonly()){
@@ -204,12 +213,22 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                 }
             }
 
-            this.action.ConfigAction.getAppId(function( json ){
-                this.appId = json.data.value;
-                if (callback) callback();
-            }.bind(this),null,false);
+            if(this.action.ConfigAction.getBaseConfig){
+                this.action.ConfigAction.getBaseConfig(function( json ){
+                    this.appId = json.data.appId;
+                    this.version = json.data.version;
+                    if (callback) callback();
+                }.bind(this),null,false);
+            }else {
+                this.action.ConfigAction.getAppId(function( json ){
+                    this.appId = json.data.value;
+                    if (callback) callback();
+                }.bind(this),null,false);
+
+            }
 
         },
+
         loadEditor : function (){
 
             this.fireEvent("beforeOpen");
@@ -218,17 +237,8 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
 
             this.officeNode = new Element("div#_" + this.documentId,{"style":"height:100%;overflow:hidden;min-height:700px"}).inject(this.node);
 
+            var config = {
 
-            this.wpsOffice = WebOfficeSDK.init({
-
-                officeType: WebOfficeSDK.OfficeType[this.officeType[this.extension.toLowerCase()]],
-                appId: this.appId,
-                fileId: this.documentId.replace(/-/g, "_"),
-                token: layout.session.token,
-                customArgs : {
-                    "appToken" : this.appToken,
-                    "mode" : this.mode
-                },
                 mount: this.officeNode,
                 mode : this.json.showMode,
                 cooperUserAttribute: {
@@ -376,7 +386,35 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                     }
                 ]
 
-            });
+            };
+
+            if(this.version === "wpsWebOffice"){
+                config.officeType = WebOfficeSDK.OfficeType[this.officeType[this.extension.toLowerCase()]];
+                config.appId = this.appId;
+                config.fileId = this.documentId.replace(/-/g, "_");
+                config.token = layout.session.token;
+                config.customArgs = {
+                    "appToken" : this.appToken,
+                    "mode" : this.mode
+                };
+                this.wpsOffice = WebOfficeSDK.init(config);
+            }else {
+                this.action.CustomAction.getWpsFileUrl(this.documentId,{
+                    "mode" : this.mode,
+                    "appToken" : this.appToken
+                },function( json ){
+                    this.wpsUrl = json.data.wpsUrl;
+                    config.url = this.wpsUrl;
+
+                }.bind(this),null,false);
+                // console.log(this.wpsUrl)
+                this.wpsOffice = WebOfficeSDK.config(config);
+                this.wpsOffice.setToken({
+                    token: layout.session.token,
+                    timeout: 100 * 60 * 1000 // token超时时间, 可配合refreshToken配置函数使用，当超时前将调用refreshToken
+                });
+
+            }
 
             this.wpsOffice.on('fileOpen', function(result) {
                 this.fireEvent("afterOpen");
@@ -406,6 +444,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                 this.hideComments();
             }
         },
+
         hide: function(){
             this.node.hide();
         },
@@ -577,6 +616,44 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             ])
             return isReplaceSuccess;
         },
+        /**
+         * @summary 盖章
+         * @return 返回是个Promise对象
+         * @example
+         * this.form.get("fieldId").setSeal(bookmark,img,left,top,width,height)
+         */
+        setSeal : async function (bookmark,img,left,top,width,height){
+            await this.wpsOffice.ready();
+
+            const app = this.wpsOffice.Application;
+
+            //获取当前选区
+            const selection = await app.ActiveDocument.ActiveWindow.Selection;
+            // 跳转到指定的书签
+            await app.ActiveDocument.ActiveWindow.Selection.GoTo(
+                app.Enum.WdGoToItem.wdGoToBookmark, // 类型：Bookmark
+                app.Enum.WdGoToDirection.wdGoToAbsolute, // 定位
+                1, // 数量
+                bookmark, // 书签名
+            );
+
+            // 获取图形对象
+            const shapes = await app.ActiveDocument.Shapes;
+            // 光标插入非嵌入式图片
+            const shape = await shapes.AddPicture({
+                FileName: img, // 图片地址
+                LinkToFile: true,
+                SaveWithDocument: true,
+                Left: left, // 图片距离左边位置
+                Top: top, // 图片距离顶部位置
+                Width: width, // 图片宽度
+                Height: height, // 图片高度
+            });
+
+            // 设置文字环绕模式为【衬于文字下方】
+            shape.ZOrder(app.Enum.ZOrderCmd.sendBehindText);
+        },
+
         /**
          * @summary 查找替换
          * @return 返回是个Promise对象

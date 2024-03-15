@@ -34,9 +34,11 @@ class ActionBuildQueryDispatch extends BaseAction {
 			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			Query query = emc.fetch(queryId, Query.class);
-			if (null == query) {
-				throw new ExceptionEntityNotExist(queryId, Query.class);
+			if(!EMPTY_SYMBOL.equals(queryId)) {
+				Query query = emc.fetch(queryId, Query.class);
+				if (null == query) {
+					throw new ExceptionEntityNotExist(queryId, Query.class);
+				}
 			}
 		}
 		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);

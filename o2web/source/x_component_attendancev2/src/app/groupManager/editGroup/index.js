@@ -20,8 +20,9 @@ export default content({
       fTitle: lp.groupAdd,
       form: {
         groupName: "",
-        checkType: "1", // 1 固定班制 2 自由打卡
+        checkType: "1", // 1 固定班制 2 自由打卡 3 排班制
         participateList: [],
+        assistAdminList: [], // 协助管理员
         unParticipateList: [],
         workPlaceIdList: [],
         allowFieldWork: false,  // 是否允许外勤打卡.
@@ -126,7 +127,6 @@ export default content({
     if (this.bind.updateId) {
       const group = await groupAction("get", this.bind.updateId);
       if (group) {
-        console.debug(group);
         this.bind.form = group;
         if (group.workDateProperties) {
           // 处理成前端使用的对象 
@@ -231,7 +231,6 @@ export default content({
     // requiredCheckIn- 开头的key 表示在必需打卡日期的配置
     if (this.bind.shiftSelector.key.startsWith('requiredCheckIn-')) {
       const date = this.bind.shiftSelector.key.substring('requiredCheckIn-'.length);
-      console.debug(date);
       for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
         const element = this.bind.requiredCheckInDateForTableList[index];
         if (element.date === date) {
@@ -252,7 +251,6 @@ export default content({
         this.bind.workDay[this.bind.shiftSelector.key].shiftSelected = newShift;
       }
     }
-    console.debug(this.bind);
   },
   // 关闭班次选择器
   closeShiftSelect() {
@@ -296,7 +294,6 @@ export default content({
         break
       }
     }
-    console.debug(i);
     if (i > -1) {
       this.bind.workPlaceSelector.workAddressSelected.splice(i, 1);
     }
@@ -369,19 +366,16 @@ export default content({
     }
   },
   showRequiredDateCycleSelector(id) {
-    console.debug("show selecotr");
     const selector = this.dom.querySelector("#o2-selector-"+id);
     const brother = this.dom.querySelector("#o2-required-date-"+id);
     const x = brother.getBoundingClientRect().left + document.documentElement.scrollLeft;
     const y = brother.getBoundingClientRect().top + document.documentElement.scrollTop;
-    console.debug("show selecotr ..........x:" + x+ " y: "+y);
     selector.style.left = x + "px";
     selector.style.top = (y+40)+"px";
     selector.style.position = "fixed";
     selector.show();
   },
   chooseDateCycleItem(date, cycle) {
-    console.debug(date, cycle)
     for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
       const element = this.bind.requiredCheckInDateForTableList[index];
       if (element.date === date) {
@@ -397,7 +391,6 @@ export default content({
     const value = e.target.value;
     const date = id.substring('o2-selector-'.length);
     const cycle = this.bind.dateCycleList.filter(c => c.value === value);
-    console.debug(id, value, date, cycle);
     for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
       const element = this.bind.requiredCheckInDateForTableList[index];
       if (element.date === date) {
@@ -405,7 +398,6 @@ export default content({
         this.bind.requiredCheckInDateForTableList[index] = element;
       }
     }
-    console.debug(this.bind)
   },
   loadNoNeedDateSelector() {
     MWF.require("MWF.widget.Calendar", function(){
@@ -454,7 +446,6 @@ export default content({
     const value = e.target.value;
     const date = id.substring('o2-noNeed-'.length);
     const cycle = this.bind.dateCycleList.filter(c => c.value === value);
-    console.debug(id, value, date, cycle);
     for (let index = 0; index < this.bind.noNeedCheckInDateForTableList.length; index++) {
       const element = this.bind.noNeedCheckInDateForTableList[index];
       if (element.date === date) {
@@ -477,12 +468,27 @@ export default content({
       this.bind.noNeedCheckInDateForTableList.splice(i, 1);
     }
   },
+  // 开始排班前 先保存数据
+  startSchedule() {
+    this.submit((result)=>{
+      console.log(result);
+      this.openScheduleWindow({bind: {trueParticipantList: result.trueParticipantList || [], groupId: result.id}})
+    })
+    
+  },
+  // 打开排班窗口
+  async openScheduleWindow(data) {
+    const bind = data || {};
+    console.log(bind);
+    const c = (await import('../schedule/index.js')).default;
+    this.scheduleVm = await c.generate("#scheduleFom", bind, this);
+  },
   // 关闭当前窗口
   close() {
     this.$topParent.publishEvent('group', {});
     this.$parent.closeFormVm();
   },
-  async submit() {
+  async submit(callback) {
     debugger;
     const myForm = this.bind.form;
     // 考勤组名称
@@ -540,6 +546,8 @@ export default content({
           return ;
         }
         myForm.workDateList = this.bind.workDateList.join(",");
+    } else if (myForm.checkType === "3"){
+      // 排班校验
     } else {
       o2.api.page.notice(lp.groupForm.checkTypeError, 'error');
       return;
@@ -590,10 +598,21 @@ export default content({
       return date+"|"+cycle;
     });
     myForm.noNeedCheckInDateList = noNeedCheckInDateList;
+    if (callback && callback instanceof Function && myForm.status  !== 1) {
+      myForm.status = 2;
+    } else {
+      myForm.status = 1;
+    }
 
     const result = await groupAction("createOrUpdate", myForm);
     console.log(result);
-    o2.api.page.notice(lp.saveSuccess, 'success');
-    this.close();
+    if (callback && callback instanceof Function) {
+      this.bind.form.id = result.id;
+      callback(result);
+    } else {
+      o2.api.page.notice(lp.saveSuccess, 'success');
+      this.close();
+    }
+    
   },
 });

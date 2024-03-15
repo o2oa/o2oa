@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.organization.core.entity.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,10 +30,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Identity_;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.Unit_;
 
 class ActionListObject extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionListObject.class);
@@ -93,6 +90,9 @@ class ActionListObject extends BaseAction {
 		@FieldDescribe("直接下级身份数量")
 		private Long subDirectIdentityCount = 0L;
 
+		@FieldDescribe("直接下级职务数量")
+		private Long subDirectDutyCount = 0L;
+
 		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible, Unit.controllerList_FIELDNAME));
 
@@ -120,6 +120,13 @@ class ActionListObject extends BaseAction {
 			this.subDirectIdentityCount = subDirectIdentityCount;
 		}
 
+		public Long getSubDirectDutyCount() {
+			return subDirectDutyCount;
+		}
+
+		public void setSubDirectDutyCount(Long subDirectDutyCount) {
+			this.subDirectDutyCount = subDirectDutyCount;
+		}
 	}
 
 	private List<Wo> list(Wi wi) throws Exception {
@@ -143,31 +150,14 @@ class ActionListObject extends BaseAction {
 							wo.setSuperior(superior.getDistinguishedName());
 						}
 					}
-					wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
-					wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
+					wo.setSubDirectIdentityCount(business.identity().countByUnit(wo.getId()));
+					wo.setSubDirectUnitCount(business.unit().countBySuper(wo.getId()));
+					wo.setSubDirectDutyCount(business.unitDuty().countByUnit(wo.getId()));
 					wos.add(wo);
 				}
 			}
 			return wos;
 		}
-	}
-
-	private Long countSubDirectUnit(Business business, Wo wo) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Unit.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.equal(root.get(Unit_.superior), wo.getId());
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
-	}
-
-	private Long countSubDirectIdentity(Business business, Wo wo) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.equal(root.get(Identity_.unit), wo.getId());
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
 }

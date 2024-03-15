@@ -68,7 +68,7 @@ class ActionTouch extends BaseAction {
 			req.setSeries(this.series);
 			ThisApplication.context().applications()
 					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							Applications.joinQueryUri("work", work.getId(), "processing","nonblocking"), null, work.getJob())
+							Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob())
 					.getData(Wo.class);
 		}
 
@@ -110,7 +110,7 @@ class ActionTouch extends BaseAction {
 						record.getProperties().getNextManualList().add(nextManual);
 					});
 			/* 去重 */
-			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
+			//record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
 			return record;
 		}
 	}

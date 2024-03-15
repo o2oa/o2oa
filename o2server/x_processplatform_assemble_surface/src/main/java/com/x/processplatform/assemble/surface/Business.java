@@ -1,14 +1,7 @@
 package com.x.processplatform.assemble.surface;
 
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,11 +11,12 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.bean.tuple.Triple;
-import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.organization.Person;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
@@ -36,6 +30,7 @@ import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
 import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
 import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskProcessModeFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
@@ -63,7 +58,6 @@ import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
 import com.x.processplatform.assemble.surface.factory.element.SplitFactory;
 import com.x.processplatform.assemble.surface.factory.portal.PortalFactory;
 import com.x.processplatform.assemble.surface.factory.service.CenterServiceFactory;
-import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -181,6 +175,15 @@ public class Business {
 			this.task = new TaskFactory(this);
 		}
 		return task;
+	}
+
+	private TaskProcessModeFactory taskProcessMode;
+
+	public TaskProcessModeFactory taskProcessMode() throws Exception {
+		if (null == this.taskProcessMode) {
+			this.taskProcessMode = new TaskProcessModeFactory(this);
+		}
+		return taskProcessMode;
 	}
 
 	private TaskCompletedFactory taskCompleted;
@@ -492,51 +495,6 @@ public class Business {
 		return o;
 	}
 
-	/**
-	 * 下载附件并打包为zip
-	 *
-	 * @param attachmentList
-	 * @param os
-	 * @throws Exception
-	 */
-	public void downToZip(List<Attachment> attachmentList, OutputStream os, Map<String, byte[]> otherAttMap)
-			throws Exception {
-		Map<String, Attachment> filePathMap = new HashMap<>();
-		List<String> emptyFolderList = new ArrayList<>();
-		/* 生成zip压缩文件内的目录结构 */
-		if (attachmentList != null) {
-			for (Attachment att : attachmentList) {
-				if (filePathMap.containsKey(att.getName())) {
-					filePathMap.put(att.getSite() + "-" + att.getName(), att);
-				} else {
-					filePathMap.put(att.getName(), att);
-				}
-			}
-		}
-		try (ZipOutputStream zos = new ZipOutputStream(os)) {
-			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
-				zos.putNextEntry(new ZipEntry(
-						StringUtils.replaceEach(entry.getKey(), FILENAME_SENSITIVES_KEY, FILENAME_SENSITIVES_EMPTY)));
-				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-						entry.getValue().getStorage());
-				entry.getValue().readContent(mapping, zos);
-			}
-
-			if (otherAttMap != null) {
-				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
-					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), FILENAME_SENSITIVES_KEY,
-							FILENAME_SENSITIVES_EMPTY)));
-					zos.write(entry.getValue());
-				}
-			}
-
-			// 往zip里添加空文件夹
-			for (String emptyFolder : emptyFolderList) {
-				zos.putNextEntry(new ZipEntry(emptyFolder));
-			}
-		}
-	}
-
 	public boolean ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(String person, String job) {
 		Optional<Triple<Class<? extends JpaObject>, String, String>> opt = Stream
 				.<Triple<Class<? extends JpaObject>, String, String>>of(Triple.of(Review.class, person, job),
@@ -544,6 +502,24 @@ public class Business {
 						Triple.of(Task.class, person, job), Triple.of(Read.class, person, job))
 				.filter(this::hasTaskOrReadOrTaskCompletedOrReadCompletedOrReviewWithPersonWithJob).findFirst();
 		return opt.isPresent();
+	}
+
+	/**
+	 * 判断用户是否有Review的permissionWrite标志
+	 * 
+	 * @param effectivePerson
+	 * @param job
+	 * @return
+	 */
+	public boolean ifPersonHasPermissionWriteReviewWithJob(EffectivePerson effectivePerson, String job) {
+		try {
+			return emc.countEqualAndEqualAndEqual(Review.class, Review.person_FIELDNAME,
+					effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, job, Review.PERMISSIONWRITE_FIELDNAME,
+					true) > 0;
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
 	}
 
 	public boolean ifPersonCanManageApplicationOrProcess(EffectivePerson effectivePerson, String applicationId,
@@ -643,8 +619,9 @@ public class Business {
 		return emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, person, Read.job_FIELDNAME, job) > 0;
 	}
 
-	public boolean ifPersonHasTaskWithWork(String person, String workId) throws Exception {
-		return emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, workId) > 0;
+	public Optional<Task> ifPersonHasTaskWithWork(String person, String workId) throws Exception {
+		Task task = emc.firstEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, workId);
+		return (null != task) ? Optional.of(task) : Optional.empty();
 	}
 
 	public boolean ifPersonHasPauseTaskWithWork(String person, String work) throws Exception {
@@ -655,6 +632,29 @@ public class Business {
 	public boolean ifPersonHasTaskCompletedWithJob(String person, String job) throws Exception {
 		return emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME, person,
 				TaskCompleted.job_FIELDNAME, job) > 0;
+	}
+
+	/**
+	 * 用户是否有足够的密级标识等级.
+	 * 
+	 * @param person
+	 * @param objectSecurityClearance
+	 * @return
+	 */
+	public boolean ifPersonHasSufficientSecurityClearance(String person, Integer objectSecurityClearance) {
+		try {
+			Person p = this.organization().person().getObject(person);
+			Integer subjectSecurityClearance = p.getSubjectSecurityClearance();
+			if (null == subjectSecurityClearance) {
+				subjectSecurityClearance = Config.ternaryManagement().getDefaultSubjectSecurityClearance();
+			}
+			if ((null != subjectSecurityClearance) && (null != objectSecurityClearance)) {
+				return subjectSecurityClearance >= objectSecurityClearance;
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return true;
 	}
 
 }

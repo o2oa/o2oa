@@ -1215,6 +1215,7 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
         }.bind(this));
     },
     isFromManualActivity: function(){
+	    debugger;
         var activity = this.route.fromActivity;
         if( activity && activity.type === "manual" ){
             if( activity.data && activity.data.routeList && activity.data.routeList.contains( this.data.id ) ){

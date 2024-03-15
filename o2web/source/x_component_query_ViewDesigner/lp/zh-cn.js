@@ -338,5 +338,12 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "deepBlue":"集团样式",
         "blueFlat":"蓝白扁平",
         "greenFlat": "绿色扁平"
+    },
+    "formToolbar":{
+        "save": "保存",
+        "saveAs": "另存为",
+        "autoSave": "自动保存",
+        "preview": "预览",
+        "help": "帮助"
     }
 };

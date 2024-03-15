@@ -92,6 +92,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadMonitorScript(v); break;
             case "Number":
                 this.loadNumberScript(v); break;
+            case "Currency":
+                this.loadCurrencyScript(v); break;
             case "Office":
                 this.loadOfficeScript(v); break;
             case "Opinion":

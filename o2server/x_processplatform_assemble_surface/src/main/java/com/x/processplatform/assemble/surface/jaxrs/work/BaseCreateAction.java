@@ -35,20 +35,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 class BaseCreateAction extends BaseAction {
 
-	protected void processingWork(String workId) throws Exception {
+	protected void processingCreateWork(String workId) throws Exception {
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null);
+				Applications.joinQueryUri("work", workId, "processing"), null);
 	}
 
 	protected String createWork(String processId, JsonElement jsonElement) throws Exception {
 		return ThisApplication.context().applications()
 				.postQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", "process", processId), jsonElement, null)
+						Applications.joinQueryUri("work", "process", processId), jsonElement)
 				.getData(WoId.class).getId();
 	}
 
 	/**
 	 * 如果不是草稿那么需要进行设置
+	 * 
 	 * @param identity
 	 * @param workId
 	 * @param title
@@ -67,7 +68,7 @@ class BaseCreateAction extends BaseAction {
 			work.setTitle(title);
 			// 写入父work标识
 			if (StringUtils.isNotBlank(parentWork)) {
-				work.getProperties().setParentWork(parentWork);
+				work.setParentWork(parentWork);
 			}
 			work.setCreatorIdentity(identity);
 			work.setCreatorPerson(organization.person().getWithIdentity(identity));
@@ -82,6 +83,7 @@ class BaseCreateAction extends BaseAction {
 
 	/**
 	 * 标志工作跳过新建检查
+	 * 
 	 * @param workId
 	 * @throws Exception
 	 */

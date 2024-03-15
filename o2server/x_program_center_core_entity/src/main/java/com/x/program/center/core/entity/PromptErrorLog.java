@@ -26,8 +26,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "PromptErrorLog", description = "服务管理提示错误.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
-@Table(name = PersistenceProperties.PromptErrorLog.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.PromptErrorLog.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.PromptErrorLog.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.PromptErrorLog.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -35,7 +35,7 @@ public class PromptErrorLog extends SliceJpaObject {
 
 	private static final long serialVersionUID = -2976141463716490951L;
 
-	private static final String TABLE = PersistenceProperties.PromptErrorLog.table;
+	private static final String TABLE = PersistenceProperties.PromptErrorLog.TABLE;
 
 	public String getId() {
 		return id;

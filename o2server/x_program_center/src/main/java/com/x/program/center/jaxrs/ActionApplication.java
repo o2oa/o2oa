@@ -13,6 +13,7 @@ import com.x.program.center.jaxrs.apppack.AppPackAction;
 import com.x.program.center.jaxrs.apppack.AppPackAnonymousAction;
 import com.x.program.center.jaxrs.appstyle.AppStyleAction;
 import com.x.program.center.jaxrs.authentication.AuthenticationAction;
+import com.x.program.center.jaxrs.bar.BarAction;
 import com.x.program.center.jaxrs.cachedispatch.CacheDispatchAction;
 import com.x.program.center.jaxrs.captcha.CaptchaAction;
 import com.x.program.center.jaxrs.center.CenterAction;
@@ -25,6 +26,7 @@ import com.x.program.center.jaxrs.designer.DesignerAction;
 import com.x.program.center.jaxrs.dict.DictAction;
 import com.x.program.center.jaxrs.dingding.DingdingAction;
 import com.x.program.center.jaxrs.distribute.DistributeAction;
+import com.x.program.center.jaxrs.foo.FooAction;
 import com.x.program.center.jaxrs.input.InputAction;
 import com.x.program.center.jaxrs.invoke.InvokeAction;
 import com.x.program.center.jaxrs.jest.JestAction;
@@ -36,6 +38,7 @@ import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
 import com.x.program.center.jaxrs.qiyeweixin.QiyeweixinAction;
 import com.x.program.center.jaxrs.schedule.ScheduleAction;
 import com.x.program.center.jaxrs.script.ScriptAction;
+import com.x.program.center.jaxrs.test.TestAction;
 import com.x.program.center.jaxrs.tokenthreshold.TokenThresholdAction;
 import com.x.program.center.jaxrs.unexpectederrorlog.UnexpectedErrorLogAction;
 import com.x.program.center.jaxrs.validation.ValidationAction;
@@ -85,6 +88,9 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(DictAction.class);
 		classes.add(ScriptAction.class);
 		classes.add(AndFxAction.class);
+		classes.add(TestAction.class);
+		classes.add(BarAction.class);
+		classes.add(FooAction.class);
 		return classes;
 	}
 }

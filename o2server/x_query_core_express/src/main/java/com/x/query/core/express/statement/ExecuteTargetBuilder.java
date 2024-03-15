@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.google.gson.Gson;
 import com.x.base.core.project.Context;
@@ -18,8 +15,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.core.entity.schema.Statement;
@@ -196,30 +192,27 @@ public class ExecuteTargetBuilder {
 
 	private String script(Context context, EffectivePerson effectivePerson, Organization organization, Runtime runtime,
 			String scriptText) {
-		String text = "";
 		try {
-			ScriptContext scriptContext = this.scriptContext(context, effectivePerson, organization, runtime);
-			CompiledScript cs = ScriptingFactory.functionalizationCompile(scriptText);
-			text = JsonScriptingExecutor.evalString(cs, scriptContext);
+			Resources resources = new Resources();
+			resources.setContext(context);
+			resources.setOrganization(organization);
+			resources.setWebservicesClient(new WebservicesClient());
+			resources.setApplications(context.applications());
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources)
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON,
+							gson.toJson(effectivePerson))
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS,
+							gson.toJson(runtime.getParameter()));
+			Source source = GraalvmScriptingFactory.functionalization(scriptText);
+			Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
+			if (opt.isPresent()) {
+				return opt.get();
+			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		return text;
-	}
-
-	private ScriptContext scriptContext(Context context, EffectivePerson effectivePerson, Organization organization,
-			Runtime runtime) throws Exception {
-		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-		Resources resources = new Resources();
-		resources.setContext(context);
-		resources.setApplications(context.applications());
-		resources.setWebservicesClient(new WebservicesClient());
-		resources.setOrganization(organization);
-		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS, gson.toJson(runtime.getParameter()));
-		return scriptContext;
+		return "";
 	}
 
 	public static class Resources extends AbstractResources {

@@ -8,6 +8,8 @@ import com.x.processplatform.core.entity.element.Activity;
 
 public class Signal extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -5831752132931660733L;
+
 	public Signal() {
 		this.time = new Date();
 		this.stamp = this.time.getTime();

@@ -30,7 +30,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.createTopNode();
     },
     getMainPageTitle : function(){
-        var tail = this.app.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+        var tail = (this.app.inBrowser && !this.access.isAnonymous()) ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
         return ( MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title ) + tail;
     },
     openMainPage : function(){
@@ -224,7 +224,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.searchInput = new Element("input.searchInput",{
             "styles" : this.css.searchInput,
             "value" : this.lp.searchKey,
-            "title" : MWFForum.isUseNickName() ? this.lp.searchTitleNick : this.lp.searchTitle
+            "title" : (!this.app.access.isAnonymous() && MWFForum.isUseNickName()) ? this.lp.searchTitleNick : this.lp.searchTitle
         }).inject(this.searchDiv);
         var _self = this;
         this.searchInput.addEvents({

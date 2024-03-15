@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 
 import com.x.attendance.assemble.control.factory.v2.AttendanceV2ManagerFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -243,7 +242,7 @@ public class Business {
 	}
 
 	/**
-	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、CRMManager
+	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、ROLE_AttendanceManager
 	 * @return
 	 * @throws Exception
 	 */

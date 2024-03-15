@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.server.console.ResourceFactory;
@@ -30,7 +29,6 @@ public class ActionControl extends ActionBase {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionControl.class);
 
-	private static final String CMD_PPE = "ppe";
 	private static final String CMD_OS = "os";
 	private static final String CMD_HS = "hs";
 	private static final String CMD_HD = "hd";
@@ -57,9 +55,7 @@ public class ActionControl extends ActionBase {
 		try {
 			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd = parser.parse(options(), args);
-			if (cmd.hasOption(CMD_PPE)) {
-				ppe(cmd);
-			} else if (cmd.hasOption(CMD_OS)) {
+			if (cmd.hasOption(CMD_OS)) {
 				os(cmd);
 			} else if (cmd.hasOption(CMD_HS)) {
 				hs(cmd);
@@ -106,7 +102,6 @@ public class ActionControl extends ActionBase {
 
 	private static Options options() {
 		Options options = new Options();
-		options.addOption(ppeOption());
 		options.addOption(osOption());
 		options.addOption(hsOption());
 		options.addOption(hdOption());
@@ -130,7 +125,6 @@ public class ActionControl extends ActionBase {
 
 	private static Options displayOptions() {
 		Options displayOptions = new Options();
-		displayOptions.addOption(ppeOption());
 		displayOptions.addOption(osOption());
 		displayOptions.addOption(hsOption());
 		displayOptions.addOption(hdOption());
@@ -146,10 +140,6 @@ public class ActionControl extends ActionBase {
 		displayOptions.addOption(enOption());
 		displayOptions.addOption(gcOption());
 		return displayOptions;
-	}
-
-	private static Option ppeOption() {
-		return Option.builder(CMD_PPE).longOpt("processPlatformExecutor").hasArg(false).desc("显示流程平台执行线程状态.").build();
 	}
 
 	private static Option osOption() {
@@ -298,11 +288,6 @@ public class ActionControl extends ActionBase {
 		final Integer repeat = this.getArgInteger(cmd, CMD_HS, 1);
 		HttpStatus httpStatus = new HttpStatus(repeat);
 		httpStatus.start();
-	}
-
-	private void ppe(CommandLine cmd) throws Exception {
-		ProcessPlatformExecutor processPlatformExecutor = new ProcessPlatformExecutor();
-		processPlatformExecutor.execute();
 	}
 
 	private void os(CommandLine cmd) {

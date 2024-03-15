@@ -118,11 +118,14 @@ class ActionListLike extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.conjunction();
-		p = cb.and(p, cb.or(cb.like(cb.lower(root.get(Identity_.name)), str + "%", StringTools.SQL_ESCAPE_CHAR),
-				cb.like(cb.lower(root.get(Identity_.unique)), str + "%", StringTools.SQL_ESCAPE_CHAR),
-				cb.like(cb.lower(root.get(Identity_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR),
-				cb.like(cb.lower(root.get(Identity_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR),
-				cb.like(cb.lower(root.get(Identity_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR)));
+		p = cb.and(p,
+				cb.or(cb.like(cb.lower(root.get(Identity_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
+						cb.like(cb.lower(root.get(Identity_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
+						cb.like(cb.lower(root.get(Identity_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
+						cb.like(cb.lower(root.get(Identity_.pinyinInitial)), "%" + str + "%",
+								StringTools.SQL_ESCAPE_CHAR),
+						cb.like(cb.lower(root.get(Identity_.distinguishedName)), "%" + str + "%",
+								StringTools.SQL_ESCAPE_CHAR)));
 		ListOrderedSet<String> set = new ListOrderedSet<>();
 		if (ListTools.isNotEmpty(wi.getUnitDutyList())) {
 			List<UnitDuty> unitDuties = business.unitDuty().pick(wi.getUnitDutyList());

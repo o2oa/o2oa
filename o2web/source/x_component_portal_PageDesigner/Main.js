@@ -527,18 +527,12 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	},
 	getToolbarHTML: function(callback){
 		var toolbarUrl = this.path+this.options.style+"/pageToolbars.html";
-		var r = new Request.HTML({
-			url: toolbarUrl,
-			method: "get",
-			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-				var toolbarNode = responseTree[0];
-				if (callback) callback(toolbarNode);
-			}.bind(this),
-			onFailure: function(xhr){
-				this.notice("request processToolbars error: "+xhr.responseText, "error");
-			}.bind(this)
-		});
-		r.send();
+        MWF.getRequestText(toolbarUrl, function(responseText, responseXML){
+            var htmlString = responseText;
+            htmlString = o2.bindJson(htmlString, {"lp": this.lp.formToolbar});
+            var temp = new Element('div').set('html', htmlString);
+            if (callback) callback( temp.childNodes[0] );
+        }.bind(this));
 	},
 	loadPageContent: function(callback){
         MWF.require("MWF.widget.Tab", null, false);
@@ -1702,6 +1696,9 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	recordStatus: function(){
 		return {"id": this.options.id};
 	},
+    showFormVersion: function(){
+        this.page.showFormVersion();
+    },
     onPostClose: function(){
         if (this.pcPage){
             MWF.release(this.pcPage.moduleList);

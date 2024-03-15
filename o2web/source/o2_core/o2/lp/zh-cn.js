@@ -235,7 +235,10 @@ o2.LP.desktop = {
         "customMessage": "您收到一条消息",
         "emoji": "表情",
         "processWork": "工作",
-        "cmsDoc": "信息文档"
+        "cmsDoc": "信息文档",
+
+        "bbsReplyCreateMessage" : "论坛回复提醒",
+        "bbsReplyCreate": "{title}"
     },
     "styleMenu": {
         "default": "默认",
@@ -334,6 +337,7 @@ o2.LP.widget = {
     "share": "分享",
     "send": "发送",
     "downloadAll": "全部下载",
+    "downloadBatch": "批量下载",
     "createFolder": "创建文件夹",
     "rename": "重命名",
     "property": "属性",

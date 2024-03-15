@@ -2,7 +2,20 @@ package com.x.processplatform.service.processing;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.organization.core.express.Organization;
-import com.x.processplatform.service.processing.factory.*;
+import com.x.processplatform.service.processing.factory.AttachmentFactory;
+import com.x.processplatform.service.processing.factory.DataRecordFactory;
+import com.x.processplatform.service.processing.factory.DocumentVersionFactory;
+import com.x.processplatform.service.processing.factory.ElementFactory;
+import com.x.processplatform.service.processing.factory.ItemFactory;
+import com.x.processplatform.service.processing.factory.ProcessFactory;
+import com.x.processplatform.service.processing.factory.ReadCompletedFactory;
+import com.x.processplatform.service.processing.factory.ReadFactory;
+import com.x.processplatform.service.processing.factory.ReviewFactory;
+import com.x.processplatform.service.processing.factory.TaskCompletedFactory;
+import com.x.processplatform.service.processing.factory.TaskFactory;
+import com.x.processplatform.service.processing.factory.WorkCompletedFactory;
+import com.x.processplatform.service.processing.factory.WorkFactory;
+import com.x.processplatform.service.processing.factory.WorkLogFactory;
 
 public class Business {
 
@@ -46,7 +59,8 @@ public class Business {
 	public static final String EVENT_TASKDUTY = "taskDuty";
 	public static final String EVENT_READDUTY = "readDuty";
 	public static final String EVENT_REVIEWDUTY = "reviewDuty";
-
+	public static final String EVENT_PERMISSIONWRITE = "permissionWrite";
+	
 	private EntityManagerContainer emc;
 
 	public Business(EntityManagerContainer emc) {
@@ -172,6 +186,15 @@ public class Business {
 			this.dataRecord = new DataRecordFactory(this);
 		}
 		return dataRecord;
+	}
+
+	private ProcessFactory process;
+
+	public ProcessFactory process() throws Exception {
+		if (null == this.process) {
+			this.process = new ProcessFactory(this);
+		}
+		return process;
 	}
 
 	private Organization organization;

@@ -286,19 +286,36 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var startContent = new Element("div.st_area");
 		var url = this.path+this.options.style+"/view/dlg/start.html";
 		this.getStartData().then(function(data){
-			var map = {};
+
+			var map = {}, mapById = {};
 			data[0].each(function (d) {
                 if (d.processList && d.processList.length){
                     var type = d.applicationCategory || "未分类";
                     if( !map[type] )map[type] = [];
                     map[type].push(d);
+
+					d.processList.each(function (process) {
+						mapById[ process.id ] = process;
+					});
                 }
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
 				if( !map[type] )map[type] = [];
 				map[type].push(d);
+
 			});
+			data[1] = (data[1] || []).filter(function (d) {
+				if( mapById[ d.id ] ){
+					d.name = mapById[ d.id ].name;
+					return true;
+				}else{
+					return false;
+				}
+			});
+
+
+
 			var array = [];
 			Object.each(map, function (list, key) {
 				array.push({ key: key, appList: list })

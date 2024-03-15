@@ -37,7 +37,7 @@ class ActionUpdateWithDocument extends BaseAction {
 			JsonElement source = getData(business, id);
 			JsonElement merge = XGsonBuilder.merge(jsonElement, source);
 			/** 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-			this.updateTitleSerial(business, document, merge);
+			this.updateTitleSerialObjectSecurityClearance(business, document, merge);
 			this.updateData(business, document, merge);
 			/** 在方法内进行了commit不需要再次进行commit */
 			// emc.commit();

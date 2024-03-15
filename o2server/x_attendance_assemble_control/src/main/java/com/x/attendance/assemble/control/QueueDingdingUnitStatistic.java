@@ -25,7 +25,7 @@ public class QueueDingdingUnitStatistic extends AbstractQueue<Date> {
 
     @Override
     protected void execute(Date date) throws Exception {
-        logger.info("开始执行组织钉钉考勤统计。。。time:"+DateTools.format(date));
+        logger.info("开始执行组织钉钉考勤统计，time:"+DateTools.format(date));
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             saveStatisticUnitForDay(business, emc, date);

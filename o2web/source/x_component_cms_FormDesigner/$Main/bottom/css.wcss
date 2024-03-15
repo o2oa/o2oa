@@ -40,7 +40,7 @@
 		"width": "22px",
 		"height": "22px",
 		"margin-top": "-26px",
-		"background": "url("+"../x_component_process_FormDesigner/$Main/default/left.png) no-repeat center center",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/left.png) no-repeat center center",
 		"float": "right",
 		"cursor": "pointer"
 	},
@@ -48,16 +48,42 @@
 		"width": "22px",
 		"height": "22px",
 		"margin-top": "-26px",
-		"background": "url("+"../x_component_process_FormDesigner/$Main/default/right.png) no-repeat center center",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/right.png) no-repeat center center",
 		"float": "right",
 		"cursor": "pointer"
 	},
+	"toolbarTitleCategoryActionNode": {
+		"width": "22px",
+		"height": "22px",
+		"margin-top": "-26px",
+		"margin-right": "22px",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/category.png) no-repeat center center",
+		"float": "right",
+		"cursor": "pointer"
+	},
+
+	"toolbarGroupContentNode": {
+		"overflow": "hidden"
+	},
 	"toolbarContentNode": {
-		"background-color": "#DDD",
+		"background-color": "#FFFFFF",
 		"border-radius": "0px",
 		"margin": "2px",
 		"padding-right": "4px",
 		"overflow": "hidden"
+	},
+	"toolbarGroupNode": {
+		"overflow": "hidden"
+	},
+	"toolbarGroupTitleNode": {
+		"height": "28px",
+		"overflow": "hidden",
+		"line-height": "28px",
+		"font-size": "12px",
+		"padding": "0 10px",
+		"font-weight": "bold",
+		"border-bottom": "1px solid #FFFFFF",
+		"cursor": "pointer"
 	},
 	"toolbarToolNode": {
 		"margin-top": "3px",
@@ -127,7 +153,10 @@
 		"height": "42px",
 		"background-position": "center center",
 		"background-repeat": "no-repeat",
-		"float": "left"
+		"float": "left",
+		"font-size": "24px",
+		"line-height": "40px",
+		"text-align": "center"
 	},
 	"toolbarToolTextNode": {
 		"margin-left": "46px",
@@ -360,4 +389,21 @@
             "border": "1px solid #999",
             "background": "url("+"../x_component_process_FormDesigner/$Main/bottom/editCancel_bg.png) no-repeat"
         },
+
+    "designTabScriptAreaNode": {
+        "height": "100%"
+    },
+    "designTabScriptPcAreaNode": {
+        "height": "100%"
+    },
+    "designTabScriptMobileAreaNode": {
+        "height": "100%",
+        "display": "none"
+    },
+    "scriptPageDragNode": {
+        "opacity": 0.7,
+        "border": "2px dashed #999",
+        "background-color": "#CCC",
+        "position": "absolute"
+    }
 }

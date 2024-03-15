@@ -90,7 +90,7 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 			} else if (null != workCompleted) {
 				this.form = business.form().pick(workCompleted.getForm());
 				if (null == this.form) {
-					StoreForm storeForm = workCompleted.getProperties().storeForm(true);
+					StoreForm storeForm = workCompleted.storeForm(true);
 					this.wo = XGsonBuilder.convert(storeForm, Wo.class);
 				}
 			}

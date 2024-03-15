@@ -24,9 +24,19 @@
     "text": "onlyOffice",
     "className": "OnlyOffice"
   },
+  "OfficeOnline": {
+    "icon": "officeOnline.png",
+    "text": "officeOnline",
+    "className": "OfficeOnline"
+  },
   "wpsOffice": {
     "icon": "wpsOffice.png",
     "text": "wpsOffice",
     "className": "WpsOffice"
+  },
+  "wpsOffice2": {
+    "icon": "wpsOffice.png",
+    "text": "wpsOffice2",
+    "className": "WpsOffice2"
   }
 }

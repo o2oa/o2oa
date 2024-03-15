@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -18,6 +17,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionUpdateWithWork extends BaseAction {
 
@@ -59,7 +59,7 @@ class ActionUpdateWithWork extends BaseAction {
 				JsonElement merge = XGsonBuilder.merge(wi.getJsonElement(), source);
 
 				/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-				updateTitleSerial(business, work, merge);
+				updateTitleSerialObjectSecurityClearance(business, work, merge);
 				updateData(business, work, merge);
 				/* updateTitleSerial 和 updateData 方法内进行了提交 */
 
@@ -72,7 +72,7 @@ class ActionUpdateWithWork extends BaseAction {
 			return result1;
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
+		ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 		result.setData(wo);
 		return result;

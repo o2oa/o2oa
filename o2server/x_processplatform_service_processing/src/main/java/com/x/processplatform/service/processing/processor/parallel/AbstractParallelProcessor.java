@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor.parallel;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.core.entity.content.Work;
@@ -28,17 +29,16 @@ abstract class AbstractParallelProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Parallel parallel = (Parallel) aeiObjects.getActivity();
-		List<Route> list = inquiring(aeiObjects, parallel);
-		return list;
+		return inquiring(aeiObjects, parallel).orElse(null);
 	}
 
 	protected abstract Work arriving(AeiObjects aeiObjects, Parallel parallel) throws Exception;
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, Parallel parallel) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Parallel parallel) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Parallel parallel) throws Exception;
 
 	@Override
 	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {

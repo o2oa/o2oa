@@ -28,7 +28,7 @@ import com.x.program.center.core.entity.ScheduleLog_;
 
 public class FireSchedule extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(FireSchedule.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FireSchedule.class);
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
 
@@ -39,7 +39,7 @@ public class FireSchedule extends BaseAction {
 				this.fire();
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
@@ -47,10 +47,10 @@ public class FireSchedule extends BaseAction {
 	private void fire() throws Exception {
 		Applications applications = ThisApplication.context().applications();
 		applications.entrySet().stream().forEach(entry -> {
-			try {
-				Date now = new Date();
-				Application application = applications.randomWithWeight(entry.getKey());
-				for (ScheduleRequest request : application.getScheduleRequestList()) {
+			Date now = new Date();
+			Application application = applications.randomWithWeight(entry.getKey());
+			for (ScheduleRequest request : application.getScheduleRequestList()) {
+				try {
 					if (LOCK.contains(request.getClassName())) {
 						throw new ExceptionScheduleLastNotEnd(request, application.getClassName());
 					}
@@ -59,7 +59,7 @@ public class FireSchedule extends BaseAction {
 					if (date.before(now)) {
 						try {
 							LOCK.add(request.getClassName());
-							logger.info("fire schedule className: {}, cron: {}, node: {}, application: {}.",
+							LOGGER.info("fire schedule className: {}, cron: {}, node: {}, application: {}.",
 									request.getClassName(), request.getCron(), application.getNode(),
 									application.getClassName());
 							String url = application.getUrlJaxrsRoot()
@@ -70,9 +70,10 @@ public class FireSchedule extends BaseAction {
 							LOCK.remove(request.getClassName());
 						}
 					}
+				} catch (Exception e) {
+					LOGGER.error(new ExceptionScheduleFire(e, request.getClassName(), request.getCron(),
+							application.getNode(), application.getClassName()));
 				}
-			} catch (Exception e) {
-				logger.error(e);
 			}
 		});
 	}

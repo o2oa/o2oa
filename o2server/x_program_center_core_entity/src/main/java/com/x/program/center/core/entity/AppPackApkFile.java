@@ -32,8 +32,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "AppPackApkFile", description = "服务管理安装包.")
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AppPackApkFile.table, uniqueConstraints = {
-        @UniqueConstraint(name = PersistenceProperties.AppPackApkFile.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.AppPackApkFile.TABLE, uniqueConstraints = {
+        @UniqueConstraint(name = PersistenceProperties.AppPackApkFile.TABLE + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
                 JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -42,7 +42,7 @@ public class AppPackApkFile extends StorageObject {
 
 
     private static final long serialVersionUID = 492931147504877023L;
-    private static final String TABLE = PersistenceProperties.AppPackApkFile.table;
+    private static final String TABLE = PersistenceProperties.AppPackApkFile.TABLE;
 
     public String getId() {
         return id;

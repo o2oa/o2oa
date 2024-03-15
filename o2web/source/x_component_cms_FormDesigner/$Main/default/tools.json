@@ -79,6 +79,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.combox,
     "className": "Combox"
   },
+  "currency": {
+    "icon": "currency.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.currency,
+    "className": "Currency"
+  },
   "button": {
     "icon": "button.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.button,
@@ -204,6 +209,11 @@
     "icon": "documenteditor.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.documenteditor,
     "className": "Documenteditor"
+  },
+  "security": {
+    "icon": "security.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.security,
+    "className": "Security"
   },
   "office": {
     "icon": "office.png",

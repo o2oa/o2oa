@@ -25,8 +25,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "InstallLog", description = "服务管理安装日志.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.InstallLog.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.InstallLog.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.InstallLog.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.InstallLog.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -34,7 +34,7 @@ public class InstallLog extends SliceJpaObject {
 
 	private static final long serialVersionUID = -1080102795064855623L;
 
-	private static final String TABLE = PersistenceProperties.InstallLog.table;
+	private static final String TABLE = PersistenceProperties.InstallLog.TABLE;
 
 	@Override
 	public String getId() {

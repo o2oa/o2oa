@@ -13,20 +13,43 @@ export default content({
     bind(){
         return {
             lp,
-            baiduAccountKey: "",
+            mapConfig: {
+                mapType: "baidu", //  amap baidu 
+                baiduAccountKey: "",
+                aMapAccountKey: "",
+            },
+            mapTypeList: [
+                {
+                    name: "百度地图",
+                    key: "baidu"
+                },
+                {
+                    name: "高德地图",
+                    key: "amap"
+                },
+            ]
         };
     },
-    afterRender() {
-    },
     close() {
+        this.$topParent.publishEvent('address', {});
         this.$parent.closeFormVm();
     },
+    chooseMapType(e) {
+        const value = e.target.value;
+        this.bind.mapConfig.mapType = value;
+        console.debug("设置类型： " + value);
+    },
     async submitAdd() {
-        if (isEmpty(this.bind.baiduAccountKey)) {
-          o2.api.page.notice(lp.workAddressBDSecretTitlePlaceholder, 'error');
-          return ;
+        debugger;
+        if (this.bind.mapConfig.mapType === "baidu" && isEmpty(this.bind.mapConfig.baiduAccountKey)) {
+            o2.api.page.notice(lp.workAddressBDSecretTitlePlaceholder, 'error');
+            return ;
         }
-        const bdKey = await putPublicData("baiduAccountKey", this.bind.baiduAccountKey);
+        if (this.bind.mapConfig.mapType === "amap" && isEmpty(this.bind.mapConfig.aMapAccountKey)) {
+            o2.api.page.notice(lp.workAddressBDSecretTitlePlaceholder, 'error');
+            return ;
+        }
+        const bdKey = await putPublicData("attendanceMapConfig", this.bind.mapConfig);
         console.debug('配置成功', bdKey);
         this.close();
     },

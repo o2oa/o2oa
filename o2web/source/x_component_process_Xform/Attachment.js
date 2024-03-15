@@ -135,7 +135,22 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         //     // }
         // }
     },
+    checkDownloadBatchAction: function(){
 
+        if( this.options.isDownloadBatch === "hidden" ){
+            this.setActionHidden(this.downloadBatchAction);
+            this.setActionHidden(this.min_downloadBatchAction);
+            this.setAttachmentsAction("downloadBatch", false );
+        }else if (!this.options.isDownloadBatch){
+            this.setActionDisabled(this.downloadBatchAction);
+            this.setActionDisabled(this.min_downloadBatchAction);
+            this.setAttachmentsAction("downloadBatch", false );
+        }else{
+            this.setActionEnabled(this.downloadBatchAction);
+            this.setActionEnabled(this.min_downloadBatchAction);
+            this.setAttachmentsAction("downloadBatch", true );
+        }
+    },
     checkEditAttAction: function () {
 
         if(layout.mobile){
@@ -491,6 +506,25 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         if (!hiddenGroup.contains("view")) this.createViewGroupActions();
         this.checkActions();
+
+        if( layout.mobile && this.checkActionsZoom ){
+            this.checkActionsZoom();
+        }
+    },
+    createReadGroupActions: function(){
+        //this.readActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+        //this.readActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.readActionBoxNode);
+        if(!this.editActionBoxNode)this.editActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+        if(!this.editActionsGroupNode)this.editActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.editActionBoxNode);
+
+        this.downloadAction = this.createAction(this.editActionsGroupNode, "download", o2.LP.widget.download, function(){
+            this.downloadAttachment();
+        }.bind(this));
+
+        this.downloadBatchAction = this.createAction(this.editActionsGroupNode, "downloadBatch", o2.LP.widget.downloadBatch, function(){
+            this.downloadBatchAttachment();
+        }.bind(this));
+
     },
     checkActions: function () {
         //    if (this.options.readonly){
@@ -505,6 +539,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         //this.checkOfficeAction();
         this.checkDownloadAction();
+        this.checkDownloadBatchAction();
+
         this.checkSizeAction();
 
         this.checkConfigAction();
@@ -530,7 +566,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }.bind(this));
 
         var isShowRead = false;
-        ["isDownload"].each(function( key ){
+        ["isDownload","isDownloadBatch"].each(function( key ){
             if( this.options[key] !== "hidden" )isShowRead = true;
         }.bind(this));
 
@@ -557,7 +593,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if( this.min_closeOfficeAction ){
             isShowLeft = true;
         }else {
-            ["isUpload", "isDelete", "isReplace", "isDownload", "isOrder"].each(function (key) {
+            ["isUpload", "isDelete", "isReplace", "isDownload", "isDownloadBatch", "isOrder"].each(function (key) {
                 if (key === "isReplace" && this.options.isReplaceHidden) return;
                 if (this.options[key] !== "hidden") isShowLeft = true;
             }.bind(this));
@@ -719,7 +755,6 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     loadMinActions: function () {
 
-
         var hiddenGroup = this.options.toolbarGroupHidden;
         if (!hiddenGroup.contains("edit")) {
             this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function (e, node) {
@@ -749,6 +784,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", MWF.LP.widget.download
                 , function (e, node) {
                     this.downloadAttachment(e, node);
+                }.bind(this));
+
+            this.min_downloadBatchAction = this.createAction(this.minActionAreaNode, "downloadBatch", MWF.LP.widget.downloadBatch
+                , function (e, node) {
+                    this.downloadBatchAttachment(e, node);
                 }.bind(this));
 
             //if(!layout.mobile){
@@ -796,7 +836,105 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             if (this.closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
         }
     },
-    configAttachment: function () {
+    configAttachment: function(){
+        o2.Actions.load("x_general_assemble_control").SecurityClearanceAction["enable"]().then(function(json){
+            if (json.data.enable){
+                this.configAttachmentSecurity();
+            }else{
+                this.configAttachmentPower();
+            }
+        }.bind(this));
+    },
+
+    getSecurityDefaultLabelList: function(){
+        if (this.securityLabelList) return Promise.resolve(this.securityLabelList);
+        var _self = this
+        return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction["object"]().then(function(json){
+            return _self.securityLabelList = json.data;
+        });
+    },
+
+    getSecurityLabelList: function(){
+        var _self = this;
+        return this.getSecurityDefaultLabelList().then(function(list){
+            var label = _self.module.form.businessData.data.objectSecurityClearance;
+            label = (!label && label!==0) ? Infinity : label;
+            var o = {};
+            Object.keys(list).forEach(function(k){
+                if (list[k]<=label){
+                    o[k] = list[k];
+                }
+            });
+            return o;
+        })
+    },
+    configAttachmentSecurity: function(){
+        var lp = MWF.xApplication.process.Xform.LP;
+        var css = this.module.form.css;
+
+        var node = new Element("div", { "styles": (layout.mobile ? css.attachmentPermissionNode_mobile : css.attachmentPermissionNode) }).inject(this.node);
+        var attNames = new Element("div", { "styles": css.attachmentPermissionNamesNode }).inject(node);
+        var attNamesTitle = new Element("div", { "styles": css.attachmentPermissionNamesTitleNode, "text": lp.attachmentPermissionInfo }).inject(attNames);
+        var attNamesArea = new Element("div", { "styles": css.attachmentPermissionNamesAreaNode }).inject(attNames);
+
+        if (this.selectedAttachments.length) {
+            this.selectedAttachments.each(function (att) {
+                var attNode = new Element("div", { "styles": css.attachmentPermissionAttNode, "text": att.data.name }).inject(attNamesArea);
+            }.bind(this));
+        }
+
+        var label = "";
+        if (this.selectedAttachments.length){
+            for (var i=0; i<this.selectedAttachments.length; i++){
+                var attLabel = this.selectedAttachments[i].data.objectSecurityClearance;
+                label = (!label || label===attLabel) ? attLabel : "";
+            }
+        }
+
+        var editArea = new Element("div", { "styles": css.attachmentPermissionEditAreaNode }).inject(node);
+        editArea.setStyle("display", "flex");
+        var title = new Element("div", { "styles": css.attachmentPermissionTitleNode, "text": lp.attachmentSecurity }).inject(editArea);
+        title.setStyle("margin-right", "15px");
+        var select = new Element("select", { "styles": css.attachmentPermissionInputNode }).inject(editArea);
+        new Element('option', {text: "", value: ""}).inject(select);
+        this.getSecurityLabelList().then(function(labels){
+            Object.keys(labels).forEach(function(key){
+                var op = new Element('option', {text: key, value: labels[key]}).inject(select);
+                if (label===labels[key]) op.selected = true;
+            });
+        });
+
+        var options = Object.merge({
+            "title": lp.attachmentPermission,
+            "style": this.module.form.json.dialogStyle || "user",
+            "isResize": false,
+            "content": node,
+            "buttonList": [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function () {
+                        this.setAttachmentSecurityConfig(select);
+                        dlg.close();
+                    }.bind(this)
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () { dlg.close(); }
+                }
+            ]
+        }, (this.module.form.json.dialogOptions||{}));
+
+        if( layout.mobile ){
+            var size = $(document.body).getSize();
+            options.width = size.x;
+            options.height = size.y;
+        }
+
+        var dlg = o2.DL.open( options );
+    },
+    configAttachmentPower: function () {
         //this.fireEvent("delete", [attachment.data]);
 
         var lp = MWF.xApplication.process.Xform.LP;
@@ -886,6 +1024,40 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             }));
         }
     },
+
+    setAttachmentSecurityConfig: function(select){
+        if (this.selectedAttachments.length) {
+            var security = select.options[select.selectedIndex].value;
+
+            var loadedCount = 0;
+            this.selectedAttachments.each(function (att) {
+                att.data.objectSecurityClearance = security.toInt();
+
+                o2.Actions.get("x_processplatform_assemble_surface").configAttachment(att.data.id, this.module.form.businessData.work.id, att.data, function () {
+                    //刷新附件权限，以后要加一个刷新附件的功能
+                    o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.getWithWorkOrWorkCompleted(att.data.id, this.module.form.businessData.work.id, function (json) {
+                        var attachment = this.getAttachmentById( att.data.id );
+                        if( attachment ){
+                            attachment.data = json.data;
+
+                            if( attachment.deleteAction && !this.isAttDeleteAvailable(attachment) ){
+                                attachment.deleteAction.setStyle("display","none");
+                            }
+
+                            if( attachment.configAction && !this.isAttConfigAvailable(attachment) ){
+                                attachment.configAction.setStyle("display","none");
+                            }
+                        }
+                        loadedCount++;
+                        if( loadedCount === this.selectedAttachments.length ){
+                            this.checkActions();
+                        }
+                    }.bind(this))
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+
     setAttachmentConfig: function (readInput, editInput, controllerInput) {
         if (this.selectedAttachments.length) {
             var readList = readInput.retrieve("data-value");
@@ -1255,6 +1427,38 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
 
+    addAttachment: function(data, messageId, isCheckPosition){
+
+        if (data.objectSecurityClearance){
+            data.objectSecurityPromise = this.getSecurityDefaultLabelList().then((list)=>{
+                return Object.keys(list).find((key)=>{
+                    return list[key]===data.objectSecurityClearance;
+                });
+            });
+        }
+
+        if (this.options.size=="min"){
+            this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(data, this, messageId, isCheckPosition));
+        }else{
+            this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this, messageId, isCheckPosition));
+        }
+        this.checkActions();
+    },
+    downloadBatchAttachment : function (){
+        var job = this.module.form.businessData.work.job;
+        var site = this.module.json.id;
+        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/job/"+job+"/site/" + site;
+        url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
+
+        if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
+
+            url += "&" + o2.tokenName + "=" + layout.session.token;
+            window.location = url;
+        }else{
+            window.open(url);
+        }
+    },
+
 });
 
 
@@ -1448,6 +1652,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
@@ -1501,6 +1706,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
         //}.bind(this));
     },
+
     setAttachmentBusinessData: function () {
         if (this.attachmentController) {
             if (this.attachmentController.attachments.length) {
@@ -1738,6 +1944,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             case "OnlyOffice":
                 this.editOnlyOffice(att);
                 break;
+            case "YozoOffice":
+                this.editYozoOffice(att);
+                break;
             case "WpsOffice":
                 this.editWpsOffice(att);
                 break;
@@ -1746,6 +1955,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
         }
 
+    },
+    editYozoOffice : function (att){
+
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"write",
+            "jars" : jars,
+            "appId":  "YozoOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "YozoOfficeEditor", options);
     },
     editOfficeOnline : function (att){
 
@@ -2570,8 +2797,11 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
     },
     previewPdf : function(){
         this.app.getAttachmentUrl(this.att, function (url) {
-            window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
-        });
+            if(layout.mobile){
+                location.href = "../o2_lib/pdfjs/web/viewer.html?file=" + url;
+            }else{
+                window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
+            }        });
     },
     previewOffice : function(){
 
@@ -2585,6 +2815,9 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                 break;
             case "OnlyOffice":
                 this.previewOnlyOffice();
+                break;
+            case "YozoOffice":
+                this.previewYozoOffice();
                 break;
             case "WpsOffice":
                 this.previewWpsOffice();
@@ -2631,6 +2864,24 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             "appId":  "OnlyOfficeEditor" + att.data.id
         };
         layout.openApplication(null, "OnlyOfficeEditor", options);
+    },
+    previewYozoOffice : function (){
+        var att = this.att;
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"view",
+            "jars" : jars,
+            "appId":  "YozoOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "YozoOfficeEditor", options);
     },
     previewWpsOffice : function (){
         var att = this.att;
@@ -2766,6 +3017,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),

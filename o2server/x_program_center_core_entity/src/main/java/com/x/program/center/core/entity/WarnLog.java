@@ -27,8 +27,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "WarnLog", description = "服务管理警告.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
-@Table(name = PersistenceProperties.WarnLog.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.WarnLog.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.WarnLog.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.WarnLog.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -36,7 +36,7 @@ public class WarnLog extends SliceJpaObject {
 
 	private static final long serialVersionUID = -5283859279413196452L;
 
-	private static final String TABLE = PersistenceProperties.WarnLog.table;
+	private static final String TABLE = PersistenceProperties.WarnLog.TABLE;
 
 	public String getId() {
 		return id;

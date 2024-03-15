@@ -279,8 +279,17 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         });
     },
     checkColumnName: function(name){
-        var rex = /^\d+|\.|\#|\s|\@|\&|\*|\(|\)|\=|\+|\!|\^|\$|\%|\;|\"|\{|\}|\[|\]|\||\\|\,|\.|\?|\/|\:|\;|\'|\"|\<|\>/g;
-        if (rex.test(name)){
+        // var rex = /^\d+|\.|\#|\s|\@|\&|\*|\(|\)|\=|\+|\!|\^|\$|\%|\;|\"|\{|\}|\[|\]|\||\\|\,|\.|\?|\/|\:|\;|\'|\"|\<|\>/g;
+        // if (rex.test(name)){
+        //     this.designer.notice(this.designer.lp.errorName, "error");
+        //     return false;
+        // }
+        //仅允许数字字母下划线
+        if(!(/^\w+$/).test(name)){
+            this.designer.notice(this.designer.lp.errorName, "error");
+            return false;
+        }
+        if((/^[0-9]/).test(name.substr(0, 1))){
             this.designer.notice(this.designer.lp.errorName, "error");
             return false;
         }
@@ -314,6 +323,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
                 this.addColumn(o);
                 this.columnListEditNameInput.set("value", "");
                 this.columnListEditDescriptionInput.set("value", "");
+                this.columnListEditTypeSelect.selectedIndex = 0;
                 this.columnListEditNameInput.focus();
             }
         }

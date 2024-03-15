@@ -1248,8 +1248,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 
     @Operation(summary = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", operationId = OPERATIONID_PREFIX
             + "batchDownloadWithWorkOrWorkCompletedStream", responses = { @ApiResponse(content = {
-                    @Content(schema = @Schema(implementation = ActionBatchDownloadWithWorkOrWorkCompleted.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", action = ActionBatchDownloadWithWorkOrWorkCompleted.class)
+                    @Content(schema = @Schema(implementation = ActionBatchDownload.Wo.class)) }) })
+    @JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", action = ActionBatchDownload.class)
     @GET
     @Path("batch/download/work/{workId}/site/{site}/stream")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1259,10 +1259,10 @@ public class AttachmentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
             @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
             @JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
-        ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+        ActionResult<ActionBatchDownload.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site,
+            result = new ActionBatchDownload().execute(effectivePerson, workId, site,
                     fileName, flag);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, null);
@@ -1273,8 +1273,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 
     @Operation(summary = "根据工作标识或已完成工作标识批量下载附件并压缩.", operationId = OPERATIONID_PREFIX
             + "batchDownloadWithWorkOrWorkCompleted", responses = { @ApiResponse(content = {
-                    @Content(schema = @Schema(implementation = ActionBatchDownloadWithWorkOrWorkCompleted.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩.", action = ActionBatchDownloadWithWorkOrWorkCompleted.class)
+                    @Content(schema = @Schema(implementation = ActionBatchDownload.Wo.class)) }) })
+    @JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩.", action = ActionBatchDownload.class)
     @GET
     @Path("batch/download/work/{workId}/site/{site}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1284,11 +1284,35 @@ public class AttachmentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
             @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
             @JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
-        ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+        ActionResult<ActionBatchDownload.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site, fileName,
+            result = new ActionBatchDownload().execute(effectivePerson, workId, site, fileName,
                     flag);
+        } catch (Exception e) {
+            LOGGER.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @Operation(summary = "根据工作的job批量下载附件并压缩.", operationId = OPERATIONID_PREFIX
+            + "batchDownload", responses = { @ApiResponse(content = {
+            @Content(schema = @Schema(implementation = ActionBatchDownload.Wo.class)) }) })
+    @JaxrsMethodDescribe(value = "根据工作的job批量下载附件并压缩.", action = ActionBatchDownload.class)
+    @GET
+    @Path("batch/download/job/{job}/site/{site}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void batchDownload(@Suspended final AsyncResponse asyncResponse,
+                     @Context HttpServletRequest request,
+                     @JaxrsParameterDescribe("*工作的job，多值~隔开") @PathParam("job") String job,
+                     @JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
+                     @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
+                     @JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
+        ActionResult<ActionBatchDownload.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionBatchDownload().execute(effectivePerson, job, site, fileName, flag);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, null);
             result.error(e);

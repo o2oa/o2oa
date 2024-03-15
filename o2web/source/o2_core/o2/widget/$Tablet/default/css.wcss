@@ -78,6 +78,39 @@
         "color": "#999",
         "cursor": "default"
     },
+
+
+
+    "toolItemIconfont": {
+        "margin": "10px 3px 10px 3px",
+        "padding": "5px",
+        "color": "#666",
+        "float": "left",
+        "cursor": "pointer",
+        "text-align": "center"
+    },
+    "toolItemIconfont_icon": {
+
+    },
+    "toolItemIconfont_text": {
+        "margin-top": "4px"
+    },
+    "toolRightItemIconfont": {
+        "margin": "10px 10px 10px 3px",
+        "color": "#666",
+        "float": "right",
+        "padding": "5px",
+        "cursor": "pointer",
+        "text-align": "center"
+    },
+    "toolItemIconfont_over": {
+        "color": "#3C76B7"
+    },
+    "toolItemIconfont_disable": {
+        "color": "#bbb",
+        "cursor": "default"
+    },
+
     "separator": {
         "margin": "17px 2px 10px 2px",
         "height": "40px",

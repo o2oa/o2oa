@@ -2,9 +2,11 @@ package com.x.processplatform.core.entity.content;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -42,11 +44,12 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.content.WorkProperties.GoBackStore;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.ticket.Ticket;
+import com.x.processplatform.core.entity.ticket.Tickets;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -97,30 +100,35 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {
 			this.title = StringTools.utf8SubString(this.getProperties().getTitle(), length_255B - 3) + "...";
 		}
-		// 填入处理人文本
-		if (ListTools.isEmpty(this.getManualTaskIdentityMatrix().flat())) {
+		if (null == this.getTickets()) {
 			this.manualTaskIdentityText = "";
 		} else {
-			String text = StringUtils.join(OrganizationDefinition.name(this.getManualTaskIdentityMatrix().flat()), ",");
-			text = StringTools.utf8SubString(text, length_255B);
-			this.setManualTaskIdentityText(text);
+			this.setManualTaskIdentityText(this.getTickets().bubble().stream().map(Ticket::distinguishedName)
+					.map(OrganizationDefinition::name).filter(Objects::nonNull).collect(Collectors.joining(",")));
 		}
 	}
 
 	@PostLoad
 	public void postLoad() {
-		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
-			this.title = this.getProperties().getTitle();
+		if (null != this.properties) {
+			if (StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+				this.title = this.getProperties().getTitle();
+			}
+			this.splitValueList = this.getProperties().getSplitValueList();
+			this.embedTargetJob = this.getProperties().getEmbedTargetJob();
+			this.embedCompleted = this.getProperties().getEmbedCompleted();
+			this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
+			this.parentJob = this.getProperties().getParentJob();
+			this.parentWork = this.getProperties().getParentWork();
+			this.goBackStore = this.getProperties().getGoBackStore();
+			this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
+			this.splitTokenValueMap = this.getProperties().getSplitTokenValueMap();
+			this.tickets = this.getProperties().getTickets();
+			this.serviceValue = this.getProperties().getServiceValue();
+			this.manualEmpowerMap = this.getProperties().getManualEmpowerMap();
+			this.forceRouteEnable = this.getProperties().getForceRouteEnable();
+			this.manualTaskIdentityText = this.getProperties().getManualTaskIdentityText();
 		}
-		this.splitValueList = this.getProperties().getSplitValueList();
-		this.embedTargetJob = this.getProperties().getEmbedTargetJob();
-		this.embedCompleted = this.getProperties().getEmbedCompleted();
-		this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
-		this.parentJob = this.getProperties().getParentJob();
-		this.parentWork = this.getProperties().getParentWork();
-		this.goBackStore = this.getProperties().getGoBackStore();
-		this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
-		this.splitTokenValueMap = this.getProperties().getSplitTokenValueMap();
 	}
 
 	/* 更新运行方法 */
@@ -203,7 +211,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
 		if (null == this.manualTaskIdentityMatrix) {
-			this.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
+			this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
 		}
 		return this.manualTaskIdentityMatrix;
 	}
@@ -259,21 +267,89 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.getProperties().setSplitTokenValueMap(splitTokenValueMap);
 	}
 
+	public void setTickets(Tickets tickets) {
+		this.getProperties().setTickets(tickets);
+		this.tickets = tickets;
+	}
+
+	public Tickets getTickets() {
+		return tickets;
+	}
+
+	public Map<String, Object> getServiceValue() {
+		return this.serviceValue;
+	}
+
+	public void setServiceValue(Map<String, Object> serviceValue) {
+		this.getProperties().setServiceValue(serviceValue);
+		this.serviceValue = serviceValue;
+	}
+
+	public Map<String, String> getManualEmpowerMap() {
+		return manualEmpowerMap;
+	}
+
+	public void setManualEmpowerMap(Map<String, String> manualEmpowerMap) {
+		this.getProperties().setManualEmpowerMap(manualEmpowerMap);
+		this.manualEmpowerMap = manualEmpowerMap;
+	}
+
+	public Boolean getForceRouteEnable() {
+		if (null == this.forceRouteEnable) {
+			this.forceRouteEnable = this.getProperties().getForceRouteEnable();
+		}
+		return forceRouteEnable;
+	}
+
+	public void setForceRouteEnable(Boolean forceRouteEnable) {
+		this.getProperties().setForceRouteEnable(forceRouteEnable);
+		this.forceRouteEnable = forceRouteEnable;
+	}
+
+	public String getManualTaskIdentityText() {
+		if ((null == this.manualTaskIdentityText) && (null != this.properties)) {
+			this.manualTaskIdentityText = this.getProperties().getManualTaskIdentityText();
+		}
+		return manualTaskIdentityText;
+	}
+
+	public void setManualTaskIdentityText(String manualTaskIdentityText) {
+		this.getProperties().setManualTaskIdentityText(manualTaskIdentityText);
+		this.manualTaskIdentityText = manualTaskIdentityText;
+	}
+
+	public static final String MANUALEMPOWERMAP_FIELDNAME = "manualEmpowerMap";
+	@Transient
+	@Deprecated(since = "8.2", forRemoval = true)
+	@FieldDescribe("授权对象")
+	private Map<String, String> manualEmpowerMap = new LinkedHashMap<>();
+
+	public static final String SERVICEVALUE_FIELDNAME = "serviceValue";
+	@Transient
+	@FieldDescribe("服务回调值")
+	private Map<String, Object> serviceValue = new LinkedHashMap<>();
+
+	public static final String GOBACKACTIVITYTOKEN_FIELDNAME = "goBackActivityToken";
+	@Transient
 	@FieldDescribe("goBack进行跳转退回时使用的.")
 	private String goBackActivityToken;
 
+	public static final String GOBACKSTORE_FIELDNAME = "goBackStore";
 	@Transient
 	@FieldDescribe("回退临时存储数据.")
 	private GoBackStore goBackStore;
 
+	public static final String SPLITVALUELIST_FIELDNAME = "splitValueList";
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
 
+	public static final String EMBEDTARGETJOB_FIELDNAME = "embedTargetJob";
 	@Transient
 	@FieldDescribe("Embed活动生成的Work的Job.")
 	private String embedTargetJob;
 
+	public static final String EMBEDCOMPLETED_FIELDNAME = "embedCompleted";
 	@Transient
 	@FieldDescribe("子流程返回标识.")
 	private String embedCompleted;
@@ -297,6 +373,21 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Transient
 	@FieldDescribe("父工作Job,在当前工作是通过子流程调用时产生.")
 	private String parentJob;
+
+	public static final String TICKETS_FIELDNAME = "tickets";
+	@Transient
+	@FieldDescribe("待办凭证.")
+	private Tickets tickets;
+
+	public static final String FORCEROUTEENABLE_FIELDNAME = "forceRouteEnable";
+	@Transient
+	@FieldDescribe("强制路由.")
+	private Boolean forceRouteEnable;
+
+	public static final String MANUALTASKIDENTITYTEXT_FIELDNAME = "manualTaskIdentityText";
+	@Transient
+	@FieldDescribe("当前处理人身份合并文本,用','分割,此字段仅用于显示当前工作的处理人,不索引.")
+	private String manualTaskIdentityText;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
@@ -486,23 +577,12 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private Boolean beforeExecuted;
 
-//	public static final String manualTaskIdentityList_FIELDNAME = "manualTaskIdentityList";
-//	@FieldDescribe("预期的处理人")
-//	@PersistentCollection(fetch = FetchType.EAGER)
-//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-//			+ manualTaskIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-//					+ manualTaskIdentityList_FIELDNAME + JoinIndexNameSuffix))
-//	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualTaskIdentityList_FIELDNAME)
-//	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
+//	@Deprecated(since = "8.2,使用tickets后将删除此字段.", forRemoval = true)
+//	public static final String MANUALTASKIDENTITYTEXT_FIELDNAME = "manualTaskIdentityText";
+//	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
+//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + MANUALTASKIDENTITYTEXT_FIELDNAME)
 //	@CheckPersist(allowEmpty = true)
-//	private List<String> manualTaskIdentityList;
-
-	public static final String MANUALTASKIDENTITYTEXT_FIELDNAME = "manualTaskIdentityText";
-	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + MANUALTASKIDENTITYTEXT_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String manualTaskIdentityText;
+//	private String manualTaskIdentityText;
 
 	/** Split Attribute */
 	public static final String splitting_FIELDNAME = "splitting";
@@ -815,6 +895,21 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
 
+	public static final String OBJECTSECURITYCLEARANCE_FIELDNAME = "objectSecurityClearance";
+	@FieldDescribe("客体密级标识.")
+	@Column(name = ColumnNamePrefix + OBJECTSECURITYCLEARANCE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + OBJECTSECURITYCLEARANCE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer objectSecurityClearance;
+
+	public Integer getObjectSecurityClearance() {
+		return objectSecurityClearance;
+	}
+
+	public void setObjectSecurityClearance(Integer objectSecurityClearance) {
+		this.objectSecurityClearance = objectSecurityClearance;
+	}
+
 	public String getProcess() {
 		return process;
 	}
@@ -1097,14 +1192,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setDataChanged(Boolean dataChanged) {
 		this.dataChanged = dataChanged;
-	}
-
-	public String getManualTaskIdentityText() {
-		return manualTaskIdentityText;
-	}
-
-	public void setManualTaskIdentityText(String manualTaskIdentityText) {
-		this.manualTaskIdentityText = manualTaskIdentityText;
 	}
 
 	public String getStringValue01() {

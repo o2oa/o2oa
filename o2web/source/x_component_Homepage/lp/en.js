@@ -1,4 +1,6 @@
-MWF.xApplication.Homepage.LP = o2.HPLP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.Homepage = MWF.xApplication.Homepage || {};
+MWF.xApplication.Homepage.LP={
 	"title": "Homepage",
 	"myTask": "Task",
 	"myTaskCompleted": "Task Completed",
@@ -37,13 +39,10 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"acceptConfirm": "Are you sure you want to attend the \"{name}\" meeting?",
 	"rejectConfirmTitle": "Decline meeting confirmation",
 	"rejectConfirm": "Are you sure you refuse to attend the \"{name}\" meeting?",
-
-
 	"prevPage": "Previous",
 	"nextPage": "Next",
 	"nextActivity": "Flow to the next step",
 	"completedActivityName": "Process Completed",
-
 	"taskStartTime": "Received Task Time",
 	"taskCompletedTime": "Task Processing Time",
 	"readStartTime": "Received Read Time",
@@ -56,11 +55,11 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"currentUser": "Current Processor",
 	"publishTime": "Publish time",
 	"publishPerson": "Publisher",
-
 	"download": "download",
 	"today": "today",
 	"allDay": "All Day",
 	"calenderInfor": "Hello {name}! {date} You have<div class='o2_homepage_calender_count_flag'>{count}</div>schedules.",
 	"noCalenderInfor": "Hello {name}! {date} no schedule。",
 	"dateFormat": "%m %d, %Y"
-};
+}
+MWF.xApplication.Homepage["lp."+o2.language] = MWF.xApplication.Homepage.LP

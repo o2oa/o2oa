@@ -46,7 +46,7 @@ MWF.xApplication.portal.DictionaryDesigner.Main = new Class({
 		this.lp = MWF.xApplication.portal.DictionaryDesigner.LP;
 
         this.addEvent("queryClose", function(e){
-            if (this.explorer){
+            if (this.explorer && this.explorer.reload){
                 this.explorer.reload();
             }
         }.bind(this));

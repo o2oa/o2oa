@@ -1,16 +1,21 @@
 package com.x.server.console.server.center;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.TimeZone;
-
-import javax.servlet.DispatcherType;
-
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
+import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.jaxrs.ApiAccessFilter;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
+import com.x.base.core.project.tools.JarTools;
+import com.x.base.core.project.tools.PathTools;
+import com.x.base.core.project.x_program_center;
+import com.x.server.console.server.JettySeverTools;
+import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.ServerRequestLogBody;
+import com.x.server.console.server.Servers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -27,22 +32,15 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
-import com.x.base.core.project.x_program_center;
-import com.x.base.core.project.config.CenterServer;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.JarTools;
-import com.x.base.core.project.tools.PathTools;
-import com.x.server.console.server.JettySeverTools;
-import com.x.server.console.server.ServerRequestLog;
-import com.x.server.console.server.ServerRequestLogBody;
-import com.x.server.console.server.Servers;
+import javax.servlet.DispatcherType;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.TimeZone;
 
 public class CenterServerTools extends JettySeverTools {
 
@@ -132,14 +130,20 @@ public class CenterServerTools extends JettySeverTools {
 		webApp.setContextPath("/" + x_program_center.class.getSimpleName());
 		webApp.setResourceBase(dir.toAbsolutePath().toString());
 		webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
-		webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
+		// 加载 ext 目录中的 jar包
+		Path ext = dir.resolve("WEB-INF").resolve("ext");
+		if (Files.exists(ext)) {
+			webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class, ext));
+		} else {
+			webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
+		}
 		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
 				BooleanUtils.toStringTrueFalse(false));
 		webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", BooleanUtils.toStringTrueFalse(true));
 		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 				BooleanUtils.toStringTrueFalse(false));
 		setStat(centerServer, webApp);
-		setExposeJest(centerServer, webApp);
+		setExposeJest(webApp);
 		return webApp;
 	}
 
@@ -154,12 +158,10 @@ public class CenterServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void setExposeJest(CenterServer centerServer, QuickStartWebApp webApp) throws Exception {
-		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
-			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
-		}
+	private static void setExposeJest( QuickStartWebApp webApp) throws Exception {
+		FilterHolder denialOfServiceFilterHolder = new FilterHolder(new ApiAccessFilter());
+		webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
+		webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
 	}
 
 	private static RequestLog requestLog(CenterServer centerServer) throws Exception {

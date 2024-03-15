@@ -3,19 +3,17 @@ package com.x.processplatform.service.processing.processor.manual;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.EmpowerLog;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
@@ -25,6 +23,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -36,11 +35,52 @@ public class Tasks {
 		// nothing
 	}
 
+	public static Task createTask(AeiObjects aeiObjects, Manual manual, Ticket ticket) throws Exception {
+		String person = aeiObjects.business().organization().person().getWithIdentity(ticket.distinguishedName());
+		String unit = aeiObjects.business().organization().unit().getWithIdentity(ticket.distinguishedName());
+		Task task = new Task(aeiObjects.getWork(), ticket.act(), ticket.distinguishedName(), person, unit,
+				ticket.fromDistinguishedName(), new Date(), null, aeiObjects.getRoutes(), manual.getAllowRapid());
+		task.setLabel(ticket.label());
+		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
+		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {
+			task.setFirst(false);
+		} else {
+			task.setFirst(ListTools.isEmpty(aeiObjects.getJoinInquireTaskCompleteds()));
+		}
+		calculateExpire(aeiObjects, manual, task);
+		if (StringUtils.isNotEmpty(ticket.fromDistinguishedName())) {
+			aeiObjects.business().organization().empowerLog().log(
+					createEmpowerLog(aeiObjects.getWork(), ticket.fromDistinguishedName(), ticket.distinguishedName()));
+			String fromPerson = aeiObjects.business().organization().person()
+					.getWithIdentity(ticket.fromDistinguishedName());
+			String fromUnit = aeiObjects.business().organization().unit()
+					.getWithIdentity(ticket.fromDistinguishedName());
+			TaskCompleted empowerTaskCompleted = new TaskCompleted(aeiObjects.getWork());
+			empowerTaskCompleted.setAct(TaskCompleted.ACT_EMPOWER);
+			empowerTaskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_EMPOWER);
+			empowerTaskCompleted.setJoinInquire(false);
+			empowerTaskCompleted.setIdentity(ticket.fromDistinguishedName());
+			empowerTaskCompleted.setDistinguishedName(ticket.fromDistinguishedName());
+			empowerTaskCompleted.setUnit(fromUnit);
+			empowerTaskCompleted.setPerson(fromPerson);
+			empowerTaskCompleted.setEmpowerToIdentity(ticket.distinguishedName());
+			aeiObjects.createTaskCompleted(empowerTaskCompleted);
+			Read empowerRead = new Read(aeiObjects.getWork(), ticket.fromDistinguishedName(), fromUnit, fromPerson);
+			aeiObjects.createRead(empowerRead);
+		}
+		if (null != aeiObjects.getWork().getGoBackStore()) {
+			// 如果存储了退回说明下一步需要jump那么待办无需选择路由
+			task.setRouteNameDisable(true);
+		}
+		return task;
+	}
+
+	@Deprecated(since = "8.2", forRemoval = true)
 	public static Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
-		String fromIdentity = aeiObjects.getWork().getProperties().getManualEmpowerMap().get(identity);
+		String fromIdentity = aeiObjects.getWork().getManualEmpowerMap().get(identity);
 		String person = aeiObjects.business().organization().person().getWithIdentity(identity);
 		String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
-		Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,
+		Task task = new Task(aeiObjects.getWork(), "create", identity, person, unit, fromIdentity, new Date(), null,
 				aeiObjects.getRoutes(), manual.getAllowRapid());
 		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
 		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {
@@ -166,15 +206,16 @@ public class Tasks {
 
 	private static void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();
-		ScriptContext scriptContext = aeiObjects.scriptContext();
-		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-				manual, Business.EVENT_MANUALTASKEXPIRE);
-		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
-		JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
-			if (null != o) {
-				expire.setDate(o.getDate());
-				expire.setHour(o.getHour());
-				expire.setWorkHour(o.getWorkHour());
+		Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), manual,
+				Business.EVENT_MANUALTASKEXPIRE);
+		GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
+			if (null != jsonElement) {
+				ExpireScriptResult res = XGsonBuilder.instance().fromJson(jsonElement, ExpireScriptResult.class);
+				expire.setDate(res.getDate());
+				expire.setHour(res.getHour());
+				expire.setWorkHour(res.getWorkHour());
 			}
 		});
 		if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {

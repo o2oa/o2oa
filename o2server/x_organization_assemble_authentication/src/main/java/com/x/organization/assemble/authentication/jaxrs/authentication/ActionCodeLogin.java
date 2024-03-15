@@ -65,10 +65,10 @@ class ActionCodeLogin extends BaseAction {
 		} else {
 			/* 普通用户登录 */
 			if (!Config.person().isMobile(o.getMobile())) {
-				throw new ExceptionInvalidMobile(o.getMobile());
+				throw new ExceptionPersonNotExistOrInvalidPassword();
 			}
 			if (BooleanUtils.isNotTrue(business.instrument().code().validateCascade(o.getMobile(), codeAnswer))) {
-				throw new ExceptionInvalidCode();
+				throw new ExceptionPersonNotExistOrInvalidPassword();
 			}
 		}
 		return o;

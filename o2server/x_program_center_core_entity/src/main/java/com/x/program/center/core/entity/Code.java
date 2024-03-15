@@ -18,8 +18,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Code", description = "服务管理短信验证码.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Code.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Code.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Code.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Code.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -27,7 +27,7 @@ public class Code extends SliceJpaObject {
 
 	private static final long serialVersionUID = -7520516033901189347L;
 
-	private static final String TABLE = PersistenceProperties.Code.table;
+	private static final String TABLE = PersistenceProperties.Code.TABLE;
 
 	public String getId() {
 		return id;

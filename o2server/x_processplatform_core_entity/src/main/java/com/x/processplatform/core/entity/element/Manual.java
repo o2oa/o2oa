@@ -1,6 +1,8 @@
 package com.x.processplatform.core.entity.element;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -38,6 +40,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
+import com.x.processplatform.core.entity.element.ManualProperties.Participant;
+import com.x.processplatform.core.entity.ticket.Ticket;
+import com.x.processplatform.core.entity.ticket.Tickets;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -83,6 +88,8 @@ public class Manual extends Activity {
 			this.allowGoBack = this.getProperties().getAllowGoBack();
 			this.manualAfterProcessingScript = this.getProperties().getManualAfterProcessingScript();
 			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
+			this.taskParticipant = this.getProperties().getTaskParticipant();
+			this.allowTerminate = this.getProperties().getAllowTerminate();
 		}
 	}
 
@@ -99,6 +106,23 @@ public class Manual extends Activity {
 
 	public void setProperties(ManualProperties properties) {
 		this.properties = properties;
+	}
+
+	@FieldDescribe("流程参与者作为待办人设置.")
+	@Transient
+	private Participant taskParticipant;
+
+	public Participant getTaskParticipant() {
+		if (null != taskParticipant) {
+			return this.taskParticipant;
+		} else {
+			return this.getProperties().getTaskParticipant();
+		}
+	}
+
+	public void setTaskParticipant(Participant taskParticipant) {
+		this.taskParticipant = taskParticipant;
+		this.getProperties().setTaskParticipant(taskParticipant);
 	}
 
 	public static final String CUSTOMDATA_FIELDNAME = "customData";
@@ -139,6 +163,7 @@ public class Manual extends Activity {
 	}
 
 	public static final String PROCESSINGTASKONCEUNDERSAMEPERSON_FIELDNAME = "processingTaskOnceUnderSamePerson";
+	@Deprecated(since = "如果使用tickets的distingushedName,那么这个设置将要废弃.")
 	@Transient
 	@FieldDescribe("同一处理人不同身份待办合并处理一次.")
 	private Boolean processingTaskOnceUnderSamePerson;
@@ -242,6 +267,51 @@ public class Manual extends Activity {
 		default:
 			return ManualTaskIdentityMatrix.concreteSingleRow(identities);
 		}
+	}
+
+	public Tickets toTickets(Collection<Ticket> targets) {
+		switch (this.getManualMode()) {
+		case parallel:
+			return Tickets.parallel(targets);
+		case queue:
+			return Tickets.queue(targets);
+		case single:
+		case grab:
+		default:
+			return Tickets.single(targets);
+		}
+	}
+
+	public Tickets identitiesToTickets(Collection<String> identities) {
+		switch (this.getManualMode()) {
+		case parallel:
+			return Tickets.parallel(identities.stream().map(Ticket::new).collect(Collectors.toList()));
+		case queue:
+			return Tickets.queue(identities.stream().map(Ticket::new).collect(Collectors.toList()));
+		case single:
+		case grab:
+		default:
+			return Tickets.single(identities.stream().map(Ticket::new).collect(Collectors.toList()));
+		}
+	}
+
+	public static final String ALLOWTERMINATE_FIELDNAME = "allowTerminate";
+	@Transient
+	@FieldDescribe("是否允许终止.")
+	// @since 8.2.0
+	private Boolean allowTerminate;
+
+	public Boolean getAllowTerminate() {
+		if (null != this.allowTerminate) {
+			return this.allowTerminate;
+		} else {
+			return this.getProperties().getAllowTerminate();
+		}
+	}
+
+	public void setAllowTerminate(Boolean allowTerminate) {
+		this.allowTerminate = allowTerminate;
+		this.properties.setAllowTerminate(allowTerminate);
 	}
 
 	@FieldDescribe("分组.")

@@ -23,6 +23,11 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
+         * 视图设计已经获取，容器也已经准备好。
+         * @event MWF.xApplication.process.Xform.ViewSelector#loadViewLayout
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 异步加载视图后执行。
          * @event MWF.xApplication.process.Xform.ViewSelector#loadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -393,18 +398,24 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                             // }, this.form.app, this.form.Macro );
                             this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
                                 "style": "select",
+                                "onLoadLayout": function () {
+                                    this.fireEvent("loadViewLayout");
+                                }.bind(this),
                                 "onLoadView": function(){
                                     this.fireEvent("loadView");
                                 }.bind(this),
                                 "onSelect": function(item){
                                     this.fireEvent("select", [item]);
                                 }.bind(this),
+                                "onUnselect": function(item){
+                                    this.fireEvent("unselect", [item]);
+                                }.bind(this),
                                 "onOpenDocument": function(options, item){
                                     this.openOptions = {
                                         "options": options,
                                         "item": item
                                     };
-                                    this.fireEvent("openDocument");
+                                    this.fireEvent("openDocument", [this.openOptions]);
                                     this.openOptions = null;
                                 }.bind(this)
                             }, this.form.app, this.form.Macro);

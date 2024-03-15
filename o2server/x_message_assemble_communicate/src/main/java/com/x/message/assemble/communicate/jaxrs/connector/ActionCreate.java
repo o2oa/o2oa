@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.graalvm.polyglot.Source;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -29,8 +27,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.message.assemble.communicate.ThisApplication;
@@ -305,32 +302,37 @@ class ActionCreate extends BaseAction {
 			if (StringUtils.isNotBlank(filter)) {
 				CacheKey cacheKey = new CacheKey(this.getClass(), "filter:" + filter);
 				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-				CompiledScript compiledScript = null;
+				Source source = null;
 				if (optional.isPresent()) {
-					compiledScript = (CompiledScript) optional.get();
+					source = (Source) optional.get();
 				} else {
 					String text = Config.messages().getFilter(filter);
 					if (StringUtils.isNotBlank(text)) {
-						compiledScript = ScriptingFactory
-								.functionalizationCompile(StringEscapeUtils.unescapeJson(text));
-						CacheManager.put(cacheCategory, cacheKey, compiledScript);
+						source = GraalvmScriptingFactory.functionalization(StringEscapeUtils.unescapeJson(text));
+						CacheManager.put(cacheCategory, cacheKey, source);
 					}
 				}
-				if (compiledScript != null) {
-					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+				if (source != null) {
+//					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
+//					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 					Resources resources = new Resources();
 					resources.setContext(ThisApplication.context());
 					resources.setOrganization(new Organization(ThisApplication.context()));
 					resources.setApplications(ThisApplication.context().applications());
 					resources.setWebservicesClient(new WebservicesClient());
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, gson.toJson(new EvalMessage(wi)));
-					Boolean result = JsonScriptingExecutor.evalBoolean(compiledScript, scriptContext);
-					boolean value = BooleanUtils.isTrue(result);
+					GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+							.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources)
+							.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_MESSAGE,
+									gson.toJson(new EvalMessage(wi)));
+					Optional<Boolean> opt = GraalvmScriptingFactory.evalAsBoolean(source, bindings);
+					AtomicBoolean value = new AtomicBoolean();
+					value.set(false);
+					if (opt.isPresent()) {
+						value.set(BooleanUtils.isTrue(opt.get()));
+					}
 					LOGGER.debug("message type:{}, title:{}, person:{}, filter:{}, result:{}.", wi::getType,
-							wi::getTitle, wi::getPerson, () -> filter, () -> value);
-					return value;
+							wi::getTitle, wi::getPerson, () -> filter, () -> value.get());
+					return value.get();
 				}
 			}
 		} catch (Exception e) {
@@ -344,28 +346,27 @@ class ActionCreate extends BaseAction {
 			if (StringUtils.isNotBlank(loader)) {
 				CacheKey cacheKey = new CacheKey(this.getClass(), "loader:" + loader);
 				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-				CompiledScript compiledScript = null;
+				Source source = null;
 				if (optional.isPresent()) {
-					compiledScript = (CompiledScript) optional.get();
+					source = (Source) optional.get();
 				} else {
 					String text = Config.messages().getLoader(loader);
 					if (StringUtils.isNotBlank(text)) {
-						compiledScript = ScriptingFactory
-								.functionalizationCompile(StringEscapeUtils.unescapeJson(text));
-						CacheManager.put(cacheCategory, cacheKey, compiledScript);
+						source = GraalvmScriptingFactory.functionalization(StringEscapeUtils.unescapeJson(text));
+						CacheManager.put(cacheCategory, cacheKey, source);
 					}
 				}
-				if (compiledScript != null) {
-					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+				if (source != null) {
 					Resources resources = new Resources();
 					resources.setContext(ThisApplication.context());
 					resources.setOrganization(new Organization(ThisApplication.context()));
 					resources.setApplications(ThisApplication.context().applications());
 					resources.setWebservicesClient(new WebservicesClient());
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, gson.toJson(new EvalMessage(wi)));
-					return JsonScriptingExecutor.eval(compiledScript, scriptContext, EvalMessage.class);
+					GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+							.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources)
+							.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_MESSAGE,
+									gson.toJson(new EvalMessage(wi)));
+					return GraalvmScriptingFactory.eval(source, bindings, EvalMessage.class);
 				}
 			}
 		} catch (Exception e) {

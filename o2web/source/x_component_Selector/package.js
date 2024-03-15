@@ -28,7 +28,13 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
 
         if( this.options.types && typeOf(this.options.types) === "array" && this.options.types.length > 0 ){
             MWF.xDesktop.requireApp("Selector", "MultipleSelector", function() {
-                this.selector = new MWF.xApplication.Selector.MultipleSelector(this.container, this.options );
+                var opts = Object.clone( this.options );
+                for (var option in options){
+                    if (typeOf(options[option]) === 'function' && (/^on[A-Z]/).test(option)){
+                        opts[option] = options[option];
+                    }
+                }
+                this.selector = new MWF.xApplication.Selector.MultipleSelector(this.container, opts );
                 if( delayLoad !== true )this.selector.load();
                 this.loading = false;
             }.bind(this));

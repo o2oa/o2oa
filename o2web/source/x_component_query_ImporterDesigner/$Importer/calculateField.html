@@ -15,6 +15,17 @@
                         <td class="editTableTitle">{{$.lp.fieldPath}}:</td>
                         <td class="editTableValue"><input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
                     </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.isName}}:</td>
+                        <td class="editTableValue">
+                            <input name="isName" type="radio" value="true" text{($.isName)===true?'checked':''} onclick="if(this.checked){
+                               //$('text{$.pid}cmsNamePropertyArea').setStyle('display', '');
+                           }"/>{{$.lp.yes}}
+                            <input name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''} onclick="if(this.checked){
+                               //$('text{$.pid}cmsNamePropertyArea').setStyle('display', 'none');
+                           }"/>{{$.lp.no}}
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>

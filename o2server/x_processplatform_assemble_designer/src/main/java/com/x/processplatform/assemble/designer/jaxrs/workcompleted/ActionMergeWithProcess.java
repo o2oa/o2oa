@@ -67,9 +67,9 @@ class ActionMergeWithProcess extends BaseAction {
 						records = records.stream()
 								.sorted(Comparator.comparing(Record::getOrder, Comparator.nullsLast(Long::compareTo)))
 								.collect(Collectors.toList());
-						workCompleted.getProperties().setRecordList(records);
+						workCompleted.setRecordList(records);
 						JsonElement jsonElement = converter.assemble(items);
-						workCompleted.getProperties().setData(gson.fromJson(jsonElement, Data.class));
+						workCompleted.setData(gson.fromJson(jsonElement, Data.class));
 						workCompleted.setMerged(true);
 						emc.commit();
 						emc.beginTransaction(Item.class);

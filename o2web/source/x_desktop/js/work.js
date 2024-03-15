@@ -105,6 +105,9 @@ layout.addReady(function(){
                             }
                             layout.openApplication(null, appName, option||{}, m_status);
                         }
+                    }else{
+                        if (options.draft) options.draft = JSON.parse(options.draft);
+                        layout.openApplication(null, appName, option||{}, m_status);
                     }
                 }
             }else{

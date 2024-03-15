@@ -334,7 +334,13 @@ MWF.xApplication.process.Application.List = new Class({
 			"</table>";
 		this.fileterNode.set("html", html);
 
+		var selectValue = [""];
+		var selectText = [""];
 
+		this.app.processList.each(function(d){
+			selectValue.push(d.id);
+			selectText.push(d.name);
+		})
 		this.form = new MForm(this.fileterNode, {}, {
 			style: "attendance",
 			isEdited: true,
@@ -342,32 +348,12 @@ MWF.xApplication.process.Application.List = new Class({
 				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				activityName: {text: lp.activity, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
-					text: lp.process,
-					"type": "text",
-
+					"text": lp.process,
+					"type": "select",
+					"selectValue" :selectValue,
+					"selectText" :selectText,
 					"style": {"min-width": "150px"},
-					"event": {
 
-						"click": function (item, ev){
-							var v = item.getValue();
-							o2.xDesktop.requireApp("Selector", "package", function(){
-								var options = {
-									"type": "Process",
-									"values": v!==""?[item.getValue().split("|")[1]] : [],
-									"count": 1,
-									"onComplete": function (items) {
-										var arr = [];
-										var arr2 = [];
-										items.each(function (data) {
-											arr.push(data.data);
-											arr2.push(items[0].data.name+"|"+items[0].data.id);
-										});
-										item.setValue(arr2.join(","));
-									}.bind(this)
-								};
-								new o2.O2Selector(this.app.desktop.node, options);
-							}.bind(this),false);
-						}.bind(this)}
 				},
 				credentialList: {
 					"text": lp.creator,
@@ -408,7 +394,7 @@ MWF.xApplication.process.Application.List = new Class({
 									delete result[key];
 								}else if (key === "processName" && result[key] !== "") {
 									//result[key] = result[key][0].split("@")[1];
-									result["processList"] = [result[key].split("|")[1]];
+									result["processList"] = [result[key]];
 									delete result[key];
 								}else if (key === "endTime" && result[key] !== "") {
 									result[key] = result[key] + " 23:59:59"
@@ -662,7 +648,7 @@ MWF.xApplication.process.Application.List = new Class({
 		dataList.each(function (data){
 			data.creatorPersonName = data.creatorPerson.split("@")[0];
 			data.creatorUnitName = data.creatorUnit.split("@")[0];
-
+			data.title = data.title || this.lp.unnamed;
 		}.bind(this));
 		return dataList;
 	},
@@ -909,6 +895,7 @@ MWF.xApplication.process.Application.AllList = new Class({
 					data.activityName = data.taskList[0].activityName;
 				}
 			}
+			data.title = data.title || this.lp.unnamed;
 		}.bind(this));
 		return dataList;
 	},
@@ -1098,14 +1085,14 @@ MWF.xApplication.process.Application.WorkList = new Class({
 
 		this.toolbarItems = {
 			"default":[
-				["delWork","jump","sendRead"],
+				["delWork","jump","sendRead","rollback"],
 				["processing","endWork","addReview"],
 				["manage"]
 			],
 			"unSelect":[
 			],
 			"selected":[
-				["delWork","jump","sendRead"],
+				["delWork","jump","sendRead","rollback"],
 				["processing","endWork","addReview"],
 				["manage"]
 			],
@@ -2217,7 +2204,7 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 		//node.inject(this.app.content);
 
 		var dlg = o2.DL.open({
-			"title": "回溯",
+			"title": MWF.xApplication.process.Work.LP.rollback,
 			"style": "user",
 			"isResize": false,
 			"content": node,
@@ -2226,28 +2213,29 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 			"buttonList": [
 				{
 					"type": "ok",
-					"text": "确定",
+					"text": MWF.LP.process.button.ok,
 					"action": function (d, e) {
 						this.doRollback(node, e, dlg ,data.id);
 					}.bind(this)
 				},
 				{
 					"type": "cancel",
-					"text": "取消",
+					"text": MWF.LP.process.button.cancel,
 					"action": function () { dlg.close(); }
 				}
 			]
 		});
 	},
 	doRollback: function (node, e, dlg ,workid) {
-
+		var lp = MWF.xApplication.process.Work.LP;
 		var rollbackItemNode = node.getLast();
 		var items = rollbackItemNode.getChildren();
 		var flowOption = (node.getElement(".rollback_flowOption").checked);
+
 		var _self = this;
 		for (var i = 0; i < items.length; i++) {
 			if (items[i].retrieve("isSelected")) {
-				var text = "您确定要将流程回溯到“{log}”状态吗？（流程回溯会清除此状态之后的所有信息）";
+				var text = lp.rollbackConfirmContent;
 				var log = items[i].retrieve("log");
 				var checks = items[i].getElements("input:checked");
 				var idList = [];
@@ -2256,16 +2244,17 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 					if (idList.indexOf(id) == -1) idList.push(id);
 				});
 
+				var opinion = MWF.xApplication.process.Xform.LP.rollbackTo+":"+log.fromActivityName;
 				text = text.replace("{log}", log.fromActivityName + "(" + log.arrivedTime + ")");
-				this.explorer.app.confirm("infor", e, "流程回溯确认", text, 450, 120, function () {
+				this.explorer.app.confirm("infor", e, lp.rollbackConfirmTitle, text, 450, 120, function () {
 
-					// console.log(log.id)
-					// console.log(flowOption)
-					// //console.log(dlg)
-					// console.log(idList)
-
-					_self.app.action.WorkCompletedAction.rollback(workid,{ "workLog": log.id },function (json){
-						_self.app.notice("回溯成功。");
+					_self.app.action[_self.type === "workCompleted"?"WorkCompletedAction":"WorkAction"][_self.type === "workCompleted"?"rollback":"V2Rollback"](workid,{
+						"workLog": log.id,
+						"distinguishedNameList": idList,
+						"processing": !!flowOption,
+						"opinion": opinion
+					},function (json){
+						_self.app.notice(lp.rollbackSuccess);
 						_self.explorer.refresh();
 					},null,false);
 
@@ -2731,10 +2720,15 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		}.bind(this));
 	},
 	loadTask : function () {
-		this.app.action.TaskAction.listWithJob(this.data.job).then(function(json){
+		this.app.action.TaskAction.listWithWork(this.data.id,function (json){
+
 			this.taskList = json.data;
 			this._loadTask();
 			this.initTask = true;
+		}.bind(this),function (){
+			this.taskArea.empty();
+			this.initTask = true;
+			return true;
 		}.bind(this));
 	},
 	_loadTask : function (){
@@ -2764,6 +2758,9 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 			var tdOpNode = new Element("td").inject(trNode);
 			var restButton = new Element("button", {"text": this.lp.resetAction, "class": "button"}).inject(tdOpNode);
 			var deleteButton = new Element("button", {"text": this.lp.remove, "class": "button"}).inject(tdOpNode);
+			var addSignButton = new Element("button", {"text": this.lp.addSign, "class": "button"}).inject(tdOpNode);
+			var flowButton = new Element("button", {"text": this.lp.flow, "class": "button"}).inject(tdOpNode);
+
 			_self = this;
 			deleteButton.addEvent("click", function (e) {
 				_self.app.confirm("warn", e, _self.lp.tip, this.lp.tip_remove, 350, 120, function () {
@@ -2838,7 +2835,212 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 
 			}.bind(this));
 
+			addSignButton.addEvent("click", function (e) {
+
+				this._addSign(task);
+			}.bind(this));
+
+			flowButton.addEvent("click", function (e) {
+
+				this._flow(task,e);
+			}.bind(this));
+
 		}.bind(this));
+	},
+	_flow : function (taskData,ev){
+		var _self = this;
+
+		var processNode = new Element("div");
+		var dlg = o2.DL.open({
+			"title": _self.lp.flow,
+			"width": "600px",
+			"height": "420px",
+			"mask": true,
+			"content": processNode,
+			"container": null,
+			"positionNode": this.explorer.app.content,
+			"onQueryClose": function () {
+				processNode.destroy();
+			}.bind(this),
+			"onPostShow": function () {
+				dlg.reCenter();
+
+				o2.xDesktop.requireApp("process.Work", "Processor", function(){
+					new o2.xApplication.process.Work.Processor(processNode, taskData, {
+						"style": "task",
+						"isManagerProcess" : true,
+						"onCancel": function(){
+							dlg.close();
+						},
+						"onSubmit": function(routeName, opinion){
+
+							var taskId = taskData.id;
+							var data = {
+								"routeName": routeName,
+								"opinion": opinion
+							};
+							_self.app.action.TaskAction.processing(taskId,data,function(json){
+								dlg.close();
+								_self.loadTask();
+							},null,false);
+
+						}
+					});
+				}.bind(this));
+			}.bind(this)
+		});
+	},
+	_addSign : function(task){
+
+		var _self = this;
+		var opt = {};
+
+		o2.DL.open({
+			"title": o2.xApplication.process.Xform.LP.form.addTask,
+			"style":  "user",
+			"width":   (layout.mobile) ? "100%" : 680,
+			"height":  (layout.mobile) ? "100%" : 380,
+			"url": this.app.path+"default/view/dlg/addSign.html",
+			"lp": o2.xApplication.process.Xform.LP.form,
+			"container": this.app.content,
+			"maskNode": this.app.content,
+			"offset": (layout.mobile) ? null : {y: -120},
+
+			"buttonList": [
+				{
+					"type": "ok",
+					"text": o2.LP.process.button.ok,
+					"action": function (d, e) {
+						if( !this.identityList || !this.identityList.length ){
+							_self.app.notice(o2.xApplication.process.Xform.LP.inputAddTaskPeople, "error", this.node);
+						}else{
+							_self.doAddTask(task,this);
+						}
+					}
+				},
+				{
+					"type": "cancel",
+					"text": MWF.LP.process.button.cancel,
+					"action": function () {
+						this.close();
+					}
+				}
+			],
+			"onPostShow": function () {
+				var selPeopleButton = this.content.getElement(".addTask_selPeopleButton");
+				selPeopleButton.addEvent("click", function () {
+					_self.selectPeopleAll(this,0);
+				}.bind(this));
+			}
+
+		});
+	},
+
+	doAddTask: function(task,dlg){
+		MWF.require("MWF.widget.Mask", function () {
+
+			var position = this.getRadioValue(dlg.content, ".addTask_type") || "after";
+			var mode = this.getRadioValue(dlg.content, ".mode_type") || "single";
+
+			if (dlg.identityList && dlg.identityList.length){
+				this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+				if( layout.mobile ){
+					this.mask.load();
+				}else{
+					this.mask.loadNode(this.app.content);
+				}
+
+				var nameArr = dlg.identityList.map(function(id){
+					return o2.name.cn(id);
+				});
+
+				var opinion = dlg.content.getElement(".addTask_opinion").get("value");
+
+				this.doAddTaskToPeople(task,dlg.identityList, opinion, mode, position === "before", "", function (json) {
+					this.fireEvent("afterAddTask");
+					if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
+					this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
+
+					dlg.close();
+					if (this.mask) this.mask.hide();
+
+
+				}.bind(this), function (xhr, text, error) {
+					var errorText = error + ":" + text;
+					if (xhr) errorText = xhr.responseText;
+					this.app.notice("request json error: " + errorText, "error", dlg ? dlg.node : null);
+
+					if (this.mask) this.mask.hide();
+				}.bind(this))
+
+			}else{
+				if (this.mask)  this.mask.hide();
+			}
+
+		}.bind(this));
+	},
+	getRadioValue: function(node, selector){
+		var nodes = node.getElements(selector);
+		for (var i=0; i<nodes.length; i++){
+			if (nodes[i].checked){
+				return nodes[i].value;
+			}
+		}
+		return "";
+	},
+	doAddTaskToPeople: function (task,names, opinion, mode, before, routeName, success, failure) {
+
+		var lp = o2.xApplication.process.Xform.LP.form;
+
+		var leftText = (!!before ? lp.addTaskBefore : lp.addTaskAfter)+lp[mode];
+
+		var nameArr = names.map(function(id){
+			return o2.name.cn(id);
+		});
+		var n = nameArr.length > 3 ? (nameArr[0]+"、"+nameArr[1]+"、"+nameArr[2]+"...") : nameArr.join(", ");
+		var routeName = leftText+":"+n;
+
+		if (!opinion) opinion = leftText+":"+nameArr.join(", "); //o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
+
+		var data = {
+			"mode": mode,
+			"before": !!before,
+			"opinion": opinion,
+			"routeName": routeName,
+			"distinguishedNameList": names
+		};
+		o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(
+			//this.workAction.resetWork(
+			function (json) {
+				if (success) success(json);
+			}.bind(this),
+			function (xhr, text, error) {
+				if (failure) failure(xhr, text, error);
+			},
+			task.id, data
+		);
+	},
+	selectPeopleAll: function (dlg, count) {
+		var names = dlg.identityList || [];
+		var areaNode = $("resetWork_selPeopleArea");
+		var options = {
+			"values": names,
+			"type": "identity",
+			"count": count,
+			"onComplete": function (items) {
+				areaNode.empty();
+				var identityList = [];
+				items.each(function (item) {
+					new MWF.widget.O2Identity(item.data, areaNode, { "style": "reset" });
+					identityList.push(item.data.distinguishedName);
+				}.bind(this));
+				dlg.identityList = identityList;
+			}.bind(this)
+		};
+		MWF.xDesktop.requireApp("Selector", "package", function () {
+			var selector = new MWF.O2Selector(this.app.content, options);
+		}.bind(this));
+
 	},
 	loadTaskDone : function () {
 		this.app.action.TaskCompletedAction.listWithJob(this.data.job, function (json) {
@@ -3218,7 +3420,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 				setOpinionButton.addEvent("click", function () {
 					_self = this;
 					var ideaNode = new Element("div", {"class": "control", "style": "margin:10px"});
-					var textareaNode = new Element("textarea", {"style":"height:80px","class": "textarea", "text": record.properties.opinion});
+					var textareaNode = new Element("textarea", {"style":"height:80px","class": "textarea", "text": record.opinion});
 					textareaNode.inject(ideaNode);
 
 					var ideaDlg = o2.DL.open({
@@ -3236,7 +3438,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							{
 								"text": lp.ok,
 								"action": function () {
-									record.properties.opinion = textareaNode.get("value");
+									record.opinion = textareaNode.get("value");
 									_self.app.action.RecordAction.manageEdit(record.id,record,function(json){
 										_self.loadRecord();
 									},null,false);
@@ -3829,6 +4031,13 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 });
 MWF.xApplication.process.Application.ManageWorkCompletedForm = new Class({
 	Extends: MWF.xApplication.process.Application.ManageWorkForm,
+	loadTask : function () {
+		this.app.action.TaskAction.listWithJob(this.data.job).then(function(json){
+			this.taskList = json.data;
+			this._loadTask();
+			this.initTask = true;
+		}.bind(this));
+	},
 	loadTab : function (){
 
 		this.tabNode = new Element("div",{"styles" : this.css.tabNode }).inject(this.formTableArea);

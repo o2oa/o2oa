@@ -37,5 +37,13 @@ MWF.xApplication.process.ScriptDesigner.LP = {
         "resumeInfo" : "Are you sure you need to perform a form recovery operation? After confirming the restoration, the current form will be updated, and the current form needs to be manually saved to take effect.",
         "resumeSuccess" :"Resume Successfully"
     },
-    "isSave": "Saving, please wait..."
+    "isSave": "Saving, please wait...",
+    "formToolbar":{
+        "save": "Save script",
+        "autoSave": "AutoSave",
+        "fontSize": "Font size",
+        "style": "style",
+        "scriptEditor": "Script Editor",
+        "viewAllVersions": "View all script versions"
+    }
 };

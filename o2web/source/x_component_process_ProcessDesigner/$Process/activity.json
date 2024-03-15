@@ -58,10 +58,7 @@
     "manualMode":"single",
     "manualMergeSameJobActivity": false,
 
-//    "canOpinion": true,
     "allowDeleteWork": false,
-//    "canAddAttachment": true,
-//    "canDeleteAttachment": true,
     "allowReroute": true,
     "allowRerouteTo": true,
     "allowReset": true,
@@ -69,6 +66,7 @@
     "allowRapid": false,
     "allowAddSplit": false,
     "allowRollback": false,
+    "allowTerminate": false,
 
     "resetCount": "0",
     "resetRange": "department",

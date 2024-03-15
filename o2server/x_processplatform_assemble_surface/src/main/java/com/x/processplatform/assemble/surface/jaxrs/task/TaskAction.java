@@ -494,44 +494,6 @@ public class TaskAction extends StandardJaxrsAction {
 	}
 
 	@Deprecated(forRemoval = true)
-	@JaxrsMethodDescribe(value = "重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人.", action = ActionReset.class)
-	@PUT
-	@Path("{id}/reset")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionReset.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionReset().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
-	}
-
-	@Deprecated(forRemoval = true)
-	@JaxrsMethodDescribe(value = "重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人.", action = ActionReset.class)
-	@POST
-	@Path("{id}/reset/mockputtopost")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void resetMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionReset.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionReset().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
-	}
-
-	@Deprecated(forRemoval = true)
 	@JaxrsMethodDescribe(value = "预计下一活动处理状态及处理人.", action = ActionWill.class)
 	@GET
 	@Path("{id}/will")
@@ -957,6 +919,24 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+//	@JaxrsMethodDescribe(value = "加签.", action = ActionAdd.class)
+//	@POST
+//	@Path("{id}/add")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("待办标识") @PathParam("id") String id, JsonElement jsonElement) {
+//		ActionResult<ActionAdd.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionAdd().execute(effectivePerson, id, jsonElement);
+//		} catch (Exception e) {
+//			LOGGER.error(e, effectivePerson, request, jsonElement);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
+
 	@Operation(summary = "分页显示当前用户创建工作的待办.", operationId = OPERATIONID_PREFIX + "V2ListCreatePaging", responses = {
 			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2ListCreatePaging.Wo.class)))) }, requestBody = @RequestBody(content = {
 					@Content(schema = @Schema(implementation = V2ListCreatePaging.Wi.class)) }))
@@ -1175,25 +1155,25 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@Operation(summary = "在指定待办位置新增处理人.", operationId = OPERATIONID_PREFIX + "V2Add", responses = {
-			@ApiResponse(content = @Content(schema = @Schema(implementation = V2Add.Wo.class))) })
-	@JaxrsMethodDescribe(value = "在指定待办位置新增处理人.", action = V2Add.class)
-	@POST
-	@Path("v2/{id}/add")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<V2Add.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2Add().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@Operation(summary = "在指定待办位置新增处理人.", operationId = OPERATIONID_PREFIX + "V2Add", responses = {
+//			@ApiResponse(content = @Content(schema = @Schema(implementation = V2Add.Wo.class))) })
+//	@JaxrsMethodDescribe(value = "在指定待办位置新增处理人.", action = V2Add.class)
+//	@POST
+//	@Path("v2/{id}/add")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void V2Add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+//		ActionResult<V2Add.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new V2Add().execute(effectivePerson, id, jsonElement);
+//		} catch (Exception e) {
+//			LOGGER.error(e, effectivePerson, request, jsonElement);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
 	@Operation(summary = "挂起待办,暂停待办处理计时.", operationId = OPERATIONID_PREFIX + "V2Pause", responses = {
 			@ApiResponse(content = @Content(schema = @Schema(implementation = V2Pause.Wo.class))) })
@@ -1230,6 +1210,42 @@ public class TaskAction extends StandardJaxrsAction {
 			result = new V2Resume().execute(effectivePerson, id);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "处理待办并流转.", action = V2TriggerProcessing.class)
+	@GET
+	@Path("v2/{id}/trigger/processing")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void v2TriggerProcessing(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<V2TriggerProcessing.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2TriggerProcessing().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "加签.", action = V3Add.class)
+	@POST
+	@Path("v3/{id}/add")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void v3Add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<V3Add.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V3Add().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

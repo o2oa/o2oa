@@ -14,15 +14,8 @@ public class V2RollbackWi extends GsonPropertyObject {
 	@FieldDescribe("工作日志")
 	private String workLog;
 
-	@FieldDescribe("已完成工作处理人.")
-	private List<String> taskCompletedIdentityList;
-
-	@FieldDescribe("是否尝试流转")
-	private Boolean processing;
-
-	public Boolean getProcessing() {
-		return BooleanUtils.isTrue(processing);
-	}
+	@FieldDescribe("组织对象专有标识.")
+	private List<String> distinguishedNameList;
 
 	public String getWorkLog() {
 		return workLog;
@@ -32,16 +25,12 @@ public class V2RollbackWi extends GsonPropertyObject {
 		this.workLog = workLog;
 	}
 
-	public void setProcessing(Boolean processing) {
-		this.processing = processing;
+	public List<String> getDistinguishedNameList() {
+		return distinguishedNameList;
 	}
 
-	public List<String> getTaskCompletedIdentityList() {
-		return taskCompletedIdentityList;
-	}
-
-	public void setTaskCompletedIdentityList(List<String> taskCompletedIdentityList) {
-		this.taskCompletedIdentityList = taskCompletedIdentityList;
+	public void setDistinguishedNameList(List<String> distinguishedNameList) {
+		this.distinguishedNameList = distinguishedNameList;
 	}
 
 }

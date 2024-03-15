@@ -1,10 +1,12 @@
 [
 	{
-		"url" : "jdbc:dm://127.0.0.1/X",
-		"username" : "admin",
-		"password" :"password",
+		"url": "jdbc:dm://127.0.0.1:5236",
+		"username": "SYSDBA",
+		"password": "123456789",
 		"includes": [],
 		"excludes": [],
-		"enable" : true
+		"enable": true,
+		"statEnable": false,
+		"schema": "X"
 	}
 ]

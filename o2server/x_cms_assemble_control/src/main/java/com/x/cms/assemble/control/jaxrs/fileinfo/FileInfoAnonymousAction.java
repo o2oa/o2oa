@@ -27,25 +27,26 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("anonymous/fileinfo")
 @JaxrsDescribe("可匿名访问的附件信息管理服务")
-public class FileInfoAnonymousAction extends StandardJaxrsAction{
+public class FileInfoAnonymousAction extends StandardJaxrsAction {
 
-	private static  Logger logger = LoggerFactory.getLogger( FileInfoAnonymousAction.class );
+	private static Logger logger = LoggerFactory.getLogger(FileInfoAnonymousAction.class);
 
 	@JaxrsMethodDescribe(value = "获取指定文档的全部附件信息列表.", action = ActionListByDocId.class)
 	@GET
 	@Path("list/document/{documentId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listFileInfoByDocumentId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId")String documentId ) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void listFileInfoByDocumentId(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId") String documentId) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListByDocId.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListByDocId().execute( request, effectivePerson, documentId );
+			result = new ActionListByDocId().execute(effectivePerson, documentId);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			result.error( e );
-			logger.error( e, effectivePerson, request, null);
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -55,17 +56,17 @@ public class FileInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("{id}/document/{documentId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件信息ID") @PathParam("id") String id,
-			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId") String documentId ) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId") String documentId) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGet().execute( request, effectivePerson, id, documentId );
+			result = new ActionGet().execute(request, effectivePerson, id, documentId);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			result.error( e );
-			logger.error( e, effectivePerson, request, null);
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -74,8 +75,7 @@ public class FileInfoAnonymousAction extends StandardJaxrsAction{
 	@GET
 	@Path("download/document/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void attachmentDownLoad(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
+	public void attachmentDownLoad(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionFileDownload.Wo> result = new ActionResult<>();
@@ -94,8 +94,7 @@ public class FileInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("download/document/{id}/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void attachmentDownloadStream(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionFileDownloadStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);

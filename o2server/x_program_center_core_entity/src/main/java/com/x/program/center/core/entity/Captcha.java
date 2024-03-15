@@ -19,8 +19,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Captcha", description = "服务管理图片验证码.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Captcha.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Captcha.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Captcha.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Captcha.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -28,7 +28,7 @@ public class Captcha extends SliceJpaObject {
 
 	private static final long serialVersionUID = -7520516033901189347L;
 
-	private static final String TABLE = PersistenceProperties.Captcha.table;
+	private static final String TABLE = PersistenceProperties.Captcha.TABLE;
 
 	public String getId() {
 		return id;

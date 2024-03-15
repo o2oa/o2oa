@@ -3,31 +3,30 @@ package com.x.cms.assemble.control.jaxrs.data;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.DocumentDataHelper;
-import com.x.cms.assemble.control.factory.ProjectionFactory;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.Projection;
-import com.x.cms.core.entity.content.Data;
-import com.x.cms.core.entity.enums.DocumentStatus;
-import com.x.cms.core.entity.message.DocumentEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.factory.ProjectionFactory;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
 import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.assemble.control.service.UserManagerService;
+import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.Projection;
+import com.x.cms.core.entity.content.Data;
+import com.x.cms.core.entity.enums.DocumentStatus;
+import com.x.cms.core.entity.message.DocumentEvent;
 import com.x.query.core.entity.Item;
 
 public class BaseAction extends StandardJaxrsAction {
@@ -35,7 +34,7 @@ public class BaseAction extends StandardJaxrsAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 	private static final String title_path = "title";
 	private static final String subject_path = "subject";
-//	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Item.class, Document.class);
+	private static final String objectSecurityClearance_path = "objectSecurityClearance";
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
 	protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
@@ -49,23 +48,26 @@ public class BaseAction extends StandardJaxrsAction {
 	}
 
 	/** 将data中的Title字段同步到document中 */
-	void updateTitleSerial(Business business, Document document, JsonElement jsonElement) throws Exception {
+	void updateTitleSerialObjectSecurityClearance(Business business, Document document, JsonElement jsonElement)
+			throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, title_path);
 		if (null == title) {
 			title = XGsonBuilder.extractString(jsonElement, subject_path);
 		}
-		if (null != title && !Objects.equals(title, document.getTitle())) {
+		Integer objectSecurityClearance = XGsonBuilder.extractInteger(jsonElement, objectSecurityClearance_path);
+		if ((!Objects.equals(title, document.getTitle()))
+				|| (!Objects.equals(objectSecurityClearance, document.getObjectSecurityClearance()))) {
 			business.entityManagerContainer().beginTransaction(Document.class);
 			business.entityManagerContainer().beginTransaction(Item.class);
 			document.setTitle(title);
+			document.setObjectSecurityClearance(objectSecurityClearance);
 			business.entityManagerContainer().commit();
-
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if(!jsonObject.has(Data.DOCUMENT_PROPERTY)){
+			if (!jsonObject.has(Data.DOCUMENT_PROPERTY)) {
 				JsonObject docJson = new JsonObject();
 				docJson.addProperty(Document.title_FIELDNAME, title);
 				jsonObject.add(Data.DOCUMENT_PROPERTY, docJson);
-			}else{
+			} else {
 				jsonObject.getAsJsonObject(Data.DOCUMENT_PROPERTY).addProperty(Document.title_FIELDNAME, title);
 			}
 
@@ -93,7 +95,7 @@ public class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.warn("{}文档数据映射失败：{}", document.getId(), e.getMessage());
 			}
-			if(DocumentStatus.isEndStatus(document.getDocStatus())){
+			if (DocumentStatus.isEndStatus(document.getDocStatus())) {
 				business.entityManagerContainer().beginTransaction(DocumentEvent.class);
 				DocumentEvent documentEvent = DocumentEvent.updateEventInstance(document);
 				business.entityManagerContainer().persist(documentEvent);
@@ -104,12 +106,14 @@ public class BaseAction extends StandardJaxrsAction {
 	}
 
 	private void projection(Business business, Document document, Data data) throws Exception {
-		CategoryInfo categoryInfo = business.entityManagerContainer().find(document.getCategoryId(), CategoryInfo.class);
-		if(categoryInfo!=null && StringUtils.isNotBlank(categoryInfo.getProjection())
-				&& XGsonBuilder.isJsonArray(categoryInfo.getProjection())){
+		CategoryInfo categoryInfo = business.entityManagerContainer().find(document.getCategoryId(),
+				CategoryInfo.class);
+		if (categoryInfo != null && StringUtils.isNotBlank(categoryInfo.getProjection())
+				&& XGsonBuilder.isJsonArray(categoryInfo.getProjection())) {
 			business.entityManagerContainer().beginTransaction(Document.class);
 			List<Projection> projections = XGsonBuilder.instance().fromJson(categoryInfo.getProjection(),
-					new TypeToken<List<Projection>>(){}.getType());
+					new TypeToken<List<Projection>>() {
+					}.getType());
 			ProjectionFactory.projectionDocument(projections, data, document);
 		}
 	}
@@ -122,13 +126,13 @@ public class BaseAction extends StandardJaxrsAction {
 			cursorPaths[i] = paths[i];
 		}
 		cursorPaths[paths.length - 1] = paths[paths.length - 1];
-		Item parent = business.itemFactory().getWithDocmentWithPath(document.getId(), parentPaths[0], parentPaths[1], parentPaths[2],
-				parentPaths[3], parentPaths[4], parentPaths[5], parentPaths[6], parentPaths[7]);
+		Item parent = business.itemFactory().getWithDocmentWithPath(document.getId(), parentPaths[0], parentPaths[1],
+				parentPaths[2], parentPaths[3], parentPaths[4], parentPaths[5], parentPaths[6], parentPaths[7]);
 		if (null == parent) {
 			throw new Exception("parent not existed.");
 		}
-		Item cursor = business.itemFactory().getWithDocmentWithPath(document.getId(), cursorPaths[0], cursorPaths[1], cursorPaths[2],
-				cursorPaths[3], cursorPaths[4], cursorPaths[5], cursorPaths[6], cursorPaths[7]);
+		Item cursor = business.itemFactory().getWithDocmentWithPath(document.getId(), cursorPaths[0], cursorPaths[1],
+				cursorPaths[2], cursorPaths[3], cursorPaths[4], cursorPaths[5], cursorPaths[6], cursorPaths[7]);
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		business.entityManagerContainer().beginTransaction(Item.class);
 		if ((null != cursor) && cursor.getItemType().equals(ItemType.a)) {
@@ -153,8 +157,8 @@ public class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().persist(o);
 			}
 		} else {
-			throw new Exception("unexpected post data with document" + document + ".path:" + StringUtils.join(paths, ".")
-					+ "json:" + jsonElement);
+			throw new Exception("unexpected post data with document" + document + ".path:"
+					+ StringUtils.join(paths, ".") + "json:" + jsonElement);
 		}
 	}
 
@@ -162,14 +166,15 @@ public class BaseAction extends StandardJaxrsAction {
 	void deleteData(Business business, Document document, String... paths) throws Exception {
 		List<Item> exists = business.itemFactory().listWithDocmentWithPath(document.getId(), paths);
 		if (exists.isEmpty()) {
-			throw new Exception( "data{docId:" + document.getId() + "} on path:" + StringUtils.join(paths, ".") + " is not existed.");
+			throw new Exception("data{docId:" + document.getId() + "} on path:" + StringUtils.join(paths, ".")
+					+ " is not existed.");
 		}
 		business.entityManagerContainer().beginTransaction(Item.class);
 		for (Item o : exists) {
 			business.entityManagerContainer().remove(o);
 		}
-		if ( paths.length > 0 ) {
-			if ( NumberUtils.isNumber(paths[paths.length - 1])) {
+		if (paths.length > 0) {
+			if (NumberUtils.isNumber(paths[paths.length - 1])) {
 				int position = paths.length - 1;
 				for (Item o : business.itemFactory().listWithDocmentWithPathWithAfterLocation(document.getId(),
 						NumberUtils.toInt(paths[position]), paths)) {

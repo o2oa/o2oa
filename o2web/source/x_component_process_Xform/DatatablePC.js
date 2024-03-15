@@ -588,10 +588,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}.bind(this));
 		},
+		_getTotalTr: function(){
+			return this.totalTr;
+		},
 		_loadTotal: function(){
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
-			if (!this.totalTr)this._loadTotalTr();
+			if (!this._getTotalTr())this._loadTotalTr();
 			var data;
 			if( this.isShowAllSection ){
 				data = { data : [] };
@@ -609,48 +612,94 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var json = column.moduleJson;
 				if(!json)return;
 
-				var pointLength = 0; //小数点后的最大数位
-				var tmpV;
-				if (column.type === "count"){
-					tmpV = data.data.length;
-				}else if(column.type === "number"){
-					tmpV = new Decimal(0);
-					for (var i=0; i<data.data.length; i++){
-						var d = data.data[i];
-						if(d[json.id]){
-							tmpV = tmpV.plus(d[json.id].toFloat() || 0);
-							var v = d[json.id].toString();
-							if( v.indexOf(".") > -1 ){
-								pointLength = Math.max(pointLength, v.split(".")[1].length);
-							}
-						}
-					}
-				}
-
-				if( isNaN( tmpV ) ){
-					totalData[json.id] = "";
-					column.td.set("text", "" );
-				}else{
-					if( pointLength > 0 && tmpV.toString() !== "0" ){
-						var s = tmpV.toString();
-						if( s.indexOf(".") > -1 ){
-							var length = s.split(".")[1].length;
-							if( length < pointLength ){
-								totalData[json.id] = s + "0".repeat(pointLength-length);
-							}else{
-								totalData[json.id] = s;
-							}
-						}else{
-							totalData[json.id] = s +"."+ "0".repeat(pointLength)
-						}
-					}else{
-						totalData[json.id] = tmpV.toString();
-					}
-					column.td.set("text", totalData[json.id] );
-				}
+				var total = this._loadColumnTotal( column, data );
+				if( typeOf(total) !== "null" )totalData[json.id] = total;
 			}.bind(this));
 			data.total = totalData;
 			return totalData;
+		},
+		_loadColumnTotal: function(column, data){
+			var json = column.moduleJson;
+			if(!json)return;
+
+			var pointLength = 0; //小数点后的最大数位
+			var tmpV;
+			if (column.type === "count"){
+				tmpV = data.data.length;
+			}else if(column.type === "number"){
+				tmpV = new Decimal(0);
+				for (var i=0; i<data.data.length; i++){
+					var d = data.data[i];
+					if(d[json.id]){
+						var v = this.formatDecimals( json, d[json.id].toFloat() );
+						tmpV = tmpV.plus(v ? v.toFloat() : 0);
+						if( v.indexOf(".") > -1 ){
+							pointLength = Math.max(pointLength, v.split(".")[1].length);
+						}
+					}
+				}
+			}
+
+			if( isNaN( tmpV ) ) {
+				column.td.set("text", "");
+				return;
+			}
+
+			var s = tmpV.toString(), total;
+			if( json.decimals && (json.decimals!=="*")){
+				total = this.formatDecimals( json, s.toFloat());
+			}else if( pointLength <= 0 || s === "0" ){
+				total = s;
+			}else if( s.indexOf(".") > -1 ){
+				var length = s.split(".")[1].length;
+				total = length < pointLength ? (s + "0".repeat(pointLength-length)) : s
+			}else{
+				total = s +"."+ "0".repeat(pointLength);
+			}
+
+			column.td.set("text", this.formatSeparate( json, total ) );
+			if( json.currencySymbol ){
+				new Element("span", {"text": json.currencySymbol, "style":"padding-right:5px"}).inject( column.td, "top" );
+			}
+			return total;
+		},
+		formatDecimals: function( json, v ){
+			var str;
+			if (json.decimals && (json.decimals!=="*")) { //小数点数位
+
+				var decimals = json.decimals.toInt();
+
+				var p = Math.pow(10, decimals);
+				var f_x = Math.round(v * p) / p;
+				str = f_x.toString();
+
+				if (decimals > 0) {
+					var pos_decimal = str.indexOf('.');
+					if (pos_decimal < 0) {
+						pos_decimal = str.length;
+						str += '.';
+					}
+					var decimalStr = (str).substr(pos_decimal + 1, (str).length);
+					while (decimalStr.length < decimals) {
+						str += '0';
+						decimalStr += 0;
+					}
+				}
+			}
+			return str || v.toString();
+		},
+		formatSeparate: function(json, str){
+			if( typeOf( str ) === "number" )str = str.toString();
+			if( json.digitsToSeparate && parseInt(json.digitsToSeparate) > 1 ){
+				var digits = parseInt(json.digitsToSeparate);
+				var reg = new RegExp( "(\\d{"+digits+"}\\B)" ,"g");
+				var arr = str.split(".");
+				var i = arr[0].split("").reverse().join("")
+					.replace(reg, "$1,")
+					.split("").reverse().join("");
+				str = arr.length > 1 ? ( i + "." + arr[1] ) : i ;
+			}
+			return str;
 		},
 		isTotalNumberModule: function( id ){
 			return this.totalNumberModuleIds.contains(id)
@@ -1255,7 +1304,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			_self.fireEvent("change", [{"lines":lines, "type":"deletelines"}]);
 
-			if(saveFlag)this.form.saveFormData();
+			if(saveFlag)this.saveFormData();
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
@@ -1298,7 +1347,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
 
-			if(saveFlag)this.form.saveFormData();
+			if(saveFlag)this.saveFormData();
 		},
 		_cancelLineEdit: function(){
 			var line = this.currentEditedLine;
@@ -1316,7 +1365,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this._loadTotal();
 				if( line.sectionLine )line.sectionLine._loadTotal();
 				if(line.attachmentChangeFlag){
-					this.form.saveFormData();
+					this.saveFormData();
 					line.attachmentChangeFlag = false;
 				}
 				this.currentEditedLine = null;
@@ -1345,7 +1394,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this._loadTotal();
 			if( line.sectionLine )line.sectionLine._loadTotal();
 			if(line.attachmentChangeFlag && !ignoerSave){
-				this.form.saveFormData();
+				this.saveFormData();
 				line.attachmentChangeFlag = false;
 			}
 			this.currentEditedLine = null;
@@ -1437,10 +1486,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
 		 * @summary 为数据表格赋值，如果需要设置所有区段数据请使用setAllSectionData方法。
-		 * @param data{DatatableData|Promise|Array} 必选，数组或Promise.
+		 * @param data{DatatableData|Promise} 必选，数组或Promise.
 		 * @param fireChange{boolean} 可选，是否触发change事件，默认false.
 		 * @example
-		 *  this.form.get("fieldId").setData([]); //赋空值
+		 *  this.form.get("fieldId").setData({data:[]}); //赋空值
 		 * @example
 		 *  //如果无法确定表单上是否有组件，需要判断
 		 *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
@@ -1529,6 +1578,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				d[ this.sectionBy ] = data || { data: [] };
 				this.setAllSectionData( d, fireChange , operation);
 			}
+		},
+		deleteAttachment: function( attId ){
+			this.form.workAction.deleteAttachment(attId, this.form.businessData.work.id);
+		},
+		saveFormData: function(){
+			this.form.saveFormData();
 		},
 		/**
 		 * @summary 当数据表格设置为区段合并展现、区段合并编辑时，可以使用本方法设置所有区段数据。
@@ -2527,10 +2582,13 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 			}
 		}.bind(this));
 	},
+	_getTotalTr: function(){
+		return this.totalTr;
+	},
 	_loadTotal: function(){
 		var totalData = {};
 		if( !this.datatable.totalFlag )return totalData;
-		if (!this.totalTr)this._loadTotalTr();
+		if (!this._getTotalTr())this._loadTotalTr();
 		var data;
 		if( this.datatable.isShowAllSection ){
 			Object.each( this.datatable.getBusinessDataById(), function (d, k) {
@@ -2543,45 +2601,8 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 			var json = column.moduleJson;
 			if(!json)return;
 
-			var pointLength = 0; //小数点后的最大数位
-			var tmpV;
-			if (column.type === "count"){
-				tmpV = data.data.length;
-			}else if(column.type === "number"){
-				tmpV = new Decimal(0);
-				for (var i=0; i<data.data.length; i++){
-					var d = data.data[i];
-					if(d[json.id]){
-						tmpV = tmpV.plus(d[json.id].toFloat() || 0);
-						var v = d[json.id].toString();
-						if( v.indexOf(".") > -1 ){
-							pointLength = Math.max(pointLength, v.split(".")[1].length);
-						}
-					}
-				}
-			}
-
-			if( isNaN( tmpV ) ){
-				totalData[json.id] = "";
-				column.td.set("text", "" );
-			}else{
-				if( pointLength > 0 && tmpV.toString() !== "0" ){
-					var s = tmpV.toString();
-					if( s.indexOf(".") > -1 ){
-						var length = s.split(".")[1].length;
-						if( length < pointLength ){
-							totalData[json.id] = s + "0".repeat(pointLength-length);
-						}else{
-							totalData[json.id] = s;
-						}
-					}else{
-						totalData[json.id] = s +"."+ "0".repeat(pointLength)
-					}
-				}else{
-					totalData[json.id] = tmpV.toString();
-				}
-				column.td.set("text", totalData[json.id] );
-			}
+			var total = this.datatable._loadColumnTotal( column, data );
+            if( typeOf(total) !== "null" )totalData[json.id] = total;
 		}.bind(this));
 		data.total = totalData;
 		return totalData;
@@ -2817,7 +2838,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				if((json.type==="Attachment" || json.type==="AttachmentDg")){
 					module.addEvent("change", function(){
 						if( this.datatable.multiEditMode ){
-							_self.form.saveFormData();
+							_self.datatable.saveFormData();
 						}else{
 							_self.attachmentChangeFlag = true;
 						}
@@ -2879,10 +2900,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		return this.options.index;
 	},
 	getModule: function(templateJsonId){
+		var _subform = this.datatable.json._subform;
+		if( _subform ){
+			var module = this.all_templateId[_subform+"_"+templateJsonId];
+			if( module )return module;
+		}
 		return this.all_templateId[templateJsonId];
 	},
 	get: function(templateJsonId){
-		return this.all_templateId[templateJsonId];
+		return this.getModule( templateJsonId );
 	},
 	getAttachmentSite: function(json, templateJsonId, sectionKey){
 		//确保site最长为64，否则后台会报错
@@ -2916,7 +2942,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				var array = module._getBusinessData();
 				(array || []).each(function(d){
 					saveFlag = true;
-					this.form.workAction.deleteAttachment(d.id, this.form.businessData.work.id);
+					this.datatable.deleteAttachment(d.id);
 
 					for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
 						var attData = this.form.businessData.attachmentList[i];
@@ -4102,7 +4128,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var dateIndexArr = []; //日期格式列下标
 		var idx=0;
 		this.columnJsonList.each(function(c){
-			if ( c.mJson && c.mJson.type === "Calendar") {
+			if ( c.mJson && c.mJson.type === "Calendar" && (c.mJson.format === "%Y-%m-%d" || c.mJson.format === "%Y-%m-%d %H:%M:%S")) {
 				dateIndexArr.push(idx);
 			}
 			idx++;
@@ -4375,6 +4401,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					}.bind(this));
 					break;
 				case "Number":
+				case "Currency":
 				case "Elnumber":
 					if (isNaN(d)){
 						lineData.errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
@@ -4385,10 +4412,12 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 				case "Calendar":
 				case "Eldate":
 				case "Eldatetime":
-					if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-						lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-						flag = false;
+					if( json.format === "%Y-%m-%d" || json.format === "%Y-%m-%d %H:%M:%S" ){
+						if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+							lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+							lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+							flag = false;
+						}
 					}
 					break;
 				default:

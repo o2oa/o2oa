@@ -3,17 +3,16 @@ package com.x.processplatform.service.processing.processor.service;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
@@ -35,7 +34,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.serviceArrive(aeiObjects.getWork().getActivityToken(), service));
 		// 清空上一次调用值
-		aeiObjects.getWork().getProperties().setServiceValue(new LinkedHashMap<>());
+		aeiObjects.getWork().setServiceValue(new LinkedHashMap<>());
 		return aeiObjects.getWork();
 	}
 
@@ -52,18 +51,17 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
 		// 判断是否已经在getServiceValue中有值了,否则会在到达后直接运行.
-		if (!aeiObjects.getWork().getProperties().getServiceValue().isEmpty()) {
+		if (!aeiObjects.getWork().getServiceValue().isEmpty()) {
 			LOGGER.debug("work:{}, serviceValue:{}.", () -> aeiObjects.getWork().getId(),
-					() -> this.gson.toJson(aeiObjects.getWork().getProperties().getServiceValue()));
+					() -> this.gson.toJson(aeiObjects.getWork().getServiceValue()));
 			if (StringUtils.isNotEmpty(service.getScript()) || StringUtils.isNotEmpty(service.getScriptText())) {
-				ScriptContext scriptContext = aeiObjects.scriptContext();
-				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_REQUESTTEXT,
-						gson.toJson(aeiObjects.getWork().getProperties().getServiceValue()));
-				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
-						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_SERVICE);
-				passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext, Boolean.TRUE);
-			} else {
-				passThrough = true;
+				GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings().putMember(
+						GraalvmScriptingFactory.BINDING_NAME_REQUESTTEXT,
+						gson.toJson(aeiObjects.getWork().getServiceValue()));
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						aeiObjects.getActivity(), Business.EVENT_SERVICE);
+				Optional<Boolean> opt = GraalvmScriptingFactory.evalAsBoolean(source, bindings);
+				passThrough = opt.isPresent() && BooleanUtils.isTrue(opt.get());
 			}
 		}
 		if (passThrough) {
@@ -78,13 +76,11 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken(), service));
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override

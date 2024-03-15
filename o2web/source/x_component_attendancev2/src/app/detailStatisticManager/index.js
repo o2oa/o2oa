@@ -15,7 +15,7 @@ export default content({
       lp,
       // 搜索表单
       form: {
-        filter: '',
+        filterList: [],
         startDate: '',
         endDate: ''
       },
@@ -99,14 +99,18 @@ export default content({
     if (this.validateForm()) {this.loadDetailList();}
   },
   async loadDetailList() {
-    showLoading(this);
+    await showLoading(this);
     this._showTableHeader();
     const form = this.bind.form;
-    form.filter = this.bind.filterList[0];
-    const json = await detailAction("statistic", form);
-    const list =  json || [];
-    this.bind.statisticList = list;
-    hideLoading(this);
+    form.filterList = this.bind.filterList;
+    try {
+      const json = await detailAction("statistic", form);
+      const list =  json || [];
+      this.bind.statisticList = list;
+    } catch (e) {
+      console.error(e);
+    }
+    await hideLoading(this);
   },
   _showTableHeader() {
     const start = this._toDate(this.bind.form.startDate);
@@ -150,7 +154,7 @@ export default content({
         break;
       }
     }
-    if (detail) {
+    if (detail && detail.workDay) {
       const recordList = detail.recordList || [];
       for (let index = 0; index < recordList.length; index++) {
         const element = recordList[index];
@@ -203,26 +207,13 @@ export default content({
   statisticExport() {
     if (this.validateForm()) {
       this.exportExcel();
-      // var _self = this;
-      // o2.api.page.confirm(
-      //   "warn",
-      //   this.bind.lp.alert,
-      //   this.bind.lp.detailExportConfirmMsg,
-      //   300,
-      //   100,
-      //   function () {
-      //     _self.exportExcel();
-      //     this.close();
-      //   },
-      //   function () {
-      //     this.close();
-      //   }
-      // );
     }
   },
   async exportExcel() {
-    showLoading(this, lp.detailExportConfirmMsg);
-    detailAction("statisticExport", this.bind.filterList[0], this.bind.form.startDate, this.bind.form.endDate).then( data => {
+    await showLoading(this, lp.detailExportConfirmMsg);
+    const form = this.bind.form;
+    form.filterList = this.bind.filterList;
+    detailAction("statisticExport", form).then( data => {
       if (data ) {
         this.downloadExcelConfirm(data);
       }

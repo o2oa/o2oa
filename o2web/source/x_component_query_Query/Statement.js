@@ -386,6 +386,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         this.contentAreaNode.scrollTo(0, 0);
 
         //this.createLoadding();
+        this.fireEvent("beforeLoadPageData", [d])
 
         this.loadViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
             this.options.statementId || this.options.statementName || this.options.statementAlias ||
@@ -1167,6 +1168,7 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
                 "width": "30px",
                 "text-align": "center"
             });
+            if (this.view.json.itemStyles) this.sequenceTd.setStyles(this.view.json.itemStyles);
             this.sequenceTd.set("text", sequence);
         }
 

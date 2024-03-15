@@ -334,8 +334,9 @@ MWF.xApplication.IMV2.Main = new Class({
 				}
 			}
 			if (!isOld) {
+				newConv.isNew = true; // 新建的 放在列表的前面
 				var itemNode = _self._createConvItemNode(newConv);
-				_self.conversationNodeItemList.push(itemNode);
+				_self.conversationNodeItemList.unshift(itemNode);
 				_self.tapConv(newConv);
 			}
 		}.bind(this), function (error) {
@@ -389,8 +390,9 @@ MWF.xApplication.IMV2.Main = new Class({
 					}
 					//新会话 创建
 					if (isNew) {
+						nCv.isNew = true; // 新建的 放在列表的前面
 						var itemNode = this._createConvItemNode(nCv);
-						this.conversationNodeItemList.push(itemNode);
+						this.conversationNodeItemList.unshift(itemNode);
 					}
 				}
 				//this.loadConversationList(json.data);
@@ -495,18 +497,25 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			}
 			this.container.loadHtml(url, { "bind": { "convName": this.data.title, "lp": this.lp }, "module": this }, function () {
 				var me = layout.session.user.distinguishedName;
-				if (this.data.type === "group" && me === this.data.adminPerson) {
+				if (this.data.type === "group") {
 					this.chatTitleMoreBtnNode.setStyle("display", "block");
 					this.chatTitleMoreBtnNode.addEvents({
 						"click": function (e) {
 							var display = this.chatTitleMoreMenuNode.getStyle("display");
 							if (display === "none") {
 								this.chatTitleMoreMenuNode.setStyle("display", "block");
-								this.chatTitleMoreMenuItem1Node.setStyle("display", "block");
-								this.chatTitleMoreMenuItem2Node.setStyle("display", "block");
-								if (this.main.imConfig.enableClearMsg) {
-									this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
+								this.chatTitleMoreMenuItem4Node.setStyle("display", "block");
+								if (me === this.data.adminPerson) { // 群主有操作权限
+									this.chatTitleMoreMenuItem1Node.setStyle("display", "block");
+									this.chatTitleMoreMenuItem2Node.setStyle("display", "block");
+									if (this.main.imConfig.enableClearMsg) {
+										this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
+									} else {
+										this.chatTitleMoreMenuItem3Node.setStyle("display", "none");
+									}
 								} else {
+									this.chatTitleMoreMenuItem1Node.setStyle("display", "none");
+									this.chatTitleMoreMenuItem2Node.setStyle("display", "none");
 									this.chatTitleMoreMenuItem3Node.setStyle("display", "none");
 								}
 							} else {
@@ -522,6 +531,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 								var display = this.chatTitleMoreMenuNode.getStyle("display");
 								if (display === "none") {
 									this.chatTitleMoreMenuNode.setStyle("display", "block");
+									this.chatTitleMoreMenuItem4Node.setStyle("display", "none");
 									this.chatTitleMoreMenuItem1Node.setStyle("display", "none");
 									this.chatTitleMoreMenuItem2Node.setStyle("display", "none");
 									this.chatTitleMoreMenuItem3Node.setStyle("display", "block");
@@ -808,7 +818,68 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}.bind(this), false);
 	},
 
-
+	// 群信息
+	tapConvInfo: function() {
+		this.chatTitleMoreMenuNode.setStyle("display", "none");
+		var convObj = null;
+		for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
+			var c = this.main.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				convObj = c.data;
+			}
+		}
+		if (convObj) {
+			var infoContainerNode = new Element("div", {"style":"padding:10px;background-color:#fff;overflow:auto;"});
+			new Element("div", {"style":"font-size: 16px;line-height: 32px;margin: 10px 0 0;", "text": this.lp.groupName}).inject(infoContainerNode);
+			new Element("div", {"style":"font-size: 14px;line-height: 26px;margin: 10px 20px 0;", "text": convObj.title}).inject(infoContainerNode);
+			new Element("div", {"style":"font-size: 16px;line-height: 32px;margin: 10px 0 0;", "text": this.lp.groupMemberAdmin}).inject(infoContainerNode);
+			var adminPerson = convObj.adminPerson || "";
+			var adminName = adminPerson;
+			if (adminPerson.indexOf("@") != -1) {
+				adminName = adminPerson.substring(0, adminPerson.indexOf("@"));
+			}
+			new Element("div", {"style":"font-size: 14px;line-height: 26px;margin: 10px 20px 0;", "text": adminName}).inject(infoContainerNode);
+			new Element("div", {"style":"font-size: 16px;line-height: 32px;margin: 10px 0 0;", "text": this.lp.groupMember}).inject(infoContainerNode);
+			var memberListContainer = new Element("div", {"style":"margin: 10px 20px;display:flex; flex-wrap:wrap;"}).inject(infoContainerNode);
+			var personList = convObj.personList || [];
+			for (let index = 0; index < personList.length; index++) {
+				const person = personList[index];
+				var memberDiv = new Element("div", {"style":"display:flex; flex-direction: column;padding: 10px;align-items: center;"}).inject(memberListContainer);
+				var avatarUrl = this.main._getIcon(person);
+				new Element("img", { "src": avatarUrl, "style": "width:40px;height:40px;" }).inject(memberDiv);
+				var name = person;
+				if (person.indexOf("@") != -1) {
+					name = name.substring(0, person.indexOf("@"));
+				}
+				new Element("div", { "text": name, "style": "margin-top:10px;" }).inject(memberDiv);
+			}
+			var dlg = o2.DL.open({
+				"title": this.lp.openGroupInfo,
+				"mask": true,
+				"width": "500",
+				"height": "430",
+				"content": infoContainerNode,
+				"onQueryClose": function () {
+					infoContainerNode.destroy();
+				}.bind(this),
+				"buttonList": [
+					{
+						"type": "ok",
+						"text": this.lp.ok,
+						"action": function () { 
+							dlg.close(); 
+						}.bind(this)
+					}
+				],
+				"onPostShow": function () {
+						dlg.reCenter();
+				}.bind(this),
+				"onPostClose": function(){
+					dlg = null;
+				}.bind(this)
+			});
+		}
+	},
 	//修改群名
 	tapUpdateConvTitle: function () {
 		this.chatTitleMoreMenuNode.setStyle("display", "none");
@@ -1608,7 +1679,7 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			}
 
 		}
-		this.node = new Element("div", { "class": "item" }).inject(this.container);
+		this.node = new Element("div", { "class": "item" }).inject(this.container, this.data.isNew ? 'top' : '');
 		this.nodeBaseItem = new Element("div", { "class": "base" }).inject(this.node);
 		var avatarNode = new Element("div", { "class": "avatar" }).inject(this.nodeBaseItem);
 		new Element("img", { "src": convData.avatarUrl, "class": "img" }).inject(avatarNode);

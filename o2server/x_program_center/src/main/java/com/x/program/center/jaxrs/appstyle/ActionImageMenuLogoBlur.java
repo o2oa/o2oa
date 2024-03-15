@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
-/*
- * 114*114
- * */
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.imgscalr.Scalr;

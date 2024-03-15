@@ -9,6 +9,8 @@
 	"templateType" : "value",
 	"isNotLoadNow": false,
 	"autosave": true,
+	"fileNameType" : "value",
+	"fileName" : "文件正文",
 	"chat": false,
 	"comments":false,
 	"compatibleFeatures": true,

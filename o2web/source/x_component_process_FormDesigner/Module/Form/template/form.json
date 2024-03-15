@@ -75,6 +75,14 @@
           "code": "",
           "html": ""
         },
+        "beforeAddTask":{
+          "code": "",
+          "html": ""
+        },
+        "afterAddTask":{
+          "code": "",
+          "html": ""
+        },
         "beforeRetract":{
           "code": "",
           "html": ""

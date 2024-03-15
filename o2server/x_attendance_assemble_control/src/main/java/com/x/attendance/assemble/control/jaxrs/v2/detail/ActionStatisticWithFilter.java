@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.detail;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.base.core.container.EntityManagerContainer;
@@ -30,7 +31,7 @@ public class ActionStatisticWithFilter extends BaseAction {
         ActionResult<List<StatisticWo>> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             StatisticWi wi = this.convertToWrapIn(jsonElement, StatisticWi.class);
-            if (StringUtils.isEmpty(wi.getFilter())) {
+            if (StringUtils.isEmpty(wi.getFilter()) && (wi.getFilterList() == null || wi.getFilterList().isEmpty())) {
                 throw new ExceptionEmptyParameter("过滤人员或组织");
             }
             if (StringUtils.isEmpty(wi.getStartDate())) {
@@ -45,24 +46,18 @@ public class ActionStatisticWithFilter extends BaseAction {
             if (startDate.after(endDate)) {
                 throw new ExceptionDateEndBeforeStartError();
             }
-//            int different = DateTools.differentDays(startDate, endDate);
-//            // 包含前后 所以+1
-//            different += 1;
-//            if (LOGGER.isDebugEnabled()) {
-//                LOGGER.debug("时间天数：" + different);
-//            }
             List<String> userList = new ArrayList<>();
             Business business = new Business(emc);
-            if (wi.getFilter().endsWith("@U")) { // 组织转化成人员列表 不递归
-                List<String> users = business.organization().person().listWithUnitSubDirect(wi.getFilter());
-                if (users != null && !users.isEmpty()) {
-                    userList.addAll(users);
+            if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
+                for (String f : wi.getFilterList()) {
+                    analysisPerson(userList, f, business);
                 }
-            } else if (wi.getFilter().endsWith("@P")) {
-                userList.add(wi.getFilter());
+            } else if (StringUtils.isNotEmpty(wi.getFilter())) {
+                analysisPerson(userList, wi.getFilter(), business);
             }
+            
             if (userList.isEmpty()) {
-                throw new ExceptionEmptyParameter("过滤人员或组织");
+                throw new ExceptionWithMessage("当前查询条件没有找到人员信息！");
             }
             // 根据人员循环查询 并统计数据
             List<StatisticWo> wos = new ArrayList<>();
@@ -71,6 +66,20 @@ public class ActionStatisticWithFilter extends BaseAction {
             return result;
         }
     }
+
+
+    private void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
+        if (filter.endsWith("@U")) { // 组织转化成人员列表 不递归
+            List<String> users = business.organization().person().listWithUnitSubDirect(filter);
+            if (users != null && !users.isEmpty()) {
+                userList.addAll(users);
+            }
+        } else if (filter.endsWith("@P")) {
+            userList.add(filter);
+        }
+    }
+
+    
 
 
 }

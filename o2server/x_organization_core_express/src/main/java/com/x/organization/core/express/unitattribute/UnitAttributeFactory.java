@@ -1,7 +1,6 @@
 package com.x.organization.core.express.unitattribute;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
@@ -15,7 +14,7 @@ public class UnitAttributeFactory {
 	private AbstractContext context;
 
 	/** 添加组织属性值 */
-	public boolean appendWithUnitWithName(String unit, String name, Collection<String> values) throws Exception {
+	public boolean appendWithUnitWithName(String unit, String name, List<String> values) throws Exception {
 		return ActionAppendWithUnitWithName.execute(context, unit, name, values);
 	}
 
@@ -30,7 +29,7 @@ public class UnitAttributeFactory {
 	}
 
 	/** 设置组织属性值 */
-	public boolean setWithUnitWithName(String unit, String name, Collection<String> values) throws Exception {
+	public boolean setWithUnitWithName(String unit, String name, List<String> values) throws Exception {
 		return ActionSetWithUnitWithName.execute(context, unit, name, values);
 	}
 

@@ -9,7 +9,21 @@
                 <td class="editTableTitle">{{$.lp.name}}:</td>
                 <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.activeType}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="activeType" value="immediately" text{(!$.activeType || $.activeType=='immediately')?'checked':''} onclick="if (this.checked){
+                    $('text{$.pid}delayArea').setStyle('display', 'none');
+                    }"/>{{$.lp.immediately}}
+                    <input type="radio" name="activeType" value="delay" text{($.activeType == 'delay')?'checked':''} onclick="if (this.checked){
+                    $('text{$.pid}delayArea').setStyle('display', 'block');
+                    }"/>{{$.lp.delay}}
+                </td>
+            </tr>
         </table>
+        <div style="display: text{($.activeType=='delay') ?'block':'none'}" id="text{$.pid}delayArea">
+            <div style="padding: 10px;">{{$.lp.delayNote}}</div>
+        </div>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>

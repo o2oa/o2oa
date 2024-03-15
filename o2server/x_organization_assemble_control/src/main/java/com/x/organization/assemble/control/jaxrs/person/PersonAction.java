@@ -1,6 +1,5 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -458,16 +457,16 @@ public class PersonAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @JaxrsMethodDescribe(value = "获取个人头像.", action = ActionGetIconWithPerson.class)
+    @JaxrsMethodDescribe(value = "获取个人头像.", action = ActionGetIcon.class)
     @GET
     @Path("{flag}/icon")
     @Consumes(MediaType.APPLICATION_JSON)
     public void getIconWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-            @JaxrsParameterDescribe("个人标识") @PathParam("flag") String flag) {
-        ActionResult<ActionGetIconWithPerson.Wo> result = new ActionResult<>();
+            @JaxrsParameterDescribe("个人标识或者身份标志") @PathParam("flag") String flag) {
+        ActionResult<ActionGetIcon.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionGetIconWithPerson().execute(effectivePerson, flag);
+            result = new ActionGetIcon().execute(effectivePerson, flag);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
@@ -515,6 +514,24 @@ public class PersonAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "锁定用户.", action = ActionDoLock.class)
+    @POST
+    @Path("lock/{flag}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void lockPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                             @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+        ActionResult<ActionDoLock.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDoLock().execute(effectivePerson, flag, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+    }
+
     @JaxrsMethodDescribe(value = "用户解锁，用于管理员解锁登录多次失败被锁定的用户.", action = ActionUnlock.class)
     @GET
     @Path("unlock/{flag}")
@@ -551,6 +568,80 @@ public class PersonAction extends StandardJaxrsAction {
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+    }
+
+    @JaxrsMethodDescribe(value = "禁用用户.", action = ActionDoBan.class)
+    @POST
+    @Path("ban/{flag}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void banPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                           @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+        ActionResult<ActionDoBan.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDoBan().execute(effectivePerson, flag, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+    }
+
+    @JaxrsMethodDescribe(value = "用户解禁.", action = ActionUnban.class)
+    @POST
+    @Path("unban/{flag}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void unbanPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                             @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+        ActionResult<ActionUnban.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionUnban().execute(effectivePerson, flag);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+    }
+
+    @JaxrsMethodDescribe(value = "分页查询用户信息.", action = ActionListFilterPaging.class)
+    @POST
+    @Path("list/filter/{page}/size/{size}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listFilterPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                 @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+                                 @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+        ActionResult<List<ActionListFilterPaging.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListFilterPaging().execute(effectivePerson, page, size, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+    }
+
+    @JaxrsMethodDescribe(value = "分页查询删除(注销)用户信息.", action = ActionListDeletePaging.class)
+    @POST
+    @Path("list/delete/{page}/size/{size}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listDeletePaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                 @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+                                 @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+        ActionResult<List<ActionListDeletePaging.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListDeletePaging().execute(effectivePerson, page, size, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
 }

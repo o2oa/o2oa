@@ -5,7 +5,7 @@ import { isInt, setJSONValue } from "../../utils/common";
 import template from "./template.html";
 import style from "./style.scope.css";
 import oInput from "../../components/o-input";
-import oTimePicker from '../../components/o-time-picker';
+import oTimePicker from "../../components/o-time-picker";
 import oSelectorProcess from "../../components/o-selector-process";
 
 export default content({
@@ -24,6 +24,8 @@ export default content({
         exceptionAlertEnable: false,
         exceptionAlertTime: "09:30",
         appealMaxTimes: 0,
+        detailStatisticCronString: "0 0 3 * * ?", //默认凌晨 3 点
+        closeOldAttendance: false, // 是否关闭旧考勤
       },
       holidayList: [],
       workDayList: [],
@@ -39,14 +41,12 @@ export default content({
     await this.loadConfig();
   },
   afterRender() {
-    
-    // this.loadHolidayDateSelector();
-    // this.loadWorkdayDateSelector();
+    this.loadDetailStatisticCronClick();// 表达式绑定 click 事件
   },
   // o time picker 控件使用
   setTimeValue(key, value) {
     setJSONValue(key, value, this.bind);
-},
+  },
   // 获取配置对象
   async loadConfig() {
     const json = await configAction("get");
@@ -57,6 +57,9 @@ export default content({
       }
       if (json.workDayList) {
         this.bind.workDayList = json.workDayList;
+      }
+      if (!json.detailStatisticCronString) {
+        this.bind.form.detailStatisticCronString = "0 0 3 * * ?"; //默认凌晨 3 点
       }
       if (typeof json.appealEnable == "undefined") {
         this.bind.form.appealEnable = false;
@@ -86,18 +89,15 @@ export default content({
       return;
     }
     if (!isInt(form.appealMaxTimes)) {
-      o2.api.page.notice(
-        lp.config.appealMaxTimesError,
-        "error"
-      );
+      o2.api.page.notice(lp.config.appealMaxTimesError, "error");
       return;
     }
     if (form.appealEnable && this.bind.processSelector.value.length > 0) {
       form.processId = this.bind.processSelector.value[0]["id"] || "";
       form.processName = this.bind.processSelector.value[0]["name"] || "";
     } else {
-      form.processId =   "";
-      form.processName =  "";
+      form.processId = "";
+      form.processName = "";
       form.appealMaxTimes = 0;
     }
 
@@ -214,10 +214,12 @@ export default content({
     this.bind.form.appealEnable = !this.bind.form.appealEnable;
   },
   clickOnDutyFastCheckInEnable() {
-    this.bind.form.onDutyFastCheckInEnable = !this.bind.form.onDutyFastCheckInEnable;
+    this.bind.form.onDutyFastCheckInEnable =
+      !this.bind.form.onDutyFastCheckInEnable;
   },
   clickOffDutyFastCheckInEnable() {
-    this.bind.form.offDutyFastCheckInEnable = !this.bind.form.offDutyFastCheckInEnable;
+    this.bind.form.offDutyFastCheckInEnable =
+      !this.bind.form.offDutyFastCheckInEnable;
   },
   clickCheckInAlertEnable() {
     this.bind.form.checkInAlertEnable = !this.bind.form.checkInAlertEnable;
@@ -238,5 +240,38 @@ export default content({
       }
       this.bind.processSelector.showValue = newShowValue.join(", ");
     }
+  },
+  loadDetailStatisticCronClick() {
+    const cronTarget = this.dom.querySelector("#detailCron");
+    o2.requireApp("Template", "widget.CronPicker", () => {
+        this.cronPicker = new MWF.xApplication.Template.widget.CronPicker(
+          c.content,
+          cronTarget,
+          c,
+          {},
+          {
+            style: "design",
+            position: {
+              //node 固定的位置
+              x: "right",
+              y: "auto",
+            },
+            onSelect: (value) => {
+              this.bind.form.detailStatisticCronString = value;
+            },
+            onQueryLoad: () => {
+              console.log(this.bind.form.detailStatisticCronString);
+              if (!this.cronPicker.node) {
+                this.cronPicker.options.value = this.bind.form.detailStatisticCronString;
+              } else {
+                this.cronPicker.setCronValue(this.bind.form.detailStatisticCronString);
+              }
+            },
+          }
+        );
+    });
+  },
+  clickCloseOldAttendance() {
+    this.bind.form.closeOldAttendance = !this.bind.form.closeOldAttendance;
   },
 });

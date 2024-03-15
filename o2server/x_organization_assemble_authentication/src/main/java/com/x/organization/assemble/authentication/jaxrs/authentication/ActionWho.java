@@ -1,12 +1,5 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import java.util.Date;
-import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -14,16 +7,15 @@ import com.x.base.core.project.config.Token.InitialManager;
 import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
-import com.x.organization.assemble.authentication.ThisApplication;
-import com.x.organization.assemble.authentication.jaxrs.authentication.QueueLoginRecord.LoginRecord;
 import com.x.organization.core.entity.Person;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 class ActionWho extends BaseAction {
 
@@ -51,11 +43,10 @@ class ActionWho extends BaseAction {
 			case manager:
 				InitialManager o = Config.token().initialManagerInstance();
 				if (StringUtils.equals(effectivePerson.getDistinguishedName(), o.getName())) {
-					wo = this.manager(null, null, o.getName(), Wo.class);
+					wo = this.manager(request, null, o.getName(), Wo.class);
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
-					wo = this.user(null, null, business, person, Wo.class);
-					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_CLIENT));
+					wo = this.user(request, null, business, person, Wo.class);
 				}
 				wo.setTokenType(TokenType.manager);
 				wo.setToken(effectivePerson.getToken());
@@ -64,19 +55,17 @@ class ActionWho extends BaseAction {
 			case securityManager:
 			case auditManager:
 				if (Config.ternaryManagement().isTernaryManagement(effectivePerson.getName())) {
-					wo = this.manager(null, null, effectivePerson.getName(), Wo.class);
+					wo = this.manager(request, null, effectivePerson.getName(), Wo.class);
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
-					wo = this.user(null, null, business, person, Wo.class);
-					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_CLIENT));
+					wo = this.user(request, null, business, person, Wo.class);
 				}
 				wo.setTokenType(effectivePerson.getTokenType());
 				wo.setToken(effectivePerson.getToken());
 				break;
 			case user:
 				Person person = this.getPerson(business, effectivePerson);
-				wo = this.user(null, null, business, person, Wo.class);
-				this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_CLIENT));
+				wo = this.user(request, null, business, person, Wo.class);
 				break;
 			default:
 				break;
@@ -92,15 +81,6 @@ class ActionWho extends BaseAction {
 			throw new ExceptionPersonNotExist(effectivePerson.getDistinguishedName());
 		}
 		return person;
-	}
-
-	private void recordLogin(String name, String address, String client) throws Exception {
-		LoginRecord o = new LoginRecord();
-		o.setAddress(Objects.toString(address, ""));
-		o.setClient(Objects.toString(client, ""));
-		o.setName(Objects.toString(name, ""));
-		o.setDate(new Date());
-		ThisApplication.queueLoginRecord.send(o);
 	}
 
 	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionWho$Wo")

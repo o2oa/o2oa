@@ -28,9 +28,37 @@
 					<input type="radio" name="allowUpload" value="false" text{(!$.allowUpload)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
-
+			<tr>
+				<td class="editTableTitle">{{$.lp.fileSite}}:</td>
+				<td class="editTableValue"><input type="text" name="fileSite" value="text{$.fileSite || 'filetext'}" class="editTableInput"/></td>
+			</tr>
 
 		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.fileName}}:</td>
+				<td class="editTableValue">
+					<input type="radio" onclick="if (this.checked){ $('fileNameArea').setStyle('display', 'block'); $('fileNameScriptArea').setStyle('display', 'none')}" name="fileNameType" value="value" text{($.fileNameType=='value')?'checked':''}/>{{$.lp.textValue}}
+					<input type="radio" onclick="if (this.checked){ $('fileNameArea').setStyle('display', 'none'); $('fileNameScriptArea').setStyle('display', 'block')}" name="fileNameType" value="script" text{($.fileNameType=='script')?'checked':''}/>{{$.lp.script}}
+				</td>
+			</tr>
+		</table>
+		<div id="fileNameArea" style="display: text{($.fileNameType=='value')?'block':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableValue">
+						<input type="text" name="fileName" value="text{$.fileName}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="fileNameScriptArea" style="display: text{($.fileNameScript=='script')?'block':'none'};">
+			<div class="MWFScriptArea" name="fileNameScript" title="{{$.lp.editScript}} (S)"></div>
+		</div>
+
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -49,8 +77,8 @@
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
 					<td class="editTableValue">
-						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'block'); $('templateScriptArea').setStyle('display', 'none')}" name="templateType" value="value" text{($.result!='script')?'checked':''}/>{{$.lp.textValue}}
-						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'none'); $('templateScriptArea').setStyle('display', 'block')}" name="templateType" value="script" text{($.result=='script')?'checked':''}/>{{$.lp.script}}
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'block'); $('templateScriptArea').setStyle('display', 'none')}" name="templateType" value="value" text{($.templateType=='value')?'checked':''}/>{{$.lp.textValue}}
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'none'); $('templateScriptArea').setStyle('display', 'block')}" name="templateType" value="script" text{($.templateType=='script')?'checked':''}/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>

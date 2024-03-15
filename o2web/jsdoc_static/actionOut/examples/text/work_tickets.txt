@@ -1,0 +1,19 @@
+{
+      "context": {
+        "e17fc446-4038-4ee1-a57f-b1dbec967a12": {
+          "label": "e17fc446-4038-4ee1-a57f-b1dbec967a12",//待办标识
+          "act": "create",//创建方式
+          "completed": false,//是否完成
+          "valid": true,//是否校验有效
+          "enable": true,//是否启用
+          "distinguishedName": "a@comp_a@I",//用户标识
+          "sibling": [],//兄弟节点标识列表
+          "fellow": [],//伙伴节点标识列表
+          "next": [],//下级节点标识列表
+          "mode": "single",//待办方式single(单人),parallel(并行),queue(串行)
+          "level": 1699343844646,//待办层级
+          "fromDistinguishedName": ""//授权自用户
+        }
+      },
+      "mode": "single" //待办方式single(单人),parallel(并行),queue(串行)
+    }

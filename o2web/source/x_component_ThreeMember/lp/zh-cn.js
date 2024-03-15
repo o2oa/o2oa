@@ -44,6 +44,26 @@ MWF.xApplication.ThreeMember.LP = {
 	"justNow" : "刚才",
 	"publishJustNow": "刚刚发表",
 
+	"logConfig": "配置日志",
+	"viewLog": "返回",
+	"status": "状态",
+	"enable": "启用",
+	"disable": "禁用",
+	"configDetail": "配置详情",
+	"moduleSelect": "选择模块",
+	"actionSelect": "选择分类",
+	"methodSelect": "选择服务",
+	"selectNote": "注：选择模块、选择分类和选择服务只为了方便自动填写类型和请求地址，不保存数据到后台。",
+	"createSuccess": "创建成功",
+	"updateSuccess": "保存成功",
+	"allConfig": "所有日志配置",
+	"deleteConfig": "删除日志配置",
+	"deleteConfigText": "删除后不能恢复，确定要删除该日志配置？",
+	"deleteConfigOK": "成功删除配置",
+	"createConfig": "创建日志配置",
+
+	"delete": "删除",
+
 	"home": "进入系统",
 	"syncLogSuccess": "同步日志成功",
 	"process": "流程管理",
@@ -120,7 +140,6 @@ MWF.xApplication.ThreeMember.LP = {
 		"securityManagerPasswordNote": "securityManager密码",
 		"auditManagerPassword": "安全审计员密码",
 		"auditManagerPasswordNote": "auditManager密码"
-	}
-
-
+	},
+	"lptest": "这是语言包测试"
 };

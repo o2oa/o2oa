@@ -1,10 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.script;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,10 +12,15 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
-import com.x.cms.assemble.control.ExceptionWrapInConvert;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.element.Script;
+import com.x.cms.core.entity.element.ScriptVersion;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
 
 class ActionCreate extends BaseAction {
 
@@ -56,6 +56,8 @@ class ActionCreate extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId( script.getId() );
 			result.setData(wo);
+			// 保存历史版本
+			ThisApplication.scriptVersionQueue.send(new ScriptVersion(wo.getId(), jsonElement, effectivePerson.getDistinguishedName()));
 		}
 		return result;
 	}

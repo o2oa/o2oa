@@ -58,14 +58,13 @@ class ActionListWithJob extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
 
-			List<Wo> wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
+			List<Wo> wos = Wo.copier.copy(emc.listEqual(Record.class, Record.job_FIELDNAME, job));
 
 			wos = wos.stream().sorted(Comparator.comparing(Wo::getOrder)).collect(Collectors.toList());
 
 			for (Task task : emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
 					.sorted(Comparator.comparing(Task::getStartTime)).collect(Collectors.toList())) {
-				Record record = this.taskToRecord(task);
-				wos.add(Wo.copier.copy(record));
+				wos.add(Wo.copier.copy(this.taskToRecord(task)));
 			}
 
 			result.setData(wos);
@@ -79,8 +78,8 @@ class ActionListWithJob extends BaseAction {
 
 		private static final long serialVersionUID = -7666329770246726197L;
 
-		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class,
-				JpaObject.singularAttributeField(Record.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 
 	}
 

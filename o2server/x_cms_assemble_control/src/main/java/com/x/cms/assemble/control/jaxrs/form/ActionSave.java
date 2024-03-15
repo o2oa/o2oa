@@ -23,11 +23,9 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.element.Form;
-import com.x.cms.core.entity.element.View;
-import com.x.cms.core.entity.element.ViewCategory;
-import com.x.cms.core.entity.element.ViewFieldConfig;
+import com.x.cms.core.entity.element.*;
 
 /**
  * 保存表单
@@ -56,6 +54,7 @@ public class ActionSave extends BaseAction {
 			if (!business.isAppInfoManager( effectivePerson, appInfo)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
+			Wo wo = new Wo();
 			Form form = emc.find(wi.getId(), Form.class);
 			if (null == form) {
 				form = Wi.copier.copy(wi);
@@ -71,8 +70,6 @@ public class ActionSave extends BaseAction {
 				emc.commit();
 				logService.log(emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "",
 						form.getId(), "FORM", "新增");
-
-				Wo wo = new Wo();
 				wo.setId(form.getId());
 				result.setData(wo);
 			} else {
@@ -88,7 +85,6 @@ public class ActionSave extends BaseAction {
 				logService.log(emc, effectivePerson.getDistinguishedName(), form.getName(), form.getAppId(), "", "",
 						form.getId(), "FORM", "更新");
 
-				Wo wo = new Wo();
 				wo.setId(form.getId());
 				result.setData(wo);
 			}
@@ -96,6 +92,8 @@ public class ActionSave extends BaseAction {
 			CacheManager.notify(View.class);
 			CacheManager.notify(ViewFieldConfig.class);
 			CacheManager.notify(ViewCategory.class);
+			// 保存历史版本
+			ThisApplication.formVersionQueue.send(new FormVersion(wo.getId(), jsonElement, effectivePerson.getDistinguishedName()));
 		}
 
 		return result;

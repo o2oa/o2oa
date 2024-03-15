@@ -27,5 +27,12 @@ MWF.xApplication.ConfigDesigner.LP = {
             "numberKey": "The item name cannot be a number, please re-enter",
 
             "inputName": "Please enter the configuration name"
-		}
+		},
+    "formToolbar":{
+        "save": "Save script",
+        "autoSave": "AutoSave",
+        "fontSize": "Font size",
+        "style": "style",
+        "scriptEditor": "Script Editor"
+    }
 };

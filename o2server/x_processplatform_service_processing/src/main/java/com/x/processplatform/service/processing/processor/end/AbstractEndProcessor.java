@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor.end;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,16 +35,16 @@ abstract class AbstractEndProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		End end = (End) aeiObjects.getActivity();
-		return inquiring(aeiObjects, end);
+		return inquiring(aeiObjects, end).orElse(null);
 	}
 
 	protected abstract Work arriving(AeiObjects aeiObjects, End end) throws Exception;
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, End end) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, End end) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, End end) throws Exception;
 
 	@Override
 	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {

@@ -47,6 +47,8 @@ MWF.xApplication.Org.LP = {
     "ipAddressPlaceHolder" : "如果不为空，匹配的ip才能登录该账号，用“,”分隔多值",
     "ipAddressIncorrectNotice" : "IP地址格式不正确：",
 
+    "securityLabel" : "密级标识",
+
     "createSubCompany": "创建子公司",
     "createSubDepartment": "创建子部门",
     "configCompany": "设置公司管理者",
@@ -95,7 +97,9 @@ MWF.xApplication.Org.LP = {
 
     "dutyName": "职务名称",
     "dutyMembers": "成员",
-
+    "editDuty": "编辑职务",
+    "modifySuccess": "修改成功",
+    "modifyFail": "修改失败",
 
     "deleteDutyTitle": "删除职务确认",
     "deleteDuty": "您确定要删除选中的职务吗？",
@@ -218,10 +222,36 @@ MWF.xApplication.Org.LP = {
     "personReadPassword": "密码到期时间{date}，密码最后修改于：{date2}",
     "roleFullName": "角色全称",
 
+    "status": "状态",
+    "statusOption": [
+        {"text": "全部","value":""},
+        {"text": "正常","value":"0"},
+        {"text": "已锁定","value":"1"},
+        {"text": "已禁用","value":"2"},
+    ],
+
+    "lockPerson": "锁定用户",
+    "lockPersonInfo": "注：锁定后，用户不能登录。",
+    "lockPersonReason": "锁定原因",
+    "lockLimitTime": "到期时间",
+    "inputLockExpiredTimeAndReason": "到期时间和锁定原因不能为空!",
+    "lockPersonSuccess": "锁定成功，用户 {name} 不能登录了！",
+
     "unlockPerson" : "解锁登录",
     "unlockPersonTitle": "解锁登录确认",
-    "unlockPersonText": "“{name}”输错密码已经超过规定次数，允许再次登录？",
+    "unlockPersonText": "“{name}”输错密码已经超过规定次数或者被管理员锁定了，允许再次登录？",
     "unlockPersonSuccess" : "用户 {name} 已经可以登录了！",
+
+    "banPerson": "禁用用户",
+    "banPersonText": "注：禁用后，“{name}”不能再使用本系统，且对应的身份和职务都将隐藏。",
+    "banPersonSuccess": "用户“{name}”已经被禁用了！",
+    "reason": "禁用原因",
+    "inputReason": "请填写禁用原因!",
+
+    "unbanPerson": "解除禁用",
+    "unbanPersonTitle": "解除禁用确认",
+    "unbanPersonText": "本操作会解除“{name}”使用系统的限制，且对应的身份和职务都将恢复，确定要执行？",
+    "unbanPersonSuccess" : "用户“{name}”已经可以使用系统了！",
 
     "expiredTime": "密码到期时间",
     "expiredTimeTitle": "密码到期时间",
@@ -234,6 +264,7 @@ MWF.xApplication.Org.LP = {
 
     //"inputPersonInfor": "请输入完整人员信息（人员名称、人员工号、手机号码、性别必填）",
     "inputPersonInfor": "请输入完整人员信息（人员名称、唯一编码、手机号码、性别必填）",
+    "inputPersonInfor2": "请输入完整人员信息（人员名称、唯一编码、手机号码、性别、密级标识必填）",
     "personAttributeText": "个人属性",
     "personIdentityText": "个人身份",
     "controllerListText": "管理者",

@@ -619,7 +619,7 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
                 //    return responseJSON;
                 //     break;
                 case "warn":
-                    MWF.xDesktop.notice("info", {x: "right", y:"top"}, responseJSON.errorMessage.join("\n"));
+                    //MWF.xDesktop.notice("info", {x: "right", y:"top"}, responseJSON.errorMessage.join("\n"));
                     if (this.appendSuccess) this.appendSuccess(responseJSON);
                     if (this.success) return this.success(responseJSON);
                     return responseJSON;

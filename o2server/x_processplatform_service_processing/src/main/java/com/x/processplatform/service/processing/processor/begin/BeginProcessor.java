@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.utils.time.WorkTime;
+import com.x.organization.core.express.Organization.ClassifyDistinguishedName;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Begin;
@@ -47,9 +49,9 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	protected void arrivingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getProcess(), Business.EVENT_PROCESSAFTERBEGIN);
-			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+			GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 		}
 	}
 
@@ -58,14 +60,62 @@ public class BeginProcessor extends AbstractBeginProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.beginExecute(aeiObjects.getWork().getActivityToken(), begin));
 		List<Work> list = new ArrayList<>();
-		// 如果是再次进入begin节点那么就不需要设置开始时间
+		// 如果是再次进入begin节点那么就不需要设置开始时间.
 		if (aeiObjects.getWork().getStartTime() == null) {
+			// 创建work不会进入这里
 			aeiObjects.getWork().setStartTime(new Date());
 			// 计算过期时间
 			this.calculateExpire(aeiObjects);
 		}
+		// 设置维护人
+		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getPermissionWriteScript())
+				|| StringTools.ifScriptHasEffectiveCode(aeiObjects.getProcess().getPermissionWriteScriptText())) {
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getProcess(), Business.EVENT_PERMISSIONWRITE);
+			List<String> names = GraalvmScriptingFactory.evalAsDistinguishedNames(source, aeiObjects.bindings());
+			ClassifyDistinguishedName classifyDistinguishedName = aeiObjects.business().organization()
+					.classifyDistinguishedNames(names);
+			List<String> distinguishedNames = this.convertToPerson(aeiObjects, classifyDistinguishedName);
+			distinguishedNames.stream().forEach(o -> {
+				Review review = new Review(aeiObjects.getWork(), o);
+				review.setPermissionWrite(true);
+				aeiObjects.getCreateReviews().add(review);
+			});
+		}
 		list.add(aeiObjects.getWork());
 		return list;
+	}
+
+	private List<String> convertToPerson(AeiObjects aeiObjects, ClassifyDistinguishedName classifyDistinguishedName)
+			throws Exception {
+
+		List<String> list = new ArrayList<>();
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getPersonList())) {
+			list.addAll(classifyDistinguishedName.getPersonList());
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getGroupList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithGroup(classifyDistinguishedName.getGroupList()));
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getIdentityList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithIdentity(classifyDistinguishedName.getIdentityList()));
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getRoleList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithRole(classifyDistinguishedName.getRoleList()));
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getUnitList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithUnitSubDirect(classifyDistinguishedName.getUnitList()));
+		}
+		return aeiObjects.business().organization().person().list(list).stream().distinct()
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -74,13 +124,10 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Begin begin) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Begin begin) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.beginInquire(aeiObjects.getWork().getActivityToken(), begin));
-		List<Route> list = new ArrayList<>();
-		Route o = aeiObjects.getRoutes().get(0);
-		list.add(o);
-		return list;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override
@@ -155,15 +202,15 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	private void expireScript(AeiObjects aeiObjects) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();
-		ScriptContext scriptContext = aeiObjects.scriptContext();
-		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+		Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 				aeiObjects.getProcess(), Business.EVENT_PROCESSEXPIRE);
-		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
-		JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
+		GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings().putMember(GraalvmScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		GraalvmScriptingFactory.eval(source, bindings, o -> {
 			if (null != o) {
-				expire.setDate(o.getDate());
-				expire.setHour(o.getHour());
-				expire.setWorkHour(o.getWorkHour());
+				ExpireScriptResult result = gson.fromJson(o, ExpireScriptResult.class);
+				expire.setDate(result.getDate());
+				expire.setHour(result.getHour());
+				expire.setWorkHour(result.getWorkHour());
 			}
 		});
 		if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {

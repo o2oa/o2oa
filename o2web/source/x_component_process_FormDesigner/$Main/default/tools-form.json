@@ -49,6 +49,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.combox,
     "className": "Combox"
   },
+  "currency": {
+    "icon": "currency.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.currency,
+    "className": "Currency"
+  },
   "opinion": {
     "icon": "opinion.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.opinion,
@@ -94,5 +99,10 @@
     "icon": "tinymceeditor.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.tinymceEditor,
     "className": "TinyMCEEditor"
+  },
+  "security": {
+    "icon": "security.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.security,
+    "className": "Security"
   }
 }

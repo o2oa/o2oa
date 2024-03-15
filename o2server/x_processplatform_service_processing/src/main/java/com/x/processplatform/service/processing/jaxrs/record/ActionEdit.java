@@ -11,7 +11,6 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -20,6 +19,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionEdit extends BaseAction {
 
@@ -29,46 +29,59 @@ class ActionEdit extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		final Bag bag = new Bag();
+		Param param = this.init(id, jsonElement);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			bag.wi = this.convertToWrapIn(jsonElement, Wi.class);
-			bag.record = emc.find(id, Record.class);
-			if (null == bag.record) {
-				throw new ExceptionEntityNotExist(id, Record.class);
-			}
-			bag.job = bag.record.getJob();
-		}
+		CallableImpl callable = new CallableImpl(param);
 
-		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-			public ActionResult<Wo> call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Record r = emc.find(id, Record.class);
-					Wi.copier.copy(bag.wi, r);
-					if ((emc.countEqual(Work.class, Work.job_FIELDNAME, r.getJob()) == 0)
-							&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, r.getJob()) == 0)) {
-						throw new ExceptionWorkOrWorkCompletedNotExist(r.getJob());
-					}
-					emc.beginTransaction(Record.class);
-					emc.check(r, CheckPersistType.all);
-					emc.commit();
-					ActionResult<Wo> result = new ActionResult<>();
-					Wo wo = new Wo();
-					wo.setId(r.getId());
-					result.setData(wo);
-					return result;
-				}
-			}
-		};
-
-		return ProcessPlatformExecutorFactory.get(bag.job).submit(callable).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
-	public static class Bag {
+	private Param init(String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			param.wi = this.convertToWrapIn(jsonElement, Wi.class);
+			param.rec = emc.find(id, Record.class);
+			if (null == param.rec) {
+				throw new ExceptionEntityNotExist(id, Record.class);
+			}
+			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, param.rec.getJob()) == 0)
+					&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, param.rec.getJob()) == 0)) {
+				throw new ExceptionWorkOrWorkCompletedNotExist(param.rec.getJob());
+			}
+			param.job = param.rec.getJob();
+		}
+		return param;
+	}
+
+	public static class Param {
 		String job;
 		Wi wi;
-		Record record;
+		Record rec;
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private Param param;
+
+		private CallableImpl(Param param) {
+			this.param = param;
+		}
+
+		public ActionResult<Wo> call() throws Exception {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Record rec = emc.find(param.rec.getId(), Record.class);
+				Wi.copier.copy(param.wi, rec);
+				emc.beginTransaction(Record.class);
+				emc.check(rec, CheckPersistType.all);
+				emc.commit();
+				ActionResult<Wo> result = new ActionResult<>();
+				Wo wo = new Wo();
+				wo.setId(rec.getId());
+				result.setData(wo);
+				return result;
+			}
+		}
 	}
 
 	public static class Wi extends Record {

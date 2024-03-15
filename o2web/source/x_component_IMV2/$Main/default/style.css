@@ -388,14 +388,14 @@
 } */
 .chat-sender-box {
   background-color: white;
-  margin: 0 50px 10px 10px;
+  margin: 0 10px 10px 10px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   text-indent: -12px;
   word-wrap: break-word;
   white-space: pre-line;
   display: inline-block;
-  max-width: calc(100% - 200px);
+  max-width: calc(100% - 80px);
 }
 /* 业务消息专用的外框 */
 .chat-sender-card-box {
@@ -465,13 +465,13 @@
 }
 .chat-receiver-box {
   background-color: #b2e281;
-  margin: 0px 10px 10px 50px;
+  margin: 0px 10px 10px 10px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
   float: right;
-  max-width: calc(100% - 200px);
+  max-width: calc(100% - 80px);
 }
 /* 业务消息专用的外框 */
 .chat-receiver-card-box {

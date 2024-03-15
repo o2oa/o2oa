@@ -49,8 +49,8 @@
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
 					<td class="editTableValue">
-						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'block'); $('templateScriptArea').setStyle('display', 'none')}" name="templateType" value="value" text{($.result!='script')?'checked':''}/>{{$.lp.textValue}}
-						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'none'); $('templateScriptArea').setStyle('display', 'block')}" name="templateType" value="script" text{($.result=='script')?'checked':''}/>{{$.lp.script}}
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'block'); $('templateScriptArea').setStyle('display', 'none')}" name="templateType" value="value" text{($.templateType!='script')?'checked':''}/>{{$.lp.textValue}}
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'none'); $('templateScriptArea').setStyle('display', 'block')}" name="templateType" value="script" text{($.templateType=='script')?'checked':''}/>{{$.lp.script}}
 					</td>
 				</tr>
 			</table>

@@ -24,6 +24,8 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.attendance.entity.v2.AttendanceV2Detail", "com.x.attendance.entity.v2.AttendanceV2Config",
 		"com.x.attendance.entity.v2.AttendanceV2AppealInfo", "com.x.attendance.entity.v2.AttendanceV2PersonConfig",
 		"com.x.attendance.entity.v2.AttendanceV2AlertMessage",
+		"com.x.attendance.entity.v2.AttendanceV2GroupSchedule",
+		"com.x.attendance.entity.v2.AttendanceV2GroupScheduleConfig",
 		"com.x.attendance.entity.v2.AttendanceV2LeaveData", "com.x.general.core.entity.GeneralFile" }, storeJars = {
 				"x_attendance_core_entity", "x_organization_core_express", "x_organization_core_entity", "x_general_core_entity" })
 public class x_attendance_assemble_control extends Deployable {

@@ -4,6 +4,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class UserSimple extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -5028505482006655529L;
 	private String userid;
 	private String name;
 

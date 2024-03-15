@@ -41,7 +41,6 @@ class ActionSave extends BaseAction {
             String person = business.organization().person().getWithIdentity(identity);
             List<String> identities = business.organization().identity().listWithPerson(person);
             List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
-            List<String> roles = business.organization().role().listWithPerson(person);
             Application application = business.application().pick(wi.getWork().getApplication());
             if (null == application) {
                 throw new ExceptionEntityNotExist(wi.getWork().getApplication(), Application.class);
@@ -49,9 +48,6 @@ class ActionSave extends BaseAction {
             Process process = business.process().pick(wi.getWork().getProcess());
             if (null == process) {
                 throw new ExceptionEntityNotExist(wi.getWork().getProcess(), Process.class);
-            }
-            if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
-                throw new ExceptionAccessDenied(effectivePerson, application);
             }
             List<String> groups = business.organization().group().listWithIdentity(identities);
             if (!business.process().startable(effectivePerson, identities, units, groups, process)) {

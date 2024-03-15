@@ -26,7 +26,7 @@ import com.x.processplatform.service.processing.Business;
 
 /**
  * 创建工作序列号
- * 
+ *
  * @author jian
  *
  */
@@ -76,6 +76,16 @@ class ActionCreateSerial extends BaseAction {
 		return result;
 	}
 
+	/**
+	 * 工单流水号是放在应用维度，根据依据(name)来区分，
+	 * 同个应用不同流程要使用不同的流水号那他的依据必须不一样,
+	 * 如果依据一样那他们将共用流水号.
+	 * @param processId
+	 * @param application
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
 	private Integer createSerial(String processId, String application, String name) throws Exception {
 		if (EMPTY_SYMBOL.equals(name)) {
 			name = "";

@@ -51,16 +51,18 @@ public class ActionPost extends BaseAction {
                 throw new ExceptionNotExistObject("人员 " + wi.getPerson());
             }
             AttendanceV2LeaveData leaveData = Wi.copier.copy(wi);
-            // 计算日期间隔
-            long interval = wi.getEndTime().getTime() - wi.getStartTime().getTime();
-            if (interval < 0) {
-                interval = -interval;
+            if (leaveData.getLeaveDayNumber() <= 0.0) { // 有传入数据 就不计算 按照传入的值来。
+                // 计算日期间隔
+                long interval = wi.getEndTime().getTime() - wi.getStartTime().getTime();
+                if (interval < 0) {
+                    interval = -interval;
+                }
+                double days = interval / (1000.0 * 3600 * 24);
+                // 保留1位小数
+                BigDecimal b = new BigDecimal(days);
+                days = b.setScale(1, RoundingMode.HALF_UP).doubleValue();
+                leaveData.setLeaveDayNumber(days);
             }
-            double days = interval / (1000.0 * 3600 * 24);
-            // 保留1位小数
-            BigDecimal b = new BigDecimal(days);
-            days = b.setScale(1, RoundingMode.HALF_UP).doubleValue();
-            leaveData.setLeaveDayNumber(days);
             leaveData.setPerson(person.getDistinguishedName());
             emc.beginTransaction(AttendanceV2LeaveData.class);
             emc.persist(leaveData, CheckPersistType.all);

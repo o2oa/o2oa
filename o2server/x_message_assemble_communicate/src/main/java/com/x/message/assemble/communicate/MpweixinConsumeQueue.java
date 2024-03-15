@@ -185,9 +185,11 @@ public class MpweixinConsumeQueue extends AbstractQueue<Message> {
 			}
 			String workUrl = "workmobilewithaction.html?workid=" + workId;
 			String portalId = Config.mpweixin().getPortalId();
-			String portal = "portalmobile.html?id=" + portalId;
-			portal = URLEncoder.encode(portal, DefaultCharset.name);
-			workUrl += "&redirectlink=" + portal;
+			if (portalId != null && StringUtils.isNotEmpty(portalId.trim())) {
+				String portal = "portalmobile.html?id=" + portalId;
+				portal = URLEncoder.encode(portal, DefaultCharset.name);
+				workUrl += "&redirectlink=" + portal;
+			}
 			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
 			o2oaUrl = o2oaUrl + "mpweixinsso.html?redirect=" + workUrl + "&type=login";
 			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);

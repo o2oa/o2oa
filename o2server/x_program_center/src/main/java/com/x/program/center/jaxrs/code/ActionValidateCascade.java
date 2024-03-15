@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.code;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
@@ -7,7 +9,6 @@ import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.program.center.ThisApplication;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionValidateCascade extends BaseAction {
 	ActionResult<Wo> execute(String mobile, String answer) throws Exception {

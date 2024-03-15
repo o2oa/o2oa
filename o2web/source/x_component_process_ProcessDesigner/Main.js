@@ -570,7 +570,9 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                 //var dx = p.x - activity.point.x;
                 //var dy = p.y - activity.point.y;
 
-                activity = this.process.createActivity(gadgetType, className, {"x": p.x, "y": p.y});
+                var px = Raphael.snapTo(10, p.x, 10);
+                var py = Raphael.snapTo(10, p.y, 10);
+                activity = this.process.createActivity(gadgetType, className, {"x": px, "y": py});
                 if (activity) activity.selected();
                 //      activity.activityMoveStart();
 

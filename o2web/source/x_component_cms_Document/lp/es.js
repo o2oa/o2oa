@@ -23,7 +23,7 @@ MWF.xApplication.cms.Document.LP = {
     "phone": "Teléfono móvil",
     "mail": "Correo electrónico",
 
-    "documentGettedError" : "Error al obtener el documento.",
+    "documentGettedError" : "No tiene permiso para ver el documento o ha sido eliminado.",
     "controllerGettedError" : "Error al obtener el controlador.",
     "formGettedError" : "Error al obtener el formulario.",
     "attachmentGettedError" : "Error al obtener los adjuntos.",

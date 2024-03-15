@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -68,7 +69,9 @@ public class WorkCompletedControlBuilder {
 	private boolean canManage() throws Exception {
 		if (null == canManage) {
 			this.canManage = business.ifPersonCanManageApplicationOrProcess(effectivePerson,
-					workCompleted.getApplication(), workCompleted.getProcess());
+					workCompleted.getApplication(), workCompleted.getProcess())
+					|| this.business.ifPersonHasPermissionWriteReviewWithJob(this.effectivePerson,
+							this.workCompleted.getJob());
 		}
 		return this.canManage;
 	}
@@ -77,9 +80,13 @@ public class WorkCompletedControlBuilder {
 
 	private boolean readable() throws Exception {
 		if (null == readable) {
-			this.readable = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
-					effectivePerson.getDistinguishedName(), workCompleted.getJob())
-					|| business.ifJobHasBeenCorrelation(effectivePerson.getDistinguishedName(), workCompleted.getJob());
+			this.readable = ((!BooleanUtils.isTrue(Config.ternaryManagement().getSecurityClearanceEnable()))
+					|| business.ifPersonHasSufficientSecurityClearance(effectivePerson.getDistinguishedName(),
+							workCompleted.getObjectSecurityClearance()))
+					&& (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+							effectivePerson.getDistinguishedName(), workCompleted.getJob())
+							|| business.ifJobHasBeenCorrelation(effectivePerson.getDistinguishedName(),
+									workCompleted.getJob()));
 		}
 		return this.readable;
 	}
@@ -99,6 +106,8 @@ public class WorkCompletedControlBuilder {
 		if (null == workCompleted) {
 			return control;
 		}
+		control.setWorkTitle(workCompleted.getTitle());
+		control.setWorkJob(workCompleted.getJob());
 		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
 				Pair.of(ifAllowVisit, this::computeAllowVisit),
 				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),

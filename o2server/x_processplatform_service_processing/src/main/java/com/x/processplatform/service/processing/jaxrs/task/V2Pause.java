@@ -9,14 +9,14 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2PauseWo;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class V2Pause extends BaseAction {
 
@@ -26,25 +26,53 @@ class V2Pause extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		final String job;
+		Param param = this.init(id);
+
+		CallableImpl callable = new CallableImpl(param);
+
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
+
+	}
+
+	private Param init(String id) throws Exception {
+
+		Param param = new Param();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Task task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			job = task.getJob();
+			param.job = task.getJob();
+			param.id = task.getId();
 		}
 
-		Callable<ActionResult<Wo>> callable = () -> {
+		return param;
+
+	}
+
+	private class Param {
+
+		private String job;
+		private String id;
+
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private Param param;
+
+		private CallableImpl(Param param) {
+			this.param = param;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
 			wo.setValue(false);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Task task = emc.find(id, Task.class);
-				if (null == task) {
-					throw new ExceptionEntityNotExist(id, Task.class);
-				}
+				Task task = emc.find(param.id, Task.class);
 				if (BooleanUtils.isNotTrue(task.getPause())) {
 					emc.beginTransaction(Task.class);
 					task.setPause(true);
@@ -55,13 +83,10 @@ class V2Pause extends BaseAction {
 			}
 			result.setData(wo);
 			return result;
-		};
-
-		return ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
-
+		}
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends V2PauseWo {
 
 		private static final long serialVersionUID = 2752464360851471911L;
 

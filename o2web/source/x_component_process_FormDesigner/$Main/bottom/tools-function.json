@@ -34,6 +34,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.importer,
     "className": "Importer"
   },
+  "SmartBI": {
+    "icon": "smartbi.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
+    "className": "SmartBI"
+  },
   "relatedlink": {
     "icon": "relatedLink.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.relatedLink,

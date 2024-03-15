@@ -462,18 +462,24 @@ MWF.xApplication.portal.ScriptDesigner.Main = new Class({
     },
 	getFormToolbarHTML: function(callback){
 		var toolbarUrl = this.path+this.options.style+"/toolbars.html";
-		var r = new Request.HTML({
-			url: toolbarUrl,
-			method: "get",
-			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-				var toolbarNode = responseTree[0];
-				if (callback) callback(toolbarNode);
-			}.bind(this),
-			onFailure: function(xhr){
-				this.notice("request portalToolbars error: "+xhr.responseText, "error");
-			}.bind(this)
-		});
-		r.send();
+        MWF.getRequestText(toolbarUrl, function(responseText, responseXML){
+            var htmlString = responseText;
+            htmlString = o2.bindJson(htmlString, {"lp": MWF.xApplication.portal.ScriptDesigner.LP.formToolbar});
+            var temp = new Element('div').set('html', htmlString);
+            if (callback) callback( temp.childNodes[0] );
+        }.bind(this));
+		// var r = new Request.HTML({
+		// 	url: toolbarUrl,
+		// 	method: "get",
+		// 	onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+		// 		var toolbarNode = responseTree[0];
+		// 		if (callback) callback(toolbarNode);
+		// 	}.bind(this),
+		// 	onFailure: function(xhr){
+		// 		this.notice("request portalToolbars error: "+xhr.responseText, "error");
+		// 	}.bind(this)
+		// });
+		// r.send();
 	},
     maxOrReturnEditor: function(){
         if (!this.isMax){
@@ -830,5 +836,85 @@ MWF.xApplication.portal.ScriptDesigner.Main = new Class({
             return status;
         }
 		return {"id": this.options.id, "application": application};
-	}
+	},
+    showScriptVersion: function(){
+
+        this.versionNode = new Element("div");
+        this.dlg = o2.DL.open({
+            "title": MWF.xApplication.portal.ScriptDesigner.LP.version["title"],
+            "content": this.versionNode,
+            "offset": {"y": -100},
+            "isMax": false,
+            "width": 500,
+            "height": 300,
+            "buttonList": [
+                {
+                    "type": "cancel",
+                    "text": MWF.xApplication.portal.ScriptDesigner.LP.version["close"],
+                    "action": function(){ this.close(); }
+                }
+            ],
+            "onPostShow": function(){
+                this.loadVersionList();
+            }.bind(this),
+            "onPostClose": function(){
+                this.dlg = null;
+            }.bind(this)
+        });
+    },
+    loadVersionList : function(){
+        var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3' style='margin-top: 1px'><tr>" +
+            "<th>"+MWF.xApplication.portal.ScriptDesigner.LP.version["no"]+"</th>" +
+            "<th>"+MWF.xApplication.portal.ScriptDesigner.LP.version["updateTime"]+"</th>" +
+            "<th>"+MWF.xApplication.portal.ScriptDesigner.LP.version["op"]+"</th>" +
+            "</tr></table>";
+        this.versionNode.set("html", tableHtml);
+        this.versionTable = this.versionNode.getElement("table");
+        o2.Actions.load("x_portal_assemble_designer").ScriptVersionAction.listWithScript(this.options.id, function(json){
+            this.versionList = json.data;
+            this.versionList.sort(function (a, b) {
+                return new Date(b.updateTime) - new Date(a.updateTime)
+            });
+            this.versionList.each(function (version,index) {
+                var node = new Element("tr").inject(this.versionTable);
+                var html = "<td>"+(index+1)+"</td>" +
+                    "<td>"+version.updateTime+"</td>" +
+                    "<td></td>";
+                node.set("html", html);
+                var actionNode = new Element("div",{"styles":{
+                        "width": "60px",
+                        "padding": "0px 3px",
+                        "border-radius": "20px",
+                        "cursor" : "pointer",
+                        "color": "#ffffff",
+                        "background-color": "#4A90E2",
+                        "float": "left",
+                        "margin-right": "2px",
+                        "text-align": "center",
+                        "font-weight": "100"
+                    }}).inject(node.getLast("td"));
+                actionNode.set("text", MWF.xApplication.portal.ScriptDesigner.LP.version["resume"]);
+                actionNode.addEvent("click",function (e) {
+
+                    console.log(this);
+                    var _self = this;
+                    this.confirm("warn", e,  MWF.xApplication.portal.ScriptDesigner.LP.version["resumeConfirm"], MWF.xApplication.portal.ScriptDesigner.LP.version["resumeInfo"], 460, 120, function(){
+                        _self.resumeScript(version);
+                        this.close();
+                    }, function(){
+                        this.close();
+                    });
+                }.bind(this));
+            }.bind(this))
+        }.bind(this));
+    },
+    resumeScript : function(version){
+        o2.Actions.load("x_portal_assemble_designer").ScriptVersionAction.get(version.id, function( json ){
+            var scriptData = JSON.parse(json.data.data);
+            this.script.editor.setValue(scriptData.text);
+
+            this.dlg.close();
+            this.notice(MWF.xApplication.portal.ScriptDesigner.LP.version["resumeSuccess"]);
+        }.bind(this), null, false);
+    },
 });

@@ -16,6 +16,19 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
             }
         }
     },
+    setAttachmentSecurityConfig: function(select){
+        if (this.selectedAttachments.length) {
+            var security = select.options[select.selectedIndex].value;
+
+            var loadedCount = 0;
+            this.selectedAttachments.each(function (att) {
+                att.data.objectSecurityClearance = security.toInt();
+
+                o2.Actions.get("x_cms_assemble_control").configAttachment(att.data.id, this.module.form.businessData.document.id, att.data);
+            }.bind(this));
+        }
+    },
+
     setAttachmentConfig: function (readInput, editInput, controllerInput) {
         if (this.selectedAttachments.length) {
             var readList = readInput.retrieve("data-value");
@@ -154,6 +167,12 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             //if (att.fileType.toLowerCase()==this.json.id.toLowerCase()) this.attachmentController.addAttachment(att);
         }.bind(this));
         this.setAttachmentBusinessData();
+
+
+        this.addEvent("change", function () {
+            if(this.validationMode)this.validationMode();
+        }.bind(this))
+
         //}.bind(this));
     },
     loadAttachmentSelecter: function (option, callback) {
@@ -487,6 +506,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     downloadAttachment: function (e, node, attachments) {
         if (this.form.businessData.document) {
             attachments.each(function (att) {
+
+                if( !this.queryDownload( att ) )return;
+
                 if (window.o2android && window.o2android.postMessage) {
                     var body = {
                     type: "downloadAttachment",
@@ -521,6 +543,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     openAttachment: function (e, node, attachments) {
         if (this.form.businessData.document) {
             attachments.each(function (att) {
+
+                if( !this.queryOpen( att ) )return;
+
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {

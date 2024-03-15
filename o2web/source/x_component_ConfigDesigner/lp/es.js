@@ -27,5 +27,12 @@ MWF.xApplication.ConfigDesigner.LP = {
 			"numberKey": "El nombre del elemento no puede ser un número, por favor ingrese uno válido.",
 
 			"inputName": "Ingrese el nombre de la configuración"
-		}
+		},
+	"formToolbar":{
+		"save": "Guardar secuencia de comandos",
+		"autoSave": "AutoGuardar",
+		"fontSize": "Tamaño de fuente",
+		"style": "estilo",
+		"scriptEditor": "Editor de guiones"
+	}
 };

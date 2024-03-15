@@ -32,6 +32,7 @@ public class ActionPersistArchive extends BaseAction {
 			try {
 				modifyDocStatus( id, "archived", effectivePerson.getDistinguishedName() );
 				document.setDocStatus( "archived" );
+				document = documentPersistService.refreshDocInfoData( document );
 				CacheManager.notify( Document.class );
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess( e, "系统将文档状态修改为归档状态时发生异常。Id:" + id );
@@ -39,9 +40,9 @@ public class ActionPersistArchive extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 				throw exception;
 			}
-			
+
 			logService.log( emc, effectivePerson.getDistinguishedName(), document.getCategoryAlias() + ":" + document.getTitle(), document.getAppId(), document.getCategoryId(), document.getId(), "", "DOCUMENT", "归档" );
-			
+
 			try {
 				documentPersistService.refreshDocumentPermission( id, null, null );
 			} catch (Exception e) {
@@ -49,7 +50,7 @@ public class ActionPersistArchive extends BaseAction {
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
-			
+
 			Wo wo = new Wo();
 			wo.setId( document.getId() );
 			result.setData( wo );
@@ -61,7 +62,7 @@ public class ActionPersistArchive extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}

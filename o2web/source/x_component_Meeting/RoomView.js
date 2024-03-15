@@ -697,7 +697,10 @@ MWF.xApplication.Meeting.RoomView.Meeting = new Class({
         }
         var rBeginDate = this.view.view.date;
         var rEndDate = this.view.view.endDate;
-        if( (this.beginDate >= rBeginDate && this.beginDate <= rEndDate) || (this.endDate >= rBeginDate && this.endDate <= rEndDate) ){
+        if( (this.beginDate >= rBeginDate && this.beginDate <= rEndDate) ||
+            (this.endDate >= rBeginDate && this.endDate <= rEndDate) ||
+            (this.beginDate <= rBeginDate && this.endDate >= rEndDate)
+        ){
             confilct = true;
             this.data.confilct = true;
         }

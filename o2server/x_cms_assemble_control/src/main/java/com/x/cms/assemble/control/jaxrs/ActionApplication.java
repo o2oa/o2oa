@@ -27,6 +27,7 @@ import com.x.cms.assemble.control.jaxrs.fileinfo.FileInfoAction;
 import com.x.cms.assemble.control.jaxrs.fileinfo.FileInfoAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.form.FormAction;
 import com.x.cms.assemble.control.jaxrs.form.FormAnonymousAction;
+import com.x.cms.assemble.control.jaxrs.formversion.FormVersionAction;
 import com.x.cms.assemble.control.jaxrs.image.ImageBase64Action;
 import com.x.cms.assemble.control.jaxrs.input.InputAction;
 import com.x.cms.assemble.control.jaxrs.log.LogAction;
@@ -37,6 +38,7 @@ import com.x.cms.assemble.control.jaxrs.permission.PermissionManagerAction;
 import com.x.cms.assemble.control.jaxrs.review.ReviewAction;
 import com.x.cms.assemble.control.jaxrs.script.ScriptAction;
 import com.x.cms.assemble.control.jaxrs.script.ScriptAnonymousAction;
+import com.x.cms.assemble.control.jaxrs.scriptversion.ScriptVersionAction;
 import com.x.cms.assemble.control.jaxrs.search.SearchFilterAction;
 import com.x.cms.assemble.control.jaxrs.templateform.TemplateFormAction;
 import com.x.cms.assemble.control.jaxrs.uuid.UUIDAction;
@@ -92,6 +94,8 @@ public class ActionApplication extends AbstractActionApplication {
 
 		this.classes.add(ReviewAction.class);
 		this.classes.add(CorrelationAction.class);
+		this.classes.add(ScriptVersionAction.class);
+		this.classes.add(FormVersionAction.class);
 
 		return this.classes;
 	}

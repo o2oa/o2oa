@@ -40,6 +40,7 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
@@ -48,6 +49,8 @@ import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.service.processing.jaxrs.record.ActionWorkProcessingWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.record.ActionWorkTerminateWo;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -524,6 +527,34 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		}
 		return null;
+	}
+
+	protected Record recordWorkProcessing(String recordType, String routeName, String opinion, String job,
+			String workLogId, String identity, String series) throws Exception {
+		com.x.processplatform.core.express.service.processing.jaxrs.record.ActionWorkProcessingWi req = new com.x.processplatform.core.express.service.processing.jaxrs.record.ActionWorkProcessingWi();
+		req.setRecordType(recordType);
+		req.setRouteName(routeName);
+		req.setOpinion(opinion);
+		req.setWorkLog(workLogId);
+		req.setDistinguishedName(identity);
+		req.setSeries(series);
+		return ThisApplication.context().applications()
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("record", "work", "processing"), req, job)
+				.getData(ActionWorkProcessingWo.class);
+	}
+
+	protected Record recordWorkTerminate(String distinguishedName, String routeName, String opinion,
+			String workCompleted, String job) throws Exception {
+		com.x.processplatform.core.express.service.processing.jaxrs.record.ActionWorkTerminateWi req = new com.x.processplatform.core.express.service.processing.jaxrs.record.ActionWorkTerminateWi();
+		req.setDistinguishedName(distinguishedName);
+		req.setRouteName(routeName);
+		req.setOpinion(opinion);
+		req.setWorkCompleted(workCompleted);
+		return ThisApplication.context().applications()
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("record", "work", "terminate"), req, job)
+				.getData(ActionWorkTerminateWo.class);
 	}
 
 }

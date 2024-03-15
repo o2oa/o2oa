@@ -38,7 +38,7 @@ class ActionExecute extends BaseAction {
 			throw new ExceptionEnableToken(invoke.getName());
 		}
 
-		return executeInvoke(request, effectivePerson, jsonElement, cacheCategory, invoke);
+		return execute(request, effectivePerson, jsonElement, cacheCategory, invoke);
 
 	}
 

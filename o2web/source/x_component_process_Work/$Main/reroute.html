@@ -1,22 +1,28 @@
 <div style="padding: 20px 30px 0px 30px; font-size:14px;">
-    <div style="height: 120px; margin-bottom:10px;overflow-y:auto;">
+    <div style="height: 210px; margin-bottom:10px;overflow-y:auto;">
         <div style="line-height: 30px; margin-bottom:10px; overflow: hidden">
             <div style="float: left; width: 70px">{{$.lp.rerouteActivity}}</div>
             <div style="margin-left: 70px">
-                <select style="width: 300px" id="rerouteWork_selectActivity"></select>
+                <select style="width: calc( 100% - 4px );" id="rerouteWork_selectActivity"></select>
                 <!--<div id="resetWork_selPeopleButton" style="font-size:12px; border-radius: 5px; height: 22px; line-height:22px; float:right; margin-top:4px; border:1px solid #666; color: #FFF; background-color: #666; box-shadow: 1px 1px 3px #999; cursor: pointer; padding: 0px 10px;">选择人员</div>
                 <div id="resetWork_selPeopleArea" style="margin-right: 70px; height: 30px"></div>-->
             </div>
             <div style="float: left; width: 70px; margin-top: 10px">{{$.lp.reroutePerson}}</div>
             <div style="margin-left: 70px; margin-top: 10px">
-                <div class="rerouteWork_selPeopleButton" style="font-size:12px; margin-right: 20px; border-radius: 5px; height: 22px; line-height:22px; float:right; margin-top:4px; border:1px solid #666; color: #FFF; background-color: #666; box-shadow: 1px 1px 3px #999; cursor: pointer; padding: 0px 10px;">{{$.lp.selectPerson}}</div>
-                <div class="rerouteWork_selPeopleArea" style="margin-right: 70px; height: 30px"></div>
+                <div class="rerouteWork_selPeopleButton" style="font-size:12px; margin-right: 4px; border-radius: 5px; height: 22px; line-height:22px; float:right; margin-top:4px; border:1px solid #666; color: #FFF; background-color: #666; box-shadow: 1px 1px 3px #999; cursor: pointer; padding: 0px 10px;">{{$.lp.selectPerson}}</div>
+                <div class="rerouteWork_selPeopleArea" style="margin-right: 54px; min-height: 30px; overflow:hidden;"></div>
             </div>
 
         </div>
-        <div style="height: 30px; line-height: 30px; margin-bottom:10px; display:none">
+        <div style="min-height: 30px; line-height: 30px; ">
             <div style="float: left; width: 70px; height: 50px; line-height: 50px;">{{$.lp.retouteOpinion}}</div>
             <div style="margin-left: 70px"><textarea id="rerouteWork_opinion" style="width: 98%; overflow:auto; height: 50px;" type="text" id="resetWork_opinion"></textarea></div>
+        </div>
+        <div style="height: 30px; line-height: 30px; margin-bottom:10px; display:none;">
+            <div style="margin-left: 70px; height: 30px; line-height: 30px;">
+                <input type="checkbox" id="rerouteWork_mergeWork" class="rerouteWork_mergeWork" />
+                <label for="rerouteWork_mergeWork">{{$.lp.mergeWork}}</label>
+            </div>
         </div>
     </div>
 

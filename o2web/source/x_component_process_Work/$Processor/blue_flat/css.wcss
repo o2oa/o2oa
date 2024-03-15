@@ -5,6 +5,9 @@
     "node_wide" : {
         "width" : "1000px"
     },
+    "node_wide_flow": {
+        "width" : "900px"
+    },
     "mask": {
         "opacity": 0.7,
         "background-color": "#eee"
@@ -76,6 +79,13 @@
         "border-right": "1px solid #cccccc",
         "background-color": "#EEE"
     },
+    "inputOpinionNode_wide_flow": {
+        "height": "199px",
+        "width": "450px",
+        "float": "left",
+        "border-right": "1px solid #cccccc",
+        "background-color": "#EEE"
+    },
     "selectIdeaNode": {
         "height": "199px",
         "width": "210px",
@@ -86,6 +96,13 @@
     "selectIdeaNode_wide": {
         "height": "199px",
         "width": "495px",
+        "float": "right",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
+    "selectIdeaNode_wide_flow": {
+        "height": "199px",
+        "width": "445px",
         "float": "right",
         "background-color": "#FFF",
         "overflow": "hidden"
@@ -176,6 +193,16 @@
         "border": "0px",
         "overflow": "auto",
         "width": "493px",
+        "height": "193px",
+        "padding": "3px",
+        "color": "#666",
+        "background": "#FFF"
+    },
+    "inputTextarea_wide_flow": {
+        "font-family": "Microsoft YaHei",
+        "border": "0px",
+        "overflow": "auto",
+        "width": "443px",
         "height": "193px",
         "padding": "3px",
         "color": "#666",

@@ -1,0 +1,19 @@
+{{each $.activityList}}
+<div class="o2flow-radio2" data-o2-events="click:toggle;" data-o2-value="{{$.activity}}" data-o2-text="{{$.name}}" data-o2-way="{{$.way}}" style="overflow: hidden;border-bottom: 1px solid #e6e6e6;border-radius: 0px;">
+    <i class="o2icon-icon_circle" style="float: left;margin-top: 26px;"></i>
+    <div style="margin-left: 30px;">
+        <div class="o2flow-goback-left" style="line-height: 26px;">
+            <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                <div style="line-height: 20px;padding-top: 5px;padding-bottom: 5px;">
+                    <span>{{$.name}}</span>
+                    <span style='color:#999999; font-size: 12px; margin-left: 10px'>({{$.lastModifyTime}})</span>
+                </div>
+                {{if $.way==="custom"}}
+                <div data-o2-events="o2load:loadWayRadio" style="flex-shrink:0;"></div>
+                {{end if}}
+            </div>
+            <div title="{{$.identityNameTitle}}" style="color:#999999;">{{$._.lp.users}}：{{$.identityNameString}}</div>
+        </div>
+    </div>
+</div>
+{{end each}}

@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -96,6 +97,8 @@ class ActionValidate extends BaseAction {
 	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -7076689129338985192L;
+
+		@FieldDescribe("外部数据源.")
 		private ExternalDataSources externalDataSources;
 
 		public ExternalDataSources getExternalDataSources() {

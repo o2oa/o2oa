@@ -2003,7 +2003,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
     },
     loadRoom: function( callback ){
         var area = this.node.getElement("[item='meetingRoom']");
-        if (area && this.data.room && this.data.room === "noRoom"){
+        if (area && this.data.room && this.data.room !== "noRoom"){
             this.app.actions.getRoom(this.data.room, function(json){
                 this.app.actions.getBuilding(json.data.building, function(bjson){
                     area.set("text", json.data.name+" ("+bjson.data.name+")");

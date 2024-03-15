@@ -42,7 +42,9 @@ public class ActionImportExcel extends BaseAction {
     ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
             throws Exception {
         lock.lock();
-        LOGGER.info("开始导入打卡记录数据。。。。。。。。。。");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("开始导入打卡记录数据！！！！！！");
+        }
         try (InputStream is = new ByteArrayInputStream(bytes);
              XSSFWorkbook workbook = new XSSFWorkbook(is);
              ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -99,12 +101,15 @@ public class ActionImportExcel extends BaseAction {
             return result;
         } finally {
             lock.unlock();
-            LOGGER.info("导入结束。。。。。。。。。。。。");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("导入结束！！！！！！");
+            }
         }
     }
 
     public static class Wo extends GsonPropertyObject {
 
+        private static final long serialVersionUID = 6022979308455360363L;
         @FieldDescribe("返回的结果标识，下载结果文件使用")
         private String flag;
         @FieldDescribe("异常错误数据条目数")

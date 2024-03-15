@@ -363,6 +363,22 @@
       "color": "#666"
     }
   },
+  "currency": {
+    "styles": {
+      "border-bottom": "1px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "20px"
+    },
+    "inputStyles": {
+      "height": "26px",
+      "color": "#666"
+    },
+    "symbolStyles": {
+      "line-height": "26px"
+    }
+  },
   "personfield": {
     "styles": {
       "border-bottom": "1px solid #ccc",

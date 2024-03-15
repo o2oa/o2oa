@@ -1,11 +1,18 @@
 package com.x.processplatform.service.processing.processor.embed;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -20,13 +27,6 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAs
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EmbedProcessor extends AbstractEmbedProcessor {
 
@@ -131,18 +131,19 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			throw new ExceptionEmptyTargetIdentity(embed.getName());
 		}
 		assignData.setIdentity(targetIdentity);
-		assignData.setTitle(this.targetTitle(aeiObjects, embed));
 		assignData.setProcessing(true);
 		assignData.setParentWork(aeiObjects.getWork().getId());
 		assignData.setParentJob(aeiObjects.getWork().getJob());
+		assignData.setTitle(this.targetTitle(aeiObjects, embed, assignData));
 		if (this.hasAssignDataScript(embed)) {
 			WrapScriptObject wrap = new WrapScriptObject();
 			wrap.set(gson.toJson(assignData));
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
-			ActionAssignCreateWi returnData = JsonScriptingExecutor.eval(cs, scriptContext, ActionAssignCreateWi.class);
+			ActionAssignCreateWi returnData = GraalvmScriptingFactory.eval(source, bindings,
+					ActionAssignCreateWi.class);
 			if (null != returnData) {
 				assignData = returnData;
 			} else {
@@ -169,13 +170,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedInquire(aeiObjects.getWork().getActivityToken(), embed));
-		// 驱动上个环节新产生的work
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	private String targetIdentity(AeiObjects aeiObjects, Embed embed) throws Exception {
@@ -196,10 +194,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			break;
 		}
 		if (this.hasIdentityScript(embed)) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-					aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETIDENTITY);
-			List<String> os = JsonScriptingExecutor.evalDistinguishedNames(compiledScript, scriptContext);
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					embed, Business.EVENT_EMBEDTARGETIDENTITY);
+			List<String> os = GraalvmScriptingFactory.evalAsDistinguishedNames(source, bindings);
 			os = ListTools.trim(os, true, false);
 			if (ListTools.isEmpty(os)) {
 				value = "";
@@ -210,12 +208,19 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		return value;
 	}
 
-	private String targetTitle(AeiObjects aeiObjects, Embed embed) throws Exception {
+	private String targetTitle(AeiObjects aeiObjects, Embed embed, ActionAssignCreateWi assignData) throws Exception {
 		String value = "";
 		if (this.hasTitleScript(embed)) {
-			CompiledScript compiledScript = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETTITLE);
-			value = JsonScriptingExecutor.evalString(compiledScript, aeiObjects.scriptContext());
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					embed, Business.EVENT_EMBEDTARGETTITLE);
+			WrapScriptObject wrap = new WrapScriptObject();
+			wrap.set(gson.toJson(assignData));
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
+			Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
+			if (opt.isPresent()) {
+				value = opt.get();
+			}
 		}
 		if (StringUtils.isEmpty(value)) {
 			value = embed.getName() + ":" + aeiObjects.getWork().getTitle();

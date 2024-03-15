@@ -3,6 +3,9 @@ package com.x.query.assemble.designer.jaxrs.input;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_query_assemble_designer;
+import com.x.query.assemble.designer.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -161,6 +164,8 @@ class ActionCover extends BaseAction {
         if (!wi.getTableList().isEmpty()) {
             CacheManager.notify(Table.class);
             CacheManager.notify(Statement.class);
+            ThisApplication.context().applications().getQuery(x_query_assemble_designer.class,
+                    Applications.joinQueryUri("table", wi.getId(), "build", "dispatch"));
         } else if (!wi.getStatementList().isEmpty()) {
             CacheManager.notify(Statement.class);
         }

@@ -1,26 +1,26 @@
 <div id="MWFFormToolbar">
 	<span MWFnodetype="MWFToolBarSeparator"></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="保存数据表" MWFButtonAction="saveView" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="{{$.lp.save}}" MWFButtonAction="saveView" MWFButtonText=""></span>
 	<span MWFnodetype="MWFToolBarSeparator"></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="build.png" title="发布数据表，进入可编译状态" MWFButtonAction="statusBuild" MWFButtonText=""></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="draft.png" title="取消数据库编译，重新编译时会删除已编译的数据表" MWFButtonAction="statusDraft" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="build.png" title="{{$.lp.build}}" MWFButtonAction="statusBuild" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="draft.png" title="{{$.lp.statusDraft}}" MWFButtonAction="statusDraft" MWFButtonText=""></span>
 <!--	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="run.png" title="编译所有数据表" MWFButtonAction="buildAllView" MWFButtonText=""></span>-->
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="run.png" title="编译当前应用所有数据表" MWFButtonAction="bulidCurrentApp" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="run.png" title="{{$.lp.bulidCurrentApp}}" MWFButtonAction="bulidCurrentApp" MWFButtonText=""></span>
 	<span MWFnodetype="MWFToolBarSeparator"></span>
 
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formExplode.gif" title="数据导出" MWFButtonAction="tableExplode" MWFButtonText=""></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formImplode.gif" title="数据导入" MWFButtonAction="tableImplode" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formExplode.gif" title="{{$.lp.tableExplode}}" MWFButtonAction="tableExplode" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formImplode.gif" title="{{$.lp.tableImplode}}" MWFButtonAction="tableImplode" MWFButtonText=""></span>
 
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formExcelExplode.png" title="Excel导出" MWFButtonAction="tableExcelExplode" MWFButtonText=""></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formExcelImplode.png" title="Excel导入" MWFButtonAction="tableExcelImplode" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formExcelExplode.png" title="{{$.lp.tableExcelExplode}}" MWFButtonAction="tableExcelExplode" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formExcelImplode.png" title="{{$.lp.tableExcelImplode}}" MWFButtonAction="tableExcelImplode" MWFButtonText=""></span>
 
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="clear.png" title="清空表数据" MWFButtonAction="tableClear" MWFButtonText=""></span>
-
-	<span MWFnodetype="MWFToolBarSeparator"></span>
-
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="帮助" MWFButtonAction="tableHelp" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="clear.png" title="{{$.lp.tableClear}}" MWFButtonAction="tableClear" MWFButtonText=""></span>
 
 	<span MWFnodetype="MWFToolBarSeparator"></span>
-	<input type="checkbox" value="autoSave" id="MWFDictionaryAutoSaveCheck">自动保存
+
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="{{$.lp.help}}" MWFButtonAction="tableHelp" MWFButtonText=""></span>
+
+	<span MWFnodetype="MWFToolBarSeparator"></span>
+	<input type="checkbox" value="autoSave" id="MWFDictionaryAutoSaveCheck">{{$.lp.autoSave}}
 
 </div>

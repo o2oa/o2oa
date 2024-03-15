@@ -15,6 +15,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.cms.core.entity.CategoryExt", "com.x.cms.core.entity.Document",
 		"com.x.cms.core.entity.DocumentViewRecord", "com.x.cms.core.entity.element.File",
 		"com.x.cms.core.entity.FileInfo", "com.x.cms.core.entity.Log",
+		"com.x.cms.core.entity.element.FormVersion", "com.x.cms.core.entity.element.ScriptVersion",
 		"com.x.processplatform.core.entity.content.Attachment", "com.x.query.core.entity.Item",
 		"com.x.query.core.entity.View", "com.x.cms.core.entity.ReadRemind", "com.x.cms.core.entity.DocumentCommend",
 		"com.x.cms.core.entity.DocumentCommentInfo", "com.x.cms.core.entity.CmsBatchOperation",

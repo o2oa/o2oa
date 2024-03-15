@@ -118,5 +118,12 @@ MWF.xApplication.query.StatDesigner.LP = {
         "sum1":"Unión entre la columna de vista y los valores de categoría especificados",  
         "groupSpecifiedList":"Valores de categoría específicos",  
         "conversion": "Conversión filas-columnas"
+    },
+    "formToolbar":{
+        "save": "Guardar",
+        "saveAs": "Guardar como",
+        "autoSave": "Guardar automáticamente",
+        "preview": "vista previa",
+        "help": "ayuda"
     }
 };

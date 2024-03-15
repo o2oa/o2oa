@@ -55,13 +55,22 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             }
         }
     },
+    getFileName : function (){
+        if (this.json.fileNameType === "value"){
+            return this.json.fileName;
+        }else if(this.json.fileNameType === "script"){
+            return this.form.Macro.exec(this.json.fileNameScript.code, this);
+        }else{
+            return MWF.xApplication.process.Xform.LP.onlyoffice.filetext;
+        }
+    },
     createDocument : function (callback){
         var data = {
-            "fileName" : MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + this.json.officeType,
+            "fileName" : this.getFileName() + "." + this.json.officeType,
             "fileType" : this.json.officeType,
             "appToken" : "x_processplatform_assemble_surface",
             "workId" : this.form.businessData.work.id,
-            "site" : "filetext"
+            "site" : this.json.fileSite?this.json.fileSite:"filetext"
         };
         this.action.OnlyofficeAction.createForO2(data,
             function( json ){
@@ -75,11 +84,11 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
 
         this.action.OnlyofficeAction.get(this.json.template).then(function(json) {
             var data = {
-                "fileName": MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + json.data.fileModel.document.fileType,
+                "fileName": this.getFileName() + "." + json.data.fileModel.document.fileType,
                 "fileType": json.data.fileModel.document.fileType,
                 "appToken" : "x_processplatform_assemble_surface",
                 "workId" : this.form.businessData.work.id,
-                "site" : "filetext",
+                "site" : this.json.fileSite?this.json.fileSite:"filetext",
                 "tempId": this.json.template
             };
 
@@ -124,7 +133,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     reload : function (){
         this.setData();
         this.node.empty();
-        this.createUpload();
+        if(this.mode !== "read" && this.json.allowUpload){
+            this.createUpload();
+        }
         this.loadDocument();
     },
     loadDocument: function () {
@@ -356,12 +367,29 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }
     },
     getData: function(){
+
         var data = {
             "documentId" : ""
+        };
+        var site = this.json.fileSite?this.json.fileSite:"filetext";
+        if(this.form.businessData.data[this.json.id] && this.form.businessData.data[this.json.id].documentId){
+            data = this.form.businessData.data[this.json.id];
+        }else {
+
+            //判断对应的site里有没有值
+            var attachmentList = this.form.businessData.attachmentList;
+            attachmentList = attachmentList.filter(function(att) {
+                return att.site === site;
+            });
+            if(attachmentList.length>0){
+                data = {
+                    "documentId": attachmentList[0].id,
+                    "appToken": "x_processplatform_assemble_surface"
+                };
+            }
+
         }
-        if(this.form.businessData.data[this.json.id]){
-            data = this.form.businessData.data[this.json.id]
-        }
+
         return data;
     },
     setData: function() {

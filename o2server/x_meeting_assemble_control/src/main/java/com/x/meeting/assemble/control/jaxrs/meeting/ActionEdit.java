@@ -17,6 +17,7 @@ import com.x.meeting.assemble.control.MessageFactory;
 import com.x.meeting.assemble.control.service.HstService;
 import com.x.meeting.core.entity.*;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -39,12 +40,27 @@ class ActionEdit extends BaseAction {
 			if(StringUtils.isBlank(wi.getSubject())){
 				throw new ExceptionCustomError("会议标题不能为空！");
 			}
-			if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
-				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
+			MeetingConfigProperties config = business.getConfig();
+			if(MeetingModeEnum.ONLINE.getValue().equals(wi.getMode())){
+				if(MeetingConfigProperties.ONLINE_PROJECT_HST.equals(config.getOnlineProduct())) {
+					if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
+						wi.setRoomId(meeting.getRoomId());
+						wi.setRoomLink(meeting.getRoomLink());
+					}else {
+						boolean flag = HstService.createMeeting(wi, config);
+						if(!flag){
+							throw new ExceptionCustomError("创建线上会议失败，请联系管理员！");
+						}
+					}
+				}else if(StringUtils.isBlank(wi.getRoomId()) || StringUtils.isBlank(wi.getRoomLink())){
 					throw new ExceptionCustomError("会议号和会议链接不能为空！");
 				}
-			}else if(StringUtils.isBlank(wi.getRoom())){
-				throw new ExceptionCustomError("会议室不能为空！");
+			}else{
+				wi.setRoomId("");
+				wi.setRoomLink("");
+				if(StringUtils.isBlank(wi.getRoom())){
+					throw new ExceptionCustomError("会议室不能为空！");
+				}
 			}
 			Room room = null;
 			if(StringUtils.isNotBlank(wi.getRoom())) {
@@ -83,7 +99,6 @@ class ActionEdit extends BaseAction {
 			emc.check(meeting, CheckPersistType.all);
 			emc.commit();
 
-			MeetingConfigProperties config = business.getConfig();
 			if(config.onLineEnabled()){
 				HstService.appendMeetingUser(meeting, config);
 				if(modifyTime){

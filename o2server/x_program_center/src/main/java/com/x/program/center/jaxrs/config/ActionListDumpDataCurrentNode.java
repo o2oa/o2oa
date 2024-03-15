@@ -1,7 +1,5 @@
 package com.x.program.center.jaxrs.config;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;

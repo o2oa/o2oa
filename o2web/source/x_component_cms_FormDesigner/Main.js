@@ -531,18 +531,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     },
     getFormToolbarHTML: function(callback){
         var toolbarUrl = this.path+this.options.style+"/formToolbars.html";
-        var r = new Request.HTML({
-            url: toolbarUrl,
-            method: "get",
-            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                var toolbarNode = responseTree[0];
-                if (callback) callback(toolbarNode);
-            }.bind(this),
-            onFailure: function(xhr){
-                this.notice("request processToolbars error: "+xhr.responseText, "error");
-            }.bind(this)
-        });
-        r.send();
+        MWF.getRequestText(toolbarUrl, function(responseText, responseXML){
+            var htmlString = responseText;
+            htmlString = o2.bindJson(htmlString, {"lp": this.lp.formToolbar});
+            var temp = new Element('div').set('html', htmlString);
+            if (callback) callback( temp.childNodes[0] );
+        }.bind(this));
     },
     loadFormContent: function(callback){
         //var iframe = new Element("iframe#iframeaa", {
@@ -1431,7 +1425,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
             "person": ["personfield", "readerfield","authorfield", "org", "reader","author"],
             "date": ["calender"],
-            "number": ["number"],
+            "number": ["number","currency"],
             "array": ["checkbox"]
         };
         fieldList = [];
@@ -1607,6 +1601,9 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     },
     recordStatus: function(){
         return {"id": this.options.id};
+    },
+    showFormVersion: function(){
+        this.form.showFormVersion();
     },
     clearNoDomModule: function(){
 	    var _self = this;

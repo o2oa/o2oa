@@ -26,5 +26,24 @@ MWF.xApplication.portal.ScriptDesigner.LP = {
         "numberKey": "El nombre del proyecto no puede ser un número. Por favor, ingrese uno nuevo.",
 
         "inputName": "Ingrese el nombre del script"
-	}
+	},
+    "version" : {
+        "title" : "Ver historial de versiones del script",
+        "close" : "Cerrar",
+        "no":"N°",
+        "updateTime":"Tiempo de actualización",
+        "op":"Operación",
+        "resume" : "Reanudar",
+        "resumeConfirm" : "Confirmación de reanudación",
+        "resumeInfo" : "¿Está seguro de que desea restaurar el script? Después de la confirmación, el script actual se actualizará y deberá guardarlo manualmente para que surta efecto.",
+        "resumeSuccess" :"¡Restaurado con éxito!"
+    },
+    "formToolbar":{
+        "save": "Guardar secuencia de comandos",
+        "autoSave": "AutoGuardar",
+        "fontSize": "Tamaño de fuente",
+        "style": "estilo",
+        "scriptEditor": "Editor de guiones",
+        "viewAllVersions": "Ver todas las versiones de script"
+    }
 };

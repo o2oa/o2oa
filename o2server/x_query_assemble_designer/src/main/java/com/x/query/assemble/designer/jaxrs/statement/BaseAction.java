@@ -11,10 +11,11 @@ import com.x.query.core.entity.schema.Statement;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected void checkDuplicate(Business business, Query query, Statement statement) throws Exception {
+	protected void checkDuplicate(Business business, Statement statement) throws Exception {
 		Optional<Triple<Statement, Field, Object>> opt = business.entityManagerContainer().conflict(Statement.class,
 				statement);
 		if (opt.isPresent()) {
+			Query query = business.entityManagerContainer().find(opt.get().first().getQuery(), Query.class);
 			throw new ExceptionDuplicate(query.getName(), opt.get().second().getName(), opt.get().third());
 		}
 	}

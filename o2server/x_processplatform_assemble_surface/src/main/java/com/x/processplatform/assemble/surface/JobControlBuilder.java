@@ -95,7 +95,7 @@ public class JobControlBuilder {
 
 	/**
 	 * 在workCompleted中allowSave == allowManage
-	 * 
+	 *
 	 * @param workCompleted
 	 * @return
 	 */
@@ -114,6 +114,8 @@ public class JobControlBuilder {
 		}
 		Control o = builder.build();
 		Control control = new Control();
+		control.setWorkTitle(workCompleted.getTitle());
+		control.setWorkJob(workCompleted.getJob());
 		if (ifAllowManage) {
 			control.setAllowManage(o.getAllowManage());
 		}

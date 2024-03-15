@@ -1,6 +1,12 @@
 MWF.xDesktop.requireApp("process.Xform", "Datatable", null, false);
 MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
     Extends: MWF.APPDatatable,
+    deleteAttachment: function( attId ){
+        this.form.documentAction.deleteAttachment(attId, this.form.businessData.work.id);
+    },
+    saveFormData: function(){
+        this.form.saveFormData();
+    },
     validationConfigItem: function(routeName, data){
         var flag = (data.status=="all") ? true: (routeName == "publ" || routeName == "publish");
         if (flag){

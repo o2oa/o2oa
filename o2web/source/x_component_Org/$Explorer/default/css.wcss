@@ -49,6 +49,7 @@
     "height": "40px",
     "background-color": "#F8F8F8",
     "border-bottom": "1px solid #CCCCCC",
+    "position": "relative"
   },
   "listScrollNode": {
     "overflow": "hidden"
@@ -63,6 +64,29 @@
     "height": "40px",
     "cursor": "pointer",
     "float": "right"
+  },
+  "filterNode": {
+    "position": "absolute",
+    "background": "url("+"../x_component_Org/$Explorer/default/icon/filter.png) right center no-repeat",
+    "background-size": "12px",
+    "width": "20px",
+    "height": "40px",
+    "cursor": "pointer",
+    "right": "40px",
+    "top": "0"
+  },
+  "filterSearchAction":{
+    "width":"80px",
+    "text-align": "center",
+    "height": "22px",
+    "line-height": "22px",
+    "color": "#666666",
+    "cursor": "pointer",
+    "font-size": "12px",
+    "border": "1px solid #666",
+    "background-color": "#2b7ac4",
+    "color": "#ffffff",
+    "border-radius": "3px"
   },
   "searchNode": {
     "margin-right": "40px",
@@ -389,6 +413,13 @@
       },
       "titleCloseNode_down": {
         "background": "url("+"../x_component_Org/$Explorer/default/icon/close_down.png) center center no-repeat"
+      },
+      "statusNode":{
+          "position": "absolute",
+          "right": "0",
+          "bottom": "0",
+          "height": "60px",
+          "width": "60px"
       },
 
 

@@ -39,10 +39,8 @@ public class ActionListPinyinInitial extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getUnitList(), ","),
-					StringUtils.join(wi.getUnitDutyList(), ","),
-					StringUtils.join(wi.getGroupList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(), StringUtils.join(wi.getUnitList(), ","),
+					StringUtils.join(wi.getUnitDutyList(), ","), StringUtils.join(wi.getGroupList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -119,7 +117,7 @@ public class ActionListPinyinInitial extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.like(root.get(Identity_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
+		Predicate p = cb.like(root.get(Identity_.pinyinInitial), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 
 		ListOrderedSet<String> set = new ListOrderedSet<>();
 		if (ListTools.isNotEmpty(wi.getUnitDutyList())) {
@@ -139,7 +137,7 @@ public class ActionListPinyinInitial extends BaseAction {
 			List<String> identityIds = business.expendGroupToIdentity(wi.getGroupList());
 			set.addAll(identityIds);
 		}
-		if(!set.isEmpty()){
+		if (!set.isEmpty()) {
 			p = cb.and(p, root.get(Identity_.id).in(set.asList()));
 		}
 

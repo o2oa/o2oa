@@ -10,7 +10,9 @@ o2.widget.O2Identity = new Class({
         "canRemove": false,
         "lazy": false,
         "disableInfor" : false,
-        "styles": ""
+        "removeByClick": false,
+        "styles": "",
+        "delay": false
 	},
 	initialize: function(data, container, options){
 
@@ -28,7 +30,7 @@ o2.widget.O2Identity = new Class({
         this.action = new o2.xDesktop.Actions.RestActions("", "x_organization_assemble_control", "x_component_Org");
         // this.explorer = explorer;
         // this.removeAction = removeAction;
-        this.load();
+        if(!this.options.delay)this.load();
 
         //o2.widget.O2Identity.iditems.push(this);
 	},
@@ -60,6 +62,13 @@ o2.widget.O2Identity = new Class({
             this.node.setStyles( this.options.styles );
         }
         this.setText();
+
+        if( this.options.removeByClick ){
+            this.node.addEvent("click", function(e){
+                this.fireEvent("remove", [this, e]);
+                e.stopPropagation();
+            }.bind(this));
+        }
 
         if (this.options.canRemove){
             this.removeNode = new Element("div", {"styles": this.style.identityRemoveNode}).inject(this.node);
@@ -327,7 +336,26 @@ o2.widget.O2Duty = new Class({
         // }
     },
     createInforNode: function(){
-        return false;
+        if( this.options.showUnit && this.data.woUnit && this.data.woUnit.levelName ){
+            this.inforNode = new Element("div", {
+                "styles": this.style.identityInforNode
+            });
+            var nameNode = new Element("div", {
+                "text": this.data.displayName || this.data.name
+            }).inject(this.inforNode);
+
+            var nameTextNode = new Element("div", {
+                "text": this.data.woUnit.levelName
+            }).inject(this.inforNode);
+            this.tooltip = new mBox.Tooltip({
+                content: this.inforNode,
+                setStyles: {content: {padding: 15, lineHeight: 20}},
+                attach: this.node,
+                transition: 'flyin'
+            });
+        }else{
+            return false;
+        }
         // this.inforNode = new Element("div", {
         //     "styles": this.style.identityInforNode
         // });
@@ -343,7 +371,12 @@ o2.widget.O2Duty = new Class({
         // });
     },
     setText: function(){
-        this.node.set("text", this.data.displayName || this.data.name);
+        if( this.options.showUnit && this.data.woUnit ){
+            var unit = this.data.woUnit.name ? ("("+this.data.woUnit.name+")") : "";
+            this.node.set("text", (this.data.displayName || this.data.name)+unit);
+        }else{
+            this.node.set("text", this.data.displayName || this.data.name);
+        }
     }
 });
 o2.widget.O2Group = new Class({

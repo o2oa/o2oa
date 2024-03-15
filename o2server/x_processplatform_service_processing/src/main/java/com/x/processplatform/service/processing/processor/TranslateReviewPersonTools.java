@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.script.CompiledScript;
-
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -14,7 +13,7 @@ import com.google.gson.JsonObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization.ClassifyDistinguishedName;
 import com.x.processplatform.core.entity.content.Data;
@@ -93,21 +92,16 @@ public class TranslateReviewPersonTools {
 				JsonObject o = iterator.next().getAsJsonObject();
 				String name = o.get("name").getAsString();
 				String code = o.get("code").getAsString();
-				CompiledScript compiledScript = aeiObjects.business().element()
-						.getCompiledScript(aeiObjects.getActivity(), Business.EVENT_REVIEWDUTY, name, code);
-				JsonScriptingExecutor.evalDistinguishedNames(compiledScript, aeiObjects.scriptContext(), ds -> {
-					try {
-						for (String str : ds) {
-							List<String> os = aeiObjects.business().organization().unitDuty()
-									.listIdentityWithUnitWithName(str, name);
-							if (ListTools.isNotEmpty(os)) {
-								list.addAll(os);
-							}
-						}
-					} catch (Exception e) {
-						LOGGER.error(e);
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getActivity(),
+						Business.EVENT_REVIEWDUTY, name, code);
+				List<String> names = GraalvmScriptingFactory.evalAsDistinguishedNames(source, aeiObjects.bindings());
+				for (String str : names) {
+					List<String> os = aeiObjects.business().organization().unitDuty().listIdentityWithUnitWithName(str,
+							name);
+					if (ListTools.isNotEmpty(os)) {
+						list.addAll(os);
 					}
-				});
+				}
 			}
 		}
 		return ListTools.trim(list, true, true);
@@ -118,9 +112,9 @@ public class TranslateReviewPersonTools {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(aeiObjects.getActivity().getReviewScript()))
 				|| (StringUtils.isNotEmpty(aeiObjects.getActivity().getReviewScriptText()))) {
-			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-					aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_REVIEW);
-			JsonScriptingExecutor.evalDistinguishedNames(compiledScript, aeiObjects.scriptContext(), list::addAll);
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getActivity(), Business.EVENT_REVIEW);
+			list.addAll(GraalvmScriptingFactory.evalAsDistinguishedNames(source, aeiObjects.bindings()));
 		}
 		return list;
 	}

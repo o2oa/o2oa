@@ -345,7 +345,9 @@ MWF.xApplication.cms.Index.Newer = new Class({
             this.documentAction.listDraftNext("(0)", 1, fielter, function (j) {
 
                 if (j.data && j.data.length > 0 && this.options.latest) {
-                    this._openDocument(j.data[0].id);
+                    //this._openDocument(j.data[0].id);
+                    var handle = this._openDocument( j.data[0].id );
+                    this.fireEvent("started", [j.data[0].id, j.data[0], handle]);
                     this.close();
                 } else {
                     if (this.columnData.appIcon) {
@@ -557,7 +559,6 @@ MWF.xApplication.cms.Index.Newer = new Class({
                     this.fireEvent( "postPublish", args );
                 }.bind(this),
                 "onAfterPublish" : function ( args ) {
-                    debugger;
                     if(_self.view && _self.view.reload )_self.view.reload();
                     _self.fireEvent( "afterPublish", args );
                 }

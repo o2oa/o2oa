@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.organization.core.entity.enums.PersonStatusEnum;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,6 +56,9 @@ class ActionCreate extends BaseAction {
                     throw new ExceptionPersonNotExist(wi.getPerson());
                 }
                 person = emc.find(person.getId(), Person.class);
+                if(PersonStatusEnum.BAN.getValue().equals(person.getStatus())){
+                    throw new ExceptionPersonBanned(person.getName());
+                }
                 Unit unit = business.unit().pick(wi.getUnit());
                 if (null == unit) {
                     throw new ExceptionUnitNotExist(wi.getUnit());

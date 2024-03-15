@@ -46,7 +46,9 @@ MWF.xApplication.Profile.LP = {
     "lps": {
         "zh-CN": "简体中文",
         "en": "English",
-		"es": "西班牙语"
+		"es": "español",
+        "ko": "한국인",
+        "zh-HK": "繁體中文"
     },
 
     "passwordRule" : "密码规则",
@@ -71,6 +73,7 @@ MWF.xApplication.Profile.LP = {
         "fromIdentity":"身份",
         "toPerson":"委托人员",
         "toIdentity":"委托身份",
+        "keepTask": "保留我的待办",
         "application":"应用",
         "applicationName":"应用名称",
         "applicationAlias":"应用别名",

@@ -14,9 +14,9 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -26,6 +26,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 
 /**
@@ -52,7 +53,7 @@ class ActionCopyToWorkCompleted extends BaseAction {
 		}
 
 		CallableImpl impl = new CallableImpl(effectivePerson, wi, workCompletedId);
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
 
 	}
 
@@ -99,7 +100,7 @@ class ActionCopyToWorkCompleted extends BaseAction {
 						StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
 								.get(Attachment.class, o.getStorage());
 						byte[] bs = o.readContent(fromStorageMapping);
-						attachment.saveContent(mapping, bs, w.getName());
+						attachment.saveContent(mapping, bs, w.getName(), Config.general().getStorageEncrypt());
 					}
 					adds.add(attachment);
 				}

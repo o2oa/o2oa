@@ -18,15 +18,15 @@ import java.util.List;
 @Schema(name = "Script", description = "脚本.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Script.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Script.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Script.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Script.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Script extends SliceJpaObject {
 
 	private static final long serialVersionUID = -6064276153015861672L;
-	private static final String TABLE = PersistenceProperties.Script.table;
+	private static final String TABLE = PersistenceProperties.Script.TABLE;
 
 	@Override
 	public String getId() {

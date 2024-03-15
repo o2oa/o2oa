@@ -5,12 +5,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -22,10 +26,10 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
+import com.x.processplatform.core.entity.ticket.Ticket;
 
 public class WorkControlBuilder {
 
@@ -73,6 +77,8 @@ public class WorkControlBuilder {
 	private boolean ifAllowResume = false;
 	// 是否可以退回
 	private boolean ifAllowGoBack = false;
+	// 是否可以终止
+	private boolean ifAllowTerminate = false;
 
 	public WorkControlBuilder enableAllowManage() {
 		this.ifAllowManage = true;
@@ -154,6 +160,11 @@ public class WorkControlBuilder {
 		return this;
 	}
 
+	public WorkControlBuilder enableAllowTerminate() {
+		this.ifAllowTerminate = true;
+		return this;
+	}
+
 	public WorkControlBuilder enableAll() {
 		enableAllowManage();
 		enableAllowVisit();
@@ -171,15 +182,23 @@ public class WorkControlBuilder {
 		enableAllowPause();
 		enableAllowResume();
 		enableAllowGoBack();
+		enableAllowTerminate();
 		return this;
 	}
 
 	private Boolean canManage = null;
 
+	/**
+	 * 判断是否可以对应用或者流程管理,额外判断是否review有permissionWrite标志
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	private boolean canManage() throws Exception {
 		if (null == canManage) {
 			this.canManage = this.business.ifPersonCanManageApplicationOrProcess(this.effectivePerson,
-					this.work.getApplication(), this.work.getProcess());
+					this.work.getApplication(), this.work.getProcess())
+					|| this.business.ifPersonHasPermissionWriteReviewWithJob(this.effectivePerson, this.work.getJob());
 		}
 		return this.canManage;
 	}
@@ -188,16 +207,20 @@ public class WorkControlBuilder {
 
 	private boolean readable() throws Exception {
 		if (null == readable) {
-			this.readable = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
-					effectivePerson.getDistinguishedName(), work.getJob())
-					|| business.ifJobHasBeenCorrelation(effectivePerson.getDistinguishedName(), work.getJob());
+			this.readable = ((!BooleanUtils.isTrue(Config.ternaryManagement().getSecurityClearanceEnable()))
+					|| business.ifPersonHasSufficientSecurityClearance(effectivePerson.getDistinguishedName(),
+							work.getObjectSecurityClearance()))
+					&& (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+							effectivePerson.getDistinguishedName(), work.getJob())
+							|| business.ifJobHasBeenCorrelation(effectivePerson.getDistinguishedName(), work.getJob()));
 		}
 		return this.readable;
 	}
 
-	private Boolean hasTaskWithWork = null;
+	// 初始值必须是null,用于判断hasTaskWithWork是否已经经过计算
+	private Optional<Task> hasTaskWithWork = null;
 
-	private boolean hasTaskWithWork() throws Exception {
+	private Optional<Task> hasTaskWithWork() throws Exception {
 		if (null == hasTaskWithWork) {
 			this.hasTaskWithWork = business.ifPersonHasTaskWithWork(effectivePerson.getDistinguishedName(),
 					work.getId());
@@ -285,6 +308,8 @@ public class WorkControlBuilder {
 		if (null == work) {
 			return control;
 		}
+		control.setWorkTitle(work.getTitle());
+		control.setWorkJob(work.getJob());
 		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
 				Pair.of(ifAllowVisit, this::computeAllowVisit),
 				Pair.of(ifAllowProcessing, this::computeAllowProcessing),
@@ -295,7 +320,8 @@ public class WorkControlBuilder {
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
 				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
 				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
-				Pair.of(ifAllowGoBack, this::computeAllowGoBack)).stream().filter(Pair::first)
+				Pair.of(ifAllowGoBack, this::computeAllowGoBack),
+				Pair.of(ifAllowTerminate, this::computeAllowTerminate)).stream().filter(Pair::first)
 				.forEach(o -> o.second().accept(control));
 		recalculate(work, control);
 		return control;
@@ -319,7 +345,7 @@ public class WorkControlBuilder {
 
 	private void computeAllowProcessing(Control control) {
 		try {
-			control.setAllowProcessing(hasTaskWithWork());
+			control.setAllowProcessing(hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -335,7 +361,7 @@ public class WorkControlBuilder {
 
 	private void computeAllowSave(Control control) {
 		try {
-			control.setAllowSave(canManage() || hasTaskWithWork());
+			control.setAllowSave(canManage() || hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -344,7 +370,7 @@ public class WorkControlBuilder {
 	private void computeAllowReset(Control control) {
 		try {
 			control.setAllowReset(PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
-					&& hasTaskWithWork());
+					&& hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -354,7 +380,7 @@ public class WorkControlBuilder {
 		try {
 			control.setAllowAddTask(
 					PropertyTools.getOrElse(activity(), Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
-							&& (canManage() || hasTaskWithWork()));
+							&& hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -371,14 +397,14 @@ public class WorkControlBuilder {
 
 	/**
 	 * 管理员可以删除,或者活动设置了可以删除&&有待办
-	 * 
+	 *
 	 * @param control
 	 */
 	private void computeAllowDelete(Control control) {
 		try {
-			control.setAllowDelete(canManage()
-					|| (PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
-							&& hasTaskWithWork()));
+			control.setAllowDelete(
+					(PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
+							&& (canManage() || hasTaskWithWork().isPresent())));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -427,7 +453,7 @@ public class WorkControlBuilder {
 	/**
 	 * 是否可以召回有三个判断点 1.活动环节设置允许召回 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
 	 * 3.回溯活动如果经过一些非人工环节那么也可以召回.
-	 * 
+	 *
 	 * @param business
 	 * @param effectivePerson
 	 * @param work
@@ -440,9 +466,9 @@ public class WorkControlBuilder {
 			control.setAllowRetract(false);
 			if (BooleanUtils
 					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))
-					&& (business.entityManagerContainer().countEqualAndEqualAndNotEqual(TaskCompleted.class,
+					&& (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
 							TaskCompleted.job_FIELDNAME, work.getJob(), TaskCompleted.activityToken_FIELDNAME,
-							work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME, false) == 0)) {
+							work.getActivityToken()) == 0)) {
 				Node node = this.workLogTree().location(work);
 				if (null != node) {
 					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
@@ -473,13 +499,13 @@ public class WorkControlBuilder {
 
 	/**
 	 * 条件为1.允许提醒,2.有已办,3.非只有当前人一条待办.
-	 * 
+	 *
 	 * @param control
 	 */
 	private void computeAllowPress(Control control) {
 		try {
 			boolean tag = PropertyTools.getOrElse(activity(), Manual.allowPress_FIELDNAME, Boolean.class, false)
-					&& hasTaskCompletedWithJob() && (!((taskCountWithWork() == 1) && hasTaskWithWork()));
+					&& hasTaskCompletedWithJob() && (!((taskCountWithWork() == 1) && hasTaskWithWork().isPresent()));
 			control.setAllowPress(tag);
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -517,13 +543,12 @@ public class WorkControlBuilder {
 			control.setAllowGoBack(false);
 			if (activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
-				if (hasTaskWithWork() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
-					if (Objects.equals(ManualMode.parallel, manual.getManualMode())) {
-						if (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
-								|| taskCountWithWork() <= 1) {
-							control.setAllowGoBack(true);
-						}
-					} else {
+				if (hasTaskWithWork().isPresent() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
+					Optional<Ticket> opt = work.getTickets().findTicketWithLabel(hasTaskWithWork.get().getLabel());
+					if (opt.isPresent() && (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
+							|| ListUtils.intersection(
+									work.getTickets().bubble().stream().map(Ticket::label).collect(Collectors.toList()),
+									opt.get().fellow()).isEmpty())) {
 						control.setAllowGoBack(true);
 					}
 				}
@@ -533,9 +558,23 @@ public class WorkControlBuilder {
 		}
 	}
 
+	private void computeAllowTerminate(Control control) {
+		try {
+			control.setAllowTerminate(false);
+			if (activity().getClass().isAssignableFrom(Manual.class)) {
+				Manual manual = (Manual) activity;
+				if (BooleanUtils.isTrue(manual.getAllowTerminate()) && (canManage() || hasTaskWithWork().isPresent())) {
+					control.setAllowTerminate(true);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
 	/**
 	 * 在退回处理过程中如果有getGoBackStore说明下一步需要jump,那么禁用以下功能.
-	 * 
+	 *
 	 * @param wo
 	 * @param work
 	 */

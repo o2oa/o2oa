@@ -136,7 +136,7 @@ class ActionListPinyinInitial extends BaseAction {
 			return wos;
 		}
 		List<String> unitIds = new ArrayList<>();
-		if(ListTools.isNotEmpty(wi.getUnitList())) {
+		if (ListTools.isNotEmpty(wi.getUnitList())) {
 			unitIds = business.expendUnitToUnit(wi.getUnitList());
 			/** 去掉指定范围本身,仅包含下级 */
 			unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
@@ -150,7 +150,7 @@ class ActionListPinyinInitial extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.like(root.get(Unit_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
+		Predicate p = cb.like(root.get(Unit_.pinyinInitial), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		if (ListTools.isNotEmpty(unitIds)) {
 			p = cb.and(p, root.get(Unit_.id).in(unitIds));
 		}

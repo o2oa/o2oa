@@ -200,6 +200,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadMonitorScript(v); break;
             case "Number":
                 this.loadNumberScript(v); break;
+            case "Currency":
+                this.loadCurrencyScript(v); break;
             case "Office":
                 this.loadOfficeScript(v); break;
             case "Opinion":
@@ -642,6 +644,12 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     loadMonitorScript: function(data){  this.loadEventsScript(data); },
 
     loadNumberScript: function(data){
+        this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        this.loadEventsScript(data);
+    },
+    loadCurrencyScript: function(data){
         this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
         this.addScriptItem(data.validation, "code", data, "validation");
         this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");

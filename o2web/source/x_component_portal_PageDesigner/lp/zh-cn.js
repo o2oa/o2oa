@@ -227,6 +227,7 @@ MWF.APPPOD.LP = {
         "label": "文本",
         "textfield": "文本字段",
         "number": "数字字段",
+        "currency": "货币字段",
         "org": "人员组织",
         "calendar": "日期选择",
         "textarea": "多行文本",
@@ -290,5 +291,34 @@ MWF.APPPOD.LP = {
         "deleteRow": "删除行",
         "insertRow": "插入行",
         "importFromForm": "从界面上中导入字段配置"
-    }
+    },
+    "formToolbar":{
+        "save": "保存表单",
+        "saveNew": "保存为模板",
+        "preview": "预览",
+        "print": "打印",
+        "formExplode": "表单导出",
+        "formImplode": "表单导入",
+        "formImplodeO2": "从O2数据导入",
+        "formImplodeO2Title": "导入O2格式表单",
+        "htmlImplode": "从HTML导入",
+        "officeImplode": "从WORD或EXCEL导入",
+        "help": "帮助",
+        "clearNoDomModule": "清除未在HTML树中的组件配置",
+        "autoSave": "自动保存",
+        "brush": "格式刷",
+        "viewAllVersion": "查看所有页面版本"
+    },
+    "version" : {
+        "title" : "查看页面版本记录",
+        "close" : "关闭",
+        "no":"序号",
+        "updateTime":"更新时间",
+        "op":"操作",
+        "person":"更新人",
+        "resume" : "恢复",
+        "resumeConfirm" : "恢复确认",
+        "resumeInfo" : "您确认是否需要执行表单恢复操作？确认恢复后当前表单会更新，需要手动保存当前页面才会生效。",
+        "resumeSuccess" :"恢复成功"
+    },
 };

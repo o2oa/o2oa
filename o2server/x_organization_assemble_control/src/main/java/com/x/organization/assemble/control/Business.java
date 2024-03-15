@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.organization.core.entity.enums.PersonStatusEnum;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.set.ListOrderedSet;
 
@@ -242,6 +243,9 @@ public class Business {
     public boolean editable(EffectivePerson effectivePerson, Role role) throws Exception {
         if (effectivePerson.isSecurityManager()) {
             return true;
+        }
+        if(role!=null && OrganizationDefinition.Manager.equals(role.getName())){
+            return false;
         }
         if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
                 OrganizationDefinition.RoleManager, OrganizationDefinition.SecurityManager)) {
@@ -537,18 +541,28 @@ public class Business {
         return ListTools.containsAny(o, t);
     }
 
-    public Predicate personPredicateWithTopUnit(EffectivePerson effectivePerson) throws Exception {
+    public Predicate personPredicateWithTopUnit(EffectivePerson effectivePerson, boolean all) throws Exception {
         EntityManager em = emc.get(Person.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         if (effectivePerson.isSecurityManager() || this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
                 OrganizationDefinition.OrganizationManager)) {
-            return cb.conjunction();
+            if(all) {
+                return cb.conjunction();
+            }else{
+                CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+                Root<Person> root = cq.from(Person.class);
+                return cb.or(cb.isNull(root.get(Person_.status)), cb.notEqual(root.get(Person_.status), PersonStatusEnum.BAN.getValue()));
+            }
         } else {
             CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
             Root<Person> root = cq.from(Person.class);
             List<Unit> units = listTopUnitWithPerson(effectivePerson.getDistinguishedName());
             List<String> ids = ListTools.extractField(units, JpaObject.id_FIELDNAME, String.class, true, true);
-            return cb.or(root.get(Person_.topUnitList).in(ids), cb.isEmpty(root.get(Person_.topUnitList)));
+            Predicate p = cb.or(root.get(Person_.topUnitList).in(ids), cb.isEmpty(root.get(Person_.topUnitList)));
+            if(!all){
+                p = cb.and(p, cb.or(cb.isNull(root.get(Person_.status)), cb.notEqual(root.get(Person_.status), PersonStatusEnum.BAN.getValue())));
+            }
+            return p;
         }
     }
 

@@ -20,6 +20,13 @@ MWF.xApplication.portal.PageDesigner.Module.Widget = MWF.PCWidget = new Class({
                 "event": "click",
                 "action": "delete",
                 "title": MWF.APPPOD.LP.formAction["delete"]
+            },
+            {
+                "name": "selectParent",
+                "icon": "selectParent.png",
+                "event": "click",
+                "action": "selectParent",
+                "title": MWF.APPFD.LP.formAction["selectParent"]
             }
             // {
             //     "name": "styleBrush",

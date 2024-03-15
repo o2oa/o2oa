@@ -105,7 +105,7 @@ MWF.xApplication.ForumSection.Main = new Class({
 					this.sectionData = json.data;
 					//this.access.hasSectionAdminAuthority( this.sectionData, function( flag ){
 					//this.isAdmin = flag;
-					var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+					var tail = (this.inBrowser && layout.desktop.session.user.name !== "anonymous") ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
 					this.setTitle( this.sectionData.sectionName + tail );
 					this.createTopNode();
 					this.createMiddleNode();

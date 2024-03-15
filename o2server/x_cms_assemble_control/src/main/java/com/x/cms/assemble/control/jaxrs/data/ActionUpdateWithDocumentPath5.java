@@ -21,8 +21,8 @@ class ActionUpdateWithDocumentPath5 extends BaseAction {
 			if (null == document) {
 				throw new ExceptionDocumentNotExists(id);
 			}
-			/** 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-			this.updateTitleSerial(business, document, jsonElement);
+			/** 先更新title,serial,objectSecurityClearance,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
+			this.updateTitleSerialObjectSecurityClearance(business, document, jsonElement);
 			this.updateData(business, document, jsonElement, path0, path1, path2, path3, path4, path5);
 			/** 在方法内进行了commit不需要再次进行commit */
 			// emc.commit();

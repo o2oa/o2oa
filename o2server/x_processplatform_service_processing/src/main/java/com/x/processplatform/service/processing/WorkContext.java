@@ -35,9 +35,9 @@ public class WorkContext {
 	private AeiObjects aeiObjects = null;
 	private Task task;
 	private TaskCompleted taskCompleted;
+	@Deprecated(forRemoval = true, since = "never use.")
 	private Route route;
 	private Record record;
-
 
 	public void bindRecord(Record record) {
 		this.record = record;
@@ -77,37 +77,11 @@ public class WorkContext {
 		this.work = work;
 	}
 
-	/**
-	 * 返回record,如果没有绑定进来返回recordList最后一条
-	 * 
-	 * @param record
-	 */
-	public String getRecord() {
-		if (null != this.record) {
-			return gson.toJson(record);
-		}
-		try {
-			List<Record> list = new ArrayList<>();
-			if (null != this.aeiObjects) {
-				list.addAll(aeiObjects.getRecords());
-				list.addAll(aeiObjects.getCreateRecords());
-			}
-			Optional<Record> opt = list.stream()
-					.filter(o -> StringUtils.equals(o.getJob(), this.aeiObjects.getWork().getJob()))
-					.max(Comparator.nullsFirst(Comparator.comparing(Record::getCreateTime)));
-			if (opt.isPresent()) {
-				return gson.toJson(opt.get());
-			}
-		} catch (Exception e) {
-			throw new IllegalStateException("getRecord error.", e);
-		}
-		return gson.toJson(null);
-	}
-
 	public String getWork() {
 		return gson.toJson(work);
 	}
 
+	// 流转完成返回null
 	public String getActivity() {
 		return gson.toJson(this.activity);
 	}
@@ -142,6 +116,33 @@ public class WorkContext {
 		}
 	}
 
+	/**
+	 * 返回record,如果没有绑定进来返回recordList最后一条
+	 * 
+	 * @param record
+	 */
+	public String getRecord() {
+		if (null != this.record) {
+			return gson.toJson(record);
+		}
+		try {
+			List<Record> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getRecords());
+				list.addAll(aeiObjects.getCreateRecords());
+			}
+			Optional<Record> opt = list.stream()
+					.filter(o -> StringUtils.equals(o.getJob(), this.aeiObjects.getWork().getJob()))
+					.max(Comparator.nullsFirst(Comparator.comparing(Record::getCreateTime)));
+			if (opt.isPresent()) {
+				return gson.toJson(opt.get());
+			}
+		} catch (Exception e) {
+			throw new IllegalStateException("getRecord error.", e);
+		}
+		return gson.toJson(null);
+	}
+
 	public String getRouteList() {
 		try {
 			List<Route> list = new ArrayList<>();
@@ -159,45 +160,12 @@ public class WorkContext {
 	 * @return 当前注入的路由
 	 * @throws Exception
 	 */
+	@Deprecated(forRemoval = true, since = "never use.")
 	public String getRoute() {
 		if (null != route) {
 			return gson.toJson(route);
 		}
 		return JsonNull.INSTANCE.toString();
-	}
-
-	public void setTitle(String title) throws Exception {
-		business.entityManagerContainer().beginTransaction(Work.class);
-		work.setTitle(title);
-		business.entityManagerContainer().check(work, CheckPersistType.all);
-		business.entityManagerContainer().beginTransaction(Task.class);
-		for (Task o : business.entityManagerContainer().list(Task.class, business.task().listWithWork(work.getId()))) {
-			o.setTitle(title);
-			business.entityManagerContainer().check(o, CheckPersistType.all);
-		}
-		business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-		for (TaskCompleted o : business.entityManagerContainer().list(TaskCompleted.class,
-				business.taskCompleted().listWithWork(work.getId()))) {
-			o.setTitle(title);
-			business.entityManagerContainer().check(o, CheckPersistType.all);
-		}
-		business.entityManagerContainer().beginTransaction(Read.class);
-		for (Read o : business.entityManagerContainer().list(Read.class, business.read().listWithWork(work.getId()))) {
-			o.setTitle(title);
-			business.entityManagerContainer().check(o, CheckPersistType.all);
-		}
-		business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-		for (ReadCompleted o : business.entityManagerContainer().list(ReadCompleted.class,
-				business.readCompleted().listWithWork(work.getId()))) {
-			o.setTitle(title);
-			business.entityManagerContainer().check(o, CheckPersistType.all);
-		}
-		business.entityManagerContainer().beginTransaction(Review.class);
-		for (Review o : business.entityManagerContainer().list(Review.class,
-				business.review().listWithWork(work.getId()))) {
-			o.setTitle(title);
-			business.entityManagerContainer().check(o, CheckPersistType.all);
-		}
 	}
 
 	public String getAttachmentList() throws Exception {
@@ -365,7 +333,7 @@ public class WorkContext {
 			throw new IllegalStateException("getReadCompletedList error.", e);
 		}
 	}
-
+	@Deprecated(forRemoval = true, since = "never use.")
 	public String getReviewList() {
 		try {
 			List<Review> list = business.entityManagerContainer().listEqual(Review.class, Review.work_FIELDNAME,
@@ -373,6 +341,40 @@ public class WorkContext {
 			return gson.toJson(list);
 		} catch (Exception e) {
 			throw new IllegalStateException("getReviewList error.", e);
+		}
+	}
+
+	public void setTitle(String title) throws Exception {
+		business.entityManagerContainer().beginTransaction(Work.class);
+		work.setTitle(title);
+		business.entityManagerContainer().check(work, CheckPersistType.all);
+		business.entityManagerContainer().beginTransaction(Task.class);
+		for (Task o : business.entityManagerContainer().list(Task.class, business.task().listWithWork(work.getId()))) {
+			o.setTitle(title);
+			business.entityManagerContainer().check(o, CheckPersistType.all);
+		}
+		business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+		for (TaskCompleted o : business.entityManagerContainer().list(TaskCompleted.class,
+				business.taskCompleted().listWithWork(work.getId()))) {
+			o.setTitle(title);
+			business.entityManagerContainer().check(o, CheckPersistType.all);
+		}
+		business.entityManagerContainer().beginTransaction(Read.class);
+		for (Read o : business.entityManagerContainer().list(Read.class, business.read().listWithWork(work.getId()))) {
+			o.setTitle(title);
+			business.entityManagerContainer().check(o, CheckPersistType.all);
+		}
+		business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+		for (ReadCompleted o : business.entityManagerContainer().list(ReadCompleted.class,
+				business.readCompleted().listWithWork(work.getId()))) {
+			o.setTitle(title);
+			business.entityManagerContainer().check(o, CheckPersistType.all);
+		}
+		business.entityManagerContainer().beginTransaction(Review.class);
+		for (Review o : business.entityManagerContainer().list(Review.class,
+				business.review().listWithWork(work.getId()))) {
+			o.setTitle(title);
+			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
 	}
 

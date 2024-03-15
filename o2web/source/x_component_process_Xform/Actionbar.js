@@ -316,6 +316,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         closeWork: function(){
             this.form.closeWork();
         },
+        flowWork: function(){
+            this.form.flowWork();
+        },
         processWork: function(){
             this.form.processWork();
         },
@@ -390,5 +393,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         goBack: function(e){
             this.form.goBack(e);
         },
+
+        terminate: function(e, ev){
+            this.form.terminateWork(e, ev);
+        }
 
     });

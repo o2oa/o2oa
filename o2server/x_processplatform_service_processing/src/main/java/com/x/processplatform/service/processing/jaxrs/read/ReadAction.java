@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -119,6 +118,24 @@ public class ReadAction extends StandardJaxrsAction {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionReset().execute(effectivePerson, id, jsonElement);
+        } catch (Exception e) {
+            LOGGER.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "待阅处理人替换.", action = ActionReplace.class)
+    @POST
+    @Path("{id}/replace")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void replace(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                        @JaxrsParameterDescribe("待阅标识") @PathParam("id") String id, JsonElement jsonElement) {
+        ActionResult<ActionReplace.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionReplace().execute(effectivePerson, id, jsonElement);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, jsonElement);
             result.error(e);

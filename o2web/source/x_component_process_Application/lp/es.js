@@ -94,6 +94,7 @@ MWF.xApplication.process.Application.LP = {
 	"flow": "Transferencia",
 	"readFlow": "Pasar de pendiente a leído",
 	"resetAction": "Reenviar",
+	"addSign" : "Agregar Firma",
 	"resetActionFor": "Enviar a",
 	"readProcess": "Procesar pendiente",
 	"editAction": "Mantenimiento",

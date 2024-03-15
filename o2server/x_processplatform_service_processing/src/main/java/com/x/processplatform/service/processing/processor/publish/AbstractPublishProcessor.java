@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor.publish;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.core.entity.content.Work;
@@ -28,16 +29,16 @@ abstract class AbstractPublishProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Publish publish = (Publish) aeiObjects.getActivity();
-		return inquiring(aeiObjects, publish);
+		return inquiring(aeiObjects, publish).orElse(null);
 	}
 
 	protected abstract Work arriving(AeiObjects aeiObjects, Publish publish) throws Exception;
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, Publish publish) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Publish publish) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Publish publish) throws Exception;
 
 	@Override
 	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {
@@ -59,7 +60,8 @@ abstract class AbstractPublishProcessor extends AbstractProcessor {
 
 	protected abstract void arrivingCommitted(AeiObjects aeiObjects, Publish publish) throws Exception;
 
-	protected abstract void executingCommitted(AeiObjects aeiObjects, Publish publish, List<Work> works) throws Exception;
+	protected abstract void executingCommitted(AeiObjects aeiObjects, Publish publish, List<Work> works)
+			throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Publish publish) throws Exception;
 }

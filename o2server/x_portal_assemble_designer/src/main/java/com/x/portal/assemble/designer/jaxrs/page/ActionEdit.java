@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.portal.assemble.designer.ThisApplication;
+import com.x.portal.core.entity.PageVersion;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -65,6 +67,8 @@ class ActionEdit extends BaseAction {
 			emc.commit();
 			CacheManager.notify(Page.class);
 			CacheManager.notify(Portal.class);
+			// 保存历史版本
+			ThisApplication.pageVersionQueue.send(new PageVersion(page.getId(), jsonElement, effectivePerson.getDistinguishedName()));
 			Wo wo = new Wo();
 			wo.setId(page.getId());
 			result.setData(wo);

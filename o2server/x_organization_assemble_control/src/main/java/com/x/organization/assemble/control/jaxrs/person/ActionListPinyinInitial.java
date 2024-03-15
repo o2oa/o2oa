@@ -32,7 +32,7 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 
 class ActionListPinyinInitial extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPinyinInitial.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -40,8 +40,8 @@ class ActionListPinyinInitial extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
-					wi.getKey(), StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(), wi.getKey(),
+					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -111,15 +111,15 @@ class ActionListPinyinInitial extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.like(root.get(Person_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
+		Predicate p = cb.like(root.get(Person_.pinyinInitial), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
-		}else{
-			if(ListTools.isNotEmpty(wi.getGroupList(), wi.getRoleList())) {
+		} else {
+			if (ListTools.isNotEmpty(wi.getGroupList(), wi.getRoleList())) {
 				return wos;
 			}
 		}
-		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson, false));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		wos = Wo.copier.copy(os);
 		wos = business.person().sort(wos);

@@ -2,6 +2,7 @@ package com.x.message.assemble.communicate.jaxrs.im;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -77,12 +78,12 @@ public class ActionMyConversationList extends BaseAction {
 				}
 				// 单聊没有聊天消息就不展现
 				return (woMsg != null);
-			}).sorted((a, b)-> {
-				if (a.lastMessage == null || b.lastMessage == null) {
+			}).filter(Objects::nonNull).sorted((a, b)-> {
+				if (a.getLastMessage() == null || b.getLastMessage() == null) {
 					return 0;
 				}
-				Date aC = a.lastMessage.getCreateTime();
-				Date bC = b.lastMessage.getCreateTime();
+				Date aC = a.getLastMessage().getCreateTime();
+				Date bC = b.getLastMessage().getCreateTime();
 				if (aC != null  && bC != null ) {
 					return aC.getTime() > bC.getTime() ? -1 : 1;
 				} else {

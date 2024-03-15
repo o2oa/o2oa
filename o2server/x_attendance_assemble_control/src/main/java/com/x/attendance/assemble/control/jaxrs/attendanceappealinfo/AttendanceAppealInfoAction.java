@@ -28,7 +28,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("attendanceappealInfo")
-@JaxrsDescribe("考勤结果申诉信息管理服务")
+@JaxrsDescribe("考勤结果申诉信息管理服务（已弃用）")
 public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceAppealInfoAction.class);

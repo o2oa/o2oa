@@ -96,6 +96,30 @@ MWF.xApplication.query.QueryManager.TableExplorer = new Class({
             this.reload();
         }
     },
+    showDeleteAction: function(){
+        if (!this.deleteItemsAction){
+            this.deleteItemsAction = new Element("div", {
+                "styles": this.css.deleteItemsAction,
+                "text": this.app.lp.deleteItems
+            }).inject(this.node);
+            this.deleteItemsAction.fade("in");
+            this.deleteItemsAction.position({
+                relativeTo: this.elementContentListNode,
+                position: 'centerTop',
+                edge: 'centerTop',
+                "offset": {"y": this.elementContentNode.getScroll().y}
+            });
+            this.deleteItemsAction.addEvent("click", function(){
+                var _self = this;
+                this.app.confirm("warn", this.deleteItemsAction, MWF.APPPM.LP.deleteElementTitle, MWF.xApplication.query.QueryManager.LP.deleteElementTable, 300, 120, function(){
+                    _self.deleteItems();
+                    this.close();
+                }, function(){
+                    this.close();
+                });
+            }.bind(this));
+        }
+    },
     saveItemAs: function(data, success, failure, cancel){
         o2.Actions.load("x_query_assemble_designer").TableAction.manageList(function(dJson){
             var i=1;

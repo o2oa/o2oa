@@ -9,14 +9,17 @@ import com.x.base.core.project.gson.GsonPropertyObject;
  */
 public class AttendanceV2ShiftCheckTime  extends GsonPropertyObject {
 
+    private static final long serialVersionUID = -6411723100579845550L;
     private String onDutyTime; // 上班打卡时间 如 09:00
-    private String onDutyTimeBeforeLimit; // onDutyTime前打卡限制 如 00:30 表示可以在8:30-9:00之间打上班的卡
-    private String onDutyTimeAfterLimit; // onDutyTime后打卡限制 如 00:30 表示可以在9:00-9:30之间打上班的卡
+    private String onDutyTimeBeforeLimit; // onDutyTime前打卡限制
+    private String onDutyTimeAfterLimit; // onDutyTime后打卡限制
     private String offDutyTime; // 下班打卡时间 如 18:00
-    private String offDutyTimeBeforeLimit; // offDutyTime前打卡限制 如 00:30 表示可以在17:30-18:00之间打下班的卡
-    private String offDutyTimeAfterLimit; // offDutyTime后打卡限制 如 00:30 表示可以在18:00-18:30之间打下班的卡
+    private String offDutyTimeBeforeLimit; // offDutyTime前打卡限制
+    private String offDutyTimeAfterLimit; // offDutyTime后打卡限制
+    private Boolean offDutyNextDay = false; // 下班打卡是否是次日 下班打卡可跨天
 
 
+    
     public String getOnDutyTime() {
         return onDutyTime;
     }
@@ -64,4 +67,14 @@ public class AttendanceV2ShiftCheckTime  extends GsonPropertyObject {
     public void setOffDutyTimeAfterLimit(String offDutyTimeAfterLimit) {
         this.offDutyTimeAfterLimit = offDutyTimeAfterLimit;
     }
+
+	public Boolean getOffDutyNextDay() {
+		return offDutyNextDay;
+	}
+
+	public void setOffDutyNextDay(Boolean offDutyNextDay) {
+		this.offDutyNextDay = offDutyNextDay;
+	}
+
+	 
 }

@@ -91,7 +91,7 @@ public class Business {
         }
         return query;
     }
-    
+
     private StateFactory state;
 
     public StateFactory state() throws Exception {
@@ -141,7 +141,7 @@ public class Business {
 
     public boolean isPortalManager(EffectivePerson effectivePerson) throws Exception {
         if (effectivePerson.isManager()
-                && (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager,
+                || (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager,
                         OrganizationDefinition.Manager))) {
             return true;
         }

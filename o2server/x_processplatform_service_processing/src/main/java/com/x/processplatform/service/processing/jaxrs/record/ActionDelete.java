@@ -10,13 +10,13 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionDelete extends BaseAction {
 
@@ -26,38 +26,54 @@ class ActionDelete extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		final Bag bag = new Bag();
+		Param param = this.init(id);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Record r = emc.find(id, Record.class);
-			if (null == r) {
-				throw new ExceptionEntityNotExist(id, Record.class);
-			}
-			bag.job = r.getJob();
-		}
+		CallableImpl callable = new CallableImpl(param);
 
-		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-			public ActionResult<Wo> call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Record r = emc.find(id, Record.class);
-					emc.beginTransaction(Record.class);
-					emc.remove(r, CheckRemoveType.all);
-					emc.commit();
-					ActionResult<Wo> result = new ActionResult<>();
-					Wo wo = new Wo();
-					wo.setId(r.getId());
-					result.setData(wo);
-					return result;
-				}
-			}
-		};
-
-		return ProcessPlatformExecutorFactory.get(bag.job).submit(callable).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
-	public static class Bag {
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private Param param;
+
+		private CallableImpl(Param param) {
+			this.param = param;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Record rec = emc.find(param.rec.getId(), Record.class);
+				emc.beginTransaction(Record.class);
+				emc.remove(rec, CheckRemoveType.all);
+				emc.commit();
+				ActionResult<Wo> result = new ActionResult<>();
+				Wo wo = new Wo();
+				wo.setId(rec.getId());
+				result.setData(wo);
+				return result;
+			}
+		}
+	};
+
+	private Param init(String id) throws Exception {
+		Param param = new Param();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Record rec = emc.find(id, Record.class);
+			if (null == rec) {
+				throw new ExceptionEntityNotExist(id, Record.class);
+			}
+			param.job = rec.getJob();
+			param.rec = rec;
+		}
+		return param;
+	}
+
+	private class Param {
 		String job;
+		Record rec;
 	}
 
 	public static class Wi extends Record {

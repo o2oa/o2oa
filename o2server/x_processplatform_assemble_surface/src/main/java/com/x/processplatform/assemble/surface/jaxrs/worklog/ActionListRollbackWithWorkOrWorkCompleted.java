@@ -34,11 +34,15 @@ import com.x.processplatform.core.entity.element.ActivityType;
 
 class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListRollbackWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListRollbackWithWorkOrWorkCompleted.class);
 
 	private static final String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
+
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 
 		String job = null;
@@ -69,11 +73,12 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 	private List<WoTaskCompleted> taskCompleteds(String job) {
 		List<WoTaskCompleted> os = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			os = emc.fetchEqual(TaskCompleted.class, WoTaskCompleted.copier, TaskCompleted.job_FIELDNAME, job).stream()
-					.sorted(Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
+			os = emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job).stream()
+					.sorted(Comparator.comparing(TaskCompleted::getCreateTime,
+							Comparator.nullsFirst(Date::compareTo).reversed()))
+					.map(WoTaskCompleted.copier::copy).collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -81,13 +86,14 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 	private List<Wo> workLogs(String job) {
 		List<Wo> os = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.JOB_FIELDNAME, job).stream()
+			os = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job).stream()
 					.filter(o -> (!BooleanUtils.isTrue(o.getSplitting()))
 							&& (Objects.equals(o.getFromActivityType(), ActivityType.manual)))
-					.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
+					.sorted(Comparator.comparing(WorkLog::getCreateTime,
+							Comparator.nullsFirst(Date::compareTo).reversed()))
+					.map(o -> Wo.copier.copy(o)).collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -97,7 +103,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -7666329770246726197L;
 
 		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class,
-				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.FROMACTIVITY_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, WorkLog.FROMACTIVITY_FIELDNAME,
 						WorkLog.FROMACTIVITYTYPE_FIELDNAME, WorkLog.FROMACTIVITYNAME_FIELDNAME,
 						WorkLog.FROMACTIVITYALIAS_FIELDNAME, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
 						WorkLog.FROMTIME_FIELDNAME, WorkLog.ARRIVEDACTIVITY_FIELDNAME,

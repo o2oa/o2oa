@@ -137,7 +137,7 @@ if (!layout.isReady) {
                     if (json.data.language && (json.data.language !== o2.languageName)) {
                         o2.language = json.data.language.toLowerCase();
                         o2.languageName = json.data.language;
-                        var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js";
+                        var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;;
                         o2.load(lp, {"reload": true}, function () {
                             if (resolve) resolve(json.data);
                         });
@@ -232,7 +232,7 @@ if (!layout.isReady) {
         var lpLoaded = false;
         var commonLoaded = false;
         //var lp = o2.session.path + "/lp/" + o2.language + ".js";
-        var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js";
+        var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;;
 
         if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
         var loadAllModules = function(error){
@@ -302,11 +302,10 @@ if (!layout.isReady) {
             loadAllModules(loadO2Modules);
         };
 
-        debugger;
         if (!o2.LP) {
             o2.load(lp, function(m){
                 if (!m.length){
-                    var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js";
+                    var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
                     o2.load(lp,loadModuls);
                 }else{
                     loadModuls();

@@ -89,18 +89,15 @@ public class DetailAction extends StandardJaxrsAction {
     }
 
     @JaxrsMethodDescribe(value = "统计导出.", action = ActionStatisticExportExcel.class)
-    @GET
-    @Path("statistic/export/filter/{filter}/start/{start}/end/{end}")
+    @POST
+    @Path("statistic/export/filter")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void statisticExport(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-            @JaxrsParameterDescribe("人员或组织的DN，组织会递归下面所有的人员，如xxx@xxx@P、xxx@xxx@U") @PathParam("filter") String filter,
-            @JaxrsParameterDescribe("开始日期：yyyy-MM-dd") @PathParam("start") String start,
-            @JaxrsParameterDescribe("结束日期：yyyy-MM-dd") @PathParam("end") String end) {
+    public void statisticExport(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
         ActionResult<ActionStatisticExportExcel.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionStatisticExportExcel().execute(effectivePerson, filter, start, end);
+            result = new ActionStatisticExportExcel().execute(effectivePerson, jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

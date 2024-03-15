@@ -31,7 +31,7 @@ class ActionListWithCurrentPerson extends BaseAction {
 	}
 
 	private List<Wo> list(Business business, EffectivePerson effectivePerson) throws Exception {
-		List<Empower> os = business.entityManagerContainer().listEqual(Empower.class, Empower.fromPerson_FIELDNAME,
+		List<Empower> os = business.entityManagerContainer().listEqual(Empower.class, Empower.FROMPERSON_FIELDNAME,
 				effectivePerson.getDistinguishedName());
 		return Wo.copier.copy(os);
 	}

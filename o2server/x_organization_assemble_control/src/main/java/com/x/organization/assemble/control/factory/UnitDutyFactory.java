@@ -1,20 +1,5 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -23,6 +8,19 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class UnitDutyFactory extends AbstractFactory {
 
@@ -104,5 +102,23 @@ public class UnitDutyFactory extends AbstractFactory {
 						Comparator.comparing(UnitDuty::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
 				.collect(Collectors.toList());
 		return list;
+	}
+
+	public List<UnitDuty> listObjByIdentity(String identityId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(UnitDuty.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
+		Root<UnitDuty> root = cq.from(UnitDuty.class);
+		Predicate p = cb.isMember(identityId, root.get(UnitDuty_.identityList));
+		return em.createQuery(cq.select(root).where(p)).getResultList();
+	}
+
+	public List<String> listByIdentity(String identityId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(UnitDuty.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<UnitDuty> root = cq.from(UnitDuty.class);
+		Predicate p = cb.isMember(identityId, root.get(UnitDuty_.identityList));
+		return em.createQuery(cq.select(root.get(UnitDuty_.id)).where(p)).getResultList();
 	}
 }

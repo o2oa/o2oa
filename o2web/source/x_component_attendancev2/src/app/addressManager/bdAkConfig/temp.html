@@ -6,12 +6,24 @@
             <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
         </div>
         <div class="o2-form-content">
-            <div class="form-item-content margin-top"><a href='{{$.lp.workAddressBDLink}}'
+            <div class="form-item-content margin-top"><a href='https://lbsyun.baidu.com/apiconsole/auth'
                     target='_blank'>{{$.lp.workAddressBDLinkTitle}}</a></div>
+            <div class="form-item-content margin-top"><a href='https://console.amap.com/dev/index'
+                    target='_blank'>{{$.lp.workAddressAMAPLinkTitle}}</a></div>
             <div class="form-item-content margin-top">{{$.lp.workAddressBDkeyConfigDesc}}</div>
+            <div class="form-item-content margin-top">
+                <select name="{{$.mapConfig.mapType}}"    @change="chooseMapType">
+                    <option oo-each="$.mapTypeList" oo-item="mt" value="{{mt.value.key}}"  .selected="(mt.value.key === $.mapConfig.mapType)" >{{ mt.value.name }} </option>
+                </select>
+            </div>
             <o-input
-                oo-prop="{'label':$.lp.workAddressBDSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder , 'value': $.baiduAccountKey }"
-                oo-model="baiduAccountKey"></o-input>
+                oo-if="$.mapConfig.mapType == 'baidu'"
+                oo-prop="{'label':$.lp.workAddressBDSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder, 'value': $.mapConfig.baiduAccountKey }"
+                oo-model="mapConfig.baiduAccountKey"></o-input>
+            <o-input
+                oo-if="$.mapConfig.mapType == 'amap'"
+                oo-prop="{'label':$.lp.workAddressAMPSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder, 'value': $.mapConfig.aMapAccountKey  }"
+                oo-model="mapConfig.aMapAccountKey"></o-input>
 
         </div>
         <div class="o2-form-footer">

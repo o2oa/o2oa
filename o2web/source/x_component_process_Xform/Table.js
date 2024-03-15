@@ -195,12 +195,14 @@ MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
                 inputs.each(function(input){
                     var inputType = input.get("type").toLowerCase();
                     if (inputType!="radio" && inputType!="checkbox" && inputType!="submit" && inputType!="buttom" && inputType!="image"){
-                        input.setStyle("width", "100%");
+                        var style = input.getStyle("width");
+                        if( !style || style === "auto")input.setStyle("width", "100%");
                     }
                 }.bind(this));
                 var textareas = this.node.getElements("textarea");
                 textareas.each(function(textarea){
-                    textarea.setStyle("width", "100%");
+                    var style = textarea.getStyle("width");
+                    if( !style || style === "auto")textarea.setStyle("width", "100%");
                 }.bind(this));
 
             }.bind(this))

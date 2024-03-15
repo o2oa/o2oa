@@ -133,7 +133,7 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 	private ManualProcessingConfigurator manual = new ManualProcessingConfigurator();
 	private MergeProcessingConfigurator merge = new MergeProcessingConfigurator();
 	private ParallelProcessingConfigurator parallel = new ParallelProcessingConfigurator();
-	private ParallelProcessingConfigurator publish = new ParallelProcessingConfigurator();
+	private PublishProcessingConfigurator publish = new PublishProcessingConfigurator();
 	private ServiceProcessingConfigurator service = new ServiceProcessingConfigurator();
 	private SplitProcessingConfigurator split = new SplitProcessingConfigurator();
 
@@ -225,11 +225,11 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 		this.parallel = parallel;
 	}
 
-	public ParallelProcessingConfigurator getPublish() {
+	public PublishProcessingConfigurator getPublish() {
 		return publish;
 	}
 
-	public void setPublish(ParallelProcessingConfigurator publish) {
+	public void setPublish(PublishProcessingConfigurator publish) {
 		this.publish = publish;
 	}
 

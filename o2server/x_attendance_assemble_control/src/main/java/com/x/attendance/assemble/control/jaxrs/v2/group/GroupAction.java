@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.group;
 
 import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -136,6 +137,24 @@ public class GroupAction extends StandardJaxrsAction {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionRebuildDetailWithGroupDate().execute(effectivePerson, groupId, date);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "获取人员某一天的考勤组和班次对象.", action = ActionGetWithShiftByPersonDate.class)
+    @GET
+    @Path("person/{person}/date/{date}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void getGroupWithShiftByPersonDate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("人员DN") @PathParam("person") String person, @JaxrsParameterDescribe("日期: yyyy-MM-dd") @PathParam("date") String date) {
+        ActionResult<WoGroupShift> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGetWithShiftByPersonDate().execute(person, date);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

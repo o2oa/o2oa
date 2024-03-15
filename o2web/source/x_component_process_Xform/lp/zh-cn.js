@@ -54,6 +54,7 @@ MWF.xApplication.process.Xform.LP = {
     "rerouteTo": "调度到",
     "rollback": "流程回溯",
     "rollbackTo": "流程回溯到",
+    "rollback_success" : "回溯成功",
     "selectRollbackActivity" : "请选择文件要回溯到的位置：",
     "tryToProcess" : "并尝试继续流转",
     "in": "在",
@@ -116,6 +117,8 @@ MWF.xApplication.process.Xform.LP = {
     "workReset": "文件已重置",
     "resetWorkInfor": "您重置了文件：",
 
+    "system": "System",
+
     "workRollback": "文件已回溯",
     "rollbackOk": "文件已回溯给",
     "rollbackWorkInfor": "您回溯了文件：",
@@ -132,6 +135,12 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkTitle": "删除文件确认",
     "deleteWorkText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>", "text": "注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？"},
     "workDelete": "已经删除文件",
+
+    "terminateWorkTitle": "终止文件",
+    "terminateWorkText": "终止文件表示此文件被废弃，直接结束流转，确定要执行？",
+    "workTerminate": "已经终止文件",
+    "terminateWork": "终止文件",
+
     "amount": "▌总计",
     "sectionAmount": "▌小计",
     "delete": "删除",
@@ -181,6 +190,8 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentRead": "谁可以查看和下载此附件：(为空表示有权限阅读此文档的人都可以，不为空需同时选择编辑和设置权限)",
     "attachmentEdit": "谁可以编辑此附件：(为空表示有权限编辑此文档的人都可以，不为空需同时选择设置权限)",
     "attachmentController": "谁可以设置此附件的权限：(为空表示有权限编辑此文档的人都可以)",
+
+    "attachmentSecurity": "附件密级标识",
 
     "attachmentOCRTitle": "纠正自动识别的图片中的文字",
     "attachmentOCR_saved": "图像文字识别结果已保存",
@@ -317,6 +328,10 @@ MWF.xApplication.process.Xform.LP = {
         "saveTitle": "保存文档",
         "flow": "继续流转",
         "flowTitle": "继续流转文档",
+        "process": "继续流转",
+        "processTitle": "继续流转文档",
+        "submit": "提交",
+        "submitTitle": "提交文档",
         "reroute": "调度",
         "rerouteTitle": "调度文档",
         "reset": "重置处理人",
@@ -329,6 +344,8 @@ MWF.xApplication.process.Xform.LP = {
         "rollbackTitle": "回溯到指定的环节，不保留流程记录",
         "delete": "删除文档",
         "deleteTitle": "删除文件",
+        "terminate": "终止文件",
+        "terminateTitle": "结束文件流转",
         "print": "打印",
         "printTitle": "打印文档",
         "press": "催促办理",
@@ -362,7 +379,9 @@ MWF.xApplication.process.Xform.LP = {
         "readed" : "已阅",
 
         "rollbackInfo": "请选择文件要回溯到的位置",
-        "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。<br/>多个值请用半角逗号(,)分隔",
+        "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。多个值请用半角逗号(,)分隔",
+        "splitValue": "拆分依据",
+        "opinion": "意见",
         "selectUnit": "选择组织或人员",
         "excludeBranches": "排除已有分支",
         "yes": "是",
@@ -381,6 +400,10 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "在您处理之前添加处理人",
         "addTaskAfterTitle": "在您处理之后添加处理人",
         "addTaskType": "加签方式",
+        "modeType": "处理方式",
+        "single": "单人",
+        "queue": "串行",
+        "parallel": "并行",
 
         "goBackActivity": "退回到活动：",
         "goBackActivityWay": "退回后处理：",
@@ -393,8 +416,9 @@ MWF.xApplication.process.Xform.LP = {
 
 
         "addTaskRepeatedTitle": "重复加签提醒",
-        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。"
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。",
 
+        "mergeWork": "合并工作"
     },
 
     "sendRead": "发送待阅",
@@ -450,7 +474,9 @@ MWF.xApplication.process.Xform.LP = {
     "associatedResult": "关联结果",
     "selectDocNote": "请先选择文档",
     "associatedDocument": "关联文档",
-    "docDeleted": "文档已经被删除。"
+    "docDeleted": "文档已经被删除或您没有权限打开此文档。",
+
+    "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

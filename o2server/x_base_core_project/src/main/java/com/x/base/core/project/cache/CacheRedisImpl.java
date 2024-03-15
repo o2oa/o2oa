@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.script.CompiledScript;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.logger.Logger;
@@ -43,36 +43,31 @@ public class CacheRedisImpl implements Cache {
 	@Override
 	public void put(CacheCategory category, CacheKey key, Object o) {
 		// 无法序列化CompiledScript类型,在使用Redis缓存无法缓存CompiledScript类型,直接跳过
-		if ((null != o) && (!(o instanceof CompiledScript))) {
-			Jedis jedis = RedisTools.getJedis();
-			if (jedis != null) {
-				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-					oos.writeObject(o);
-					byte[] bytes = baos.toByteArray();
-					jedis.set(concrete(category, key).getBytes(StandardCharsets.UTF_8), bytes, setParams);
-				} catch (Exception e) {
-					RedisTools.closeJedis(jedis);
-				}
+		if ((null != o) && (!(o instanceof Source))) {
+			try (Jedis jedis = RedisTools.getJedis();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+				oos.writeObject(o);
+				byte[] bytes = baos.toByteArray();
+				jedis.set(concrete(category, key).getBytes(StandardCharsets.UTF_8), bytes, setParams);
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
 		}
 	}
 
 	@Override
 	public Optional<Object> get(CacheCategory category, CacheKey key) {
-		Jedis jedis = RedisTools.getJedis();
-		if (jedis != null) {
-			try {
-				byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
-				if ((null != bytes) && bytes.length > 0) {
-					try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-							ObjectInputStream ois = new ObjectInputStream(bais)) {
-						return Optional.ofNullable(ois.readObject());
-					}
+		try (Jedis jedis = RedisTools.getJedis()) {
+			byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
+			if ((null != bytes) && bytes.length > 0) {
+				try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+						ObjectInputStream ois = new ObjectInputStream(bais)) {
+					return Optional.ofNullable(ois.readObject());
 				}
-			} catch (Exception e) {
-				RedisTools.closeJedis(jedis);
 			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 		return Optional.empty();
 	}

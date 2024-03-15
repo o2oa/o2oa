@@ -41,7 +41,7 @@ public class FileAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "获取指定File.", action = ActionGet.class)
 	@GET
 	@Path("{id}")
-	// @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
@@ -253,16 +253,19 @@ public class FileAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "上传文件,并进行压缩,如果文件大小小于指定宽度或者宽度<0,则不进行压缩.为了兼容前台增加的POST方法.", action = ActionUploadOctetStream.class)
 	@POST
 	@Path("upload/referencetype/{referenceType}/reference/{reference}/scale/{scale}")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void uploadPostOctetStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("文件类型") @PathParam("referenceType") String referenceType,
+			@JaxrsParameterDescribe("文件类型：processPlatformJob|processPlatformForm|mindInfo|portalPage|" +
+					"cmsDocument|forumDocument|forumReply|component|teamworkProject") @PathParam("referenceType") String referenceType,
 			@JaxrsParameterDescribe("关联id") @PathParam("reference") String reference,
-			@JaxrsParameterDescribe("缩放") @PathParam("scale") Integer scale, byte[] bytes) {
+			@JaxrsParameterDescribe("缩放") @PathParam("scale") Integer scale,
+									  @FormDataParam(FILE_FIELD)  byte[] bytes,
+									  @JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionUploadOctetStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUploadOctetStream().execute(effectivePerson, referenceType, reference, scale, bytes);
+			result = new ActionUploadOctetStream().execute(effectivePerson, referenceType, reference, scale, bytes, disposition);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -276,7 +279,8 @@ public class FileAction extends StandardJaxrsAction {
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void upload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("文件类型") @PathParam("referenceType") String referenceType,
+			@JaxrsParameterDescribe("文件类型：processPlatformJob|processPlatformForm|mindInfo|portalPage|" +
+					"cmsDocument|forumDocument|forumReply|component|teamworkProject") @PathParam("referenceType") String referenceType,
 			@JaxrsParameterDescribe("关联id") @PathParam("reference") String reference,
 			@JaxrsParameterDescribe("缩放") @PathParam("scale") Integer scale,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
@@ -439,5 +443,24 @@ public class FileAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "获取文件Base64编码后的内容.", action = ActionGetBase64.class)
+	@GET
+	@Path("{id}/binary/base64")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getBase64(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+		ActionResult<ActionGetBase64.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetBase64().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 
 }

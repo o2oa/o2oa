@@ -93,7 +93,7 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
             pagingEnable : true,
             documentKeyWord : "orderNumber",
             pagingPar : {
-                currentPage : this.options.viewPageNum || 1,
+                currentPage : (this.options.viewPageNum || 1).toInt(),
                 countPerPage : 10,
                 hasPrevPage : true,
                 hasTruningBar : false,

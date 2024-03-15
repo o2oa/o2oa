@@ -25,7 +25,7 @@ public class GBaseDictionary extends DBDictionary {
 
 	public final boolean swapSchemaAndCatalog = false;
 
-	private static final Localizer _loc = Localizer.forPackage(InformixDictionary.class);
+	private static final Localizer _loc = Localizer.forPackage(GBaseDictionary.class);
 
 	/**
 	 * If true, then we will issue a "SET LOCK MODE TO WAIT N" statement whenever we

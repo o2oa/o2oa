@@ -12,7 +12,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -22,6 +21,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionTouch extends BaseAction {
 
@@ -39,7 +39,7 @@ class ActionTouch extends BaseAction {
 			}
 			job = work.getJob();
 		}
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableAction(id, jsonElement)).get(300,
+		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(new CallableAction(id, jsonElement)).get(300,
 				TimeUnit.SECONDS);
 	}
 
@@ -67,7 +67,7 @@ class ActionTouch extends BaseAction {
 				emc.beginTransaction(Work.class);
 				Type type = new TypeToken<LinkedHashMap<String, Object>>() {
 				}.getType();
-				work.getProperties().setServiceValue(XGsonBuilder.instance().fromJson(jsonElement, type));
+				work.setServiceValue(XGsonBuilder.instance().fromJson(jsonElement, type));
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
 				Wo wo = new Wo();

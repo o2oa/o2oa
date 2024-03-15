@@ -39,6 +39,9 @@ MWF.xApplication.IMV2.LP = {
 	"open": "open",
 	"noTitle": "Untitled",
 
+	"openGroupInfo": "Group information",
+	"groupMember": "Group members",
+	"groupMemberAdmin": "Group administrator",
 	"modifyGroupName": "Modify Name",
 	"groupName": "Name",
 	"deleteConversation": "Delete Conversation",

@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Basic;
@@ -17,6 +18,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -46,7 +48,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author zhour
  *
  */
-@Schema(name = "Task", description = "流程平台已办.")
+@Schema(name = "TaskCompleted", description = "流程平台已办.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.TaskCompleted.table, uniqueConstraints = {
@@ -89,6 +91,11 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String PROCESSINGTYPE_EXTEND = "extend";
 	// 前添加处理人
 	public static final String PROCESSINGTYPE_ADD = "add";
+
+	public static final String ACT_CREATE = "create";
+	public static final String ACT_ADD = "add";
+	public static final String ACT_RESET = "reset";
+	public static final String ACT_EMPOWER = "empower";
 
 	public String getId() {
 		return id;
@@ -157,6 +164,10 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
 				this.opinion = this.getProperties().getOpinion();
 			}
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
+			this.act = this.properties.getAct();
+//			this.empowerFrom = this.properties.getEmpowerFrom();
+//			this.empowerTo = this.properties.getEmpowerTo();
 		}
 	}
 
@@ -301,6 +312,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.serial = task.getSerial();
 		this.person = task.getPerson();
 		this.identity = task.getIdentity();
+		this.distinguishedName = task.getDistinguishedName();
 		this.unit = task.getUnit();
 		this.activity = task.getActivity();
 		this.activityName = task.getActivityName();
@@ -359,11 +371,98 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.latest = true;
 		this.duration = duration;
 		this.processingType = processingType;
-		/* 必须使用set方法,执行opinion的判断 */
+		// 必须使用set方法,执行opinion的判断
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
+		// this.empowerFrom = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
+		this.label = task.getLabel();
+		// 必须使用这个方法.act是Transient对象
+		this.setAct(task.getAct());
+	}
+
+	public static final String PREVTASKIDENTITYLIST_FIELDNAME = "prevTaskIdentityList";
+	@Transient
+	@FieldDescribe("上一人工环节处理人列表.")
+	private List<String> prevTaskIdentityList;
+
+	public List<String> getPrevTaskIdentityList() {
+		if ((null != this.properties) && (null == this.prevTaskIdentityList)) {
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
+		}
+		return this.prevTaskIdentityList;
+	}
+
+	public void setPrevTaskIdentityList(List<String> prevTaskIdentityList) {
+		this.getProperties().setPrevTaskIdentityList(prevTaskIdentityList);
+		this.prevTaskIdentityList = prevTaskIdentityList;
+	}
+
+//	public static final String PREVTASKLIST_FIELDNAME = "prevTaskList";
+//	@Transient
+//	@FieldDescribe("上一人工环节待办对象列表")
+//	private List<PrevTask> prevTaskList;
+//
+//	public List<PrevTask> getPrevTaskList() {
+//		if ((null != this.properties) && (null == this.prevTaskList)) {
+//			this.prevTaskList = this.properties.getPrevTaskList();
+//		}
+//		return this.prevTaskList;
+//	}
+//
+//	public void setPrevTaskList(List<PrevTask> prevTaskList) {
+//		this.getProperties().setPrevTaskList(prevTaskList);
+//		this.prevTaskList = prevTaskList;
+//	}
+
+//	public static final String EMPOWERFROM_FIELDNAME = "empowerFrom";
+//	@FieldDescribe("授权来源.")
+//	private String empowerFrom;
+//
+//	public String getEmpowerFrom() {
+//		if ((null != this.properties) && (null == this.empowerFrom)) {
+//			this.empowerFrom = this.properties.getEmpowerFrom();
+//		}
+//		return this.empowerFrom;
+//	}
+//
+//	public void setEmpowerFrom(String empowerFrom) {
+//		this.getProperties().setEmpowerTo(empowerFrom);
+//		this.empowerFrom = empowerFrom;
+//	}
+//
+//	public static final String EMPOWERTO_FIELDNAME = "empowerTo";
+//	@FieldDescribe("授权对象")
+//	private String empowerTo;
+//
+//	public String getEmpowerTo() {
+//		if ((null != this.properties) && (null == this.empowerTo)) {
+//			this.empowerTo = this.properties.getEmpowerTo();
+//		}
+//		return this.empowerTo;
+//	}
+//
+//	public void setEmpowerTo(String empowerTo) {
+//		this.getProperties().setEmpowerTo(empowerTo);
+//		this.empowerTo = empowerTo;
+//	}
+
+	public static final String ACT_FIELDNAME = "act";
+	@Transient
+	@FieldDescribe("Ticket创建方式,empower,create,reset,add.")
+	private String act;
+
+	public String getAct() {
+		if ((null != this.properties) && (null == this.act)) {
+			this.act = this.properties.getAct();
+		}
+		return this.act;
+	}
+
+	public void setAct(String act) {
+		this.getProperties().setAct(act);
+		this.act = act;
 	}
 
 	public TaskCompletedProperties getProperties() {
@@ -504,12 +603,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = false)
 	private String identity;
 
+	@Deprecated(since = "8.2 移动到properties中")
 	public static final String empowerToIdentity_FIELDNAME = "empowerToIdentity";
 	@FieldDescribe("授权给谁处理,在processType=empower时记录授权对象")
 	@Column(length = length_255B, name = ColumnNamePrefix + empowerToIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String empowerToIdentity;
 
+	@Deprecated(since = "8.2 移动到properties中")
 	public static final String empowerFromIdentity_FIELDNAME = "empowerFromIdentity";
 	@FieldDescribe("授权自Identity")
 	@Column(length = length_255B, name = ColumnNamePrefix + empowerFromIdentity_FIELDNAME)
@@ -702,6 +803,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date viewTime;
 
+	public static final String DISTINGUISHEDNAME_FIELDNAME = "distinguishedName";
+	@Schema(description = "处理对象.")
+	@FieldDescribe("处理对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + DISTINGUISHEDNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + DISTINGUISHEDNAME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String distinguishedName;
+
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent
@@ -709,6 +818,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private TaskCompletedProperties properties;
+
+	public static final String LABEL_FIELDNAME = "label";
+	@Schema(description = "待办凭证标识.")
+	@FieldDescribe("待办凭证标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + LABEL_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + LABEL_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String label;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -934,13 +1051,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
 
-//	public String getDecision() {
-//		return decision;
-//	}
-//
-//	public void setDecision(String decision) {
-//		this.decision = decision;
-//	}
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 	public String getJob() {
 		return job;
@@ -1548,6 +1665,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setRouteAlias(String routeAlias) {
 		this.routeAlias = routeAlias;
+	}
+
+	public String getDistinguishedName() {
+		return distinguishedName;
+	}
+
+	public void setDistinguishedName(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
 	}
 
 }

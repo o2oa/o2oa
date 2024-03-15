@@ -1,7 +1,6 @@
 package com.x.organization.core.express.identity;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
@@ -29,7 +28,7 @@ public class IdentityFactory {
 	}
 
 	/** 批量获取身份的distinguishedName */
-	public List<String> list(Collection<String> values) throws Exception {
+	public List<String> list(List<String> values) throws Exception {
 		return ActionList.execute(context, values);
 	}
 
@@ -49,13 +48,13 @@ public class IdentityFactory {
 	}
 
 	/** 批量获取身份对象 */
-	public List<Identity> listObject(Collection<String> values) throws Exception {
+	public List<Identity> listObject(List<String> values) throws Exception {
 		List<? extends Identity> os = ActionListObject.execute(context, values, false);
 		return (List<Identity>) os;
 	}
 
 	/** 批量获取身份对象 */
-	public List<WoIdentity> listWoObject(Collection<String> values) throws Exception {
+	public List<WoIdentity> listWoObject(List<String> values) throws Exception {
 		List<? extends Identity> os = ActionListObject.execute(context, values, true);
 		return (List<WoIdentity>) os;
 	}
@@ -67,11 +66,11 @@ public class IdentityFactory {
 	}
 
 	/** 查询人员的身份 */
-	public List<String> listWithPerson(Collection<String> values) throws Exception {
+	public List<String> listWithPerson(List<String> values) throws Exception {
 		return ActionListWithPerson.execute(context, values, false);
 	}
 
-	public List<String> listWithPerson(Collection<String> values, Boolean useNameFind) throws Exception {
+	public List<String> listWithPerson(List<String> values, Boolean useNameFind) throws Exception {
 		return ActionListWithPerson.execute(context, values, useNameFind);
 	}
 
@@ -86,7 +85,7 @@ public class IdentityFactory {
 	}
 
 	/** 查询群组的身份 */
-	public List<String> listWithGroup(Collection<String> values) throws Exception {
+	public List<String> listWithGroup(List<String> values) throws Exception {
 		return ActionListWithGroup.execute(context, values);
 	}
 
@@ -96,7 +95,7 @@ public class IdentityFactory {
 	}
 
 	/** 根据组织获取直接成员身份 */
-	public List<String> listWithUnitSubDirect(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSubDirect(List<String> values) throws Exception {
 		return ActionListWithUnitSubDirect.execute(context, values);
 	}
 
@@ -106,7 +105,7 @@ public class IdentityFactory {
 	}
 
 	/** 根据组织获取嵌套成员身份 */
-	public List<String> listWithUnitSubNested(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSubNested(List<String> values) throws Exception {
 		return ActionListWithUnitSubNested.execute(context, values);
 	}
 
@@ -146,12 +145,12 @@ public class IdentityFactory {
 	}
 
 	/** 根据个人和组织获取身份 */
-	public List<String> listWithPersonUnit(Collection<String> units, Collection<String> people) throws Exception {
+	public List<String> listWithPersonUnit(List<String> units, List<String> people) throws Exception {
 		return ActionListWithPersonUnit.execute(context, units, people);
 	}
 
 	/** 根据个人和组织获取身份对象 */
-	public List<Identity> listWithPersonUnitObject(Collection<String> units, Collection<String> people)
+	public List<Identity> listWithPersonUnitObject(List<String> units, List<String> people)
 			throws Exception {
 		List<? extends Identity> os = ActionListWithPersonUnitObject.execute(context, units, people);
 		return (List<Identity>) os;

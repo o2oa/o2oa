@@ -247,7 +247,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"instanceMode": "Modo de instancia",
 		"draftMode": "Modo de borrador",
 		"instanceModeInfo": "(Crear una instancia del flujo directamente al crear el flujo, generar una tarea pendiente para el autor del borrador)",
-		"draftModeInfo": "(No crear una instancia del flujo al crear el flujo, no generar tarea pendiente, generar un documento de borrador, crear una instancia del flujo solo cuando se realiza el procesamiento)",
+		"draftModeInfo": "(No crear una instancia del flujo al crear el flujo, no generar tarea pendiente, generar un documento de borrador, crear una instancia del flujo solo cuando se realiza el procesamiento. Los archivos adjuntos no se pueden cargar en modo borrador.)",
 
 		"checkDraft": "Verificación al crear",
 		"checkDraftInfo": "(Seleccionar \"Sí\": las instancias del flujo que no se hayan guardado no se guardarán)",
@@ -257,6 +257,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"starGroup": "Grupo de inicio",
 		"manager": "Administrador",
 		"maintenanceIdentity": "Encargado del mantenimiento",
+		"defaultIdentity": "Manejador predeterminado",
+		"managerScript": "mantenimiento",
 
 		"number": "Número",
 		"numberActivity": "Actividad de numeración",
@@ -318,6 +320,16 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"reviewer": "Revisor",
 		"reviewerId": "Identificación",
 		"unit": "Organización",
+
+		"participante": "Rol del proceso",
+		"participant_creator": "iniciador",
+		"participant_activity": "Participante",
+		"participant_maintenance": "Mantenedor",
+		"participant_none": "Ninguno",
+
+		"participant_creator_info": "Establecer el iniciador de la instancia del proceso como el controlador de la actividad actual",
+		"participant_maintenance_info": "Establecer el mantenedor del proceso como el manejador de la actividad actual",
+		"participant_activity_info": "Establezca el controlador de la actividad que la instancia de proceso ha transferido como el controlador de la actividad actual. Seleccione la actividad a continuación",
 
 		"splitScript": "Script de criterios de división",
 		"embed": "Llamar",
@@ -419,6 +431,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"setTimeoutAfterWorkHours": "Establecer horas laborales para el tiempo de espera",
 		"activityPower": "Permisos",
 		"allowDelete": "Permitir eliminación de archivos",
+		"allowTerminate": "Permitir terminación",
 		"allowReset": "Permitir reinicio",
 		"resetCount": "Número de reinicios de aprobación",
 		"resetRange": "Alcance de reinicio",
@@ -469,6 +482,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"opinionRequired": "Se requiere opinión",
 		"routeType": "Tipo de ruta",
 		"defaultRoute": "Ruta predeterminada",
+		"sole": "Seleccionado por defecto",
+		"defaultRouteSelected": "Ruta predeterminada",
 		"backRoute": "Ruta de retorno",
 		"appendTask": "Transferir (solo para la misma actividad)",
 		"appendTaskInfo": "La transferencia no activa eventos de actividad",

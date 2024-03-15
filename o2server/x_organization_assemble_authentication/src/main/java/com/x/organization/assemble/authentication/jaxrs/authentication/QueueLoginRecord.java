@@ -11,6 +11,7 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.assemble.authentication.jaxrs.authentication.QueueLoginRecord.LoginRecord;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.enums.PersonStatusEnum;
 
 public class QueueLoginRecord extends AbstractQueue<LoginRecord> {
 
@@ -31,6 +32,12 @@ public class QueueLoginRecord extends AbstractQueue<LoginRecord> {
 				person.setLastLoginTime(date);
 				person.setLastLoginAddress(address);
 				person.setLastLoginClient(client);
+				if(PersonStatusEnum.LOCK.getValue().equals(person.getStatus()) &&
+						person.getLockExpireTime().getTime() < System.currentTimeMillis()){
+					person.setStatus(PersonStatusEnum.NORMAL.getValue());
+					person.setLockExpireTime(null);
+					person.setStatusDes("");
+				}
 				emc.commit();
 			}
 		}

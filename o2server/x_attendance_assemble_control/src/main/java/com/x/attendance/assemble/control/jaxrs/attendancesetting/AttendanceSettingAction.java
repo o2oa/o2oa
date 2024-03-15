@@ -28,7 +28,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("attendancesetting")
-@JaxrsDescribe("系统配置信息管理服务")
+@JaxrsDescribe("系统配置信息管理服务（已弃用）")
 public class AttendanceSettingAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceSettingAction.class);

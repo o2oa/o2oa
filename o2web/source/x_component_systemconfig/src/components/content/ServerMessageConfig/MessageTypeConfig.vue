@@ -51,7 +51,7 @@
             <el-collapse-item v-if="type!=='custom'" :name="type">
               <template #title>
                 <div style="display: flex; align-items: center; width: 100%;">
-                  <div class="item_server_item_slot" style="width: 70%">{{messageTypes.custom[type].description}}({{type}})</div>
+                  <div class="item_server_item_slot" style="width: 70%">{{messageTypes.custom[type].description}}(custom_{{type}})</div>
                   <div class="item_module_store_del o2icon-del" @click="deleteTmpMessage($event, type)"></div>
                 </div>
               </template>

@@ -71,15 +71,15 @@ class ActionListObject extends BaseAction {
 		List<Wo> wos = new ArrayList<>();
 		for (String str : wi.getPersonList()) {
 			Person o = business.person().pick(str);
-			if(o!=null){
+			if (o != null) {
 				Wo wo = this.convert(business, o, Wo.class);
 				wo.setMatchKey(str);
 				wos.add(wo);
 			}
 		}
-		if(wos.isEmpty() && BooleanUtils.isTrue(wi.getUseNameFind())){
+		if (wos.isEmpty() && BooleanUtils.isTrue(wi.getUseNameFind())) {
 			List<Person> os = business.person().listWithName(wi.getPersonList());
-			for(Person o : os){
+			for (Person o : os) {
 				Wo wo = this.convert(business, o, Wo.class);
 				wo.setMatchKey(o.getName());
 				wos.add(wo);

@@ -2,13 +2,13 @@ package com.x.processplatform.service.processing.processor.choice;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.script.CompiledScript;
+import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Choice;
 import com.x.processplatform.core.entity.element.Route;
@@ -50,22 +50,22 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Choice choice) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Choice choice) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.choiceInquire(aeiObjects.getWork().getActivityToken(), choice));
-		List<Route> results = new ArrayList<>();
 		// 多条路由进行判断
 		for (Route o : aeiObjects.getRoutes()) {
-			CompiledScript compiledScript = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE);
-			if (BooleanUtils.isTrue(
-					JsonScriptingExecutor.evalBoolean(compiledScript, aeiObjects.scriptContext(), Boolean.FALSE))) {
-				results.add(o);
-				break;
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), o,
+					Business.EVENT_ROUTE);
+
+			Optional<Boolean> opt = GraalvmScriptingFactory.evalAsBoolean(source, aeiObjects.bindings());
+
+			if (opt.isPresent() && BooleanUtils.isTrue(opt.get())) {
+				return Optional.of(o);
 			}
 		}
-		return results;
+		return Optional.empty();
 	}
 
 	@Override

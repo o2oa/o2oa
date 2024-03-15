@@ -30,7 +30,7 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 		html += " :plain=\"plain\"";
 		html += " :round=\"round\"";
 		html += " :circle=\"circle\"";
-		html += " :icon=\"icon\"";
+		if( this.json.iconPosition !== "right" )html += " :icon=\"icon\"";
 		html += " :disabled=\"disabled\"";
 		html += " :loading=\"loading\"";
 
@@ -52,7 +52,9 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 		// }
 
 		// html += ">"+((this.json.circle!==true && this.json.isText!==false) ? (this.json.name || this.json.id) : "")+"</el-button>";
-		html += ">{{(isText===false) ? '' : name||id}}</el-button>";
+		html += ">{{(isText===false) ? '' : name||id}}";
+		if( this.json.iconPosition === "right" )html += "<i class=\""+ this.json.icon +" el-icon--right\"></i>";
+		html += "</el-button>";
 		return html;
 	},
 	_createCopyNode: function(){
@@ -67,5 +69,17 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 		if (!this.copyNode) this._createCopyNode();
 		this.copyNode.setStyle("display", "inline-block");
 		return this.copyNode;
-	}
+	},
+	_setEditStyle_custom: function(name){
+		switch (name){
+			case "name": this.setPropertyName(); break;
+			case "id": this.setPropertyId(); break;
+			case "buttonRadio":
+			case "iconPosition":
+			case "icon":
+			case "vueSlot":
+				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			default: ;
+		}
+	},
 });

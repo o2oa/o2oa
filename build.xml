@@ -75,6 +75,16 @@
 			project.setNewProperty("length_arm_mb", length_arm_mbytes);
 		]]>
 		</script>
+		<checksum file="${preName}-${VERSION}-sw.zip" property="build_sw.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-sw.zip" property="length_sw"/>
+		<script language="javascript">
+			<![CDATA[
+			var length_sw_bytes = project.getProperty("length_sw");
+			var length_sw_kbytes = Math.round((length_sw_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_sw_mbytes = Math.round((length_sw_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			project.setNewProperty("length_sw_mb", length_sw_mbytes);
+		]]>
+		</script>
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
 		</tstamp>
@@ -142,6 +152,15 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-${VERSION}-linux-arm.zip",
 			"sha256": "${build_arm.sha}"
+			},
+			"sw": {
+			"system": "sw",
+			"name": "o2server-${VERSION}-sw",
+			"fileName": "o2server-${VERSION}-sw.zip",
+			"fileSize": "${length_sw_mb}MB",
+			"updateTime": "${TODAY}",
+			"url": "/download/o2server-${VERSION}-sw.zip",
+			"sha256": "${build_sw.sha}"
 			},
 			"jvm_windows": {}
 			}
@@ -212,6 +231,15 @@
 			"url": "/download/o2server-${VERSION}-linux-arm.zip",
 			"sha256": "${build_arm.sha}"
 			},
+			"sw": {
+			"system": "sw",
+			"name": "o2server-${VERSION}-sw",
+			"fileName": "o2server-${VERSION}-sw.zip",
+			"fileSize": "${length_sw_mb}MB",
+			"updateTime": "${TODAY}",
+			"url": "/download/o2server-${VERSION}-sw.zip",
+			"sha256": "${build_sw.sha}"
+			},
 			"source":{
 			"name":"o2oa-master",
 			"updateTime":"${TODAY}",
@@ -220,7 +248,7 @@
 			}
 			}</echo>
 	</target>
-	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macos,zip_aix,zip_raspi,zip_mips,zip_arm" />
+	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macos,zip_aix,zip_raspi,zip_mips,zip_arm,zip_sw" />
 	<target name="version_o2">
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -239,7 +267,6 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="console.jar"/>
 				<include name="jvm/windows_java11/"/>
 				<include name="service_windows.bat"/>
 				<include name="start_windows.bat"/>
@@ -261,12 +288,10 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="console.jar"/>
 				<include name="jvm/linux_java11/"/>
 				<include name="start_linux.sh"/>
 				<include name="start_linux_min.sh"/>
 				<include name="start_linux_debug.sh"/>
-				<include name="start_linux_min.sh"/>
 				<include name="console_linux.sh"/>
 				<include name="stop_linux.sh"/>
 				<include name="service_linux.sh"/>
@@ -285,7 +310,6 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="console.jar"/>
 				<include name="jvm/macos_java11/"/>
 				<include name="start_macos.sh"/>
 				<include name="start_macos_debug.sh"/>
@@ -306,7 +330,6 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="console.jar"/>
 				<include name="jvm/aix_java11/"/>
 				<include name="start_aix.sh"/>
 				<include name="start_aix_debug.sh"/>
@@ -327,7 +350,6 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="console.jar"/>
 				<include name="jvm/raspi_java11/"/>
 				<include name="start_raspi.sh"/>
 				<include name="start_raspi_debug.sh"/>
@@ -348,7 +370,6 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="console.jar"/>
 				<include name="jvm/mips_java11/"/>
 				<include name="start_mips.sh"/>
 				<include name="start_mips_debug.sh"/>
@@ -369,12 +390,31 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="console.jar"/>
 				<include name="jvm/arm_java11/"/>
 				<include name="start_arm.sh"/>
 				<include name="start_arm_debug.sh"/>
 				<include name="console_arm.sh"/>
 				<include name="stop_arm.sh"/>
+			</zipfileset>
+		</zip>
+	</target>
+	<target name="zip_sw">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-sw.zip" update="false">
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
+				<include name="commons/"/>
+				<exclude name="commons/ext/" />
+				<include name="configSample/"/>
+				<include name="localSample/"/>
+				<include name="servers/"/>
+				<include name="store/"/>
+				<include name="console.jar"/>
+				<include name="index.html"/>
+				<include name="version.o2"/>
+				<include name="jvm/sw_java11/"/>
+				<include name="start_sw.sh"/>
+				<include name="start_sw_debug.sh"/>
+				<include name="console_sw.sh"/>
+				<include name="stop_sw.sh"/>
 			</zipfileset>
 		</zip>
 	</target>

@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.manual;
 
 import com.x.base.core.project.exception.RunningException;
 
+@Deprecated(since = "8.2")
 class ExceptionExpectedEmpty extends RunningException {
 
 	private static final long serialVersionUID = 9085364457175859374L;

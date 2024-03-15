@@ -608,6 +608,10 @@ MWF.xApplication.cms.Module.Main = new Class({
 			} else {
 				dataStr = window.clipboardData.getData("Text");
 			}
+			if( !dataStr.contains("elementType") )return;
+			if( !dataStr.contains("cmsDocument") )return;
+			if( dataStr.contains("eval(\"") || dataStr.contains("eval('") )return;
+
 			var data = JSON.decode(dataStr);
 
 			this.listPublishableCategoryInfo(function(){

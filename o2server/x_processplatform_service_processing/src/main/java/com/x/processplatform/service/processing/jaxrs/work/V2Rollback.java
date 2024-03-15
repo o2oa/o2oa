@@ -1,10 +1,15 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -13,23 +18,16 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Manual;
@@ -37,253 +35,232 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
+import com.x.processplatform.core.entity.ticket.Tickets;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWo;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
+import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.processor.TaskTickets;
 
 class V2Rollback extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(V2Rollback.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Rollback.class);
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-        LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-        final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Param param = this.init(id, jsonElement);
 
-        final String job;
+		CallableImpl callable = new CallableImpl(param);
 
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
-            if (null == work) {
-                throw new ExceptionEntityNotExist(id, Work.class);
-            }
-            job = work.getJob();
-        }
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
 
-        Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-            public ActionResult<Wo> call() throws Exception {
-                Work work;
-                WorkLogTree tree;
-                WorkLog workLog;
-                try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-                    Business business = new Business(emc);
-                    work = getWork(business, id);
-                    List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
-                    tree = new WorkLogTree(emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
-                    workLog = getTargetWorkLog(workLogs, wi.getWorkLog());
-                    Node workLogNode = tree.find(workLog);
-                    Nodes nodes = tree.down(workLogNode);
-                    List<String> activityTokens = activityTokenOfNodes(nodes);
+	}
 
-                    LOGGER.debug("activityTokens:{}.", () -> gson.toJson(activityTokens));
+	private Param init(String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
+		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Work work = emc.fetch(id, Work.class,
+					ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME, Work.process_FIELDNAME));
+			if (null == work) {
+				throw new ExceptionEntityNotExist(id, Work.class);
+			}
+			Application application = business.element().get(work.getApplication(), Application.class);
+			if (null == application) {
+				throw new ExceptionEntityNotExist(work.getApplication(), Application.class);
+			}
+			Process process = business.element().get(work.getProcess(), Process.class);
+			if (null == process) {
+				throw new ExceptionEntityNotExist(work.getProcess(), Process.class);
+			}
+			param.job = work.getJob();
+			param.work = work;
+			WorkLog workLog = emc.find(wi.getWorkLog(), WorkLog.class);
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
+			}
+			param.workLog = workLog;
+			param.distinguishedNameList = wi.getDistinguishedNameList();
+		}
+		return param;
+	}
 
-                    emc.beginTransaction(Task.class);
-                    emc.beginTransaction(TaskCompleted.class);
-                    emc.beginTransaction(Read.class);
-                    emc.beginTransaction(ReadCompleted.class);
-                    emc.beginTransaction(WorkLog.class);
-                    emc.beginTransaction(Work.class);
-                    emc.beginTransaction(Record.class);
+	private class Param {
 
-                    deleteTasks(business, work.getJob(), activityTokens);
-                    deleteTaskCompleteds(business, work.getJob(), activityTokens);
-                    deleteReads(business, work.getJob(), activityTokens);
-                    deleteReadCompleteds(business, work.getJob(), activityTokens);
-                    deleteRecords(business, work.getJob(), activityTokens);
-                    deleteWorkLogs(business, work.getJob(), activityTokens);
+		private String job;
+		private Work work;
+		private WorkLog workLog;
+		private List<String> distinguishedNameList;
 
-                    List<String> workIds = workOfNodes(nodes);
+	}
 
-                    workIds = ListUtils.subtract(workIds, ListTools.toList(work.getId()));
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
-                    deleteWorks(business, work.getJob(), workIds);
+		private Param param;
 
-                    update(business, work, workLog);
+		private CallableImpl(Param param) {
+			this.param = param;
+		}
 
-                    List<String> manualTaskIdentityList = new ArrayList<>();
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Work work = emc.find(param.work.getId(), Work.class);
+				List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
+				WorkLogTree tree = new WorkLogTree(emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
+				WorkLog workLog = getTargetWorkLog(workLogs, param.workLog.getId());
+				Activity activity = business.element().getActivity(workLog.getFromActivity());
+				AeiObjects aeiObjects = new AeiObjects(business, work, activity, new ProcessingAttributes());
+				Node workLogNode = tree.find(workLog);
+				Nodes nodes = tree.down(workLogNode);
+				List<String> activityTokens = activityTokenOfNodes(nodes);
 
-                    List<TaskCompleted> taskCompleteds = new ArrayList<>();
+				LOGGER.debug("activityTokens:{}.", () -> gson.toJson(activityTokens));
 
-                    if (ListTools.isNotEmpty(wi.getTaskCompletedIdentityList())) {
-                        // 如果指定了回退人
-                        taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-                                work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
-                                TaskCompleted.identity_FIELDNAME, wi.getTaskCompletedIdentityList());
-                    } else {
-                        taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-                                work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
-                                TaskCompleted.joinInquire_FIELDNAME, true);
-                    }
+				aeiObjects.getTasks().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteTasks()::add);
 
-                    for (TaskCompleted o : taskCompleteds) {
-                        if (BooleanUtils.isTrue(o.getJoinInquire())) {
-                            emc.remove(o, CheckRemoveType.all);
-                        }
-                        manualTaskIdentityList.add(o.getIdentity());
-                    }
-                    updateManualTaskIdentityMatrix(business, work, manualTaskIdentityList);
-                    emc.commit();
-                }
+				// 将已有的已办标识为joinInquire=false,这样由于存在已办所以撤回将被禁用.
+				aeiObjects.getTaskCompleteds().stream()
+						.filter(o -> StringUtils.equals(workLog.getFromActivityToken(), o.getActivityToken()))
+						.forEach(o -> {
+							o.setJoinInquire(false);
+							aeiObjects.getUpdateTaskCompleteds().add(o);
+						});
 
-                ActionResult<Wo> result = new ActionResult<>();
-                Wo wo = new Wo();
-                wo.setValue(true);
-                result.setData(wo);
-                return result;
-            }
-        };
+				aeiObjects.getTaskCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						// 前面已经更新,不能再次删除
+						.filter(o -> !aeiObjects.getUpdateTaskCompleteds().contains(o))
+						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
 
-        return ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
+				// 调整latest标识,否则有不是latest的已办不会在已办列表中显示
+				aeiObjects.getTaskCompleteds().stream().filter(o -> !aeiObjects.getDeleteTaskCompleteds().contains(o))
+						.collect(Collectors.groupingBy(TaskCompleted::getPerson)).entrySet().stream()
+						.map(Map.Entry::getValue)
+						.filter(o -> o.stream().noneMatch(t -> BooleanUtils.isTrue(t.getLatest()))).forEach(o -> {
+							Optional<TaskCompleted> opt = o.stream()
+									.sorted(Comparator.comparing(TaskCompleted::getCompletedTime,
+											Comparator.nullsFirst(Date::compareTo).reversed()))
+									.findFirst();
+							if (opt.isPresent()) {
+								opt.get().setLatest(true);
+								aeiObjects.getUpdateTaskCompleteds().add(opt.get());
+							}
+						});
 
-    }
+				aeiObjects.getReads().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteReads()::add);
 
-    private Work getWork(Business business, String workId) throws Exception {
-        Work work = business.entityManagerContainer().find(workId, Work.class);
-        if (null == work) {
-            throw new ExceptionEntityNotExist(workId, Work.class);
-        }
-        Application application = business.element().get(work.getApplication(), Application.class);
-        if (null == application) {
-            throw new ExceptionEntityNotExist(work.getApplication(), Application.class);
-        }
-        Process process = business.element().get(work.getProcess(), Process.class);
-        if (null == process) {
-            throw new ExceptionEntityNotExist(work.getProcess(), Process.class);
-        }
-        return work;
-    }
+				aeiObjects.getReadCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteReadCompleteds()::add);
 
-    private void update(Business business, Work work, WorkLog workLog) throws Exception {
-        work.setActivity(workLog.getFromActivity());
-        work.setActivityType(workLog.getFromActivityType());
-        work.setActivityAlias(workLog.getFromActivityAlias());
-        work.setActivityName(workLog.getFromActivityName());
-        work.setActivityToken(workLog.getFromActivityToken());
-        work.setSplitting(workLog.getSplitting());
-        work.setSplitToken(workLog.getSplitToken());
-        work.setSplitValue(workLog.getSplitValue());
-        // 重新设置表单
-        String formId = business.element().lookupSuitableForm(work.getProcess(), work.getActivity());
-        if (StringUtils.isNotBlank(formId)) {
-            work.setForm(formId);
-        }
-        workLog.setConnected(false);
-        workLog.setArrivedActivity("");
-        workLog.setArrivedActivityAlias("");
-        workLog.setArrivedActivityName("");
-        workLog.setArrivedActivityToken("");
-        workLog.setArrivedActivityType(null);
-        workLog.setArrivedGroup(null);
-        workLog.setArrivedOpinionGroup(null);
-        workLog.setArrivedTime(null);
-    }
+				aeiObjects.getRecords().stream().filter(o -> activityTokens.contains(o.getFromActivityToken()))
+						.forEach(aeiObjects.getDeleteRecords()::add);
 
-    private void updateManualTaskIdentityMatrix(Business business, Work work, List<String> manualTaskIdentityList)
-            throws Exception {
-        if (Objects.equals(ActivityType.manual, work.getActivityType())) {
-            Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
-            if (null != manual) {
-                work.setManualTaskIdentityMatrix(manual.identitiesToManualTaskIdentityMatrix(manualTaskIdentityList));
-            }
+				aeiObjects.getWorkLogs().stream().filter(o -> activityTokens.contains(o.getFromActivityToken()))
+						.forEach(aeiObjects.getDeleteWorkLogs()::add);
 
-        }
-    }
+				aeiObjects.getReviews().stream()
+						.filter(o -> o.getCreateTime().getTime() > workLog.getCreateTime().getTime())
+						.forEach(aeiObjects.getDeleteReviews()::add);
 
-    private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws ExceptionEntityNotExist {
-        WorkLog workLog = list.stream().filter(o -> StringUtils.equals(o.getId(), id)).findFirst().orElse(null);
-        if (null == workLog) {
-            throw new ExceptionEntityNotExist(id, WorkLog.class);
-        }
-        return workLog;
-    }
+				List<String> workIds = ListUtils.subtract(workOfNodes(nodes), ListTools.toList(work.getId()));
 
-    private List<String> activityTokenOfNodes(Nodes nodes) {
-        List<String> list = new ArrayList<>();
-        for (Node o : nodes) {
-            list.add(o.getWorkLog().getFromActivityToken());
-        }
-        return ListTools.trim(list, true, true);
-    }
+				aeiObjects.getWorks().stream().filter(o -> workIds.contains(o.getId()))
+						.forEach(o -> aeiObjects.getDeleteWorks().add(o));
 
-    private List<String> workOfNodes(Nodes nodes) {
-        List<String> os = new ArrayList<>();
-        for (Node o : nodes) {
-            os.add(o.getWorkLog().getWork());
-        }
-        return ListTools.trim(os, true, true);
-    }
+				update(business, work, workLog);
 
-    private void deleteTasks(Business business, String job, List<String> activityTokens) throws Exception {
-        List<Task> os = business.entityManagerContainer().listEqualAndIn(Task.class, Task.job_FIELDNAME, job,
-                Task.activityToken_FIELDNAME, activityTokens);
-        for (Task o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
-            MessageFactory.task_delete(o);
-        }
-    }
+				updateTickets(business, aeiObjects, param.distinguishedNameList);
+				aeiObjects.getUpdateWorks().add(work);
+				aeiObjects.commit();
+			}
 
-    private void deleteTaskCompleteds(Business business, String job, List<String> activityTokens) throws Exception {
-        List<TaskCompleted> os = business.entityManagerContainer().listEqualAndIn(TaskCompleted.class,
-                TaskCompleted.job_FIELDNAME, job, TaskCompleted.activityToken_FIELDNAME, activityTokens);
-        for (TaskCompleted o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
-            MessageFactory.taskCompleted_delete(o);
-        }
-    }
+			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
+			wo.setId(param.work.getId());
+			result.setData(wo);
+			return result;
+		}
 
-    private void deleteReads(Business business, String job, List<String> activityTokens) throws Exception {
-        List<Read> os = business.entityManagerContainer().listEqualAndIn(Read.class, Read.job_FIELDNAME, job,
-                Read.activityToken_FIELDNAME, activityTokens);
-        for (Read o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
-            MessageFactory.read_delete(o);
-        }
-    }
+		private void update(Business business, Work work, WorkLog workLog) throws Exception {
+			work.setActivity(workLog.getFromActivity());
+			work.setActivityType(workLog.getFromActivityType());
+			work.setActivityAlias(workLog.getFromActivityAlias());
+			work.setActivityName(workLog.getFromActivityName());
+			work.setActivityToken(workLog.getFromActivityToken());
+			work.setSplitting(workLog.getSplitting());
+			work.setSplitToken(workLog.getSplitToken());
+			work.setSplitValue(workLog.getSplitValue());
+			// 重新设置表单
+			String formId = business.element().lookupSuitableForm(work.getProcess(), work.getActivity());
+			if (StringUtils.isNotBlank(formId)) {
+				work.setForm(formId);
+			}
+			workLog.setConnected(false);
+			workLog.setArrivedActivity("");
+			workLog.setArrivedActivityAlias("");
+			workLog.setArrivedActivityName("");
+			workLog.setArrivedActivityToken("");
+			workLog.setArrivedActivityType(null);
+			workLog.setArrivedGroup(null);
+			workLog.setArrivedOpinionGroup(null);
+			workLog.setArrivedTime(null);
+		}
 
-    private void deleteReadCompleteds(Business business, String job, List<String> activityTokens) throws Exception {
-        List<ReadCompleted> os = business.entityManagerContainer().listEqualAndIn(ReadCompleted.class,
-                ReadCompleted.job_FIELDNAME, job, ReadCompleted.activityToken_FIELDNAME, activityTokens);
-        for (ReadCompleted o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
-            MessageFactory.readCompleted_delete(o);
-        }
-    }
+		private void updateTickets(Business business, AeiObjects aeiObjects, List<String> distinguishedNameList)
+				throws Exception {
+			if (Objects.equals(ActivityType.manual, aeiObjects.getWork().getActivityType())) {
+				Manual manual = (Manual) business.element().get(aeiObjects.getWork().getActivity(),
+						ActivityType.manual);
+				if ((null != manual) && ListTools.isNotEmpty(distinguishedNameList)) {
+					aeiObjects.getWork().setTickets(TaskTickets.translate(aeiObjects, manual, distinguishedNameList));
+					return;
+				}
+			}
+			aeiObjects.getWork().setTickets(new Tickets());
+		}
 
-    private void deleteRecords(Business business, String job, List<String> activityTokens) throws Exception {
-        List<Record> os = business.entityManagerContainer().listEqualAndIn(Record.class, Record.job_FIELDNAME, job,
-                Record.fromActivityToken_FIELDNAME, activityTokens);
-        for (Record o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
-        }
-    }
+		private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws ExceptionEntityNotExist {
+			Optional<WorkLog> opt = list.stream().filter(o -> StringUtils.equals(o.getId(), id)).findFirst();
+			if (opt.isEmpty()) {
+				throw new ExceptionEntityNotExist(id, WorkLog.class);
+			}
+			return opt.get();
+		}
 
-    private void deleteWorkLogs(Business business, String job, List<String> activityTokens) throws Exception {
-        List<WorkLog> os = business.entityManagerContainer().listEqualAndIn(WorkLog.class, WorkLog.JOB_FIELDNAME, job,
-                WorkLog.FROMACTIVITYTOKEN_FIELDNAME, activityTokens);
-        for (WorkLog o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
+		private List<String> activityTokenOfNodes(Nodes nodes) {
+			List<String> list = new ArrayList<>();
+			for (Node o : nodes) {
+				list.add(o.getWorkLog().getFromActivityToken());
+			}
+			return ListTools.trim(list, true, true);
+		}
 
-        }
-    }
+		private List<String> workOfNodes(Nodes nodes) {
+			List<String> os = new ArrayList<>();
+			for (Node o : nodes) {
+				os.add(o.getWorkLog().getWork());
+			}
+			return ListTools.trim(os, true, true);
+		}
 
-    private void deleteWorks(Business business, String job, List<String> workIds) throws Exception {
-        List<Work> os = business.entityManagerContainer().listEqualAndIn(Work.class, Work.job_FIELDNAME, job,
-                JpaObject.id_FIELDNAME, workIds);
-        for (Work o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
-            MessageFactory.work_delete(o);
-        }
-    }
+	}
 
-    public static class Wi extends V2RollbackWi {
+	public static class Wi extends V2RollbackWi {
 
-        private static final long serialVersionUID = 1549664177644024435L;
+		private static final long serialVersionUID = 1549664177644024435L;
 
-    }
+	}
 
-    public static class Wo extends WrapBoolean {
+	public static class Wo extends V2RollbackWo {
 
-        private static final long serialVersionUID = 7732547960719161607L;
-    }
+		private static final long serialVersionUID = 7732547960719161607L;
+	}
 }

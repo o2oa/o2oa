@@ -31,7 +31,7 @@ MWF.xApplication.process.Xform.Monitor = MWF.APPMonitor =  new Class(
                 "onPostLoad" : function(){
                     this.fireEvent("postLoad");
                 }.bind(this)
-            });
+            }, this);
         }.bind(this), false);
     }
 });

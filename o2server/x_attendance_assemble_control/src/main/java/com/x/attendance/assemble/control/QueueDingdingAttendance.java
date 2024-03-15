@@ -50,8 +50,6 @@ public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecor
                 logger.error(e);
                 updateSyncRecord(record, e.getMessage());
             }
-        } else {
-            logger.info("不是钉钉同步任务。。。。。。。。。。。。。");
         }
     }
 
@@ -109,7 +107,7 @@ public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecor
                             if (result.hasMore) {
                                 page++;
                             } else {
-                                logger.info("同步钉钉考勤结束。。。。。。。。。。。。。。。。");
+                                logger.info("同步钉钉考勤结束！");
                                 hasMoreResult = false;
                             }
                         } else {
@@ -120,7 +118,7 @@ public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecor
                 }
                 //是否还有更多用户
                 if (list.size() < personPageSize) {
-                    logger.info("同步钉钉考勤 没有更多用户了，结束。。。。。。。。。。。。。。。");
+                    logger.info("同步钉钉考勤 没有更多用户了，结束！");
                     hasNextPerson = false;
                     updateSyncRecord(record, null);
                 } else {
@@ -130,7 +128,7 @@ public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecor
                 }
             } else {
                 //没有用户查询到结束
-                logger.info("同步钉钉考勤 查询不到用户了，结束。。。。。。。。。。。。。。。");
+                logger.info("同步钉钉考勤 查询不到用户了，结束！");
                 hasNextPerson = false;
                 updateSyncRecord(record, null);
             }
@@ -150,7 +148,7 @@ public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecor
                 hasNextDate = false;
             }
         }
-        logger.info("发起数据统计程序 完成。。。。。。。。。。");
+        logger.info("发起数据统计程序 完成！");
     }
     private void deleteDingdingAttendance(Date fromDate, Date toDate) throws Exception{
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

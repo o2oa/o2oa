@@ -25,7 +25,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("fileimport")
-@JaxrsDescribe("考勤数据导入服务")
+@JaxrsDescribe("考勤数据导入服务（已弃用）")
 public class AttendanceDetailFileImportAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceDetailFileImportAction.class);

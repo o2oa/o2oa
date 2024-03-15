@@ -27,6 +27,8 @@ class ActionListWithIdentityObject extends BaseAction {
 
 	public static class Wi extends WoAbstract {
 
+		private static final long serialVersionUID = 1794127661786349239L;
+
 	}
 
 }

@@ -5,17 +5,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Review;
@@ -61,8 +59,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				throw new ExceptionActivityNotExist(work.getTitle(), work.getId(), work.getDestinationActivityType(),
 						work.getDestinationActivity());
 			}
-			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
-					processingAttributes);
+			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
 			// 清空可能的Manual活动预期人员
 			this.arriveCleanManualTaskIdentityMatrix(aeiObjects);
 			// 清空可能的Manual活动授权信息
@@ -112,7 +109,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	}
 
 	private void arriveCleanManualEmpowerMap(AeiObjects aeiObjects) {
-		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<>());
+		aeiObjects.getWork().setManualEmpowerMap(new LinkedHashMap<>());
 	}
 
 	private void arriveUpdateWorkThroughManual(AeiObjects aeiObjects) throws Exception {
@@ -126,16 +123,16 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private void callBeforeArriveScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallBeforeArriveScript())
 				&& this.hasBeforeArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			CompiledScript cs = null;
+			Source source = null;
 			if (this.hasBeforeArriveScript(aeiObjects.getProcess())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_BEFOREARRIVE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			if (this.hasBeforeArriveScript(aeiObjects.getActivity())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_BEFOREARRIVE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 		}
 	}
@@ -143,16 +140,16 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private boolean callAfterArriveScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterArriveScript())
 				&& this.hasAfterArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			CompiledScript cs = null;
+			Source source = null;
 			if (this.hasAfterArriveScript(aeiObjects.getProcess())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_AFTERARRIVE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			if (this.hasAfterArriveScript(aeiObjects.getActivity())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_AFTERARRIVE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			return true;
 		}
@@ -199,8 +196,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				throw new ExceptionActivityNotExist(work.getTitle(), work.getId(), work.getActivityType(),
 						work.getActivity());
 			}
-			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
-					processingAttributes);
+			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
 			// 如果是调度路由,需要重新设置froceRoute
 			if (BooleanUtils.isNotTrue(work.getBeforeExecuted())) {
@@ -208,9 +204,17 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				this.callBeforeExecuteScript(aeiObjects);
 				work.setBeforeExecuted(true);
 			}
-			// 运行业务方法
-			List<Work> works = this.executeProcessing(aeiObjects);
-
+			List<Work> works = new ArrayList<>();
+			// 8.2版本以前没有使用destinationActivity作为强制路由,如果这里不单独判断,老版本的数据会原地转圈,在同一环节再次进入,重新生成activityToken,现象就是所有待办会重新生成.
+			// 调度reroute靠此代码跳过执行.
+			if (StringUtils.isNotEmpty(work.getDestinationActivity())
+					&& Objects.nonNull(work.getDestinationActivityType())
+					&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
+				works.add(work);
+			} else {
+				// 运行业务方法
+				works.addAll(this.executeProcessing(aeiObjects));
+			}
 			if (ListTools.isNotEmpty(works)) {
 				for (Work o : works) {
 					results.add(o.getId());
@@ -223,12 +227,11 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				// 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码可能修改了data数据.
 				aeiObjects.entityManagerContainer().commit();
 			}
-
 			if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScript())
 					|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScriptText())) {
-				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
-						aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PROCESSAFTEREND);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						aeiObjects.getProcess(), Business.EVENT_PROCESSAFTEREND);
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -239,33 +242,33 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private void callBeforeExecuteScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallBeforeExecuteScript())
 				&& this.hasBeforeExecuteScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript cs = null;
+			Source source = null;
 			if (this.hasBeforeExecuteScript(aeiObjects.getProcess())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_BEFOREEXECUTE);
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			if (this.hasBeforeExecuteScript(aeiObjects.getActivity())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_BEFOREEXECUTE);
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
-			JsonScriptingExecutor.eval(cs, scriptContext);
 		}
 	}
 
 	private boolean callAfterExecuteScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterExecuteScript())
 				&& this.hasAfterExecuteScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			CompiledScript cs = null;
+			Source source = null;
 			if (this.hasAfterExecuteScript(aeiObjects.getProcess())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_AFTEREXECUTE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			if (this.hasAfterExecuteScript(aeiObjects.getActivity())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_AFTEREXECUTE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			return true;
 		}
@@ -290,24 +293,22 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				throw new ExceptionActivityNotExist(work.getTitle(), work.getId(), work.getActivityType(),
 						work.getActivity());
 			}
-			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
-					processingAttributes);
+			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
 			// 运行查询路由前脚本
 			this.callBeforeInquireScript(aeiObjects);
 			// 运行主方法
-			List<Route> selectRoutes = this.inquireProcessing(aeiObjects);
+			Route selectRoute = this.inquireProcessing(aeiObjects);
 			// 主方法运行完成
-			aeiObjects.addSelectRoutes(selectRoutes);
-			if ((null == selectRoutes) || selectRoutes.isEmpty()) {
-				throw new IllegalStateException("inquire return empty routes");
+			if (null == selectRoute) {
+				return results;
 			}
 			List<Work> works = new ArrayList<>();
 			// 运行查询路由后脚本
-			work.setDestinationActivity(selectRoutes.get(0).getActivity());
-			work.setDestinationActivityType(selectRoutes.get(0).getActivityType());
-			work.setDestinationRoute(selectRoutes.get(0).getId());
-			work.setDestinationRouteName(selectRoutes.get(0).getName());
+			work.setDestinationActivity(selectRoute.getActivity());
+			work.setDestinationActivityType(selectRoute.getActivityType());
+			work.setDestinationRoute(selectRoute.getId());
+			work.setDestinationRouteName(selectRoute.getName());
 			works.add(work);
 			for (Work o : works) {
 				results.add(o.getId());
@@ -338,33 +339,33 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private void callBeforeInquireScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallBeforeInquireScript())
 				&& this.hasBeforeInquireScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript cs = null;
+			Source source = null;
 			if (this.hasBeforeInquireScript(aeiObjects.getProcess())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_BEFOREINQUIRE);
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			if (this.hasBeforeInquireScript(aeiObjects.getActivity())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_BEFOREINQUIRE);
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
-			JsonScriptingExecutor.eval(cs, scriptContext);
 		}
 	}
 
 	private boolean callAfterInquireScript(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getActivityProcessingConfigurator().getCallAfterInquireScript())
 				&& this.hasAfterInquireScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
-			CompiledScript cs = null;
+			Source source = null;
 			if (this.hasAfterInquireScript(aeiObjects.getProcess())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getProcess(), Business.EVENT_AFTERINQUIRE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			if (this.hasAfterInquireScript(aeiObjects.getActivity())) {
-				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+				source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 						aeiObjects.getActivity(), Business.EVENT_AFTERINQUIRE);
-				JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			return true;
 		}
@@ -379,8 +380,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	protected abstract void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception;
 
-	// TODO 需要优化,只需要返回单值 MUST! 下一个版本一定改完
-	protected abstract List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception;
+	protected abstract Route inquireProcessing(AeiObjects aeiObjects) throws Exception;
 
 	protected abstract void inquireCommitted(AeiObjects aeiObjects) throws Exception;
 

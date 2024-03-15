@@ -12,7 +12,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -20,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionDelete extends BaseAction {
 
@@ -29,8 +29,6 @@ class ActionDelete extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -42,8 +40,10 @@ class ActionDelete extends BaseAction {
 			executorSeed = taskCompleted.getJob();
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
+		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
+			public ActionResult<Wo> call() throws Exception {
+				ActionResult<Wo> result = new ActionResult<>();
+				Wo wo = new Wo();
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					TaskCompleted taskCompleted = emc.find(id, TaskCompleted.class);
 					if (null == taskCompleted) {
@@ -63,17 +63,14 @@ class ActionDelete extends BaseAction {
 					}
 					emc.remove(taskCompleted, CheckRemoveType.all);
 					emc.commit();
-
 					wo.setId(taskCompleted.getId());
+					result.setData(wo);
 				}
-				return "";
+				return result;
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-
-		result.setData(wo);
-		return result;
+		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 

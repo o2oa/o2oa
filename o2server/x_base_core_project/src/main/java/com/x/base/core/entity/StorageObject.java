@@ -1,11 +1,40 @@
 package com.x.base.core.entity;
 
-import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.tools.DefaultCharset;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.util.Date;
+import java.util.Objects;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.CacheStrategy;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
@@ -14,14 +43,11 @@ import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-import java.io.FileNotFoundException;
-import java.io.*;
-import java.net.URLEncoder;
-import java.time.Duration;
-import java.util.Date;
-import java.util.Objects;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.StringTools;
 
 @MappedSuperclass
 public abstract class StorageObject extends SliceJpaObject {
@@ -45,6 +71,26 @@ public abstract class StorageObject extends SliceJpaObject {
 	public static final String PATHSEPARATOR = "/";
 
 	public static final String DELETE_OPERATE = "delete";
+
+	public static final String ENCRYPTKEY_FIELDNAME = "encryptKey";
+
+	public static final String CRYPTOGRAPHIC_ALGORITHM_AES = "AES";
+	public static final String CRYPTOGRAPHIC_ALGORITHM_AES_GCM_NOPADDING = "AES/GCM/NoPadding";
+
+	public static final String MIN_HTTPS = "https";
+
+	@FieldDescribe("文件密钥.")
+	@Column(name = ColumnNamePrefix + ENCRYPTKEY_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String encryptKey;
+
+	public String getEncryptKey() {
+		return encryptKey;
+	}
+
+	public void setEncryptKey(String encryptKey) {
+		this.encryptKey = encryptKey;
+	}
 
 	public abstract String path() throws Exception;
 
@@ -101,57 +147,101 @@ public abstract class StorageObject extends SliceJpaObject {
 		return length;
 	}
 
-	/** 将导入的字节进行保存 */
 	public Long saveContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
-		this.setName(name);
-		this.setDeepPath(mapping.getDeepPath());
-		this.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(name, ".")));
-		return this.updateContent(mapping, bytes);
-	}
-
-	/** 将导入的流进行保存 */
-	public Long saveContent(StorageMapping mapping, InputStream input, String name) throws Exception {
-		this.setName(name);
-		this.setDeepPath(mapping.getDeepPath());
-		this.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(name, ".")));
-		return this.updateContent(mapping, input);
-	}
-
-	/** 更新Content内容 */
-	public Long updateContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-			if (StringUtils.isNotEmpty(name)) {
-				this.setName(name);
-				this.setExtension(StringUtils.lowerCase(FilenameUtils.getExtension(name)));
-			}
-			return updateContent(mapping, bais);
+		try (InputStream input = new ByteArrayInputStream(bytes)) {
+			return saveContent(mapping, input, name, 0);
 		}
 	}
 
-	/** 更新Content内容 */
+	public Long saveContent(StorageMapping mapping, byte[] bytes, String name, Integer encrypt) throws Exception {
+		try (InputStream input = new ByteArrayInputStream(bytes)) {
+			return saveContent(mapping, input, name, encrypt);
+		}
+	}
+
+	public Long saveContent(StorageMapping mapping, InputStream input, String name) throws Exception {
+		return this.saveContent(mapping, input, name, 0);
+	}
+
+	/**
+	 * 将导入的流进行保存
+	 *
+	 * @param mapping
+	 * @param input
+	 * @param name
+	 * @param encrypt
+	 * @return
+	 * @throws Exception
+	 */
+	public Long saveContent(StorageMapping mapping, InputStream input, String name, Integer encrypt) throws Exception {
+		this.setDeepPath(mapping.getDeepPath());
+		return this.updateContent(mapping, input, name, encrypt);
+	}
+
+	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
+		try (InputStream input = new ByteArrayInputStream(bytes)) {
+			return updateContent(mapping, input, null, 0);
+		}
+	}
+
+	public Long updateContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
+		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
+			return updateContent(mapping, input, name, 0);
+		}
+	}
+
+	public Long updateContent(StorageMapping mapping, byte[] bytes, Integer encrypt) throws Exception {
+		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
+			return updateContent(mapping, input, null, encrypt);
+		}
+	}
+
+	public Long updateContent(StorageMapping mapping, byte[] bytes, String name, Integer encrypt) throws Exception {
+		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
+			return updateContent(mapping, input, name, encrypt);
+		}
+	}
+
+	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
+		return updateContent(mapping, input, null, 0);
+	}
+
 	public Long updateContent(StorageMapping mapping, InputStream input, String name) throws Exception {
+		return updateContent(mapping, input, name, 0);
+	}
+
+	public Long updateContent(StorageMapping mapping, InputStream input, Integer encrypt) throws Exception {
+		return updateContent(mapping, input, null, encrypt);
+	}
+
+	/**
+	 * 更新内容
+	 *
+	 * @param mapping
+	 * @param input
+	 * @param name
+	 * @param encrypt
+	 * @return
+	 * @throws Exception
+	 */
+	public Long updateContent(StorageMapping mapping, InputStream input, String name, Integer encrypt)
+			throws Exception {
+		Objects.requireNonNull(encrypt);
 		if (StringUtils.isNotEmpty(name)) {
 			this.setName(name);
 			this.setExtension(StringUtils.lowerCase(FilenameUtils.getExtension(name)));
 		}
-		return updateContent(mapping, input);
-	}
-
-	/** 更新Content内容 */
-	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
+		if ((encrypt == 1) || (encrypt == 2)) {
+			if (StringUtils.isBlank(this.getEncryptKey())) {
+				this.setEncryptKey(encrypt.toString() + StringUtils.substring(StringTools.uniqueToken(), 0, 31));
+			}
+		} else {
+			this.setEncryptKey("");
+		}
 		if (Objects.equals(StorageProtocol.hdfs, mapping.getProtocol())) {
-			return this.hdfsUpdateContent(mapping, IOUtils.toByteArray(input));
+			return this.hdfsUpdateContent(mapping, input);
 		} else {
 			return this.vfsUpdateContent(mapping, input);
-		}
-	}
-
-	/** 更新Content内容 */
-	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
-		if (Objects.equals(StorageProtocol.hdfs, mapping.getProtocol())) {
-			return this.hdfsUpdateContent(mapping, bytes);
-		} else {
-			return this.vfsUpdateContent(mapping, new ByteArrayInputStream(bytes));
 		}
 	}
 
@@ -221,6 +311,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		if (null == mapping.getProtocol()) {
 			throw new IllegalStateException("storage protocol is null.");
 		}
+		String split = "//";
 		switch (mapping.getProtocol()) {
 		case ftp:
 			prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
@@ -255,20 +346,28 @@ public abstract class StorageObject extends SliceJpaObject {
 		case s3:
 			prefix = "s3://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost();
-			if(StringUtils.isNotBlank(mapping.getName()) && !mapping.getHost().startsWith(mapping.getName())) {
+			if (StringUtils.isNotBlank(mapping.getName()) && !mapping.getHost().startsWith(mapping.getName())) {
 				prefix = prefix + "/" + mapping.getName();
 			}
 			break;
 		case min:
 			prefix = "min://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" ;
-			String split = "//";
-			if(mapping.getHost().indexOf(split) > -1) {
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@";
+			if (mapping.getHost().indexOf(split) > -1) {
 				prefix = prefix + StringUtils.substringAfter(mapping.getHost(), split);
-			}else{
+			} else {
 				prefix = prefix + mapping.getHost();
 			}
 			prefix = prefix.equals("/") ? prefix + mapping.getName() : prefix + "/" + mapping.getName();
+			break;
+		case cos:
+			prefix = "cos://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@";
+			if (mapping.getHost().indexOf(split) > -1) {
+				prefix = prefix + StringUtils.substringAfter(mapping.getHost(), split);
+			} else {
+				prefix = prefix + mapping.getHost();
+			}
 			break;
 		case file:
 			prefix = "file://";
@@ -293,7 +392,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		return prefix + mappingPrefix;
 	}
 
-	private FileSystemOptions getOptions(StorageMapping mapping) throws Exception {
+	private FileSystemOptions getOptions(StorageMapping mapping) throws FileSystemException {
 		FileSystemOptions opts = new FileSystemOptions();
 		if (null == mapping.getProtocol()) {
 			throw new IllegalStateException("storage protocol is null.");
@@ -301,8 +400,8 @@ public abstract class StorageObject extends SliceJpaObject {
 		switch (mapping.getProtocol()) {
 		case sftp:
 			SftpFileSystemConfigBuilder sftpBuilder = SftpFileSystemConfigBuilder.getInstance();
-			sftpBuilder.setConnectTimeout(opts, Duration.ofMillis(10 * 1000));
-			sftpBuilder.setSessionTimeout(opts, Duration.ofMillis(30 * 1000));
+			sftpBuilder.setConnectTimeout(opts, Duration.ofMillis(10000));
+			sftpBuilder.setSessionTimeout(opts, Duration.ofMillis(30000));
 			sftpBuilder.setFileNameEncoding(opts, DefaultCharset.name);
 			// By default, the path is relative to the user's home directory. This can be
 			// changed with:
@@ -327,8 +426,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpBuilder.setConnectTimeout(opts, Duration.ofMillis(10 * 1000));
-			ftpBuilder.setSoTimeout(opts, Duration.ofMillis(10 * 1000));
+			ftpBuilder.setConnectTimeout(opts, Duration.ofMillis(10000));
+			ftpBuilder.setSoTimeout(opts, Duration.ofMillis(10000));
 			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case ftps:
@@ -338,14 +437,14 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpsBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
 			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpsBuilder.setConnectTimeout(opts, Duration.ofMillis(10 * 1000));
-			ftpsBuilder.setSoTimeout(opts, Duration.ofMillis(10 * 1000));
+			ftpsBuilder.setConnectTimeout(opts, Duration.ofMillis(10000));
+			ftpsBuilder.setSoTimeout(opts, Duration.ofMillis(10000));
 			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case webdav:
 			Webdav4FileSystemConfigBuilder webdavBuilder = Webdav4FileSystemConfigBuilder.getInstance();
-			webdavBuilder.setConnectionTimeout(opts, Duration.ofMillis(10 * 1000));
-			webdavBuilder.setSoTimeout(opts, Duration.ofMillis(10 * 1000));
+			webdavBuilder.setConnectionTimeout(opts, Duration.ofMillis(10000));
+			webdavBuilder.setSoTimeout(opts, Duration.ofMillis(10000));
 			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
 			webdavBuilder.setMaxConnectionsPerHost(opts, 200);
 			webdavBuilder.setMaxTotalConnections(opts, 200);
@@ -353,13 +452,9 @@ public abstract class StorageObject extends SliceJpaObject {
 			break;
 		case min:
 			MinFileSystemConfigBuilder minBuilder = MinFileSystemConfigBuilder.getInstance();
-			minBuilder.setTaskTimeOut(opts, 10 * 1000L);
-			String https = "https";
-			if(mapping.getHost().startsWith(https)){
-				minBuilder.setUseHttps(opts, true);
-			}else{
-				minBuilder.setUseHttps(opts, false);
-			}
+			minBuilder.setTaskTimeOut(opts, 10000L);
+			minBuilder.setUseHttps(opts, mapping.getHost().startsWith(MIN_HTTPS));
+			break;
 		default:
 			break;
 		}
@@ -384,7 +479,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		for (int i = 0; i < 2; i++) {
 			try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
 					OutputStream output = fo.getContent().getOutputStream()) {
-				length = IOUtils.copyLarge(inputStream, output);
+				length = computeIfHandleEncrypt(inputStream, output);
 				this.setLength(length);
 				if ((!Objects.equals(StorageProtocol.webdav, mapping.getProtocol()))
 						&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))
@@ -406,6 +501,23 @@ public abstract class StorageObject extends SliceJpaObject {
 		return length;
 	}
 
+	private long hdfsUpdateContent(StorageMapping mapping, InputStream input) throws Exception {
+		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
+				.get(hdfsConfiguration(mapping))) {
+			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
+			if (fileSystem.exists(path)) {
+				fileSystem.delete(path, false);
+			}
+			try (org.apache.hadoop.fs.FSDataOutputStream output = fileSystem.create(path)) {
+				long length = computeIfHandleEncrypt(input, output);
+				this.setStorage(mapping.getName());
+				this.setLastUpdateTime(new Date());
+				this.setLength(length);
+				return length;
+			}
+		}
+	}
+
 	/**
 	 * vfs读取数据
 	 *
@@ -423,17 +535,34 @@ public abstract class StorageObject extends SliceJpaObject {
 		try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options)) {
 			if (fo.exists() && fo.isFile()) {
 				try (InputStream input = fo.getContent().getInputStream()) {
-					length = IOUtils.copyLarge(input, output);
+					length = computeIfHandleDecrypt(input, output);
 				}
 			} else {
 				throw new FileNotFoundException(
 						fo.getPublicURIString() + " not existed, object:" + this.toString() + ".");
 			}
 			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
+					&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 				/* webdav关闭会试图去关闭commons.httpClient */
 				manager.closeFileSystem(fo.getFileSystem());
+			}
+		}
+		return length;
+	}
+
+	private Long hdfsReadContent(StorageMapping mapping, OutputStream output) throws Exception {
+		long length = -1L;
+		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
+				.get(hdfsConfiguration(mapping))) {
+			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
+			if (fileSystem.exists(path)) {
+				try (org.apache.hadoop.fs.FSDataInputStream input = fileSystem.open(path)) {
+					length = computeIfHandleDecrypt(input, output);
+				}
+			} else {
+				throw new FileNotFoundException(path + " not existed, object:" + this.toString() + ".");
 			}
 		}
 		return length;
@@ -472,45 +601,13 @@ public abstract class StorageObject extends SliceJpaObject {
 				}
 			}
 			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
+					&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 				// webdav关闭会试图去关闭commons.httpClient
 				manager.closeFileSystem(fo.getFileSystem());
 			}
 		}
-	}
-
-	private long hdfsUpdateContent(StorageMapping mapping, byte[] bytes) throws Exception {
-		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-				.get(hdfsConfiguration(mapping))) {
-			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
-			if (fileSystem.exists(path)) {
-				fileSystem.delete(path, false);
-			}
-			try (org.apache.hadoop.fs.FSDataOutputStream out = fileSystem.create(path)) {
-				out.write(bytes);
-				this.setStorage(mapping.getName());
-				this.setLastUpdateTime(new Date());
-				this.setLength((long) bytes.length);
-			}
-		}
-		return bytes.length;
-	}
-
-	private Long hdfsReadContent(StorageMapping mapping, OutputStream output) throws Exception {
-		long length = -1L;
-		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-				.get(hdfsConfiguration(mapping))) {
-			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
-			if (fileSystem.exists(path)) {
-				try (org.apache.hadoop.fs.FSDataInputStream inputStream = fileSystem.open(path)) {
-					length = IOUtils.copyLarge(inputStream, output);
-				}
-			} else {
-				throw new FileNotFoundException(path + " not existed, object:" + this.toString() + ".");
-			}
-		}
-		return length;
 	}
 
 	private boolean hdfsExistContent(StorageMapping mapping) throws Exception {
@@ -540,7 +637,114 @@ public abstract class StorageObject extends SliceJpaObject {
 		configuration.set("fs.default.name",
 				StorageProtocol.hdfs + "://" + mapping.getHost() + ":" + mapping.getPort());
 		configuration.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+		configuration.set("fs.hdfs.impl.disable.cache", BooleanUtils.TRUE);
 		return configuration;
+	}
+
+	private Long computeIfHandleEncrypt(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
+		if (StringUtils.isNotBlank(this.getEncryptKey())) {
+			if (StringUtils.startsWith(this.getEncryptKey(), "1")) {
+				return encryptAES(inputStream, outputStream);
+			} else if (StringUtils.startsWith(this.getEncryptKey(), "2")) {
+				return encryptAESGCMNoPadding(inputStream, outputStream);
+			} else {
+				throw new IllegalStateException("error encrypt type.");
+			}
+		} else {
+			return IOUtils.copyLarge(inputStream, outputStream);
+		}
+	}
+
+	private Long computeIfHandleDecrypt(InputStream inputStream, OutputStream outputStream) throws IOException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+		if (StringUtils.isNotBlank(this.getEncryptKey())) {
+			if (StringUtils.startsWith(this.getEncryptKey(), "1")) {
+				return decryptAES(inputStream, outputStream);
+			} else if (StringUtils.startsWith(this.getEncryptKey(), "2")) {
+				return decryptAESGCMNoPadding(inputStream, outputStream);
+			} else {
+				throw new IllegalStateException("error encrypt type.");
+			}
+		} else {
+			return IOUtils.copyLarge(inputStream, outputStream);
+		}
+	}
+
+	private SecretKey computeIfEncryptKeyAbsent() {
+		return new SecretKeySpec(this.getEncryptKey().getBytes(), CRYPTOGRAPHIC_ALGORITHM_AES);
+	}
+
+	private Long encryptAES(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
+		Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES);
+		cipher.init(Cipher.ENCRYPT_MODE, computeIfEncryptKeyAbsent());
+		try (CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher)) {
+			byte[] buffer = new byte[4096];
+			int bytesRead;
+			long length = 0L;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				cipherOutputStream.write(buffer, 0, bytesRead);
+				length += bytesRead;
+			}
+			return length;
+		}
+	}
+
+	private Long decryptAES(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
+		Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES);
+		cipher.init(Cipher.DECRYPT_MODE, computeIfEncryptKeyAbsent());
+		try (CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher)) {
+			byte[] buffer = new byte[4096];
+			int bytesRead;
+			long length = 0L;
+			while ((bytesRead = cipherInputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, bytesRead);
+				length += bytesRead;
+			}
+			return length;
+		}
+	}
+
+	private Long encryptAESGCMNoPadding(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
+		Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES_GCM_NOPADDING);
+		cipher.init(Cipher.ENCRYPT_MODE, computeIfEncryptKeyAbsent());
+		byte[] iv = cipher.getIV();
+		outputStream.write(iv);
+		try (CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher)) {
+			byte[] buffer = new byte[4096];
+			int bytesRead;
+			long length = 0L;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				cipherOutputStream.write(buffer, 0, bytesRead);
+				length += bytesRead;
+			}
+			return length;
+		}
+	}
+
+	private Long decryptAESGCMNoPadding(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException,
+			InvalidAlgorithmParameterException {
+		byte[] iv = new byte[12]; // Read the IV from the encrypted stream
+		if (12 != inputStream.read(iv)) {
+			throw new IllegalStateException("Read the IV from the encrypted stream error.");
+		}
+		Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES_GCM_NOPADDING);
+		GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv);
+		cipher.init(Cipher.DECRYPT_MODE, computeIfEncryptKeyAbsent(), gcmParameterSpec);
+		try (CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher)) {
+			byte[] buffer = new byte[4096];
+			int bytesRead;
+			long length = 0L;
+			while ((bytesRead = cipherInputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, bytesRead);
+				length += bytesRead;
+			}
+			return length;
+		}
 	}
 
 }

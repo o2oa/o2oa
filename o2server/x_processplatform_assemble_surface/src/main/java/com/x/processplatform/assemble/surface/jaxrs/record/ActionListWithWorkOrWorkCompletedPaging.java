@@ -68,8 +68,8 @@ class ActionListWithWorkOrWorkCompletedPaging extends BaseAction {
 				} else {
 					job = business.job().findWithWorkCompleted(flag);
 					WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
-					if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
-						List<Record> os = workCompleted.getProperties().getRecordList();
+					if (ListTools.isNotEmpty(workCompleted.getRecordList())) {
+						List<Record> os = workCompleted.getRecordList();
 						int start = (page - 1) * size;
 						start = Math.min(start, os.size());
 						wos = Wo.copier.copy(os.stream().sorted(Comparator.comparing(Record::getOrder)).skip(start)

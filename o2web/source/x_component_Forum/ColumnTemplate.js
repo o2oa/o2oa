@@ -291,7 +291,6 @@ MWF.xApplication.Forum.ColumnTemplate.Document = new Class({
     createPersonNode : function( container, personName ){
         var persons = typeOf(personName) === "array" ? personName : personName.split(",");
         persons.each( function(userName, i){
-
             Promise.resolve( MWFForum.getDisplayName( userName ) ).then(function (name) {
                 var span = new Element("span", {
                     "text" : name.split('@')[0],

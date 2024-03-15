@@ -222,7 +222,7 @@ MWF.xApplication.Homepage.CalendarContent.Calendar = new Class({
     loadCalenderInfor: function(count){
         var text = (count) ? this.app.lp.calenderInfor : this.app.lp.noCalenderInfor;
         text = text.replace("{name}", layout.user.name);
-        var today = new Date();
+        var today = new Date().clearTime();
         var dateStr = (this.date.diff(today)===0) ? this.app.lp.today : this.date.format(this.app.lp.dateFormat);
         text = text.replace("{date}", dateStr);
         text = text.replace("{count}", count);

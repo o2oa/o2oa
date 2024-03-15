@@ -16,6 +16,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -144,7 +145,7 @@ class ActionAssignCreate extends BaseAction {
 			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
 		} else {
 			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
-			toAttachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
+			toAttachment.saveContent(toMapping, o.readContent(fromMapping), o.getName(), Config.general().getStorageEncrypt());
 		}
 	}
 
@@ -157,8 +158,8 @@ class ActionAssignCreate extends BaseAction {
 		work.setCreatorIdentity(identityDn);
 		work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
 		work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
-		work.getProperties().setParentWork(wi.getParentWork());
-		work.getProperties().setParentJob(wi.getParentJob());
+		work.setParentWork(wi.getParentWork());
+		work.setParentJob(wi.getParentJob());
 		if (StringUtils.isNotEmpty(work.getCreatorUnit())) {
 			Unit unit = business.organization().unit().getObject(work.getCreatorUnit());
 			work.setCreatorUnitLevelName(unit.getLevelName());

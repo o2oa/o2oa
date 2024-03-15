@@ -231,7 +231,7 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象。
          * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=WorkParsed|extension=Work|ignoreNoDescr=true|ignoreProps=[properties,manualTaskIdentityMatrix]|Work对象:
-         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompletedParsed|extension=Work||ignoreProps=[properties]|WorkCompleted对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompletedParsed|extension=Work|ignoreProps=[properties,data,taskCompletedList,readCompletedList,reviewList,recordList,workLogList,storeForm,mobileStoreForm]|WorkCompleted对象:
          * @o2syntax
          * var work = this.workContext.getWork();
          */
@@ -643,7 +643,8 @@ MWF.xScript.Environment = function(ev){
          * @return {WorkControl} 流程实例权限对象.
          * <pre><code class='language-js'>{
          *        "allowVisit": true,             //是否允许访问工作
-         *        "allowProcessing": true,        //是否允许流转
+         *        "allowFlow": true,              //是否允许继续流转（允许提交或重置处理人或加签）
+         *        "allowProcessing": true,        //是否允许提交
          *        "allowReadProcessing": false,   //是否有待阅
          *        "allowSave": true,              //是否允许保存业务数据
          *        "allowReset": false,            //是否允许重置处理人
@@ -667,7 +668,7 @@ MWF.xScript.Environment = function(ev){
          * @method getWorkLogList
          * @static
          * @return {WorkLog[]} 流程记录对象.
-         * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties]
+         * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties,goBackFromActivityType]
          * @o2syntax
          * var workLogList = this.workContext.getWorkLogList();
          */
@@ -691,7 +692,7 @@ MWF.xScript.Environment = function(ev){
          * 如果不传入参数，则直接返回本地缓存中的attachmentList对象。
          * @param {Function} [error] 获取附件对象数组出错时的回调。
          * @return {WorkAttachmentData[]} 附件数据.
-         * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
+         * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment|ignoreProps=[properties]
          * @o2syntax
          * //从本地缓存获取附件列表
          * var attachmentList = this.workContext.getAttachmentList();
@@ -2832,7 +2833,7 @@ MWF.xScript.Environment = function(ev){
          * @example
          //带参数，直接调用后台服务重置
          this.form.reset({
-            "names": ["张三(综合部)"],
+            "names": ["张三@zhangsan@I"],
             "opinion": "授权处理",
             "success": function(json){
                 this.form.notice("reset success", "success");
@@ -2849,7 +2850,7 @@ MWF.xScript.Environment = function(ev){
             if (!option){
                 if (_form.businessData.control["allowReset"]) _form.resetWork();
             }else{
-                _form.resetWorkToPeson(option.names, option.opinion, option.keep, option.success, option.failure);
+                _form.resetWorkToPeson(option.names, option.opinion, option.routeName || "", option.success, option.failure);
             }
         },
 
@@ -3101,25 +3102,11 @@ MWF.xScript.Environment = function(ev){
          * 格式如下：
          * <pre><code class="language-js">
          * {
-         *   "optionList" : [    //增加待办人的操作的列表
-         *       {
-         *           "identityList;": [],    //要增加待办组的身份列表，这些身份中只需要一个人处理即可。
-         *           "position": "after"     //增加待办的位置，可以选用以下值：
-         *                                   //after: 在当前待办（由identity参数指定）之后；
-         *                                   //before: 在当前待办（由identity参数指定）之前；
-         *                                   //top: 将要添加的待办人加入到所有待办列表最前面；
-         *                                   //bottom: 将要添加的待办人加入到所有待办列表的最后；
-         *                                   //extend: 在当前待办（由identity参数指定）组中，添加待办人；
-         *                                   //after、before、top、bottom四个参数值在并行处理活动时，没有本质区别，所有待办都会同时产生。
-         *                                   //而在串行活动或单人活动就会影响到待办产生的顺序。
-         *                                   //extend参数值，会在当前待办（由identity参数指定）组中添加一个待办人，在同一组中的待办人，只需要一人处理，就会标志整个待办组已经处理。
-         *                                   //当传入identity参数时，此处参数值都会会生效，默认为after；如果没有传入identity，只有top和bottom生效
-         *       }
-         *   ],
-         *   "opinion" : "", //增加待办意见.
+         *   "mode" : "single", //加签模式:single,queue,parallel
+         *   "before" : true, //是否是前加签,false后加签.
+         *   "distinguishedNameList": [], //加签人的身份数组。
          *   "routeName" : "", //增加待办在流程记录中显示的路由.
-         *   "identity": "", //当前待办的用户身份，如果没有传入此参数，会查找当前用户对于此文档的待办，如果有，则并传入待办的身份。
-         *   "remove" : false, //是否删除当前用户的待办.默认false
+         *   "opinion" : "", //加签意见
          *   "success": function(){}, //执行成功后的回调方法
          *   "failure": function(){} //执行失败后的回调方法
          * }
@@ -3130,14 +3117,11 @@ MWF.xScript.Environment = function(ev){
          * @example
          * //带参数，根据参数执行添加待办操作
          * this.form.addTask({
-         *   "optionList" : [
-         *       {
-         *           "identityList": ["张三@XXXX@I", "李四@XXXX@I"],
-         *           "position": "after"
-         *       }
-         *   ],
-         *   "opinion" : "请张三、李四审阅",
+         *   "mode" : "single",
+         *   "before": false,
+         *   "distinguishedNameList": ["张三@XXXX@I", "李四@XXXX@I"],
          *   "routeName" : "添加审阅人",
+         *   "opinion" : "请张三、李四审阅",
          *   "success": function(json){
          *       this.form.notice("addTask success", "success");
          *   }.bind(this),
@@ -3158,11 +3142,16 @@ MWF.xScript.Environment = function(ev){
                         if (callback) callback();
                     }
                 })(function(){
-                    if (!option.identity){
-                        option.identity = (_form.businessData.task) && _form.businessData.task.identityDn;
-                    }
-                    var workId = _form.businessData.work.id;
-                    o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
+                    // if (!option.identity){
+                    //     option.identity = (_form.businessData.task) && _form.businessData.task.identityDn;
+                    // }
+                    // var workId = _form.businessData.work.id;
+                    // o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
+
+                    // var taskId = _form.businessData.task.id;
+                    // o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(taskId, option, option.success, option.failure);
+
+                    _form.doAddTaskToPeople(option.distinguishedNameList, option.opinion, option.mode, option.before, option.routeName || "", option.success, option.failure)
                 });
             }else{
                 if (_form.businessData.control["allowAddTask"]) _form.addTask();
@@ -3642,12 +3631,14 @@ MWF.xScript.Environment = function(ev){
          * @param {String} id - 流程的jobId，如果流程拆分后，有多个流程实例（workId会有多个），但jobId是唯一的。
          * @param {Boolean} [choice] - 如果有多个流程实例，是否弹出界面选择。如果传入false,则直接打开第一个工作。
          * @param {Object} [options] - 打开工作时传入的选项。
-         * @param {Function} [callback] - 打开工作时的回调方法，该方法可以获取打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）。
+         * @param {Function} [callback] - 打开工作成功或失败的回调方法，如果打开成功，该方法可以获取打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）；如果打开失败，此方法第一个参数是一个Error，其cause属性可获取通过jobId查询到的work数据。
          * @example
          this.form.openJob(jobId, true);
          * @example
          this.form.openJob(jobId, true, {}, function(handel){
-            //handel为打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）
+            //通过Error.prototype.isPrototypeOf(handel)来判断handel是否是一个错误。
+            //如果打开成功，handel为打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）
+            //如果打开错误，handel为为一个Error对象，其cause属性可获取通过jobId查询到的work数据
          });
          */
         "openJob": function(id, choice, options, callback){
@@ -3663,7 +3654,7 @@ MWF.xScript.Environment = function(ev){
                     if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
                     callback(this);
                 }
-            };
+            }
 
             runCallback = function ( handel ) {
                 if( o2.typeOf(callback) === "function" ) {
@@ -3672,7 +3663,11 @@ MWF.xScript.Environment = function(ev){
                     } else if (options && options.appId) {
                         if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
                             callback(layout.desktop.apps[options.appId], true);
+                        }else{
+                            callback(handel, false);
                         }
+                    }else{
+                        callback(handel, false);
                     }
                 }
             };
@@ -3770,7 +3765,15 @@ MWF.xScript.Environment = function(ev){
                             return handel;
                         }
                     }
+                }else{
+                    runCallback(new Error("Can't open this Job", {
+                        cause: workData
+                    }));
                 }
+            }else{
+                runCallback(new Error("Can't open this Job", {
+                    cause: workData
+                }));
             }
             // var op = options || {};
             // op.workId = id;
@@ -3798,6 +3801,12 @@ MWF.xScript.Environment = function(ev){
          *    "onAfterPublish" : function( form, documentData ){ //发布后执行的方法，该事件在桌面模式打开有效
          *       //form为内容管理Form对象，documentData 为文档数据
          *    },
+         *    "onAfterSave": function( form, documentData ){ //保存后执行的方法，该事件在桌面模式打开有效
+         *       //form为内容管理Form对象，documentData 为文档数据
+         *    },
+         *    "onBeforeClose": function(){ //关闭前执行的方法，该事件在桌面模式打开有效
+         *
+         *    },
          *    "onPostDelete" : function(){ //删除文档后执行的方法，该事件在桌面模式打开有效
          *    }
          * }</code></pre>
@@ -3807,8 +3816,28 @@ MWF.xScript.Environment = function(ev){
         "openDocument": function(id, title, options){
             var op = options || {};
             op.documentId = id;
-            op.docTitle = title;
+            op.docTitle = title || "";
             op.appId = (op.appId) || ("cms.Document"+id);
+            if( op.onPostPublish ){
+                op.postPublish = op.onPostPublish;
+                delete op.onPostPublish;
+            }
+            if( op.onAfterPublish ){
+                op.afterPublish = op.onAfterPublish;
+                delete op.onAfterPublish;
+            }
+            if( op.onAfterSave ){
+                op.afterSave = op.onAfterSave;
+                delete op.onAfterSave;
+            }
+            if( op.onBeforeClose ){
+                op.beforeClose = op.onBeforeClose;
+                delete op.onBeforeClose;
+            }
+            if( op.onPostDelete ){
+                op.postDelete = op.onPostDelete;
+                delete op.onPostDelete;
+            }
             return layout.desktop.openApplication(this.event, "cms.Document", op);
         },
 

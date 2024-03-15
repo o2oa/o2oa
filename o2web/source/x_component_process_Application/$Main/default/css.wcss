@@ -516,99 +516,105 @@
     "color" : "#666666"
   },
 
-      "rollbackItemIconNode": {
-          "height": "46px",
-          "width": "30px",
-          "float": "right",
-          "overflow": "hidden",
-          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
-      },
-      "rollbackItemIconNode_current": {
-          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
-      },
-      "rollbackItemContentNode": {
-          "margin-right": "30px",
-          "height": "46px"
-      },
+   "rollbackItemIconNode": {
+        "height": "46px",
+        "width": "30px",
+        "float": "right",
+        "overflow": "hidden",
+        "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+    },
+    "rollbackItemIconNode_current": {
+        "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+    },
+    "rollbackItemContentNode": {
+        "margin-right": "30px",
+        "min-height": "46px"
+    },
 
-      "rollbackAreaNode": {
-          "padding": "0 30px",
-          "font-size": "14px",
-          "overflow": "hidden"
-      },
-      "rollbackItemNode": {
-          "min-height": "46px",
-          "margin-bottom": "10px",
-          "padding": "10px",
-          "cursor": "pointer",
-          "background-color": "#ffffff"
-      },
-      "rollbackItemNode_over": {
-          "background-color": "#eaf1f9"
-      },
-      "rollbackItemNode_current": {
-          "background-color": "#6196d1"
-      },
+    "rollbackAreaNode": {
+        "padding": "0 30px",
+        "font-size": "14px",
+        "overflow": "hidden"
+    },
+    "rollbackItemNode": {
+        "min-height": "46px",
+        "margin-bottom": "10px",
+        "padding": "10px",
+        "cursor": "pointer",
+        "background-color": "#ffffff"
+    },
+    "rollbackItemNode_over": {
+        "background-color": "#eaf1f9"
+    },
+    "rollbackItemNode_current": {
+        "background-color": "#6196d1"
+    },
 
-      "rollbackItemIconNode": {
-          "height": "46px",
-          "width": "30px",
-          "float": "right",
-          "overflow": "hidden",
-          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
-      },
-      "rollbackItemIconNode_current": {
-          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
-      },
-      "rollbackItemContentNode": {
-          "margin-right": "30px",
-          "height": "46px"
-      },
-      "rollbackItemActivityNode": {
-          "height": "26px",
-          "line-height": "26px",
-          "font-weight": "bold",
-          "float": "left",
-          "color": "#000000",
-          "margin-right": "10px"
-      },
-      "rollbackItemActivityNode_current": {
-          "color": "#ffffff",
-      },
-      "rollbackItemTimeNode": {
-          "height": "26px",
-          "line-height": "26px",
-          "color": "#666666",
-          "float": "left"
-      },
-      "rollbackItemTimeNode_current": {
-          "color": "#eeeeee"
-      },
-      "rollbackItemTaskTitleNode": {
-          "float": "left",
-          "height": "20px",
-          "line-height": "20px",
-          "font-size": "12px",
-          "color": "#0000ff",
-          "font-weight": "bold"
-      },
-      "rollbackItemTaskTitleNode_current":{
-          "color": "#ffffff",
-      },
-      "rollbackItemTaskNode": {
-          "float": "left",
-          "margin-left": "5px",
-          "height": "20px",
-          "line-height": "20px",
-          "font-size": "12px",
-          "color": "#666666",
-          "float": "left"
-      },
-      "rollbackItemTaskCheckNode": {
-          "float": "left"
-      },
-      "rollbackItemTaskNode_current": {
-          "color": "#eeeeee"
-      },
+    "rollbackItemIconNode": {
+        "min-height": "46px",
+        "width": "30px",
+        "float": "right",
+        "overflow": "hidden",
+        "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+    },
+    "rollbackItemIconNode_current": {
+        "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+    },
+    "rollbackItemContentNode": {
+        "margin-right": "30px",
+        "min-height": "46px"
+    },
+    "rollbackItemActivityNode": {
+        "height": "26px",
+        "line-height": "26px",
+        "font-weight": "bold",
+        "float": "left",
+        "color": "#000000",
+        "margin-right": "10px"
+    },
+    "rollbackItemActivityNode_current": {
+        "color": "#ffffff",
+    },
+    "rollbackItemTimeNode": {
+        "height": "26px",
+        "line-height": "26px",
+        "color": "#666666",
+        "float": "left"
+    },
+    "rollbackItemTimeNode_current": {
+        "color": "#eeeeee"
+    },
+    "rollbackItemTaskTitleNode": {
+        "float": "left",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#0000ff",
+        "font-weight": "bold"
+    },
+    "rollbackItemTaskTitleNode_current":{
+        "color": "#ffffff"
+    },
+    "rollbackItemTaskBodyNode": {
+      "float": "left",
+      "overflow": "hidden",
+      "color": "#666666"
+    },
+    "rollbackItemTaskBodyNode_current": {
+      "color": "#eeeeee"
+    },
+    "rollbackItemTaskNode": {
+        "float": "left",
+        "margin-left": "5px",
+        "min-height": "20px",
+        "line-height": "20px",
+        "font-size": "12px"
+    },
+    "rollbackItemTaskCheckNode": {
+        "float": "left"
+    },
+    "rollbackItemTaskNode_current": {
+        "color": "#eeeeee"
+    },
 
 }

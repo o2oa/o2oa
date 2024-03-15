@@ -56,7 +56,7 @@ public class ActionFileUploadCallback extends BaseAction {
 					attachment.getText());
 		}
 
-		attachment.saveContent(mapping, bytes, fileName);
+		attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 		attachment = fileInfoServiceAdv.saveAttachment( docId, attachment );
 
 		CacheManager.notify( FileInfo.class );

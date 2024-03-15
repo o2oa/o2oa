@@ -267,7 +267,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
 
             //formDataText
-            if (this.json.languageType!=="script" && this.json.languageType!=="default"){
+            if (this.json.languageType!=="script" && this.json.languageType!=="default" && this.json.languageType!=="lib" && this.json.languageType!=="dict"){
                 if (callback) callback();
                 return true;
             }
@@ -275,13 +275,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             var language = MWF.xApplication.cms.Xform.LP.form;
             var languageJson = null;
 
+            var name = "lp-"+o2.language;
+            var application = this.businessData.document.appId;
+
             if (this.json.languageType=="script"){
                 if (this.json.languageScript && this.json.languageScript.code){
                     languageJson = this.Macro.exec(this.json.languageScript.code, this);
                 }
             }else if (this.json.languageType=="default") {
-                var name = "lp-"+o2.language;
-                var application = this.businessData.document.appId;
 
                 var p1 = new Promise(function(resolve, reject){
                     this.documentAction.getDictRoot(name, application, function(d){
@@ -304,6 +305,26 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 }.bind(this));
 
                 languageJson = Promise.any([p1, p2]);
+
+            }else if (this.json.languageType=="lib") {
+                languageJson = new Promise(function(resolve, reject){
+                    this.documentAction.getScriptByNameV2(name, application, function(d){
+                        if (d.data.text) {
+                            resolve( this.Macro.exec(d.data.text, this) );
+                        }
+                    }.bind(this), function(){
+                        reject("");
+                    });
+                }.bind(this));
+
+            }else if (this.json.languageType=="dict") {
+                languageJson = new Promise(function(resolve, reject){
+                    this.documentAction.getDictRoot(name, application, function(d){
+                        resolve( d.data );
+                    }, function(){
+                        reject("");
+                    });
+                }.bind(this));
             }
 
             if (languageJson){
@@ -812,8 +833,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }.bind(this));
             if( callback )callback( moduleNodes, jsons, modules )
         },
-        _loadModule: function (json, node, beforeLoad) {
-            if (!json) return;
+        _loadModule: function (json, node, beforeLoad, replace) {
+            if (!json) return null;
 
             //流程组件返回
             if( ( json.type === "Log" && json.logType ) || ["Monitor","ReadLog"].contains(json.type) ){
@@ -830,9 +851,9 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
             var module = new MWF["CMS" + json.type](node, json, this);
             if (beforeLoad) beforeLoad.apply(module);
-            if (!this.all[json.id]) this.all[json.id] = module;
+            if (replace || !this.all[json.id]) this.all[json.id] = module;
             if (module.field) {
-                if (!this.forms[json.id]) this.forms[json.id] = module;
+                if (replace || !this.forms[json.id]) this.forms[json.id] = module;
             }
             module.readonly = this.options.readonly;
             module.load();
@@ -972,8 +993,39 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.businessData.document.title = formData.subject;
                 this.businessData.document.subject = formData.subject;
             }
+            if (formData.objectSecurityClearance) {
+                data.objectSecurityClearance = formData.objectSecurityClearance;
+                this.businessData.document.objectSecurityClearance = formData.objectSecurityClearance;
+            }
             data.isNewDocument = false;
             return data;
+        },
+        saveFormData: function (callback, sync) {
+            var data = this.getData();
+            var specialData = this.getSpecialData();
+            var documentData = this.getDocumentData(data);
+
+            if( documentData.docStatus === "waitPublish" ){
+                documentData.documentNotify = this.getNoticeOptions();
+            }
+
+            documentData.readerList = specialData.readers;
+            documentData.authorList = specialData.authors;
+            documentData.pictureList = specialData.pictures;
+            documentData.summary = specialData.summary;
+            documentData.cloudPictures = specialData.cloudPictures;
+            documentData.docData = data;
+            delete documentData.attachmentList;
+            if (this.officeList) {
+                this.officeList.each(function (module) {
+                    module.save();
+                });
+            }
+            this.documentAction.saveDocument(documentData, function () {
+                this.businessData.data.isNew = false;
+
+                if (callback && typeof callback === "function") callback();
+            }.bind(this), null, !sync);
         },
         saveDocument: function (callback, sync, silent) {
             this.fireEvent("beforeSave");
@@ -1015,7 +1067,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 //this.documentAction.saveData(function(json){
                 if(!silent)this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
                 this.businessData.data.isNew = false;
-                this.fireEvent("afterSave");
+                this.fireEvent("afterSave", [this, documentData]);
+                if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterSave",[this, documentData]);
                 if (callback && typeof callback === "function") callback();
                 if( !this.json.notReloadWhenSave ){
                     this._reloadReadForm();
@@ -1040,6 +1093,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         },
         closeDocument: function () {
             this.fireEvent("beforeClose");
+            if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeClose");
             if (this.app) {
                 this.app.close();
             }
@@ -1455,8 +1509,12 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             } else {
                 var options = { "documentId": this.businessData.document.id, "readonly": false }; //this.explorer.app.options.application.allowControl};
 
+                debugger;
+
                 if (this.app.options.postPublish)options.postPublish = this.app.options.postPublish;
                 if (this.app.options.afterPublish)options.afterPublish = this.app.options.afterPublish;
+                if (this.app.options.afterSave)options.afterSave = this.app.options.afterSave;
+                if (this.app.options.beforeClose)options.beforeClose = this.app.options.beforeClose;
                 if (this.app.options.postDelete)options.postDelete = this.app.options.postDelete;
 
                 if (this.app.options.formEditId) options.formEditId = this.app.options.formEditId;
@@ -1522,7 +1580,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
          */
         uploadedAttachment: function (site, id) {
             this.documentAction.getAttachment(id, this.businessData.document.id, function (json) {
-
+                if (!json.data.control) json.data.control = {};
                 var flag = this.businessData.attachmentList.some(function (attData) {
                     return json.data.id === attData.id;
                 }.bind(this));

@@ -33,7 +33,7 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 
 class ActionListLike extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListLike.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -65,6 +65,7 @@ class ActionListLike extends BaseAction {
 		private List<String> groupList = new ArrayList<>();
 		@FieldDescribe("搜索角色范围,为空则不限定")
 		private List<String> roleList = new ArrayList<>();
+
 
 		public String getKey() {
 			return key;
@@ -105,10 +106,11 @@ class ActionListLike extends BaseAction {
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p,
+				cb.like(cb.lower(root.get(Person_.distinguishedName)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
 		} else {
@@ -116,7 +118,7 @@ class ActionListLike extends BaseAction {
 				return wos;
 			}
 		}
-		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron));
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron, false));
 		List<String> ids = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList().stream().distinct()
 				.collect(Collectors.toList());
 		List<Person> os = business.entityManagerContainer().list(Person.class, ids);
