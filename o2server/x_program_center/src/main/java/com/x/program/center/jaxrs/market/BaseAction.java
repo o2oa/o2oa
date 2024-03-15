@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.JsonObject;
+import com.x.base.core.project.tools.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -47,12 +49,6 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
-import com.x.base.core.project.tools.ZipTools;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -140,7 +136,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             }
         }
         try {
-            FileUtils.cleanDirectory(tempFile);
+            FileUtils.deleteDirectory(tempFile);
         } catch (Exception e) {
             if (logger.isDebugEnabled()) {
                 logger.debug(e.getMessage());
@@ -217,7 +213,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                             continue;
                         }
                         JsonElement fileJson = map.containsKey(customConfig.getConfigName()) ? map.get(customConfig.getConfigName()) :
-                                Config.customConfig(StringUtils.substringBefore(customConfig.getConfigName(), nameEnd));
+                                getCustomConfig(customConfig.getConfigName());
                         if(fileJson!=null && customConfig.getData()!=null){
                             JsonElement newFileJson;
                             if(CONFIG_OPERATE_REPLACE.equalsIgnoreCase(customConfig.getOperate())){
@@ -254,6 +250,17 @@ abstract class BaseAction extends StandardJaxrsAction {
             installData.setConfigList(list);
             logger.info("完成部署[{}]的config配置", app.getName());
         }
+    }
+
+    private JsonElement getCustomConfig(String configName) throws Exception{
+        JsonElement config = BaseTools.readConfigObject(Config.DIR_CONFIG + "/" + configName, JsonObject.class);
+        JsonElement configSample = BaseTools.readConfigObject(Config.DIR_CONFIGSAMPLE + "/" + configName, JsonObject.class);
+        if(config == null){
+            return configSample;
+        }else if(configSample != null){
+            return XGsonBuilder.cover(config, configSample, "");
+        }
+        return config;
     }
 
     protected ActionInstallOffline.InstallWo installModule(WrapModule module) throws Exception {
