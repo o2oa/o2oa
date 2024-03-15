@@ -68,6 +68,8 @@
 					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='docx')?'checked':''} type="radio" value="docx"/>Word <br/>
 					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='xlsx')?'checked':''} type="radio" value="xlsx"/>Excel <br/>
 					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='pptx')?'checked':''} type="radio" value="pptx"/>PowerPoint <br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='upload')?'checked':''} type="radio" value="upload"/>Upload <br/>
+
 					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'block'); " name="officeType" text{($.officeType=='other')?'checked':''} type="radio" value="other"/>{{$.lp.byTemplate}}
 				</td>
 			</tr>
@@ -103,13 +105,28 @@
 		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
 	</div>
 	<div title="{{$.lp.onlyoffice.config}}" class="MWFTab">
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.onlyoffice.moduleConfig}}</div>
+
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.onlyoffice.aclConfig}}</div>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.autosave}}:</td>
+				<td class="editTableTitle">{{$.lp.onlyoffice.download}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="autosave" value="true" text{($.autosave)?'checked':''}/>{{$.lp.yes}}
-					<input type="radio" name="autosave" value="false" text{(!$.autosave)?'checked':''}/>{{$.lp.no}}
+					<input type="radio" name="download" value="true" text{($.download)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="download" value="false" text{(!$.download)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.print}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="print" value="true" text{($.print)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="print" value="false" text{(!$.print)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.copy}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="copy" value="true" text{($.copy)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="copy" value="false" text{(!$.copy)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 			<tr>
@@ -126,6 +143,24 @@
 					<input type="radio" name="comments" value="false" text{(!$.comments)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.review}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="review" value="true" text{($.review)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="review" value="false" text{(!$.review)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.onlyoffice.moduleConfig}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.onlyoffice.autosave}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="autosave" value="true" text{($.autosave)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="autosave" value="false" text{(!$.autosave)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
 			<tr>
 				<td class="editTableTitle">{{$.lp.onlyoffice.compatibleFeatures}}:</td>
 				<td class="editTableValue">
@@ -242,63 +277,6 @@
 				<td class="editTableValue">
 					<input type="radio" name="hideRightMenu" value="true" text{($.hideRightMenu)?'checked':''}/>{{$.lp.yes}}
 					<input type="radio" name="hideRightMenu" value="false" text{(!$.hideRightMenu)?'checked':''}/>{{$.lp.no}}
-				</td>
-			</tr>
-		</table>
-		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.onlyoffice.individualization}}</div>
-		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.address}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="address" value="text{$.address}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.info}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="info" value="text{$.info}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">logo:</td>
-				<td class="editTableValue">
-					<input type="text" name="logo" value="text{$.logo}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.mail}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="mail" value="text{$.mail}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.company}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="name" value="text{$.name}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.www}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="www" value="text{$.www}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.feedbackUrl}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="feedbackUrl" value="text{$.feedbackUrl}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.logoImg}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="logoImg" value="text{$.logoImg}" class="editTableInput"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">{{$.lp.onlyoffice.logoUrl}}:</td>
-				<td class="editTableValue">
-					<input type="text" name="logoUrl" value="text{$.logoUrl}" class="editTableInput"/>
 				</td>
 			</tr>
 		</table>

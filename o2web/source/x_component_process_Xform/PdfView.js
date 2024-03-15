@@ -95,13 +95,30 @@ MWF.xApplication.process.Xform.PdfView = MWF.APPPdfView =  new Class({
 
     },
     getData: function(){
+
         var data = {
             "documentId" : ""
         };
-        if(this.form.businessData.data[this.json.id]){
-            data.documentId = this.form.businessData.data[this.json.id].documentId;
+        var site = "pdfAttachement";
+        if(this.form.businessData.data[this.json.id] && this.form.businessData.data[this.json.id].documentId){
+            data = this.form.businessData.data[this.json.id];
+        }else {
+
+            //判断对应的site里有没有值
+            var attachmentList = this.form.businessData.attachmentList;
+            attachmentList = attachmentList.filter(function(att) {
+                return att.site === site;
+            });
+            if(attachmentList.length>0){
+                data = {
+                    "documentId": attachmentList[0].id,
+                };
+            }
+
         }
+
         return data;
+
     },
     setData: function(){
 

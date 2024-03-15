@@ -42,16 +42,30 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             this.data = this.getData();
             if(this.data.documentId === ""){
 
-                if (this.json.officeType === "other" && this.json.templateType === "script"){
-                    this.json.template = this.form.Macro.exec(this.json.templeteScript.code, this);
+                if(this.json.officeType === "upload"){
+                    this.createEmpty();
+                }else{
+                    if (this.json.officeType === "other" && this.json.templateType === "script"){
+                        this.json.template = this.form.Macro.exec(this.json.templeteScript.code, this);
+                    }
+
+                    this[this.json.officeType === "other"&&this.json.template !== ""? "createDocumentByTemplate":"createDocument"](function (){
+                        this.loadDocument();
+                    }.bind(this));
                 }
 
-                this[this.json.officeType === "other"&&this.json.template !== ""? "createDocumentByTemplate":"createDocument"](function (){
-                    this.loadDocument();
-                }.bind(this));
             }else {
                 this.documentId = this.data.documentId;
-                this.loadDocument();
+
+                o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.getOnlineInfo(this.documentId).then(function (json){
+
+                    if(["png","jpg","jpeg","gif"].contains(json.data.extension)){
+                        this.loadImgageViewer();
+                    }else{
+                        this.loadDocument();
+                    }
+                }.bind(this));
+
             }
         }
     },
@@ -63,6 +77,24 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }else{
             return MWF.xApplication.process.Xform.LP.onlyoffice.filetext;
         }
+    },
+    createEmpty : function (){
+        this.emptyNode = new Element("div").inject(this.node);
+        this.emptyNode.set("text",MWF.xApplication.process.Xform.LP.ofdview.nofile);
+    },
+    loadImgageViewer : function (){
+        var imgContainer = new Element("div").inject(this.node);
+        imgContainer.setStyles({
+            "display":"flex",
+            "justify-content" : "center",
+            "padding":"20px",
+            "overflow":"auto",
+            "max-height":"800px"
+        });
+        var imgNode = new Element("img").inject(imgContainer);
+        imgNode.set("src","../x_processplatform_assemble_surface/jaxrs/attachment/download/" + this.documentId  + "?uuid="+o2.uuid());
+        imgNode.setStyle("max-width","100%");
+
     },
     createDocument : function (callback){
         var data = {
@@ -110,10 +142,10 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             o2.require("o2.widget.Upload", null, false);
             var upload = new o2.widget.Upload(this.content, {
                 "action": o2.Actions.get("x_processplatform_assemble_surface").action,
-                "method": "replaceAttachment",
-                "accept" : ".docx,.xlsx,.pptx",
+                "method": this.data.documentId === ""?"uploadAttachment" : "replaceAttachment",
+                "accept" : ".docx,.xlsx,.pptx,.pdf,.jpg,.png,.jpeg,.gif",
                 "parameter": {
-                    "id" : this.documentId,
+                    "id" : this.data.documentId === ""?this.form.businessData.work.id: this.documentId,
                     "workid" : this.form.businessData.work.id,
                 },
                 "data":{
@@ -121,7 +153,6 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 "onCompleted": function(data){
 
                     this.documentId = data.id;
-
                     this.reload();
                 }.bind(this)
             });
@@ -134,7 +165,13 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         this.setData();
         this.node.empty();
         this.createUpload();
-        this.loadDocument();
+        o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.getOnlineInfo(this.documentId).then(function (json){
+            if(["png","jpg","jpeg","gif"].contains(json.data.extension)){
+                this.loadImgageViewer();
+            }else{
+                this.loadDocument();
+            }
+        }.bind(this));
     },
     loadDocument: function () {
         this.getEditor(function () {
@@ -145,8 +182,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     },
     loadApi : function (callback){
         this.action.OnlyofficeConfigAction.getConfig(function( json ){
-            var data = json.data;
-            var docserviceApi = data.docserviceApi;
+
+            this.config = data;
+            var docserviceApi = this.config.docserviceApi;
             o2.load(docserviceApi, function () {
                 if (callback) callback();
             }.bind(this));
@@ -170,7 +208,25 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             this.action.OnlyofficeAction.appFileEdit({
                 "appToken" : this.data.appToken,
                 "mode" : this.mode,
-                "fileId" : this.documentId
+                "fileId" : this.documentId,
+
+                "extendParam2" : {
+                    "permissions" : JSON.stringify({
+                        "chat": true,
+                        "comment": true,
+                        "copy": true,
+                        "deleteCommentAuthorOnly": false,
+                        "download": true,
+                        "edit": true,
+                        "editCommentAuthorOnly": false,
+                        "fillForms": true,
+                        "modifyContentControl": true,
+                        "modifyFilter": true,
+                        "print": true,
+                        "protect": false,
+                        "review": false
+                    })
+                }
             }, function( json ){
                 this.document = json.data;
                 this.document.editor = this.document.fileModel;
@@ -266,7 +322,12 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             console.log("Plugins is loaded");
             this.fireEvent("afterOpen");
         }.bind(this);
-
+        var onDownloadAs = function (event) {
+            //下载
+            var fileType = event.data.fileType;
+            var url = event.data.url;
+            window.open(url);
+        };
         this.document.editor.events = {
             "onAppReady": onAppReady,
             "onDocumentReady":onDocumentReady,
@@ -275,6 +336,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             'onRequestEditRights': onRequestEditRights,
             "onError": onError,
             "onOutdatedVersion": onOutdatedVersion,
+            "onDownloadAs": onDownloadAs,
         }
         if (this.document.FileHistory[0] !== "") {
             this.document.editor.events.onRequestHistory = onRequestHistory;
@@ -302,6 +364,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
 
 
         this.document.editor.editorConfig.customization = {
+            "uiTheme" : "theme-o2oa",
             "chat": this.json.chat,
             "commentAuthorOnly": false,
             "comments": this.json.comments,
@@ -310,12 +373,14 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             "compactToolbar": this.json.compactToolbar,
             "compatibleFeatures": this.json.compatibleFeatures,
             "customer": {
-                "address": this.json.address,
-                "info": this.json.info,
-                "logo": this.json.logo,
-                "mail": this.json.mail,
-                "name": this.json.companyName,
-                "www": this.json.www
+                "address": this.config.address,
+                "info": this.config.info,
+                "logo": this.config.logo,
+                "logoDark": this.config.logoDark,
+                "mail": this.config.mail,
+                "name": this.config.name,
+                "phone": this.config.phone,
+                "www": this.config.www
             },
             "feedback": {
                 "url": this.json.feedback,
@@ -325,8 +390,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             "help": this.json.help,
             "hideRightMenu": this.json.hideRightMenu,
             "logo": {
-                "image": this.json.logoImg,
-                "url": this.json.logoUrl
+                "image": this.config.logo,
+                "imageDark": this.config.logoDark,
+                "url": this.config.www
             },
             "macros": true,
             "macrosMode": "warn",
@@ -346,6 +412,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 "showReviewChanges" : this.json.showReviewChanges
             }
         }
+
+        console.log( this.document.editor)
+        debugger
         docEditor = new DocsAPI.DocEditor("_" + this.documentId, this.document.editor);
         this.onlyOffice = docEditor;
 

@@ -1464,7 +1464,12 @@ MWF.xApplication.process.FormDesigner.LP = {
             "www":"网址",
             "feedbackUrl":"反馈地址",
             "logoImg":"左上角logo（172x40）",
-            "logoUrl":"logo链接"
+            "logoUrl":"logo链接",
+            "aclConfig" : "权限设置",
+            "download" :"允许下载",
+            "print" :"允许打印",
+            "copy" :"允许复制",
+            "review"  : "强制修订"
         },
         "smartbi":{
             "select":"资源选择",
