@@ -35,11 +35,14 @@ class XMLParse {
 		Object[] result = new Object[3];
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setExpandEntityReferences(false);
+			dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+			dbf.setFeature("http://xml.org/sax/features/external-general-entities",false);
+			dbf.setFeature("http://xml.org/sax/features/external-parameter-entities",false);
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			StringReader sr = new StringReader(xmltext);
 			InputSource is = new InputSource(sr);
 			Document document = db.parse(is);
-
 			Element root = document.getDocumentElement();
 			NodeList nodelist1 = root.getElementsByTagName("Encrypt");
 			NodeList nodelist2 = root.getElementsByTagName("ToUserName");
