@@ -46,7 +46,7 @@ import com.x.processplatform.core.entity.content.Attachment;
 
 /**
  * 直接发布文档内容
- * 
+ *
  * @author O2LEE
  *
  */
@@ -127,18 +127,13 @@ public class ActionPersistPublishContent extends BaseAction {
 		}
 
 		if (check) {
-			wi.setDocumentType(categoryInfo.getDocumentType());
 			wi.setAppId(categoryInfo.getAppId());
 			wi.setAppName(appInfo.getAppName());
 			wi.setCategoryName(categoryInfo.getCategoryName());
 			wi.setCategoryId(categoryInfo.getId());
 			wi.setCategoryAlias(categoryInfo.getCategoryAlias());
-
-			if (StringUtils.isEmpty(wi.getDocumentType())) {
-				wi.setDocumentType(categoryInfo.getDocumentType());
-			}
-			if (!"信息".equals(wi.getDocumentType()) && !"数据".equals(wi.getDocumentType())) {
-				wi.setDocumentType("信息");
+			if (!Document.DOCUMENT_TYPE_INFO.equals(wi.getDocumentType()) && !Document.DOCUMENT_TYPE_DATA.equals(wi.getDocumentType())) {
+				wi.setDocumentType(StringUtils.isBlank(categoryInfo.getDocumentType()) ? Document.DOCUMENT_TYPE_INFO : categoryInfo.getDocumentType());
 			}
 			if (wi.getPictureList() != null && !wi.getPictureList().isEmpty()) {
 				wi.setHasIndexPic(true);
@@ -414,7 +409,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		@FieldDescribe("文档标题，70字以内")
 		private String title;
-		
+
 		@FieldDescribe("客体密级标识")
 		private Integer objectSecurityClearance;
 
@@ -994,7 +989,7 @@ public class ActionPersistPublishContent extends BaseAction {
 		public void setObjectSecurityClearance(Integer objectSecurityClearance) {
 			this.objectSecurityClearance = objectSecurityClearance;
 		}
-		
+
 	}
 
 	public static class Wo extends WoId {
