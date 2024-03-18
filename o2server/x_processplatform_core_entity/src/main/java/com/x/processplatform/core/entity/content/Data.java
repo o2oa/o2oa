@@ -74,7 +74,7 @@ public class Data extends ListOrderedMap<String, Object> {
 	@JsonIgnore
 	public Data setAttachmentList(List<Attachment> attachmentList) {
 		List<DataAttachment> list = new ArrayList<>();
-		if (ListTools.isEmpty(attachmentList)) {
+		if (!ListTools.isEmpty(attachmentList)) {
 			DataAttachment.copier.copy(attachmentList, list);
 		}
 		this.put(ATTACHMENTLIST_PROPERTY, list);
