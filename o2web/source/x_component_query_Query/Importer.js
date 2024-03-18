@@ -762,13 +762,22 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             if( !this.importerJson ){
                 this.getImporterJSON( function () {
                     exportTo();
-                }.bind(this))
+                }.bind(this));
             }else{
                 exportTo();
             }
         },
 
         downloadTemplate: function(fileName, callback){
+            if( this.Macro ){
+                this._downloadTemplate(fileName, callback);
+            }else{
+                this.loadMacro(function (){
+                    this._downloadTemplate(fileName, callback);
+                }.bind(this));
+            }
+        },
+        _downloadTemplate: function(fileName, callback){
             if( !this.excelUtils ){
                 this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
             }
@@ -805,11 +814,15 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             return title;
         },
         getTitleArray: function(){
-            var titleArray = [];
-            this.json.data.columnList.each( function (columnJson, i) {
-                titleArray.push( columnJson.displayName );
+            return this.json.data.columnList.map( function (columnJson, i) {
+                var obj = {
+                    text: columnJson.displayName
+                };
+                if( columnJson.optionScript ){
+                    obj.options = this.Macro.exec(columnJson.optionScript, this);
+                }
+                return obj;
             }.bind(this));
-            return titleArray;
         },
         getColWidthArray : function(){
             var colWidthArr = [];
