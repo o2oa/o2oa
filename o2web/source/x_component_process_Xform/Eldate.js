@@ -134,6 +134,19 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         html += "</el-date-picker>";
         return html;
     },
+    getInputData: function(){
+        var data = this.json[this.json.$id];
+        if( data === null ){
+            if( ["monthrange","daterange"].contains(this.json.selectType) ) {
+                return [];
+            }else if( ["dates"].contains(this.json.selectType) ){
+                return [];
+            }else{
+                return "";
+            }
+        }
+        return this.json[this.json.$id];
+    },
 
         getExcelData: function(){
             var value = this.getData();
