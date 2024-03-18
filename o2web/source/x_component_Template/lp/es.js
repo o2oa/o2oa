@@ -62,6 +62,12 @@ MWF.xApplication.Template.LP={
 		"close": "Cerrar",
 		"max": "Maximizar",
 		"restore": "Restaurar"
+	},
+	"excelUtils": {
+		"promptTitle": "Consejos de entrada",
+		"prompt": "Por favor, seleccione un valor de la lista desplegable",
+		"errorTitle": "Error de entrada",
+		"error": "El valor que ingresaste no está en la lista"
 	}
 }
 MWF.xApplication.Template["lp."+o2.language] = MWF.xApplication.Template.LP
