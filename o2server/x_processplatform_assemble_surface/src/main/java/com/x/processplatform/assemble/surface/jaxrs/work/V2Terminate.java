@@ -56,7 +56,12 @@ class V2Terminate extends BaseAction {
 			String identity = business.organization().identity()
 					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 			if (StringUtils.isEmpty(identity)) {
-				throw new ExceptionEmptyIdentity(effectivePerson.getDistinguishedName());
+				// 如果直接报错,那么管理员和cipher无法进行终止.
+				if (effectivePerson.isManager()) {
+					identity = effectivePerson.getDistinguishedName();
+				} else {
+					throw new ExceptionEmptyIdentity(effectivePerson.getDistinguishedName());
+				}
 			}
 			param.distinguishedName = identity;
 			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
