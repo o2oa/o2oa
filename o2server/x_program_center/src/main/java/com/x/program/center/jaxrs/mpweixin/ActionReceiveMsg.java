@@ -27,13 +27,13 @@ import com.x.program.center.core.entity.MPWeixinMenu;
  * Created by fancyLou on 3/8/21.
  * Copyright © 2021 O2. All rights reserved.
  */
-public class ActionReceiveMsg  extends BaseAction {
+public class ActionReceiveMsg extends BaseAction {
 
 
     private static Logger logger = LoggerFactory.getLogger(ActionReceiveMsg.class);
 
 
-    ActionResult<Wo> execute(String signature, Long timestamp, String nonce, String echostr, InputStream inputStream)  throws Exception {
+    ActionResult<Wo> execute(String signature, Long timestamp, String nonce, String echostr, InputStream inputStream) throws Exception {
         logger.info("微信公众号接收消息,signature:{}, timestamp:{}, nonce:{}, echostr:{}.", signature, timestamp, nonce, echostr);
         Wo wo = new Wo();
         ActionResult<Wo> actionResult = new ActionResult<>();
@@ -88,7 +88,7 @@ public class ActionReceiveMsg  extends BaseAction {
                             wo.setText("success");
                             actionResult.setData(wo);
                             return actionResult;
-                        }  else {
+                        } else {
                             String xml = txtMessageBack(toUser, fromUser, content);
                             logger.info("回复点击菜单消息： {}", xml);
                             wo.setText(xml);
@@ -98,7 +98,7 @@ public class ActionReceiveMsg  extends BaseAction {
                     } else {
                         logger.info("没有查询到对应的 eventKey：{}", eventKey);
                     }
-                }else if (WX_MSG_RECEIVE_EVENT_SUBSCRIBE.equalsIgnoreCase(event)) { // 订阅事件
+                } else if (WX_MSG_RECEIVE_EVENT_SUBSCRIBE.equalsIgnoreCase(event)) { // 订阅事件
                     MPWeixinMenu menu = findMenuWithEventKey(WX_MSG_RECEIVE_EVENT_SUBSCRIBE);
                     if (menu != null) {
                         String content = menu.getContent();
@@ -127,7 +127,7 @@ public class ActionReceiveMsg  extends BaseAction {
             } else {
                 logger.info("未处理消息类型, MsgType: {}", msgType);
             }
-        }else {
+        } else {
             logger.info("没有获取到消息内容 inputStream 为空！");
         }
         wo.setText("success");//不回复消息
@@ -157,7 +157,7 @@ public class ActionReceiveMsg  extends BaseAction {
                 "<FromUserName><![CDATA[" + from + "]]></FromUserName>" +
                 "<CreateTime>" + time + "</CreateTime>" +
                 "<MsgType><![CDATA[image]]></MsgType>" +
-                "<Image><MediaId><![CDATA["+mediaId+"]]></MediaId></Image>" +
+                "<Image><MediaId><![CDATA[" + mediaId + "]]></MediaId></Image>" +
                 "</xml>";
         return xml;
     }
@@ -170,7 +170,7 @@ public class ActionReceiveMsg  extends BaseAction {
                 "<FromUserName><![CDATA[" + from + "]]></FromUserName>" +
                 "<CreateTime>" + time + "</CreateTime>" +
                 "<MsgType><![CDATA[voice]]></MsgType>" +
-                "<Voice><MediaId><![CDATA["+mediaId+"]]></MediaId></Voice>" +
+                "<Voice><MediaId><![CDATA[" + mediaId + "]]></MediaId></Voice>" +
                 "</xml>";
         return xml;
     }
@@ -183,10 +183,10 @@ public class ActionReceiveMsg  extends BaseAction {
                 "<FromUserName><![CDATA[" + from + "]]></FromUserName>" +
                 "<CreateTime>" + time + "</CreateTime>" +
                 "<MsgType><![CDATA[video]]></MsgType>" +
-                "<Video>"+
-                "<MediaId><![CDATA["+mediaId+"]]></MediaId>" +
-                "<Title><![CDATA["+title+"]]></Title>" +
-                "<Description><![CDATA["+description+"]]></Description>"  +
+                "<Video>" +
+                "<MediaId><![CDATA[" + mediaId + "]]></MediaId>" +
+                "<Title><![CDATA[" + title + "]]></Title>" +
+                "<Description><![CDATA[" + description + "]]></Description>" +
                 "</Video>" +
                 "</xml>";
         return xml;
@@ -199,24 +199,27 @@ public class ActionReceiveMsg  extends BaseAction {
 
     /**
      * 读取xml
+     *
      * @param ins
      * @return
      * @throws Exception
      */
-    public static Map<String, String> xmlToMap(InputStream ins) throws Exception{
+    public static Map<String, String> xmlToMap(InputStream ins) throws Exception {
         Map<String, String> map = new HashMap<>();
         if (ins == null) {
             return map;
         }
         SAXReader reader = new SAXReader();
-
+        reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         Document doc = reader.read(ins);
 
         Element root = doc.getRootElement();
 
         List<Element> list = root.elements();
 
-        for(Element e : list){
+        for (Element e : list) {
             map.put(e.getName(), e.getText());
         }
         ins.close();
@@ -231,11 +234,13 @@ public class ActionReceiveMsg  extends BaseAction {
         String toUser;
         String text;
         String scriptId;
+
         ExecuteServiceScriptThread(String toUser, String text, String scriptId) {
             this.toUser = toUser;
             this.text = text;
             this.scriptId = scriptId;
         }
+
         @Override
         public void run() {
             evalRemote();
@@ -248,7 +253,7 @@ public class ActionReceiveMsg  extends BaseAction {
                     body.setKeyword(text);
                     body.setOpenId(toUser);
                     ActionResponse result = CipherConnectionAction.post(false,
-                            Config.url_x_program_center_jaxrs("invoke",scriptId, "execute"), body);
+                            Config.url_x_program_center_jaxrs("invoke", scriptId, "execute"), body);
                     logger.info("执行脚本结果： " + result.toJson());
                 } else {
                     logger.warn("没有配置服务脚本id");
