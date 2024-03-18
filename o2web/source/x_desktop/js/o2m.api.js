@@ -555,8 +555,8 @@
         o2m.util.navigation.openInnerApp
         o2m.util.navigation.openOtherApp
         o2m.util.navigation.openWindow
-  
-  
+        o2m.util.navigation.share
+
   
   * ***** END UTIL BLOCK ******/
 
@@ -1364,6 +1364,44 @@
    *});
    */
   this.o2m.util.navigation.clearCache = _o2m_u_navigation_clearCache;
+
+
+  //o2m.util.navigation.share 分享图片
+  this.o2m.util.navigation.shareSuccess = function (result) {
+    console.log("util navigation share back, result:" + result);
+  };
+  var _o2m_u_navigation_share = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    var base64 = c && c.base64 ? c.base64 : "";
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.navigation.shareSuccess = onSuccess;
+    }
+    var body = {
+      type: "navigation.share",
+      callback: "o2m.util.navigation.shareSuccess",
+      data: {
+        base64: base64
+      }
+    };
+    _util_post(body, onFail);
+  };
+
+  /**
+   * 分享图片功能，目前只支持 base64 进行分享
+   * @method share
+   * @memberOf o2m
+   * @o2membercategory util.navigation
+   * @static
+   * @example
+   * o2m.util.navigation.share({
+   * base64: '图片的 base64 编码';
+   * onSuccess : function() {
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
+  this.o2m.util.navigation.share = _o2m_u_navigation_share;
    
 
 

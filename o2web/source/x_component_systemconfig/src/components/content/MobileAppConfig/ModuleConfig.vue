@@ -327,19 +327,20 @@ const loadCategoryList = () => {
 
 const load = () => {
   getAppStyle().then((data) => {
-    appStyle.value = {
-      indexPortal: data.indexPortal,
-      indexType: data.indexType,
-      nativeAppList: data.nativeAppList,
-      simpleMode: data.simpleMode,
-      systemMessageSwitch: data.systemMessageSwitch,
-      indexCentered: data.indexCentered,
-      systemMessageCanClick: data.systemMessageCanClick,
-      appExitAlert: data.appExitAlert,
-      contactPermissionView: data.contactPermissionView,
-      processFilterList: data.processFilterList,
-      cmsCategoryFilterList: data.cmsCategoryFilterList,
-    };
+    appStyle.value = data;
+    //     {
+    //   indexPortal: data.indexPortal,
+    //   indexType: data.indexType,
+    //   nativeAppList: data.nativeAppList,
+    //   simpleMode: data.simpleMode,
+    //   systemMessageSwitch: data.systemMessageSwitch,
+    //   indexCentered: data.indexCentered,
+    //   systemMessageCanClick: data.systemMessageCanClick,
+    //   appExitAlert: data.appExitAlert,
+    //   contactPermissionView: data.contactPermissionView,
+    //   processFilterList: data.processFilterList,
+    //   cmsCategoryFilterList: data.cmsCategoryFilterList,
+    // };
     if (data.appIndexPages && data.appIndexPages.length > 0) {
       appIndexPagesCheckValues.value.im = data.appIndexPages.indexOf("im") > -1;
       appIndexPagesCheckValues.value.contact =
