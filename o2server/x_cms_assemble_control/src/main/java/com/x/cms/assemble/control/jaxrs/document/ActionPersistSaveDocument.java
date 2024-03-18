@@ -47,7 +47,7 @@ import org.w3c.dom.DocumentType;
 
 /**
  * 保存文档
- * 
+ *
  * @author O2LEE
  *
  */
@@ -139,9 +139,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 			document.setCategoryName(categoryInfo.getCategoryName());
 			document.setCategoryAlias(categoryInfo.getCategoryAlias());
 			document.setDocumentType(categoryInfo.getDocumentType());
-
-			if (!"信息".equals(document.getDocumentType()) && !"数据".equals(document.getDocumentType())) {
-				document.setDocumentType("信息");
+			if(!Document.DOCUMENT_TYPE_DATA.equals( document.getDocumentType() )) {
+				document.setDocumentType( Document.DOCUMENT_TYPE_INFO );
 			}
 		}
 
@@ -331,7 +330,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		@FieldDescribe("文档标题，<font style='color:red'>必填</font>")
 		private String title;
-		
+
 		@FieldDescribe("客体密级标识")
 		private Integer objectSecurityClearance;
 

@@ -169,11 +169,9 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			wi.setCategoryName(categoryInfo.getCategoryName());
 			wi.setCategoryId(categoryInfo.getId());
 			wi.setCategoryAlias(categoryInfo.getCategoryAlias());
-			if (StringUtils.isEmpty(wi.getDocumentType())) {
-				wi.setDocumentType(categoryInfo.getDocumentType());
-			}
-			if (!"信息".equals(wi.getDocumentType()) && !"数据".equals(wi.getDocumentType())) {
-				wi.setDocumentType("信息");
+			wi.setDocumentType(categoryInfo.getDocumentType());
+			if (!Document.DOCUMENT_TYPE_DATA.equals(wi.getDocumentType())) {
+				wi.setDocumentType(Document.DOCUMENT_TYPE_INFO);
 			}
 			if (wi.getPictureList() != null && !wi.getPictureList().isEmpty()) {
 				wi.setHasIndexPic(true);
