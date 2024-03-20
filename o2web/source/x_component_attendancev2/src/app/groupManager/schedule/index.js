@@ -1,6 +1,8 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, isEmpty, showLoading, hideLoading, replaceCustomString, lpFormat } from "../../../utils/common";
+import ExcelJS from "exceljs";
+
+import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, isEmpty, showLoading, hideLoading, replaceCustomString, lpFormat, generateExcelColumnNames } from "../../../utils/common";
 import { groupScheduleAction } from "../../../utils/actions";
 import selectShiftMultiple from "../../shiftManager/selectShiftMultiple";
 import style from "./style.scope.css";
@@ -188,29 +190,29 @@ export default content({
   dayName(index) {
     switch(index) {
       case 0 :
-        return lp.daySimple.Sunday;
+        return lp.day.Sunday;
       case 1 :
-          return lp.daySimple.Monday;
+          return lp.day.Monday;
       case 2 :
-        return lp.daySimple.Tuesday;
+        return lp.day.Tuesday;
       case 3 :
-        return lp.daySimple.Wednesday;
+        return lp.day.Wednesday;
       case 4 :
-        return lp.daySimple.Thursday;
+        return lp.day.Thursday;
       case 5 :
-        return lp.daySimple.Friday;
+        return lp.day.Friday;
       case 6 :
-        return lp.daySimple.Saturday;
+        return lp.day.Saturday;
       default:
         return "";             
     }
   },
   // 方格内班次名显示
-  scheduleDateShow(date, person) {
+  scheduleDateShow(date, person, list) {
     for (let index = 0; index < this.bind.scheduleList.length; index++) {
       const element = this.bind.scheduleList[index];
       if (element.scheduleDateString === date && element.userId === person) {
-        return element.shift.shiftName[0];
+        return element.shift.shiftName;
       }
     }
     return "";
@@ -291,7 +293,6 @@ export default content({
       console.error(e);
     }
     await hideLoading(this);
-    console.log(this.bind.scheduleList);
   },
   // 提交排班数据
   async postMonthData(close) {
@@ -397,28 +398,34 @@ export default content({
   },
   // 选择班次
   chooseShiftOnDate(shift) {
+    debugger;
     if (this.bind.clickForCycle) { // 班次周期
       this.bind.shiftCycleList.push(shift);
     } else {
-      let exist = false;
-      for (let index = 0; index < this.bind.scheduleList.length; index++) {
-        const element = this.bind.scheduleList[index];
-        if (element.scheduleDateString === this.bind.clickDate && element.userId === this.bind.clickPerson) {
-          element.shift = shift;
-          this.bind.scheduleList[index] = element;
-          exist = true;
-        }
-      }
-      if (!exist) {
-        this.bind.scheduleList.push({
-          scheduleDateString: this.bind.clickDate,
-          userId: this.bind.clickPerson,
-          shift: shift,
-          shiftId: shift.id
-        });
-      }
+      this.putInScheduleList(shift, this.bind.clickDate, this.bind.clickPerson);
     }
     this._closeChooseBox();
+  },
+  // 放入排班列表
+  putInScheduleList(shift, date, person) {
+    console.log(shift, date, person)
+    let exist = false;
+    for (let index = 0; index < this.bind.scheduleList.length; index++) {
+      const element = this.bind.scheduleList[index];
+      if (element.scheduleDateString === date && element.userId === person) {
+        element.shift = shift;
+        this.bind.scheduleList[index] = element;
+        exist = true;
+      }
+    }
+    if (!exist) {
+      this.bind.scheduleList.push({
+        scheduleDateString: date,
+        userId: person,
+        shift: shift,
+        shiftId: shift.id
+      });
+    }
   },
   // 按照排班周期排班
   scheduleByCycle() {
@@ -483,12 +490,16 @@ export default content({
         shiftName: lp.scheduleForm.restShift
       });
     }  else { // 清除班次
-      const existingItemIndex = this.bind.scheduleList.findIndex(item => item.scheduleDateString === this.bind.clickDate && item.userId === this.bind.clickPerson);
-      if (existingItemIndex > -1) {
-        this.bind.scheduleList.splice(existingItemIndex, 1);
-      }
+      this.deleteScheduleListByDatePerson(this.bind.clickDate, this.bind.clickPerson)
     }
     this._closeChooseBox();
+  },
+  // 删除排班列表中的一条数据
+  deleteScheduleListByDatePerson(date, person) {
+    const existingItemIndex = this.bind.scheduleList.findIndex(item => item.scheduleDateString === date && item.userId === person);
+    if (existingItemIndex > -1) {
+      this.bind.scheduleList.splice(existingItemIndex, 1);
+    }
   },
   // 删除排班周期的一条数据
   deleteCycleShift(shift) {
@@ -500,5 +511,161 @@ export default content({
       this.bind.shiftCycleList.splice(existingItemIndex, 1);
     }
   },
+  // 下载排班的 excel模板
+  async downloadScheduleTemplate() {
+    if (this.bind.shiftSelector.shiftSelected.length === 0) {
+      o2.api.page.notice(lp.scheduleForm.downloadExcelTempEmptyShift, 'error');
+      return ;
+    }
+    if (this.bind.trueParticipantList.length === 0) {
+      console.error("没有参与人");
+      return ;
+    }
+    // 开始创建 excel 文件
+    const _shifts = this.bind.shiftSelector.shiftSelected.map( (item) => item.shiftName) // 班次列表
+    const people = this.bind.trueParticipantList.map( (item) => formatPersonName(item)) // 参与人列表
+    const monthDayNum = this.bind.dateList.length + 1 // 月份天数 第一列是姓名
+    _shifts.push(lp.scheduleForm.excelEmptyShift)
+    const _workbook = new ExcelJS.Workbook()
+    // 添加选择班次用的工作表
+    const _sheet2 = _workbook.addWorksheet('sheet2')
+    _sheet2.addRow(_shifts)
+    _sheet2.state = 'hidden' // 隐藏，不需要显示
+    // 根据班次数量生成对应的列标识
+    const _sheet2ColumnNames = generateExcelColumnNames(_shifts.length)
+    // 这个是下拉选择班次的列表数据表达式
+    const formulae = 'sheet2!$' + _sheet2ColumnNames[0] + '$1:$' + _sheet2ColumnNames[_sheet2ColumnNames.length - 1] + '$1'
+    console.log(formulae)
+    // 用户操作的工作表
+    const _sheet1 = _workbook.addWorksheet('sheet1')
+    // 根据这个月的日期数量生成对应的列标识
+    const columnNames = generateExcelColumnNames(monthDayNum);
+    console.log(columnNames)
+    //第一行 表头 合并居中 填充颜色
+    _sheet1.addRow([ lpFormat(lp, 'scheduleForm.excelTitle', {month: this.bind.month} )])
+    _sheet1.mergeCells('A1:' + columnNames[columnNames.length - 1] + '1')
+    _sheet1.getCell('A1').alignment = {vertical: 'middle', horizontal: 'center'}
+    _sheet1.getCell('A1').fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: {argb: 'FFCCFFFF'}
+    }
+    // 第二行 日期
+    let header1 = [] // 放星期
+    let header2 = [] // 放日期
+    for (let i = 0; i < monthDayNum; i++) {
+      if (i === 0) {
+        header1.push(lp.detailTable.person)
+        header2.push("")
+      } else {
+        const _date = this.bind.dateList[i-1]
+        header1.push(_date.day)
+        header2.push(_date.text)
+      }
+    }
+    _sheet1.addRow(header1)
+    _sheet1.addRow(header2)
+    // 填充颜色
+    const headerFill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: {argb: 'FFCCFFCC'}
+    }
+    for (let i = 0; i < columnNames.length; i++) {
+      _sheet1.getCell(columnNames[i] + '2').fill = headerFill
+      _sheet1.getCell(columnNames[i] + '3').fill = headerFill
+    }
+    // A2A3 放姓名字段  合并居中
+    _sheet1.mergeCells('A2:A3')
+    _sheet1.getCell('A2').alignment = {vertical: 'middle', horizontal: 'center'}
 
+    // 第四行开始 后面的行 根据人员添加行
+    for (let i = 0; i < people.length; i++) {
+      _sheet1.addRow([people[i]])
+    }
+    //第一列是人员名称 从 1 开始 给对应的单元格添加班次下拉数据
+    for (let i = 1; i < columnNames.length; i++) {
+      const column = columnNames[i]
+      for (let j = 0; j < people.length; j++) {
+        const cellName = column + (j + 4) // 第四行开始才是人员班次选择
+        _sheet1.getCell(cellName).dataValidation = {
+          type: 'list',
+          allowBlank: true,
+          formulae: [formulae]
+        }
+      }
+    }
+    // 给所有单元格添加边框
+    const border =  {
+      top: {style:'thin'},
+      left: {style:'thin'},
+      bottom: {style:'thin'},
+      right: {style:'thin'}
+    }
+    _sheet1.eachRow(function(row, rowNumber) {
+      row.eachCell({ includeEmpty: true }, function(cell, colNumber) {
+        cell.border = border
+      });
+      row.commit();
+    });
+    // 下载文件
+    const buffer = await _workbook.xlsx.writeBuffer()
+    const excelLink = document.createElement('a')
+    excelLink.href = window.URL.createObjectURL(new Blob([buffer]))
+    excelLink.download = lpFormat(lp, 'scheduleForm.excelFileName', {month: this.bind.month} )
+    excelLink.click()
+  },
+  // 从 excel 文件读取数据
+  async excelJsReadFile(file) {
+    const workbook = new ExcelJS.Workbook();  // new一下
+    await workbook.xlsx.load(file);  // 读文件
+    const worksheet = workbook.getWorksheet('sheet1');  // 读sheet1 跟上面的导出模板一致
+    const monthDayNum = this.bind.dateList.length + 1 // 月份天数 第一列是姓名
+    const columnNames = generateExcelColumnNames(monthDayNum);
+    this.bind.trueParticipantList.forEach((participant, j) => {
+      const rowNum = 4 + j
+      columnNames.forEach((columnName, i) => {
+        if (i !== 0) {
+          const cellValue = worksheet.getCell(columnName + rowNum).value
+          let shift = null
+          const date = this.bind.dateList[i-1]
+          if (cellValue && cellValue !== "") {
+            shift = this.bind.shiftSelector.shiftSelected.find(item => item.shiftName === cellValue)
+          }
+          if (shift) {
+            this.putInScheduleList(shift, date.dateString, participant)
+          } else {
+            this.deleteScheduleListByDatePerson(date.dateString, participant)
+          }
+        }
+      })
+    })
+  },
+  // 上传排班好的 excel模板 把数据导入到系统中
+  uploadScheduleTemplate() {
+    if (this.bind.shiftSelector.shiftSelected.length === 0) {
+      o2.api.page.notice(lp.scheduleForm.downloadExcelTempEmptyShift, 'error');
+      return ;
+    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.style.display = 'none';
+    // 添加 change 事件监听器，接收上传的文件
+    input.addEventListener('change', (event) => {
+      const files = event.target.files;
+      // 处理上传的文件
+      if (files && files.length > 0) {
+        const file = files[0]
+        // 读取文件
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const arrayBuffer = reader.result
+          this.excelJsReadFile(arrayBuffer)
+        }
+        reader.readAsArrayBuffer(file)
+      }
+    });
+
+    input.click();
+  },
 });

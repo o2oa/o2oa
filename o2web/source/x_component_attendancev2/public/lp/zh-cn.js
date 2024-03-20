@@ -242,6 +242,12 @@ MWF.xApplication.attendancev2.LP = {
     monthInfo: "切换月份会自动保存当前月份的数据！",
     copyFromLastMonthBtn: "复制上月排班数据",
     copyConfirmInfo: "确定要复制{month}的数据到当前吗？",
+    downloadExcelTempEmptyShift: "请先选择排班班次！",
+    downloadExcelTempBtn: "下载Excel模板进行排班",
+    uploadExcelBtn: "上传已经排班好的Excel",
+    excelEmptyShift: "--休息--",
+    excelTitle: "{month} 排班表（只能按现有下拉的班次排班，否则无法识别）",
+    excelFileName: "{month}_排班表.xlsx"
   },
   dateCycle: {
     none: "无",

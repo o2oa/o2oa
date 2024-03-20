@@ -251,6 +251,26 @@ const replaceCustomString = (originalString, searchString, replacement) => {
   return replacedString;
 }
 
+/**
+ * 根据传入的数字个数，生成Excel列名数组，如：A,B,C,....,AA,AB,AC,....
+ * @param len 数量
+ * @returns {*[]}
+ */
+const generateExcelColumnNames = (len) =>{
+  const columnNames = [];
+  for (let i = 1; i <= len; i++) {
+    let columnName = "";
+    let quotient = i;
+    while (quotient > 0) {
+      const remainder = (quotient - 1) % 26;
+      columnName = String.fromCharCode(65 + remainder) + columnName;
+      quotient = Math.floor((quotient - 1) / 26);
+    }
+    columnNames.push(columnName);
+  }
+  return columnNames;
+}
+
 export {
   getAllDatesInMonth,
   formatPersonName,
@@ -269,4 +289,5 @@ export {
   storageSet,
   storageGet,
   replaceCustomString,
+  generateExcelColumnNames
 };
