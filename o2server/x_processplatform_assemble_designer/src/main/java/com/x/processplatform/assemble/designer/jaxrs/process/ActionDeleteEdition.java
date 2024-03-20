@@ -35,12 +35,13 @@ class ActionDeleteEdition extends BaseAction {
 						application.getName(), application.getId());
 			}
 			List<Process> list = new ArrayList<>();
-			if(StringUtils.isNotEmpty(editionProcess.getEdition())){
-				list.addAll(business.process().listProcessEditionObject(editionProcess.getApplication(), editionProcess.getEdition()));
-			}else{
+			if (StringUtils.isNotEmpty(editionProcess.getEdition())) {
+				list.addAll(business.process().listProcessEditionObject(editionProcess.getApplication(),
+						editionProcess.getEdition()));
+			} else {
 				list.add(editionProcess);
 			}
-			for(Process process : list) {
+			for (Process process : list) {
 				/* 先删除content内容 */
 				this.deleteDraft(business, process);
 				this.deleteTask(business, process);
@@ -51,7 +52,7 @@ class ActionDeleteEdition extends BaseAction {
 				this.deleteAttachment(business, process, onlyRemoveNotCompleted);
 				this.deleteItem(business, process, onlyRemoveNotCompleted);
 				this.deleteSerialNumber(business, process);
-				this.deleteRecord(business, process);
+				this.deleteRecord(business, process, onlyRemoveNotCompleted);
 				this.deleteDocumentVersion(business, process);
 				this.deleteWork(business, process);
 				if (!onlyRemoveNotCompleted) {
@@ -76,7 +77,7 @@ class ActionDeleteEdition extends BaseAction {
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);
-			for(Process process : list) {
+			for (Process process : list) {
 				this.deleteAgent(business, process);
 				this.deleteBegin(business, process);
 				this.deleteCancel(business, process);
