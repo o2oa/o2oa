@@ -10,6 +10,8 @@ import javax.persistence.criteria.Root;
 
 import com.x.processplatform.assemble.designer.AbstractFactory;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Record_;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkLog_;
 
@@ -60,4 +62,5 @@ public class WorkLogFactory extends AbstractFactory {
 		cq.select(root.get(WorkLog_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
 }
