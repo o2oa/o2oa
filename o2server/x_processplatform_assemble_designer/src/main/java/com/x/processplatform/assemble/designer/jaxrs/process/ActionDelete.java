@@ -56,7 +56,7 @@ class ActionDelete extends BaseAction {
 			this.deleteAttachment(business, process, onlyRemoveNotCompleted);
 			this.deleteItem(business, process, onlyRemoveNotCompleted);
 			this.deleteSerialNumber(business, process);
-			this.deleteRecord(business, process);
+			this.deleteRecord(business, process, onlyRemoveNotCompleted);
 			this.deleteDocumentVersion(business, process);
 			this.deleteWork(business, process);
 			if (!onlyRemoveNotCompleted) {

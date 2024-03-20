@@ -85,7 +85,7 @@ class ActionDelete extends BaseAction {
 			this.deleteAttachment(business, application, onlyRemoveNotCompleted);
 			this.deleteDataItem(business, application, onlyRemoveNotCompleted);
 			this.deleteSerialNumber(business, application);
-			this.deleteRecord(business, application);
+			this.deleteRecord(business, application, onlyRemoveNotCompleted);
 			this.deleteDocumentVersion(business, application);
 			this.deleteWork(business, application);
 			if (!onlyRemoveNotCompleted) {
@@ -404,9 +404,11 @@ class ActionDelete extends BaseAction {
 		this.deleteBatch(business.entityManagerContainer(), Work.class, ids);
 	}
 
-	private void deleteRecord(Business business, Application application) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(Record.class, Record.application_FIELDNAME,
-				application.getId());
+	private void deleteRecord(Business business, Application application, boolean onlyRemoveNotCompleted)
+			throws Exception {
+		List<String> ids = onlyRemoveNotCompleted
+				? business.record().listWithApplicationWithCompleted(application.getId(), false)
+				: business.record().listWithApplication(application.getId());
 		this.deleteBatch(business.entityManagerContainer(), Record.class, ids);
 	}
 

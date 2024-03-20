@@ -136,9 +136,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 		this.deleteBatch(business.entityManagerContainer(), Work.class, ids);
 	}
 
-	void deleteRecord(Business business, Process process) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(Record.class, Record.process_FIELDNAME,
-				process.getId());
+	void deleteRecord(Business business, Process process, boolean onlyRemoveNotCompleted) throws Exception {
+		List<String> ids = onlyRemoveNotCompleted
+				? business.record().listWithProcessWithCompleted(process.getId(), false)
+				: business.record().listWithProcess(process.getId());
 		this.deleteBatch(business.entityManagerContainer(), Record.class, ids);
 	}
 
