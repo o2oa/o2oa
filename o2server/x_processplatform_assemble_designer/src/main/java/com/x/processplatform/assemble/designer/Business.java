@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.designer;
 
-import com.x.processplatform.assemble.designer.element.factory.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -12,6 +11,7 @@ import com.x.processplatform.assemble.designer.content.factory.DraftFactory;
 import com.x.processplatform.assemble.designer.content.factory.ItemFactory;
 import com.x.processplatform.assemble.designer.content.factory.ReadCompletedFactory;
 import com.x.processplatform.assemble.designer.content.factory.ReadFactory;
+import com.x.processplatform.assemble.designer.content.factory.RecordFactory;
 import com.x.processplatform.assemble.designer.content.factory.ReviewFactory;
 import com.x.processplatform.assemble.designer.content.factory.SerialNumberFactory;
 import com.x.processplatform.assemble.designer.content.factory.TaskCompletedFactory;
@@ -19,6 +19,30 @@ import com.x.processplatform.assemble.designer.content.factory.TaskFactory;
 import com.x.processplatform.assemble.designer.content.factory.WorkCompletedFactory;
 import com.x.processplatform.assemble.designer.content.factory.WorkFactory;
 import com.x.processplatform.assemble.designer.content.factory.WorkLogFactory;
+import com.x.processplatform.assemble.designer.element.factory.AgentFactory;
+import com.x.processplatform.assemble.designer.element.factory.ApplicationDictFactory;
+import com.x.processplatform.assemble.designer.element.factory.ApplicationDictItemFactory;
+import com.x.processplatform.assemble.designer.element.factory.ApplicationFactory;
+import com.x.processplatform.assemble.designer.element.factory.BeginFactory;
+import com.x.processplatform.assemble.designer.element.factory.CancelFactory;
+import com.x.processplatform.assemble.designer.element.factory.ChoiceFactory;
+import com.x.processplatform.assemble.designer.element.factory.DelayFactory;
+import com.x.processplatform.assemble.designer.element.factory.EmbedFactory;
+import com.x.processplatform.assemble.designer.element.factory.EndFactory;
+import com.x.processplatform.assemble.designer.element.factory.FileFactory;
+import com.x.processplatform.assemble.designer.element.factory.FormFactory;
+import com.x.processplatform.assemble.designer.element.factory.FormFieldFactory;
+import com.x.processplatform.assemble.designer.element.factory.InvokeFactory;
+import com.x.processplatform.assemble.designer.element.factory.ManualFactory;
+import com.x.processplatform.assemble.designer.element.factory.MergeFactory;
+import com.x.processplatform.assemble.designer.element.factory.ParallelFactory;
+import com.x.processplatform.assemble.designer.element.factory.ProcessFactory;
+import com.x.processplatform.assemble.designer.element.factory.PublishFactory;
+import com.x.processplatform.assemble.designer.element.factory.RouteFactory;
+import com.x.processplatform.assemble.designer.element.factory.ScriptFactory;
+import com.x.processplatform.assemble.designer.element.factory.ServiceFactory;
+import com.x.processplatform.assemble.designer.element.factory.SplitFactory;
+import com.x.processplatform.assemble.designer.element.factory.TemplateFormFactory;
 import com.x.processplatform.core.entity.element.Application;
 
 public class Business {
@@ -364,6 +388,15 @@ public class Business {
 			this.draft = new DraftFactory(this);
 		}
 		return draft;
+	}
+
+	private RecordFactory record;
+
+	public RecordFactory record() throws Exception {
+		if (null == this.record) {
+			this.record = new RecordFactory(this);
+		}
+		return record;
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Application application) throws Exception {
