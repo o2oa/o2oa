@@ -19,7 +19,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
         "minWidth": 540
     },
 	onQueryLoad: function(){
-		this.lp = MWF.QueryLP;
+		this.lp = MWF.xApplication.query.QueryExplorer.LP;
         this.viewPath = this.path+this.options.style+"/view.html";
         this.restActions = MWF.Actions.get("x_query_assemble_designer");
         this.deleteElements = [];
