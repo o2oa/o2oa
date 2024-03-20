@@ -271,6 +271,28 @@ const generateExcelColumnNames = (len) =>{
   return columnNames;
 }
 
+/**
+ * 选择单个文件功能，并触发回调函数
+ * @param callback 回调函数，返回选中的文件
+ */
+const chooseSingleFile = (callback) => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.style.display = 'none';
+  // 添加 change 事件监听器，接收上传的文件
+  input.addEventListener('change', (event) => {
+    const files = event.target.files;
+    // 处理上传的文件
+    if (files && files.length > 0) {
+      const file = files[0]
+      if (callback) {
+        callback(file)
+      }
+    }
+  });
+  input.click();
+}
+
 export {
   getAllDatesInMonth,
   formatPersonName,
@@ -289,5 +311,6 @@ export {
   storageSet,
   storageGet,
   replaceCustomString,
-  generateExcelColumnNames
+  generateExcelColumnNames,
+  chooseSingleFile
 };
