@@ -324,20 +324,19 @@ if (!layout.isReady) {
             } else {
                 loadModuls();
             }
-
-            if (!o2.LP) {
-                console.log('load lp .... ');
-                o2.load(lp, function(m){
-                    if (!m.length){
-                        var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
-                        o2.load(lp,loadModuls);
-                    }else{
-                        loadModuls();
-                    }
-                });
-            } else {
-                loadModuls();
-            }
+            //
+            // if (!o2.LP) {
+            //     o2.load(lp, function(m){
+            //         if (!m.length){
+            //             var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
+            //             o2.load(lp,loadModuls);
+            //         }else{
+            //             loadModuls();
+            //         }
+            //     });
+            // } else {
+            //     loadModuls();
+            // }
 
             _loadProgressBar();
             if (config.proxyCenterEnable){
