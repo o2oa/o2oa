@@ -53,7 +53,8 @@ MWF.xApplication.Profile.Main = new Class({
                     this.personData.mail = "";
                 }
 
-                this.content.loadHtml(this.path+this.options.style+"/"+((this.inBrowser||layout.viewMode=="Default")? "viewBrowser": "view")+".html",
+                var url =  this.path+this.options.style+"/"+(layout.viewMode==="Layout"? "view": "viewBrowser")+".html";
+                this.content.loadHtml( url,
                     {"bind": {"data": this.personData, "lp": this.lp}, "module": this},
                     function(){
                         this.loadContent()
