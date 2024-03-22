@@ -480,7 +480,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
 			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
-				if (!jsonElement.isJsonNull()) {
+				if (Objects.nonNull(jsonElement) && (!jsonElement.isJsonNull())) {
 					jaxrsBody.set(gson.toJson(jsonElement));
 				}
 			});
