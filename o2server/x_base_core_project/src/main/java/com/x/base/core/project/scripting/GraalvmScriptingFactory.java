@@ -1,10 +1,13 @@
 package com.x.base.core.project.scripting;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
@@ -16,6 +19,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.graalvm.polyglot.Context;
@@ -77,11 +81,27 @@ public class GraalvmScriptingFactory {
 		try (Context context = Context.newBuilder().engine(ENGINE).allowHostClassLoading(true)
 				.allowHostAccess(HostAccess.ALL).allowHostClassLookup(GraalvmScriptingFactory::allowClass).build()) {
 			Value bind = context.getBindings(LANGUAGE_ID_JS);
+			Map<String, Class<?>> dataAssignDataEmbedDataClasses = new HashMap<>();
 			if (null != bindings) {
+				dataAssignDataEmbedDataClasses = Stream.of(BINDING_NAME_EMBEDDATA, BINDING_NAME_DATA)
+						.filter(bindings::containsKey).filter(o -> Objects.nonNull(bindings.get(o)))
+						.collect(Collectors.toMap(Function.identity(), o -> bindings.get(o).getClass()));
 				bindings.entrySet().forEach(en -> bind.putMember(en.getKey(), en.getValue()));
 			}
 			context.eval(getcommonScriptSource());
-			return promise(context, context.eval(source));
+			Value value = context.eval(source);
+			if ((null != bindings) && (!dataAssignDataEmbedDataClasses.isEmpty())) {
+				dataAssignDataEmbedDataClasses.entrySet().forEach(o -> {
+					Value v = bind.getMember(o.getKey().substring(o.getKey().indexOf("_") + 1));
+					try {
+						MethodUtils.invokeExactMethod(bindings.get(o.getKey()), "replaceContent",
+								bind.getMember("JSON").invokeMember("stringify", v).asString());
+					} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+						LOGGER.error(e);
+					}
+				});
+			}
+			return promise(context, value);
 		}
 	}
 
