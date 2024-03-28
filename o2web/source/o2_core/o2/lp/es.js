@@ -459,7 +459,10 @@ o2.LP={
 			"insertEmotion": "Insertar emoticono",
 			"insertImage": "Insertar imagen",
 			"Emotions": "regular_smile|Sonrisa,teeth_smile|Risa,angry_smile|Enojado,confused_smile|Perplejo,cry_smile|Llanto,embaressed_smile|Avergonzado,omg_smile|Sorprendido,sad_smile|Tristeza,shades_smile|Genial,tounge_smile|Sacar la lengua,wink_smile|Guiño,angel_smile|Ángel,devil_smile|Demonio,heart|Corazón,broken_heart|Corazón roto,thumbs_up|Pulgar hacia arriba,thumbs_down|Pulgar hacia abajo,cake|Pastel,lightbulb|Bombilla,envelope|Sobre"
-		}
+		},
+		"unit": "Organización",
+		"duty": "Cargo",
+		"selectIdentity": "Elegir identidad"
 	},
 	"authentication": {
 		"LoginFormTitle": "Bienvenido al inicio de sesión",
