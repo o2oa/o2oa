@@ -133,11 +133,7 @@ MWF.xApplication.query.ImporterDesigner.LP={
 		"valueScriptDataNote": "Datos empresariales generados por el sistema según la configuración",
 		"valueScriptDocumentNote": "Si importa documentos CMS, se generarán los datos del documento por el sistema",
 		"valueScriptWorkNote": "Si importa trabajos de proceso, se generarán los datos de trabajo por el sistema",
-		"idPathNote": "Al importar los datos de la tabla autoconstruida, la ruta de campo 'id' significa actualizar el registro original.",
-		"excelSelectedOption ": " columna excel opcional ",
-		"selectedOptionScript ": " script opcional",
-		"excelSelectedOption": "La columna Excel es opcional",
-		"selectedOptionScript": "Guión opcional"
+		"idPathNote": "Al importar los datos de la tabla autoconstruida, la ruta de campo 'id' significa actualizar el registro original."
 	},
 	"formToolbar": {
 		"save": "Guardar",
@@ -145,6 +141,7 @@ MWF.xApplication.query.ImporterDesigner.LP={
 		"autoSave": "Guardar automáticamente",
 		"preview": "vista previa",
 		"help": "ayuda"
-	}
+	},
+	"autoAddColumns": "Generar columnas a partir de la tabla de datos"
 }
 MWF.xApplication.query.ImporterDesigner["lp."+o2.language] = MWF.xApplication.query.ImporterDesigner.LP

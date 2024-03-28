@@ -130,10 +130,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                 this.loadMacro( function () {
                     this._loadModuleEvents();
                     this.fireEvent("queryLoad");
-                    this.importFromExcel()
-                }.bind(this))
-            }.bind(this))
-
+                    this.importFromExcel();
+                }.bind(this));
+            }.bind(this));
         },
         loadMacro: function (callback) {
             MWF.require("MWF.xScript.Macro", function () {
@@ -214,6 +213,10 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             this.personMapImported = {};
             this.unitMapImported = {};
             this.groupMapImported = {};
+
+            this.lookupAction.getUUID( function (json){
+                this.recordId = json.data;
+            }.bind(this), null, false);
 
             this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
 
@@ -304,8 +307,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
             var data = this.getData();
 
-            this.lookupAction.getUUID(function(json){
-                this.recordId = json.data;
+            // this.lookupAction.getUUID(function(json){
+            //     this.recordId = json.data;
                 this.lookupAction.executImportModel(this.json.id, {
                     "recordId": this.recordId,
                     "data" : data
@@ -323,7 +326,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                     this.app.notice(requestJson.message, "error");
                     this.progressBar.close();
                 }.bind(this))
-            }.bind(this))
+            // }.bind(this))
             // }.bind(this))
         },
         objectToString: function (obj, type) {
@@ -762,22 +765,13 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             if( !this.importerJson ){
                 this.getImporterJSON( function () {
                     exportTo();
-                }.bind(this));
+                }.bind(this))
             }else{
                 exportTo();
             }
         },
 
         downloadTemplate: function(fileName, callback){
-            if( this.Macro ){
-                this._downloadTemplate(fileName, callback);
-            }else{
-                this.loadMacro(function (){
-                    this._downloadTemplate(fileName, callback);
-                }.bind(this));
-            }
-        },
-        _downloadTemplate: function(fileName, callback){
             if( !this.excelUtils ){
                 this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
             }
@@ -814,15 +808,11 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             return title;
         },
         getTitleArray: function(){
-            return this.json.data.columnList.map( function (columnJson, i) {
-                var obj = {
-                    text: columnJson.displayName
-                };
-                if( columnJson.optionScript ){
-                    obj.options = this.Macro.exec(columnJson.optionScript, this);
-                }
-                return obj;
+            var titleArray = [];
+            this.json.data.columnList.each( function (columnJson, i) {
+                titleArray.push( columnJson.displayName );
             }.bind(this));
+            return titleArray;
         },
         getColWidthArray : function(){
             var colWidthArr = [];

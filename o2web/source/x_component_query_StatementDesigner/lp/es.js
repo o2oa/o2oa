@@ -305,7 +305,8 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"customFilterCondition": "Datos de filtro personalizados",
 		"byScript": "Según el guión",
 		"language": "Paquete lingüístico",
-		"languageInfo": "Devuelve un objeto json que contiene información lingüística; O2.language obtiene información sobre el idioma actual"
+		"languageInfo": "Devuelve un objeto json que contiene información lingüística; O2.language obtiene información sobre el idioma actual",
+		"forceClearCustomViewStyle": "Eliminar estilos personalizados"
 	},
 	"viewStyle": {
 		"default": "Estilo predeterminado",
@@ -314,7 +315,8 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"official": "Estilo oficial",
 		"deepBlue": "Estilo de grupo",
 		"blueFlat": "Azul y blanco plano",
-		"greenFlat": "Verde plano"
+		"greenFlat": "Verde plano",
+		"lightBlue": "Estilo azul claro"
 	},
 	"formToolbar": {
 		"save": "Guardar",

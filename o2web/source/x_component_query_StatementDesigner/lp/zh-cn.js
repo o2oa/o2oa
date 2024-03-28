@@ -133,7 +133,8 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "exportEnable": "允许导出",
         "isTime": "时间类型",
         "isNumber": "数字类型",
-        "viewEnable": "启用视图"
+        "viewEnable": "启用视图",
+        "forceClearCustomViewStyle": "切换时清除自定义样式"
 
     },
     "formToolbar":{

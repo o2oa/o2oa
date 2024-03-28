@@ -69,6 +69,7 @@ MWF.xApplication.query.ImporterDesigner.LP = {
     },
     "mastInputPath": "请输入数据路径",
     "mastInputTitle": "请输入标题",
+    "autoAddColumns": "根据数据表生成列",
     "propertyTemplate": {
         "base": "基本",
         "event": "事件",
@@ -153,9 +154,7 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "valueScriptDataNote": "系统根据配置生成的业务数据",
         "valueScriptDocumentNote": "如果导入CMS文档，系统生成的文档数据",
         "valueScriptWorkNote": "如果导入流程work，系统生成的工作数据",
-        "idPathNote": "当导入自建表数据时，字段路径为'id'表示更新原有记录。",
-        "excelSelectedOption": "excel列可选项",
-        "selectedOptionScript": "可选项脚本，返回数组"
+        "idPathNote": "当导入自建表数据时，字段路径为'id'表示更新原有记录。"
     },
     "formToolbar":{
         "save": "保存",

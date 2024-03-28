@@ -63,9 +63,14 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
 
             symbole.setStyles( this.json.symbolStyles || {} );
 
-            var width = symbole.getSize().x + 5;
+            var paddingLeft = symbole.getSize().x + 5;
+            var inputPadding = input.getStyle("padding-right");
+            var width = paddingLeft;
+            if( this.isNumber( inputPadding ) ){
+                width = width + parseFloat(inputPadding);
+            }
             input.setStyles({
-                "padding-left": width + "px",
+                "padding-left": paddingLeft + "px",
                 "width": "calc( 100% - " + width +"px )"
             });
 

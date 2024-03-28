@@ -29,6 +29,15 @@
     "viewContentNode": {
         "overflow": "hidden"
     },
+    "autoAddColumnsNode":{
+        "width": "34px",
+        "height": "40px",
+        "padding-left": "24px",
+        "position": "absolute",
+        "left": "0",
+        "top": "0",
+        "background": "url(../x_component_query_ViewDesigner/$View/default/icon/autoAddColumns.png) 10px center no-repeat"
+    },
     "contentLeftNode": {
         "width": "30px",
         "background-color": "#EEE",
@@ -134,6 +143,7 @@
     },
 
     "viewTitleContentNode": {
+        "position": "relative",
         "margin": "0px 31px 0px 31px",
         "height": "40px"
     },

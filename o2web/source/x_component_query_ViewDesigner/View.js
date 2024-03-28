@@ -985,20 +985,36 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             );
         }.bind(this));
     },
+    isForceClearCustomStyle: function (){
+        return this.json.forceClearCustomStyle &&
+            this.json.forceClearCustomStyle.length &&
+            this.json.forceClearCustomStyle[0] === "yes"
+    },
     removeStyles: function(from, to){
-        if (this.json.data.viewStyles[to]){
-            Object.each(from, function(style, key){
-                if (this.json.data.viewStyles[to][key] && this.json.data.viewStyles[to][key]==style){
-                    delete this.json.data.viewStyles[to][key];
-                }
-            }.bind(this));
+        if( this.isForceClearCustomStyle() ){
+            this.json.data.viewStyles[to] = {};
+        }else {
+            if (this.json.data.viewStyles[to]) {
+                Object.each(from, function (style, key) {
+                    if (this.json.data.viewStyles[to][key] && this.json.data.viewStyles[to][key] == style) {
+                        delete this.json.data.viewStyles[to][key];
+                    }
+                }.bind(this));
+            }
         }
     },
     copyStyles: function(from, to){
-        if (!this.json.data.viewStyles[to]) this.json.data.viewStyles[to] = {};
-        Object.each(from, function(style, key){
-            if (!this.json.data.viewStyles[to][key]) this.json.data.viewStyles[to][key] = style;
-        }.bind(this));
+        if( this.isForceClearCustomStyle() ){
+            this.json.data.viewStyles[to] = {};
+            Object.each(from, function (style, key) {
+                this.json.data.viewStyles[to][key] = style;
+            }.bind(this));
+        }else{
+            if (!this.json.data.viewStyles[to]) this.json.data.viewStyles[to] = {};
+            Object.each(from, function(style, key){
+                if (!this.json.data.viewStyles[to][key]) this.json.data.viewStyles[to][key] = style;
+            }.bind(this));
+        }
     },
     // clearTemplateStyles: function(styles){
     //     if (styles){
@@ -1019,6 +1035,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             if (styles.contentTr) this.removeStyles(styles.contentTr, "contentTr");
             if (styles.contentSelectedTr) this.removeStyles(styles.contentSelectedTr, "contentSelectedTr");
             if (styles.contentTd) this.removeStyles(styles.contentTd, "contentTd");
+            if (styles.zebraContentTd) this.removeStyles(styles.zebraContentTd, "zebraContentTd");
             if (styles.contentGroupTd) this.removeStyles(styles.contentGroupTd, "contentGroupTd");
             if (styles.groupCollapseNode) this.removeStyles(styles.groupCollapseNode, "groupCollapseNode");
             if (styles.groupExpandNode) this.removeStyles(styles.groupExpandNode, "groupExpandNode");
@@ -1038,6 +1055,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         if (styles.contentTr) this.copyStyles(styles.contentTr, "contentTr");
         if (styles.contentSelectedTr) this.copyStyles(styles.contentSelectedTr, "contentSelectedTr");
         if (styles.contentTd) this.copyStyles(styles.contentTd, "contentTd");
+        if (styles.zebraContentTd) this.copyStyles(styles.zebraContentTd, "zebraContentTd");
         if (styles.contentGroupTd) this.copyStyles(styles.contentGroupTd, "contentGroupTd");
         if (styles.groupCollapseNode) this.copyStyles(styles.groupCollapseNode, "groupCollapseNode");
         if (styles.groupExpandNode) this.copyStyles(styles.groupExpandNode, "groupExpandNode");

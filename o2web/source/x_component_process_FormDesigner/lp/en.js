@@ -1466,7 +1466,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"flow": "Continue circulation",
 		"el_iconPosition": "Icon position",
 		"checkOtherFlow": "Verify other circulation methods",
-		"checkOtherFlowNote": "When adding, resetting, or returning, execute the verification script. Obtain the flow method (add as: addTask, reset as: reset, return as: goBack) through this. form. opinion, and other parameters of the flow through this. form. flowData"
+		"checkOtherFlowNote": "When adding, resetting, or returning, execute the verification script. Obtain the flow method (add as: addTask, reset as: reset, return as: goBack) through this. form. opinion, and other parameters of the flow through this. form. flowData",
+		"forceClearCustomViewStyle": "Clear custom styles when switching",
+		"forceClearCustomStyle": "Clear custom styles when switching"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
@@ -1531,7 +1533,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"moveup": "Move to the previous line",
 		"deleteRow": "Delete Row",
 		"insertRow": "Insert Row",
-		"importFromForm": "Import field configuration from the interface"
+		"importFromForm": "Import field configuration from the interface",
+		"forceClearCustomViewStyle": "Clear custom styles when switching"
 	},
 	"formToolbar": {
 		"save": "Save form",

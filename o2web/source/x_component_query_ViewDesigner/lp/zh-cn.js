@@ -329,6 +329,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "byScript": "根据脚本",
         "language": "语言包",
         "languageInfo": "返回包含语言信息的JSON对象；o2.language获取当前语言信息",
+        "forceClearCustomViewStyle": "切换时清除自定义样式"
     },
     "viewStyle":{
         "default": "默认样式",
@@ -337,7 +338,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "official":"公文样式",
         "deepBlue":"集团样式",
         "blueFlat":"蓝白扁平",
-        "greenFlat": "绿色扁平"
+        "greenFlat": "绿色扁平",
+        "lightBlue": "淡蓝样式"
     },
     "formToolbar":{
         "save": "保存",

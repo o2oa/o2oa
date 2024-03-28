@@ -77,7 +77,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"injectNotice": "Mantenga presionado Ctrl y suelte el mouse para posicionamiento preciso",
 		"selectedContainer": "Seleccionar objeto padre",
 		"property": "Propiedad",
-		"batchModify": "Modificación masiva"
+		"batchModify": "Modificación masiva",
+		"selectParent": "Seleccionar componentes superiores"
 	},
 	"actionbar": {
 		"readhide": "Establecer si se muestra al leer",
@@ -1461,7 +1462,11 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"tableNodeStyles": "Estilo de contenedor de tabla",
 		"logHtmlScript": "Guiones HTML",
 		"flow": "Continuar circulando",
-		"el_iconPosition": "Ubicación del icono"
+		"el_iconPosition": "Ubicación del icono",
+		"checkOtherFlow": "Verificar otros métodos de circulación",
+		"checkOtherFlowNote": "Ejecute el guión de verificación cuando se agregue, restablezca o devuelva, obtenga el método de circulación a través de este.formulario.currentrouteme (agregue la etiqueta a: addatask, restablezca a: reset, devuelva a: goback), obtenga una opinión a través de este.formulario.opinion, obtenga otros parámetros de la circulación a través de este.formulario.flowdata",
+		"allowDownloadBatch": "Permitir descargas por lotes",
+		"forceClearCustomStyle": "Limpiar estilos personalizados al cambiar"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
@@ -1564,7 +1569,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"banner": "Banner",
 		"title": "Título",
 		"sectionTitle": "Título de sección",
-		"section": "Sección"
+		"section": "Sección",
+		"lightBlue": "Estilo azul claro"
 	}
 }
 MWF.xApplication.cms.FormDesigner["lp."+o2.language] = MWF.xApplication.cms.FormDesigner.LP

@@ -41,6 +41,13 @@
       "pc"
     ]
   },
+  "light-blue": {
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.lightBlue,
+    "file": "styles_light-blue.json",
+    "mode": [
+      "pc"
+    ]
+  },
   "green-flat": {
     "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.greenFlat,
     "file": "styles_green-flat.json",

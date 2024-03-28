@@ -1120,6 +1120,7 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
         this.idx = i;
         this.clazzType = "item";
         this.lazy = lazy;
+        this.odd = this.view.items.length % 2 === 1;
         this.load();
     },
     _load: function () {
@@ -1129,6 +1130,9 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
 
         var viewStyles = this.view.viewJson.viewStyles;
         var viewContentTdNode = (viewStyles && viewStyles["contentTd"]) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+        if( this.odd ){
+            viewContentTdNode = ( viewStyles && viewStyles["zebraContentTd"] && Object.keys(viewStyles["zebraContentTd"].length > 0)) ? viewStyles["zebraContentTd"] : viewContentTdNode;
+        }
 
         if(!this.node)this.loadNode();
 

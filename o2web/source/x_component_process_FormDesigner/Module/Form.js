@@ -194,20 +194,36 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
 		this.designer.fireEvent("postFormLoad");
 	},
+	isForceClearCustomStyle: function (){
+		return this.json.forceClearCustomStyle &&
+			this.json.forceClearCustomStyle.length &&
+			this.json.forceClearCustomStyle[0] === "yes";
+	},
     removeStyles: function(from, to){
-        if (this.json[to]){
-            Object.each(from, function(style, key){
-                if (this.json[to][key] && this.json[to][key]==style){
-                    delete this.json[to][key];
-                }
-            }.bind(this));
-        }
+		if( this.isForceClearCustomStyle()  ){
+			if(this.json[to])this.json[to] = {};
+		}else{
+			if (this.json[to]){
+				Object.each(from, function(style, key){
+					if (this.json[to][key] && this.json[to][key]==style){
+						delete this.json[to][key];
+					}
+				}.bind(this));
+			}
+		}
     },
     copyStyles: function(from, to){
-        if (!this.json[to]) this.json[to] = {};
-        Object.each(from, function(style, key){
-            if (!this.json[to][key]) this.json[to][key] = style;
-        }.bind(this));
+		if( this.isForceClearCustomStyle() ){
+			this.json[to] = {};
+			Object.each(from, function(style, key){
+				this.json[to][key] = style;
+			}.bind(this));
+		}else{
+			if (!this.json[to]) this.json[to] = {};
+			Object.each(from, function(style, key){
+				if (!this.json[to][key]) this.json[to][key] = style;
+			}.bind(this));
+		}
     },
     clearTemplateStyles: function(styles){
         if (styles){
@@ -1033,6 +1049,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.data.html = html;
 
 		var data = this._copyFormJson(this.data);
+
+		if( data.forceClearCustomStyle )delete data.forceClearCustomStyle;
 
 		if (data.json.styleConfig && data.json.styleConfig.extendFile){
 			var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;

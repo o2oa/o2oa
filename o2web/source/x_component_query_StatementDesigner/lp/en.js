@@ -308,7 +308,8 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"top": "Forward",
 		"bottom": "rear",
 		"format": "format",
-		"script": "script"
+		"script": "script",
+		"forceClearCustomViewStyle": "Clear custom styles"
 	},
 	"viewStyle": {
 		"default": "Default",
@@ -317,7 +318,8 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"official": "Official",
 		"deepBlue": "Deep Blue",
 		"blueFlat": "Blue and white flat",
-		"greenFlat": "Green Flat"
+		"greenFlat": "Green Flat",
+		"lightBlue": "Light blue style"
 	},
 	"formToolbar": {
 		"save": "Save",

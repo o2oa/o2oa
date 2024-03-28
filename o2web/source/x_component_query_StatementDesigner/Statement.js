@@ -1794,25 +1794,39 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         var className = d.entityCategory === "dynamic" ? d.table : d.entityClassName;
         if( !className )return;
         var pre = ["sql", "sqlScript"].contains(d.format) ? "x" : "";
-        o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
-            className,
-            d.entityCategory,
-            function(json){
-                this.json.data.selectList = (json.data||[]).map( function ( field ) {
-                    return {
-                        "id": (new MWF.widget.UUID).id,
-                        "column": field.name,
-                         "path": pre ? (pre + field.name) : field.name,
-                        "displayName": field.description || field.name,
-                        "orderType": "original"
-                    }
-                }.bind(this));
 
-                this.json.data.selectList.each(function (d) {
-                    this.items.push(new MWF.xApplication.query.StatementDesigner.View.Column(d, this));
-                }.bind(this));
-            }.bind(this)
-        )
+        var p;
+        if( d.entityCategory === "dynamic" ){
+            p = o2.Actions.load("x_query_assemble_designer").TableAction.get(d.table, function(json){
+                if (json){
+                    var dataJson = JSON.decode(json.data.data);
+                    return dataJson.fieldList || [];
+                }
+            }.bind(this));
+        }else{
+            p = o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
+                className,
+                d.entityCategory,
+                function(json){
+                    return json.data||[];
+                }.bind(this)
+            );
+        }
+        Promise.resolve(p).then(function (data){
+            this.json.data.selectList = data.map( function ( field ) {
+                return {
+                    "id": (new MWF.widget.UUID).id,
+                    "column": field.name,
+                    "path": pre ? (pre + field.name) : field.name,
+                    "displayName": field.description || field.name,
+                    "orderType": "original"
+                }
+            }.bind(this));
+
+            this.json.data.selectList.each(function (d) {
+                this.items.push(new MWF.xApplication.query.StatementDesigner.View.Column(d, this));
+            }.bind(this));
+        }.bind(this))
     },
     selected: function () {
         if (this.statement.currentSelectedModule) {
@@ -2184,6 +2198,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
             if (styles.contentTr) this.removeStyles(styles.contentTr, "contentTr");
             if (styles.contentSelectedTr) this.removeStyles(styles.contentSelectedTr, "contentSelectedTr");
             if (styles.contentTd) this.removeStyles(styles.contentTd, "contentTd");
+            if (styles.zebraContentTd) this.removeStyles(styles.zebraContentTd, "zebraContentTd");
             // if (styles.contentGroupTd) this.removeStyles(styles.contentGroupTd, "contentGroupTd");
             // if (styles.groupCollapseNode) this.removeStyles(styles.groupCollapseNode, "groupCollapseNode");
             // if (styles.groupExpandNode) this.removeStyles(styles.groupExpandNode, "groupExpandNode");
@@ -2203,6 +2218,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         if (styles.contentTr) this.copyStyles(styles.contentTr, "contentTr");
         if (styles.contentSelectedTr) this.copyStyles(styles.contentSelectedTr, "contentSelectedTr");
         if (styles.contentTd) this.copyStyles(styles.contentTd, "contentTd");
+        if (styles.zebraContentTd) this.copyStyles(styles.zebraContentTd, "zebraContentTd");
         // if (styles.contentGroupTd) this.copyStyles(styles.contentGroupTd, "contentGroupTd");
         // if (styles.groupCollapseNode) this.copyStyles(styles.groupCollapseNode, "groupCollapseNode");
         // if (styles.groupExpandNode) this.copyStyles(styles.groupExpandNode, "groupExpandNode");
@@ -2213,19 +2229,31 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         if (styles.tableProperties) this.copyStyles(styles.tableProperties, "tableProperties");
     },
     removeStyles: function (from, to) {
-        if (this.json.data.viewStyles[to]) {
-            Object.each(from, function (style, key) {
-                if (this.json.data.viewStyles[to][key] && this.json.data.viewStyles[to][key] == style) {
-                    delete this.json.data.viewStyles[to][key];
-                }
-            }.bind(this));
+        if( this.isForceClearCustomStyle() ){
+            this.json.data.viewStyles[to] = {};
+        }else{
+            if (this.json.data.viewStyles[to]) {
+                Object.each(from, function (style, key) {
+                    if (this.json.data.viewStyles[to][key] && this.json.data.viewStyles[to][key] == style) {
+                        delete this.json.data.viewStyles[to][key];
+                    }
+                }.bind(this));
+            }
         }
+
     },
     copyStyles: function (from, to) {
-        if (!this.json.data.viewStyles[to]) this.json.data.viewStyles[to] = {};
-        Object.each(from, function (style, key) {
-            if (!this.json.data.viewStyles[to][key]) this.json.data.viewStyles[to][key] = style;
-        }.bind(this));
+        if( this.isForceClearCustomStyle() ){
+            this.json.data.viewStyles[to] = {};
+            Object.each(from, function (style, key) {
+                this.json.data.viewStyles[to][key] = style;
+            }.bind(this));
+        }else{
+            if (!this.json.data.viewStyles[to]) this.json.data.viewStyles[to] = {};
+            Object.each(from, function (style, key) {
+                if (!this.json.data.viewStyles[to][key]) this.json.data.viewStyles[to][key] = style;
+            }.bind(this));
+        }
     }
     // preview: function(){
     //     if( this.isNewView ){

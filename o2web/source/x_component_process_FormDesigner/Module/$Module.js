@@ -147,22 +147,27 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.treeNode.module = this;
 	},
 	copyStyles: function(from, to){
-		if (!this.json[to]) this.json[to] = {};
+		if( this.form.isForceClearCustomStyle() ){
+			this.json[to] = {};
+		}else{
+			if (!this.json[to]) this.json[to] = {};
+		}
 		Object.each(from, function(style, key){
 			//if (!this.json[to][key])
 			this.json[to][key] = style;
 		}.bind(this));
 	},
 	removeStyles: function(from, to){
-		if (this.json[to]){
-			Object.each(from, function(style, key){
-				if (this.json[to][key] && this.json[to][key]==style){
-					delete this.json[to][key];
-				}
-				//if (this.json[from][key]){
-				//   delete this.json[to][key];
-				//}
-			}.bind(this));
+		if( this.form.isForceClearCustomStyle() ){
+			this.json[to] = {};
+		}else{
+			if (this.json[to]){
+				Object.each(from, function(style, key){
+					if (this.json[to][key] && this.json[to][key]==style){
+						delete this.json[to][key];
+					}
+				}.bind(this));
+			}
 		}
 	},
 	setTemplateStyles: function(styles){
@@ -298,6 +303,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 
 		var className = this.moduleName.capitalize();
 		var prefix = (this.form.moduleType=="page") ? "PC" : "FC";
+		if( this.form.designer.options.name.contains("cms.") ){
+			prefix = "CMSFC";
+		}
 		var newTool = new MWF[prefix+className](this.form);
         var oldId = newModuleJson.id;
 		newTool.json = newModuleJson;
