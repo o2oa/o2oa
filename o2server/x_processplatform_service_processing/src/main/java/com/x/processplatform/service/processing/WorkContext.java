@@ -108,9 +108,15 @@ public class WorkContext {
 				list.addAll(aeiObjects.getRecords());
 				list.addAll(aeiObjects.getCreateRecords());
 			}
-			return gson.toJson(
-					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
-							.collect(Collectors.toList()));
+			List<Record> records = list.stream()
+					.filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
+					.collect(Collectors.toList());
+			// 考虑到比如已经是最后一个人工环节,那么work已经转为workCompleted,那么直接返回全部record
+			if (records.isEmpty()) {
+				return gson.toJson(list);
+			} else {
+				return gson.toJson(records);
+			}
 		} catch (Exception e) {
 			throw new IllegalStateException("getRecordList error.", e);
 		}
@@ -333,6 +339,7 @@ public class WorkContext {
 			throw new IllegalStateException("getReadCompletedList error.", e);
 		}
 	}
+
 	@Deprecated(forRemoval = true, since = "never use.")
 	public String getReviewList() {
 		try {
