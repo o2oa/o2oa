@@ -113,9 +113,11 @@ public class WorkContext {
 					.collect(Collectors.toList());
 			// 考虑到比如已经是最后一个人工环节,那么work已经转为workCompleted,那么直接返回全部record
 			if (records.isEmpty()) {
-				return gson.toJson(list);
+				return gson.toJson(list.stream().sorted(Comparator.nullsLast(Comparator.comparing(Record::getOrder)))
+						.collect(Collectors.toList()));
 			} else {
-				return gson.toJson(records);
+				return gson.toJson(records.stream().sorted(Comparator.nullsLast(Comparator.comparing(Record::getOrder)))
+						.collect(Collectors.toList()));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException("getRecordList error.", e);
