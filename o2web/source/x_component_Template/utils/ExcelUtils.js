@@ -160,19 +160,92 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
         }.bind(this));
     },
     appendDataToSheet: function (sheet, array, colWidthArr, dateIndexArray, numberIndexArray){
-        var titleRow = sheet.getRow(1);
+        // var titleRow = sheet.getRow(1);
         var titleArray = array.shift();
+
         titleArray.each( function( title, i ){
             sheet.getColumn(i+1).width = colWidthArr[i] ? (colWidthArr[i] / 10) : 20;
-            var cell = titleRow.getCell(i+1);
-            cell.value = o2.typeOf(title) === 'object' ? title.text : title;
+        });
+
+        //处理表头分类
+        var titleDataParsed = [];
+        var maxTitleLevel = 1;
+        titleArray.each(function (title, i){
+            var text = o2.typeOf(title) === 'object' ? title.text : title;
+            var texts = text.split('\\');
+            maxTitleLevel = Math.max( maxTitleLevel, texts.length );
+            titleDataParsed.push( texts );
+        });
+
+        var setTitleCellStyle = function (cell){
             cell.font = { name: '宋体', family: 4, size: 12, bold: true };
             // cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFFF'} };
             cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-        });
+        };
+
+        for( var level=0 ;level<maxTitleLevel; level++ ){
+            var titleRow = sheet.getRow(level+1);
+
+            var lastValue = '';
+            var lastCell = null;
+            var lastIndex = -1;
+            var lastTitles = null;
+            var lastAvailableIndex = -1;
+            var startColName, starRowIndex, endColName, endRowIndex;
+
+            titleDataParsed.each( function(titles, i){
+                if( !titles[level] )return;
+                lastAvailableIndex = i;
+                if( lastValue !== titles[level] ){
+                    var cell = titleRow.getCell(i+1);
+                    cell.value = titles[level];
+                    setTitleCellStyle(cell);
+
+                    if(lastTitles && lastCell ){
+                        //sheet.mergeCells('A2:A3');
+                        startColName = this.index2ColName(lastIndex);
+                        starRowIndex = level+1;
+                        endColName = this.index2ColName(i-1);
+                        endRowIndex = lastTitles[level+1] ? level+1 : maxTitleLevel;
+                        if( startColName !== endColName || starRowIndex !== endRowIndex  ){
+                            sheet.mergeCells(startColName+starRowIndex+':'+endColName+endRowIndex);
+                        }
+                    }
+
+                    lastValue = titles[level];
+                    lastCell = cell;
+                    lastIndex = i;
+                    lastTitles = titles;
+                }
+
+            }.bind(this));
+
+            debugger;
+
+            if(lastTitles && lastCell && lastTitles[level] ){
+                //sheet.mergeCells('A2:A3');
+                startColName = this.index2ColName(lastIndex);
+                starRowIndex = level+1;
+                endColName = this.index2ColName(lastAvailableIndex);
+                endRowIndex = lastTitles[level+1] ? level+1 : maxTitleLevel;
+                if( startColName !== endColName || starRowIndex !== endRowIndex  ){
+                    sheet.mergeCells(startColName+starRowIndex+':'+endColName+endRowIndex);
+                }
+            }
+
+        }
+
+        // titleArray.each( function( title, i ){
+        //     sheet.getColumn(i+1).width = colWidthArr[i] ? (colWidthArr[i] / 10) : 20;
+        //     var cell = titleRow.getCell(i+1);
+        //     cell.value = o2.typeOf(title) === 'object' ? title.text : title;
+        //     cell.font = { name: '宋体', family: 4, size: 12, bold: true };
+        //     // cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFFF'} };
+        //     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        // });
 
         array.each(function( contentArray, i ){
-            var contentRow = sheet.getRow(i+2);
+            var contentRow = sheet.getRow(i+1+maxTitleLevel);
             contentArray.each(function( content, j ){
                 var cell = contentRow.getCell(j+1);
                 cell.value = content;
