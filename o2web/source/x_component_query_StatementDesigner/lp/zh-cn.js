@@ -134,7 +134,12 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "isTime": "时间类型",
         "isNumber": "数字类型",
         "viewEnable": "启用视图",
-        "forceClearCustomViewStyle": "切换时清除自定义样式"
+        "forceClearCustomViewStyle": "切换时清除自定义样式",
+
+        "total": "合计",
+        "notNeeded": "不需要",
+        "totalValue": "数值",
+        "totalCount": "数量"
 
     },
     "formToolbar":{

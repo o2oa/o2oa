@@ -916,39 +916,80 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         var colWidthArr = [];
         var dateIndexArray = [];
         var numberIndexArray = [];
+        var totalArray = [];
         var idx = 0;
+
+        if (this.viewJson.isSequence === "yes") {
+            titleArray.push( this.lp.sequence );
+            colWidthArr.push(100);
+            totalArray.push('');
+            idx = idx + 1;
+        }
+
         Object.each(this.entries, function (c, k) {
             if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
                 titleArray.push(c.displayName);
                 colWidthArr.push(c.exportWidth || 200);
                 if( c.isTime )dateIndexArray.push(idx);
                 if( c.isNumber )numberIndexArray.push(idx);
+                totalArray.push( ['number', 'count'].contains(c.total) ? new Decimal(0) : '' );
                 idx++;
             }
         }.bind(this));
         exportArray.push(titleArray);
 
         this.loadExportData(start, end, d, function (dataList) {
-            var index = 0;
+            var rowIndex = 0;
             dataList.each(function (data, j) {
                 data.each(function (d, i) {
-                    index = index + 1;
+                    rowIndex = rowIndex + 1;
+
+                    var columnIndex = 0;
+
                     var dataArray = [];
+                    if (this.viewJson.isSequence === "yes") {
+                        dataArray.push( rowIndex );
+                        columnIndex++;
+                    }
                     Object.each(this.entries, function (c, k) {
                         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
                             var text = this.getExportText(c, k, d);
-                            // if( c.isNumber && typeOf(text) === "string" && (parseFloat(text).toString() !== "NaN") ){
-                            //     text = parseFloat(text);
-                            // }
+
                             dataArray.push( text );
+
+                            switch (c.total){
+                                case 'number':
+                                    totalArray[columnIndex] = totalArray[columnIndex].plus(text);
+                                    break;
+                                case 'count':
+                                    totalArray[columnIndex] = totalArray[columnIndex].plus(1);
+                                    break;
+                            }
+
+                            columnIndex++;
                         }
                     }.bind(this));
                     //exportRow事件
-                    var argu = {"index":index, "source": d, "data":dataArray};
+                    var argu = {"index":rowIndex, "source": d, "data":dataArray};
                     this.fireEvent("exportRow", [argu]);
                     exportArray.push( argu.data || dataArray );
                 }.bind(this));
             }.bind(this));
+
+            var hasTotal = false;
+            totalArray = totalArray.map(function (d){
+                if( d ){
+                    hasTotal = true;
+                    return d.toString();
+                }else{
+                    return '';
+                }
+            });
+
+            if( hasTotal ){
+                totalArray[0] = this.lp.total + " " + totalArray[0];
+                exportArray.push( totalArray );
+            }
 
             //export事件
             var arg = {
@@ -977,15 +1018,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         start = start - 1;
         var differ = end - start;
         var count;
-        // if( differ < 10 ){
-        //    count = 10;
-        // }else if( differ < 100 ){
-        //     count = 100;
-        // }else if( differ < 1000 ){
-        //     count = 1000;
-        // }else{
-        //     count = 10000; bai boi bai boy buy boy
-        // }
         if( differ < 10000 ){
             count = differ;
         }else{
@@ -1046,7 +1078,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
     getExportText: function (c, k, data) {
         var path = c.path, code = c.code, obj = data;
         if (!path) {
-            return ""
         } else if (path === "$all") {
         } else {
             obj = this.getDataByPath(obj, path);
@@ -1060,6 +1091,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 "json": c
             });
         }catch (e) {}
+
+        if( !obj )return "";
 
         var toName = function (value) {
             if (typeOf(value) === "array") {

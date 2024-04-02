@@ -2,7 +2,9 @@ MWF.xApplication.Template = MWF.xApplication.Template || {};
 MWF.xApplication.Template.utils = MWF.xApplication.Template.utils || {};
 
 MWF.xApplication.Template.utils.ExcelUtils = new Class({
-    initialize: function(){
+    Implements: [Options, Events],
+    initialize: function( options ){
+        if(options)this.setOptions(options);
         this.sheet2JsonOptions = {};
         this.pollyfill();
     },
@@ -105,8 +107,8 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
 
     _loadExportResource : function( callback ){
         if( !window.ExcelJS ){
-            var uri = "../o2_lib/exceljs/babel-polyfill-6.2.js";
-            var uri2 = "../o2_lib/exceljs/exceljs.min.js";
+            var uri = "../o2_lib/exceljs/4.4.0/polyfill-6.26.0.js";
+            var uri2 = "../o2_lib/exceljs/4.4.0/exceljs.min.js";
             COMMON.AjaxModule.load(uri, function(){
                 COMMON.AjaxModule.load(uri2, function(){
                     callback();
@@ -146,9 +148,11 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                         if(args[i])titleArray[i].optionsValue = args[i];
                     }
                     this.setDataValidation(workbook, sheet, titleArray);
+                    this.fireEvent('beforeDownload', [sheet, array, colWidthArr, dateIndexArray, numberIndexArray]);
                     this.downloadExcel(workbook, fileName, callback);
                 }.bind(this));
             }else{
+                this.fireEvent('beforeDownload', [sheet, array, colWidthArr, dateIndexArray, numberIndexArray]);
                 this.downloadExcel(workbook, fileName, callback);
             }
         }.bind(this));

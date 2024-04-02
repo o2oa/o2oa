@@ -258,6 +258,8 @@ MWF.xApplication.query.Query.LP = {
 
     "noPermission": "您无权限访问此文档。",
     "associationSuccess": "关联成功。",
-    "associationResult": "关联结果"
+    "associationResult": "关联结果",
+
+    "total": "合计"
 
 };
