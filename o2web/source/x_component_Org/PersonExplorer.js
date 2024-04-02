@@ -345,7 +345,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                 }
             }, {
                 "getHtml": function(){
-                    return "<div style='word-break: break-word;'>"+this.distinguishedName+"</div>";
+                    return "<div style='word-break: break-word;'>"+o2.txt(this.distinguishedName)+"</div>";
                 },
                 //"get": function(){ return this.distinguishedName; },
                 "set": function(value){ this.distinguishedName = value; }

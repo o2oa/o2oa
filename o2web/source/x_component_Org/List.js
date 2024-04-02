@@ -38,7 +38,7 @@ MWF.xApplication.Org.List = new Class({
         var html = "<table cellspacing='0' cellpadding='5' border='0' width='80%' align='center' style='line-height:normal; clear: both;'>";
         html += "<tr><th style='width:20px'></th>";
         headers.each(function(title){
-            html += "<th style='"+title.style+"'>"+title.text+"</th>";
+            html += "<th style='"+title.style+"'>"+o2.txt(title.text)+"</th>";
         }.bind(this));
         html += "</table>";
         this.contentNode.set("html", html);
@@ -176,7 +176,7 @@ MWF.xApplication.Org.List.Item = new Class({
                     }else{
                         var v = this.data[at];
                         if (typeOf(v)==="array") v = v.join(",");
-                        td.set("text", v);
+                        td.set("text", o2.txt(v) );
                     }
                 }else{
                     td.set("text", "");
@@ -209,7 +209,7 @@ MWF.xApplication.Org.List.Item = new Class({
                 if (n==="icon"){
                     rows.push("<div>cc</div>");
                 }else{
-                    rows.push(this.data[n]);
+                    rows.push(typeOf(this.data[n])==='string' ? o2.txt(this.data[n]) : this.data[n]);
                 }
             }else{
                 rows.push("");
