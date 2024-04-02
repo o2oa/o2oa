@@ -53,7 +53,7 @@ MWF.xApplication.Profile.Main = new Class({
                     this.personData.mail = "";
                 }
 
-                var url =  this.path+this.options.style+"/"+(layout.viewMode==="Layout"? "view": "viewBrowser")+".html";
+                var url =  this.path+this.options.style+"/"+( (!this.inBrowser && layout.viewMode==="Layout") ? "view": "viewBrowser")+".html";
                 this.content.loadHtml( url,
                     {"bind": {"data": this.personData, "lp": this.lp}, "module": this},
                     function(){
@@ -327,7 +327,7 @@ MWF.xApplication.Profile.Main = new Class({
     },
 
     loadIdeaConfigActions: function( i ){
-        if( typeOf(i) !== "number" ) i = (this.inBrowser||layout.viewMode=="Default")? 1 : 2;
+        if( typeOf(i) !== "number" ) i = (!this.inBrowser && layout.viewMode==="Layout") ? 2 : 1;
         this.ideasArea = this.tab.pages[i].contentNode.setStyle("min-height","500px").getElement("textarea").addEvent("focus",function(){
             this.addClass("mainColor_border mainColor_color");
         }).addEvent("blur",function(){
@@ -378,7 +378,7 @@ MWF.xApplication.Profile.Main = new Class({
         }.bind(this))
     },
     loadEmPowerConfigAction: function(){
-        var i = (this.inBrowser||layout.viewMode=="Default")? 2 : 3;
+        var i = (!this.inBrowser && layout.viewMode==="Layout")? 3 : 2;
 
         this.tab.pages[i].contentNode.setStyle("overflow","auto");
         var tabEmpowerNodes = this.tab.pages[i].contentNode.getElements("div.o2_profile_emPower_tab");
@@ -841,7 +841,7 @@ MWF.xApplication.Profile.Main = new Class({
 
     loadPasswordConfigActions: function(){
 
-        var i = (this.inBrowser||layout.viewMode=="Default")? 3 : 4;
+        var i = (!this.inBrowser && layout.viewMode==="Layout" )? 4 : 3;
 
         var passwordRemindNode =  this.tab.pages[i].contentNode.getElement(".o2_profile_passwordRemindNode");
         var paswordRule = layout.config.passwordRegexHint || this.lp.paswordRule;
@@ -871,7 +871,7 @@ MWF.xApplication.Profile.Main = new Class({
         }.bind(this)).addClass("mainColor_bg");
     },
     loadSSOConfigAction: function(){
-        var i = (this.inBrowser||layout.viewMode=="Default")? 4 : 5;
+        var i = (!this.inBrowser && layout.viewMode==="Layout") ? 5 : 4;
         this.ssoConfigAreaNode = this.tab.pages[i].contentNode.setStyle("min-height","300px").getElement(".o2_profile_ssoConfigArea");
         MWF.Actions.get("x_organization_assemble_authentication").listOauthServer(function(json){
             json.data.each(function(d){
@@ -1192,7 +1192,7 @@ MWF.xApplication.Profile.Main = new Class({
     },
     checkPassowrdStrength: function(pwd){
 
-        var i = (this.inBrowser||layout.viewMode=="Default")? 3 : 4;
+        var i = (!this.inBrowser && layout.viewMode==="Layout")? 4 : 3;
         var passwordStrengthNode = this.tab.pages[i].contentNode.getElement(".o2_profile_passwordStrengthArea");
         var passwordRemindNode =  this.tab.pages[i].contentNode.getElement(".o2_profile_passwordRemindNode");
 
