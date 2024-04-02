@@ -11,7 +11,6 @@ import com.x.bbs.assemble.control.jaxrs.configsetting.BBSConfigSettingAction;
 import com.x.bbs.assemble.control.jaxrs.configsetting.BBSConfigSettingAnonymousAction;
 import com.x.bbs.assemble.control.jaxrs.foruminfo.ForumInfoAction;
 import com.x.bbs.assemble.control.jaxrs.foruminfo.ForumInfoManagerUserAction;
-import com.x.bbs.assemble.control.jaxrs.image.ImageBase64Action;
 import com.x.bbs.assemble.control.jaxrs.login.LoginAction;
 import com.x.bbs.assemble.control.jaxrs.login.LogoutAction;
 import com.x.bbs.assemble.control.jaxrs.login.MobileIndexAction;
@@ -41,7 +40,6 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(SectionInfoAction.class);
 		this.classes.add(SectionInfoManagerUserAction.class);
 		this.classes.add(SubjectInfoAction.class);
-		this.classes.add(ImageBase64Action.class);
 		this.classes.add(SubjectInfoManagerUserAction.class);
 		this.classes.add(SubjectAttachmentAction.class);
 		this.classes.add(ReplyInfoAction.class);
