@@ -370,14 +370,14 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "版块置顶", action = ActionSubjectTopToMainSection.class )
+	@JaxrsMethodDescribe( value = "版块置顶", action = ActionSubjectTopToSection.class )
 	@GET
 	@Path("topToSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void topToSection( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
-		ActionResult<ActionSubjectTopToMainSection.Wo> result = new ActionResult<>();
+		ActionResult<ActionSubjectTopToSection.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		if( check ){
@@ -389,7 +389,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 		}
 		if(check){
 			try {
-				result = new ActionSubjectTopToMainSection().execute( request, effectivePerson, id );
+				result = new ActionSubjectTopToSection().execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionRoleInfoProcess( e, "版块置顶时发生异常！" );
