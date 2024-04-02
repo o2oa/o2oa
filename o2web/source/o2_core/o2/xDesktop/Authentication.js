@@ -1816,8 +1816,8 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
                     name: {
                         text: this.lp.userName, defaultValue: this.lp.userName, className: "inputUser",
                         notEmpty: true, defaultValueAsEmpty: true, emptyTip: this.lp.inputYourUserName,
-                        validRule: { isInvalid: function (value, it) { return this.checkUserName(value, it); }.bind(this) },
-                        validMessage: { isInvalid: this.lp.userNotExist },
+                        // validRule: { isInvalid: function (value, it) { return this.checkUserName(value, it); }.bind(this) },
+                        // validMessage: { isInvalid: this.lp.userNotExist },
                         event: {
                             focus: function (it) { if (this.lp.userName === it.getValue()) it.setValue(""); if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive); }.bind(this),
                             blur: function (it) { if (it.getValue() === "") it.setValue(this.lp.userName); if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputUser); }.bind(this),

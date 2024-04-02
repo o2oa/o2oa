@@ -1126,7 +1126,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (!flag) flag = MWF.xApplication.cms.Xform.LP.notValidation;
             if (typeOf(flag) === "string") {
                 if (flag !== "true") {
-                    this.app.notice(flag, "error");
+                    this.app.notice(o2.txt(flag), "error");
                     return false;
                 }
             } else if (flag.toString() != "true") {
@@ -1141,7 +1141,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (!flag) flag = MWF.xApplication.cms.Xform.LP.notValidation;
             if (typeOf(flag) === "string") {
                 if (flag !== "true") {
-                    this.app.notice(flag, "error");
+                    this.app.notice(o2.txt(flag), "error");
                     return false;
                 }
             } else if (flag.toString() != "true") {
@@ -1219,7 +1219,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     this.closeWindowOnMobile();
                 } else {
                     if (this.businessData.document.title) {
-                        this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelayedPublished + ": “" + this.businessData.document.title + "”", "success");
+                        this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelayedPublished + ": “" + o2.txt(this.businessData.document.title) + "”", "success");
                     } else {
                         this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelayedPublished, "success");
                     }
@@ -1293,7 +1293,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     } else {
                         if( slience !== true ){
                             if (this.businessData.document.title) {
-                                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
+                                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + o2.txt(this.businessData.document.title ) + "”", "success");
                             } else {
                                 this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
                             }
@@ -1427,7 +1427,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.documentAction.removeDocument(this.businessData.document.id, function (json) {
                     this.fireEvent("afterDelete");
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterDelete");
-                    this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + this.businessData.document.title + "”", "success");
+                    this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + o2.txt(this.businessData.document.title) + "”", "success");
                     this.options.autoSave = false;
                     this.options.saveOnClose = false;
                     this.fireEvent("postDelete");
@@ -1473,7 +1473,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                         debugger;
                         _self.fireEvent("afterDelete");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
-                        _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + _self.businessData.document.title + "”", "success");
+                        _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + o2.txt(_self.businessData.document.title) + "”", "success");
                         _self.options.autoSave = false;
                         _self.options.saveOnClose = false;
                         _self.fireEvent("postDelete");
