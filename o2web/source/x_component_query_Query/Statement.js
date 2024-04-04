@@ -991,8 +991,24 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 exportArray.push( totalArray );
             }
 
+            var headTextScript = this.viewJson.exportHeadText || this.viewJson.exportHeadText;
+            var headText = headTextScript ? this.Macro.exec(headTextScript, this) : '';
+
+            var headStyleScript = this.viewJson.exportHeadStyle || this.viewJson.exportHeadStyle;
+            var headStyle = headStyleScript ? this.Macro.exec(headStyleScript, this) : null;
+
+            var titleStyleScript = this.viewJson.exportColumnTitleStyle || this.viewJson.exportColumnTitleStyle;
+            var titleStyle = titleStyleScript ? this.Macro.exec(titleStyleScript, this) : null;
+
+            var contentStyleScript = this.viewJson.exportColumnContentStyle || this.viewJson.exportColumnContentStyle;
+            var contentStyle = contentStyleScript ? this.Macro.exec(contentStyleScript, this) : null;
+
             //export事件
             var arg = {
+                headText: headText,
+                headStyle: headStyle,
+                titleStyle: titleStyle,
+                contentStyle: contentStyle,
                 data : exportArray,
                 colWidthArray : colWidthArr,
                 title : excelName
@@ -1004,7 +1020,15 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 this.loadingAreaNode = null;
             }
 
-            new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
+            var options = {};
+            if( arg.headText )options.headText = arg.headText;
+            if( arg.headStyle )options.headText = arg.headStyle;
+            if( arg.titleStyle )options.columnTitleStyle = arg.titleStyle;
+            if( arg.contentStyle )options.columnContentStyle = arg.contentStyle;
+
+            new MWF.xApplication.query.Query.Statement.ExcelUtils(
+                options
+            ).exportToExcel(
                 arg.data || exportArray,
                 arg.title || excelName,
                 arg.colWidthArray || colWidthArr,

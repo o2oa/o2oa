@@ -1460,6 +1460,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 break;
             case "number":
             case "double":
+                debugger;
                 value = value.replace(/&#10;/g,"");
                 data = parseFloat(value);
                 break;

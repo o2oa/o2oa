@@ -155,6 +155,23 @@
             <div class="MWFScriptArea" name="data.languageScript" title="{{$.lp.languageScript}}"></div>
             <div style="padding: 5px;">{{$.lp.languageInfo}}</div>
         </div>
+
+        <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.export}}</div>
+        <div class="MWFFormulaArea" name="data.exportHeadText" title="{{$.lp.headText}}"></div>
+        <div class="MWFFormulaArea" name="data.exportHeadStyle" title="{{$.lp.headStyle}}"></div>
+        <div class="MWFFormulaArea" name="data.exportColumnTitleStyle" title="{{$.lp.columnTitleStyle}}"></div>
+        <div class="MWFFormulaArea" name="data.exportColumnContentStyle" title="{{$.lp.columnContentStyle}}"></div>
+        <div style="white-space: pre">
+    exceljs style sample:
+    return {
+        font: { name: '宋体', family: 4, size: 10, bold: false },
+        border: { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} },
+        fill: { type: 'pattern', pattern:'solid',  fgColor:{argb:'FFFFFF'} },
+        alignment :  { vertical: 'middle', horizontal: 'center' } //wrapText: true
+    }
+    <a style="text-underline: #0a84ff;" target="_blank" href="https://github.com/exceljs/exceljs/blob/HEAD/README_zh.md#%E6%A0%B7%E5%BC%8F">
+    see more
+    </a></div>
     </div>
 
     <div title="{{$.lp.filter}}"  class="MWFTab">

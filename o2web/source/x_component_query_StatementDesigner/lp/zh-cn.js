@@ -139,8 +139,12 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "total": "合计",
         "notNeeded": "不需要",
         "totalValue": "数值",
-        "totalCount": "数量"
+        "totalCount": "数量",
 
+        "headText": "表头文本",
+        "headStyle": "表头样式",
+        "columnTitleStyle": "列标题样式",
+        "columnContentStyle": "列内容样式"
     },
     "formToolbar":{
         "save": "保存",
