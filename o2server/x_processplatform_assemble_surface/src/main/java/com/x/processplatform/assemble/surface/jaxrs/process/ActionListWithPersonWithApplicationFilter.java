@@ -1,18 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.process;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -27,14 +14,23 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 import com.x.processplatform.core.express.service.processing.jaxrs.process.ActionListWithPersonWithApplicationFilterWi;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class ActionListWithPersonWithApplicationFilter extends BaseAction {
 
@@ -65,7 +61,7 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 			for (String id : ids) {
 				wos.add(Wo.copier.copy(business.process().pick(id)));
 			}
-			SortTools.asc(wos, false, "name");
+			wos = business.process().sort(wos);
 			result.setData(wos);
 			return result;
 		}
