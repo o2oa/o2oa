@@ -330,7 +330,7 @@ const Action = function(root, json){
     var createMethod = function(service, key){
         const jaxrsUri = service.uri;
         const re = new RegExp("(?<={).+?(?=})", "g");
-        const parameters = jaxrsUri.match(re);
+        const parameters = jaxrsUri.match(re) || [];
         this[key] = invokeFunction.call(this, service, parameters, key);
     };
 
@@ -4147,6 +4147,24 @@ const createProxy = function(target, j_data){
     });
     return new Proxy(target, {
         get(target, property){
+            if (property==='add'){
+                return function(key, value){
+                    if (key==="length" && (target.$Jdata instanceof ArrayList)){
+                        while (target.$Jdata.size()>value){
+                            target.$Jdata.remove(target.$Jdata.size()-1);
+                        }
+                    }else{
+                        target.$Jdata[key] = value;
+                    }
+                    return Reflect.set(target, key, value);
+                }
+            }
+            if (property==='del'){
+                return function (key) {
+                    delete target.$Jdata[key];
+                    delete target[key];
+                }
+            }
             return (property!=='$Jdata' && target[property] && (typeof target[property]==='object' || Array.isArray(target[property]))) ? createProxy(target[property], target.$Jdata[property]) : target[property];
         },
         set(target, property, value){
