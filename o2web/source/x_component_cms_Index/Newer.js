@@ -32,6 +32,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
 
         "searchEnable": true,
 
+        "zIndex": "",
+
         //autoSave : "",
         //saveOnClose : "",
 
@@ -197,6 +199,10 @@ MWF.xApplication.cms.Index.Newer = new Class({
         }
     },
     _createTableContent: function () {
+        if( this.options.zIndex ){
+            this.formMaskNode.setStyle('z-index', this.options.zIndex);
+            this.formAreaNode.setStyle('z-index', this.options.zIndex);
+        }
 
         var categoryName = this.categoryData ? ( this.categoryData.name || this.categoryData.categoryName ) : this.lp.selectCategory;
         var html = "";
