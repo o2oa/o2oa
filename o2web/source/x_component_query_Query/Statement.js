@@ -991,16 +991,16 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 exportArray.push( totalArray );
             }
 
-            var headTextScript = this.viewJson.exportHeadText || this.viewJson.exportHeadText;
+            var headTextScript = this.viewJson.exportHeadText;
             var headText = headTextScript ? this.Macro.exec(headTextScript, this) : '';
 
-            var headStyleScript = this.viewJson.exportHeadStyle || this.viewJson.exportHeadStyle;
+            var headStyleScript = this.viewJson.exportHeadStyle;
             var headStyle = headStyleScript ? this.Macro.exec(headStyleScript, this) : null;
 
-            var titleStyleScript = this.viewJson.exportColumnTitleStyle || this.viewJson.exportColumnTitleStyle;
+            var titleStyleScript = this.viewJson.exportColumnTitleStyle;
             var titleStyle = titleStyleScript ? this.Macro.exec(titleStyleScript, this) : null;
 
-            var contentStyleScript = this.viewJson.exportColumnContentStyle || this.viewJson.exportColumnContentStyle;
+            var contentStyleScript = this.viewJson.exportColumnContentStyle;
             var contentStyle = contentStyleScript ? this.Macro.exec(contentStyleScript, this) : null;
 
             //export事件
@@ -1022,7 +1022,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
             var options = {};
             if( arg.headText )options.headText = arg.headText;
-            if( arg.headStyle )options.headText = arg.headStyle;
+            if( arg.headStyle )options.headStyle = arg.headStyle;
             if( arg.titleStyle )options.columnTitleStyle = arg.titleStyle;
             if( arg.contentStyle )options.columnContentStyle = arg.contentStyle;
 

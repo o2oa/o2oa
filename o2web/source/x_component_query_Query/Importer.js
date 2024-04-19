@@ -124,7 +124,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
         },
         load: function(){
-            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils();
 
             this.getImporterJSON( function () {
                 this.loadMacro( function () {
@@ -699,7 +699,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
         exportWithImportDataToExcel : function ( importData ) {
 
             if( !this.excelUtils ){
-                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils();
             }
 
             var exportTo = function () {
@@ -782,7 +782,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
         },
         _downloadTemplate: function(fileName, callback){
             if( !this.excelUtils ){
-                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils({
+                    isTemplate: true
+                });
             }
             var doExport = function () {
                 var arg = {
@@ -1615,8 +1617,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);
 MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
     Extends: MWF.xApplication.Template.utils.ExcelUtils,
-    initialize: function(){
+    initialize: function( options ){
+        if(options)this.setOptions(options);
         this.sheet2JsonOptions = {header:1};
+        this.pollyfill();
     }
 });
 

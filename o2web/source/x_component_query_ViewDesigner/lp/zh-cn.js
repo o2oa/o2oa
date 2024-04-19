@@ -329,7 +329,25 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "byScript": "根据脚本",
         "language": "语言包",
         "languageInfo": "返回包含语言信息的JSON对象；o2.language获取当前语言信息",
-        "forceClearCustomViewStyle": "切换时清除自定义样式"
+        "forceClearCustomViewStyle": "切换时清除自定义样式",
+
+        "export": "导出",
+        "exportNotice": "一次性最多导出2000条",
+        "exportWidth": "宽度",
+        "exportEnable": "允许导出",
+        "isTime": "时间类型",
+        "isNumber": "数字类型",
+        "viewEnable": "启用视图",
+
+        "total": "合计",
+        "notNeeded": "不需要",
+        "totalValue": "数值",
+        "totalCount": "数量",
+
+        "headText": "表头文本",
+        "headStyle": "表头样式",
+        "columnTitleStyle": "列标题样式",
+        "columnContentStyle": "列内容样式"
     },
     "viewStyle":{
         "default": "默认样式",

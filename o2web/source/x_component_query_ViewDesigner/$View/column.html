@@ -156,6 +156,55 @@
             </table>
         </div>
         <div class="MWFFormulaArea" name="code" title="{{$.lp.showScript}}(S)" data-type="service"></div>
+
+        <div style="border-top: 1px solid #999; margin-top:10px">
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.export}}</div>
+            <div style="height:24px; line-height: 24px; text-align: left; font-size: 14px; color:#999;">{{$.lp.exportNotice}}</div>
+            <div class="MWFDataData" id="text{$.pid}dataExportEditor">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="table-layout: fixed;">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.exportEnable}}:</td>
+                        <td class="editTableValue">
+                            <input name="exportEnable" type="radio" value="true" text{($.exportEnable)!==false?'checked':''}/>{{$.lp.yes}}
+                            <input name="exportEnable" type="radio" value="false" text{($.exportEnable)===false?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.exportWidth}}:</td>
+                        <td class="editTableValue">
+                            <input type="text" name="exportWidth" value="text{$.exportWidth || 200}" class="editTableInputNoWidth"/>px
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.isTime}}:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isTime" type="radio" value="true" onclick="if(this.checked){
+                                   $$('[name=text{$.mid}isNumber]').each(function( el ){ if(el.get('value') === 'false' ){ el.set('checked', true); el.fireEvent('change') }})
+                               }" text{($.isTime)===true?'checked':''}/>{{$.lp.yes}}
+                            <input class="MWFWorkDataCheck" name="isTime" type="radio" value="false" text{($.isTime)!==true?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.isNumber}}:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isNumber" type="radio" value="true" onclick="if(this.checked){
+                                   $$('[name=text{$.mid}isTime]').each(function( el ){ if(el.get('value') === 'false' ){el.set('checked', true);  el.fireEvent('change') }})
+                               }" text{($.isNumber)===true?'checked':''}/>{{$.lp.yes}}
+                            <input class="MWFWorkDataCheck" name="isNumber" type="radio" value="false" text{($.isNumber)!==true?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.total}}:</td>
+                        <td class="editTableValue">
+                            <input class="editTableRadio" name="total" text{!($.total) || ($.total=='no')?'checked':''} type="radio" value="no"/>{{$.lp.notNeeded}} <br/>
+                            <input class="editTableRadio" name="total" text{($.total=='number')?'checked':''} type="radio" value="number"/>{{$.lp.totalValue}} <br/>
+                            <input class="editTableRadio" name="total" text{($.total=='count')?'checked':''} type="radio" value="count"/>{{$.lp.totalCount}} <br/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
 	</div>
     <div title="{{$.lp.style}}" class="MWFTab">
         <div class="MWFMaplist" name="titleStyles" title="{{$.lp.titleStyles}}"></div>

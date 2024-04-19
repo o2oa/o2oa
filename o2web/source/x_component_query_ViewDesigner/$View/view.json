@@ -81,6 +81,14 @@
       "unselectRow" : {
         "code": "",
         "html": ""
+      },
+      "export": {
+        "code": "",
+        "html": ""
+      },
+      "exportRow": {
+        "code": "",
+        "html": ""
       }
     }
   },

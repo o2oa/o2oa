@@ -309,7 +309,22 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"bottom": "rear",
 		"format": "format",
 		"script": "script",
-		"forceClearCustomViewStyle": "Clear custom styles"
+		"forceClearCustomViewStyle": "Clear custom styles",
+		"export": "export",
+		"exportWidth": "width",
+		"exportEnable": "Allow export",
+		"isTime": "Time type",
+		"isNumber": "Number type",
+		"viewEnable": "Enable View",
+		"total": "total",
+		"notNeeded": "No need",
+		"totalValue": "numerical value",
+		"totalCount": "quantity",
+		"headText": "Table header text",
+		"headStyle": "Table header style",
+		"columnTitleStyle": "Column header style",
+		"columnContentStyle": "Column Content Style",
+		"exportNotice": "Up to 2000 items can be found everywhere at once"
 	},
 	"viewStyle": {
 		"default": "Default",

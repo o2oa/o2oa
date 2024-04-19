@@ -306,7 +306,22 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"byScript": "Según el guión",
 		"language": "Paquete lingüístico",
 		"languageInfo": "Devuelve un objeto json que contiene información lingüística; O2.language obtiene información sobre el idioma actual",
-		"forceClearCustomViewStyle": "Eliminar estilos personalizados"
+		"forceClearCustomViewStyle": "Eliminar estilos personalizados",
+		"export": "Exportar",
+		"exportWidth": "Ancho",
+		"exportEnable": "Permitir la exportación",
+		"isTime": "Tipo de tiempo",
+		"isNumber": "Tipo digital",
+		"viewEnable": "Activar vista",
+		"total": "Total",
+		"notNeeded": "No es necesario",
+		"totalValue": "Valores",
+		"totalCount": "Cantidad",
+		"headText": "Texto de la cabecera",
+		"headStyle": "Estilo de encabezado",
+		"columnTitleStyle": "Estilo de título de columna",
+		"columnContentStyle": "Estilo de contenido de columna",
+		"exportNotice": "Hasta 2.000 artículos en todas partes a la vez"
 	},
 	"viewStyle": {
 		"default": "Estilo predeterminado",

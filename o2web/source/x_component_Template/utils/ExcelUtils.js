@@ -4,6 +4,7 @@ MWF.xApplication.Template.utils = MWF.xApplication.Template.utils || {};
 MWF.xApplication.Template.utils.ExcelUtils = new Class({
     Implements: [Options, Events],
     options:{
+        'isTemplate': false,
         'headText': '',
         'headStyle': {
             font: { name: '宋体', family: 4, size: 20, bold: true },
@@ -122,7 +123,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
 
     _loadExportResource : function( callback ){
         if( !window.ExcelJS ){
-            var uri = "../o2_lib/exceljs/babel-polyfill-6.2";
+            var uri = "../o2_lib/exceljs/babel-polyfill-6.2.js";
             var uri2 = "../o2_lib/exceljs/exceljs.min.js";
             COMMON.AjaxModule.load(uri, function(){
                 COMMON.AjaxModule.load(uri2, function(){
@@ -205,6 +206,10 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             sheet.getColumn(i+1+offsetColumnIndex).width = colWidthArr[i] ? (colWidthArr[i] / 10) : 20;
         });
 
+        debugger;
+
+        var startCol = this.index2ColName(offsetColumnIndex), endCol = this.index2ColName(titleArray.length-1+offsetColumnIndex);
+
         if( this.options.headText ){
             var headRow = sheet.getRow(1+offsetRowIndex);
             var headCell = headRow.getCell(1+offsetColumnIndex);
@@ -212,6 +217,8 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             Object.each(this.options.headStyle || {}, function (value, key){
                 headCell[key] = value;
             });
+            sheet.mergeCells( startCol+(offsetRowIndex+1)+":"+ endCol+(offsetRowIndex+1));
+            offsetRowIndex++;
         }
 
         //处理表头分类
@@ -230,7 +237,21 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             //cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
             Object.each(this.options.columnTitleStyle || {}, function (value, key){
                 cell[key] = value;
-            })
+            });
+        }.bind(this);
+
+        var setDataCellStyle = function(cell, index){
+            if( (dateIndexArray || []).contains( index ) ){
+                cell.numFmt = 'yyyy-mm-dd HH:MM:SS';
+            }
+            var isNumber = ( numberIndexArray||[] ).contains( index );
+            var style = this.options.columnContentStyle || {};
+            if( isNumber && style.alignment && style.alignment.wrapText ){
+                style.alignment.wrapText = false;
+            }
+            Object.each(style || {}, function (value, key){
+                cell[key] = value;
+            });
         }.bind(this);
 
         for( var level=0 ;level<maxTitleLevel; level++ ){
@@ -294,26 +315,27 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
         //     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
         // });
 
-        array.each(function( contentArray, i ){
-            var contentRow = sheet.getRow(i+1+maxTitleLevel+offsetRowIndex);
-            contentArray.each(function( content, j ){
-                var cell = contentRow.getCell(j+1+offsetColumnIndex);
-                cell.value = content;
-                if( (dateIndexArray || []).contains( j ) ){
-                    cell.numFmt = 'yyyy-mm-dd HH:MM:SS';
-                }
-                var isNumber = ( numberIndexArray||[] ).contains( j );
-                var style = this.options.columnContentStyle || {};
-                if( isNumber && style.alignment && style.alignment.wrapText ){
-                    style.alignment.wrapText = false;
-                }
-                Object.each(style || {}, function (value, key){
-                    cell[key] = value;
-                });
-                // cell.font = { name: '宋体', family: 4, size: 12, bold: false };
-                // cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: !isNumber };
+        if( array.length ){
+            array.each(function( contentArray, i ){
+                var contentRow = sheet.getRow(i+1+maxTitleLevel+offsetRowIndex);
+                contentArray.each(function( content, j ){
+                    var cell = contentRow.getCell(j+1+offsetColumnIndex);
+                    cell.value = content;
+                    setDataCellStyle( cell, j );
+                    // cell.font = { name: '宋体', family: 4, size: 12, bold: false };
+                    // cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: !isNumber };
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        }else if( this.options.isTemplate ){
+            for (var rowIndex = 0; rowIndex < 3000; rowIndex++) {
+                var row = sheet.getRow(rowIndex+1+maxTitleLevel+offsetRowIndex );
+                titleDataParsed.each(function(titles, colIndex){
+                    var cell = row.getCell(colIndex+1+offsetColumnIndex);
+                    setDataCellStyle( cell, colIndex );
+                }.bind(this));
+            }
+        }
+
     },
     setDataValidation: function (workbook, dataSheet, titleArray, offsetColumnIndex, offsetRowIndex){
         var validationSheet = workbook.addWorksheet('Validation');
