@@ -1193,6 +1193,7 @@
     var portalFlag = c && c.portalFlag ? c.portalFlag : "";
     var portalTitle = c && c.portalTitle ? c.portalTitle : "";
     var portalPage = c && c.portalPage ? c.portalPage : "";
+    var parameters = c && c.parameters ? c.parameters : {};
     var body = {
       type: "navigation.openInnerApp",
       callback: "o2m.util.navigation.openInnerAppSuccess",
@@ -1200,7 +1201,8 @@
         appKey: appKey,
         portalFlag: portalFlag,
         portalTitle: portalTitle,
-        portalPage: portalPage
+        portalPage: portalPage,
+        parameters: parameters
       }
     };
     _util_post(body, onFail);
