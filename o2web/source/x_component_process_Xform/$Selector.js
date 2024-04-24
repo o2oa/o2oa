@@ -424,15 +424,19 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         }
         return value;
     },
-    getDataByPath: function (obj, path) {
-        var pathList = path.split(".");
+    getDataByPath: function (obj, path, isUppcase) {
+        var pathList = isUppcase ? path.toUpperCase().split(".") : path.split(".");
         for (var i = 0; i < pathList.length; i++) {
             var p = pathList[i];
             if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
             if (obj[p]) {
                 obj = obj[p];
             } else if(obj[p] === undefined || obj[p] === null) {
-                obj = "";
+                if( !isUppcase && i === 0 ){
+                    return this.getDataByPath(obj, path, true);
+                }else{
+                    obj = "";
+                }
                 break;
             } else {
                 obj = obj[p];
