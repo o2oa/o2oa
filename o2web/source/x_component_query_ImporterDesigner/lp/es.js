@@ -133,7 +133,9 @@ MWF.xApplication.query.ImporterDesigner.LP={
 		"valueScriptDataNote": "Datos empresariales generados por el sistema según la configuración",
 		"valueScriptDocumentNote": "Si importa documentos CMS, se generarán los datos del documento por el sistema",
 		"valueScriptWorkNote": "Si importa trabajos de proceso, se generarán los datos de trabajo por el sistema",
-		"idPathNote": "Al importar los datos de la tabla autoconstruida, la ruta de campo 'id' significa actualizar el registro original."
+		"idPathNote": "Al importar los datos de la tabla autoconstruida, la ruta de campo 'id' significa actualizar el registro original.",
+		"excelSelectedOption": "Guión opcional",
+		"checkInOption": "Verificar si está en opciones"
 	},
 	"formToolbar": {
 		"save": "Guardar",

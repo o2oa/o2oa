@@ -226,6 +226,7 @@ MWF.xApplication.query.Query.LP={
 		"1": "Import successful",
 		"2": "Import failed"
 	},
-	"total": "total"
+	"total": "total",
+	"notInOptions": "Not in optional values"
 }
 MWF.xApplication.query.Query["lp."+o2.language] = MWF.xApplication.query.Query.LP

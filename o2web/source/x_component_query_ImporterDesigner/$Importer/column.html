@@ -113,6 +113,13 @@
                         <input name="validFieldType" type="radio" value="false" text{($.validFieldType)===false?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.checkInOption}}:</td>
+                    <td class="editTableValue">
+                        <input name="validInOption" type="radio" value="true" text{($.validInOption)===true?'checked':''}/>{{$.lp.yes}}
+                        <input name="validInOption" type="radio" value="false" text{($.validInOption)!==true?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
             </table>
 
             <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}cmsFieldProperty" class="text{$.vid}cmsFieldProperty">

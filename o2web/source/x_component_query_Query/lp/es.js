@@ -226,6 +226,7 @@ MWF.xApplication.query.Query.LP={
 	"noPermission": "No tienes permiso para acceder a este documento.",
 	"associationSuccess": "Asociación exitosa.",
 	"associationResult": "Resultado de la asociación",
-	"total": "Total"
+	"total": "Total",
+	"notInOptions": "No en valores opcionales"
 }
 MWF.xApplication.query.Query["lp."+o2.language] = MWF.xApplication.query.Query.LP
