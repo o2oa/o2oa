@@ -230,7 +230,13 @@ MWF.xApplication.attendancev2.LP={
 		"day": "Day",
 		"monthInfo": "Switching months will automatically save data for the current month!",
 		"copyFromLastMonthBtn": "Copy last month's data",
-		"copyConfirmInfo": "Are you sure you want to copy the data of {month} to the current one?"
+		"copyConfirmInfo": "Are you sure you want to copy the data of {month} to the current one?",
+		"downloadExcelTempEmptyShift": "Please select the scheduling shift first!",
+		"downloadExcelTempBtn": "Download Excel template for scheduling",
+		"uploadExcelBtn": "Upload Excel that has already been scheduled",
+		"excelEmptyShift": "--Rest--",
+		"excelTitle": "{month} Schedule (Can only schedule shifts based on the existing dropdown, otherwise it cannot be recognized)",
+		"excelFileName": "{month}_Schedule.xlsx"
 	},
 	"dateCycle": {
 		"none": "None",

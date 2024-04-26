@@ -230,7 +230,13 @@ MWF.xApplication.attendancev2.LP={
 		"day": "Días",
 		"monthInfo": "¡¡ cambiar mes guardará automáticamente los datos del mes actual!",
 		"copyFromLastMonthBtn": "Copiar los datos de programación del mes pasado",
-		"copyConfirmInfo": "¿¿ estás seguro de que quieres copiar los datos de {month} a la actualidad?"
+		"copyConfirmInfo": "¿¿ estás seguro de que quieres copiar los datos de {month} a la actualidad?",
+		"downloadExcelTempEmptyShift": "¡¡ por favor, elija el horario primero!",
+		"downloadExcelTempBtn": "Descargar la plantilla de Microsoft para programar",
+		"uploadExcelBtn": "Sube el Microsoft que ya está programado",
+		"excelEmptyShift": "--Descanso--",
+		"excelTitle": "{month} Horario (solo se puede programar de acuerdo con el turno desplegable existente, de lo contrario no se puede identificar)",
+		"excelFileName": "{month}_Horario.xlsx"
 	},
 	"dateCycle": {
 		"none": "Ninguno",

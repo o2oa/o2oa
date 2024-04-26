@@ -56,6 +56,10 @@
         <div style="margin: 10px 0;float: right;">
           <button class="light-border-button mainColor_border primary_color"
               @click="copyFromLastMonth">{{$.lp.scheduleForm.copyFromLastMonthBtn}}</button>
+          <button class="light-border-button mainColor_border primary_color"
+                  @click="downloadScheduleTemplate">{{$.lp.scheduleForm.downloadExcelTempBtn}}</button>
+          <button class="light-border-button mainColor_border primary_color"
+                  @click="uploadScheduleTemplate">{{$.lp.scheduleForm.uploadExcelBtn}}</button>
         </div>
         <div style="clear: both;"></div>
        </div>
