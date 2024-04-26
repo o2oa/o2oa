@@ -1,7 +1,9 @@
-MWF.xApplication.process.ProcessDesigner.LP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.ProcessDesigner = MWF.xApplication.process.ProcessDesigner || {};
+MWF.xApplication.process.ProcessDesigner.LP={
 	"title": "ProcessEditor",
 	"newProcess": "Create Process",
-
 	"tools": "Tools",
 	"unnamed": "Unnamed",
 	"unknow": "Unknow",
@@ -10,9 +12,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"route": "Route",
 	"property": "Property",
 	"showJson": "Show JSON",
-	"all" : "All",
+	"all": "All",
 	"showAdvanced": "Advanced properties",
-
 	"phone": "Phone",
 	"mail": "Mail",
 	"selectScript": "Select script: ",
@@ -21,8 +22,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"ok": "OK",
 	"close": "Close",
 	"cancel": "Cancel",
-
-	"notice":{
+	"notice": {
 		"no_name": "enter the process name",
 		"save_success": "Process was saved successfully!",
 		"save_process": "Please save the process first!",
@@ -32,8 +32,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"deleteActivityTitle": "Delete Activity Confirmation",
 		"deleteActivity": "Deleting an activity will also delete all routes associated with this activity. Are you sure you want to delete the selected activity?",
 		"saveRouteOrgNoName": "Name and title cannot be empty",
-		"saveRouteOrgNumberId" : "Identifier cannot be a pure number",
-		"saveRouteOrgDoubleDotId" : "The ID cannot contain two consecutive dots",
+		"saveRouteOrgNumberId": "Identifier cannot be a pure number",
+		"saveRouteOrgDoubleDotId": "The ID cannot contain two consecutive dots",
 		"processCopyError": "Activity paste failed, please copy again and try again",
 		"routeNameConfilct": "An activity cannot have two routes with the same name!"
 	},
@@ -59,18 +59,14 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 			"end": "End",
 			"parallel": "Parallel"
 		},
-
 		"copyActivity": "Copy activity",
-
 		"deleteActivity": "Delete activity",
 		"deleteRoute": "Delete route",
-
 		"saveProcess": "Save Process",
 		"saveProcessNew": "Save as a new version",
 		"checkProcess": "Check Process",
 		"exportProcess": "Export Process",
 		"printProcess": "Print Process",
-
 		"showGrid": "Show Grid",
 		"hideGrid": "Hide Grid"
 	},
@@ -90,7 +86,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"serialNumberLongTitle": "Serial Number Length",
 	"serialNumberByTitle": "Serial Number ByTitle",
 	"isSave": "Saving, please wait...",
-
 	"dutyInputTitle": "Add Duty parameter",
 	"dutyInput": "Please add parameters for the duty \"{duty}\"",
 	"creatorCompany": "Drafting Company",
@@ -101,28 +96,25 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"deleteDutyText": "Are you sure you want to remove the duty \"{duty}\"?",
 	"selectIcon": "Select Icon",
 	"centerServer": "Center Serve",
-
 	"creatorUnit": "The Unit of the author",
 	"currentUnit": "The Unit of the processor",
 	"selectUnit": "Select Unit",
 	"scriptUnit": "script",
 	"preview": "Preview",
 	"copy": "Copy from other",
-
 	"selectType": "Select Type",
 	"identity": "Identity",
 	"unit": "Unit",
 	"selectCount": "Select Count",
 	"deleteOrgConfirmTitle": "Delete selection confirmation",
 	"deleteOrgConfirmContent": "Are you sure you want to delete the selected configuration?",
-
 	"projectionTitle": "Mapping business data",
 	"projectionActionNode_add": "Add mapping entry",
 	"projectionActionNode_modify": "Modify the mapping entry",
 	"projectionDataName": "DataName",
 	"projectionPath": "Path",
-	"projectionType":"Type",
-    "projectionName":"Name",
+	"projectionType": "Type",
+	"projectionName": "Name",
 	"projectionInputError": "Please enter the data name and data path",
 	"projectionTypeCountError": "{type} type data mapping entries, up to {count} allowed.",
 	"projectionSameNameError": "Same data name already exists",
@@ -133,18 +125,15 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"projectionRunText": "Execute mapping confirmation",
 	"projectionRunSuccess": "Data mapping has been executed",
 	"projectionRunError": "No need to perform data mapping",
-
 	"enable": "Enabled",
 	"notEnable": "Not enabled",
 	"currentEdition": "Current Edition",
 	"editionUpdate": "Last Modified",
-	"editionDiscription":"Enter the version description",
-
+	"editionDiscription": "Enter the version description",
 	"upgradeConfirm": "Save new version confirmation",
 	"upgradeInfor": "<div style='overflow: hidden; line-height: 26px'>Are you sure you want to save the current process as a new version?<br/>Select \"Enable the new version\" after saving is complete, The new version will be set as the enabled version.</div><div style='margin-top:10px'><input type='checkbox' checked>Enable the new version</div>",
 	"inputDiscription": "Please enter the version description first",
-
-	"edition_list":{
+	"edition_list": {
 		"editionList": "View process version",
 		"number": "Version number",
 		"update": "Update time",
@@ -155,8 +144,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"yes": "Yes",
 		"no": "No",
 		"newProcess": "A new process is created.",
-		"an": "",
-
+		"an": "individual",
 		"modifyProcess": "[Process] modified the attributes <b>\"{field}\"</b>, from: <span style='color: #ff0000'>\"{old}\"</b> span>, to: <span style='color: #0000ff'>\"{new}\"</span>",
 		"modifyActivity": "[Activity] modified the <b>\"{name}\"</b> activity attribute <b>\"{field}\"</b> from: <span style='color: #ff0000'>\"{old}\"</span>, to: <span style='color: #0000ff'>\"{new}\"</span>",
 		"modifyActivity_addRoute": "[Routing] Added <b>\"{name}\"</b> activity routing <b>\"{rname}\"</b>, pointing to <span style='color: #0000ff'> \"{Next}\"</span>",
@@ -167,44 +155,64 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"addActivity": "[Activity] Added activity <b style='color: #0000ff'>\"{name}\"</b>",
 		"noDiffs": "No difference with the previous version",
 		"hasDiffs": "Differences from the previous version:",
-
 		"open": "Switch",
 		"enable": "Enable",
 		"rollback": "Rollback",
 		"override": "Override",
 		"del": "Delete",
-
 		"openInfor": "Save the currently opened version and open the version\"{v}\".",
 		"enableInfor": "Enable process version\"{v}\"",
 		"rollbackInfor": "Roll the process design back to the selected version, all versions after the selected version will be deleted.",
 		"overrideInfor": "Override the current version with the design of the selected version.",
 		"delInfor": "Delete process version\"{v}\".",
-
 		"enabledProcessTitle": "Enable process confirmation",
 		"enabledProcessInfor": "Set the current process to \"enabled\", the previously enabled process version will be set to \"not enabled\".<br><br>Process instances already in circulation will not be affected, and the process will be started next time, the process instance will be created with the enabled process version.<br><br>Are you sure you want to set the current process to \"enabled\"?",
-
 		"deleteEditionTitle": "Delete Edition Confirmation",
 		"deleteEditionInfor": "Delete the selected process version \"{v}\", and also delete the circulating instance of the process version \"{v}\". Are you sure you want to delete the process version \"{v}\"?"
 	},
-	"selectorButton" : {
-		"ok" : "OK",
-		"cancel" : "Cancel"
+	"selectorButton": {
+		"ok": "OK",
+		"cancel": "Cancel"
 	},
-	"orgEditor" : {
+	"orgEditor": {
 		"addOption": "Add Option",
 		"modifyOption": "Modify Option",
 		"conflictNotice": "The route has been configured with the same name",
 		"copyConfig": "Copy selection configuration"
 	},
 	"serial": {
-		"text": ["Text", "Arbitrary text"],
-		"year": ["Year", "Year of drafting time"],
-		"month": ["Month", "Month of drafting time"],
-		"day": ["Day", "Day of drafting time"],
-		"unit": ["Unit", "The direct unit of the author"],
-		"unitAttribute": ["unitAttr", "Attributes of the direct unit of the author"],
-		"script": ["script", "script"],
-		"number": ["serial", "Serial Number"]
+		"text": [
+			"Text",
+			"Arbitrary text"
+		],
+		"year": [
+			"Year",
+			"Year of drafting time"
+		],
+		"month": [
+			"Month",
+			"Month of drafting time"
+		],
+		"day": [
+			"Day",
+			"Day of drafting time"
+		],
+		"unit": [
+			"Unit",
+			"The direct unit of the author"
+		],
+		"unitAttribute": [
+			"unitAttr",
+			"Attributes of the direct unit of the author"
+		],
+		"script": [
+			"script",
+			"script"
+		],
+		"number": [
+			"serial",
+			"Serial Number"
+		]
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -213,9 +221,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"json": "JSON",
 		"person": "Person",
 		"split": "Split",
-
 		"apiDoc": "Click here to view the API documentation",
-
 		"id": "ID",
 		"name": "Name",
 		"alias": "Alias",
@@ -228,7 +234,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"icon": "Icon",
 		"type": "Type",
 		"form": "Form",
-
 		"routeAsOpinion": "Use route name as default opinion",
 		"yes": "Yes",
 		"no": "No",
@@ -237,7 +242,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"versionName": "Version Name",
 		"versionId": "Version Id",
 		"versionDescription": "Version Description",
-
 		"startup": "Startup",
 		"startTerminal": "Start Terminal",
 		"pcAndMobile": "PC and mobile",
@@ -248,7 +252,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"draftMode": "draft",
 		"instanceModeInfo": "(Create a process instance directly when creating a new process, and generate to-do for the drafter)",
 		"draftModeInfo": "(When creating a new process, no process instance is created, no to-do is generated, a draft document is generated, and the process instance is not created until the transfer.Attachments cannot be uploaded in draft mode.)",
-
 		"checkDraft": "Check Draft",
 		"checkDraftInfo": "(Select \"Yes\": unsaved process instances will not be retained)",
 		"power": "Power",
@@ -259,13 +262,11 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"maintenanceIdentity": "Maintainer",
 		"defaultIdentity": "Default handler",
 		"managerScript": "Maintainer Script",
-
 		"number": "Number",
 		"numberActivity": "NumberActivity",
 		"trigger": "Trigger",
 		"arrivals": "Arrivals",
 		"submit": "Submit",
-
 		"aging": "Aging",
 		"processTimeLimit": "Process TimeLimit",
 		"noLimit": "NoLimit",
@@ -282,7 +283,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"hourWorkTimeout": "Timeout after a few working hours",
 		"specifyTimeout": "Timeout after the specified time",
 		"oneOfThree": "One Of Three",
-
 		"mapping": "Mapping",
 		"mappingData": "Mapping Data",
 		"dataName": "Name",
@@ -292,7 +292,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"mappingDataToTable": "Mapping Query Table",
 		"mappingTableEnabled": "Store the data in the query table after work completed",
 		"queryTable": "tables",
-
 		"data": "data",
 		"dataTrace": "Business data trace",
 		"dataTraceInfo": "Enabling business data tracking can record every change of the specified business field, and you can set to view the historical change records of business data in the form design",
@@ -305,14 +304,11 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dataTraceCustomInfo": "Define the business fields to be traced in the following settings",
 		"dataTraceAllInfo": "Trace all business data fields (excluding data tables, data templates and long text (Lob) type data)",
 		"dataTraceFieldNames": "Field Names",
-
 		"allowReroute": "Allow Reroute",
 		"allowRerouteTo": "Allow Reroute to here",
-
 		"mergeLayerThreshold": "Number of Merge Layers",
 		"mergeLayerThreshold0": "Merge as many layers as possible",
 		"mergeLayerThreshold1": "Merge single layers",
-
 		"reader": "Reader",
 		"readerId": "Reader ID",
 		"duty": "Duty",
@@ -320,17 +316,14 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"reviewer": "Review",
 		"reviewerId": "Review Id",
 		"unit": "Unit",
-
 		"participant": "Process role",
 		"participant_creator": "initiator",
 		"participant_activity": "Participant",
 		"participant_maintenance": "Maintainer",
 		"participant_none": "None",
-
 		"participant_creator_info": "Set the initiator of the process instance as the handler of the current activity",
 		"participant_maintenance_info": "Set the maintainer of the process as the handler of the current activity",
 		"participant_activity_info": "Set the handler of the activity that the process instance has transferred as the handler of the current activity. Please select the activity below",
-
 		"splitScript": "Split Value Script",
 		"embed": "Embed",
 		"selectProcess": "Select Process",
@@ -349,7 +342,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dataScript": "Data Script",
 		"getOldData": "Get business data of the original process",
 		"setNewData": "Set the business data of the new process",
-
 		"timer": "Timer",
 		"timerType": "Timer Type",
 		"delayTime": "Execute after few minute delay",
@@ -357,7 +349,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"specifyMinute": "Specified minute",
 		"specifyATime": "Specified time",
 		"specifyData": "Specified data path",
-
 		"invoke": "Invoke",
 		"protocol": "Protocol",
 		"invokeType": "Invoke Type",
@@ -367,7 +358,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"addParameter": "Add Parameter",
 		"deleteParameter": "Delete Parameter",
 		"responseScript": "Response Script",
-
 		"use": "Use",
 		"getJson": " get response content. If the response content is a string in JSON format, a JSON object is returned; otherwise, the original response content is returned.",
 		"systemRequest": "System Service",
@@ -377,19 +367,15 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"requestHeaderScript": "Request Header Script",
 		"addHeader": "Add Header ",
 		"delHeader": "Delete Header ",
-
 		"setParameterInfo": "Return a json object to set parameters, please check the API documentation",
 		"setParameterInfo2": "Return a array to set parameters, please check the API documentation",
 		"setRequestBodyInfo": "Return a json object to set the message body, please check the API documentation",
 		"setHeaderInfo": "Return a json object to set the message header, please check the API documentation",
 		"getJaxws": "Get the response content. The response type depends on the return of the service",
-
 		"service": "Service",
 		"serviceResponseScript": "Response Script",
 		"responseInfo": "Get the request data through \"this.request.getBody()\"<br/>return true, the drive flow continues to flow<br/>return false, indicating that the flow conditions are not met, waiting for the next call",
-
 		"runScript": "Execute script",
-
 		"processType": "ProcessType",
 		"oneProcess": "One person handles",
 		"single": "single",
@@ -400,13 +386,10 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"grab": "grab",
 		"grabInfo": "Whoever opens the task first will handle it",
 		"readForUntreated": "Send read to untreated person",
-
 		"mergeTask": "Merge Task",
 		"mergeTaskInfo": "(If you choose \"Yes\", the task on this activity with the same identity will be merged)",
-
-        "mergeTaskProcess": "Merge Task Processing",
-        "mergeTaskProcessInfo": "(If you select \"Yes\", when the same person's different identities generate multiple to-dos in this activity, they only need to be processed once)",
-
+		"mergeTaskProcess": "Merge Task Processing",
+		"mergeTaskProcessInfo": "(If you select \"Yes\", when the same person's different identities generate multiple to-dos in this activity, they only need to be processed once)",
 		"activityGroup": "Activity Group",
 		"opinionGroup": "Opinion Group",
 		"taskPerson": "Task",
@@ -434,7 +417,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowPress": "Allow Press",
 		"allowPause": "Allow Pause",
 		"allowAddTask": "Allow Add Task",
-
 		"backConfig": "Back configuration",
 		"allowBack": "Allow Back",
 		"multiTaskEnable": "Allow rollback when multi-task",
@@ -451,10 +433,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"backWayStep": "Normal flow according to process configuration",
 		"backWayJump": "Go straight back to the bouncer",
 		"backWayCustom": "BackWayCustom",
-
 		"backActivitySelectTitle": "Select an activity that allows backtracking",
 		"backActivitySelectInfo": "You can select the activity nodes that are allowed to be returned in the current activity. Only the allowed activities that have been transferred can be returned. You can also set the processing method after the return for each activity that is allowed to be returned.",
-
 		"beforeBegin": "beforeBegin",
 		"eventInfo1": "Start the process to generate a work instance",
 		"afterBegin": "afterBegin",
@@ -481,10 +461,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"eventInfo9": "Process task, generate taskComplete",
 		"manualAfterTask": "manualAfterTask",
 		"eventInfo10": "Determine whether the conditions are met and enter the next activity",
-
 		"eventInfo11": "Execute all process flow tasks until staying or ending in an activity",
 		"afterProcess": "Activity flow complete",
-
 		"updataTime": "UpdataTime",
 		"num": "SerialNumber",
 		"defaultOpinion": "Default Opinion",
@@ -514,7 +492,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"hideCondition": "Hide Condition",
 		"hideConditionInfo": "(Return true to hide)",
 		"select": "Select",
-
 		"title": "Title",
 		"titleInfo": "Such as: please select department manager",
 		"defaultValue": "DefaultValue",
@@ -537,7 +514,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"levelIs": "The",
 		"levelUnit": " level unit",
 		"unitTypeIs": "The unit type is ",
-		"deUnit": "",
+		"deUnit": "Organization of",
 		"expandNext": "Expand lower level",
 		"selectUnit": "Select Unit",
 		"formData": "Form data",
@@ -561,7 +538,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dataStructure": "data Structure",
 		"complete": "Complete",
 		"simple": "Simple",
-
 		"section": "Section",
 		"enableSection": "Enable Section",
 		"sectionBy": "SectionBy",
@@ -569,7 +545,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"handlerUnit": "Handler Unit",
 		"activityId": "Activity Id",
 		"splitValue": "Split Value",
-
 		"publish": "Publish",
 		"publishTarget": "Publish Target",
 		"cms": "Content Management",
@@ -585,7 +560,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"titleField": "Title Field",
 		"useProcessFormNote": "Note: If yes, the document published to the content management will be opened using the process form, otherwise it will be opened using the form set by the content management classification.",
 		"setNewPublishData": "Returns a json object to set the data, please check the API documentation. Such as",
-
 		"querytable": "Data Table",
 		"querytableActionNode_add": "↑ Add data table configuration entry ↑",
 		"querytableActionNode_modify": "↑ Modify data table configuration entry ↑",
@@ -598,7 +572,26 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"byDataScript": "By DataScript",
 		"publishTableConfig": "Data table publishing configuration",
 		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1).",
-		"orgIdPlaceholder" : "Such as: departmentLeader"
+		"orgIdPlaceholder": "Such as: departmentLeader",
+		"dataTraceFieldNamesSelect": "Select form fields",
+		"selectForm": "form ",
+		"selectField": "Data fields",
+		"selectedField": "Selected fields",
+		"mergeLayerThresholdn": "Merge {n} layers",
+		"waitUntilCompletedTitle": "Process waiting",
+		"waitUntilCompleted": "If \"Yes\" is selected, the main process will remain waiting during the called process flow until the called process flow ends",
+		"completedEventsInfo": "Enabling process waiting will trigger the main process to continue flowing after the sub process ends. The following three events will be executed",
+		"completedEndEvent": "After successful sub process",
+		"completedEnd": "After successful sub process",
+		"completedCancelEvent": "After the sub process is cancelled",
+		"completedCancel": "After the sub process is cancelled",
+		"completedEvent": "After completing the sub process",
+		"completed": "After completing the sub process",
+		"completedEndEventInfo": "When the sub process flows to the end activity, this event will be executed",
+		"completedCancelEventInfo": "When the sub process flows to the cancellation activity, this event will be executed",
+		"completedEventInfo": "When the sub process flows to the end or cancels the activity, this event will be executed",
+		"groupRange": "Group scope",
+		"specifyGroup": "Designated groups"
 	}
-
-};
+}
+MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

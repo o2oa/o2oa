@@ -511,9 +511,7 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
                     cornerPointIndex = i - 1;
                 }
             }
-            ;
         }
-        ;
         return cornerPointIndex;
     },
     getNearIndex: function (pList, p) {
@@ -592,6 +590,7 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
         ;
     },
     doBrokenLine: function (e, idx, corner) {
+
         var offsetP = MWF.getOffset(e.event);
 
         var toX = offsetP.offsetX;
@@ -883,8 +882,8 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
                 var decisionPoints = Raphael.pathIntersection(beginLinePath, fromActivityPath);
                 var endPoints = Raphael.pathIntersection(endLinePath, toActivityPath);
 
-                this.beginPoint = decisionPoints[0];
-                this.endPoint = endPoints[0];
+                this.beginPoint = decisionPoints[0] || this.fromActivity.center;
+                this.endPoint = endPoints[0] || this.toActivity.center;
             }
         }
         if (!fromActivityPath && toActivityPath) {
