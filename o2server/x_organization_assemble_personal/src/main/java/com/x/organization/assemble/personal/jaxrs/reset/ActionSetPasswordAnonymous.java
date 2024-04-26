@@ -1,16 +1,11 @@
 package com.x.organization.assemble.personal.jaxrs.reset;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -20,6 +15,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionSetPasswordAnonymous extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSetPasswordAnonymous.class);
@@ -30,7 +28,6 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 
-			/** 排除xadmin */
 			if (Config.token().isInitialManager(wi.getUserName())) {
 				throw new ExceptionEditInitialManagerDeny();
 			} else {
@@ -40,13 +37,10 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 
 				Person o = business.person().getWithCredential(wi.getUserName());
 				if (null == o) {
-					throw new ExceptionPersonNotExist(wi.getUserName());
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 
 				Person person = emc.find(o.getId(), Person.class);
-				if (null == person) {
-					throw new ExceptionPersonNotExist(wi.getUserName());
-				}
 
 				if (StringUtils.isEmpty(wi.getOldPassword())) {
 					throw new ExceptionOldPasswordEmpty();
@@ -54,31 +48,23 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 				if (StringUtils.isEmpty(wi.getNewPassword())) {
 					throw new ExceptionPasswordEmpty();
 				}
-
 				if (StringUtils.isEmpty(wi.getConfirmPassword())) {
 					throw new ExceptionConfirmPasswordEmpty();
 				}
 
-				if (!StringUtils.equals(wi.getNewPassword(), wi.getConfirmPassword())) {
-					throw new ExceptionTwicePasswordNotMatch();
-				}
+				String oldPassword = BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(wi.getOldPassword(), Config.privateKey())
+						: wi.getOldPassword();
+				String newPassword = BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(wi.getNewPassword(), Config.privateKey())
+						: wi.getNewPassword();
+				String confirmPassword = BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(wi.getConfirmPassword(), Config.privateKey())
+						: wi.getConfirmPassword();
 
 				if (StringUtils.equals(wi.getNewPassword(), wi.getOldPassword())) {
 					throw new ExceptionNewPasswordSameAsOldPassword();
 				}
 
-				String oldPassword = wi.getOldPassword();
-				String newPassword = wi.getNewPassword();
-				String confirmPassword = wi.getConfirmPassword();
-				String isEncrypted = wi.getIsEncrypted();
-
-				// RSA解秘
-				if (!StringUtils.isEmpty(isEncrypted)) {
-					if (isEncrypted.trim().equalsIgnoreCase("y")) {
-						oldPassword = this.decryptRSA(oldPassword);
-						newPassword = this.decryptRSA(newPassword);
-						confirmPassword = this.decryptRSA(confirmPassword);
-					}
+				if(!StringUtils.equals(newPassword, confirmPassword)){
+					throw new ExceptionTwicePasswordNotMatch();
 				}
 
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
@@ -88,7 +74,7 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 					if (!StringUtils.equals(
 							Crypto.encrypt(oldPassword, Config.token().getKey(), Config.person().getEncryptType()),
 							person.getPassword())) {
-						throw new ExceptionOldPasswordNotMatch();
+						throw new ExceptionPersonNotExistOrInvalidPassword();
 					}
 					if (!newPassword.matches(Config.person().getPasswordRegex())) {
 						throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
