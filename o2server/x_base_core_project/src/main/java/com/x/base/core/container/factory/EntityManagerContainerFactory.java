@@ -86,11 +86,11 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 				instance.checkRemoveFieldMap.clear();
 			}
 			/* 注销驱动程序 */
-			Enumeration<Driver> drivers = DriverManager.getDrivers();
-			while (drivers.hasMoreElements()) {
-				Driver driver = drivers.nextElement();
-				DriverManager.deregisterDriver(driver);
-			}
+//			Enumeration<Driver> drivers = DriverManager.getDrivers();
+//			while (drivers.hasMoreElements()) {
+//				Driver driver = drivers.nextElement();
+//				DriverManager.deregisterDriver(driver);
+//			}
 			/* 由于可能重新载入 */
 			instance = null;
 		} catch (Exception e) {
