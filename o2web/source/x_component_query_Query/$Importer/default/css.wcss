@@ -45,7 +45,8 @@
         "border-left": "0",
         "border-right" : "0px",
         "border-bottom" : "1px solid #cfd9df",
-        "text-align": "right"
+        "text-align": "right",
+        "word-break": "break-all"
     },
     "validContentStyles": {
         "background-color": "#FFFFFF",
@@ -58,7 +59,8 @@
         "text-align": "left",
          "width": "240px",
          "right": "-20px",
-         "position": "sticky"
+         "position": "sticky",
+         "word-break": "break-all"
     },
     "properties": {
         "width": "100%",

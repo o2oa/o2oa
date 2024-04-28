@@ -135,7 +135,8 @@ MWF.xApplication.query.ImporterDesigner.LP={
 		"selectField": "Select Column/Field",
 		"idPathNote": "When importing self created table data, a field path of 'id' indicates updating the original record.",
 		"excelSelectedOption": "Optional Script",
-		"checkInOption": "Verify if it is in the optional list"
+		"checkInOption": "Verify if it is in the optional list",
+		"defaultValueScript": "Default Script"
 	},
 	"formToolbar": {
 		"save": "Save",

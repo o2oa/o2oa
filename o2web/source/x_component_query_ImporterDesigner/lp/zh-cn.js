@@ -156,7 +156,8 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "valueScriptWorkNote": "如果导入流程work，系统生成的工作数据",
         "idPathNote": "当导入自建表数据时，字段路径为'id'表示更新原有记录。",
         "excelSelectedOption": "可选项脚本",
-        "checkInOption": "校验在是否在可选项中"
+        "checkInOption": "校验在是否在可选项中",
+        "defaultValueScript": "默认值脚本"
     },
     "formToolbar":{
         "save": "保存",

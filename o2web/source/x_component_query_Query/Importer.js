@@ -391,7 +391,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
                         htmlArray.push( "<tr>" );
                         this.json.data.columnList.each( function (columnJson, i) {
-                            htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
+                            var d = lineData[ i ];
+                            var text = typeOf(d) === "string" ? ( d || '' ).replace(/&#10;/g,"<br/>") : d;
+                            htmlArray.push( "<td style='"+contentStyle+"'>"+ text +"</td>" ); //换行符&#10;
                         });
                         htmlArray.push( "<td style='"+validContentStyles+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
                         htmlArray.push( "</tr>" );
@@ -942,7 +944,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 errorTextListExcel.push( colInforExcel + lp.canNotBeEmpty + lp.fullstop );
             }
 
-            if( columnJson.optionScript && value ){
+            if( columnJson.validInOption && columnJson.optionScript && value ){
                 var options = this.importer.Macro.exec(columnJson.optionScript, this);
                 if( !options.contains(value) ){
                     errorTextList.push( colInfor + lp.notInOptions +":"+ options.join(",") + lp.fullstop );
@@ -1300,6 +1302,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if(!columnJson.path)return;
 
             var value = this.importedData[i] || "";
+
+            if( !value && columnJson.defaultValueScript ){
+                value = this.importer.Macro.exec(columnJson.defaultValueScript, this);
+            }
+
             if( !value )return;
 
             var data = this.parseData(value, (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess), columnJson);
@@ -1465,7 +1472,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 }else{
                     if( dataType === "string" ){
                         var linebreak = type === "dynamicTable" ? json.lineBreak_Querytable : json.lineBreak_CMSProcess;
-                        data = value.replace(/&#10;/g, linebreak || "" )
+                        if( typeOf(value) !== 'string' ){
+                            data = value.toString ? value.toString() : (value || "");
+                        }else{
+                            data = value.replace(/&#10;/g, linebreak || "" );
+                        }
                     }else{
                         data = this.stringToArray(value);
                     }
