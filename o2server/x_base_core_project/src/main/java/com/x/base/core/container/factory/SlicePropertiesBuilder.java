@@ -121,66 +121,67 @@ public class SlicePropertiesBuilder {
 		throw new Exception("can not get dictionary of url: " + url + ".");
 	}
 
-	public static boolean hasSchemaOfUrl(String url) throws Exception {
-		if (StringUtils.containsIgnoreCase(url, "jdbc:db2:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oracle:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:mysql:")) {
-			return false;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:postgresql:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:informix-sqli:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbasedbt-sqli:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbase:")) {
-			return false;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:h2:tcp:")) {
-			return false;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:dm:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:sqlserver:")) {
-			return false;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
-			return true;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
-			return true;
-		}
-		throw new Exception("can not get schema of url: " + url + ".");
-	}
+//	public static boolean hasSchemaOfUrl(String url) throws Exception {
+//		if (StringUtils.containsIgnoreCase(url, "jdbc:db2:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oracle:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:mysql:")) {
+//			return false;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:postgresql:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:informix-sqli:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbasedbt-sqli:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbase:")) {
+//			return false;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:h2:tcp:")) {
+//			return false;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:dm:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:sqlserver:")) {
+//			return false;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
+//			return true;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
+//			return true;
+//		}
+//		return false;
+//		//throw new Exception("can not get schema of url: " + url + ".");
+//	}
 
-	public static String validationQueryOfUrl(String url) throws Exception {
-		if (StringUtils.containsIgnoreCase(url, "jdbc:db2:")) {
-			return validationQuery_db2;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oracle:")) {
-			return validationQuery_oracle;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:mysql:")) {
-			return validationQuery_mysql;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:postgresql:")) {
-			return validationQuery_postgresql;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:informix-sqli:")) {
-			return validationQuery_informix;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbasedbt-sqli:")) {
-			return validationQuery_gbase;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbase:")) {
-			return validationQuery_gbasemysql;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:h2:tcp:")) {
-			return validationQuery_h2;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:dm:")) {
-			return validationQuery_dm;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:sqlserver:")) {
-			return validationQuery_sqlserver;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase:")) {
-			return validationQuery_kingbase;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
-			return validationQuery_kingbase8;
-		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
-			return validationQuery_oscar;
-		}
-		throw new Exception("can not get schema of url: " + url + ".");
-	}
+//	public static String validationQueryOfUrl(String url) throws Exception {
+//		if (StringUtils.containsIgnoreCase(url, "jdbc:db2:")) {
+//			return validationQuery_db2;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oracle:")) {
+//			return validationQuery_oracle;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:mysql:")) {
+//			return validationQuery_mysql;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:postgresql:")) {
+//			return validationQuery_postgresql;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:informix-sqli:")) {
+//			return validationQuery_informix;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbasedbt-sqli:")) {
+//			return validationQuery_gbase;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbase:")) {
+//			return validationQuery_gbasemysql;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:h2:tcp:")) {
+//			return validationQuery_h2;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:dm:")) {
+//			return validationQuery_dm;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:sqlserver:")) {
+//			return validationQuery_sqlserver;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase:")) {
+//			return validationQuery_kingbase;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
+//			return validationQuery_kingbase8;
+//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
+//			return validationQuery_oscar;
+//		}
+//		throw new Exception("can not get schema of url: " + url + ".");
+//	}
 
 }

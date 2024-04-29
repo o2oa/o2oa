@@ -1,9 +1,6 @@
 package com.x.base.core.container.factory;
 
 import java.lang.reflect.Field;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
