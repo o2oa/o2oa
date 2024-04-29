@@ -2703,7 +2703,7 @@ const statement = {
                 (() => {
                     if (d.formatType === "numberValue") {
                         return parseFloat(d.value);
-                    } else if (!["sql", "sqlScript"].includes(format)) {
+                    } else if ( ["dateTimeValue","dateValue","timeValue"].includes( d.formatType ) && !["sql", "sqlScript"].includes(format)) {
                         const prefix = {dateTimeValue: 'ts', datetimeValue: 'ts', dateValue: 'd', timeValue: 't'}[d.formatType];
                         return `{${prefix} '${d.value}'}`;
                     }
