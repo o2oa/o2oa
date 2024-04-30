@@ -117,14 +117,14 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
         throw new IllegalStateException("get schema error.");
     }
 
-    public boolean hasSchema() throws Exception {
-        for (ExternalDataSource o : this) {
-            if (BooleanUtils.isTrue(o.getEnable())) {
-                return SlicePropertiesBuilder.hasSchemaOfUrl(o.getUrl());
-            }
-        }
-        throw new Exception("hasSchema error.");
-    }
+//    public boolean hasSchema() throws Exception {
+//        for (ExternalDataSource o : this) {
+//            if (BooleanUtils.isTrue(o.getEnable())) {
+//                return SlicePropertiesBuilder.hasSchemaOfUrl(o.getUrl());
+//            }
+//        }
+//        throw new Exception("hasSchema error.");
+//    }
 
     public String getTransactionIsolation() {
         for (ExternalDataSource o : this) {
