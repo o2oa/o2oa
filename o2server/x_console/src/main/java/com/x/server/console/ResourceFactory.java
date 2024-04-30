@@ -195,8 +195,8 @@ public class ResourceFactory {
 			dataSource.setMaxPoolSize(ds.getMaxTotal());
 			dataSource.setMinPoolSize(ds.getMaxIdle());
 			// 增加校验
-			dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
-			dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
+			//dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
+			//dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
 			dataSource.setMaxIdleTime(ds.getMaxIdleTime());
 			dataSource.setAcquireIncrement(2);
 			DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
