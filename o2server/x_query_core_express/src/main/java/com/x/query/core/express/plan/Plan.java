@@ -234,7 +234,7 @@ public abstract class Plan extends GsonPropertyObject {
 					text.append("'entry':extractObject.getEntry(),\n");
 					text.append("'columnName':extractObject.getColumn()\n");
 					text.append("}\n");
-					text.append("extractObject.setValue(executeScript.apply(obj));\n");
+					text.append("extractObject.setValue(executeScript.apply(obj)?.toString());\n");
 					text.append("}");
 					// CompiledScript cs = ScriptingFactory.compile(text.toString());
 					Source source = GraalvmScriptingFactory.source(text.toString());
