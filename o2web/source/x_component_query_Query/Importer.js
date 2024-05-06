@@ -1307,10 +1307,17 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 value = this.importer.Macro.exec(columnJson.defaultValueScript, this);
             }
 
-            if( !value )return;
+            var dataType = (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess);
 
-            var data = this.parseData(value, (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess), columnJson);
-            if( !data && data !== 0 )return;
+            if( !value && ["number","double","integer","long"].contains(dataType) ){
+                value = 0;
+            }
+
+            if( !value && (typeOf(value) === "null" || value === "") )return;
+
+            var data = this.parseData(value, dataType, columnJson);
+
+            if( !data && data !== 0 && data !== false )return;
 
             if( json.type === "dynamicTable" ){
                 this.data[ columnJson.path ] = data;
@@ -1485,13 +1492,21 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             case "number":
             case "double":
                 debugger;
-                value = value.replace(/&#10;/g,"");
-                data = parseFloat(value);
+                if( value === 0 ){
+                    data = 0;
+                }else{
+                    value = value.replace(/&#10;/g,"");
+                    data = parseFloat(value);
+                }
                 break;
             case "integer":
             case "long":
-                value = value.replace(/&#10;/g,"");
-                data = parseInt( value );
+                if( value === 0 ){
+                    data = 0;
+                }else {
+                    value = value.replace(/&#10;/g, "");
+                    data = parseInt(value);
+                }
                 break;
             case "numberList":
             case "doubleList":
