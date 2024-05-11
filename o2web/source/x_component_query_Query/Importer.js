@@ -79,7 +79,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                  * @example
                  * <caption>this.event格式如下：</caption>
                  * {
-                 *     "importData": [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //导入的数据
+                 *     "importedData": [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //导入的数据
                  *     "data" : {//根据导入模型生成的业务数据
                  *  	   {
                  *  	    "subject", "标题一", //subject为导入模型列配置的路径
