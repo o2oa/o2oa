@@ -411,6 +411,12 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
         this.moduleValueAG = null;
     },
 
+    resetData: function(){
+        var value = this.moduleValueAG || this._getBusinessData();
+        if (!value) value = this._computeValue();
+        this.setData(value || "");
+    },
+
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
