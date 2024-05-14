@@ -44,9 +44,11 @@ class ActionReset extends BaseAction {
 			if (StringUtils.isBlank(password)) {
 				throw new ExceptionPasswordEmpty();
 			}
+			credential =  BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(credential, Config.privateKey()) : credential;
+			password =  BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(password, Config.privateKey()) : password;
 			Person person = business.person().getWithCredential(credential);
 			if (null == person) {
-				throw new ExceptionPersonNotExist(credential);
+				throw new ExceptionPersonNotExistOrInvalidAnswer();
 			}
 			person = emc.find(person.getId(), Person.class, ExceptionWhen.not_found);
 			if (BooleanUtils.isTrue(Config.person().getSuperPermission())
@@ -57,7 +59,7 @@ class ActionReset extends BaseAction {
 					throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 				}
 				if (BooleanUtils.isFalse(business.instrument().code().validate(person.getMobile(), codeAnswer))) {
-					throw new ExceptionInvalidCode();
+					throw new ExceptionPersonNotExistOrInvalidAnswer();
 				}
 			}
 			emc.beginTransaction(Person.class);

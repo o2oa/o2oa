@@ -251,6 +251,48 @@ const replaceCustomString = (originalString, searchString, replacement) => {
   return replacedString;
 }
 
+/**
+ * 根据传入的数字个数，生成Excel列名数组，如：A,B,C,....,AA,AB,AC,....
+ * @param len 数量
+ * @returns {*[]}
+ */
+const generateExcelColumnNames = (len) =>{
+  const columnNames = [];
+  for (let i = 1; i <= len; i++) {
+    let columnName = "";
+    let quotient = i;
+    while (quotient > 0) {
+      const remainder = (quotient - 1) % 26;
+      columnName = String.fromCharCode(65 + remainder) + columnName;
+      quotient = Math.floor((quotient - 1) / 26);
+    }
+    columnNames.push(columnName);
+  }
+  return columnNames;
+}
+
+/**
+ * 选择单个文件功能，并触发回调函数
+ * @param callback 回调函数，返回选中的文件
+ */
+const chooseSingleFile = (callback) => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.style.display = 'none';
+  // 添加 change 事件监听器，接收上传的文件
+  input.addEventListener('change', (event) => {
+    const files = event.target.files;
+    // 处理上传的文件
+    if (files && files.length > 0) {
+      const file = files[0]
+      if (callback) {
+        callback(file)
+      }
+    }
+  });
+  input.click();
+}
+
 export {
   getAllDatesInMonth,
   formatPersonName,
@@ -269,4 +311,6 @@ export {
   storageSet,
   storageGet,
   replaceCustomString,
+  generateExcelColumnNames,
+  chooseSingleFile
 };

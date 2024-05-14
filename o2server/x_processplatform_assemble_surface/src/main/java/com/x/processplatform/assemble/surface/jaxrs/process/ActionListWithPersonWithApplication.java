@@ -1,8 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.process;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -14,12 +11,13 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionListWithPersonWithApplication extends BaseAction {
 
@@ -49,7 +47,7 @@ class ActionListWithPersonWithApplication extends BaseAction {
             for (String id : ids) {
                 wos.add(Wo.copier.copy(business.process().pick(id)));
             }
-            SortTools.asc(wos, false, "name");
+            wos = business.process().sort(wos);
             result.setData(wos);
             return result;
         }

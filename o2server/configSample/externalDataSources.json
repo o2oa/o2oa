@@ -18,7 +18,7 @@
     "testConnectionOnCheckout": false,
     "maxIdleTime": 300.0,
     "autoCommit": false,
-    "schema": "X",
+    "schema": "",
     "logStatEnable": false,
     "logStatInterval": 180.0,
     "slowSqlEnable": true,

@@ -5,7 +5,7 @@ import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
-import { lpFormat, isEmpty } from "../../utils/common";
+import {lpFormat, isEmpty, chooseSingleFile} from "../../utils/common";
 
 export default content({
   template,
@@ -179,41 +179,24 @@ export default content({
 
    // excel导入请假数据
    importExcel() {
-    if (!this.uploadFileAreaNode) {
-			this._createUploadNode();
-		}
-		this.fileUploadNode.click();
+     chooseSingleFile((file)=> this._uploadExcel(file))
   },
-  // 创建上传控件
-  _createUploadNode() {
-    this.uploadFileAreaNode = new Element("div");
-		const html = "<input name=\"file\" type=\"file\" multiple/>";
-		this.uploadFileAreaNode.set("html", html);
-		this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-    this.fileUploadNode.addEvent("change", function() {
-      this._uploadExcel();
-    }.bind(this));
-  },
-  async _uploadExcel() {
-    const files = this.fileUploadNode.files;
-    if (files.length) {
-      const file = files.item(0);
-      const fileExt = file.name.substring(file.name.lastIndexOf("."));
-      console.debug("文件名", file.name, fileExt);
-      if (fileExt.toLowerCase() !== ".xls" && fileExt.toLowerCase() !== ".xlsx") {
-        o2.api.page.notice(lp.leave.importExcelFileError, 'error');
-        return;
-      }
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('fileName', file.name);
-      var _self = this;
-      o2.Actions.load("x_attendance_assemble_control").RecordAction.input(formData, "", function(json){
-        if (json && json.data) {
-          _self.downloadConfirm(json.data)
-        }
-      }); 
+  // 读取选择的文件并上传到服务器
+  async _uploadExcel(file) {
+    const fileExt = file.name.substring(file.name.lastIndexOf("."));
+    console.debug("文件名", file.name, fileExt);
+    if (fileExt.toLowerCase() !== ".xls" && fileExt.toLowerCase() !== ".xlsx") {
+      o2.api.page.notice(lp.leave.importExcelFileError, 'error');
+      return;
     }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    o2.Actions.load("x_attendance_assemble_control").RecordAction.input(formData, "", (json)=>{
+      if (json && json.data) {
+        this.downloadConfirm(json.data)
+      }
+    });
   },
   downloadConfirm(result) {
     if (result) {

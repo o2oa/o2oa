@@ -26,6 +26,8 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +51,8 @@ import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
 public abstract class Plan extends GsonPropertyObject {
+
+	private static final Logger logger = LoggerFactory.getLogger(Plan.class);
 
 	private static final long serialVersionUID = -4281507899642115426L;
 
@@ -230,7 +234,7 @@ public abstract class Plan extends GsonPropertyObject {
 					text.append("'entry':extractObject.getEntry(),\n");
 					text.append("'columnName':extractObject.getColumn()\n");
 					text.append("}\n");
-					text.append("extractObject.setValue(executeScript.apply(obj));\n");
+					text.append("extractObject.setValue(executeScript.apply(obj)?.toString());\n");
 					text.append("}");
 					// CompiledScript cs = ScriptingFactory.compile(text.toString());
 					Source source = GraalvmScriptingFactory.source(text.toString());
@@ -354,7 +358,9 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	private void fillSelectEntry(List<String> bundles, SelectEntry selectEntry, Table table) throws Exception {
-		// oracle 将empty string 自动转换成null,需要判断
+		if(StringUtils.isBlank(selectEntry.path)){
+			return;
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			EntityManager em = emc.get(Item.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -363,6 +369,7 @@ public abstract class Plan extends GsonPropertyObject {
 			Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(bundles));
 			String[] paths = StringUtils.split(selectEntry.path, ".");
 			List<Order> ol = new ArrayList<>();
+			// oracle 将空字符串自动转换成null,需要同时判断null和空字符串
 			if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
 				p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
 			} else {

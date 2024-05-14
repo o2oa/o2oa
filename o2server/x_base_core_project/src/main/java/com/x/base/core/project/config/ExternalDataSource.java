@@ -63,8 +63,9 @@ public class ExternalDataSource extends ConfigObject {
     public static final Integer DEFAULT_MAXIDLETIME = 300;
 
     public static final Boolean DEFAULT_AUTOCOMMIT = false;
-
-    public static final String DEFAULT_SCHEMA = "X";
+    // 20240428修改为空值,取消默认的SCHEMA这样可以手工适陪各种postgres变种版本.
+    // public static final String DEFAULT_SCHEMA = "X";
+    public static final String DEFAULT_SCHEMA = "";
 
     public static ExternalDataSource defaultInstance() {
 

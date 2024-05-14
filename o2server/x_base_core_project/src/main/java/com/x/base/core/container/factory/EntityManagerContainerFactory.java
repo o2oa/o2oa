@@ -1,9 +1,6 @@
 package com.x.base.core.container.factory;
 
 import java.lang.reflect.Field;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -86,11 +83,11 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 				instance.checkRemoveFieldMap.clear();
 			}
 			/* 注销驱动程序 */
-			Enumeration<Driver> drivers = DriverManager.getDrivers();
-			while (drivers.hasMoreElements()) {
-				Driver driver = drivers.nextElement();
-				DriverManager.deregisterDriver(driver);
-			}
+//			Enumeration<Driver> drivers = DriverManager.getDrivers();
+//			while (drivers.hasMoreElements()) {
+//				Driver driver = drivers.nextElement();
+//				DriverManager.deregisterDriver(driver);
+//			}
 			/* 由于可能重新载入 */
 			instance = null;
 		} catch (Exception e) {
