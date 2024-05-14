@@ -665,14 +665,14 @@ Object.defineProperties(org, {
     oUnitDuty:          { get: ()=>_javaOrg().unitDuty() }
 });
 Object.assign(org,  {
-    group: ()=> this.oGroup,
-    identity: ()=> this.oIdentity,
-    person: ()=> this.oPerson,
-    personAttribute: ()=> this.oPersonAttribute,
-    role: ()=> this.oRole,
-    unit: ()=> this.oUnit,
-    unitAttribute: ()=> this.oUnitAttribute,
-    unitDuty: ()=> this.oUnitDuty,
+    group: ()=> this.org.oGroup,
+    identity: ()=> this.org.oIdentity,
+    person: ()=> this.org.oPerson,
+    personAttribute: ()=> this.org.oPersonAttribute,
+    role: ()=> this.org.oRole,
+    unit: ()=> this.org.oUnit,
+    unitAttribute: ()=> this.org.oUnitAttribute,
+    unitDuty: ()=> this.org.oUnitDuty,
 
     getObject(o, v){
         if (v && Array.isArray(v)){

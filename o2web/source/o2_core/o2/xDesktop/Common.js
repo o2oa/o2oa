@@ -60,17 +60,19 @@ MWF.xDesktop.getUserLayout = function(callback){
     MWF.UD.getPublicData("forceLayout", function(json) {
         var forceStatus = null;
         if (json) forceStatus = json;
+        debugger;
         MWF.UD.getDataJson("layout", function(json) {
             if (json) {
                 layout.userLayout = json;
-                if( !layout.userLayout.flatStyle )layout.userLayout.flatStyle = "blue";
+                if( !layout.userLayout.flatStyle )layout.userLayout.flatStyle = layout.config.defaultSkin;
                 if( !layout.userLayout.apps )layout.userLayout.apps = {};
                 if (forceStatus) layout.userLayout.apps = Object.merge(layout.userLayout.apps, forceStatus.apps);
                 if (callback) callback();
             }else{
                 MWF.UD.getPublicData("defaultLayout", function(json) {
                     layout.userLayout = json || {};
-                    if( !layout.userLayout.flatStyle )layout.userLayout.flatStyle = "blue";
+                    // if( !layout.userLayout.flatStyle )
+                        layout.userLayout.flatStyle = layout.config.defaultSkin || 'blue';
                     if( !layout.userLayout.apps )layout.userLayout.apps = {};
                     if (forceStatus) layout.userLayout.apps = Object.merge(layout.userLayout.apps, forceStatus.apps);
                     if (callback) callback();
