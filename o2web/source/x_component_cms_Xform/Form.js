@@ -478,14 +478,15 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     }.bind(this));
                 }
                 this.mobileTools = tools;
-                //app上用原来的按钮样式
-                if (window.o2android) {
-                    if (tools.length) if (node) this._createMobileActions(node, tools);
-                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog) {
-                    if (tools.length) if (node) this._createMobileActions(node, tools);
+                if (tools.length <= 0) {
+                    if (node) node.hide();
                 } else {
-                    //钉钉 企业微信用新的样式
-                    if (tools.length) if (node) this._createMobileActionsDingdingStyle(node, tools);
+                    // app上用原来的按钮样式
+                    if (window.o2android || window.flutter_inappwebview || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog)) {
+                        if (node) this._createMobileActions(node, tools);
+                    } else {
+                        if (node) this._createMobileActionsDingdingStyle(node, tools);
+                    }
                 }
                 if (callback) callback();
             }.bind(this));
