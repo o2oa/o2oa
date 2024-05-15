@@ -18,8 +18,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.x.base.core.project.tools.DateTools;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-
 public class XGsonBuilder {
 
 	private static Gson INSTANCE;
@@ -38,7 +36,7 @@ public class XGsonBuilder {
 					gson.registerTypeAdapter(Long.class, new LongDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateSerializer());
-					gson.registerTypeAdapter(ScriptObjectMirror.class, new ScriptObjectMirrorSerializer());
+					// gson.registerTypeAdapter(ScriptObjectMirror.class, new ScriptObjectMirrorSerializer());
 					gson.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter());
 					INSTANCE = gson.setPrettyPrinting().serializeSpecialFloatingPointValues().create();
 				}
