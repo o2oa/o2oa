@@ -1243,6 +1243,13 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
                 var cell = this.getText(c, k, td); //this.data[k];
                 if (cell === undefined || cell === null) cell = "";
 
+                var v = cell;
+                if (c.isHtml) {
+                    td.set("html", v);
+                } else {
+                    td.set("text", v);
+                }
+
                 // if (k!== this.view.viewJson.group.column){
                 debugger;
                 var total;
