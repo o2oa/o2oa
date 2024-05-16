@@ -455,6 +455,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
         if (this.gridJson.length) {
             // if( !this.options.paging ){
+            this.totalMap = {};
             this.gridJson.each(function (line, i) {
                 this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, line, null, i, null, this.options.lazy));
             }.bind(this));
@@ -471,6 +472,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             var from = Math.min(this.pageNumber * this.options.perPageCount, this.gridJson.length);
             var to = Math.min((this.pageNumber + 1) * this.options.perPageCount + 1, this.gridJson.length);
             this.isItemsLoading = true;
+            this.totalMap = {};
             for (var i = from; i < to; i++) {
                 this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, this.gridJson[i], null, i, null, this.options.lazy));
             }
@@ -1242,12 +1244,21 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
                 if (cell === undefined || cell === null) cell = "";
 
                 // if (k!== this.view.viewJson.group.column){
-                var v = cell;
-                if (c.isHtml) {
-                    td.set("html", v);
-                } else {
-                    td.set("text", v);
+                debugger;
+                var total;
+                switch (c.total){
+                    case 'name':
+                        if( parseFloat(v).toString() !== "NaN" ){ //可以转成数字
+                            total = this.view.totalMap[ c.name ];
+                            this.view.totalMap[ c.name ] = total ? total.plus(v) : new Decimal(v);
+                        }
+                        break;
+                    case 'count':
+                        total = this.view.totalMap[ c.name ];
+                        this.view.totalMap[ c.name ] = total ? total.plus(v) : new Decimal(v);
+                        break;
                 }
+
 
                 if (typeOf(c.contentProperties) === "object") td.setProperties(c.contentProperties);
                 if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
