@@ -718,7 +718,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this));
     },
     loadDefaultData: function( callback ){
-        debugger;
         var d = {};
         d.bundleList = this.options.defaultBundles;
         d.key = this.bundleKey;
@@ -1389,7 +1388,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }else{
             this.filterItems = [];
         }
-        debugger;
         this.viewSearchIconNode.setStyle("display", "none");
         this.viewSearchInputBoxNode.setStyle("display", "none");
         this.viewSearchCustomActionNode.setStyle("display", "none");
@@ -1869,7 +1867,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
     clearSelectAllStyle : function(){
-        debugger;
         if(!this.selectAllNode)return;
         var viewStyles = this.viewJson.viewStyles;
         var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
@@ -2029,7 +2026,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
      * @param {Object} options 需要跳转的参数配置
      */
     switchView : function( json ){
-        debugger;
         // json = {
         //     "application": application,
         //     "viewName": viewName,
@@ -2137,7 +2133,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     //api 使用 结束
 
     loadObserver: function(){
-        debugger;
         if( this.io ){
             this.io.disconnect();
             this.io = null;
@@ -2390,7 +2385,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     exportArray.push( totalArray );
                 }
 
-                debugger;
 
                 var headTextScript = this.viewJson.exportHeadText;
                 var headText = headTextScript ? this.Macro.exec(headTextScript, this) : '';
@@ -2682,7 +2676,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }
 
         //默认选中
-        debugger;
         var selectedFlag;
         var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
         if( !this.isSelected && defaultSelectedScript ){

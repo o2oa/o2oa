@@ -961,7 +961,9 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
                             switch (c.total){
                                 case 'number':
-                                    totalArray[columnIndex] = totalArray[columnIndex].plus(text);
+                                    if( parseFloat(text).toString() !== "NaN" ) { //可以转成数字
+                                        totalArray[columnIndex] = totalArray[columnIndex].plus(text.toString());
+                                    }
                                     break;
                                 case 'count':
                                     totalArray[columnIndex] = totalArray[columnIndex].plus(1);
@@ -1251,18 +1253,17 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
                 }
 
                 // if (k!== this.view.viewJson.group.column){
-                debugger;
                 var total;
                 switch (c.total){
-                    case 'name':
+                    case 'number':
                         if( parseFloat(v).toString() !== "NaN" ){ //可以转成数字
-                            total = this.view.totalMap[ c.name ];
-                            this.view.totalMap[ c.name ] = total ? total.plus(v) : new Decimal(v);
+                            total = this.view.totalMap[ c.column ];
+                            this.view.totalMap[ c.column ] = total ? total.plus(v.toString()) : new Decimal(v.toString());
                         }
                         break;
                     case 'count':
-                        total = this.view.totalMap[ c.name ];
-                        this.view.totalMap[ c.name ] = total ? total.plus(v) : new Decimal(v);
+                        total = this.view.totalMap[ c.column ];
+                        this.view.totalMap[ c.column ] = total ? total.plus(v) : new Decimal(v);
                         break;
                 }
 
