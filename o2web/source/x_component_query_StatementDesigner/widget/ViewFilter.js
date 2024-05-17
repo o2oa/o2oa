@@ -1151,7 +1151,18 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.datatypeInput.onchange();
         }
     },
-
+    orderItem: function(item){
+        var index = this.items.indexOf(item);
+        if(index < 1)return;
+        var itemNode = item.node;
+        var upNode = itemNode.getPrevious();
+        if (upNode) {
+            itemNode.inject(upNode, "before");
+        }
+        this.items[index] = this.items[index-1];
+        this.items[index-1] = item;
+        this.fireEvent("change");
+    },
     deleteItem: function (item) {
         if (this.currentItem == item) item.unSelected();
         this.items.erase(item);
@@ -1191,6 +1202,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter = new C
     load: function () {
         this.node = new Element("div", {"styles": this.css.itemNode}).inject(this.container);
         this.deleteNode = new Element("div", {"styles": this.css.itemDeleteNode}).inject(this.node);
+        this.orderNode = new Element("div", {
+            "styles": this.css.itemOrderNode, "text": "↑"
+        }).inject(this.node);
         this.contentNode = new Element("div", {"styles": this.css.itemContentNode}).inject(this.node);
         this.contentNode.set("text", this.getText());
 
@@ -1200,6 +1214,10 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter = new C
 
         this.deleteNode.addEvent("click", function (e) {
             this.deleteItem(e);
+        }.bind(this));
+
+        this.orderNode.addEvent("click", function (e) {
+            this.orderItem(e);
         }.bind(this));
     },
     getText: function () {
@@ -1246,6 +1264,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter = new C
     },
     destroy: function () {
         this.filter.deleteItem(this);
+    },
+    orderItem: function () {
+        this.filter.orderItem(this);
     }
 });
 

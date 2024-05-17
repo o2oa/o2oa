@@ -356,9 +356,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
     },
     loadCurrentPageData: function (callback, async, type) {
         //是否需要在翻页的时候清空之前的items ?
-
-        debugger;
-
         if (this.pageloading) return;
         this.pageloading = true;
 
