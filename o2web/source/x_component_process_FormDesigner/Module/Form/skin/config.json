@@ -66,6 +66,14 @@
       "pc"
     ]
   },
+  "light-blue": {
+    "name": "淡蓝样式",
+    "file": "styles_light-blue.json",
+    "extendFile": "styles_light-blue_extend.json",
+    "mode": [
+      "pc"
+    ]
+  },
   "green-flat": {
     "name": "绿色扁平",
     "file": "styles_green-flat.json",

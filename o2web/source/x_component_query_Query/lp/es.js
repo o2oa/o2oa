@@ -225,6 +225,8 @@ MWF.xApplication.query.Query.LP={
 	"deleteDocumentOK": "El registro de importación se eliminó correctamente",
 	"noPermission": "No tienes permiso para acceder a este documento.",
 	"associationSuccess": "Asociación exitosa.",
-	"associationResult": "Resultado de la asociación"
+	"associationResult": "Resultado de la asociación",
+	"total": "Total",
+	"notInOptions": "No en valores opcionales"
 }
 MWF.xApplication.query.Query["lp."+o2.language] = MWF.xApplication.query.Query.LP

@@ -79,6 +79,15 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         this.addColumnNode = new Element("div", {"styles": this.css.addColumnNode}).inject(this.viewColumnNode);
 
         this.viewTitleContentNode = new Element("div", {"styles": this.css.viewTitleContentNode}).inject(this.viewColumnNode);
+
+        this.autoAddColumnsNode = new Element("div.autoAddColumnsNode", {
+            styles: this.css.autoAddColumnsNode,
+            title: this.designer.lp.autoAddColumns
+        }).inject(this.viewTitleContentNode);
+        if( this.json.type !== 'dynamicTable' || (this.json.data.columnList && this.json.data.columnList.length) ){
+            this.autoAddColumnsNode.hide();
+        }
+
         this.viewTitleTableNode = new Element("table", {
             "styles": this.css.viewTitleTableNode,
             "border": "0px",
@@ -104,6 +113,9 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         this.addCalculateFieldNode = new Element("div#addCalculateFieldNode", {
             "styles": this.css.addCalculateFieldNode,
         }).inject(this.calculateTitleNode);
+        if(this.json.type !== "dynamicTable"){
+            this.addCalculateFieldNode.hide();
+        }
 
         this.viewContentBodyNode = new Element("div", {"styles": this.css.viewContentBodyNode}).inject(this.viewContentNode);
 
@@ -217,6 +229,44 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         this.addCalculateFieldNode.addEvent("click", function(e){
             this.addCalculateField();
             e.stopPropagation();
+        }.bind(this));
+        this.autoAddColumnsNode.addEvent("click", function (e) {
+            this.autoAddColumns();
+            e.stopPropagation();
+        }.bind(this));
+    },
+    autoAddColumns: function(){
+        if(this.json.type !== "dynamicTable")return;
+        if( !this.json.data.dynamicTable || !this.json.data.dynamicTable.id )return;
+        MWF.require("MWF.widget.UUID", null, false);
+
+        debugger;
+        var p = o2.Actions.load("x_query_assemble_designer").TableAction.get(this.json.data.dynamicTable.id, function(json){
+            if (json){
+                var dataJson = JSON.decode(json.data.data);
+                return dataJson.fieldList || [];
+            }
+        }.bind(this));
+        Promise.resolve(p).then(function (data){
+            this.json.data.columnList = data.map( function ( field ) {
+                return {
+                    "id": (new MWF.widget.UUID).id,
+                    "path": field.name,
+                    "displayName": field.description || field.name,
+                    "dataType_Querytable" : field.type,
+                    "dataType_CMSProcess": "string",
+                    "validFieldType" : true
+                };
+            }.bind(this));
+
+            this.json.data.columnList.each(function (d, i) {
+                this.items.push(new MWF.xApplication.query.ImporterDesigner.Importer.Column(d, this, null, i));
+            }.bind(this));
+
+            this.items.each( function (item, i) {
+                item.resetIndex(i);
+            });
+
         }.bind(this));
     },
     addCalculateField: function(){
@@ -547,9 +597,18 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     explode: function(){},
     implode: function(){},
     _setEditStyle: function(name, input, oldValue) {
-        debugger;
-        if(name === "data.process"){
-            this.property.loadFormSelect();
+        switch( name ){
+            case 'data.process':
+                this.property.loadFormSelect();
+                break;
+            case 'type':
+                if(this.autoAddColumnsNode){
+                    if( this.json.type !== 'dynamicTable' || (this.json.data.columnList && this.json.data.columnList.length) ){
+                        this.autoAddColumnsNode.hide();
+                    }else{
+                        this.autoAddColumnsNode.show();
+                    }
+                }
         }
     },
     reloadMaplist: function(){
@@ -645,6 +704,7 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         this.css = this.view.css;
         this.content = this.view.viewTitleTrNode;
         this.domListNode = this.view.domListNode;
+        this.view.autoAddColumnsNode.hide();
         this.load();
     },
     load: function(){
@@ -696,17 +756,25 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         this.setEvent();
     },
     loadDefaultJson: function(callback){
-        if( this.view.defaultColumnJson ){
-            this.json = Object.merge( this.json, Object.clone(this.view.defaultColumnJson) );
+        this._loadDefaultJson(function (defaultColumnJson){
+            for( var key in  defaultColumnJson){
+                if( !this.json[key] ){
+                    this.json[key] = defaultColumnJson[key];
+                }
+            }
             if (callback) callback(this.json);
+        }.bind(this));
+    },
+    _loadDefaultJson: function (callback){
+        if( this.view.defaultColumnJson ){
+            if (callback) callback(Object.clone(this.view.defaultColumnJson));
             return;
         }
         var url = this.view.path+"column.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
-                this.view.defaultColumnJson = Object.clone(obj);
-                this.json = Object.merge( this.json, Object.clone(obj) );
-                if (callback) callback(this.json);
+                this.view.defaultColumnJson = obj;
+                if (callback) callback(Object.clone(this.view.defaultColumnJson));
             }.bind(this),
             "onerror": function(text){
                 this.view.designer.notice(text, "error");
@@ -739,7 +807,7 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
         });
         this.listNode.addEvents({
             "click": function(e){this.selected(); e.stopPropagation();}.bind(this),
-            "mouseover": function(){debugger; if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode_over)}.bind(this),
+            "mouseover": function(){if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode_over)}.bind(this),
             "mouseout": function(){if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode)}.bind(this)
         });
     },
@@ -900,8 +968,15 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
 
         this.view.setViewWidth();
 
+        this._destroy();
+
         MWF.release(this);
         delete this;
+    },
+    _destroy: function (){
+        if( !this.view.json.data.columnList  || !this.view.json.data.columnList.length ){
+            this.view.autoAddColumnsNode.show();
+        }
     },
     addColumn: function(e, data){
         MWF.require("MWF.widget.UUID", function(){
@@ -909,15 +984,13 @@ MWF.xApplication.query.ImporterDesigner.Importer.Column = new Class({
             if (data){
                 json = Object.clone(data);
                 json.id = (new MWF.widget.UUID).id;
-                json.column = (new MWF.widget.UUID).id;
             }else{
                 var id = (new MWF.widget.UUID).id;
-                json = {
-                    "id": id,
-                    "column": id,
-                    "displayName": this.view.designer.lp.unnamed,
-                    "orderType": "original"
-                };
+                this._loadDefaultJson(function (defaultColumnJson){
+                    defaultColumnJson.id = id;
+                    defaultColumnJson.displayName = MWF.xApplication.query.ImporterDesigner.LP.unnamed;
+                    json = defaultColumnJson;
+                }.bind(this));
             }
 
             var idx = this.view.json.data.columnList.indexOf(this.json);
@@ -1079,17 +1152,25 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
         this.setCustomStyles();
     },
     loadDefaultJson: function(callback){
-        if( this.view.defaultCalculateFieldJson ){
-            this.json = Object.merge( this.json, Object.clone(this.view.defaultCalculateFieldJson) );
+        this._loadDefaultJson(function (defaultCalculateFieldJson){
+            for( var key in  defaultCalculateFieldJson){
+                if( !this.json[key] ){
+                    this.json[key] = defaultCalculateFieldJson[key];
+                }
+            }
             if (callback) callback(this.json);
+        }.bind(this))
+    },
+    _loadDefaultJson: function(callback){
+        if( this.view.defaultCalculateFieldJson ){
+            if (callback) callback( Object.clone(this.view.defaultCalculateFieldJson) );
             return;
         }
         var url = this.view.path+"calculateField.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
-                this.view.defaultCalculateFieldJson = Object.clone(obj);
-                this.json = Object.merge( this.json, Object.clone(obj) );
-                if (callback) callback(this.json);
+                this.view.defaultCalculateFieldJson = obj;
+                if (callback) callback( Object.clone(this.view.defaultCalculateFieldJson) );
             }.bind(this),
             "onerror": function(text){
                 this.view.designer.notice(text, "error");

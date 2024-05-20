@@ -3,7 +3,8 @@
         "border-top": "1px solid #cfd9df",
         "border-left": "0px",
         "border-right" : "0px",
-        "border-bottom" : "0px"
+        "border-bottom" : "0px",
+        "table-layout": "fixed"
     },
     "titleStyles": {
         "background-color": "#ffffff",
@@ -13,21 +14,53 @@
         "border-right" : "0px",
         "border-bottom" : "1px solid #cfd9df",
         "height": "23px",
-        "font-size": "16px",
+        "font-size": "14px",
         "width": "65px",
         "font-weight": "bold",
         "line-height": "23px",
         "text-align": "left"
+    },
+    "vaildTitleStyles": {
+        "background-color": "#ffffff",
+        "color": "#333",
+        "border-top": "0px",
+        "border-left": "1px solid #cfd9df",
+        "border-right" : "0px",
+        "border-bottom" : "1px solid #cfd9df",
+        "height": "23px",
+        "font-size": "14px",
+        "width": "65px",
+        "font-weight": "bold",
+        "line-height": "23px",
+        "text-align": "left",
+        "width": "240px",
+        "right": "-20px",
+        "position": "sticky"
     },
     "contentStyles": {
         "background-color": "#FFFFFF",
         "color": "#000",
         "font-size": "14px",
         "border-top": "0px",
-        "border-left": "0px",
+        "border-left": "0",
         "border-right" : "0px",
         "border-bottom" : "1px solid #cfd9df",
-        "text-align": "right"
+        "text-align": "right",
+        "word-break": "break-all"
+    },
+    "validContentStyles": {
+        "background-color": "#FFFFFF",
+        "color": "#000",
+        "font-size": "14px",
+        "border-top": "0px",
+        "border-left": "1px solid #cfd9df",
+        "border-right" : "0px",
+        "border-bottom" : "1px solid #cfd9df",
+        "text-align": "left",
+         "width": "240px",
+         "right": "-20px",
+         "position": "sticky",
+         "word-break": "break-all"
     },
     "properties": {
         "width": "100%",

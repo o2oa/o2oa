@@ -308,7 +308,23 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"top": "Forward",
 		"bottom": "rear",
 		"format": "format",
-		"script": "script"
+		"script": "script",
+		"forceClearCustomViewStyle": "Clear custom styles",
+		"export": "export",
+		"exportNotice": "Export up to 2000 items at once",
+		"exportWidth": "width",
+		"exportEnable": "Allow export",
+		"isTime": "Time type",
+		"isNumber": "Number type",
+		"viewEnable": "Enable View",
+		"total": "total",
+		"notNeeded": "No need",
+		"totalValue": "numerical value",
+		"totalCount": "quantity",
+		"headText": "Table header text",
+		"headStyle": "Table header style",
+		"columnTitleStyle": "Column header style",
+		"columnContentStyle": "Column Content Style"
 	},
 	"viewStyle": {
 		"default": "Default",
@@ -317,7 +333,8 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"official": "Official",
 		"deepBlue": "Deep Blue",
 		"blueFlat": "Blue and white flat",
-		"greenFlat": "Green Flat"
+		"greenFlat": "Green Flat",
+		"lightBlue": "Light blue style"
 	},
 	"formToolbar": {
 		"save": "Save",

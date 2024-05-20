@@ -15,7 +15,6 @@
 				names.splice( i--, 1 );
 		}
 
-		debugger;
 		editor.ui.addRichCombo( comboName, {
 
 			label: editor.lang.lineheight.title,

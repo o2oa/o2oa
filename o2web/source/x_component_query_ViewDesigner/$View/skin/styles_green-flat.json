@@ -36,6 +36,7 @@
       "padding": "16px 5px",
       "border-bottom": "1px solid #ebeef5"
     },
+    "zebraContentTd": {},
     "contentGroupTd": {
       "padding": "16px 5px",
       "border-bottom": "1px solid #ebeef5",

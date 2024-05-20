@@ -134,8 +134,9 @@ MWF.xApplication.query.ImporterDesigner.LP={
 		"valueScriptWorkNote": "If importing process Work, the system generated work data",
 		"selectField": "Select Column/Field",
 		"idPathNote": "When importing self created table data, a field path of 'id' indicates updating the original record.",
-		"excelSelectedOption": "excel column options ",
-		"selectedOptionScript": "Optional script"
+		"excelSelectedOption": "Optional Script",
+		"checkInOption": "Verify if it is in the optional list",
+		"defaultValueScript": "Default Script"
 	},
 	"formToolbar": {
 		"save": "Save",
@@ -143,6 +144,7 @@ MWF.xApplication.query.ImporterDesigner.LP={
 		"autoSave": "Auto Save",
 		"preview": "preview",
 		"help": "help"
-	}
+	},
+	"autoAddColumns": "Generate columns based on the data table"
 }
 MWF.xApplication.query.ImporterDesigner["lp."+o2.language] = MWF.xApplication.query.ImporterDesigner.LP

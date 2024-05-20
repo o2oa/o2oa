@@ -107,7 +107,7 @@ o2.widget.JsonTemplate = new Class({
         var $ = json;
         var f = eval("(x = function($){\n return "+text+";\n})");
         returnValue = f.apply(json, [$]);
-        if (returnValue===undefined) returnValue="";
+        if (returnValue===undefined || returnValue===null) returnValue="";
         returnValue = returnValue.toString();
         return returnValue || "";
 	},

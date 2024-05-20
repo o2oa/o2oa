@@ -1834,7 +1834,7 @@ MWF.xScript.CMSEnvironment = function(ev){
         "getApp": function(){return _form.app;},
         "app": _form.app,
         "node": function(){return _form.node;},
-        "readonly": _form.options.readonly,
+        // "readonly": _form.options.readonly,
         "get": function(name,subformName ){
             if( !_form.all )return null;
             if( subformName ){
@@ -2282,6 +2282,10 @@ MWF.xScript.CMSEnvironment = function(ev){
             });
         }
     };
+
+    Object.defineProperty(this.form, "readonly", {
+        get: function(){ return  !!_form.options.readonly; }
+    });
 
     this.target = ev.target;
     this.event = ev.event;

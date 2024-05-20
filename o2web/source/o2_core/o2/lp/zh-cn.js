@@ -440,7 +440,11 @@ o2.LP.widget = {
     "fontSize": "字体大小",
     "fontFamily": "字体",
 
-    "explorerNotSupportFeatures" : "您的浏览器不支持以下特性:"
+    "explorerNotSupportFeatures" : "您的浏览器不支持以下特性:",
+
+    "unit": "组织",
+    "duty": "职务",
+    "selectIdentity": "选择身份"
 };
 
 o2.LP.widget.SimpleEditor = {

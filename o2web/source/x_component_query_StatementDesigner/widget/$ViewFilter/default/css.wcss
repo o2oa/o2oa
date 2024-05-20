@@ -46,6 +46,22 @@
         "background": "url(../x_component_query_ViewDesigner/widget/$ViewFilter/default/icon/delete1.png) no-repeat center center",
         "cursor": "pointer"
     },
+    "itemOrderNode": {
+        "width": "12px",
+        "height": "20px",
+        "padding-top": "4px",
+        "padding-left": "8px",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "itemAddNode": {
+        "width": "12px",
+        "height": "20px",
+        "padding-top": "4px",
+        "padding-left": "8px",
+        "float": "right",
+        "cursor": "pointer"
+    },
     "itemContentNode": {
         "padding-left": "5px",
         "padding-right": "3px",

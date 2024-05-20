@@ -1,0 +1,173 @@
+{
+    "pagingBarWraper" : {
+        "height" : "60px",
+        "overflow" : "hidden"
+    },
+    "pagingBar" : {
+        "float": "left",
+        "margin-left": "10px",
+        "margin-top": "18px",
+        "height": "24px",
+        "color": "#777777"
+    },
+    "firstPage" : {
+        "height": "24px",
+        "width": "80px",
+        "border": "1px solid #e6e6e6",
+        "border-radius" : "4px",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "margin-right": "10px",
+        "color" : "inherit",
+        "background-color": "#ffffff",
+        "float": "left"
+    },
+    "firstPage_over" : {
+        "color" : "#0080EB",
+        "background-color": "#f1f1f1"
+    },
+    "lastPage" : {
+        "height": "24px",
+        "width": "80px",
+        "border": "1px solid #e6e6e6",
+        "border-radius" : "4px",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "color" : "inherit",
+        "background-color": "#ffffff",
+        "float": "left"
+    },
+    "lastPage_over" : {
+        "color" : "#0080EB",
+        "background-color": "#f1f1f1"
+    },
+    "prePage" : {
+        "width": "24px",
+        "height": "24px",
+        "border-radius" : "4px",
+        "border": "1px solid #e6e6e6",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "background-color": "#ffffff",
+        "float": "left",
+        "margin-right": "10px",
+        "background": "url(../o2_core/o2/widget/$Paging/default/icon/left.png) no-repeat center center"
+    },
+    "prePage_over" : {
+        "color" : "inherit",
+        "background-color": "#f1f1f1"
+    },
+    "nextPage" : {
+        "width": "24px",
+        "height": "24px",
+        "border-radius" : "4px",
+        "border": "1px solid #e6e6e6",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "background-color": "#ffffff",
+        "float": "left",
+        "margin-right": "10px",
+        "background": "url(../o2_core/o2/widget/$Paging/default/icon/right.png) no-repeat center center"
+    },
+    "nextPage_over" : {
+        "color" : "inherit",
+        "background-color": "#f1f1f1"
+    },
+    "pageTurnContainer" : {
+        "float" : "left"
+    },
+    "pageItem" : {
+        "padding-left": "5px",
+        "padding-right" : "5px",
+        "height": "24px",
+        "border-radius" : "4px",
+        "border": "1px solid transparent",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "float": "left",
+        "margin-right": "10px",
+        "background-color": "#ffffff"
+    },
+    "pageItem_over" : {
+        "color": "#0080EB"
+    },
+    "preBatchPage" : {
+        "padding-left": "5px",
+        "padding-right" : "5px",
+        "height": "24px",
+        "line-height": "normal",
+        "border": "1px solid #e6e6e6",
+        "text-align": "center",
+        "border-radius" : "4px",
+        "cursor": "pointer",
+        "float": "left",
+        "margin-right": "10px",
+        "background-color": "#ffffff"
+    },
+    "preBatchPage_over" : {
+        "color" : "inherit",
+        "background-color": "#f1f1f1"
+    },
+    "nextBatchPage" : {
+        "padding-left": "5px",
+        "padding-right" : "5px",
+        "height": "24px",
+        "line-height": "normal",
+        "border": "1px solid #e6e6e6",
+        "text-align": "center",
+        "border-radius" : "4px",
+        "cursor": "pointer",
+        "float": "left",
+        "margin-right": "10px",
+        "background-color": "#ffffff"
+    },
+    "nextBatchPage_over" : {
+        "color" : "inherit",
+        "background-color": "#f1f1f1"
+    },
+    "currentPage" : {
+        "width": "24px",
+        "height": "24px",
+        "border": "1px solid #e6e6e6",
+        "text-align": "center",
+        "line-height": "24px",
+        "border-radius" : "4px",
+        "cursor": "pointer",
+        "float": "left",
+        "margin-right": "10px",
+        "background-color": "#0080EB",
+        "color": "#ffffff"
+    },
+    "pageJumper" : {
+        "float" : "left",
+        "height" : "20px",
+        "border-radius" : "4px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "width" : "20px",
+        "margin-left" : "10px",
+        "border" : "1px solid #ddd"
+    },
+    "pageJumper_over" : {
+        "border" : "1px solid #43AAFA"
+    },
+    "pageJumperText" : {
+        "float" : "left",
+        "height" : "20px",
+        "padding" : "2px 5px",
+        "text-align" : "center",
+        "line-height" : "20px",
+        "margin-right" : "5px"
+    },
+    "inforNode": {
+        "float":"left",
+        "height": "26px",
+        "line-height": "26px",
+        "padding":"0px 10px"
+    }
+}

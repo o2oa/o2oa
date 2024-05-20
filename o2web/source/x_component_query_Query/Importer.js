@@ -124,16 +124,15 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
         },
         load: function(){
-            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils();
 
             this.getImporterJSON( function () {
                 this.loadMacro( function () {
                     this._loadModuleEvents();
                     this.fireEvent("queryLoad");
-                    this.importFromExcel()
-                }.bind(this))
-            }.bind(this))
-
+                    this.importFromExcel();
+                }.bind(this));
+            }.bind(this));
         },
         loadMacro: function (callback) {
             MWF.require("MWF.xScript.Macro", function () {
@@ -214,6 +213,10 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             this.personMapImported = {};
             this.unitMapImported = {};
             this.groupMapImported = {};
+
+            this.lookupAction.getUUID( function (json){
+                this.recordId = json.data;
+            }.bind(this), null, false);
 
             this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
 
@@ -304,8 +307,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
             var data = this.getData();
 
-            this.lookupAction.getUUID(function(json){
-                this.recordId = json.data;
+            // this.lookupAction.getUUID(function(json){
+            //     this.recordId = json.data;
                 this.lookupAction.executImportModel(this.json.id, {
                     "recordId": this.recordId,
                     "data" : data
@@ -323,7 +326,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                     this.app.notice(requestJson.message, "error");
                     this.progressBar.close();
                 }.bind(this))
-            }.bind(this))
+            // }.bind(this))
             // }.bind(this))
         },
         objectToString: function (obj, type) {
@@ -368,16 +371,19 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                     var htmlArray = ["<table "+ this.objectToString( this.css.properties ) +" style='"+this.objectToString( this.css.tableStyles, "style" )+"'>"];
 
                     var titleStyle = this.objectToString( this.css.titleStyles, "style" );
+                    var vaildTitleStyles = this.objectToString( this.css.vaildTitleStyles, "style" );
                     htmlArray.push( "<tr>" );
                     this.json.data.columnList.each( function (columnJson, i) {
                         htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
                     });
-                    htmlArray.push( "<th style='"+titleStyle+"'> "+this.lp.validationInfor +"</th>" );
+                    htmlArray.push( "<th style='"+vaildTitleStyles+"'> "+this.lp.validationInfor +"</th>" );
                     htmlArray.push( "</tr>" );
 
                     var contentStyles = Object.clone( this.css.contentStyles );
                     if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
                     var contentStyle = this.objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
+
+                    var validContentStyles = this.objectToString( this.css.validContentStyles, "style" );
 
                     this.rowList.each( function( row, lineIndex ){
 
@@ -385,9 +391,11 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
                         htmlArray.push( "<tr>" );
                         this.json.data.columnList.each( function (columnJson, i) {
-                            htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
+                            var d = lineData[ i ];
+                            var text = typeOf(d) === "string" ? ( d || '' ).replace(/&#10;/g,"<br/>") : d;
+                            htmlArray.push( "<td style='"+contentStyle+"'>"+ text +"</td>" ); //换行符&#10;
                         });
-                        htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
+                        htmlArray.push( "<td style='"+validContentStyles+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
                         htmlArray.push( "</tr>" );
 
                     }.bind(this));
@@ -696,7 +704,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
         exportWithImportDataToExcel : function ( importData ) {
 
             if( !this.excelUtils ){
-                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils();
             }
 
             var exportTo = function () {
@@ -762,7 +770,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             if( !this.importerJson ){
                 this.getImporterJSON( function () {
                     exportTo();
-                }.bind(this));
+                }.bind(this))
             }else{
                 exportTo();
             }
@@ -779,7 +787,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
         },
         _downloadTemplate: function(fileName, callback){
             if( !this.excelUtils ){
-                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils({
+                    isTemplate: true
+                });
             }
             var doExport = function () {
                 var arg = {
@@ -921,8 +931,9 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         this.importer.json.data.columnList.each( function (columnJson, i) {
 
-            var colInfor = columnText.replace( "{n}", i+1 );
-            var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+            var colName = this.importer.excelUtils.index2ColName( i );
+            var colInfor = columnText.replace( "{n}", (i+1)+"("+colName+")" );
+            var colInforExcel = columnTextExcel.replace( "{n}", colName );
 
             var value = this.importedData[i] || "";
 
@@ -931,6 +942,14 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if( !columnJson.allowEmpty && !value ){
                 errorTextList.push( colInfor + lp.canNotBeEmpty + lp.fullstop );
                 errorTextListExcel.push( colInforExcel + lp.canNotBeEmpty + lp.fullstop );
+            }
+
+            if( columnJson.validInOption && columnJson.optionScript && value ){
+                var options = this.importer.Macro.exec(columnJson.optionScript, this);
+                if( !options.contains(value) ){
+                    errorTextList.push( colInfor + lp.notInOptions +":"+ options.join(",") + lp.fullstop );
+                    errorTextListExcel.push( colInforExcel + lp.notInOptions +":"+ options.join(",") + lp.fullstop );
+                }
             }
 
             if( columnJson.validFieldType !== false && value ){
@@ -1088,11 +1107,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextList = [];
         var errorTextListExcel = [];
 
-
         this.importer.json.data.columnList.each( function (columnJson, i) {
-
-            var colInfor = columnText.replace( "{n}", i+1 );
-            var colInforExcel = columnTextExcel.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+            var colName = this.importer.excelUtils.index2ColName( i );
+            var colInfor = columnText.replace( "{n}", (i+1)+"("+colName+")" );
+            var colInforExcel = columnTextExcel.replace( "{n}", colName );
 
             var value = this.importedData[i] || "";
 
@@ -1284,10 +1302,22 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             if(!columnJson.path)return;
 
             var value = this.importedData[i] || "";
-            if( !value )return;
 
-            var data = this.parseData(value, (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess), columnJson);
-            if( !data && data !== 0 )return;
+            if( !value && columnJson.defaultValueScript ){
+                value = this.importer.Macro.exec(columnJson.defaultValueScript, this);
+            }
+
+            var dataType = (json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess);
+
+            if( !value && ["number","double","integer","long"].contains(dataType) ){
+                value = 0;
+            }
+
+            if( !value && (typeOf(value) === "null" || value === "") )return;
+
+            var data = this.parseData(value, dataType, columnJson);
+
+            if( !data && data !== 0 && data !== false )return;
 
             if( json.type === "dynamicTable" ){
                 this.data[ columnJson.path ] = data;
@@ -1449,7 +1479,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 }else{
                     if( dataType === "string" ){
                         var linebreak = type === "dynamicTable" ? json.lineBreak_Querytable : json.lineBreak_CMSProcess;
-                        data = value.replace(/&#10;/g, linebreak || "" )
+                        if( typeOf(value) !== 'string' ){
+                            data = value.toString ? value.toString() : (value || "");
+                        }else{
+                            data = value.replace(/&#10;/g, linebreak || "" );
+                        }
                     }else{
                         data = this.stringToArray(value);
                     }
@@ -1457,13 +1491,22 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 break;
             case "number":
             case "double":
-                value = value.replace(/&#10;/g,"");
-                data = parseFloat(value);
+                debugger;
+                if( value === 0 ){
+                    data = 0;
+                }else{
+                    value = value.replace(/&#10;/g,"");
+                    data = parseFloat(value);
+                }
                 break;
             case "integer":
             case "long":
-                value = value.replace(/&#10;/g,"");
-                data = parseInt( value );
+                if( value === 0 ){
+                    data = 0;
+                }else {
+                    value = value.replace(/&#10;/g, "");
+                    data = parseInt(value);
+                }
                 break;
             case "numberList":
             case "doubleList":
@@ -1611,8 +1654,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);
 MWF.xApplication.query.Query.Importer.ExcelUtils = new Class({
     Extends: MWF.xApplication.Template.utils.ExcelUtils,
-    initialize: function(){
+    initialize: function( options ){
+        if(options)this.setOptions(options);
         this.sheet2JsonOptions = {header:1};
+        this.pollyfill();
     }
 });
 

@@ -175,6 +175,9 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
 
         var className = this.moduleName.capitalize();
         var prefix = (this.form.moduleType=="page") ? "PC" : "FC";
+        if( this.form.designer.options.name.contains("cms.") ){
+            prefix = "CMSFC";
+        }
         var newTool = new MWF[prefix+className](this.form);
         var oldId = newModuleJson.id;
         newModuleJson.id = newTool._getNewId();

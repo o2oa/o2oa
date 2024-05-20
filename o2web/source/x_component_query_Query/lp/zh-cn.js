@@ -183,6 +183,7 @@ MWF.xApplication.query.Query.LP = {
     "notExistInSystem" : "在系统中不存在",
     "uploadedFilesCannotHaveSpaces" : "上传的文件不能带空格",
     "canNotBeEmpty": "不能为空",
+    "notInOptions": "不在可选值中",
     "cmsTitleLengthInfor": "标题长度不能超过70个字",
     "cmsSummaryLengthInfor": "摘要长度不能超过70个字",
     "caculateFieldValidationText": "计算字段错误:",
@@ -258,6 +259,8 @@ MWF.xApplication.query.Query.LP = {
 
     "noPermission": "您无权限访问此文档。",
     "associationSuccess": "关联成功。",
-    "associationResult": "关联结果"
+    "associationResult": "关联结果",
+
+    "total": "合计"
 
 };

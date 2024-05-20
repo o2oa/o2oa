@@ -77,7 +77,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"injectNotice": "Hold down Ctrl and release the mouse for precise positioning",
 		"selectedContainer": "Select Parent",
 		"property": "Property",
-		"batchModify": "Batch modify "
+		"batchModify": "Batch modify ",
+		"selectParent": "Select superior components"
 	},
 	"actionbar": {
 		"readhide": "Set whether to display when reading",
@@ -1462,7 +1463,11 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"base64Encode": "Image Base64 encoding",
 		"imagePreview": "Browsing the original image",
 		"flow": "Continue circulation",
-		"el_iconPosition": "Icon position"
+		"el_iconPosition": "Icon position",
+		"checkOtherFlow": "Verify other circulation methods",
+		"checkOtherFlowNote": "When adding, resetting, or returning, execute the verification script. Obtain the flow method (add as: addTask, reset as: reset, return as: goBack) through this. form. opinion, and other parameters of the flow through this. form. flowData",
+		"allowDownloadBatch": "Allow batch downloads",
+		"forceClearCustomStyle": "Clear custom styles when switching"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
@@ -1564,7 +1569,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"title": "Title",
 		"sectionTitle": "Section Title",
 		"section": "section",
-		"greenFlat": "Green flat"
+		"greenFlat": "Green flat",
+		"lightBlue": "Light blue style"
 	}
 }
 MWF.xApplication.cms.FormDesigner["lp."+o2.language] = MWF.xApplication.cms.FormDesigner.LP

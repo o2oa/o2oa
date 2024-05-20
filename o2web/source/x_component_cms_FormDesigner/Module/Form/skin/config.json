@@ -34,6 +34,14 @@
       "pc"
     ]
   },
+  "light-blue": {
+    "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.lightBlue,
+    "file": "styles_light-blue.json",
+    "extendFile": "styles_light-blue_extend.json",
+    "mode": [
+      "pc"
+    ]
+  },
   "defaultMobile": {
     "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.defaultMobileStyle,
     "file": "styles_defaultMobile.json",

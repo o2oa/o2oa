@@ -2,7 +2,25 @@ MWF.xApplication.Template = MWF.xApplication.Template || {};
 MWF.xApplication.Template.utils = MWF.xApplication.Template.utils || {};
 
 MWF.xApplication.Template.utils.ExcelUtils = new Class({
-    initialize: function(){
+    Implements: [Options, Events],
+    options:{
+        'isTemplate': false,
+        'headText': '',
+        'headStyle': {
+            font: { name: '宋体', family: 4, size: 20, bold: true },
+            alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
+        },
+        'columnTitleStyle': {
+            font: { name: '宋体', family: 4, size: 12, bold: true },
+            alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
+        },
+        'columnContentStyle': {
+            font: { name: '宋体', family: 4, size: 12, bold: false },
+            alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
+        }
+    },
+    initialize: function( options ){
+        if(options)this.setOptions(options);
         this.sheet2JsonOptions = {};
         this.pollyfill();
     },
@@ -116,7 +134,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             callback();
         }
     },
-    exportToExcel : function(array, fileName, colWidthArr, dateIndexArray, numberIndexArray, callback){
+    exportToExcel : function(array_arg, fileName_arg, colWidthArr_arg, dateIndexArray_arg, numberIndexArray_arg, callback){
         // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
         // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
         // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
@@ -129,8 +147,27 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             var sheet = workbook.addWorksheet('Sheet1');
             //sheet.properties.defaultRowHeight = 25;
 
+            var arg = {
+                offsetColumnIndex: 0,
+                offsetRowIndex: 0,
+                sheet: sheet,
+                fileName: fileName_arg,
+                array: array_arg,
+                colWidthArr: colWidthArr_arg,
+                dateIndexArray: dateIndexArray_arg,
+                numberIndexArray: numberIndexArray_arg,
+                excelUtilsObject: this
+            };
+            this.fireEvent('beforeAppendData', [arg]);
+            var offsetColumnIndex = arg.offsetColumnIndex;
+            var offsetRowIndex = arg.offsetRowIndex;
+            var array = arg.array;
+            var colWidthArr = arg.colWidthArr;
+            var dateIndexArray = arg.dateIndexArray;
+            var numberIndexArray = arg.numberIndexArray;
+
             var titleArray = array[0];
-            this.appendDataToSheet(sheet, array, colWidthArr, dateIndexArray, numberIndexArray);
+            this.appendDataToSheet(sheet, array, colWidthArr, dateIndexArray, numberIndexArray, offsetColumnIndex, offsetRowIndex);
 
             var hasValidation = false;
             var ps = titleArray.map(function( title ){
@@ -145,11 +182,13 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                     for( var i=0; i<args.length; i++ ){
                         if(args[i])titleArray[i].optionsValue = args[i];
                     }
-                    this.setDataValidation(workbook, sheet, titleArray);
-                    this.downloadExcel(workbook, fileName, callback);
+                    this.setDataValidation(workbook, sheet, titleArray, offsetColumnIndex, offsetRowIndex);
+                    this.fireEvent('beforeDownload', [arg]);
+                    this.downloadExcel(workbook, arg.fileName, callback);
                 }.bind(this));
             }else{
-                this.downloadExcel(workbook, fileName, callback);
+                this.fireEvent('beforeDownload', [arg]);
+                this.downloadExcel(workbook, arg.fileName, callback);
             }
         }.bind(this));
     },
@@ -159,33 +198,146 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             this._openDownloadDialog(blob, fileName + ".xlsx", callback);
         }.bind(this));
     },
-    appendDataToSheet: function (sheet, array, colWidthArr, dateIndexArray, numberIndexArray){
-        var titleRow = sheet.getRow(1);
+    appendDataToSheet: function (sheet, array, colWidthArr, dateIndexArray, numberIndexArray, offsetColumnIndex, offsetRowIndex){
+        // var titleRow = sheet.getRow(1);
         var titleArray = array.shift();
+
         titleArray.each( function( title, i ){
-            sheet.getColumn(i+1).width = colWidthArr[i] ? (colWidthArr[i] / 10) : 20;
-            var cell = titleRow.getCell(i+1);
-            cell.value = o2.typeOf(title) === 'object' ? title.text : title;
-            cell.font = { name: '宋体', family: 4, size: 12, bold: true };
-            // cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFFF'} };
-            cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            sheet.getColumn(i+1+offsetColumnIndex).width = colWidthArr[i] ? (colWidthArr[i] / 10) : 20;
         });
 
-        array.each(function( contentArray, i ){
-            var contentRow = sheet.getRow(i+2);
-            contentArray.each(function( content, j ){
-                var cell = contentRow.getCell(j+1);
-                cell.value = content;
-                cell.font = { name: '宋体', family: 4, size: 12, bold: false };
-                if( (dateIndexArray || []).contains( j ) ){
-                    cell.numFmt = 'yyyy-mm-dd HH:MM:SS';
-                }
-                var isNumber = ( numberIndexArray||[] ).contains( j );
-                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: !isNumber };
+        debugger;
+
+        var startCol = this.index2ColName(offsetColumnIndex), endCol = this.index2ColName(titleArray.length-1+offsetColumnIndex);
+
+        if( this.options.headText ){
+            var headRow = sheet.getRow(1+offsetRowIndex);
+            var headCell = headRow.getCell(1+offsetColumnIndex);
+            headCell.value = this.options.headText;
+            Object.each(this.options.headStyle || {}, function (value, key){
+                headCell[key] = value;
             });
+            sheet.mergeCells( startCol+(offsetRowIndex+1)+":"+ endCol+(offsetRowIndex+1));
+            offsetRowIndex++;
+        }
+
+        //处理表头分类
+        var titleDataParsed = [];
+        var maxTitleLevel = 1;
+        titleArray.each(function (title, i){
+            var text = o2.typeOf(title) === 'object' ? title.text : title;
+            var texts = text.split('\\');
+            maxTitleLevel = Math.max( maxTitleLevel, texts.length );
+            titleDataParsed.push( texts );
         });
+
+        var setTitleCellStyle = function (cell){
+            //cell.font = { name: '宋体', family: 4, size: 12, bold: true };
+            // cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFFF'} };
+            //cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            Object.each(this.options.columnTitleStyle || {}, function (value, key){
+                cell[key] = value;
+            });
+        }.bind(this);
+
+        var setDataCellStyle = function(cell, index){
+            if( (dateIndexArray || []).contains( index ) ){
+                cell.numFmt = 'yyyy-mm-dd HH:MM:SS';
+            }
+            var isNumber = ( numberIndexArray||[] ).contains( index );
+            var style = this.options.columnContentStyle || {};
+            if( isNumber && style.alignment && style.alignment.wrapText ){
+                style.alignment.wrapText = false;
+            }
+            Object.each(style || {}, function (value, key){
+                cell[key] = value;
+            });
+        }.bind(this);
+
+        for( var level=0 ;level<maxTitleLevel; level++ ){
+            var titleRow = sheet.getRow(level+1+offsetRowIndex);
+
+            var lastValue = '';
+            var lastCell = null;
+            var lastIndex = -1;
+            var lastTitles = null;
+            var lastAvailableIndex = -1;
+            var startColName, starRowIndex, endColName, endRowIndex;
+
+            titleDataParsed.each( function(titles, i){
+                if( !titles[level] )return;
+                lastAvailableIndex = i;
+                if( lastValue !== titles[level] ){
+                    var cell = titleRow.getCell(i+1+offsetColumnIndex);
+                    cell.value = titles[level];
+                    setTitleCellStyle(cell);
+
+                    if(lastTitles && lastCell ){
+                        //sheet.mergeCells('A2:A3');
+                        startColName = this.index2ColName(lastIndex+offsetColumnIndex);
+                        starRowIndex = level+1+offsetRowIndex;
+                        endColName = this.index2ColName(i-1+offsetColumnIndex);
+                        endRowIndex = (lastTitles[level+1] ? level+1 : maxTitleLevel)+offsetRowIndex;
+                        if( startColName !== endColName || starRowIndex !== endRowIndex  ){
+                            sheet.mergeCells(startColName+starRowIndex+':'+endColName+endRowIndex);
+                        }
+                    }
+
+                    lastValue = titles[level];
+                    lastCell = cell;
+                    lastIndex = i;
+                    lastTitles = titles;
+                }
+
+            }.bind(this));
+
+            debugger;
+
+            if(lastTitles && lastCell && lastTitles[level] ){
+                //sheet.mergeCells('A2:A3');
+                startColName = this.index2ColName(lastIndex+offsetColumnIndex);
+                starRowIndex = level+1+offsetRowIndex;
+                endColName = this.index2ColName(lastAvailableIndex+offsetColumnIndex);
+                endRowIndex = (lastTitles[level+1] ? level+1 : maxTitleLevel)+offsetRowIndex;
+                if( startColName !== endColName || starRowIndex !== endRowIndex  ){
+                    sheet.mergeCells(startColName+starRowIndex+':'+endColName+endRowIndex);
+                }
+            }
+
+        }
+
+        // titleArray.each( function( title, i ){
+        //     sheet.getColumn(i+1).width = colWidthArr[i] ? (colWidthArr[i] / 10) : 20;
+        //     var cell = titleRow.getCell(i+1);
+        //     cell.value = o2.typeOf(title) === 'object' ? title.text : title;
+        //     cell.font = { name: '宋体', family: 4, size: 12, bold: true };
+        //     // cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFFF'} };
+        //     cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        // });
+
+        if( array.length ){
+            array.each(function( contentArray, i ){
+                var contentRow = sheet.getRow(i+1+maxTitleLevel+offsetRowIndex);
+                contentArray.each(function( content, j ){
+                    var cell = contentRow.getCell(j+1+offsetColumnIndex);
+                    cell.value = content;
+                    setDataCellStyle( cell, j );
+                    // cell.font = { name: '宋体', family: 4, size: 12, bold: false };
+                    // cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: !isNumber };
+                }.bind(this));
+            }.bind(this));
+        }else if( this.options.isTemplate ){
+            for (var rowIndex = 0; rowIndex < 3000; rowIndex++) {
+                var row = sheet.getRow(rowIndex+1+maxTitleLevel+offsetRowIndex );
+                titleDataParsed.each(function(titles, colIndex){
+                    var cell = row.getCell(colIndex+1+offsetColumnIndex);
+                    setDataCellStyle( cell, colIndex );
+                }.bind(this));
+            }
+        }
+
     },
-    setDataValidation: function (workbook, dataSheet, titleArray){
+    setDataValidation: function (workbook, dataSheet, titleArray, offsetColumnIndex, offsetRowIndex){
         var validationSheet = workbook.addWorksheet('Validation');
         validationSheet.state = 'hidden'; //hidden 隐藏   veryHidden 从“隐藏/取消隐藏”对话框中隐藏工作表
 
@@ -214,8 +366,8 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                 error: MWF.xApplication.Template.LP.excelUtils.error
             };
 
-            var dataColName = this.index2ColName(i);
-            for (var rowIndex = 2; rowIndex <= 3000; rowIndex++) {
+            var dataColName = this.index2ColName(i+offsetColumnIndex);
+            for (var rowIndex = 2+offsetRowIndex; rowIndex <= 3000+offsetRowIndex; rowIndex++) {
                 const cell = dataSheet.getCell(dataColName+rowIndex);
                 cell.dataValidation = dataValidation;
             }

@@ -1533,7 +1533,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "applicationStatus": "应用status",
         "titleAddTo": "标题行添加",
         "firstLine": "首行",
-        "lastLine": "末行"
+        "lastLine": "末行",
+        "forceClearCustomStyle": "切换时清除自定义样式"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",

@@ -95,6 +95,7 @@
                         </td>
                     </tr>
                 </table>
+                <div class="MWFFormulaArea" name="defaultValueScript" title="{{$.lp.defaultValueScript}}"></div>
             </div>
 
             <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">{{$.lp.validation}}</div>
@@ -111,6 +112,13 @@
                     <td class="editTableValue">
                         <input name="validFieldType" type="radio" value="true" text{($.validFieldType)!==false?'checked':''}/>{{$.lp.yes}}
                         <input name="validFieldType" type="radio" value="false" text{($.validFieldType)===false?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.checkInOption}}:</td>
+                    <td class="editTableValue">
+                        <input name="validInOption" type="radio" value="true" text{($.validInOption)===true?'checked':''}/>{{$.lp.yes}}
+                        <input name="validInOption" type="radio" value="false" text{($.validInOption)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>

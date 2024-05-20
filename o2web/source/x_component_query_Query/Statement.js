@@ -356,9 +356,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
     },
     loadCurrentPageData: function (callback, async, type) {
         //是否需要在翻页的时候清空之前的items ?
-
-        debugger;
-
         if (this.pageloading) return;
         this.pageloading = true;
 
@@ -455,6 +452,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
         if (this.gridJson.length) {
             // if( !this.options.paging ){
+            this.totalMap = {};
             this.gridJson.each(function (line, i) {
                 this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, line, null, i, null, this.options.lazy));
             }.bind(this));
@@ -471,6 +469,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             var from = Math.min(this.pageNumber * this.options.perPageCount, this.gridJson.length);
             var to = Math.min((this.pageNumber + 1) * this.options.perPageCount + 1, this.gridJson.length);
             this.isItemsLoading = true;
+            this.totalMap = {};
             for (var i = from; i < to; i++) {
                 this.items.push(new MWF.xApplication.query.Query.Statement.Item(this, this.gridJson[i], null, i, null, this.options.lazy));
             }
@@ -916,42 +915,101 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         var colWidthArr = [];
         var dateIndexArray = [];
         var numberIndexArray = [];
+        var totalArray = [];
         var idx = 0;
+
+        if (this.viewJson.isSequence === "yes") {
+            titleArray.push( this.lp.sequence );
+            colWidthArr.push(100);
+            totalArray.push('');
+            idx = idx + 1;
+        }
+
         Object.each(this.entries, function (c, k) {
             if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
                 titleArray.push(c.displayName);
                 colWidthArr.push(c.exportWidth || 200);
                 if( c.isTime )dateIndexArray.push(idx);
                 if( c.isNumber )numberIndexArray.push(idx);
+                totalArray.push( ['number', 'count'].contains(c.total) ? new Decimal(0) : '' );
                 idx++;
             }
         }.bind(this));
         exportArray.push(titleArray);
 
         this.loadExportData(start, end, d, function (dataList) {
-            var index = 0;
+            var rowIndex = 0;
             dataList.each(function (data, j) {
                 data.each(function (d, i) {
-                    index = index + 1;
+                    rowIndex = rowIndex + 1;
+
+                    var columnIndex = 0;
+
                     var dataArray = [];
+                    if (this.viewJson.isSequence === "yes") {
+                        dataArray.push( rowIndex );
+                        columnIndex++;
+                    }
                     Object.each(this.entries, function (c, k) {
                         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
                             var text = this.getExportText(c, k, d);
-                            // if( c.isNumber && typeOf(text) === "string" && (parseFloat(text).toString() !== "NaN") ){
-                            //     text = parseFloat(text);
-                            // }
+
                             dataArray.push( text );
+
+                            switch (c.total){
+                                case 'number':
+                                    if( parseFloat(text).toString() !== "NaN" ) { //可以转成数字
+                                        totalArray[columnIndex] = totalArray[columnIndex].plus(text.toString());
+                                    }
+                                    break;
+                                case 'count':
+                                    totalArray[columnIndex] = totalArray[columnIndex].plus(1);
+                                    break;
+                            }
+
+                            columnIndex++;
                         }
                     }.bind(this));
                     //exportRow事件
-                    var argu = {"index":index, "source": d, "data":dataArray};
+                    var argu = {"index":rowIndex, "source": d, "data":dataArray};
                     this.fireEvent("exportRow", [argu]);
                     exportArray.push( argu.data || dataArray );
                 }.bind(this));
             }.bind(this));
 
+            var hasTotal = false;
+            totalArray = totalArray.map(function (d){
+                if( d ){
+                    hasTotal = true;
+                    return d.toString();
+                }else{
+                    return '';
+                }
+            });
+
+            if( hasTotal ){
+                totalArray[0] = this.lp.total + " " + totalArray[0];
+                exportArray.push( totalArray );
+            }
+
+            var headTextScript = this.viewJson.exportHeadText;
+            var headText = headTextScript ? this.Macro.exec(headTextScript, this) : '';
+
+            var headStyleScript = this.viewJson.exportHeadStyle;
+            var headStyle = headStyleScript ? this.Macro.exec(headStyleScript, this) : null;
+
+            var titleStyleScript = this.viewJson.exportColumnTitleStyle;
+            var titleStyle = titleStyleScript ? this.Macro.exec(titleStyleScript, this) : null;
+
+            var contentStyleScript = this.viewJson.exportColumnContentStyle;
+            var contentStyle = contentStyleScript ? this.Macro.exec(contentStyleScript, this) : null;
+
             //export事件
             var arg = {
+                headText: headText,
+                headStyle: headStyle,
+                titleStyle: titleStyle,
+                contentStyle: contentStyle,
                 data : exportArray,
                 colWidthArray : colWidthArr,
                 title : excelName
@@ -963,7 +1021,15 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 this.loadingAreaNode = null;
             }
 
-            new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
+            var options = {};
+            if( arg.headText )options.headText = arg.headText;
+            if( arg.headStyle )options.headStyle = arg.headStyle;
+            if( arg.titleStyle )options.columnTitleStyle = arg.titleStyle;
+            if( arg.contentStyle )options.columnContentStyle = arg.contentStyle;
+
+            new MWF.xApplication.query.Query.Statement.ExcelUtils(
+                options
+            ).exportToExcel(
                 arg.data || exportArray,
                 arg.title || excelName,
                 arg.colWidthArray || colWidthArr,
@@ -977,15 +1043,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         start = start - 1;
         var differ = end - start;
         var count;
-        // if( differ < 10 ){
-        //    count = 10;
-        // }else if( differ < 100 ){
-        //     count = 100;
-        // }else if( differ < 1000 ){
-        //     count = 1000;
-        // }else{
-        //     count = 10000; bai boi bai boy buy boy
-        // }
         if( differ < 10000 ){
             count = differ;
         }else{
@@ -1046,7 +1103,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
     getExportText: function (c, k, data) {
         var path = c.path, code = c.code, obj = data;
         if (!path) {
-            return ""
         } else if (path === "$all") {
         } else {
             obj = this.getDataByPath(obj, path);
@@ -1060,6 +1116,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 "json": c
             });
         }catch (e) {}
+
+        if( !obj )return "";
 
         var toName = function (value) {
             if (typeOf(value) === "array") {
@@ -1120,6 +1178,7 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
         this.idx = i;
         this.clazzType = "item";
         this.lazy = lazy;
+        this.odd = this.view.items.length % 2 === 1;
         this.load();
     },
     _load: function () {
@@ -1129,6 +1188,9 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
 
         var viewStyles = this.view.viewJson.viewStyles;
         var viewContentTdNode = (viewStyles && viewStyles["contentTd"]) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+        if( this.odd ){
+            viewContentTdNode = ( viewStyles && viewStyles["zebraContentTd"] && Object.keys(viewStyles["zebraContentTd"].length > 0)) ? viewStyles["zebraContentTd"] : viewContentTdNode;
+        }
 
         if(!this.node)this.loadNode();
 
@@ -1180,13 +1242,28 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
                 var cell = this.getText(c, k, td); //this.data[k];
                 if (cell === undefined || cell === null) cell = "";
 
-                // if (k!== this.view.viewJson.group.column){
                 var v = cell;
                 if (c.isHtml) {
                     td.set("html", v);
                 } else {
                     td.set("text", v);
                 }
+
+                // if (k!== this.view.viewJson.group.column){
+                var total;
+                switch (c.total){
+                    case 'number':
+                        if( parseFloat(v).toString() !== "NaN" ){ //可以转成数字
+                            total = this.view.totalMap[ c.column ];
+                            this.view.totalMap[ c.column ] = total ? total.plus(v.toString()) : new Decimal(v.toString());
+                        }
+                        break;
+                    case 'count':
+                        total = this.view.totalMap[ c.column ];
+                        this.view.totalMap[ c.column ] = total ? total.plus(v) : new Decimal(v);
+                        break;
+                }
+
 
                 if (typeOf(c.contentProperties) === "object") td.setProperties(c.contentProperties);
                 if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);

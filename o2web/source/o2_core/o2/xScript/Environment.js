@@ -2632,15 +2632,8 @@ MWF.xScript.Environment = function(ev){
          */
         "node": function(){return _form.node;},
 
-        /**
-         * 获取表单是否可编辑。只读。
-         * @member readonly
-         * @static
-         * @return {Boolean} 是否只读.
-         * @o2syntax
-         * var readonly = this.form.readonly;
-         */
-        "readonly": _form.options.readonly,
+
+        // "readonly": _form.options.readonly,
 
         /**
          * 获取表单元素对象。<br/>
@@ -4152,8 +4145,16 @@ MWF.xScript.Environment = function(ev){
         }
     };
 
+    /**
+     * 获取表单是否可编辑。只读。
+     * @member readonly
+     * @static
+     * @return {Boolean} 是否只读.
+     * @o2syntax
+     * var readonly = this.form.readonly;
+     */
     Object.defineProperty(this.form, "readonly", {
-        get: function(){ return  _form.options.readonly; }
+        get: function(){ return  !!_form.options.readonly; }
     });
 
     /**

@@ -1465,7 +1465,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"flow": "Continuar circulando",
 		"el_iconPosition": "Ubicación del icono",
 		"checkOtherFlow": "Verificar otros métodos de circulación",
-		"checkOtherFlowNote": "Ejecute el guión de verificación cuando se agregue, restablezca o devuelva, obtenga el método de circulación a través de este.formulario.currentrouteme (agregue la etiqueta a: addatask, restablezca a: reset, devuelva a: goback), obtenga una opinión a través de este.formulario.opinion, obtenga otros parámetros de la circulación a través de este.formulario.flowdata"
+		"checkOtherFlowNote": "Ejecute el guión de verificación cuando se agregue, restablezca o devuelva, obtenga el método de circulación a través de este.formulario.currentrouteme (agregue la etiqueta a: addatask, restablezca a: reset, devuelva a: goback), obtenga una opinión a través de este.formulario.opinion, obtenga otros parámetros de la circulación a través de este.formulario.flowdata",
+		"forceClearCustomViewStyle": "Limpiar estilos personalizados al cambiar",
+		"forceClearCustomStyle": "Limpiar estilos personalizados al cambiar"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
@@ -1531,7 +1533,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"moveup": "Mover a la fila anterior",
 		"deleteRow": "Eliminar fila",
 		"insertRow": "Insertar fila",
-		"importFromForm": "Importar configuración de campos desde la interfaz"
+		"importFromForm": "Importar configuración de campos desde la interfaz",
+		"forceClearCustomViewStyle": "Limpiar estilos personalizados al cambiar"
 	},
 	"formToolbar": {
 		"save": "Guardar formulario",

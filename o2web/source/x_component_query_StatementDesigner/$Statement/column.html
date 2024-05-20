@@ -127,6 +127,14 @@
                             <input class="MWFWorkDataCheck" name="isNumber" type="radio" value="false" text{($.isNumber)!==true?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.total}}:</td>
+                        <td class="editTableValue">
+                            <input class="editTableRadio" name="total" text{!($.total) || ($.total=='no')?'checked':''} type="radio" value="no"/>{{$.lp.notNeeded}} <br/>
+                            <input class="editTableRadio" name="total" text{($.total=='number')?'checked':''} type="radio" value="number"/>{{$.lp.totalValue}} <br/>
+                            <input class="editTableRadio" name="total" text{($.total=='count')?'checked':''} type="radio" value="count"/>{{$.lp.totalCount}} <br/>
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
