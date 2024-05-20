@@ -95,6 +95,9 @@ public class HighFreqWork extends HighFreq {
 								Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), additionalQuery));
 						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(jobs,
 								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, additionalQuery));
+						// // 全文索引没有写入processPlatform_boolean_completed:false
+						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(jobs,
+								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, null));
 						deleteCount.addAndGet(jobs.size());
 					} catch (Exception e) {
 						LOGGER.error(e);
