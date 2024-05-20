@@ -88,7 +88,7 @@ public class MPWeixinMenu extends SliceJpaObject {
 
     public static final String url_FIELDNAME = "url";
     @FieldDescribe("打开网页的地址，如果type等于view或者miniprogram ，这个url必填")
-    @Column(length = length_4K, name = ColumnNamePrefix + url_FIELDNAME)
+    @Column(length = length_2K, name = ColumnNamePrefix + url_FIELDNAME)
     private String url;
 
 
