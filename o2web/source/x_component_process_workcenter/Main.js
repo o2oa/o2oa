@@ -21,8 +21,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.setLayout();
 			this.loadCount();
 			var list = (this.status) ? (this.status.navi || "task") : "task";
-			this.loadList(list);
-			if (callback) callback();
+			this.loadList(list, callback);
+			// if (callback) callback();
 		}.bind(this));
 	},
 	setLayout: function(){
@@ -77,14 +77,14 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			// this.draftCountNode.set("text", json.size);
 		}.bind(this));
 	},
-	loadList: function(type){
+	loadList: function(type, callback){
 		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
 		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
 		this.currentMenu = this[type+"MenuNode"];
 
 		if (this.currentList) this.currentList.hide();
 		this.showSkeleton();
-		this._loadListContent(type);
+		this._loadListContent(type, callback);
 		this.loadCount();
 		//if (this.currentList) this.currentList.loadPage();
 	},
@@ -94,14 +94,14 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	hideSkeleton: function(){
 		if (this.skeletonNode) this.skeletonNode.dispose();
 	},
-	_loadListContent: function(type){
+	_loadListContent: function(type, callback){
 		var list = this[(type+"-list").camelCase()];
 		if (!list){
 			list = new MWF.xApplication.process.workcenter[type.capitalize()+"List"](this, { "onLoadData": this.hideSkeleton.bind(this) });
 			this[(type+"-list").camelCase()] = list;
 		}
 		list.init();
-		list.load();
+		list.load(callback);
 		this.currentList = list;
 	},
 	setMenuItemStyleDefault: function(node){
@@ -745,7 +745,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	setLayout: function(){
 
 	},
-	load: function(){
+	load: function(callback){
 		this.total = null;
 		var _self = this;
 		this.loadFilterFlag();
@@ -755,6 +755,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 			_self.hide();
 			_self.loadPage();
 			_self.loadItems(data);
+			if(callback)callback();
 		});
 	},
 	refresh: function(){
