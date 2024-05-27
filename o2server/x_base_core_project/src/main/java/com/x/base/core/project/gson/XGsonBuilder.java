@@ -1,22 +1,14 @@
 package com.x.base.core.project.gson;
 
+import com.google.gson.*;
+import com.x.base.core.project.tools.DateTools;
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.x.base.core.project.tools.DateTools;
 
 public class XGsonBuilder {
 
@@ -36,7 +28,6 @@ public class XGsonBuilder {
 					gson.registerTypeAdapter(Long.class, new LongDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateSerializer());
-					// gson.registerTypeAdapter(ScriptObjectMirror.class, new ScriptObjectMirrorSerializer());
 					gson.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter());
 					INSTANCE = gson.setPrettyPrinting().serializeSpecialFloatingPointValues().create();
 				}
