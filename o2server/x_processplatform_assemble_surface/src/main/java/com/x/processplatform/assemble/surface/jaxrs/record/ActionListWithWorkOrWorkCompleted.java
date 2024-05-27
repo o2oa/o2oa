@@ -25,6 +25,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.jaxrs.record.ActionListWithJob.Wo;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -62,14 +63,14 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				Business business = new Business(emc);
 				String job = business.job().findWithWork(flag);
 				if (null != job) {
-					wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
+					wos = Wo.copier.copy(emc.listEqual(Record.class, Record.job_FIELDNAME, job));
 				} else {
 					job = business.job().findWithWorkCompleted(flag);
 					WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
 					if (ListTools.isNotEmpty(workCompleted.getRecordList())) {
 						wos = Wo.copier.copy(workCompleted.getRecordList());
 					} else {
-						wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
+						wos = Wo.copier.copy(emc.listEqual(Record.class, Record.job_FIELDNAME, job));
 					}
 				}
 				wos = wos.stream().sorted(Comparator.comparing(Wo::getOrder)).collect(Collectors.toList());
@@ -103,8 +104,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		private static final long serialVersionUID = -7666329770246726197L;
 
-		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class,
-				JpaObject.singularAttributeField(Record.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 
 	}
 
