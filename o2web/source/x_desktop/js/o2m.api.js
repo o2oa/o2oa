@@ -1076,6 +1076,47 @@
   this.o2m.util.device.location = _o2m_u_device_location;
 
 
+  //o2m.util.device.localAuth
+  this.o2m.util.device.localAuthSuccess = function (result) {
+    console.log("util device localAuth back, result:" + result);
+  };
+  /**
+   * 移动端生物识别认证
+   * @method localAuth
+   * @memberOf o2m
+   * @o2membercategory util.device
+   * @static
+   * @param {Object} obj  localAuth 需要传入对象
+   * <pre><code class='language-js'>{
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.device.localAuth({
+   * onSuccess : function(result) {
+   *     // result 是一个 json 字符串
+   *     {
+   *      "value":  false // 是否授权成功
+   *      }
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
+  this.o2m.util.device.localAuth = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.device.localAuthSuccess = onSuccess;
+    }
+    var body = {
+      type: "device.localAuth",
+      callback: "o2m.util.device.localAuthSuccess",
+      data: {}
+    };
+    _util_post(body, onFail);
+  };
+
+
   //o2m.util.navigation.setTitle
   this.o2m.util.navigation.setTitleSuccess = function (result) {
     console.log("util calendar chooseInterval back, result:" + result);
