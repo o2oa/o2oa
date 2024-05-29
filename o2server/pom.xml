@@ -506,14 +506,6 @@
 					<version>3.8.1</version>
 					<configuration>
 						<target>11</target>
-						<compilerArgs>
-							<arg>--add-exports</arg>
-							<arg>
-								jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED</arg>
-							<arg>--add-exports</arg>
-							<arg>
-								jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED</arg>
-						</compilerArgs>
 					</configuration>
 				</plugin>
 				<plugin>
