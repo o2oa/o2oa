@@ -116,7 +116,7 @@ public class GroupFactory {
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(String... values) throws Exception {
-		return listWithPersonReference(Arrays.asList(values),true,true, false);
+		return listWithPersonReference(Arrays.asList(values),true,false, false);
 	}
 
 	/** 查询人员所在的群组 */
@@ -140,12 +140,12 @@ public class GroupFactory {
 
 	/** 查询身份所在的群组 */
 	public List<String> listWithIdentity(Collection<String> values) throws Exception {
-		return listWithIdentityReference(values,true,true, true);
+		return listWithIdentityReference(values,true,true, false);
 	}
 
 	/** 查询身份所在的群组 */
 	public List<String> listWithIdentity(String... values) throws Exception {
-		return listWithIdentityReference(Arrays.asList(values),true,true, true);
+		return listWithIdentityReference(Arrays.asList(values),true,true, false);
 	}
 
 	/**
