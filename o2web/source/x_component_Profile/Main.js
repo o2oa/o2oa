@@ -218,9 +218,9 @@ MWF.xApplication.Profile.Main = new Class({
 
         }.bind(this));
     },
-    openFaceSet: function(){
-        layout.openApplication(null, "FaceSet");
-    },
+    // openFaceSet: function(){
+    //     layout.openApplication(null, "FaceSet");
+    // },
     loadInforConfigActions: function(){
         this.contentImgNode = this.content.getElement(".o2_profile_inforIconContentImg");
         this.content.getElement(".o2_profile_inforIconChange").addClass("mainColor_color mainColor_border").addEvent("click", function(){
