@@ -116,7 +116,7 @@ class ActionListLikePinyin extends BaseAction {
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.conjunction();
 		p = cb.and(p, cb.or(cb.like(cb.lower(root.get(Identity_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
@@ -142,9 +142,8 @@ class ActionListLikePinyin extends BaseAction {
 		if (!set.isEmpty()) {
 			p = cb.and(p, root.get(Identity_.id).in(set.asList()));
 		}
-		List<String> ids = em.createQuery(cq.select(root.get(Identity_.id)).where(p)).getResultList().stream()
+		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList().stream()
 				.distinct().collect(Collectors.toList());
-		List<Identity> os = business.entityManagerContainer().list(Identity.class, ids);
 		wos = Wo.copier.copy(os);
 		wos = business.identity().sort(wos);
 		return wos;
