@@ -210,32 +210,32 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
     //Camera Login
     _createTopContent: function () {
-        this.actions = MWF.Actions.get("x_organization_assemble_authentication");
-
-        this.faceLogin = false;
-        this.actions.getLoginMode(function (json) {
-            this.faceLogin = json.data.faceLogin;
-        }.bind(this), null, false);
-
-        if (this.faceLogin) {
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                COMMON.AjaxModule.loadDom("../o2_lib/adapter/adapter.js", function () {
-                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                        //暂时隐藏此功能
-                        this.cameraLoginIcon = new Element("div", { "styles": this.explorer.css.cameraLoginIcon }).inject(this.formTopContentNode);
-                        this.cameraLoginIcon.addEvent("click", function () {
-                            if (!this.isCameraLogin) {
-                                this.cameraLogin();
-                                this.isCameraLogin = true;
-                            } else {
-                                this.closeCamera();
-                                this.isCameraLogin = false;
-                            }
-                        }.bind(this));
-                    }
-                }.bind(this));
-            }
-        }
+        // this.actions = MWF.Actions.get("x_organization_assemble_authentication");
+        //
+        // this.faceLogin = false;
+        // this.actions.getLoginMode(function (json) {
+        //     this.faceLogin = json.data.faceLogin;
+        // }.bind(this), null, false);
+        //
+        // if (this.faceLogin) {
+        //     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        //         COMMON.AjaxModule.loadDom("../o2_lib/adapter/adapter.js", function () {
+        //             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        //                 //暂时隐藏此功能
+        //                 this.cameraLoginIcon = new Element("div", { "styles": this.explorer.css.cameraLoginIcon }).inject(this.formTopContentNode);
+        //                 this.cameraLoginIcon.addEvent("click", function () {
+        //                     if (!this.isCameraLogin) {
+        //                         this.cameraLogin();
+        //                         this.isCameraLogin = true;
+        //                     } else {
+        //                         this.closeCamera();
+        //                         this.isCameraLogin = false;
+        //                     }
+        //                 }.bind(this));
+        //             }
+        //         }.bind(this));
+        //     }
+        // }
     },
     closeCamera: function () {
         if (this.cameraLoginVideoNode) {
