@@ -78,13 +78,21 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			if (splitTokenList.isPresent()) {
 				gotoShallower(aeiObjects, merge, splitTokenList.get());
 			} else {
-				// 完全找不到合并的文档,唯一一份
-				aeiObjects.getWork().setSplitting(false);
-				aeiObjects.getWork().setSplitToken("");
-				aeiObjects.getWork().setSplitTokenList(new ArrayList<>());
-				aeiObjects.getWork().setSplitValue("");
-				aeiObjects.getWork().setSplitValueList(new ArrayList<>());
-				aeiObjects.getWork().setSplitTokenValueMap(new LinkedHashMap<>());
+				// 只有一份也不能直接合并,因为可能设置了合并层数,返回到了处理人是拆分值的情况
+				if ((null != merge.getMergeLayerThreshold()) && (merge.getMergeLayerThreshold() > 0)
+						&& aeiObjects.getWork().getSplitTokenList().size() > merge.getMergeLayerThreshold()) {
+					List<String> list = aeiObjects.getWork().getSplitTokenList().subList(0,
+							aeiObjects.getWork().getSplitTokenList().size() - merge.getMergeLayerThreshold());
+					gotoShallower(aeiObjects, merge, list);
+				} else {
+					// 唯一一份且合并层数大于等于当前的总层数,那么退出拆分状态.
+					aeiObjects.getWork().setSplitting(false);
+					aeiObjects.getWork().setSplitToken("");
+					aeiObjects.getWork().setSplitTokenList(new ArrayList<>());
+					aeiObjects.getWork().setSplitValue("");
+					aeiObjects.getWork().setSplitValueList(new ArrayList<>());
+					aeiObjects.getWork().setSplitTokenValueMap(new LinkedHashMap<>());
+				}
 			}
 			results.add(aeiObjects.getWork());
 		}
