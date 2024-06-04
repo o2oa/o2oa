@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<label>
+    <input type="text" style="width: 1000px" />
+</label>
+<script>
+    const recognition = new webkitSpeechRecognition();
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.querySelector('input').value = transcript;
+        console.log(transcript);
+    };
+
+    recognition.start();
+</script>
+</body>
+</html>

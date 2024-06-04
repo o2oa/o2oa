@@ -1,0 +1,42 @@
+<div class="filterArea">
+    <div class="filterArea-title">
+        <div style="padding-top: 10px;">{{$.lp.filter}}</div>
+    </div>
+    <div class="filterArea-content">
+        {{each $.selectedFilterList}}
+        <div class="filterItem">
+            <div class="filterItem-content-selected" data-o2-events="mouseenter:checkedFilterItemEnter;mouseleave:checkedFilterItemLeave;click:removeFilterItem">
+                {{$.label}}：
+
+                {{if ($.labelList && $.labelList.length)}}
+                <div class="filterItem-value-selected mainColor_color" title="{{$.labelList.join('、')}}">{{$.labelList[0] + ($.labelList.length>1 ? "..." : "")}}</div>
+                {{end if}}
+
+                {{if !($.labelList && $.labelList.length)}}
+                    {{if o2.typeOf($.value) === "array"}}
+                    <div class="filterItem-value-selected mainColor_color" title="{{$.value.join('到')}}">{{$.value.join('至')}}</div>
+                    {{end if}}
+
+                    {{if o2.typeOf($.value) === "string"}}
+                    <div class="filterItem-value-selected mainColor_color" title="{{$.value}}">{{$.value}}</div>
+                    {{end if}}
+                {{end if}}
+
+                <i class="o2icon-close" style="color:#999"></i>
+            </div>
+        </div>
+        {{end each}}
+
+        {{each $.filterList}}
+        <div class="filterItem">
+            <div class="filterItem-content" data-o2-events="o2load:loadFilterTooltip;">
+                <div class="selector">
+                    {{$.label}}
+                    <i class="arrow o2icon-chevron-thin-down"></i>
+                </div>
+                {{end if}}
+            </div>
+        </div>
+        {{end each}}
+    </div>
+</div>

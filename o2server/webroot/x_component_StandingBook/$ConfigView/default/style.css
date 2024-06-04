@@ -1,0 +1,318 @@
+.menuTitleConfig{
+    margin: 0 20px;
+    height: 60px;
+    font-size: 18px;
+    color: #333333;
+    line-height: 60px;
+    border-bottom: 1px solid #cccccc;
+}
+.menuTitleTextConfig{
+    float: left;
+    font-size: 16px;
+}
+.menuTitleAction{
+    float: right;
+    font-size: 16px;
+    padding: 22px 0 20px 30px;
+    cursor: pointer;
+}
+.noElementNode {
+    text-align: center;
+    padding: 20px;
+    height: 30px;
+    line-height: 30px;
+    margin-top: 10px;
+    margin-left: 0px;
+    color: #888;
+    cursor: pointer;
+    font-size: 16px
+}
+.noItemNoticeNode {
+    text-align: left;
+    padding: 20px;
+    height: 60px;
+    line-height: 60px;
+    margin-top: 10px;
+    margin-left: 0px;
+    color: #888;
+    cursor: pointer;
+    font-size: 16px
+}
+
+
+.naviContainerNode {
+    border-top: 1px solid #fff;
+    float: left;
+    overflow: hidden;
+    width: 300px;
+    height: 100%;
+    background-color: #fff
+}
+
+.naviArea {
+    overflow: hidden
+}
+
+.naviNode {
+
+}
+
+.newConfigNaviNode {
+    color: #333;
+    /*padding-left: 45px;*/
+    padding-right: 10px;
+    min-height: 24px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-weight: normal;
+    line-height: 24px;
+    overflow: hidden;
+    font-size: 14px;
+    border-bottom: 1px solid #ccc;
+    position: relative
+}
+
+.configNaviNode {
+    cursor: pointer;
+    padding-left: 40px;
+    padding-right: 20px;
+    min-height: 24px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    overflow: hidden;
+    font-weight: normal;
+    line-height: 24px;
+    font-size: 14px;
+    position: relative;
+    background-color: #fff;
+    color: #333
+}
+
+.configNaviNode_selected {
+    color: #4A90E2;
+    background-color: #EBF1F7;
+}
+
+.configNaviNode_over {
+    color: #333;
+    background-color: #EBF1F7;
+}
+
+/*.configNaviNode_selected {*/
+/*    color: #fff;*/
+/*    background-color: #4A90E2;*/
+/*}*/
+
+/*.configNaviNode_over {*/
+/*    color: #333;*/
+/*    background-color: #f2f2f2*/
+/*}*/
+
+.configNaviTextNode {
+
+}
+.configNaviTextNode_disabled{
+    color: #999
+}
+
+
+.configInput {
+    height: 24px;
+    width: calc( 100% - 10px );
+    color: #666;
+    border: 1px dashed #666
+}
+
+.actionArea {
+    padding: 10px 0 0px 0;
+    height: 20px;
+    overflow: hidden;
+}
+
+.actionNodeStyles {
+    /*width: 16px;*/
+    /*height: 16px;*/
+    margin-left: 2px;
+    margin-right: 10px;
+    float: left;
+    cursor: pointer
+}
+
+
+.configListResizeNode {
+    width: 3px;
+    float: left;
+    background-color: #505050;
+    margin-right: 5px;
+    margin-left: 5px;
+    cursor: col-resize
+}
+
+.rightContent {
+
+}
+
+.separatNode {
+    border-bottom: 1px solid #f7f7f7
+}
+
+.separatNode_dragIn {
+    border-bottom: 1px solid #ffa200 !important;
+}
+
+.moduleNodeMove {
+    border: 2px dashed #ffa200;
+    height: 30px;
+    overflow: hidden;
+    margin: 3px;
+    display: block;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    position: absolute;
+    z-index: 10002;
+    opacity: 0.7;
+    width: 150px;
+    cursor: move
+}
+
+.formNode{
+    height:100%;
+    overflow:hidden
+}
+.formContentContainerNode{
+    margin-left:0px;
+    overflow:hidden;
+    background-color:#eee;
+    opacity:1
+}
+.formContentScrollNode{
+    background-color:#fff;
+    overflow:scroll
+}
+.formContentNode{
+    background-color:#fff;
+    padding-bottom:10px
+}
+.formBottomNode{
+    height:60px;
+    background: #fff;
+    padding-left:28px;
+    overflow:hidden
+}
+.formInputEditButton{
+    margin-top:20px;
+    background:#4A90E2;
+    border-radius:20px;
+    width:320px;
+    height:40px;
+    line-height:40px;
+    border:0px;
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
+    text-align:center
+}
+.formInputOkButton{
+    margin-top:20px;
+    background:#4A90E2;
+    border-radius:20px;
+    width:300px;
+    height:40px;
+    line-height:40px;
+    border:0px;
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
+    text-align:center;
+    float:left
+}
+.formInputCancelButton{
+    margin-top:20px;
+    background:#eee;
+    border-radius:20px;
+    width:160px;
+    height:40px;
+    line-height:40px;
+    color:#666;
+    border:0px;
+    margin-left:20px;
+    font-size:16px;
+    text-align:center;
+    cursor:pointer;
+    float:left
+}
+.formAppArea{
+    padding-right: 4%;
+    width: 95%;
+    border-radius: 13px;
+    border: 1px solid #dedede;
+    color: rgb(0, 0, 255);
+    min-height: 26px;
+    overflow: hidden;
+    font-size: 14px;
+    background: url(../x_component_Template/$MForm/attendance/icon/selectperson.png) 98% center no-repeat rgb(255, 255, 255)
+}
+
+.fileListNode{
+    overflow: hidden;
+    /*user-select: none;*/
+}
+.fileListItem{
+    float: left;
+    width: 630px;
+    border-radius: 50px;
+    height: 50px;
+    overflow: hidden;
+    color: #000000;
+    /*border: 1px solid #dedede;*/
+    /*margin-right: 20px;*/
+    /*margin-top: 10px;*/
+}
+.fieldListIcon{
+    float: left;
+    padding-top: 18px;
+    padding-left: 20px;
+    color: #999;
+}
+.filteListName{
+    padding-left: 5px;
+    width:180px;
+    line-height: 50px;
+    float: left;
+    word-break: break-all;
+    overflow: hidden;
+}
+.filteListEnable{
+    width:65px;
+    height: 50px;
+    line-height: 50px;
+    float: left;
+}
+.filteListDisplayDefault{
+    width:80px;
+    line-height: 50px;
+    height: 50px;
+    float: left;
+}
+.filteListText{
+    width:150px;
+    line-height: 50px;
+    float: left;
+}
+
+.listNoData{
+    text-align: center;
+    padding-top:100px;
+    padding-bottom:50px;
+}
+.listNoDataIcon{
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    background: url("../x_component_StandingBook/$Main/default/icons/nodata.png") no-repeat;
+}
+.listNoDataText{
+    line-height: 50px;
+    font-size: 16px;
+    color: #999;
+}

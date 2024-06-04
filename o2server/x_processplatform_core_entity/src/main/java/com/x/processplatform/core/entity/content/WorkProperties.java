@@ -43,6 +43,16 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("待办身份矩阵")
 	private ManualTaskIdentityMatrix manualTaskIdentityMatrix = new ManualTaskIdentityMatrix();
 
+	private Map<String, String> splitTokenValueMap = new LinkedHashMap<>();
+
+	public Map<String, String> getSplitTokenValueMap() {
+		return splitTokenValueMap;
+	}
+
+	public void setSplitTokenValueMap(Map<String, String> splitTokenValueMap) {
+		this.splitTokenValueMap = splitTokenValueMap;
+	}
+
 	public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
 		return manualTaskIdentityMatrix;
 	}

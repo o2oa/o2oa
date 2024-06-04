@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.processor.split;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.script.CompiledScript;
@@ -60,6 +61,9 @@ public class SplitProcessor extends AbstractSplitProcessor {
 		List<String> values = new ArrayList<>(aeiObjects.getWork().getSplitValueList());
 		values.add(splitValues.get(0));
 		aeiObjects.getWork().setSplitValueList(values);
+		Map<String, String> splitTokenValueMap = aeiObjects.getWork().getSplitTokenValueMap();
+		splitTokenValueMap.put(aeiObjects.getWork().getSplitToken(), aeiObjects.getWork().getSplitValue());
+		aeiObjects.getWork().setSplitTokenValueMap(splitTokenValueMap);
 		results.add(aeiObjects.getWork());
 		Optional<WorkLog> optionalWorkLog = aeiObjects.getWorkLogs().stream()
 				.filter(o -> StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getFromActivityToken()))
@@ -74,7 +78,8 @@ public class SplitProcessor extends AbstractSplitProcessor {
 			aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
 			// 产生后续的拆分文档并标记拆分值
 			for (int i = 1; i < splitValues.size(); i++) {
-				Work splitWork = splitWork(aeiObjects, splitValues.get(i));
+			//	Work splitWork = splitWork(aeiObjects, splitValues.get(i));
+				Work splitWork = splitWork(aeiObjects, aeiObjects.getWork().getSplitToken(), splitValues.get(i));
 				aeiObjects.getCreateWorks().add(splitWork);
 				WorkLog splitWorkLog = splitWorkLog(aeiObjects, mainWorkLog, splitValues.get(i), splitWork);
 				aeiObjects.getCreateWorkLogs().add(splitWorkLog);
@@ -96,13 +101,18 @@ public class SplitProcessor extends AbstractSplitProcessor {
 		return splitWorkLog;
 	}
 
-	private Work splitWork(AeiObjects aeiObjects, String value) throws Exception {
+	private Work splitWork(AeiObjects aeiObjects, String token, String value)
+			throws  Exception {
 		Work splitWork = new Work(aeiObjects.getWork());
 		// 替work换拆分值
 		splitWork.setSplitValue(value);
-		List<String> values = new ArrayList<>(splitWork.getSplitValueList());
+		//List<String> values = new ArrayList<>(splitWork.getSplitValueList());
+		List<String> values = splitWork.getSplitValueList();
 		ListTools.set(values, -1, value);
 		splitWork.setSplitValueList(values);
+		Map<String, String> splitTokenValueMap = splitWork.getSplitTokenValueMap();
+		splitTokenValueMap.put(token, value);
+		splitWork.setSplitTokenValueMap(splitTokenValueMap);
 		return splitWork;
 	}
 

@@ -2,6 +2,7 @@ package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.Basic;
@@ -115,6 +116,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
 		this.parentJob = this.getProperties().getParentJob();
 		this.parentWork = this.getProperties().getParentWork();
+		this.splitTokenValueMap = this.getProperties().getSplitTokenValueMap();
 	}
 
 	/* 更新运行方法 */
@@ -224,6 +226,20 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public String getParentJob() {
 		return parentJob;
+	}
+
+	public static final String SPLITTOKENVALUEMAP_FIELDNAME = "splitTokenValueMap";
+	@Transient
+	@FieldDescribe("拆分值存储对象.")
+	private Map<String, String> splitTokenValueMap;
+
+	public Map<String, String> getSplitTokenValueMap() {
+		return splitTokenValueMap;
+	}
+
+	public void setSplitTokenValueMap(Map<String, String> splitTokenValueMap) {
+		this.splitTokenValueMap = splitTokenValueMap;
+		this.getProperties().setSplitTokenValueMap(splitTokenValueMap);
 	}
 
 	@Transient
