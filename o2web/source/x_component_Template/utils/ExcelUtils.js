@@ -241,13 +241,17 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
         }.bind(this);
 
         var setDataCellStyle = function(cell, index){
-            if( (dateIndexArray || []).contains( index ) ){
-                cell.numFmt = 'yyyy-mm-dd HH:MM:SS';
-            }
+            var isDate = (dateIndexArray || []).contains( index );
             var isNumber = ( numberIndexArray||[] ).contains( index );
             var style = this.options.columnContentStyle || {};
-            if( isNumber && style.alignment && style.alignment.wrapText ){
-                style.alignment.wrapText = false;
+            if( isDate ){
+                cell.numFmt = 'yyyy-mm-dd HH:MM:SS';
+            }else if( isNumber ){
+                if( style.alignment && style.alignment.wrapText ){
+                    style.alignment.wrapText = false;
+                }
+            }else{
+                cell.numFmt = '@';
             }
             Object.each(style || {}, function (value, key){
                 cell[key] = value;
