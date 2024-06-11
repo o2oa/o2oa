@@ -161,6 +161,7 @@ class ActionGet extends BaseAction {
 		wos = business.unitDuty().sort(wos);
 		for (WoUnitDuty woUnitDuty : wos) {
 			this.referenceUnit(business, woUnitDuty);
+			woUnitDuty.setIdentityList(null);
 		}
 		woIdentity.setWoUnitDutyList(wos);
 	}
