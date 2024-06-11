@@ -48,7 +48,7 @@
         "overflow": "hidden"
     },
     "identityInforNameNode": {
-        "height": "40px"
+        "min-height": "40px"
     },
     "identityInforPicNode": {
         "height": "40px",
@@ -56,12 +56,12 @@
         "float": "left"
     },
     "identityInforRightTextNode": {
-        "height": "40px",
+        "min-height": "40px",
         "float": "left",
         "margin-left": "20px",
     },
     "identityInforNameTextNode": {
-        "height": "24px",
+        "min-height": "24px",
         "line-height": "24px",
         "width": "120px",
         "color": "#da7429",
