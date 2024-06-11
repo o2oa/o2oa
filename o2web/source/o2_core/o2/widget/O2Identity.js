@@ -229,6 +229,7 @@ o2.widget.O2Identity = new Class({
 
             this.loadedInfor = true;
             this.tooltip = new mBox.Tooltip({
+                delayClose: 9999999999,
                 content: this.inforNode,
                 setStyles: {content: {padding: 15, lineHeight: 20}},
                 attach: this.node,
