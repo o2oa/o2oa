@@ -2807,7 +2807,6 @@ MWF.xScript.Environment = function(ev){
 
         /**对当前文档的待办重新设定处理人。<b>（仅流程表单中可用）</b><br/>
          * 可以通过this.workContext.getControl().allowReset来判断当前用户是否有权限重置处理人。<br/>
-         * this.form.reset()会触发 beforeReset、afterReset事件，因此在上述事件中不允许使用本方法。
          * @method reset
          * @static
          * @param {Object} [option] - 进行重置处理人的相关参数，如果不带此参数，弹出重置处理人对话框<br/>
@@ -2821,10 +2820,10 @@ MWF.xScript.Environment = function(ev){
         }
          </code></pre>
          * @example
-         //不带参数，弹出重置处理人对话框
+         //不带参数，弹出重置处理人对话框，用户确定后会触发 beforeReset、afterReset事件，因此在这两个事件中不允许使用本方法。
          this.form.reset();
          * @example
-         //带参数，直接调用后台服务重置
+         //带参数，直接调用后台服务重置,不会触发 beforeReset、afterReset事件
          this.form.reset({
             "names": ["张三@zhangsan@I"],
             "opinion": "授权处理",
@@ -2850,7 +2849,6 @@ MWF.xScript.Environment = function(ev){
         /**撤回文档操作，上一个处理人收回已经流转下去的文件。<b>（仅流程表单中可用）</b><br/>
          * 这个操作只允许上一个处理人在流转文件之后，下一个处理人未处理的时候执行。<br/>
          * 可以通过this.workContext.getControl().allowRetract来判断当前用户是否有权限撤回。<br/>
-         * this.form.retract()会触发 beforeRetract、afterRetract事件，因此在上述事件中不允许使用本方法。
          * @method retract
          * @static
          * @param {Object} [option] - 进行撤回的相关参数，如果不提供option参数，则弹出撤回对话框。<br/>
@@ -2862,10 +2860,10 @@ MWF.xScript.Environment = function(ev){
         }
          </code></pre>
          * @example
-         //不带参数，则弹出撤回对话框
+         //不带参数，则弹出撤回对话框，用户确定后会触发 beforeRetract、afterRetract事件，因此在这两个事件中不允许使用本方法。
          this.form.retract();
          * @example
-         //带参数，直接调用后台服务撤回
+         //带参数，直接调用后台服务撤回，不会出发beforeRetract、afterRetract事件
          this.form.retract({
             "success": function(json){
                 this.form.notice("retract success", "success");
@@ -2901,10 +2899,10 @@ MWF.xScript.Environment = function(ev){
         }
          </code></pre>
          * @example
-         //不带参数，则弹出添加分支对话框
+         //不带参数，则弹出添加分支对话框，用户确定后会触发beforeAddSplit、afterAddSplit事件
          this.form.addSplit();
          * @example
-         //带参数，直接添加分支
+         //带参数，直接调用后天服务添加分支，不会触发beforeAddSplit、afterAddSplit事件
          this.form.addSplit({
             "value" : ["开发部@kfb@U"],
             "trimExist" : true,
@@ -2949,10 +2947,10 @@ MWF.xScript.Environment = function(ev){
         }
          </code></pre>
          * @example
-         //不带参数，则弹出删除提示对话框
+         //不带参数，则弹出删除提示对话框，用户确定后触发beforeDelete和afterDelete事件
          this.form.deleteWork();
          * @example
-         //带参数，直接调用服务删除
+         //带参数，直接调用服务删除，不触发beforeDelete和afterDelete事件
          this.form.deleteWork({
             "success": function(json){
                 this.form.notice("deleteWork success", "success");
@@ -2990,10 +2988,10 @@ MWF.xScript.Environment = function(ev){
         }
          </code></pre>
          * @example
-         //不带参数，弹出发送待阅对话框
+         //不带参数，弹出发送待阅对话框，确定后触发beforeSendRead，afterSendRead事件
          this.form.sendRead();
          * @example
-         //带参数，直接调用后台服务发送待阅
+         //带参数，直接调用后台服务发送待阅，触发beforeSendRead，afterSendRead事件
          this.form.sendRead({
             "identityList": ["张三@zhangsan@I"],
             "notify": false,
@@ -3034,10 +3032,10 @@ MWF.xScript.Environment = function(ev){
         }
          </code></pre>
          * @example
-         //不带参数，弹出添加阅读人对话框
+         //不带参数，弹出添加阅读人对话框，触发beforeAddReview和afterAddReview事件。
          this.form.addReview();
          * @example
-         //带参数，直接调用后台服务发送待阅
+         //带参数，直接调用后台服务发送待阅，触发beforeAddReview和afterAddReview事件。
          this.form.addReview({
             "personList": ["张三@zhangsan@P"],
             "success": function(json){
