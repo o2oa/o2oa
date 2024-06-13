@@ -11,6 +11,19 @@ Object.assign(o2.APP$Elinput.prototype, {
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead() );
     },
+    reload: function(){
+        if (!this.vm) return;
+
+        var node = this.vm.$el;
+        this.vm.$destroy();
+        node.empty();
+
+        this.vm = null;
+
+        this.vueApp = null;
+
+        this._loadUserInterface();
+    },
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);

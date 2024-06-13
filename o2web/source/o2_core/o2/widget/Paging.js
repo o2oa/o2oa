@@ -10,6 +10,7 @@ o2.widget.Paging = new Class({
         currentPage: 1,
         itemSize: 0,
         pageSize: 0,
+        hasChangeCount: false,
         hasFirstPage : true,
         hasLastPage : true,
         hasNextPage: true,
@@ -140,6 +141,10 @@ o2.widget.Paging = new Class({
 
         if (this.options.hasJumper) {
             this.createPageJumper();
+        }
+
+        if( this.options.hasChangeCount ){
+            this.createCountChanger();
         }
 
         if(this.options.hasInfor && this.options.inforTextStyle && this.options.inforPosition==="bottom" ){
@@ -294,6 +299,41 @@ o2.widget.Paging = new Class({
             }.bind(this)
         });
     },
+    createCountChanger: function(){
+        var _self = this;
+        var countChanger = this.countChanger = new Element("input.countChanger", {
+            "styles": this.css.pageJumper,
+            "title": o2.LP.widget.countChangerTitle || "每页条数",
+        }).inject(this.node);
+        this.countChangerText = new Element("div.countChangerText", {
+            "styles": this.css.pageJumperText,
+            "text": o2.LP.widget.countChangerText || "条/页",
+            "value": this.options.countPerPage
+        }).inject(this.node);
+        countChanger.addEvents({
+            "focus": function (ev) {
+                ev.target.setStyles(this.css.pageJumper_over);
+                if( _self.options.useMainColor )ev.target.addClass("mainColor_border");
+            }.bind(this),
+            "blur": function (ev) {
+                var value = this.value;
+                _self.changeCountPerPage(value);
+                ev.target.setStyles(_self.css.pageJumper);
+                if( _self.options.useMainColor )ev.target.removeClass("mainColor_border");
+            },
+            "keyup": function (e) {
+                this.value = this.value.replace(/[^0-9_]/g, '');
+            },
+            "keydown": function (e) {
+                if (e.code == 13 && this.value != "") {
+                    var value = this.value;
+                    _self.changeCountPerPage(value);
+                    e.stopPropagation();
+                    //e.preventDefault();
+                }
+            }
+        });
+    },
     createPageJumper : function(){
         var _self = this;
         var pageJumper = this.pageJumper = new Element("input.pageJumper", {
@@ -329,6 +369,13 @@ o2.widget.Paging = new Class({
                 }
             }
         });
+    },
+    changeCountPerPage: function (countPerPage){
+        var num = countPerPage;
+        if( typeOf(num) === "string" )num = num.toInt();
+        this.options.currentPage = 1;
+        this.options.countPerPage = num;
+        this.load();
     },
     gotoPage: function (num) {
         if( typeOf(num) === "string" )num = num.toInt();

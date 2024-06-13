@@ -64,6 +64,9 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
         if (!this.json.description) this.json.description = "";
     },
+    resetOption: function(){
+        this.reload();
+    },
     _createEventFunction: function(methods, k){
         methods["$loadElEvent_"+k.camelCase()] = function(){
             var flag = true;

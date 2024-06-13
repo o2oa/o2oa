@@ -61,6 +61,8 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
 
         this.vm = null;
 
+        this.vueApp = null;
+
         this._loadUserInterface();
     },
     _checkVmodel: function(text){

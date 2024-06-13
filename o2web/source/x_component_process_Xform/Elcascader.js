@@ -65,6 +65,9 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     //     if (this.isReadonly()) this.json.disabled = true;
     //     this._loadNodeEdit();
     // },
+    resetOption: function(){
+        this.reload();
+    },
     _loadMergeReadContentNode: function( contentNode, data ){
         this._loadOptions();
         Promise.resolve(this.json.options).then(function(options){
