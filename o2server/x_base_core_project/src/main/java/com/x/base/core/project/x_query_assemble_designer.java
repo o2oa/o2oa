@@ -19,6 +19,7 @@ import com.x.base.core.project.annotation.ModuleType;
         "com.x.processplatform.core.entity.content.Read", "com.x.processplatform.core.entity.content.ReadCompleted",
         "com.x.processplatform.core.entity.element.Process", "com.x.processplatform.core.entity.content.Attachment",
         "com.x.cms.core.entity.Document", "com.x.cms.core.entity.AppInfo", "com.x.cms.core.entity.CategoryInfo",
+        "com.x.cms.core.entity.DocumentViewRecord", "com.x.cms.core.entity.DocumentCommentInfo",
         "com.x.cms.core.entity.Review", "com.x.organization.core.entity.Person", "com.x.organization.core.entity.Unit",
         "com.x.organization.core.entity.Group" }, storageTypes = { StorageType.processPlatform }, storeJars = {
                 "x_query_core_entity", "x_organization_core_entity", "x_organization_core_express",
