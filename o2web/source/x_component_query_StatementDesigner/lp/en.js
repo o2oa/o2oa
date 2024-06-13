@@ -414,6 +414,13 @@ MWF.xApplication.query.StatementDesigner.LP={
 	"workCompletedInstanceSql": "Completed process instance (PP_C_WORKCOMPLETED)",
 	"reviewInstanceSql": "Readable (PP_C_REVIEW)",
 	"documentInstanceSql": "Content Management Document (CMS_DOCUMENT)",
-	"autoAddColumns": "Generate columns from the data table "
+	"autoAddColumns": "Generate columns from the data table ",
+	"cmsReviewInstance": "Readable (Review)",
+	"DocumentViewRecord": "Content Management Reading Record (DocumentViewRecord)",
+	"documentViewRecord": "Content Management Reading Record (DocumentViewRecord)",
+	"documentCommentInfo": "Content Management Comment Record (DocumentCommentInfo)",
+	"cmsReviewInstanceSql": "Content Management Readable (PP-C-REView)",
+	"documentViewRecordSql": "Content Management Reading Record (PP-C-REView)",
+	"documentCommentInfoSql": "Content Management Comment Record (PP-C-REView)"
 }
 MWF.xApplication.query.StatementDesigner["lp."+o2.language] = MWF.xApplication.query.StatementDesigner.LP

@@ -413,6 +413,13 @@ MWF.xApplication.query.StatementDesigner.LP={
 	"filterList": "Condiciones de filtrado",
 	"pageNo": "Número de página",
 	"perPage": "Por Página",
-	"size": "Artículo"
+	"size": "Artículo",
+	"cmsReviewInstance": "Se puede leer (revisión)",
+	"DocumentViewRecord": "Registros de lectura de gestión de contenidos (documentviewrecord)",
+	"documentViewRecord": "Registros de lectura de gestión de contenidos (documentviewrecord)",
+	"documentCommentInfo": "Registros de comentarios de gestión de contenidos (documentmenterinfo)",
+	"cmsReviewInstanceSql": "Gestión de contenidos legible (pp c review)",
+	"documentViewRecordSql": "Registros de lectura de gestión de contenidos (pp c review)",
+	"documentCommentInfoSql": "Registros de comentarios de gestión de contenidos (pp c review)"
 }
 MWF.xApplication.query.StatementDesigner["lp."+o2.language] = MWF.xApplication.query.StatementDesigner.LP
