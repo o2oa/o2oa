@@ -287,6 +287,7 @@ MWF.xApplication.Selector.Person = new Class({
                 "style": this.css.maskNode,
                 "useIframeShim": true,
                 "iframeShimOptions": {"browsers": true},
+                "inject": {"where":"bottom"},
                 "onShow": function () {
                     this.shim.shim.setStyles({
                         "opacity": 0,
