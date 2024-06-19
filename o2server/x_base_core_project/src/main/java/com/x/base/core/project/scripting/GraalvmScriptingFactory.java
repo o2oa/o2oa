@@ -299,10 +299,11 @@ public class GraalvmScriptingFactory {
 	public static Source functionalization(String text) {
 		StringBuilder sb = new StringBuilder();
 		if (BooleanUtils.isTrue(Config.general().getGraalvmEvalAsPromise())) {
-			sb.append("(async function(){ ").append(Objects.toString(text, ""))
-					.append(" }.apply(globalThis)).catch((e)=>{ throw e.stack; });");
+			sb.append("(async function(){ ").append(System.lineSeparator()).append(Objects.toString(text, ""))
+					.append(System.lineSeparator()).append(" }.apply(globalThis)).catch((e)=>{ throw e.stack; });");
 		} else {
-			sb.append("(function(){ ").append(Objects.toString(text, "")).append(" }.apply(globalThis));");
+			sb.append("(function(){ ").append(System.lineSeparator()).append(Objects.toString(text, ""))
+					.append(System.lineSeparator()).append(" }.apply(globalThis));");
 		}
 		return Source.create(LANGUAGE_ID_JS, sb.toString());
 	}
