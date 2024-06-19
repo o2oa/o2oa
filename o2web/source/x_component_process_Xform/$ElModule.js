@@ -52,6 +52,19 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
             this._loadUserInterface();
         }
     },
+    reload: function(){
+        if (!this.vm) return;
+
+        var node = this.vm.$el;
+        this.vm.$destroy();
+        node.empty();
+
+        this.vm = null;
+
+        this.vueApp = null;
+
+        this._loadUserInterface();
+    },
     _checkVmodel: function(text){
         if (text){
             this.vModels = [];

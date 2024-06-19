@@ -2214,11 +2214,67 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     init: function(){
         this.itemTempletedHtml = this.menu.itemTempletedHtml;
 
-        if (this.data.itemDataList && this.data.itemDataList.length){
-            for (var i=0; i<Math.min(this.data.itemDataList.length, 4); i++){
-                var icon = this.setSubItemIcon(this.data.itemDataList[i], this.sunIconNodes[i]);
+        var user = this.menu.layout.session.user;
+        var currentNames = [user.name, user.distinguishedName, user.id, user.unique];
+        if (user.roleList) currentNames = currentNames.concat(user.roleList);
+        if (user.groupList) currentNames = currentNames.concat(user.groupList);
+
+        // console.log('this.data.itemDataList', this.data.itemDataList);
+        // console.log('this.menu.portalJson', this.menu.portalJson);
+        // console.log('this.menu.processJson', this.menu.processJson);
+        // console.log('this.menu.inforJson', this.menu.inforJson);
+        // console.log('this.menu.queryJson', this.menu.queryJson);
+        // console.log('this.menu.componentJson', this.menu.componentJson);
+        // console.log('this.menu.layoutJson', this.menu.layoutJson);
+
+        var itemDataList = this.data.itemDataList.filter(function(data){
+            var json;
+            switch (data.type){
+                case "portal":
+                   return this.checkPermission(data, this.menu.portalJson);
+                case "process":
+                    return this.checkPermission(data, this.menu.processJson);
+                case "cms":
+                    return this.checkPermission(data, this.menu.inforJson);
+                case "query":
+                    return this.checkPermission(data, this.menu.queryJson);
+                default:
+                    var component = this.getComponent(data.path, this.menu.componentJson);
+                    var layout = this.getComponent(data.path, this.menu.layoutJson);
+                    if(!component && !layout)return false;
+                    if (component){
+                        return this.menu.checkMenuItem(component, currentNames);
+                    }
+                    if (layout){
+                        return this.menu.checkMenuItem(layout, currentNames);
+                    }
+                    return false;
+            }
+        }.bind(this));
+
+        if (itemDataList && itemDataList.length){
+            for (var i=0; i<Math.min(itemDataList.length, 4); i++){
+                var icon = this.setSubItemIcon(itemDataList[i], this.sunIconNodes[i]);
             }
         }
+
+        if( !itemDataList.length )this.node.hide();
+
+        this.availableItemDataList = itemDataList;
+    },
+    getComponent: function (path, array){
+        if( !array )array = [];
+        for( var i=0; i<array.length; i++ ){
+            if( path === array[i].path )return array[i];
+        }
+        return null;
+    },
+    checkPermission: function (itemData, array){
+        if( !array )array = [];
+        for( var i=0; i<array.length; i++ ){
+            if( itemData.id === array[i].id )return true;
+        }
+        return false;
     },
     resetSubItemIcon: function(){
         this.sunIconNodes.each(function(e){
@@ -2271,7 +2327,8 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     },
     loadItems: function(){
         if (!this.items) this.items = [];
-        this.data.itemDataList.each(function(data){
+        //this.data.itemDataList
+        this.availableItemDataList.each(function(data){
             var item = this.items.find(function(i){
                 return i.data.id == data.id;
             });

@@ -116,6 +116,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		private Long viewCount = 0L;
 		private Long commentCount = 0L;
 		private Long commendCount = 0L;
+		private Date createTime;
 		private Date publishTime;
 		private Date modifyTime;
 		private Boolean isTop;
@@ -294,6 +295,14 @@ public class Data extends ListOrderedMap<String, Object> {
 
 		public void setCommendCount(Long commendCount) {
 			this.commendCount = commendCount;
+		}
+
+		public Date getCreateTime() {
+			return createTime;
+		}
+
+		public void setCreateTime(Date createTime) {
+			this.createTime = createTime;
 		}
 	}
 

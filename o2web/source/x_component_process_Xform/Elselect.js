@@ -78,6 +78,9 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             contentNode.set("text", text.join(","));
         }.bind(this));
     },
+    resetOption: function(){
+        this.reload();
+    },
     _appendVueData: function(){
         // this.form.Macro.environment.data.check(this.json.id);
         // this.json[this.json.id] = this._getBusinessData();

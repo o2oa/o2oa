@@ -275,22 +275,14 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * @throws Exception
      */
     public List<AttendanceV2CheckInRecord> listRecordByPage(Integer adjustPage,
-            Integer adjustPageSize, String userId, Date startDate, Date endDate) throws Exception {
+            Integer adjustPageSize, String userId, Date startDate, Date endDate, String sourceType, String checkInResult,
+                                                            String checkInType, Boolean fieldWork) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2CheckInRecord.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2CheckInRecord> cq = cb.createQuery(AttendanceV2CheckInRecord.class);
         Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
-        Predicate p = null;
-        if (StringUtils.isNotEmpty(userId)) {
-            p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
-        }
-        if (startDate != null && endDate != null) {
-            if (p == null) {
-                p = cb.between(root.get(AttendanceV2CheckInRecord_.recordDate), startDate, endDate);
-            } else {
-                p = cb.and(p, cb.between(root.get(AttendanceV2CheckInRecord_.recordDate), startDate, endDate));
-            }
-        }
+        Predicate p = buildPredicate(cb, root, userId, startDate, endDate, sourceType, checkInResult, checkInType,
+                fieldWork);
         if (p == null) {
             cq.select(root).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.recordDate)));
         } else {
@@ -310,11 +302,25 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * @return
      * @throws Exception
      */
-    public Long recordCount(String userId, Date startDate, Date endDate) throws Exception {
+    public Long recordCount(String userId, Date startDate, Date endDate, String sourceType, String checkInResult,
+                            String checkInType, Boolean fieldWork) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2CheckInRecord.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
+        Predicate p = buildPredicate(cb, root, userId, startDate, endDate, sourceType, checkInResult, checkInType,
+                fieldWork);
+        if (p == null) {
+            cq.select(cb.count(root));
+        } else {
+            cq.select(cb.count(root)).where(p);
+        }
+        return em.createQuery(cq).getSingleResult();
+    }
+
+    private Predicate buildPredicate(CriteriaBuilder cb, Root<AttendanceV2CheckInRecord> root, String userId, Date startDate, Date endDate,
+                                     String sourceType, String checkInResult,
+                                     String checkInType, Boolean fieldWork) {
         Predicate p = null;
         if (StringUtils.isNotEmpty(userId)) {
             p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
@@ -326,12 +332,35 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
                 p = cb.and(p, cb.between(root.get(AttendanceV2CheckInRecord_.recordDate), startDate, endDate));
             }
         }
-        if (p == null) {
-            cq.select(cb.count(root));
-        } else {
-            cq.select(cb.count(root)).where(p);
+        if (StringUtils.isNotEmpty(sourceType)) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2CheckInRecord_.sourceType), sourceType);
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.sourceType), sourceType));
+            }
         }
-        return em.createQuery(cq).getSingleResult();
+        if (StringUtils.isNotEmpty(checkInResult)) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2CheckInRecord_.checkInResult), checkInResult);
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.checkInResult), checkInResult));
+            }
+        }
+        if (StringUtils.isNotEmpty(checkInType)) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2CheckInRecord_.checkInType), checkInType);
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.checkInType), checkInType));
+            }
+        }
+        if (fieldWork != null) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2CheckInRecord_.fieldWork), fieldWork);
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.fieldWork), fieldWork));
+            }
+        }
+        return p;
     }
 
     /**

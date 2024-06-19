@@ -23,25 +23,10 @@
 <body style="overflow: auto; margin:0px">
 <div id="layout" class="layout" style="overflow: auto"></div>
 <script text="text/javascript">
-    function addWxJsSdk() {
-        //插入微信jssdk
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = "../o2_lib/wechat/jweixin-1.6.0.js";
-        document.body.appendChild(script);
-    }
+
     // 根据ua判断当前环境 加载各种jssdk
     var u = navigator.userAgent.toLocaleLowerCase();
-    // /miniProgram/i.test(u) 小程序
-    // /wxwork/i.test(u) 企业微信
-    if (/micromessenger/i.test(u)){ // 微信 企业微信 小程序
-        //微信的WeixinJSBridgeReady加载完成后进行判断
-        if (!window.WeixinJSBridge || !WeixinJSBridge.invoke) {
-            document.addEventListener('WeixinJSBridgeReady', addWxJsSdk, false);
-        } else {
-            addWxJsSdk();
-        }
-    }else if (/uni-app/i.test(u)) { // uniapp开发的app
+    if (/uni-app/i.test(u)) { // uniapp开发的app
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = "../o2_lib/uniapp/uni.webview.1.5.2.js";

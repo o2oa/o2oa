@@ -1307,6 +1307,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if(saveFlag)this.saveFormData();
 		},
 		_deleteLine: function(ev, line){
+			if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMin() ){
 				var text = MWF.xApplication.process.Xform.LP.minItemCountNotice.replace("{n}", this.json.minCount );
 				this.form.notice(text,"info");

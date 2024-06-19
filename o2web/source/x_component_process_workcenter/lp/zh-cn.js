@@ -5,6 +5,8 @@ MWF.xApplication.process.workcenter.LP = {
 	"taskCompleted": "已办",
 	"readCompleted": "已阅",
 	"draft": "草稿",
+	"review": "参阅",
+	"myCreated": "我创建的",
 	"createProcess": "新建流程",
 	"all": "全部",
 	"byType": "按分类",
@@ -73,6 +75,15 @@ MWF.xApplication.process.workcenter.LP = {
 		{"key": "completedList", "name": "是否流转完成"},
 		{"key": "key", "name": "关键字"}
 	],
+	"filterCategoryListReview": [
+		{"key": "applicationList", "name": "应用名称"},
+		{"key": "processList", "name": "流程名称"},
+		{"key": "activityNameList", "name": "办理活动"},
+		{"key": "creatorUnitList", "name": "创建部门"},
+		{"key": "startTimeMonthList", "name": "创建月份"},
+		{"key": "completedList", "name": "是否流转完成"},
+		{"key": "key", "name": "关键字"}
+	],
 	"filterCategoryShortList": [
 		{"key": "applicationList", "name": "应用"},
 		{"key": "processList", "name": "流程"},
@@ -83,11 +94,22 @@ MWF.xApplication.process.workcenter.LP = {
 		{"key": "completedList", "name": "完成"},
 		{"key": "key", "name": "关键字"}
 	],
+	"filterCategoryShortListReview": [
+		{"key": "applicationList", "name": "应用"},
+		{"key": "processList", "name": "流程"},
+		{"key": "activityNameList", "name": "活动"},
+		{"key": "creatorUnitList", "name": "部门"},
+		{"key": "startTimeMonthList", "name": "创建月份"},
+		{"key": "completedList", "name": "完成"},
+		{"key": "key", "name": "关键字"}
+	],
 	"noTask": "没有要处理的待办",
 	"noTaskCompleted": "没有已处理的文件",
 	"noRead": "没有需要阅读的文件",
 	"noReadCompleted": "没有已经阅读的文件",
 	"noDraft": "没有草稿文件",
+	"noReview": "没有参阅",
+	"noMyCreated": "没有我创建的文件",
 	"createWork": "新建流程文件",
 
 	"batch": "批量处理",

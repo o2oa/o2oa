@@ -184,11 +184,11 @@
     "text": MWF.APPPOD.LP.modules.application, 
     "className": "Application"
   },
-  "SmartBI": { 
-    "icon": "smartbi.png",
-    "text": MWF.APPPOD.LP.modules.SmartBI,
-    "className": "SmartBI"
-  },
+//  "SmartBI": {
+//    "icon": "smartbi.png",
+//    "text": MWF.APPPOD.LP.modules.SmartBI,
+//    "className": "SmartBI"
+//  },
   "htmledit": {
     "icon": "htmleditor.png",
     "text": MWF.APPPOD.LP.modules.htmledit,

@@ -838,7 +838,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (!json) return null;
 
             //流程组件返回
-            if( ( json.type === "Log" && json.logType ) || ["Monitor","ReadLog"].contains(json.type) ){
+            if( ( json.type === "Log" && json.logType ) || ["Sidebar","Monitor","ReadLog"].contains(json.type) ){
                 node.empty();
                 return;
             }else if( this.options.useProcessForm && json.type === "Actionbar" ){ //使用流程表单，组件是操作条

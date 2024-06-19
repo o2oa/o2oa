@@ -34,11 +34,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.importer,
     "className": "Importer"
   },
-  "SmartBI": {
-    "icon": "smartbi.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.SmartBI,
-    "className": "SmartBI"
-  },
+//  "SmartBI": {
+//    "icon": "smartbi.png",
+//    "text": MWF.xApplication.cms.FormDesigner.LP.modules.SmartBI,
+//    "className": "SmartBI"
+//  },
   "comment": {
     "icon": "comment.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.comment,
