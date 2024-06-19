@@ -1246,7 +1246,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }else{
             if (div.parentNode) div.parentNode.removeChild(div);
         }
-        return text;
+        return text.replace(/<br><\/div>/g, '</div>').replace(/[\n\r]/g, '');
 
     },
     checkSaveNewEdition: function(callback){

@@ -368,7 +368,9 @@ MWF.xApplication.systemconfig.LP={
 		"bindDnUserInfo": "Enlace a un administrador con permisos de administración para realizar consultas de autenticación, como cn=root.",
 		"bindDnPwd": "Contraseña de usuario de administración de vinculación",
 		"bindDnPwdInfo": "Contraseña de administrador para enlazar.",
-		"ldapEnabledError": "Por favor, configure todos los parámetros de LDAP antes de habilitar la autenticación LDAP."
+		"ldapEnabledError": "Por favor, configure todos los parámetros de LDAP antes de habilitar la autenticación LDAP.",
+		"appTokenExpired": "Duración válida del inicio de sesión en el lado de la aplicación",
+		"appTokenExpiredInfo": "Después de que el usuario inicie sesión en el sistema, si no interactúa con el servidor durante mucho tiempo, el sistema cancelará esta sesión. Aquí puede configurar la duración válida del inicio de sesión en minutos. Para terminales móviles."
 	},
 	"_ssoConfig": {
 		"ssoConfig": "Claves de autenticación",

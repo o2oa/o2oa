@@ -368,7 +368,9 @@ MWF.xApplication.systemconfig.LP={
 		"bindDnUserInfo": "Bind a user with administrative rights as an administrator for query authentication. Such as: cn=root",
 		"bindDnPwd": "Manage User Passwords",
 		"bindDnPwdInfo": "Bind administrator's password",
-		"ldapEnabledError": "Please configure all LDAP parameters completely before enabling LDAP authentication."
+		"ldapEnabledError": "Please configure all LDAP parameters completely before enabling LDAP authentication.",
+		"appTokenExpired": "Effective duration of app login",
+		"appTokenExpiredInfo": "After logging into the system, if a user does not interact with the server for a long time, the system will log out of this login. You can set the effective login duration here, in minutes. Used for mobile devices."
 	},
 	"_ssoConfig": {
 		"ssoConfig": "Authentication Key Config",

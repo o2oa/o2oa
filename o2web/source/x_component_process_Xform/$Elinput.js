@@ -91,7 +91,7 @@ Object.assign(o2.APP$Elinput.prototype, {
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (value || value===false){
+        if (value || value===false || value===0){
             return value;
         }else{
             value = this._computeValue();

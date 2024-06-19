@@ -288,8 +288,9 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
                 //var data = this.documentEditor.getFiletextText(this.documentEditor.data.filetext);
 
-                var data = this.documentEditor.data.filetext;
-                var earlyData = originaData.filetext;
+                var data = this.documentEditor.data.filetext.replace(/<br><\/div>/g, '</div>');
+                var earlyData = originaData.filetext.replace(/<br><\/div>/g, '</div>');
+
                 if (data!=earlyData){
                     dataTxt = this.documentEditor.getFiletextText(data);
                     earlyDataTxt = this.documentEditor.getFiletextText(earlyData);
