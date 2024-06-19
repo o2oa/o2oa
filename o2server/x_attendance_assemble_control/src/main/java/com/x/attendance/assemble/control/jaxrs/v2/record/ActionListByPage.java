@@ -52,7 +52,8 @@ public class ActionListByPage extends BaseAction {
                 end = DateTools.parseDateTime(wi.getEndDate() + " 23:59:59");
             }
             List<AttendanceV2CheckInRecord> list = business.getAttendanceV2ManagerFactory().listRecordByPage(adjustPage,
-                    adjustPageSize, wi.getUserId(), start, end);
+                    adjustPageSize, wi.getUserId(), start, end, wi.getSourceType(), wi.getCheckInResult(),
+                    wi.getCheckInType(), wi.getFieldWork());
             List<Wo> wos = Wo.copier.copy(list);
             for (Wo wo : wos) {
                 try {
@@ -65,7 +66,8 @@ public class ActionListByPage extends BaseAction {
                 } catch (Exception ignore) {}
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().recordCount(wi.getUserId(), start, end));
+            result.setCount(business.getAttendanceV2ManagerFactory().recordCount(wi.getUserId(), start, end, wi.getSourceType(), wi.getCheckInResult(),
+                    wi.getCheckInType(), wi.getFieldWork()));
             return result;
         }
     }
@@ -80,6 +82,46 @@ public class ActionListByPage extends BaseAction {
         private String startDate;
         @FieldDescribe("打卡记录结束日期: YYYY-MM-dd")
         private String endDate;
+        @FieldDescribe("打卡数据来源：USER_CHECK|AUTO_CHECK|FAST_CHECK|SYSTEM_IMPORT")
+        private String sourceType;
+        @FieldDescribe("打卡结果: Normal|Early|Late|SeriousLate|NotSigned")
+        private String checkInResult;
+        @FieldDescribe("考勤类型: OnDuty|OffDuty")
+        private String checkInType;
+        @FieldDescribe("是否外勤打卡.")
+        private Boolean fieldWork;
+
+        public String getSourceType() {
+            return sourceType;
+        }
+
+        public void setSourceType(String sourceType) {
+            this.sourceType = sourceType;
+        }
+
+        public String getCheckInResult() {
+            return checkInResult;
+        }
+
+        public void setCheckInResult(String checkInResult) {
+            this.checkInResult = checkInResult;
+        }
+
+        public String getCheckInType() {
+            return checkInType;
+        }
+
+        public void setCheckInType(String checkInType) {
+            this.checkInType = checkInType;
+        }
+
+        public Boolean getFieldWork() {
+            return fieldWork;
+        }
+
+        public void setFieldWork(Boolean fieldWork) {
+            this.fieldWork = fieldWork;
+        }
 
         public String getUserId() {
             return userId;

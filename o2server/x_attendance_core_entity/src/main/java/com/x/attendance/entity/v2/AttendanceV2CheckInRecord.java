@@ -105,7 +105,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     public static final String SOURCE_TYPE_FAST_CHECK = "FAST_CHECK"; // 极速打卡
     public static final String SOURCE_TYPE_SYSTEM_IMPORT = "SYSTEM_IMPORT"; // 系统倒入
     public static final String sourceType_FIELDNAME = "sourceType";
-    @FieldDescribe("打卡数据来源")
+    @FieldDescribe("打卡数据来源：USER_CHECK|AUTO_CHECK|FAST_CHECK|SYSTEM_IMPORT")
     @Column(length = length_128B, name = ColumnNamePrefix + sourceType_FIELDNAME)
     private String sourceType;
 
@@ -140,7 +140,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     private String checkInType;
 
     public static final String sourceDevice_FIELDNAME = "sourceDevice";
-    @FieldDescribe("来源设备：Mac|Windows|IOS|Android|其他")
+    @FieldDescribe("来源设备")
     @Column( length = JpaObject.length_128B, name = ColumnNamePrefix + sourceDevice_FIELDNAME )
     private String sourceDevice;
 
