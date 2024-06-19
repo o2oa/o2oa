@@ -632,14 +632,14 @@ const _getNameFlag = function(name){
  * @o2category server.common
  * @o2ordernumber 170
  * @since v9.0.4
- * @method    {GroupFactory}  group   后端的GroupFactory实例，可用于获取group群组相关数据, <a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/GroupFactory.html">查看javadoc</a>
- * @method    {IdentityFactory}  identity   后端的IdentityFactory实例，可用于获取identity身份相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/IdentityFactory.html">查看javadoc</a>
- * @method    {PersonFactory}  person   后端的PersonFactory实例，可用于获取person人员相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/PersonFactory.html">查看javadoc</a>
- * @method    {PersonAttributeFactory}  personAttribute   后端的GroupFactory实例，可用于获取personAttribute人员属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/PersonAttributeFactory.html">查看javadoc</a>
- * @method    {RoleFactory}  role   后端的RoleFactory实例，可用于获取role角色相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/RoleFactory.html">查看javadoc</a>
- * @method    {UnitFactory}  unit   后端的UnitFactory实例，可用于获取unit相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitFactory.html">查看javadoc</a>
- * @method    {UnitAttributeFactory}  unitAttribute   后端的UnitAttributeFactory实例，可用于获取unitAttribute组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitAttributeFactory.html">查看javadoc</a>
- * @method    {UnitDutyFactory}  unitDuty   后端的UnitDutyFactory实例，可用于获取unitDuty组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitDutyFactory.html">查看javadoc</a>
+ * @property    {GroupFactory}  group   后端的GroupFactory实例，可用于获取group群组相关数据
+ * @property    {IdentityFactory}  identity   后端的IdentityFactory实例，可用于获取identity身份相关数据
+ * @property    {PersonFactory}  person   后端的PersonFactory实例，可用于获取person人员相关数据
+ * @property    {PersonAttributeFactory}  personAttribute   后端的GroupFactory实例，可用于获取personAttribute人员属性相关数据
+ * @property    {RoleFactory}  role   后端的RoleFactory实例，可用于获取role角色相关数据
+ * @property    {UnitFactory}  unit   后端的UnitFactory实例，可用于获取unit相关数据
+ * @property    {UnitAttributeFactory}  unitAttribute   后端的UnitAttributeFactory实例，可用于获取unitAttribute组织属性相关数据
+ * @property    {UnitDutyFactory}  unitDuty   后端的UnitDutyFactory实例，可用于获取unitDuty组织属性相关数据
  * @o2syntax
  * //您可以通过以下引用来获取当前实例的org对象，如下：
  * this.org;
