@@ -52,6 +52,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 				"read": createDefineObject("read"),
 				"readCompleted": createDefineObject("readCompleted"),
 				"draft": createDefineObject("draft"),
+				"review": createDefineObject("review"),
+				"myCreated": createDefineObject("myCreated"),
 			};
 			MWF.defineProperties(this.countData, o);
 		}
@@ -64,6 +66,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.countData.taskCompleted = json.data.taskCompleted;
 			this.countData.read = json.data.read;
 			this.countData.readCompleted = json.data.readCompleted;
+			this.countData.review = json.data.review;
 
 			// this.pageData = Object.assign(this.pageData, json.data);
 			// this.taskCountNode.set("text", json.data.task);
@@ -75,6 +78,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.countData.draft = json.count;
 			// this.pageData = Object.assign(this.pageData, {"draft": json.size});
 			// this.draftCountNode.set("text", json.size);
+		}.bind(this));
+		this.action.ReviewAction.countWithPerson(layout.session.user.id, {
+			creatorPersonList: [layout.session.user.id]
+		}).then(function(json){
+			this.countData.myCreated = json.data.count;
 		}.bind(this));
 	},
 	loadList: function(type, callback){
@@ -97,6 +105,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	_loadListContent: function(type, callback){
 		var list = this[(type+"-list").camelCase()];
 		if (!list){
+			console.log('MWF.xApplication.process.workcenter.'+type.capitalize()+"List");
 			list = new MWF.xApplication.process.workcenter[type.capitalize()+"List"](this, { "onLoadData": this.hideSkeleton.bind(this) });
 			this[(type+"-list").camelCase()] = list;
 		}
@@ -151,8 +160,15 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 	getFilterData: function(){
 		var type = this.currentList.options.type.capitalize();
-		var action = type+"Action";
-		return this.action[action].filterAttribute().then(function(json){return json.data});
+		switch (type) {
+			case "MyCreated":
+				return this.action.ReviewAction.filterCreateEntry().then(function(json){return json.data});
+			case "Review":
+				return this.action.ReviewAction.filterEntry().then(function(json){return json.data});
+			default:
+				var action = type+"Action";
+				return this.action[action].filterAttribute().then(function(json){return json.data});
+		}
 	},
 	showFilter: function(e){
 		//console.log(this.filterDlg);
@@ -168,7 +184,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
 			this.currentList.filterAttribute = data;
-			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList}, "module": this})
+			var filterCategoryList = ['review','myCreated'].contains(this.currentList.options.type) ? this.lp.filterCategoryListReview : this.lp.filterCategoryList;
+			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList, filterCategoryList: filterCategoryList}, "module": this})
 		}.bind(this));
 
 		var _self = this;
@@ -1576,6 +1593,7 @@ MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
 		// }.bind(this));
 	}
 });
+
 MWF.xApplication.process.workcenter.DraftList = new Class({
 	Extends: MWF.xApplication.process.workcenter.ReadList,
 	options: {
@@ -1606,6 +1624,73 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 		this.app.desktop.openApplication(e, "process.Work", options);
 	}
 });
+
+MWF.xApplication.process.workcenter.ReviewList = new Class({
+	Extends: MWF.xApplication.process.workcenter.ReadList,
+	options: {
+		"itemHeight": 60,
+		"type": "review"
+	},
+	loadData: function(){
+		// this.app.filterActionNode.hide();
+		var _self = this;
+		return this.action.ReviewAction.V2ListPaging(this.page, this.size, this.filterList||{}).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.size;
+			return json.data;
+		}.bind(this));
+	},
+	openTask: function(e, data){
+		o2.api.form.openWork(data.work, "", data.title, {
+			"onPostClose": function(){
+				if (this.refresh) this.refresh();
+			}.bind(this)
+		});
+	},
+	loadFilterFlag: function(){
+		this.filterNode.empty();
+		var filterItemHtml = "<div class='ft_filterItem'>" +
+			"<div class='ft_filterItemTitle mainColor_color'>{{$.title}}:</div>" +
+			"<div class='ft_filterItemName'>{{$.name}}</div>"+
+			"<icon class='o2icon-clear ft_filterItemDel' data-key='{{$.key}}' data-name='{{$.name}}'/>"+
+			"</div>";
+		var _self = this;
+		this.lp.filterCategoryShortListReview.forEach(function(list){
+			if (_self.filterNameList && _self.filterNameList[list.key] && _self.filterNameList[list.key].length){
+				_self.filterNameList[list.key].forEach(function(i){
+					var html = o2.bindJson(filterItemHtml, {"title": list.name, "name": i, "key": list.key});
+					_self.filterNode.appendHTML(html);
+				});
+			}
+		});
+		this.filterNode.getElements(".ft_filterItemDel").addEvent("click", this.clearFilterItem.bind(this));
+	}
+});
+
+MWF.xApplication.process.workcenter.MyCreatedList = new Class({
+	Extends: MWF.xApplication.process.workcenter.ReviewList,
+	options: {
+		"itemHeight": 60,
+		"type": "myCreated"
+	},
+	loadData: function(){
+		// this.app.filterActionNode.hide();
+		var _self = this;
+		return this.action.ReviewAction.V2ListCreateNext(this.page, this.size, this.filterList||{}).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.size;
+			return json.data;
+		}.bind(this));
+	},
+	openTask: function(e, data){
+		o2.api.form.openWork(data.work, "", data.title, {
+			"onPostClose": function(){
+				if (this.refresh) this.refresh();
+			}.bind(this)
+		});
+	}
+});
+
 
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xApplication.process.workcenter.List.Tooltip = new Class({

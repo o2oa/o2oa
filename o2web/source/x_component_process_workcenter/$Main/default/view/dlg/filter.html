@@ -5,7 +5,7 @@
         <div class="ft_titleInputArea"><input value="{{($.filter) ? ($.filter.key || "") : ""}}" type="text" placeholder="{{$.lp.filterPlaceholder}}"  data-o2-events="keydown:inputFilter"/></div>
     </div>
     <div class="ft_filterItemsArea">
-        {{each ($.lp.filterCategoryList)}}
+        {{each ($.filterCategoryList)}}
             {{if ($._.data[$.key])}}
                 <div class="ft_itemsCategory">
                     <div class="ft_itemsCategoryTitle">{{$.name}}</div>
