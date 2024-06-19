@@ -259,7 +259,7 @@ public class Qiyeweixin extends ConfigObject {
 	public String getAppJsapiTicket() throws Exception {
 		if ((StringUtils.isNotEmpty(cachedAppJsapiTicket) && (null != cachedAppJsapiTicketDate))
 				&& (cachedAppJsapiTicketDate.after(new Date()))) {
-			return cachedJsapiTicket;
+			return cachedAppJsapiTicket;
 		} else {
 			String address = getApiAddress() + "/cgi-bin/ticket/get?access_token=" + this.corpAccessToken() + "&type=agent_config";
 			JsapiTicketResp resp = HttpConnection.getAsObject(address, null, JsapiTicketResp.class);

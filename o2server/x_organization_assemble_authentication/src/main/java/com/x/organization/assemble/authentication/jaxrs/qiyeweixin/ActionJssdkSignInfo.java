@@ -45,13 +45,19 @@ public class ActionJssdkSignInfo extends BaseAction {
       // 不知道这两个 ticket  有啥区别 默认用getJsapiTicket()
       if (wi.getJsticketType() != null && "app".equals(wi.getJsticketType())) {
         jsticket = Config.qiyeweixin().getAppJsapiTicket();
+          if (logger.isDebugEnabled()) {
+              logger.debug("应用的 jsticket: "+jsticket);
+          }
       } else {
         jsticket = Config.qiyeweixin().getJsapiTicket();
+          if (logger.isDebugEnabled()) {
+              logger.debug("企业的 jsticket: "+jsticket);
+          }
       }
       String corpId = Config.qiyeweixin().getCorpId();
       String agentId = Config.qiyeweixin().getAgentId();
       if (logger.isDebugEnabled()) {
-        logger.debug("参数 "+jsticket + " " + corpId + " " + agentId);
+        logger.debug("参数 jsticket： "+jsticket + " noncestr:  "+noncestr + " timestamp: "+ timestamp + " url: " +wi.getUrl() + " " + corpId + " " + agentId);
       }
       String signStr = sha1(jsticket, noncestr, timestamp, wi.getUrl());
       logger.info("加密结果 "+ signStr);  
