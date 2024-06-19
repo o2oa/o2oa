@@ -31,10 +31,22 @@
                 <div class="menuItemText">{{$.lp.readCompleted}}</div>
             </div>
 
+            <div class="menuItem" data-o2-element="reviewMenuNode" data-o2-events="click:loadList:review">
+                <div class="menuItemIcon"><icon class="o2icon-document-copy"></icon></div>
+                <div class="menuItemCount" data-o2-element="reviewCountNode"></div>
+                <div class="menuItemText">{{$.lp.review}}</div>
+            </div>
+
             <div class="menuItem" data-o2-element="draftMenuNode" data-o2-events="click:loadList:draft">
                 <div class="menuItemIcon"><icon class="o2icon-caogao"></icon></div>
                 <div class="menuItemCount" data-o2-element="draftCountNode"></div>
                 <div class="menuItemText">{{$.lp.draft}}</div>
+            </div>
+
+            <div class="menuItem" data-o2-element="myCreatedMenuNode" data-o2-events="click:loadList:myCreated">
+                <div class="menuItemIcon"><icon class="o2icon-publish1"></icon></div>
+                <div class="menuItemCount" data-o2-element="myCreatedCountNode"></div>
+                <div class="menuItemText">{{$.lp.myCreated}}</div>
             </div>
 
             <div class="createProcessAction mainColor_bg" data-o2-events="click:startProcess">

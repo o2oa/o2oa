@@ -132,6 +132,70 @@ MWF.xApplication.process.workcenter.LP={
 	"batch": "Batch processing",
 	"selectBatch": "Select multiple to-dos of the same link for batch processing",
 	"cannotSelectBatch": "To-dos in different links cannot be batch processed",
-	"unnamed": "unnamed"
+	"unnamed": "unnamed",
+	"review": "Refer to",
+	"myCreated": "My drafting",
+	"noReview": "No reference",
+	"noMyCreated": "No files I created",
+	"filterCategoryShortListReview": {
+		"0": {
+			"key": "applicationList",
+			"name": "application"
+		},
+		"1": {
+			"key": "processList",
+			"name": "flow"
+		},
+		"2": {
+			"key": "activityNameList",
+			"name": "activity"
+		},
+		"3": {
+			"key": "creatorUnitList",
+			"name": "department"
+		},
+		"4": {
+			"key": "startTimeMonthList",
+			"name": "Create month"
+		},
+		"5": {
+			"key": "completedList",
+			"name": "complete"
+		},
+		"6": {
+			"key": "key",
+			"name": "keyword"
+		}
+	},
+	"filterCategoryListReview": {
+		"0": {
+			"key": "applicationList",
+			"name": "apply name"
+		},
+		"1": {
+			"key": "processList",
+			"name": "Process Name"
+		},
+		"2": {
+			"key": "activityNameList",
+			"name": "Handling activities"
+		},
+		"3": {
+			"key": "creatorUnitList",
+			"name": "Create department"
+		},
+		"4": {
+			"key": "startTimeMonthList",
+			"name": "Create month"
+		},
+		"5": {
+			"key": "completedList",
+			"name": "Is the circulation completed"
+		},
+		"6": {
+			"key": "key",
+			"name": "keyword"
+		}
+	}
 }
 MWF.xApplication.process.workcenter["lp."+o2.language] = MWF.xApplication.process.workcenter.LP

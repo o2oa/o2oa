@@ -1032,3 +1032,27 @@
 .o2icon-triangle_up2:before {
   content: "\e9b4";
 }
+.o2icon-window:before {
+  content: "\e98b";
+}
+.o2icon-draft:before {
+  content: "\e9a7";
+}
+.o2icon-search1:before {
+  content: "\e9a8";
+}
+.o2icon-publish1:before {
+  content: "\e9cd";
+}
+.o2icon-dot-board:before {
+  content: "\e9f7";
+}
+.o2icon-document-copy:before {
+  content: "\ea09";
+}
+.o2icon-document:before {
+  content: "\e992";
+}
+.o2icon-layout:before {
+  content: "\e996";
+}
