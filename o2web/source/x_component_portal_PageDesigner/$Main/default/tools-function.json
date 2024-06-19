@@ -28,10 +28,10 @@
     "icon": "importer.png",
     "text": MWF.APPPOD.LP.modules.importer,
     "className": "Importer"
-  },
-  "SmartBI": { 
-    "icon": "smartbi.png",
-    "text": MWF.APPPOD.LP.modules.SmartBI,
-    "className": "SmartBI"
   }
+//  "SmartBI": {
+//    "icon": "smartbi.png",
+//    "text": MWF.APPPOD.LP.modules.SmartBI,
+//    "className": "SmartBI"
+//  }
 }

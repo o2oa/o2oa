@@ -258,11 +258,11 @@
     "className": "AssociatedDocument"
   },
 
-  "SmartBI": {
-    "icon": "smartbi.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
-    "className": "SmartBI"
-  },
+//  "SmartBI": {
+//    "icon": "smartbi.png",
+//    "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
+//    "className": "SmartBI"
+//  },
   "writingBoard": {
     "icon": "writingBoard.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.writingBoard,
