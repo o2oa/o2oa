@@ -79,6 +79,9 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "workCompletedInstance": "已完成流程实例(WorkCompleted)",
     "reviewInstance": "可阅读(Review)",
     "documentInstance": "内容管理文档(Document)",
+    "cmsReviewInstance": "内容管理可阅读(com.x.cms.core.entity.Review)",
+    "documentViewRecord": "内容管理阅读记录(DocumentViewRecord)",
+    "documentCommentInfo": "内容管理评论记录(DocumentCommentInfo)",
 
     "taskInstanceSql":"待办(PP_C_TASK)",
     "taskCompletedInstanceSql": "已办(PP_C_TASKCOMPLETED)",
@@ -88,6 +91,9 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "workCompletedInstanceSql":"已完成流程实例(PP_C_WORKCOMPLETED)",
     "reviewInstanceSql":"可阅读(PP_C_REVIEW)",
     "documentInstanceSql":"内容管理文档(CMS_DOCUMENT)",
+    "cmsReviewInstanceSql":"内容管理可阅读(CMS_REVIEW)",
+    "documentViewRecordSql":"内容管理阅读记录(CMS_DOCUMENT_VIEWRECORD)",
+    "documentCommentInfoSql":"内容管理评论记录(CMS_DOCUMENT_COMMENTINFO)",
 
     "autoAddColumns": "根据数据表生成列",
 

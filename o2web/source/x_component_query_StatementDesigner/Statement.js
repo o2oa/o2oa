@@ -977,6 +977,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 return "PP_C_REVIEW";
             case "com.x.cms.core.entity.Document":
                 return "CMS_DOCUMENT";
+            case "com.x.cms.core.entity.Review":
+                return "CMS_REVIEW";
+            case "com.x.cms.core.entity.DocumentViewRecord":
+                return "CMS_DOCUMENT_VIEWRECORD";
+            case "com.x.cms.core.entity.DocumentCommentInfo":
+                return "CMS_DOCUMENT_COMMENTINFO";
         }
     },
     setDynamicTableName: function(){
