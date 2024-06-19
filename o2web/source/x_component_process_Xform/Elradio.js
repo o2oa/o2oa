@@ -48,6 +48,22 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             this._loadUserInterface();
         }
     },
+    resetOption: function(){
+        this.reload();
+    },
+    reload: function(){
+        if (!this.vm) return;
+
+        var node = this.vm.$el;
+        this.vm.$destroy();
+        node.empty();
+
+        this.vm = null;
+
+        this.vueApp = null;
+
+        this._loadUserInterface();
+    },
     _loadNode: function(){
         this.node.empty();
         if (this.isReadonly()){

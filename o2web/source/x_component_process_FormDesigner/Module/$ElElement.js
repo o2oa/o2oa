@@ -231,12 +231,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	setPropertyName: function(){},
 	setPropertyId: function(){},
 	resetElement: function(){
-		//this._createVueAppNode();
-		//this.node.inject(this.vm.$el,"before");
-		// var node = this.vm.$el;
-		// this.vm.$destroy();
-		// node.destroy();
-
 		this.reseting = true;
 
 		var node = this.vm.$el;

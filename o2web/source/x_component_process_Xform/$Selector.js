@@ -8,22 +8,22 @@ o2.xDesktop.requireApp("process.Xform", "$Input", null, false);
  */
 MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     /** @lends MWF.xApplication.process.Xform.$Selector# */
-    {
+{
     Extends: MWF.APP$Input,
 
-        /**
-         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
-         * @event MWF.xApplication.process.Xform.$Selector#load
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
+    /**
+     * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+     * @event MWF.xApplication.process.Xform.$Selector#load
+     * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+     */
 
-    _showValue: function(node, value){
+    _showValue: function (node, value) {
         var optionItems = this.getOptions();
-        if( optionItems && typeOf(optionItems.then) === "function" ){
+        if (optionItems && typeOf(optionItems.then) === "function") {
             optionItems.then(function (opt) {
                 this.__showValue(node, value, opt)
             }.bind(this));
-        }else{
+        } else {
             this.__showValue(node, value, optionItems)
         }
     },
@@ -32,7 +32,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
      * @example
      * this.form.get('fieldId').resetOption();
      */
-    resetOption: function(){
+    resetOption: function () {
         this.node.empty();
         this.setOptions();
         this.fireEvent("resetOption");
@@ -52,23 +52,23 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
      *     //options为选择项数组
      * })
      */
-    getOptions: function(async, refresh){
+    getOptions: function (async, refresh) {
         this.optionsCache = null;
         var opt = this._getOptions(async, refresh);
-        if( (opt && typeOf(opt.then) === "function") ){
-            var p = Promise.resolve( opt ).then(function(option){
+        if ((opt && typeOf(opt.then) === "function")) {
+            var p = Promise.resolve(opt).then(function (option) {
                 this.moduleSelectAG = null;
                 this.optionsCache = (option || []);
                 return this.optionsCache;
             }.bind(this));
             this.moduleSelectAG = p;
             return p;
-        }else{
+        } else {
             this.optionsCache = (opt || []);
             return this.optionsCache;
         }
     },
-    _getOptions: function(async, refresh){
+    _getOptions: function (async, refresh) {
         debugger;
         switch (this.json.itemType) {
             case "values":
@@ -82,18 +82,21 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var opts, firstOpts = this.getFirstOption();
         switch (this.json.itemType) {
             case "dict":
-                opts = this.getOptionsWithDict( async, refresh ); break;
+                opts = this.getOptionsWithDict(async, refresh);
+                break;
             case "view":
-                opts = this.getOptionsWithView( async, refresh ); break;
+                opts = this.getOptionsWithView(async, refresh);
+                break;
             case "statement":
-                opts = this.getOptionsWithStatement( async, refresh ); break;
+                opts = this.getOptionsWithStatement(async, refresh);
+                break;
         }
-        if( opts && typeOf(opts.then) === "function" ){
-            return Promise.resolve(opts).then(function ( opts ) {
-                return this._contactOption( firstOpts, opts );
+        if (opts && typeOf(opts.then) === "function") {
+            return Promise.resolve(opts).then(function (opts) {
+                return this._contactOption(firstOpts, opts);
             }.bind(this));
-        }else{
-            return this._contactOption( firstOpts, opts );
+        } else {
+            return this._contactOption(firstOpts, opts);
         }
         // if( (defaultOpts && typeOf(defaultOpts.then) === "function" ) || (opts && typeOf(opts.then) === "function" ) ){
         //     return Promise.all( [defaultOpts, opts] ).then(function (arr) {
@@ -103,21 +106,21 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         //     return this._contactOption( defaultOpts, opts );
         // }
     },
-    _contactOption: function(opt1, opt2){
+    _contactOption: function (opt1, opt2) {
         var optA, optB;
-        if( !opt1 )opt1 = [];
-        if( !opt2 )opt2 = [];
-        optA = typeOf(opt1) !== "array" ? [opt1]: opt1;
-        optB = typeOf(opt2) !== "array" ? [opt2]: opt2;
+        if (!opt1) opt1 = [];
+        if (!opt2) opt2 = [];
+        optA = typeOf(opt1) !== "array" ? [opt1] : opt1;
+        optB = typeOf(opt2) !== "array" ? [opt2] : opt2;
         optA.each(function (o) {
-            if( o )optB.unshift( o );
+            if (o) optB.unshift(o);
         });
         return optB;
     },
-    getFirstOption: function(){
+    getFirstOption: function () {
         //return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
-        if( !this.json.firstOptionEnable )return [];
-        return  [this.json.firstOption||"|"];
+        if (!this.json.firstOptionEnable) return [];
+        return [this.json.firstOption || "|"];
     },
 
     /**
@@ -135,28 +138,28 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
      *     //optionData为选择项
      * })
      */
-    getOptionsObj : function( refresh ){
-        var optionItems = (refresh!==true && this.optionsCache) ? this.optionsCache : this.getOptions();
-        if( optionItems && typeOf(optionItems.then) === "function" ){
-            return Promise.resolve( optionItems ).then(function(optItems){
-                return this._getOptionsObj( optItems );
+    getOptionsObj: function (refresh) {
+        var optionItems = (refresh !== true && this.optionsCache) ? this.optionsCache : this.getOptions();
+        if (optionItems && typeOf(optionItems.then) === "function") {
+            return Promise.resolve(optionItems).then(function (optItems) {
+                return this._getOptionsObj(optItems);
             }.bind(this));
-        }else{
-            return this._getOptionsObj( optionItems );
+        } else {
+            return this._getOptionsObj(optionItems);
         }
     },
-    _getOptionsObj: function( optItems ){
+    _getOptionsObj: function (optItems) {
         var textList = [];
         var valueList = [];
-        optItems.each(function(item){
+        optItems.each(function (item) {
             var tmps = item.split("|");
-            textList.push( tmps[0] );
-            valueList.push( tmps[1] || tmps[0] );
+            textList.push(tmps[0]);
+            valueList.push(tmps[1] || tmps[0]);
         });
-        return { textList : textList, valueList : valueList };
+        return {textList: textList, valueList: valueList};
     },
 
-    setOptions: function(){
+    setOptions: function () {
         var optionItems = this.getOptions();
         this._setOptions(optionItems);
     },
@@ -171,29 +174,29 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
      * var data = this.form.get('fieldId').getTextData();
      * var text = data.text[0] //获取选中项的文本
      */
-    getTextData: function(){
+    getTextData: function () {
         var ops;
-        if (this.isReadonly()){
+        if (this.isReadonly()) {
             ops = this.getOptionsObj();
             var data = this._getBusinessData();
             var d = typeOf(data) === "array" ? data : [data];
-            if( ops && typeOf(ops.then) === "function" ){
+            if (ops && typeOf(ops.then) === "function") {
                 return Promise.resolve(ops).then(function (opts) {
                     return this._getTextData(d, opts)
                 }.bind(this));
-            }else{
+            } else {
                 return this._getTextData(d, ops)
             }
-        }else{
+        } else {
             return this._getInputTextData();
         }
     },
-    _getTextData: function(d, opts){
+    _getTextData: function (d, opts) {
         var value = [], text = [];
-        d.each( function (v) {
-            var idx = opts.valueList.indexOf( v );
-            value.push( v || "" );
-            text.push( idx > -1 ? opts.textList[idx] : (v || "") );
+        d.each(function (v) {
+            var idx = opts.valueList.indexOf(v);
+            value.push(v || "");
+            text.push(idx > -1 ? opts.textList[idx] : (v || ""));
         });
         if (!value.length) value = [""];
         if (!text.length) text = [""];
@@ -201,8 +204,8 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     },
 
 
-    getOptionsWithDict: function ( async, refresh ) {
-        if( !this.json.itemDict || !this.json.itemDict.length )return [];
+    getOptionsWithDict: function (async, refresh) {
+        if (!this.json.itemDict || !this.json.itemDict.length) return [];
         var obj = this.json.itemDict[0];
         var dict = new this.form.Macro.environment.Dict({
             "type": obj.appType,
@@ -214,62 +217,74 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         paths.splice(0, 1); //第一个是root，删掉
         var path = paths.length ? paths.join(".") : null;
 
-        var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemDictAsync !== false);
-        var data = dict.get( path, null, null, asy, refresh === true );
-        if( data && typeOf(data.then) === "function" ){
+        var asy = o2.typeOf(async) === "boolean" ? async : (this.json.itemDictAsync !== false);
+        var data = dict.get(path, null, null, asy, refresh === true);
+        if (data && typeOf(data.then) === "function") {
             return data.then(function (data) {
                 return this.parseDictOptions(data);
             }.bind(this));
-        }else{
+        } else {
             return this.parseDictOptions(data);
         }
     },
-    getString: function( d ){
+    getString: function (d) {
         switch (o2.typeOf(d)) {
-            case "null": return "";
-            case "string":  return d;
-            case "boolean": case "number": case "date": return d.toString();
-            default: return "";
+            case "null":
+                return "";
+            case "string":
+                return d;
+            case "boolean":
+            case "number":
+            case "date":
+                return d.toString();
+            default:
+                return "";
         }
     },
     parseDictOptions: function (d) {
         var arr = [], value, text, valuekey = this.json.dictValueKey, textkey = this.json.dictTextKey;
-        switch ( o2.typeOf(d) ) {
+        switch (o2.typeOf(d)) {
             case "array":
                 d.each(function (i) {
-                    switch ( o2.typeOf(i) ) {
+                    switch (o2.typeOf(i)) {
                         case "object":
-                            if( valuekey && textkey ){
-                                value = this.getString( i[valuekey] );
-                                text = this.getString( i[textkey] );
-                                arr.push( text + "|" + value );
-                            }else if( valuekey ){
-                                arr.push( this.getString( i[valuekey] ) );
-                            }else if( textkey ){
-                                arr.push( this.getString(i[textkey] ));
+                            if (valuekey && textkey) {
+                                value = this.getString(i[valuekey]);
+                                text = this.getString(i[textkey]);
+                                arr.push(text + "|" + value);
+                            } else if (valuekey) {
+                                arr.push(this.getString(i[valuekey]));
+                            } else if (textkey) {
+                                arr.push(this.getString(i[textkey]));
                             }
                             break;
-                        case "null": break;
-                        default: arr.push( i.toString() ); break;
+                        case "null":
+                            break;
+                        default:
+                            arr.push(i.toString());
+                            break;
                     }
                 }.bind(this));
                 return arr;
             case "object":
                 Object.each(d, function (i, key) {
-                    switch ( o2.typeOf(i) ) {
+                    switch (o2.typeOf(i)) {
                         case "object":
-                            if( valuekey && textkey ){
-                                value = this.getString( i[valuekey] );
-                                text = this.getString(i[ textkey] );
-                                arr.push( value + "|" + text );
-                            }else if( valuekey ){
-                                arr.push( this.getString( i[valuekey] ) );
-                            }else if( textkey ){
-                                arr.push( this.getString(i[ textkey] ) );
+                            if (valuekey && textkey) {
+                                value = this.getString(i[valuekey]);
+                                text = this.getString(i[textkey]);
+                                arr.push(value + "|" + text);
+                            } else if (valuekey) {
+                                arr.push(this.getString(i[valuekey]));
+                            } else if (textkey) {
+                                arr.push(this.getString(i[textkey]));
                             }
                             break;
-                        case "null": break;
-                        default: arr.push( i.toString() + "|" + key.toString() ); break;
+                        case "null":
+                            break;
+                        default:
+                            arr.push(i.toString() + "|" + key.toString());
+                            break;
                     }
                 }.bind(this))
                 return arr;
@@ -279,15 +294,15 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 return [d.toString()];
         }
     },
-    getOptionsWithView: function(async, refresh){
-        if( !this.json.itemView )return [];
+    getOptionsWithView: function (async, refresh) {
+        if (!this.json.itemView) return [];
         var obj = this.json.itemView;
 
-        var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
+        var asy = o2.typeOf(async) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.viewFilterList && this.json.viewFilterList.length){
-            this.json.viewFilterList.each(function(entry){
+        if (this.json.viewFilterList && this.json.viewFilterList.length) {
+            this.json.viewFilterList.each(function (entry) {
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
@@ -298,89 +313,90 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
             "application": obj.application,
             "filter": filter
         }, null, asy);
-        if( data && typeOf(data.then) === "function" ){
+        if (data && typeOf(data.then) === "function") {
             return data.then(function (data) {
                 return this.parseViewOptions(data);
             }.bind(this));
-        }else{
+        } else {
             return this.parseViewOptions(data);
         }
     },
-    parseViewOptions: function(json){
+    parseViewOptions: function (json) {
         var arr = [], value, text, valuekey = this.json.viewValueColumn, textkey = this.json.viewTextColumn;
-        json.grid.each(function(d){
+        json.grid.each(function (d) {
             var i = d.data || {};
-            if( valuekey && textkey ){
-                value = valuekey === "bundle" ? d.bundle : (this.getString( i[valuekey] ));
-                text = textkey === "bundle" ? d.bundle : (this.getString(i[ textkey] ));
-                arr.push( text + "|" + value );
-            }else if( valuekey ){
-                arr.push( valuekey === "bundle" ? d.bundle : (this.getString( i[valuekey] )) );
-            }else if( textkey ){
-                arr.push( textkey === "bundle" ? d.bundle : (this.getString(i[ textkey] )) );
+            if (valuekey && textkey) {
+                value = valuekey === "bundle" ? d.bundle : (this.getString(i[valuekey]));
+                text = textkey === "bundle" ? d.bundle : (this.getString(i[textkey]));
+                arr.push(text + "|" + value);
+            } else if (valuekey) {
+                arr.push(valuekey === "bundle" ? d.bundle : (this.getString(i[valuekey])));
+            } else if (textkey) {
+                arr.push(textkey === "bundle" ? d.bundle : (this.getString(i[textkey])));
             }
         }.bind(this))
         return arr.unique();
     },
 
-    getOptionsWithStatement: function(async, refresh){
-        if( !this.json.itemStatement )return [];
+    getOptionsWithStatement: function (async, refresh) {
+        if (!this.json.itemStatement) return [];
         var obj = this.json.itemStatement;
 
-        var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
+        var asy = o2.typeOf(async) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.statementFilterList && this.json.statementFilterList.length){
-            this.json.statementFilterList.each(function(entry){
+        if (this.json.statementFilterList && this.json.statementFilterList.length) {
+            this.json.statementFilterList.each(function (entry) {
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
         }
 
         var parameter = {};
-        if( this.json.statementParameterList && this.json.statementParameterList.length ){
-            this.json.statementParameterList.each(function(entry){
+        if(this.json.statementParameterList && this.json.statementParameterList.length) {
+            this.json.statementParameterList.each(function (entry) {
                 parameter[entry.parameter] = this.parseParameter(entry);
             }.bind(this));
         }
 
         var data = this.form.Macro.environment.statement.execute({
-            "name" : obj.name,
-            "mode" : "data",
-            "page" : 1, //（number）可选，当前页码，默认为1
-            "pageSize" : 1000, //（number）可选，每页的数据条数，默认为20
+            "name": obj.name,
+            "mode": "data",
+            "page": 1, //（number）可选，当前页码，默认为1
+            "pageSize": 1000, //（number）可选，每页的数据条数，默认为20
             "filter": filter,
-            "parameter" : parameter,
+            "parameter": parameter,
             "parameterList": this.json.parameterList
         }, null, asy);
-        if( data && typeOf(data.then) === "function" ){
+        if (data && typeOf(data.then) === "function") {
             return data.then(function (data) {
                 return this.parseStatementOptions(data);
             }.bind(this));
-        }else{
+        } else {
             return this.parseStatementOptions(data);
         }
     },
-    parseStatementOptions: function(json){
-        var arr = [], value, text, valuekey = this.json.statementValueColumn, textkey = this.json.statementTextColumn;
-        json.data.each(function(d){
-            if( valuekey && textkey ){
+    parseStatementOptions: function (json) {
+        var arr = [], value, text, valuekey = this.json.statementValueColumn,
+            textkey = this.json.statementTextColumn;
+        json.data.each(function (d) {
+            if (valuekey && textkey) {
                 value = this.getDataByPath(d, valuekey);
                 text = this.getDataByPath(d, textkey);
-                arr.push( text + "|" + value );
-            }else if( valuekey ){
+                arr.push(text + "|" + value);
+            } else if (valuekey) {
                 value = this.getDataByPath(d, valuekey);
-                arr.push( value );
-            }else if( textkey ){
+                arr.push(value);
+            } else if (textkey) {
                 text = this.getDataByPath(d, textkey);
-                arr.push( text );
+                arr.push(text);
             }
         }.bind(this));
         return arr.unique();
     },
     parseParameter: function (f) {
         var value = f.value;
-        if( f.valueType === "script" ){
+        if (f.valueType === "script") {
             value = this.form.Macro.exec(f.valueScript ? f.valueScript.code : "", this);
         }
         if (typeOf(value) === "date") {
@@ -431,10 +447,10 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
             if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
             if (obj[p]) {
                 obj = obj[p];
-            } else if(obj[p] === undefined || obj[p] === null) {
-                if( !isUppcase && i === 0 ){
+            } else if (obj[p] === undefined || obj[p] === null) {
+                if (!isUppcase && i === 0) {
                     return this.getDataByPath(obj, path, true);
-                }else{
+                } else {
                     obj = "";
                 }
                 break;
@@ -443,7 +459,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
             }
         }
-        return this.getString( obj );
+        return this.getString(obj);
     }
 
 });
