@@ -73,9 +73,9 @@ input,button,select,textarea{outline:none}
 select.script::-ms-expand { display: none; }
 ::-ms-clear, ::-ms-reveal{display: none;}
 
-.WordSection1 table{
-	border: 0 !important;
-}
+/*.WordSection1 table{*/
+/*	border: 0 !important;*/
+/*}*/
 
 @media print {
 

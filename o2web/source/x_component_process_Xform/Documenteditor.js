@@ -1239,14 +1239,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var div = document.createElement("div");
         div.style.height = '0px';
         document.body.appendChild(div);
-        div.innerHTML = data;
+        div.innerHTML = data.replace(/<br><\/div>/g, '</div>').replace(/[\n\r]/g, '');
         var text = div.innerText;
         if (div.remove){
             div.remove();
         }else{
             if (div.parentNode) div.parentNode.removeChild(div);
         }
-        return text.replace(/<br><\/div>/g, '</div>').replace(/[\n\r]/g, '');
+        return text;
+        // return text.replace(/<br><\/div>/g, '</div>');
 
     },
     checkSaveNewEdition: function(callback){
@@ -2797,7 +2798,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                 var editor;
                 try{
-                    editor = CKEDITOR.inline(node || this.layout_filetext, this._getEditorConfig(editorName));
+                    var editorConfig = this._getEditorConfig(editorName);
+                    editor = CKEDITOR.inline(node || this.layout_filetext, editorConfig);
                     this[(editorName || "filetextEditor")] = editor;
 
                     editor.on("instanceReady", function(e){
@@ -2839,6 +2841,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                     }.bind(this));
 
+                    const _self = this;
                     editor.on( 'paste', function( e ) {
                         var html = e.data.dataValue;
                         //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
@@ -2879,14 +2882,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         if (tableList && tableList.length){
                             var w = (node || this.layout_filetext).offsetWidth.toFloat()-2;
                             tableList.each(function(table){
-                                var twstyle = table.getStyle("width");
-                                var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
-                                var twatt = table.get("width");
-                                var twa = (twatt) ? (twatt.toFloat() || 0) : 0;
-                                var tw = Math.max(tws, twa);
-                                if (tw===0 || tw>w){
-                                    table.setStyle("width", ""+w+"px");
-                                }
+
+                                const rTable = _self.cloneTable(table, editorConfig);
+                                rTable.inject(table, 'after');
+                                table.destroy();
+
+
+                                // var twstyle = table.getStyle("width");
+                                // var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
+                                // var twatt = table.get("width");
+                                // var twa = (twatt) ? (twatt.toFloat() || 0) : 0;
+                                // var tw = Math.max(tws, twa);
+                                // if (tw===0 || tw>w){
+                                //     table.setStyle("width", ""+w+"px");
+                                // }
                             });
                             tableList.setStyles({
                                 "margin-left": "",
@@ -2894,20 +2903,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                 "word-break": "break-all"
                             });
                         }
-                        var tdList = tmp.getElements("td");
-                        tdList.each(function(td){
-                            var tbw_top = td.getStyle("border-top-width").toFloat() || 0;
-                            var tbw_bottom = td.getStyle("border-bottom-width").toFloat() || 0;
-                            var tbw_left = td.getStyle("border-left-width").toFloat() || 0;
-                            var tbw_right = td.getStyle("border-right-width").toFloat() || 0;
-
-                            td.setStyles({
-                                "border-top-width": (tbw_top/2)+"px",
-                                "border-bottom-width": (tbw_bottom/2)+"px",
-                                "border-left-width": (tbw_left/2)+"px",
-                                "border-right-width": (tbw_right/2)+"px",
-                            });
-                        });
+                        // var tdList = tmp.getElements("td");
+                        // tdList.each(function(td){
+                        //     var tbw_top = td.getStyle("border-top-width").toFloat() || 0;
+                        //     var tbw_bottom = td.getStyle("border-bottom-width").toFloat() || 0;
+                        //     var tbw_left = td.getStyle("border-left-width").toFloat() || 0;
+                        //     var tbw_right = td.getStyle("border-right-width").toFloat() || 0;
+                        //
+                        //     td.setStyles({
+                        //         "border-top-width": (tbw_top/2)+"px",
+                        //         "border-bottom-width": (tbw_bottom/2)+"px",
+                        //         "border-left-width": (tbw_left/2)+"px",
+                        //         "border-right-width": (tbw_right/2)+"px",
+                        //     });
+                        // });
 
                         e.data.dataValue = tmp.get("html");
                         tmp.destroy();
@@ -2981,6 +2990,56 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
             }.bind(this));
         }
+    },
+    getTableWidth(table) {
+        var twstyle = table.getStyle("width");
+        var tws = (twstyle) ? (parseFloat(twstyle) || 0) : 0;
+        var twatt = table.get("width");
+        var twa = (twatt) ? (parseFloat(twatt) || 0) : 0;
+        return Math.max(tws, twa);
+    },
+
+    cloneTable(table, editorConfig) {
+        const rows = table.rows;
+        const w = this.getTableWidth(table);
+
+        const rTable = new Element('table');
+        rTable.set({
+            "border": editorConfig.qtBorder,
+            "cellpadding": editorConfig.qtCellPadding || 0,
+            "cellspacing": editorConfig.qtCellSpacing || 0,
+            "class": editorConfig.qtClass
+        });
+        rTable.setStyles(editorConfig.qtStyle);
+        rTable.setStyles({
+            "width": editorConfig.qtWidth,
+            "word-break": "break-all"
+        });
+        rTable.dataset.tableType = 'o2';
+
+        for (let i = 0; i < rows.length; i++) {
+            const r = rows.item(i);
+            const cr = new Element(r.tagName);
+            cr.inject(rTable, 'bottom');
+            const cells = r.getElements('td,th');
+            cells.forEach((c) => {
+                const cc = new Element(c.tagName);
+                const rowspan = c.getAttribute('rowspan');
+                const colspan = c.getAttribute('colspan');
+                if (rowspan) cc.set('rowspan', rowspan);
+                if (colspan) cc.set('colspan', colspan);
+
+                const w = c.getStyle('width');
+                if (w) cc.setStyle('width', w);
+
+                const pw = c.get('width');
+                if (w) cc.set('width', pw);
+
+                cc.set('html', c.get('html'));
+                cc.inject(cr, 'bottom');
+            });
+        }
+        return rTable;
     },
     _loadEvents: function(editorConfig){
         Object.each(this.json.events, function(e, key){
