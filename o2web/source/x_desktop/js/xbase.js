@@ -84,6 +84,8 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 body.data.workId = options.workId;
             } else if (options.workCompletedId) {
                 body.data.workCompletedId = options.workCompletedId;
+            } else if (options.draftId) {
+                body.data.draftId = options.draftId;
             }
             window.o2android.postMessage(JSON.stringify(body));
             return true;
@@ -104,12 +106,14 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 window.webkit.messageHandlers.openO2Work.postMessage({
                     "work": options.workId,
                     "workCompleted": "",
+                    "draftId": options.draftId,
                     "title": options.title || ""
                 });
             } else if (options.workCompletedId) {
                 window.webkit.messageHandlers.openO2Work.postMessage({
                     "work": "",
                     "workCompleted": options.workCompletedId,
+                    "draftId": options.draftId,
                     "title": options.title || ""
                 });
             }

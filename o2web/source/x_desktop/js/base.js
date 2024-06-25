@@ -112,6 +112,8 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                     body.data.workId = options.workId;
                 } else if (options.workCompletedId) {
                     body.data.workCompletedId = options.workCompletedId;
+                } else if (options.draftId) {
+                    body.data.draftId = options.draftId;
                 }
                 window.o2android.postMessage(JSON.stringify(body));
                 return true;
@@ -132,12 +134,14 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                     window.webkit.messageHandlers.openO2Work.postMessage({
                         "work": options.workId,
                         "workCompleted": "",
+                        "draftId": options.draftId,
                         "title": options.title || options.docTitle || ""
                     });
                 } else if (options.workCompletedId) {
                     window.webkit.messageHandlers.openO2Work.postMessage({
                         "work": "",
                         "workCompleted": options.workCompletedId,
+                        "draftId": options.draftId,
                         "title": options.title || options.docTitle || ""
                     });
                 }
