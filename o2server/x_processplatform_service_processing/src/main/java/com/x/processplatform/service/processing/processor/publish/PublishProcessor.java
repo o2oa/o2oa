@@ -37,7 +37,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 /**
  * 数据发布节点处理器
- * 
+ *
  * @author sword
  */
 public class PublishProcessor extends AbstractPublishProcessor {
@@ -229,8 +229,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				if (ListTools.isNotEmpty(list)) {
 					CmsNotify cmsNotify = new CmsNotify(list);
 					ThisApplication.context().applications().postQuery(x_cms_assemble_control.class, Applications
-							.joinQueryUri("document", woId.getId(), "update", aeiObjects.getWork().getJob()),
-							cmsNotify);
+							.joinQueryUri("document", woId.getId(), "notify"), cmsNotify);
 				}
 			}
 		} catch (Exception e) {
