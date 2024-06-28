@@ -1669,7 +1669,7 @@
             "code": "",
             "html": ""
           },
-          "templateType": "section",
+          "templateType": "default",
           "moduleName": "div",
           "recoveryStyles": {
             "padding": "20px 0px",
@@ -1994,7 +1994,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -2003,11 +2002,9 @@
             "color": "#666"
           },
           "recoveryInputStyles": {
-            "text-align": "right",
             "height": "26px",
             "color": "#666",
-            "font-size": "18px",
-            "float": "right"
+            "font-size": "18px"
           },
           "preprocessing": "y",
           "pid": "PC91703b09-c09b-4610-b930-6148156c5c67textfield",
@@ -2031,7 +2028,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -2040,11 +2036,9 @@
             "color": "#666"
           },
           "recoveryInputStyles": {
-            "text-align": "right",
             "height": "26px",
             "color": "#666",
-            "font-size": "18px",
-            "float": "right"
+            "font-size": "18px"
           },
           "preprocessing": "y",
           "pid": "PC91703b09-c09b-4610-b930-6148156c5c67textfield_2",
@@ -2068,7 +2062,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -2077,11 +2070,9 @@
             "color": "#666"
           },
           "recoveryInputStyles": {
-            "text-align": "right",
             "height": "26px",
             "color": "#666",
-            "font-size": "18px",
-            "float": "right"
+            "font-size": "18px"
           },
           "preprocessing": "y",
           "events": {
@@ -2112,7 +2103,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -2121,11 +2111,9 @@
             "color": "#666"
           },
           "recoveryInputStyles": {
-            "text-align": "right",
             "height": "26px",
             "color": "#666",
-            "font-size": "18px",
-            "float": "right"
+            "font-size": "18px"
           },
           "preprocessing": "y",
           "events": {
@@ -2156,7 +2144,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -2165,11 +2152,9 @@
             "color": "#666"
           },
           "recoveryInputStyles": {
-            "text-align": "right",
             "height": "26px",
             "color": "#666",
-            "font-size": "18px",
-            "float": "right"
+            "font-size": "18px"
           },
           "preprocessing": "y",
           "pid": "PC91703b09-c09b-4610-b930-6148156c5c67number_2",
@@ -3957,7 +3942,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -3994,7 +3978,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -4038,7 +4021,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -4082,7 +4064,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",
@@ -4121,7 +4102,6 @@
           "recoveryStyles": {
             "border-bottom": "1px solid #ccc",
             "background": "transparent ",
-            "height": "26px",
             "line-height": "26px",
             "border-top": "0px",
             "border-left": "0px",

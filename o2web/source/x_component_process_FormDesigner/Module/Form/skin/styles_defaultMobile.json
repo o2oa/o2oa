@@ -49,7 +49,7 @@
       }
     },
     "section": {
-      "name": "区段",
+      "name": "区段标题",
       "styles": {
         "margin": "20px auto",
         "background-color": "#ffffff",

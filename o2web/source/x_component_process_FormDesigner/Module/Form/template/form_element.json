@@ -756,7 +756,7 @@
             "code": "",
             "html": ""
           },
-          "templateType": "section",
+          "templateType": "default",
           "moduleName": "div",
           "isSaved": true,
           "recoveryStyles": {
