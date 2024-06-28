@@ -93,11 +93,11 @@ var apps = [
     { "folder": "x_component_IMV2", "tasks": ["move", "min"] },
     { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_Demo", "tasks": ["move", "min"] },
-    { "folder": "x_component_appstore", "tasks": [] },
-    { "folder": "x_component_appstore_application", "tasks": [] },
-    { "folder": "x_component_systemconfig", "tasks": [] },
-    { "folder": "x_component_attendancev2", "tasks": [] },
-    { "folder": "x_init", "tasks": [] }
+    // { "folder": "x_component_appstore", "tasks": [] },
+    // { "folder": "x_component_appstore_application", "tasks": [] },
+    // { "folder": "x_component_systemconfig", "tasks": [] },
+    // { "folder": "x_component_attendancev2", "tasks": [] },
+    // { "folder": "x_init", "tasks": [] }
 ];
 
 module.exports = apps;

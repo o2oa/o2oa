@@ -210,9 +210,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
     //Camera Login
     _createTopContent: function () {
-        // this.actions = MWF.Actions.get("x_organization_assemble_authentication");
-        //
-        // this.faceLogin = false;
+        this.actions = MWF.Actions.get("x_organization_assemble_authentication");
+
+        this.faceLogin = false;
         // this.actions.getLoginMode(function (json) {
         //     this.faceLogin = json.data.faceLogin;
         // }.bind(this), null, false);
