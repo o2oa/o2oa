@@ -4826,6 +4826,22 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 if (category) {
                     options["category"] = category
                 }
+                if (data) {
+                    options["data"] = data
+                }
+                if (identity) {
+                    options["identity"] = identity
+                }
+                if (typeof(latest) == 'undefined' || latest === null) {
+                    options["latest"] = true
+                } else {
+                    options["latest"] = latest
+                }
+                if (typeof(ignoreTitle) == 'undefined' || ignoreTitle === null) {
+                    options["ignoreTitle"] = false
+                } else {
+                    options["ignoreTitle"] = ignoreTitle
+                }
                 if (window.o2android && window.o2android.postMessage) {
                         var body = {
                         type: "createO2CmsDocument",
