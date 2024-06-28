@@ -2349,6 +2349,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                         var work = data.work;
                                         var options = {
                                             "draft": work,
+                                            "draftData":data.data||{},
                                             "appId": "process.Work" + (new o2.widget.UUID).toString(),
                                             "desktopReload": false
                                         };
