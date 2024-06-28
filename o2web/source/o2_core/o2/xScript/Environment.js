@@ -4113,7 +4113,12 @@ MWF.xScript.Environment = function(ev){
                                 var application;
                                 if (data.work){
                                     var work = data.work;
-                                    var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
+                                    var options = {
+                                        "draft": work,
+                                        "draftData":data.data||{},
+                                        "appId": "process.Work"+(new o2.widget.UUID).toString(),
+                                        "desktopReload": false
+                                    };
                                     if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
                                     application = layout.desktop.openApplication(null, "process.Work", options);
                                 }else{

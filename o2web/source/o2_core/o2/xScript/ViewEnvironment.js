@@ -4935,12 +4935,17 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             "workData": data,
                             "identity": identity,
                             "latest": latest,
-                            "skipDraftCheck": skipDraftCheck,
+                            "skipDraftCheck": skipDraftCheck, 
                             "onStarted": function (data, title, processName) {
                                 var application;
                                 if (data.work){
                                     var work = data.work;
-                                    var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
+                                    var options = {
+                                        "draft": work,
+                                        "draftData":data.data||{}, 
+                                        "appId": "process.Work"+(new o2.widget.UUID).toString(),
+                                        "desktopReload": false
+                                    };
                                     if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
                                     application = layout.desktop.openApplication(null, "process.Work", options);
                                 }else{
