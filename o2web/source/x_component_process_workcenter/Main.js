@@ -1611,7 +1611,7 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 		var _self = this;
 		return this.action.DraftAction.listMyPaging(this.page, this.size, {}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
 	},
@@ -1636,7 +1636,7 @@ MWF.xApplication.process.workcenter.ReviewList = new Class({
 		var _self = this;
 		return this.action.ReviewAction.V2ListPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
 	},
@@ -1678,7 +1678,7 @@ MWF.xApplication.process.workcenter.MyCreatedList = new Class({
 		var _self = this;
 		return this.action.ReviewAction.V2ListCreateNext(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.size;
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
 	},

@@ -73,7 +73,7 @@
       }
     },
     "section": {
-      "name": "区段",
+      "name": "区段标题",
       "styles": {
         "padding": "20px 0px",
         "background-color": "#FFF",

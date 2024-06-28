@@ -64,9 +64,8 @@
       }
     },
     "section": {
-      "name": "区段",
+      "name": "区段标题",
       "styles": {
-        "height": "18px",
         "background-color": "#ffffff",
         "line-height": "18px",
         "padding": "0px 10px",
