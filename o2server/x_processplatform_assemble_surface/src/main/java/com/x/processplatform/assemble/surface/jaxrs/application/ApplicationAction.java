@@ -81,13 +81,13 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取指定范围内的可见的应用,同时判断应用下有启动的流程.", action = ActionListRangeWithPerson.class)
+	@JaxrsMethodDescribe(value = "获取指定范围内的可见的应用,如果不指定则所有,同时判断应用下有启动的流程.", action = ActionListRangeWithPerson.class)
 	@POST
 	@Path("list/range")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithPersonApplication(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void listRangeWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<List<ActionListRangeWithPerson.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

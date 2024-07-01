@@ -17,6 +17,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -130,6 +131,7 @@ class ActionListRangeWithPerson extends BaseAction {
 
 		private static final long serialVersionUID = 4212513683929130715L;
 
+		@FieldDescribe("应用列表")
 		private List<String> applicationList = new ArrayList<>();
 
 		public List<String> getApplicationList() {
