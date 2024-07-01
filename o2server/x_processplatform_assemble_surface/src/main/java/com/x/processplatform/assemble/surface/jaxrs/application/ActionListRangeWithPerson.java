@@ -76,7 +76,8 @@ class ActionListRangeWithPerson extends BaseAction {
 				List<String> roles = business.organization().role().listWithPerson(effectivePerson);
 				List<String> ids = listFromApplication(business, effectivePerson, roles, identities, units);
 				if (ListTools.isNotEmpty(wi.getApplicationList())) {
-					ids = ListUtils.intersection(wi.getApplicationList(), ids);
+					ids = ListUtils.intersection(business.application().pick(wi.getApplicationList()).stream()
+							.map(Application::getId).collect(Collectors.toList()), ids);
 				}
 				for (String id : ids) {
 					Application o = business.application().pick(id);
