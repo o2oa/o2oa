@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -13,6 +14,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -79,6 +81,24 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取指定范围内的可见的应用,同时判断应用下有启动的流程.", action = ActionListRangeWithPerson.class)
+	@POST
+	@Path("list/range")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithPersonApplication(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<List<ActionListRangeWithPerson.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListRangeWithPerson().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@Operation(summary = "获取可见的应用,同时判断应用下有启动的流程,并进行流程的名称匹配.", operationId = OPERATIONID_PREFIX
 			+ "listWithPersonLike", responses = { @ApiResponse(content = {
 					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPersonLike.Wo.class))) }) })
@@ -123,14 +143,15 @@ public class ApplicationAction extends StandardJaxrsAction {
 
 	@Operation(summary = "根据当前用户所有可见的Application,并绑定其可启动终端的Process.", operationId = OPERATIONID_PREFIX
 			+ "listWithPersonAndTerminal", responses = { @ApiResponse(content = {
-			@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPersonAndTerminal.Wo.class))) }) })
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPersonAndTerminal.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "根据当前用户所有可见的Application,并绑定其可启动终端的Process.", action = ActionListWithPersonAndTerminal.class)
 	@GET
 	@Path("list/terminal/{terminal}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithPersonAndTerminal(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								  @JaxrsParameterDescribe("流程启动终端：client(pc端可启动)、mobile(手机端可启动)") @PathParam("terminal") String terminal) {
+	public void listWithPersonAndTerminal(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("流程启动终端：client(pc端可启动)、mobile(手机端可启动)") @PathParam("terminal") String terminal) {
 		ActionResult<List<ActionListWithPersonAndTerminal.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -185,15 +206,14 @@ public class ApplicationAction extends StandardJaxrsAction {
 	}
 
 	@Operation(summary = "校验当前用户是否是指定应用的管理员.", operationId = OPERATIONID_PREFIX + "isManager", responses = {
-			@ApiResponse(content = {
-					@Content(schema = @Schema(implementation = ActionIsManager.Wo.class)) }) })
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionIsManager.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "校验当前用户是否是指定应用的管理员.", action = ActionIsManager.class)
 	@GET
 	@Path("{flag}/is/manager")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void isManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
 		ActionResult<ActionIsManager.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
