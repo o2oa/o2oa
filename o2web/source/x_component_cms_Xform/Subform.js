@@ -70,5 +70,24 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
         //        if (callback) callback();
         //    }
         //}
+    },
+    getSubformData: function (data) {
+        if (!data || typeOf(data) !== "object") return;
+        var subformDataStr = null;
+        if ( this.form.json.mode !== "Mobile" && !layout.mobile){
+            subformDataStr = data.data;
+        }else{
+            subformDataStr = data.mobileData;
+        }
+        this.subformData = null;
+        if (subformDataStr) {
+            if( this.form.isParseLanguage ) {
+                var jsonStr = o2.bindJson(MWF.decodeJsonString(subformDataStr), {"lp": MWF.xApplication.process.Xform.LP.form});
+                this.subformData = JSON.decode(jsonStr);
+            }else{
+                this.subformData = JSON.decode(MWF.decodeJsonString(subformDataStr));
+            }
+            this.subformData.updateTime = data.updateTime;
+        }
     }
 });
