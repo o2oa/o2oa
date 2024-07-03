@@ -11,6 +11,7 @@ MWF.xApplication.process.TaskCenter.LP = {
     "read": "待阅",
     "readed": "已阅",
     "review": "参阅",
+    "myCreated": "我创建的",
     "start": "启动",
     "startTop5": "常用流程",
     "startProcess": "可启动流程",
