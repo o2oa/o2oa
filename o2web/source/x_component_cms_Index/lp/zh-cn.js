@@ -1,3 +1,6 @@
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.cms = MWF.xApplication.cms || {};
+MWF.xApplication.cms.Index = MWF.xApplication.cms.Index || {};
 MWF.xApplication.cms.Index.LP = {
 	"title": "内容管理首页",
 	"createDocument" : "新建文档",

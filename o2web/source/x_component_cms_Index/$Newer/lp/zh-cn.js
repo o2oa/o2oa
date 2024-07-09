@@ -1,3 +1,7 @@
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.cms = MWF.xApplication.cms || {};
+MWF.xApplication.cms.Index = MWF.xApplication.cms.Index || {};
+MWF.xApplication.cms.Index.Newer = MWF.xApplication.cms.Index.Newer || {};
 MWF.xApplication.cms.Index.Newer.lp = {
     "start": "新建",
     "createDocument" : "新建",

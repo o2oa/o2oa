@@ -323,6 +323,8 @@ function build_web_language_pack(cb){
     cb();
 }
 
+exports.build_web_language_pack = build_web_language_pack
+
 var moduleFolder = [];
 async function build_web_module() {
     var dest = 'target/o2server/servers/webServer/';

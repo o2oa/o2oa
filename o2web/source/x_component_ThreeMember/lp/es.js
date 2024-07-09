@@ -1,7 +1,8 @@
-MWF.xApplication.ThreeMember.LP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.ThreeMember = MWF.xApplication.ThreeMember || {};
+MWF.xApplication.ThreeMember.LP={
 	"title": "Tres miembros",
-
-	"person" : "Usuario",
+	"person": "Usuario",
 	"node": "Nodo",
 	"clientIp": "IP del cliente",
 	"module": "Módulo",
@@ -24,26 +25,23 @@ MWF.xApplication.ThreeMember.LP = {
 	"noItem": "No se encontraron datos bajo las condiciones actuales",
 	"all": "Todos los registros",
 	"sendData": "Datos de solicitud",
-
-	"cancel" : "Cancelar",
-	"close" : "Cerrar",
-	"ok" : "Aceptar",
-	"edit" : "Editar",
-	"remove" : "Eliminar",
-	"action" : "Acción",
+	"cancel": "Cancelar",
+	"close": "Cerrar",
+	"ok": "Aceptar",
+	"edit": "Editar",
+	"remove": "Eliminar",
+	"action": "Acción",
 	"view": "Ver",
 	"viewDetail": "Ver",
 	"logDetail": "Detalles del registro",
-
 	"yesterday": "Ayer",
-	"twoDaysAgo" : "Anteayer",
-	"weekAgo" : "Hace una semana",
-	"dayAgo" : "Días atrás",
-	"hourAgo" : "Horas atrás",
-	"minuteAgo" : "Minutos atrás",
-	"justNow" : "Ahora mismo",
+	"twoDaysAgo": "Anteayer",
+	"weekAgo": "Hace una semana",
+	"dayAgo": "Días atrás",
+	"hourAgo": "Horas atrás",
+	"minuteAgo": "Minutos atrás",
+	"justNow": "Ahora mismo",
 	"publishJustNow": "Recién publicado",
-
 	"logConfig": "Configuración de registro",
 	"viewLog": "regresar",
 	"status": "estado",
@@ -61,7 +59,6 @@ MWF.xApplication.ThreeMember.LP = {
 	"deleteConfigText": "No se puede restaurar después de eliminarlo. ¿Está seguro de que desea eliminar esta configuración de registro?",
 	"deleteConfigOK": "Configuración eliminada exitosamente",
 	"createConfig": "Crear configuración de registro",
-
 	"home": "Ingresar al sistema",
 	"syncLogSuccess": "Sincronización de registros exitosa",
 	"process": "Administración de procesos",
@@ -91,17 +88,16 @@ MWF.xApplication.ThreeMember.LP = {
 	"password": "Contraseñas",
 	"logout": "Cerrar sesión",
 	"welcome": "Hola,",
-	"noDataText" : {
+	"noDataText": {
 		"process": "No hay procesos en esta aplicación",
 		"category": "No hay categorías en esta aplicación",
 		"view": "No hay vistas en esta aplicación",
 		"stat": "No hay estadísticas en esta aplicación",
 		"table": "No hay tablas de datos en esta aplicación",
 		"statement": "No hay configuraciones de consulta en esta aplicación",
-		"importer": "No hay configuraciones de importación en esta aplicación",
+		"importer": "No hay configuraciones de importación en esta aplicación"
 	},
-
-	"permission" : {
+	"permission": {
 		"application": "Permiso de aplicación",
 		"process": "Permiso de proceso",
 		"column": "Permiso de columna",
@@ -114,8 +110,7 @@ MWF.xApplication.ThreeMember.LP = {
 		"statement": "Permiso de consulta",
 		"importer": "Permiso de importación"
 	},
-
-	"passwordConfig":{
+	"passwordConfig": {
 		"title": "Configuración de la información básica de la cuenta de usuario del sistema",
 		"password": "Contraseña predeterminada para nuevos usuarios",
 		"passwordNote": "Al crear nuevos usuarios, se utilizará la siguiente contraseña. Los usuarios pueden cambiarla después de iniciar sesión en el sistema.",
@@ -137,7 +132,9 @@ MWF.xApplication.ThreeMember.LP = {
 		"securityManagerPasswordNote": "Contraseña del administrador de seguridad (securityManager)",
 		"auditManagerPassword": "Contraseña del auditor de seguridad",
 		"auditManagerPasswordNote": "Contraseña del auditor de seguridad (auditManager)"
-	}
-
-
-};
+	},
+	"delete": "Eliminar",
+	"noServiceNote": "El sistema no ha instalado un servicio de fondo de gestión de tres miembros, Póngase en contacto con el Administrador para instalarlo en el mercado de aplicaciones.",
+	"lptest": "Esta es la prueba del paquete de idiomas."
+}
+MWF.xApplication.ThreeMember["lp."+o2.language] = MWF.xApplication.ThreeMember.LP
