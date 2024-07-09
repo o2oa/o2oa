@@ -75,12 +75,14 @@ MWF.xApplication.process.TaskCenter.List = new Class({
                         this.currentFilterNode.getFirst("span").set("text", "("+this.count+")");
                         this.isCountShow = true;
                     }
-                    if (json.count<=this.items.length){
-                        this.isItemsLoaded = true;
-                    }
+
                     json.data.each(function(task){
                         this.items.push(this._createItem(task));
                     }.bind(this));
+
+                    if (json.count<=this.items.length){
+                        this.isItemsLoaded = true;
+                    }
 
                     this.isItemLoadding = false;
 

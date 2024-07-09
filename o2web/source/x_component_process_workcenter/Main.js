@@ -1676,7 +1676,7 @@ MWF.xApplication.process.workcenter.MyCreatedList = new Class({
 	loadData: function(){
 		// this.app.filterActionNode.hide();
 		var _self = this;
-		return this.action.ReviewAction.V2ListCreateNext(this.page, this.size, this.filterList||{}).then(function(json){
+		return this.action.ReviewAction.V2ListCreatePaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
 			return json.data;
