@@ -1,6 +1,7 @@
-MWF.xApplication.ThreeMember.LP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.ThreeMember = MWF.xApplication.ThreeMember || {};
+MWF.xApplication.ThreeMember.LP={
 	"title": "Three-Member Management",
-
 	"person": "User",
 	"node": "Node",
 	"clientIp": "Client IP",
@@ -15,7 +16,7 @@ MWF.xApplication.ThreeMember.LP = {
 	"updateTime": "End Time",
 	"requestTime": "Request Time",
 	"spendTime": "Execution duration (milliseconds)",
-	"spendTime1 ":" Execution duration",
+	"spendTime1 ": " Execution duration",
 	"millisecond ": "milliseconds",
 	"firstPage": "First Page",
 	"lastPage": "Last Page",
@@ -24,7 +25,6 @@ MWF.xApplication.ThreeMember.LP = {
 	"noItem": "No data is queried under the current conditions",
 	"all": "All Logs",
 	"sendData": "Request Data",
-
 	"cancel": "Cancel",
 	"close": "Close",
 	"ok": "OK",
@@ -34,7 +34,6 @@ MWF.xApplication.ThreeMember.LP = {
 	"view": "View",
 	"viewDetail": "View Detail",
 	"logDetail": "Log Detail",
-
 	"yesterday": "Yesterday",
 	"twoDaysAgo": "The day before yesterday",
 	"weekAgo": "Week Ago",
@@ -43,7 +42,6 @@ MWF.xApplication.ThreeMember.LP = {
 	"minuteAgo": "minutes ago",
 	"justNow": "JustNow",
 	"publishJustNow": "Just published",
-
 	"logConfig": "Log configuration",
 	"viewLog": "Log",
 	"status": "status",
@@ -61,7 +59,6 @@ MWF.xApplication.ThreeMember.LP = {
 	"deleteConfigText": "It cannot be restored after deletion. Are you sure you want to delete this log configuration?",
 	"deleteConfigOK": "Configuration deleted successfully",
 	"createConfig": "Create log configuration",
-
 	"home": "Enter system",
 	"syncLogSuccess": "Sync log success",
 	"process": "Process Management",
@@ -92,17 +89,16 @@ MWF.xApplication.ThreeMember.LP = {
 	"logout": "Logout",
 	"welcome": "Hello,",
 	"noServiceNote": "The three-person management background service is not installed in the system, please contact the administrator to install it in the application market.",
-	"noDataText" : {
+	"noDataText": {
 		"process": "There is no process in this application",
 		"category": "There is no category in this app",
 		"view": "There is no view in this application",
 		"stat": "There are no statistics for this app",
 		"table": "There is no data table in this application",
 		"statement": "There is no query configuration under this application",
-		"importer": "There is no import configuration under this application",
+		"importer": "There is no import configuration under this application"
 	},
-
-	"permission" : {
+	"permission": {
 		"application": "Application permissions",
 		"process": "Process permissions",
 		"column": "Column permissions",
@@ -115,8 +111,7 @@ MWF.xApplication.ThreeMember.LP = {
 		"statement": "Query permission",
 		"importer": "Import permission"
 	},
-
-	"passwordConfig":{
+	"passwordConfig": {
 		"title": "Basic information about the personnel account of the configuration system",
 		"password": "Default password for new users",
 		"passwordNote": "When creating a new user, use the following password, the user can modify it after logging in to the system",
@@ -138,5 +133,10 @@ MWF.xApplication.ThreeMember.LP = {
 		"securityManagerPasswordNote": "securityManager Password",
 		"auditManagerPassword": "Security Auditor Password",
 		"auditManagerPasswordNote": "auditManager Password"
-	}
-};
+	},
+	"spendTime1": "Execution duration",
+	"millisecond": "millisecond",
+	"delete": "delete",
+	"lptest": "This is a language pack test"
+}
+MWF.xApplication.ThreeMember["lp."+o2.language] = MWF.xApplication.ThreeMember.LP

@@ -55,7 +55,7 @@ public class IdentityFactory {
 
 	/** 批量获取身份对象 */
 	public List<WoIdentity> listWoObject(List<String> values) throws Exception {
-		List<? extends Identity> os = ActionListObject.execute(context, values, false);
+		List<? extends Identity> os = ActionListObject.execute(context, values, true);
 		return (List<WoIdentity>) os;
 	}
 

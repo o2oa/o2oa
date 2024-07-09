@@ -8,6 +8,7 @@ MWF.xDesktop.requireApp("process.TaskCenter", "ReadList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReadCompletedList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReviewList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "DraftList", null, false);
+MWF.xDesktop.requireApp("process.TaskCenter", "MyCreatedList", null, false);
 
 if (MWF.xApplication.process.TaskCenter.options) MWF.xApplication.process.TaskCenter.options.multitask = false;
 MWF.xApplication.process.TaskCenter.Main = new Class({
@@ -218,9 +219,18 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             this.showReaded();
         }.bind(this));
 
+        this.createTabItem(this.lp.review, "review.png", "review", function () {
+            this.showReview();
+        }.bind(this));
+
         this.createTabItem(this.lp.draftTab, "draft.png", "draft", function () {
             this.showDraft();
         }.bind(this));
+
+        this.createTabItem(this.lp.myCreated, "mycreated.png", "myCreated", function () {
+            this.showMyCreated();
+        }.bind(this));
+
         //this.createTabItem(this.lp.review, "review.png", "review", function(){this.showReview();}.bind(this));
 
         this.getWorkCounts();
@@ -314,10 +324,16 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
                 this["taskCompletedCountNode"].set("text", "( " + ((this.counts.taskCompleted > 100) ? "99+" : this.counts.taskCompleted) + " )");
                 this["readCountNode"].set("text", "( " + ((this.counts.read > 100) ? "99+" : this.counts.read) + " )");
                 this["readCompletedCountNode"].set("text", "( " + ((this.counts.readCompleted > 100) ? "99+" : this.counts.readCompleted) + " )");
-                //this["reviewCountNode"].set("text", "[ "+((this.counts.review>100) ? "99" : this.counts.review)+" ]");
+                this["reviewCountNode"].set("text", "[ "+((this.counts.review>100) ? "99" : this.counts.review)+" ]");
             }.bind(this), null, this.desktop.session.user.distinguishedName);
             this.action.listDraftNext("(0)", 1, function (json) {
                 this["draftCountNode"].set("text", "( " + ((json.count > 100) ? "99+" : json.count) + " )");
+            }.bind(this));
+            o2.Actions.load("x_processplatform_assemble_surface").ReviewAction.countWithPerson(layout.session.user.id, {
+                creatorPersonList: [layout.session.user.id]
+            }).then(function(json){
+                var myCreated = json.data.count;
+                this["myCreatedCountNode"].set("text", "( " + ((myCreated > 100) ? "99+" : myCreated) + " )");
             }.bind(this));
         }.bind(this));
     },
@@ -365,6 +381,9 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
                 break;
             case "draft":
                 this.showDraft();
+                break;
+            case "myCreated":
+                this.showMyCreated();
                 break;
             default:
                 this.showTask();
@@ -791,7 +810,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
     },
     showDraft: function(){
         if (this.currentTab !== "draft") {
-            this.showTab(4);
+            this.showTab(5);
             this.currentTab = "draft";
             if (!this.draftList) {
                 this.createDraftList((this.status) ? this.status.filter : null);
@@ -803,6 +822,28 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
 
         } else {
             if (this.draftList) this.draftList.refresh();
+        }
+        this.searchBarAreaNode.setStyle("display", "none");
+    },
+
+    createMyCreatedList: function (filterData) {
+        if (!this.contentNode) this.loadContent();
+        this.myCreatedList = new MWF.xApplication.process.TaskCenter.MyCreatedList(this.contentListAreaNode, this, filterData);
+    },
+    showMyCreated: function(){
+        if (this.currentTab !== "myCreated") {
+            this.showTab(6);
+            this.currentTab = "myCreated";
+            if (!this.myCreatedList) {
+                this.createMyCreatedList((this.status) ? this.status.filter : null);
+                this.myCreatedList.show();
+            } else {
+                this.myCreatedList.show();
+                if (this.myCreatedList) this.myCreatedList.refresh();
+            }
+
+        } else {
+            if (this.myCreatedList) this.myCreatedList.refresh();
         }
         this.searchBarAreaNode.setStyle("display", "none");
     },

@@ -1,118 +1,121 @@
-MWF.xApplication.Attendance.LP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.Attendance = MWF.xApplication.Attendance || {};
+MWF.xApplication.Attendance.LP={
 	"title": "Gestión de asistencia",
-	"delete" : "Eliminar",
+	"delete": "Eliminar",
 	"deleteDocumentTitle": "Confirmación de eliminación",
 	"deleteDocument": "¿Está seguro de que desea eliminar esta información?",
 	"deleteDocumentOK": "Eliminado con éxito",
-	"createSuccess" : "Creado exitosamente",
-	"updateSuccess" : "Actualizado exitosamente",
-	"inputName" : "Por favor ingrese el nombre",
-
+	"createSuccess": "Creado exitosamente",
+	"updateSuccess": "Actualizado exitosamente",
+	"inputName": "Por favor ingrese el nombre",
 	"dateFormatMonth": "%Y年%m月",
 	"dateFormatOnlyMonth": "%m",
 	"dateFormatDay": "%Y-%m-%d",
 	"dateFormatMonthDayLocal": "%d de %B",
 	"dateFormat": "db",
-
-	"month" : "mes",
-	"today" : "hoy",
-	"day" : "día",
-
-	"cancel" : "Cancelar",
-	"ok" : "Aceptar",
-
+	"month": "mes",
+	"today": "hoy",
+	"day": "día",
+	"cancel": "Cancelar",
+	"ok": "Aceptar",
 	"create_cancel_title": "Confirmación",
 	"create_cancel": "¿Estás seguro de que deseas cancelar la creación?",
-
-	"normal" : "Asistencia", //color verde, normal
-	"levelAsked":"Permiso", //color azul, permiso
-	"late":"Retraso", //color naranja, retraso
-	"lateSelectText": ["","Retrasado","No retrasado"],
-	"leaveEarly":"Salida temprana", //color naranja, salida temprana
-	"noSign":"Falta", //color rosa, no ha firmado
-	"appealSuccess" : "Apelación aceptada",
-	"lackOfTime" : "Insuficiente",
-	"abNormalDuty" : "Anormal",
-	"truefalseSelectText": ["","Sí","No"],
+	"normal": "Asistencia",
+	"levelAsked": "Permiso",
+	"late": "Retraso",
+	"lateSelectText": [
+		"",
+		"Retrasado",
+		"No retrasado"
+	],
+	"leaveEarly": "Salida temprana",
+	"noSign": "Falta",
+	"appealSuccess": "Apelación aceptada",
+	"lackOfTime": "Insuficiente",
+	"abNormalDuty": "Anormal",
+	"truefalseSelectText": [
+		"",
+		"Sí",
+		"No"
+	],
 	"query": "Buscar",
 	"wholeDay": "Todo el día",
 	"am": "AM",
 	"pm": "PM",
-
 	"statusText": {
-		"normal" : "Asistencia", //color verde, normal
-		"levelAsked":"Permiso", //color azul, permiso
-		"late":"Retraso", //color naranja, retraso
-		"leaveEarly":"Salida temprana", //color naranja, salida temprana
-		"noSign":"Falta", //color rosa, no ha firmado
-		"appealSuccess" : "Apelación",
-		"lackOfTime" : "Insuficiente",
-		"abNormalDuty" : "Anormal",
-
-
-		"lateTimes" : "Retrasos",
-		"leaveEarlyTimes" : "Salidas tempranas",
-		"lackOfTimeCount" : "Insuficiente",
-		"abNormalDutyCount" : "Registros anormales",
-		"resultNormal" : "Normal",
+		"normal": "Asistencia",
+		"levelAsked": "Permiso",
+		"late": "Retraso",
+		"leaveEarly": "Salida temprana",
+		"noSign": "Falta",
+		"appealSuccess": "Apelación",
+		"lackOfTime": "Insuficiente",
+		"abNormalDuty": "Anormal",
+		"lateTimes": "Retrasos",
+		"leaveEarlyTimes": "Salidas tempranas",
+		"lackOfTimeCount": "Insuficiente",
+		"abNormalDutyCount": "Registros anormales",
+		"resultNormal": "Normal",
 		"seriousLateTimes": "Serios retrasos",
 		"outsideDutyTimes": "Fuera de horario",
 		"absenteeismTimes": "Absentismo",
-		"notSignedCount": "Faltas de registro",
+		"notSignedCount": "Faltas de registro"
 	},
-
-	"absent" : "Ausente",
-	"notAbsent" : "No ausente",
-	"absendSelectText": ["","Ausente","No ausente"],
-
-	"attendanceStatisic" : "Estadísticas de asistencia",
-	"name" : "Nombre",
-	"onDutyTimes" : "Entrada al trabajo",
-	"offDutyTimes" : "Salida del trabajo",
-	"onDutyDayCount" : "Días laborales",
-	"onSelfHolidayCount" : "Días de vacaciones",
-	"absenceDayCount" : "Días no laborales",
-	"lateTimes" : "Retraso",
-	"leaveEarlyTimes" : "Salida temprana",
-	"lackOfTimeCount" : "Insuficiente",
-	"abNormalDutyCount" : "Anormal",
-	"resultNormal" : "Registro normal",
+	"absent": "Ausente",
+	"notAbsent": "No ausente",
+	"absendSelectText": [
+		"",
+		"Ausente",
+		"No ausente"
+	],
+	"attendanceStatisic": "Estadísticas de asistencia",
+	"name": "Nombre",
+	"onDutyTimes": "Entrada al trabajo",
+	"offDutyTimes": "Salida del trabajo",
+	"onDutyDayCount": "Días laborales",
+	"onSelfHolidayCount": "Días de vacaciones",
+	"absenceDayCount": "Días no laborales",
+	"lateTimes": "Retraso",
+	"leaveEarlyTimes": "Salida temprana",
+	"lackOfTimeCount": "Insuficiente",
+	"abNormalDutyCount": "Anormal",
+	"resultNormal": "Registro normal",
 	"seriousLateTimes": "Retrasos graves",
 	"outsideDutyTimes": "Registros de salida del trabajo fuera del horario",
 	"absenteeismTimes": "Ausencia injustificada",
 	"notSignedCount": "Faltas de registro",
-
-	"topUnitAttendanceDetail" : "Detalle de asistencia de la empresa",
-	"topUnitAttendanceStatic" : "Estadísticas de tasa de asistencia de la empresa",
-	"unitAttendanceDetail":"Detalle de asistencia del departamento",
-	"unitAttendanceStatic":"Estadísticas de tasa de asistencia del departamento",
+	"topUnitAttendanceDetail": "Detalle de asistencia de la empresa",
+	"topUnitAttendanceStatic": "Estadísticas de tasa de asistencia de la empresa",
+	"unitAttendanceDetail": "Detalle de asistencia del departamento",
+	"unitAttendanceStatic": "Estadísticas de tasa de asistencia del departamento",
 	"personAttendanceDetail": "Detalle de asistencia individual",
-	"personAttendanceStatic" : "Estadísticas de tasa de asistencia individual",
+	"personAttendanceStatic": "Estadísticas de tasa de asistencia individual",
 	"unitSigninDetail": "Detalle del registro de entrada y salida del departamento",
 	"unitSigninStatic": "Estadísticas de tasa de registro de entrada y salida del departamento",
 	"personSigninDetail": "Detalle del registro de entrada y salida individual",
 	"personSigninStatic": "Estadísticas de tasa de registro de entrada y salida individual",
-	"staticByDay" : "Estadísticas diarias",
-	"staticByMonth" : "Estadísticas mensuales",
+	"staticByDay": "Estadísticas diarias",
+	"staticByMonth": "Estadísticas mensuales",
 	"type": "Tipo",
-	"topUnit" : "Empresa",
-	"unit" : "Departamento",
-	"annuaal" : "Anual",
-	"months" : "Mes",
+	"topUnit": "Empresa",
+	"unit": "Departamento",
+	"annuaal": "Anual",
+	"months": "Mes",
 	"date": "Fecha",
-	"seeSchedule" : "Ver el horario",
-	"unfindSchedule" : "No se encontró el horario para su departamento y empresa",
-	"scheduleTable" : "Horario",
-	"signTime" : "Hora de registro de entrada y salida",
-	"appeal" : "Apelación",
+	"seeSchedule": "Ver el horario",
+	"unfindSchedule": "No se encontró el horario para su departamento y empresa",
+	"scheduleTable": "Horario",
+	"signTime": "Hora de registro de entrada y salida",
+	"appeal": "Apelación",
 	"createAppeal": "Crear una apelación",
 	"viewAppealDetail": "Ver información de apelación",
-	"export" : "Exportar",
+	"export": "Exportar",
 	"name1": "Nombre",
-	"alias" : "Alias",
+	"alias": "Alias",
 	"range": "Rango",
 	"meter": "Metro",
-	"description" : "Comentario",
+	"description": "Comentario",
 	"save": "Guardar",
 	"enableMove": "Permitir mover",
 	"workPlaceEmptyNotice": "El lugar de trabajo no puede estar vacío",
@@ -121,93 +124,106 @@ MWF.xApplication.Attendance.LP = {
 	"openRegisterUrl": "Haga clic para abrir el canal de certificación",
 	"secretKey": "Clave secreta",
 	"mustSelectMonth": "Si selecciona una fecha, también debe seleccionar un mes",
-
-	"index" : {
-		"attendanceCalendar":"Calendario de asistencia",
-		"pieChart" : "Resumen de asistencia",
-		"lineChart" : "Tendencia de entrada y salida",
-		"absent":"Ausente",
-		"offDutyTime":"Asistió al trabajo, tiempo de registro:",
-		"levelAsked":"Permiso o salida reportada"
+	"index": {
+		"attendanceCalendar": "Calendario de asistencia",
+		"pieChart": "Resumen de asistencia",
+		"lineChart": "Tendencia de entrada y salida",
+		"absent": "Ausente",
+		"offDutyTime": "Asistió al trabajo, tiempo de registro:",
+		"levelAsked": "Permiso o salida reportada"
 	},
-
-	"schedule" : {
-		"inputVaild" : "Los campos de unidad, horario de entrada y salida, hora de inicio del retraso, hora de inicio de salida temprana y hora de inicio de absentismo no pueden estar vacíos",
-		"setSchedule" : "Configuración de horario",
-		"unit" : "Unidad",
-		"workTime" : "Horario de entrada",
-		"offTime" : "Horario de salida",
-		"lateTime":"Hora de inicio de retraso",
-
-		"leaveEarlyTime":"Hora de inicio de salida temprana",
-		"absenteeismTime":"Hora de inicio de absentismo",
-		"illegal":{
-			"1":["La hora de salida no puede ser anterior a la hora de entrada"],
-			"2":["El tiempo de inicio del almuerzo no puede ser anterior al horario de entrada","El tiempo de finalización del almuerzo no puede ser anterior al tiempo de inicio del almuerzo","La hora de salida no puede ser anterior a la finalización del almuerzo"],
-			"3":["La hora de salida de la mañana no puede ser anterior al horario de entrada","El horario de entrada de la tarde no puede ser anterior a la hora de salida de la mañana","La hora de salida no puede ser anterior al horario de entrada de la tarde"]
+	"schedule": {
+		"inputVaild": "Los campos de unidad, horario de entrada y salida, hora de inicio del retraso, hora de inicio de salida temprana y hora de inicio de absentismo no pueden estar vacíos",
+		"setSchedule": "Configuración de horario",
+		"unit": "Unidad",
+		"workTime": "Horario de entrada",
+		"offTime": "Horario de salida",
+		"lateTime": "Hora de inicio de retraso",
+		"leaveEarlyTime": "Hora de inicio de salida temprana",
+		"absenteeismTime": "Hora de inicio de absentismo",
+		"illegal": {
+			"1": [
+				"La hora de salida no puede ser anterior a la hora de entrada"
+			],
+			"2": [
+				"El tiempo de inicio del almuerzo no puede ser anterior al horario de entrada",
+				"El tiempo de finalización del almuerzo no puede ser anterior al tiempo de inicio del almuerzo",
+				"La hora de salida no puede ser anterior a la finalización del almuerzo"
+			],
+			"3": [
+				"La hora de salida de la mañana no puede ser anterior al horario de entrada",
+				"El horario de entrada de la tarde no puede ser anterior a la hora de salida de la mañana",
+				"La hora de salida no puede ser anterior al horario de entrada de la tarde"
+			]
 		},
-		"lateStartTime":"Hora de inicio del retraso en la mañana",
-		"leaveEarlyStartTime":"Hora de inicio de salida temprana en la tarde",
-		"leaveEarlyStartTimeMorning":"Hora de inicio de salida temprana en la mañana",
-		"lateStartTimeAfternoon":"Hora de inicio del retraso en la tarde",
-		"signProxy":{
-			"name":"Estrategia de registro",
-			"select":{
-				"1":"Dos veces al día (entrada y salida por la mañana y por la tarde)",
-				"2":"Tres veces al día (entrada y salida por la mañana y por la tarde, más una vez durante el almuerzo)",
-				"3":"Cuatro veces al día (entrada y salida por la mañana y por la tarde)"
+		"lateStartTime": "Hora de inicio del retraso en la mañana",
+		"leaveEarlyStartTime": "Hora de inicio de salida temprana en la tarde",
+		"leaveEarlyStartTimeMorning": "Hora de inicio de salida temprana en la mañana",
+		"lateStartTimeAfternoon": "Hora de inicio del retraso en la tarde",
+		"signProxy": {
+			"2": {
+				"middayRestStartTime": "Hora de inicio del almuerzo",
+				"middayRestEndTime": "Hora de finalización del almuerzo"
 			},
-			"2":{
-				"middayRestStartTime":"Hora de inicio del almuerzo",
-				"middayRestEndTime":"Hora de finalización del almuerzo",
+			"3": {
+				"middayRestStartTime": "Hora de salida de la mañana",
+				"middayRestEndTime": "Hora de entrada de la tarde"
 			},
-			"3":{
-				"middayRestStartTime":"Hora de salida de la mañana",
-				"middayRestEndTime":"Hora de entrada de la tarde",
+			"name": "Estrategia de registro",
+			"select": {
+				"1": "Dos veces al día (entrada y salida por la mañana y por la tarde)",
+				"2": "Tres veces al día (entrada y salida por la mañana y por la tarde, más una vez durante el almuerzo)",
+				"3": "Cuatro veces al día (entrada y salida por la mañana y por la tarde)"
 			}
 		}
-		//"" : "打卡有效时间",
-		//"" : "从",
-		//"" : "到",
-		//"" : "旷工",
-		//"" : "上班缺勤",
-		//"" : "下班缺勤",
-		//"" : "上下班均缺勤"
 	},
-	"holiday" : {
-		"inputValid" : "¡El año, el nombre del feriado, la fecha de inicio y la fecha de finalización son obligatorios, por favor complete!",
-		"setHoliday" : "Configuración de vacaciones legales",
-		"year" : "Año",
-		"name" : "Nombre de la festividad",
-		"startDate" : "Fecha de inicio",
-		"endDate" : "Fecha de finalización",
-		"makeUpClassDay" : "Día de recuperación",
-		"holidaySchedule" : "Programa de vacaciones",
+	"holiday": {
+		"inputValid": "¡El año, el nombre del feriado, la fecha de inicio y la fecha de finalización son obligatorios, por favor complete!",
+		"setHoliday": "Configuración de vacaciones legales",
+		"year": "Año",
+		"name": "Nombre de la festividad",
+		"startDate": "Fecha de inicio",
+		"endDate": "Fecha de finalización",
+		"makeUpClassDay": "Día de recuperación",
+		"holidaySchedule": "Programa de vacaciones",
 		"addMakeUpClassDay": "Agregar día de recuperación",
-		"beginGreateThanEndNotice": "La fecha de inicio no puede ser posterior a la fecha de finalización",
+		"beginGreateThanEndNotice": "La fecha de inicio no puede ser posterior a la fecha de finalización"
 	},
-	"permission" : {
-		"setAttendancer" : "Configuración del encargado de asistencia",
-		"role" : "Rol",
-		"personName" : "Nombre de la persona",
-		"unit" : "Unidad",
-		"roleSelectText": ["Administrador de la empresa","Administrador del departamento"]
+	"permission": {
+		"setAttendancer": "Configuración del encargado de asistencia",
+		"role": "Rol",
+		"personName": "Nombre de la persona",
+		"unit": "Unidad",
+		"roleSelectText": [
+			"Administrador de la empresa",
+			"Administrador del departamento"
+		]
 	},
-	"selfHoliday" : {
-		"inputValid" : "¡El departamento, el nombre del empleado, el tipo de permiso, la fecha de inicio, la fecha de finalización y los días de permiso son obligatorios, por favor complete!"
+	"selfHoliday": {
+		"inputValid": "¡El departamento, el nombre del empleado, el tipo de permiso, la fecha de inicio, la fecha de finalización y los días de permiso son obligatorios, por favor complete!"
 	},
 	"nextActivity": "Siguiente actividad:",
 	"nextUser": "Persona responsable:",
 	"deal": "Procesar",
 	"processStarted": "El archivo se ha iniciado",
 	"processStartedMessage": "Ha iniciado un nuevo trabajo:",
-
-	"auditStatus" : "Estado",
-	"auditStatusSelectText" : ["Todos los estados","Pendiente","Aprobado","No aprobado"],
+	"auditStatus": "Estado",
+	"auditStatusSelectText": [
+		"Todos los estados",
+		"Pendiente",
+		"Aprobado",
+		"No aprobado"
+	],
 	"appealReason": "Motivo",
-	"appealReasonSelectText" : ["","Permiso temporal","Viaje de negocios","Salida por razones de trabajo","Otro"],
+	"appealReasonSelectText": [
+		"",
+		"Permiso temporal",
+		"Viaje de negocios",
+		"Salida por razones de trabajo",
+		"Otro"
+	],
 	"department": "Departamento",
-	"person" : "Persona",
+	"person": "Persona",
 	"auditor": "Revisor",
 	"search": "Buscar",
 	"selectPerson": "Persona",
@@ -231,10 +247,21 @@ MWF.xApplication.Attendance.LP = {
 	"offDutyTime": "Hora de salida",
 	"attendanceStatus": "Estado de asistencia",
 	"appealStatus": "Estado de apelación",
-	"appealStatusSelectText": ["En apelación","No aprobado","Aprobado"],
+	"appealStatusSelectText": [
+		"En apelación",
+		"No aprobado",
+		"Aprobado"
+	],
 	"address": "Dirección",
 	"leaveType": "Tipo de permiso",
-	"leaveTypeSelectText": ["","Vacaciones pagadas","Permiso pagado por enfermedad","Permiso pagado por beneficios","Permiso sin sueldo","Otro"],
+	"leaveTypeSelectText": [
+		"",
+		"Vacaciones pagadas",
+		"Permiso pagado por enfermedad",
+		"Permiso pagado por beneficios",
+		"Permiso sin sueldo",
+		"Otro"
+	],
 	"startTime": "Inicio",
 	"endTime": "Finalización",
 	"appealDescriptoin": "Motivo de la apelación",
@@ -251,26 +278,56 @@ MWF.xApplication.Attendance.LP = {
 	"processSuccess": "Procesamiento exitoso",
 	"noDepartment": "¡No se encontró el departamento al que pertenece, por favor contacte al administrador!",
 	"signinType": "Tipo de registro",
-	"signinTypeSelectText": ["", "Registro de entrada", "Registro de salida"],
-	"signinQywxTypeSelectText": ["", "Registro de entrada", "Registro de salida", "Registro fuera de la oficina"],
+	"signinTypeSelectText": [
+		"",
+		"Registro de entrada",
+		"Registro de salida"
+	],
+	"signinQywxTypeSelectText": [
+		"",
+		"Registro de entrada",
+		"Registro de salida",
+		"Registro fuera de la oficina"
+	],
 	"signinResult": "Resultado del registro",
-	"signinResultSelectText": ["", "Normal", "Salida temprana", "Retraso", "Retraso grave", "Retraso con ausencia no autorizada", "No se registró"],
-	"signinQywxResultSelectText": ["", "Normal", "Hora excepcional", "Lugar excepcional", "No se registró", "Problemas con el wifi", "Dispositivo no utilizado comúnmente"],
+	"signinResultSelectText": [
+		"",
+		"Normal",
+		"Salida temprana",
+		"Retraso",
+		"Retraso grave",
+		"Retraso con ausencia no autorizada",
+		"No se registró"
+	],
+	"signinQywxResultSelectText": [
+		"",
+		"Normal",
+		"Hora excepcional",
+		"Lugar excepcional",
+		"No se registró",
+		"Problemas con el wifi",
+		"Dispositivo no utilizado comúnmente"
+	],
 	"recordAddress": "Dirección de registro",
 	"optMachineType": "Información del dispositivo",
 	"workTime": "Horas trabajadas",
-
-	"systemSetting" : "Configuración del sistema",
+	"systemSetting": "Configuración del sistema",
 	"reportTo": "Persona de informe",
 	"appealEnable": "¿Activado?",
-	"appealSelectText": ["Activado","Desactivado"],
+	"appealSelectText": [
+		"Activado",
+		"Desactivado"
+	],
 	"appealAuditFlowType": "Tipo de flujo",
-	"appealAuditFlowTypeSelectText": ["Flujo personalizado","Flujo interno"],
+	"appealAuditFlowTypeSelectText": [
+		"Flujo personalizado",
+		"Flujo interno"
+	],
 	"appealAuditor": "Revisor de apelación",
 	"appealAuditorType": "Revisor",
 	"appealAuditorValue": "Contenido de revisión",
 	"directSupervisor": "Supervisor directo",
-	"appealAuditFlow" : "Flujo de solicitud personalizado",
+	"appealAuditFlow": "Flujo de solicitud personalizado",
 	"none": "Ninguno",
 	"saveSuccess": "Guardado exitoso",
 	"noReportToNotice": "No se ha configurado su persona de informe en la gestión de organizaciones, por favor contacte al administrador.",
@@ -282,15 +339,16 @@ MWF.xApplication.Attendance.LP = {
 	"directLeader": "Líder directo",
 	"noDirectLeader": "No se ha configurado su atributo de persona \"Líder Directo\" en el sistema, por favor contacte al administrador.",
 	"createAppealNotice": "La apelación ha sido enviada.",
-
 	"offDutyAbbrev": "休",
 	"onDutyAbbrev": "班",
 	"attendanceSummary": "Resumen de asistencia",
 	"attendanceTrendChart": "Gráfico de tendencia de entrada/salida",
-	"trendChartLegend" : ['Hora de entrada', 'Hora de salida'],
+	"trendChartLegend": [
+		"Hora de entrada",
+		"Hora de salida"
+	],
 	"attendanceTrend": "Tendencia de asistencia",
 	"year": "Año",
-
 	"importExcelNotice": "Por favor importe un archivo Excel!",
 	"analyseDataSuccess": "Análisis de datos de asistencia exitoso",
 	"statDataSuccess": "Estadísticas de datos de asistencia exitosas",
@@ -302,15 +360,24 @@ MWF.xApplication.Attendance.LP = {
 		"4. Haga clic en el botón de análisis de datos de asistencia, el sistema generará detalles de asistencia;",
 		"5. Haga clic en el botón de estadísticas de datos de asistencia y el sistema generará estadísticas de tasa de asistencia para individuos, departamentos y empresas."
 	],
-	"selectCheckMonth":"Seleccione el mes de verificación",
+	"selectCheckMonth": "Seleccione el mes de verificación",
 	"checkDetailSuccess": "Verificación de datos de asistencia exitosa",
-	"importDataResult":"Resultado de la importación de datos de asistencia",
+	"importDataResult": "Resultado de la importación de datos de asistencia",
 	"importDataResultSuccess": "El archivo que ha subido, “{fileName}”, se ha importado con éxito. Aquí se muestran {count} registros:",
 	"importDataResultFail": "El archivo que ha subido, “{fileName}”, no ha pasado la verificación y contiene {errorCount} datos erróneos. Modifíquelos e inténtelo de nuevo. Aquí se muestran {count} registros:",
-	"importDataResultThList" : [
-		"Número de fila", "Número de empleado", "Nombre del empleado", "Fecha","Hora de entrada en la mañana","Hora de salida en la mañana","Hora de entrada en la tarde","Hora de salida en la tarde","Resultado de verificación","Descripción"
+	"importDataResultThList": [
+		"Número de fila",
+		"Número de empleado",
+		"Nombre del empleado",
+		"Fecha",
+		"Hora de entrada en la mañana",
+		"Hora de salida en la mañana",
+		"Hora de entrada en la tarde",
+		"Hora de salida en la tarde",
+		"Resultado de verificación",
+		"Descripción"
 	],
-	"selectExportMonth":"Seleccione el mes de exportación",
+	"selectExportMonth": "Seleccione el mes de exportación",
 	"exportSourceData": "Exportar datos de registro",
 	"true": "Correcto",
 	"false": "Erróneo",
@@ -321,80 +388,73 @@ MWF.xApplication.Attendance.LP = {
 	"readyToImportData": "Preparándose para importar los datos",
 	"readyToImportData1": "Preparándose para importar los datos...",
 	"importSpeed": "regs/seg",
-
-
 	"myDetail": "Detalle de asistencia",
 	"myDetailStatic": "Tasa de asistencia",
-
-	"cyclText" : "Ciclo de asistencia: {start}-{end}",
-
+	"cyclText": "Ciclo de asistencia: {start}-{end}",
 	"personSetting": "Configuración de personal de asistencia",
 	"configType": "Tipo de configuración",
-	"configTypeSelectText": ["Requiere asistencia", "No requiere asistencia"],
+	"configTypeSelectText": [
+		"Requiere asistencia",
+		"No requiere asistencia"
+	],
 	"topUnitName": "Nombre de la empresa",
 	"unitName": "Nombre del departamento",
-	"employeeNumber":"Número de empleado",
+	"employeeNumber": "Número de empleado",
 	"joininDate": "Fecha de incorporación",
-
 	"exportEmployeeHolidayRecord": "Exportar registro de vacaciones de los empleados",
 	"employeeHolidayRecord": "Registro de vacaciones de los empleados",
-
 	"leaveType1": "Tipo de vacaciones",
-	"leaveTypeSelectText1" : ["Vacaciones pagadas anuales", "Licencia por enfermedad remunerada", "Vacaciones con beneficios remunerados", "Días personales sin goce de sueldo", "Otro"],
+	"leaveTypeSelectText1": [
+		"Vacaciones pagadas anuales",
+		"Licencia por enfermedad remunerada",
+		"Vacaciones con beneficios remunerados",
+		"Días personales sin goce de sueldo",
+		"Otro"
+	],
 	"leaveDayCount": "Días de vacaciones",
-
 	"statisticsPeriodSetting": "Configuración del período estadístico",
 	"selectCompanyNotice": "Haga doble clic para seleccionar, ingrese '*' para hacer coincidir todas las empresas",
 	"selectDepartmentNotice": "Haga doble clic para seleccionar, ingrese '*' para hacer coincidir todos los departamentos",
 	"statisticsCompany": "Empresa estadística",
 	"statisticsUnit": "Departamento estadístico",
 	"cycleYear": "Año del período estadístico",
-	"cycleMonth":"Mes del período estadístico",
+	"cycleMonth": "Mes del período estadístico",
 	"startDate": "Fecha de inicio",
 	"endData": "Fecha de finalización",
-
-	"selectStartEndEndDataNotice":"Seleccione una fecha de inicio y una fecha de finalización",
+	"selectStartEndEndDataNotice": "Seleccione una fecha de inicio y una fecha de finalización",
 	"weekendSetting": "Configuración del fin de semana",
 	"selectWeekend": "Selección del fin de semana",
-
 	"detail": "Descripción detallada",
 	"appealDate": "Fecha de apelación",
 	"auditOpinion": "Opinión de aprobación",
-
 	"holiday1": "Día festivo",
 	"weekend": "Fin de semana",
 	"workDaysoff": "Días laborables libres",
 	"workDay": "Día laborable",
-
-	"middayRestStartTime":"Hora de inicio del almuerzo",
-	"middayRestEndTime":"Hora de finalización del almuerzo",
+	"middayRestStartTime": "Hora de inicio del almuerzo",
+	"middayRestEndTime": "Hora de finalización del almuerzo",
 	"isCheckInOutOfRange": "Registro fuera de la oficina",
 	"yes": "Sí",
 	"no": "No",
-
-	"createWorkLocation":"Crear lugar de trabajo",
+	"createWorkLocation": "Crear lugar de trabajo",
 	"createWorkLocationText": "Haga clic para moverse a la ubicación correspondiente en el mapa y haga clic nuevamente para crear",
 	"setBaiduDeveloperCertification": "Configurar la certificación de desarrollador de Baidu",
 	"setBaiduDeveloperCertificationText": "La configuración del lugar de trabajo requiere la certificación de desarrollador de Baidu",
-
 	"action": "Acción",
 	"start": "Hora de inicio",
 	"end": "Hora de finalización",
-
 	"appealIsDisable": "La aprobación de apelaciones de asistencia ha sido desactivada",
 	"batchDeal": "Procesamiento por lotes:",
 	"holi": "Vacaciones",
 	"work": "Trabajo suplementario",
 	"newHoliday": "Nueva configuración de vacaciones",
 	"onDutyDayCount1": "Días trabajados",
-	"onSelfHolidayCount1":"Días de licencia o informe de ausencia",
+	"onSelfHolidayCount1": "Días de licencia o informe de ausencia",
 	"absentCount": "Días de ausencia",
-
 	"fileName": "Nombre de archivo",
 	"fileSize": "Tamaño de archivo",
 	"uploadTime": "Tiempo de carga",
 	"uploadPerson": "Persona que cargó",
-	"action": "Acción",
 	"deleteFile": "Eliminar archivo",
 	"download": "Descargar archivo",
 	"viewImportResult": "Ver resultados de importación",
@@ -404,22 +464,18 @@ MWF.xApplication.Attendance.LP = {
 	"statData": "Estadísticas de asistencia",
 	"analyzeData": "Análisis de datos de asistencia",
 	"viewDescription": "Ver descripción",
-	//"myAppealTitleText": "Please file an appeal in 'My Attendance Statistics -> My Attendance Details'",
 	"myAppealTitleText": "Por favor, presente una apelación en 'Mis estadísticas de asistencia'",
-
 	"createManager": "Crear configuración de administrador",
 	"createPersonConfig": "Agregar configuración de personal de asistencia",
 	"addStaticCycle": "Agregar ciclo estadístico",
 	"errorDescription": "Descripción del error",
 	"createSchedule": "Crear programación de horarios",
 	"deleteSelected": "Eliminar archivos seleccionados",
-
 	"navi": {
 		"myIndex": "Informe mensual de asistencia",
 		"myDetail": "Estadísticas de asistencia",
 		"myAppealDeal": "Solicitudes de apelación",
 		"appealDeal": "Aprobación de apelaciones",
-
 		"unitIndex": "Inf. mensual del depto.",
 		"peopleDetail": "Estadísticas personales",
 		"unitDetail": "Estadísticas del departamento",
@@ -430,7 +486,6 @@ MWF.xApplication.Attendance.LP = {
 		"dingdingUnitDetail": "Estadísticas del departamento de DingTalk",
 		"qywxPeopleDetail": "Estadísticas personales de WeChat Work",
 		"qywxUnitDetail": "Estadísticas del departamento de WeChat Work",
-
 		"maintain": "Mantenimiento",
 		"importing": "Importación de datos",
 		"importedInvalidInfor": "Error en la aplicación móvil",
@@ -445,10 +500,9 @@ MWF.xApplication.Attendance.LP = {
 		"holidaySetting": "Vacaciones legales",
 		"addressSetting": "Lugar de trabajo",
 		"appSetting": "Apelaciones",
-		"weekendSetting": "Fin de semana",
+		"weekendSetting": "Fin de semana"
 	},
-
-	"week" : "Semana",
+	"week": "Semana",
 	"weeks": {
 		"Sun": "Domingo",
 		"Mon": "Lunes",
@@ -457,10 +511,26 @@ MWF.xApplication.Attendance.LP = {
 		"Thur": "Jueves",
 		"Fri": "Viernes",
 		"Sat": "Sábado",
-		"arr": ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
-	}
-
-
-
-
-};
+		"arr": [
+			"Domingo",
+			"Lunes",
+			"Martes",
+			"Miércoles",
+			"Jueves",
+			"Viernes",
+			"Sábado"
+		]
+	},
+	"checkingDataContent": "Se revisan los datos: ('speed') / s, un total de ('total'), los restantes ('remaining').",
+	"checkingDataErrorContent": ", error ('errorcount') artículo",
+	"importingDataContent": "Se están importando datos: ',' Speed ',' total ',' remaining ',' remaining ',' total ',' remaining '.",
+	"importingDataErrorContent": ", error ('errorcount') artículo",
+	"hour": "Horas",
+	"mintue": "Puntos",
+	"second": "Segundos",
+	"importSuccessTitle": "Importación exitosa",
+	"importSuccessContent": "Importación total de datos ('total'). velocidad de barra: ('speed'). tiempo de barra / segundo: ('time str')",
+	"importFailTitle": "Falló la importación",
+	"importFailContent": "Datos compartidos ('total'). se produjo un error en las entradas: ('error count'). las entradas tardaron: ('time str') por favor, modifique y vuelva a importar"
+}
+MWF.xApplication.Attendance["lp."+o2.language] = MWF.xApplication.Attendance.LP

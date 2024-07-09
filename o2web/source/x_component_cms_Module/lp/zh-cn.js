@@ -1,3 +1,6 @@
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.cms = MWF.xApplication.cms || {};
+MWF.xApplication.cms.Module = MWF.xApplication.cms.Module || {};
 MWF.xApplication.cms.Module.LP = {
 	"title": "内容管理",
 

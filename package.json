@@ -60,7 +60,7 @@
         "author": "",
         "license": "ISC",
         "devDependencies": {
-                "@o2oa/language-tools": "^1.0.15",
+                "@o2oa/language-tools": "^1.0.27",
                 "@o2oa/tidy-jsdoc-o2": "^0.0.26",
                 "dateformat": "^3.0.3",
                 "docdash": "^1.2.0",
@@ -77,8 +77,8 @@
                 "gulp-rename": "^1.4.0",
                 "gulp-shell": "^0.8.0",
                 "gulp-sourcemaps": "^3.0.0",
-                "gulp-tm-uglify": "3.0.1",
                 "gulp-terser": "^2.1.0",
+                "gulp-tm-uglify": "3.0.1",
                 "gulp-uglify-es": "^2.0.0",
                 "gulp-util": "^3.0.8",
                 "jsdoc": "^3.6.6",
