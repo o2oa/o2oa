@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@o2oa/component": "^1.1.0",
-    "element-plus": "^2.3.6",
+    "element-plus": "2.3.6",
     "vue": "^3.3.4"
   },
   "devDependencies": {
