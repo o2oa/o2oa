@@ -44,7 +44,7 @@ class ActionListObject extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getIdentityList(), wi.getReferenceFlag(), wi.getRecursiveFlag());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getIdentityList(), wi.getReferenceFlag(), wi.getReferenceGroupFlag(), wi.getRecursiveFlag());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -71,12 +71,14 @@ class ActionListObject extends BaseAction {
 				if (BooleanUtils.isTrue(wi.getReferenceFlag())){
 					referenceUnit(business, wo, wi);
 					referenceUnitDuty(business, wo);
-					referenceGroup(business, wo, wi);
 				}else {
 					Unit u = business.unit().pick(o.getUnit());
 					if (null != u) {
 						wo.setUnit(u.getDistinguishedName());
 					}
+				}
+				if(BooleanUtils.isTrue(wi.getReferenceGroupFlag())){
+					referenceGroup(business, wo, wi);
 				}
 				wos.add(wo);
 			}
@@ -174,8 +176,11 @@ class ActionListObject extends BaseAction {
 		@FieldDescribe("身份")
 		private List<String> identityList = new ArrayList<>();
 
-		@FieldDescribe("是否关联查询身份所属对象信息：组织、角色、群组")
+		@FieldDescribe("是否关联查询身份所属组织、角色信息")
 		private Boolean referenceFlag;
+
+		@FieldDescribe("是否关联查询身份所属群组信息")
+		private Boolean referenceGroupFlag;
 
 		@FieldDescribe("是否递归查询上级组织或群组，默认false")
 		private Boolean recursiveFlag;
@@ -202,6 +207,14 @@ class ActionListObject extends BaseAction {
 
 		public void setRecursiveFlag(Boolean recursiveFlag) {
 			this.recursiveFlag = recursiveFlag;
+		}
+
+		public Boolean getReferenceGroupFlag() {
+			return referenceGroupFlag;
+		}
+
+		public void setReferenceGroupFlag(Boolean referenceGroupFlag) {
+			this.referenceGroupFlag = referenceGroupFlag;
 		}
 	}
 
