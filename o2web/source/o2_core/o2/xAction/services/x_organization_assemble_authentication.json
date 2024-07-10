@@ -46,6 +46,10 @@
     "uri": "/jaxrs/authentication/code",
     "method": "POST"
   }, //使用短信验证码登录
+  "loginByTwoFactor": {
+    "uri": "/jaxrs/authentication/two/factory/login",
+    "method": "POST"
+  }, //双因素登录认证
   "getLoginBind": {
     "uri": "/jaxrs/authentication/bind"
   }, //扫描的二维码

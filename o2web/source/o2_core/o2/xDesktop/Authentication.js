@@ -518,10 +518,15 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.codeLogin = false;
         this.bindLogin = false;
         this.captchaLogin = true;
+        this.twoFactorLogin = false;
         this.actions.getLoginMode(function (json) {
             this.codeLogin = json.data.codeLogin;
             this.bindLogin = json.data.bindLogin;
             this.captchaLogin = json.data.captchaLogin;
+            this.twoFactorLogin = json.data.twoFactorLogin;
+            if( this.codeLogin && this.twoFactorLogin ){ //如果两个都是true，以短信登录为准
+                this.twoFactorLogin = false;
+            }
         }.bind(this), null, false);
 
         MWF.Actions.get("x_organization_assemble_personal").getRegisterMode(function (json) {
@@ -564,14 +569,22 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 "   <div item='verificationAction' style='float:left;'></div>" +
                 "   <div item='resendVerificationAction' style='float:left;display:none;'></div>" +
                 "</td></tr>";
+        }else if(this.twoFactorLogin){
+            html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop60'>" +
+                "   <div item='codeAnswerWithTwoFactorlogin' style='float:left;'></div>" +
+                "</td></tr>";
+            html += "<tr item='twoFactorloginStep2Tr' style='display: none'><td styles='formTableValueTop20' item='twoFactorloginStep2Action'></td></tr>";
         }
-        html += "<tr><td styles='formTableValueTop20' item='loginAction'></td></tr>" +
+        html += "<tr item='loginActionTr'><td styles='formTableValueTop20' item='loginAction'></td></tr>" +
             "</table>" +
             "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
         if (this.signUpMode && this.signUpMode !== "disable") {
-            html += "<tr><td><div item='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
+            html += "<tr item='forgetPasswordTr'><td><div item='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
         } else {
-            html += "<tr><td><div styles='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
+            html += "<tr item='forgetPasswordTr'><td><div styles='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
+        }
+        if(this.twoFactorLogin){
+            html += "<tr item='hideTwoFactorySendMsgTr' style='display: none'><td><div styles='signUpAction'></div><div item='hideTwoFactorySendMsgAction'></div></td></tr>";
         }
         html += "<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
             "<tr><td  styles='formTableValue' item='oauthArea'></td></tr>" +
@@ -719,6 +732,33 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                             it.getElements()[0].setStyles(this.css.inputVerificationCode2);
                         }.bind(this)
                     },
+                    codeAnswerWithTwoFactorlogin: {
+                        text: this.lp.verificationCode,
+                        defaultValue: this.lp.inputVerificationCode,
+                        className: "inputVerificationCode3",
+                        notEmpty: false,
+                        defaultValueAsEmpty: true,
+                        emptyTip: this.lp.inputVerificationCode,
+                        event: {
+                            focus: function (it) {
+                                if (this.lp.inputVerificationCode === it.getValue()) it.setValue("");
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                if ("" === it.getValue()) it.setValue(this.lp.inputVerificationCode);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputVerificationCode3);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13) this.doTwoFactorlogin();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                        onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputVerificationCode2);
+                        }.bind(this)
+                    },
                     verificationAction: {
                         value: this.lp.sendVerification,
                         type: "button",
@@ -735,12 +775,22 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                         className: "inputResendVerification"
                     },
                     loginAction: {
-                        value: this.lp.loginAction,
+                        value: this.twoFactorLogin ? this.lp.sendVerification : this.lp.loginAction,
                         type: "button",
                         className: "inputLogin",
                         event: {
                             click: function () {
                                 this.ok();
+                            }.bind(this)
+                        }
+                    },
+                    twoFactorloginStep2Action: {
+                        value: this.lp.loginAction,
+                        type: "button",
+                        className: "inputLogin",
+                        event: {
+                            click: function () {
+                                this.doTwoFactorlogin();
                             }.bind(this)
                         }
                     },
@@ -781,6 +831,16 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                         event: {
                             click: function () {
                                 this.gotoResetPassword();
+                            }.bind(this)
+                        }
+                    },
+                    hideTwoFactorySendMsgAction: {
+                        value: this.lp.return,
+                        type: "innerText",
+                        className: "forgetPassword",
+                        event: {
+                            click: function () {
+                                this.hideTwoFactorySendMsgArea();
                             }.bind(this)
                         }
                     }
@@ -907,6 +967,42 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             styles: this.css.oauthItemTextNode,
             text: data.name
         }).inject(itemNode);
+    },
+    showTwoFactorySendMsgArea: function (){
+        this.errorArea.empty();
+
+        ["credentialTr","passwordTr","captchaTr", "forgetPasswordTr", "loginActionTr"].each(function (itemName){
+            var node = this.formTableArea.getElement("[item='"+itemName+"']");
+            if( node )node.setStyle("display", "none");
+        }.bind(this));
+        ["codeTr","hideTwoFactorySendMsgTr","twoFactorloginStep2Tr"].each(function (itemName){
+            var node = this.formTableArea.getElement("[item='"+itemName+"']");
+            if( node )node.setStyle("display", "");
+        }.bind(this));
+    },
+    hideTwoFactorySendMsgArea: function (){
+        this.errorArea.empty();
+
+        if (this.captchaLogin) {
+            var captchaItem = this.form.getItem("captchaAnswer");
+            if (captchaItem){
+                captchaItem.setValue( this.lp.verificationCode );
+                this.setCaptchaPic();
+            }
+        }
+
+        var codeItem = this.form.getItem("codeAnswerWithTwoFactorlogin");
+        codeItem.options.notEmpty = false;
+        codeItem.setValue( this.lp.inputVerificationCode );
+
+        ["credentialTr","passwordTr","captchaTr", "forgetPasswordTr", "loginActionTr"].each(function (itemName){
+            var node = this.formTableArea.getElement("[item='"+itemName+"']");
+            if( node )node.setStyle("display", "");
+        }.bind(this));
+        ["codeTr","hideTwoFactorySendMsgTr","twoFactorloginStep2Tr"].each(function (itemName){
+            var node = this.formTableArea.getElement("[item='"+itemName+"']");
+            if( node )node.setStyle("display", "none");
+        }.bind(this));
     },
     showExampleArea: function () {
         if (this.isHiddingExample || this.isShowingExample) return;
@@ -1142,23 +1238,44 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         var data = this.form.getResult(true, ",", true, false, true);
         if (data) {
             this._ok(data, function (json) {
-                if (json.type === "error") {
-                    if (this.app) this.app.notice(json.message, "error");
-                } else if( json.data.passwordExpired ){ //密码过期
-                    var userName = json.data.distinguishedName;
-                    this.explorer.logout( function(){ //注销再到密码修改页
-                        this.gotoChangePassword({
-                            userName : userName
-                        });
-                    }.bind(this))
-                } else {
-                    this._close();
-                    if (this.formMaskNode) this.formMaskNode.destroy();
-                    this.formAreaNode.destroy();
-                    if (this.explorer && this.explorer.view) this.explorer.view.reload();
-                    if (this.app) this.app.notice(this.lp.loginSuccess, "success");
-                    this.fireEvent("postOk", json);
-                }
+                this.afterLogin( json );
+            }.bind(this));
+        }
+    },
+    afterLogin: function (json) {
+        if (json.type === "error") {
+            if (this.app) this.app.notice(json.message, "error");
+        } else if( json.data.passwordExpired ){ //密码过期
+            var userName = json.data.distinguishedName;
+            this.explorer.logout( function(){ //注销再到密码修改页
+                this.gotoChangePassword({
+                    userName : userName
+                });
+            }.bind(this))
+        } else {
+            this._close();
+            if (this.formMaskNode) this.formMaskNode.destroy();
+            this.formAreaNode.destroy();
+            if (this.explorer && this.explorer.view) this.explorer.view.reload();
+            if (this.app) this.app.notice(this.lp.loginSuccess, "success");
+            this.fireEvent("postOk", json);
+        }
+    },
+    doTwoFactorlogin: function (){
+        var codeItem = this.form.getItem("codeAnswerWithTwoFactorlogin");
+        codeItem.options.notEmpty = true;
+        if ( codeItem.verify(true) ) {
+            var d = {
+                credential: this.captchaLoginData.credential,
+                codeAnswer: codeItem.getValue()
+            };
+            this.actions.loginByCode(d, function (json) {
+                codeItem.options.notEmpty = false;
+                this.afterLogin(json);
+            }.bind(this), function (errorObj) {
+                codeItem.options.notEmpty = false;
+                var error = JSON.parse(errorObj.responseText);
+                this.setWarning(error.message);
             }.bind(this));
         }
     },
@@ -1189,15 +1306,36 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 d.captchaAnswer = data.captchaAnswer;
                 d.captcha = this.captcha;
             }
-            this.actions.loginByCaptcha(d, function (json) {
-                if (callback) callback(json);
-                //this.fireEvent("postOk")
-            }.bind(this), function (errorObj) {
-                var error = JSON.parse(errorObj.responseText);
-                this.setWarning(error.message);
-                this.setCaptchaPic();
-                if (this.form.getItem("captchaAnswer")) this.form.getItem("captchaAnswer").setValue("");
-            }.bind(this));
+            if( this.twoFactorLogin ){
+                 this.captchaLoginData = d;
+
+                this.actions.loginByTwoFactor(d, function (json){
+                    if( json.data.passwordExpired ){ //密码过期
+                        //var userName = json.data.distinguishedName;
+                        this.gotoChangePassword({
+                            userName : d.credential,
+                            oldPassword: d.password
+                        });
+                    }else{
+                        this.showTwoFactorySendMsgArea();
+                    }
+                 }.bind(this), function (errorObj) {
+                     var error = JSON.parse(errorObj.responseText);
+                     this.setWarning(error.message);
+                     this.setCaptchaPic();
+                     if (this.form.getItem("captchaAnswer")) this.form.getItem("captchaAnswer").setValue("");
+                 }.bind(this));
+            }else{
+                this.actions.loginByCaptcha(d, function (json) {
+                    if (callback) callback(json);
+                    //this.fireEvent("postOk")
+                }.bind(this), function (errorObj) {
+                    var error = JSON.parse(errorObj.responseText);
+                    this.setWarning(error.message);
+                    this.setCaptchaPic();
+                    if (this.form.getItem("captchaAnswer")) this.form.getItem("captchaAnswer").setValue("");
+                }.bind(this));
+            }
         } else if (this.loginType === "code") {
             d = {
                 credential: data.credential,
@@ -2239,7 +2377,8 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
                         type: "password",
                         className: "inputPassword",
                         notEmpty: true,
-                        defaultValueAsEmpty: true,
+                        defaultValueAsEmpty: false,
+                        defaultValue: this.options.oldPassword || "",
                         emptyTip: this.lp.inputYourOldPassword,
                         attr: {"placeholder": this.lp.oldPassword},
                         event: {

@@ -471,6 +471,7 @@ o2.LP.authentication = {
     "inputPicVerificationCode": "请输入右侧的验证码",
     "inputComfirmPassword": "请确认您的密码",
     "inputVerificationCode": "请输入手机验证码",
+    "return": "返回",
     "confirmPassword": "确认密码",
     "sendVerification": "发送验证码",
     "resendVerification": "重新发送",
