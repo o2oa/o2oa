@@ -25,6 +25,7 @@ class ActionMode extends BaseAction {
 		wo.setBindLogin(BooleanUtils.isTrue(Config.person().getBindLogin()));
 		wo.setFaceLogin(BooleanUtils.isTrue(Config.person().getFaceLogin()));
 		wo.setCaptchaLogin(BooleanUtils.isTrue(Config.person().getCaptchaLogin()));
+		wo.setTwoFactorLogin(BooleanUtils.isTrue(Config.person().getTwoFactorLogin()));
 		result.setData(wo);
 		return result;
 	}
