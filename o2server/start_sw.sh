@@ -26,7 +26,7 @@ if [ -d ${current_dir}/local/update ]; then
 			fi
 		done
 		for A in "start" "stop" "restart" "console" "service"; do
-			for B in "_windows.bat" "_windows_debug.bat" "_linux.sh" "_linux_debug.sh" "_linux_min.sh" "_macos.sh" "_macos_debug.sh" "_arm.sh" "_arm_debug.sh" "_mips.sh" "_mips_debug.sh" "_raspi.sh" "_raspi_debug.sh" "_aix.sh" "_aix_debug.sh" "_sw.sh" "_sw_debug.sh"; do
+			for B in "_windows.bat" "_windows_debug.bat" "_linux.sh" "_linux_debug.sh" "_linux_min.sh" "_macosx64.sh" "_macosx64_debug.sh" "_macosarm.sh" "_macosarm_debug.sh" "_arm.sh" "_arm_debug.sh" "_mips.sh" "_mips_debug.sh" "_raspi.sh" "_raspi_debug.sh" "_sw.sh" "_sw_debug.sh"; do
 				if [ -f ${current_dir}/local/update/o2server/$A$B ]; then
 					echo "update ${current_dir}/$A$B."
 					cp -f -p ${current_dir}/local/update/o2server/$A$B ${current_dir}/
