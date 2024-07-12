@@ -2567,7 +2567,6 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             "min-width": width+"px"
         });
 
-        debugger;
         var work = this.flow.form.businessData.work;
         var d = {
             process: work.process,
