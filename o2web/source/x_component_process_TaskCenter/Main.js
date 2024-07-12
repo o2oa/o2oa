@@ -1134,8 +1134,9 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         }else{
             this.iconNode.setStyle("background-image", "url(../x_component_process_ProcessManager/$Explorer/default/processIcon/process.png)");
         }
-        this.actionNode = new Element("div", {"styles": this.css.processActionNode, "text": this.app.lp.start}).inject(this.node);
         this.textNode = new Element("div", {"styles": this.css.processTextNode}).inject(this.node);
+
+        this.actionNode = new Element("div", {"styles": this.css.processActionNode, "text": this.app.lp.start}).inject(this.node);
 
         var appName = "";
         if( typeOf( this.data.applicationName ) === "string" ){
@@ -1332,8 +1333,9 @@ MWF.xApplication.process.TaskCenter.Category = new Class({
 
         this.iconNode.setStyle("background-image", "url(../x_component_process_ProcessManager/$Explorer/default/processIcon/process.png)");
 
-        this.actionNode = new Element("div", {"styles": this.css.processActionNode, "text": this.app.lp.start}).inject(this.node);
         this.textNode = new Element("div", {"styles": this.css.processTextNode}).inject(this.node);
+
+        this.actionNode = new Element("div", {"styles": this.css.processActionNode, "text": this.app.lp.start}).inject(this.node);
 
         var appName = this.data.appName;
         this.textNode.set({
@@ -1621,8 +1623,40 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
             this.closeStartProcessArea(e);
         }.bind(this));
 
+        this.searchProcessNode = new Element("div", {"styles": this.css.searchProcessNode_mobile}).inject(this.startProcessAreaNode);
+        this.searchProcessInput = new Element("input", {
+            "styles": this.css.searchProcessInput_mobile,
+            "placeholder": this.lp.searchProcess
+        }).inject(this.searchProcessNode);
+        this.searchProcessAction = new Element("div", {"styles": this.css.searchProcessAction_mobile}).inject(this.searchProcessNode);
+        this.searchProcessAction.addEvent("click", function (e) {
+            var v = this.searchProcessInput.get("value");
+
+            var flag = false;
+            var top5Node = this.startProcessListNode.getElement(".top5Node");
+            if(top5Node){
+                top5Node.getElements(".processItem").each(function(el){
+                    var isShow = !v || el.get("text").contains(v);
+                    isShow ? el.show() : el.hide();
+                    if( isShow )flag = true;
+                });
+                flag ? top5Node.show() : top5Node.hide();
+            }
+
+            this.startProcessListNode.getElements(".appNode").each(function(appel){
+                var flag1 = false;
+                appel.getElements(".processItem").each(function(el){
+                    var isShow = !v || el.get("text").contains(v);
+                    isShow ? el.show() : el.hide();
+                    if( isShow )flag1 = true;
+                });
+                flag1 ? appel.show() : appel.hide();
+            });
+
+        }.bind(this));
+
         this.startProcessListNode = new Element("div", {"styles": this.css.startProcessListNode_mobile}).inject(this.startProcessAreaNode);
-        var h = size.y-this.startProcessTopNode.getSize().y;
+        var h = size.y-this.startProcessTopNode.getSize().y - this.searchProcessNode.getSize().y;
         this.startProcessListNode.setStyle("height", ""+h+"px");
 
         this.app.getAction(function () {
@@ -1631,8 +1665,9 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                 MWF.UD.getDataJson("taskCenter_startTop", function(json){
                     this.top5Data = json;
                     if (this.top5Data && this.top5Data.length){
-                        new Element("div", {"styles": this.css.applicationChildTitleNode, "text": this.lp.startTop5}).inject(this.startProcessListNode);
-                        var top5ChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
+                        var top5Node = new Element("div.top5Node").inject(this.startProcessListNode);
+                        new Element("div.top5Title", {"styles": this.css.applicationChildTitleNode, "text": this.lp.startTop5}).inject(top5Node);
+                        var top5ChildNode = new Element("div.top5ChildNode", {"styles": this.css.applicationChildChildNode}).inject(top5Node);
 
                         this.top5Data.sort(function(p1, p2){
                             return 0-(p1.count-p2.count);
@@ -1641,10 +1676,12 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                             if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
                         }.bind(this));
                     }
+
                     appjson.data.each(function (app) {
                         if (app.processList && app.processList.length > 0) {
-                            new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
-                            var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
+                            var appNode = new Element("div.appNode").inject(this.startProcessListNode);
+                            new Element("div.appTitleNode", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(appNode);
+                            var appChildNode = new Element("div.appChildNode", {"styles": this.css.applicationChildChildNode}).inject(appNode);
                             app.processList.each(function(process){
                                 new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": app.applicationName || app.appName || app.name }, appChildNode);
                             }.bind(this));
