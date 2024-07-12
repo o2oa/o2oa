@@ -551,6 +551,10 @@ public class ElementFactory extends AbstractFactory {
 				scriptText = Objects
 						.toString(PropertyUtils.getProperty(o, Publish.targetAssignDataScriptText_FIELDNAME));
 				break;
+			case Business.EVENT_PUBLISHCMSCREATOR:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Publish.cmsCreatorScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Publish.cmsCreatorScriptText_FIELDNAME));
+				break;
 			case Business.EVENT_INVOKEJAXRSHEAD:
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScriptText_FIELDNAME));
