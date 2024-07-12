@@ -12,7 +12,8 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         resetEnable: true,
         goBackEnable: true,
         processOptions: {},
-        mainColorEnable: true
+        mainColorEnable: true,
+        zIndex: 20001 //比正文编辑器痕迹窗口多1
     },
     initialize: function (container, task, options, form) {
         this.setOptions(options);
@@ -198,7 +199,14 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         }
         this.quickSelector = new MWF.ProcessFlow.widget.QuickSelect(
             this.form.app ? this.form.app.content : $(document.body),
-            this.quickSelectNode, this.form.app, {}
+            this.quickSelectNode,
+            this.form.app,
+            {},
+            {
+                nodeStyles: {
+                    "z-index" : this.options.zIndex + 1
+                }
+            }
          );
         this.quickSelector.flow = this;
         this.contentScrollNode.addEvent("scroll", function () {
@@ -1195,7 +1203,7 @@ MWF.ProcessFlow.Processor = new Class({
                 "style": {
                     "background-color": "#999",
                     "opacity": 0.3,
-                    "z-index": 600
+                    "z-index": this.flow.options.zIndex+1
                 }
             });
 
@@ -1524,7 +1532,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         this.node.getParent().mask({
             "opacity": 0.7,
             "background-color": "#eee",
-            "z-index": 1002
+            "z-index": this.flow.options.zIndex + 2
         });
         this.empowerDlg = o2.DL.open({
             "title": MWF.xApplication.process.Xform.LP.selectEmpower,
@@ -1535,7 +1543,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
             "width": width + 40, //600,
             "height": "auto", //dlgHeight,
             "mark": true,
-            "zindex": 1001,
+            "zindex": this.flow.options.zIndex + 3,
             "onPostShow": function () {
                 if (this.nodeWidth)this.node.setStyle("width", this.nodeWidth + "px");
                 if (this.nodeHeight)this.node.setStyle("height", this.nodeHeight + "px");
@@ -2542,7 +2550,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             "position" : "absolute",
             "max-width" : "500px",
             "min-width" : "260px",
-            "z-index" : "1001",
+            "z-index" : 20002,
             "background-color" : "#fff",
             "padding" : "10px 0px 10px 0px",
             "border-radius" : "8px",
