@@ -2557,11 +2557,11 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
             userName : this.options.userName,
             oldPassword : data.password,
             newPassword : data.newPassword,
-            confirmPassword : data.confirmPassword,
-            isEncrypted : "n" //是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key"
+            confirmPassword : data.confirmPassword
+            //isEncrypted : "n" //是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key"
         }
-        // o2.Actions.load("x_organization_assemble_personal").PasswordAction.changePassword( d, function (json) {
-        o2.Actions.load("x_organization_assemble_personal").ResetAction.setPasswordAnonymous( d, function (json) {
+        //o2.Actions.load("x_organization_assemble_personal").ResetAction.setPasswordAnonymous( d, function (json) {
+        MWF.Actions.get("x_organization_assemble_personal").setPasswordAnonymous( d, function (json) {
             if (callback) callback(json);
             //this.fireEvent("postOk")
         }.bind(this), function (errorObj) {

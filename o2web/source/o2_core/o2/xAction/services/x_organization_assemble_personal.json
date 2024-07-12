@@ -22,6 +22,8 @@
   "checkPasswordOnResetPassword" : {"uri":"/jaxrs/reset/check/password/{password}"},
   "createCodeOnResetPassword" :  {"uri":"/jaxrs/reset/code/credential/{credential}"},
 
+  "setPasswordAnonymous" : {"uri":"/jaxrs/reset/password/anonymous", "method": "POST"},
+
 
   "getUserData": {"uri": "/jaxrs/custom/{name}"},
   "putUserData": {"uri": "/jaxrs/custom/{name}", "method": "PUT"},
