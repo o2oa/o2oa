@@ -66,8 +66,6 @@ public class ActionSetPasswordAnonymous extends BaseAction {
                         BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(
                                 wi.getConfirmPassword(), Config.privateKey())
                                 : wi.getConfirmPassword();
-                LOGGER.info("{} set password oldPassword:{}, newPassword:{}, confirmPassword:{}",
-                        person.getDistinguishedName(), oldPassword, newPassword, confirmPassword);
                 if (StringUtils.equals(newPassword, oldPassword)) {
                     throw new ExceptionNewPasswordSameAsOldPassword();
                 }
