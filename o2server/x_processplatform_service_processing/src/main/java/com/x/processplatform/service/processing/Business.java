@@ -38,6 +38,7 @@ public class Business {
 	public static final String EVENT_INVOKEJAXRSBODY = "invokeJaxrsBody";
 	public static final String EVENT_INVOKEJAXRSHEAD = "invokeJaxrsHead";
 	public static final String EVENT_PUBLISHCMSBODY = "publishCmsBody";
+	public static final String EVENT_PUBLISHCMSCREATOR = "publishCmsCreator";
 	public static final String EVENT_SERVICE = "service";
 	public static final String EVENT_ROUTE = "route";
 	public static final String EVENT_ROUTEAPPENDTASKIDENTITY = "routeAppendTaskIdentity";
@@ -60,7 +61,7 @@ public class Business {
 	public static final String EVENT_READDUTY = "readDuty";
 	public static final String EVENT_REVIEWDUTY = "reviewDuty";
 	public static final String EVENT_PERMISSIONWRITE = "permissionWrite";
-	
+
 	private EntityManagerContainer emc;
 
 	public Business(EntityManagerContainer emc) {

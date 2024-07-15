@@ -424,6 +424,35 @@ public class Publish extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private Boolean inheritAttachment;
 
+	public static final String cmsCreatorIdentity_FIELDNAME = "cmsCreatorIdentity";
+	@FieldDescribe("内容管理文档创建者身份.")
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ cmsCreatorIdentity_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String cmsCreatorIdentity;
+
+	public static final String publishCmsCreatorType_FIELDNAME = "publishCmsCreatorType";
+	@FieldDescribe("内容管理文档创建者来源类型:creator, identity, lastIdentity")
+	@Enumerated(EnumType.STRING)
+	@Column(length = PublishCmsCreatorType.length, name = ColumnNamePrefix + publishCmsCreatorType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private PublishCmsCreatorType cmsCreatorType;
+
+	public static final String cmsCreatorScript_FIELDNAME = "cmsCreatorScript";
+	@IdReference(Script.class)
+	@FieldDescribe("内容管理文档创建者脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + cmsCreatorScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String cmsCreatorScript;
+
+	public static final String cmsCreatorScriptText_FIELDNAME = "cmsCreatorScriptText";
+	@FieldDescribe("内容管理文档创建者脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + cmsCreatorScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String cmsCreatorScriptText;
+
 	public static final String titleDataPath_FIELDNAME = "titleDataPath";
 	@FieldDescribe("内容管理文档标题数据路径")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + titleDataPath_FIELDNAME)
@@ -992,4 +1021,36 @@ public class Publish extends Activity {
 		this.getProperties().setPublishTableList(publishTableList);
 	}
 
+	public String getCmsCreatorIdentity() {
+		return cmsCreatorIdentity;
+	}
+
+	public void setCmsCreatorIdentity(String cmsCreatorIdentity) {
+		this.cmsCreatorIdentity = cmsCreatorIdentity;
+	}
+
+	public PublishCmsCreatorType getCmsCreatorType() {
+		return cmsCreatorType;
+	}
+
+	public void setCmsCreatorType(
+			PublishCmsCreatorType cmsCreatorType) {
+		this.cmsCreatorType = cmsCreatorType;
+	}
+
+	public String getCmsCreatorScript() {
+		return cmsCreatorScript;
+	}
+
+	public void setCmsCreatorScript(String cmsCreatorScript) {
+		this.cmsCreatorScript = cmsCreatorScript;
+	}
+
+	public String getCmsCreatorScriptText() {
+		return cmsCreatorScriptText;
+	}
+
+	public void setCmsCreatorScriptText(String cmsCreatorScriptText) {
+		this.cmsCreatorScriptText = cmsCreatorScriptText;
+	}
 }
