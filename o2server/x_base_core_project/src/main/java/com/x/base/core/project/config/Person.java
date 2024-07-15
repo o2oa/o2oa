@@ -61,6 +61,7 @@ public class Person extends ConfigObject {
 		this.codeLogin = DEFAULT_CODELOGIN;
 		this.bindLogin = DEFAULT_BINDLOGIN;
 		this.faceLogin = DEFAULT_FACELOGIN;
+		this.twoFactorLogin = false;
 		this.firstLoginModifyPwd = DEFAULT_FIRSTLOGINMODIFYPWD;
 		this.password = DEFAULT_PASSWORD;
 		this.passwordPeriod = DEFAULT_PASSWORDPERIOD;
@@ -94,6 +95,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("是否启用刷脸登录,默认值:false.")
 	private Boolean faceLogin;
+
+	@FieldDescribe("是否启用双因素认证登录,默认值:false.")
+	private Boolean twoFactorLogin;
 
 	@FieldDescribe("是否启用首次登陆修改密码,默认值:false")
 	private Boolean firstLoginModifyPwd;
@@ -358,5 +362,13 @@ public class Person extends ConfigObject {
 
 	public void setAppTokenExpiredMinutes(Integer appTokenExpiredMinutes) {
 		this.appTokenExpiredMinutes = appTokenExpiredMinutes;
+	}
+
+	public Boolean getTwoFactorLogin() {
+		return twoFactorLogin;
+	}
+
+	public void setTwoFactorLogin(Boolean twoFactorLogin) {
+		this.twoFactorLogin = twoFactorLogin;
 	}
 }

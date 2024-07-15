@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -34,6 +35,9 @@ class ActionLogin extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			if(BooleanUtils.isTrue(Config.person().getTwoFactorLogin())){
+				throw new ExceptionLoginDisable();
+			}
 			Wo wo = new Wo();
 			check(wi);
 			String password = this.password(wi.getPassword());

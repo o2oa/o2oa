@@ -35,6 +35,9 @@ class ActionCaptchaLogin extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		this.validate(wi);
+		if(BooleanUtils.isTrue(Config.person().getTwoFactorLogin())){
+			throw new ExceptionLoginDisable();
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Wo wo = null;
