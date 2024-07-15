@@ -2530,6 +2530,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.flowDlg = o2.DL.open({
                 "title": this.app.lp.flowWork,
                 "style": this.json.dialogStyle || "user",
+                "zindex": 20001,
                 "isResize": false,
                 "content": flowNode,
                 "maskNode": this.app.content,
