@@ -65,6 +65,11 @@
     "padding-top" : "20px",
     "text-align": "left"
   },
+  "formTableValueTop60" : {
+    "padding-top" : "50px",
+    "padding-bottom" : "20px",
+    "text-align": "left"
+  },
   "formTableTitleDiv" : {
     "font-weight" : "bold"
   },

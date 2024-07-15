@@ -260,6 +260,18 @@
 	"padding-left" : "58px",
 	"border-radius" : "4px"
   },
+  "inputVerificationCode3" : {
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "292px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_verify_code.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
   "inputSendVerification" : {
 	"margin-left" : "20px",
 	"color" : "#fff",
