@@ -46,8 +46,8 @@ var jvmUrls = {
     "linux_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux_java11",
     "aix_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/aix_java11",
     "arm_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/arm_java11",
-    "macos_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/macos_java11",
-    "risc_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/risc_java11",
+    "macosx64_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/macosx64_java11",
+    "macosarm_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/macosarm_java11",
     "mips_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/mips_java11",
     "raspi_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/raspi_java11",
     "windows_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/windows_java11",
@@ -59,8 +59,8 @@ var scripts = {
     "linux": ["o2server/*linux*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "aix": ["o2server/*aix*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "arm": ["o2server/*arm*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
-    "macos": ["o2server/*macos*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
-    "risc": ["o2server/*risc*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
+    "macosx64": ["o2server/*macosx64*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
+    "macosarm": ["o2server/*macosarm*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "mips": ["o2server/*mips*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "raspi": ["o2server/*raspi*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "windows": ["o2server/*windows*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
@@ -1200,7 +1200,8 @@ function createHistoryJsonFile(url, fileName, host){
                     const downloadJson = JSON.parse(str);
                     downloadJson.windows.url = host+downloadJson.windows.url;
                     downloadJson.linux.url = host+downloadJson.linux.url
-                    downloadJson.macos.url = host+downloadJson.macos.url
+                    downloadJson.macosx64.url = host+downloadJson.macosx64.url
+                    downloadJson.macosarm.url = host+downloadJson.macosarm.url
                     downloadJson.aix.url = host+downloadJson.aix.url
                     downloadJson.raspi.url = host+downloadJson.raspi.url
                     downloadJson.mips.url = host+downloadJson.mips.url
