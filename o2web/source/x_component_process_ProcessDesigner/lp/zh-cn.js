@@ -358,6 +358,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"getOldData": "获取原流程的业务数据",
 		"setNewData": "设置新流程的业务数据",
 
+		"cmsCreator": "发布者",
+		"cmsCreatorId": "发布者标识",
+		"specifyCmsCreator": "指定一个发布者",
+		"useScript": "使用脚本",
+		"cmsCreatorScript": "发布者脚本",
+
 		"waitUntilCompletedTitle": "流程等待",
 		"waitUntilCompleted": "如果选择“是”，主流程将在被调用流程流转过程中保持等待，直到等待被调用流程流转结束",
 		"completedEventsInfo": "启用了流程等待，子流程结束后会触发主流程继续流转，下面的三个事件会被执行",
