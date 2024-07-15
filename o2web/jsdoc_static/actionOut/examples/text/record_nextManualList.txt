@@ -1,0 +1,12 @@
+[
+       {
+           "activity": "e9303aff-a87e-4a22-a341-7a2c35095d40",
+           "activityType": "manual",
+           "activityName": "审核",
+           "activityAlias": "",
+           "activityToken": "4c207f49-e616-4b02-9d6a-f40eeb299440",
+           "taskIdentityList": [
+               "开发1@bgs_kf1@I"
+           ]
+       }
+   ]

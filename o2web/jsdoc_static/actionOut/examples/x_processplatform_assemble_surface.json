@@ -290,11 +290,14 @@
   },
   "WorkLog": {
     "fromActivityType": "text:work_activityType",
-    "arrivedActivityType": "text:work_activityType"
+    "arrivedActivityType": "text:work_activityType",
+    "properties": "text:workLog_properties",
+    "tickets": "text:workLog_tickets"
   },
   "Record": {
     "fromActivityType": "text:work_activityType",
     "arrivedActivityType": "text:work_activityType",
-    "properties": "text:record_properties"
+    "properties": "text:record_properties",
+    "nextManualList": "text:record_nextManualList"
   }
 }
