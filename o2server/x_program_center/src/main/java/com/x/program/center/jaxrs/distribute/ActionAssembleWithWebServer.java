@@ -1,22 +1,19 @@
 package com.x.program.center.jaxrs.distribute;
 
-import java.util.Map;
-import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import java.util.Map;
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 
 class ActionAssembleWithWebServer extends BaseAction {
 
     ActionResult<Wo> execute(HttpServletRequest request, String source) throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
-        wo.setWebServer(this.getRandomWebServer(request, source));
         wo.setAssembles(this.getRandomAssembles(request, source));
         wo.setTokenName(Config.person().getTokenName());
         wo.setMockConfig(Config.mock());
@@ -27,9 +24,6 @@ class ActionAssembleWithWebServer extends BaseAction {
     }
 
     public static class Wo extends GsonPropertyObject {
-
-        @FieldDescribe("webServer")
-        public WoWebServer webServer;
 
         @FieldDescribe("assembles")
         public Map<String, WoAssemble> assembles;
@@ -42,14 +36,6 @@ class ActionAssembleWithWebServer extends BaseAction {
 
         @FieldDescribe("是否启用单服务器.")
         private Boolean standalone;
-
-        public WoWebServer getWebServer() {
-            return webServer;
-        }
-
-        public void setWebServer(WoWebServer webServer) {
-            this.webServer = webServer;
-        }
 
         public Map<String, WoAssemble> getAssembles() {
             return assembles;

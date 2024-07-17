@@ -1,5 +1,6 @@
 package com.x.bbs.assemble.control.jaxrs.attachment;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,11 +20,14 @@ import com.x.base.core.project.http.WrapOutString;
 
 public class ActionUploadAndEncode extends BaseAction {
 
-	protected ActionResult<WrapOutString> execute( HttpServletRequest request, EffectivePerson effectivePerson, 
-			Integer size, byte[] bytes, FormDataContentDisposition disposition) {
+	protected ActionResult<WrapOutString> execute( HttpServletRequest request, EffectivePerson effectivePerson,
+			Integer size, byte[] bytes, FormDataContentDisposition disposition) throws Exception{
+		if(effectivePerson.isAnonymous()){
+			throw new ExceptionAccessDenied(effectivePerson);
+		}
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
+
 		try ( InputStream input = new ByteArrayInputStream(bytes)) {
 			BufferedImage image = ImageIO.read(input);
 			int width = image.getWidth();
