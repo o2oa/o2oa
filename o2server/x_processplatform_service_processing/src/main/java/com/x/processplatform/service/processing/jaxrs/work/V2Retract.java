@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -9,7 +10,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.hadoop.thirdparty.com.google.common.base.Objects;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -118,8 +118,11 @@ class V2Retract extends BaseAction {
 				Nodes nodes = tree.down(workLogNode);
 				List<String> activityTokens = activityTokenOfNodes(nodes);
 
-				aeiObjects.getTasks().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
-						.forEach(aeiObjects.getDeleteTasks()::add);
+				aeiObjects.getTasks().stream().filter(o -> activityTokens.contains(o.getActivityToken())).forEach(o -> {
+					// 标记应为撤回删除
+					o.setRouteName("retract");
+					aeiObjects.getDeleteTasks().add(o);
+				});
 
 				aeiObjects.getTaskCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
@@ -142,7 +145,7 @@ class V2Retract extends BaseAction {
 
 				aeiObjects.getDeleteWorks().addAll(business.entityManagerContainer()
 						.listEqualAndIn(Work.class, Work.job_FIELDNAME, param.job, JpaObject.id_FIELDNAME, workIds)
-						.stream().filter(o -> !Objects.equal(o, work)).collect(Collectors.toList()));
+						.stream().filter(o -> !Objects.equals(o, work)).collect(Collectors.toList()));
 
 				if (StringUtils.isNotEmpty(param.manual.getForm())) {
 					Form form = business.element().get(param.manual.getForm(), Form.class);
