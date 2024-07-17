@@ -34,7 +34,12 @@
       "padding": "5px 5px",
       "border-bottom": "1px solid #CCC"
     },
-    "zebraContentTd": {},
+    "zebraContentTd": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding": "5px 5px",
+      "border-bottom": "1px solid #CCC"
+    },
     "contentGroupTd": {
       "padding": "5px 5px",
       "border-bottom": "1px solid #CCC",
