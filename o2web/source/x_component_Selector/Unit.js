@@ -410,7 +410,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     },
     loadSubItem: function(){
-        if( !this.selector.expandSubEnable )return;
+        if( !this.selector.options.expandSubEnable )return;
         this.isExpand = (this.selector.options.expand);
         if ( this._hasChild() || this.selector.options.expandEmptyCategory ){
             if (this.selector.options.expand){

@@ -1158,7 +1158,7 @@
         "height": "100%",
         "float": "left",
         "font-size": "16px",
-        "color": "#fb4747",
+        "color": "transparent",
         "text-align": "center",
         "background": "#ffffff",
         "line-height": "50px"

@@ -25,14 +25,24 @@
 			project.setNewProperty("length_linux_mb", length_linux_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-macos.zip" property="build_macos.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-macos.zip" property="length_macos"/>
+		<checksum file="${preName}-${VERSION}-macosx64.zip" property="build_macosx64.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-macosx64.zip" property="length_macosx64"/>
 		<script language="javascript">
 			<![CDATA[
-			var length_macos_bytes = project.getProperty("length_macos");
-			var length_macos_kbytes = Math.round((length_macos_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			var length_macos_mbytes = Math.round((length_macos_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_macos_mb", length_macos_mbytes);
+			var length_macosx64_bytes = project.getProperty("length_macosx64");
+			var length_macosx64_kbytes = Math.round((length_macosx64_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_macosx64_mbytes = Math.round((length_macosx64_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			project.setNewProperty("length_macosx64_mb", length_macos64_mbytes);
+		]]>
+		</script>
+		<checksum file="${preName}-${VERSION}-macosarm.zip" property="build_macosarm.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-macosarm.zip" property="length_macosarm"/>
+		<script language="javascript">
+			<![CDATA[
+			var length_macosarm_bytes = project.getProperty("length_macosarm");
+			var length_macosarm_kbytes = Math.round((length_macosarm_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_macosarm_mbytes = Math.round((length_macosarm_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			project.setNewProperty("length_macosarm_mb", length_macosarm_mbytes);
 		]]>
 		</script>
 		<checksum file="${preName}-${VERSION}-aix.zip" property="build_aix.sha" algorithm="SHA-256" />
@@ -43,16 +53,6 @@
 			var length_aix_kbytes = Math.round((length_aix_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_aix_mbytes = Math.round((length_aix_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_aix_mb", length_aix_mbytes);
-		]]>
-		</script>
-		<checksum file="${preName}-${VERSION}-raspi.zip" property="build_raspi.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-raspi.zip" property="length_raspi"/>
-		<script language="javascript">
-			<![CDATA[
-			var length_raspi_bytes = project.getProperty("length_raspi");
-			var length_raspi_kbytes = Math.round((length_raspi_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			var length_raspi_mbytes = Math.round((length_raspi_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_raspi_mb", length_raspi_mbytes);
 		]]>
 		</script>
 		<checksum file="${preName}-${VERSION}-linux-mips.zip" property="build_mips.sha" algorithm="SHA-256" />
@@ -108,23 +108,23 @@
 			"url": "/download/o2server-${VERSION}-linux-x64.zip",
 			"sha256": "${build_linux.sha}"
 			},
-			"macos": {
-			"system": "macos",
-			"name": "o2server-${VERSION}-macos",
-			"fileName": "o2server-${VERSION}-macos.zip",
-			"fileSize": "${length_macos_mb}MB",
+			"macosx64": {
+			"system": "macosx64",
+			"name": "o2server-${VERSION}-macosx64",
+			"fileName": "o2server-${VERSION}-macosx64.zip",
+			"fileSize": "${length_macosx64_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-macos.zip",
-			"sha256": "${build_macos.sha}"
+			"url": "/download/o2server-${VERSION}-macosx64.zip",
+			"sha256": "${build_macosx64.sha}"
 			},
-			"aix": {
-			"system": "aix",
-			"name": "o2server-${VERSION}-aix",
-			"fileName": "o2server-${VERSION}-aix.zip",
-			"fileSize": "${length_aix_mb}MB",
+			"macosarm": {
+			"system": "macosarm",
+			"name": "o2server-${VERSION}-macosarm",
+			"fileName": "o2server-${VERSION}-macosarm.zip",
+			"fileSize": "${length_macosarm_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-aix.zip",
-			"sha256": "${build_aix.sha}"
+			"url": "/download/o2server-${VERSION}-macosarm.zip",
+			"sha256": "${build_macosarm.sha}"
 			},
 			"raspi": {
 			"system": "raspberrypi",
@@ -186,23 +186,23 @@
 			"url": "/download/o2server-${VERSION}-linux-x64.zip",
 			"sha256": "${build_linux.sha}"
 			},
-			"macos": {
-			"system": "macos",
-			"name": "o2server-${VERSION}-macos",
-			"fileName": "o2server-${VERSION}-macos.zip",
-			"fileSize": "${length_macos_mb}MB",
+			"macosx64": {
+			"system": "macosx64",
+			"name": "o2server-${VERSION}-macosx64",
+			"fileName": "o2server-${VERSION}-macosx64.zip",
+			"fileSize": "${length_macosx64_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-macos.zip",
-			"sha256": "${build_macos.sha}"
+			"url": "/download/o2server-${VERSION}-macosx64.zip",
+			"sha256": "${build_macosx64.sha}"
 			},
-			"aix": {
-			"system": "aix",
-			"name": "o2server-${VERSION}-aix",
-			"fileName": "o2server-${VERSION}-aix.zip",
-			"fileSize": "${length_aix_mb}MB",
+			"macosarm": {
+			"system": "macosarm",
+			"name": "o2server-${VERSION}-macosarm",
+			"fileName": "o2server-${VERSION}-macosarm.zip",
+			"fileSize": "${length_macosarm_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-${VERSION}-aix.zip",
-			"sha256": "${build_aix.sha}"
+			"url": "/download/o2server-${VERSION}-macosarm.zip",
+			"sha256": "${build_macosarm.sha}"
 			},
 			"raspi": {
 			"system": "raspi",
@@ -298,8 +298,8 @@
 			</zipfileset>
 		</zip>
 	</target>
-	<target name="zip_macos">
-		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macos.zip" update="false">
+	<target name="zip_macosx64">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macosx64.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
@@ -310,16 +310,16 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="jvm/macos_java11/"/>
-				<include name="start_macos.sh"/>
-				<include name="start_macos_debug.sh"/>
-				<include name="console_macos.sh"/>
-				<include name="stop_macos.sh"/>
+				<include name="jvm/macosx64_java11/"/>
+				<include name="start_macosx64.sh"/>
+				<include name="start_macosx64_debug.sh"/>
+				<include name="console_macosx64.sh"/>
+				<include name="stop_macosx64.sh"/>
 			</zipfileset>
 		</zip>
 	</target>
-	<target name="zip_aix">
-		<zip encoding="utf-8" destfile="${preName}-${VERSION}-aix.zip" update="false">
+	<target name="zip_macosarm">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macosarm.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
@@ -330,11 +330,11 @@
 				<include name="console.jar"/>
 				<include name="index.html"/>
 				<include name="version.o2"/>
-				<include name="jvm/aix_java11/"/>
-				<include name="start_aix.sh"/>
-				<include name="start_aix_debug.sh"/>
-				<include name="console_aix.sh"/>
-				<include name="stop_aix.sh"/>
+				<include name="jvm/macosarm_java11/"/>
+				<include name="start_macosarm.sh"/>
+				<include name="start_macosarm_debug.sh"/>
+				<include name="console_macosarm.sh"/>
+				<include name="stop_macosarm.sh"/>
 			</zipfileset>
 		</zip>
 	</target>

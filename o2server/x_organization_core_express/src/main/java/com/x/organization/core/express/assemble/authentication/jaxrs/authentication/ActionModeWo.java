@@ -25,6 +25,10 @@ public class ActionModeWo extends GsonPropertyObject {
 	@Schema(description = "人脸识别登陆.")
 	private Boolean faceLogin = false;
 
+	@FieldDescribe("双因素登陆.")
+	@Schema(description = "双因素登陆.")
+	private Boolean twoFactorLogin = false;
+
 	public Boolean getCodeLogin() {
 		return codeLogin;
 	}
@@ -57,4 +61,11 @@ public class ActionModeWo extends GsonPropertyObject {
 		this.captchaLogin = captchaLogin;
 	}
 
+	public Boolean getTwoFactorLogin() {
+		return twoFactorLogin;
+	}
+
+	public void setTwoFactorLogin(Boolean twoFactorLogin) {
+		this.twoFactorLogin = twoFactorLogin;
+	}
 }

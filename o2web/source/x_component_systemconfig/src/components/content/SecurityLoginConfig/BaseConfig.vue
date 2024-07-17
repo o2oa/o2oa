@@ -14,9 +14,23 @@
     <div class="item_info">{{lp._loginConfig.codeLoginInfo}}</div>
     <div class="item_info">
       <el-switch
-          @change="saveConfig('person', 'codeLogin', codeLogin)"
+          @change="changeCodeLogin();"
           v-model="codeLogin"
-          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable">
+          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable"
+          :disabled="codeLoginDisabled"
+      >
+      </el-switch>
+    </div>
+
+    <div class="item_title">{{lp._loginConfig.twoFactorLogin}}</div>
+    <div class="item_info">{{lp._loginConfig.twoFactorLoginInfo}}</div>
+    <div class="item_info">
+      <el-switch
+          @change="changeTwoFactorLogin()"
+          v-model="twoFactorLogin"
+          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable"
+          :disabled="twoFactorLoginDisabled"
+      >
       </el-switch>
     </div>
 
@@ -96,12 +110,33 @@ const captchaLogin = ref(false);
 const codeLogin = ref(true);
 const bindLogin = ref(true);
 const faceLogin = ref(false);
+const twoFactorLogin = ref(false);
 const register = ref('disable');
 const loginPage = ref(false);
 const loginPortal = ref('default');
 const indexPage = ref(false);
 const indexPortal = ref('');
 const portalList = ref([]);
+const codeLoginDisabled = ref(false);
+const twoFactorLoginDisabled = ref(false);
+
+const changeCodeLogin = async () => {
+  twoFactorLoginDisabled.value = !!(codeLogin.value);
+  if( !!(codeLogin.value) ){
+    twoFactorLogin.value = false;
+    await saveConfig('person', 'twoFactorLogin', twoFactorLogin.value)
+  }
+  await saveConfig('person', 'codeLogin', codeLogin.value)
+}
+
+const changeTwoFactorLogin = async () => {
+  codeLoginDisabled.value = !!(twoFactorLogin.value);
+  if( !!(twoFactorLogin.value) ){
+    codeLogin.value = false;
+    await saveConfig('person', 'codeLogin', codeLogin.value)
+  }
+  await saveConfig('person', 'twoFactorLogin', twoFactorLogin.value)
+}
 
 const load = async () => {
   const personP = getConfigData('person').then((data)=>{
@@ -109,6 +144,11 @@ const load = async () => {
     codeLogin.value = !!data.codeLogin;
     bindLogin.value = !!data.bindLogin;
     faceLogin.value = !!data.faceLogin;
+    twoFactorLogin.value = !!data.twoFactorLogin;
+
+    twoFactorLoginDisabled.value = codeLogin.value;
+    codeLoginDisabled.value = twoFactorLogin.value;
+
     if (data.register) register.value = data.register;
     if (data.loginPage && data.loginPage.enable){
       loginPage.value = !!data.loginPage.enable;
@@ -116,6 +156,7 @@ const load = async () => {
     }
     return data;
   });
+
   const portalP = getConfigData('portal').then((data)=>{
     if (data.loginPage && data.loginPage.enable){
       loginPage.value = !!data.loginPage.enable;

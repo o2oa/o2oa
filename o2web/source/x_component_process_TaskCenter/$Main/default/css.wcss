@@ -498,6 +498,22 @@
         "cursor": "pointer",
         "float": "left"
     },
+    "searchProcessNode_mobile":{
+        "display": "flex",
+        "padding": "10px 10px 10px 20px"
+    },
+    "searchProcessInput_mobile":{
+        "flex": "1",
+        "height": "24px",
+        "color": "rgb(102, 102, 102)",
+        "border": "1px solid rgb(153, 153, 153)",
+        "border-radius": "4px"
+    },
+    "searchProcessAction_mobile":{
+        "width": "40px",
+         "height": "24px",
+         "background": "url(../x_component_process_TaskCenter/$Main/default/icon/search.png) center center no-repeat"
+    },
     "startProcessListNode_mobile":{
         "overflow": "auto"
     },
@@ -570,31 +586,32 @@
         "display": "none"
     },
     "startProcessNode": {
-        "height": "50px",
-        "line-height": "50px",
+        //"height": "50px",
+        //"line-height": "50px",
         "font-size": "16px",
         "padding": "0px 10px",
         "overflow": "hidden",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center"
     },
     "processIconNode": {
         "width": "50px",
         "height": "50px",
-        "float": "left",
         "background-position": "center center",
         "background-repeat": "no-repeat",
-        "float": "left"
+        "padding": "0 10px;"
     },
     "processTextNode": {
-        "margin-left": "52px",
-        "margin-right": "120px",
-        "line-height": "50px",
+        "line-height": "24px",
+        "padding": "13px 0",
         "font-size": "14px",
         "overflow": "hidden",
-        "color": "#333333"
+        "color": "#333333",
+        "flex": "1"
     },
     "processActionNode": {
-        "margin": "12px 20px",
+        "margin": "0 10px",
         "height": "24px",
         "width": "80px",
         "border": "1px solid #cccccc",
@@ -604,7 +621,6 @@
         "line-height": "24px",
         "text-align": "center",
         "font-size": "12px",
-        "float": "right",
         "display": "block"
     },
     "processActionNode_over": {

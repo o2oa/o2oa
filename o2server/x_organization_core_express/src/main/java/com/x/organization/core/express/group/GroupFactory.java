@@ -140,12 +140,12 @@ public class GroupFactory {
 
 	/** 查询身份所在的群组 */
 	public List<String> listWithIdentity(List<String> values) throws Exception {
-		return listWithIdentityReference(values, true, true, false);
+		return listWithIdentityReference(values, true, true, true);
 	}
 
 	/** 查询身份所在的群组 */
 	public List<String> listWithIdentity(String... values) throws Exception {
-		return listWithIdentityReference(Arrays.asList(values), true, true, false);
+		return listWithIdentityReference(Arrays.asList(values), true, true, true);
 	}
 
 	/**

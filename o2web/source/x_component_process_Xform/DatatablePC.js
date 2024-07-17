@@ -4575,5 +4575,9 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);
 MWF.xApplication.process.Xform.DatatablePC.ExcelUtils = new Class({
-	Extends: MWF.xApplication.Template.utils.ExcelUtils
+	Extends: MWF.xApplication.Template.utils.ExcelUtils,
+	initialize: function(){
+		this.sheet2JsonOptions = {};
+		this.pollyfill();
+	}
 });

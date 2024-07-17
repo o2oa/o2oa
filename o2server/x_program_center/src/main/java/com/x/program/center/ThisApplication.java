@@ -1,12 +1,5 @@
 package com.x.program.center;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
@@ -14,7 +7,6 @@ import com.x.program.center.schedule.AndFxSyncOrganization;
 import com.x.program.center.schedule.Area;
 import com.x.program.center.schedule.Cleanup;
 import com.x.program.center.schedule.CleanupCode;
-import com.x.program.center.schedule.CollectLog;
 import com.x.program.center.schedule.CollectPerson;
 import com.x.program.center.schedule.DingdingSyncOrganization;
 import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
@@ -26,6 +18,11 @@ import com.x.program.center.schedule.WeLinkSyncOrganization;
 import com.x.program.center.schedule.WeLinkSyncOrganizationTrigger;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ThisApplication {
 
@@ -108,7 +105,6 @@ public class ThisApplication {
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);
 			context().scheduleLocal(Cleanup.class, 10, 60 * 30);
 			context().scheduleLocal(CollectPerson.class, 10, 60 * 30);
-			context().scheduleLocal(CollectLog.class, 10, 60 * 30);
 			// 运行间隔由60秒缩减到30秒
 			context().scheduleLocal(TriggerAgent.class, 150, 30);
 			/* 行政区域每周更新一次 */

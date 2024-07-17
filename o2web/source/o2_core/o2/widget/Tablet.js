@@ -18,6 +18,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "eraserRadiusSize": 20, //橡皮大小
         "color" : "#000000", //画笔颜色
 
+        "zIndex": 20003,
+
         tools : [
             "save", "|",
             "undo",
@@ -937,7 +939,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 this.ctx.globalCompositeOperation = "source-over";
                 this.parseFileToImage( img );
             }.bind(this)
-        });
+        }, this);
         clipper.load();
     },
     input: function( itemNode ){
@@ -1799,9 +1801,10 @@ o2.widget.Tablet.ImageClipper = new Class({
         "style": "default",
         "aspectRatio": 0
     },
-    initialize: function(app, options){
+    initialize: function(app, options, tablet){
         this.setOptions(options);
         this.app = app;
+        this.tablet = tablet;
         this.path = "../x_component_process_Xform/widget/$ImageClipper/";
         this.cssPath = "../x_component_process_Xform/widget/$ImageClipper/"+this.options.style+"/css.wcss";
         this._loadCss();
@@ -1833,6 +1836,7 @@ o2.widget.Tablet.ImageClipper = new Class({
                 "style": options.style || "user",
                 "top": y,
                 "left": x - 20,
+                "zindex": this.tablet.options.zIndex,
                 "fromTop": y,
                 "fromLeft": x - 20,
                 "width": width,
@@ -1857,7 +1861,7 @@ o2.widget.Tablet.ImageClipper = new Class({
                     }
                 ],
                 "onPostShow" : function(){
-                    this.node.setStyle("z-index",1003);
+                    //this.node.setStyle("z-index",1003);
                     this.content.setStyle("margin-left","20px");
                 }
             });
@@ -1901,7 +1905,7 @@ o2.widget.Tablet.ImageMover = new Class({
                 "top" : coordinates.top,
                 "left" : coordinates.left,
                 "background" : "rgba(255,255,255,0.5)",
-                "z-index" : 1003,
+                "z-index" : this.tablet.options.zIndex + 3,
                 "-webkit-user-select": "none",
                 "-moz-user-select": "none",
                 "user-select" : "none"

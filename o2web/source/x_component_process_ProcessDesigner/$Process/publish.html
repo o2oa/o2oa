@@ -142,6 +142,58 @@
                 </tr>
             </table>
             <hr/>
+
+
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.cmsCreator}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" onclick="if (this.checked){
+                            $('text{$.id}cmsCreatorIdentityEditArea').setStyle('display', 'none');
+                            $('text{$.id}cmsCreatorScriptEditArea').setStyle('display', 'none');
+                        }" name="cmsCreatorType" text{($.cmsCreatorType=='creator')?'checked':''} type="radio" value="creator"/>{{$.lp.currentCreator}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){
+                            $('text{$.id}cmsCreatorIdentityEditArea').setStyle('display', 'none');
+                            $('text{$.id}cmsCreatorScriptEditArea').setStyle('display', 'none');
+                        }" name="cmsCreatorType" text{($.cmsCreatorType=='lastIdentity')?'checked':''} type="radio" value="lastIdentity"/>{{$.lp.prevHandler}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){
+                            $('text{$.id}cmsCreatorIdentityEditArea').setStyle('display', 'block');
+                            $('text{$.id}cmsCreatorScriptEditArea').setStyle('display', 'none');
+                        }" name="cmsCreatorType" text{($.cmsCreatorType=='identity')?'checked':''} type="radio" value="identity"/>{{$.lp.specifyCmsCreator}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){
+                            $('text{$.id}cmsCreatorIdentityEditArea').setStyle('display', 'none');
+                            $('text{$.id}cmsCreatorScriptEditArea').setStyle('display', 'block');
+                        }" name="cmsCreatorType" text{($.cmsCreatorType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.useScript}}<br/>
+                    </td>
+                </tr>
+            </table>
+
+            <div id="text{$.id}cmsCreatorIdentityEditArea" style="display: text{($.cmsCreatorType=='identity')?'block':'none'};">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.cmsCreatorId}}:</td>
+                        <td class="editTableValue">
+                            <div class="MWFPersonIdentity" count="1"  name="cmsCreatorIdentity" type="identity"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="text{$.id}cmsCreatorScriptEditArea" style="display: text{($.cmsCreatorType=='script')?'block':'none'};">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.cmsCreatorScript}}:</td>
+                        <td class="editTableValue">
+                            <div class="MWFScript" name="cmsCreatorScript"></div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="MWFScriptText" name="cmsCreatorScriptText"></div>
+            </div>
+
+
+
+            <hr/>
             <div></div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>

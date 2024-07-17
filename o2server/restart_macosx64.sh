@@ -5,5 +5,5 @@ current_dir="$(
     pwd
 )"
 cd ${current_dir}
-${current_dir}/stop_macos.sh
-${current_dir}/start_macos.sh
+${current_dir}/stop_macosx64.sh
+${current_dir}/start_macosx64.sh

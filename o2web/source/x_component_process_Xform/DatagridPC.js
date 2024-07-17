@@ -2533,5 +2533,9 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 
 MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);
 MWF.xApplication.process.Xform.DatagridPC.ExcelUtils = new Class({
-	Extends: MWF.xApplication.Template.utils.ExcelUtils
+	Extends: MWF.xApplication.Template.utils.ExcelUtils,
+	initialize: function(){
+		this.sheet2JsonOptions = {};
+		this.pollyfill();
+	}
 });
