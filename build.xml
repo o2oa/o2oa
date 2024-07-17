@@ -32,7 +32,7 @@
 			var length_macosx64_bytes = project.getProperty("length_macosx64");
 			var length_macosx64_kbytes = Math.round((length_macosx64_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_macosx64_mbytes = Math.round((length_macosx64_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_macosx64_mb", length_macos64_mbytes);
+			project.setNewProperty("length_macosx64_mb", length_macosx64_mbytes);
 		]]>
 		</script>
 		<checksum file="${preName}-${VERSION}-macosarm.zip" property="build_macosarm.sha" algorithm="SHA-256" />
