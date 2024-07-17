@@ -248,7 +248,7 @@
 			}
 			}</echo>
 	</target>
-	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macosx64,,zip_macosarm,zip_aix,zip_raspi,zip_mips,zip_arm,zip_sw" />
+	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macosx64,zip_macosarm,zip_aix,zip_raspi,zip_mips,zip_arm,zip_sw" />
 	<target name="version_o2">
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>

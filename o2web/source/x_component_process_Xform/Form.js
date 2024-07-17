@@ -2117,56 +2117,59 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.businessData.task.routeName = routeName;
                 this.businessData.task.opinion = opinion || "";
 
-                var mediaIds = [];
-                if (medias && medias.length) {
-                    medias.each(function (file, i) {
-                        var formData = new FormData();
-                        formData.append("file", file);
-                        formData.append("site", "$mediaOpinion");
-                        var fileName = "mediaOpinion_"+i+"_"+new Date().getTime();
-                        if( file.type && file.type.contains("/") ) {
-                            file.name = fileName + "." + file.type.split("/")[1];
-                        }else{
-                            file.name = fileName + ".unknow";
-                        }
-                        this.workAction.uploadAttachment(this.businessData.work.id, formData, file, function (json) {
-                            mediaIds.push(json.data.id);
-                        }.bind(this), null, false);
-                    }.bind(this));
-                }
-                if (mediaIds.length) this.businessData.task.mediaOpinion = mediaIds.join(",");
-
-                if (appendTaskIdentityList && appendTaskIdentityList.length) {
-                    var list = [];
-                    appendTaskIdentityList.each(function (identity) {
-                        if (typeOf(identity) === "object") {
-                            list.push(identity.distinguishedName || identity.unique || identity.id)
-                        } else {
-                            list.push(identity);
-                        }
-                    }.bind(this));
-                    this.businessData.task.appendTaskIdentityList = list;
-                }
-
-                this.businessData.task.ignoreEmpowerIdentityList = ignoreEmpowerIdentityList;
-
-                this.fireEvent("afterSave");
-                if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
-
-                // var promiseList = [];
-                // if (this.documenteditorList && this.documenteditorList.length) {
-                //     var promiseList = [];
-                //     this.documenteditorList.each(function (module) {
-                //         promiseList.push(module.checkSaveNewHistroy());
-                //     });
+                // var mediaIds = [];
+                // if (medias && medias.length) {
+                //     medias.each(function (file, i) {
+                //         var formData = new FormData();
+                //         var fileName = "mediaOpinion_"+i+"_"+new Date().getTime();
+                //         if( file.type && file.type.contains("/") ) {
+                //             file.name = fileName + "." + file.type.split("/")[1];
+                //         }else{
+                //             file.name = fileName + ".unknow";
+                //         }
+                //
+                //         formData.append("file", file, file.name);
+                //         formData.append("site", "$mediaOpinion");
+                //
+                //
+                //         this.workAction.uploadAttachment(this.businessData.work.id, formData, file, function (json) {
+                //             mediaIds.push(json.data.id);
+                //         }.bind(this), null, false);
+                //     }.bind(this));
                 // }
-                // Promise.all(promiseList).then(function(){
+                // if (mediaIds.length) this.businessData.task.mediaOpinion = mediaIds.join(",");
+
+                this.saveMedias(medias).then(function(){
+                    if (appendTaskIdentityList && appendTaskIdentityList.length) {
+                        var list = [];
+                        appendTaskIdentityList.each(function (identity) {
+                            if (typeOf(identity) === "object") {
+                                list.push(identity.distinguishedName || identity.unique || identity.id)
+                            } else {
+                                list.push(identity);
+                            }
+                        }.bind(this));
+                        this.businessData.task.appendTaskIdentityList = list;
+                    }
+
+                    this.businessData.task.ignoreEmpowerIdentityList = ignoreEmpowerIdentityList;
+
+                    this.fireEvent("afterSave");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
+
+                    // var promiseList = [];
+                    // if (this.documenteditorList && this.documenteditorList.length) {
+                    //     var promiseList = [];
+                    //     this.documenteditorList.each(function (module) {
+                    //         promiseList.push(module.checkSaveNewHistroy());
+                    //     });
+                    // }
+                    // Promise.all(promiseList).then(function(){
                     this.workAction.processTask(function (json) {
                         //if (processor) processor.destroy();
                         //if (processNode) processNode.destroy();
                         if (callback) callback(json);
 
-                        debugger;
                         this.taskList = json.data;
                         this.fireEvent("afterProcess", {routeName: routeName, opinion: opinion});
                         if (this.app && this.app.fireEvent) this.app.fireEvent("afterProcess");
@@ -2179,12 +2182,58 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                         //window.setTimeout(function(){this.app.close();}.bind(this), 2000);
                     }.bind(this), null, this.businessData.task.id, this.businessData.task);
-                // }.bind(this), function(){});
+                    // }.bind(this), function(){});
+
+                }.bind(this));
+
 
             }.bind(this), null, true, data, true);
 
         }.bind(this));
     },
+
+    saveMedias: function(medias){
+        return new Promise(function(resolve){
+            var mediaIds = [];
+
+            if (medias && medias.length) {
+                var mPs = [];
+                medias.each(function (file, i) {
+                    var formData = new FormData();
+                    var fileName = "mediaOpinion_"+i+"_"+new Date().getTime();
+                    if( file.type && file.type.contains("/") ) {
+                        file.name = fileName + "." + file.type.split("/")[1];
+                    }else{
+                        file.name = fileName + ".unknow";
+                    }
+
+                    formData.append("file", file, file.name);
+                    formData.append("site", "$mediaOpinion");
+
+                    mPs.push(this.uploadMedia(formData, file).then(function(id){
+                        mediaIds.push(id);
+                    }));
+                }.bind(this));
+
+                Promise.all(mPs).then(function(){
+                    if (mediaIds.length) this.businessData.task.mediaOpinion = mediaIds.join(",");
+                    resolve();
+                }.bind(this));
+            }else{
+                resolve();
+            }
+        }.bind(this))
+    },
+    uploadMedia(formData, file){
+        return new Promise(function(resolve){
+            this.workAction.uploadAttachment(this.businessData.work.id, formData, file, function(json){
+                // mediaIds.push(json.data.id);
+                resolve(json.data.id);
+            }.bind(this))
+        }.bind(this));
+    },
+
+
     finishOnFlow: function(type, data, notCloseWindow){
         if (this.closeImmediatelyOnProcess && !notCloseWindow) {
             this.app.close();
@@ -2653,6 +2702,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "defaultRoute": defaultRoute,
                 "isHandwriting": this.json.isHandwriting === "no" ? false : true,
                 "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
+                    debugger;
                     if (!medias || !medias.length) {
                         medias = mds;
                     } else {
