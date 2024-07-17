@@ -1430,8 +1430,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     addAttachment: function(data, messageId, isCheckPosition){
 
         if (data.objectSecurityClearance){
-            data.objectSecurityPromise = this.getSecurityDefaultLabelList().then((list)=>{
-                return Object.keys(list).find((key)=>{
+            data.objectSecurityPromise = this.getSecurityDefaultLabelList().then(function (list){
+                return Object.keys(list).find( function(key){
                     return list[key]===data.objectSecurityClearance;
                 });
             });
@@ -1444,21 +1444,20 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
         this.checkActions();
     },
-    downloadBatchAttachment : function (){
+    downloadBatchAttachment : function () {
         var job = this.module.form.businessData.work.job;
         var site = this.module.json.id;
-        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/job/"+job+"/site/" + site;
+        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/job/" + job + "/site/" + site;
         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
 
         if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
 
             url += "&" + o2.tokenName + "=" + layout.session.token;
             window.location = url;
-        }else{
+        } else {
             window.open(url);
         }
-    },
-
+    }
 });
 
 

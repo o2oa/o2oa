@@ -117,8 +117,8 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 			"min-height": "100px"
 		});
         // this.isActive = true;
-        //if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
-		if (Browser.name==="ie"){
+        if (Browser.name==="ie" || Browser.name==="chrome" || Browser.name==="firefox"){
+		// if (Browser.name==="ie"){
             this.isActive = true;
             this.file = null;
             if (!this.form.officeList) this.form.officeList=[];
@@ -159,6 +159,18 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         }
         return "Word.Document"
     },
+    getTemplateName: function(){
+        switch (this.json.officeType){
+            case "word":
+                return "template.docx";
+            case "excel":
+                return "template.xlsx";
+            case "ppt":
+                return "template.pptx";
+        }
+        return "template.docx"
+    },
+
 	defaultParam: function(readonly){
 		var o = {
 			"ProductCaption": this.json.productCaption || this.options.ProductCaption,
@@ -189,16 +201,16 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         layout.desktop.offices[this.getOfficeObjectId()] = this;
 
         if (this.readonly){
-            this.loadOfficeRead(file);
+            this.loadOfficeEdit(file, true);
         }else if (this.json.isReadonly || this.form.json.isReadonly){
             this.readonly  = true;
-            this.loadOfficeRead(file);
+            this.loadOfficeEdit(file, true);
         }else{
             if (this.json.readScript && this.json.readScript.code){
                 var flag = this.form.Macro.exec(this.json.readScript.code, this);
                 if (flag){
                     this.readonly = true;
-                    this.loadOfficeRead(file);
+                    this.loadOfficeEdit(file, true);
                 }else{
                     this.loadOfficeEdit(file);
                 }
@@ -408,7 +420,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         return new Element("div", {
             "MWFnodeid": id,
             "MWFnodetype": "MWFToolBarButton",
-            "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+img,
+            "MWFButtonImage": "/x_component_process_FormDesigner/widget/$ActionsEditor/default/tools/"+img,
             "title": title,
             "MWFButtonAction": "menuAction",
             "MWFButtonText": title
@@ -419,7 +431,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         return new Element("div", {
             "MWFnodeid": id,
             "MWFnodetype": "MWFToolBarMenu",
-            "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+img,
+            "MWFButtonImage": "/x_component_process_FormDesigner/widget/$ActionsEditor/default/tools/"+img,
             "title": title,
             "MWFButtonAction": "menuAction",
             "MWFButtonText": title
@@ -429,7 +441,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         return new Element("div", {
             "MWFnodeid": id,
             "MWFnodetype": "MWFToolBarMenuItem",
-            "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+img,
+            "MWFButtonImage": "/x_component_process_FormDesigner/widget/$ActionsEditor/default/tools/"+img,
             "title": title,
             "MWFButtonAction": action,
             "MWFButtonText": title
@@ -438,7 +450,9 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
     menuAction: function(button){
         switch (button.buttonID){
             case "menu_new":
-                this.officeOCX.CreateNew(this.getProgID());
+                var templateName = this.getTemplateName();
+                this.officeOCX.BeginOpenFromURL('/x_component_process_Xform/widget/ntko/'+templateName, true, this.readonly);
+                // this.officeOCX.CreateNew(this.getProgID());
                 break;
             case "menu_openfile":
                 this.officeOCX.ShowDialog(1);
@@ -485,19 +499,10 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
                             }
                         }
                     }.bind(this));
-                    /*var attc = this.form.all[att];
-                    if (attc){
-                        attc.attachmentController.attachments.each(function(a){
-                            if (a.data.control.allowEdit){
-                                if (this.options.files.indexOf(a.data.extension.toLowerCase())!==-1){
-                                    button._loadMenuItem(this.createMenuActionMenuItem(a.data.id, a.data.name, "14.png", "openAttachment:"+a.data.id+":"+att+":"+a.data.name));
-                                }
-                            }
-                        }.bind(this));
-                    }*/
                 }.bind(this));
         }
     },
+
     openFile: function(bt, e, item){
         if (this.openedAttachment){
             this.save();
@@ -586,7 +591,6 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
                             this.sealItem = this.createMenuActionMenu("menu_att", "", "14.png");
                         }
                     }
-
                     this.toolbarWidget.load();
 
                 }.bind(this));
@@ -829,6 +833,10 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             var codeBase = this.json.codeBase || this.options.codeBase;
             var version = this.json.version || this.options.version;
             var classid = this.json.clsid || this.options.clsid;
+            var pdfType = this.officeConfig.pdfType || this.json.pdfType || this.options.pdfType;
+            var pdfVersion = this.officeConfig.pdfVersion || this.json.pdfVersion || this.options.pdfVersion;
+            var pdfCodeBase = this.officeConfig.pdfCodeBase || this.json.pdfCodeBase || this.options.pdfCodeBase;
+            var pdfCodeBase64 = this.officeConfig.pdfCodeBase64 || this.json.pdfCodeBase64 || this.options.pdfCodeBase64;
 
             var objectHtml = "";
             if (navigator.userAgent.indexOf("Linux") > -1) {
@@ -876,20 +884,19 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             this.officeOCX = this.officeNode.getFirst().getFirst();
 
             if(window.navigator.platform=="Win64"){
-                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
+                if (this.officeOCX.AddDocTypePlugin) this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
             }
             if(window.navigator.platform=="Win32"){
-                this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
+                if (this.officeOCX.AddDocTypePlugin) this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
             }
             this.doOfficeOCXEvents();
         }
 
-        var url = this.getOfficeFileUrl();
-        if (url){
-            this.officeOCX.BeginOpenFromURL(url, true, this.readonly);
+        this.getAutoSavedAttachments();
+        if (this.autoSavedAttachments && this.autoSavedAttachments.length){
+            this.openRecoverAutoSaveDlg();
         }else{
-            this.officeOCX.CreateNew(this.getProgID());
-            this.fireEvent("afterCreate");
+            this.openOfficeFile(file);
         }
     },
     loadOfficeEditChrome: function(file){
@@ -952,6 +959,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
                 objectHtml += "_"+key+"='"+p+"'";
             });
             objectHtml += ">";
+
             //尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href="../o2_lib/officecontrol/ntkoplugins.crx">安装组件</a>
             objectHtml += "<SPAN STYLE='color:red'>"+MWF.xApplication.process.Xform.LP.installNTKOWebChromePluginNotice_crx+"</SPAN>";
 
@@ -962,35 +970,46 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 
             if (this.officeOCX){
                 if(window.navigator.platform=="Win64"){
-                    this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
+                    if (this.officeOCX.AddDocTypePlugin) this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
                 }
                 if(window.navigator.platform=="Win32"){
-                    this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
+                    if (this.officeOCX.AddDocTypePlugin) this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
                 }
 
                 this.doOfficeOCXEvents();
+                // this.officeOCX.addEventListener('DocumentOpened', function(){
+                //     console.log('OnDocumentOpened ...')
+                // })
             }
         }
 
-        var url = this.getOfficeFileUrl();
-        if (url){
-            this.officeOCX.BeginOpenFromURL(url, true, this.readonly);
+        this.getAutoSavedAttachments();
+        if (this.autoSavedAttachments && this.autoSavedAttachments.length){
+            this.openRecoverAutoSaveDlg();
         }else{
-            window.setTimeout(function(){
-                this.officeOCX.CreateNew("WPS.Document");
-            }.bind(this), 5000);
-
-            //this.officeOCX.CreateNew(this.getProgID());
-            this.fireEvent("afterCreate");
+            this.openOfficeFile(file);
         }
+
+        // var url = this.getOfficeFileUrl();
+        // if (url){
+        //     this.officeOCX.BeginOpenFromURL(url, true, this.readonly);
+        // }else{
+        //     window.setTimeout(function(){
+        //         // if (this.officeOCX.CreateNew) this.officeOCX.CreateNew("Word.Document");
+        //         this.officeOCX.BeginOpenFromURL('/x_component_process_Xform/widget/ntko/ntkocreatnew.docx', true, this.readonly);
+        //     }.bind(this), 500);
+        //
+        //     //this.officeOCX.CreateNew(this.getProgID());
+        //     this.fireEvent("afterCreate");
+        // }
     },
-    loadOfficeEdit: function(file){
+    loadOfficeEdit: function(file, readonly){
         if (Browser.name==="chrome"){
-            this.loadOfficeEditChrome(file);
+            this.loadOfficeEditChrome(file, readonly);
         }else if (Browser.name==="firefox") {
-            this.loadOfficeEditFirefox(file);
+            this.loadOfficeEditFirefox(file, readonly);
         }else{
-            this.loadOfficeEditIE(file);
+            this.loadOfficeEditIE(file, readonly);
         }
         this.openedAttachment = null
     },
@@ -1070,8 +1089,9 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             //layout.desktop.tmpOffice = this;
             this.officeOCX.BeginOpenFromURL(url, true, this.readonly);
         }else{
+            var templateName = this.getTemplateName();
             this.isNew = true;
-            this.officeOCX.CreateNew(this.getProgID());
+            this.officeOCX.BeginOpenFromURL('/x_component_process_Xform/widget/ntko/'+templateName, true, this.readonly);
             this.fireEvent("afterCreate");
         }
 
@@ -1270,28 +1290,51 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         this.addOfficeEvent(id, "AfterOpenFromURL(doc, statusCode)", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].AfterOpenFromURL(doc, statusCode);");
         this.addOfficeEvent(id, "OnDocumentOpened(url, doc)", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].OnDocumentOpened(url, doc);");
         this.addOfficeEvent(id, "OnDocumentClosed()", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].OnDocumentClosed();");
+
+        this.loadMenu();
     },
     OnDocumentClosed: function(){
         this.fireEvent("afterCloseOffice");
     },
     OnDocumentOpened: function(url, doc){
         this.afterOpen();
-        this.loadMenu();
 
         this.fireEvent("afterOpenOffice", {
             url : url,
-            doc : doc
+            doc : this.officeOCX.ActiveDocument
         });
     },
     AfterOpenFromURL: function(doc, statusCode){
         this.fireEvent("afterOpen", [doc, statusCode]);
     },
+    checkActiveDocument: function(cb){
+        if (!this.officeOCX.ActiveDocument){
+            window.setTimeout(function(){
+                this.checkActiveDocument(cb);
+            }.bind(this), 1000);
+        }else{
+            if (cb) cb();
+        }
+    },
     addOfficeEvent: function(id, event, code){
-        var script = document.createElement("script");
-        script.setAttribute("for", id);
-        script.setAttribute("event", event);
-        script.innerText = code;
-        this.officeForm.appendChild(script);
+        if ((Browser.name==="chrome" || Browser.name==="firefox") && event.substring(0, event.indexOf('(')) === 'OnDocumentOpened'){
+            this.checkActiveDocument(function(){
+                if (this.readonly) this.docReadonly();
+                if (this.json.trackRevisions==="1") this.startRevisions();
+
+                this.fireEvent("afterOpenOffice");
+                this.fireEvent("afterOpen");
+            }.bind(this));
+        }else{
+            var script = document.createElement("script");
+            script.setAttribute("type", 'text/javascript');
+            script.setAttribute("language", 'javascript');
+            script.setAttribute("for", id);
+            script.setAttribute("event", event);
+            script.innerText = code;
+            this.officeForm.appendChild(script);
+        }
+
     },
 
     loadOfficeRead: function(file){
@@ -1348,9 +1391,9 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         this.officeOCX = this.officeNode.getFirst().getFirst();
 
         if(window.navigator.platform=="Win64"){
-            this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
+            if (this.officeOCX.AddDocTypePlugin) this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase64,51,true);
         }else{
-            this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
+            if (this.officeOCX.AddDocTypePlugin) this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
         }
         //this.officeOCX.AddDocTypePlugin(".pdf","PDF.NtkoDocument","4.0.0.3","../x_desktop/res/framework/officecontrol/ntkooledocall.cab",51,true);
 

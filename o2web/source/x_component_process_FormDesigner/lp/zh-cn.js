@@ -338,7 +338,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "iframe": "Iframe",
         "documenteditor": "公文编辑器",
         "htmledit": "HTML编辑器",
-        "office": "Office控件",
+        "office": "Office控件(Ntko)",
         "yozoOffice" : "永中控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
