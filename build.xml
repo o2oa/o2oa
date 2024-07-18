@@ -32,7 +32,7 @@
 			var length_macosx64_bytes = project.getProperty("length_macosx64");
 			var length_macosx64_kbytes = Math.round((length_macosx64_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_macosx64_mbytes = Math.round((length_macosx64_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_macosx64_mb", length_macos64_mbytes);
+			project.setNewProperty("length_macosx64_mb", length_macosx64_mbytes);
 		]]>
 		</script>
 		<checksum file="${preName}-${VERSION}-macosarm.zip" property="build_macosarm.sha" algorithm="SHA-256" />
@@ -43,16 +43,6 @@
 			var length_macosarm_kbytes = Math.round((length_macosarm_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_macosarm_mbytes = Math.round((length_macosarm_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_macosarm_mb", length_macosarm_mbytes);
-		]]>
-		</script>
-		<checksum file="${preName}-${VERSION}-aix.zip" property="build_aix.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-aix.zip" property="length_aix"/>
-		<script language="javascript">
-			<![CDATA[
-			var length_aix_bytes = project.getProperty("length_aix");
-			var length_aix_kbytes = Math.round((length_aix_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			var length_aix_mbytes = Math.round((length_aix_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_aix_mb", length_aix_mbytes);
 		]]>
 		</script>
 		<checksum file="${preName}-${VERSION}-linux-mips.zip" property="build_mips.sha" algorithm="SHA-256" />
@@ -248,7 +238,7 @@
 			}
 			}</echo>
 	</target>
-	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macosx64,zip_macosarm,zip_aix,zip_raspi,zip_mips,zip_arm,zip_sw" />
+	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macosx64,zip_macosarm,zip_raspi,zip_mips,zip_arm,zip_sw" />
 	<target name="version_o2">
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
