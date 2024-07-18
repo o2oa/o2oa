@@ -1,5 +1,6 @@
 package com.x.bbs.assemble.control.jaxrs.attachment;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,6 +29,9 @@ public class ActionUploadCallback extends BaseAction {
 
 	protected ActionResult<Wo<WoObject>> execute( HttpServletRequest request, EffectivePerson effectivePerson,
 			String subjectId, String callback, String site, byte[] bytes, FormDataContentDisposition disposition) throws Exception{
+		if(effectivePerson.isAnonymous()){
+			throw new ExceptionAccessDenied(effectivePerson);
+		}
 		ActionResult<Wo<WoObject>> result = new ActionResult<>();
 		BBSSubjectAttachment attachment = null;
 		BBSSubjectInfo subject = null;

@@ -22,13 +22,13 @@ class ActionLogin extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (!Config.token().isInitialManager(wi.getCredential())) {
 			/* 管理员登陆 */
-			throw new ExceptionCredentialNotMatch();
+			throw new ExceptionPersonNotExistOrInvalidPassword();
 		}
 		if (StringUtils.isEmpty(wi.getPassword())) {
-			throw new ExceptionPasswordEmpty();
+			throw new ExceptionPersonNotExistOrInvalidPassword();
 		}
 		if (!StringUtils.equals(Config.token().getPassword(), wi.getPassword())) {
-			throw new ExceptionPasswordNotMatch();
+			throw new ExceptionPersonNotExistOrInvalidPassword();
 		}
 		HttpToken httpToken = new HttpToken();
 		EffectivePerson ep = new EffectivePerson(Config.token().initialManagerInstance().getName(), TokenType.manager,

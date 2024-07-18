@@ -37,18 +37,18 @@ class ActionCode extends BaseAction {
 			Business business = new Business(emc);
 			String id = business.person().getWithCredential(credential);
 			if (StringUtils.isEmpty(id)) {
-				throw new ExceptionSendCodeError();
+				throw new ExceptionSendCodeResult();
 			}
 			Person o = emc.find(id, Person.class);
 			if (!Config.person().isMobile(o.getMobile())) {
-				throw new ExceptionInvalidMobile(o.getMobile());
+				throw new ExceptionSendCodeResult();
 			}
 			try {
 				business.instrument().code().create(o.getMobile());
 			} catch (Exception e) {
-				throw new ExceptionSendCodeError(e);
+				throw new ExceptionSendCodeResult(e);
 			}
-			return result;
+			throw new ExceptionSendCodeResult();
 		}
 	}
 

@@ -47,23 +47,11 @@ MWF.xAction.RestActions.Action["x_organization_assemble_authentication"] = new C
                 data.password = encrypt.encrypt(data.password);
                 data.isEncrypted = "y";
                 this.action.invoke({"name": "loginByTwoFactor", data : data,
-                    "success": function(json, responseText){
-                        if (json.data.value){
-                            if (success) success(json);
-                        }else{
-                            if (failure) failure(null, responseText, json.message);
-                        }
-                    },"failure": failure, "async": async});
+                    "success": success,"failure": failure, "async": async});
             }.bind(this));
         }else{
             this.action.invoke({"name": "loginByTwoFactor", data : data,
-                "success": function(json, responseText){
-                    if (json.data.value){
-                        if (success) success(json);
-                    }else{
-                        if (failure) failure(null, responseText, json.message);
-                    }
-                },"failure": failure, "async": async});
+                "success": success,"failure": failure, "async": async});
         }
     },
 

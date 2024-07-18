@@ -34,7 +34,7 @@ class ActionCreate extends BaseAction {
 					throw new ExceptionTransferCodeError(resp);
 				}
 			}else if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
-				logger.warn("短信无法发送,系统没有启用O2云服务.");
+				throw new ExceptionDisable();
 			} else {
 				Message message = new Message();
 				message.setUnit(Config.collect().getName());
