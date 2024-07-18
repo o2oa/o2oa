@@ -25,7 +25,9 @@
     "contentTr" : {
       "background": "#ffffff"
     },
-    "zebraContentTd": {},
+    "zebraContentTd": {
+      "background": "#ffffff"
+    },
     "contentSelectedTr" : {
       "background": "#ffeded"
     },
