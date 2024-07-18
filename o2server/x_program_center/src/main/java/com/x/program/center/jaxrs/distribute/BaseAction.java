@@ -133,6 +133,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Application application = ThisApplication.context().applications().randomWithWeight(str);
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
+				wrap.setHost(StringUtils.isNotEmpty(source) ? source : this.getHost(request));
+				wrap.setPort(application.getPort());
 				wrap.setName(application.getName());
 			}
 			map.put(StringUtils.substringAfterLast(str, "."), wrap);
@@ -147,6 +149,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Application application = ThisApplication.context().applications().randomWithWeight(str);
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
+				// 如果只配置了center的porxy而没有配置application的proxy,强制设置成source
+				wrap.setHost(StringUtils.isBlank(application.getProxyHost()) ? source : application.getProxyHost());
+				wrap.setPort(application.getProxyPort());
 				wrap.setName(application.getName());
 			}
 			map.put(StringUtils.substringAfterLast(str, "."), wrap);
@@ -161,6 +166,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Application application = ThisApplication.context().applications().randomWithWeight(str);
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
+				wrap.setHost(application.getNode());
+				wrap.setPort(application.getPort());
 				wrap.setName(application.getName());
 			}
 			map.put(StringUtils.substringAfterLast(str, "."), wrap);
@@ -171,7 +178,26 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public static class WoAssemble extends GsonPropertyObject {
 
 		private String name;
+		private Boolean sslEnable;
+		private String host;
+		private Integer port;
 		private String context;
+
+		public String getHost() {
+			return host;
+		}
+
+		public void setHost(String host) {
+			this.host = host;
+		}
+
+		public Integer getPort() {
+			return port;
+		}
+
+		public void setPort(Integer port) {
+			this.port = port;
+		}
 
 		public String getContext() {
 			return context;
@@ -179,6 +205,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setContext(String context) {
 			this.context = context;
+		}
+
+		public Boolean getSslEnable() {
+			return sslEnable;
+		}
+
+		public void setSslEnable(Boolean sslEnable) {
+			this.sslEnable = sslEnable;
 		}
 
 		public String getName() {
