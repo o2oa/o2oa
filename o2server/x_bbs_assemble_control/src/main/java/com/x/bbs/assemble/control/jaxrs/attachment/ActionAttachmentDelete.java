@@ -1,5 +1,6 @@
 package com.x.bbs.assemble.control.jaxrs.attachment;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -26,6 +27,9 @@ public class ActionAttachmentDelete extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger(ActionAttachmentDelete.class);
 
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id) throws Exception {
+		if(effectivePerson.isAnonymous()){
+			throw new ExceptionAccessDenied(effectivePerson);
+		}
 		ActionResult<Wo> result = new ActionResult<>();
 		BBSSubjectAttachment subjectAttachment = null;
 		BBSSubjectInfo subjectInfo = null;
