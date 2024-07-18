@@ -2915,7 +2915,10 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         if(this.att.data.categoryId){
             module = "cms";
         }
-        var url = protocol + "//" + srv.host+ ":"  + srv.port +  srv.context + "/jaxrs/office/doc/to/pdf/"+ module +"/" + this.att.data.id;
+
+        var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
+        var appPort = srv.port || window.location.port;
+        var url = protocol + "//" + (srv.host || window.location.hostname) + ":"  + ((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort) +  srv.context + "/jaxrs/office/doc/to/pdf/"+ module +"/" + this.att.data.id;
         window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
     },
     previewOfd : function(){

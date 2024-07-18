@@ -13,12 +13,15 @@
                 var locate = window.location;
                 var protocol = locate.protocol;
                 var addressObj, address;
+                var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
                 if( root === "x_program_center" ){
                     addressObj = layout.centerServer;
-                    address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+ "/x_program_center";
+                    var appPort = addressObj.port || window.location.port;
+                    address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+ "/x_program_center";
                 }else{
                     addressObj = layout.serviceAddressList[root];
-                    address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+                    var appPort = addressObj.port || window.location.port;
+                    address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
                 }
 
                 var res = new Request.JSON({

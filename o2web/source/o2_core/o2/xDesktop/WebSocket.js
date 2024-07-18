@@ -7,10 +7,13 @@ MWF.xDesktop.WebSocket = new Class({
     options: {},
     initialize: function(options){
         var addressObj = layout.serviceAddressList["x_message_assemble_communicate"];
+        var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
+        var appPort = addressObj.port || window.location.port;
+
         var uri = new URI(window.location.href);
         var scheme = uri.get("scheme");
         var wsScheme = (scheme.toString().toLowerCase()==="https") ? "wss" : "ws";
-        this.ws = wsScheme+"://"+addressObj.host+( (!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
+        this.ws = wsScheme+"://"+addressObj.host+( (!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context+"/ws/collaboration";
 
         this.reConnect = true;
         this.checking = false;

@@ -255,13 +255,14 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
             this.json.service = {"root": this.json.contextRoot, "action":"", "method": "", "url": ""};
         }
         var addressObj = layout.serviceAddressList[this.json.service.root];
-
+        var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
         if (addressObj){
-            this.address = layout.config.app_protocol+"//"+addressObj.host+(( !addressObj.port || addressObj.port==80 ) ? "" : ":"+addressObj.port)+addressObj.context;
+            var appPort = addressObj.port || window.location.port;
+            this.address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
-            var port = layout.desktop.centerServer.port;
-            this.address = layout.config.app_protocol+"//"+host+((!port || port=="80") ? "" : ":"+port)+"/"+this.json.service.root;
+            var port = layout.desktop.centerServer.port || window.location.port;
+            this.address = layout.config.app_protocol+"//"+host+((!port || port.toString()===defaultPort) ? "" : ":"+port)+"/"+this.json.service.root;
         }
     },
     _getO2Uri: function(){
