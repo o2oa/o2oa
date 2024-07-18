@@ -155,7 +155,7 @@ MWF.xAction.RestActions = MWF.Actions = {
             address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+ ((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort);
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
-            var port = layout.desktop.centerServer.port; || window.location.port;
+            var port = layout.desktop.centerServer.port || window.location.port;
             //var mapping = layout.getCenterUrlMapping();
             address = layout.config.app_protocol+"//"+host+( (!port || port.toString()===defaultPort) ? "" : ":"+port);
         }
