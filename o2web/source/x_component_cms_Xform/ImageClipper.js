@@ -36,6 +36,12 @@ MWF.xApplication.cms.Xform.ImageClipper = MWF.CMSImageClipper =  new Class({
             this.imageClipper.load();
         }.bind(this));
     },
+    getReferencetypeForMobile: function() {
+        return "cmsDocument";
+    },
+    getReferenceForMobile: function() {
+        return this.form.businessData.document.id;
+    },
     validationConfigItem: function(routeName, data){
         var flag = (data.status=="all") ? true: (routeName == "publish");
         if (flag){

@@ -87,16 +87,11 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                     this.validation();
                     o2.imageClipperCallback = null;
                 }.bind(this);
-                // 兼容cms编辑表单
-                var referencetype = "processPlatformJob";
-                if(this.form.businessData.work && this.form.businessData.work.referencetype) {
-                    referencetype = this.form.businessData.work.referencetype
-                }
                 var imageBody = {
                     "mwfId" : this.json.id,
                     "callback" : "o2.imageClipperCallback",
-                    "referencetype": referencetype,
-                    "reference": this.form.businessData.work.job
+                    "referencetype": this.getReferencetypeForMobile(),
+                    "reference": this.getReferenceForMobile()
                 };
                 if (window.o2android && window.o2android.postMessage) {
                     var body = {
@@ -123,6 +118,16 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         }.bind(this));
         this.fieldModuleLoaded = true;
 	},
+    getReferencetypeForMobile: function() {
+        var referencetype = "processPlatformJob";
+        if(this.form.businessData.work && this.form.businessData.work.referencetype) {
+            referencetype = this.form.businessData.work.referencetype
+        }
+        return referencetype;
+    },
+    getReferenceForMobile: function() {
+        return this.form.businessData.work.job;
+    },
     getTextData : function(){
         var value = this._getBusinessData() || "";
         return {"value": [value], "text": [value]};
