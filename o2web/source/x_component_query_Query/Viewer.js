@@ -2348,12 +2348,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                         Object.each(this.entries, function (c, k) {
                             if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
                                 var text = this.getExportText(c, k, d);
-
                                 dataArray.push( text );
-
                                 switch (c.total){
                                     case 'number':
-                                        totalArray[columnIndex] = totalArray[columnIndex].plus(text);
+                                        if( parseFloat(text).toString() !== "NaN" ) { //可以转成数字
+                                            totalArray[columnIndex] = totalArray[columnIndex].plus(text);
+                                        }
                                         break;
                                     case 'count':
                                         totalArray[columnIndex] = totalArray[columnIndex].plus(1);
