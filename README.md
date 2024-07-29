@@ -18,8 +18,7 @@
 
 ​        平台拥有流程管理、门户管理、信息管理、数据管理和服务管理五大核心能力。用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大幅度减化企业信息化建设成本和业务应用开发难度。
 
-![o2oa](https://static.oschina.net/uploads/space/2018/0918/200301_N9TG_3931542.png)
-
+![o2oa](https://www.o2oa.net/v3/img/home/pic_zonghe@2x.png)
 
 
 
@@ -165,9 +164,7 @@ Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 
 #### 如果需要进行转售，闭源分发或者在商业项目中作为项目的一部分使用，请主动联系兰德网络公司购买商用许可。
 
-商用许可说明：https://www.o2oa.net/license.html
-
-技术支持服务：https://www.o2oa.net/support.html
+商用许可与支持服务：https://www.o2oa.net/service/gs.html
 
 
 
@@ -194,3 +191,12 @@ Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 O2OA（翱途）开发平台是由 **浙江兰德纵横网路技术股份有限公司** 建立和维护的。O2OA（翱途）的名字和标志是属于 **浙江兰德纵横网路技术股份有限公司** 的注册商标。
 
 我们 ❤️ 开源软件！看一下[我们的其他开源项目](https://github.com/o2oa)，瞅一眼[我们的博客](https://my.oschina.net/o2oa)。
+
+
+
+
+
+
+
+
+
