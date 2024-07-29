@@ -133,6 +133,9 @@ public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisito
         if (Comparison.isLike(entry.comparison)) {
             return "LIKE";
         }
+        if (Comparison.isNotLike(entry.comparison)) {
+            return "NOT LIKE";
+        }
         if (Comparison.isIn(entry.comparison)) {
             return "IN";
         }
