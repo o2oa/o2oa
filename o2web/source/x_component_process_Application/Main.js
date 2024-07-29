@@ -3770,7 +3770,10 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 				var locate = window.location;
 				var protocol = locate.protocol;
 				var addressObj = layout.serviceAddressList["x_processplatform_assemble_surface"];
-				var address = protocol+"//"+addressObj.host+(addressObj.port==80|| addressObj.port === ""? "" : ":"+addressObj.port)+addressObj.context;
+
+				var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
+				var appPort = addressObj.port || window.location.port;
+				var address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
 				window.open(o2.filterUrl(address) + "/jaxrs/attachment/download/"+ attachment.id +"/stream")
 
 			}.bind(this));

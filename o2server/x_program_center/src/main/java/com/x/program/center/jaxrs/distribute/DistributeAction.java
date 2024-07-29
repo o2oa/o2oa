@@ -32,9 +32,9 @@ public class DistributeAction extends StandardJaxrsAction {
 	@Path("assemble/source/{source}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JaxrsMethodDescribe(value = "为用户分派应用主机。", action = ActionAssemble.class)
+	@JaxrsMethodDescribe(value = "获取应用模块信息。", action = ActionAssemble.class)
 	public void assemble(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("访问主机名") @PathParam("source") String source) {
+			@JaxrsParameterDescribe("访问来源") @PathParam("source") String source) {
 		ActionResult<ActionAssemble.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

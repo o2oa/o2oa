@@ -148,14 +148,16 @@ MWF.xAction.RestActions = MWF.Actions = {
     "getHost": function(root){
         var addressObj = layout.serviceAddressList[root];
         var address = "";
+
+        var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
         if (addressObj){
-            //var mapping = layout.getAppUrlMapping();
-            address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+ (( !addressObj.port || addressObj.port==80 ) ? "" : ":"+addressObj.port);
+            var appPort = addressObj.port || window.location.port;
+            address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+ ((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort);
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
-            var port = layout.desktop.centerServer.port;
+            var port = layout.desktop.centerServer.port || window.location.port;
             //var mapping = layout.getCenterUrlMapping();
-            address = layout.config.app_protocol+"//"+host+( (!port || port=="80") ? "" : ":"+port);
+            address = layout.config.app_protocol+"//"+host+( (!port || port.toString()===defaultPort) ? "" : ":"+port);
         }
         return address;
     },

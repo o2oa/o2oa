@@ -12,14 +12,13 @@
 
 ----------------------------------------------------------------------------
 
-# O2OA企业应用开发平台 OpenSource OA Platform
+# O2OA（翱途）开发平台（100%开源的OA与协同办公解决方案）
 
 O2OA（翱途）低代码开发平台，100%开源企业协同办公定制平台，提供完整的前后端API和模块定制能力。平台基于JavaEE分布式架构，具备流程引擎、表单定制、页面定制能力及业务数据服务能力，支持跨平台移动办公，有效提升工作效率。
 
 平台通过国产信创认证，支持白标二次开发，提供高度灵活的协同办公解决方案，低成本满足企业办公需求。低代码开发大幅降低技术门槛，加速系统构建与定制，赋能企业快速响应业务实现，确保信息安全与自主可控。
 
-![o2oa](https://static.oschina.net/uploads/space/2018/0918/200301_N9TG_3931542.png)
-
+![o2oa](https://www.o2oa.net/v3/img/home/pic_zonghe@2x.png)
 
 
 
@@ -165,9 +164,7 @@ Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 
 #### 如果需要进行转售，闭源分发或者在商业项目中作为项目的一部分使用，请主动联系兰德网络公司购买商用许可。
 
-商用许可说明：https://www.o2oa.net/license.html
-
-技术支持服务：https://www.o2oa.net/support.html
+商用许可与支持服务：https://www.o2oa.net/service/gs.html
 
 
 
@@ -179,7 +176,7 @@ Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 
 # 关于
 
-[![img](https://www.o2oa.net/wimg/common/logo_all@1.5x.png)](./assets/O2OA-logo.jpg)
+[![img](https://www.o2oa.net/v3/img/common/logo_all@2x.png)](./assets/O2OA-logo.jpg)
 
 浙江兰德纵横网络技术股份有限 公司成立于1999年，是浙江省高新技术企业、浙江省信息产业厅认定的软件企业、浙江省信息产业重点企业、浙江省软件业五强企业， 总部拥有5300多平方米的办公场所，员工总数超过600人，在北京、上海、深圳、天津、南京、合肥、郑州、重庆、沈阳、长春、哈尔滨、呼和浩特、济南、南昌等省会城市设立办事处， 服务网络覆盖中国及东南亚部分国家和地区。公司已通过ISO9001：2008国际质量体系认证，并取得了国家系统集成三级资质认证和CMI三级认证的证书。
 
@@ -194,3 +191,5 @@ Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 O2OA（翱途）开发平台是由 **浙江兰德纵横网路技术股份有限公司** 建立和维护的。O2OA（翱途）的名字和标志是属于 **浙江兰德纵横网路技术股份有限公司** 的注册商标。
 
 我们 ❤️ 开源软件！看一下[我们的其他开源项目](https://github.com/o2oa)，瞅一眼[我们的博客](https://my.oschina.net/o2oa)。
+
+

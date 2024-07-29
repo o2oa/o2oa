@@ -1629,12 +1629,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     _getO2Address: function(contextRoot){
         var addressObj = layout.serviceAddressList[contextRoot];
         var address = "";
+
+        var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
         if (addressObj){
-            address = layout.config.app_protocol+"//"+addressObj.host+((!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context;
+            var appPort = addressObj.port || window.location.port;
+            address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
-            var port = layout.desktop.centerServer.port;
-            address = layout.config.app_protocol+"//"+host+(!port || port=="80" ? "" : ":"+port)+"/"+contextRoot;
+            var port = layout.desktop.centerServer.port || window.location.port;
+            address = layout.config.app_protocol+"//"+host+((!port || port.toString()===defaultPort) ? "" : ":"+port)+"/"+contextRoot;
         }
         return address;
     },

@@ -454,7 +454,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             //COMMON.AjaxModule.loadDom(, function(){
 
             var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
-            var url = layout.config.app_protocol + "//" + (addressObj.host || window.location.hostname)+ (addressObj.port === 80 ? "" : ":" + addressObj.port) + addressObj.context;
+            var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
+            var appPort = addressObj.port || window.location.port;
+            var url = layout.config.app_protocol + "//" + (addressObj.host || window.location.hostname)+ ((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort) + addressObj.context;
 
             var code = this.crypDES();
             var json = { "client": "face", "token": code };

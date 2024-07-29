@@ -1,5 +1,6 @@
 package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,6 +28,9 @@ public class ActionSave extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionSave.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		logger.debug(effectivePerson.getDistinguishedName());
+		if(effectivePerson.isAnonymous()){
+			throw new ExceptionAccessDenied(effectivePerson);
+		}
 		ActionResult<Wo> result = new ActionResult<>();
 		HotPictureInfoService hotPictureInfoService = new HotPictureInfoService();
 

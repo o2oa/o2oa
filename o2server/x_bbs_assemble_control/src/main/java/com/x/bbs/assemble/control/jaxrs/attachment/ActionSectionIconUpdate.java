@@ -1,5 +1,6 @@
 package com.x.bbs.assemble.control.jaxrs.attachment;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,18 +24,21 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.bbs.entity.BBSSectionInfo;
 
 public class ActionSectionIconUpdate extends BaseAction {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ActionSectionIconUpdate.class);
 
-	protected ActionResult<WrapOutId> execute( HttpServletRequest request, EffectivePerson effectivePerson, 
-			String sectionId, byte[] bytes, FormDataContentDisposition disposition) {
+	protected ActionResult<WrapOutId> execute( HttpServletRequest request, EffectivePerson effectivePerson,
+			String sectionId, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+		if(effectivePerson.isAnonymous()){
+			throw new ExceptionAccessDenied(effectivePerson);
+		}
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		BBSSectionInfo sectionInfo = null;
 		String icon = null;
-		Boolean check = true;		
+		Boolean check = true;
 		String hostIp = request.getRemoteAddr();
 		String hostName = request.getRemoteAddr();
-		
+
 		if( check ){
 			if( StringUtils.isEmpty(sectionId) ){
 				check = false;
@@ -42,7 +46,7 @@ public class ActionSectionIconUpdate extends BaseAction {
 				result.error( exception );
 			}
 		}
-		
+
 		if (check) {
 			try {
 				sectionInfo = sectionInfoService.get(sectionId);
@@ -57,7 +61,7 @@ public class ActionSectionIconUpdate extends BaseAction {
 				logger.error(e);
 			}
 		}
-		
+
 		if( check ){
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try ( InputStream input = new ByteArrayInputStream(bytes)) {
@@ -71,7 +75,7 @@ public class ActionSectionIconUpdate extends BaseAction {
 				logger.error( e, effectivePerson, request, null );
 			}
 		}
-		
+
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				sectionInfo = emc.find(sectionId, BBSSectionInfo.class);

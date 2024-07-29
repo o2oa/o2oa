@@ -25,15 +25,17 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
         //this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
         var addressObj = layout.serviceAddressList[this.serviceName];
+        var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
         if (addressObj){
             //var mapping = layout.getAppUrlMapping(layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context);
-            this.address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+((!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context;
+            var appPort = addressObj.port || window.location.port;
+            this.address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
-            var port = layout.desktop.centerServer.port;
+            var port = layout.desktop.centerServer.port || window.location.port;
 
             //var mapping = layout.getCenterUrlMapping(layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center");
-            this.address = layout.config.app_protocol+"//"+host+((!port || port=="80") ? "" : ":"+port)+"/"+this.serviceName;
+            this.address = layout.config.app_protocol+"//"+host+((!port || port.toString()===defaultPort) ? "" : ":"+port)+"/"+this.serviceName;
         }
 
         //this.address = "http://hbxa01.bf.ctc.com/"+this.serviceName;
