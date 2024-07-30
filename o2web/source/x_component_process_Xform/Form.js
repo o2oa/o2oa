@@ -2686,8 +2686,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "onLoad": function () {
                 if (postLoadFun) postLoadFun(this);
 
-                _self.fireEvent("afterFlowWork");
-                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterFlowWork");
+                _self.fireEvent("afterFlowWork", [this]);
+                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterFlowWork", [this]);
             },
             "onCancel": function () {
                 this.destroy();
