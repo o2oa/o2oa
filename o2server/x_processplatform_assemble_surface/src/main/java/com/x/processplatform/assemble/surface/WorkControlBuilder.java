@@ -5,16 +5,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -418,7 +419,7 @@ public class WorkControlBuilder {
 					&& BooleanUtils.isTrue(work.getSplitting())) {
 				Node node = this.workLogTree().location(work);
 				if (null != node) {
-					computeAllowAddSplitLoopNode(control, node);
+					computeAllowAddSplitLoopNode(control, work);
 				}
 			}
 		} catch (Exception e) {
@@ -426,29 +427,46 @@ public class WorkControlBuilder {
 		}
 	}
 
-	private void computeAllowAddSplitLoopNode(Control control, Node node) {
-		Nodes nodes = new Nodes();
-		nodes.add(node);
-		for (int i = 0; i < work.getSplitTokenList().size(); i++) {
-			List<Node> temps = new ArrayList<>();
-			for (Node n : nodes) {
-				Nodes ups = n.upTo(ActivityType.split);
-				temps.addAll(ups);
-				for (Node u : ups) {
-					Nodes manuals = u.upTo(ActivityType.manual);
-					for (Node m : manuals) {
-						if (this.hasTaskCompletedWithActivityToken(effectivePerson, business,
-								m.getWorkLog().getFromActivityToken())) {
-							control.setAllowAddSplit(true);
-							return;
-						}
-					}
+	private void computeAllowAddSplitLoopNode(Control control, Work work) throws Exception {
+		List<Node> list = this.workLogTree().nodes().stream()
+				.filter(o -> Objects.equals(work.getSplitToken(), o.getWorkLog().getSplitToken())
+						&& Objects.equals(ActivityType.split, o.getWorkLog().getFromActivityType()))
+				.collect(Collectors.toList());
+		for (Node n : list) {
+			Nodes manuals = n.upTo(ActivityType.manual);
+			for (Node m : manuals) {
+				if (this.hasTaskCompletedWithActivityToken(effectivePerson, business,
+						m.getWorkLog().getFromActivityToken())) {
+					control.setAllowAddSplit(true);
+					return;
 				}
 			}
-			nodes.clear();
-			nodes.addAll(temps);
 		}
 	}
+
+//	private void computeAllowAddSplitLoopNode(Control control, Node node) {
+//		Nodes nodes = new Nodes();
+//		nodes.add(node);
+//		for (int i = 0; i < work.getSplitTokenList().size(); i++) {
+//			List<Node> temps = new ArrayList<>();
+//			for (Node n : nodes) {
+//				Nodes ups = n.upTo(ActivityType.split);
+//				temps.addAll(ups);
+//				for (Node u : ups) {
+//					Nodes manuals = u.upTo(ActivityType.manual);
+//					for (Node m : manuals) {
+//						if (this.hasTaskCompletedWithActivityToken(effectivePerson, business,
+//								m.getWorkLog().getFromActivityToken())) {
+//							control.setAllowAddSplit(true);
+//							return;
+//						}
+//					}
+//				}
+//			}
+//			nodes.clear();
+//			nodes.addAll(temps);
+//		}
+//	}
 
 	/**
 	 * 是否可以召回有三个判断点 1.活动环节设置允许召回 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办

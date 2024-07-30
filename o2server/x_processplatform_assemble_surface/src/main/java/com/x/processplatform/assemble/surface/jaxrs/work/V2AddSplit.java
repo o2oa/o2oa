@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -34,7 +36,6 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
-import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddSplitWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddSplitWo;
@@ -46,10 +47,10 @@ class V2AddSplit extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddSplit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> jsonElement);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Param param = init(effectivePerson, id, jsonElement);
 		List<String> ids = addSplit(param.work.getId(), param.addSplitWorkLog.getId(), param.splitValueList,
@@ -91,14 +92,14 @@ class V2AddSplit extends BaseAction {
 			if (null == currentNode) {
 				throw new ExceptionWorkLogWithActivityTokenNotExist(work.getActivityToken());
 			}
-			Node addSplitNode = this.findSplitNode(tree, currentNode);
+			Node addSplitNode = this.findSplitNode(tree, work);
 			if (null == addSplitNode) {
 				throw new ExceptionNoneSplitNode(work.getId());
 			}
 			param.addSplitWorkLog = addSplitNode.getWorkLog();
 			if (BooleanUtils.isTrue(wi.getTrimExist())) {
 				List<String> splitValues = ListUtils.subtract(wi.getSplitValueList(),
-						this.existSplitValues(tree, addSplitNode));
+						this.existSplitValues(workLogs, work));
 				if (ListTools.isEmpty(splitValues)) {
 					throw new ExceptionEmptySplitValueAfterTrim(work.getId());
 				}
@@ -127,17 +128,22 @@ class V2AddSplit extends BaseAction {
 
 	}
 
-	private List<String> existSplitValues(WorkLogTree tree, Node splitNode) {
-		List<String> values = new ArrayList<>();
-		for (Node node : splitNode.parents()) {
-			for (Node o : tree.down(node)) {
-				if (StringUtils.isNotEmpty(o.getWorkLog().getSplitValue())) {
-					values.add(o.getWorkLog().getSplitValue());
-				}
-			}
-		}
-		values = ListTools.trim(values, true, true);
-		return values;
+//	private List<String> existSplitValues(WorkLogTree tree, Node splitNode) {
+//		List<String> values = new ArrayList<>();
+//		for (Node node : splitNode.parents()) {
+//			for (Node o : tree.down(node)) {
+//				if (StringUtils.isNotEmpty(o.getWorkLog().getSplitValue())) {
+//					values.add(o.getWorkLog().getSplitValue());
+//				}
+//			}
+//		}
+//		values = ListTools.trim(values, true, true);
+//		return values;
+//	}
+
+	private List<String> existSplitValues(List<WorkLog> workLogs, Work work) {
+		return workLogs.stream().filter(o -> Objects.equals(o.getSplitToken(), work.getSplitToken()))
+				.map(WorkLog::getSplitValue).filter(StringUtils::isNotBlank).distinct().collect(Collectors.toList());
 	}
 
 	private List<WorkLog> listWorkLog(Business business, Work work) throws Exception {
@@ -147,12 +153,18 @@ class V2AddSplit extends BaseAction {
 	/**
 	 * 进行回溯定位到前一次进行拆分的节点
 	 */
-	private Node findSplitNode(WorkLogTree tree, Node currentNode) {
-		Nodes nodes = currentNode.upTo(ActivityType.split, ActivityType.manual, ActivityType.choice);
-		if (!nodes.isEmpty()) {
-			return nodes.get(0);
-		}
-		return null;
+//	private Node findSplitNode(WorkLogTree tree, Node currentNode) {
+//		Nodes nodes = currentNode.upTo(ActivityType.split, ActivityType.manual, ActivityType.choice);
+//		if (!nodes.isEmpty()) {
+//			return nodes.get(0);
+//		}
+//		return null;
+//	}
+	private Node findSplitNode(WorkLogTree tree, Work work) {
+		return tree.nodes().stream()
+				.filter(o -> Objects.equals(work.getSplitToken(), o.getWorkLog().getSplitToken())
+						&& Objects.equals(ActivityType.split, o.getWorkLog().getFromActivityType()))
+				.findFirst().orElse(null);
 	}
 
 	private List<String> addSplit(String workId, String addSplitWorkLogId, List<String> splitValueList, String job)
