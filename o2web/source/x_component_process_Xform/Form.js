@@ -2536,8 +2536,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     flowWork_pc: function ( defaultRoute ) {
         var _self = this;
         //? 添加事件
-        this.fireEvent("beforeFlowWork");
-        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
+        this.fireEvent("beforeProcessWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
         if (!this.formCustomValidation("", "")) {
             this.app.content.unmask();
@@ -2630,8 +2630,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.app.content.setStyle("height", document.body.getSize().y);
         }
 
-        this.fireEvent("beforeFlowWork");
-        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
+        this.fireEvent("beforeProcessWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
         // if (this.json.mode != "Mobile") {
         //     this.app.content.mask({
@@ -2686,8 +2686,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "onLoad": function () {
                 if (postLoadFun) postLoadFun(this);
 
-                _self.fireEvent("afterFlowWork", [this]);
-                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterFlowWork", [this]);
+                _self.fireEvent("afterLoadProcessor", [this]);
+                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterLoadProcessor", [this]);
             },
             "onCancel": function () {
                 this.destroy();
