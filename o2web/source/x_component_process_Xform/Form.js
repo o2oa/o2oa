@@ -109,6 +109,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              */
             "afterLoadProcessor",
             /**
+             * 关闭弹出的提交界面以后执行。
+             * @event MWF.xApplication.process.Xform.Form#closeProcessor
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "closeProcessor",
+            /**
              * 重置处理人前触发。
              * @event MWF.xApplication.process.Xform.Form#beforeReset
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -2690,10 +2696,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterLoadProcessor", [this]);
             },
             "onCancel": function () {
-                this.destroy();
+                //this.destroy();
                 hanlderNode.destroy();
-                _self.app.content.unmask();
-                delete this;
+                //_self.app.content.unmask();
+                _self.fireEvent("closeProcessor", [this]);
+                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("closeProcessor", [this]);
             },
             "opinionOptions": {
                 "opinion": op.opinion,
@@ -3112,6 +3119,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "type": "cancel",
                         "text": MWF.LP.process.button.cancel,
                         "action": function () {
+                            _self.fireEvent("closeProcessor", [this]);
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("closeProcessor", [this]);
                             this.processDlg.close();
                         }.bind(this)
                     }
