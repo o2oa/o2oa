@@ -386,12 +386,9 @@
     var title = c && c.title ? c.title : "";
     var cancelButton = c && c.cancelButton ? c.cancelButton : "取消";
     var otherButtons = c && c.otherButtons ? c.otherButtons : [];
+    var tooManyButtons = c && c.tooManyButtons ? c.tooManyButtons : false;
     var onSuccess = c && c.onSuccess ? c.onSuccess : null;
     var onFail = c && c.onFail ? c.onFail : null;
-    if (title === "") {
-      if (typeof onFail === "function") { onFail("title标题不能为空！"); }
-      return;
-    }
     if (otherButtons.length < 1) {
       if (typeof onFail === "function") { onFail("其他按钮列表不能为空！"); }
       return;
@@ -405,7 +402,8 @@
       data: {
         title: title,
         cancelButton: cancelButton,
-        otherButtons: otherButtons
+        otherButtons: otherButtons,
+        tooManyButtons: tooManyButtons
       }
     };
     _notification_post(body, onFail);
