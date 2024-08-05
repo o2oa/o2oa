@@ -1,5 +1,6 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
+import com.x.base.core.project.cache.CacheManager;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,6 +205,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			business.entityManagerContainer().beginTransaction(Person.class);
 			this.failure(person);
 			business.entityManagerContainer().commit();
+			CacheManager.notify(Person.class);
 			return null;
 		}
 	}
