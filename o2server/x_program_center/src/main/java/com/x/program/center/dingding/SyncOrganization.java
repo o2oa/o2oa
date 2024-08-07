@@ -1,5 +1,6 @@
 package com.x.program.center.dingding;
 
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -52,6 +53,7 @@ import com.x.program.center.Business;
 public class SyncOrganization {
 
 	private static Logger logger = LoggerFactory.getLogger(SyncOrganization.class);
+	private Gson gson = new Gson();
 
 	public PullResult execute(Business business) throws Exception {
 		logger.info("钉钉进行人员同步.");
@@ -326,6 +328,7 @@ public class SyncOrganization {
 	}
 
 	private Person updatePerson(Business business, PullResult result, Person person, User user) throws Exception {
+		logger.info("更新用户信息：{}", gson.toJson(user));
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(Person.class);
 		person.setDingdingHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)));
@@ -340,7 +343,6 @@ public class SyncOrganization {
 		person.setMobile(user.getMobile());
 		person.setMail(user.getEmail());
 		person.setOfficePhone(user.getMobile());
-		emc.check(person, CheckPersistType.all);
 		emc.commit();
 		result.getUpdatePersonList().add(person.getDistinguishedName());
 		return person;
