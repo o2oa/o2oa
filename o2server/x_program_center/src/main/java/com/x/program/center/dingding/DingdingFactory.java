@@ -1,14 +1,5 @@
 package com.x.program.center.dingding;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.HttpConnection;
@@ -17,6 +8,13 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class DingdingFactory {
 
@@ -28,10 +26,12 @@ public class DingdingFactory {
 
 	private List<User> users = new ArrayList<>();
 
+	private List<Integer> QPS_ERROR_CODE = List.of(-1, 90002, 90018, 90006, 90005, 90019, 90010, 90008, 90014);
+
 	private int count = 0;
 
 	public void syncSleep(int time) {
-		int defaultTime = 5000;
+		int defaultTime = 2000;
 		try {
 			if (time < 100) {
 				time = defaultTime;
@@ -42,10 +42,12 @@ public class DingdingFactory {
 		}
 	}
 
-	public boolean syncExceptionDeal(Integer retCode, String retMessage) {
+	public boolean syncExceptionDeal(Integer retCode, Integer subCode) {
 		boolean exceptionDeal = false;
-		if ((retCode == -1) || (retCode == 90002) || (retCode == 90018) || (retCode == 90006) || (retCode == 90005) || (retCode == 90019)
-				|| (retCode == 90010) || (retCode == 90008) || (retCode == 90014)) {
+		if(subCode == null){
+			subCode = 0;
+		}
+		if (QPS_ERROR_CODE.contains(retCode) || QPS_ERROR_CODE.contains(subCode)) {
 			this.syncSleep(0);
 			exceptionDeal = true;
 		}
@@ -67,7 +69,7 @@ public class DingdingFactory {
 	 * @throws Exception
 	 */
 	private void recursionOrg(Long parentId) throws Exception {
-		for (Department o : this.orgs(parentId)) {
+		for (Department o : this.orgs(parentId, true)) {
 			Department sub = this.detailOrg(o.getDept_id());
 			if (null != sub) {
 				if(BooleanUtils.isTrue(sub.getFrom_union_org()) && BooleanUtils.isFalse(Config.dingding().getSyncUnionOrgEnable())){
@@ -86,9 +88,12 @@ public class DingdingFactory {
 		return orgs.stream().filter(o -> 1L == o.getDept_id()).collect(Collectors.toList());
 	}
 
-	private List<Department> orgs(Long parentId) throws Exception {
-		// String address = Config.dingding().getOapiAddress() + "/department/list?access_token=" + this.accessToken
-		// 		+ "&id=";
+	private List<Department> orgs(Long parentId, boolean repeat) throws Exception {
+		this.count = this.count + 1;
+		if (this.count > 500) {
+			this.syncSleep(1000);
+			this.count = 0;
+		}
 		String address = Config.dingding().getOapiAddress() + "/topapi/v2/department/listsub?access_token=" + this.accessToken;
 		DingdingDepartmentPost body = new DingdingDepartmentPost();
 		body.setDept_id(parentId);
@@ -99,15 +104,19 @@ public class DingdingFactory {
 		Type type = new TypeToken<DingdingResponse<List<Department>>> () {}.getType();
 		DingdingResponse<List<Department>> response = XGsonBuilder.instance().fromJson(reString, type);
 		if (response.getErrcode() != 0) {
-			throw new ExceptionListOrg(response.getErrcode(), response.getErrmsg());
+			if (repeat && this.syncExceptionDeal(response.getErrcode(), response.getSub_code())) {
+				return orgs(parentId, false);
+			} else {
+				throw new ExceptionListOrg(response.getErrcode(), response.getErrmsg());
+			}
 		}
 		return response.getResult();
 	}
 
 	private Department detailOrg(Long id) throws Exception {
 		this.count = this.count + 1;
-		if (this.count > 1000) {
-			this.syncSleep(2000);
+		if (this.count > 500) {
+			this.syncSleep(1000);
 			this.count = 0;
 		}
 		// String address = Config.dingding().getOapiAddress() + "/department/get?access_token=" + this.accessToken;
@@ -117,7 +126,7 @@ public class DingdingFactory {
 		DingdingResponse<Department> response = postDetailOrg(id);
 		Department resp = response.getResult();
 		if (response.getErrcode() != 0) {
-			if (this.syncExceptionDeal(response.getErrcode(), response.getErrmsg())) {
+			if (this.syncExceptionDeal(response.getErrcode(), response.getSub_code())) {
 				 DingdingResponse<Department> response2 = postDetailOrg(id);
 				 resp = response2.getResult();
 			} else {
@@ -143,8 +152,8 @@ public class DingdingFactory {
 
 	private List<User> users(Department department) throws Exception {
 		this.count = this.count + 1;
-		if (this.count > 1000) {
-			this.syncSleep(2000);
+		if (this.count > 500) {
+			this.syncSleep(1000);
 			this.count = 0;
 		}
 		// String address = Config.dingding().getOapiAddress() + "/user/list?access_token=" + this.accessToken
@@ -152,7 +161,7 @@ public class DingdingFactory {
 		String address = Config.dingding().getOapiAddress() + "/topapi/v2/user/list?access_token=" + this.accessToken;
 		Type type = new TypeToken<DingdingResponse<DingdingUserPageResult>> () {}.getType();
 		List<User> list = new ArrayList<>();
-		boolean hasMore = true; 
+		boolean hasMore = true;
 		int cursor = 0;
 		while(hasMore) {
 			DingdingUserListPost body = new DingdingUserListPost();
@@ -176,40 +185,7 @@ public class DingdingFactory {
 			list.addAll(pageResult.getList());
 		}
 		return list;
-
-		// UserListResp resp = HttpConnection.getAsObject(address, null, UserListResp.class);
-		// logger.debug("users response:{}.", resp);
-		// if (resp.getErrcode() != 0) {
-		// 	if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-		// 		resp = HttpConnection.getAsObject(address, null, UserListResp.class);
-		// 	} else {
-		// 		throw new ExceptionListUser(resp.getErrcode(), resp.getErrmsg());
-		// 	}
-		// }
-		// return resp.getUserlist();
 	}
-
-	// private User detailUser(UserSimple simple) throws Exception {
-	// 	this.count = this.count + 1;
-	// 	if (this.count > 1000) {
-	// 		this.syncSleep(2000);
-	// 		this.count = 0;
-	// 	}
-	// 	String address = Config.dingding().getOapiAddress() + "/user/get?access_token=" + this.accessToken + "&userid="
-	// 			+ simple.getUserid();
-	// 	UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
-	// 	logger.debug("detailUser response:{}.", resp);
-
-	// 	if (resp.getErrcode() != 0) {
-	// 		if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-	// 			resp = HttpConnection.getAsObject(address, null, UserResp.class);
-	// 		} else {
-	// 			throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
-	// 		}
-	// 	}
-	// 	return resp;
-
-	// }
 
 	public List<User> listUser(Department org) throws Exception {
 		return users.stream().filter(o ->  ListTools.contains(o.getDept_id_list(), org.getDept_id()))
@@ -222,25 +198,25 @@ public class DingdingFactory {
 		}).sorted(Comparator.comparing(Department::getOrder, Comparator.nullsLast(Long::compareTo)))
 				.collect(Collectors.toList());
 	}
- 
+
 
 
 	/**
 	 * 查询钉钉组织的 post 对象
 	 */
 	public static class DingdingDepartmentPost extends GsonPropertyObject {
-  
+
 		private static final long serialVersionUID = 2344247634146398572L;
 		private Long dept_id;
-	
+
 		public Long getDept_id() {
 			return dept_id;
 		}
-	
+
 		public void setDept_id(Long dept_id) {
 			this.dept_id = dept_id;
 		}
-	
+
 	}
 
 	/**
@@ -273,9 +249,9 @@ public class DingdingFactory {
     public void setSize(Integer size) {
       this.size = size;
     }
-	
-		
-		
+
+
+
 
 
 	}

@@ -464,7 +464,7 @@ public class SyncOrganization {
 		identity.setUnitLevelName(unit.getLevelName());
 		identity.setUnitName(unit.getName());
 		if (order != null) {
-			identity.setOrderNumber(order.intValue());
+			identity.setOrderNumber(Math.abs(order.intValue()));
 		}
 		// 人员有多个身份不能设置多个主身份
 		identity.setMajor(false);
@@ -476,16 +476,13 @@ public class SyncOrganization {
 
 	private Identity updateIdentity(Business business, PullResult result, Unit unit, Identity identity, User user,
 			Long order) throws Exception {
-		if (null != order) {
-			if (!StringUtils.equals(Objects.toString(identity.getOrderNumber(), ""), Objects.toString(order, ""))) {
+		if (null != order && (!StringUtils.equals(Objects.toString(identity.getOrderNumber(), ""), Math.abs(order.intValue())+""))) {
 				EntityManagerContainer emc = business.entityManagerContainer();
 				emc.beginTransaction(Identity.class);
-				if (order != null) {
-					identity.setOrderNumber(order.intValue());
-				}
+				identity.setOrderNumber(Math.abs(order.intValue()));
 				emc.commit();
 				result.getUpdateIdentityList().add(identity.getDistinguishedName());
-			}
+
 		}
 		return identity;
 	}

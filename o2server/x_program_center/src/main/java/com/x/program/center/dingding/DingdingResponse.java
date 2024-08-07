@@ -3,49 +3,66 @@ package com.x.program.center.dingding;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class DingdingResponse<T> extends GsonPropertyObject {
-  
-  private static final long serialVersionUID = 3897958184570973499L;
 
-  private T result;
+    private static final long serialVersionUID = 3897958184570973499L;
 
-  private Integer errcode;
+    private T result;
 
-  private String errmsg;
+    private Integer errcode;
 
-  private String request_id;
+    private Integer sub_code;
 
-  public T getResult() {
-    return result;
-  }
+    private String sub_msg;
 
-  public void setResult(T result) {
-    this.result = result;
-  }
+    private String errmsg;
 
-  public Integer getErrcode() {
-    return errcode;
-  }
+    private String request_id;
 
-  public void setErrcode(Integer errcode) {
-    this.errcode = errcode;
-  }
+    public T getResult() {
+        return result;
+    }
 
-  public String getErrmsg() {
-    return errmsg;
-  }
+    public void setResult(T result) {
+        this.result = result;
+    }
 
-  public void setErrmsg(String errmsg) {
-    this.errmsg = errmsg;
-  }
+    public Integer getErrcode() {
+        return errcode;
+    }
 
-  public String getRequest_id() {
-    return request_id;
-  }
+    public void setErrcode(Integer errcode) {
+        this.errcode = errcode;
+    }
 
-  public void setRequest_id(String request_id) {
-    this.request_id = request_id;
-  }
+    public String getErrmsg() {
+        return errmsg;
+    }
 
-  
+    public void setErrmsg(String errmsg) {
+        this.errmsg = errmsg;
+    }
 
+    public String getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(String request_id) {
+        this.request_id = request_id;
+    }
+
+    public Integer getSub_code() {
+        return sub_code;
+    }
+
+    public void setSub_code(Integer sub_code) {
+        this.sub_code = sub_code;
+    }
+
+    public String getSub_msg() {
+        return sub_msg;
+    }
+
+    public void setSub_msg(String sub_msg) {
+        this.sub_msg = sub_msg;
+    }
 }
