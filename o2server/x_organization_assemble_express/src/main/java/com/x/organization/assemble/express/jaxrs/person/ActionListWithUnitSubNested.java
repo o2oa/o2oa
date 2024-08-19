@@ -1,5 +1,6 @@
 package com.x.organization.assemble.express.jaxrs.person;
 
+import com.x.organization.core.entity.Person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +82,13 @@ class ActionListWithUnitSubNested extends BaseAction {
 		List<String> personIds = em.createQuery(cq.select(root.get(Identity_.person)).where(p))
 				.getResultList().stream().distinct().collect(Collectors.toList());
 		personIds = ListTools.trim(personIds, true, true);
-		List<String> values = business.person().listPersonDistinguishedNameSorted(personIds);
+		List<Person> personList = new ArrayList<>();
+		for (List<String> subPersonIds : ListTools.batch(personIds, 1000)) {
+			personList.addAll(business.entityManagerContainer().fetch(subPersonIds, Person.class,
+					ListTools.toList(Person.distinguishedName_FIELDNAME)));
+		}
+		List<String> values = personList.stream().map(Person::getDistinguishedName).sorted().collect(
+				Collectors.toList());
 		Wo wo = new Wo();
 		wo.getPersonList().addAll(values);
 		return wo;
