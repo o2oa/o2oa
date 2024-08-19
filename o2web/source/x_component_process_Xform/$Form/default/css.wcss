@@ -292,11 +292,10 @@
         "background-position": "center center",
         "margin-left": "10px",
         "background-repeat": "no-repeat",
-        "float": "left",
-        "cursor": "pointer"
+        "float": "left",        "cursor": "pointer"
     },
     "logMediaOpinionContent": {
-        //"position": "absolute",
+        "position": "relative",
         "background": "#ffffff",
         "border": "1px solid #cccccc",
         //"border-radius": "6px",
@@ -306,7 +305,10 @@
     "logMediaOpinionContentClose": {
         "height": "20px",
         "width": "20px",
-        "float": "right",
+        "position": "absolute",
+        "top": "0px",
+        "right": "0px",
+        //"float": "right",
         "background": "url(../x_component_process_Xform/$Form/default/icon/close.png) center center no-repeat",
         "cursor": "pointer"
     },
