@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -146,9 +147,13 @@ class V2AddSplit extends BaseAction {
 
 					workCopy.setSplitValueList(adjustSplitValueList(arrived.getSplitValueList(), splitValue));
 					workCopy.setSplitToken(arrived.getSplitToken());
+
 					workCopy.setSplitTokenList(arrived.getSplitTokenList());
 					workCopy.setSplitValue(splitValue);
 					workCopy.setSplitting(arrived.getSplitting());
+					Map<String, String> splitValueMap = workCopy.getSplitTokenValueMap();
+					splitValueMap.put(workCopy.getSplitToken(), workCopy.getSplitValue());
+					workCopy.setSplitTokenValueMap(splitValueMap);
 					workCopy.setTickets(null);
 					workCopy.setBeforeExecuted(false);
 					workCopy.setDestinationActivity(null);
