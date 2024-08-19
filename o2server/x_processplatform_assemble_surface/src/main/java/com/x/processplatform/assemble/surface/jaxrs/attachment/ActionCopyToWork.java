@@ -53,8 +53,8 @@ class ActionCopyToWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowProcessing().build();
-			if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
+			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
