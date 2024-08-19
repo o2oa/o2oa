@@ -235,6 +235,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         if( this.addTask )this.addTask.destroy();
         if( this.goBack )this.goBack.destroy();
         if(this.quickSelector)this.quickSelector.destroy();
+        this.fireEvent("cancel");
     },
     getMarginY : function(node){
         return (node.getStyle("margin-top").toInt() || 0 ) +

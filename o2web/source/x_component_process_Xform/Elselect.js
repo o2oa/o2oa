@@ -297,6 +297,31 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     //
     //     }
     // },
+        _createEventFunction: function(methods, k){
+            methods["$loadElEvent_"+k.camelCase()] = function(){
+                var flag = true;
+                if (k==="change"){
+                    if (this.validationMode){
+                        this.validationMode();
+                        this._setBusinessData(this.getInputData());
+                        if( !this.validation() ) flag = false;
+                    }
+                }else if( this.json.filterable && ['visible-change','focus'].contains(k) ){
+                    var input = this.node.getElement('.el-input__inner');
+                    if( input )input.removeAttribute('readonly');
+                }
+                if (this.json.events && this.json.events[k] && this.json.events[k].code){
+                    this.form.Macro.fire(this.json.events[k].code, this, arguments);
+                }
+                if( flag )this.fireEvent(k, arguments);
+            }.bind(this);
+        },
+        _afterLoaded: function (){
+            if( this.json.filterable ){
+                var input = this.node.getElement('.el-input__inner');
+                if( input )input.removeAttribute('readonly');
+            }
+        },
     __setReadonly: function(data){
         if (this.isReadonly()){
             this._loadOptions();

@@ -109,6 +109,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              */
             "afterLoadProcessor",
             /**
+             * 关闭弹出的提交界面以后执行。
+             * @event MWF.xApplication.process.Xform.Form#closeProcessor
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "closeProcessor",
+            /**
              * 重置处理人前触发。
              * @event MWF.xApplication.process.Xform.Form#beforeReset
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -2536,8 +2542,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     flowWork_pc: function ( defaultRoute ) {
         var _self = this;
         //? 添加事件
-        this.fireEvent("beforeFlowWork");
-        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
+        this.fireEvent("beforeProcessWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
         if (!this.formCustomValidation("", "")) {
             this.app.content.unmask();
@@ -2630,8 +2636,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.app.content.setStyle("height", document.body.getSize().y);
         }
 
-        this.fireEvent("beforeFlowWork");
-        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
+        this.fireEvent("beforeProcessWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
         // if (this.json.mode != "Mobile") {
         //     this.app.content.mask({
@@ -2685,12 +2691,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             },
             "onLoad": function () {
                 if (postLoadFun) postLoadFun(this);
+
+                _self.fireEvent("afterLoadProcessor", [this]);
+                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterLoadProcessor", [this]);
             },
             "onCancel": function () {
-                this.destroy();
+                //this.destroy();
                 hanlderNode.destroy();
-                _self.app.content.unmask();
-                delete this;
+                //_self.app.content.unmask();
+                _self.fireEvent("closeProcessor", [this]);
+                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("closeProcessor", [this]);
             },
             "opinionOptions": {
                 "opinion": op.opinion,
@@ -3109,6 +3119,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "type": "cancel",
                         "text": MWF.LP.process.button.cancel,
                         "action": function () {
+                            _self.fireEvent("closeProcessor", [this]);
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("closeProcessor", [this]);
                             this.processDlg.close();
                         }.bind(this)
                     }
