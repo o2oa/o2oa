@@ -1,6 +1,13 @@
 package com.x.query.core.express.statement;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,14 +81,38 @@ public class Executor {
             }
             if (executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
                 appendSelectRange(runtime, query);
-                return query.getResultList();
+                if(isOld){
+                    return query.getResultList();
+                }else{
+                    List<LinkedHashMap<String, Object>> list = query.getResultList();
+                    for (LinkedHashMap<String, Object> map : list) {
+                        for (Map.Entry<String, Object> entry : map.entrySet()) {
+                            if (entry.getValue() instanceof Clob) {
+                                map.put(entry.getKey(), convertClobToString((Clob) entry.getValue()));
+                            }
+                        }
+                    }
+                    return list;
+                }
             } else {
                 emc.beginTransaction(DynamicBaseEntity.class);
-                Object data = Integer.valueOf(query.executeUpdate());
+                Object data = query.executeUpdate();
                 emc.commit();
                 return data;
             }
         }
+    }
+
+    private static String convertClobToString(Clob clob) throws SQLException,IOException {
+        StringBuilder sb = new StringBuilder();
+        try (Reader reader = clob.getCharacterStream();
+                BufferedReader br = new BufferedReader(reader)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        return sb.toString();
     }
 
     private static void appendSelectRange(Runtime runtime, Query query) {
