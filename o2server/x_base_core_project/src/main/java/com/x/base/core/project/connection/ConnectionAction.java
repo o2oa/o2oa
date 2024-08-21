@@ -171,50 +171,47 @@ public class ConnectionAction {
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
-		} catch (Exception e) {
+			addHeads(connection, heads);
+			connection.setRequestMethod(method);
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			connection.connect();
+			try (OutputStream output = connection.getOutputStream()) {
+				if (null != body) {
+					if (body instanceof CharSequence) {
+						IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
+					} else {
+						IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
+					}
+				}
+			} catch (Exception e) {
+				response.setType(Type.connectFatal);
+				response.setMessage(
+						String.format("%s ouput error, address: %s, because: %s.", method, address, e.getMessage()));
+				return response;
+			}
+			int status = connection.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
+				String redirect = connection.getHeaderField(HEAD_LOCATION);
+				if (StringUtils.isNotBlank(redirect)) {
+					connection.disconnect();
+					return postPut(connectTimeout, readTimeout, redirect, method, heads, body);
+				}
+			}
+			return read(response, connection);
+		} catch (IOException e) {
 			response.setType(Type.connectFatal);
 			response.setMessage(String.format("%s create connection error, address: %s, because: %s.", method, address,
 					e.getMessage()));
 			return response;
-		}
-		addHeads(connection, heads);
-		connection.setRequestMethod(method);
-		connection.setUseCaches(false);
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		try {
-			connection.connect();
-		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(
-					String.format("%s connect error, address: %s, because: %s.", method, address, e.getMessage()));
-			return response;
-		}
-		try (OutputStream output = connection.getOutputStream()) {
-			if (null != body) {
-				if (body instanceof CharSequence) {
-					IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
-				} else {
-					IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
-				}
-			}
-		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(
-					String.format("%s ouput error, address: %s, because: %s.", method, address, e.getMessage()));
-			return response;
-		}
-		int status = connection.getResponseCode();
-		if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
-			String redirect = connection.getHeaderField(HEAD_LOCATION);
-			if (StringUtils.isNotBlank(redirect)) {
+		} finally {
+			if (connection != null) {
 				connection.disconnect();
-				return postPut(connectTimeout, readTimeout, redirect, method, heads, body);
 			}
 		}
-		return read(response, connection);
 	}
 
 	public static ActionResponse post(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads,
@@ -467,7 +464,6 @@ public class ConnectionAction {
 						Objects.toString(connection.getURL()), connection.getRequestMethod(), code, e.getMessage()));
 			}
 		}
-		connection.disconnect();
 		return response;
 	}
 
@@ -512,7 +508,8 @@ public class ConnectionAction {
 		map.entrySet().forEach((o -> connection.addRequestProperty(o.getKey(), o.getValue())));
 	}
 
-	private static void addHeadsNoContentType(HttpURLConnection connection, List<NameValuePair> heads) throws Exception {
+	private static void addHeadsNoContentType(HttpURLConnection connection, List<NameValuePair> heads)
+			throws Exception {
 		Map<String, String> map = new TreeMap<>();
 		map.put(ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
 		map.put(ACCESS_CONTROL_ALLOW_HEADERS,
