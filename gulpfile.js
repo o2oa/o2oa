@@ -1202,7 +1202,7 @@ function createHistoryJsonFile(url, fileName, host){
                     downloadJson.linux.url = host+downloadJson.linux.url
                     downloadJson.macosx64.url = host+downloadJson.macosx64.url
                     downloadJson.macosarm.url = host+downloadJson.macosarm.url
-                    downloadJson.aix.url = host+downloadJson.aix.url
+                    // downloadJson.aix.url = host+downloadJson.aix.url
                     downloadJson.raspi.url = host+downloadJson.raspi.url
                     downloadJson.mips.url = host+downloadJson.mips.url
                     downloadJson.arm.url = host+downloadJson.arm.url
