@@ -62,36 +62,32 @@ public class ConnectionAction {
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
-		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(String.format("%s create connection error, address: %s, because: %s.", method, address,
-					e.getMessage()));
-			return response;
-		}
-		addHeads(connection, heads);
-		connection.setRequestMethod(method);
-		connection.setUseCaches(false);
-		connection.setDoOutput(false);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		try {
+			addHeads(connection, heads);
+			connection.setRequestMethod(method);
+			connection.setUseCaches(false);
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
 			connection.connect();
 			int status = connection.getResponseCode();
 			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
 				String redirect = connection.getHeaderField("Location");
 				if (StringUtils.isNotBlank(redirect)) {
-					connection.disconnect();
 					return getDelete(connectTimeout, readTimeout, redirect, method, heads);
 				}
 			}
+			return read(response, connection);
 		} catch (Exception e) {
 			response.setType(Type.connectFatal);
 			response.setMessage(String.format("%s connect connection error, address: %s, because: %s.", method, address,
 					e.getMessage()));
 			return response;
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
 		}
-		return read(response, connection);
 	}
 
 	public static ActionResponse get(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads)
@@ -119,30 +115,29 @@ public class ConnectionAction {
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
-		} catch (Exception e) {
-			throw new ExceptionGetBinary(e, connection);
-		}
-		addHeadsNoContentType(connection, heads);
-		connection.setRequestMethod(method);
-		connection.setUseCaches(false);
-		connection.setDoOutput(false);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		try {
+			addHeadsNoContentType(connection, heads);
+			connection.setRequestMethod(method);
+			connection.setUseCaches(false);
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
 			connection.connect();
 			int status = connection.getResponseCode();
 			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
 				String redirect = connection.getHeaderField("Location");
 				if (StringUtils.isNotBlank(redirect)) {
-					connection.disconnect();
 					return getDeleteBinary(connectTimeout, readTimeout, redirect, method, heads);
 				}
 			}
+			return readBinary(connection);
 		} catch (Exception e) {
 			throw new ExceptionGetBinary(e, connection);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
 		}
-		return readBinary(connection);
 	}
 
 	public static byte[] getBinary(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads)
@@ -171,50 +166,41 @@ public class ConnectionAction {
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
-		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(String.format("%s create connection error, address: %s, because: %s.", method, address,
-					e.getMessage()));
-			return response;
-		}
-		addHeads(connection, heads);
-		connection.setRequestMethod(method);
-		connection.setUseCaches(false);
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		try {
+			addHeads(connection, heads);
+			connection.setRequestMethod(method);
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
 			connection.connect();
-		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(
-					String.format("%s connect error, address: %s, because: %s.", method, address, e.getMessage()));
-			return response;
-		}
-		try (OutputStream output = connection.getOutputStream()) {
-			if (null != body) {
-				if (body instanceof CharSequence) {
-					IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
-				} else {
-					IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
+			try (OutputStream output = connection.getOutputStream()) {
+				if (null != body) {
+					if (body instanceof CharSequence) {
+						IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
+					} else {
+						IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
+					}
 				}
 			}
+			int status = connection.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
+				String redirect = connection.getHeaderField(HEAD_LOCATION);
+				if (StringUtils.isNotBlank(redirect)) {
+					return postPut(connectTimeout, readTimeout, redirect, method, heads, body);
+				}
+			}
+			return read(response, connection);
 		} catch (Exception e) {
 			response.setType(Type.connectFatal);
-			response.setMessage(
-					String.format("%s ouput error, address: %s, because: %s.", method, address, e.getMessage()));
+			response.setMessage(String.format("%s connect connection error, address: %s, because: %s.", method, address,
+					e.getMessage()));
 			return response;
-		}
-		int status = connection.getResponseCode();
-		if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
-			String redirect = connection.getHeaderField(HEAD_LOCATION);
-			if (StringUtils.isNotBlank(redirect)) {
+		} finally {
+			if (connection != null) {
 				connection.disconnect();
-				return postPut(connectTimeout, readTimeout, redirect, method, heads, body);
 			}
 		}
-		return read(response, connection);
 	}
 
 	public static ActionResponse post(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads,
@@ -242,33 +228,31 @@ public class ConnectionAction {
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
-		} catch (Exception e) {
-			throw new ExceptionBinary(e, connection);
-		}
-		addHeads(connection, heads);
-		connection.setRequestMethod(method);
-		connection.setUseCaches(false);
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		try {
+			addHeads(connection, heads);
+			connection.setRequestMethod(method);
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
 			connection.connect();
-		} catch (Exception e) {
-			throw new ExceptionBinary(e, connection);
-		}
-		try (OutputStream output = connection.getOutputStream()) {
-			if (null != body) {
-				if (body instanceof CharSequence) {
-					IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
-				} else {
-					IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
+			try (OutputStream output = connection.getOutputStream()) {
+				if (null != body) {
+					if (body instanceof CharSequence) {
+						IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
+					} else {
+						IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
+					}
 				}
 			}
+			return readBinary(connection);
 		} catch (Exception e) {
 			throw new ExceptionBinary(e, connection);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
 		}
-		return readBinary(connection);
 	}
 
 	public static byte[] postBinary(int connectTimeout, int readTimeout, String address, List<NameValuePair> heads,
@@ -297,46 +281,42 @@ public class ConnectionAction {
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
-		} catch (Exception e) {
-			throw new ExceptionMultiPartBinary(e, connection);
-		}
-		byte[] bytes = null;
-		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-			if (null != fileParts) {
-				for (FilePart filePart : fileParts) {
-					writeFilePart(byteArrayOutputStream, filePart, boundary);
+			byte[] bytes = null;
+			try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+				if (null != fileParts) {
+					for (FilePart filePart : fileParts) {
+						writeFilePart(byteArrayOutputStream, filePart, boundary);
+					}
 				}
-			}
-			if (null != formFields) {
-				for (FormField formField : formFields) {
-					writeFormField(byteArrayOutputStream, formField, boundary);
+				if (null != formFields) {
+					for (FormField formField : formFields) {
+						writeFormField(byteArrayOutputStream, formField, boundary);
+					}
 				}
+				IOUtils.write(StringTools.TWO_HYPHENS + boundary + StringTools.TWO_HYPHENS, byteArrayOutputStream,
+						DefaultCharset.charset_utf_8);
+				bytes = byteArrayOutputStream.toByteArray();
 			}
-			IOUtils.write(StringTools.TWO_HYPHENS + boundary + StringTools.TWO_HYPHENS, byteArrayOutputStream,
-					DefaultCharset.charset_utf_8);
-			bytes = byteArrayOutputStream.toByteArray();
-		} catch (Exception e) {
-			throw new ExceptionMultiPartBinary(e, connection);
-		}
-		addHeadsMultiPart(connection, heads, boundary);
-		connection.setRequestProperty(CONTENT_LENGTH, bytes.length + "");
-		connection.setRequestMethod(method);
-		connection.setUseCaches(false);
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		try {
+			addHeadsMultiPart(connection, heads, boundary);
+			connection.setRequestProperty(CONTENT_LENGTH, bytes.length + "");
+			connection.setRequestMethod(method);
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
 			connection.connect();
+			try (OutputStream output = connection.getOutputStream()) {
+				IOUtils.write(bytes, output);
+			}
+			return readBinary(connection);
 		} catch (Exception e) {
 			throw new ExceptionMultiPartBinary(e, connection);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
 		}
-		try (OutputStream output = connection.getOutputStream()) {
-			IOUtils.write(bytes, output);
-		} catch (Exception e) {
-			throw new ExceptionMultiPartBinary(e, connection);
-		}
-		return readBinary(connection);
 	}
 
 	public static byte[] postMultiPartBinary(int connectTimeout, int readTimeout, String address,
@@ -399,32 +379,6 @@ public class ConnectionAction {
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 	}
 
-//	public static byte[] getFile(String address, List<NameValuePair> heads) throws ClientProtocolException, IOException  {
-//		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-//			HttpGet httpget = new HttpGet(address);
-//			if (ListTools.isNotEmpty(heads)) {
-//				String name;
-//				String value;
-//				for (NameValuePair o : heads) {
-//					name = Objects.toString(o.getName(), "");
-//					value = Objects.toString(o.getValue(), "");
-//					if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
-//						httpget.addHeader(name, value);
-//					}
-//				}
-//			}
-//			HttpResponse response = httpclient.execute(httpget);
-//			HttpEntity entity = response.getEntity();
-//			if (entity != null) {
-//				InputStream in = entity.getContent();
-//				if (in != null) {
-//					return IOUtils.toByteArray(in);
-//				}
-//			}
-//		}
-//		return null;
-//	}
-
 	private static String extractErrorMessageIfExist(String str) {
 		if (StringUtils.isBlank(str)) {
 			return "";
@@ -467,7 +421,6 @@ public class ConnectionAction {
 						Objects.toString(connection.getURL()), connection.getRequestMethod(), code, e.getMessage()));
 			}
 		}
-		connection.disconnect();
 		return response;
 	}
 
@@ -488,7 +441,6 @@ public class ConnectionAction {
 				throw new ExceptionReadBinary(e, connection, code);
 			}
 		}
-		connection.disconnect();
 		return bytes;
 	}
 
@@ -512,7 +464,8 @@ public class ConnectionAction {
 		map.entrySet().forEach((o -> connection.addRequestProperty(o.getKey(), o.getValue())));
 	}
 
-	private static void addHeadsNoContentType(HttpURLConnection connection, List<NameValuePair> heads) throws Exception {
+	private static void addHeadsNoContentType(HttpURLConnection connection, List<NameValuePair> heads)
+			throws Exception {
 		Map<String, String> map = new TreeMap<>();
 		map.put(ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
 		map.put(ACCESS_CONTROL_ALLOW_HEADERS,
