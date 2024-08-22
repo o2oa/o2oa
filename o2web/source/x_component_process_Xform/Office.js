@@ -1290,13 +1290,12 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         this.addOfficeEvent(id, "AfterOpenFromURL(doc, statusCode)", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].AfterOpenFromURL(doc, statusCode);");
         this.addOfficeEvent(id, "OnDocumentOpened(url, doc)", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].OnDocumentOpened(url, doc);");
         this.addOfficeEvent(id, "OnDocumentClosed()", "if (layout.desktop.offices[\""+id+"\"]) layout.desktop.offices[\""+id+"\"].OnDocumentClosed();");
-
-        this.loadMenu();
     },
     OnDocumentClosed: function(){
         this.fireEvent("afterCloseOffice");
     },
     OnDocumentOpened: function(url, doc){
+        this.loadMenu();
         this.afterOpen();
 
         this.fireEvent("afterOpenOffice", {
@@ -1319,6 +1318,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
     addOfficeEvent: function(id, event, code){
         if ((Browser.name==="chrome" || Browser.name==="firefox") && event.substring(0, event.indexOf('(')) === 'OnDocumentOpened'){
             this.checkActiveDocument(function(){
+                this.loadMenu();
                 if (this.readonly) this.docReadonly();
                 if (this.json.trackRevisions==="1") this.startRevisions();
 
