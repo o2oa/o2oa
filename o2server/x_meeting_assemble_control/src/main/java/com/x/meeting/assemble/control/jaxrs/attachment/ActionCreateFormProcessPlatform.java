@@ -23,12 +23,16 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.ThisApplication;
 import com.x.meeting.core.entity.Attachment;
 import com.x.meeting.core.entity.Meeting;
 
 public class ActionCreateFormProcessPlatform extends BaseAction {
+
+	private static final Logger logger = LoggerFactory.getLogger(ActionCreateFormProcessPlatform.class);
 
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -86,16 +90,25 @@ public class ActionCreateFormProcessPlatform extends BaseAction {
 		Application app = ThisApplication.context().applications()
 				.randomWithWeight(x_processplatform_assemble_surface.class.getName());
 		String address = app.getUrlJaxrsRoot() + "attachment/download/" + workAttachmentId + "/work/" + workId;
-		HttpURLConnection connection = HttpConnection.prepare(address, CipherConnectionAction.cipher());
-		connection.setRequestMethod("GET");
-		connection.setDoOutput(false);
-		connection.setDoInput(true);
+		HttpURLConnection connection = null;
 		byte[] bytes = null;
-		connection.connect();
-		try (InputStream input = connection.getInputStream()) {
-			bytes = IOUtils.toByteArray(input);
+		try {
+			connection = HttpConnection.prepare(address, CipherConnectionAction.cipher());
+			connection.setRequestMethod("GET");
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.connect();
+			try (InputStream input = connection.getInputStream()) {
+				bytes = IOUtils.toByteArray(input);
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
 		}
-		connection.disconnect();
+
 		return bytes;
 	}
 

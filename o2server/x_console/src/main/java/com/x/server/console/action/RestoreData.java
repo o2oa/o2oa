@@ -3,6 +3,7 @@ package com.x.server.console.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -69,11 +70,13 @@ public class RestoreData {
 		if (StringUtils.isEmpty(path)) {
 			LOGGER.warn("{}.", () -> "path is empty.");
 		}
-		ClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader();
-		Path dir = dir(path);
-		Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
-		thread.start();
-		return true;
+		try (URLClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader()) {
+			Path dir = dir(path);
+			Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
+			thread.start();
+			thread.join();
+			return true;
+		}
 	}
 
 	private Path dir(String path) throws IOException, URISyntaxException {

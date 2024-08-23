@@ -1,5 +1,22 @@
 package com.x.base.core.project.connection;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Config;
@@ -9,17 +26,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.Map.Entry;
 
 public class HttpConnection {
 
@@ -62,15 +68,23 @@ public class HttpConnection {
 	public static String getAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout)
 			throws Exception {
 		checkAddress(address);
-		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(ConnectionAction.METHOD_GET);
-		connection.setDoOutput(false);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		String str = readResultString(connection);
-		connection.disconnect();
-		return str;
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_GET);
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			return readResultString(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
 	}
 
 	public static <T> T getAsObject(String address, List<NameValuePair> heads, Class<T> cls) throws Exception {
@@ -115,17 +129,25 @@ public class HttpConnection {
 	public static String postAsString(String address, List<NameValuePair> heads, String body, int connectTimeout,
 			int readTimeout) throws Exception {
 		checkAddress(address);
-		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(ConnectionAction.METHOD_POST);
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		connection.connect();
-		doOutput(connection, body);
-		String str = readResultString(connection);
-		connection.disconnect();
-		return str;
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_POST);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			connection.connect();
+			doOutput(connection, body);
+			return readResultString(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
 	}
 
 	public static <T> T postAsObject(String address, List<NameValuePair> heads, String body, Class<T> cls)
@@ -172,17 +194,25 @@ public class HttpConnection {
 	public static String putAsString(String address, List<NameValuePair> heads, String body, int connectTimeout,
 			int readTimeout) throws Exception {
 		checkAddress(address);
-		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(ConnectionAction.METHOD_PUT);
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		connection.connect();
-		doOutput(connection, body);
-		String str = readResultString(connection);
-		connection.disconnect();
-		return str;
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_PUT);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			connection.connect();
+			doOutput(connection, body);
+			return readResultString(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
 	}
 
 	public static <T> T putAsObject(String address, List<NameValuePair> heads, String body, Class<T> cls)
@@ -227,15 +257,24 @@ public class HttpConnection {
 	public static String deleteAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout)
 			throws Exception {
 		checkAddress(address);
-		HttpURLConnection connection = prepare(address, heads);
-		connection.setRequestMethod(ConnectionAction.METHOD_DELETE);
-		connection.setDoOutput(false);
-		connection.setDoInput(true);
-		connection.setConnectTimeout(connectTimeout);
-		connection.setReadTimeout(readTimeout);
-		String str = readResultString(connection);
-		connection.disconnect();
-		return str;
+		HttpURLConnection connection = null;
+		try {
+			connection = prepare(address, heads);
+
+			connection.setRequestMethod(ConnectionAction.METHOD_DELETE);
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(connectTimeout);
+			connection.setReadTimeout(readTimeout);
+			return readResultString(connection);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return null;
 	}
 
 	public static <T> T deleteAsObject(String address, List<NameValuePair> heads, Class<T> cls) throws Exception {

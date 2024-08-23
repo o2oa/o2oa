@@ -22,7 +22,7 @@ public class EntityClassLoaderTools {
         // nothing
     }
 
-    public static ClassLoader concreteClassLoader() throws IOException, URISyntaxException {
+    public static URLClassLoader concreteClassLoader() throws IOException, URISyntaxException {
         List<URL> urlList = new ArrayList<>();
         IOFileFilter filter = new WildcardFileFilter("*.jar");
         for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {

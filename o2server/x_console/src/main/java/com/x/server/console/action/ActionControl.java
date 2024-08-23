@@ -272,7 +272,7 @@ public class ActionControl extends ActionBase {
 		compactLocalH2.execute();
 	}
 
-	private void dd(CommandLine cmd) throws IOException, URISyntaxException {
+	private void dd(CommandLine cmd) throws Exception {
 		String path = Objects.toString(cmd.getOptionValue(CMD_DD), "");
 		DumpData dumpData = new DumpData();
 		dumpData.execute(path);
