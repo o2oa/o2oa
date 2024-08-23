@@ -242,22 +242,37 @@ public class EndProcessor extends AbstractEndProcessor {
 				aeiObjects.getProcessingAttributes());
 		parentAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
-			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
+			GraalvmScriptingFactory.Bindings bindings = parentAeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
 			if (this.hasEmbedCompletedScript(embed)) {
-				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-						embed, Business.EVENT_EMBEDCOMPLETED);
+				Source source = parentAeiObjects.business().element().getCompiledScript(
+						parentAeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETED);
 				GraalvmScriptingFactory.eval(source, bindings);
 			}
 			if (this.hasEmbedCompletedEndScript(embed)) {
-				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-						embed, Business.EVENT_EMBEDCOMPLETEDEND);
+				Source source = parentAeiObjects.business().element().getCompiledScript(
+						parentAeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETEDEND);
 				GraalvmScriptingFactory.eval(source, bindings);
 			}
-			aeiObjects.getWorkDataHelper().update(aeiObjects.getData());
 		}
 		parentAeiObjects.commit();
 		touchWork(parent.getId());
+//		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
+//		GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
+//				.putMember(GraalvmScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
+//		if (this.hasEmbedCompletedScript(embed)) {
+//			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+//					embed, Business.EVENT_EMBEDCOMPLETED);
+//			GraalvmScriptingFactory.eval(source, bindings);
+//		}
+//		if (this.hasEmbedCompletedEndScript(embed)) {
+//			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+//					embed, Business.EVENT_EMBEDCOMPLETEDEND);
+//			GraalvmScriptingFactory.eval(source, bindings);
+//		}
+//		aeiObjects.getWorkDataHelper().update(aeiObjects.getData());
+//	}
+
 	}
 
 	/**

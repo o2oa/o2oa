@@ -1,5 +1,6 @@
 package com.x.server.console.action;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -16,7 +17,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,7 +54,7 @@ public class DumpData {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DumpData.class);
 
-	public boolean execute(String path) throws Exception {
+	public boolean execute(String path) throws IOException, URISyntaxException {
 		Path dir = null;
 		Date start = new Date();
 		if (StringUtils.isEmpty(path)) {
@@ -66,13 +66,10 @@ public class DumpData {
 				return false;
 			}
 		}
-		try (URLClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader()) {
-			Files.createDirectories(dir);
-			Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
-			thread.start();
-			thread.join();
-			return true;
-		}
+		Files.createDirectories(dir);
+		Thread thread = new Thread(new RunnableImpl(dir, start));
+		thread.start();
+		return true;
 	}
 
 	public class RunnableImpl implements Runnable {
@@ -81,19 +78,18 @@ public class DumpData {
 		private Date start;
 		private DumpRestoreDataCatalog catalog;
 		private Gson pureGsonDateFormated;
-		private ClassLoader classLoader;
 
-		public RunnableImpl(Path dir, Date start, ClassLoader classLoader) {
+		public RunnableImpl(Path dir, Date start) {
 			this.dir = dir;
 			this.start = start;
 			this.catalog = new DumpRestoreDataCatalog();
 			this.pureGsonDateFormated = XGsonBuilder.instance();
-			this.classLoader = classLoader;
-			Thread.currentThread().setContextClassLoader(classLoader);
 		}
 
 		public void run() {
-			try {
+			ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
+			try (URLClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader()) {
+				Thread.currentThread().setContextClassLoader(classLoader);
 				List<String> classNames = this.entities(classLoader);
 				LOGGER.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
@@ -101,13 +97,10 @@ public class DumpData {
 				PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
 				StorageMappings storageMappings = Config.storageMappings();
 				AtomicInteger idx = new AtomicInteger(1);
-				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
-						? classNames.parallelStream()
-						: classNames.stream();
-				stream.forEach(className -> {
-					Thread.currentThread().setContextClassLoader(classLoader);
-					String nameOfThread = Thread.currentThread().getName();
-					Thread.currentThread().setName(DumpData.class.getName() + ":" + className);
+//				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
+//						? classNames.parallelStream()
+//						: classNames.stream();
+				classNames.forEach(className -> {
 					EntityManagerFactory emf = null;
 					EntityManager em = null;
 					try {
@@ -124,7 +117,6 @@ public class DumpData {
 						e.printStackTrace();
 						LOGGER.error(new Exception(String.format("dump:%s error.", className), e));
 					} finally {
-						Thread.currentThread().setName(nameOfThread);
 						if (null != em) {
 							em.close();
 						}
@@ -136,14 +128,15 @@ public class DumpData {
 				Files.write(dir.resolve("catalog.json"),
 						pureGsonDateFormated.toJson(catalog).getBytes(StandardCharsets.UTF_8));
 				LOGGER.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.toString(),
-
 						count(), (System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				Thread.currentThread().setContextClassLoader(originClassLoader);
 			}
 		}
 
-		private List<String> entities(ClassLoader classLoader) throws Exception {
+		private List<String> entities(ClassLoader classLoader) throws ClassNotFoundException  {
 			List<String> classNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
 			classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
 					Config.dumpRestoreData().getExcludes());
