@@ -1123,32 +1123,38 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitReadCreatePart() {
 		// 去重可能的在同一次提交中产生的对同一个人的多份Read
 		this.getCreateReads().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson())).entrySet()
-				.forEach(
-						entry -> entry
-								.getValue().stream().sorted(
-										Comparator
-												.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
-												.reversed()
-												.thenComparing(Comparator.comparing(Read::getId,
-														Comparator.nullsLast(String::compareTo))))
-								.findFirst().ifPresent(o -> {
-									try {
-										Optional<Read> existOptional = this.getReads().stream()
-												.filter(p -> StringUtils.equals(o.getJob(), p.getJob())
-														&& StringUtils.equals(o.getPerson(), p.getPerson()))
-												.findFirst();
-										// 不存在内容重复的待阅
-										if (!existOptional.isPresent()) {
-											this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-											// 创建待阅的参阅
-											this.createReview(new Review(this.getWork(), o.getPerson()));
-										} else {
-											o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
-										}
-									} catch (Exception e) {
-										LOGGER.error(e);
-									}
-								}));
+				.forEach(entry -> entry.getValue().stream()
+						.sorted(Comparator.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+								.reversed().thenComparing(
+										Comparator.comparing(Read::getId, Comparator.nullsLast(String::compareTo))))
+//								.findFirst().ifPresent(o -> {
+//									try {
+//										Optional<Read> existOptional = this.getReads().stream()
+//												.filter(p -> StringUtils.equals(o.getJob(), p.getJob())
+//														&& StringUtils.equals(o.getPerson(), p.getPerson()))
+//												.findFirst();
+//										// 不存在内容重复的待阅
+//										if (!existOptional.isPresent()) {
+//											this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+//											// 创建待阅的参阅
+//											this.createReview(new Review(this.getWork(), o.getPerson()));
+//										} else {
+//											o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
+//										}
+//									} catch (Exception e) {
+//										LOGGER.error(e);
+//									}
+//								}));
+						.findFirst().ifPresent(o -> {
+							try {
+								// 创建待阅
+								this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+								// 创建待阅的参阅
+								this.createReview(new Review(this.getWork(), o.getPerson()));
+							} catch (Exception e) {
+								LOGGER.error(e);
+							}
+						}));
 
 	}
 
