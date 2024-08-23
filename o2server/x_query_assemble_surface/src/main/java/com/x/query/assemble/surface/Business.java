@@ -52,7 +52,7 @@ public class Business {
     private static CacheCategory cache = new CacheCategory(Query.class, View.class, Stat.class, Reveal.class,
             Table.class, Statement.class, ImportModel.class);
 
-    private static ClassLoader dynamicEntityClassLoader = null;
+    private static URLClassLoader dynamicEntityClassLoader = null;
 
     public static ClassLoader getDynamicEntityClassLoader() throws Exception {
         if (null == dynamicEntityClassLoader) {
@@ -68,6 +68,9 @@ public class Business {
             urlList.add(o.toURI().toURL());
         }
         URL[] urls = new URL[urlList.size()];
+		if (null != dynamicEntityClassLoader) {
+			dynamicEntityClassLoader.close();
+		}
         dynamicEntityClassLoader = URLClassLoader.newInstance(urlList.toArray(urls),
                 null != ThisApplication.context() ? ThisApplication.context().servletContext().getClassLoader()
                         : Thread.currentThread().getContextClassLoader());
