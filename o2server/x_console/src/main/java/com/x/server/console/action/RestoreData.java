@@ -58,7 +58,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.server.console.command.Commands;
 
-
 public class RestoreData {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestoreData.class);
@@ -138,6 +137,7 @@ public class RestoreData {
 						LOGGER.print("restore data({}/{}): {}.", idx.getAndAdd(1), classNames.size(), cls.getName());
 						long size = restore(cls, Config.dumpRestoreData().getAttachStorage(), xml);
 						total.getAndAdd(size);
+						cls = null;
 					} catch (Exception e) {
 						LOGGER.error(new Exception(String.format("restore:%s error.", className), e));
 					}
@@ -209,7 +209,7 @@ public class RestoreData {
 				Object t = gson.fromJson(json, cls);
 				if (Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
 						DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)
-						&& (null != em.find(cls, BeanUtils.getBeanProperty(t, JpaObject.id_FIELDNAME)))) {
+						&& (null != em.find(cls, BeanUtils.getProperty(t, JpaObject.id_FIELDNAME)))) {
 					continue;
 				}
 				if (StorageObject.class.isAssignableFrom(cls) && attachStorage) {

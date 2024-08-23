@@ -2,6 +2,7 @@ package com.x.server.console.action;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URLClassLoader;
@@ -113,6 +114,7 @@ public class DumpData {
 						LOGGER.print("dump data({}/{}): {}, count: {}.", idx.getAndAdd(1), classNames.size(),
 								cls.getName(), estimateCount);
 						dump(cls, em, storageMappings, Config.dumpRestoreData().getAttachStorage(), estimateCount);
+						cls = null;
 					} catch (Exception e) {
 						e.printStackTrace();
 						LOGGER.error(new Exception(String.format("dump:%s error.", className), e));
@@ -136,7 +138,7 @@ public class DumpData {
 			}
 		}
 
-		private List<String> entities(ClassLoader classLoader) throws ClassNotFoundException  {
+		private List<String> entities(ClassLoader classLoader) throws ClassNotFoundException {
 			List<String> classNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
 			classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
 					Config.dumpRestoreData().getExcludes());
