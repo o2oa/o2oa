@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@o2oa/component": "^1.1.6",
-    "@o2oa/oovm": "^2.1.59",
+    "@o2oa/oovm": "^2.1.63",
     "@o2oa/util": "^1.0.29",
     "exceljs": "^4.4.0"
   },
