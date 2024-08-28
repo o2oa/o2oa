@@ -193,6 +193,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			_self.filterDlg.close();
 		}
 		this.filterDlg = o2.DL.open({
+			"container": this.content,
 			"mask": false,
 			"title": "",
 			"style": "user",
@@ -1024,6 +1025,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		var processNode = new Element("div.processNode").inject(this.content);
 		this.setProcessNode(task, form, processNode, "process", function (processor) {
 			this.processDlg = o2.DL.open({
+				"container": this.app.content,
 				"title": this.lp.process,
 				"style": form.json.dialogStyle || "user",
 				"isResize": false,
@@ -1388,6 +1390,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 			var html = o2.bindJson(o[0].data, {"lp": this.lp, "readedConfirmContent": text});
 			var p = o2.dlgPosition(e, this.app.content, 550, 260)
 			var readDlg = o2.DL.open({
+				"container": this.app.content,
 				"title": this.lp.setReadedConfirmTitle,
 				"style": "user",
 				"isResize": false,
@@ -1448,6 +1451,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		this.infoDlg = o2.DL.open({
 			// "top": p.y,
 			// "left": p.x,
+			"container": this.app.content,
 			"title": this.lp.processInfo,
 			"style": "user",
 			"isResize": true,
