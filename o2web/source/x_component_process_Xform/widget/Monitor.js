@@ -476,7 +476,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs, activity);
 
         this.currentWorklogNode = activity.worklogNode;
-        this.currentWorklogNode.setStyle("display", this.currentWorklogNode.get("html") ? "block" : "none");
+        this.currentWorklogNode.setStyle("display", !!this.currentWorklogNode.get("html") ? "block" : "none");
         if( layout.mobile ){
             var pSize = this.paperNode.getSize();
             var bodySize =  $(document.body).getSize();
