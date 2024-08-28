@@ -3,6 +3,7 @@ package com.x.server.console.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -56,8 +58,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.server.console.command.Commands;
 
-import net.sf.ehcache.hibernate.management.impl.BeanUtils;
-
 public class RestoreData {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestoreData.class);
@@ -69,9 +69,9 @@ public class RestoreData {
 		if (StringUtils.isEmpty(path)) {
 			LOGGER.warn("{}.", () -> "path is empty.");
 		}
-		ClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader();
+
 		Path dir = dir(path);
-		Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
+		Thread thread = new Thread(new RunnableImpl(dir, start));
 		thread.start();
 		return true;
 	}
@@ -98,13 +98,10 @@ public class RestoreData {
 		private Date start;
 		private DumpRestoreDataCatalog catalog;
 		private Gson gson;
-		private ClassLoader classLoader;
 
-		public RunnableImpl(Path dir, Date start, ClassLoader classLoader) throws IOException {
+		public RunnableImpl(Path dir, Date start) throws IOException {
 			this.dir = dir;
 			this.start = start;
-			this.classLoader = classLoader;
-			Thread.currentThread().setContextClassLoader(classLoader);
 			this.catalog = new DumpRestoreDataCatalog();
 			this.gson = XGsonBuilder.instance();
 			Path path = dir.resolve("catalog.json");
@@ -114,7 +111,9 @@ public class RestoreData {
 
 		@Override
 		public void run() {
-			try {
+			ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
+			try (URLClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader()) {
+				Thread.currentThread().setContextClassLoader(classLoader);
 				Pair<List<String>, List<String>> pair = entities(catalog, classLoader);
 				List<String> classNames = pair.first();
 				if (pair.second().isEmpty()) {
@@ -128,18 +127,17 @@ public class RestoreData {
 				PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
 				AtomicInteger idx = new AtomicInteger(1);
 				AtomicLong total = new AtomicLong(0);
-				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
-						? classNames.parallelStream()
-						: classNames.stream();
-				stream.forEach(className -> {
-					Thread.currentThread().setContextClassLoader(classLoader);
+//				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
+//						? classNames.parallelStream()
+//						: classNames.stream();
+				classNames.forEach(className -> {
 					try {
 						@SuppressWarnings("unchecked")
-						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
-								.loadClass(className);
+						Class<JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(className);
 						LOGGER.print("restore data({}/{}): {}.", idx.getAndAdd(1), classNames.size(), cls.getName());
 						long size = restore(cls, Config.dumpRestoreData().getAttachStorage(), xml);
 						total.getAndAdd(size);
+						cls = null;
 					} catch (Exception e) {
 						LOGGER.error(new Exception(String.format("restore:%s error.", className), e));
 					}
@@ -161,6 +159,8 @@ public class RestoreData {
 					exception.printStackTrace();
 				}
 				LOGGER.error(e);
+			} finally {
+				Thread.currentThread().setContextClassLoader(originClassLoader);
 			}
 		}
 
@@ -209,7 +209,7 @@ public class RestoreData {
 				Object t = gson.fromJson(json, cls);
 				if (Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
 						DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)
-						&& (null != em.find(cls, BeanUtils.getBeanProperty(t, JpaObject.id_FIELDNAME)))) {
+						&& (null != em.find(cls, BeanUtils.getProperty(t, JpaObject.id_FIELDNAME)))) {
 					continue;
 				}
 				if (StorageObject.class.isAssignableFrom(cls) && attachStorage) {

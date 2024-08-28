@@ -65,7 +65,7 @@ public class Business {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
 
-	private static ClassLoader dynamicEntityClassLoader = null;
+	private static URLClassLoader dynamicEntityClassLoader = null;
 
 	public static ClassLoader getDynamicEntityClassLoader() throws IOException, URISyntaxException {
 		if (null == dynamicEntityClassLoader) {
@@ -81,6 +81,9 @@ public class Business {
 			urlList.add(o.toURI().toURL());
 		}
 		URL[] urls = new URL[urlList.size()];
+		if (null != dynamicEntityClassLoader) {
+			dynamicEntityClassLoader.close();
+		}
 		dynamicEntityClassLoader = URLClassLoader.newInstance(urlList.toArray(urls),
 				null != ThisApplication.context() ? ThisApplication.context().servletContext().getClassLoader()
 						: Thread.currentThread().getContextClassLoader());

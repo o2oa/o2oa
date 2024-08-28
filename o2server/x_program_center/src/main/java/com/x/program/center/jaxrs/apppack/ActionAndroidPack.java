@@ -36,8 +36,8 @@ public class ActionAndroidPack extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionAndroidPack.class);
 
 	ActionResult<Wo> execute(String token, String appName, String o2ServerProtocol, String o2ServerHost,
-			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String urlMapping,String appVersionName, String appBuildNo, String deleteHuawei,
-							 String fileName, byte[] bytes,
+			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String urlMapping,
+			String appVersionName, String appBuildNo, String deleteHuawei, String fileName, byte[] bytes,
 			FormDataContentDisposition disposition) throws Exception {
 		ActionResult<Wo> result = new ActionResult<Wo>();
 		if (StringUtils.isEmpty(token)) {
@@ -82,8 +82,8 @@ public class ActionAndroidPack extends BaseAction {
 		if (!fileName.toLowerCase().endsWith("png")) {
 			throw new ExceptionFileNotPng();
 		}
-		String s = postFormData(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, deleteHuawei, fileName,
-				bytes);
+		String s = postFormData(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext,
+				isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, deleteHuawei, fileName, bytes);
 		Type type = new TypeToken<AppPackResult<IdValue>>() {
 		}.getType();
 		AppPackResult<IdValue> appPackResult = XGsonBuilder.instance().fromJson(s, type);
@@ -113,78 +113,87 @@ public class ActionAndroidPack extends BaseAction {
 	 * @throws Exception
 	 */
 	private String postFormData(String token, String appName, String o2ServerProtocol, String o2ServerHost,
-			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String  urlMapping, String appVersionName, String appBuildNo, String deleteHuawei,
-								String fileName, byte[] bytes) throws Exception {
+			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String urlMapping,
+			String appVersionName, String appBuildNo, String deleteHuawei, String fileName, byte[] bytes)
+			throws Exception {
 		logger.info("发起打包请求，form : " + token + " ," + appName + " ," + o2ServerProtocol + " ," + o2ServerHost + " ,"
-				+ o2ServerPort + " ," + o2ServerContext + " ," + isPackAppIdOuter + " ," + urlMapping +" ," + appVersionName +" ," + appBuildNo + " ," + deleteHuawei + " ," + fileName);
+				+ o2ServerPort + " ," + o2ServerContext + " ," + isPackAppIdOuter + " ," + urlMapping + " ,"
+				+ appVersionName + " ," + appBuildNo + " ," + deleteHuawei + " ," + fileName);
 		String boundary = "abcdefghijk";
 		String end = "\r\n";
 		String twoHyphens = "--";
 		String address = Config.collect().appPackServerApi(Collect.ADDRESS_APPPACK_SAVE);
 		logger.info("发起打包请求，url " + address);
 		URL url = new URL(address);
-		HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
-		httpUrlConnection.setUseCaches(false);
-		httpUrlConnection.setRequestMethod(ConnectionAction.METHOD_POST);
-		httpUrlConnection.setDoOutput(true);
-		httpUrlConnection.setDoInput(true);
-		// heads
-		Map<String, String> map = new HashMap<>();
-		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS,
-				ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
-				"x-requested-with, x-request, Content-Type, x-cipher, x-client, x-token, token");
-		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS, ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
-		map.put(ConnectionAction.CACHE_CONTROL, ConnectionAction.CACHE_CONTROL_VALUE);
-		map.put(ConnectionAction.CONTENT_TYPE, "multipart/form-data;boundary=" + boundary);
-		// 设置字符编码连接参数
-		map.put("Connection", "Keep-Alive");
-		map.put("Charset", "UTF-8");
-		map.put("token", token);
+		HttpURLConnection connection = null;
+		String result = "";
+		try {
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setUseCaches(false);
+			connection.setRequestMethod(ConnectionAction.METHOD_POST);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			// heads
+			Map<String, String> map = new HashMap<>();
+			map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS,
+					ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
+			map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
+					"x-requested-with, x-request, Content-Type, x-cipher, x-client, x-token, token");
+			map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS, ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+			map.put(ConnectionAction.CACHE_CONTROL, ConnectionAction.CACHE_CONTROL_VALUE);
+			map.put(ConnectionAction.CONTENT_TYPE, "multipart/form-data;boundary=" + boundary);
+			// 设置字符编码连接参数
+			map.put("Connection", "Keep-Alive");
+			map.put("Charset", "UTF-8");
+			map.put("token", token);
 
-		for (Map.Entry<String, String> en : map.entrySet()) {
-			if (StringUtils.isNotEmpty(en.getValue())) {
-				httpUrlConnection.setRequestProperty(en.getKey(), en.getValue());
+			for (Map.Entry<String, String> en : map.entrySet()) {
+				if (StringUtils.isNotEmpty(en.getValue())) {
+					connection.setRequestProperty(en.getKey(), en.getValue());
+				}
+			}
+			// form data
+			try (DataOutputStream ds = new DataOutputStream(connection.getOutputStream())) {
+				// properties
+				writeFormProperties("appName", appName, boundary, end, twoHyphens, ds);
+				writeFormProperties("o2ServerProtocol", o2ServerProtocol, boundary, end, twoHyphens, ds);
+				writeFormProperties("o2ServerHost", o2ServerHost, boundary, end, twoHyphens, ds);
+				writeFormProperties("o2ServerPort", o2ServerPort, boundary, end, twoHyphens, ds);
+				writeFormProperties("o2ServerContext", o2ServerContext, boundary, end, twoHyphens, ds);
+				writeFormProperties("isPackAppIdOuter", isPackAppIdOuter, boundary, end, twoHyphens, ds);
+				writeFormProperties("urlMapping", urlMapping, boundary, end, twoHyphens, ds);
+				writeFormProperties("appVersionName", appVersionName, boundary, end, twoHyphens, ds);
+				writeFormProperties("appBuildNo", appBuildNo, boundary, end, twoHyphens, ds);
+				writeFormProperties("deleteHuawei", deleteHuawei, boundary, end, twoHyphens, ds);
+				writeFormProperties("collectName", Config.collect().getName(), boundary, end, twoHyphens, ds);
+				// file
+				ds.writeBytes(twoHyphens + boundary + end);
+				ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\";filename=\""
+						+ URLEncoder.encode(fileName, DefaultCharset.name) + "\"" + end);
+				ds.writeBytes(end);
+				ds.write(bytes, 0, bytes.length);
+				ds.writeBytes(end);
+				ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
+				/* close streams */
+				ds.flush();
+			}
+
+			try (InputStream input = connection.getInputStream()) {
+				result = IOUtils.toString(input, StandardCharsets.UTF_8);
+			}
+			int code = connection.getResponseCode();
+			if (code != 200) {
+				throw new Exception("connection{url:" + connection.getURL() + "}, response error{responseCode:" + code
+						+ "}, response:" + result + ".");
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
 			}
 		}
-		// form data
-		try (DataOutputStream ds = new DataOutputStream(httpUrlConnection.getOutputStream())) {
-			// properties
-			writeFormProperties("appName", appName, boundary, end, twoHyphens, ds);
-			writeFormProperties("o2ServerProtocol", o2ServerProtocol, boundary, end, twoHyphens, ds);
-			writeFormProperties("o2ServerHost", o2ServerHost, boundary, end, twoHyphens, ds);
-			writeFormProperties("o2ServerPort", o2ServerPort, boundary, end, twoHyphens, ds);
-			writeFormProperties("o2ServerContext", o2ServerContext, boundary, end, twoHyphens, ds);
-			writeFormProperties("isPackAppIdOuter", isPackAppIdOuter, boundary, end, twoHyphens, ds);
-			writeFormProperties("urlMapping", urlMapping, boundary, end, twoHyphens, ds);
-			writeFormProperties("appVersionName", appVersionName, boundary, end, twoHyphens, ds);
-			writeFormProperties("appBuildNo", appBuildNo, boundary, end, twoHyphens, ds);
-			writeFormProperties("deleteHuawei", deleteHuawei, boundary, end, twoHyphens, ds);
-			writeFormProperties("collectName", Config.collect().getName(), boundary, end, twoHyphens, ds);
-			// file
-			ds.writeBytes(twoHyphens + boundary + end);
-			ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\";filename=\""
-					+ URLEncoder.encode(fileName, DefaultCharset.name) + "\"" + end);
-			ds.writeBytes(end);
-			ds.write(bytes, 0, bytes.length);
-			ds.writeBytes(end);
-			ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
-			/* close streams */
-			ds.flush();
-		}
-		String result = "";
-		try (InputStream input = httpUrlConnection.getInputStream()) {
-			result = IOUtils.toString(input, StandardCharsets.UTF_8);
-		}
-		int code = httpUrlConnection.getResponseCode();
-		if (code != 200) {
-			throw new Exception("connection{url:" + httpUrlConnection.getURL() + "}, response error{responseCode:"
-					+ code + "}, response:" + result + ".");
-		}
-		httpUrlConnection.disconnect();
-
 		logger.info("打包请求返回，result : " + result);
-
 		return result;
 	}
 

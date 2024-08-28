@@ -17,7 +17,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
     {
 	Implements: [Events],
 	Extends: MWF.APP$Module,
-	
+
 	_loadUserInterface: function(){
 		if (this.json.valueType == "text"){
 			this.node.set("text", this.json.text || "");
@@ -28,7 +28,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
 			    var value = this.form.Macro.exec(code, this);
 			    this._setNodeText(value);
 				//this.node.set("text", this.form.Macro.exec(code, this) || "");
-			} 
+			}
 		}
 		if (this.json.prefixIcon || this.json.suffixIcon){
             var text = this.node.get("text");
@@ -89,7 +89,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
                 this.node.set("text", v || "");
             }.bind(this), function(){});
         }else{
-            this.node.set("text", v || "");
+            this.node.set("text", text || "");
         }
         //this.node.set("text", text);
     }

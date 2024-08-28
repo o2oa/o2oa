@@ -94,6 +94,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 					aeiObjects.getWork().setSplitTokenValueMap(new LinkedHashMap<>());
 				}
 			}
+			// 不删除必然要继续流转,离开merge环节
 			results.add(aeiObjects.getWork());
 		}
 		return results;
