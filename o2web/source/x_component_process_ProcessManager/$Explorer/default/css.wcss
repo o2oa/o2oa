@@ -102,6 +102,16 @@
         "color": "#4a90e2",
         "border-bottom": "2px solid #4a90e2"
     },
+    "itemStyleSwitchNode":{
+        "float": "right",
+        "display": "flex"
+    },
+    "itemStyleSwitchItemNode":{
+        "padding": "5px",
+        "width":"16px",
+        "height": "16px",
+        "background-repeat": "no-repeat"
+    },
 	"searchElementButtonNode": {
 		"float": "right",
 		"width": "80px",

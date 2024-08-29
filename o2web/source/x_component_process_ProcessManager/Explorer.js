@@ -277,6 +277,23 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             this.isSetContentSize = false;
             this.reload();
         }.bind(this));
+
+        this.itemStyleSwitchNode = new Element("div", {
+            styles: this.css.itemStyleSwitchNode
+        }).inject(this.categoryElementNode);
+        ['line','card'].each(function(style){
+            var el = new Element("div", {
+                styles: this.css.itemStyleSwitchItemNode
+            }).inject(this.viewSwitchNode);
+            el.setStyle('background-image',"url('../x_component_process_ProcessManager/$Explorer/default/icon/"+style+".png')");
+            el.addEvent("click", function(e){
+                //this.switchItemStyle(style);
+            }.bind(this));
+        }.bind(this));
+
+    },
+    switchItemStyle: function(style){
+
     },
     showDeleteAction: function(){
         if (!this.deleteItemsAction){
