@@ -77,6 +77,7 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
         this.app.confirm("warn", e, this.app.lp.delete_building_title, info, 300, 120, function(){
             _self.remove();
             this.close();
+            _self.close();
         }, function(){
             this.close();
         });
@@ -159,6 +160,7 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
             "onPostSave" : save_callback
         } : {};
         var form = new MWF.xApplication.Meeting.BuildingForm(this,this.data, options, {app:this.app});
+        form.view = this.view;
         form.edit();
     },
     removeBuilding: function(e) {
