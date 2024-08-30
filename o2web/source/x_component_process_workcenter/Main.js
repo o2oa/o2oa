@@ -183,9 +183,10 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
-			if(data.completedList){
-				data.completedList[0].name = this.lp.completed;
-				data.completedList[1].name = this.lp.processing;
+			if (data.completedList) {
+				data.completedList.forEach(function (item) {
+					item.name = (item.name === "completed") ? this.lp.completed : this.lp.processing;
+				}.bind(this));
 			}
 			this.currentList.filterAttribute = data;
 			var filterCategoryList = ['review','myCreated'].contains(this.currentList.options.type) ? this.lp.filterCategoryListReview : this.lp.filterCategoryList;
