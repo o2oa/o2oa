@@ -183,6 +183,10 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
+			if(data.completedList){
+				data.completedList[0].name = this.lp.completed;
+				data.completedList[1].name = this.lp.processing;
+			}
 			this.currentList.filterAttribute = data;
 			var filterCategoryList = ['review','myCreated'].contains(this.currentList.options.type) ? this.lp.filterCategoryListReview : this.lp.filterCategoryList;
 			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList, filterCategoryList: filterCategoryList}, "module": this})
@@ -307,15 +311,15 @@ MWF.xApplication.process.workcenter.Main = new Class({
 
 			var map = {}, mapById = {};
 			data[0].each(function (d) {
-                if (d.processList && d.processList.length){
-                    var type = d.applicationCategory || "未分类";
-                    if( !map[type] )map[type] = [];
-                    map[type].push(d);
+				if (d.processList && d.processList.length){
+					var type = d.applicationCategory || "未分类";
+					if( !map[type] )map[type] = [];
+					map[type].push(d);
 
 					d.processList.each(function (process) {
 						mapById[ process.id ] = process;
 					});
-                }
+				}
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
@@ -619,7 +623,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
-                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
+				if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
@@ -905,7 +909,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
-            "taskId": data.id,
+			"taskId": data.id,
 			"onPostClose": function(){
 				if (this.refresh) this.refresh();
 			}.bind(this)
