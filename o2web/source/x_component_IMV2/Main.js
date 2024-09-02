@@ -206,7 +206,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		new Element("span", { "text": this.lp.settingsRevokeMsg}).inject(line2Node);
 
 		var line3Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
-		var revokeOutMinuteNode = new Element("input", {"type":"number", "value": this.imConfig.revokeOutMinute ?? 2, "name": "revokeEnable"}).inject(line3Node);
+		var revokeOutMinuteNode = new Element("input", {"type":"number", "value": this.imConfig.revokeOutMinute ?? 0, "name": "revokeEnable"}).inject(line3Node);
 		new Element("span", { "text": this.lp.settingsRevokeOutMinuteMsg}).inject(line3Node);
 
 		var dlg = o2.DL.open({
@@ -225,7 +225,7 @@ MWF.xApplication.IMV2.Main = new Class({
 						"action": function () { 
 							this.imConfig.enableClearMsg = isClearEnableNode.get("checked");
 							this.imConfig.enableRevokeMsg = isRevokeEnableNode.get("checked");
-							this.imConfig.revokeOutMinute = revokeOutMinuteNode.get("value") ?? 2;
+							this.imConfig.revokeOutMinute = revokeOutMinuteNode.get("value") ?? 0;
 							this.postIMConfig(this.imConfig);
 							// 保存配置文件
 							dlg.close(); 
@@ -1700,9 +1700,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		var list = []; // 菜单列表
 		
 		if (this.main.imConfig.enableRevokeMsg) { // 是否启用撤回消息
-			var revokeMinute = this.main.imConfig.revokeOutMinute ?? 2;
+			var revokeMinute = this.main.imConfig.revokeOutMinute ?? 0;
 			var createTime = o2.common.toDate(msg.createTime);
-			if (revokeMinute > 0 && (new Date().getTime() - createTime.getTime()) <  revokeMinute * 60 * 1000 ) {
+			if (revokeMinute <= 0 || ( revokeMinute > 0 && (new Date().getTime() - createTime.getTime()) <  revokeMinute * 60 * 1000) ) {
 				if (createPerson !== distinguishedName) {
 					// 判断是否群主
 					var isGroupAdmin = false;
