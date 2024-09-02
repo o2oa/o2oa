@@ -48,6 +48,7 @@ MWF.xApplication.IMV2.LP={
 	"msgShareError": "¡Fallo en compartir o reenviar mensaje!",
 	"settingsClearMsg": "¿Habilitar la función de eliminación de conversaciones?",
 	"settingsRevokeMsg": "¿Habilitar la función de revocación de mensajes?",
+	"settingsRevokeOutMinuteMsg": "撤回时效(分钟数)",
 	"enterMessage": "Ingrese el contenido del mensaje",
 	"send": "Enviar",
 	"sendKeyTips": "Ctrl + Enter para cambiar de línea",

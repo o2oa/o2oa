@@ -205,6 +205,10 @@ MWF.xApplication.IMV2.Main = new Class({
 		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableRevokeMsg || false, "name": "revokeEnable"}).inject(line2Node);
 		new Element("span", { "text": this.lp.settingsRevokeMsg}).inject(line2Node);
 
+		var line3Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
+		var revokeOutMinuteNode = new Element("input", {"type":"number", "value": this.imConfig.revokeOutMinute ?? 2, "name": "revokeEnable"}).inject(line3Node);
+		new Element("span", { "text": this.lp.settingsRevokeOutMinuteMsg}).inject(line3Node);
+
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
 				"mask": true,
@@ -221,6 +225,7 @@ MWF.xApplication.IMV2.Main = new Class({
 						"action": function () { 
 							this.imConfig.enableClearMsg = isClearEnableNode.get("checked");
 							this.imConfig.enableRevokeMsg = isRevokeEnableNode.get("checked");
+							this.imConfig.revokeOutMinute = revokeOutMinuteNode.get("value") ?? 2;
 							this.postIMConfig(this.imConfig);
 							// 保存配置文件
 							dlg.close(); 
@@ -1695,22 +1700,26 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		var list = []; // 菜单列表
 		
 		if (this.main.imConfig.enableRevokeMsg) { // 是否启用撤回消息
-			if (createPerson != distinguishedName) {
-				// 判断是否群主
-				var isGroupAdmin = false;
-				for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
-					var c = this.main.conversationNodeItemList[i];
-					if (this.conversationId == c.data.id) {
-						if (c.data.type === "group" && distinguishedName === c.data.adminPerson) {
-							isGroupAdmin = true;
+			var revokeMinute = this.main.imConfig.revokeOutMinute ?? 2;
+			var createTime = o2.common.toDate(msg.createTime);
+			if (revokeMinute > 0 && (new Date().getTime() - createTime.getTime()) <  revokeMinute * 60 * 1000 ) {
+				if (createPerson !== distinguishedName) {
+					// 判断是否群主
+					var isGroupAdmin = false;
+					for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
+						var c = this.main.conversationNodeItemList[i];
+						if (this.conversationId === c.data.id) {
+							if (c.data.type === "group" && distinguishedName === c.data.adminPerson) {
+								isGroupAdmin = true;
+							}
 						}
 					}
+					if (isGroupAdmin) {
+						list.push({"id":"revokeMemberMsg", "text": this.lp.msgMenuItemRevokeMemberMsg});
+					}
+				} else {
+					list.push({"id":"revokeMsg", "text": this.lp.msgMenuItemRevokeMsg});
 				}
-				if (isGroupAdmin) {
-					list.push({"id":"revokeMemberMsg", "text": this.lp.msgMenuItemRevokeMemberMsg});
-				}
-			} else {
-				list.push({"id":"revokeMsg", "text": this.lp.msgMenuItemRevokeMsg});
 			}
 		}
 		if (this.menuNode) {

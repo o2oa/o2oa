@@ -26,6 +26,7 @@ public class ActionImConfig extends BaseAction {
 		Wo wo = new Wo();
 		wo.setEnableClearMsg(false);
 		wo.setEnableRevokeMsg(false);
+		wo.setRevokeOutMinute(2); // 默认2分钟
 		for (Map.Entry<String, JsonElement> en : Config.web().entrySet()) {
 			if (en.getKey().equals(IM_CONFIG_KEY_NAME)) {
 				JsonElement je = en.getValue();
@@ -46,10 +47,21 @@ public class ActionImConfig extends BaseAction {
 		private Boolean enableClearMsg;
 		@FieldDescribe("是否开启撤回聊天消息的功能.")
 		private Boolean enableRevokeMsg;
+		@FieldDescribe("撤回时效（分钟数）")
+		private Integer revokeOutMinute;
 		@FieldDescribe("版本号.")
 		private int versionNo;
 		@FieldDescribe("更新内容.")
 		private String changelog;
+
+
+		public Integer getRevokeOutMinute() {
+			return revokeOutMinute;
+		}
+
+		public void setRevokeOutMinute(Integer revokeOutMinute) {
+			this.revokeOutMinute = revokeOutMinute;
+		}
 
 		public int getVersionNo() {
 			return versionNo;
