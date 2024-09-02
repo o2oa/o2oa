@@ -76,7 +76,8 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
         }.bind(this));
     },
     keyCopyItems: function(e){
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId){
+        var app = layout.desktop.currentApp || layout.desktop.app;
+        if (app && app.appId===this.appId){
             if (this.formConfigurator){
                 this.formConfigurator.keyCopy(e);
                 if (e) e.preventDefault();
@@ -96,7 +97,8 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
         }
     },
     keyPasteItems: function(e){
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+        var app = layout.desktop.currentApp || layout.desktop.app;
+        if (app && app.appId===this.appId) {
             if (this.formConfigurator) {
                 this.formConfigurator.keyPaste(e);
             }
