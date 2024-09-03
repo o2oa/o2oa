@@ -6,7 +6,8 @@ MWF.xApplication.process.ProcessManager.ScriptExplorer = new Class({
         "create": MWF.APPPM.LP.script.create,
         "search": MWF.APPPM.LP.script.search,
         "searchText": MWF.APPPM.LP.script.searchText,
-        "noElement": MWF.APPPM.LP.script.noScriptNoticeText
+        "noElement": MWF.APPPM.LP.script.noScriptNoticeText,
+        "name": 'process.ScriptExplorer'
     },
 
     keyCopy: function(e){
@@ -206,7 +207,6 @@ MWF.xApplication.process.ProcessManager.ScriptExplorer = new Class({
 
 MWF.xApplication.process.ProcessManager.ScriptExplorer.Script = new Class({
 	Extends: MWF.xApplication.process.ProcessManager.DictionaryExplorer.Dictionary,
-
     _customNodes: function(){
         if (!this.data.validated){
             new Element("div", {"styles": this.explorer.css.itemErrorNode}).inject(this.node);

@@ -9,14 +9,17 @@ MWF.xApplication.query.QueryManager.ImporterExplorer = new Class({
             "search": MWF.xApplication.query.QueryManager.LP.importer.search,
             "searchText": MWF.xApplication.query.QueryManager.LP.importer.searchText,
             "noElement": MWF.xApplication.query.QueryManager.LP.importer.noSelectNoticeText
-        }
+        },
+        "categoryEnable": true,
+        "itemStyle": "card",
+        "name": 'query.ImporterExplorer'
     },
     initialize: function(node, actions, options){
         this.setOptions(options);
         this.setTooltip();
 
         this.path = "../x_component_query_QueryManager/$Explorer/";
-        this.cssPath = "../x_component_query_QueryManager/$Explorer/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_process_ProcessManager/$Explorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

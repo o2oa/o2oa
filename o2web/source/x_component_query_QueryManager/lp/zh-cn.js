@@ -41,6 +41,14 @@ MWF.xApplication.query.QueryManager.LP = {
     "interfaceConfig": "界面导航配置",
     "moveUp": "上移",
 
+    "name": "名称",
+    "alias": "别名",
+    "sorkKeyNote": "-排序-",
+    "createTime": "创建时间",
+    "updateTime": "更新时间",
+    "asc": "正序",
+    "desc": "倒序",
+    "searchPlacholder": "输入名称/别名/id搜索",
 
     "select": {
         "create": "新建选择器",

@@ -6,7 +6,8 @@ MWF.xApplication.process.ProcessManager.ViewExplorer = new Class({
         "create": MWF.APPPM.LP.view.create,
         "search": MWF.APPPM.LP.view.search,
         "searchText": MWF.APPPM.LP.view.searchText,
-        "noElement": MWF.APPPM.LP.view.noNoticeText
+        "noElement": MWF.APPPM.LP.view.noNoticeText,
+        "name": 'process.ViewExplorer'
     },
 
     _createElement: function(e){

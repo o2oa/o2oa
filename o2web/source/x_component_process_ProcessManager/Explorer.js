@@ -12,7 +12,13 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             "search": MWF.APPPM.LP.process.search,
             "searchText": MWF.APPPM.LP.process.searchText,
             "noElement": MWF.APPPM.LP.process.noProcessNoticeText
-        }
+        },
+        "topEnable": true,
+        "categoryEnable": true,
+        "itemStyle": "card",
+        "sortKeys": ['name', 'alias', 'createTime', 'updateTime'],
+        "sortKey": '',
+        "name": 'process.processExplorer'
     },
 
     initialize: function(node, actions, options){
@@ -46,6 +52,11 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
     },
     reload: function(){
         if (this.app && this.app.content){
+            if( this.itemList && this.itemList.length ){
+                this.itemList.each(function (item){
+                    if(item.destroy)item.destroy();
+                });
+            }
             this.node.empty();
             this.isSetContentSize = false;
             this.load();
@@ -56,9 +67,27 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         this.loadContentNode();
 
         this.setNodeScroll();
-        this.loadElementList();
-    },
 
+        this.getUd( function (){
+            this.loadElementList();
+        }.bind(this));
+    },
+    getUd: function ( callback ){
+        MWF.UD.getDataJson(this.options.name, function (data){
+            if( data ){
+                this.options.itemStyle = data.itemStyle;
+                this.options.sortKey = data.sortKey;
+            }
+            callback();
+        }.bind(this));
+    },
+    setUd: function (){
+        var data = {
+            itemStyle: this.options.itemStyle,
+            sortKey: this.options.sortKey,
+        };
+        MWF.UD.putData(this.options.name, data);
+    },
 
     loadToolbar: function(){
         this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode});
@@ -209,14 +238,21 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             var height = nodeSize.y-toolbarSize.y-categorySize.y-pt-pb;
             this.elementContentNode.setStyle("height", ""+height+"px");
 
-            var count = (nodeSize.x/282).toInt();
-            var x = count*282;
-            var m = (nodeSize.x-x)/2-10;
+            if( this.options.itemStyle === 'card' ){
+                var count = (nodeSize.x/282).toInt();
+                var x = count*282;
+                var m = (nodeSize.x-x)/2-10;
 
-            this.elementContentListNode.setStyles({
-                "width": ""+x+"px",
-                "margin-left": "" + m + "px"
-            });
+                this.elementContentListNode.setStyles({
+                    "width": ""+x+"px",
+                    "margin-left": "" + m + "px"
+                });
+            }else{
+                this.elementContentListNode.setStyles({
+                    "margin-right": "10px"
+                });
+            }
+
         }
     },
     setNodeScroll: function(){
@@ -229,13 +265,17 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
     },
 
     loadElementList: function(){
+        this.itemList = [];
         this._loadItemDataList(function(json){
             if (json.data.length){
+                this.checkSort(json.data);
                 json.data.each(function(item){
                     if (this.categoryList.indexOf(item.category) === -1) if (item.category) this.categoryList.push(item.category);
                     if (!this.elementCategory || (item.category === this.elementCategory)){
                         var itemObj = this._getItemObject(item);
                         itemObj.load();
+                        this.checkShow(itemObj);
+                        this.itemList.push(itemObj);
                     }
 
                 }.bind(this));
@@ -248,12 +288,48 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
                     this._createElement(e);
                 }.bind(this));
             }
-            this.loadCategoryList();
+            if(this.options.topEnable)this.loadTopNode();
             if( !this.isSetContentSize ){
                 this.setContentSize();
                 this.isSetContentSize = true;
             }
         }.bind(this));
+    },
+    checkSort: function (data){
+        if( !!this.options.sortKey ){
+            var sortKey = this.options.sortKey.split("-");
+            var key = sortKey[0], isDesc = sortKey[1] === 'desc';
+            data.sort(function (a, b){
+                var av = a[key];
+                var bv = b[key];
+                if( typeOf(av) === 'string' && typeOf(bv) === 'string' ){
+                    var isLetterA = /^[a-zA-Z0-9]/.test(av);
+                    var isLetterB = /^[a-zA-Z0-9]/.test(bv);
+
+                    if (isLetterA && !isLetterB) return isDesc ? 1 : -1; // a是字母，b不是，a排在前面
+                    if (!isLetterA && isLetterB) return isDesc ? -1 : 1;  // a不是字母，b是，b排在前面
+
+                    return isDesc ?  bv.localeCompare(av) : av.localeCompare(bv);
+                }
+                return isDesc ? (bv - av) : (av - bv);
+            }.bind(this));
+        }
+    },
+    checkShow: function (i){
+        if( this.options.searchKey ){
+            var v = this.options.searchKey;
+            if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                //i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }
+    },
+    loadTopNode: function (){
+        if(this.options.categoryEnable)this.loadCategoryList();
+        this.createItemStyleNode();
+        this.createSortNode();
+        this.createSearchNode();
     },
     loadCategoryList: function(){
         this.categoryElementNode.empty();
@@ -277,22 +353,106 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             this.isSetContentSize = false;
             this.reload();
         }.bind(this));
-
-        this.itemStyleSwitchNode = new Element("div", {
+    },
+    createItemStyleNode: function (){
+        this.itemStyleSwitchNode = new Element("div.itemStyleSwitchNode", {
             styles: this.css.itemStyleSwitchNode
         }).inject(this.categoryElementNode);
         ['line','card'].each(function(style){
             var el = new Element("div", {
                 styles: this.css.itemStyleSwitchItemNode
-            }).inject(this.viewSwitchNode);
+            }).inject(this.itemStyleSwitchNode);
             el.setStyle('background-image',"url('../x_component_process_ProcessManager/$Explorer/default/icon/"+style+".png')");
+            el.store("sty", style);
             el.addEvent("click", function(e){
-                //this.switchItemStyle(style);
+                this.switchItemStyle(el, style);
             }.bind(this));
+            if( style === this.options.itemStyle )el.click();
+        }.bind(this));
+    },
+    createSortNode: function(){
+        this.itemSortArea = new Element("div.itemStyleSwitchNode", {
+            styles: this.css.itemSortArea
+        }).inject(this.categoryElementNode);
+        this.itemSortSelect = new Element('select.itemSortSelect', {
+            styles: this.css.itemSortSelect,
+            events: {
+                change: function(){
+                    this.options.sortKey = this.itemSortSelect[ this.itemSortSelect.selectedIndex ].value;
+                    this.setUd();
+                    this.reload();
+                }.bind(this)
+            }
+        }).inject(this.itemSortArea);
+        new Element('option',{ 'text': this.app.lp.sorkKeyNote, 'value': "" }).inject(this.itemSortSelect);
+        this.options.sortKeys.each(function (key){
+            var opt = new Element('option',{ 'text': this.app.lp[key] + " " + this.app.lp.asc, 'value': key+"-asc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+            opt = new Element('option',{ 'text': this.app.lp[key] + " " + this.app.lp.desc, 'value': key+"-desc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+        }.bind(this));
+    },
+    createSearchNode: function (){
+        this.searchNode = new Element("div.searchNode", {
+            "styles": this.css.searchArea
+        }).inject(this.categoryElementNode);
+
+        this.searchInput = new Element("input.searchInput", {
+            "styles": this.css.searchInput,
+            "placeholder": this.app.lp.searchPlacholder,
+            "value": this.options.searchKey || ""
+        }).inject(this.searchNode);
+
+        this.searchButton = new Element("i", {
+            "styles": this.css.searchButton
+        }).inject(this.searchNode);
+
+        this.searchCancelButton = new Element("i", {
+            "styles": this.css.searchCancelButton
+        }).inject(this.searchNode);
+
+        this.searchInput.addEvents({
+            focus: function(){
+                this.searchNode.addClass("mainColor_border");
+                this.searchButton.addClass("mainColor_color");
+            }.bind(this),
+            blur: function () {
+                this.searchNode.removeClass("mainColor_border");
+                this.searchButton.removeClass("mainColor_color");
+            }.bind(this),
+            keydown: function (e) {
+                if( (e.keyCode || e.code) === 13 ){
+                    this.search();
+                }
+            }.bind(this),
+            keyup: function (e){
+                this.searchCancelButton.setStyle('display', this.searchInput.get('value') ? '' : 'none');
+            }.bind(this)
+        });
+
+        this.searchCancelButton.addEvent("click", function (e) {
+            this.searchInput.set("value", "");
+            this.searchCancelButton.hide();
+            this.search();
         }.bind(this));
 
+        this.searchButton.addEvent("click", function (e) {
+            this.search();
+        }.bind(this));
     },
-    switchItemStyle: function(style){
+    switchItemStyle: function(el){
+        if( this.currentItemStyleSwitchItemNode ){
+            var cur = this.currentItemStyleSwitchItemNode;
+            cur.setStyle('background-image',"url('../x_component_process_ProcessManager/$Explorer/default/icon/"+cur.retrieve('sty')+".png')");
+        }
+        this.currentItemStyleSwitchItemNode = el;
+        el.setStyle('background-image',"url('../x_component_process_ProcessManager/$Explorer/default/icon/"+el.retrieve('sty')+"_active.png')");
+
+        if( el.retrieve('sty') !== this.options.itemStyle ){
+            this.options.itemStyle = el.retrieve('sty');
+            this.setUd();
+            this.reload();
+        }
 
     },
     showDeleteAction: function(){
@@ -319,6 +479,19 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             }.bind(this));
         }
     },
+    search: function (){
+       var v = this.searchInput.get("value");
+       this.options.searchKey = v;
+        this.itemList.each(function (i){
+            if( !v ){
+                i.node.setStyle("display", "");
+            }else if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }.bind(this));
+    },
     hideDeleteAction: function(){
         if (this.deleteItemsAction) this.deleteItemsAction.destroy();
         delete this.deleteItemsAction;
@@ -334,6 +507,11 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         return MWF.xApplication.process.ProcessManager.Explorer.Item(this, item)
     },
     destroy: function(){
+        if( this.itemList && this.itemList.length ){
+            this.itemList.each(function (item){
+                if(item.destroy)item.destroy();
+            });
+        }
         this.node.destroy();
         o2.release(this);
     }
@@ -354,12 +532,17 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
         this.createIconNode();
         //this.createDeleteNode();
         this.createActionNode();
-        this.createTextNodes();
+        this.explorer.options.itemStyle === 'line' ? this.createTextNodes_line() : this.createTextNodes();
         this._isNew();
+        this.createInforNode();
+    },
+    destroy: function (){
+        if( this.tooltip )this.tooltip.destroy();
+        this.node.destroy();
     },
     createNode: function(){
         this.node = new Element("div", {
-            "styles": this.css.itemNode,
+            "styles": this.explorer.options.itemStyle === 'line' ? this.css.itemNode_line : this.css.itemNode,
             "events": {
                 "mouseover": function(){
                     this.deleteActionNode.fade("in");
@@ -378,7 +561,7 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
         var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
 
         var itemIconNode = new Element("div", {
-            "styles": this.css.itemIconNode
+            "styles": this.explorer.options.itemStyle === 'line' ? this.css.itemIconNode_line : this.css.itemIconNode
         }).inject(this.node);
         itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
 
@@ -413,7 +596,7 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
     },
     unSelected: function(){
         this.isSelected = false;
-        this.node.setStyles(this.css.itemNode);
+        this.node.setStyles(this.explorer.options.itemStyle === 'line' ? this.css.itemNode_line : this.css.itemNode);
         this.explorer.selectMarkItems.erase(this);
     },
     createActionNode: function(){
@@ -460,6 +643,39 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
             "styles": this.css.itemTextDateNode,
             "text": (this.data.updateTime || "")
         }).inject(this.node);
+    },
+    createTextNodes_line: function(){
+        var inforNode = new Element("div", {
+            "styles": this.explorer.css.itemInforNode_line
+        }).inject(this.node);
+        var inforBaseNode = new Element("div", {
+            "styles": this.explorer.css.itemInforBaseNode_line
+        }).inject(inforNode);
+
+        new Element("div", {
+            "styles": this.explorer.css.itemTextTitleNode_line,
+            "text": this.data.name,
+            "title": this.data.name,
+            "events": {
+                "click": function(e){this._open(e);e.stopPropagation();}.bind(this)
+            }
+        }).inject(inforBaseNode);
+
+        new Element("div", {
+            "styles": this.explorer.css.itemTextAliasNode_line,
+            "text": this.data.alias,
+            "title": this.data.alias
+        }).inject(inforBaseNode);
+        new Element("div", {
+            "styles": this.explorer.css.itemTextDateNode_line,
+            "text": (this.data.updateTime || "")
+        }).inject(inforBaseNode);
+
+        new Element("div", {
+            "styles": this.explorer.css.itemTextDescriptionNode_line,
+            "text": this.data.description || "",
+            "title": this.data.description || ""
+        }).inject(inforNode);
     },
     saveas: function(){
         MWF.xDesktop.requireApp("Selector", "package", function(){
@@ -542,7 +758,7 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
             var currentDate = new Date();
             if (createDate.diff(currentDate, "hour")<12) {
                 this.newNode = new Element("div", {
-                    "styles": this.css.itemNewNode
+                    "styles": this.explorer.options.itemStyle === 'line' ? this.css.itemNewNode_line : this.css.itemNewNode
                 }).inject(this.node);
                 this.newNode.addEvent("click", function(e){
                     this.toggleSelected();
@@ -550,5 +766,58 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
                 }.bind(this));
             }
         }
+    },
+    createInforNode: function(callback){
+        var lp = this.explorer.app.lp;
+        this.inforNode = new Element("div");
+        var wrapNode = new Element("div", {
+            style: 'display: grid; grid-template-columns: 60px auto; line-height:20px;'
+        }).inject(this.inforNode);
+        var html = "<div style='grid-column: 1 / -1; font-weight: bold'>"+this.data.name+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.alias+": </div><div style='margin-left:10px'>"+( this.data.alias || "" )+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.createTime+": </div><div style='margin-left:10px'>"+(this.data.createTime || "")+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.updateTime+": </div><div style='float:left; margin-left:10px'>"+(this.data.updateTime||"")+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.description+": </div><div style='float:left; margin-left:10px'>"+(this.data.description||"")+"</div>";
+        wrapNode.set("html", html);
+
+        this.tooltip = new MWF.xApplication.process.ProcessManager.Explorer.Item.Tooltip(this.explorer.app.content, this.node, this.explorer.app, {}, {
+            axis : "y",
+            hiddenDelay : 300,
+            displayDelay : 200
+        });
+        this.tooltip.inforNode = this.inforNode;
+    },
+});
+
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xApplication.process.ProcessManager.Explorer.Item.Tooltip = new Class({
+    Extends: MTooltips,
+    options:{
+        nodeStyles: {
+            "font-size" : "12px",
+            "position" : "absolute",
+            "max-width" : "500px",
+            "min-width" : "180px",
+            "z-index" : "1001",
+            "background-color" : "#fff",
+            "padding" : "10px",
+            "border-radius" : "8px",
+            "box-shadow": "0 0 12px 0 #999999",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text"
+        },
+        isFitToContainer : true,
+        overflow : "scroll"
+    },
+    _loadCustom : function( callback ){
+        if(callback)callback();
+    },
+    _customNode : function( node, contentNode ){
+        this.inforNode.inject(contentNode);
+        if( this.inforNode.getSize().y > 300 ){
+            this.inforNode.setStyle("padding-bottom", "15px");
+        }
+        this.fireEvent("customContent", [contentNode, node]);
     }
 });
+

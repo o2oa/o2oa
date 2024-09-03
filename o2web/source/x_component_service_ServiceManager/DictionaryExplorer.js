@@ -9,7 +9,10 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer = new Class({
         "create": MWF.xApplication.service.ServiceManager.LP.dictionary.create,
         "search": MWF.xApplication.service.ServiceManager.LP.dictionary.search,
         "searchText": MWF.xApplication.service.ServiceManager.LP.dictionary.searchText,
-        "noElement": MWF.xApplication.service.ServiceManager.LP.dictionary.noDictionaryNoticeText
+        "noElement": MWF.xApplication.service.ServiceManager.LP.dictionary.noDictionaryNoticeText,
+        "categoryEnable": false,
+        "itemStyle": "line",
+        "name": "service.DictionaryExplorer"
     },
     openFindDesigner: function(){
         var options = {
@@ -48,12 +51,16 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer = new Class({
         this.app.desktop.openApplication(e, "service.DictionaryDesigner", options);
     },
     loadElementList: function(){
+        this.itemList = [];
         if( MWF.AC.isServiceManager() ){
             this._loadItemDataList(function(json){
                 if (json.data.length){
+                    this.checkSort(json.data);
                     json.data.each(function(item){
                         var itemObj = this._getItemObject(item);
-                        itemObj.load()
+                        itemObj.load();
+                        this.checkShow(itemObj);
+                        this.itemList.push(itemObj);
                     }.bind(this));
                 }else{
                     var noElementNode = new Element("div.noElementNode", {
@@ -64,6 +71,7 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer = new Class({
                         this._createElement(e);
                     }.bind(this));
                 }
+                this.loadTopNode();
                 if( !this.isSetContentSize ){
                     this.setContentSize();
                     this.isSetContentSize = true;
