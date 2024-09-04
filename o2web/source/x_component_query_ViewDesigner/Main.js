@@ -20,7 +20,10 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
         },
 		"actions": null,
 		"category": null,
-		"processData": null
+		"processData": null,
+
+        "sortKeys": ['name', 'alias', 'createTime', 'updateTime'],
+        "sortKey": ''
 	},
 	onQueryLoad: function(){
         this.shortcut = true;
@@ -244,13 +247,119 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             "text": MWF.APPDVD.LP.view
         }).inject(this.viewListNode);
 
+
         this.viewListResizeNode = new Element("div", {"styles": this.css.viewListResizeNode}).inject(this.viewListNode);
+
+        this.createListTitleNodes();
+
         this.viewListAreaSccrollNode = new Element("div", {"styles": this.css.viewListAreaSccrollNode}).inject(this.viewListNode);
         this.viewListAreaNode = new Element("div", {"styles": this.css.viewListAreaNode}).inject(this.viewListAreaSccrollNode);
 
         this.loadViewListResize();
 
         this.loadViewList();
+    },
+    createListTitleNodes: function (){
+        this.viewListTitleNode.setStyle("display", 'flex');
+
+        this.titleActionArea = new Element("div", {
+            styles: this.css.titleActionArea
+        }).inject(this.viewListTitleNode);
+
+        this.appAction = new Element("div", {
+            styles: this.css.appAction,
+            title: this.lp.gotoApp
+        }).inject(this.titleActionArea);
+
+        this.addAction = new Element("div", {
+            styles: this.css.addAction,
+            title: this.lp.create
+        }).inject(this.titleActionArea);
+
+        this.moreAction = new Element("div", {
+            styles: this.css.moreAction,
+            title: this.lp.searchAndSort
+        }).inject(this.titleActionArea);
+        this.moreAction.addEvent("click", function(){
+            this.toolbarNode.setStyle("display", this.toolbarNode.getStyle("display") === "none" ? "" : "none" );
+        }.bind(this));
+
+        this.toolbarNode =  new Element("div", {
+            styles: this.css.toolbarNode
+        }).inject(this.viewListNode);
+
+        this.createSortNode();
+        this.createSearchNode();
+    },
+    createSortNode: function(){
+        this.itemSortArea = new Element("div.itemSortArea", {
+            styles: this.css.itemSortArea
+        }).inject(this.toolbarNode);
+        this.itemSortSelect = new Element('select.itemSortSelect', {
+            styles: this.css.itemSortSelect,
+            events: {
+                change: function(){
+                    this.options.sortKey = this.itemSortSelect[ this.itemSortSelect.selectedIndex ].value;
+                    this.setUd();
+                    this.reload();
+                }.bind(this)
+            }
+        }).inject(this.itemSortArea);
+        new Element('option',{ 'text': this.lp.sorkKeyNote, 'value': "" }).inject(this.itemSortSelect);
+        this.options.sortKeys.each(function (key){
+            var opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.asc, 'value': key+"-asc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+            opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.desc, 'value': key+"-desc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+        }.bind(this));
+    },
+    createSearchNode: function (){
+        this.searchNode = new Element("div.searchNode", {
+            "styles": this.css.searchArea
+        }).inject(this.toolbarNode);
+
+        this.searchInput = new Element("input.searchInput", {
+            "styles": this.css.searchInput,
+            "placeholder": this.lp.searchPlacholder,
+            "value": this.options.searchKey || ""
+        }).inject(this.searchNode);
+
+        this.searchButton = new Element("i", {
+            "styles": this.css.searchButton
+        }).inject(this.searchNode);
+
+        this.searchCancelButton = new Element("i", {
+            "styles": this.css.searchCancelButton
+        }).inject(this.searchNode);
+
+        this.searchInput.addEvents({
+            focus: function(){
+                this.searchNode.addClass("mainColor_border");
+                this.searchButton.addClass("mainColor_color");
+            }.bind(this),
+            blur: function () {
+                this.searchNode.removeClass("mainColor_border");
+                this.searchButton.removeClass("mainColor_color");
+            }.bind(this),
+            keydown: function (e) {
+                if( (e.keyCode || e.code) === 13 ){
+                    this.search();
+                }
+            }.bind(this),
+            keyup: function (e){
+                this.searchCancelButton.setStyle('display', this.searchInput.get('value') ? '' : 'none');
+            }.bind(this)
+        });
+
+        this.searchCancelButton.addEvent("click", function (e) {
+            this.searchInput.set("value", "");
+            this.searchCancelButton.hide();
+            this.search();
+        }.bind(this));
+
+        this.searchButton.addEvent("click", function (e) {
+            this.search();
+        }.bind(this));
     },
 
     loadViewListResize: function(){
@@ -274,7 +383,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 
                 var width = initialWidth+dx;
                 if (width> bodySize.x/2) width =  bodySize.x/2;
-                if (width<40) width = 40;
+                if (width<90) width = 90;
                 this.contentNode.setStyle("margin-left", width+1);
                 this.viewListNode.setStyle("width", width);
                 //this.tab.pages.each(function(page){

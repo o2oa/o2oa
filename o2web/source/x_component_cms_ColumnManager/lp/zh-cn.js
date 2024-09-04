@@ -39,6 +39,13 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "templateCategory": "模板分类：",
     "all": "全部",
 
+    "sorkKeyNote": "-排序-",
+    "createTime": "创建时间",
+    "updateTime": "更新时间",
+    "asc": "正序",
+    "desc": "倒序",
+    "searchPlacholder": "输入名称/别名/id搜索",
+
     "formType": {
         "empty": "空白表单",
         "publishEdit": "发布类编辑表单",

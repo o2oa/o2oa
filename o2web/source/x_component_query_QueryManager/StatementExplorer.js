@@ -235,7 +235,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
         var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
 
         var itemIconNode = new Element("div", {
-            "styles": this.css.itemIconNode
+            "styles": this.explorer.options.itemStyle === 'line' ? this.css.itemIconNode_line : this.css.itemIconNode
         }).inject(this.node);
         itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
 
