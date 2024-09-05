@@ -170,28 +170,12 @@
           "flex": "1",
            "justify-content": "flex-end"
     },
-    "addAction":{
-        "margin-right": "10px",
-        "width": "20px",
-         "height": "20px",
-        "cursor": "pointer",
-        "background": "url(../x_component_query_ViewDesigner/$Main/default/toolbar/add.png) no-repeat center center",
-        "background-size": "12px 12px"
-    },
     "moreAction":{
          "margin-right": "10px",
          "width": "20px",
          "height": "20px",
          "cursor": "pointer",
          "background": "url(../x_component_query_ViewDesigner/$Main/default/toolbar/more.png) no-repeat center center",
-         "background-size": "12px 12px"
-     },
-    "appAction":{
-         "margin-right": "10px",
-         "width": "20px",
-         "height": "20px",
-         "cursor": "pointer",
-         "background": "url(../x_component_query_ViewDesigner/$Main/default/toolbar/app.png) no-repeat center center",
          "background-size": "12px 12px"
      },
      "toolbarNode":{

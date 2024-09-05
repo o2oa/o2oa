@@ -73,7 +73,8 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         }.bind(this));
     },
     getUd: function ( callback ){
-        MWF.UD.getDataJson(this.options.name, function (data){
+        var id = (this.app.options && this.app.options.application) ? this.app.options.application.id : "";
+        MWF.UD.getDataJson(this.options.name + "_" + id, function (data){
             if( data ){
                 this.options.itemStyle = data.itemStyle;
                 this.options.sortKey = data.sortKey;
@@ -86,7 +87,8 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             itemStyle: this.options.itemStyle,
             sortKey: this.options.sortKey,
         };
-        MWF.UD.putData(this.options.name, data);
+        var id = (this.app.options && this.app.options.application) ? this.app.options.application.id : "";
+        MWF.UD.putData(this.options.name+ "_" + id, data);
     },
 
     loadToolbar: function(){

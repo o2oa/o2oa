@@ -73,7 +73,7 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
         }.bind(this));
     },
     getUd: function ( callback ){
-        MWF.UD.getDataJson(this.options.name, function (data){
+        MWF.UD.getDataJson(this.options.name+ "_" + this.app.options.column.id, function (data){
             if( data ){
                 this.options.itemStyle = data.itemStyle;
                 this.options.sortKey = data.sortKey;
@@ -86,7 +86,7 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
             itemStyle: this.options.itemStyle,
             sortKey: this.options.sortKey,
         };
-        MWF.UD.putData(this.options.name, data);
+        MWF.UD.putData(this.options.name+ "_" + this.app.options.column.id, data);
     },
     loadToolbar: function(){
         this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode});

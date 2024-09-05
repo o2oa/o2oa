@@ -28,9 +28,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
     "asc": "正序",
     "desc": "倒序",
     "searchPlacholder": "输入名称/别名/id搜索",
-    "create": "新建",
     "searchAndSort": "排序和搜索",
-    "gotoApp": "打开应用",
 
     "action": {
         "move": "移动",
@@ -374,6 +372,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "saveAs": "另存为",
         "autoSave": "自动保存",
         "preview": "预览",
-        "help": "帮助"
+        "help": "帮助",
+        "add": "新建",
+        "gotoApp": "打开所在应用"
     }
 };

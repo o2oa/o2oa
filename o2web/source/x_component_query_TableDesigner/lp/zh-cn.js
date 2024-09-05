@@ -128,6 +128,16 @@ MWF.xApplication.query.TableDesigner.LP = {
         "tableImplode":"数据导入",
         "tableExcelExplode":"Excel导出",
         "tableExcelImplode":"Excel导入",
-        "tableClear":"清空表数据"
-    }
+        "tableClear":"清空表数据",
+        "add": "新建",
+        "gotoApp": "打开所在应用"
+    },
+
+    "sorkKeyNote": "-排序-",
+    "createTime": "创建时间",
+    "updateTime": "更新时间",
+    "asc": "正序",
+    "desc": "倒序",
+    "searchPlacholder": "输入名称/别名/id搜索",
+    "searchAndSort": "排序和搜索"
 };
