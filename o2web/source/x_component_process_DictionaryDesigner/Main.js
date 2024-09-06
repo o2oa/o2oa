@@ -355,6 +355,7 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
         });
     },
     createElement: function(){
+        debugger;
         var flag = true;
         this.itemArray.each(function(i){
             if( !i.data.id ){
@@ -517,11 +518,13 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
             this.options.id = d.id;
         }
         if( this.itemArray && this.itemArray.length  ){
-            this.itemArray.each(function(i){
+            this.itemArray = this.itemArray.filter(function(i){
                 if(i.data.id)i.node.destroy();
+                return !i.data.id;
             });
+        }else{
+            this.itemArray = [];
         }
-        this.itemArray = [];
         this.actions.listDictionary(this.application.id || this.application, function (json) {
             this.checkSort(json.data);
             json.data.each(function(dictionary){
@@ -917,6 +920,7 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
                             dictionary.load();
                         }.bind(this), true);
                     }.bind(this));
+                    this.status.openDictionarys = [];
                 }
             }
 		}.bind(this));

@@ -13,6 +13,11 @@
 <!--	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="帮助" MWFButtonAction="invokeHelp" MWFButtonText="" id="MWFInvokeAutoCode"></span>-->
 
     <span MWFnodetype="MWFToolBarSeparator"></span>
+
+    <span MWFnodetype="MWFToolBarButton" MWFButtonImage="add.png" title="{{$.lp.add}}" MWFButtonAction="createElement" MWFButtonText=""></span>
+    <span MWFnodetype="MWFToolBarButton" MWFButtonImage="app.png" title="{{$.lp.gotoApp}}" MWFButtonAction="openApp" MWFButtonText=""></span>
+
+    <span MWFnodetype="MWFToolBarSeparator"></span>
     <input type="checkbox" value="autoSave" id="MWFInvokeAutoSaveCheck">{{$.lp.autoSave}}
 
     <div style="float: right; margin-right: 20px">{{$.lp.fontSize}}：<select MWFnodetype="fontSize">

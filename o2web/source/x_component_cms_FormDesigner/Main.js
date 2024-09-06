@@ -1846,6 +1846,14 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             }
 
         }.bind(this));
+    },
+    openApp: function (){
+        layout.openApplication(null, 'cms.ColumnManager', {
+            column: this.application,
+            appId: 'cms.ColumnManager'+this.application.id
+        }, {
+            "navi": "formConfig"
+        });
     }
 });
 
@@ -2037,5 +2045,5 @@ MWF.xApplication.cms.FormDesigner.ToolsGroup = new Class({
                 if (callback) callback();
             }.bind(this));
         }
-    },
+    }
 });
