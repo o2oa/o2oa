@@ -177,7 +177,10 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 return;
             }
         });
-        if( !flag )return;
+        if( !flag ){
+            this.notice(this.lp.duplicateNewNote, 'info');
+            return;
+        }
         if( this.currentListInvokeItem ){
             this.currentListInvokeItem.setStyles(this.css.listInvokeItem);
         }

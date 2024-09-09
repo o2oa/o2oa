@@ -363,7 +363,10 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
                 return;
             }
         });
-        if( !flag )return;
+        if( !flag ){
+            this.notice(this.lp.duplicateNewNote, 'info');
+            return;
+        }
         if( this.currentListDictionaryItem ){
             this.currentListDictionaryItem.setStyles(this.css.listDictionaryItem);
         }

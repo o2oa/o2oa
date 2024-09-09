@@ -177,7 +177,10 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
                 return;
             }
         });
-        if( !flag )return;
+        if( !flag ){
+            this.notice(this.lp.duplicateNewNote, 'info');
+            return;
+        }
         if( this.currentListAgentItem ){
             this.currentListAgentItem.setStyles(this.css.listAgentItem);
         }

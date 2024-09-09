@@ -190,7 +190,6 @@ MWF.xApplication.portal.ScriptDesigner.Main = new Class({
         });
     },
     createElement: function(){
-        debugger;
         var flag = true;
         this.itemArray.each(function(i){
             if( i.data.isNewScript ){
@@ -198,7 +197,10 @@ MWF.xApplication.portal.ScriptDesigner.Main = new Class({
                 return;
             }
         });
-        if( !flag )return;
+        if( !flag ){
+            this.notice(this.lp.duplicateNewNote, 'info');
+            return;
+        }
         if( this.currentListScriptItem ){
             this.currentListScriptItem.setStyles(this.css.listScriptItem);
         }

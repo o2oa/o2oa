@@ -54,5 +54,6 @@ MWF.xApplication.portal.ScriptDesigner.LP = {
         "asc": "正序",
         "desc": "倒序",
         "searchPlacholder": "输入名称/别名/id搜索",
-        "searchAndSort": "排序和搜索"
+        "searchAndSort": "排序和搜索",
+        "duplicateNewNote": "已有新脚本，请先保存"
 };

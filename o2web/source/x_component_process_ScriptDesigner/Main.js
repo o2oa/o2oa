@@ -199,7 +199,10 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
                 return;
             }
         });
-        if( !flag )return;
+        if( !flag ){
+            this.notice(this.lp.duplicateNewNote, 'info');
+            return;
+        }
         if( this.currentListScriptItem ){
             this.currentListScriptItem.setStyles(this.css.listScriptItem);
         }
