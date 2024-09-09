@@ -137,10 +137,11 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
             methods["$loadElEvent_"+k.camelCase()] = function(){
                 var flag = true;
                 if (k==="change"){
-                    if(this.json.inputType === "number" && this.json.resultType === "number" ){
-                        debugger;
-                        if( parseFloat(arguments[0]).toString() !== "NaN" ){
-                            this.json[this.json.$id] = parseFloat(arguments[0]);
+                    if(this.json.inputType === "number"  ){
+                        if( this.json.resultType === "number" ){
+                            if( parseFloat(arguments[0]).toString() !== "NaN" ){
+                                this.json[this.json.$id] = parseFloat(arguments[0]);
+                            }
                         }
                         var value = this.getMin( this.getMax( this.json[this.json.$id] ) );
                         if( value !== this.json[this.json.$id] ){
@@ -182,11 +183,21 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (value || value===0 || value===false){
-            return value;
+        if( this.json.inputType === "number" ){
+            if (value || value===0 ){
+                return this.json.resultType === "string" ? value.toString() : value;
+            }else{
+                value = this._computeValue();
+                value = (o2.typeOf(value)!=="null") ? value : "";
+                return this.json.resultType === "string" ? value.toString() : value;
+            }
         }else{
-            value = this._computeValue();
-            return (o2.typeOf(value)!=="null") ? value : "";
+            if (value || value===0 || value === false){
+                return value;
+            }else{
+                value = this._computeValue();
+                return (o2.typeOf(value)!=="null") ? value : "";
+            }
         }
     }
 }); 

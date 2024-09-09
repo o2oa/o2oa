@@ -63,8 +63,8 @@
 			<tr id="text{$.pid}resultType" style="display: text{($.inputType==='number')?'':'none'}">
 				<td class="editTableTitle">{{$.lp.resultType}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="resultType" value="string" text{($.resultType!=='number')?'checked':''}/>{{$.lp.text}}
-					<input type="radio" name="resultType" value="number" text{($.resultType==='number')?'checked':''}/>{{$.lp.number}}
+					<input type="radio" name="resultType" value="string" text{($.resultType==='string')?'checked':''}/>{{$.lp.text}}
+					<input type="radio" name="resultType" value="number" text{($.resultType!=='string')?'checked':''}/>{{$.lp.number}}
 				</td>
 			</tr>
 			<tr id="text{$.pid}maxLength" style="display: text{($.inputType==='number')?'none':''}">
