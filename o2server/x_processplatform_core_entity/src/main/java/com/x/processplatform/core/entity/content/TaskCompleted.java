@@ -44,7 +44,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 没有多值字段
- * 
+ *
  * @author zhour
  *
  */
@@ -243,6 +243,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.setForm(work.getForm());
 		this.expireTime = null;
 		this.expired = false;
 		this.routeName = route.getName();
@@ -283,6 +284,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.setForm(work.getForm());
 		this.expireTime = null;
 		this.expired = false;
 		this.routeName = "";
@@ -463,6 +465,22 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public void setAct(String act) {
 		this.getProperties().setAct(act);
 		this.act = act;
+	}
+
+	@Transient
+	@FieldDescribe("使用表单")
+	private String form;
+
+	public String getForm() {
+		if ((null != this.properties) && (null == this.form)) {
+			this.form = this.properties.getForm();
+		}
+		return form;
+	}
+
+	public void setForm(String form) {
+		this.getProperties().setForm(form);
+		this.form = form;
 	}
 
 	public TaskCompletedProperties getProperties() {
