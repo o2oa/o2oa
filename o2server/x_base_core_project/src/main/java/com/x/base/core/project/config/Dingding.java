@@ -37,6 +37,9 @@ public class Dingding extends ConfigObject {
 	@FieldDescribe("强制拉入同步cron,默认在每天的8点和12点强制进行同步.")
 	private String forceSyncCron;
 
+	@FieldDescribe("是否仅同步人员(新用户创建和根据手机号码绑定钉钉ID).")
+	private Boolean syncPersonOnly;
+
 	@FieldDescribe("oapi服务器地址")
 	private String oapiAddress;
 
@@ -109,6 +112,7 @@ public class Dingding extends ConfigObject {
 		this.scanLoginAppSecret = default_scanLoginAppSecret;
 		this.attendanceSyncEnable = default_attendanceSyncEnable;
 		this.syncUnionOrgEnable = default_syncUnionOrgEnable;
+		this.syncPersonOnly = false;
 	}
 
 	private static String cachedCorpAccessToken;
@@ -139,6 +143,14 @@ public class Dingding extends ConfigObject {
 
 	public String getForceSyncCron() {
 		return StringUtils.isEmpty(this.forceSyncCron) ? default_forceSyncCron : this.forceSyncCron;
+	}
+
+	public Boolean getSyncPersonOnly() {
+		return BooleanUtils.isTrue(syncPersonOnly);
+	}
+
+	public void setSyncPersonOnly(Boolean syncPersonOnly) {
+		this.syncPersonOnly = syncPersonOnly;
 	}
 
 	public String corpAccessToken() throws Exception {
