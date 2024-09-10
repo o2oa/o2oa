@@ -36,17 +36,6 @@ public class TaskCompletedProperties extends JsonProperties {
 	@FieldDescribe("Ticket创建方式,create,reset,add.")
 	private String act;
 
-	@FieldDescribe("使用表单")
-	private String form;
-
-	public String getForm() {
-		return form;
-	}
-
-	public void setForm(String form) {
-		this.form = form;
-	}
-
 	public String getAct() {
 		return act;
 	}
