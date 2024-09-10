@@ -300,6 +300,9 @@
   "lookupFormWithWork": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}"},
   "lookupFormWithWorkMobile": {"uri": "/jaxrs/form/v2/lookup/workorworkcompleted/{workOrWorkCompleted}/mobile"},
 
+  "lookupFormWithTaskCompleted": {"uri": "/jaxrs/form/v2/lookup/taskcompleted/{taskcompleted}"},
+  "lookupFormWithTaskCompletedMobile": {"uri": "/jaxrs/form/v2/lookup/taskcompleted/{taskcompleted}/mobile"},
+
   "listTaskByJob": {"uri": "/jaxrs/task/list/job/{job}"},
   "listTaskCompletedByJob": {"uri": "/jaxrs/taskcompleted/list/job/{job}"},
   "listReadByJob": {"uri": "/jaxrs/read/list/job/{job}"},

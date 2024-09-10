@@ -496,7 +496,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                                 var selectedBundles = this.selectedBundleMap[ viewJson.viewId ] || [];
 
                                 //this.viewPage.showTabIm();
-                                var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+                                var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
 
                                 pageViewNode.setStyle("height", viewHeight);
 

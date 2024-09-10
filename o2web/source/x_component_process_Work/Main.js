@@ -19,6 +19,7 @@ MWF.xApplication.process.Work.Main = new Class({
         "draft": null,
         "workCompletedId": "",
         "taskId": "",
+        "taskCompletedId":"",
         "jobId": "",
         "form": null,
         "priorityWork": "",
@@ -37,6 +38,7 @@ MWF.xApplication.process.Work.Main = new Class({
         } else {
             this.options.workId = this.status.workId;
             this.options.taskId = this.status.taskId;
+            this.options.taskCompletedId = this.status.taskCompletedId;
             this.options.workCompletedId = this.status.workCompletedId;
             this.options.jobId = this.status.jobId;
             this.options.draftId = this.status.draftId;
@@ -150,6 +152,15 @@ MWF.xApplication.process.Work.Main = new Class({
             delete this.options.jobid;
             delete this.options.job;
             this.loadWorkByJob(jobId);
+        }else if(this.options.taskCompletedId){
+            MWF.Actions.load('x_processplatform_assemble_surface').TaskCompletedAction.get(this.options.taskCompletedId, function (json){
+                if( json.data.completed ){
+                    this.options.workCompletedId = json.data.workCompleted;
+                }else{
+                    this.options.workId = json.data.work;
+                }
+                this.loadWork();
+            }.bind(this));
         }
     },
     loadWorkByWork: function(id){
@@ -219,7 +230,15 @@ MWF.xApplication.process.Work.Main = new Class({
                     //this.close();
                 }.bind(this)}, id, id, id, [this.options.formid || this.options.form.id , new Date().getTime()]);
         }else{
-            this.action[((layout.mobile) ? "lookupFormWithWorkMobile" : "lookupFormWithWork")](id, function(json){
+            var lookupMethod, lookupId;
+            if( this.options.taskCompletedId ){
+                lookupId = this.options.taskCompletedId;
+                lookupMethod = layout.mobile ? "lookupFormWithTaskCompletedMobile" : "lookupFormWithTaskCompleted";
+            }else{
+                lookupId = id;
+                lookupMethod = layout.mobile ? "lookupFormWithWorkMobile" : "lookupFormWithWork";
+            }
+            this.action[lookupMethod](lookupId, function(json){
                 var formId = json.data.id;
                 if (json.data.form){
                     json_form = json;
@@ -728,7 +747,16 @@ MWF.xApplication.process.Work.Main = new Class({
 
     recordStatus: function(){
 	    debugger;
-	    var status = {"workId": this.options.workId, "taskId": this.options.taskId, "workCompletedId": this.options.workCompletedId, "jobId": this.options.jobId, "draftId": this.options.draftId, "priorityWork": this.options.priorityWork, "readonly": this.readonly};
+	    var status = {
+            "workId": this.options.workId,
+            "taskId": this.options.taskId,
+            "taskCompletedId": this.options.taskCompletedId,
+            "workCompletedId": this.options.workCompletedId,
+            "jobId": this.options.jobId,
+            "draftId": this.options.draftId,
+            "priorityWork": this.options.priorityWork,
+            "readonly": this.readonly
+        };
         if( this.options.formid )status.formid = this.options.formid;
         if( this.options.form && this.options.form.id )status.form = this.options.form;
         return status;
