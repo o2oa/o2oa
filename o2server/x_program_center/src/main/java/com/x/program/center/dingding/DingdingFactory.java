@@ -152,7 +152,7 @@ public class DingdingFactory {
 		String address = Config.dingding().getOapiAddress() + "/topapi/v2/user/list?access_token=" + this.accessToken;
 		Type type = new TypeToken<DingdingResponse<DingdingUserPageResult>> () {}.getType();
 		List<User> list = new ArrayList<>();
-		boolean hasMore = true; 
+		boolean hasMore = true;
 		int cursor = 0;
 		while(hasMore) {
 			DingdingUserListPost body = new DingdingUserListPost();
@@ -176,40 +176,11 @@ public class DingdingFactory {
 			list.addAll(pageResult.getList());
 		}
 		return list;
-
-		// UserListResp resp = HttpConnection.getAsObject(address, null, UserListResp.class);
-		// logger.debug("users response:{}.", resp);
-		// if (resp.getErrcode() != 0) {
-		// 	if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-		// 		resp = HttpConnection.getAsObject(address, null, UserListResp.class);
-		// 	} else {
-		// 		throw new ExceptionListUser(resp.getErrcode(), resp.getErrmsg());
-		// 	}
-		// }
-		// return resp.getUserlist();
 	}
 
-	// private User detailUser(UserSimple simple) throws Exception {
-	// 	this.count = this.count + 1;
-	// 	if (this.count > 1000) {
-	// 		this.syncSleep(2000);
-	// 		this.count = 0;
-	// 	}
-	// 	String address = Config.dingding().getOapiAddress() + "/user/get?access_token=" + this.accessToken + "&userid="
-	// 			+ simple.getUserid();
-	// 	UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
-	// 	logger.debug("detailUser response:{}.", resp);
-
-	// 	if (resp.getErrcode() != 0) {
-	// 		if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-	// 			resp = HttpConnection.getAsObject(address, null, UserResp.class);
-	// 		} else {
-	// 			throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
-	// 		}
-	// 	}
-	// 	return resp;
-
-	// }
+	public List<User> listAllUser() {
+		return users;
+	}
 
 	public List<User> listUser(Department org) throws Exception {
 		return users.stream().filter(o ->  ListTools.contains(o.getDept_id_list(), org.getDept_id()))
@@ -222,25 +193,23 @@ public class DingdingFactory {
 		}).sorted(Comparator.comparing(Department::getOrder, Comparator.nullsLast(Long::compareTo)))
 				.collect(Collectors.toList());
 	}
- 
-
 
 	/**
 	 * 查询钉钉组织的 post 对象
 	 */
 	public static class DingdingDepartmentPost extends GsonPropertyObject {
-  
+
 		private static final long serialVersionUID = 2344247634146398572L;
 		private Long dept_id;
-	
+
 		public Long getDept_id() {
 			return dept_id;
 		}
-	
+
 		public void setDept_id(Long dept_id) {
 			this.dept_id = dept_id;
 		}
-	
+
 	}
 
 	/**
@@ -273,9 +242,9 @@ public class DingdingFactory {
     public void setSize(Integer size) {
       this.size = size;
     }
-	
-		
-		
+
+
+
 
 
 	}
