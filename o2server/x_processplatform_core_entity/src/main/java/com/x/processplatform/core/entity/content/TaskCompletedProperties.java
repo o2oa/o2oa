@@ -1,13 +1,12 @@
 package com.x.processplatform.core.entity.content;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.ActivityType;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class TaskCompletedProperties extends JsonProperties {
 
@@ -36,30 +35,6 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	@FieldDescribe("Ticket创建方式,create,reset,add.")
 	private String act;
-
-//	public static final String EMPOWERFROM_FIELDNAME = "empowerFrom";
-//	@FieldDescribe("授权来源.")
-//	private String empowerFrom;
-//
-//	public static final String EMPOWERTO_FIELDNAME = "empowerTo";
-//	@FieldDescribe("授权对象.")
-//	private String empowerTo;
-//
-//	public String getEmpowerFrom() {
-//		return empowerFrom;
-//	}
-//
-//	public void setEmpowerFrom(String empowerFrom) {
-//		this.empowerFrom = empowerFrom;
-//	}
-//
-//	public String getEmpowerTo() {
-//		return empowerTo;
-//	}
-//
-//	public void setEmpowerTo(String empowerTo) {
-//		this.empowerTo = empowerTo;
-//	}
 
 	public String getAct() {
 		return act;
