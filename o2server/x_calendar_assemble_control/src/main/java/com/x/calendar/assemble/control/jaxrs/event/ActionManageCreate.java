@@ -5,6 +5,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -35,6 +36,10 @@ public class ActionManageCreate extends BaseAction {
 		List<String> groupNames = null;
 		List<String> ids = null;
 		String personName = effectivePerson.getDistinguishedName();
+
+		if(!effectivePerson.isManager()){
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 
 		Boolean check = true;
 
