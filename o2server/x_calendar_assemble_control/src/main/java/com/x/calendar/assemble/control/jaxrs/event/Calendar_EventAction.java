@@ -210,7 +210,7 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("日历事件信息") JsonElement jsonElement) {
+					   @JaxrsParameterDescribe("日历事件信息") JsonElement jsonElement) {
 		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -218,6 +218,30 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 		if (check) {
 			try {
 				result = new ActionCreate().execute(request, effectivePerson, jsonElement);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionEventProcess(e, "新建或者更新日历事件信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "管理员创建一个新的日历事件信息", action = ActionManageCreate.class)
+	@Path("manage")
+	@POST
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageCreate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("日历事件信息") JsonElement jsonElement) {
+		ActionResult<ActionManageCreate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionManageCreate().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionEventProcess(e, "新建或者更新日历事件信息时发生异常！");
