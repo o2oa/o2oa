@@ -43,6 +43,9 @@ MWF.xApplication.cms.Module.Main = new Class({
 		this.restActions = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Module.Actions.RestActions();
 		this.createNode();
 		this.loadApplicationContent();
+		// if(!MWF.shortcut){
+		// 	MWF.require("MWF.xDesktop.shortcut");
+		// }
 	},
 	createNode: function(){
 		this.content.setStyle("overflow", "hidden");
@@ -497,6 +500,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}).inject(this.copyAction, "top");
 		this.copyAction.addEvents({
 			"click": function(e){
+				debugger;
 				if( this.view ){
 					if( this.keyCopyItemsFun )return;
 					this.keyCopyItemsFun = this.keyCopyItems.bind(this);
@@ -568,7 +572,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 	//	});
 	//},
 	keyCopyItems: function(e){
-		if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+		var app = layout.desktop.currentApp || layout.desktop.app;
+		if (app && app.appId===this.appId) {
 			var itemIds = this.view.getSelectedIds();
 			if (itemIds.length) {
 				var items = [];
@@ -601,7 +606,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}
 	},
 	keyPasteItems: function(e){
-		if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+		var app = layout.desktop.currentApp || layout.desktop.app;
+		if (app && app.appId===this.appId) {
 			var dataStr = "";
 			if (e && e.clipboardData) {
 				dataStr = e.clipboardData.getData('text/plain');

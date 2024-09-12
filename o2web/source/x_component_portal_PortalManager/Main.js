@@ -25,7 +25,8 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
 	},
 
     keyCopyItems: function(e){
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId){
+        var app = layout.desktop.currentApp || layout.desktop.app;
+        if (app && app.appId===this.appId){
             if (this.pageConfigurator){
                 this.pageConfigurator.keyCopy(e);
             }
@@ -41,7 +42,8 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
         }
     },
     keyPasteItems: function(e){
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+        var app = layout.desktop.currentApp || layout.desktop.app;
+        if (app && app.appId===this.appId) {
             if (this.pageConfigurator){
                 this.pageConfigurator.keyPaste(e);
             }

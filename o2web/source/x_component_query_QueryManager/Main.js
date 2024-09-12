@@ -40,7 +40,8 @@ MWF.xApplication.query.QueryManager.Main = new Class({
         }
     },
     keyPasteItems: function(e) {
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId === this.appId){
+        var app = layout.desktop.currentApp || layout.desktop.app;
+        if (app && app.appId === this.appId){
             if (this.viewConfigurator) {
                 this.viewConfigurator.keyPaste(e);
             }
