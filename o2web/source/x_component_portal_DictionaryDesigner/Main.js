@@ -130,10 +130,30 @@ MWF.xApplication.portal.DictionaryDesigner.Main = new Class({
         }
     },
 
-
+    openApp: function (){
+        layout.openApplication(null, 'portal.PortalManager', {
+            application: this.application,
+            appId: 'portal.PortalManager'+this.application.id
+        }, {
+            "navi":2
+        });
+    },
 
     loadDictionaryList: function(){
+        if( this.currentListDictionaryItem ){
+            var d = this.currentListDictionaryItem.retrieve('dictionary');
+            this.options.id = d.id;
+        }
+        if( this.itemArray && this.itemArray.length  ){
+            this.itemArray = this.itemArray.filter(function(i){
+                if(i.data.id)i.node.destroy();
+                return !i.data.id;
+            });
+        }else{
+            this.itemArray = [];
+        }
         this.actions.listDictionary(this.application.id || this.application, function (json) {
+            this.checkSort(json.data);
             json.data.each(function(dictionary){
                 this.createListDictionaryItem(dictionary);
             }.bind(this));
@@ -193,6 +213,7 @@ MWF.xApplication.portal.DictionaryDesigner.Main = new Class({
                             dictionary.load();
                         }.bind(this), true);
                     }.bind(this));
+                    this.status.openDictionarys = [];
                 }
             }
 		}.bind(this));

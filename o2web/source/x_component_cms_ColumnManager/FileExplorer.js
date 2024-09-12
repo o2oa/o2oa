@@ -6,7 +6,8 @@ MWF.xApplication.cms.ColumnManager.FileExplorer = new Class({
         "create": MWF.CMSCM.LP.file.create,
         "search": MWF.CMSCM.LP.file.search,
         "searchText": MWF.CMSCM.LP.file.searchText,
-        "noElement": MWF.CMSCM.LP.file.noDictionaryNoticeText
+        "noElement": MWF.CMSCM.LP.file.noDictionaryNoticeText,
+        "topEnable": false
     },
 
     // createSearchElementNode: function(){

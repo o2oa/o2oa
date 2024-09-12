@@ -64,6 +64,9 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
         }).inject(this.viewListNode);
 
         this.viewListResizeNode = new Element("div", {"styles": this.css.viewListResizeNode}).inject(this.viewListNode);
+
+        this.createListTitleNodes();
+
         this.viewListAreaSccrollNode = new Element("div", {"styles": this.css.viewListAreaSccrollNode}).inject(this.viewListNode);
         this.viewListAreaNode = new Element("div", {"styles": this.css.viewListAreaNode}).inject(this.viewListAreaSccrollNode);
 
@@ -72,8 +75,24 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
         this.loadViewList();
     },
 
+    openApp: function (){
+        layout.openApplication(null, 'query.QueryManager', {
+            application: this.application,
+            appId: 'query.QueryManager'+this.application.id
+        }, {
+            "navi":1
+        });
+    },
+
     loadViewList: function(){
+        if( this.itemArray && this.itemArray.length  ){
+            this.itemArray.each(function(i){
+                if(!i.data.isNewView)i.node.destroy();
+            });
+        }
+        this.itemArray = [];
         this.actions.listStat(this.application.id, function (json) {
+            this.checkSort(json.data);
             json.data.each(function(view){
                 this.createListViewItem(view);
             }.bind(this));
@@ -93,6 +112,18 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
             "mouseover": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem_over);},
             "mouseout": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem);}
         });
+
+        if( view.id === this.options.id ){
+            listViewItem.setStyles(this.css.listViewItem_current);
+            this.currentListViewItem = listViewItem;
+        }
+
+        var itemObj = {
+            node: listViewItem,
+            data: view
+        };
+        this.itemArray.push(itemObj);
+        this.checkShow(itemObj);
     },
     //打开视图
     loadViewByData: function(node, e){
@@ -123,13 +154,14 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
     },
 	
 	//loadView------------------------------------------
-    loadView: function(){
+    loadView: function(callback){
 		this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
             if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.view = new MWF.xApplication.query.StatDesigner.Stat(this, vdata);
 			this.view.load();
+            if (callback) callback();
 		}.bind(this));
 	},
 

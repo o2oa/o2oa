@@ -20,7 +20,11 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         },
 		"actions": null,
 		"category": null,
-		"processData": null
+		"processData": null,
+
+        "sortKeys": ['name', 'alias', 'createTime', 'updateTime'],
+        "sortKey": '',
+        "listToolbarExpanded": false
 	},
 
     onQueryLoad: function(){
@@ -92,22 +96,24 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     },
     openStatement: function(callback){
         this.getApplication(function(){
-            this.loadNodes();
-            this.loadStatementListNodes();
-            //	this.loadToolbar();
-            this.loadContentNode();
-            this.loadProperty();
-            //	this.loadTools();
-            this.resizeNode();
-            this.addEvent("resize", this.resizeNode.bind(this));
-            this.loadStatement(function(){
-                if (callback) callback();
-            }.bind(this));
+            this.getUd(function (){
+                this.loadNodes();
+                this.loadStatementListNodes();
+                //	this.loadToolbar();
+                this.loadContentNode();
+                this.loadProperty();
+                //	this.loadTools();
+                this.resizeNode();
+                this.addEvent("resize", this.resizeNode.bind(this));
+                this.loadStatement(function(){
+                    if (callback) callback();
+                }.bind(this));
 
-            this.setScrollBar(this.designerStatementArea, null, {
-                "V": {"x": 0, "y": 0},
-                "H": {"x": 0, "y": 0}
-            });
+                this.setScrollBar(this.designerStatementArea, null, {
+                    "V": {"x": 0, "y": 0},
+                    "H": {"x": 0, "y": 0}
+                });
+            }.bind(this))
         }.bind(this));
     },
     loadNodes: function(){
@@ -131,6 +137,9 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         }).inject(this.statementListNode);
 
         this.statementListResizeNode = new Element("div", {"styles": this.css.statementListResizeNode}).inject(this.statementListNode);
+
+        this.createListTitleNodes();
+
         this.statementListAreaSccrollNode = new Element("div", {"styles": this.css.statementListAreaSccrollNode}).inject(this.statementListNode);
         this.statementListAreaNode = new Element("div", {"styles": this.css.statementListAreaNode}).inject(this.statementListAreaSccrollNode);
 
@@ -138,6 +147,182 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
 
         this.loadStatementList();
     },
+
+
+    createListTitleNodes: function (){
+        this.statementListTitleNode.setStyle("display", 'flex');
+
+        this.titleActionArea = new Element("div", {
+            styles: this.css.titleActionArea
+        }).inject(this.statementListTitleNode);
+
+        this.moreAction = new Element("div", {
+            styles: this.css.moreAction,
+            title: this.lp.searchAndSort
+        }).inject(this.titleActionArea);
+        this.moreAction.addEvent("click", function(){
+            var isHidden = this.toolbarNode.getStyle("display") === "none";
+            this.toolbarNode.setStyle("display", isHidden ? "" : "none" );
+            this.resizeNode();
+            this.options.listToolbarExpanded = isHidden;
+            this.setUd();
+        }.bind(this));
+
+        this.toolbarNode =  new Element("div", {
+            styles: this.css.toolbarNode
+        }).inject(this.statementListNode);
+        if( this.options.listToolbarExpanded )this.toolbarNode.show();
+
+        this.createSortNode();
+        this.createSearchNode();
+    },
+    getUd: function ( callback ){
+        MWF.UD.getDataJson(this.options.name + "_" + this.application.id, function (data){
+            if( data ){
+                this.options.sortKey = data.sortKey;
+                this.options.listToolbarExpanded = data.listToolbarExpanded || false;
+            }
+            callback();
+        }.bind(this));
+    },
+    setUd: function (){
+        var data = {
+            sortKey: this.options.sortKey,
+            listToolbarExpanded: this.options.listToolbarExpanded
+        };
+        MWF.UD.putData(this.options.name + "_" + this.application.id, data);
+    },
+    openApp: function (){
+        layout.openApplication(null, 'query.QueryManager', {
+            application: this.application,
+            appId: 'query.QueryManager'+this.application.id
+        }, {
+            "navi":3
+        });
+    },
+    createElement: function(){
+        var options = {
+            "application":{
+                id: this.application.id,
+                name: this.application.name
+            }
+        };
+        layout.openApplication(null, this.options.name, options);
+    },
+    createSortNode: function(){
+        this.itemSortArea = new Element("div.itemSortArea", {
+            styles: this.css.itemSortArea
+        }).inject(this.toolbarNode);
+        this.itemSortSelect = new Element('select.itemSortSelect', {
+            styles: this.css.itemSortSelect,
+            events: {
+                change: function(){
+                    this.options.sortKey = this.itemSortSelect[ this.itemSortSelect.selectedIndex ].value;
+                    this.setUd();
+                    this.loadStatementList();
+                }.bind(this)
+            }
+        }).inject(this.itemSortArea);
+        new Element('option',{ 'text': this.lp.sorkKeyNote, 'value': "" }).inject(this.itemSortSelect);
+        this.options.sortKeys.each(function (key){
+            var opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.asc, 'value': key+"-asc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+            opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.desc, 'value': key+"-desc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+        }.bind(this));
+    },
+    createSearchNode: function (){
+        this.searchNode = new Element("div.searchNode", {
+            "styles": this.css.searchArea
+        }).inject(this.toolbarNode);
+
+        this.searchInput = new Element("input.searchInput", {
+            "styles": this.css.searchInput,
+            "placeholder": this.lp.searchPlacholder,
+            "value": this.options.searchKey || ""
+        }).inject(this.searchNode);
+
+        this.searchButton = new Element("i", {
+            "styles": this.css.searchButton
+        }).inject(this.searchNode);
+
+        this.searchCancelButton = new Element("i", {
+            "styles": this.css.searchCancelButton
+        }).inject(this.searchNode);
+
+        this.searchInput.addEvents({
+            focus: function(){
+                this.searchNode.addClass("mainColor_border");
+                this.searchButton.addClass("mainColor_color");
+            }.bind(this),
+            blur: function () {
+                this.searchNode.removeClass("mainColor_border");
+                this.searchButton.removeClass("mainColor_color");
+            }.bind(this),
+            keydown: function (e) {
+                if( (e.keyCode || e.code) === 13 ){
+                    this.search();
+                }
+            }.bind(this),
+            keyup: function (e){
+                this.searchCancelButton.setStyle('display', this.searchInput.get('value') ? '' : 'none');
+            }.bind(this)
+        });
+
+        this.searchCancelButton.addEvent("click", function (e) {
+            this.searchInput.set("value", "");
+            this.searchCancelButton.hide();
+            this.search();
+        }.bind(this));
+
+        this.searchButton.addEvent("click", function (e) {
+            this.search();
+        }.bind(this));
+    },
+    checkSort: function (data){
+        if( !!this.options.sortKey ){
+            var sortKey = this.options.sortKey.split("-");
+            var key = sortKey[0], isDesc = sortKey[1] === 'desc';
+            data.sort(function (a, b){
+                var av = a[key];
+                var bv = b[key];
+                if( typeOf(av) === 'string' && typeOf(bv) === 'string' ){
+                    var isLetterA = /^[a-zA-Z0-9]/.test(av);
+                    var isLetterB = /^[a-zA-Z0-9]/.test(bv);
+
+                    if (isLetterA && !isLetterB) return isDesc ? 1 : -1; // a是字母，b不是，a排在前面
+                    if (!isLetterA && isLetterB) return isDesc ? -1 : 1;  // a不是字母，b是，b排在前面
+
+                    return isDesc ?  bv.localeCompare(av) : av.localeCompare(bv);
+                }
+                return isDesc ? (bv - av) : (av - bv);
+            }.bind(this));
+        }
+    },
+    checkShow: function (i){
+        if( this.options.searchKey ){
+            var v = this.options.searchKey;
+            if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                //i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }
+    },
+    search: function (){
+        var v = this.searchInput.get("value");
+        this.options.searchKey = v;
+        this.itemArray.each(function (i){
+            if( !v ){
+                i.node.setStyle("display", "");
+            }else if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }.bind(this));
+    },
+
     loadStatementListResize: function(){
         this.statementListResize = new Drag(this.statementListResizeNode,{
             "snap": 1,
@@ -191,7 +376,14 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         });
     },
     loadStatementList: function(){
+        if( this.itemArray && this.itemArray.length  ){
+            this.itemArray.each(function(i){
+                if(!i.data.isNewStatement)i.node.destroy();
+            });
+        }
+        this.itemArray = [];
         this.actions.listStatement(this.application.id, {},function (json) {
+            this.checkSort(json.data);
             json.data.each(function(statement){
                 this.createListStatementItem(statement);
             }.bind(this));
@@ -210,6 +402,18 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             "mouseover": function(){if (_self.currentListStatementItem!=this) this.setStyles(_self.css.listStatementItem_over);},
             "mouseout": function(){if (_self.currentListStatementItem!=this) this.setStyles(_self.css.listStatementItem);}
         });
+
+        if( statement.id === this.options.id ){
+            listStatementItem.setStyles(this.css.listStatementItem_current);
+            this.currentListStatementItem = listStatementItem;
+        }
+
+        var itemObj = {
+            node: listStatementItem,
+            data: statement
+        };
+        this.itemArray.push(itemObj);
+        this.checkShow(itemObj);
     },
     //打开查询配置
     loadStatementByData: function(node, e){
@@ -476,7 +680,10 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom+nodeMarginTop+nodeMarginBottom;
         y = nodeSize.y-y;
-        this.statementListAreaSccrollNode.setStyle("height", ""+y+"px");
+
+        var leftToolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : {x:0,y:0};
+
+        this.statementListAreaSccrollNode.setStyle("height", ""+(y-leftToolbarSize.y)+"px");
         this.statementListResizeNode.setStyle("height", ""+y+"px");
     },
 

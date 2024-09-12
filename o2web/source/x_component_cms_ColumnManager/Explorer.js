@@ -15,7 +15,12 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
             "search": MWF.CMSCM.LP.category.search,
             "searchText": MWF.CMSCM.LP.category.searchText,
             "noElement": MWF.CMSCM.LP.category.noCategoryNoticeText
-		}
+		},
+        "topEnable": true,
+        "itemStyle": "line",
+        "sortKeys": ['name', 'alias', 'createTime', 'updateTime'],
+        "sortKey": '',
+        "name": 'cms.FormExplorer'
 	},
 	
 	initialize: function(node, actions, options){
@@ -49,23 +54,52 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
 	},
     reload: function(){
         if( !this.node )return;
+        if( this.itemArray && this.itemArray.length ){
+            this.itemArray.each(function (item){
+                if(item.destroy)item.destroy();
+            });
+        }
         this.initData();
         this.node.empty();
         this.load();
     },
     load: function(){
-        this.loadToolbar();
-        this.loadContentNode();
+        this.getUd( function (){
+            this.loadToolbar();
+            this.loadContentNode();
 
-        this.setNodeScroll();
-        this.loadElementList();
+            this.setNodeScroll();
+            this.loadElementList();
+        }.bind(this));
+    },
+    getUd: function ( callback ){
+        MWF.UD.getDataJson(this.options.name+ "_" + this.app.options.column.id, function (data){
+            if( data ){
+                this.options.itemStyle = data.itemStyle;
+                this.options.sortKey = data.sortKey;
+            }
+            callback();
+        }.bind(this));
+    },
+    setUd: function (){
+        var data = {
+            itemStyle: this.options.itemStyle,
+            sortKey: this.options.sortKey,
+        };
+        MWF.UD.putData(this.options.name+ "_" + this.app.options.column.id, data);
     },
     loadToolbar: function(){
         this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode});
         this.createTitleElementNode();
         this.createCreateElementNode();
 
-        this.createSearchElementNode();
+        if(this.options.topEnable){
+            this.createItemStyleNode();
+            this.createSortNode();
+            this.createSearchNode();
+        }
+
+        //this.createSearchElementNode();
         this.toolbarNode.inject(this.node);
     },
     createCreateElementNode: function(){
@@ -95,44 +129,44 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
         }).inject(this.toolbarNode);
 
         //@todo
-        return false;
-
-        this.searchElementButtonNode = new Element("div", {
-            "styles": this.css.searchElementButtonNode,
-            "title": this.options.tooltip.search
-        }).inject(this.searchElementNode);
-
-        this.searchElementInputAreaNode = new Element("div", {
-            "styles": this.css.searchElementInputAreaNode
-        }).inject(this.searchElementNode);
-
-        this.searchElementInputBoxNode = new Element("div", {
-            "styles": this.css.searchElementInputBoxNode
-        }).inject(this.searchElementInputAreaNode);
-
-        this.searchElementInputNode = new Element("input", {
-            "type": "text",
-            "value": this.options.tooltip.searchText,
-            "styles": this.css.searchElementInputNode,
-            "x-webkit-speech": "1"
-        }).inject(this.searchElementInputBoxNode);
-        var _self = this;
-        this.searchElementInputNode.addEvents({
-            "focus": function(){
-                if (this.value==_self.options.tooltip.searchText) this.set("value", "");
-            },
-            "blur": function(){if (!this.value) this.set("value", _self.options.tooltip.searchText);},
-            "keydown": function(e){
-                if (e.code==13){
-                    this.searchElement();
-                    e.preventDefault();
-                }
-            }.bind(this),
-            "selectstart": function(e){
-                e.preventDefault();
-            }
-        });
-        this.searchElementButtonNode.addEvent("click", function(){this.searchElement();}.bind(this));
+        // return false;
+        //
+        // this.searchElementButtonNode = new Element("div", {
+        //     "styles": this.css.searchElementButtonNode,
+        //     "title": this.options.tooltip.search
+        // }).inject(this.searchElementNode);
+        //
+        // this.searchElementInputAreaNode = new Element("div", {
+        //     "styles": this.css.searchElementInputAreaNode
+        // }).inject(this.searchElementNode);
+        //
+        // this.searchElementInputBoxNode = new Element("div", {
+        //     "styles": this.css.searchElementInputBoxNode
+        // }).inject(this.searchElementInputAreaNode);
+        //
+        // this.searchElementInputNode = new Element("input", {
+        //     "type": "text",
+        //     "value": this.options.tooltip.searchText,
+        //     "styles": this.css.searchElementInputNode,
+        //     "x-webkit-speech": "1"
+        // }).inject(this.searchElementInputBoxNode);
+        // var _self = this;
+        // this.searchElementInputNode.addEvents({
+        //     "focus": function(){
+        //         if (this.value==_self.options.tooltip.searchText) this.set("value", "");
+        //     },
+        //     "blur": function(){if (!this.value) this.set("value", _self.options.tooltip.searchText);},
+        //     "keydown": function(e){
+        //         if (e.code==13){
+        //             this.searchElement();
+        //             e.preventDefault();
+        //         }
+        //     }.bind(this),
+        //     "selectstart": function(e){
+        //         e.preventDefault();
+        //     }
+        // });
+        // this.searchElementButtonNode.addEvent("click", function(){this.searchElement();}.bind(this));
     },
     searchElement: function(){
         //-----------------------------------------
@@ -191,9 +225,11 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
     loadElementList: function( callback ){
         this._loadItemDataList(function(json){
             if (json.data.length){
+                this.checkSort(json.data);
                 json.data.each(function(item){
                     var itemObj = this._getItemObject(item, this.itemArray.length + 1 );
                     itemObj.load();
+                    this.checkShow(itemObj);
                     this.itemObject[ item.id ] = itemObj;
                     this.itemArray.push( itemObj );
                 }.bind(this));
@@ -209,7 +245,137 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
             }
         }.bind(this));
     },
+    checkSort: function (data){
+        if( !!this.options.sortKey ){
+            var sortKey = this.options.sortKey.split("-");
+            var key = sortKey[0], isDesc = sortKey[1] === 'desc';
+            data.sort(function (a, b){
+                var av = a[key];
+                var bv = b[key];
+                if( typeOf(av) === 'string' && typeOf(bv) === 'string' ){
+                    var isLetterA = /^[a-zA-Z0-9]/.test(av);
+                    var isLetterB = /^[a-zA-Z0-9]/.test(bv);
 
+                    if (isLetterA && !isLetterB) return isDesc ? 1 : -1; // a是字母，b不是，a排在前面
+                    if (!isLetterA && isLetterB) return isDesc ? -1 : 1;  // a不是字母，b是，b排在前面
+
+                    return isDesc ?  bv.localeCompare(av) : av.localeCompare(bv);
+                }
+                return isDesc ? (bv - av) : (av - bv);
+            }.bind(this));
+        }
+    },
+    checkShow: function (i){
+        if( this.options.searchKey ){
+            var v = this.options.searchKey;
+            if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                //i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }
+    },
+    createItemStyleNode: function (){
+        this.itemStyleSwitchNode = new Element("div.itemStyleSwitchNode", {
+            styles: this.css.itemStyleSwitchNode
+        }).inject(this.toolbarNode);
+        ['line','card'].each(function(style){
+            var el = new Element("div", {
+                styles: this.css.itemStyleSwitchItemNode
+            }).inject(this.itemStyleSwitchNode);
+            el.setStyle('background-image',"url('../x_component_process_ProcessManager/$Explorer/default/icon/"+style+".png')");
+            el.store("sty", style);
+            el.addEvent("click", function(e){
+                this.switchItemStyle(el, style);
+            }.bind(this));
+            if( style === this.options.itemStyle )el.click();
+        }.bind(this));
+    },
+    createSortNode: function(){
+        this.itemSortArea = new Element("div.itemStyleSwitchNode", {
+            styles: this.css.itemSortArea
+        }).inject(this.toolbarNode);
+        this.itemSortSelect = new Element('select.itemSortSelect', {
+            styles: this.css.itemSortSelect,
+            events: {
+                change: function(){
+                    this.options.sortKey = this.itemSortSelect[ this.itemSortSelect.selectedIndex ].value;
+                    this.setUd();
+                    this.reload();
+                }.bind(this)
+            }
+        }).inject(this.itemSortArea);
+        new Element('option',{ 'text': this.app.lp.sorkKeyNote, 'value': "" }).inject(this.itemSortSelect);
+        this.options.sortKeys.each(function (key){
+            var opt = new Element('option',{ 'text': this.app.lp[key] + " " + this.app.lp.asc, 'value': key+"-asc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+            opt = new Element('option',{ 'text': this.app.lp[key] + " " + this.app.lp.desc, 'value': key+"-desc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+        }.bind(this));
+    },
+    createSearchNode: function (){
+        this.searchNode = new Element("div.searchNode", {
+            "styles": this.css.searchArea
+        }).inject(this.toolbarNode);
+
+        this.searchInput = new Element("input.searchInput", {
+            "styles": this.css.searchInput,
+            "placeholder": this.app.lp.searchPlacholder,
+            "value": this.options.searchKey || ""
+        }).inject(this.searchNode);
+
+        this.searchButton = new Element("i", {
+            "styles": this.css.searchButton
+        }).inject(this.searchNode);
+
+        this.searchCancelButton = new Element("i", {
+            "styles": this.css.searchCancelButton
+        }).inject(this.searchNode);
+
+        this.searchInput.addEvents({
+            focus: function(){
+                this.searchNode.addClass("mainColor_border");
+                this.searchButton.addClass("mainColor_color");
+            }.bind(this),
+            blur: function () {
+                this.searchNode.removeClass("mainColor_border");
+                this.searchButton.removeClass("mainColor_color");
+            }.bind(this),
+            keydown: function (e) {
+                if( (e.keyCode || e.code) === 13 ){
+                    this.search();
+                }
+            }.bind(this),
+            keyup: function (e){
+                this.searchCancelButton.setStyle('display', this.searchInput.get('value') ? '' : 'none');
+            }.bind(this)
+        });
+
+        this.searchCancelButton.addEvent("click", function (e) {
+            this.searchInput.set("value", "");
+            this.searchCancelButton.hide();
+            this.search();
+        }.bind(this));
+
+        this.searchButton.addEvent("click", function (e) {
+            this.search();
+        }.bind(this));
+    },
+    switchItemStyle: function(el){
+        if( this.currentItemStyleSwitchItemNode ){
+            var cur = this.currentItemStyleSwitchItemNode;
+            cur.setStyle('background-image',"url('../x_component_process_ProcessManager/$Explorer/default/icon/"+cur.retrieve('sty')+".png')");
+        }
+        this.currentItemStyleSwitchItemNode = el;
+        el.setStyle('background-image',"url('../x_component_process_ProcessManager/$Explorer/default/icon/"+el.retrieve('sty')+"_active.png')");
+
+        if( el.retrieve('sty') !== this.options.itemStyle ){
+            this.options.itemStyle = el.retrieve('sty');
+            this.setUd();
+            this.reload();
+        }
+
+    },
     showDeleteAction: function(){
         if (!this.deleteItemsAction){
             this.deleteItemsAction = new Element("div", {
@@ -232,6 +398,19 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
             }.bind(this));
         }
     },
+    search: function (){
+       var v = this.searchInput.get("value");
+       this.options.searchKey = v;
+        this.itemArray.each(function (i){
+            if( !v ){
+                i.node.setStyle("display", "");
+            }else if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }.bind(this));
+    },
     hideDeleteAction: function(){
         if (this.deleteItemsAction) this.deleteItemsAction.destroy();
         delete this.deleteItemsAction;
@@ -245,6 +424,15 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
     },
     _getItemObject: function(item, index){
         return MWF.xApplication.cms.ColumnManager.Explorer.Item(this, item, {index : index })
+    },
+    destroy: function(){
+        if( this.itemArray && this.itemArray.length ){
+            this.itemArray.each(function (item){
+                if(item.destroy)item.destroy();
+            });
+        }
+        this.node.destroy();
+        o2.release(this);
     }
 });
 
@@ -262,24 +450,33 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
         this.data = item;
         this.container = this.explorer.elementContentListNode;
 
+        this.css = this.explorer.css;
+
         this.icon = this._getIcon();
     },
 
     load: function(){
-        if( this.options.index % 2 == 0 ){
-            this.itemNodeCss = this.explorer.css.itemNode_even
+        if( this.explorer.options.itemStyle === 'card' ){
+            this.itemNodeCss = this.css.itemNode_card;
         }else{
-            this.itemNodeCss = this.explorer.css.itemNode
+            this.itemNodeCss = this.options.index % 2 === 0 ? this.css.itemNode_even : this.css.itemNode;
         }
+
         this.node = new Element("div", {
             "styles": this.itemNodeCss,
             "events": {
                 "click": function(e){this._open(e);e.stopPropagation();}.bind(this),
                 "mouseover": function(){
-                    if( !this.isSelected )this.node.setStyles( this.explorer.css.itemNode_over )
+                    if( !this.isSelected )this.node.setStyles( this.css.itemNode_over );
+
+                    if(this.deleteActionNode)this.deleteActionNode.fade("in");
+                    if (this.saveasActionNode) this.saveasActionNode.fade("in");
                 }.bind(this),
                 "mouseout": function(){
-                    if( !this.isSelected )this.node.setStyles( this.itemNodeCss )
+                    if( !this.isSelected )this.node.setStyles( this.itemNodeCss );
+
+                    if(this.deleteActionNode)this.deleteActionNode.fade("out");
+                    if (this.saveasActionNode) this.saveasActionNode.fade("out");
                 }.bind(this)
             }
         }).inject(this.container,this.options.where);
@@ -289,7 +486,7 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
         var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
 
         var itemIconNode = new Element("div", {
-            "styles": this.explorer.css.itemIconNode
+            "styles": this.explorer.options.itemStyle === 'card' ? this.css.itemIconNode_card : this.css.itemIconNode
         }).inject(this.node);
         itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
         //new Element("img", {
@@ -317,14 +514,14 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
             this.saveas(e);
             e.stopPropagation();
         }.bind(this));
-        this.saveasActionNode.addEvents({
-            "mouseover" : function(ev){
-                this.saveasActionNode.setStyles( this.explorer.css.saveasActionNode_over )
-            }.bind(this),
-            "mouseout" : function(ev){
-                this.saveasActionNode.setStyles( this.explorer.css.saveasActionNode )
-            }.bind(this)
-        });
+        // this.saveasActionNode.addEvents({
+        //     "mouseover" : function(ev){
+        //         this.saveasActionNode.setStyles( this.explorer.css.saveasActionNode_over )
+        //     }.bind(this),
+        //     "mouseout" : function(ev){
+        //         this.saveasActionNode.setStyles( this.explorer.css.saveasActionNode )
+        //     }.bind(this)
+        // });
 
         if (!this.explorer.options.noDelete){
             this.deleteActionNode = new Element("div.deleteAction", {
@@ -334,16 +531,45 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
                 this.deleteItem(e);
                 e.stopPropagation();
             }.bind(this));
-            this.deleteActionNode.addEvents({
-                "mouseover" : function(ev){
-                    this.deleteActionNode.setStyles( this.explorer.css.deleteAction_over )
-                }.bind(this),
-                "mouseout" : function(ev){
-                    this.deleteActionNode.setStyles( this.explorer.css.deleteAction )
-                }.bind(this)
-            })
+            // this.deleteActionNode.addEvents({
+            //     "mouseover" : function(ev){
+            //         this.deleteActionNode.setStyles( this.explorer.css.deleteAction_over )
+            //     }.bind(this),
+            //     "mouseout" : function(ev){
+            //         this.deleteActionNode.setStyles( this.explorer.css.deleteAction )
+            //     }.bind(this)
+            // })
         }
 
+        this.explorer.options.itemStyle === 'card' ? this.createTextNodes_card() : this.createTextNodes();
+
+        this._isNew();
+
+        this.createInforNode();
+
+    },
+    createTextNodes_card: function(){
+        new Element("div", {
+            "styles": this.css.itemTextTitleNode_card,
+            "text": this.data.name,
+            "title": this.data.name,
+            "events": {
+                "click": function(e){this._open(e);}.bind(this)
+            }
+        }).inject(this.node);
+
+        new Element("div", {
+            "styles": this.css.itemTextDescriptionNode_card,
+            "text": this.data.description || "",
+            "title": this.data.description || ""
+        }).inject(this.node);
+
+        new Element("div", {
+            "styles": this.css.itemTextDateNode_card,
+            "text": (this.data.updateTime || "")
+        }).inject(this.node);
+    },
+    createTextNodes: function(){
         var inforNode = new Element("div.itemInforNode", {
             "styles": this.explorer.css.itemInforNode
         }).inject(this.node);
@@ -392,9 +618,7 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
         //    "styles": this.explorer.css.itemTextDateNode,
         //    "text": (this.data.updateTime || "")
         //}).inject(this.node);
-
     },
-
     deleteItem: function(){
         if (!this.deleteMode){
             this.deleteMode = true;
@@ -463,8 +687,12 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
             var currentDate = new Date();
             if (createDate.diff(currentDate, "hour")<12) {
                 this.newNode = new Element("div", {
-                    "styles": this.explorer.css.itemNewNode
+                    "styles": this.explorer.options.itemStyle === 'card' ? this.css.itemNewNode_card : this.css.itemNewNode
                 }).inject(this.node);
+                this.newNode.addEvent("click", function(e){
+                    this.toggleSelected();
+                    e.stopPropagation();
+                }.bind(this));
             }
         }
     },
@@ -508,5 +736,60 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
                 }.bind(this),
             });
         }.bind(this));
+    },
+
+    createInforNode: function(callback){
+        var lp = this.explorer.app.lp;
+        this.inforNode = new Element("div");
+        var wrapNode = new Element("div", {
+            style: 'display: grid; grid-template-columns: 60px auto; line-height:20px;'
+        }).inject(this.inforNode);
+        var html = "<div style='grid-column: 1 / -1; font-weight: bold'>"+this.data.name+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.alias+": </div><div style='margin-left:10px'>"+( this.data.alias || "" )+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.createTime+": </div><div style='margin-left:10px'>"+(this.data.createTime || "")+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.updateTime+": </div><div style='float:left; margin-left:10px'>"+(this.data.updateTime||"")+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.description+": </div><div style='float:left; margin-left:10px'>"+(this.data.description||"")+"</div>";
+        wrapNode.set("html", html);
+
+        this.tooltip = new MWF.xApplication.cms.ColumnManager.Explorer.Item.Tooltip(this.explorer.app.content, this.node, this.explorer.app, {}, {
+            axis : "y",
+            hiddenDelay : 300,
+            displayDelay : 200
+        });
+        this.tooltip.inforNode = this.inforNode;
+    },
+});
+
+
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xApplication.cms.ColumnManager.Explorer.Item.Tooltip = new Class({
+    Extends: MTooltips,
+    options:{
+        nodeStyles: {
+            "font-size" : "12px",
+            "position" : "absolute",
+            "max-width" : "500px",
+            "min-width" : "180px",
+            "z-index" : "1001",
+            "background-color" : "#fff",
+            "padding" : "10px",
+            "border-radius" : "8px",
+            "box-shadow": "0 0 12px 0 #999999",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text"
+        },
+        isFitToContainer : true,
+        overflow : "scroll"
+    },
+    _loadCustom : function( callback ){
+        if(callback)callback();
+    },
+    _customNode : function( node, contentNode ){
+        this.inforNode.inject(contentNode);
+        if( this.inforNode.getSize().y > 300 ){
+            this.inforNode.setStyle("padding-bottom", "15px");
+        }
+        this.fireEvent("customContent", [contentNode, node]);
     }
 });
+

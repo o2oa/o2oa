@@ -9,7 +9,10 @@ MWF.xApplication.query.QueryManager.StatExplorer = new Class({
             "search": MWF.xApplication.query.QueryManager.LP.stat.search,
             "searchText": MWF.xApplication.query.QueryManager.LP.stat.searchText,
             "noElement": MWF.xApplication.query.QueryManager.LP.stat.noStatNoticeText
-        }
+        },
+        "categoryEnable": true,
+        "itemStyle": "card",
+        "name": 'query.StatExplorer'
     },
     openFindDesigner: function(){
         this.app.options.application.moduleType = "query";

@@ -823,5 +823,13 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
             });
             MWF.release(this.process);
         }
+    },
+    openApp: function (){
+        layout.openApplication(null, 'process.ProcessManager', {
+            application: this.application,
+            appId: 'process.ProcessManager'+this.application.id
+        }, {
+            "navi": 1
+        });
     }
 });

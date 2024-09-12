@@ -10,7 +10,10 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer = new Class({
             "search": MWF.xApplication.portal.PortalManager.LP.widget.search,
             "searchText": MWF.xApplication.portal.PortalManager.LP.widget.searchText,
             "noElement": MWF.xApplication.portal.PortalManager.LP.widget.noNoticeText
-        }
+        },
+        "categoryEnable": true,
+        "itemStyle": "card",
+        "name": 'portal.WidgetExplorer'
     },
     openFindDesigner: function(){
         this.app.options.application.moduleType = "portal";

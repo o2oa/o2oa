@@ -6,11 +6,10 @@ MWF.xApplication.cms.ColumnManager.ScriptExplorer = new Class({
         "create": MWF.CMSCM.LP.dictionary.create,
         "search": MWF.CMSCM.LP.dictionary.search,
         "searchText": MWF.CMSCM.LP.dictionary.searchText,
-        "noElement": MWF.CMSCM.LP.dictionary.noDictionaryNoticeText
+        "noElement": MWF.CMSCM.LP.dictionary.noDictionaryNoticeText,
+        "topEnable": true,
+        "name": 'cms.ScriptExplorer'
     },
-
-
-
     _createElement: function(e){
         var _self = this;
         var application = _self.app.options.application || _self.app.application || _self.app.options.column || _self.app.column;

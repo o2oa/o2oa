@@ -6,7 +6,8 @@ MWF.xApplication.process.ProcessManager.StatExplorer = new Class({
         "create": MWF.APPPM.LP.stat.create,
         "search": MWF.APPPM.LP.stat.search,
         "searchText": MWF.APPPM.LP.stat.searchText,
-        "noElement": MWF.APPPM.LP.stat.noNoticeText
+        "noElement": MWF.APPPM.LP.stat.noNoticeText,
+        "name": 'process.StatExplorer'
     },
 
     _createElement: function(e){

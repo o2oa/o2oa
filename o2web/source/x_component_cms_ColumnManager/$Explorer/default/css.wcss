@@ -72,6 +72,74 @@
 	"-webkit-user-select": "auto",
 	"-moz-user-select": "auto"
   },
+
+  "itemStyleSwitchNode":{
+        "float": "right",
+        "display": "flex",
+        "height": "38px",
+         "align-items": "center",
+         "margin-top": "8px",
+         "margin-right": "20px"
+    },
+    "itemStyleSwitchItemNode":{
+        "padding": "5px",
+        "width":"16px",
+        "height": "16px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "itemSortArea":{
+        "float": "right",
+         "margin-top": "8px",
+        "height": "38px",
+        "line-height": "38px"
+    },
+    "itemSortSelect":{
+        "border": "1px solid #ccc",
+        "border-radius": "4px",
+        "height": "20px",
+    },
+    "searchArea":{
+        "float": "right",
+        "width": "172px",
+        "border": "1px solid #ccc",
+        "border-radius": "4px",
+        "margin": "16px 10px 0 0",
+        "padding": "0 0 0 2px",
+        "overflow": "hidden"
+    },
+    "searchInput": {
+        "width": "calc( 100% - 46px )",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "13px",
+        "color": "#666",
+        "border": "0",
+        "float": "left",
+        "background": "inherit"
+    },
+    "searchButton":{
+        "cursor": "pointer",
+        "width": "20px",
+        "height": "20px",
+        "line-height": "20px",
+        "color": "#ccc",
+        "float": "right",
+        "background": "url(../x_component_process_ProcessManager/$Explorer/default/icon/search.png) no-repeat center center",
+        "background-size": "12px 12px"
+    },
+    "searchCancelButton":{
+        "cursor": "pointer",
+        "width": "20px",
+        "height": "20px",
+        "line-height": "20px",
+        "color": "#ccc",
+        "float": "right",
+        "background": "url(../x_component_process_ProcessManager/$Explorer/default/icon/icon_clear.png) no-repeat center center",
+        "display": "none",
+        "background-size": "12px 12px"
+    },
+
   "elementContentNode": {
 	"overflow": "hidden",
 	"position": "static"
@@ -123,6 +191,63 @@
 	"font-size": "16px"
   },
 
+  "itemNode_card": {
+        "position": "relative",
+		"width": "240px",
+		"padding": "10px",
+		"height": "60px",
+		"margin-top": "20px",
+		"margin-left": "20px",
+		"border": "1px solid #CCC",
+		"float": "left",
+		"background-color": "#FFF",
+		"cursor": "default"
+	},
+	"itemIconNode_card": {
+		"padding": "0px",
+		"float": "left",
+		"width": "40px",
+		"height": "60px",
+		"cursor": "pointer"
+	},
+	"itemTextTitleNode_card": {
+		"margin-left": "50px",
+		"margin-right": "20px",
+		"height": "20px",
+		"line-height": "20px",
+		"font-size": "14px",
+		"font-weight": "bold",
+		"overflow": "hidden",
+		"cursor": "pointer",
+		"color": "#333"
+	},
+	"itemTextDescriptionNode_card": {
+	    "margin-left": "50px",
+    	"margin-right": "20px",
+		"font-size": "12px",
+		"line-height": "20px",
+		"height": "20px",
+		"color": "#777",
+		"overflow": "hidden",
+		"white-space": "normal"
+	},
+	"itemTextDateNode_card": {
+	    "margin-left": "50px",
+	    "font-size": "12px",
+        "line-height": "20px",
+        "height": "20px",
+        "color": "#777",
+        "text-align": "right"
+	},
+	"itemNewNode_card": {
+        "width": "47px",
+        "height": "47px",
+        "position": "absolute",
+        "top": "0",
+        "left": "0",
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
+    },
+
   "itemNode": {
 	"height": "50px",
 	"margin-left": "0px",
@@ -141,11 +266,7 @@
 	"position" : "relative"
   },
   "itemNode_over" : {
-	"height": "50px",
-	"margin-left": "0px",
-	"background-color": "#f0f0f0",
-	"cursor": "default",
-	"position" : "relative"
+	"background-color": "#f0f0f0"
   },
   "itemTypeNode" : {
 	"overflow" : "hidden",
@@ -243,9 +364,9 @@
   "itemNewNode": {
 	"width": "30px",
 	"height": "30px",
-	"position": "relative",
-	"top": "-45px",
-	"left": "-5px",
+	"position": "absolute",
+	"top": "0",
+	"left": "0",
 	"background": "url("+"../x_component_cms_ColumnManager/$Explorer/default/icon/new.png) no-repeat right"
   },
 
@@ -464,6 +585,7 @@
 	"margin-left": "2px",
 	"margin-right": "5px",
 	"float": "left",
+	 "opacity": 0,
 	"cursor": "pointer"
   },
   "deleteAction_over" : {
@@ -483,6 +605,7 @@
 	"margin-left": "2px",
 	"margin-right": "5px",
 	"float": "left",
+	 "opacity": 0,
 	"cursor": "pointer"
   },
   "saveasActionNode_over" : {

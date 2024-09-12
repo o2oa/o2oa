@@ -6,7 +6,8 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
         "create": MWF.APPPM.LP.form.create,
         "search": MWF.APPPM.LP.form.search,
         "searchText": MWF.APPPM.LP.form.searchText,
-        "noElement": MWF.APPPM.LP.form.noFormNoticeText
+        "noElement": MWF.APPPM.LP.form.noFormNoticeText,
+        "name": 'process.FormExplorer'
     },
 
     //ev.dataTransfer.setData("text/plain", ev.target.id);

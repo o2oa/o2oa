@@ -6,7 +6,8 @@ MWF.xApplication.portal.PortalManager.FileExplorer = new Class({
         "create": MWF.APPPM.LP.file.create,
         "search": MWF.APPPM.LP.file.search,
         "searchText": MWF.APPPM.LP.file.searchText,
-        "noElement": MWF.APPPM.LP.file.noDictionaryNoticeText
+        "noElement": MWF.APPPM.LP.file.noDictionaryNoticeText,
+        "topEnable": false
     },
 
     // _createElement: function(e){

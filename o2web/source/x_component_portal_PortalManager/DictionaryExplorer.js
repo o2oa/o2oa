@@ -9,7 +9,10 @@ MWF.xApplication.portal.PortalManager.DictionaryExplorer = new Class({
         "create": MWF.xApplication.portal.PortalManager.LP.dictionary.create,
         "search": MWF.xApplication.portal.PortalManager.LP.dictionary.search,
         "searchText": MWF.xApplication.portal.PortalManager.LP.dictionary.searchText,
-        "noElement": MWF.xApplication.portal.PortalManager.LP.dictionary.noDictionaryNoticeText
+        "noElement": MWF.xApplication.portal.PortalManager.LP.dictionary.noDictionaryNoticeText,
+        "categoryEnable": false,
+        "itemStyle": "line",
+        "name": 'portal.DictionaryExplorer'
     },
     openFindDesigner: function(){
         this.app.options.application.moduleType = "portal";

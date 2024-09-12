@@ -1937,6 +1937,14 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             }
 
         }.bind(this));
+    },
+    openApp: function (){
+        layout.openApplication(null, 'portal.PortalManager', {
+            application: this.application,
+            appId: 'portal.PortalManager'+this.application.id
+        }, {
+            "navi": 0
+        });
     }
 });
 

@@ -1616,6 +1616,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "clearNoDomModule": "清除未在HTML树中的组件配置",
         "autoSave": "自动保存",
         "brush": "格式刷",
-        "viewAllVersion": "查看所有表单版本"
+        "viewAllVersion": "查看所有表单版本",
+        "add": "新建",
+        "gotoApp": "打开所在应用"
     }
 };

@@ -44,6 +44,16 @@ MWF.xApplication.portal.ScriptDesigner.LP = {
             "fontSize": "字体大小",
             "style": "样式",
             "scriptEditor": "脚本编辑器",
-            "viewAllVersions": "查看所有脚本版本"
-        }
+            "viewAllVersions": "查看所有脚本版本",
+            "add": "新建",
+            "gotoApp": "打开所在应用"
+        },
+        "sorkKeyNote": "-排序-",
+        "createTime": "创建时间",
+        "updateTime": "更新时间",
+        "asc": "正序",
+        "desc": "倒序",
+        "searchPlacholder": "输入名称/别名/id搜索",
+        "searchAndSort": "排序和搜索",
+        "duplicateNewNote": "已有新脚本，请先保存"
 };

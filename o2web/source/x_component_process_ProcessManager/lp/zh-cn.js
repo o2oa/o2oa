@@ -40,6 +40,13 @@ MWF.xApplication.process.ProcessManager.LP = {
     "deleteProcessTitle": "删除设计确认",
     "deleteProcess": "删除选中的流程，同时也会删除选中流程的流转中实例。确定要删除选中的流程吗？",
 
+    "sorkKeyNote": "-排序-",
+    "createTime": "创建时间",
+    "updateTime": "更新时间",
+    "asc": "正序",
+    "desc": "倒序",
+    "searchPlacholder": "输入名称/别名/id搜索",
+
 	"process": {
         "create": "新建流程",
         "search": "搜索流程",

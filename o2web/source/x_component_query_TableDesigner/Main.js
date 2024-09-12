@@ -56,6 +56,9 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
         }).inject(this.viewListNode);
 
         this.viewListResizeNode = new Element("div", {"styles": this.css.viewListResizeNode}).inject(this.viewListNode);
+
+        this.createListTitleNodes();
+
         this.viewListAreaSccrollNode = new Element("div", {"styles": this.css.viewListAreaSccrollNode}).inject(this.viewListNode);
         this.viewListAreaNode = new Element("div", {"styles": this.css.viewListAreaNode}).inject(this.viewListAreaSccrollNode);
 
@@ -63,9 +66,26 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
 
         this.loadViewList();
     },
+
+    openApp: function (){
+        layout.openApplication(null, 'query.QueryManager', {
+            application: this.application,
+            appId: 'query.QueryManager'+this.application.id
+        }, {
+            "navi":2
+        });
+    },
+
     loadViewList: function(){
         debugger;
+        if( this.itemArray && this.itemArray.length  ){
+            this.itemArray.each(function(i){
+                if(!i.data.isNewTable)i.node.destroy();
+            });
+        }
+        this.itemArray = [];
         this.actions.listTable(this.application.id, function (json) {
+            this.checkSort(json.data);
             json.data.each(function(table){
                 this.createListViewItem(table);
             }.bind(this));
@@ -85,6 +105,18 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
             "mouseover": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem_over);},
             "mouseout": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem);}
         });
+
+        if( table.id === this.options.id ){
+            listTableItem.setStyles(this.css.listViewItem_current);
+            this.currentListViewItem = listTableItem;
+        }
+
+        var itemObj = {
+            node: listTableItem,
+            data: table
+        };
+        this.itemArray.push(itemObj);
+        this.checkShow(itemObj);
     },
     //打开数据表
     loadTableByData: function(node, e){

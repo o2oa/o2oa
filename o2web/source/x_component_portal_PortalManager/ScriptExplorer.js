@@ -9,7 +9,10 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer = new Class({
             "search": MWF.xApplication.portal.PortalManager.LP.script.search,
             "searchText": MWF.xApplication.portal.PortalManager.LP.script.searchText,
             "noElement": MWF.xApplication.portal.PortalManager.LP.script.noScriptNoticeText
-        }
+        },
+        "categoryEnable": false,
+        "itemStyle": "line",
+        "name": 'portal.ScriptExplorer'
     },
     openFindDesigner: function(){
         this.app.options.application.moduleType = "portal";
@@ -199,12 +202,15 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer = new Class({
         };
     },
     loadElementList: function(){
-	    debugger;
+	    this.itemList = [];
         this._loadItemDataList(function(json){
             if (json.data.length){
+                this.checkSort(json.data);
                 json.data.each(function(item){
                     var itemObj = this._getItemObject(item);
-                    itemObj.load()
+                    itemObj.load();
+                    this.checkShow(itemObj);
+                    this.itemList.push(itemObj);
                 }.bind(this));
             }else{
                 var noElementNode = new Element("div.noElementNode", {
@@ -217,6 +223,7 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer = new Class({
                     }.bind(this));
                 }
             }
+            this.loadTopNode();
             if( !this.isSetContentSize ){
                 this.setContentSize();
                 this.isSetContentSize = true;

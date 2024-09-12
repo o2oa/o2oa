@@ -10,7 +10,10 @@ MWF.xApplication.query.QueryManager.ViewExplorer = new Class({
             "search": MWF.xApplication.query.QueryManager.LP.view.search,
             "searchText": MWF.xApplication.query.QueryManager.LP.view.searchText,
             "noElement": MWF.xApplication.query.QueryManager.LP.view.noViewNoticeText
-        }
+        },
+        "categoryEnable": true,
+        "itemStyle": "card",
+        "name": 'query.ViewExplorer'
     },
 
     openFindDesigner: function(){

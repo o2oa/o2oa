@@ -160,5 +160,78 @@
 	"propertyContentArea": {
 		"overflow": "hidden",
 		"margin-bottom": "2px"
-	}
+	},
+
+    "titleActionArea":{
+        "float" : "right",
+         "display": "flex",
+          "align-items":"center",
+          "height":"100%",
+          "flex": "1",
+           "justify-content": "flex-end"
+    },
+    "moreAction":{
+         "margin-right": "10px",
+         "width": "20px",
+         "height": "20px",
+         "cursor": "pointer",
+         "background": "url(../x_component_query_ViewDesigner/$Main/default/toolbar/more.png) no-repeat center center",
+         "background-size": "12px 12px"
+     },
+     "toolbarNode":{
+       "border-bottom": "1px dashed rgb(204, 204, 204)",
+       "width": "100%",
+       "background": "#fff",
+       "display": "none",
+       "padding-bottom": "10px"
+    },
+	"itemSortArea":{
+        "height": "38px",
+        "line-height": "38px",
+        "text-align": "center"
+    },
+    "itemSortSelect":{
+        "border": "1px solid #ccc",
+        "height": "20px",
+        "width": "90%"
+    },
+    "searchArea":{
+        "border": "1px solid #ccc",
+        "padding": "0 0 0 2px",
+        "overflow": "hidden",
+        "width": "90%",
+        "margin-left": "calc( 5% - 4px )",
+         "text-align": "center"
+    },
+    "searchInput": {
+        "width": "calc( 100% - 46px )",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "13px",
+        "color": "#666",
+        "border": "0",
+        "float": "left",
+        "background": "inherit"
+    },
+    "searchButton":{
+        "cursor": "pointer",
+        "width": "20px",
+        "height": "20px",
+        "line-height": "20px",
+        "color": "#ccc",
+        "float": "right",
+        "background": "url(../x_component_process_ProcessManager/$Explorer/default/icon/search.png) no-repeat center center",
+        "background-size": "12px 12px"
+    },
+    "searchCancelButton":{
+        "cursor": "pointer",
+        "width": "20px",
+        "height": "20px",
+        "line-height": "20px",
+        "color": "#ccc",
+        "float": "right",
+        "background": "url(../x_component_process_ProcessManager/$Explorer/default/icon/icon_clear.png) no-repeat center center",
+        "display": "none",
+        "background-size": "12px 12px"
+    }
 }
