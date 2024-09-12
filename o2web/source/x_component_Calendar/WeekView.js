@@ -376,6 +376,9 @@ MWFCalendarWeekView.Calendar = new Class({
                 }).inject(head);
                 th.store("date", d.format("%Y-%m-%d") );
                 th.addEvent( "click", function(){
+                    if( _self.app.topMenuNodeMap['toDay'] ){
+                        _self.app.switchTopMenuNode( _self.app.topMenuNodeMap['toDay'] );
+                    }
                     _self.app.toDay( this.retrieve("date") )
                 }.bind(th));
                 d.increment("day", 1);

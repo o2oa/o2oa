@@ -279,6 +279,7 @@ MWF.xApplication.Calendar.Main = new Class({
         return actionNode;
     },
     loadTopMenus: function(){
+        this.topMenuNodeMap = {};
         //this.createTopMenu(this.lp.myCalendar, "icon_huiyi", "toMyCalendar");
         this.createTopMenu(this.lp.month, "o2icon-month", "toMonth");
         this.createTopMenu(this.lp.week, "o2icon-week", "toWeek");
@@ -300,6 +301,8 @@ MWF.xApplication.Calendar.Main = new Class({
 
         var actionNode = new Element("div", {"styles": this.css.topMenuNode}).inject(this.topMenu);
         var actionIconNode = new Element("div."+icon, {"styles": this.css.topMenuIconNode}).inject(actionNode);
+
+        this.topMenuNodeMap[action] = actionNode;
 
         // actionIconNode.setStyle("background", "url(../x_component_Calendar/$Main/default/icon/"+icon+".png) no-repeat center center");
 
@@ -331,19 +334,7 @@ MWF.xApplication.Calendar.Main = new Class({
             //"mousedown": function(){this.setStyles(_self.css.topMenuNode_down);},
             //"mouseup": function(){this.setStyles(_self.css.topMenuNode_over);},
             "click": function(){
-                if( this.node != _self.currentTopMenuNode ){
-                    this.node.setStyles( _self.css.topMenuNode_down );
-                    this.node.addClass("mainColor_color");
-                    this.node.retrieve("iconNode").setStyles( _self.css.topMenuIconNode_over ).addClass("mainColor_color");
-                    // this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
-                }
-                if( _self.currentTopMenuNode && this.node != _self.currentTopMenuNode){
-                    _self.currentTopMenuNode.setStyles( _self.css.topMenuNode );
-                    _self.currentTopMenuNode.removeClass("mainColor_color");
-                    _self.currentTopMenuNode.retrieve("iconNode").setStyles( _self.css.topMenuIconNode ).removeClass("mainColor_color");
-                    // _self.currentTopMenuNode.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+_self.currentTopMenuNode.retrieve("icon")+".png) no-repeat center center" );
-                }
-                _self.currentTopMenuNode = this.node;
+                _self.switchTopMenuNode( this.node );
                 if (_self[action]) _self[action].apply(_self);
             }.bind({ node : actionNode })
         });
@@ -357,6 +348,19 @@ MWF.xApplication.Calendar.Main = new Class({
         }
         this.resizeNodes();
         return actionNode;
+    },
+    switchTopMenuNode:function ( node ){
+        if( node !== this.currentTopMenuNode ){
+            node.setStyles( this.css.topMenuNode_down );
+            node.addClass("mainColor_color");
+            node.retrieve("iconNode").setStyles( this.css.topMenuIconNode_over ).addClass("mainColor_color");
+        }
+        if( this.currentTopMenuNode && node !== this.currentTopMenuNode){
+            this.currentTopMenuNode.setStyles( this.css.topMenuNode );
+            this.currentTopMenuNode.removeClass("mainColor_color");
+            this.currentTopMenuNode.retrieve("iconNode").setStyles( this.css.topMenuIconNode ).removeClass("mainColor_color");
+        }
+        this.currentTopMenuNode = node;
     },
 
     hideCurrentView: function(){
