@@ -215,7 +215,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
         var size = this.paperNode.getSize();
         this.playLogNode = this.createWorkLogNode([log], activity);
-        this.playLogNode.setStyle("display", "block");
+        this.playLogNode.setStyle("display", this.playLogNode.get("html") ? "block" : "none");
         var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
         this.playLogNode.setPosition({"x": p.x, "y": p.y});
     },
