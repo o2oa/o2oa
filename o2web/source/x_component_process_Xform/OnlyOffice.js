@@ -348,7 +348,15 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 "showReviewChanges" : this.json.showReviewChanges
             }
         }
-        docEditor = new DocsAPI.DocEditor("_" + this.documentId, this.document.editor);
+
+        if (window.CXO_API && window.CXO_API.CXEditor) {
+            docEditor = new window.CXO_API.CXEditor("_" + this.documentId, this.document.editor);
+        } else if (window.DocsAPI && window.DocsAPI.DocEditor) {
+            docEditor = new window.DocsAPI.DocEditor("_" + this.documentId, this.document.editor);
+        } else {
+            console.error("Editor API not found");
+            throw new Error("Editor API not found");
+        }
         this.onlyOffice = docEditor;
 
     },
