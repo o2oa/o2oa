@@ -98,6 +98,16 @@ public class ActionWriteImConfig extends BaseAction {
 		private Boolean enableClearMsg;
 		@FieldDescribe("是否开启撤回聊天消息的功能.")
 		private Boolean enableRevokeMsg;
+		@FieldDescribe("撤回时效（分钟数）")
+		private Integer revokeOutMinute;
+
+		public Integer getRevokeOutMinute() {
+			return revokeOutMinute;
+		}
+
+		public void setRevokeOutMinute(Integer revokeOutMinute) {
+			this.revokeOutMinute = revokeOutMinute;
+		}
 
 		public Boolean getEnableClearMsg() {
 			return enableClearMsg;
