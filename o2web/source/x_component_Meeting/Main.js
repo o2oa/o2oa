@@ -1293,7 +1293,12 @@ MWF.xApplication.Meeting.Config = new Class({
 
         this.app.notice( this.app.lp.config_saveSuccess, "success" );
 
-        this.hide();
+        //this.hide();
+
+        if(this.scriptEditor)this.scriptEditor.destroy();
+        this.node.destroy();
+        this.app.node.removeEvent("mousedown", this.hideFun);
+        this.app.refresh();
     },
     show: function(){
         this.node.setStyles(MWF.AC.isMeetingAdministrator() ? this.css.configNode_admin : this.css.configNode);
