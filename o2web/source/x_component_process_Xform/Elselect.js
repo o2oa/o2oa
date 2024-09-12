@@ -308,7 +308,11 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                     }
                 }else if( this.json.filterable && ['visible-change','focus'].contains(k) ){
                     var input = this.node.getElement('.el-input__inner');
-                    if( input )input.removeAttribute('readonly');
+                    if( input ){
+                        window.setTimeout(function(){
+                            input.removeAttribute('readonly');
+                        }, 200);
+                    }
                 }
                 if (this.json.events && this.json.events[k] && this.json.events[k].code){
                     this.form.Macro.fire(this.json.events[k].code, this, arguments);
@@ -319,7 +323,11 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         _afterLoaded: function (){
             if( this.json.filterable ){
                 var input = this.node.getElement('.el-input__inner');
-                if( input )input.removeAttribute('readonly');
+                if( input ){
+                    window.setTimeout(function (){
+                        input.removeAttribute('readonly');
+                    }, 200);
+                }
             }
         },
     __setReadonly: function(data){
