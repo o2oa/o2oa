@@ -1,17 +1,16 @@
 package com.x.general.assemble.control.jaxrs.qrcode;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoFile;
+import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionPostCreate extends BaseAction {
 
@@ -22,7 +21,8 @@ public class ActionPostCreate extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
 		byte[] bytes = this.create(wi.getWidth(), wi.getHeight(), wi.getText());
-		Wo wo = new Wo(bytes, this.contentType(false, FILENAME), this.contentDisposition(false, FILENAME));
+		Wo wo = new Wo();
+		wo.setValue(Base64.encodeBase64String(bytes));
 		result.setData(wo);
 		return result;
 	}
@@ -67,12 +67,9 @@ public class ActionPostCreate extends BaseAction {
 	}
 
 	@Schema(name = "com.x.general.assemble.control.jaxrs.qrcode.ActionPostCreate$Wo")
-	public class Wo extends WoFile {
+	public class Wo extends WrapString {
 		private static final long serialVersionUID = -6210739068105920249L;
 
-		public Wo(byte[] bytes, String contentType, String contentDisposition) {
-			super(bytes, contentType, contentDisposition);
-		}
 	}
 
 }
