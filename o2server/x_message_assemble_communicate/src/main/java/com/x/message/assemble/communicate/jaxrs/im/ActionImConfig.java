@@ -33,8 +33,8 @@ public class ActionImConfig extends BaseAction {
 				wo = this.convertToWrapIn(je, Wo.class);
 			}
 		}
-		wo.setVersionNo(200);
-		wo.setChangelog("新增群聊删除功能和单聊会话个人删除功能！");
+		wo.setVersionNo(300);
+		wo.setChangelog("新增转发、收藏等功能！");
 		result.setData(wo);
 		return result;
 	}
