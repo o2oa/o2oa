@@ -120,12 +120,18 @@ public class HandoverJob extends AbstractJob {
 		list = listReview(business, handover);
 		for (String id : list){
 			Review review = emc.find(id, Review.class);
+			Review targetReview = getReview(business, review.getJob(), handover.getTargetPerson());
 			emc.beginTransaction(Review.class);
-			if(!hasReview(business, review.getJob(), handover.getTargetPerson())){
+			if(targetReview == null){
+				if(review.getPerson().equals(review.getCreatorPerson())){
+					review.setCreatorPerson(handover.getTargetPerson());
+				}
 				review.setPerson(handover.getTargetPerson());
-				emc.commit();
 				jobSet.add(review.getJob());
 			}else{
+				if(review.getPerson().equals(review.getCreatorPerson())){
+					targetReview.setCreatorPerson(handover.getTargetPerson());
+				}
 				emc.remove(review);
 			}
 			emc.commit();
@@ -176,6 +182,11 @@ public class HandoverJob extends AbstractJob {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		Long count = emc.countEqualAndEqual(Review.class, Review.job_FIELDNAME, job, Review.person_FIELDNAME, person);
 		return count > 0;
+	}
+
+	private Review getReview(Business business, String job, String person) throws Exception{
+		EntityManagerContainer emc = business.entityManagerContainer();
+		return emc.firstEqualAndEqual(Review.class, Review.job_FIELDNAME, job, Review.person_FIELDNAME, person);
 	}
 
 	private List<Read> listRead(Business business, Handover handover) throws Exception{
