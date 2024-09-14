@@ -45,9 +45,11 @@ MWF.xApplication.IMV2.LP = {
 	"modifyGroupName": "修改群名",
 	"groupName": "群名",
 	"deleteConversation": "删除会话",
+	"msgHistory": "聊天记录",
 
 	"msgMenuItemRevokeMemberMsg": "撤回成员消息",
 	"msgMenuItemRevokeMsg": "撤回",
+	"msgMenuItemSelectMsg": "多选",
 	"msgLoadNoMoreData": "没有更多数据了！",
 	"msgNoBusinessId": "没有业务ID！",
 	"msgNoBusinessPerson": "没有查询到业务相关的人员，无法创建聊天！",

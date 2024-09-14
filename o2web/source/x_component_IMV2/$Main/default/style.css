@@ -362,11 +362,26 @@
   border-radius: 3px;
 }
 
+
+/* 聊天消息样式 */
+.none {
+  display: none;
+}
+.block {
+  display: block;
+}
+.chat-msg {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-msg-checkbox {
+  width: 32px;
+}
+
 .chat-sender {
-  clear: both;
-  /* font-size: 80%; */
-  float: left;
-  width: 75%;
+  flex: 1;
 }
 .chat-sender-avatar {
   float: left;
@@ -389,9 +404,8 @@
 .chat-sender-box {
   background-color: white;
   margin: 0 10px 10px 10px;
-  padding: 10px 10px 10px 10px;
+  padding: 10px 10px 10px 0px;
   border-radius: 7px;
-  text-indent: -12px;
   word-wrap: break-word;
   white-space: pre-line;
   display: inline-block;
@@ -428,10 +442,7 @@
 }
 
 .chat-receiver {
-  clear: both;
-  /* font-size: 80%; */
-  float: right;
-  width: 75%;
+  flex: 1;
 }
 .chat-receiver-avatar {
   float: right;
@@ -466,7 +477,7 @@
 .chat-receiver-box {
   background-color: #b2e281;
   margin: 0px 10px 10px 10px;
-  padding: 10px 10px 10px 10px;
+  padding: 10px 0px 10px 10px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
@@ -531,7 +542,7 @@
   border-style: solid;
   border-color: transparent white transparent transparent;
   position: relative;
-  left: -22px;
+  left: -12px;
   top: 3px;
   float: left;
 }
@@ -543,7 +554,7 @@
   border-style: solid;
   border-color: transparent transparent transparent #b2e281;
   position: relative;
-  right: -22px;
+  right: -12px;
   top: 3px;
   float: right;
 }

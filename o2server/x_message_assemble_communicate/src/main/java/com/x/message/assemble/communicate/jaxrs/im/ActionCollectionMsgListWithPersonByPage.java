@@ -38,7 +38,15 @@ public class ActionCollectionMsgListWithPersonByPage extends BaseAction {
 				if (StringUtils.isNotEmpty(wo.getMessageId()) ) {
 					IMMsg message =  emc.find(wo.getMessageId(), IMMsg.class);
 					if (message != null) {
-						wo.setMessage(message);
+						IMMsgWo messageWo = IMMsgWo.copier.copy(message);
+						// 引用消息
+						if (StringUtils.isNotEmpty(messageWo.getQuoteMessageId())) {
+							IMMsg quoteMessage =  emc.find(messageWo.getQuoteMessageId(), IMMsg.class);
+							if (quoteMessage != null) {
+								messageWo.setQuoteMessage(quoteMessage);
+							}
+						}
+						wo.setMessage(messageWo);
 					}
 				}
 			}
@@ -57,14 +65,35 @@ public class ActionCollectionMsgListWithPersonByPage extends BaseAction {
 				JpaObject.FieldsInvisible);
 
 		@FieldDescribe("关联消息.")
-		private IMMsg message;
+		private IMMsgWo message;
 
-		public IMMsg getMessage() {
+
+		public IMMsgWo getMessage() {
 			return message;
 		}
 
-		public void setMessage(IMMsg message) {
+		public void setMessage(
+				IMMsgWo message) {
 			this.message = message;
+		}
+	}
+
+	public static class IMMsgWo extends IMMsg {
+
+
+		private static final long serialVersionUID = -463562231776143538L;
+		static WrapCopier<IMMsg, IMMsgWo> copier = WrapCopierFactory.wo(IMMsg.class, IMMsgWo.class, null,
+				JpaObject.FieldsInvisible);
+
+		@FieldDescribe("引用消息.")
+		private IMMsg quoteMessage;
+
+		public IMMsg getQuoteMessage() {
+			return quoteMessage;
+		}
+
+		public void setQuoteMessage(IMMsg quoteMessage) {
+			this.quoteMessage = quoteMessage;
 		}
 	}
 }
