@@ -17,8 +17,8 @@
 <!-- 聊天内容 -->
 <div class="chat-content" data-o2-element="chatContentNode">
 </div>
-<!-- 聊天操作 -->
-<div class="chat-bottom-area" data-o2-element="chatBottomAreaNode">
+<!-- 底部聊天操作区 -->
+<div class="chat-bottom-area block" data-o2-element="chatBottomAreaNode">
   <div class="chat-bottom-area-tool" data-o2-element="chatBottomAreaToolNode">
     <img src="../x_component_IMV2/$Main/default/icons/icon-emoji.png" data-o2-element="chatBottomAreaToolEmojiNode" data-o2-events="click:showEmojiBox" />
     <img src="../x_component_IMV2/$Main/default/icons/icon-file.png" data-o2-element="chatBottomAreaToolFileNode" data-o2-events="click:showChooseFile" />
@@ -31,5 +31,30 @@
     <div class="chat-bottom-area-send" data-o2-element="chatBottomAreaSendAreaNode">
       <span class="chat-bottom-area-send-btn" data-o2-element="chatBottomAreaSendBtnNode" data-o2-events="click:sendMsg">{{$.lp.send}}</span>
     </div>
+  </div>
+</div>
+<!-- 选择模式下 底部操作区 -->
+<div class="chat-bottom-area none" data-o2-element="chatBottomSelectModeAreaNode">
+  <div class="chat-bottom-area-select-box">
+    <div class="chat-bottom-area-select-box-main">
+      <div class="btn-area">
+        <img src="../x_component_IMV2/$Main/default/icons/forward.png" data-o2-element="chatBottomAreaForwardNode" data-o2-events="click:forwardOneByOne" />
+        <div class="title">逐条转发</div>
+      </div>
+      <div class="btn-area">
+        <img src="../x_component_IMV2/$Main/default/icons/merge_forward.png" data-o2-element="chatBottomAreaMergeForwardNode" data-o2-events="click:forwardMerge" />
+        <div class="title">合并转发</div>
+      </div>
+      <div class="btn-area">
+        <img src="../x_component_IMV2/$Main/default/icons/collection.png" data-o2-element="chatBottomAreaCollectionNode" data-o2-events="click:collectionMsgs" />
+        <div class="title">收藏</div>
+      </div>
+    </div>
+    <div class="chat-bottom-area-select-box-close">
+      <div class="btn-close" data-o2-events="click:cancelSelectMode">
+        关闭
+      </div>
+    </div>
+
   </div>
 </div>

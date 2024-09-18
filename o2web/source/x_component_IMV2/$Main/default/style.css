@@ -288,13 +288,13 @@
   padding: 0 20px;
 }
 
+ /* 底部聊天输入区 */
 .chat-bottom-area {
   height: 155px;
   overflow: hidden;
   border-top: 1px solid #f1f1f1;
   background: #ffffff;
 }
-
 .chat-bottom-area-tool {
   position: relative;
   padding: 0 8px;
@@ -302,15 +302,12 @@
   line-height: 38px;
   font-size: 0;
 }
-
 .chat-bottom-area-tool img {
   margin: 7px 10px;
 }
-
 .chat-bottom-area-textarea {
   margin-left: 10px;
 }
-
 .chat-bottom-area-textarea textarea {
   display: block;
   width: 100%;
@@ -322,12 +319,10 @@
   resize: none;
   background: 0 0;
 }
-
 .chat-bottom-area-send-space {
   position: relative;
   height: 46px;
 }
-
 .chat-bottom-area-key-tips {
   position: absolute;
   right: 105px;
@@ -336,7 +331,6 @@
   line-height: 32px;
   color: #848484;
 }
-
 .chat-bottom-area-send {
   position: absolute;
   right: 15px;
@@ -345,11 +339,9 @@
   line-height: 32px;
   cursor: pointer;
 }
-
 .chat-bottom-area-send-btn {
   border-radius: 3px 0 0 3px;
 }
-
 .chat-bottom-area-send span {
   display: inline-block;
   vertical-align: top;
@@ -362,8 +354,53 @@
   border-radius: 3px;
 }
 
+.chat-bottom-area-select-box {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+.chat-bottom-area-select-box-main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  height: 100%;
+}
+.chat-bottom-area-select-box-main .btn-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.chat-bottom-area-select-box-main .btn-area img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+.chat-bottom-area-select-box-main .btn-area .title {
+  color: #848484;
+}
+.chat-bottom-area-select-box-close {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chat-bottom-area-select-box-close .btn-close {
+  height: 32px;
+  line-height: 32px;
+  cursor: pointer;
+  border-radius: 3px 0 0 3px;
+  padding: 0 20px;
+  background-color: #F7F7F7;
+  color: #666666;
+}
 
-/* 聊天消息样式 */
+  /* 聊天消息样式 */
 .none {
   display: none;
 }

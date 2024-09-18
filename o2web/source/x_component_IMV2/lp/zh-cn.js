@@ -46,10 +46,17 @@ MWF.xApplication.IMV2.LP = {
 	"groupName": "群名",
 	"deleteConversation": "删除会话",
 	"msgHistory": "聊天记录",
+	"msgTypeHistory": "[聊天记录]",
+	"msgTypeImage": "[图片]",
 
 	"msgMenuItemRevokeMemberMsg": "撤回成员消息",
 	"msgMenuItemRevokeMsg": "撤回",
 	"msgMenuItemSelectMsg": "多选",
+	"msgMenuItemForwardMsg": "转发",
+	"msgMenuItemCollectionMsg": "收藏",
+	"msgMenuItemQuoteMsg": "引用",
+
+
 	"msgLoadNoMoreData": "没有更多数据了！",
 	"msgNoBusinessId": "没有业务ID！",
 	"msgNoBusinessPerson": "没有查询到业务相关的人员，无法创建聊天！",
@@ -57,7 +64,9 @@ MWF.xApplication.IMV2.LP = {
 	"msgNeedChoosePerson": "请选择至少一个人员！",
 	"msgShareNoBody": "没有获取到消息，无法分享、转发！",
 	"msgShareError": "分享、转发消息失败！",
-	
+	"msgNeedSelectMessage": "请至少选择一条消息！",
+	"msgCollectionSuccess": "收藏成功！",
+
 	
 	"settingsClearMsg": "是否开启会话删除功能",
 	"settingsRevokeMsg": "是否开启聊天消息撤回功能",
@@ -67,6 +76,7 @@ MWF.xApplication.IMV2.LP = {
 	"send": "发送",
 	"sendKeyTips": "Ctrl + Enter 换行",
 	"file": "[文件]",
+
 	"messageXadminNotSupport": "xadmin用户无法使用聊聊，请切换正常的用户登录！",
 	"messageDeleteSingleConversationAlert": "确定要删除当前会话吗，删除后将看不到以前的聊天记录？",
 	"messageDeleteGroupConversationAlert": "确定要删除当前会话吗，这会解散当前群聊并删除聊天记录？"
