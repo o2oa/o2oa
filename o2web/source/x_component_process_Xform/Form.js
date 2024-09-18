@@ -371,6 +371,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 styleNode.appendChild(cssTextNode);
             }
             return "css" + id;
+        }else if( cssText ){
+            return "css" + this.json.id.replace(/\-/g, "");
         }
         return "";
     },
