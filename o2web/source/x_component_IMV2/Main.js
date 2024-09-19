@@ -492,6 +492,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		this.hasMoreMsgData = false; // 是否还有更多的消息 翻页
 		this.selectMode = false; // 选择模式
 		this.selectMsgList = []; // 选择的列表
+		this.quoteMessage = null; // 引用消息
 		this.load();
 	},
 	htmlSymbols: function() {
@@ -1280,9 +1281,12 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			"createTime": time,
 			"sendStatus": 1
 		};
+		if (this.quoteMessage && this.quoteMessage.id) {
+			textMessage.quoteMessageId = this.quoteMessage.id;
+			textMessage.quoteMessage = this.quoteMessage;
+		}
 		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
 			function (json) {
-				//data = json.data;
 				console.log(this.lp.sendSuccess);
 			}.bind(this),
 			function (error) {
@@ -1291,6 +1295,81 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		this.messageList.push(textMessage);
 		this._buildReceiver(body, distinguishedName, false, textMessage);
 		this.main._refreshConvMessage(textMessage);
+		this.deleteQuoteMessage();
+	},
+	// 创建引用消息的 Node 节点
+	_newQuoteMessageElement: function (msg, parentNode) {
+		var name = msg.createPerson;
+		if (msg.createPerson.indexOf("@") !== -1) {
+			name = name.substring(0, msg.createPerson.indexOf("@"));
+		}
+		name += ": ";
+		var msgBody = JSON.parse(msg.body);
+		if (msgBody.type !== "emoji" && msgBody.type !== "image") {
+			name += this.contentEscapeBackToSymbol(msgBody.body)
+			if (msgBody.type === "file") {
+				name += " " + msgBody.fileName;
+			}
+		}
+		let quoteMessageNode = new Element("div", {"class": "quote-message-box"}).inject(parentNode);
+		new Element("div", {"text": name , "class": "quote-message-desc" }).inject(quoteMessageNode)
+		if (msgBody.type === "emoji") {
+			var img = "";
+			for (var i = 0; i < this.main.emojiList.length; i++) {
+				if (msgBody.body === this.main.emojiList[i].key) {
+					img = this.main.emojiList[i].path;
+				}
+			}
+			new Element("img", { "src": img, "class": "quote-message-emoji" }).inject(quoteMessageNode);
+		} else if (msgBody.type === "image") {
+			var url = this._getFileUrlWithWH(msgBody.fileId, 48, 48);
+			new Element("img", { "src": url, "class": "quote-message-image" }).inject(quoteMessageNode);
+		}
+		return quoteMessageNode;
+	},
+	// 添加引用消息
+	addQuoteMessage: function (msg) {
+		if (this.quoteMessage) {
+			this.deleteQuoteMessage();
+		}
+		this.quoteMessage = msg;
+		if (!this.quoteMessage) {
+			console.error('引用消息为空！！！！');
+			return;
+		}
+
+		let node = this._newQuoteMessageElement(msg, this.chatBottomAreaQuoteMessageNode);
+
+		// var name = msg.createPerson;
+		// if (msg.createPerson.indexOf("@") !== -1) {
+		// 	name = name.substring(0, msg.createPerson.indexOf("@"));
+		// }
+		// name += ": ";
+		// var msgBody = JSON.parse(msg.body);
+		// if (msgBody.type !== "emoji") {
+		// 	name += this.contentEscapeBackToSymbol(msgBody.body)
+		// }
+		// let quoteMessageNode = new Element("div", {"class": "quote-message-box"}).inject(this.chatBottomAreaQuoteMessageNode);
+		// new Element("div", {"text": name , "class": "quote-message-desc" }).inject(quoteMessageNode)
+		// if (msgBody.type === "emoji") {
+		// 	var img = "";
+		// 	for (var i = 0; i < this.main.emojiList.length; i++) {
+		// 		if (msgBody.body === this.main.emojiList[i].key) {
+		// 			img = this.main.emojiList[i].path;
+		// 		}
+		// 	}
+		// 	new Element("img", { "src": img, "class": "quote-message-emoji" }).inject(quoteMessageNode);
+		// }
+		let closeNode = new Element("div", {"class": "quote-message-close", "title": "关闭"}).inject(node)
+		closeNode.addEvent("click", function (){
+			this.deleteQuoteMessage()
+		}.bind(this))
+	},
+	deleteQuoteMessage: function () {
+		this.quoteMessage = null;
+		for (const child of this.chatBottomAreaQuoteMessageNode.children) {
+			 child.remove()
+		}
 	},
 	//点击发送消息
 	sendMsg: function () {
@@ -1366,7 +1445,11 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				name = name.substring(0, msg.createPerson.indexOf("@"));
 			}
 			var body = JSON.parse(msg.body)
-			desc += name + ": " + body.body + "\n"
+			var content = body.body;
+			if (body.type === "text") {
+				content = this.contentEscapeBackToSymbol(body.body)
+			}
+			desc += name + ": " + content + "\n"
 		}
 		var title = "群聊的聊天记录"
 		if (this.data.type === "single") {
@@ -1543,7 +1626,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		})
 	},
 	// 点击消息
-	_clickMsgItem: function (e) {
+	_clickMsgItem: function (e, isQuoteMsg) {
+		e.stopPropagation();
+		console.debug('点击消息，isQuoteMsg ' + isQuoteMsg);
 		var msg = e.event.currentTarget.retrieve("msg");
 		if (!msg || !msg.body) {
 			console.error('错误的 target！！！')
@@ -1551,6 +1636,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 		var msgBody = JSON.parse(msg.body);
 		if (this.selectMode) {
+			if (isQuoteMsg) {
+				return;
+			}
 			this._selectOrUnSelectMsg(msg)
 		} else {
 			if (msgBody.type === "image") {
@@ -1560,6 +1648,12 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				o2.api.form.openWork(msgBody.work, "", title || "" );
 			} else  if (msgBody.type === "messageHistory") {
 				console.log('聊天记录点击')
+			} else if (msgBody.type === "file") {
+				var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
+				window.open(downloadUrl);
+			} else if (msgBody.type === "location") {
+				var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
+				window.open(url);
 			}
 		}
 	},
@@ -1647,16 +1741,14 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			var url = this._getFileDownloadUrl(msgBody.fileId);
 			new Element("audio", { "src": url, "controls": "controls", "preload": "preload" }).inject(lastNode);
 		} else if (msgBody.type === "location") {
-			var mapBox = new Element("span").inject(lastNode);
+			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
 			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
-			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
-			new Element("a", { "href": url, "target": "_blank", "text": msgBody.address }).inject(mapBox);
+			new Element("span", {   "text": msgBody.address }).inject(mapBox);
 		} else if (msgBody.type === "file") { //文件
-			var mapBox = new Element("span").inject(lastNode);
+			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
 			var fileIcon = this._getFileIcon(msgBody.fileExtension);
 			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
-			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
-			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
+			new Element("span", {"text": msgBody.fileName }).inject(mapBox);
 		} else if (msgBody.type === "process") {
 			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
 			// 流程名称
@@ -1692,6 +1784,20 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else {//text
 			new Element("span", { "text": this.contentEscapeBackToSymbol(msgBody.body) }).inject(lastNode);
 		}
+
+		// 引用消息
+		if (msg.quoteMessage) {
+			let quoteMessage = msg.quoteMessage;
+			let node = this._newQuoteMessageElement(quoteMessage, receiverBodyNode);
+			node.classList.add("chat-sender-quote-msg");
+			node.store("msg", quoteMessage);
+			node.addEvents({
+				"click": function(e) {
+					this._clickMsgItem(e, true);
+				}.bind(this)
+			});
+		}
+
 		if (isTop) {
 			// 添加消息时间
 			this._buildMsgTime(isTop, msg);
@@ -1756,17 +1862,15 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else if (msgBody.type === "audio") {
 			var url = this._getFileDownloadUrl(msgBody.fileId);
 			new Element("audio", { "src": url, "controls": "controls", "preload": "preload" }).inject(lastNode);
-		} else if (msgBody.type === "location") {
-			var mapBox = new Element("span").inject(lastNode);
+		}  else if (msgBody.type === "location") {
+			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
 			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
-			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
-			new Element("a", { "href": url, "target": "_blank", "text": msgBody.address }).inject(mapBox);
+			new Element("span", {   "text": msgBody.address }).inject(mapBox);
 		} else if (msgBody.type === "file") { //文件
-			var mapBox = new Element("span").inject(lastNode);
+			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
 			var fileIcon = this._getFileIcon(msgBody.fileExtension);
 			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
-			var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
-			new Element("a", { "href": downloadUrl, "target": "_blank", "text": msgBody.fileName }).inject(mapBox);
+			new Element("span", {"text": msgBody.fileName }).inject(mapBox);
 		} else if (msgBody.type === "process") {
 			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
 			// 流程名称
@@ -1802,6 +1906,20 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else {//text
 			new Element("span", { "text": this.contentEscapeBackToSymbol(msgBody.body) }).inject(lastNode);
 		}
+
+		// 引用消息
+		if (msg.quoteMessage) {
+			let quoteMessage = msg.quoteMessage;
+			let node = this._newQuoteMessageElement(quoteMessage, receiverBodyNode);
+			node.classList.add("chat-receiver-quote-msg");
+			node.store("msg", quoteMessage);
+			node.addEvents({
+				"click": function(e) {
+					this._clickMsgItem(e, true);
+				}.bind(this)
+			});
+		}
+
 		if (isTop) {
 			// 添加消息时间
 			this._buildMsgTime(isTop, msg);
@@ -2001,7 +2119,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			}
 		}
 		if (menuItemData.id === "quote") {
-
+			this.addQuoteMessage(msg)
 		}
 	},
 	// 撤回消息
@@ -2170,13 +2288,13 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			}
 			if (mBody.type) {
 				convData.lastMessageType = mBody.type;
-				if (mBody.type == "process") {
+				if (mBody.type === "process") {
 					var title = mBody.title;
 					if (title == null || title == "") {
 						title = "【" + mBody.processName + "】- " + this.lp.noTitle;
 					}
 					convData.lastMessage = title;
-				} else if (mBody.type == "cms") {
+				} else if (mBody.type === "cms") {
 					convData.lastMessage = mBody.title || "";
 				}
 			}

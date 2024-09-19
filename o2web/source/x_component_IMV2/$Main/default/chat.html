@@ -27,6 +27,9 @@
     <textarea data-o2-element="chatBottomAreaTextareaNode" placeholder="{{$.lp.enterMessage}}"></textarea>
   </div>
   <div class="chat-bottom-area-send-space">
+    <!--  引用消息区域-->
+    <div class="quote-box" data-o2-element="chatBottomAreaQuoteMessageNode"></div>
+    <!--  发送按钮区域  -->
     <div class="chat-bottom-area-key-tips">{{$.lp.sendKeyTips}}</div>
     <div class="chat-bottom-area-send" data-o2-element="chatBottomAreaSendAreaNode">
       <span class="chat-bottom-area-send-btn" data-o2-element="chatBottomAreaSendBtnNode" data-o2-events="click:sendMsg">{{$.lp.send}}</span>

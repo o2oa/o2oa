@@ -322,19 +322,65 @@
 .chat-bottom-area-send-space {
   position: relative;
   height: 46px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+.quote-box {
+  flex: 1;
+  display: flex;
+  margin-left: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.quote-message-box {
+  background-color: #e1e1e1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  max-width: 90%;
+}
+.quote-message-emoji {
+  width: 32px;
+  height: 32px;
+}
+.quote-message-image {
+  width: 48px;
+  height: 48px;
+}
+.quote-message-desc {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.quote-message-close {
+  background-image: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_off_round_grey.png) !important;
+  width: 28px;
+  height: 28px;
+  margin-left: 5px;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 .chat-bottom-area-key-tips {
-  position: absolute;
-  right: 105px;
-  top: 3px;
+  /*position: absolute;*/
+  /*right: 105px;*/
+  /*top: 3px;*/
+  width: 120px;
   height: 32px;
   line-height: 32px;
   color: #848484;
 }
 .chat-bottom-area-send {
-  position: absolute;
-  right: 15px;
-  top: 3px;
+  /*position: absolute;*/
+  /*right: 15px;*/
+  /*top: 3px;*/
+  width: 84px;
   height: 32px;
   line-height: 32px;
   cursor: pointer;
@@ -419,6 +465,8 @@
 
 .chat-sender {
   flex: 1;
+  margin-bottom: 10px;
+  cursor: pointer;
 }
 .chat-sender-avatar {
   float: left;
@@ -440,13 +488,18 @@
 } */
 .chat-sender-box {
   background-color: white;
-  margin: 0 10px 10px 10px;
+  margin: 0 10px 2px 10px;
   padding: 10px 10px 10px 0px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
   display: inline-block;
   max-width: calc(100% - 80px);
+}
+.chat-sender-quote-msg {
+  float: left;
+  clear: both;
+  margin-left: 45px;
 }
 /* 业务消息专用的外框 */
 .chat-sender-card-box {
@@ -480,6 +533,8 @@
 
 .chat-receiver {
   flex: 1;
+  margin-bottom: 10px;
+  cursor: pointer;
 }
 .chat-receiver-avatar {
   float: right;
@@ -513,13 +568,18 @@
 }
 .chat-receiver-box {
   background-color: #b2e281;
-  margin: 0px 10px 10px 10px;
+  margin: 0px 10px 2px 10px;
   padding: 10px 0px 10px 10px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
   float: right;
   max-width: calc(100% - 80px);
+}
+.chat-receiver-quote-msg {
+  float: right;
+  clear: both;
+  margin-right: 45px;
 }
 /* 业务消息专用的外框 */
 .chat-receiver-card-box {
