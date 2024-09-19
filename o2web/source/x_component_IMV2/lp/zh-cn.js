@@ -38,6 +38,7 @@ MWF.xApplication.IMV2.LP = {
 	"chooseBusinessWorkTitle":"关联工作",
 	"open": "打开",
 	"noTitle": "无标题",
+	"msgCollectionTitle": "我的收藏",
 
 	"openGroupInfo": "群信息",
 	"groupMember": "群成员",
@@ -48,6 +49,7 @@ MWF.xApplication.IMV2.LP = {
 	"msgHistory": "聊天记录",
 	"msgTypeHistory": "[聊天记录]",
 	"msgTypeImage": "[图片]",
+	"msgTypeEmoji": "[表情]",
 
 	"msgMenuItemRevokeMemberMsg": "撤回成员消息",
 	"msgMenuItemRevokeMsg": "撤回",
