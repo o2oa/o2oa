@@ -202,6 +202,7 @@
   display: -webkit-flex;
   flex-direction: column;
   -ms-flex-direction: column;
+  position: relative;
 }
 
 .o2_im_chat_content_title_more {
@@ -327,46 +328,6 @@
   align-items: center;
   gap: 20px;
 }
-.quote-box {
-  flex: 1;
-  display: flex;
-  margin-left: 10px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.quote-message-box {
-  background-color: #e1e1e1;
-  padding: 5px 10px;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  max-width: 90%;
-}
-.quote-message-emoji {
-  width: 32px;
-  height: 32px;
-}
-.quote-message-image {
-  width: 48px;
-  height: 48px;
-}
-.quote-message-desc {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.quote-message-close {
-  background-image: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_off_round_grey.png) !important;
-  width: 28px;
-  height: 28px;
-  margin-left: 5px;
-  background-position: center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
 .chat-bottom-area-key-tips {
   /*position: absolute;*/
   /*right: 105px;*/
@@ -446,12 +407,82 @@
   color: #666666;
 }
 
-  /* 聊天消息样式 */
+/* 聊天消息样式 */
 .none {
   display: none;
 }
 .block {
   display: block;
+}
+/* 引用消息 */
+.quote-box {
+  flex: 1;
+  display: flex;
+  margin-left: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.quote-message-box {
+  background-color: #e1e1e1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  max-width: 90%;
+}
+.quote-message-emoji {
+  width: 32px;
+  height: 32px;
+}
+.quote-message-image {
+  width: 48px;
+  height: 48px;
+}
+.quote-message-desc {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.quote-message-close {
+  background-image: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_off_round_grey.png) !important;
+  width: 28px;
+  height: 28px;
+  margin-left: 5px;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+/* 聊天记录 */
+.chat-msg-list-container {
+  z-index: 99;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.chat-msg-list-box {
+  background-color: #ebebeb;
+  color: rgb(102, 102, 102);
+  z-index: 100;
+  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  border-radius: 6px;
+  width: 100%;
+  height: 70%;
+  max-width: 500px;
+  min-height: 300px;
+  opacity: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.chat-msg-list {
+  display: flex;
+  flex-direction: column;
 }
 .chat-msg {
   width: 100%;
@@ -462,7 +493,6 @@
 .chat-msg-checkbox {
   width: 32px;
 }
-
 .chat-sender {
   flex: 1;
   margin-bottom: 10px;

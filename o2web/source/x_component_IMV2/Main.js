@@ -1625,7 +1625,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			}
 		})
 	},
-	// 点击消息
+	// 点击消息 包含 选择 和 打开 消息
 	_clickMsgItem: function (e, isQuoteMsg) {
 		e.stopPropagation();
 		console.debug('点击消息，isQuoteMsg ' + isQuoteMsg);
@@ -1634,27 +1634,58 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			console.error('错误的 target！！！')
 			return;
 		}
-		var msgBody = JSON.parse(msg.body);
 		if (this.selectMode) {
 			if (isQuoteMsg) {
 				return;
 			}
 			this._selectOrUnSelectMsg(msg)
 		} else {
-			if (msgBody.type === "image") {
-				var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
-				window.open(downloadUrl);
-			} else if (msgBody.type === "process") {
-				o2.api.form.openWork(msgBody.work, "", title || "" );
-			} else  if (msgBody.type === "messageHistory") {
-				console.log('聊天记录点击')
-			} else if (msgBody.type === "file") {
-				var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
-				window.open(downloadUrl);
-			} else if (msgBody.type === "location") {
-				var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
-				window.open(url);
-			}
+			this.openMsgItem(msg)
+		}
+	},
+	// 打开消息
+	openMsgItem: function (msg) {
+		var msgBody = JSON.parse(msg.body);
+		if (msgBody.type === "image") {
+			window.open(this._getFileDownloadUrl(msgBody.fileId));
+		} else if (msgBody.type === "process") {
+			o2.api.form.openWork(msgBody.work, "", title || "" );
+		} else  if (msgBody.type === "messageHistory") {
+			console.log('聊天记录点击')
+			this._openMessageHistory(msg)
+		} else if (msgBody.type === "file") {
+			window.open(this._getFileDownloadUrl(msgBody.fileId));
+		} else if (msgBody.type === "location") {
+			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
+			window.open(url);
+		}
+	},
+	// 打开一个聊天记录
+	_openMessageHistory: function (msg) {
+		if (!this.messageHistoryMap) {
+			this.messageHistoryMap = new Map();
+		}
+		// 遮罩层
+		if (!this.messageHistoryNode) {
+			this.messageHistoryNode = new Element("div", {"class": "chat-msg-list-container"}).inject(this.main.chatNode);
+		}
+		if (this.messageHistoryMap.has(msg.id)) {
+			this.closeMessageHistory(msg)
+		}
+		const el = new MWF.xApplication.IMV2.ChatMessageList({title: this.lp.msgHistory, msg: msg}, this);
+		this.messageHistoryMap.set(msg.id, el)
+
+	},
+	// 关闭某一个聊天记录
+	closeMessageHistory: function (msg) {
+		if (this.messageHistoryMap.has(msg.id)) {
+			this.messageHistoryMap.get(msg.id).deleteSelfNode()
+			this.messageHistoryMap.delete(msg.id) // 删除
+		}
+		// 关闭遮罩层
+		if (this.messageHistoryMap.size < 1 && this.messageHistoryNode) {
+			this.messageHistoryNode.destroy()
+			this.messageHistoryNode = null;
 		}
 	},
 	// 撤回、删除 消息
@@ -2582,6 +2613,216 @@ MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
 		if (data) {
 			this.app.updateConversationTitle(data.title, this.app.conversationId);
 			this.close();
+		}
+	}
+});
+
+
+// 消息列表
+MWF.xApplication.IMV2.ChatMessageList = new Class({
+	initialize: function (data, main) {
+		this.data = data;
+		this.main = main;
+		this.app = main.app;
+		this.container = main.messageHistoryNode; // 有专门的容器
+		this.lp = main.lp;
+		this.path = main.path;
+		this.options = main.options;
+		this.msg = data.msg; // 消息对象 里面的 id 作为标识
+
+		this.load();
+	},
+	load: function () {
+		var url = this.path + this.options.style + "/messageList.html";
+		this.container.loadHtml(url, { "bind": { "thisTitle": this.data.title ?? this.lp.msgHistory, "lp": this.lp }, "module": this }, function () {
+			console.debug("加载完成");
+			this._layout();
+			this.loadMsgList();
+		}.bind(this));
+	},
+	// 删除当前节点 给上层调用的
+	deleteSelfNode: function () {
+		this.messageListBoxNode.destroy()
+	},
+	// 关闭 调用了上层的方法，为了关闭遮罩层
+	close: function () {
+		 this.main.closeMessageHistory(this.msg);
+	},
+	_layout: function() {
+		const rect = this.messageListBoxNode.parentElement.getBoundingClientRect()
+		this.parentElWidth = rect.width
+		this.parentElHeight = rect.height
+		const selfRect = this.messageListBoxNode.getBoundingClientRect()
+		this.selfElWidth = selfRect.width
+		this.selfElHeight = selfRect.height
+		const left = (rect.width - selfRect.width) / 2
+		const top = (rect.height - selfRect.height) / 2
+		this.messageListBoxNode.style.position = 'absolute';
+		this.messageListBoxNode.style.left = left + 'px';
+		this.messageListBoxNode.style.top = top + 'px';
+		console.debug("加载_layout完成")
+		this._draggable()
+	},
+	_draggable: function() {
+		this.messageListBoxHeaderNode.addEventListener('mousedown', (e) => {
+			this.offsetX = e.clientX - this.messageListBoxNode.offsetLeft
+			this.offsetY = e.clientY - this.messageListBoxNode.offsetTop
+			this.isDragging = true
+		})
+		this.messageListBoxHeaderNode.addEventListener('mousemove', (e) => {
+			if (this.isDragging) {
+				let left = e.clientX - this.offsetX
+				if (left < 0) {
+					left = 0
+				}
+				if (left > this.parentElWidth - this.selfElWidth) {
+					left = this.parentElWidth - this.selfElWidth
+				}
+				let top = e.clientY - this.offsetY
+				if (top < 0) {
+					top = 0
+				}
+				if (top > this.parentElHeight - this.selfElHeight) {
+					top = this.parentElHeight - this.selfElHeight
+				}
+				this.messageListBoxNode.style.left = left + 'px'
+				this.messageListBoxNode.style.top = top + 'px'
+			}
+		})
+		this.messageListBoxHeaderNode.addEventListener('mouseup', () => {
+			this.isDragging = false
+		})
+		console.debug("加载 _draggable 完成")
+	},
+	loadMsgList: function (){
+		var msgBody = JSON.parse(this.msg.body)
+		var messageHistoryIds = msgBody.messageHistoryIds;
+		if (messageHistoryIds && messageHistoryIds.length > 0) {
+			o2.Actions.load("x_message_assemble_communicate").ImAction.msgListObject({msgIdList: messageHistoryIds }, function (json) {
+				var list = json.data;
+				if (list && list.length > 0) {
+					for (let i = 0; i < list.length; i++) {
+						const msg = list[i];
+						this._renderMsgItem(msg)
+					}
+				}
+			}.bind(this), function (error) {
+				console.log(error);
+			}.bind(this));
+		}
+	},
+	clickMsgItem(e) {
+		e.stopPropagation();
+		var msg = e.event.currentTarget.retrieve("msg");
+		if (!msg || !msg.body) {
+			console.error('错误的 target！！！');
+			return;
+		}
+		this.main.openMsgItem(msg);
+	},
+	_renderMsgItem: function (msg) {
+		var msgBody = JSON.parse(msg.body)
+		var msgItemNode = new Element("div", {"class": "chat-msg"}).inject(this.messageListNode);
+		msgItemNode.store("msg", msg);
+		msgItemNode.addEvents({
+			"click": function(e) {
+				this.clickMsgItem(e);
+			}.bind(this)
+		})
+		var checkBoxClass = "chat-msg-checkbox none"
+		if (this.selectMode) {
+			checkBoxClass = "chat-msg-checkbox block"
+		}
+		var msgItemCheckBoxNode = new Element("div", {"class": checkBoxClass}).inject(msgItemNode);
+		var msgItemCheckBoxInputNode =  new Element("input", {"type": "checkbox", "class": "check-box-select-item"}).inject(msgItemCheckBoxNode);
+		msgItemCheckBoxInputNode.store("msg", msg)
+
+		var receiverBodyNode = new Element("div", { "class": "chat-sender", "id": msg.id}).inject(msgItemNode);
+
+		var avatarNode = new Element("div", {"class": "chat-sender-avatar"}).inject(receiverBodyNode);
+		var avatarUrl = this.main.main._getIcon(msg.createPerson);
+		var name = msg.createPerson;
+		if (msg.createPerson.indexOf("@") > -1) {
+			name = name.substring(0, msg.createPerson.indexOf("@"));
+		}
+		new Element("img", { "src": avatarUrl }).inject(avatarNode);
+		new Element("div", { "text": name , "class": "chat-sender-name"}).inject(receiverBodyNode);
+		var lastNodeClass = "chat-sender-box"
+		if (msgBody.type === "process" || msgBody.type === "cms") {
+			lastNodeClass = "chat-sender-card-box"
+		}
+		var lastNode = new Element("div", {"class": lastNodeClass}).inject(receiverBodyNode);
+		var lastFirstNode = new Element("div", { "class": "chat-left_triangle" }).inject(lastNode);
+		//text
+		if (msgBody.type === "emoji") { // 表情
+			var img = "";
+			for (var i = 0; i < this.main.main.emojiList.length; i++) {
+				if (msgBody.body === this.main.main.emojiList[i].key) {
+					img = this.main.main.emojiList[i].path;
+				}
+			}
+			new Element("img", { "src": img, "class": "chat-content-emoji" }).inject(lastNode);
+		} else if (msgBody.type === "image") {//image
+			var imgBox = new Element("div", { "class": "img-chat" }).inject(lastNode);
+			var url = this.main._getFileUrlWithWH(msgBody.fileId, 144, 192);
+			new Element("img", { "src": url }).inject(imgBox);
+		} else if (msgBody.type === "audio") {
+			var url = this.main._getFileDownloadUrl(msgBody.fileId);
+			new Element("audio", { "src": url, "controls": "controls", "preload": "preload" }).inject(lastNode);
+		} else if (msgBody.type === "location") {
+			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
+			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
+			new Element("span", {   "text": msgBody.address }).inject(mapBox);
+		} else if (msgBody.type === "file") { //文件
+			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
+			var fileIcon = this.main._getFileIcon(msgBody.fileExtension);
+			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+			new Element("span", {"text": msgBody.fileName }).inject(mapBox);
+		} else if (msgBody.type === "process") {
+			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
+			// 流程名称
+			new Element("div", {"class": "chat-card-type", "text": "【"+msgBody.processName+"】"}).inject(cardNode);
+			// 工作标题
+			var title = msgBody.title;
+			if (title == null || title === "") {
+				title = "【"+msgBody.processName+"】- " + this.lp.noTitle;
+			}
+			new Element("div", {"class": "chat-card-body", "text":title}).inject(cardNode);
+			var cardFooter = new Element("div", {"class": "chat-card-bottom"}).inject(cardNode);
+			var appIconNode = new Element("img", {"class": "chat-card-bottom-icon"}).inject(cardFooter);
+			this.main._loadProcessApplicationIcon(msgBody.application, function(appIcon) {
+				if (appIcon && appIcon.icon) {
+					appIconNode.set("src", "data:image/png;base64," + appIcon.icon);
+				} else {
+					console.log('没有找到应用图标');
+					appIconNode.set("src", "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
+				}
+			})
+			new Element("div", { "class": "chat-card-bottom-name", "text": msgBody.applicationName }).inject(cardFooter);
+		} else if (msgBody.type === "cms") {
+
+		} else if (msgBody.type === "messageHistory") { // 聊天记录
+			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
+			// title
+			new Element("div", {"class": "chat-card-type", "text": msgBody.messageHistoryTitle}).inject(cardNode);
+			// desc
+			new Element("div", {"class": "chat-card-body", "text": msgBody.messageHistoryDesc }).inject(cardNode);
+			var cardFooter = new Element("div", {"class": "chat-card-bottom"}).inject(cardNode);
+			new Element("div", { "class": "chat-card-bottom-name", "text": this.lp.msgHistory }).inject(cardFooter);
+		} else {//text
+			new Element("span", { "text": this.main.contentEscapeBackToSymbol(msgBody.body) }).inject(lastNode);
+		}
+		// 引用消息
+		if (msg.quoteMessage) {
+			let quoteMessage = msg.quoteMessage;
+			let node = this.main._newQuoteMessageElement(quoteMessage, receiverBodyNode);
+			node.classList.add("chat-sender-quote-msg");
+			node.store("msg", quoteMessage);
+			node.addEvents({
+				"click": function(e) {
+					this.clickMsgItem(e);
+				}.bind(this)
+			});
 		}
 	}
 });
