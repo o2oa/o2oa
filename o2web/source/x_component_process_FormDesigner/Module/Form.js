@@ -1050,7 +1050,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
 		var data = this._copyFormJson(this.data);
 
-		if( data.forceClearCustomStyle )delete data.forceClearCustomStyle;
+		if( data.json.forceClearCustomStyle )delete data.json.forceClearCustomStyle;
 
 		if (data.json.styleConfig && data.json.styleConfig.extendFile){
 			var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
