@@ -113,9 +113,9 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
         this.addCalculateFieldNode = new Element("div#addCalculateFieldNode", {
             "styles": this.css.addCalculateFieldNode,
         }).inject(this.calculateTitleNode);
-        if(this.json.type !== "dynamicTable"){
-            this.addCalculateFieldNode.hide();
-        }
+        // if(this.json.type !== "dynamicTable"){
+        //     this.addCalculateFieldNode.hide();
+        // }
 
         this.viewContentBodyNode = new Element("div", {"styles": this.css.viewContentBodyNode}).inject(this.viewContentNode);
 
