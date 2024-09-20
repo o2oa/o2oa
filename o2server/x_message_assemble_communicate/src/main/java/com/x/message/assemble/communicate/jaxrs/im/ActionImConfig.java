@@ -18,20 +18,22 @@ public class ActionImConfig extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionImConfig.class);
 
-	ActionResult<ActionImConfig.Wo> execute(EffectivePerson effectivePerson) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-		ActionResult<ActionImConfig.Wo> result = new ActionResult<>();
+		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setEnableClearMsg(false);
 		wo.setEnableRevokeMsg(false);
-		wo.setRevokeOutMinute(2); // 默认2分钟
 		for (Map.Entry<String, JsonElement> en : Config.web().entrySet()) {
 			if (en.getKey().equals(IM_CONFIG_KEY_NAME)) {
 				JsonElement je = en.getValue();
 				wo = this.convertToWrapIn(je, Wo.class);
 			}
+		}
+		if (wo.getRevokeOutMinute() == null || wo.getRevokeOutMinute() <= 0) {
+			wo.setRevokeOutMinute(2); // 默认2分钟
 		}
 		wo.setVersionNo(300);
 		wo.setChangelog("新增转发、收藏等功能！");
@@ -49,11 +51,21 @@ public class ActionImConfig extends BaseAction {
 		private Boolean enableRevokeMsg;
 		@FieldDescribe("撤回时效（分钟数）")
 		private Integer revokeOutMinute;
+		@FieldDescribe("会话检查脚本.")
+		private String conversationCheckInvoke;
 		@FieldDescribe("版本号.")
 		private int versionNo;
 		@FieldDescribe("更新内容.")
 		private String changelog;
 
+
+		public String getConversationCheckInvoke() {
+			return conversationCheckInvoke;
+		}
+
+		public void setConversationCheckInvoke(String conversationCheckInvoke) {
+			this.conversationCheckInvoke = conversationCheckInvoke;
+		}
 
 		public Integer getRevokeOutMinute() {
 			return revokeOutMinute;

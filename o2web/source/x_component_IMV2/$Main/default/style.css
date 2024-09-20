@@ -475,6 +475,7 @@
 .chat-msg-list {
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 .chat-msg {
   width: 100%;

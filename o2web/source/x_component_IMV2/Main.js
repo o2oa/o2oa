@@ -59,7 +59,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				this.setTitle(imComponent.title);
 			}
 		}.bind(this), function (err) {
-			console.log(err);
+			console.error(err);
 		})
 	},
 	// 加载应用
@@ -138,7 +138,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	},
 	// 收到会话变更或删除消息
 	conversationMsgCallback: function(conv) {
-		console.log("会话消息处理", conv);
+		console.debug("会话消息处理", conv);
 		if (conv && conv.id) {
 			//  查询会话
 			o2.Actions.load("x_message_assemble_communicate").ImAction.conversation(conv.id, function (json) {
@@ -207,22 +207,28 @@ MWF.xApplication.IMV2.Main = new Class({
 		var settingNode = new Element("div", {"style":"padding:10px;background-color:#fff;"});
 
 		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
-		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false, "name": "clearEnable"}).inject(lineNode);
+		var isClearEnableNode = new Element("input", {"type":"checkbox",  "name": "clearEnable"}).inject(lineNode);
+		isClearEnableNode.checked = this.imConfig.enableClearMsg || false
 		new Element("span", { "text": this.lp.settingsClearMsg}).inject(lineNode);
 
 		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
-		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableRevokeMsg || false, "name": "revokeEnable"}).inject(line2Node);
+		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "name": "revokeEnable"}).inject(line2Node);
+		isRevokeEnableNode.checked = this.imConfig.enableRevokeMsg || false;
 		new Element("span", { "text": this.lp.settingsRevokeMsg}).inject(line2Node);
 
 		var line3Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
 		var revokeOutMinuteNode = new Element("input", {"type":"number", "value": this.imConfig.revokeOutMinute ?? 2, "name": "revokeEnable"}).inject(line3Node);
 		new Element("span", { "text": this.lp.settingsRevokeOutMinuteMsg}).inject(line3Node);
 
+		var line4Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
+		var conversationCheckInvokeNode = new Element("input", {"type":"text", "value": this.imConfig.conversationCheckInvoke ?? "", "name": "revokeEnable"}).inject(line4Node);
+		new Element("span", { "text": this.lp.settingsConversationCheckInvokeMsg}).inject(line4Node);
+
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
 				"mask": true,
 				"width": '500',
-				"height": "210",
+				"height": "310",
 				"content": settingNode,
 				"onQueryClose": function () {
 					settingNode.destroy();
@@ -232,12 +238,14 @@ MWF.xApplication.IMV2.Main = new Class({
 						"type": "ok",
 						"text": this.lp.ok,
 						"action": function () { 
-							this.imConfig.enableClearMsg = isClearEnableNode.get("checked");
-							this.imConfig.enableRevokeMsg = isRevokeEnableNode.get("checked");
+							this.imConfig.enableClearMsg = isClearEnableNode.checked;
+							this.imConfig.enableRevokeMsg = isRevokeEnableNode.checked;
 							this.imConfig.revokeOutMinute = revokeOutMinuteNode.get("value") ?? 2;
 							if (this.imConfig.revokeOutMinute <= 0 ) {
 								this.imConfig.revokeOutMinute = 2;
 							}
+							this.imConfig.conversationCheckInvoke = (conversationCheckInvokeNode.get("value") ?? "").trim();
+							console.debug(this.imConfig)
 							this.postIMConfig(this.imConfig);
 							// 保存配置文件
 							dlg.close(); 
@@ -262,7 +270,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		o2.Actions.load("x_message_assemble_communicate").ImAction.config(imConfig, function (json) {
 			this.refresh();//重新加载整个IM应用
 		}.bind(this), function (error) {
-			console.log(error);
+			console.error(error);
 			this.app.notice(error, "error", this.app.content);
 		}.bind(this));
 	},
@@ -309,7 +317,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			_self.reciveNewMessage();
 
 		}.bind(this), function (error) {
-			console.log(error);
+			console.error(error);
 		}.bind(this))
 	},
 	//更新群成员
@@ -325,7 +333,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			// 列表上的数据也要刷新
 			_self.reciveNewMessage();
 		}.bind(this), function (error) {
-			console.log(error);
+			console.error(error);
 		}.bind(this))
 	},
 	/**
@@ -338,27 +346,33 @@ MWF.xApplication.IMV2.Main = new Class({
 			type: cType,
 			personList: persons,
 		};
-		var _self = this;
-		o2.Actions.load("x_message_assemble_communicate").ImAction.create(conv, function (json) {
-			var newConv = json.data;
-			var isOld = false;
-			for (var i = 0; i < _self.conversationNodeItemList.length; i++) {
-				var c = _self.conversationNodeItemList[i];
-				if (newConv.id == c.data.id) {
-					isOld = true;
-					_self.tapConv(c.data);
-					break;
+		MWF.require("MWF.widget.Mask", function () {
+			this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+			this.mask.loadNode(this.app.content);
+			o2.Actions.load("x_message_assemble_communicate").ImAction.create(conv, function (json) {
+				var newConv = json.data;
+				var isOld = false;
+				for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+					var c = this.conversationNodeItemList[i];
+					if (newConv.id == c.data.id) {
+						isOld = true;
+						this.tapConv(c.data);
+						break;
+					}
 				}
-			}
-			if (!isOld) {
-				newConv.isNew = true; // 新建的 放在列表的前面
-				var itemNode = _self._createConvItemNode(newConv);
-				_self.conversationNodeItemList.unshift(itemNode);
-				_self.tapConv(newConv);
-			}
-		}.bind(this), function (error) {
-			console.log(error);
-		}.bind(this))
+				if (!isOld) {
+					newConv.isNew = true; // 新建的 放在列表的前面
+					var itemNode = this._createConvItemNode(newConv);
+					this.conversationNodeItemList.unshift(itemNode);
+					this.tapConv(newConv);
+				}
+				if (this.mask) { this.mask.hide(); this.mask = null; }
+			}.bind(this), function (error) {
+				console.error(error);
+				if (this.mask) { this.mask.hide(); this.mask = null; }
+			}.bind(this));
+		}.bind(this));
+
 	},
 	//创建会话ItemNode
 	_createConvItemNode: function (conv) {
@@ -921,7 +935,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 					this.showProcessWorkDialog(workList, workCompletedList);
 				}
 			}.bind(this), function(error){
-				console.log(error);
+				console.error(error);
 			}.bind(this));
 		}
 	},
@@ -1037,7 +1051,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				}
 
 			}.bind(this), function (error) {
-				console.log(error);
+				console.error(error);
 			}.bind(this), false);
 		}
 	},
@@ -1095,7 +1109,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				this.hasMoreMsgData = true;
 			}
 		}.bind(this), function (error) {
-			console.log(error);
+			console.error(error);
 			this.isLoading = false;
 		}.bind(this), false);
 	},
@@ -1272,7 +1286,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				console.log(this.lp.sendSuccess);
 			}.bind(this),
 			function (error) {
-				console.log(error);
+				console.error(error);
 			}.bind(this));
 		this.messageList.push(message);
 		this._buildReceiver(body, distinguishedName, false, message);
@@ -1302,7 +1316,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				console.log(this.lp.sendSuccess);
 			}.bind(this),
 			function (error) {
-				console.log(error);
+				console.error(error);
 			}.bind(this));
 		this.messageList.push(textMessage);
 		this._buildReceiver(body, distinguishedName, false, textMessage);
@@ -1400,7 +1414,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			var share = new MWF.xApplication.IMV2.ShareToConversation({
 				msgBody: {},
 				callback: function (conversation) {
-					console.log("选择了会话 " + conversation.title)
+					console.debug("选择了会话 " + conversation.title)
 					this._forwardMsgList(conversation, msgList)
 				}.bind(this)
 			}, this.app);
@@ -1597,7 +1611,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 						this._newImageOrFileMsgAndSend(type, fileId, fileName, fileExtension)
 					}
 				}.bind(this), function (error) {
-					console.log(error);
+					console.error(error);
 				}.bind(this))
 			}
 		}.bind(this));
@@ -1675,7 +1689,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else if (msgBody.type === "process") {
 			o2.api.form.openWork(msgBody.work, "", title || "" );
 		} else  if (msgBody.type === "messageHistory") {
-			console.log('聊天记录点击')
+			console.debug('聊天记录点击')
 			this._openMessageHistory(msg)
 		} else if (msgBody.type === "file") {
 			window.open(this._getFileDownloadUrl(msgBody.fileId));
@@ -2021,7 +2035,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 					if (callback) callback();
 				}
 			}.bind(this), function (error) {
-				console.log(error);
+				console.error(error);
 				if (callback) callback();
 			}.bind(this))
 		}
@@ -2204,7 +2218,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 	// 撤回消息
 	_revokeMsg: function(msg) {
 		o2.Actions.load("x_message_assemble_communicate").ImAction.msgRevoke(msg.id, function(json) {
-			console.log("撤回消息：", json);
+			console.debug("撤回消息：", json);
 			// 删除消息
 			$(msg.id).destroy();
 		}.bind(this));
@@ -2680,6 +2694,8 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 		this.page = 1;
 		this.collectionMode = !!this.data.collectionMode; // 是否是收藏模式
 		this.selectMode = false; // 选择模式
+		this.hasMoreCollection = false; // 是否有更多收藏
+		this.isLoadingCollection = false; // 是否正在加载
 		this.selectMsgList = [];
 		this.collectionList = [];
 		this.load();
@@ -2690,6 +2706,7 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 			console.debug("加载完成");
 			this._layout();
 			if (this.collectionMode) {
+				this._addScrollListener();
 				this.page = 1;
 				this.loadMsgCollectionList();
 			} else {
@@ -2781,7 +2798,7 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 			 this.cancelSelectMode();
 			 this.loadMsgCollectionList();
 		}.bind(this), function (error) {
-			console.log(error);
+			console.error(error);
 		}.bind(this));
 	},
 	// 选择模式
@@ -2835,12 +2852,36 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 			}
 		})
 	},
+
+	_addScrollListener: function () {
+		console.debug('_addScrollListener ', this.messageListContainerNode);
+		this.messageListContainerNode.addEvents({
+			"scroll": function () {
+				// 检查是否滚动到底部
+				if (this.messageListContainerNode.scrollTop + this.messageListContainerNode.clientHeight >= this.messageListContainerNode.scrollHeight) {
+					this.loadMoreMsgCollectionList();  // 加载更多内容
+				}
+			}.bind(this)
+		});
+	},
+	// 加载更多
+	loadMoreMsgCollectionList: function () {
+		if (!this.hasMoreCollection) return;
+		this.page += 1;
+		this.loadMsgCollectionList()
+	},
 	// 分页查询收藏列表
 	loadMsgCollectionList: function () {
+		if (this.isLoadingCollection) return;
 		if (this.page === 1) {
-			this.messageListNode.empty()
+			while (this.messageListNode.firstChild) {
+				this.messageListNode.removeChild(
+					this.messageListNode.firstChild
+				)
+			}
 			this.collectionList = []
 		}
+		this.isLoadingCollection = true;
 		o2.Actions.load("x_message_assemble_communicate").ImAction.collectionListByPaging(''+this.page, '20', {}, function (json) {
 			let list = json.data;
 			if (list && list.length > 0) {
@@ -2850,8 +2891,12 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 					this.collectionList.push(msg); // 存储收藏列表
 				}
 			}
+			this.hasMoreCollection = (list && list.length === 20);
+			this.isLoadingCollection = false;
 		}.bind(this), function (error) {
-			console.log(error);
+			console.error(error);
+			this.hasMoreCollection = false;
+			this.isLoadingCollection = false;
 		}.bind(this));
 	},
 	loadMsgList: function (){
@@ -2867,7 +2912,7 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 					}
 				}
 			}.bind(this), function (error) {
-				console.log(error);
+				console.error(error);
 			}.bind(this));
 		}
 	},

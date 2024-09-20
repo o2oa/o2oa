@@ -73,6 +73,7 @@ MWF.xApplication.IMV2.LP = {
 	"settingsClearMsg": "是否开启会话删除功能",
 	"settingsRevokeMsg": "是否开启聊天消息撤回功能",
 	"settingsRevokeOutMinuteMsg": "撤回时效(分钟数)",
+	"settingsConversationCheckInvokeMsg": "会话创建、更新的检查接口",
 
 	"enterMessage": "输入消息内容",
 	"send": "发送",

@@ -15,71 +15,74 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMMsg;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 public class ActionMsgListObject extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionMsgListObject.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionMsgListObject.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
-			throws Exception {
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
+            throws Exception {
 
-		LOGGER.debug("execute ActionMsgListObject :{}.", effectivePerson::getDistinguishedName);
+        LOGGER.debug("execute ActionMsgListObject :{}.", effectivePerson::getDistinguishedName);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			if (wi == null || wi.getMsgIdList() == null || wi.getMsgIdList().isEmpty()) {
-				throw new ExceptionEmptyId();
-			}
-			List<IMMsg> msgList = business.imConversationFactory().listMsgObject(wi.getMsgIdList());
-			List<Wo> wos = Wo.copier.copy(msgList);
-			for (Wo wo : wos) {
-				if (StringUtils.isNotEmpty(wo.getQuoteMessageId()) ) {
-					IMMsg quoteMessage =  emc.find(wo.getQuoteMessageId(), IMMsg.class);
-					if (quoteMessage != null) {
-						wo.setQuoteMessage(quoteMessage);
-					}
-				}
-			}
-			result.setData(wos);
-			return result;
-		}
-	}
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<List<Wo>> result = new ActionResult<>();
+            Business business = new Business(emc);
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            if (wi == null || wi.getMsgIdList() == null || wi.getMsgIdList().isEmpty()) {
+                throw new ExceptionEmptyId();
+            }
+            List<IMMsg> msgList = business.imConversationFactory().listMsgObject(wi.getMsgIdList());
+            List<Wo> wos = Wo.copier.copy(msgList);
+            for (Wo wo : wos) {
+                if (StringUtils.isNotEmpty(wo.getQuoteMessageId())) {
+                    IMMsg quoteMessage = emc.find(wo.getQuoteMessageId(), IMMsg.class);
+                    if (quoteMessage != null) {
+                        wo.setQuoteMessage(quoteMessage);
+                    }
+                }
+            }
+            result.setData(
+                    wos.stream().sorted((a, b) -> b.getCreateTime().compareTo(a.getCreateTime()))
+                            .collect(Collectors.toList()));
+            return result;
+        }
+    }
 
-	public static class Wi extends GsonPropertyObject {
-
-
-		private static final long serialVersionUID = 3649112474402515842L;
-		@FieldDescribe("消息id列表")
-		private List<String> msgIdList;
-
-		public List<String> getMsgIdList() {
-			return msgIdList;
-		}
-
-		public void setMsgIdList(List<String> msgIdList) {
-			this.msgIdList = msgIdList;
-		}
-	}
-
-	public static class Wo extends IMMsg {
+    public static class Wi extends GsonPropertyObject {
 
 
-		private static final long serialVersionUID = -4500552602639326831L;
-		static WrapCopier<IMMsg, Wo> copier = WrapCopierFactory.wo(IMMsg.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+        private static final long serialVersionUID = 3649112474402515842L;
+        @FieldDescribe("消息id列表")
+        private List<String> msgIdList;
 
-		@FieldDescribe("引用消息.")
-		private IMMsg quoteMessage;
+        public List<String> getMsgIdList() {
+            return msgIdList;
+        }
 
-		public IMMsg getQuoteMessage() {
-			return quoteMessage;
-		}
+        public void setMsgIdList(List<String> msgIdList) {
+            this.msgIdList = msgIdList;
+        }
+    }
 
-		public void setQuoteMessage(IMMsg quoteMessage) {
-			this.quoteMessage = quoteMessage;
-		}
-	}
+    public static class Wo extends IMMsg {
+
+
+        private static final long serialVersionUID = -4500552602639326831L;
+        static WrapCopier<IMMsg, Wo> copier = WrapCopierFactory.wo(IMMsg.class, Wo.class, null,
+                JpaObject.FieldsInvisible);
+
+        @FieldDescribe("引用消息.")
+        private IMMsg quoteMessage;
+
+        public IMMsg getQuoteMessage() {
+            return quoteMessage;
+        }
+
+        public void setQuoteMessage(IMMsg quoteMessage) {
+            this.quoteMessage = quoteMessage;
+        }
+    }
 }

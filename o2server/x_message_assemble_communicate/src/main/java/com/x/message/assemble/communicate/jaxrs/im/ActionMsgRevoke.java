@@ -51,13 +51,11 @@ public class ActionMsgRevoke extends BaseAction {
                 && !effectivePerson.getDistinguishedName().equals(imMsg.getCreatePerson())) {
                 throw new ExceptionMsgRevokeNoPermission();
             }
-
-            if (config.getData().getRevokeOutMinute() > 0) {
-                Date create = imMsg.getCreateTime();
-                if (new Date().getTime() - create.getTime()
-                    > config.getData().getRevokeOutMinute() * 60 * 1000) {
-                    throw new ExceptionMsgRevokeOutOfTime();
-                }
+            // 撤回时间超过配置时间
+            Date create = imMsg.getCreateTime();
+            if (new Date().getTime() - create.getTime()
+                > config.getData().getRevokeOutMinute() * 60 * 1000) {
+                throw new ExceptionMsgRevokeOutOfTime();
             }
 
             emc.beginTransaction(IMMsg.class);

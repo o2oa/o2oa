@@ -294,41 +294,6 @@ public class ImAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "清空会话的所有消息.", action = ActionDeleteConversationMsgs.class)
-	@DELETE
-	@Path("conversation/{id}/clear/all/msg")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void clearConversationMsg(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("会话ID") @PathParam("id") String id) {
-		ActionResult<ActionDeleteConversationMsgs.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionDeleteConversationMsgs().execute(effectivePerson, id);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-	@JaxrsMethodDescribe(value = "清空会话的所有消息.", action = ActionDeleteConversationMsgs.class)
-	@GET
-	@Path("conversation/{id}/clear/all/msg/mockdeletetoget")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void clearConversationMsgMockdeletetoget(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("会话ID") @PathParam("id") String id) {
-		ActionResult<ActionDeleteConversationMsgs.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionDeleteConversationMsgs().execute(effectivePerson, id);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "删除群聊，只有群主可以删除.", action = ActionDeleteGroupConversation.class)
 	@DELETE
 	@Path("conversation/{id}/group")

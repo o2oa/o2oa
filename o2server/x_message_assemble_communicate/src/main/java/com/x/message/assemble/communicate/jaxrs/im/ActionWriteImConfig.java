@@ -100,6 +100,16 @@ public class ActionWriteImConfig extends BaseAction {
 		private Boolean enableRevokeMsg;
 		@FieldDescribe("撤回时效（分钟数）")
 		private Integer revokeOutMinute;
+		@FieldDescribe("会话检查脚本.")
+		private String conversationCheckInvoke;
+
+		public String getConversationCheckInvoke() {
+			return conversationCheckInvoke;
+		}
+
+		public void setConversationCheckInvoke(String conversationCheckInvoke) {
+			this.conversationCheckInvoke = conversationCheckInvoke;
+		}
 
 		public Integer getRevokeOutMinute() {
 			return revokeOutMinute;
