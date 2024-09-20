@@ -20,38 +20,30 @@
   height: 40px;
   background-color: rgb(248, 248, 248);
   border-bottom: 1px solid rgb(204, 204, 204);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  padding: 0 10px;
 }
 .o2_im_chat_list_top .add {
-  background: url(../x_component_IMV2/$Main/default/icons/add.png) left center
-    no-repeat;
   height: 40px;
   cursor: pointer;
-  margin-left: 14px;
   text-align: center;
   line-height: 40px;
   color: #848484;
-  padding-left: 24px;
-  float: left;
-}
-
-.o2_im_chat_list_top .group {
-  height: 40px;
-  cursor: pointer;
-  margin-left: 14px;
-  text-align: center;
-  line-height: 40px;
-  color: #848484;
-  padding-left: 24px;
-  float: left;
 }
 .o2_im_chat_list_top .im_setting {
-  background: url(../x_component_IMV2/$Main/default/icons/icon_setting.png)
-    no-repeat center;
   height: 40px;
-  float: right;
   width: 40px;
-  border-left: solid 1px #dedede;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.o2_im_chat_list_top .im_setting img {
+  height: 24px;
+  width: 24px;
 }
 
 .o2_im_chat_list_top .search_out {
@@ -998,7 +990,7 @@
 
 /*分享的会话列表*/
 .share-conversation-out-box {
-  background-color: rgb(255, 255, 255);
+  background-color: #ebebeb;
   color: rgb(102, 102, 102);
   z-index: 30000;
   box-shadow: rgb(102 102 102) 3px 3px 15px;
