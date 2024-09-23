@@ -211,18 +211,24 @@ MWF.xApplication.IMV2.Main = new Class({
 		isClearEnableNode.checked = this.imConfig.enableClearMsg || false
 		new Element("span", { "text": this.lp.settingsClearMsg}).inject(lineNode);
 
-		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
+		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;margin-top: 10px;"}).inject(settingNode);
 		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "name": "revokeEnable"}).inject(line2Node);
 		isRevokeEnableNode.checked = this.imConfig.enableRevokeMsg || false;
 		new Element("span", { "text": this.lp.settingsRevokeMsg}).inject(line2Node);
 
-		var line3Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
+		var line3Node = new Element("div", {"style":"height:24px;line-height: 24px;margin-top: 10px;"}).inject(settingNode);
 		var revokeOutMinuteNode = new Element("input", {"type":"number", "value": this.imConfig.revokeOutMinute ?? 2, "name": "revokeEnable"}).inject(line3Node);
 		new Element("span", { "text": this.lp.settingsRevokeOutMinuteMsg}).inject(line3Node);
 
-		var line4Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
+		var line4Node = new Element("div", {"style":"height:24px;line-height: 24px;margin-top: 10px;"}).inject(settingNode);
 		var conversationCheckInvokeNode = new Element("input", {"type":"text", "value": this.imConfig.conversationCheckInvoke ?? "", "name": "revokeEnable"}).inject(line4Node);
 		new Element("span", { "text": this.lp.settingsConversationCheckInvokeMsg}).inject(line4Node);
+
+		var line5Node = new Element("div", {"style":"height:24px;line-height: 24px;margin-top: 10px;"}).inject(settingNode);
+		var enableOnlyOfficePreviewNode = new Element("input", {"type":"checkbox",  "name": "enableOnlyOfficePreview"}).inject(line5Node);
+		enableOnlyOfficePreviewNode.checked = this.imConfig.enableOnlyOfficePreview || false
+		new Element("span", { "text": this.lp.settingsEnableOnlyOfficePreviewMsg}).inject(line5Node);
+
 
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
@@ -240,6 +246,7 @@ MWF.xApplication.IMV2.Main = new Class({
 						"action": function () { 
 							this.imConfig.enableClearMsg = isClearEnableNode.checked;
 							this.imConfig.enableRevokeMsg = isRevokeEnableNode.checked;
+							this.imConfig.enableOnlyOfficePreview = enableOnlyOfficePreviewNode.checked;
 							this.imConfig.revokeOutMinute = revokeOutMinuteNode.get("value") ?? 2;
 							if (this.imConfig.revokeOutMinute <= 0 ) {
 								this.imConfig.revokeOutMinute = 2;
@@ -1692,6 +1699,18 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			console.debug('聊天记录点击')
 			this._openMessageHistory(msg)
 		} else if (msgBody.type === "file") {
+			// 有安装 onlyOffice
+			if (layout.serviceAddressList["x_onlyofficefile_assemble_control"]
+				&& this.main.imConfig.enableOnlyOfficePreview  && msgBody.fileExtension
+				&& (msgBody.fileExtension.toLowerCase() === "docx" || msgBody.fileExtension.toLowerCase() === "doc"
+				|| msgBody.fileExtension.toLowerCase() === "xls" || msgBody.fileExtension.toLowerCase() === "xlsx"
+				|| msgBody.fileExtension.toLowerCase() === "ppt" || msgBody.fileExtension.toLowerCase() === "pptx"
+				|| msgBody.fileExtension.toLowerCase() === "pdf" || msgBody.fileExtension.toLowerCase() === "csv"
+				|| msgBody.fileExtension.toLowerCase() === "txt")) {
+				var onlyOfficeUrl =  "../o2_lib/onlyoffice/index.html?fileName=" +msgBody.fileName+ "&file=" + this._getFileDownloadUrl(msgBody.fileId);
+				window.open(onlyOfficeUrl);
+				return;
+			}
 			window.open(this._getFileDownloadUrl(msgBody.fileId));
 		} else if (msgBody.type === "location") {
 			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
