@@ -1182,7 +1182,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         if (n) n.set("text", this.data.description || "");
 
         var n = this.editContentNode.getElement(".infor_orderNumber");
-        if (n) n.set("text", this.data.orderNumber || "");
+        if (n) n.set("text", o2.typeOf( this.data.orderNumber ) === 'null' ? "" : this.data.orderNumber);
 
 
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
