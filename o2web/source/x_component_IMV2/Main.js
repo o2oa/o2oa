@@ -1710,6 +1710,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				var onlyOfficeUrl =  "../o2_lib/onlyoffice/index.html?fileName=" +msgBody.fileName+ "&file=" + this._getFileDownloadUrl(msgBody.fileId);
 				window.open(onlyOfficeUrl);
 				return;
+			} else if (msgBody.fileExtension && (msgBody.fileExtension.toLowerCase() === "mp4" || msgBody.fileExtension.toLowerCase() === "avi" || msgBody.fileExtension.toLowerCase() === "ogg")) {
+				console.log('视频文件无需下载！')
+				return;
 			}
 			window.open(this._getFileDownloadUrl(msgBody.fileId));
 		} else if (msgBody.type === "location") {
@@ -1854,10 +1857,17 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
 			new Element("span", {   "text": msgBody.address }).inject(mapBox);
 		} else if (msgBody.type === "file") { //文件
-			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
-			var fileIcon = this._getFileIcon(msgBody.fileExtension);
-			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
-			new Element("span", {"text": msgBody.fileName }).inject(mapBox);
+			// 视频文件 mp4 avi ogg
+			if (msgBody.fileExtension
+				&& (msgBody.fileExtension.toLowerCase() === "mp4" || msgBody.fileExtension.toLowerCase() === "avi" || msgBody.fileExtension.toLowerCase() === "ogg")) {
+				// var videoType = "video/" + msgBody.fileExtension.toLowerCase();
+				new Element("video", {"class": "chat-content-video", "src": this._getFileDownloadUrl(msgBody.fileId), "controls": "controls", "preload": "preload"}).inject(lastNode);
+			} else {
+				var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
+				var fileIcon = this._getFileIcon(msgBody.fileExtension);
+				new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+				new Element("span", {"text": msgBody.fileName }).inject(mapBox);
+			}
 		} else if (msgBody.type === "process") {
 			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
 			// 流程名称
@@ -1976,10 +1986,17 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
 			new Element("span", {   "text": msgBody.address }).inject(mapBox);
 		} else if (msgBody.type === "file") { //文件
-			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
-			var fileIcon = this._getFileIcon(msgBody.fileExtension);
-			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
-			new Element("span", {"text": msgBody.fileName }).inject(mapBox);
+			// 视频文件 mp4 avi ogg
+			if (msgBody.fileExtension
+				&& (msgBody.fileExtension.toLowerCase() === "mp4" || msgBody.fileExtension.toLowerCase() === "avi" || msgBody.fileExtension.toLowerCase() === "ogg")) {
+				//var videoType = "video/" + msgBody.fileExtension.toLowerCase();
+				new Element("video", {"class": "chat-content-video","src": this._getFileDownloadUrl(msgBody.fileId), "controls": "controls", "preload": "preload"}).inject(lastNode);
+			} else {
+				var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
+				var fileIcon = this._getFileIcon(msgBody.fileExtension);
+				new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+				new Element("span", {"text": msgBody.fileName }).inject(mapBox);
+			}
 		} else if (msgBody.type === "process") {
 			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
 			// 流程名称
@@ -3010,10 +3027,17 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
 			new Element("span", {   "text": msgBody.address }).inject(mapBox);
 		} else if (msgBody.type === "file") { //文件
-			var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
-			var fileIcon = this.main._getFileIcon(msgBody.fileExtension);
-			new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
-			new Element("span", {"text": msgBody.fileName }).inject(mapBox);
+			// 视频文件 mp4 avi ogg
+			if (msgBody.fileExtension
+				&& (msgBody.fileExtension.toLowerCase() === "mp4" || msgBody.fileExtension.toLowerCase() === "avi" || msgBody.fileExtension.toLowerCase() === "ogg")) {
+				// var videoType = "video/" + msgBody.fileExtension.toLowerCase();
+				new Element("video", {"class": "chat-content-video", "src":  this.main._getFileDownloadUrl(msgBody.fileId), "controls": "controls", "preload": "preload"}).inject(lastNode);
+			} else {
+				var mapBox = new Element("span", {"style": "display: flex;gap: 5px;align-items: center;"}).inject(lastNode);
+				var fileIcon = this.main._getFileIcon(msgBody.fileExtension);
+				new Element("img", { "src": "../x_component_IMV2/$Main/file_icons/" + fileIcon, "width": 48, "height": 48 }).inject(mapBox);
+				new Element("span", {"text": msgBody.fileName }).inject(mapBox);
+			}
 		} else if (msgBody.type === "process") {
 			var cardNode = new Element("div", {"class": "chat-card"}).inject(lastNode);
 			// 流程名称

@@ -683,6 +683,10 @@
   height: 32px;
   margin: 5px;
 }
+.chat-content-video {
+  width: 230px;
+  height: 130px;
+}
 .chat-notice {
   clear: both;
   font-size: 70%;
