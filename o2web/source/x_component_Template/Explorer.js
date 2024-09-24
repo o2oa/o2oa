@@ -2,7 +2,7 @@ MWF.xApplication.Template = MWF.xApplication.Template || {};
 MWF.xApplication.Template.Explorer = MWF.xApplication.Template.Explorer || {};
 
 MWF.require("MWF.widget.O2Identity", null, false);
-//MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
 
 String.implement({
 
