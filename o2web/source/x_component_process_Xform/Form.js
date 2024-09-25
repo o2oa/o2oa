@@ -202,7 +202,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              * @event MWF.xApplication.process.Xform.Form#afterGoBack
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
-            "afterGoBack"
+            "afterGoBack",
+
+            /**
+             * 回溯前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeRollback
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeRollback",
+
+            /**
+             * 回溯后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterRollback
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterRollback"
         ]
     },
     initialize: function (node, data, options) {
@@ -3965,6 +3979,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             this.doRollbackActionInvoke(log, idList, function (json) {
                 if (json.data.properties) {
+                    this.fireEvent("afterRollback");
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterRollback");
                     this.addRollbackMessage(json.data);
 
