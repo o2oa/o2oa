@@ -77,6 +77,12 @@ public class IMMsg extends SliceJpaObject {
     private String createPerson;
 
 
+    public static final String quoteMessageId_FIELDNAME = "quoteMessageId";
+    @FieldDescribe("引用消息id.")
+    @Column(length = length_64B, name = ColumnNamePrefix + quoteMessageId_FIELDNAME)
+    private String quoteMessageId;
+
+
     public String getConversationId() {
         return conversationId;
     }
@@ -99,5 +105,13 @@ public class IMMsg extends SliceJpaObject {
 
     public void setCreatePerson(String createPerson) {
         this.createPerson = createPerson;
+    }
+
+    public String getQuoteMessageId() {
+        return quoteMessageId;
+    }
+
+    public void setQuoteMessageId(String quoteMessageId) {
+        this.quoteMessageId = quoteMessageId;
     }
 }

@@ -5,16 +5,15 @@
       <div class="add" data-o2-element="o2ImConvCreateNode" data-o2-events="click:tapCreateSingleConv">
         {{$.lp.createSingle}}
       </div>
-      <div class="group" data-o2-element="o2ImGroupConvCreateNode" data-o2-events="click:tapCreateGroupConv">
+      <div class="add" data-o2-element="o2ImGroupConvCreateNode" data-o2-events="click:tapCreateGroupConv">
         {{$.lp.createGroup}}
       </div>
-      <div class="im_setting" style="display: none;" data-o2-element="o2ImAdminSettingNode" data-o2-events="click:tapOpenSettings"></div>
-      <!-- <div class="search_out">
-        <div title="搜索" class="search_icon"></div>
-        <div class="search_input_out">
-          <input type="text" x-webkit-speech="x-webkit-speech" placeholder="请输入搜索" class="search_input">
-        </div>
-      </div> -->
+      <div class="im_setting" data-o2-element="o2ImCollectionNode" data-o2-events="click:openCollectionListPage">
+        <img src="../x_component_IMV2/$Main/default/icons/collection.png" alt="收藏">
+      </div>
+      <div class="im_setting" style="display: none;" data-o2-element="o2ImAdminSettingNode" data-o2-events="click:tapOpenSettings">
+        <img src="../x_component_IMV2/$Main/default/icons/icon_setting.png" alt="设置">
+      </div>
     </div>
 
     <!-- chat list -->

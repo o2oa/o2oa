@@ -1,5 +1,9 @@
 package com.x.message.assemble.communicate.factory;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.message.core.entity.IMMsgCollection;
+import com.x.message.core.entity.IMMsgCollection_;
+import com.x.organization.core.entity.Person_;
 import java.util.Date;
 import java.util.List;
 
@@ -124,6 +128,27 @@ public class IMConversationFactory extends AbstractFactory {
 	}
 
 	/**
+	 * 根据 id 列表获取消息对象列表
+	 * @param ids
+	 * @return
+	 * @throws Exception
+	 */
+	public List<IMMsg> listMsgObject(List<String> ids) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<IMMsg> cq = cb.createQuery(IMMsg.class);
+		Root<IMMsg> root = cq.from(IMMsg.class);
+		Predicate p;
+		if(ids.size() > 1){
+			p = root.get(JpaObject.id_FIELDNAME).in(ids);
+		}else{
+			p = cb.equal(root.get(JpaObject.id_FIELDNAME), ids.get(0));
+		}
+		return  em.createQuery(cq.select(root).where(p).orderBy(cb.desc(root.get(IMMsg_.createTime)))).getResultList();
+	}
+
+
+	/**
 	 * 查询会话中的聊天消息
 	 * 分页查询需要
 	 * @param adjustPage
@@ -199,4 +224,59 @@ public class IMConversationFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(IMConversationExt_.conversationId), conversationId);
 		return em.createQuery(cq.select(root.get(IMConversationExt_.id)).where(p)).getResultList();
 	}
+
+
+
+	/**
+	 * 查询收藏消息
+	 * @param person 收藏人
+	 * @param msgId 消息 id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<IMMsgCollection> listCollectionByPersonAndMsgId(String person, String msgId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMMsgCollection.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		Predicate predicate = cb.conjunction();
+		CriteriaQuery<IMMsgCollection> cq = cb.createQuery(IMMsgCollection.class);
+		Root<IMMsgCollection> root = cq.from(IMMsgCollection.class);
+		predicate = cb.and(predicate, cb.equal(root.get(IMMsgCollection_.createPerson), person));
+		predicate = cb.and(predicate, cb.equal(root.get(IMMsgCollection_.messageId), msgId));
+		return  em.createQuery(cq.select(root).where(predicate)).getResultList();
+	}
+
+	/**
+	 * 分页查询收藏消息
+	 * @param adjustPage
+	 * @param adjustPageSize
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public List<IMMsgCollection> listCollectionWithPersonByPage(Integer adjustPage, Integer adjustPageSize, String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMMsgCollection.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<IMMsgCollection> cq = cb.createQuery(IMMsgCollection.class);
+		Root<IMMsgCollection> root = cq.from(IMMsgCollection.class);
+		Predicate p = cb.equal(root.get(IMMsgCollection_.createPerson), person);
+		cq.select(root).where(p).orderBy(cb.desc(root.get(IMMsgCollection_.createTime)));
+		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
+				.getResultList();
+	}
+
+	/**
+	 * 收藏消息数量
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public Long listCollectionCount(String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMMsgCollection.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<IMMsgCollection> root = cq.from(IMMsgCollection.class);
+		Predicate p = cb.equal(root.get(IMMsgCollection_.createPerson), person);
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+	}
+
 }

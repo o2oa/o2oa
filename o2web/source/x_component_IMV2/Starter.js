@@ -454,32 +454,37 @@ MWF.xApplication.IMV2.ShareToConversation = new Class({
   },
   // 点击会话
   clickConversationItem: function(conversation) {
-    console.log(conversation)
-    var distinguishedName = layout.session.user.distinguishedName;
-		var time = this._currentTime();
-		var bodyJson = JSON.stringify(this.data.msgBody);
-    var uuid = new MWF.widget.UUID().createTrueUUID();
-		var textMessage = {
-			"id": uuid,
-			"conversationId": conversation.id,
-			"body": bodyJson,
-			"createPerson": distinguishedName,
-			"createTime": time,
-			"sendStatus": 1
-		};
-		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
-			function (json) {
-        var options = {
-          conversationId: conversation.id,
-          mode: this.options.mode || "default"
-        }
-        layout.openApplication(null, "IMV2", options);
-			}.bind(this),
-			function (error) {
-				console.log(error);
-        this.app.notice(this.lp.msgShareError, "error");
-			}.bind(this));
-		this.closeConversationListDialog();
+    console.log(conversation);
+    if (this.data.callback ) { // 选择器
+        this.data.callback(conversation)
+    } else {
+        var distinguishedName = layout.session.user.distinguishedName;
+        var time = this._currentTime();
+        var bodyJson = JSON.stringify(this.data.msgBody);
+        var uuid = new MWF.widget.UUID().createTrueUUID();
+        var textMessage = {
+            "id": uuid,
+            "conversationId": conversation.id,
+            "body": bodyJson,
+            "createPerson": distinguishedName,
+            "createTime": time,
+            "sendStatus": 1
+        };
+        o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
+            function (json) {
+                var options = {
+                    conversationId: conversation.id,
+                    mode: this.options.mode || "default"
+                }
+                layout.openApplication(null, "IMV2", options);
+            }.bind(this),
+            function (error) {
+                console.log(error);
+                this.app.notice(this.lp.msgShareError, "error");
+            }.bind(this));
+    }
+
+    this.closeConversationListDialog();
   },
   _currentTime: function () {
 		var today = new Date();
