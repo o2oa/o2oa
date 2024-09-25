@@ -113,7 +113,7 @@ export default content({
         },
       ],
       dateCycleList: [
-        {name: lp.dateCycle.none, value: ""}, 
+        {name: lp.dateCycle.none, value: "none"},
         {name: lp.dateCycle.week, value: "week"}, 
         {name: lp.dateCycle.twoWeek, value: "twoWeek"}, 
         {name: lp.dateCycle.month, value: "month"}, 
@@ -430,8 +430,10 @@ export default content({
               }
             }
             if (!isIn) {
+              const c = this.bind.dateCycleList[0]
               this.bind.noNeedCheckInDateForTableList.push({
                 date: chooseDate,
+                cycle: c
               });
             }
           }.bind(this),
