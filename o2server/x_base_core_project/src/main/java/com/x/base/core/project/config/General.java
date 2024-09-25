@@ -34,6 +34,7 @@ import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.Host;
 import com.x.base.core.project.tools.NumberTools;
+import org.graalvm.polyglot.Context;
 
 public class General extends ConfigObject {
 
@@ -47,7 +48,7 @@ public class General extends ConfigObject {
 					FileOutputStream.class.getName(), RandomAccessFile.class.getName(), Socket.class.getName(),
 					ServerSocket.class.getName(), ZipFile.class.getName(), ZipInputStream.class.getName(),
 					ZipOutputStream.class.getName(), ScriptEngine.class.getName(), ScriptEngineManager.class.getName(),
-					URL.class.getName(), URI.class.getName(), Class.class.getName()));
+					URL.class.getName(), URI.class.getName(), Class.class.getName(), Context.class.getName()));
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
