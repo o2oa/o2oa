@@ -127,11 +127,13 @@ public class SyncOrganization {
         for (User user : userList) {
             EntityManagerContainer emc = business.entityManagerContainer();
             Person person = emc.flag(user.getMobile(), Person.class);
-            if (null != person && StringUtils.isBlank(person.getDingdingId())) {
-                emc.beginTransaction(Person.class);
-                person.setDingdingId(Objects.toString(user.getUserid()));
-                result.getUpdatePersonList().add(person.getDistinguishedName());
-                emc.commit();
+            if (null != person) {
+                if(StringUtils.isBlank(person.getDingdingId())) {
+                    emc.beginTransaction(Person.class);
+                    person.setDingdingId(Objects.toString(user.getUserid()));
+                    result.getUpdatePersonList().add(person.getDistinguishedName());
+                    emc.commit();
+                }
             } else {
                 emc.beginTransaction(Person.class);
                 person = new Person();
