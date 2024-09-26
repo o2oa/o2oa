@@ -25,6 +25,8 @@ MWF.xApplication.IMV2.Main = new Class({
 		this.app = this;
 		this.conversationNodeItemList = [];
 		this.messageList = [];
+		this.emojiV2TypeList = ["smile", "animals", "food", "activities", "travel", "objects","symbol"];
+		this.emojiV2Object = {}; // 新版字符表情对象 对象里面按照上面 emojiV2TypeList里面的名称进行分类
 		this.emojiList = [];
 		//添加87个表情
 		for (var i = 1; i < 88; i++) {
@@ -42,7 +44,24 @@ MWF.xApplication.IMV2.Main = new Class({
 			this.conversationId = this.status.conversationId || "";
 			this.mode = this.status.mode || "default";
 		}
-
+	},
+	// 加载新版本的 emoji 字符表情
+	_loadNewEmoji: function () {
+		const emojiJsonPath = this.path + this.options.style + "/emoji.json";
+		// 使用 fetch 获取 JSON 数据
+		fetch(emojiJsonPath)
+			.then(response => {
+				if (!response.ok) {
+					console.error('网络响应错误, emoji.json读取错误');
+				}
+				return response.json(); // 解析为 JSON
+			})
+			.then(data => {
+				 this.emojiV2Object = data;
+			})
+			.catch(error => {
+				console.error('请求失败:', error);
+			});
 	},
 	// 刷新的时候缓存数据
 	recordStatus: function(){
@@ -70,6 +89,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			this.app.notice(this.lp.messageXadminNotSupport, "error");
 			return;
 		}
+		this._loadNewEmoji(); // 加载 emoji json 对象
 		// 先加载配置文件 放入imConfig对象
 		MWF.xDesktop.loadConfig(function () {
 			this.imConfig = layout.config.imConfig || {}
@@ -125,6 +145,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	},
 	// websocket过来的新消息回调
 	createNewMsgCallback: function(msg) {
+		console.log('=======> msg ', msg)
 		this.reciveNewMessage();
 	},
 	// 接收新的消息 会话列表更新 或者 聊天窗口更新
@@ -1647,6 +1668,66 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		//关闭emojiBoxNode
 		this.emojiBoxNode.setStyle("display", "none");
 		document.body.removeEvent("mousedown", this.hideFun);
+	},
+	showEmojiV2: function () {
+		if (!this.isLoadEmojiV2) {
+			for (let i = 0; i < this.main.emojiV2TypeList.length; i++) {
+				let type = this.main.emojiV2TypeList[i];
+				let typeNode = new Element("div", {"class": "im-chat-emoji-item"}).inject(this.emojiTypeListContainerNode);
+				let className = "btn";
+				if (i === 0) {
+					className += " active"
+				}
+				let btnNode = new Element("div", {"class": className}).inject(typeNode);
+				new Element("img", {"src": "../x_component_IMV2/$Main/default/icons/emoji_type_" + type + ".png"}).inject(btnNode);
+				typeNode.store("type", type);
+				typeNode.addEvent("click", function (e){
+					this._clickEmojiV2TypeBtn(e)
+				}.bind(this))
+			}
+			this._renderEmojiV2List(this.main.emojiV2Object[this.main.emojiV2TypeList[0]]);
+			this.isLoadEmojiV2 = true;
+		}
+		this.emojiMaskNode.classList.remove('none');
+	},
+	_renderEmojiV2List: function (list) {
+		this.emojiListContainerNode.empty()
+		this.currentEmojiV2List = list;
+		for (let i = 0; i < this.currentEmojiV2List.length; i++) {
+			let emoji = this.currentEmojiV2List[i];
+			let emojiNode = new Element("div", {"class": "im-chat-emoji-item"}).inject(this.emojiListContainerNode);
+			emojiNode.set("text", emoji)
+			emojiNode.store("emoji", emoji)
+			emojiNode.addEvent("click", function (e){
+				this._clickEmojiV2Item(e)
+			}.bind(this))
+		}
+	},
+	// 点击表情类型
+	_clickEmojiV2TypeBtn: function (e) {
+		let target =  e.event.currentTarget;
+		let type = target.retrieve("type");
+		console.debug('点击了 表情类型 ' + type);
+		this._renderEmojiV2List(this.main.emojiV2Object[type]);
+		let list = this.emojiTypeListContainerNode.children;
+		for (let i = 0; i < list.length; i++) {
+			let child = list[i];
+			child.firstChild.classList.remove('active');
+		}
+		target.firstChild.classList.add('active')
+	},
+	// 点击表情
+	_clickEmojiV2Item: function (e) {
+		let emoji = e.target.retrieve("emoji");
+		let text = this.chatBottomAreaTextareaNode.value;
+		this.chatBottomAreaTextareaNode.value = text + emoji;
+		this.closeEmojiMaskV2()
+	},
+	closeEmojiMaskV2: function () {
+		this.emojiMaskNode.classList.add('none')
+	},
+	clickStopCloseEmojiMaskV2: function (e) {
+		e.stopPropagation()
 	},
 	//发送表情消息
 	sendEmojiMsg: function (emoji) {

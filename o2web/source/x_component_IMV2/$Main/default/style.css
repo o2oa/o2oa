@@ -242,6 +242,7 @@
 }
 
 /* 聊天界面 */
+/* 图片表情 */
 .chat-emoji-box {
   position: absolute;
   width: 630px;
@@ -261,6 +262,91 @@
   float: left;
   margin: 5px;
 }
+
+/* 文字表情 */
+
+/* 表情 emoji */
+.im-divider-v {
+  height: 1px;
+  width: 100%;
+  background-color: #e0e0e0;
+}
+.im-chat-emoji-mask {
+  z-index: 98;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+}
+.im-chat-emoji {
+  z-index: 99;
+  position: absolute;
+  bottom: 155px;
+  left: 1rem;
+  width: 30rem;
+  height: 30rem;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0.2em 0.2em 1em 0.125em #BBBBBB;
+  border-radius: 4px;
+}
+.im-chat-emoji-triangle {
+  height: 0;
+  width: 0;
+  border-width: 0.375rem;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+  position: absolute;
+  bottom: -0.74rem;
+  left: 0.375rem;
+}
+.im-chat-emoji-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.im-chat-emoji-type-container {
+  flex: 1;
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.im-chat-emoji-type-list {
+  height: 2.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 5px;
+}
+.im-chat-emoji-item {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+  cursor: pointer;
+}
+.im-chat-emoji-item .btn {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.im-chat-emoji-item img {
+  width: 80%;
+  height: 80%;
+}
+.im-chat-emoji-item .active {
+  background-color: #f3f3f3;
+  border-radius: 4px;
+}
+
 .chat-title {
   height: 30px;
   text-align: center;
@@ -311,6 +397,7 @@
   overflow: auto;
   resize: none;
   background: 0 0;
+  font-size: 1rem;
 }
 .chat-bottom-area-send-space {
   position: relative;

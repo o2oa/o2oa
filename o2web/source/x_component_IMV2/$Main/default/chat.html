@@ -18,9 +18,31 @@
 <div class="chat-content" data-o2-element="chatContentNode">
 </div>
 <!-- 底部聊天操作区 -->
+<!-- 表情 emoji   -->
+<div class="im-chat-emoji-mask none"  data-o2-element="emojiMaskNode" data-o2-events="click:closeEmojiMaskV2">
+  <div class="im-chat-emoji" data-o2-events="click:clickStopCloseEmojiMaskV2">
+    <div class="im-chat-emoji-triangle"></div>
+    <div class="im-chat-emoji-container">
+      <div class="im-chat-emoji-type-container" data-o2-element="emojiListContainerNode">
+<!--        <div class="im-chat-emoji-item pointer" oo-each=" $.currentEmoji.list" oo-item="emo" @click="clickChooseEmoji">-->
+<!--          {{emo.value}}-->
+<!--        </div>-->
+      </div>
+      <div class="im-divider-v"></div>
+      <div class="im-chat-emoji-type-list" data-o2-element="emojiTypeListContainerNode">
+<!--        <div class="im-chat-emoji-item pointer">-->
+<!--          <div class="btn active" data-o2-events="click:showEmojiBox">-->
+<!--&lt;!&ndash;            <i class="{{eType.value.icon}} icon"></i>&ndash;&gt;-->
+<!--            <img src="../x_component_IMV2/$Main/default/icons/emoji_type_smile.png"  />-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+  </div>
+</div>
 <div class="chat-bottom-area block" data-o2-element="chatBottomAreaNode">
   <div class="chat-bottom-area-tool" data-o2-element="chatBottomAreaToolNode">
-    <img src="../x_component_IMV2/$Main/default/icons/icon-emoji.png" data-o2-element="chatBottomAreaToolEmojiNode" data-o2-events="click:showEmojiBox" />
+    <img src="../x_component_IMV2/$Main/default/icons/icon-emoji.png" data-o2-element="chatBottomAreaToolEmojiNode" data-o2-events="click:showEmojiV2" />
     <img src="../x_component_IMV2/$Main/default/icons/icon-file.png" data-o2-element="chatBottomAreaToolFileNode" data-o2-events="click:showChooseFile" />
   </div>
   <div class="chat-bottom-area-textarea">
