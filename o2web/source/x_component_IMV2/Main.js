@@ -1721,7 +1721,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		let emoji = e.target.retrieve("emoji");
 		let text = this.chatBottomAreaTextareaNode.value;
 		this.chatBottomAreaTextareaNode.value = text + emoji;
-		this.closeEmojiMaskV2()
+		// this.closeEmojiMaskV2()
 	},
 	closeEmojiMaskV2: function () {
 		this.emojiMaskNode.classList.add('none')
