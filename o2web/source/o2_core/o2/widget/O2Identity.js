@@ -424,8 +424,10 @@ o2.widget.O2CMSApplication = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){
         if (!this.data.name){
-            o2.Actions.get("x_cms_assemble_control").getApplication((this.data.id || this.data.name), function(json){
+            o2.Actions.get("x_cms_assemble_control").getApplication(this.data.id || this.data.name, function(json){
                 this.data = json.data;
+                if(!this.data.name)this.data.name = this.data.appName;
+                if(!this.data.alias)this.data.alias = this.data.appAlias;
             }.bind(this), null, false);
             // this.action = new o2.xDesktop.Actions.RestActions("", "x_cms_assemble_control", "");
             // this.action.actions = {"getApplication": {"uri": "/jaxrs/application/{id}"}};
