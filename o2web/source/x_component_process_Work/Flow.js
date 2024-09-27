@@ -522,7 +522,7 @@ MWF.ProcessFlow.Reset = new Class({
                 o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.getActivity(this.businessData.work.activity, "manual", function (activityJson) {
                     var scriptText = activityJson.data.activity.resetRangeScriptText;
                     if (!scriptText) return;
-                    var resetRange = this.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
+                    var resetRange = this.form.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
                     options.noUnit = true;
                     options.include = typeOf(resetRange) === "array" ? resetRange : [resetRange];
                     options.exclude = exclude;
