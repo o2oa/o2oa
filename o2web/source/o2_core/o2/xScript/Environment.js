@@ -2750,7 +2750,7 @@ MWF.xScript.Environment = function(ev){
         "resumeTask": function(){_form.resumeTask();},
 
         /**本校验不包括校验意见，校验路由；通常用在弹出提交界面时候的校验
-         * @summary 根据表单中所有组件的校验设置和“流转校验”脚本进行校验。
+         * @summary 根据表单中所有组件的校验设置和“流转校验”脚本进行校验。<b>（仅流程表单中可用）</b>
          * @method verify
          * @static
          * @o2syntax
@@ -2763,6 +2763,22 @@ MWF.xScript.Environment = function(ev){
          */
         "verify": function(){
             return !(!_form.formCustomValidation("", "") || !_form.formValidation("", ""));
+        },
+
+        /**
+         * @summary 根据表单中所有组件的校验设置和表单的“发布校验”脚本进行校验。<b>（仅内容管理表单中可用）</b>
+         * @method verifyPublish
+         * @static
+         * @o2syntax
+         * this.form.verifyPublish()
+         *  @example
+         *  if( !this.form.verifyPublish() ){
+         *      return false;
+         *  }
+         *  @return {Boolean} 是否通过校验
+         */
+        "verifyPublish": function(isSave){
+            return !(!_form.formValidation(isSave ? "" : "publish") || !_form[isSave ? 'formSaveValidation' : 'formPublishValidation']());
         },
 
 
