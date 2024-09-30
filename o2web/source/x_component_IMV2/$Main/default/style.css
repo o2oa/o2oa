@@ -576,7 +576,6 @@
 .chat-sender {
   flex: 1;
   margin-bottom: 10px;
-  cursor: pointer;
 }
 .chat-sender-avatar {
   float: left;
@@ -605,6 +604,7 @@
   white-space: pre-line;
   display: inline-block;
   max-width: calc(100% - 80px);
+  cursor: pointer;
 }
 .chat-sender-quote-msg {
   float: left;
@@ -618,6 +618,7 @@
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   display: inline-block;
+  cursor: pointer;
 }
 /* .chat-sender div:nth-of-type(3) {
   background-color: white;
@@ -644,7 +645,6 @@
 .chat-receiver {
   flex: 1;
   margin-bottom: 10px;
-  cursor: pointer;
 }
 .chat-receiver-avatar {
   float: right;
@@ -685,11 +685,13 @@
   white-space: pre-line;
   float: right;
   max-width: calc(100% - 80px);
+  cursor: pointer;
 }
 .chat-receiver-quote-msg {
   float: right;
   clear: both;
   margin-right: 45px;
+  cursor: pointer;
 }
 /* 业务消息专用的外框 */
 .chat-receiver-card-box {
@@ -698,6 +700,7 @@
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   float: right;
+  cursor: pointer;
 }
 /* .chat-receiver div:nth-of-type(3) {
   background-color: #b2e281;
