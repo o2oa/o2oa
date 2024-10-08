@@ -4940,7 +4940,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     }, false);
 
                     if (!cmpt.processStarter) cmpt.processStarter = new o2.xApplication.process.TaskCenter.Starter(obj);
-                    cmpt.processStarter.load();
+                    cmpt.processStarter.load({
+                        "appFlag": app
+                    });
                 }, true, true);
                 return "";
             }
@@ -4951,14 +4953,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             "workData": data,
                             "identity": identity,
                             "latest": latest,
-                            "skipDraftCheck": skipDraftCheck, 
+                            "skipDraftCheck": skipDraftCheck,
                             "onStarted": function (data, title, processName) {
                                 var application;
                                 if (data.work){
                                     var work = data.work;
                                     var options = {
                                         "draft": work,
-                                        "draftData":data.data||{}, 
+                                        "draftData":data.data||{},
                                         "appId": "process.Work"+(new o2.widget.UUID).toString(),
                                         "desktopReload": false
                                     };
@@ -5162,9 +5164,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *      此参数可以省略，如果省略，系统会自动弹出错误信息。
      *
      *      async : 方法同步或者异步执行，默认为true。
-     *      
+     *
      *      urlEncode : 是否对url进行编码，默认为true。
-     *      
+     *
      *      cache : 是否使用缓存，默认为true。
      *  @o2syntax
      *  <caption>
