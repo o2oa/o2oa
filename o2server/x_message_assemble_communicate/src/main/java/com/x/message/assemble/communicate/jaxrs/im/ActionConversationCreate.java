@@ -47,14 +47,16 @@ public class ActionConversationCreate extends BaseAction {
             if (conversation.getPersonList() == null || conversation.getPersonList().isEmpty()) {
                 throw new ExceptionEmptyMember();
             }
-            if (conversation.getType().equals(CONVERSATION_TYPE_GROUP)
-                && conversation.getPersonList().size() < 2) {
-                throw new ExceptionGroupConversationEmptyMember();
-            }
             if (!conversation.getPersonList().contains(effectivePerson.getDistinguishedName())) {
                 List<String> list = conversation.getPersonList();
                 list.add(effectivePerson.getDistinguishedName());
                 conversation.setPersonList(list);
+            }
+            if ((conversation.getType().equals(CONVERSATION_TYPE_GROUP)
+                 && conversation.getPersonList().size() < 3)
+                || (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)
+                    && conversation.getPersonList().size() != 2)) {
+                throw new ExceptionGroupConversationEmptyMember();
             }
             // 单聊 判断会话是否存在
             if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) {

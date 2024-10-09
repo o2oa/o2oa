@@ -27,6 +27,7 @@ MWF.xApplication.IMV2.LP = {
 	"chooseConversation":"选择会话",
 	"chooseConversationExistConversation":"当前已存在关联的聊天会话：",
 	"chooseConversationCreateNew":"创建新的聊天",
+	"chooseConversationSearchInputPlaceholder":"输入关键字后回车搜索",
 
 	"choosePerson":"选择人员",
 	"choosePersonCreate":"创建聊天",

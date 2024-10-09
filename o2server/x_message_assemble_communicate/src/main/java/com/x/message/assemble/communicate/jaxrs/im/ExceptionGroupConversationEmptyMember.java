@@ -7,6 +7,6 @@ class ExceptionGroupConversationEmptyMember extends PromptException {
 	private static final long serialVersionUID = 4132300948670472899L;
 
 	ExceptionGroupConversationEmptyMember() {
-		super("群会话的成员列表不能为空或少于三个人.");
+		super("会话的成员列表数量不正确.");
 	}
 }

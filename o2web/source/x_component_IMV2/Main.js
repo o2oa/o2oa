@@ -420,11 +420,16 @@ MWF.xApplication.IMV2.Main = new Class({
 	
 	//刷新会话Item里面的最后消息内容
 	_refreshConvMessage: function (msg) {
+		var isIn = false;
 		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
 			var node = this.conversationNodeItemList[i];
 			if (node.data.id === msg.conversationId) {
 				node.refreshLastMsg(msg);
+				isIn = true;
 			}
+		}
+		if (!isIn) {
+			this.reciveNewMessage();
 		}
 	},
 	//检查会话列表是否有更新
@@ -1377,6 +1382,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			new Element("img", { "src": img, "class": "quote-message-emoji" }).inject(quoteMessageNode);
 		} else if (msgBody.type === "image") {
 			var url = this._getFileUrlWithWH(msgBody.fileId, 48, 48);
+			if (msgBody.fileExtension && msgBody.fileExtension.toLowerCase() === "webp") {
+				url = this._getFileDownloadUrl(msgBody.fileId);
+			}
 			new Element("img", { "src": url, "class": "quote-message-image" }).inject(quoteMessageNode);
 		}
 		return quoteMessageNode;
@@ -1608,6 +1616,15 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 		this.fileUploadNode.click();
 	},
+	// 检测浏览器是否支持WebP
+	_canUseWebP: function() {
+		var elem = document.createElement('canvas');
+		if (elem.getContext && elem.getContext('2d')) {
+			return elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+		}
+		return false;
+	},
+
 	//创建文件选择框
 	createUploadFileNode: function () {
 		this.uploadFileAreaNode = new Element("div");
@@ -1624,7 +1641,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				var fileExt = file.name.substring(file.name.lastIndexOf("."));
 				// 图片消息
 				var type = "file"
-				if (fileExt.toLowerCase() === ".bmp" || fileExt.toLowerCase() === ".jpeg"
+				if (fileExt.toLowerCase() === ".webp" && this._canUseWebP()) {
+					type = "image"
+				} else if (fileExt.toLowerCase() === ".bmp" || fileExt.toLowerCase() === ".jpeg"
 					|| fileExt.toLowerCase() === ".png" || fileExt.toLowerCase() === ".jpg") {
 					type = "image"
 				} else { // 文件消息
@@ -1887,19 +1906,20 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			this._buildMsgTime(isTop, msg);
 		}
 		var msgItemNode = new Element("div", {"class": "chat-msg"}).inject(this.chatContentNode, isTop ? "top" : "bottom");
-		msgItemNode.store("msg", msg);
-		msgItemNode.addEvents({
-			"click": function(e) {
-				this._clickMsgItem(e);
-			}.bind(this)
-		})
+
 		var checkBoxClass = "chat-msg-checkbox none"
 		if (this.selectMode) {
 			checkBoxClass = "chat-msg-checkbox block"
 		}
 		var msgItemCheckBoxNode = new Element("div", {"class": checkBoxClass}).inject(msgItemNode);
+
 		var msgItemCheckBoxInputNode =  new Element("input", {"type": "checkbox", "class": "check-box-select-item"}).inject(msgItemCheckBoxNode);
 		msgItemCheckBoxInputNode.store("msg", msg)
+		msgItemCheckBoxInputNode.addEvents({
+			"click": function(e) {
+				this._clickMsgItem(e);
+			}.bind(this)
+		})
 
 		var receiverBodyNode = new Element("div", { "class": "chat-sender", "id": msg.id}).inject(msgItemNode);
 		this._addContextMenuEvent(receiverBodyNode, msg);
@@ -1916,6 +1936,12 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			lastNodeClass = "chat-sender-card-box"
 		}
 		var lastNode = new Element("div", {"class": lastNodeClass}).inject(receiverBodyNode);
+		lastNode.store("msg", msg);
+		lastNode.addEvents({
+			"click": function(e) {
+				this._clickMsgItem(e);
+			}.bind(this)
+		})
 		var lastFirstNode = new Element("div", { "class": "chat-left_triangle" }).inject(lastNode);
 		//text
 		if (msgBody.type === "emoji") { // 表情
@@ -1929,6 +1955,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else if (msgBody.type === "image") {//image
 			var imgBox = new Element("div", { "class": "img-chat" }).inject(lastNode);
 			var url = this._getFileUrlWithWH(msgBody.fileId, 144, 192);
+			if (msgBody.fileExtension && msgBody.fileExtension.toLowerCase() === "webp") {
+				url = this._getFileDownloadUrl(msgBody.fileId);
+			}
 			new Element("img", { "src": url }).inject(imgBox);
 		} else if (msgBody.type === "audio") {
 			var url = this._getFileDownloadUrl(msgBody.fileId);
@@ -2021,13 +2050,15 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			this._buildMsgTime(isTop, msg);
 		}
 		var msgItemNode = new Element("div", {"class": "chat-msg"}).inject(this.chatContentNode, isTop ? "top" : "bottom");
-		msgItemNode.store("msg", msg);
-		msgItemNode.addEvent("click", function(e) {
-			this._clickMsgItem(e);
-		}.bind(this))
+
 		var msgItemCheckBoxNode = new Element("div", {"class": "chat-msg-checkbox none"}).inject(msgItemNode);
 		var msgItemCheckBoxInputNode =  new Element("input", {"type": "checkbox", "class": "check-box-select-item"}).inject(msgItemCheckBoxNode);
 		msgItemCheckBoxInputNode.store("msg", msg)
+		msgItemCheckBoxInputNode.addEvents({
+			"click": function(e) {
+				this._clickMsgItem(e);
+			}.bind(this)
+		})
 
 		var receiverBodyNode = new Element("div", { "class": "chat-receiver", "id": msg.id}).inject(msgItemNode);
 		this._addContextMenuEvent(receiverBodyNode, msg);
@@ -2045,6 +2076,11 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			lastNodeClass = "chat-receiver-card-box"
 		}
 		var lastNode = new Element("div", {"class": lastNodeClass}).inject(receiverBodyNode);
+		lastNode.store("msg", msg);
+		lastNode.addEvent("click", function(e) {
+			this._clickMsgItem(e);
+		}.bind(this))
+
 		var lastFirstNode = new Element("div", { "class": "chat-right_triangle" }).inject(lastNode);
 
 		if (msgBody.type === "emoji") { // 表情
@@ -2058,6 +2094,9 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		} else if (msgBody.type === "image") {//image
 			var imgBox = new Element("div", { "class": "img-chat" }).inject(lastNode);
 			var url = this._getFileUrlWithWH(msgBody.fileId, 144, 192);
+			if (msgBody.fileExtension && msgBody.fileExtension.toLowerCase() === "webp") {
+				url = this._getFileDownloadUrl(msgBody.fileId);
+			}
 			new Element("img", { "src": url }).inject(imgBox);
 		} else if (msgBody.type === "audio") {
 			var url = this._getFileDownloadUrl(msgBody.fileId);
@@ -3099,6 +3138,9 @@ MWF.xApplication.IMV2.ChatMessageList = new Class({
 		} else if (msgBody.type === "image") {//image
 			var imgBox = new Element("div", { "class": "img-chat" }).inject(lastNode);
 			var url = this.main._getFileUrlWithWH(msgBody.fileId, 144, 192);
+			if (msgBody.fileExtension && msgBody.fileExtension.toLowerCase() === "webp") {
+				url = this.main._getFileDownloadUrl(msgBody.fileId);
+			}
 			new Element("img", { "src": url }).inject(imgBox);
 		} else if (msgBody.type === "audio") {
 			var url = this.main._getFileDownloadUrl(msgBody.fileId);
