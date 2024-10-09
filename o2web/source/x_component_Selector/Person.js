@@ -1092,7 +1092,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     initSearchInput: function(){
         this.searchInput.addEvents({
-            "keydown": function(e){
+            "keyup": function(e){
                 var iTimerID = this.searchInput.retrieve("searchTimer", null);
                 if (iTimerID){
                     window.clearTimeout(iTimerID);
@@ -1238,7 +1238,7 @@ MWF.xApplication.Selector.Person = new Class({
 
     initSelectedSearchInput: function(){
         this.selectedSearchInput.addEvents({
-            "keydown": function(e){
+            "keyup": function(e){
                 var iTimerID = this.selectedSearchInput.retrieve("searchTimer", null);
                 if (iTimerID){
                     window.clearTimeout(iTimerID);
