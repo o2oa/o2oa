@@ -9,15 +9,14 @@ class QueueAdd implements Add {
 
 	@Override
 	public Collection<Ticket> afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
-		List<Ticket> targets = tickets.trimWithBubble(collection);
-		if (!targets.isEmpty()) {
+		//List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!collection.isEmpty()) {
 			List<Ticket> next = tickets.listNext(ticket);
-			Tickets.interconnectedAsFellow(targets);
-			targets.stream().forEach(o -> o.appendNext(next));
+			Tickets.interconnectedAsFellow(collection);
+			collection.stream().forEach(o -> o.appendNext(next));
 			tickets.completed(ticket);
-			//completedThenNotJoin(tickets, ticket);
 		}
-		return targets;
+		return collection;
 	}
 
 	@Override
