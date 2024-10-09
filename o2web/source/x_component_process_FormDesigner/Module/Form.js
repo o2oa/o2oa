@@ -1546,7 +1546,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		if (subformList){
 			Object.each(subformList, function(subform){
 				if (!currentSubform || currentSubform!=subform.id){
-					if (subform.moduleList[id]){
+					if ((subform.moduleList || {})[id]){
 						elementConflict = true;
 						if (this.options.fields.indexOf(type)!=-1 || this.options.fields.indexOf(subform.moduleList[id].type)!=-1){
 							fieldConflict = true;
