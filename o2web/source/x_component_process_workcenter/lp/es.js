@@ -137,65 +137,65 @@ MWF.xApplication.process.workcenter.LP={
 	"myCreated": "Mi Redacción",
 	"noReview": "Sin consultar",
 	"noMyCreated": "No hay archivos que haya creado",
-	"filterCategoryShortListReview": {
-		"0": {
+	"filterCategoryShortListReview": [
+		{
 			"key": "applicationList",
 			"name": "Aplicación"
 		},
-		"1": {
+		{
 			"key": "processList",
 			"name": "Proceso"
 		},
-		"2": {
+		{
 			"key": "activityNameList",
 			"name": "Actividades"
 		},
-		"3": {
+		{
 			"key": "creatorUnitList",
 			"name": "Departamento"
 		},
-		"4": {
+		{
 			"key": "startTimeMonthList",
 			"name": "Crear mes"
 		},
-		"5": {
+		{
 			"key": "completedList",
 			"name": "Completado"
 		},
-		"6": {
+		{
 			"key": "key",
 			"name": "Palabras clave"
 		}
-	},
-	"filterCategoryListReview": {
-		"0": {
+	],
+	"filterCategoryListReview": [
+		{
 			"key": "applicationList",
 			"name": "Nombre de la aplicación"
 		},
-		"1": {
+		{
 			"key": "processList",
 			"name": "Nombre del proceso"
 		},
-		"2": {
+		{
 			"key": "activityNameList",
 			"name": "Tramitación de las actividades"
 		},
-		"3": {
+		{
 			"key": "creatorUnitList",
 			"name": "Crear un departamento"
 		},
-		"4": {
+		{
 			"key": "startTimeMonthList",
 			"name": "Crear mes"
 		},
-		"5": {
+		{
 			"key": "completedList",
 			"name": "Si se completa la circulación"
 		},
-		"6": {
+		{
 			"key": "key",
 			"name": "Palabras clave"
 		}
-	}
+	]
 }
 MWF.xApplication.process.workcenter["lp."+o2.language] = MWF.xApplication.process.workcenter.LP

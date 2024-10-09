@@ -248,37 +248,24 @@ MWF.xApplication.Org.LP={
 	"lockPersonSuccess": "¡Bloqueo exitoso, ¡ el usuario (...) no puede iniciar sesión!",
 	"locked": "Bloqueo",
 	"baned": "Desactivado",
-	"status": {
-		"0": {
+	"status": "status",
+	"statusOption": [
+		{
 			"text": "Normal",
 			"value": "0"
 		},
-		"1": {
+		{
 			"text": "Bloqueo",
 			"value": "1"
 		},
-		"2": {
+		{
+			"text": "Desactivado",
+			"value": "2"
+		},
+		{
 			"text": "Desactivado",
 			"value": "2"
 		}
-	},
-	"statusOption": {
-		"0": {
-			"text": "Normal",
-			"value": "0"
-		},
-		"1": {
-			"text": "Bloqueo",
-			"value": "1"
-		},
-		"2": {
-			"text": "Desactivado",
-			"value": "2"
-		},
-		"3": {
-			"text": "Desactivado",
-			"value": "2"
-		}
-	}
-}
+	]
+};
 MWF.xApplication.Org["lp."+o2.language] = MWF.xApplication.Org.LP
