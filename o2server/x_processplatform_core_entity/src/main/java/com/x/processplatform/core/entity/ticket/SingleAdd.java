@@ -9,15 +9,14 @@ class SingleAdd implements Add {
 
 	@Override
 	public Collection<Ticket> afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
-		List<Ticket> targets = tickets.trimWithBubble(collection);
-		if (!targets.isEmpty()) {
+		// List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!collection.isEmpty()) {
 			List<Ticket> next = tickets.listNext(ticket);
-			Tickets.interconnectedAsFellow(targets);
-			targets.stream().forEach(o -> o.appendNext(next));
+			Tickets.interconnectedAsFellow(collection);
+			collection.stream().forEach(o -> o.appendNext(next));
 			tickets.completed(ticket);
-			//completedThenNotJoin(tickets, ticket);
 		}
-		return targets;
+		return collection;
 	}
 
 	@Override
@@ -32,14 +31,14 @@ class SingleAdd implements Add {
 		}
 		targets.stream().forEach(o -> o.appendNext(next));
 		tickets.completed(ticket);
-		//completedThenNotJoin(tickets, ticket);
+		// completedThenNotJoin(tickets, ticket);
 		return targets;
 	}
 
 	@Override
 	public Collection<Ticket> afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		//List<Ticket> fellow = tickets.listFellow(ticket, true);
+		// List<Ticket> fellow = tickets.listFellow(ticket, true);
 		List<Ticket> next = tickets.listNext(ticket);
 		sibling.addAll(targets);
 		Tickets.interconnectedAsSibling(sibling);
@@ -48,7 +47,7 @@ class SingleAdd implements Add {
 		targets.stream().forEach(o -> o.appendNext(next));
 		tickets.listNextTo(ticket).forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
 		tickets.completed(ticket);
-		//completedThenNotJoin(tickets, ticket);
+		// completedThenNotJoin(tickets, ticket);
 		return targets;
 	}
 
