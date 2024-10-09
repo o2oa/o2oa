@@ -103,8 +103,8 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             centerUrl.toURI().go();
         } else {
             layout.openApplication(null, "process.workcenter");
-        }      
-        
+        }
+
     },
     loadTitle: function () {
         this.loadTitleBar();
@@ -1270,7 +1270,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
                 if( layout.inBrowser ){
                     this.starter.fireEvent("afterStartProcess", [win]);
                 }
-            }            
+            }
 
             if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, false);
         }else{
@@ -1418,9 +1418,12 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         this.css = app.css;
         this.lp = app.lp;
         this.content = this.app.content;
-        this.startApplications = [];
     },
-    load: function(){
+    load: function(options){
+        this.startApplications = [];
+        this.appList = [];
+        this.columnList = [];
+        this.setOptions(options);
         if (layout.mobile){
             this.showStartProcessArea_mobile();
         }else{
@@ -1428,9 +1431,8 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         }
     },
     showStartProcessArea_pc: function () {
-        if (!this.startProcessAreaNode) {
-            this.createStartProcessArea();
-        }
+        if (this.startProcessAreaNode) this.startProcessAreaNode.destroy();
+        this.createStartProcessArea();
         this.content.mask({
             "destroyOnHide": true,
             "id": "process_taskcenter_startProcessMask",
@@ -1535,6 +1537,11 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
             if(this.allApplicationStarter){
                 this.startProcessSearchNode.setStyle("display", "block");
                 this.allApplicationStarter.selected();
+            }else{
+                var apps = this.appList.length ? this.appList : this.columnList;
+                if( apps.length ){
+                    apps[0].selected();
+                }
             }
         }
     },
@@ -1547,20 +1554,43 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
             Promise.all([p1, p2]).then(function(data){
                 var json_process = data[0],  json_column = data[1];
 
+                if( this.options.appFlag ){
+                    json_process.data = json_process.data.filter(function (d){
+                        return [d.id, d.name, d.alias].contains(this.options.appFlag);
+                    }.bind(this));
+
+                    json_column.data = json_column.data.filter(function (d){
+                        return [d.id, d.appName, d.appAlias].contains(this.options.appFlag);
+                    }.bind(this));
+                }
+
                 this.appStartableData = json_process.data;
                 this.columnStartableData = json_column.data;
 
                 this.startProcessSearchNode.setStyle("display", "block");
-                this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json_process.data, this, json_column.data);
-                this.allApplicationStarter.selected();
+                if( !this.options.appFlag ) {
+                    this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json_process.data, this, json_column.data);
+                    this.allApplicationStarter.selected();
+                }
 
                 json_process.data.each(function (app) {
-                    if (app.processList && app.processList.length) new MWF.xApplication.process.TaskCenter.Application(app, this);
+                    if (app.processList && app.processList.length){
+                       var a = new MWF.xApplication.process.TaskCenter.Application(app, this);
+                       this.appList.push(a);
+                    }
                 }.bind(this));
 
                 json_column.data.each(function (column) {
-                    new MWF.xApplication.process.TaskCenter.Column(column, this);
+                    var c = new MWF.xApplication.process.TaskCenter.Column(column, this);
+                    this.columnList.push(c);
                 }.bind(this));
+
+                if( this.options.appFlag ){
+                    var apps = this.appList.length ? this.appList : this.columnList;
+                    if( apps.length ){
+                        apps[0].selected();
+                    }
+                }
             }.bind(this));
 
         }.bind(this));
@@ -1595,9 +1625,8 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         }
     },
     showStartProcessArea_mobile: function(){
-        if (!this.startProcessAreaNode) {
-            this.createStartProcessArea_mobile();
-        }
+        if (this.startProcessAreaNode) this.startProcessAreaNode.destroy();
+        this.createStartProcessArea_mobile();
         this.startProcessAreaNode.setStyle("display", "block");
         //document.body.setStyle("-webkit-overflow-scrolling", "auto");
         var morph = new Fx.Morph(this.startProcessAreaNode, {
@@ -1660,23 +1689,11 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         this.startProcessListNode.setStyle("height", ""+h+"px");
 
         this.app.getAction(function () {
-            o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPersonAndTerminal("mobile", function (appjson) {
-                //this.app = this;
-                MWF.UD.getDataJson("taskCenter_startTop", function(json){
-                    this.top5Data = json;
-                    if (this.top5Data && this.top5Data.length){
-                        var top5Node = new Element("div.top5Node").inject(this.startProcessListNode);
-                        new Element("div.top5Title", {"styles": this.css.applicationChildTitleNode, "text": this.lp.startTop5}).inject(top5Node);
-                        var top5ChildNode = new Element("div.top5ChildNode", {"styles": this.css.applicationChildChildNode}).inject(top5Node);
-
-                        this.top5Data.sort(function(p1, p2){
-                            return 0-(p1.count-p2.count);
-                        });
-                        this.top5Data.each(function(process, i){
-                            if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
-                        }.bind(this));
-                    }
-
+            if( this.options.appFlag ){
+                o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPersonAndTerminal("mobile", function (appjson) {
+                    appjson.data = appjson.data.filter(function (d){
+                        return [d.id, d.name, d.alias].contains( this.options.appFlag );
+                    }.bind(this));
                     appjson.data.each(function (app) {
                         if (app.processList && app.processList.length > 0) {
                             var appNode = new Element("div.appNode").inject(this.startProcessListNode);
@@ -1687,9 +1704,43 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                             }.bind(this));
                         }
                     }.bind(this));
-                }.bind(this));
 
+                }.bind(this));
+            }else{
+                this.loadApplications_mobile();
+            }
+        }.bind(this));
+    },
+    loadApplications_mobile: function(){
+        o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPersonAndTerminal("mobile", function (appjson) {
+            //this.app = this;
+            MWF.UD.getDataJson("taskCenter_startTop", function(json){
+                this.top5Data = json;
+                if (this.top5Data && this.top5Data.length){
+                    var top5Node = new Element("div.top5Node").inject(this.startProcessListNode);
+                    new Element("div.top5Title", {"styles": this.css.applicationChildTitleNode, "text": this.lp.startTop5}).inject(top5Node);
+                    var top5ChildNode = new Element("div.top5ChildNode", {"styles": this.css.applicationChildChildNode}).inject(top5Node);
+
+                    this.top5Data.sort(function(p1, p2){
+                        return 0-(p1.count-p2.count);
+                    });
+                    this.top5Data.each(function(process, i){
+                        if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
+                    }.bind(this));
+                }
+
+                appjson.data.each(function (app) {
+                    if (app.processList && app.processList.length > 0) {
+                        var appNode = new Element("div.appNode").inject(this.startProcessListNode);
+                        new Element("div.appTitleNode", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(appNode);
+                        var appChildNode = new Element("div.appChildNode", {"styles": this.css.applicationChildChildNode}).inject(appNode);
+                        app.processList.each(function(process){
+                            new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": app.applicationName || app.appName || app.name }, appChildNode);
+                        }.bind(this));
+                    }
+                }.bind(this));
             }.bind(this));
+
         }.bind(this));
     },
     // getAction: function (callback) {
