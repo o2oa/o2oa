@@ -420,11 +420,16 @@ MWF.xApplication.IMV2.Main = new Class({
 	
 	//刷新会话Item里面的最后消息内容
 	_refreshConvMessage: function (msg) {
+		var isIn = false;
 		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
 			var node = this.conversationNodeItemList[i];
 			if (node.data.id === msg.conversationId) {
 				node.refreshLastMsg(msg);
+				isIn = true;
 			}
+		}
+		if (!isIn) {
+			this.reciveNewMessage();
 		}
 	},
 	//检查会话列表是否有更新

@@ -1095,10 +1095,25 @@
   min-height: 300px;
   max-height: 560px;
   opacity: 1;
-  padding: 24px;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
 }
+.share-search-box {
+  height: 28px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  padding: 0 10px;
+}
+.share-search-box-input {
+  height: 26px;
+  width: calc(100% - 20px);
+  line-height: 26px;
+  border: 0;
+  border-radius: 20px;
+  padding: 0 10px;
+}
+
 .share-conversation-list {
   width: 257px;
   display: flex;
@@ -1139,6 +1154,7 @@
   line-height: 30px;
   margin-left: 16px;
   word-wrap: break-word;
-  white-space: pre-line;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
