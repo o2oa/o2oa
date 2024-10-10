@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.factory.content;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -110,4 +111,43 @@ public class WorkFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<String> listJobWithProcess(String processId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Work.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Work> root = cq.from(Work.class);
+		Predicate p = cb.equal(root.get(Work_.process), processId);
+		return em.createQuery(cq.select(root.get(Work_.job)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+	}
+
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Work.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Work> root = cq.from(Work.class);
+		Predicate p = cb.equal(root.get(Work_.process), id);
+		cq.select(root.get(Work_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listJobWithApplication(String applicationId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Work.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Work> root = cq.from(Work.class);
+		Predicate p = cb.equal(root.get(Work_.application), applicationId);
+		return em.createQuery(cq.select(root.get(Work_.job)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Work.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Work> root = cq.from(Work.class);
+		Predicate p = cb.equal(root.get(Work_.application), id);
+		cq.select(root.get(Work_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

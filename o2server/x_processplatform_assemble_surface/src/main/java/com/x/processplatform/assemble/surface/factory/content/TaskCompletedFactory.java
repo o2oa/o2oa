@@ -199,6 +199,47 @@ public class TaskCompletedFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.process), id);
+		cq.select(root.get(TaskCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithProcessWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.process), id);
+		p = cb.and(p, cb.equal(root.get(TaskCompleted_.completed), completed));
+		cq.select(root.get(TaskCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.application), id);
+		cq.select(root.get(TaskCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplicationWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.application), id);
+		p = cb.and(p, cb.equal(root.get(TaskCompleted_.completed), completed));
+		cq.select(root.get(TaskCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 //	/* 获取可以召回的已办点 */
 //	public String getAllowRetract(String person, Work work) throws Exception {
 //		if (null != work) {

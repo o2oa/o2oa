@@ -44,6 +44,17 @@ public class ProcessFactory extends ElementFactory {
 		return this.pick(application, flag, Process.class);
 	}
 
+	public List<Process> listProcessEditionObject(String application, String edition) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Process.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
+		Root<Process> root = cq.from(Process.class);
+		Predicate p = cb.equal(root.get(Process_.application), application);
+		p = cb.and(p, cb.equal(root.get(Process_.edition), edition));
+		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
+		return em.createQuery(cq).getResultList();
+	}
+
 	/**
 	 * 在启动方法中根据应用和流程标识找到流程,需要考虑如果启用版本管理,那么流程名是重复的
 	 *

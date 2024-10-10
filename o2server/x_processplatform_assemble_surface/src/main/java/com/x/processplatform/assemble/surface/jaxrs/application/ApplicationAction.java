@@ -3,12 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.application;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -218,6 +213,27 @@ public class ApplicationAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionIsManager().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "根据应用标识删除流程实例数据.", operationId = OPERATIONID_PREFIX + "deleteWorkOrWorkCompleted", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteWorkOrWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据应用标识删除流程实例数据", action = ActionDeleteWorkOrWorkCompleted.class)
+	@DELETE
+	@Path("{flag}/{onlyRemoveNotCompleted}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+										  @JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag,
+										  @JaxrsParameterDescribe("仅删除流转中Work") @PathParam("onlyRemoveNotCompleted") boolean onlyRemoveNotCompleted) {
+		ActionResult<ActionDeleteWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteWorkOrWorkCompleted().execute(effectivePerson, flag, onlyRemoveNotCompleted);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

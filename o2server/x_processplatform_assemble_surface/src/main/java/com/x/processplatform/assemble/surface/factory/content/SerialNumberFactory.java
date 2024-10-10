@@ -30,4 +30,24 @@ public class SerialNumberFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(SerialNumber.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<SerialNumber> root = cq.from(SerialNumber.class);
+		Predicate p = cb.equal(root.get(SerialNumber_.application), id);
+		cq.select(root.get(SerialNumber_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(SerialNumber.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<SerialNumber> root = cq.from(SerialNumber.class);
+		Predicate p = cb.equal(root.get(SerialNumber_.process), id);
+		cq.select(root.get(SerialNumber_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 }

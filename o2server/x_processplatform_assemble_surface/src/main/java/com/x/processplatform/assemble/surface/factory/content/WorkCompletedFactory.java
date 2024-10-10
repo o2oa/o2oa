@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.factory.content;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -89,6 +90,44 @@ public class WorkCompletedFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
-	
+	public List<String> listJobWithProcess(String processId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+		Predicate p = cb.equal(root.get(WorkCompleted_.process), processId);
+		return em.createQuery(cq.select(root.get(WorkCompleted_.job)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+	}
+
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+		Predicate p = cb.equal(root.get(WorkCompleted_.process), id);
+		cq.select(root.get(WorkCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listJobWithApplication(String applicationId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+		Predicate p = cb.equal(root.get(WorkCompleted_.application), applicationId);
+		return em.createQuery(cq.select(root.get(WorkCompleted_.job)).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+		Predicate p = cb.equal(root.get(WorkCompleted_.application), id);
+		cq.select(root.get(WorkCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 
 }
