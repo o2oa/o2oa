@@ -689,7 +689,7 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示我受到邀请的正在进行中的会议.", action = ActionInvitedCompleted.class)
+	@JaxrsMethodDescribe(value = "列示我受到邀请的已结束的会议.", action = ActionInvitedCompleted.class)
 	@GET
 	@Path("list/invited/completed")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
