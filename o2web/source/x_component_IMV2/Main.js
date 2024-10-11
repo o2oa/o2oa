@@ -1058,31 +1058,26 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 
 	//检查是否有新消息
 	_checkNewMessage: function () {
-		if (this.conversationId && this.conversationId != "") {//是否有会话窗口
+		if (this.conversationId && this.conversationId !== "") {//是否有会话窗口
 			var data = { "conversationId": this.conversationId };
 			o2.Actions.load("x_message_assemble_communicate").ImAction.msgListByPaging(1, 10, data, function (json) {
 				var list = json.data;
 				if (list && list.length > 0) {
-					var msg = list[0];
-					//检查聊天框是否有变化
-					if (this.conversationId == msg.conversationId) {
-						for (var i = 0; i < list.length; i++) {
-							var isnew = true;
-							var m = list[i];
-							for (var j = 0; j < this.messageList.length; j++) {
-								if (this.messageList[j].id == m.id) {
-									isnew = false;
-								}
+					for (var i = 0; i < list.length; i++) {
+						var isnew = true;
+						var m = list[i];
+						for (var j = 0; j < this.messageList.length; j++) {
+							if (this.messageList[j].id === m.id) {
+								isnew = false;
 							}
-							if (isnew) {
-								this.messageList.push(m);
-								this._buildMsgNode(m, false);
-								// this._refreshConvMessage(m);
-							}
+						}
+						if (isnew) {
+							this.messageList.push(m);
+							this._buildMsgNode(m, false);
+							// this._refreshConvMessage(m);
 						}
 					}
 				}
-
 			}.bind(this), function (error) {
 				console.error(error);
 			}.bind(this), false);
@@ -1090,8 +1085,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 	},
 	// 撤回消息
 	_checkRevokeMsg: function(msg) {
-		if (this.conversationId && this.conversationId != "") {//是否有会话窗口
-			if (msg.conversationId && msg.conversationId == this.conversationId) {
+		if (this.conversationId && this.conversationId !== "") {//是否有会话窗口
+			if (msg.conversationId && msg.conversationId === this.conversationId) {
 				// 删除数据
 				this.messageList.splice(this.messageList.findIndex(e => e.id === msg.id), 1);
 				this._removeMsgNode(msg);
