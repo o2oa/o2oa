@@ -86,30 +86,40 @@ abstract class BaseAction extends StandardJaxrsAction {
             EffectivePerson effectivePerson) {
         // 发送消息
         List<String> persons = conversation.getPersonList();
-        persons.removeIf(s -> (effectivePerson.getDistinguishedName().equals(s)));
-        for (int i = 0; i < persons.size(); i++) {
-            String name = "";
+        // 原来排除了自己 先不排除，因为有多端操作的可能，多端可以同步消息
+//        persons.removeIf(s -> (effectivePerson.getDistinguishedName().equals(s)));
+        String name = "";
+        try {
+            name = effectivePerson.getDistinguishedName().substring(0,
+                    effectivePerson.getDistinguishedName().indexOf("@"));
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        for (String person : persons) {
+            LOGGER.info("发送im消息， person: " + person + " messageType: " + messageType);
+            String title = "您有一条来自 " + name + " 的消息";
+            if (person.equals(effectivePerson.getDistinguishedName())) {
+                title = "您有一条新消息";
+            }
+            Message message = new Message();
+//            String body = imMessageBody(msg);
+            message.setTitle(title);
+            message.setPerson(person);
+            message.setType(messageType);
+            message.setId("");
+            message.setBody(msg.toString());
             try {
-                name = effectivePerson.getDistinguishedName().substring(0,
-                        effectivePerson.getDistinguishedName().indexOf("@"));
+                // 发送 websocket 消息
+                ThisApplication.wsConsumeQueue.send(message);
             } catch (Exception e) {
                 LOGGER.error(e);
             }
-            String person = persons.get(i);
-            LOGGER.info("发送im消息， person: " + person + " messageType: " + messageType);
-            String title = "来自 " + name + " 的消息";
-            MessageConnector.send(messageType, title, person, msg);
-            // 如果消息接收者没有在线 连接ws 就发送一个推送消息
-            if (MessageConnector.TYPE_IM_CREATE.equals(messageType)) { // 发送聊天消息时候 如果没有在线 发送app推送消息
+            // 发送聊天消息时候 如果没有在线 发送app推送消息
+            if (!person.equals(effectivePerson.getDistinguishedName()) && MessageConnector.TYPE_IM_CREATE.equals(messageType)) {
                 try {
                     if (!ThisApplication.wsClients().containsValue(person)) {
                         LOGGER.info("向app 推送im消息， person: " + person);
-                        Message message = new Message();
-                        String body = imMessageBody(msg);
-                        message.setTitle(title + ": " + body);
-                        message.setPerson(person);
-                        message.setType(MessageConnector.TYPE_IM_CREATE);
-                        message.setId("");
+
                         if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
                             ThisApplication.pmsinnerConsumeQueue.send(message);
                         }
