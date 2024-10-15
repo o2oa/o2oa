@@ -21,59 +21,60 @@ import java.util.List;
  */
 public class ActionQueryCountWithFilter extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionQueryCountWithFilter.class);
+    private static Logger logger = LoggerFactory.getLogger(ActionQueryCountWithFilter.class);
 
-	protected ActionResult<Wo> execute( HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson ) throws Exception {
-		ActionResult<Wo> result = new ActionResult<>();
+    protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement,
+            EffectivePerson effectivePerson) throws Exception {
+        ActionResult<Wo> result = new ActionResult<>();
 
-		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
-		String personName = effectivePerson.getDistinguishedName();
+        Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+        String personName = effectivePerson.getDistinguishedName();
 
-		if ( wi == null ) { wi = new Wi(); }
+        if (wi == null) {
+            wi = new Wi();
+        }
 
-		if( StringUtils.isEmpty( wi.getDocumentType() )) {
-			wi.setDocumentType( "信息" );
-		}
+        if (StringUtils.isEmpty(wi.getDocumentType())) {
+            wi.setDocumentType("信息");
+        }
 
-		if( ListTools.isEmpty( wi.getStatusList() )) {
-			List<String> status = new ArrayList<>();
-			status.add( "published" );
-			wi.setStatusList( status );
-		}
+        if (ListTools.isEmpty(wi.getStatusList())) {
+            List<String> status = new ArrayList<>();
+            status.add("published");
+            wi.setStatusList(status);
+        }
 
-		QueryFilter queryFilter = wi.getQueryFilter();
-		Business business = new Business(null);
-		if(business.isManager(effectivePerson)){
-			personName = null;
-		}
+        QueryFilter queryFilter = wi.getQueryFilter();
+        Business business = new Business(null);
 
-		Long total = documentQueryService.countWithCondition( personName, queryFilter, false, false);
-		if( total == null) {
-			total = 0L;
-		}
-		Wo wo = new Wo();
-		wo.setDocCount(total);
-		result.setCount(total);
-		result.setData(wo);
-		return result;
-	}
+        Long total = documentQueryService.countWithCondition(personName, queryFilter, false, false,
+                wi.getReadFlag(), business.isManager(effectivePerson));
+        if (total == null) {
+            total = 0L;
+        }
+        Wo wo = new Wo();
+        wo.setDocCount(total);
+        result.setCount(total);
+        result.setData(wo);
+        return result;
+    }
 
-	public static class Wi extends WrapInDocumentFilter{
+    public static class Wi extends WrapInDocumentFilter {
 
-	}
+    }
 
-	public static class Wo extends GsonPropertyObject {
+    public static class Wo extends GsonPropertyObject {
 
-		@FieldDescribe( "查询到的文档数量" )
-		Long docCount = 0L;
+        @FieldDescribe("查询到的文档数量")
+        Long docCount = 0L;
 
-		public Long getDocCount() {
-			return docCount;
-		}
+        public Long getDocCount() {
+            return docCount;
+        }
 
-		public void setDocCount(Long docCount) {
-			this.docCount = docCount;
-		}
+        public void setDocCount(Long docCount) {
+            this.docCount = docCount;
+        }
 
-	}
+    }
 }
