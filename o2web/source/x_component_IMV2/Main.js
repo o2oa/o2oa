@@ -309,7 +309,33 @@ MWF.xApplication.IMV2.Main = new Class({
 		// new ChatNodeBox
 		this.chatNodeBox = new MWF.xApplication.IMV2.ChatNodeBox(conv, this);
 	},
-	
+	tapChoosePerson: function() {
+		MWF.requireApp("Selector","package", function(){
+			new MWF.O2Selector(document.body,  {
+				"type": 'identity',
+				"count": 0,
+				"title": '通讯录',
+				"firstLevelSelectable": true,
+				"resultType": "person",
+				"onPostLoadContent": function () {
+					this.titleTextNode.set("text", '通讯录')
+				},
+				"onComplete": function(items) {
+					console.log(items)
+					if (items && items.length > 0) {
+						let personList = items.map(i => i.data.distinguishedName)
+						const me = layout.session.user.distinguishedName;
+						personList = personList.filter(p => p !== me)
+						if (personList.length === 0 ) {
+							this.app.notice(this.lp.msgNeedChoosePerson, "error");
+						} else {
+							this.newConversation(personList, personList.length === 1 ? "single" : "group")
+						}
+					}
+				}.bind(this)
+			})
+		}.bind(this));
+	},
 	//点击创建单聊按钮
 	tapCreateSingleConv: function () {
 		// var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
