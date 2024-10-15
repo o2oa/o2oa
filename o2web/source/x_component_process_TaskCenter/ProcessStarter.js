@@ -18,13 +18,14 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
         this.cssPath = "../x_component_process_TaskCenter/$ProcessStarter/"+this.options.style+"/css.wcss";
         this._loadCss();
 
-        MWF.xDesktop.requireApp("process.TaskCenter", "$ProcessStarter."+MWF.language, null, false);
-        this.lp = MWF.xApplication.process.TaskCenter.ProcessStarter.lp;
-
         this.data = data;
         this.app = app;
     },
     load: function(){
+        if( !this.lp ){
+            MWF.xDesktop.requireApp("process.TaskCenter", "$ProcessStarter."+MWF.language, null, false);
+            this.lp = MWF.xApplication.process.TaskCenter.ProcessStarter.lp;
+        }
         this.getOrgAction(function(){
             if (this.app.desktop.session.user.distinguishedName){
                 o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.listAvailableIdentityWithProcess(this.data.id, function(json){
