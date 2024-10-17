@@ -1470,7 +1470,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		if (this.selectedTaskList && this.selectedTaskList.length){
 			var p = [];
 			this.selectedTaskList.forEach(function(task){
-				if (!opinion) opinion = routeName;
+				if (!opinion) opinion = "";
 
 				p.push(this.action.ReadAction.processing(task.id, {"opinion": opinion}, function(json){
 
