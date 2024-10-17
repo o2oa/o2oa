@@ -1307,6 +1307,15 @@ MWF.xApplication.process.workcenter.List = new Class({
 		delete data._;
 		e.currentTarget.store("task", data);
 	},
+	batchProcess: function(e){
+		if(this.options.type === "read"){
+			this.batchProcessRead(e);
+		}else {
+			this.batchProcessTask(e);
+
+		}
+
+	},
 	batchProcessTask: function(e){
 		if (this.selectedTaskList && this.selectedTaskList.length){
 			var data = this.selectedTaskList[0];
@@ -1362,6 +1371,9 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		return this.action.ReadAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
+			json.data.each(function (d){
+				d.allowRapid = true;
+			})
 			return json.data;
 		}.bind(this));
 
@@ -1384,6 +1396,90 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var now = new Date();
 		if (now.getTime()-start.getTime()<86400000){
 			iconNode.setStyle("background-image", "url("+"../x_component_process_workcenter/$Main/default/icons/pic_new.png)");
+		}
+	},
+	selectTask: function(e, data){
+		if (e.currentTarget.get("disabled").toString()!="true"){
+			var itemNode = e.currentTarget.getParent(".listItem");
+			var iconNode = e.currentTarget.getElement(".selectFlagIcon");
+
+			if (itemNode){
+				if (itemNode.hasClass("mainColor_bg_opacity")){
+					itemNode.removeClass("mainColor_bg_opacity");
+					iconNode.removeClass("o2icon-xuanzhong");
+					iconNode.removeClass("selectFlagIcon_select");
+					iconNode.removeClass("mainColor_color");
+					this.unSelectedTask(data);
+					this.showBatchAction();
+				}else{
+					itemNode.addClass("mainColor_bg_opacity");
+					iconNode.addClass("o2icon-xuanzhong");
+					iconNode.addClass("selectFlagIcon_select");
+					iconNode.addClass("mainColor_color");
+					this.selectedTask(data);
+					this.showBatchAction(itemNode);
+				}
+			}
+		}
+	},
+	batchProcessRead: function(e){
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			var data = this.selectedTaskList[0];
+			this.editRead();
+		}
+	},
+	editRead : function(){
+		var _self = this;
+		var text = this.lp.readConfirm;
+		var url = this.app.path+this.app.options.style+"/view/dlg/read.html";
+		o2.loadHtml(url, {"bind": {"lp": this.lp, "readedConfirmContent": text}, "module": this}, function(o){
+			var html = o2.bindJson(o[0].data, {"lp": this.lp, "readedConfirmContent": text});
+			//var p = o2.dlgPosition(null, this.app.content, 550, 260)
+			var readDlg = o2.DL.open({
+				"title": this.lp.setReadedConfirmTitle,
+				"style": "user",
+				"isResize": false,
+				"height": "260",
+				"width": "550",
+				"html": html,
+				"maskNode": this.app.content,
+				"minTop": 5,
+				"buttonList": [
+					{
+						"type": "ok",
+						"text": MWF.LP.process.button.ok,
+						"action": function () {
+							debugger;
+							var opinion = this.content.getElement("textarea").get("value");
+							_self.batchSubmitRead(opinion);
+							this.close();
+						}
+					},
+					{
+						"type": "cancel",
+						"text": MWF.LP.process.button.cancel,
+						"action": function () {
+							this.close();
+						}
+					}
+				]
+			});
+		}.bind(this));
+	},
+	batchSubmitRead: function(opinion){
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			var p = [];
+			this.selectedTaskList.forEach(function(task){
+				if (!opinion) opinion = routeName;
+
+				p.push(this.action.ReadAction.processing(task.id, {"opinion": opinion}, function(json){
+
+				}.bind(this)));
+			}.bind(this));
+			Promise.all(p).then(function(){
+				this.app.content.unmask();
+				this.refresh();
+			}.bind(this));
 		}
 	},
 	setReadCompleted: function(e, data){

@@ -130,6 +130,8 @@ MWF.xApplication.process.workcenter.LP={
 	"noDraft": "No draft files",
 	"createWork": "New Process File",
 	"batch": "Batch processing",
+	"readConfirm" : "Are you sure you want to mark the selected files as read?",
+
 	"selectBatch": "Select multiple to-dos of the same link for batch processing",
 	"cannotSelectBatch": "To-dos in different links cannot be batch processed",
 	"unnamed": "unnamed",

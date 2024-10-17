@@ -1,88 +1,87 @@
 <div>
     {{if $.data.length}}
-        {{each $.data}}
-        <div class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; o2load:loadItemFlag">
-            <div class="selectFlag">
-                {{if $.allowRapid}}
-                <div class="selectFlagArea" style="height: 59px; cursor: pointer" title="{{$._.lp.selectBatch}}" data-o2-events="o2load:bindSelectData;click:selectTask">
-                    <div class="selectFlagIcon"></div>
-                </div>
+    {{each $.data}}
+    <div class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; o2load:loadItemFlag">
+        <div class="selectFlag">
+            {{if $.allowRapid}}
+            <div class="selectFlagArea" style="height: 59px; cursor: pointer" title="{{$._.lp.selectBatch}}" data-o2-events="o2load:bindSelectData;click:selectTask">
+                <div class="selectFlagIcon"></div>
+            </div>
+            {{end if}}
+        </div>
+        <div class="listItemApplication">
+            <div class="listItemApplicationIcon" data-o2-events="o2load:loadItemIcon:{{$.application}}"></div>
+            <div class="listItemApplicationText" title="{{$.applicationName}}">{{$.applicationName}}</div>
+        </div>
+        <div class="listItemLine"></div>
+
+        <div class="listItemFlag">
+            {{if $.allowRapid && $._.type!=='read'}}}
+            <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask" title="{{$._.lp.rapidEditor}}"></div>
+            {{end if}}
+            {{if $._.type=='read'}}
+            <div class="rapidEditor o2icon-daiyue" data-o2-events="click:setReadCompleted" title="{{$._.lp.setReadCompleted}}"></div>
+            {{end if}}
+        </div>
+        <div class="listItemDate">
+            <div>
+                {{if $._.type=='task' || $._.type=='read'}}
+                <div>{{$.startTime}}</div>
                 {{end if}}
-            </div>
-            <div class="listItemApplication">
-                <div class="listItemApplicationIcon" data-o2-events="o2load:loadItemIcon:{{$.application}}"></div>
-                <div class="listItemApplicationText" title="{{$.applicationName}}">{{$.applicationName}}</div>
-            </div>
-            <div class="listItemLine"></div>
 
-            <div class="listItemFlag">
-                {{if $.allowRapid}}
-                <div class="rapidEditor o2icon-bianji" data-o2-events="click:editTask" title="{{$._.lp.rapidEditor}}"></div>
+                {{if $._.type=='taskCompleted' || $._.type=='readCompleted'}}
+                <div>{{$.completedTime}}</div>
                 {{end if}}
-                {{if $._.type=='read'}}
-                <div class="rapidEditor o2icon-daiyue" data-o2-events="click:setReadCompleted" title="{{$._.lp.setReadCompleted}}"></div>
+
+                {{if $._.type=='draft'}}
+                <div>{{$.createTime}}</div>
                 {{end if}}
-            </div>
-            <div class="listItemDate">
-                <div>
-                    {{if $._.type=='task' || $._.type=='read' || $._.type=='review' || $._.type=='myCreated'}}
-                    <div>{{$.startTime}}</div>
-                    {{end if}}
-
-                    {{if $._.type=='taskCompleted' || $._.type=='readCompleted'}}
-                    <div>{{$.completedTime}}</div>
-                    {{end if}}
-
-                    {{if $._.type=='draft'}}
-                    <div>{{$.createTime}}</div>
-                    {{end if}}
-                    <div class="listItemExpire"></div>
-                </div>
-            </div>
-
-            <div class="listItemActivity">
-                <div class="listItemActivityText mainColor_color" title="{{$.activityName}}">
-                    {{($._.type==='draft') ? $._.lp.draft : $.activityName}}
-                </div>
-            </div>
-
-			<div class="listItemUnit">
-				<div title="{{o2.name.cn($.identity)+' ('+o2.name.cn($.unit)+') '}}">
-					{{($._.type==='draft') ? $._.lp.draft : o2.name.cn($.unit)}}
-				</div>
-			</div>
-
-            <div class="listItemTitle" data-o2-events="click:{{($._.type=='task' || $._.type=='draft' || $._.type=='review' || $._.type=='myCreated') ? 'openTask' : 'openWorkInfo'}}">
-                <div class="listItemTitleProcess" title="{{$.processName}}">
-                    <div class="listItemTitleFlag">【</div>
-                    <div class="listItemTitleProcessText">{{$.processName}}</div>
-                    <div class="listItemTitleFlag">】</div>
-                </div>
-                <div class="listItemTitleSubject">
-                    <a>{{$.title}}</a>
-                </div>
+                <div class="listItemExpire"></div>
             </div>
         </div>
-        {{end each}}
 
-        <div class="batchAction mainColor_bg" data-o2-element="batchAction" data-o2-events="click:batchProcessTask">{{$.lp.batch}}</div>
+        <div class="listItemActivity">
+            <div class="listItemActivityText mainColor_color" title="{{$.activityName}}">
+                {{($._.type==='draft') ? $._.lp.draft : $.activityName}}
+            </div>
+        </div>
+
+        <div class="listItemUnit">
+            <div title="{{o2.name.cn($.identity)+' ('+o2.name.cn($.unit)+') '}}">
+                {{($._.type==='draft') ? $._.lp.draft : o2.name.cn($.unit)}}
+            </div>
+        </div>
+
+        <div class="listItemTitle" data-o2-events="click:{{($._.type=='task' || $._.type=='draft') ? 'openTask' : 'openWorkInfo'}}">
+            <div class="listItemTitleProcess" title="{{$.processName}}">
+                <div class="listItemTitleFlag">【</div>
+                <div class="listItemTitleProcessText">{{$.processName}}</div>
+                <div class="listItemTitleFlag">】</div>
+            </div>
+            <div class="listItemTitleSubject">
+                <a>{{$.title}}</a>
+            </div>
+        </div>
+    </div>
+    {{end each}}
+
+    <div class="batchAction mainColor_bg" data-o2-element="batchAction" data-o2-events="click:batchProcess">{{$.lp.batch}}</div>
+
     {{end if}}
     {{if !$.data.length}}
-        <div class="emptyListArea">
-            <div class="emptyListIcon"></div>
-            <div class="emptyListText">
-                {{if $.type=='task'}} {{$.lp.noTask}} {{end if}}
-                {{if $.type=='taskCompleted'}} {{$.lp.noTaskCompleted}} {{end if}}
-                {{if $.type=='read'}} {{$.lp.noRead}} {{end if}}
-                {{if $.type=='readCompleted'}} {{$.lp.noReadCompleted}} {{end if}}
-                {{if $.type=='draft'}} {{$.lp.noDraft}} {{end if}}
-                {{if $.type=='review'}} {{$.lp.noReview}} {{end if}}
-                {{if $.type=='myCreated'}} {{$.lp.noMyCreated}} {{end if}}
-            </div>
-
-            <div class="emptyListAction mainColor_color" data-o2-events="click:startProcess">
-                {{$.lp.createWork}}
-            </div>
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            {{if $.type=='task'}} {{$.lp.noTask}} {{end if}}
+            {{if $.type=='taskCompleted'}} {{$.lp.noTaskCompleted}} {{end if}}
+            {{if $.type=='read'}} {{$.lp.noRead}} {{end if}}
+            {{if $.type=='readCompleted'}} {{$.lp.noReadCompleted}} {{end if}}
+            {{if $.type=='draft'}} {{$.lp.noDraft}} {{end if}}
         </div>
+
+        <div class="emptyListAction mainColor_color" data-o2-events="click:startProcess">
+            {{$.lp.createWork}}
+        </div>
+    </div>
     {{end if}}
 </div>
