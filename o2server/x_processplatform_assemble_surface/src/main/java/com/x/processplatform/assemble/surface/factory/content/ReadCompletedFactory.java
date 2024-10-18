@@ -120,6 +120,48 @@ public class ReadCompletedFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Predicate p = cb.equal(root.get(ReadCompleted_.process), id);
+		cq.select(root.get(ReadCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithProcessWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Predicate p = cb.equal(root.get(ReadCompleted_.process), id);
+		p = cb.and(p, cb.equal(root.get(ReadCompleted_.completed), completed));
+		cq.select(root.get(ReadCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Predicate p = cb.equal(root.get(ReadCompleted_.application), id);
+		cq.select(root.get(ReadCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplicationWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+		Predicate p = cb.equal(root.get(ReadCompleted_.application), id);
+		p = cb.and(p, cb.equal(root.get(ReadCompleted_.completed), completed));
+		cq.select(root.get(ReadCompleted_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	public <T extends ReadCompleted> List<T> sort(List<T> list) {
 		list = list.stream()
 				.sorted(Comparator.comparing(ReadCompleted::getCreateTime, Comparator.nullsLast(Date::compareTo)))

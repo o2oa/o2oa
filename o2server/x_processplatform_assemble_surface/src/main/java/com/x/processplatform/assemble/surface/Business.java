@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.x.processplatform.assemble.surface.factory.content.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,19 +22,6 @@ import com.x.correlation.core.express.service.processing.jaxrs.correlation.Actio
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.factory.cms.CmsFactory;
-import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
-import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
-import com.x.processplatform.assemble.surface.factory.content.JobFactory;
-import com.x.processplatform.assemble.surface.factory.content.ReadCompletedFactory;
-import com.x.processplatform.assemble.surface.factory.content.ReadFactory;
-import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
-import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
-import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
-import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
-import com.x.processplatform.assemble.surface.factory.content.TaskProcessModeFactory;
-import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
-import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
-import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
 import com.x.processplatform.assemble.surface.factory.element.AgentFactory;
 import com.x.processplatform.assemble.surface.factory.element.ApplicationDictFactory;
 import com.x.processplatform.assemble.surface.factory.element.ApplicationDictItemFactory;
@@ -249,6 +237,23 @@ public class Business {
 		return process;
 	}
 
+	private DraftFactory draft;
+
+	public DraftFactory draft() throws Exception {
+		if (null == this.draft) {
+			this.draft = new DraftFactory(this);
+		}
+		return draft;
+	}
+
+	private RecordFactory record;
+
+	public RecordFactory record() throws Exception {
+		if (null == this.record) {
+			this.record = new RecordFactory(this);
+		}
+		return record;
+	}
 	private AgentFactory agent;
 
 	public AgentFactory agent() throws Exception {
