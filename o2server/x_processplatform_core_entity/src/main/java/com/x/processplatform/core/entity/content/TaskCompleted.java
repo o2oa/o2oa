@@ -44,7 +44,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 没有多值字段
- * 
+ *
  * @author zhour
  *
  */
@@ -243,6 +243,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.form = work.getForm();
 		this.expireTime = null;
 		this.expired = false;
 		this.routeName = route.getName();
@@ -283,6 +284,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.form = work.getForm();
 		this.expireTime = null;
 		this.expired = false;
 		this.routeName = "";
@@ -528,6 +530,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + work_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String work;
+
+	public static final String form_FIELDNAME = "form";
+	@FieldDescribe("使用表单.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + form_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String form;
 
 	public static final String completed_FIELDNAME = "completed";
 	@FieldDescribe("整个job是否已经完成.")
@@ -1675,4 +1683,11 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.distinguishedName = distinguishedName;
 	}
 
+	public String getForm() {
+		return form;
+	}
+
+	public void setForm(String form) {
+		this.form = form;
+	}
 }

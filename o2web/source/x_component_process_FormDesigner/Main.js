@@ -1961,6 +1961,14 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             }
 
         }.bind(this));
+    },
+    openApp: function (){
+        layout.openApplication(null, 'process.ProcessManager', {
+            application: this.application,
+            appId: 'process.ProcessManager'+this.application.id
+        }, {
+            "navi": 0
+        });
     }
 });
 MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({

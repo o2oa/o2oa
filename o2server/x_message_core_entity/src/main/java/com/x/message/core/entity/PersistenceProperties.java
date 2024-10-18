@@ -35,4 +35,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class IMMsgFile {
 		public static final String table = "MSG_IM_MESSAGE_FILE";
 	}
+
+	public static class IMMsgCollection {
+		public static final String table = "MSG_IM_MESSAGE_COLLECTION";
+	}
 }

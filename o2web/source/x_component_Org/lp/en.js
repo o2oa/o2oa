@@ -248,37 +248,24 @@ MWF.xApplication.Org.LP={
 	"lockPersonSuccess": "Locked successfully, user {name} cannot log in!",
 	"locked": "locking",
 	"baned": "Disabled",
-	"status": {
-		"0": {
+	"status": "status",
+	"statusOption": [
+		{
 			"text": "normal",
+			"value": ""
+		},
+		{
+			"text": "locking",
 			"value": "0"
 		},
-		"1": {
-			"text": "locking",
-			"value": "one"
-		},
-		"2": {
+		{
 			"text": "Disabled",
-			"value": "two"
-		}
-	},
-	"statusOption": {
-		"0": {
-			"text": "normal",
-			"value": "0"
+			"value": "1"
 		},
-		"1": {
-			"text": "locking",
-			"value": "one"
-		},
-		"2": {
-			"text": "Disabled",
-			"value": "two"
-		},
-		"3": {
+		{
 			"text": "disabled ",
-			"value": "two"
+			"value": "2"
 		}
-	}
-}
+	]
+};
 MWF.xApplication.Org["lp."+o2.language] = MWF.xApplication.Org.LP

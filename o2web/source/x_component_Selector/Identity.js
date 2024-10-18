@@ -43,7 +43,7 @@ MWF.xApplication.Selector.Identity = new Class({
     },
     _loadSelectItems: function(addToNext){
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
-        if( this.options.resultType === "person" ){
+        if( this.options.resultType === "person" && this.options.title === MWF.xApplication.Selector.LP.selectIdentity ){
             if( this.titleTextNode ){
                 this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson );
             }else{

@@ -261,6 +261,48 @@ public class WorkLogFactory extends AbstractFactory {
 		}
 	}
 
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkLog.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkLog> root = cq.from(WorkLog.class);
+		Predicate p = cb.equal(root.get(WorkLog_.process), id);
+		cq.select(root.get(WorkLog_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithProcessWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkLog.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkLog> root = cq.from(WorkLog.class);
+		Predicate p = cb.equal(root.get(WorkLog_.process), id);
+		p = cb.and(p, cb.equal(root.get(WorkLog_.completed), completed));
+		cq.select(root.get(WorkLog_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkLog.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkLog> root = cq.from(WorkLog.class);
+		Predicate p = cb.equal(root.get(WorkLog_.application), id);
+		cq.select(root.get(WorkLog_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplicationWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(WorkLog.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkLog> root = cq.from(WorkLog.class);
+		Predicate p = cb.equal(root.get(WorkLog_.application), id);
+		p = cb.and(p, cb.equal(root.get(WorkLog_.completed), completed));
+		cq.select(root.get(WorkLog_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	public <T extends WorkLog> List<T> sort(List<T> list) {
 		list = list.stream()
 				.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))

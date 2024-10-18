@@ -179,7 +179,8 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
         }.bind(this));
     },
     keyCopyItems: function(e){
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId){
+        var app = layout.desktop.currentApp || layout.desktop.app;
+        if (app && app.appId===this.appId){
             if (this.agentConfigurator){
                 this.agentConfigurator.keyCopy(e);
                 if (e) e.preventDefault();
@@ -199,7 +200,8 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
         }
     },
     keyPasteItems: function(e){
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+        var app = layout.desktop.currentApp || layout.desktop.app;
+        if (app && app.appId===this.appId) {
             if (this.agentConfigurator){
                 this.agentConfigurator.keyPaste(e);
             }

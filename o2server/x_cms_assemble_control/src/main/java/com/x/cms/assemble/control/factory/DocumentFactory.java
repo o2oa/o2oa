@@ -8,6 +8,7 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.document.WrapInDocumentFilter;
 import com.x.cms.core.entity.*;
 import com.x.cms.core.entity.enums.DocumentStatus;
 import com.x.cms.core.express.tools.CriteriaBuilderTools;
@@ -464,7 +465,7 @@ public class DocumentFactory extends AbstractFactory {
 	 * @throws NoSuchFieldException
 	 */
 	public List<Document> listPagingWithCondition( String personName, String orderField, String orderType, QueryFilter queryFilter, Integer adjustPage,
-												   Integer adjustPageSize, Boolean isAuthor, Boolean excludeAllRead) throws Exception {
+												   Integer adjustPageSize, Boolean isAuthor, Boolean excludeAllRead, String readFlag, Boolean isAdmin) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
@@ -473,13 +474,13 @@ public class DocumentFactory extends AbstractFactory {
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
-		if(StringUtils.isNotBlank(personName)){
+		if(BooleanUtils.isTrue(isAdmin)){
 			if(!BooleanUtils.isTrue(isAuthor)) {
 				Subquery<Review> subQuery = cq.subquery(Review.class);
-				Root<Review> root2 = subQuery.from(em1.getMetamodel().entity(Review.class));
-				subQuery.select(root2);
-				Predicate p_permission = cb1.equal(root2.get(Review_.permissionObj), personName);
-				p_permission = cb1.and(p_permission, cb1.equal(root2.get(Review_.docId), root.get(Document_.id)));
+				Root<Review> root1 = subQuery.from(em1.getMetamodel().entity(Review.class));
+				subQuery.select(root1);
+				Predicate p_permission = cb1.equal(root1.get(Review_.permissionObj), personName);
+				p_permission = cb1.and(p_permission, cb1.equal(root1.get(Review_.docId), root.get(Document_.id)));
 				subQuery.where(p_permission);
 				if(BooleanUtils.isTrue(excludeAllRead)){
 					p = cb.and(p, cb.exists(subQuery));
@@ -519,6 +520,23 @@ public class DocumentFactory extends AbstractFactory {
 					ep = cb.or(ep, root.get(Document_.authorGroupList).in(groupList));
 				}
 				p = cb.and(p, ep);
+			}
+		}
+		if(StringUtils.isNotBlank(readFlag)) {
+			EntityManager em2 = this.entityManagerContainer().get(DocumentViewRecord.class);
+			CriteriaBuilder cb2 = em2.getCriteriaBuilder();
+			Subquery<DocumentViewRecord> subQuery2 = cq.subquery(DocumentViewRecord.class);
+			Root<DocumentViewRecord> root2 = subQuery2.from(
+					em2.getMetamodel().entity(DocumentViewRecord.class));
+			subQuery2.select(root2);
+			Predicate p2 = cb2.equal(root2.get(DocumentViewRecord_.viewerName), personName);
+			p2 = cb2.and(p2, cb2.equal(root2.get(DocumentViewRecord_.documentId),
+					root.get(Document_.id)));
+			subQuery2.where(p2);
+			if (WrapInDocumentFilter.READ_FLAG_READ.equalsIgnoreCase(readFlag)) {
+				p = cb.and(p, cb.exists(subQuery2));
+			} else if (WrapInDocumentFilter.READ_FLAG_UNREAD.equalsIgnoreCase(readFlag)) {
+				p = cb.and(p, cb.not(cb.exists(subQuery2)));
 			}
 		}
 		List<String> fields = DocumentWo.copier.getCopyFields();
@@ -569,7 +587,7 @@ public class DocumentFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long countWithCondition( String personName, QueryFilter queryFilter, Boolean isAuthor, Boolean excludeAllRead) throws Exception {
+	public Long countWithCondition( String personName, QueryFilter queryFilter, Boolean isAuthor, Boolean excludeAllRead, String readFlag, Boolean isAdmin) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
@@ -578,13 +596,13 @@ public class DocumentFactory extends AbstractFactory {
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
-		if(StringUtils.isNotBlank(personName)){
+		if(BooleanUtils.isTrue(isAdmin)){
 			if(!BooleanUtils.isTrue(isAuthor)) {
 				Subquery<Review> subquery = cq.subquery(Review.class);
-				Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
-				subquery.select(root2);
-				Predicate p_permission = cb1.equal(root2.get(Review_.permissionObj), personName);
-				p_permission = cb1.and(p_permission, cb1.equal(root2.get(Review_.docId), root.get(Document_.id)));
+				Root<Review> root1 = subquery.from(em1.getMetamodel().entity(Review.class));
+				subquery.select(root1);
+				Predicate p_permission = cb1.equal(root1.get(Review_.permissionObj), personName);
+				p_permission = cb1.and(p_permission, cb1.equal(root1.get(Review_.docId), root.get(Document_.id)));
 				subquery.where(p_permission);
 				if(BooleanUtils.isTrue(excludeAllRead)){
 					p = cb.and(p, cb.exists(subquery));
@@ -624,6 +642,23 @@ public class DocumentFactory extends AbstractFactory {
 					ep = cb.or(ep, root.get(Document_.authorGroupList).in(groupList));
 				}
 				p = cb.and(p, ep);
+			}
+		}
+		if(StringUtils.isNotBlank(readFlag)) {
+			EntityManager em2 = this.entityManagerContainer().get(DocumentViewRecord.class);
+			CriteriaBuilder cb2 = em2.getCriteriaBuilder();
+			Subquery<DocumentViewRecord> subQuery2 = cq.subquery(DocumentViewRecord.class);
+			Root<DocumentViewRecord> root2 = subQuery2.from(
+					em2.getMetamodel().entity(DocumentViewRecord.class));
+			subQuery2.select(root2);
+			Predicate p2 = cb2.equal(root2.get(DocumentViewRecord_.viewerName), personName);
+			p2 = cb2.and(p2, cb2.equal(root2.get(DocumentViewRecord_.documentId),
+					root.get(Document_.id)));
+			subQuery2.where(p2);
+			if (WrapInDocumentFilter.READ_FLAG_READ.equalsIgnoreCase(readFlag)) {
+				p = cb.and(p, cb.exists(subQuery2));
+			} else if (WrapInDocumentFilter.READ_FLAG_UNREAD.equalsIgnoreCase(readFlag)) {
+				p = cb.and(p, cb.not(cb.exists(subQuery2)));
 			}
 		}
 

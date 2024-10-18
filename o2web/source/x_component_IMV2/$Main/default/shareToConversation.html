@@ -7,14 +7,23 @@
           <span>{{$.lp.chooseConveration}}</span>
         </div>
         <div class="person-box-header-close" data-o2-element="conversationChooseCloseBtnNode">
-          <span>X</span>
+<!--          <span>{{$.lp.close}}</span>-->
+          <div class="quote-message-close" title="关闭"></div>
         </div>
       </div>
-      <div class="person-box-body">
-        <div class="share-conversation-list"  data-o2-element="conversationListNode">
-          
-
+        <div class="share-search-box">
+            <input class="share-search-box-input" data-o2-element="shareSearchInputNode" type="text" placeholder="{{$.lp.chooseConversationSearchInputPlaceholder}}">
         </div>
+      <div class="person-box-body">
+<!--          会话列表-->
+        <div class="share-conversation-list"  data-o2-element="conversationListNode">
+        </div>
+<!--          搜索人员结果列表 -->
+          <div style="margin: 10px; " class="none"  data-o2-element="searchPersonTitleNode">
+              人员：
+          </div>
+          <div class="share-conversation-list"  data-o2-element="searchPersonListNode">
+          </div>
       </div>
 
       <!-- <div class="person-box-footer">

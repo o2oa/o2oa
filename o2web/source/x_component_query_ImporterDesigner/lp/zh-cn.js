@@ -164,6 +164,15 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "saveAs": "另存为",
         "autoSave": "自动保存",
         "preview": "预览",
-        "help": "帮助"
-    }
+        "help": "帮助",
+        "add": "新建",
+        "gotoApp": "打开所在应用"
+    },
+    "sorkKeyNote": "-排序-",
+    "createTime": "创建时间",
+    "updateTime": "更新时间",
+    "asc": "正序",
+    "desc": "倒序",
+    "searchPlacholder": "输入名称/别名/id搜索",
+    "searchAndSort": "排序和搜索"
 };

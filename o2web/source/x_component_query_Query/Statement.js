@@ -50,7 +50,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
          * }</code></pre>
          * @event MWF.xApplication.query.Query.Statement#exportRow
          */
-        "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
+        "moduleEvents": ["queryLoad", "postLoad", "beforeLoadPageData", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
             "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow", "export", "exportRow"]
     },
     initialize: function (container, json, options, app, parentMacro) {

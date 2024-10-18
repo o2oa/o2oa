@@ -168,6 +168,25 @@ public class ReadFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Read.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Read> root = cq.from(Read.class);
+		Predicate p = cb.equal(root.get(Read_.process), id);
+		cq.select(root.get(Read_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Read.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Read> root = cq.from(Read.class);
+		Predicate p = cb.equal(root.get(Read_.application), id);
+		cq.select(root.get(Read_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 //	/* read是否允许处理 */
 //	public Boolean allowProcessing(EffectivePerson effectivePerson, Read read) throws Exception {
 //		Business business = this.business();

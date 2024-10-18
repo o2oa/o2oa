@@ -9,14 +9,17 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
             "search": MWF.xApplication.query.QueryManager.LP.statement.search,
             "searchText": MWF.xApplication.query.QueryManager.LP.statement.searchText,
             "noElement": MWF.xApplication.query.QueryManager.LP.statement.noStatNoticeText
-        }
+        },
+        "categoryEnable": true,
+        "itemStyle": "card",
+        "name": 'query.StatementExplorer'
     },
     initialize: function(node, actions, options){
         this.setOptions(options);
         this.setTooltip();
 
         this.path = "../x_component_query_QueryManager/$Explorer/";
-        this.cssPath = "../x_component_query_QueryManager/$Explorer/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_process_ProcessManager/$Explorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -232,7 +235,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
         var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
 
         var itemIconNode = new Element("div", {
-            "styles": this.css.itemIconNode
+            "styles": this.explorer.options.itemStyle === 'line' ? this.css.itemIconNode_line : this.css.itemIconNode
         }).inject(this.node);
         itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
 

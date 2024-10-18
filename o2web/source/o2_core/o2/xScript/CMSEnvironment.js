@@ -1853,6 +1853,22 @@ MWF.xScript.CMSEnvironment = function(ev){
         },
         "close": function(){_form.closeDocument();},
 
+        /**
+         * @summary 根据表单中所有组件的校验设置和表单的“发布校验”脚本进行校验。<b>（仅内容管理表单中可用）</b>
+         * @method verifyPublish
+         * @static
+         * @o2syntax
+         * this.form.verifyPublish()
+         *  @example
+         *  if( !this.form.verifyPublish() ){
+         *      return false;
+         *  }
+         *  @return {Boolean} 是否通过校验
+         */
+        "verifyPublish": function(isSave){
+            return !(!_form.formValidation("publish") || !_form[isSave ? 'formSaveValidation' : 'formPublishValidation']());
+        },
+
         /**发布当前文档。<b>（仅内容管理表单中可用）</b>
          * @method publish
          * @memberOf module:form
@@ -2227,62 +2243,63 @@ MWF.xScript.CMSEnvironment = function(ev){
                     }, false);
 
                     if (!cmpt.processStarter) cmpt.processStarter = new o2.xApplication.process.TaskCenter.Starter(obj);
-                    cmpt.processStarter.load();
+                    cmpt.processStarter.load({
+                        "appFlag": app
+                    });
                 }, true, true);
                 return "";
             }
+            MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", null, false);
             var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function(json){
                 if (json.data){
-                    MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
-                        var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
-                            "workData": data,
-                            "identity": identity,
-                            "latest": latest,
-                            "skipDraftCheck": skipDraftCheck,
-                            "onStarted": function(data, title, processName){
-                                var application;
-                                if (data.work){
-                                    var work = data.work;
-                                    var options = {
-                                        "draft": work,
-                                        "draftData":data.data||{},
-                                        "appId": "process.Work"+(new o2.widget.UUID).toString(),
-                                        "desktopReload": false
-                                    };
+                    var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
+                        "workData": data,
+                        "identity": identity,
+                        "latest": latest,
+                        "skipDraftCheck": skipDraftCheck,
+                        "onStarted": function(data, title, processName){
+                            var application;
+                            if (data.work){
+                                var work = data.work;
+                                var options = {
+                                    "draft": work,
+                                    "draftData":data.data||{},
+                                    "appId": "process.Work"+(new o2.widget.UUID).toString(),
+                                    "desktopReload": false
+                                };
+                                if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
+                                application = layout.desktop.openApplication(null, "process.Work", options);
+                            }else{
+                                var currentTask = [];
+                                data.each(function(work){
+                                    if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+                                }.bind(this));
+
+                                if (currentTask.length==1){
+                                    var options = {"workId": currentTask[0], "appId": currentTask[0]};
                                     if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
-                                    application = layout.desktop.openApplication(null, "process.Work", options);
-                                }else{
-                                    var currentTask = [];
-                                    data.each(function(work){
-                                        if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
-                                    }.bind(this));
+                                    application =layout.desktop.openApplication(null, "process.Work", options);
+                                }else{}
+                            }
 
-                                    if (currentTask.length==1){
-                                        var options = {"workId": currentTask[0], "appId": currentTask[0]};
-                                        if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
-                                        application =layout.desktop.openApplication(null, "process.Work", options);
-                                    }else{}
-                                }
+                            // var currentTask = [];
+                            // data.each(function(work){
+                            //     if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+                            // }.bind(this));
+                            //
+                            // if (currentTask.length==1){
+                            //     var options = {"workId": currentTask[0], "appId": currentTask[0]};
+                            //     layout.desktop.openApplication(null, "process.Work", options);
+                            // }else{}
 
-                                // var currentTask = [];
-                                // data.each(function(work){
-                                //     if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
-                                // }.bind(this));
-                                //
-                                // if (currentTask.length==1){
-                                //     var options = {"workId": currentTask[0], "appId": currentTask[0]};
-                                //     layout.desktop.openApplication(null, "process.Work", options);
-                                // }else{}
+                            if (callback) callback(data);
 
-                                if (callback) callback(data);
-
-                                if(layout.inBrowser && afterCreated){
-                                    afterCreated(application)
-                                }
-                            }.bind(this)
-                        });
-                        starter.load();
-                    }.bind(this));
+                            if(layout.inBrowser && afterCreated){
+                                afterCreated(application)
+                            }
+                        }.bind(this)
+                    });
+                    starter.load();
                 }
             });
         }

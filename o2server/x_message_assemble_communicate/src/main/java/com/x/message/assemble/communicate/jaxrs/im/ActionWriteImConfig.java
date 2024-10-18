@@ -98,6 +98,36 @@ public class ActionWriteImConfig extends BaseAction {
 		private Boolean enableClearMsg;
 		@FieldDescribe("是否开启撤回聊天消息的功能.")
 		private Boolean enableRevokeMsg;
+		@FieldDescribe("撤回时效（分钟数）")
+		private Integer revokeOutMinute;
+		@FieldDescribe("会话检查脚本.")
+		private String conversationCheckInvoke;
+		@FieldDescribe("是否使用onlyOffice预览文件(需要先安装onlyOffice扩展应用).")
+		private Boolean enableOnlyOfficePreview;
+
+		public Boolean getEnableOnlyOfficePreview() {
+			return enableOnlyOfficePreview;
+		}
+
+		public void setEnableOnlyOfficePreview(Boolean enableOnlyOfficePreview) {
+			this.enableOnlyOfficePreview = enableOnlyOfficePreview;
+		}
+
+		public String getConversationCheckInvoke() {
+			return conversationCheckInvoke;
+		}
+
+		public void setConversationCheckInvoke(String conversationCheckInvoke) {
+			this.conversationCheckInvoke = conversationCheckInvoke;
+		}
+
+		public Integer getRevokeOutMinute() {
+			return revokeOutMinute;
+		}
+
+		public void setRevokeOutMinute(Integer revokeOutMinute) {
+			this.revokeOutMinute = revokeOutMinute;
+		}
 
 		public Boolean getEnableClearMsg() {
 			return enableClearMsg;

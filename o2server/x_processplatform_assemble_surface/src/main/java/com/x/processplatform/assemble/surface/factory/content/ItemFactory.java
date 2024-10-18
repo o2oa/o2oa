@@ -120,4 +120,15 @@ public class ItemFactory extends AbstractFactory {
 		return list;
 	}
 
+	public List<Item> listObjectWithJob(String job) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Item.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+		Root<Item> root = cq.from(Item.class);
+		Predicate p = cb.equal(root.get(Item_.bundle), job);
+		p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 }

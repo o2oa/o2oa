@@ -7,7 +7,9 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
         "create": MWF.CMSCM.LP.form.create,
         "search": MWF.CMSCM.LP.form.search,
         "searchText": MWF.CMSCM.LP.form.searchText,
-        "noElement": MWF.CMSCM.LP.form.noFormNoticeText
+        "noElement": MWF.CMSCM.LP.form.noFormNoticeText,
+        "topEnable": true,
+        "name": 'cms.FormExplorer'
     },
     //
     //_createElement: function(e){

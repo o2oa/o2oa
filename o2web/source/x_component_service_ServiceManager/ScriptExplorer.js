@@ -9,7 +9,10 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer = new Class({
             "search": MWF.xApplication.service.ServiceManager.LP.script.search,
             "searchText": MWF.xApplication.service.ServiceManager.LP.script.searchText,
             "noElement": MWF.xApplication.service.ServiceManager.LP.script.noScriptNoticeText
-        }
+        },
+        "categoryEnable": false,
+        "itemStyle": "line",
+        "name": "service.ScriptExplorer",
     },
     openFindDesigner: function(){
         var options = {
@@ -56,12 +59,16 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer = new Class({
         };
     },
     loadElementList: function(){
+        this.itemList = [];
         if( MWF.AC.isServiceManager() ){
             this._loadItemDataList(function(json){
                 if (json.data.length){
+                    this.checkSort(json.data);
                     json.data.each(function(item){
                         var itemObj = this._getItemObject(item);
-                        itemObj.load()
+                        itemObj.load();
+                        this.checkShow(itemObj);
+                        this.itemList.push(itemObj);
                     }.bind(this));
                 }else{
                     var noElementNode = new Element("div.noElementNode", {
@@ -72,6 +79,7 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer = new Class({
                         this._createElement(e);
                     }.bind(this));
                 }
+                this.loadTopNode();
                 if( !this.isSetContentSize ){
                     this.setContentSize();
                     this.isSetContentSize = true;

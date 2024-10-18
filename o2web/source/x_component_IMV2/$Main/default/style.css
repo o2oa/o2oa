@@ -20,38 +20,30 @@
   height: 40px;
   background-color: rgb(248, 248, 248);
   border-bottom: 1px solid rgb(204, 204, 204);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  padding: 0 10px;
 }
 .o2_im_chat_list_top .add {
-  background: url(../x_component_IMV2/$Main/default/icons/add.png) left center
-    no-repeat;
   height: 40px;
   cursor: pointer;
-  margin-left: 14px;
   text-align: center;
   line-height: 40px;
   color: #848484;
-  padding-left: 24px;
-  float: left;
-}
-
-.o2_im_chat_list_top .group {
-  height: 40px;
-  cursor: pointer;
-  margin-left: 14px;
-  text-align: center;
-  line-height: 40px;
-  color: #848484;
-  padding-left: 24px;
-  float: left;
 }
 .o2_im_chat_list_top .im_setting {
-  background: url(../x_component_IMV2/$Main/default/icons/icon_setting.png)
-    no-repeat center;
   height: 40px;
-  float: right;
   width: 40px;
-  border-left: solid 1px #dedede;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.o2_im_chat_list_top .im_setting img {
+  height: 24px;
+  width: 24px;
 }
 
 .o2_im_chat_list_top .search_out {
@@ -202,6 +194,7 @@
   display: -webkit-flex;
   flex-direction: column;
   -ms-flex-direction: column;
+  position: relative;
 }
 
 .o2_im_chat_content_title_more {
@@ -249,6 +242,7 @@
 }
 
 /* 聊天界面 */
+/* 图片表情 */
 .chat-emoji-box {
   position: absolute;
   width: 630px;
@@ -268,6 +262,91 @@
   float: left;
   margin: 5px;
 }
+
+/* 文字表情 */
+
+/* 表情 emoji */
+.im-divider-v {
+  height: 1px;
+  width: 100%;
+  background-color: #e0e0e0;
+}
+.im-chat-emoji-mask {
+  z-index: 98;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+}
+.im-chat-emoji {
+  z-index: 99;
+  position: absolute;
+  bottom: 155px;
+  left: 1rem;
+  width: 30rem;
+  height: 30rem;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0.2em 0.2em 1em 0.125em #BBBBBB;
+  border-radius: 4px;
+}
+.im-chat-emoji-triangle {
+  height: 0;
+  width: 0;
+  border-width: 0.375rem;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+  position: absolute;
+  bottom: -0.74rem;
+  left: 0.375rem;
+}
+.im-chat-emoji-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.im-chat-emoji-type-container {
+  flex: 1;
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.im-chat-emoji-type-list {
+  height: 2.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 5px;
+}
+.im-chat-emoji-item {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+  cursor: pointer;
+}
+.im-chat-emoji-item .btn {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.im-chat-emoji-item img {
+  width: 80%;
+  height: 80%;
+}
+.im-chat-emoji-item .active {
+  background-color: #f3f3f3;
+  border-radius: 4px;
+}
+
 .chat-title {
   height: 30px;
   text-align: center;
@@ -288,13 +367,13 @@
   padding: 0 20px;
 }
 
+ /* 底部聊天输入区 */
 .chat-bottom-area {
   height: 155px;
   overflow: hidden;
   border-top: 1px solid #f1f1f1;
   background: #ffffff;
 }
-
 .chat-bottom-area-tool {
   position: relative;
   padding: 0 8px;
@@ -302,15 +381,12 @@
   line-height: 38px;
   font-size: 0;
 }
-
 .chat-bottom-area-tool img {
   margin: 7px 10px;
 }
-
 .chat-bottom-area-textarea {
   margin-left: 10px;
 }
-
 .chat-bottom-area-textarea textarea {
   display: block;
   width: 100%;
@@ -321,35 +397,37 @@
   overflow: auto;
   resize: none;
   background: 0 0;
+  font-size: 1rem;
 }
-
 .chat-bottom-area-send-space {
   position: relative;
   height: 46px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
-
 .chat-bottom-area-key-tips {
-  position: absolute;
-  right: 105px;
-  top: 3px;
+  /*position: absolute;*/
+  /*right: 105px;*/
+  /*top: 3px;*/
+  width: 120px;
   height: 32px;
   line-height: 32px;
   color: #848484;
 }
-
 .chat-bottom-area-send {
-  position: absolute;
-  right: 15px;
-  top: 3px;
+  /*position: absolute;*/
+  /*right: 15px;*/
+  /*top: 3px;*/
+  width: 84px;
   height: 32px;
   line-height: 32px;
   cursor: pointer;
 }
-
 .chat-bottom-area-send-btn {
   border-radius: 3px 0 0 3px;
 }
-
 .chat-bottom-area-send span {
   display: inline-block;
   vertical-align: top;
@@ -362,11 +440,142 @@
   border-radius: 3px;
 }
 
+.chat-bottom-area-select-box {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+.chat-bottom-area-select-box-main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  height: 100%;
+}
+.chat-bottom-area-select-box-main .btn-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.chat-bottom-area-select-box-main .btn-area img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+.chat-bottom-area-select-box-main .btn-area .title {
+  color: #848484;
+}
+.chat-bottom-area-select-box-close {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chat-bottom-area-select-box-close .btn-close {
+  height: 32px;
+  line-height: 32px;
+  cursor: pointer;
+  border-radius: 3px 0 0 3px;
+  padding: 0 20px;
+  background-color: #F7F7F7;
+  color: #666666;
+}
+
+/* 聊天消息样式 */
+.none {
+  display: none;
+}
+.block {
+  display: block;
+}
+/* 引用消息 */
+.quote-box {
+  flex: 1;
+  display: flex;
+  margin-left: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.quote-message-box {
+  background-color: #e1e1e1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  max-width: 90%;
+}
+.quote-message-emoji {
+  width: 32px;
+  height: 32px;
+}
+.quote-message-image {
+  width: 48px;
+  height: 48px;
+}
+.quote-message-desc {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.quote-message-close {
+  background-image: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_off_round_grey.png) !important;
+  width: 28px;
+  height: 28px;
+  margin-left: 5px;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+/* 聊天记录 */
+.chat-msg-list-container {
+  z-index: 99;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.chat-msg-list-box {
+  background-color: #ebebeb;
+  color: rgb(102, 102, 102);
+  z-index: 100;
+  box-shadow: rgb(102 102 102) 3px 3px 15px;
+  border-radius: 6px;
+  width: 100%;
+  height: 70%;
+  max-width: 500px;
+  min-height: 300px;
+  opacity: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.chat-msg-list {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.chat-msg {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-msg-checkbox {
+  width: 32px;
+}
 .chat-sender {
-  clear: both;
-  /* font-size: 80%; */
-  float: left;
-  width: 75%;
+  flex: 1;
+  margin-bottom: 10px;
 }
 .chat-sender-avatar {
   float: left;
@@ -388,14 +597,19 @@
 } */
 .chat-sender-box {
   background-color: white;
-  margin: 0 10px 10px 10px;
-  padding: 10px 10px 10px 10px;
+  margin: 0 10px 2px 10px;
+  padding: 10px 10px 10px 0px;
   border-radius: 7px;
-  text-indent: -12px;
   word-wrap: break-word;
   white-space: pre-line;
   display: inline-block;
   max-width: calc(100% - 80px);
+  cursor: pointer;
+}
+.chat-sender-quote-msg {
+  float: left;
+  clear: both;
+  margin-left: 45px;
 }
 /* 业务消息专用的外框 */
 .chat-sender-card-box {
@@ -404,6 +618,7 @@
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   display: inline-block;
+  cursor: pointer;
 }
 /* .chat-sender div:nth-of-type(3) {
   background-color: white;
@@ -428,10 +643,8 @@
 }
 
 .chat-receiver {
-  clear: both;
-  /* font-size: 80%; */
-  float: right;
-  width: 75%;
+  flex: 1;
+  margin-bottom: 10px;
 }
 .chat-receiver-avatar {
   float: right;
@@ -465,13 +678,20 @@
 }
 .chat-receiver-box {
   background-color: #b2e281;
-  margin: 0px 10px 10px 10px;
-  padding: 10px 10px 10px 10px;
+  margin: 0px 10px 2px 10px;
+  padding: 10px 0px 10px 10px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
   float: right;
   max-width: calc(100% - 80px);
+  cursor: pointer;
+}
+.chat-receiver-quote-msg {
+  float: right;
+  clear: both;
+  margin-right: 45px;
+  cursor: pointer;
 }
 /* 业务消息专用的外框 */
 .chat-receiver-card-box {
@@ -480,6 +700,7 @@
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   float: right;
+  cursor: pointer;
 }
 /* .chat-receiver div:nth-of-type(3) {
   background-color: #b2e281;
@@ -531,7 +752,7 @@
   border-style: solid;
   border-color: transparent white transparent transparent;
   position: relative;
-  left: -22px;
+  left: -12px;
   top: 3px;
   float: left;
 }
@@ -543,7 +764,7 @@
   border-style: solid;
   border-color: transparent transparent transparent #b2e281;
   position: relative;
-  right: -22px;
+  right: -12px;
   top: 3px;
   float: right;
 }
@@ -551,6 +772,10 @@
   width: 32px;
   height: 32px;
   margin: 5px;
+}
+.chat-content-video {
+  width: 230px;
+  height: 130px;
 }
 .chat-notice {
   clear: both;
@@ -860,7 +1085,7 @@
 
 /*分享的会话列表*/
 .share-conversation-out-box {
-  background-color: rgb(255, 255, 255);
+  background-color: #ebebeb;
   color: rgb(102, 102, 102);
   z-index: 30000;
   box-shadow: rgb(102 102 102) 3px 3px 15px;
@@ -870,10 +1095,25 @@
   min-height: 300px;
   max-height: 560px;
   opacity: 1;
-  padding: 24px;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
 }
+.share-search-box {
+  height: 28px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  padding: 0 10px;
+}
+.share-search-box-input {
+  height: 26px;
+  width: calc(100% - 20px);
+  line-height: 26px;
+  border: 0;
+  border-radius: 20px;
+  padding: 0 10px;
+}
+
 .share-conversation-list {
   width: 257px;
   display: flex;
@@ -914,6 +1154,7 @@
   line-height: 30px;
   margin-left: 16px;
   word-wrap: break-word;
-  white-space: pre-line;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }

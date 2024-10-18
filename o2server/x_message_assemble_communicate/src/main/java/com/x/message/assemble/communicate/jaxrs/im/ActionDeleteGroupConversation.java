@@ -43,18 +43,8 @@ public class ActionDeleteGroupConversation extends BaseAction {
                     && !effectivePerson.getDistinguishedName().equals(conversation.getAdminPerson()))) {
                 throw new ExceptionConvDeleteNoPermission();
             }
-            // 先删除聊天记录
+
             Business business = new Business(emc);
-            List<String> msgIds = business.imConversationFactory().listAllMsgIdsWithConversationId(conversationId);
-            if (msgIds == null || msgIds.isEmpty()) {
-                LOGGER.info("没有聊天记录，无需清空！ conversationId:" + conversationId);
-            } else {
-                emc.beginTransaction(IMMsg.class);
-                emc.delete(IMMsg.class, msgIds);
-                emc.commit();
-                LOGGER.info("成功清空聊天记录！conversationId:" + conversationId + " msg size：" + msgIds.size() + " person："
-                        + effectivePerson.getDistinguishedName());
-            }
             // 然后删除会话扩展对象
             List<String> extIds = business.imConversationFactory().listAllConversationExtIdsWithConversationId(conversationId);
             if (extIds == null || extIds.isEmpty()) {

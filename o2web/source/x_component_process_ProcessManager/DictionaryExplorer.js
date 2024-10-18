@@ -6,7 +6,10 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
         "create": MWF.APPPM.LP.dictionary.create,
         "search": MWF.APPPM.LP.dictionary.search,
         "searchText": MWF.APPPM.LP.dictionary.searchText,
-        "noElement": MWF.APPPM.LP.dictionary.noDictionaryNoticeText
+        "noElement": MWF.APPPM.LP.dictionary.noDictionaryNoticeText,
+        "name": 'process.DictionaryExplorer',
+        "categoryEnable": false,
+        "itemStyle": "line"
     },
 
     initialize: function(node, actions, options){
@@ -14,7 +17,7 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
         this.setTooltip();
 
         this.path = "../x_component_process_ProcessManager/$DictionaryExplorer/";
-        this.cssPath = "../x_component_process_ProcessManager/$DictionaryExplorer/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_process_ProcessManager/$Explorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -26,10 +29,12 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
 	    if (this.toolbarNode){
             var toolbarSize = this.toolbarNode.getSize();
             var nodeSize = this.node.getSize();
+            var categorySize = this.categoryElementNode ? this.categoryElementNode.getSize() : {"x": 0, "y": 0};
+
             var pt = this.elementContentNode.getStyle("padding-top").toFloat();
             var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
 
-            var height = nodeSize.y-toolbarSize.y-pt-pb;
+            var height = nodeSize.y-toolbarSize.y-categorySize.y-pt-pb;
             this.elementContentNode.setStyle("height", ""+height+"px");
         }
 
@@ -240,11 +245,15 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
         };
     },
     loadElementList: function(){
+        this.itemList = [];
         this._loadItemDataList(function(json){
             if (json.data.length){
+                this.checkSort(json.data);
                 json.data.each(function(item){
                     var itemObj = this._getItemObject(item);
-                    itemObj.load()
+                    itemObj.load();
+                    this.checkShow(itemObj);
+                    this.itemList.push(itemObj);
                 }.bind(this));
             }else{
                 var noElementNode = new Element("div.noElementNode", {
@@ -257,6 +266,7 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
                     }.bind(this));
                 }
             }
+            if(this.options.topEnable)this.loadTopNode();
             if( !this.isSetContentSize ){
                 this.setContentSize();
                 this.isSetContentSize = true;
@@ -282,81 +292,81 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
 MWF.xApplication.process.ProcessManager.DictionaryExplorer.Dictionary = new Class({
 	Extends: MWF.xApplication.process.ProcessManager.Explorer.Item,
 
-    load: function(){
-        this.node = new Element("div", {
-            "styles": this.explorer.css.itemNode,
-            "events": {
-                "mouseover": function(){
-                    if (this.deleteActionNode) this.deleteActionNode.fade("in");
-                    if (this.saveasActionNode) this.saveasActionNode.fade("in");
-                }.bind(this),
-                "mouseout": function(){
-                    if (this.deleteActionNode) this.deleteActionNode.fade("out");
-                    if (this.saveasActionNode) this.saveasActionNode.fade("out");
-                }.bind(this)
-            }
-        }).inject(this.container);
-
-        if (this.data.name.icon) this.icon = this.data.name.icon;
-        var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
-
-        var itemIconNode = new Element("div", {
-            "styles": this.explorer.css.itemIconNode
-        }).inject(this.node);
-        itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
-        //new Element("img", {
-        //    "src": iconUrl, "border": "0"
-        //}).inject(itemIconNode);
-
-        itemIconNode.addEvent("click", function(e){
-            this.toggleSelected();
-            e.stopPropagation();
-        }.bind(this));
-
-        itemIconNode.makeLnk({
-            "par": this._getLnkPar()
-        });
-
-        if (!this.explorer.options.noDelete){
-            this._createActions();
-        }
-
-        var inforNode = new Element("div", {
-            "styles": this.explorer.css.itemInforNode
-        }).inject(this.node);
-        var inforBaseNode = new Element("div", {
-            "styles": this.explorer.css.itemInforBaseNode
-        }).inject(inforNode);
-
-        new Element("div", {
-            "styles": this.explorer.css.itemTextTitleNode,
-            "text": this.data.name,
-            "title": this.data.name,
-            "events": {
-                "click": function(e){this._open(e);e.stopPropagation();}.bind(this)
-            }
-        }).inject(inforBaseNode);
-
-        new Element("div", {
-            "styles": this.explorer.css.itemTextAliasNode,
-            "text": this.data.alias,
-            "title": this.data.alias
-        }).inject(inforBaseNode);
-        new Element("div", {
-            "styles": this.explorer.css.itemTextDateNode,
-            "text": (this.data.updateTime || "")
-        }).inject(inforBaseNode);
-
-        new Element("div", {
-            "styles": this.explorer.css.itemTextDescriptionNode,
-            "text": this.data.description || "",
-            "title": this.data.description || ""
-        }).inject(inforNode);
-
-        this._customNodes();
-
-        this._isNew();
-    },
+    // load: function(){
+    //     this.node = new Element("div", {
+    //         "styles": this.explorer.css.itemNode,
+    //         "events": {
+    //             "mouseover": function(){
+    //                 if (this.deleteActionNode) this.deleteActionNode.fade("in");
+    //                 if (this.saveasActionNode) this.saveasActionNode.fade("in");
+    //             }.bind(this),
+    //             "mouseout": function(){
+    //                 if (this.deleteActionNode) this.deleteActionNode.fade("out");
+    //                 if (this.saveasActionNode) this.saveasActionNode.fade("out");
+    //             }.bind(this)
+    //         }
+    //     }).inject(this.container);
+    //
+    //     if (this.data.name.icon) this.icon = this.data.name.icon;
+    //     var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
+    //
+    //     var itemIconNode = new Element("div", {
+    //         "styles": this.explorer.css.itemIconNode
+    //     }).inject(this.node);
+    //     itemIconNode.setStyle("background", "url("+iconUrl+") center center no-repeat");
+    //     //new Element("img", {
+    //     //    "src": iconUrl, "border": "0"
+    //     //}).inject(itemIconNode);
+    //
+    //     itemIconNode.addEvent("click", function(e){
+    //         this.toggleSelected();
+    //         e.stopPropagation();
+    //     }.bind(this));
+    //
+    //     itemIconNode.makeLnk({
+    //         "par": this._getLnkPar()
+    //     });
+    //
+    //     if (!this.explorer.options.noDelete){
+    //         this._createActions();
+    //     }
+    //
+    //     var inforNode = new Element("div", {
+    //         "styles": this.explorer.css.itemInforNode
+    //     }).inject(this.node);
+    //     var inforBaseNode = new Element("div", {
+    //         "styles": this.explorer.css.itemInforBaseNode
+    //     }).inject(inforNode);
+    //
+    //     new Element("div", {
+    //         "styles": this.explorer.css.itemTextTitleNode,
+    //         "text": this.data.name,
+    //         "title": this.data.name,
+    //         "events": {
+    //             "click": function(e){this._open(e);e.stopPropagation();}.bind(this)
+    //         }
+    //     }).inject(inforBaseNode);
+    //
+    //     new Element("div", {
+    //         "styles": this.explorer.css.itemTextAliasNode,
+    //         "text": this.data.alias,
+    //         "title": this.data.alias
+    //     }).inject(inforBaseNode);
+    //     new Element("div", {
+    //         "styles": this.explorer.css.itemTextDateNode,
+    //         "text": (this.data.updateTime || "")
+    //     }).inject(inforBaseNode);
+    //
+    //     new Element("div", {
+    //         "styles": this.explorer.css.itemTextDescriptionNode,
+    //         "text": this.data.description || "",
+    //         "title": this.data.description || ""
+    //     }).inject(inforNode);
+    //
+    //     this._customNodes();
+    //
+    //     this._isNew();
+    // },
     _createActions: function(){
         this.deleteActionNode = new Element("div", {
             "styles": this.explorer.css.deleteActionNode

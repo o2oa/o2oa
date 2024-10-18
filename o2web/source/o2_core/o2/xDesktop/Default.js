@@ -396,6 +396,7 @@ o2.xDesktop.Default = new Class({
             }
             o2.UD.getPublicData("forceMainMenuData", function(fData){
                 if (fData){
+                    this.isUseForceMainMenuData = true;
                     this.status.menuData=fData;
                     this.menuData = this.status.menuData;
                     if (this.menuData.linkList) this.status.flatLnks = this.menuData.linkList;
@@ -1835,7 +1836,11 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         }
     },
     loadBadge: function(){
-        this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
+        if( this.layout.isUseForceMainMenuData ){
+            this.badgeNode.hide();
+        }else{
+            this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
+        }
     },
     loadText: function(){
         if (this.data.path && this.data.path.indexOf("@url") !== 0 ){
@@ -1911,14 +1916,16 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         }.bind(this));
     },
     makeLnk: function(){
-        var drag = new Drag(this.node, {
-            "stopPropagation": true,
-            "compensateScroll": true,
-            "onStart": function(el, e){
-                this.doDragMove(e);
-                drag.stop();
-            }.bind(this)
-        });
+        if( !this.layout.isUseForceMainMenuData ) {
+            var drag = new Drag(this.node, {
+                "stopPropagation": true,
+                "compensateScroll": true,
+                "onStart": function (el, e) {
+                    this.doDragMove(e);
+                    drag.stop();
+                }.bind(this)
+            });
+        }
     },
     getDragNode: function(){
         if (!this.dragNode){
@@ -1952,13 +1959,27 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             "stopPropagation": true,
             "compensateScroll": true,
             "droppables": droppables,
-            "onStart": function(el){ this._drag_start(el); }.bind(this),
-            "onDrag": function(dragging,e){ this._drag_drag(dragging, e); }.bind(this),
-            "onEnter": function(dragging, inObj){ this._drag_enter(dragging, inObj); }.bind(this),
-            "onLeave": function(dragging, obj){ this._drag_leave(dragging, obj); }.bind(this),
-            "onDrop": function(dragging, inObj){ this._drag_drop(dragging, inObj); }.bind(this),
-            "onCancel": function(dragging){ this._drag_cancel(dragging); }.bind(this),
-            "onComplete": function(dragging, e){ this._drag_complete(dragging, e); }.bind(this),
+            "onStart": function (el) {
+                this._drag_start(el);
+            }.bind(this),
+            "onDrag": function (dragging, e) {
+                this._drag_drag(dragging, e);
+            }.bind(this),
+            "onEnter": function (dragging, inObj) {
+                this._drag_enter(dragging, inObj);
+            }.bind(this),
+            "onLeave": function (dragging, obj) {
+                this._drag_leave(dragging, obj);
+            }.bind(this),
+            "onDrop": function (dragging, inObj) {
+                this._drag_drop(dragging, inObj);
+            }.bind(this),
+            "onCancel": function (dragging) {
+                this._drag_cancel(dragging);
+            }.bind(this),
+            "onComplete": function (dragging, e) {
+                this._drag_complete(dragging, e);
+            }.bind(this),
         });
         drag.start(e);
         this.dragStatus == "remove";
@@ -2227,7 +2248,7 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
         // console.log('this.menu.componentJson', this.menu.componentJson);
         // console.log('this.menu.layoutJson', this.menu.layoutJson);
 
-        var itemDataList = this.data.itemDataList.filter(function(data){
+        var itemDataList = (this.data.itemDataList || []).filter(function(data){
             var json;
             switch (data.type){
                 case "portal":
@@ -2258,7 +2279,11 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
             }
         }
 
-        if( !itemDataList.length )this.node.hide();
+        if( !itemDataList.length ){
+            this.node.hide();
+        }else{
+            this.node.show();
+        }
 
         this.availableItemDataList = itemDataList;
     },
@@ -2328,7 +2353,7 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     loadItems: function(){
         if (!this.items) this.items = [];
         //this.data.itemDataList
-        this.availableItemDataList.each(function(data){
+        (this.availableItemDataList || this.data.itemDataList).each(function(data){
             var item = this.items.find(function(i){
                 return i.data.id == data.id;
             });
@@ -2422,6 +2447,8 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
             this.setSubItemIcon(data, this.sunIconNodes[this.data.itemDataList.length]);
         }
         this.data.itemDataList.push(data);
+        if(this.availableItemDataList)this.availableItemDataList.push(data);
+        this.node.show();
     },
     setSubItemIcon: function(data, node){
         switch (this.getItemType(data)){
@@ -2957,12 +2984,12 @@ o2.xDesktop.Default.Lnk = new Class({
                 }
             }.bind(this),
             "mouseover": function(){
-                this.actionNode.fade("in");
+                if(!this.layout.isUseForceMainMenuData)this.actionNode.fade("in");
                 this.node.addClass("overColor_bg");
                 this.textNode.fade("in");
             }.bind(this),
             "mouseout": function(){
-                this.actionNode.fade("out");
+                if(!this.layout.isUseForceMainMenuData)this.actionNode.fade("out");
                 this.node.removeClass("overColor_bg");
                 this.textNode.fade("out");
             }.bind(this)
@@ -2979,14 +3006,16 @@ o2.xDesktop.Default.Lnk = new Class({
                 this.actionNode.removeClass("layout_menu_lnk_item_action_shadow");
             }.bind(this)
         });
-        var drag = new Drag(this.node, {
-            "stopPropagation": true,
-            "compensateScroll": true,
-            "onStart": function(el, e){
-                this.doDragMove(e);
-                drag.stop();
-            }.bind(this)
-        });
+        if( !this.layout.isUseForceMainMenuData ){
+            var drag = new Drag(this.node, {
+                "stopPropagation": true,
+                "compensateScroll": true,
+                "onStart": function(el, e){
+                    this.doDragMove(e);
+                    drag.stop();
+                }.bind(this)
+            });
+        }
     },
     getDragNode: function(){
         if (!this.dragNode){

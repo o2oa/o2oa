@@ -18,11 +18,11 @@ public class ActionImConfig extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionImConfig.class);
 
-	ActionResult<ActionImConfig.Wo> execute(EffectivePerson effectivePerson) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-		ActionResult<ActionImConfig.Wo> result = new ActionResult<>();
+		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setEnableClearMsg(false);
 		wo.setEnableRevokeMsg(false);
@@ -32,8 +32,11 @@ public class ActionImConfig extends BaseAction {
 				wo = this.convertToWrapIn(je, Wo.class);
 			}
 		}
-		wo.setVersionNo(200);
-		wo.setChangelog("新增群聊删除功能和单聊会话个人删除功能！");
+		if (wo.getRevokeOutMinute() == null || wo.getRevokeOutMinute() <= 0) {
+			wo.setRevokeOutMinute(2); // 默认2分钟
+		}
+		wo.setVersionNo(300);
+		wo.setChangelog("新增转发、收藏等功能！");
 		result.setData(wo);
 		return result;
 	}
@@ -46,10 +49,40 @@ public class ActionImConfig extends BaseAction {
 		private Boolean enableClearMsg;
 		@FieldDescribe("是否开启撤回聊天消息的功能.")
 		private Boolean enableRevokeMsg;
+		@FieldDescribe("是否使用onlyOffice预览文件(需要先安装onlyOffice扩展应用).")
+		private Boolean enableOnlyOfficePreview;
+		@FieldDescribe("撤回时效（分钟数）")
+		private Integer revokeOutMinute;
+		@FieldDescribe("会话检查脚本.")
+		private String conversationCheckInvoke;
 		@FieldDescribe("版本号.")
 		private int versionNo;
 		@FieldDescribe("更新内容.")
 		private String changelog;
+
+		public Boolean getEnableOnlyOfficePreview() {
+			return enableOnlyOfficePreview;
+		}
+
+		public void setEnableOnlyOfficePreview(Boolean enableOnlyOfficePreview) {
+			this.enableOnlyOfficePreview = enableOnlyOfficePreview;
+		}
+
+		public String getConversationCheckInvoke() {
+			return conversationCheckInvoke;
+		}
+
+		public void setConversationCheckInvoke(String conversationCheckInvoke) {
+			this.conversationCheckInvoke = conversationCheckInvoke;
+		}
+
+		public Integer getRevokeOutMinute() {
+			return revokeOutMinute;
+		}
+
+		public void setRevokeOutMinute(Integer revokeOutMinute) {
+			this.revokeOutMinute = revokeOutMinute;
+		}
 
 		public int getVersionNo() {
 			return versionNo;

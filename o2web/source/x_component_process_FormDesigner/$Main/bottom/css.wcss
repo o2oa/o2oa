@@ -14,7 +14,7 @@
 		"border-left": "1px solid #505050",
 		"margin-left": "141px",
 		"-webkit-user-select": "text",
-		"-moz-user-select": "text" 
+		"-moz-user-select": "text"
 	},
 	"formNode": {
 		"margin-left": "160px",

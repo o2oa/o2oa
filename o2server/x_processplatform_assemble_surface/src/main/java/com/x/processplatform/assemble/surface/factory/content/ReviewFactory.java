@@ -119,6 +119,48 @@ public class ReviewFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Review.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Review> root = cq.from(Review.class);
+		Predicate p = cb.equal(root.get(Review_.process), id);
+		cq.select(root.get(Review_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithProcessWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Review.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Review> root = cq.from(Review.class);
+		Predicate p = cb.equal(root.get(Review_.process), id);
+		p = cb.and(p, cb.equal(root.get(Review_.completed), completed));
+		cq.select(root.get(Review_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Review.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Review> root = cq.from(Review.class);
+		Predicate p = cb.equal(root.get(Review_.application), id);
+		cq.select(root.get(Review_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplicationWithCompleted(String id, Boolean completed) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Review.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Review> root = cq.from(Review.class);
+		Predicate p = cb.equal(root.get(Review_.application), id);
+		p = cb.and(p, cb.equal(root.get(Review_.completed), completed));
+		cq.select(root.get(Review_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	public <T extends Review> List<T> sort(List<T> list) {
 		list = list.stream().sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 				.collect(Collectors.toList());

@@ -20,6 +20,9 @@ import com.x.cms.core.express.tools.filter.term.LikeTerm;
 
 public class WrapInDocumentFilter {
 
+	public static final String READ_FLAG_READ = "READ";
+	public static final String READ_FLAG_UNREAD = "UNREAD";
+
 	@FieldDescribe( "排序列名" )
 	private String orderField = "publishTime";
 

@@ -195,7 +195,7 @@ class ActionProcessing extends BaseAction {
 				// 将所有前面的已办lastest标记false
 				emc.listEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, task.getJob(),
 						TaskCompleted.person_FIELDNAME, task.getPerson()).forEach(o -> o.setLatest(false));
-				TaskCompleted taskCompleted = concreteTaskCompleted(task);
+				TaskCompleted taskCompleted = concreteTaskCompleted(business, task);
 				emc.persist(taskCompleted, CheckPersistType.all);
 				emc.remove(task, CheckRemoveType.all);
 				// 去掉处理同一处理人不同身份待办合并处理一次processingTaskOnceUnderSamePerson(business, task);
@@ -228,11 +228,15 @@ class ActionProcessing extends BaseAction {
 //			}
 //		}
 
-		private TaskCompleted concreteTaskCompleted(Task task) throws Exception {
+		private TaskCompleted concreteTaskCompleted(Business business, Task task) throws Exception {
 			Date now = new Date();
 			Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
 			TaskCompleted taskCompleted = new TaskCompleted(task, wi.getProcessingType(), now, duration);
 			taskCompleted.onPersist();
+			Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
+			if(work != null){
+				taskCompleted.setForm(work.getForm());
+			}
 			return taskCompleted;
 		}
 	}

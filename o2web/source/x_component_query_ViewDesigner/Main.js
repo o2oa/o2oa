@@ -20,7 +20,11 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
         },
 		"actions": null,
 		"category": null,
-		"processData": null
+		"processData": null,
+
+        "sortKeys": ['name', 'alias', 'createTime', 'updateTime'],
+        "sortKey": '',
+        "listToolbarExpanded": false
 	},
 	onQueryLoad: function(){
         this.shortcut = true;
@@ -196,23 +200,25 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
     },
 	openView: function(callback){
         this.getApplication(function(){
-            this.initOptions();
-            this.loadNodes();
-            this.loadViewListNodes();
-            //	this.loadToolbar();
-            this.loadContentNode();
-            this.loadProperty();
-            //	this.loadTools();
-            this.resizeNode();
-            this.addEvent("resize", this.resizeNode.bind(this));
-            this.loadView(function(){
-                if (callback) callback();
-            });
+            this.getUd(function (){
+                this.initOptions();
+                this.loadNodes();
+                this.loadViewListNodes();
+                //	this.loadToolbar();
+                this.loadContentNode();
+                this.loadProperty();
+                //	this.loadTools();
+                this.resizeNode();
+                this.addEvent("resize", this.resizeNode.bind(this));
+                this.loadView(function(){
+                    if (callback) callback();
+                });
 
-            this.setScrollBar(this.propertyDomArea, null, {
-                "V": {"x": 0, "y": 0},
-                "H": {"x": 0, "y": 0}
-            });
+                this.setScrollBar(this.propertyDomArea, null, {
+                    "V": {"x": 0, "y": 0},
+                    "H": {"x": 0, "y": 0}
+                });
+            }.bind(this))
         }.bind(this));
 	},
 	initOptions: function(){
@@ -244,13 +250,191 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             "text": MWF.APPDVD.LP.view
         }).inject(this.viewListNode);
 
+
         this.viewListResizeNode = new Element("div", {"styles": this.css.viewListResizeNode}).inject(this.viewListNode);
+
+        this.createListTitleNodes();
+
         this.viewListAreaSccrollNode = new Element("div", {"styles": this.css.viewListAreaSccrollNode}).inject(this.viewListNode);
         this.viewListAreaNode = new Element("div", {"styles": this.css.viewListAreaNode}).inject(this.viewListAreaSccrollNode);
 
         this.loadViewListResize();
 
         this.loadViewList();
+    },
+
+    createListTitleNodes: function (){
+        this.viewListTitleNode.setStyle("display", 'flex');
+
+        this.titleActionArea = new Element("div", {
+            styles: this.css.titleActionArea
+        }).inject(this.viewListTitleNode);
+
+        this.moreAction = new Element("div", {
+            styles: this.css.moreAction,
+            title: this.lp.searchAndSort
+        }).inject(this.titleActionArea);
+        this.moreAction.addEvent("click", function(){
+            var isHidden = this.toolbarNode.getStyle("display") === "none";
+            this.toolbarNode.setStyle("display", isHidden ? "" : "none" );
+            this.resizeNode();
+            this.options.listToolbarExpanded = isHidden;
+            this.setUd();
+        }.bind(this));
+
+        this.toolbarNode =  new Element("div", {
+            styles: this.css.toolbarNode
+        }).inject(this.viewListNode);
+        if( this.options.listToolbarExpanded )this.toolbarNode.show();
+
+        this.createSortNode();
+        this.createSearchNode();
+    },
+    getUd: function ( callback ){
+        MWF.UD.getDataJson(this.options.name + "_" + this.application.id, function (data){
+            if( data ){
+                this.options.sortKey = data.sortKey;
+                this.options.listToolbarExpanded = data.listToolbarExpanded || false;
+            }
+            callback();
+        }.bind(this));
+    },
+    setUd: function (){
+        var data = {
+            sortKey: this.options.sortKey,
+            listToolbarExpanded: this.options.listToolbarExpanded
+        };
+        MWF.UD.putData(this.options.name + "_" + this.application.id, data);
+    },
+    openApp: function (){
+        layout.openApplication(null, 'query.QueryManager', {
+            application: this.application,
+            appId: 'query.QueryManager'+this.application.id
+        }, {
+            "navi":0
+        });
+    },
+    createElement: function(){
+        var options = {
+            "application":{
+                id: this.application.id,
+                name: this.application.name
+            }
+        };
+        layout.openApplication(null, this.options.name, options);
+    },
+    createSortNode: function(){
+        this.itemSortArea = new Element("div.itemSortArea", {
+            styles: this.css.itemSortArea
+        }).inject(this.toolbarNode);
+        this.itemSortSelect = new Element('select.itemSortSelect', {
+            styles: this.css.itemSortSelect,
+            events: {
+                change: function(){
+                    this.options.sortKey = this.itemSortSelect[ this.itemSortSelect.selectedIndex ].value;
+                    this.setUd();
+                    this.loadViewList();
+                }.bind(this)
+            }
+        }).inject(this.itemSortArea);
+        new Element('option',{ 'text': this.lp.sorkKeyNote, 'value': "" }).inject(this.itemSortSelect);
+        this.options.sortKeys.each(function (key){
+            var opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.asc, 'value': key+"-asc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+            opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.desc, 'value': key+"-desc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+        }.bind(this));
+    },
+    createSearchNode: function (){
+        this.searchNode = new Element("div.searchNode", {
+            "styles": this.css.searchArea
+        }).inject(this.toolbarNode);
+
+        this.searchInput = new Element("input.searchInput", {
+            "styles": this.css.searchInput,
+            "placeholder": this.lp.searchPlacholder,
+            "value": this.options.searchKey || ""
+        }).inject(this.searchNode);
+
+        this.searchButton = new Element("i", {
+            "styles": this.css.searchButton
+        }).inject(this.searchNode);
+
+        this.searchCancelButton = new Element("i", {
+            "styles": this.css.searchCancelButton
+        }).inject(this.searchNode);
+
+        this.searchInput.addEvents({
+            focus: function(){
+                this.searchNode.addClass("mainColor_border");
+                this.searchButton.addClass("mainColor_color");
+            }.bind(this),
+            blur: function () {
+                this.searchNode.removeClass("mainColor_border");
+                this.searchButton.removeClass("mainColor_color");
+            }.bind(this),
+            keydown: function (e) {
+                if( (e.keyCode || e.code) === 13 ){
+                    this.search();
+                }
+            }.bind(this),
+            keyup: function (e){
+                this.searchCancelButton.setStyle('display', this.searchInput.get('value') ? '' : 'none');
+            }.bind(this)
+        });
+
+        this.searchCancelButton.addEvent("click", function (e) {
+            this.searchInput.set("value", "");
+            this.searchCancelButton.hide();
+            this.search();
+        }.bind(this));
+
+        this.searchButton.addEvent("click", function (e) {
+            this.search();
+        }.bind(this));
+    },
+    checkSort: function (data){
+        if( !!this.options.sortKey ){
+            var sortKey = this.options.sortKey.split("-");
+            var key = sortKey[0], isDesc = sortKey[1] === 'desc';
+            data.sort(function (a, b){
+                var av = a[key];
+                var bv = b[key];
+                if( typeOf(av) === 'string' && typeOf(bv) === 'string' ){
+                    var isLetterA = /^[a-zA-Z0-9]/.test(av);
+                    var isLetterB = /^[a-zA-Z0-9]/.test(bv);
+
+                    if (isLetterA && !isLetterB) return isDesc ? 1 : -1; // a是字母，b不是，a排在前面
+                    if (!isLetterA && isLetterB) return isDesc ? -1 : 1;  // a不是字母，b是，b排在前面
+
+                    return isDesc ?  bv.localeCompare(av) : av.localeCompare(bv);
+                }
+                return isDesc ? (bv - av) : (av - bv);
+            }.bind(this));
+        }
+    },
+    checkShow: function (i){
+        if( this.options.searchKey ){
+            var v = this.options.searchKey;
+            if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                //i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }
+    },
+    search: function (){
+        var v = this.searchInput.get("value");
+        this.options.searchKey = v;
+        this.itemArray.each(function (i){
+            if( !v ){
+                i.node.setStyle("display", "");
+            }else if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }.bind(this));
     },
 
     loadViewListResize: function(){
@@ -274,7 +458,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 
                 var width = initialWidth+dx;
                 if (width> bodySize.x/2) width =  bodySize.x/2;
-                if (width<40) width = 40;
+                if (width<90) width = 90;
                 this.contentNode.setStyle("margin-left", width+1);
                 this.viewListNode.setStyle("width", width);
                 //this.tab.pages.each(function(page){
@@ -319,7 +503,14 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
     },
 
     loadViewList: function(){
+        if( this.itemArray && this.itemArray.length  ){
+            this.itemArray.each(function(i){
+                if(!i.data.isNewView)i.node.destroy();
+            });
+        }
+        this.itemArray = [];
         this.actions.listView(this.application.id, function (json) {
+            this.checkSort(json.data);
             json.data.each(function(view){
                 this.createListViewItem(view);
             }.bind(this));
@@ -339,6 +530,18 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             "mouseover": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem_over);},
             "mouseout": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem);}
         });
+
+        if( view.id === this.options.id ){
+            listViewItem.setStyles(this.css.listViewItem_current);
+            this.currentListViewItem = listViewItem;
+        }
+
+        var itemObj = {
+            node: listViewItem,
+            data: view
+        };
+        this.itemArray.push(itemObj);
+        this.checkShow(itemObj);
     },
     //打开视图
     loadViewByData: function(node, e){
@@ -666,11 +869,11 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 		}
 		
 		
-		titleSize = this.propertyTitleNode.getSize();
-		titleMarginTop = this.propertyTitleNode.getStyle("margin-top").toFloat();
-		titleMarginBottom = this.propertyTitleNode.getStyle("margin-bottom").toFloat();
-		titlePaddingTop = this.propertyTitleNode.getStyle("padding-top").toFloat();
-		titlePaddingBottom = this.propertyTitleNode.getStyle("padding-bottom").toFloat();
+		var titleSize = this.propertyTitleNode.getSize();
+		var titleMarginTop = this.propertyTitleNode.getStyle("margin-top").toFloat();
+		var titleMarginBottom = this.propertyTitleNode.getStyle("margin-bottom").toFloat();
+		var titlePaddingTop = this.propertyTitleNode.getStyle("padding-top").toFloat();
+		var titlePaddingBottom = this.propertyTitleNode.getStyle("padding-bottom").toFloat();
 		
 		y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
 		y = nodeSize.y-y;
@@ -684,12 +887,16 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
         titleMarginBottom = this.viewListTitleNode.getStyle("margin-bottom").toFloat();
         titlePaddingTop = this.viewListTitleNode.getStyle("padding-top").toFloat();
         titlePaddingBottom = this.viewListTitleNode.getStyle("padding-bottom").toFloat();
-        nodeMarginTop = this.viewListAreaSccrollNode.getStyle("margin-top").toFloat();
-        nodeMarginBottom = this.viewListAreaSccrollNode.getStyle("margin-bottom").toFloat();
+        var nodeMarginTop = this.viewListAreaSccrollNode.getStyle("margin-top").toFloat();
+        var nodeMarginBottom = this.viewListAreaSccrollNode.getStyle("margin-bottom").toFloat();
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom+nodeMarginTop+nodeMarginBottom;
         y = nodeSize.y-y;
-        this.viewListAreaSccrollNode.setStyle("height", ""+y+"px");
+
+
+        var leftToolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : {x:0,y:0};
+
+        this.viewListAreaSccrollNode.setStyle("height", ""+(y-leftToolbarSize.y)+"px");
         this.viewListResizeNode.setStyle("height", ""+y+"px");
 	},
 

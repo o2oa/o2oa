@@ -116,9 +116,45 @@ MWF.xApplication.service.DictionaryDesigner.Main = new Class({
         if (callback) callback();
     },
 
+    getUd: function ( callback ){
+        MWF.UD.getDataJson(this.options.name, function (data){
+            if( data ){
+                this.options.sortKey = data.sortKey;
+                this.options.listToolbarExpanded = data.listToolbarExpanded || false;
+            }
+            callback();
+        }.bind(this));
+    },
+    setUd: function (){
+        var data = {
+            sortKey: this.options.sortKey,
+            listToolbarExpanded: this.options.listToolbarExpanded
+        };
+        MWF.UD.putData(this.options.name, data);
+    },
+    openApp: function (){
+        layout.openApplication(null, 'service.ServiceManager', {
+            appId: 'service.ServiceManager'
+        }, {
+            "navi":2
+        });
+    },
 
     loadDictionaryList: function(){
+        if( this.currentListDictionaryItem ){
+            var d = this.currentListDictionaryItem.retrieve('dictionary');
+            this.options.id = d.id;
+        }
+        if( this.itemArray && this.itemArray.length  ){
+            this.itemArray = this.itemArray.filter(function(i){
+                if(i.data.id)i.node.destroy();
+                return !i.data.id;
+            });
+        }else{
+            this.itemArray = [];
+        }
         this.actions.listDictionary(function (json) {
+            this.checkSort(json.data);
             json.data.each(function(dictionary){
                 this.createListDictionaryItem(dictionary);
             }.bind(this));
@@ -178,6 +214,7 @@ MWF.xApplication.service.DictionaryDesigner.Main = new Class({
                             dictionary.load();
                         }.bind(this), true);
                     }.bind(this));
+                    this.status.openDictionarys = [];
                 }
             }
 		}.bind(this));

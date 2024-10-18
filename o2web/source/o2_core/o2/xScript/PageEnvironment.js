@@ -1309,23 +1309,23 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         };
 
         this.statement = {
-        execute: function (obj, callback, async) {
-            if( obj.format ){
-                return this._execute(obj, callback, async, obj.format);
-            }else{
-                if( this.needCheckFormat(obj) ){
-                    var result;
-                    var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, function(json){
-                        result = this._execute(obj, callback, async, json.data.format);
-                        return result;
-                    }.bind(this), null, async);
-                    return result || p;
+            execute: function (obj, callback, async) {
+                if( obj.format ){
+                    return this._execute(obj, callback, async, obj.format);
                 }else{
-                    return this._execute(obj, callback, async, "");
-                }
+                    if( this.needCheckFormat(obj) ){
+                        var result;
+                        var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, function(json){
+                            result = this._execute(obj, callback, async, json.data.format);
+                            return result;
+                        }.bind(this), null, async);
+                        return result || p;
+                    }else{
+                        return this._execute(obj, callback, async, "");
+                    }
 
-            }
-        },
+                }
+            },
             needCheckFormat: function(s){
                 if( s.format )return false;
                 if( typeOf(s.parameter) === "object" ){
@@ -1377,7 +1377,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
                         parameter[parameterName] = value; //"%"+value+"%";
                     } else {
-                         if( ["sql", "sqlScript"].contains(format) ) {
+                        if( ["sql", "sqlScript"].contains(format) ) {
                             if (d.formatType === "numberValue") {
                                 value = parseFloat(value);
                             }
@@ -1651,11 +1651,11 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     }
                 }.bind(this);
 
-            if( type === "service" ){
-                scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
-            }else{
-                scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
-            }
+                if( type === "service" ){
+                    scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
+                }else{
+                    scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
+                }
             }
         };
         this.include = function (optionsOrName, callback, async) {
@@ -2331,63 +2331,64 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         }, false);
 
                         if (!cmpt.processStarter) cmpt.processStarter = new o2.xApplication.process.TaskCenter.Starter(obj);
-                        cmpt.processStarter.load();
+                        cmpt.processStarter.load({
+                            "appFlag": app
+                        });
                     }, true, true);
                     return "";
                 }
+                MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", null, false);
                 var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function (json) {
                     if (json.data) {
-                        MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function () {
-                            var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
-                                "workData": data,
-                                "identity": identity,
-                                "latest": latest,
-                                "skipDraftCheck": skipDraftCheck,
-                                "onStarted": function (data, title, processName) {
-                                    var application;
-                                    if (data.work) {
-                                        var work = data.work;
-                                        var options = {
-                                            "draft": work,
-                                            "draftData":data.data||{},
-                                            "appId": "process.Work" + (new o2.widget.UUID).toString(),
-                                            "desktopReload": false
-                                        };
+                        var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
+                            "workData": data,
+                            "identity": identity,
+                            "latest": latest,
+                            "skipDraftCheck": skipDraftCheck,
+                            "onStarted": function (data, title, processName) {
+                                var application;
+                                if (data.work) {
+                                    var work = data.work;
+                                    var options = {
+                                        "draft": work,
+                                        "draftData":data.data||{},
+                                        "appId": "process.Work" + (new o2.widget.UUID).toString(),
+                                        "desktopReload": false
+                                    };
+                                    if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
+                                    application = layout.desktop.openApplication(null, "process.Work", options);
+                                } else {
+                                    var currentTask = [];
+                                    data.each(function (work) {
+                                        if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+                                    }.bind(this));
+
+                                    if (currentTask.length == 1) {
+                                        var options = {"workId": currentTask[0], "appId": currentTask[0]};
                                         if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
                                         application = layout.desktop.openApplication(null, "process.Work", options);
                                     } else {
-                                        var currentTask = [];
-                                        data.each(function (work) {
-                                            if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
-                                        }.bind(this));
-
-                                        if (currentTask.length == 1) {
-                                            var options = {"workId": currentTask[0], "appId": currentTask[0]};
-                                            if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
-                                            application = layout.desktop.openApplication(null, "process.Work", options);
-                                        } else {
-                                        }
                                     }
+                                }
 
-                                    // var currentTask = [];
-                                    // data.each(function (work) {
-                                    //     if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
-                                    // }.bind(this));
-                                    //
-                                    // if (currentTask.length == 1) {
-                                    //     var options = { "workId": currentTask[0], "appId": currentTask[0] };
-                                    //     layout.desktop.openApplication(null, "process.Work", options);
-                                    // } else { }
+                                // var currentTask = [];
+                                // data.each(function (work) {
+                                //     if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+                                // }.bind(this));
+                                //
+                                // if (currentTask.length == 1) {
+                                //     var options = { "workId": currentTask[0], "appId": currentTask[0] };
+                                //     layout.desktop.openApplication(null, "process.Work", options);
+                                // } else { }
 
-                                    if (callback) callback(data);
+                                if (callback) callback(data);
 
-                                    if(layout.inBrowser && afterCreated){
-                                        afterCreated(application)
-                                    }
-                                }.bind(this)
-                            });
-                            starter.load();
-                        }.bind(this));
+                                if(layout.inBrowser && afterCreated){
+                                    afterCreated(application)
+                                }
+                            }.bind(this)
+                        });
+                        starter.load();
                     }
                 });
             },

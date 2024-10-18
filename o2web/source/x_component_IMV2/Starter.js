@@ -383,6 +383,14 @@ MWF.xApplication.IMV2.ShareToConversation = new Class({
         this.conversationChooseCloseBtnNode.addEvents({
           "click": function(){this.closeConversationListDialog()}.bind(this)
         });
+        this.shareSearchInputNode.addEvent("keyup", function (e){
+            if (e.code === 13) {
+                e.stopPropagation();
+                var searchInputVal = this.shareSearchInputNode.get("value");
+                console.log('搜索内容: '+searchInputVal)
+                this.searchConversationAndPerson(searchInputVal);
+            }
+        }.bind(this));
         this.loadConversationList();
       }.bind(this));
   },
@@ -397,16 +405,95 @@ MWF.xApplication.IMV2.ShareToConversation = new Class({
   // 加载会话列表
   loadConversationList: function() {
     o2.Actions.load("x_message_assemble_communicate").ImAction.myConversationList(function (json) {
-      this.conversationNodeItemList = [];
 			if (json.data && json.data instanceof Array) {
-        for (var i = 0; i < json.data.length; i++) {
-          var conversation = json.data[i];
+                this.conversationList = json.data; // 会话数据
+                this.conversationNodeItemList = [];
+        for (var i = 0; i < this.conversationList.length; i++) {
+          var conversation = this.conversationList[i];
           var itemNode = this._createConvItemNode(conversation);
           this.conversationNodeItemList.push(itemNode);
         }
 			}
 		}.bind(this));
   },
+    // 搜索会话
+    searchConversationAndPerson: function(value) {
+        this.conversationListNode.empty();
+        this.searchPersonListNode.empty();
+        this.searchPersonTitleNode.classList.remove("block");
+        this.searchPersonTitleNode.classList.add("none");
+        this.conversationNodeItemList = [];
+        this.personNodeItemList = [];
+        var searchConvList = [];
+        if (value) {
+            // 搜索会话
+            searchConvList = this.conversationList.filter((c) => c.title.indexOf(value) > -1 );
+            //搜索人员
+            this.searchLoadPerson(value);
+        } else {
+            // 还原会话列表
+            searchConvList = this.conversationList;
+        }
+        // 会话列表创建
+        for (var i = 0; i < searchConvList.length; i++) {
+            var conversation = searchConvList[i];
+            var itemNode = this._createConvItemNode(conversation);
+            this.conversationNodeItemList.push(itemNode);
+        }
+
+    },
+    searchLoadPerson: function (value) {
+        var body = {"key": value};
+        this.searchPersonList = [];
+        o2.Actions.load("x_organization_assemble_control").PersonAction.listFilterPaging(1, 20, body, function (json) {
+                if (json.data && json.data instanceof Array) {
+                    this.searchPersonList = json.data || [];
+                    this.personNodeItemList = [];
+                    this.searchPersonTitleNode.classList.remove("none");
+                    this.searchPersonTitleNode.classList.add("block");
+                    for (var i = 0; i < this.searchPersonList.length; i++) {
+                        var person = this.searchPersonList[i];
+                        var personItemNode = this._createPersonItemNode(person);
+                        this.personNodeItemList.push(personItemNode);
+                    }
+                }
+        }.bind(this));
+    },
+    _createPersonItemNode: function (person) {
+        var avatarDefault = this._getIcon(person.distinguishedName);
+        var itemNode = new Element("div", { "class": "item" }).inject(this.searchPersonListNode);
+        var nodeBaseItem = new Element("div", { "class": "base" }).inject(itemNode);
+        var avatarNode = new Element("div", { "class": "avatar" }).inject(nodeBaseItem);
+        new Element("img", { "src": avatarDefault, "class": "img" }).inject(avatarNode);
+        new Element("div", { "class": "body" , "text": person.name }).inject(nodeBaseItem);
+        itemNode.store("person", person);
+        itemNode.addEvents({
+            "click": function() {
+                this.clickPersonItem(person)
+            }.bind(this)
+        })
+        return itemNode;
+    },
+    clickPersonItem: function (person) {
+        console.log('点击人员', person);
+        MWF.require("MWF.widget.Mask", function () {
+                this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                this.mask.loadNode(this.app.content);
+                var conv = {
+                    type: "single",
+                    personList: [person.distinguishedName],
+                };
+                o2.Actions.load("x_message_assemble_communicate").ImAction.create(conv, function (json) {
+                    var newConv = json.data;
+                    this.clickConversationItem(newConv);
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
+                }.bind(this), function (error) {
+                    console.error(error);
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
+                }.bind(this));
+        }.bind(this));
+
+    },
   	//用户头像
 	_getIcon: function (id) {
 		var orgAction = MWF.Actions.get("x_organization_assemble_control")
@@ -454,32 +541,37 @@ MWF.xApplication.IMV2.ShareToConversation = new Class({
   },
   // 点击会话
   clickConversationItem: function(conversation) {
-    console.log(conversation)
-    var distinguishedName = layout.session.user.distinguishedName;
-		var time = this._currentTime();
-		var bodyJson = JSON.stringify(this.data.msgBody);
-    var uuid = new MWF.widget.UUID().createTrueUUID();
-		var textMessage = {
-			"id": uuid,
-			"conversationId": conversation.id,
-			"body": bodyJson,
-			"createPerson": distinguishedName,
-			"createTime": time,
-			"sendStatus": 1
-		};
-		o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
-			function (json) {
-        var options = {
-          conversationId: conversation.id,
-          mode: this.options.mode || "default"
-        }
-        layout.openApplication(null, "IMV2", options);
-			}.bind(this),
-			function (error) {
-				console.log(error);
-        this.app.notice(this.lp.msgShareError, "error");
-			}.bind(this));
-		this.closeConversationListDialog();
+    console.log(conversation);
+    if (this.data.callback ) { // 选择器
+        this.data.callback(conversation)
+    } else {
+        var distinguishedName = layout.session.user.distinguishedName;
+        var time = this._currentTime();
+        var bodyJson = JSON.stringify(this.data.msgBody);
+        var uuid = new MWF.widget.UUID().createTrueUUID();
+        var textMessage = {
+            "id": uuid,
+            "conversationId": conversation.id,
+            "body": bodyJson,
+            "createPerson": distinguishedName,
+            "createTime": time,
+            "sendStatus": 1
+        };
+        o2.Actions.load("x_message_assemble_communicate").ImAction.msgCreate(textMessage,
+            function (json) {
+                var options = {
+                    conversationId: conversation.id,
+                    mode: this.options.mode || "default"
+                }
+                layout.openApplication(null, "IMV2", options);
+            }.bind(this),
+            function (error) {
+                console.log(error);
+                this.app.notice(this.lp.msgShareError, "error");
+            }.bind(this));
+    }
+
+    this.closeConversationListDialog();
   },
   _currentTime: function () {
 		var today = new Date();

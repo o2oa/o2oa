@@ -6,7 +6,9 @@ MWF.xApplication.cms.ColumnManager.DictionaryExplorer = new Class({
         "create": MWF.CMSCM.LP.dictionary.create,
         "search": MWF.CMSCM.LP.dictionary.search,
         "searchText": MWF.CMSCM.LP.dictionary.searchText,
-        "noElement": MWF.CMSCM.LP.dictionary.noDictionaryNoticeText
+        "noElement": MWF.CMSCM.LP.dictionary.noDictionaryNoticeText,
+        "topEnable": true,
+        "name": 'cms.DictionaryExplorer'
     },
 
     _createElement: function(e){
@@ -44,9 +46,11 @@ MWF.xApplication.cms.ColumnManager.DictionaryExplorer = new Class({
     loadElementList: function(callback){
         this._loadItemDataList(function(json){
             if (json.data.length){
+                this.checkSort(json.data);
                 json.data.each(function(item){
                     var itemObj = this._getItemObject(item, this.itemArray.length + 1);
                     itemObj.load();
+                    this.checkShow(itemObj);
                     this.itemObject[ item.id ] = itemObj;
                     this.itemArray.push( itemObj );
                 }.bind(this));

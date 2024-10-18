@@ -3,6 +3,7 @@
 	"name": "",
 	"type": "Subform",
 	"description": "",
+	"moduleList": {},
 	"events": {
 	  "queryLoad" : {
 		"code": "",

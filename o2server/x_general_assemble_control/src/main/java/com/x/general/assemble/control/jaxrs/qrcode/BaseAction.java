@@ -1,13 +1,5 @@
 package com.x.general.assemble.control.jaxrs.qrcode;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.EnumMap;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -15,6 +7,12 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map;
+import javax.imageio.ImageIO;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -25,6 +23,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	static {
 		HINTS.put(EncodeHintType.MARGIN, "1");
 		HINTS.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q.toString());
+		HINTS.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 	}
 
 	private static final String FORMAT = "png";
@@ -40,6 +39,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private static final int WHITE = 0xFFFFFFFF;
 
 	protected byte[] create(Integer width, Integer height, String text) throws WriterException, IOException {
+		text = text.replace("\\n", "\n");
 		int w = this.width(width);
 		int h = this.height(height);
 		BitMatrix bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, w, h, HINTS);

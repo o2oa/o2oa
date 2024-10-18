@@ -1,0 +1,32 @@
+
+    <div class="chat-msg-list-box" data-o2-element="messageListBoxNode" >
+      <div class="person-box-header"  data-o2-element="messageListBoxHeaderNode">
+        <div class="person-box-header-title">
+          <span>{{$.thisTitle}}</span>
+        </div>
+        <div class="person-box-header-close" data-o2-element="messageListCloseBtnNode" data-o2-events="click:close">
+<!--          <span>{{$.lp.close}}</span>-->
+          <div class="quote-message-close" title="关闭"></div>
+        </div>
+      </div>
+       <div style="margin-bottom: 12px;" class="none" data-o2-element="messageListToolNode">
+         <div class="layout_content_taskbar_item none" style="float: left;" data-o2-element="messageListCancelBtnNode" data-o2-events="click:cancelSelectMode" >
+           <div class="layout_content_taskbar_item_text">取消</div>
+         </div>
+         <div class="layout_content_taskbar_item mainColor_bg" style="float: right;" data-o2-element="messageListSelectBtnNode" data-o2-events="click:openSelectMode">
+           <div class="layout_content_taskbar_item_text">多选</div>
+         </div>
+         <div class="layout_content_taskbar_item mainColor_bg none" style="float: right;" data-o2-element="messageListDeleteCollectionBtnNode" data-o2-events="click:deleteSelectedCollection">
+           <div class="layout_content_taskbar_item_text">删除</div>
+         </div>
+       </div>
+      <div class="person-box-body" data-o2-element="messageListContainerNode">
+        <div class="chat-msg-list"  data-o2-element="messageListNode">
+
+        </div>
+      </div>
+
+    </div>
+
+
+ 

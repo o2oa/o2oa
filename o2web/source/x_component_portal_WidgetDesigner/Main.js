@@ -105,5 +105,13 @@ MWF.xApplication.portal.WidgetDesigner.Main = new Class({
         //this.page.preview();
         var url = "../x_desktop/portal.html?id=" + this.application.id + "&widget=" + this.page.json.id;
         window.open(o2.filterUrl(url));
+    },
+    openApp: function (){
+        layout.openApplication(null, 'portal.PortalManager', {
+            application: this.application,
+            appId: 'portal.PortalManager'+this.application.id
+        }, {
+            "navi": 1
+        });
     }
 });

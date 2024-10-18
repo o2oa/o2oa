@@ -60,6 +60,9 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
         if(this.json.recoveryStyles){
             this.node.setStyles(this.json.recoveryStyles);
         }
+        if( this.json.properties ){
+            this.node.set(this.json.properties );
+        }
         this.node.addEvent("click", function(){
             this.selectedData = null;
             this.selectView(function(data){
@@ -457,5 +460,5 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             }
         }
     }
-	
-}); 
+
+});

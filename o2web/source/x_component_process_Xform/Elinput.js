@@ -50,6 +50,8 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     _appendVueData: function(){
         if (!this.json.maxlength) this.json.maxlength = "";
         if (!this.json.minlength) this.json.minlength = "";
+        if (!this.json.max) this.json.max = "";
+        if (!this.json.min) this.json.min = "";
         if (!this.json.showWordLimit) this.json.showWordLimit = false;
         if (!this.json.showPassword) this.json.showPassword = false;
         if (!this.json.disabled) this.json.disabled = false;
@@ -80,8 +82,13 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         //var numberStr = (this.json.inputType === "number" && this.json.resultType === "number" ) ? ".number" : "";
         var html = "<el-input";
         html += " v-model"+"=\""+this.json.$id+"\"";
-        html += " :maxlength=\"maxlength\"";
-        html += " :minlength=\"minlength\"";
+        if( this.json.inputType === 'number' ){
+            html += " :max=\"max\"";
+            html += " :min=\"min\"";
+        }else{
+            html += " :maxlength=\"maxlength\"";
+            html += " :minlength=\"minlength\"";
+        }
         html += " :show-word-limit=\"showWordLimit\"";
         html += " :show-password=\"showPassword\"";
         html += " :disabled=\"disabled\"";
@@ -130,9 +137,15 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
             methods["$loadElEvent_"+k.camelCase()] = function(){
                 var flag = true;
                 if (k==="change"){
-                    if(this.json.inputType === "number" && this.json.resultType === "number" ){
-                        if( parseFloat(arguments[0]).toString() !== "NaN" ){
-                            this.json[this.json.$id] = parseFloat(arguments[0]);
+                    if(this.json.inputType === "number"  ){
+                        if( this.json.resultType === "number" ){
+                            if( parseFloat(arguments[0]).toString() !== "NaN" ){
+                                this.json[this.json.$id] = parseFloat(arguments[0]);
+                            }
+                        }
+                        var value = this.getMin( this.getMax( this.json[this.json.$id] ) );
+                        if( value !== this.json[this.json.$id] ){
+                            this.json[this.json.$id] = value;
                         }
                     }
                     this.validationMode();
@@ -145,14 +158,46 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
                 if( flag )this.fireEvent(k, arguments);
             }.bind(this);
         },
+        getMax: function( value ){
+            if( isNaN(value) )return value;
+            if( typeOf( value ) === "string" )value = parseFloat(value);
+            if( typeOf(this.json.max)!=='null' && !isNaN( this.json.max )){
+                var max = this.json.max;
+                if( typeOf( max ) === "string" )max = parseFloat(max);
+                return isNaN(max) ? value : Math.min( max, value );
+            }else{
+                return value;
+            }
+        },
+        getMin: function( value ){
+            if( isNaN(value) )return value;
+            if( typeOf( value ) === "string" )value = parseFloat(value);
+            if( typeOf(this.json.min)!=='null' && !isNaN( this.json.min )){
+                var min = this.json.min;
+                if( typeOf( min ) === "string" )min = parseFloat(min);
+                return isNaN(min) ? value : Math.max( min, value );
+            }else{
+                return value;
+            }
+        },
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (value || value===0 || value===false){
-            return value;
+        if( this.json.inputType === "number" ){
+            if (value || value===0 ){
+                return this.json.resultType === "string" ? value.toString() : value;
+            }else{
+                value = this._computeValue();
+                value = (o2.typeOf(value)!=="null") ? value : "";
+                return this.json.resultType === "string" ? value.toString() : value;
+            }
         }else{
-            value = this._computeValue();
-            return (o2.typeOf(value)!=="null") ? value : "";
+            if (value || value===0 || value === false){
+                return value;
+            }else{
+                value = this._computeValue();
+                return (o2.typeOf(value)!=="null") ? value : "";
+            }
         }
     }
 }); 

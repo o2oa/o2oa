@@ -18,6 +18,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionMsgListWithConversationByPage extends BaseAction {
 
@@ -48,6 +50,14 @@ public class ActionMsgListWithConversationByPage extends BaseAction {
 			List<IMMsg> msgList = business.imConversationFactory().listMsgWithConversationByPage(adjustPage,
 					adjustPageSize, wi.getConversationId(), lastDeleteTime);
 			List<Wo> wos = Wo.copier.copy(msgList);
+			for (Wo wo : wos) {
+				if (StringUtils.isNotEmpty(wo.getQuoteMessageId()) ) {
+					IMMsg quoteMessage =  emc.find(wo.getQuoteMessageId(), IMMsg.class);
+					if (quoteMessage != null) {
+						wo.setQuoteMessage(quoteMessage);
+					}
+				}
+			}
 			result.setData(wos);
 			result.setCount(business.imConversationFactory().count(wi.getConversationId(), lastDeleteTime));
 			return result;
@@ -75,5 +85,16 @@ public class ActionMsgListWithConversationByPage extends BaseAction {
 		private static final long serialVersionUID = 3434938936805201380L;
 		static WrapCopier<IMMsg, Wo> copier = WrapCopierFactory.wo(IMMsg.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
+
+		@FieldDescribe("引用消息.")
+		private IMMsg quoteMessage;
+
+		public IMMsg getQuoteMessage() {
+			return quoteMessage;
+		}
+
+		public void setQuoteMessage(IMMsg quoteMessage) {
+			this.quoteMessage = quoteMessage;
+		}
 	}
 }

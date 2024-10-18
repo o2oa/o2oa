@@ -2,6 +2,9 @@ MWF.xDesktop.requireApp("process.ProcessManager", "Explorer", null, false);
 MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
 	Extends: MWF.xApplication.process.ProcessManager.Explorer,
 	Implements: [Options, Events],
+    options: {
+        "name": 'process.ProcessExplorer'
+    },
 
     keyCopy: function(e){
         if (this.selectMarkItems.length){

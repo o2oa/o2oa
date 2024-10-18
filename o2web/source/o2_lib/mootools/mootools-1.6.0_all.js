@@ -1,4 +1,4 @@
-/* MooTools: the javascript framework. license: MIT-style license. copyright: Copyright (c) 2006-2016 [Valerio Proietti](http://mad4milk.net/).*/ 
+/* MooTools: the javascript framework. license: MIT-style license. copyright: Copyright (c) 2006-2016 [Valerio Proietti](http://mad4milk.net/).*/
 /*!
 Web Build: http://mootools.net/more/builder/444dd8f9b276db91102332672b694443
 */
@@ -1165,8 +1165,9 @@ Browser.exec = function(text){
 		var script = document.createElement('script');
 		script.setAttribute('type', 'text/javascript');
 		script.text = text;
-		document.head.appendChild(script);
-		document.head.removeChild(script);
+		var head = document.head;
+		head.appendChild(script);
+		head.removeChild(script);
 	}
 	return text;
 };

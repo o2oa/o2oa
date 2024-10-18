@@ -215,7 +215,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
         var size = this.paperNode.getSize();
         this.playLogNode = this.createWorkLogNode([log], activity);
-        this.playLogNode.setStyle("display", "block");
+        this.playLogNode.setStyle("display", this.playLogNode.get("html") ? "block" : "none");
         var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
         this.playLogNode.setPosition({"x": p.x, "y": p.y});
     },
@@ -476,7 +476,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs, activity);
 
         this.currentWorklogNode = activity.worklogNode;
-        this.currentWorklogNode.setStyle("display", "block");
+        this.currentWorklogNode.setStyle("display", !!this.currentWorklogNode.get("html") ? "block" : "none");
         if( layout.mobile ){
             var pSize = this.paperNode.getSize();
             var bodySize =  $(document.body).getSize();

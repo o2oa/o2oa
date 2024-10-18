@@ -19,7 +19,11 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
         "height": "600",
 		"actions": null,
 		"category": null,
-		"processData": null
+		"processData": null,
+
+        "sortKeys": ['name', 'alias', 'createTime', 'updateTime'],
+        "sortKey": '',
+        "listToolbarExpanded": false
 	},
 	onQueryLoad: function(){
         this.shortcut = true;
@@ -227,27 +231,29 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 
 	openForm: function(){
         this.getApplication(function(){
-            this.initOptions();
-            this.loadNodes();
-            this.loadDictionaryListNodes();
-        //	this.loadToolbar();
-            this.loadContentNode();
-            this.loadProperty();
-        //	this.loadTools();
-            this.resizeNode();
-            this.addEvent("resize", this.resizeNode.bind(this));
-            this.loadDictionary();
+            this.getUd(function (){
+                this.initOptions();
+                this.loadNodes();
+                this.loadDictionaryListNodes();
+            //	this.loadToolbar();
+                this.loadContentNode();
+                this.loadProperty();
+            //	this.loadTools();
+                this.resizeNode();
+                this.addEvent("resize", this.resizeNode.bind(this));
+                this.loadDictionary();
 
-            if (this.toolbarContentNode){
-                this.setScrollBar(this.toolbarContentNode, null, {
-                    "V": {"x": 0, "y": 0},
-                    "H": {"x": 0, "y": 0}
-                });
-                this.setScrollBar(this.propertyDomArea, null, {
-                    "V": {"x": 0, "y": 0},
-                    "H": {"x": 0, "y": 0}
-                });
-            }
+                if (this.toolbarContentNode){
+                    this.setScrollBar(this.toolbarContentNode, null, {
+                        "V": {"x": 0, "y": 0},
+                        "H": {"x": 0, "y": 0}
+                    });
+                    this.setScrollBar(this.propertyDomArea, null, {
+                        "V": {"x": 0, "y": 0},
+                        "H": {"x": 0, "y": 0}
+                    });
+                }
+            }.bind(this))
         }.bind(this));
 	},
 	initOptions: function(){
@@ -279,12 +285,198 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
         }).inject(this.dictionaryListNode);
 
         this.dictionaryListResizeNode = new Element("div", {"styles": this.css.dictionaryListResizeNode}).inject(this.dictionaryListNode);
+
+        this.createListTitleNodes();
+
         this.dictionaryListAreaSccrollNode = new Element("div", {"styles": this.css.dictionaryListAreaSccrollNode}).inject(this.dictionaryListNode);
         this.dictionaryListAreaNode = new Element("div", {"styles": this.css.dictionaryListAreaNode}).inject(this.dictionaryListAreaSccrollNode);
 
         this.loadDictionaryListResize();
 
         this.loadDictionaryList();
+    },
+
+    createListTitleNodes: function (){
+        this.dictionaryListTitleNode.setStyle("display", 'flex');
+
+        this.titleActionArea = new Element("div", {
+            styles: this.css.titleActionArea
+        }).inject(this.dictionaryListTitleNode);
+
+        this.moreAction = new Element("div", {
+            styles: this.css.moreAction,
+            title: this.lp.searchAndSort
+        }).inject(this.titleActionArea);
+        this.moreAction.addEvent("click", function(){
+            var isHidden = this.toolbarNode.getStyle("display") === "none";
+            this.toolbarNode.setStyle("display", isHidden ? "" : "none" );
+            this.resizeNode();
+            this.options.listToolbarExpanded = isHidden;
+            this.setUd();
+        }.bind(this));
+
+        this.toolbarNode =  new Element("div", {
+            styles: this.css.toolbarNode
+        }).inject(this.dictionaryListNode);
+        if( this.options.listToolbarExpanded )this.toolbarNode.show();
+
+        this.createSortNode();
+        this.createSearchNode();
+    },
+    getUd: function ( callback ){
+        MWF.UD.getDataJson(this.options.name + "_" + this.application.id, function (data){
+            if( data ){
+                this.options.sortKey = data.sortKey;
+                this.options.listToolbarExpanded = data.listToolbarExpanded || false;
+            }
+            callback();
+        }.bind(this));
+    },
+    setUd: function (){
+        var data = {
+            sortKey: this.options.sortKey,
+            listToolbarExpanded: this.options.listToolbarExpanded
+        };
+        MWF.UD.putData(this.options.name + "_" + this.application.id, data);
+    },
+    openApp: function (){
+        layout.openApplication(null, 'cms.ColumnManager', {
+            column: this.application,
+            appId: 'cms.ColumnManager'+this.application.id
+        }, {
+            "navi": "dataConfig"
+        });
+    },
+    createElement: function(){
+        var flag = true;
+        this.itemArray.each(function(i){
+            if( !i.data.id ){
+                flag = false;
+                return;
+            }
+        });
+        if( !flag ){
+            this.notice(this.lp.duplicateNewNote, 'info');
+            return;
+        }
+        if( this.currentListDictionaryItem ){
+            this.currentListDictionaryItem.setStyles(this.css.listDictionaryItem);
+        }
+        this.options.id = "";
+        this.loadDictionary();
+    },
+    createSortNode: function(){
+        this.itemSortArea = new Element("div.itemSortArea", {
+            styles: this.css.itemSortArea
+        }).inject(this.toolbarNode);
+        this.itemSortSelect = new Element('select.itemSortSelect', {
+            styles: this.css.itemSortSelect,
+            events: {
+                change: function(){
+                    this.options.sortKey = this.itemSortSelect[ this.itemSortSelect.selectedIndex ].value;
+                    this.setUd();
+                    this.loadDictionaryList();
+                }.bind(this)
+            }
+        }).inject(this.itemSortArea);
+        new Element('option',{ 'text': this.lp.sorkKeyNote, 'value': "" }).inject(this.itemSortSelect);
+        this.options.sortKeys.each(function (key){
+            var opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.asc, 'value': key+"-asc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+            opt = new Element('option',{ 'text': this.lp[key] + " " + this.lp.desc, 'value': key+"-desc" }).inject(this.itemSortSelect);
+            if( this.options.sortKey === opt.get('value') )opt.set('selected', true);
+        }.bind(this));
+    },
+    createSearchNode: function (){
+        this.searchNode = new Element("div.searchNode", {
+            "styles": this.css.searchArea
+        }).inject(this.toolbarNode);
+
+        this.searchInput = new Element("input.searchInput", {
+            "styles": this.css.searchInput,
+            "placeholder": this.lp.searchPlacholder,
+            "value": this.options.searchKey || ""
+        }).inject(this.searchNode);
+
+        this.searchButton = new Element("i", {
+            "styles": this.css.searchButton
+        }).inject(this.searchNode);
+
+        this.searchCancelButton = new Element("i", {
+            "styles": this.css.searchCancelButton
+        }).inject(this.searchNode);
+
+        this.searchInput.addEvents({
+            focus: function(){
+                this.searchNode.addClass("mainColor_border");
+                this.searchButton.addClass("mainColor_color");
+            }.bind(this),
+            blur: function () {
+                this.searchNode.removeClass("mainColor_border");
+                this.searchButton.removeClass("mainColor_color");
+            }.bind(this),
+            keydown: function (e) {
+                if( (e.keyCode || e.code) === 13 ){
+                    this.search();
+                }
+            }.bind(this),
+            keyup: function (e){
+                this.searchCancelButton.setStyle('display', this.searchInput.get('value') ? '' : 'none');
+            }.bind(this)
+        });
+
+        this.searchCancelButton.addEvent("click", function (e) {
+            this.searchInput.set("value", "");
+            this.searchCancelButton.hide();
+            this.search();
+        }.bind(this));
+
+        this.searchButton.addEvent("click", function (e) {
+            this.search();
+        }.bind(this));
+    },
+    checkSort: function (data){
+        if( !!this.options.sortKey ){
+            var sortKey = this.options.sortKey.split("-");
+            var key = sortKey[0], isDesc = sortKey[1] === 'desc';
+            data.sort(function (a, b){
+                var av = a[key];
+                var bv = b[key];
+                if( typeOf(av) === 'string' && typeOf(bv) === 'string' ){
+                    var isLetterA = /^[a-zA-Z0-9]/.test(av);
+                    var isLetterB = /^[a-zA-Z0-9]/.test(bv);
+
+                    if (isLetterA && !isLetterB) return isDesc ? 1 : -1; // a是字母，b不是，a排在前面
+                    if (!isLetterA && isLetterB) return isDesc ? -1 : 1;  // a不是字母，b是，b排在前面
+
+                    return isDesc ?  bv.localeCompare(av) : av.localeCompare(bv);
+                }
+                return isDesc ? (bv - av) : (av - bv);
+            }.bind(this));
+        }
+    },
+    checkShow: function (i){
+        if( this.options.searchKey ){
+            var v = this.options.searchKey;
+            if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                //i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }
+    },
+    search: function (){
+        var v = this.searchInput.get("value");
+        this.options.searchKey = v;
+        this.itemArray.each(function (i){
+            if( !v ){
+                i.node.setStyle("display", "");
+            }else if( i.data.name.contains(v) || (i.data.alias || "").contains(v) || i.data.id.contains(v) ){
+                i.node.setStyle("display", "");
+            }else{
+                i.node.setStyle("display", "none");
+            }
+        }.bind(this));
     },
 
     loadDictionaryListResize: function(){
@@ -316,7 +508,20 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
     },
 
     loadDictionaryList: function(){
+        if( this.currentListDictionaryItem ){
+            var d = this.currentListDictionaryItem.retrieve('dictionary');
+            this.options.id = d.id;
+        }
+        if( this.itemArray && this.itemArray.length  ){
+            this.itemArray = this.itemArray.filter(function(i){
+                if(i.data.id)i.node.destroy();
+                return !i.data.id;
+            });
+        }else{
+            this.itemArray = [];
+        }
         this.actions.listDictionary(this.application.id || this.application, function (json) {
+            this.checkSort(json.data);
             json.data.each(function(dictionary){
                 this.createListDictionaryItem(dictionary);
             }.bind(this));
@@ -335,6 +540,18 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
             "mouseover": function(){if (_self.currentListDictionaryItem!=this) this.setStyles(_self.css.listDictionaryItem_over);},
             "mouseout": function(){if (_self.currentListDictionaryItem!=this) this.setStyles(_self.css.listDictionaryItem);}
         });
+
+        if( dictionary.id === this.options.id ){
+            listDictionaryItem.setStyles(this.css.listDictionaryItem_current);
+            this.currentListDictionaryItem = listDictionaryItem;
+        }
+
+        var itemObj = {
+            node: listDictionaryItem,
+            data: dictionary
+        };
+        this.itemArray.push(itemObj);
+        this.checkShow(itemObj);
     },
     loadDictionaryByData: function(node, e){
         var dictionary = node.retrieve("dictionary");
@@ -670,7 +887,10 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 
         y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom+nodeMarginTop+nodeMarginBottom;
         y = nodeSize.y-y;
-        this.dictionaryListAreaSccrollNode.setStyle("height", ""+y+"px");
+
+        var leftToolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : {x:0,y:0};
+
+        this.dictionaryListAreaSccrollNode.setStyle("height", ""+(y-leftToolbarSize.y)+"px");
         this.dictionaryListResizeNode.setStyle("height", ""+y+"px");
 	},
 	
@@ -707,6 +927,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
                             dictionary.load();
                         }.bind(this), true);
                     }.bind(this));
+                    this.status.openDictionarys = [];
                 }
             }
 		}.bind(this));

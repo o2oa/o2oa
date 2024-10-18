@@ -21,7 +21,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.setLayout();
 			this.loadCount();
 			var list = (this.status) ? (this.status.navi || "task") : "task";
-			this.loadList(list, callback);
+			this.loadList(list, null, callback);
 			// if (callback) callback();
 		}.bind(this));
 	},
@@ -85,7 +85,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.countData.myCreated = json.data.count;
 		}.bind(this));
 	},
-	loadList: function(type, callback){
+	loadList: function(type, e, callback){
 		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
 		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
 		this.currentMenu = this[type+"MenuNode"];
@@ -183,6 +183,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
+			if (data.completedList) {
+				data.completedList.forEach(function (item) {
+					item.name = (item.name === "completed") ? this.lp.completed : this.lp.processing;
+				}.bind(this));
+			}
 			this.currentList.filterAttribute = data;
 			var filterCategoryList = ['review','myCreated'].contains(this.currentList.options.type) ? this.lp.filterCategoryListReview : this.lp.filterCategoryList;
 			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList, filterCategoryList: filterCategoryList}, "module": this})
@@ -193,6 +198,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			_self.filterDlg.close();
 		}
 		this.filterDlg = o2.DL.open({
+			"container": this.content,
 			"mask": false,
 			"title": "",
 			"style": "user",
@@ -306,15 +312,15 @@ MWF.xApplication.process.workcenter.Main = new Class({
 
 			var map = {}, mapById = {};
 			data[0].each(function (d) {
-                if (d.processList && d.processList.length){
-                    var type = d.applicationCategory || "未分类";
-                    if( !map[type] )map[type] = [];
-                    map[type].push(d);
+				if (d.processList && d.processList.length){
+					var type = d.applicationCategory || "未分类";
+					if( !map[type] )map[type] = [];
+					map[type].push(d);
 
 					d.processList.each(function (process) {
 						mapById[ process.id ] = process;
 					});
-                }
+				}
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
@@ -618,7 +624,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
-                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
+				if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
@@ -904,7 +910,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
-            "taskId": data.id,
+			"taskId": data.id,
 			"onPostClose": function(){
 				if (this.refresh) this.refresh();
 			}.bind(this)
@@ -1024,6 +1030,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		var processNode = new Element("div.processNode").inject(this.content);
 		this.setProcessNode(task, form, processNode, "process", function (processor) {
 			this.processDlg = o2.DL.open({
+				"container": this.app.content,
 				"title": this.lp.process,
 				"style": form.json.dialogStyle || "user",
 				"isResize": false,
@@ -1300,6 +1307,15 @@ MWF.xApplication.process.workcenter.List = new Class({
 		delete data._;
 		e.currentTarget.store("task", data);
 	},
+	batchProcess: function(e){
+		if(this.options.type === "read"){
+			this.batchProcessRead(e);
+		}else {
+			this.batchProcessTask(e);
+
+		}
+
+	},
 	batchProcessTask: function(e){
 		if (this.selectedTaskList && this.selectedTaskList.length){
 			var data = this.selectedTaskList[0];
@@ -1355,6 +1371,9 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		return this.action.ReadAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
+			json.data.each(function (d){
+				d.allowRapid = true;
+			})
 			return json.data;
 		}.bind(this));
 
@@ -1379,6 +1398,90 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 			iconNode.setStyle("background-image", "url("+"../x_component_process_workcenter/$Main/default/icons/pic_new.png)");
 		}
 	},
+	selectTask: function(e, data){
+		if (e.currentTarget.get("disabled").toString()!="true"){
+			var itemNode = e.currentTarget.getParent(".listItem");
+			var iconNode = e.currentTarget.getElement(".selectFlagIcon");
+
+			if (itemNode){
+				if (itemNode.hasClass("mainColor_bg_opacity")){
+					itemNode.removeClass("mainColor_bg_opacity");
+					iconNode.removeClass("o2icon-xuanzhong");
+					iconNode.removeClass("selectFlagIcon_select");
+					iconNode.removeClass("mainColor_color");
+					this.unSelectedTask(data);
+					this.showBatchAction();
+				}else{
+					itemNode.addClass("mainColor_bg_opacity");
+					iconNode.addClass("o2icon-xuanzhong");
+					iconNode.addClass("selectFlagIcon_select");
+					iconNode.addClass("mainColor_color");
+					this.selectedTask(data);
+					this.showBatchAction(itemNode);
+				}
+			}
+		}
+	},
+	batchProcessRead: function(e){
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			var data = this.selectedTaskList[0];
+			this.editRead();
+		}
+	},
+	editRead : function(){
+		var _self = this;
+		var text = this.lp.readConfirm;
+		var url = this.app.path+this.app.options.style+"/view/dlg/read.html";
+		o2.loadHtml(url, {"bind": {"lp": this.lp, "readedConfirmContent": text}, "module": this}, function(o){
+			var html = o2.bindJson(o[0].data, {"lp": this.lp, "readedConfirmContent": text});
+			//var p = o2.dlgPosition(null, this.app.content, 550, 260)
+			var readDlg = o2.DL.open({
+				"title": this.lp.setReadedConfirmTitle,
+				"style": "user",
+				"isResize": false,
+				"height": "260",
+				"width": "550",
+				"html": html,
+				"maskNode": this.app.content,
+				"minTop": 5,
+				"buttonList": [
+					{
+						"type": "ok",
+						"text": MWF.LP.process.button.ok,
+						"action": function () {
+							debugger;
+							var opinion = this.content.getElement("textarea").get("value");
+							_self.batchSubmitRead(opinion);
+							this.close();
+						}
+					},
+					{
+						"type": "cancel",
+						"text": MWF.LP.process.button.cancel,
+						"action": function () {
+							this.close();
+						}
+					}
+				]
+			});
+		}.bind(this));
+	},
+	batchSubmitRead: function(opinion){
+		if (this.selectedTaskList && this.selectedTaskList.length){
+			var p = [];
+			this.selectedTaskList.forEach(function(task){
+				if (!opinion) opinion = "";
+
+				p.push(this.action.ReadAction.processing(task.id, {"opinion": opinion}, function(json){
+
+				}.bind(this)));
+			}.bind(this));
+			Promise.all(p).then(function(){
+				this.app.content.unmask();
+				this.refresh();
+			}.bind(this));
+		}
+	},
 	setReadCompleted: function(e, data){
 		if (data.item) data = data.item;
 		var _self = this;
@@ -1388,6 +1491,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 			var html = o2.bindJson(o[0].data, {"lp": this.lp, "readedConfirmContent": text});
 			var p = o2.dlgPosition(e, this.app.content, 550, 260)
 			var readDlg = o2.DL.open({
+				"container": this.app.content,
 				"title": this.lp.setReadedConfirmTitle,
 				"style": "user",
 				"isResize": false,
@@ -1448,6 +1552,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		this.infoDlg = o2.DL.open({
 			// "top": p.y,
 			// "left": p.x,
+			"container": this.app.content,
 			"title": this.lp.processInfo,
 			"style": "user",
 			"isResize": true,

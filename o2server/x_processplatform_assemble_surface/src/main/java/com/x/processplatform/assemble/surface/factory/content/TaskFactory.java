@@ -182,6 +182,26 @@ public class TaskFactory extends AbstractFactory {
 	// return list;
 	// }
 
+	public List<String> listWithProcess(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Task> root = cq.from(Task.class);
+		Predicate p = cb.equal(root.get(Task_.process), id);
+		cq.select(root.get(Task_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listWithApplication(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Task> root = cq.from(Task.class);
+		Predicate p = cb.equal(root.get(Task_.application), id);
+		cq.select(root.get(Task_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	public <T extends Task> List<T> sort(List<T> list) {
 		list = list.stream().sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
 				.collect(Collectors.toList());

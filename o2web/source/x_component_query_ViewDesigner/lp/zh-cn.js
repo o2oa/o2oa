@@ -16,11 +16,19 @@ MWF.xApplication.query.ViewDesigner.LP = {
     "saveViewNotice" : "请先保存视图！",
 
     "application" : "数据应用",
-    "newView" : "新视图",
+
     "newViewName" : "新视图名称",
     "copy" : "副本",
     "ok" : "确定",
     "cancel" : "取消",
+
+    "sorkKeyNote": "-排序-",
+    "createTime": "创建时间",
+    "updateTime": "更新时间",
+    "asc": "正序",
+    "desc": "倒序",
+    "searchPlacholder": "输入名称/别名/id搜索",
+    "searchAndSort": "排序和搜索",
 
     "action": {
         "move": "移动",
@@ -364,6 +372,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "saveAs": "另存为",
         "autoSave": "自动保存",
         "preview": "预览",
-        "help": "帮助"
+        "help": "帮助",
+        "add": "新建",
+        "gotoApp": "打开所在应用"
     }
 };

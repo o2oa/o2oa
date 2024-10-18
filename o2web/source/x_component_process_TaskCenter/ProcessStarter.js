@@ -131,13 +131,14 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
     },
 
     createMarkNode: function(){
+        var app = (this.app.embeded && this.app.eventTarget) ? this.app.eventTarget : this.app;
         this.markNode = new Element("div#mark", {
             "styles": this.css.markNode,
             "events": {
                 "mouseover": function(e){e.stopPropagation();},
                 "mouseout": function(e){e.stopPropagation();}
             }
-        }).inject(this.app.content);
+        }).inject(app.content);
     },
     createAreaNode: function(){
         this.areaNode = new Element("div#area", {
@@ -240,8 +241,9 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
     },
     setStartNodeSize: function(){
         if (!layout.mobile){
-            var size = this.app.content.getSize();
-            var allSize = this.app.content.getSize();
+            var app = (this.app.embeded && this.app.eventTarget) ? this.app.eventTarget : this.app;
+            var size = app.content.getSize();
+            var allSize = app.content.getSize();
             this.markNode.setStyles({
                 "width": ""+allSize.x+"px",
                 "height": ""+allSize.y+"px"
@@ -338,6 +340,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
     }
 
 });
+
 MWF.xApplication.process.TaskCenter.ProcessStarter.Identity = new Class({
     initialize: function(container, data, starter, style){
         this.container = $(container);

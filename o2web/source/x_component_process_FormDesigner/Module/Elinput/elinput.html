@@ -29,18 +29,26 @@
 					<div style="width: 140px; float: left"><input onclick="if (this.checked){
 						$('text{$.pid}textareaOptionArea').setStyle('display', 'none');
 						$('text{$.pid}resultType').setStyle('display', 'none');
+						$('text{$.pid}maxLength').setStyle('display', '');
+						$('text{$.pid}max').setStyle('display', 'none');
 					}" type="radio" name="inputType" value="text" text{(!$.inputType || $.inputType=='text')?'checked':''}/>{{$.lp.text}}(text)</div>
 					<div style="width: 140px; float: left"><input onclick="if (this.checked){
 						$('text{$.pid}textareaOptionArea').setStyle('display', 'block');
 						$('text{$.pid}resultType').setStyle('display', 'none');
+						$('text{$.pid}maxLength').setStyle('display', '');
+						$('text{$.pid}max').setStyle('display', 'none');
 					}" type="radio" name="inputType" value="textarea" text{($.inputType=='textarea')?'checked':''}/>{{$.lp.textarea}}(textarea)</div>
 					<div style="width: 140px; float: left"><input onclick="if (this.checked){
 						$('text{$.pid}textareaOptionArea').setStyle('display', 'none');
 						$('text{$.pid}resultType').setStyle('display', '');
+						$('text{$.pid}maxLength').setStyle('display', 'none');
+						$('text{$.pid}max').setStyle('display', '');
 					}" type="radio" name="inputType" value="number" text{($.inputType=='number')?'checked':''}/>{{$.lp.number}}(number)</div>
 					<div style="width: 140px; float: left"><input onclick="if (this.checked){
 						$('text{$.pid}textareaOptionArea').setStyle('display', 'none');
 						$('text{$.pid}resultType').setStyle('display', 'none');
+						$('text{$.pid}maxLength').setStyle('display', '');
+						$('text{$.pid}max').setStyle('display', 'none');
 					}" type="radio" name="inputType" value="password" text{($.inputType=='password')?'checked':''}/>{{$.lp.password}}(password)</div>
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="search" text{($.inputType=='search')?'checked':''}/>{{$.lp.search}}(search)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="color" text{($.inputType=='color')?'checked':''}/>{{$.lp.color}}(color)</div>-->
@@ -55,13 +63,17 @@
 			<tr id="text{$.pid}resultType" style="display: text{($.inputType==='number')?'':'none'}">
 				<td class="editTableTitle">{{$.lp.resultType}}:</td>
 				<td class="editTableValue">
-					<input type="radio" name="resultType" value="string" text{($.resultType!=='number')?'checked':''}/>{{$.lp.text}}
-					<input type="radio" name="resultType" value="number" text{($.resultType==='number')?'checked':''}/>{{$.lp.number}}
+					<input type="radio" name="resultType" value="string" text{($.resultType==='string')?'checked':''}/>{{$.lp.text}}
+					<input type="radio" name="resultType" value="number" text{($.resultType!=='string')?'checked':''}/>{{$.lp.number}}
 				</td>
 			</tr>
-			<tr>
+			<tr id="text{$.pid}maxLength" style="display: text{($.inputType==='number')?'none':''}">
 				<td class="editTableTitle">{{$.lp.maxlength}}:</td>
 				<td class="editTableValue"><input type="text" name="maxlength" value="text{$.maxlength}" class="editTableInput"/></td>
+			</tr>
+			<tr id="text{$.pid}max" style="display: text{($.inputType==='number')?'':'none'}">
+				<td class="editTableTitle">{{$.lp.max}}:</td>
+				<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>
 			</tr>
 			<tr>
 				<td class="editTableTitle">{{$.lp.wordNumber}}:</td>
