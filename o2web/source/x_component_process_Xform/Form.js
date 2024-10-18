@@ -355,7 +355,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             styleNode = document.createElement("style");
             styleNode.setAttribute("type", "text/css");
             styleNode.id = "style" + this.json.id;
-            styleNode.inject(document.head, "before");
+            styleNode.inject(document.head, "bottom");
 
             if (styleNode.styleSheet) {
                 var setFunc = function () {
