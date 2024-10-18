@@ -4119,48 +4119,47 @@ MWF.xScript.Environment = function(ev){
                 }, true, true);
                 return "";
             }
+            MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", null, false);
             var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function(json){
                 if (json.data){
-                    MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
-                        var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
-                            "workData": data,
-                            "identity": identity,
-                            "latest": latest,
-                            "skipDraftCheck": skipDraftCheck,
-                            "onStarted": function(data, title, processName){
-                                var application;
-                                if (data.work){
-                                    var work = data.work;
-                                    var options = {
-                                        "draft": work,
-                                        "draftData":data.data||{},
-                                        "appId": "process.Work"+(new o2.widget.UUID).toString(),
-                                        "desktopReload": false
-                                    };
+                    var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
+                        "workData": data,
+                        "identity": identity,
+                        "latest": latest,
+                        "skipDraftCheck": skipDraftCheck,
+                        "onStarted": function(data, title, processName){
+                            var application;
+                            if (data.work){
+                                var work = data.work;
+                                var options = {
+                                    "draft": work,
+                                    "draftData":data.data||{},
+                                    "appId": "process.Work"+(new o2.widget.UUID).toString(),
+                                    "desktopReload": false
+                                };
+                                if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
+                                application = layout.desktop.openApplication(null, "process.Work", options);
+                            }else{
+                                var currentTask = [];
+                                data.each(function(work){
+                                    if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+                                }.bind(this));
+
+                                if (currentTask.length==1){
+                                    var options = {"workId": currentTask[0], "appId": currentTask[0]};
                                     if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
                                     application = layout.desktop.openApplication(null, "process.Work", options);
-                                }else{
-                                    var currentTask = [];
-                                    data.each(function(work){
-                                        if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
-                                    }.bind(this));
+                                }else{}
+                            }
 
-                                    if (currentTask.length==1){
-                                        var options = {"workId": currentTask[0], "appId": currentTask[0]};
-                                        if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
-                                        application = layout.desktop.openApplication(null, "process.Work", options);
-                                    }else{}
-                                }
+                            if (callback) callback(data);
 
-                                if (callback) callback(data);
-
-                                if(layout.inBrowser && afterCreated){
-                                    afterCreated(application)
-                                }
-                            }.bind(this)
-                        });
-                        starter.load();
-                    }.bind(this));
+                            if(layout.inBrowser && afterCreated){
+                                afterCreated(application)
+                            }
+                        }.bind(this)
+                    });
+                    starter.load();
                 }
             });
         }

@@ -1,3 +1,6 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.TaskCenter = MWF.xApplication.process.TaskCenter || {};
+MWF.xApplication.process.TaskCenter.ProcessStarter = MWF.xApplication.process.TaskCenter.ProcessStarter || {};
 MWF.xApplication.process.TaskCenter.ProcessStarter.lp = {
     "start": "启动流程",
 	"department": "部门",
