@@ -1,6 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 //MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
+
 o2.xApplication.Selector.package = MWF.O2Selector = new Class({
     Implements: [Options],
     options: {
@@ -17,6 +18,7 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
         "dutyUnitLevelBy" : "duty"
     },
     initialize: function(container, options, delayLoad){
+        MWF.O2Selector.selectedIndex = 1;
         if( !MWF.xApplication.Selector.LP ){
             MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
         }
@@ -76,7 +78,6 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
         }
     }
 });
-
 MWF.O2SelectorFilter = new Class({
     Implements: [Options],
     options: {

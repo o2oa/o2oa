@@ -611,6 +611,16 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
 
+        var selectedIndexMap = {};
+        var firstType = this.options.types[0];
+        var values = this.options[firstType+'Options'].values;
+        values = typeOf(values) === "array" ?  values : [values];
+        values.each(function(e, i){
+            if( !e )return;
+            var key = typeOf( e ) === "string" ? e : ( e.distinguishedName || e.unique || e.employee || e.levelName || e.id );
+            selectedIndexMap[key] = MWF.O2Selector.selectedIndex++;
+        });
+
         this.options.types.each( function( type, index ){
 
             var options = Object.clone( this.options );
@@ -678,8 +688,11 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 //    options.names = options.names.concat( options[type+"Names"] )
                 //}
 
+                debugger;
+
                 this.selectors[t] = new MWF.xApplication.Selector[t](this.container, options );
                 var selector = this.selectors[t];
+                selector.selectedIndexMap = selectedIndexMap;
                 selector.inMulitple = true;
 
                 var itemAreaScrollNode;
@@ -941,6 +954,9 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 this.selectedItems = this.selectedItems.concat( selector.selectedItems );
             }
         }
+        this.selectedItems.sort(function (a, b){
+            return a.selectedIndex - b.selectedIndex;
+        });
         return this.selectedItems;
     },
     getSelectedItemsObject : function(){
@@ -948,6 +964,9 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         for( var key in this.selectors ){
             var selector = this.selectors[key];
             if( selector.selectedItems && selector.selectedItems.length > 0 ){
+                selector.selectedItems.sort(function (a, b){
+                    return a.selectedIndex - b.selectedIndex;
+                });
                 this.selectedItemsObject[key.toLowerCase()] = selector.selectedItems;
             }
         }
