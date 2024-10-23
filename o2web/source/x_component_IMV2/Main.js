@@ -108,10 +108,10 @@ MWF.xApplication.IMV2.Main = new Class({
 				// 处理窗口模式
 				if (this.mode === "onlyChat" && this.conversationId != "") {
 					this.o2ConversationListNode.setStyle("display", "none");
-					this.chatNode.setStyle("margin-left", "2px");
+					this.chatContainerNode.setStyle("margin-left", "2px");
 				} else {
 					this.o2ConversationListNode.setStyle("display", "flex");
-					this.chatNode.setStyle("margin-left", "259px");
+					this.chatContainerNode.setStyle("margin-left", "259px");
 				}
 
 				//获取会话列表
@@ -199,7 +199,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		}
 		// 当前聊天窗口 关闭
 		if (this.conversationId && this.conversationId === conv.id) {
-			this.chatNode.empty();
+			this.chatContainerNode.empty();
 			this.conversationId = null;
 		}
 	},
@@ -309,7 +309,33 @@ MWF.xApplication.IMV2.Main = new Class({
 		// new ChatNodeBox
 		this.chatNodeBox = new MWF.xApplication.IMV2.ChatNodeBox(conv, this);
 	},
-	
+	tapChoosePerson: function() {
+		MWF.requireApp("Selector","package", function(){
+			new MWF.O2Selector(document.body,  {
+				"type": 'identity',
+				"count": 0,
+				"title": '通讯录',
+				"firstLevelSelectable": true,
+				"resultType": "person",
+				"onPostLoadContent": function () {
+					this.titleTextNode.set("text", '通讯录')
+				},
+				"onComplete": function(items) {
+					console.log(items)
+					if (items && items.length > 0) {
+						let personList = items.map(i => i.data.distinguishedName)
+						const me = layout.session.user.distinguishedName;
+						personList = personList.filter(p => p !== me)
+						if (personList.length === 0 ) {
+							this.app.notice(this.lp.msgNeedChoosePerson, "error");
+						} else {
+							this.newConversation(personList, personList.length === 1 ? "single" : "group")
+						}
+					}
+				}.bind(this)
+			})
+		}.bind(this));
+	},
 	//点击创建单聊按钮
 	tapCreateSingleConv: function () {
 		// var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
@@ -541,7 +567,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		this.data = data;
 		this.main = main;
 		this.app = main.app;
-		this.container = this.main.chatNode;
+		this.container = this.main.chatContainerNode;
 		this.lp = this.main.lp;
 		this.path = this.main.path;
 		this.options = this.main.options;
@@ -878,42 +904,65 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				this.loadMsgListByPage();
 				var scrollFx = new Fx.Scroll(this.chatContentNode);
 				scrollFx.toBottom();
-				// 绑定事件
-				this.chatBottomAreaTextareaNode.addEvents({
-					"keyup": function (e) {
-						// debugger;
-						if (e.code === 13) {
-							if (e.control === true) {
-								var text = this.chatBottomAreaTextareaNode.value;
-								this.chatBottomAreaTextareaNode.value = text + "\n";
-							} else {
-								this.sendMsg();
-							}
-							e.stopPropagation();
-						}
-					}.bind(this)
-				});
-				// 绑定时间
-				this.chatContentNode.addEvents({
-					"scroll": function(e) {
-							//滑到顶部时触发下次数据加载
-						if (this.chatContentNode.scrollTop == 0) {
-							if (this.hasMoreMsgData) { // 有更多数据
-								// 间隔1秒 防止频繁
-								setTimeout(() => {
-											//将scrollTop置为10以便下次滑到顶部
-											this.chatContentNode.scrollTop = 10;
-											//加载数据
-											this.loadMoreMsgList();
-								}, 1000);
-							}
-						}
-					}.bind(this)
-				});
+				this.addChatEventListener()
 				// 显示业务图标
 				this.loadBusinessIcon();
 			}.bind(this));
 
+	},
+	// 内部一些节点添加事件
+	addChatEventListener: function () {
+		// 消息输入框绑定回车事件
+		this.chatBottomAreaTextareaNode.addEvents({
+			"keyup": function (e) {
+				// debugger;
+				if (e.code === 13) {
+					if (e.control === true) {
+						var text = this.chatBottomAreaTextareaNode.value;
+						this.chatBottomAreaTextareaNode.value = text + "\n";
+					} else {
+						this.sendMsg();
+					}
+					e.stopPropagation();
+				}
+			}.bind(this)
+		});
+		// 消息列表上绑定滚动事件
+		this.chatContentNode.addEvents({
+			"scroll": function(e) {
+				//滑到顶部时触发下次数据加载
+				if (this.chatContentNode.scrollTop == 0) {
+					if (this.hasMoreMsgData) { // 有更多数据
+						// 间隔1秒 防止频繁
+						setTimeout(() => {
+							//将scrollTop置为10以便下次滑到顶部
+							this.chatContentNode.scrollTop = 10;
+							//加载数据
+							this.loadMoreMsgList();
+						}, 1000);
+					}
+				}
+			}.bind(this)
+		});
+		// 绑定拖拽事件，拖拽上传文件 发送文件消息
+		// 阻止默认行为（防止文件打开）
+		["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+			this.chatNode.addEventListener(eventName, (e)=> {
+				e.preventDefault();
+				e.stopPropagation();
+			});
+		});
+		// 添加拖入/离开时的样式变化
+		["dragenter", "dragover"].forEach(eventName => {
+			this.chatNode.addEventListener(eventName, (e) => this.dragEnterOverEvent(e));
+		});
+		["dragleave", "drop"].forEach(eventName => {
+			this.chatNode.addEventListener(eventName, (e) => this.dragLeaveEvent(e));
+		});
+		// 拖入文件发送消息
+		this.chatNode.addEventListener("drop", (e) => this.dragDropFileSendMsg(e))
+		// 从剪贴板 复制文件 发送消息
+		this.chatNode.addEventListener("paste", (e) => this.pasteFileSendMsg(e))
 	},
 	// 如果有业务数据 头部展现应用图标 可以点击打开
 	loadBusinessIcon: function() {
@@ -1604,6 +1653,49 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		this.chatBottomAreaNode.classList.add("block")
 		this._selectOrUnSelectMsg()
 	},
+	dragEnterOverEvent: function (e) {
+		this.chatNode.classList.add("drag-area");
+	},
+	dragLeaveEvent: function (e) {
+		this.chatNode.classList.remove("drag-area");
+	},
+	// 拖拽发送文件消息
+	dragDropFileSendMsg: function (e) {
+		console.log('拖拽了文件', e)
+		if (e && e.dataTransfer && e.dataTransfer.files) {
+			const files = e.dataTransfer.files
+			console.log('拖拽了文件', files);
+			[...files].forEach((file)=> {
+				if (file.type && file.type !== '') {
+					this.sendFileMsg(file)
+				}
+			});
+		}
+	},
+	// 从剪贴板 复制 文件上传并发送消息
+	pasteFileSendMsg: function (e) {
+		// 获取粘贴的内容
+		const items = e.clipboardData.items;
+		// 遍历剪贴板中的所有项目
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+			// 判断是否为文件类型
+			if (item.kind === 'file') {
+				const file = item.getAsFile();
+				if (file) {
+					console.log('粘贴的文件:', file);
+					this.sendFileMsg(file)
+				}
+			} else if (item.type.indexOf('image') > -1) {
+				// 处理图片类型，可以通过 getAsFile 获取 Blob 对象
+				const file = item.getAsFile();
+				if (file) {
+					console.log('粘贴的图片:', file);
+					this.sendFileMsg(file)
+				}
+			}
+		}
+	},
 	// 点击发送文件消息
 	showChooseFile: function () {
 		if (!this.uploadFileAreaNode) {
@@ -1630,33 +1722,36 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			var files = this.fileUploadNode.files;
 			if (files.length) {
 				var file = files.item(0);
-				var formData = new FormData();
-				formData.append('file', file);
-				formData.append('fileName', file.name);
-				var fileExt = file.name.substring(file.name.lastIndexOf("."));
-				// 图片消息
-				var type = "file"
-				if (fileExt.toLowerCase() === ".webp" && this._canUseWebP()) {
-					type = "image"
-				} else if (fileExt.toLowerCase() === ".bmp" || fileExt.toLowerCase() === ".jpeg"
-					|| fileExt.toLowerCase() === ".png" || fileExt.toLowerCase() === ".jpg") {
-					type = "image"
-				} else { // 文件消息
-					type = "file"
-				}
-				//上传文件
-				o2.Actions.load("x_message_assemble_communicate").ImAction.uploadFile(this.conversationId, type, formData, "{}", function (json) {
-					if (json.data) {
-						var fileId = json.data.id
-						var fileExtension = json.data.fileExtension
-						var fileName = json.data.fileName
-						this._newImageOrFileMsgAndSend(type, fileId, fileName, fileExtension)
-					}
-				}.bind(this), function (error) {
-					console.error(error);
-				}.bind(this))
+				this.sendFileMsg(file)
 			}
 		}.bind(this));
+	},
+	sendFileMsg: function (file) {
+		var formData = new FormData();
+		formData.append('file', file);
+		formData.append('fileName', file.name);
+		var fileExt = file.name.substring(file.name.lastIndexOf("."));
+		// 图片消息
+		var type = "file"
+		if (fileExt.toLowerCase() === ".webp" && this._canUseWebP()) {
+			type = "image"
+		} else if (fileExt.toLowerCase() === ".bmp" || fileExt.toLowerCase() === ".jpeg"
+			|| fileExt.toLowerCase() === ".png" || fileExt.toLowerCase() === ".jpg") {
+			type = "image"
+		} else { // 文件消息
+			type = "file"
+		}
+		//上传文件
+		o2.Actions.load("x_message_assemble_communicate").ImAction.uploadFile(this.conversationId, type, formData, "{}", function (json) {
+			if (json.data) {
+				var fileId = json.data.id
+				var fileExtension = json.data.fileExtension
+				var fileName = json.data.fileName
+				this._newImageOrFileMsgAndSend(type, fileId, fileName, fileExtension)
+			}
+		}.bind(this), function (error) {
+			console.error(error);
+		}.bind(this))
 	},
 	//点击表情按钮
 	showEmojiBox: function (){
@@ -1815,7 +1910,6 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			window.open(url);
 		}
 	},
-
 	// 打开收藏的消息
 	openMyCollection: function () {
 		let id = 'myCollectionFlag';// 这个作为一个标识
@@ -1827,7 +1921,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 		// 遮罩层
 		if (!this.messageHistoryNode) {
-			this.messageHistoryNode = new Element("div", {"class": "chat-msg-list-container"}).inject(this.main.chatNode);
+			this.messageHistoryNode = new Element("div", {"class": "chat-msg-list-container"}).inject(this.chatNode);
 		}
 		if (this.messageHistoryMap.has(msg.id)) {
 			this.closeMessageHistory(msg)
@@ -1843,14 +1937,13 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		}
 		// 遮罩层
 		if (!this.messageHistoryNode) {
-			this.messageHistoryNode = new Element("div", {"class": "chat-msg-list-container"}).inject(this.main.chatNode);
+			this.messageHistoryNode = new Element("div", {"class": "chat-msg-list-container"}).inject(this.chatNode);
 		}
 		if (this.messageHistoryMap.has(msg.id)) {
 			this.closeMessageHistory(msg)
 		}
 		const el = new MWF.xApplication.IMV2.ChatMessageList({title: this.lp.msgHistory, msg: msg}, this);
 		this.messageHistoryMap.set(msg.id, el)
-
 	},
 	// 关闭某一个聊天记录
 	closeMessageHistory: function (msg) {

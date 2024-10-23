@@ -3,7 +3,7 @@ MWF.xApplication.IMV2.LP = {
 
 	"modifyMember": "修改成员",
 	"noMessage": "没有消息内容！",
-	"createConversation": "创建聊天会话",
+	"createConversation": "创建聊天",
 	"createSingle": "创建单聊",
 	"createGroup": "创建群聊",
 
@@ -69,6 +69,7 @@ MWF.xApplication.IMV2.LP = {
 	"msgShareError": "分享、转发消息失败！",
 	"msgNeedSelectMessage": "请至少选择一条消息！",
 	"msgCollectionSuccess": "收藏成功！",
+	"msgDragArea": "拖入文件发送消息",
 
 	
 	"settingsClearMsg": "是否开启会话删除功能",
