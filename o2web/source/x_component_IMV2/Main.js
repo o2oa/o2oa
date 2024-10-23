@@ -961,6 +961,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		});
 		// 拖入文件发送消息
 		this.chatNode.addEventListener("drop", (e) => this.dragDropFileSendMsg(e))
+		// 从剪贴板 复制文件 发送消息
+		this.chatNode.addEventListener("paste", (e) => this.pasteFileSendMsg(e))
 	},
 	// 如果有业务数据 头部展现应用图标 可以点击打开
 	loadBusinessIcon: function() {
@@ -1668,6 +1670,30 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 					this.sendFileMsg(file)
 				}
 			});
+		}
+	},
+	// 从剪贴板 复制 文件上传并发送消息
+	pasteFileSendMsg: function (e) {
+		// 获取粘贴的内容
+		const items = e.clipboardData.items;
+		// 遍历剪贴板中的所有项目
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+			// 判断是否为文件类型
+			if (item.kind === 'file') {
+				const file = item.getAsFile();
+				if (file) {
+					console.log('粘贴的文件:', file);
+					this.sendFileMsg(file)
+				}
+			} else if (item.type.indexOf('image') > -1) {
+				// 处理图片类型，可以通过 getAsFile 获取 Blob 对象
+				const file = item.getAsFile();
+				if (file) {
+					console.log('粘贴的图片:', file);
+					this.sendFileMsg(file)
+				}
+			}
 		}
 	},
 	// 点击发送文件消息
