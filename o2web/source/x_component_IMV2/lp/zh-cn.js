@@ -69,6 +69,7 @@ MWF.xApplication.IMV2.LP = {
 	"msgShareError": "分享、转发消息失败！",
 	"msgNeedSelectMessage": "请至少选择一条消息！",
 	"msgCollectionSuccess": "收藏成功！",
+	"msgDragArea": "拖入文件发送消息",
 
 	
 	"settingsClearMsg": "是否开启会话删除功能",

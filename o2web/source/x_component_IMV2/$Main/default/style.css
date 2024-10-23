@@ -183,17 +183,22 @@
   overflow: auto;
 }
 
-.o2_im_chat_content {
+.o2_im_chat_content_container {
   height: 100%;
   margin-left: 259px;
+}
+/* 拖拽文件上传 */
+.drag-area {
+  border: 2px solid #fb4747;
+  height: calc(100% - 4px) !important;
+}
+.o2_im_chat_content {
+  height: 100%;
   overflow: hidden;
   background-color: rgb(255, 255, 255);
   opacity: 1;
   display: flex;
-  display: -webkit-box;
-  display: -webkit-flex;
   flex-direction: column;
-  -ms-flex-direction: column;
   position: relative;
 }
 
@@ -598,7 +603,7 @@
 .chat-sender-box {
   background-color: white;
   margin: 0 10px 2px 10px;
-  padding: 10px 10px 10px 0px;
+  padding: 10px 10px 10px 5px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
@@ -679,7 +684,7 @@
 .chat-receiver-box {
   background-color: #b2e281;
   margin: 0px 10px 2px 10px;
-  padding: 10px 0px 10px 10px;
+  padding: 10px 5px 10px 10px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
