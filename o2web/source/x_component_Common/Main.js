@@ -627,7 +627,7 @@ MWF.xApplication.Common.Main = new Class({
 			if (layout.mobile) {
 				noticeTarget = $(document.body);
 			}
-			
+
 			var off = offset;
 			if (!off) {
 				off = {
