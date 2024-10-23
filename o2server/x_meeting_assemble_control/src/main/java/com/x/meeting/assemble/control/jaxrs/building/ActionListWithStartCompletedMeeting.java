@@ -1,8 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.building;
 
-import java.util.Date;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.WrapCopier;
@@ -17,7 +14,10 @@ import com.x.meeting.assemble.control.wrapout.WrapOutBuilding;
 import com.x.meeting.assemble.control.wrapout.WrapOutRoom;
 import com.x.meeting.core.entity.Building;
 
-class ActionListWithStartCompleted extends BaseAction {
+import java.util.Date;
+import java.util.List;
+
+class ActionListWithStartCompletedMeeting extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String start, String completed) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -25,15 +25,11 @@ class ActionListWithStartCompleted extends BaseAction {
 			Business business = new Business(emc);
 			Date startTime = DateTools.parse(start, DateTools.format_yyyyMMdd + " " + DateTools.format_HHmm);
 			Date completedTime = DateTools.parse(completed, DateTools.format_yyyyMMdd + " " + DateTools.format_HHmm);
-
-			startTime = DateTools.addSeconds(startTime,1);
-			completedTime = DateTools.addSeconds(completedTime,-1);
-
 			List<String> ids = business.building().list();
 			List<Wo> wos = Wo.copier.copy(emc.list(Building.class, ids));
 			WrapTools.setRoom(business, wos);
 			for (WrapOutBuilding wo : wos) {
-				WrapTools.setFutureMeeting(business, wo.getRoomList(), true);
+				WrapTools.setAllMeeting(business, wo.getRoomList(), true,startTime,completedTime);
 				for (WrapOutRoom room : wo.getRoomList()) {
 					WrapTools.checkRoomIdle(business, room, startTime, completedTime);
 				}

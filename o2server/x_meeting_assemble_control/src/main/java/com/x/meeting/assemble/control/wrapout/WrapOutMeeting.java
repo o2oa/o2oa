@@ -29,6 +29,16 @@ public class WrapOutMeeting extends Meeting {
 	private WrapOutRoom woRoom;
 
 	private List<WrapOutAttachment> attachmentList;
+	/* 会议室地址 */
+	private String roomAddress;
+
+	public String getRoomAddress() {
+		return roomAddress;
+	}
+
+	public void setRoomAddress(String roomAddress) {
+		this.roomAddress = roomAddress;
+	}
 
 	public Long getRank() {
 		return rank;

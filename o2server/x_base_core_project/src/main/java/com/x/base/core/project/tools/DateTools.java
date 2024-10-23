@@ -705,6 +705,20 @@ public class DateTools {
 	}
 
 	/**
+	 * 指定时间添加指定的秒数
+	 * @param date
+	 * @param seconds
+	 * @return
+	 */
+	public static Date addSeconds(Date date, int seconds) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.SECOND, seconds);// 指定的时间上加上n秒
+		date = calendar.getTime();
+		return date;
+	}
+
+	/**
 	 * endDate比startDate多的天数
 	 * @param startDate
 	 * @param endDate

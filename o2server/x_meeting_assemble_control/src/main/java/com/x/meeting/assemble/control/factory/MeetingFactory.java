@@ -218,6 +218,22 @@ public class MeetingFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<String> listAllWithRoom(String roomId, boolean allowOnly,Date startTime, Date completedTime) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Meeting.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Meeting> root = cq.from(Meeting.class);
+		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), startTime);
+		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.completedTime), completedTime));
+		p = cb.and(p, cb.equal(root.get(Meeting_.room), roomId));
+		p = cb.and(p, cb.equal(root.get(Meeting_.manualCompleted), false));
+		if (allowOnly) {
+			p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.allow));
+		}
+		cq.select(root.get(Meeting_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 //	@MethodDescribe("列示所有首字母开始的Building.")
 	public List<String> listPinyinInitial(String key) throws Exception {
 		String str = key.replaceAll("_", "\\\\_");
