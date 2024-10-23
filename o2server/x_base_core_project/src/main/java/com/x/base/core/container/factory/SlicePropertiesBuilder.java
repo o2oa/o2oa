@@ -21,7 +21,7 @@ public class SlicePropertiesBuilder {
 	public static String driver_kingbase = "com.kingbase.Driver";
 	public static String driver_kingbase8 = "com.kingbase8.Driver";
 	public static String driver_oscar = "com.oscar.Driver";
-	public static String driver_vastbase = "com.vastbase.Driver";
+	public static String driver_vastbase = "cn.com.vastbase.Driver";
 	/* 避免db2在aix版本和lwl版本字段长度不一致的问题 */
 	public static String dictionary_db2 = "db2(characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
 	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=-1,maxEmbeddedBlobSize=-1)";
