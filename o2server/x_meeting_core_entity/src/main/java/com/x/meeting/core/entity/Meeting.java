@@ -300,6 +300,12 @@ public class Meeting extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String roomLink;
 
+	public static final String externalPerson_FIELDNAME = "externalPerson";
+	@FieldDescribe("外部参会人员")
+	@Column(length = 500, name = ColumnNamePrefix + externalPerson_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String externalPerson;
+
 	public String getRoom() {
 		return room;
 	}
@@ -532,5 +538,13 @@ public class Meeting extends SliceJpaObject {
 
 	public void setRoomLink(String roomLink) {
 		this.roomLink = roomLink;
+	}
+
+	public String getExternalPerson() {
+		return externalPerson;
+	}
+
+	public void setExternalPerson(String externalPerson) {
+		this.externalPerson = externalPerson;
 	}
 }

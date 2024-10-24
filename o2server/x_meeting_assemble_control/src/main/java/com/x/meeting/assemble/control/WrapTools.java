@@ -44,7 +44,7 @@ public class WrapTools {
 	public static <T extends WrapOutBuilding> void setRoom(Business business, T t) throws Exception {
 		List<String> ids = business.room().listWithBuilding(t.getId());
 		List<WrapOutRoom> list = roomOutCopier.copy(business.entityManagerContainer().list(Room.class, ids));
-		SortTools.asc(list, false, "floor", "name");
+		SortTools.asc(list, true, Room.orderNumber_FIELDNAME, Room.name_FIELDNAME);
 		t.setRoomList(list);
 	}
 
@@ -101,13 +101,17 @@ public class WrapTools {
 
 	public static <T extends WrapOutMeeting> void decorate(Business business, T t, EffectivePerson effectivePerson)
 			throws Exception {
-		Date now = new Date();
-		if (now.before(t.getStartTime())) {
-			t.setStatus("wait");
-		} else if (now.after(t.getCompletedTime())) {
-			t.setStatus("completed");
+		if(ConfirmStatus.wait.equals(t.getConfirmStatus())){
+			t.setStatus("applying");
 		} else {
-			t.setStatus("processing");
+			Date now = new Date();
+			if (now.before(t.getStartTime())) {
+				t.setStatus("wait");
+			} else if (now.after(t.getCompletedTime())) {
+				t.setStatus("completed");
+			} else {
+				t.setStatus("processing");
+			}
 		}
 		t.setMyApply(false);
 		t.setMyWaitConfirm(false);
