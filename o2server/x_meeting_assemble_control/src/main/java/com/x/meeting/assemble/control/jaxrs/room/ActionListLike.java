@@ -25,7 +25,7 @@ class ActionListLike extends BaseAction {
 			List<String> ids = business.room().listLike(key);
 			List<Wo> wos = Wo.copier.copy(emc.list(Room.class, ids));
 			WrapTools.setFutureMeeting(business, wos, true);
-			SortTools.asc(wos, false, Room.name_FIELDNAME);
+			SortTools.asc(wos, Room.orderNumber_FIELDNAME, Room.name_FIELDNAME);
 			result.setData(wos);
 			return result;
 		}

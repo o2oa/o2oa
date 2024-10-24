@@ -79,7 +79,9 @@ class ActionCreate extends BaseAction {
 				if (room.getAvailable() == false) {
 					throw new ExceptionRoomNotAvailable(room.getName());
 				}
-				meeting.setAuditor(room.getAuditor());
+				if(StringUtils.isNotBlank(room.getAuditor())) {
+					meeting.setAuditor(room.getAuditor());
+				}
 				meeting.setRoom(room.getId());
 				Date startTime = DateTools.addSeconds(meeting.getStartTime(),1);
 				Date completedTime = DateTools.addSeconds(meeting.getCompletedTime(),-1);

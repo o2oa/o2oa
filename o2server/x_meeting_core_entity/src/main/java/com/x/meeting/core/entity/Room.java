@@ -145,6 +145,12 @@ public class Room extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Boolean available;
 
+	public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,升序排列,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + orderNumber_FIELDNAME)
+	private Integer orderNumber;
+
 	public String getName() {
 		return name;
 	}
@@ -241,4 +247,11 @@ public class Room extends SliceJpaObject {
 		this.phoneNumber = phoneNumber;
 	}
 
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 }
