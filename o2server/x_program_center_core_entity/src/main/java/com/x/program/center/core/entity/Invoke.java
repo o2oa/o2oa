@@ -2,6 +2,7 @@ package com.x.program.center.core.entity;
 
 import java.util.Date;
 
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
@@ -140,6 +146,17 @@ public class Invoke extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
+	public static final String executorList_FIELDNAME = "executorList";
+	@FieldDescribe("执行权限")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ executorList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + executorList_FIELDNAME
+			+ JoinIndexNameSuffix))
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + executorList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + executorList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> executorList;
+
 	public String getName() {
 		return name;
 	}
@@ -226,5 +243,13 @@ public class Invoke extends SliceJpaObject {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public List<String> getExecutorList() {
+		return executorList;
+	}
+
+	public void setExecutorList(List<String> executorList) {
+		this.executorList = executorList;
 	}
 }
