@@ -88,6 +88,7 @@ MWF.xApplication.Meeting.LP={
 	"mail": "Mailbox",
 	"meetingSubject": "Subject",
 	"meetingDescription": "Description",
+	"externalPerson": "External Person",
 	"meetingAttachment": "Attachment",
 	"meetingDetail": "Detail",
 	"editAddress": "Edit Address",

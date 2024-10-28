@@ -244,8 +244,8 @@ MWF.xApplication.Meeting.RoomForm = new Class({
             "<tr><td styles='formTableTitle'>"+lp.available+":</td>" +
             "    <td styles='formTableValue'>" +
             "       <div item='available' style='"+ boxStyle +"'></div>" +
-            "<td styles='formTableTitle'>"+lp.orderNumber+":</td>" +
-            "    <td styles='formTableTitle2'>" +
+            "<td styles='formTableTitle2'>"+lp.orderNumber+":</td>" +
+            "    <td styles='formTableTitle'>" +
             "       <div item='orderNumber' ></div></td>" +
             "</td></tr>" +
             "<tr><td styles='formTableTitle'></td>" +
@@ -830,6 +830,11 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 
             "<tr style='display:"+ ( this.isNew ? "none" : "") +" ;' item='checkPersonTr'><td styles='formTableTitle'>"+this.lp.needSignInPerson+":</td>" +
             "    <td styles='formTableValue' item='checkinPersonList'></td></tr>" +
+
+            "<tr><td styles='formTableTitle'>"+this.lp.externalPerson+":</td>" +
+            "    <td styles='formTableValue' item='externalPerson'></td></tr>" +
+
+
             "<tr><td styles='formTableTitle'>"+this.lp.meetingSubject+":</td>" +
             "    <td styles='formTableValue' item='subject'></td></tr>" +
             "<tr><td styles='formTableTitle'>"+this.lp.meetingDescription+":</td>" +
@@ -990,6 +995,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             }.bind(this)
                         } },
                     subject: {},
+                    externalPerson :{},
                     roomLink: {
                         type: this.app.isAutoCreateOnlineRoom() ? ( this.isNew ? "text" : "innerText" ) : "text",
                         attr: {
