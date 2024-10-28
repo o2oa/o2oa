@@ -242,8 +242,11 @@ MWF.xApplication.Meeting.RoomForm = new Class({
             "       <div item='deviceList' style='"+ boxStyle +"'></div>" +
             "</td></tr>" +
             "<tr><td styles='formTableTitle'>"+lp.available+":</td>" +
-            "    <td styles='formTableValue' colspan='3'>" +
+            "    <td styles='formTableValue'>" +
             "       <div item='available' style='"+ boxStyle +"'></div>" +
+            "<td styles='formTableTitle'>"+lp.orderNumber+":</td>" +
+            "    <td styles='formTableTitle2'>" +
+            "       <div item='orderNumber' ></div></td>" +
             "</td></tr>" +
             "<tr><td styles='formTableTitle'></td>" +
             "    <td styles='formTableValue' colspan='3' style='padding-top: 30px;'>"+
@@ -328,6 +331,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                     },
                     capacity: { notEmpty : true, tType: "number", text : lp.capacity },
                     roomNumber: {},
+                    orderNumber: {},
                     phoneNumber: {},
                     deviceList: { type : "checkbox",
                         value : this.data.device ? this.data.device.split("#") : "",
