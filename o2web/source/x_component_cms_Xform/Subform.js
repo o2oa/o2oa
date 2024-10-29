@@ -77,7 +77,7 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
         if ( this.form.json.mode !== "Mobile" && !layout.mobile){
             subformDataStr = data.data;
         }else{
-            subformDataStr = data.mobileData;
+            subformDataStr = data.mobileData || data.data;
         }
         this.subformData = null;
         if (subformDataStr) {
