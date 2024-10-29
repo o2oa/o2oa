@@ -228,7 +228,8 @@ public class MeetingFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal(root.get(Meeting_.room), roomId));
 		p = cb.and(p, cb.equal(root.get(Meeting_.manualCompleted), false));
 		if (allowOnly) {
-			p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.allow));
+			p = cb.and(p, cb.or(cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.wait),
+					cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.allow)));
 		}
 		cq.select(root.get(Meeting_.id)).where(p);
 		return em.createQuery(cq).getResultList();
