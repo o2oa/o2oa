@@ -740,6 +740,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
+        this.clearDefaultMargin();
     },
     _searchConfirmPerson: function(item){
         var inforNode = item.inforNode || new Element("div");

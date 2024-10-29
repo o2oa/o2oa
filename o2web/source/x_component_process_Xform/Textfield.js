@@ -22,7 +22,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 	iconStyle: "textFieldIcon",
-	
+
 	// _loadUserInterface: function(){
 	// 	this._loadNode();
     //     if (this.json.compute === "show"){
@@ -109,6 +109,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
+        this.clearDefaultMargin();
     },
 
     _resetNodeEdit: function(){
@@ -233,4 +234,4 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         return v;
     }
 
-}); 
+});

@@ -111,6 +111,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
+        this.clearDefaultMargin();
     },
     loadDescription: function(){
         if (this.isReadonly())return;
@@ -738,4 +739,4 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }
         return true;
     }
-}); 
+});
