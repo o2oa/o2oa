@@ -1435,11 +1435,17 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     setSelectedItem: function(){
+        var getSelectedIndex = function (e){
+            var key = typeOf( e ) === "string" ? e : ( e.distinguishedName || e.unique || e.employee || e.levelName || e.id );
+            return (this.selectedIndexMap||{})[key];
+        }.bind(this);
         if (this.options.values.length){
             this.options.values.each(function(v, i){
+                var index = getSelectedIndex(v);
                 if (typeOf(v)==="object"){
                     v.isFromValues = true;
                     var selecteditem = this._newItemSelected(v, this, null);
+                    selecteditem.selectedIndex = index;
                     this.selectedItems.push(selecteditem);
                     if(this.addToSelectedItemsMap)this.addToSelectedItemsMap(v, selecteditem);
                 }else if( typeOf(v)==="string" ){
@@ -1448,6 +1454,7 @@ MWF.xApplication.Selector.Person = new Class({
                         this.options.values[i] = json.data;
                         json.data.isFromValues = true;
                         var selecteditem = this._newItemSelected(json.data, this, null);
+                        selecteditem.selectedIndex = index;
                         this.selectedItems.push(selecteditem);
                         if(this.addToSelectedItemsMap)this.addToSelectedItemsMap(json.data, selecteditem);
                     }.bind(this);
@@ -2698,6 +2705,8 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             this.isFromValues = true;
             this.data.isFromValues = false;
         }
+
+        if(!this.selectedIndex)this.selectedIndex = MWF.O2Selector.selectedIndex++;
 
         this.getData(function(){
             this.node.setStyle("display","");
