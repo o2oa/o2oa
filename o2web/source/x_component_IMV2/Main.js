@@ -67,7 +67,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			});
 	},
 	// 刷新的时候缓存数据
-	recordStatus: function(person){
+	recordStatus: function(){
 		return {"conversationId": this.conversationId, "mode": this.mode};
 	},
 	onQueryClose: function () {
