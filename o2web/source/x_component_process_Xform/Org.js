@@ -611,6 +611,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         this.checkEmpower( array, function( data ){
             var values = [];
+
             data.each(function(d){
                 values.push(MWF.org.parseOrgData(d, true, simple));
             }.bind(this));
@@ -620,6 +621,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             }else{
                 this.setData(values, true);
             }
+
             //this._setBusinessData(values);
             this.validationMode();
             this.validation();
@@ -1248,7 +1250,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         var flag = false;
         if (typeOf(value)!=="array") value = (!!value) ? [value] : [];
         //value = (value.flat) ? value.flat() : value.flatten();
-
         if (value.some(function(e){ return (e && o2.typeOf(e.then)=="function") }) || this.json.asyncMode==="yes"){
             var p = Promise.all(value).then(function(d){
                 if (typeOf(d)!=="array") d = (!!d) ? [d] : [];
