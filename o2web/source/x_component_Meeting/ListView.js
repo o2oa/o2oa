@@ -1,3 +1,4 @@
+MWF.require("o2.widget.Paging", null, false);
 MWF.xApplication.Meeting.ListView = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -62,6 +63,9 @@ MWF.xApplication.Meeting.ListView = new Class({
         this.loadNaviItem(this.app.lp.listNavi.processing, "toApplyProcessing");
         this.loadNaviItem(this.app.lp.listNavi.completed, "toApplyCompleted");
 
+        this.loadNaviItem(this.app.lp.listNavi.apply, "toApply");
+
+
         var menuNode = new Element("div.menuNode", {"styles": this.css.menuNode, "text": this.app.lp.listNavi.myMeeting}).inject(this.leftNode);
         this.loadNaviItem(this.app.lp.listNavi.wait, "toMeetingWait");
         this.loadNaviItem(this.app.lp.listNavi.processing, "toMeetingProcessing");
@@ -99,15 +103,27 @@ MWF.xApplication.Meeting.ListView = new Class({
 
     toApplyWait: function(){
         if (this.currentView) this.currentView.destroy();
-        this.currentView = new MWF.xApplication.Meeting.ListView.ApplyWait(this);
+        this.currentView = new MWF.xApplication.Meeting.ListView.ApplyWait(this,{
+            "meetingStatus" : "wait"
+        });
     },
     toApplyProcessing: function(){
         if (this.currentView) this.currentView.destroy();
-        this.currentView = new MWF.xApplication.Meeting.ListView.ApplyProcessing(this);
+        this.currentView = new MWF.xApplication.Meeting.ListView.ApplyProcessing(this,{
+            "meetingStatus" : "processing"
+        });
     },
     toApplyCompleted: function(){
         if (this.currentView) this.currentView.destroy();
-        this.currentView = new MWF.xApplication.Meeting.ListView.ApplyCompleted(this);
+        this.currentView = new MWF.xApplication.Meeting.ListView.ApplyCompleted(this,{
+            "meetingStatus" : "completed"
+        });
+    },
+    toApply: function(){
+        if (this.currentView) this.currentView.destroy();
+        this.currentView = new MWF.xApplication.Meeting.ListView.Apply(this,{
+            "meetingStatus" : "applying"
+        });
     },
     toMeetingWait: function(){
         if (this.currentView) this.currentView.destroy();
@@ -193,13 +209,24 @@ MWF.xApplication.Meeting.ListView = new Class({
 });
 
 MWF.xApplication.Meeting.ListView.View = new Class({
-    initialize: function(view, action){
+    Implements: [Options, Events],
+    options: {
+        "meetingStatus" : "completed"
+    },
+    initialize: function(view,options){
+        this.setOptions(options);
         this.view = view;
         this.css = this.view.css;
         this.container = this.view.contentNode;
         this.app = this.view.app;
         this.items = [];
+        this.page = 1;
+        this.pageSize = 10;
+
+        this.action = o2.Actions.load("x_meeting_assemble_control");
+
         this.load();
+
     },
     reload : function(){
         this.items = [];
@@ -216,6 +243,8 @@ MWF.xApplication.Meeting.ListView.View = new Class({
 
 
         this.loadList();
+
+        this.docPaginationNode = new Element("div").inject(this.container);
     },
     loadHead: function(){
         this.table = new Element("table", {
@@ -226,11 +255,45 @@ MWF.xApplication.Meeting.ListView.View = new Class({
             "html": "<tr><th>"+this.app.lp.applyPerson+"</th><th>"+this.app.lp.beginDate+"</th><th>"+this.app.lp.time+"</th><th>"+this.app.lp.subject+"</th><th>"+this.app.lp.room+"</th></tr>"
         }).inject(this.container);
         this.table.getElements("th").setStyles(this.css.listViewTableTh);
+
+        this.tableBody = new Element("tbody").inject(this.table);
     },
     loadList: function() {
-        this.app.actions.listMeetingApplyWait(function (json) {
+        this.tableBody.empty();
+        this.action.MeetingAction.listApplyMeetingPaging(this.page,this.pageSize,{"meetingStatus" : this.options.meetingStatus},function (json) {
             this.loadLines(json.data);
+            this.docTotal = json.count;
+            this.loadDocPagination(  );
         }.bind(this));
+    },
+    loadDocPagination: function(text){
+        this.docPaginationNode.empty();
+        if( o2.typeOf(this.docTotal) === "number" && this.docTotal > 0 ){
+            this.docPaging = new o2.widget.Paging(this.docPaginationNode, {
+                style: "blue_round",
+                countPerPage: this.pageSize,
+                visiblePages: 9,
+                currentPage: this.page,
+                itemSize: this.docTotal,
+                useMainColor: true,
+                text: {
+                    firstPage: "第一页",
+                    lastPage: "最后一页"
+                },
+                // pageSize: pageSize,
+                onJumpingPage: function (pageNum) {
+                    this.page = pageNum;
+                    this.loadList();
+                }.bind(this),
+                hasInfor: true,
+                inforTextStyle: "",
+                onPostLoad: function () {
+                    // this.wraper.setStyle("border-top", "1px solid #4A90E2");
+                    // this.wraper.addClass("mainColor_border");
+                }
+            });
+            this.docPaging.load();
+        }
     },
     loadLines: function(items){
         items.each(function(item){
@@ -253,6 +316,7 @@ MWF.xApplication.Meeting.ListView.View = new Class({
         this.items = [];
         this.view.currentView = null;
         this.table.destroy();
+        this.docPaginationNode.destroy();
     }
 
 });
@@ -262,49 +326,68 @@ MWF.xApplication.Meeting.ListView.ApplyWait = new Class({
     Extends: MWF.xApplication.Meeting.ListView.View
 });
 MWF.xApplication.Meeting.ListView.ApplyProcessing = new Class({
-    Extends: MWF.xApplication.Meeting.ListView.View,
-    loadList: function() {
-        this.app.actions.listMeetingApplyProcessing(function (json){this.loadLines(json.data);}.bind(this));
-    }
+    Extends: MWF.xApplication.Meeting.ListView.View
 });
 MWF.xApplication.Meeting.ListView.ApplyCompleted = new Class({
-    Extends: MWF.xApplication.Meeting.ListView.View,
-    loadList: function() {
-        this.app.actions.listMeetingApplyCompleted(function (json){this.loadLines(json.data);}.bind(this));
-    }
+    Extends: MWF.xApplication.Meeting.ListView.View
+});
+
+MWF.xApplication.Meeting.ListView.Apply = new Class({
+    Extends: MWF.xApplication.Meeting.ListView.View
 });
 
 MWF.xApplication.Meeting.ListView.MeetingWait = new Class({
     Extends: MWF.xApplication.Meeting.ListView.View,
     loadList: function() {
-        this.app.actions.listMeetingInvitedWait(function (json){this.loadLines(json.data);}.bind(this));
+        this.tableBody.empty();
+        this.action.MeetingAction.listInviteMeetingPaging(this.page,this.pageSize,{"meetingStatus" : "wait"},function (json) {
+            this.loadLines(json.data);
+            this.docTotal = json.count;
+            this.loadDocPagination(  );
+        }.bind(this));
     }
 });
 MWF.xApplication.Meeting.ListView.MeetingProcessing = new Class({
     Extends: MWF.xApplication.Meeting.ListView.View,
     loadList: function() {
-        this.app.actions.listMeetingInvitedProcessing(function (json){this.loadLines(json.data);}.bind(this));
+        this.tableBody.empty();
+        this.action.MeetingAction.listInviteMeetingPaging(this.page,this.pageSize,{"meetingStatus" : "processing"},function (json) {
+            this.loadLines(json.data);
+            this.docTotal = json.count;
+            this.loadDocPagination(  );
+        }.bind(this));
     }
 });
 MWF.xApplication.Meeting.ListView.MeetingCompleted = new Class({
     Extends: MWF.xApplication.Meeting.ListView.View,
     loadList: function() {
-        this.app.actions.listMeetingInvitedCompleted(function (json){this.loadLines(json.data);}.bind(this));
+        this.tableBody.empty();
+        this.action.MeetingAction.listInviteMeetingPaging(this.page,this.pageSize,{"meetingStatus" : "completed"},function (json) {
+            this.loadLines(json.data);
+            this.docTotal = json.count;
+            this.loadDocPagination(  );
+        }.bind(this));
     }
 });
 MWF.xApplication.Meeting.ListView.MeetingReject = new Class({
     Extends: MWF.xApplication.Meeting.ListView.View,
     loadList: function() {
-        this.app.actions.listMeetingInvitedRejected(function (json){this.loadLines(json.data);}.bind(this));
+        this.tableBody.empty();
+        this.action.MeetingAction.listInviteMeetingPaging(this.page,this.pageSize,{"meetingStatus" : "completed","rejectFlag":true},function (json) {
+            this.loadLines(json.data);
+            this.docTotal = json.count;
+            this.loadDocPagination(  );
+        }.bind(this));
     }
 });
 
 MWF.xApplication.Meeting.ListView.View.Line = new Class({
     initialize: function(table, item){
+
         this.table = table;
         this.view = this.table.view;
         this.css = this.view.css;
-        this.container = this.table.table;
+        this.container = this.table.tableBody;
         this.app = this.view.app;
         this.data = item;
         this.load();

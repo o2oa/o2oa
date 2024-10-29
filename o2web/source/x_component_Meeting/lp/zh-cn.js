@@ -98,6 +98,10 @@ MWF.xApplication.Meeting.LP = {
     "mail": "邮箱",
     "meetingSubject": "会议标题",
     "meetingDescription": "会议描述",
+
+    "externalPerson": "外部参会人员",
+
+
     "meetingAttachment": "会议材料",
     "meetingDetail" : "会议详情",
     "editAddress" : "编辑地址",
