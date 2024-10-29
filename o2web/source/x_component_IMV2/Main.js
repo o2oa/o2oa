@@ -17,6 +17,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		"isResize": true,
 		"isMax": true,
 		"title": MWF.xApplication.IMV2.LP.title,
+		"openConversation": null,
 		"conversationId": "", // 传入的当前会话id
 		"mode": "default" // 展现模式：default onlyChat 。 onlyChat的模式需要传入conversationId 会打开这个会话的聊天窗口并隐藏左边的会话列表
 	},
@@ -39,9 +40,11 @@ MWF.xApplication.IMV2.Main = new Class({
 		
 		if (!this.status) {
 			this.conversationId = this.options.conversationId || "";
+			this.openConversation = this.options.openConversation;
 			this.mode = this.options.mode || "default";
 		} else {
 			this.conversationId = this.status.conversationId || "";
+			this.openConversation = this.status.openConversation;
 			this.mode = this.status.mode || "default";
 		}
 	},
@@ -64,7 +67,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			});
 	},
 	// 刷新的时候缓存数据
-	recordStatus: function(){
+	recordStatus: function(person){
 		return {"conversationId": this.conversationId, "mode": this.mode};
 	},
 	onQueryClose: function () {
@@ -106,7 +109,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				//启动监听
 				// this.startListening();
 				// 处理窗口模式
-				if (this.mode === "onlyChat" && this.conversationId != "") {
+				if (this.mode === "onlyChat" && this.conversationId !== "") {
 					this.o2ConversationListNode.setStyle("display", "none");
 					this.chatContainerNode.setStyle("margin-left", "2px");
 				} else {
@@ -205,20 +208,34 @@ MWF.xApplication.IMV2.Main = new Class({
 	},
 	//加载会话列表
 	loadConversationList: function (list) {
+		let openChat = false
 		for (var i = 0; i < list.length; i++) {
 			var chat = list[i];
 			var itemNode = this._createConvItemNode(chat);
 			this.conversationNodeItemList.push(itemNode);
-			if (this.conversationId && this.conversationId == chat.id) {
+			if (this.openConversation &&  this.openConversation.id && this.openConversation.id === chat.id) {
+				openChat = true;
+				this.tapConv(chat);
+			} else if (this.conversationId && this.conversationId === chat.id) {
+				openChat = true;
 				this.tapConv(chat);
 			}
 		}
+		// 列表里面没有这个会话 有可能是单聊会话 没有消息的情况
+		if (!openChat && this.openConversation) {
+			const newConv = this.openConversation;
+			newConv.isNew = true; // 新建的 放在列表的前面
+			const itemNode = this._createConvItemNode(newConv);
+			this.conversationNodeItemList.unshift(itemNode);
+			openChat = true;
+			this.tapConv(newConv);
+		}
 		// 初始情况 打开第一个
-		if(!this.conversationId && this.conversationNodeItemList.length > 0) {
+		if(!openChat && this.conversationNodeItemList.length > 0) {
 			this.tapConv(this.conversationNodeItemList[0].data);
 		}
 	},
-	
+
 	// 点击设置按钮
 	tapOpenSettings: function() {
 		this.openSettingsDialog();
@@ -301,6 +318,26 @@ MWF.xApplication.IMV2.Main = new Class({
 			console.error(error);
 			this.app.notice(error, "error", this.app.content);
 		}.bind(this));
+	},
+	// 外部调用
+	tapConvOutside: function (conv) {
+		if (conv && conv.id) {
+			let openChat = false
+			for (let i = 0; i < this.conversationNodeItemList.length; i++) {
+				const cv = this.conversationNodeItemList[i];
+				if (cv.data.id === conv.id) {
+					openChat = true;
+					this.tapConv(conv);
+				}
+			}
+			if (!openChat) {
+				const newConv = conv;
+				newConv.isNew = true; // 新建的 放在列表的前面
+				const itemNode = this._createConvItemNode(newConv);
+				this.conversationNodeItemList.unshift(itemNode);
+				this.tapConv(newConv);
+			}
+		}
 	},
 	//点击会话
 	tapConv: function (conv) {
@@ -436,7 +473,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	_setCheckNode: function (conv) {
 		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
 			var item = this.conversationNodeItemList[i];
-			if (item.data.id == conv.id) {
+			if (item.data.id === conv.id) {
 				item.addCheckClass();
 			} else {
 				item.removeCheckClass();
