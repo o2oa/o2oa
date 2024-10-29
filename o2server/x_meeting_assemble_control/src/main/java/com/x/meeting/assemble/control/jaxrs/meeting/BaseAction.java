@@ -142,6 +142,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return p;
 	}
 
+	protected Predicate filterRejectPerson(CriteriaBuilder cb, Root<Meeting> root, Predicate p,
+			String rejectPerson) {
+		if (StringUtils.isNotBlank(rejectPerson)) {
+			p = cb.and(p, cb.isMember(rejectPerson.trim(), root.get(Meeting_.rejectPersonList)));
+		}
+		return p;
+	}
+
 	protected Predicate filterInvitePerson(CriteriaBuilder cb, Root<Meeting> root, Predicate p,
 			String invitePersonList) {
 		if (!StringUtils.isBlank(invitePersonList)) {
