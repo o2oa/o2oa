@@ -1,6 +1,10 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -11,8 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,8 @@ import org.graalvm.polyglot.Source;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.TernaryManagement;
 import com.x.base.core.project.config.Token;
@@ -78,7 +82,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected boolean editable(Business business, EffectivePerson effectivePerson, Person person) throws Exception {
 		if (business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.OrganizationManager)) {
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
 			return true;
 		}
 		if (null == person) {
