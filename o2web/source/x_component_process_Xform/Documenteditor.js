@@ -2439,7 +2439,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this._createPage(function(control){
             this._loadPageLayout(control);
-            
+
             // this.data = this._getBusinessData();
             // if (!this.data) this.data = this._getDefaultData();
 
@@ -3083,6 +3083,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //}
             }.bind(this);
             field.node.store(this.json.id+"bindFun", bindFun);
+            debugger;
             field.addModuleEvent("change", bindFun);
         }
     },
