@@ -3083,7 +3083,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //}
             }.bind(this);
             field.node.store(this.json.id+"bindFun", bindFun);
-            debugger;
             field.addModuleEvent("change", bindFun);
         }
     },
