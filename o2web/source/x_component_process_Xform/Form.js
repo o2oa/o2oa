@@ -700,6 +700,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.isAllSubformLoaded = true;
         }
         if (!this.isAllSubformLoaded) return;
+        if (this.isLoaded)return;
         //console.log( "checkSubformLoaded this.subformCount="+ this.subformCount + " this.subformLoadedCount="+this.subformLoadedCount );
         if ((!this.subformCount || this.subformCount === this.subformLoadedCount) &&
             (!this.subpageCount || this.subpageCount === this.subpageLoadedCount) &&
