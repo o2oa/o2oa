@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.processor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.graalvm.polyglot.Source;
@@ -39,6 +40,7 @@ public class TranslateReviewPersonTools {
 		List<String> identities = new ArrayList<>();
 		List<String> units = new ArrayList<>();
 		List<String> groups = new ArrayList<>();
+		List<String> people = new ArrayList<>();
 		/* 指定的身份 */
 		if (ListTools.isNotEmpty(aeiObjects.getActivity().getReviewIdentityList())) {
 			identities.addAll(aeiObjects.getActivity().getReviewIdentityList());
@@ -52,11 +54,13 @@ public class TranslateReviewPersonTools {
 		identities.addAll(classifyDistinguishedName.getIdentityList());
 		units.addAll(classifyDistinguishedName.getUnitList());
 		groups.addAll(classifyDistinguishedName.getGroupList());
+		people.addAll(classifyDistinguishedName.getPersonList());
 		/* 使用脚本计算 */
 		classifyDistinguishedName = aeiObjects.business().organization().classifyDistinguishedNames(script(aeiObjects));
 		identities.addAll(classifyDistinguishedName.getIdentityList());
 		units.addAll(classifyDistinguishedName.getUnitList());
 		groups.addAll(classifyDistinguishedName.getGroupList());
+		people.addAll(classifyDistinguishedName.getPersonList());
 		/* 指定处理组织 */
 		if (ListTools.isNotEmpty(aeiObjects.getActivity().getReviewUnitList())) {
 			units.addAll(aeiObjects.getActivity().getReviewUnitList());
@@ -78,7 +82,8 @@ public class TranslateReviewPersonTools {
 					aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), aeiObjects.getActivity().getName(),
 					aeiObjects.getActivity().getId(), XGsonBuilder.toJson(identities), XGsonBuilder.toJson(os));
 		}
-		return os;
+		people.addAll(os);
+		return people.stream().distinct().collect(Collectors.toList());
 	}
 
 	/* 取到指定职务的identity */
