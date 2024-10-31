@@ -763,16 +763,20 @@ MWF.xApplication.Meeting.RoomView.Meeting = new Class({
 
         switch (this.data.status){
             case "wait":
-                this.colorNode.setStyles({"background-color": "#4990E2"});
-                this.timeNode.setStyles({"color": "#4990E2"});
+                this.colorNode.setStyles({"background-color": "#51B749"});
+                this.timeNode.setStyles({"color": "#51B749"});
                 break;
             case "processing":
-                this.colorNode.setStyles({"background-color": "#66CC7F"});
-                this.timeNode.setStyles({"color": "#66CC7F"});
+                this.colorNode.setStyles({"background-color": "#5484ED"});
+                this.timeNode.setStyles({"color": "#5484ED"});
                 break;
             case "completed":
-                this.colorNode.setStyles({"background-color": "#ccc"});
-                this.timeNode.setStyles({"color": "#ccc"});
+                this.colorNode.setStyles({"background-color": "#FBD75B"});
+                this.timeNode.setStyles({"color": "#FBD75B"});
+                break;
+            case "applying":
+                this.colorNode.setStyles({"background-color": "#F9905A"});
+                this.timeNode.setStyles({"color": "#F9905A"});
                 break;
         }
         if (this.data.myWaitAccept){

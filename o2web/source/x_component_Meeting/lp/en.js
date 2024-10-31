@@ -88,6 +88,7 @@ MWF.xApplication.Meeting.LP={
 	"mail": "Mailbox",
 	"meetingSubject": "Subject",
 	"meetingDescription": "Description",
+	"externalPerson": "External Person",
 	"meetingAttachment": "Attachment",
 	"meetingDetail": "Detail",
 	"editAddress": "Edit Address",
@@ -195,6 +196,7 @@ MWF.xApplication.Meeting.LP={
 		"floor": "Floor",
 		"device": "Equipment",
 		"photo": "Photo",
+		"orderNumber" : "orderNumber",
 		"capacity": "Capacity",
 		"auditor": "Auditor",
 		"available": "Status",
@@ -212,6 +214,7 @@ MWF.xApplication.Meeting.LP={
 		"myMeeting": "Invitation",
 		"wait": "Not started",
 		"processing": "In progress",
+		"apply": "Apply",
 		"completed": "Completed",
 		"reject": "Rejected",
 		"room": "Meeting Room"

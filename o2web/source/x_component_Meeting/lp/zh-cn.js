@@ -98,6 +98,10 @@ MWF.xApplication.Meeting.LP = {
     "mail": "邮箱",
     "meetingSubject": "会议标题",
     "meetingDescription": "会议描述",
+
+    "externalPerson": "外部参会人员",
+
+
     "meetingAttachment": "会议材料",
     "meetingDetail" : "会议详情",
     "editAddress" : "编辑地址",
@@ -215,6 +219,7 @@ MWF.xApplication.Meeting.LP = {
         "capacity": "容纳人数",
         "auditor": "会议室审核人",
         "available": "会议室状态",
+        "orderNumber" : "排序号",
         "roomNumber": "会议室门牌",
         "phone": "分机号",
 
@@ -231,6 +236,7 @@ MWF.xApplication.Meeting.LP = {
         "myMeeting" :"我收到的邀请",
         "wait": "未开始",
         "processing": "进行中",
+        "apply": "申请中",
         "completed": "已结束",
         "reject": "已拒绝",
         "room": "会议室"

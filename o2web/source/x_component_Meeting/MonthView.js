@@ -480,13 +480,16 @@ MWF.xApplication.Meeting.MonthView.Calendar.Day = new Class({
             if(this.firstStatus){
                 switch (this.firstStatus){
                     case "wait":
-                        this.titleNode.setStyles({ "border-left": "6px solid #4990E2" });
+                        this.titleNode.setStyles({ "border-left": "6px solid #51B749" });
                         break;
                     case "processing":
-                        this.titleNode.setStyles({ "border-left": "6px solid #66CC7F" });
+                        this.titleNode.setStyles({ "border-left": "6px solid #5484ED" });
                         break;
                     case "completed":
-                        this.titleNode.setStyles({ "border-left": "6px solid #ccc" });
+                        this.titleNode.setStyles({ "border-left": "6px solid #FBD75B" });
+                        break;
+                    case "applying":
+                        this.titleNode.setStyles({ "border-left": "6px solid #F9905A" });
                         break;
                     case "myWaitAccept":
                         this.titleNode.setStyles({ "border-left": "6px solid #F6A623" });
@@ -508,13 +511,16 @@ MWF.xApplication.Meeting.MonthView.Calendar.Day = new Class({
                 }).inject( this.node );
                 switch (this.lastStatus){
                     case "wait":
-                        bottomEmptyNode.setStyles({ "border-left": "6px solid #4990E2" });
+                        bottomEmptyNode.setStyles({ "border-left": "6px solid #51B749" });
                         break;
                     case "processing":
-                        bottomEmptyNode.setStyles({ "border-left": "6px solid #66CC7F" });
+                        bottomEmptyNode.setStyles({ "border-left": "6px solid #5484ED" });
                         break;
                     case "completed":
-                        bottomEmptyNode.setStyles({ "border-left": "6px solid #ccc" });
+                        bottomEmptyNode.setStyles({ "border-left": "6px solid #FBD75B" });
+                        break;
+                    case "applying":
+                        bottomEmptyNode.setStyles({ "border-left": "6px solid #F9905A" });
                         break;
                     case "myWaitAccept":
                         bottomEmptyNode.setStyles({ "border-left": "6px solid #F6A623" });
@@ -623,18 +629,23 @@ MWF.xApplication.Meeting.MonthView.Calendar.Day.Meeting = new Class({
         switch (this.data.status){
             case "wait":
                 this.node.setStyles({
-                    "border-left": "6px solid #4990E2"
+                    "border-left": "6px solid #51B749"
                 });
                 break;
             case "processing":
                 this.node.setStyles({
-                    "border-left": "6px solid #66CC7F"
+                    "border-left": "6px solid #5484ED"
+                });
+                break;
+            case "applying":
+                this.node.setStyles({
+                    "border-left": "6px solid #F9905A"
                 });
                 break;
             case "completed":
                 //add attachment
                 this.node.setStyles({
-                    "border-left": "6px solid #ccc"
+                    "border-left": "6px solid #FBD75B"
                 });
                 //this.textNode.setStyle("color", "#666");
 

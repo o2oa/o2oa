@@ -602,22 +602,22 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
 
         this.topNode = new Element("div.topNode", { styles : this.css.roomItemTitleTopNode }).inject( this.titleNode );
 
-        this.descriptNode = new Element("div.roomItemDescriptNode",{
-            styles : this.css.roomItemDescriptNode
-        }).inject(this.titleNode);
-
-        if( this.data.capacity ){
-            this.titleCountNode = new Element("div.titleCountNode", {
-                "styles": this.enable ? this.css.roomItemTitleCountNode : this.css.roomItemTitleCountNode_disable,
-                "text" :  this.data.capacity+ this.app.lp.person
-            }).inject(this.descriptNode);
-        }
-        if( this.data.roomNumber ){
-            new Element("div.titleCountNode", {
-                "styles": this.enable ? this.css.roomItemTitleCountNode : this.css.roomItemTitleCountNode_disable,
-                "text" :  this.data.roomNumber
-            }).inject(this.descriptNode);
-        }
+        // this.descriptNode = new Element("div.roomItemDescriptNode",{
+        //     styles : this.css.roomItemDescriptNode
+        // }).inject(this.titleNode);
+        //
+        // if( this.data.capacity ){
+        //     this.titleCountNode = new Element("div.titleCountNode", {
+        //         "styles": this.enable ? this.css.roomItemTitleCountNode : this.css.roomItemTitleCountNode_disable,
+        //         "text" :  this.data.capacity+ this.app.lp.person
+        //     }).inject(this.descriptNode);
+        // }
+        // if( this.data.roomNumber ){
+        //     new Element("div.titleCountNode", {
+        //         "styles": this.enable ? this.css.roomItemTitleCountNode : this.css.roomItemTitleCountNode_disable,
+        //         "text" :  this.data.roomNumber
+        //     }).inject(this.descriptNode);
+        // }
 
 
         if( this.buildingName && this.buildingName !== "noRoom" ){
@@ -964,14 +964,18 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day = new Class({
                 if (firstStatus) {
                     switch (firstStatus) {
                         case "wait":
-                            titleNode.setStyles({"border-left": "6px solid #4990E2"});
+                            titleNode.setStyles({"border-left": "6px solid #51B749"});
                             break;
                         case "processing":
-                            titleNode.setStyles({"border-left": "6px solid #66CC7F"});
+                            titleNode.setStyles({"border-left": "6px solid #5484ED"});
                             break;
                         case "completed":
-                            titleNode.setStyles({"border-left": "6px solid #ccc"});
+                            titleNode.setStyles({"border-left": "6px solid #FBD75B"});
                             break;
+                        case "applying":
+                            titleNode.setStyles({"border-left": "6px solid #F9905A"});
+                            break;
+
                         case "myWaitAccept":
                             titleNode.setStyles({"border-left": "6px solid #F6A623"});
                             break
@@ -992,13 +996,16 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day = new Class({
                     }).inject(node);
                     switch (lastStatus) {
                         case "wait":
-                            bottomEmptyNode.setStyles({"border-left": "6px solid #4990E2"});
+                            bottomEmptyNode.setStyles({"border-left": "6px solid #51B749"});
                             break;
                         case "processing":
-                            bottomEmptyNode.setStyles({"border-left": "6px solid #66CC7F"});
+                            bottomEmptyNode.setStyles({"border-left": "6px solid #5484ED"});
                             break;
                         case "completed":
-                            bottomEmptyNode.setStyles({"border-left": "6px solid #ccc"});
+                            bottomEmptyNode.setStyles({"border-left": "6px solid #FBD75B"});
+                            break;
+                        case "applying":
+                            bottomEmptyNode.setStyles({"border-left": "6px solid #F9905A"});
                             break;
                         case "myWaitAccept":
                             bottomEmptyNode.setStyles({"border-left": "6px solid #F6A623"});
@@ -1110,18 +1117,27 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day.Meeting = new Class({
         switch (this.data.status){
             case "wait":
                 this.node.setStyles({
-                    "border-left": "6px solid #4990E2"
+                    "border-left": "6px solid #51B749"
                 });
                 break;
             case "processing":
                 this.node.setStyles({
-                    "border-left": "6px solid #66CC7F"
+                    "border-left": "6px solid #5484ED"
                 });
                 break;
             case "completed":
                 //add attachment
                 this.node.setStyles({
-                    "border-left": "6px solid #ccc"
+                    "border-left": "6px solid #FBD75B"
+                });
+                //this.textNode.setStyle("color", "#666");
+
+                break;
+
+            case "applying":
+                //add attachment
+                this.node.setStyles({
+                    "border-left": "6px solid #F9905A"
                 });
                 //this.textNode.setStyle("color", "#666");
 
