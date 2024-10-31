@@ -1436,8 +1436,9 @@ MWF.xApplication.Selector.Person = new Class({
 
     setSelectedItem: function(){
         var getSelectedIndex = function (e){
+            if( !e )return 9999999;
             var key = typeOf( e ) === "string" ? e : ( e.distinguishedName || e.unique || e.employee || e.levelName || e.id );
-            return (this.selectedIndexMap||{})[key];
+            return (this.selectedIndexMap||{})[key] || 9999999;
         }.bind(this);
         if (this.options.values.length){
             this.options.values.each(function(v, i){
