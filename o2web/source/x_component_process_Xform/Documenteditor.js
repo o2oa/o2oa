@@ -2439,7 +2439,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this._createPage(function(control){
             this._loadPageLayout(control);
-            
+
             // this.data = this._getBusinessData();
             // if (!this.data) this.data = this._getDefaultData();
 

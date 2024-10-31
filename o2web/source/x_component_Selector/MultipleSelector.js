@@ -613,7 +613,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         var selectedIndexMap = {};
         var firstType = this.options.types[0];
-        var values = this.options[firstType+'Options'].values;
+        var values = this.options[firstType+'Options'] ? this.options[firstType+'Options'].values : [];
+        if(!values)values = [];
         values = typeOf(values) === "array" ?  values : [values];
         values.each(function(e, i){
             if( !e )return;

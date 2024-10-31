@@ -228,4 +228,4 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         return "";
     },
     _afterCreateVueExtend: function (app) {}
-}); 
+});

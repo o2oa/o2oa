@@ -978,6 +978,24 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
 
         return this.form.all[path];
+    },
+    clearDefaultMargin: function (){
+        var marginStyle = this.node.getStyle('margin-right');
+        var paddingStyle = this.node.getStyle('padding-right');
+        if( marginStyle === '20px' || paddingStyle === '4px' ){
+            var map = {};
+            Object.each(this.json.recoveryStyles || {}, function(value, key){
+                var k = key.toLowerCase();
+                if( ['margin','margin-right','padding', 'padding-right'].contains(k) ){
+                    map[k] = value;
+                }
+            });
+            if( marginStyle === '20px' && map['margin'] !== '20px' && map['margin-right'] !== '20px') {
+                this.node.setStyle('margin-right', '0');
+            }
+            if( paddingStyle === '4px' && map['padding'] !== '4px' && map['padding-right'] !== '4px') {
+                this.node.setStyle('padding-right', '0');
+            }
+        }
     }
-
 });
