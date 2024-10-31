@@ -34,7 +34,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
         this.actions = MWF.Actions.get("x_program_center");
 		//this.actions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
-		
+
 		this.lp = MWF.xApplication.service.InvokeDesigner.LP;
 
         this.addEvent("queryClose", function(e){
@@ -44,7 +44,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         }.bind(this));
 //		this.processData = this.options.processData;
 	},
-	
+
 	loadApplication: function(callback){
 		this.createNode();
 		if (!this.options.isRefresh){
@@ -521,14 +521,14 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         //};
         //this.desktop.openApplication(e, "service.InvokeDesigner", options);
     },
-	
+
 	//loadContentNode------------------------------
     loadContentNode: function(toolbarCallback, contentCallback){
 		this.contentToolbarNode = new Element("div#contentToolbarNode", {
 			"styles": this.css.contentToolbarNode
 		}).inject(this.contentNode);
 		this.loadContentToolbar(toolbarCallback);
-		
+
 		this.editContentNode = new Element("div", {
 			"styles": this.css.editContentNode
 		}).inject(this.contentNode);
@@ -716,36 +716,36 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             //    new MWF.widget.ScrollBar(this.designNode, {"distance": 100});
             //}.bind(this));
 	},
-	
+
 	//loadProperty------------------------
 	loadProperty: function(){
 		this.propertyTitleNode = new Element("div", {
 			"styles": this.css.propertyTitleNode,
 			"text": MWF.SRVID.LP.property
 		}).inject(this.propertyNode);
-		
+
 		this.propertyResizeBar = new Element("div", {
 			"styles": this.css.propertyResizeBar
 		}).inject(this.propertyNode);
 		this.loadPropertyResize();
-		
+
 		this.propertyContentNode = new Element("div", {
 			"styles": this.css.propertyContentNode
 		}).inject(this.propertyNode);
-		
+
 		//this.propertyDomArea = new Element("div", {
 		//	"styles": this.css.propertyDomArea
 		//}).inject(this.propertyContentNode);
-		
+
 		//this.propertyDomPercent = 0.3;
 		//this.propertyContentResizeNode = new Element("div", {
 		//	"styles": this.css.propertyContentResizeNode
 		//}).inject(this.propertyContentNode);
-		
+
 		this.propertyContentArea = new Element("div", {
 			"styles": this.css.propertyContentArea
 		}).inject(this.propertyContentNode);
-		
+
 		//this.loadPropertyContentResize();
 
         this.setPropertyContent();
@@ -801,6 +801,20 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             "margin-top": "10px",
             "color": "#999999"
         }).inject(this.propertyContentArea);
+
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.executorList+":"}).inject(this.propertyContentArea);
+        this.propertyExecutorListNode = new Element("div", {"styles": this.css.propertyOrgNode}).inject(this.propertyContentArea);
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+            this.executorListSelector = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(this.propertyExecutorListNode, this, {
+                "types": ['person', 'unit', 'group', 'role'],
+                "names": [],
+                "onChange": function (ids) {
+                    if(this.invokeTab)this.invokeTab.showPage.invoke.data.executorList = ids.map(function(id){
+                        return id.data.distinguishedName;
+                    });
+                }.bind(this)
+            });
+        }.bind(this));
 
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.isEnable+":"}).inject(this.propertyContentArea);
         this.propertyEnableNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
@@ -1016,7 +1030,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
 				el.store("position", {"x": x, "y": y});
-				
+
 				var size = this.propertyNode.getSize();
 				el.store("initialWidth", size.x);
 			}.bind(this),
@@ -1027,7 +1041,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 				var position = el.retrieve("position");
 				var initialWidth = el.retrieve("initialWidth").toFloat();
 				var dx = position.x.toFloat()-x.toFloat();
-				
+
 				var width = initialWidth+dx;
 				if (width> bodySize.x/2) width =  bodySize.x/2;
 				if (width<40) width = 40;
@@ -1071,17 +1085,17 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 		var size = this.propertyContentNode.getSize();
 		//var resizeNodeSize = this.propertyContentResizeNode.getSize();
 		//var height = size.y-resizeNodeSize.y;
-		
+
 		//var domHeight = this.propertyDomPercent*height;
 		//var contentHeight = height-domHeight;
-		
+
 		//this.propertyDomArea.setStyle("height", ""+domHeight+"px");
 		//this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
         this.propertyContentArea.setStyle("height", ""+size.y+"px");
 	},
-	
 
-	
+
+
 	//resizeNode------------------------------------------------
 	resizeNode: function(){
         if (!this.isMax){
@@ -1133,7 +1147,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             this.invokeListResizeNode.setStyle("height", ""+y+"px");
         }
 	},
-	
+
 	//loadForm------------------------------------------
     loadInvoke: function(){
         //this.invokeTab.addTab(node, title);

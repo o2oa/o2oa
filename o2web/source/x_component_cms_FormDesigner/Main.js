@@ -36,7 +36,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 			this.options.title = this.options.title + "-"+MWF.CMSFD.LP.newForm;
 		}
 		this.actions = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-		
+
 		this.lp = MWF.xApplication.cms.FormDesigner.LP;
 
 		if( this.options.application ){
@@ -101,10 +101,6 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     copyModule: function(){
         if (this.shortcut) {
             if (this.form) {
-                //           if (this.form.isFocus){
-                // if (!this.form.node.contains(document.activeElement)){
-                //     return false;
-                // }
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
@@ -143,7 +139,8 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                             module.addHistoryLog("cut");
                         }
 
-                        module.destroy();_form.currentSelectedModule = null;
+                        module.destroy();
+                        _form.currentSelectedModule = null;
                         _form.selected();
                         _form = null;
                     }
@@ -165,11 +162,17 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                             "styles": {"display": "none"},
                             "html": html
                         }).inject(this.content);
+
+                        var originalIds = {};
+                        Object.each(json, function (moduleJson){
+                            originalIds[moduleJson.id] = true;
+                        });
+
                         Object.each(json, function (moduleJson) {
                             var oid = moduleJson.id;
                             var id = moduleJson.id;
                             var idx = 1;
-                            while (this.form.json.moduleList[id]) {
+                            while (this.form.json.moduleList[id] || ( originalIds[id] && idx > 1 )) {
                                 id = oid + "_" + idx;
                                 idx++;
                             }

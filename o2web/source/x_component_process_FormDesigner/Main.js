@@ -38,7 +38,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		    this.application = this.options.application;
         }
 	},
-	
+
 	loadApplication: function(callback){
 		this.createNode();
 		if (!this.options.isRefresh){
@@ -148,15 +148,21 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                         var idMap = {};
                         var html = MWF.clipboard.data.data.html;
                         var json = Object.clone(MWF.clipboard.data.data.json);
-                        var tmpNode = Element("div", {
+                        var tmpNode = new Element("div", {
                             "styles": {"display": "none"},
                             "html": html
                         }).inject(this.content);
+
+                        var originalIds = {};
+                        Object.each(json, function (moduleJson){
+                            originalIds[moduleJson.id] = true;
+                        });
+
                         Object.each(json, function (moduleJson) {
                             var oid = moduleJson.id;
                             var id = moduleJson.id;
                             var idx = 1;
-                            while (this.form.json.moduleList[id]) {
+                            while (this.form.json.moduleList[id] || ( originalIds[id] && idx > 1 ) ) {
                                 id = oid + "_" + idx;
                                 idx++;
                             }
@@ -271,7 +277,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		this.tools = [];
         this.toolGroups = [];
 		this.toolbarDecrease = 0;
-		
+
 		this.designNode = null;
 		this.form = null;
 	},
@@ -289,14 +295,14 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
         if (this.options.style=="bottom") this.propertyNode.inject(this.formNode, "after");
 	},
-	
+
 	//loadToolbar----------------------
 	loadToolbar: function(){
 		this.toolbarTitleNode = new Element("div", {
 			"styles": this.css.toolbarTitleNode,
 			"text": MWF.APPFD.LP.tools
 		}).inject(this.toolbarNode);
-		
+
 		this.toolbarTitleActionNode = new Element("div", {
 			"styles": this.css.toolbarTitleActionNode,
 			"events": {
@@ -344,19 +350,19 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		if (this.toolbarMode=="all"){
 			var size = this.toolbarNode.getSize();
 			this.toolbarDecrease = (size.x.toFloat())-60;
-			
+
 			this.tools.each(function(node){
 				node.getLast().setStyle("display", "none");
 			});
 			this.toolbarTitleNode.set("text", "");
-			
+
 			this.toolbarNode.setStyle("width", "60px");
-			
+
 			var formMargin = this.formNode.getStyle("margin-left").toFloat();
 			formMargin = formMargin - this.toolbarDecrease;
-			
+
 			this.formNode.setStyle("margin-left", ""+formMargin+"px");
-			
+
 			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNodeRight);
 
 			this.toolbarGroupContentNode.getElements(".o2formModuleTools").hide();
@@ -366,32 +372,32 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 			sizeX = 60 + this.toolbarDecrease;
 			var formMargin = this.formNode.getStyle("margin-left").toFloat();
 			formMargin = formMargin + this.toolbarDecrease;
-			
+
 			this.toolbarNode.setStyle("width", ""+sizeX+"px");
 			this.formNode.setStyle("margin-left", ""+formMargin+"px");
-			
+
 			this.tools.each(function(node){
 				node.getLast().setStyle("display", "block");
 			});
-			
+
 			this.toolbarTitleNode.set("text", MWF.APPFD.LP.tools);
-			
+
 			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNode);
 
             this.toolbarGroupContentNode.getElements(".o2formModuleTools").show();
 
 			this.toolbarMode="all";
 		}
-		
+
 	},
-	
+
 	//loadFormNode------------------------------
 	loadFormNode: function(){
 		this.formToolbarNode = new Element("div", {
 			"styles": this.css.formToolbarNode
 		}).inject(this.formNode);
 		this.loadFormToolbar();
-		
+
 		this.formContentNode = new Element("div", {
 			"styles": this.css.formContentNode
 		}).inject(this.formNode);
@@ -809,12 +815,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             this.propertyTitleNode.setStyle("cursor", "row-resize");
             this.loadPropertyResizeBottom();
         }
-		
+
 		this.propertyResizeBar = new Element("div", {
 			"styles": this.css.propertyResizeBar
 		}).inject(this.propertyNode);
 		this.loadPropertyResize();
-		
+
 		this.propertyContentNode = new Element("div", {
 			"styles": this.css.propertyContentNode
 		}).inject(this.propertyNode);
@@ -836,7 +842,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		this.propertyContentResizeNode = new Element("div", {
 			"styles": this.css.propertyContentResizeNode
 		}).inject(this.propertyContentNode);
-		
+
 		this.propertyContentArea = new Element("div", {
 			"styles": this.css.propertyContentArea
 		}).inject(this.propertyContentNode);
@@ -934,7 +940,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
 				el.store("position", {"x": x, "y": y});
-				
+
 				var size = this.propertyNode.getSize();
 				el.store("initialWidth", size.x);
 			}.bind(this),
@@ -945,7 +951,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 				var position = el.retrieve("position");
 				var initialWidth = el.retrieve("initialWidth").toFloat();
 				var dx = position.x.toFloat()-x.toFloat();
-				
+
 				var width = initialWidth+dx;
 				if (width> bodySize.x/2) width =  bodySize.x/2;
 				if (width<40) width = 40;
@@ -994,7 +1000,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
 				el.store("position", {"x": x, "y": y});
-				
+
 				var size = this.propertyDomContentArea.getSize();
 				el.store("initialHeight", size.y);
                 el.store("initialWidth", size.x);
@@ -1023,36 +1029,36 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		var size = this.propertyContentNode.getSize();
 		var resizeNodeSize = this.propertyContentResizeNode.getSize();
 		var height = size.y-resizeNodeSize.y;
-		
+
 		var domHeight = this.propertyDomPercent*height;
 		var contentHeight = height-domHeight;
-		
+
 		this.propertyDomContentArea.setStyle("height", ""+domHeight+"px");
         this.propertyDomScrollArea.setStyle("height", ""+(domHeight-28)+"px");
         this.historyScrollArea.setStyle("height", ""+(domHeight-28)+"px");
 		this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
-		
+
 		if (this.form){
 			if (this.form.currentSelectedModule){
 				if (this.form.currentSelectedModule.property){
 					var tab = this.form.currentSelectedModule.property.propertyTab;
 					if (tab){
 						var tabTitleSize = tab.tabNodeContainer.getSize();
-						
+
 						tab.pages.each(function(page){
 							var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
 							var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-							
+
 							var tabContentNodeAreaHeight = contentHeight - topMargin - bottomMargin - tabTitleSize.y.toFloat()-15;
 							page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
 						}.bind(this));
-						
+
 					}
 				}
 			}
 		}
 	},
-	
+
 	//loadTools------------------------------
     loadTools: function(callback){
         o2.loadCss("../o2_lib/vue/element/index.css");
@@ -1110,7 +1116,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             }.bind(this));
         }.bind(this));
     },
-	
+
 	//resizeNode------------------------------------------------
     resizeNodeLeftRight: function(){
         var nodeSize = this.node.getSize();
@@ -1270,7 +1276,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             this.setPropertyContentResize();
         }
 	},
-	
+
 	//loadForm------------------------------------------
 	loadForm: function(){
 
@@ -1281,12 +1287,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
             this.form = this.pcForm;
 		}.bind(this));
-			
+
 //		}catch(e){
 //			layout.notice("error", {x: "right", y:"top"}, e.message, this.designNode);
 //		}
-		
-		
+
+
 //		MWF.getJSON(COMMON.contentPath+"/res/js/testform.json", {
 //			"onSuccess": function(obj){
 //				this.form = new MWF.FCForm(this);
