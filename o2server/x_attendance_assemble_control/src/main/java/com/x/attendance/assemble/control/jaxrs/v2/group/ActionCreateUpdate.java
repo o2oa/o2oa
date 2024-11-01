@@ -86,9 +86,9 @@ public class ActionCreateUpdate extends BaseAction {
                 } else {
                     throw new ExceptionEmptyParameter("打卡类型");
                 }
-                if (wi.getWorkPlaceIdList() == null || wi.getWorkPlaceIdList().isEmpty()) {
-                    throw new ExceptionEmptyParameter("工作场所列表");
-                }
+//                if (wi.getWorkPlaceIdList() == null || wi.getWorkPlaceIdList().isEmpty()) {
+//                    throw new ExceptionEmptyParameter("工作场所列表");
+//                }
             }
            
             // 新增或更新
