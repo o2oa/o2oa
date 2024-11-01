@@ -232,6 +232,10 @@
 			<artifactId>tika-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers-standard-package</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model</artifactId>
 		</dependency>
@@ -451,26 +455,26 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 		</dependency>
-			<dependency>
-				<groupId>org.graalvm.sdk</groupId>
-				<artifactId>graal-sdk</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.js</groupId>
-				<artifactId>js</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.js</groupId>
-				<artifactId>js-scriptengine</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.tools</groupId>
-				<artifactId>profiler</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.tools</groupId>
-				<artifactId>chromeinspector</artifactId>
-			</dependency>
+		<dependency>
+			<groupId>org.graalvm.sdk</groupId>
+			<artifactId>graal-sdk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>profiler</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>chromeinspector</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -848,6 +852,11 @@
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-core</artifactId>
+				<version>2.5.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tika</groupId>
+				<artifactId>tika-parsers-standard-package</artifactId>
 				<version>2.5.0</version>
 			</dependency>
 			<dependency>
