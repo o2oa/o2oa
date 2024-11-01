@@ -159,6 +159,11 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
 
+            if( !this.eventLoaded ){
+                this._loadDomEvents();
+                this.eventLoaded = true;
+            }
+
             this.fireEvent("load");
             this.isLoaded = true;
         }
@@ -180,4 +185,4 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
             }
             this.setData(data, true);
         }
-}); 
+});

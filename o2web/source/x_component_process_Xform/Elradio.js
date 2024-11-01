@@ -76,6 +76,11 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
 
+            if( !this.eventLoaded ){
+                this._loadDomEvents();
+                this.eventLoaded = true;
+            }
+
             this.fireEvent("postLoad");
             if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
                 this.moduleSelectAG.then(function () {
@@ -329,6 +334,26 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             this.styleNode.inject(this.node, "before");
         }
     },
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1 && this.options.elEvents.indexOf(key)===-1){
+                    if( key === "click" ){
+                        this.clickEvnet = function (event){
+                            this.form.Macro.fire(e.code, this, event);
+                        }.bind(this);
+                        this.node.addEvent(key, function(event){
+                            o2.defer(this.clickEvnet, 100, this, [event]);
+                        }.bind(this));
+                    }else{
+                        this.node.addEvent(key, function(event){
+                            return this.form.Macro.fire(e.code, this, event);
+                        }.bind(this));
+                    }
+                }
+            }
+        }.bind(this));
+    },
 
     getExcelData: function( type ){
 		var value = this.getData();
@@ -360,4 +385,4 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             }.bind(this));
         }
     }
-}); 
+});

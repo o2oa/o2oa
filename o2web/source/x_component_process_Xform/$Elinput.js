@@ -51,6 +51,12 @@ Object.assign(o2.APP$Elinput.prototype, {
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
 
+            if( !this.eventLoaded ){
+                this._loadDomEvents();
+                this.eventLoaded = true;
+            }
+
+
             this.fireEvent("postLoad");
             if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
                 this.moduleSelectAG.then(function () {
