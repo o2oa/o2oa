@@ -18,10 +18,11 @@ export default content({
         totalPage: 1,
         size: 15, // 每页条目数
       },
+      appealEnable: false, // 读取配置文件 是否启用了申诉功能
     };
   },
   afterRender() {
-    this.loadAppealList();
+    this.loadImConfig();
   },
   loadData(e) {
     if (
@@ -33,6 +34,12 @@ export default content({
       this.bind.pagerData.page = e.detail.module.bind.page || 1;
       this.loadAppealList();
     }
+  },
+  async loadImConfig() {
+    // 查询配置
+    this.imConfig = await configAction("get");
+    this.bind.appealEnable = (this.imConfig && this.imConfig.appealEnable && this.imConfig.processId)
+    await this.loadAppealList();
   },
   async loadAppealList() {
     const json = await appealInfoActionListByPaging(
@@ -115,9 +122,7 @@ export default content({
     return "";
   },
   async startProcess(appeal) {
-    // 查询配置
-    const json = await configAction("get");
-    if (json && json.appealEnable && json.processId) {
+    if (this.bind.appealEnable ) {
       // 检查是否能够申诉 有可能超过限制次数
       const checkResult = await appealInfoAction("startCheck", appeal.id);
       if (checkResult) {
