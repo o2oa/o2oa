@@ -64,15 +64,12 @@ export default content({
     }
   },
   submit() {
-    if (this.bind.workAddressSelected && this.bind.workAddressSelected.length > 0) {
-      // if (this.$parent.reciveWorkPlaceSelect) {
-      //   this.$parent.reciveWorkPlaceSelect(this.bind.workAddressSelected);
-      // } else {
-      //   console.error("没有reciveWorkPlaceSelect方法");
-      // }
-      this.closeSelectWorkPlace();
-    } else {
-      o2.api.page.notice(lp.workAddressForm.selectWorkAddressEmpty, 'error');
-    }
+    // if (this.bind.workAddressSelected && this.bind.workAddressSelected.length > 0) {
+    //
+    //
+    // } else {
+    //   o2.api.page.notice(lp.workAddressForm.selectWorkAddressEmpty, 'error');
+    // }
+    this.closeSelectWorkPlace();
   },
 });

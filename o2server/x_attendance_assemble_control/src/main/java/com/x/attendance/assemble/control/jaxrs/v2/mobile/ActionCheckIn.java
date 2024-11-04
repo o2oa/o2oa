@@ -237,14 +237,14 @@ public class ActionCheckIn extends BaseAction {
     private void generateAppealInfo(AttendanceV2CheckInRecord record,boolean fieldWorkMarkError, EntityManagerContainer emc, Business business) {
         try {
             if (record != null && record.checkResultException(fieldWorkMarkError)) {
-                AttendanceV2Config config = null;
-                List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
-                if (configs != null && !configs.isEmpty()) {
-                    config = configs.get(0);
-                }
-                if (config == null || !config.getAppealEnable()) {
-                    return;
-                }
+//                AttendanceV2Config config = null;
+//                List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+//                if (configs != null && !configs.isEmpty()) {
+//                    config = configs.get(0);
+//                }
+//                if (config == null || !config.getAppealEnable()) {
+//                    return;
+//                }
                 List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
                 if (appealList != null && !appealList.isEmpty()) {
                     LOGGER.info("当前打卡记录已经有申诉数据存在，不需要重复生成！{}", record.getId());
