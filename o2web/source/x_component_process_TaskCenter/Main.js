@@ -1435,6 +1435,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         }
     },
     showStartProcessArea_pc: function () {
+        debugger;
         if (this.startProcessAreaNode) this.startProcessAreaNode.destroy();
         this.createStartProcessArea();
         this.content.mask({
@@ -1512,7 +1513,6 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         this.startProcessSearchIconNode.addEvent("click", function(){ this.searchStartProcess(); }.bind(this));
     },
     searchStartProcess: function(){
-        debugger;
         var key = this.startProcessSearchInputNode.get("value");
         if (key && key!==this.lp.searchProcess){
             if (this.appStartableData){
@@ -1618,9 +1618,13 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
     setResizeStartProcessAreaHeight: function () {
         if (this.startProcessAreaNode) {
             var size = this.content.getSize();
+            var scroll = this.content.getScroll();
             var nodeSize = this.startProcessAreaNode.getSize();
-            var x = (size.x-nodeSize.x)/2;
-            var y = (size.y-nodeSize.y)/2;
+
+            var x = (size.x-nodeSize.x)/2 + scroll.x;
+            var y = (size.y-nodeSize.y)/2 + scroll.y;
+
+
             this.startProcessAreaNode.setStyle("top", "" + y + "px");
             this.startProcessAreaNode.setStyle("left", "" + x + "px");
 
