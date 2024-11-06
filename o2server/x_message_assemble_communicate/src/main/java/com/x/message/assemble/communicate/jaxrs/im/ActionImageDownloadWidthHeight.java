@@ -32,6 +32,7 @@ public class ActionImageDownloadWidthHeight extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionImageDownloadWidthHeight.class);
 
+	private static String[] imageExtentionArray = new String[] { "jpg", "png", "bmp", "jpeg" };
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, Integer width, Integer height)
 			throws Exception {
 
@@ -46,7 +47,7 @@ public class ActionImageDownloadWidthHeight extends BaseAction {
 			if (null == file) {
 				throw new ExceptionFileNotExist(id);
 			}
-			if (!ArrayUtils.contains(IMAGE_EXTENSIONS, file.getExtension())) {
+			if (!ArrayUtils.contains(imageExtentionArray, file.getExtension().toLowerCase())) {
 				throw new IllegalStateException("file is not image file.");
 			}
 			if (width < 0 || width > 5000) {

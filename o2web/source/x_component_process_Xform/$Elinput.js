@@ -100,6 +100,17 @@ Object.assign(o2.APP$Elinput.prototype, {
             }
         }.bind(this));
     },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1 || this.options.elEvents.indexOf(key)!==-1 ){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            this.node.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
+    },
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();

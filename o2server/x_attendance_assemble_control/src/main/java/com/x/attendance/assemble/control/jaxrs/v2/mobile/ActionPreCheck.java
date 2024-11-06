@@ -54,6 +54,11 @@ public class ActionPreCheck extends BaseAction {
                 return result;
             }
             AttendanceV2Group group = woGroupShift.getGroup();
+            // 没有配置工作地址 不能打卡
+            if (group.getWorkPlaceIdList() == null || group.getWorkPlaceIdList().isEmpty()) {
+                result.setData(cannotCheckIn("没有配置工作地址"));
+                return result;
+            }
             // 处理并发的问题
             List<AttendanceV2CheckInRecord> recordList = ThisApplication.executor
                     .submit(new CallableImpl(effectivePerson.getDistinguishedName(), group, woGroupShift.getShift())).get();

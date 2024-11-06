@@ -121,7 +121,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     }
 
                     if (page){
-                        this.options.pageId = pageJson.data.id;
+                        this.options.pageId = (pageJson.data && pageJson.data.page) ? pageJson.data.page.id : "";
 
                         if (this.appForm) this.appForm.fireEvent("beforeClose");
                         Object.keys(this.$events).each(function(k){

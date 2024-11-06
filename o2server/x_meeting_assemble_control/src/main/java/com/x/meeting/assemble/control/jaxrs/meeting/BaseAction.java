@@ -142,6 +142,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return p;
 	}
 
+	protected Predicate filterRejectPerson(CriteriaBuilder cb, Root<Meeting> root, Predicate p,
+			String rejectPerson) {
+		if (StringUtils.isNotBlank(rejectPerson)) {
+			p = cb.and(p, cb.isMember(rejectPerson.trim(), root.get(Meeting_.rejectPersonList)));
+		}
+		return p;
+	}
+
 	protected Predicate filterInvitePerson(CriteriaBuilder cb, Root<Meeting> root, Predicate p,
 			String invitePersonList) {
 		if (!StringUtils.isBlank(invitePersonList)) {
@@ -182,18 +190,17 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (meetingStatus.equalsIgnoreCase("completed")) {
 			p = cb.and(p, cb.or(cb.lessThan(root.get(Meeting_.completedTime), new Date()),
 					cb.equal(root.get(Meeting_.manualCompleted), true)));
-		}
-
-		if (meetingStatus.equalsIgnoreCase("processing")) {
+		}else if (meetingStatus.equalsIgnoreCase("processing")) {
 			Date date = new Date();
 			p = cb.and(p, cb.notEqual(root.get(Meeting_.manualCompleted), true));
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.startTime), date));
 			p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Meeting_.completedTime), date));
-		}
-
-		if (meetingStatus.equalsIgnoreCase("wait")) {
+		}else if (meetingStatus.equalsIgnoreCase("wait")) {
 			p = cb.and(p, cb.notEqual(root.get(Meeting_.manualCompleted), true));
+			p = cb.and(p, cb.notEqual(root.get(Meeting_.confirmStatus), ConfirmStatus.wait));
 			p = cb.and(p, cb.greaterThan(root.get(Meeting_.startTime), new Date()));
+		}else if (meetingStatus.equalsIgnoreCase("applying")) {
+			p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.wait));
 		}
 		return p;
 	}

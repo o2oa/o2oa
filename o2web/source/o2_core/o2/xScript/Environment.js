@@ -4070,11 +4070,11 @@ MWF.xScript.Environment = function(ev){
             })
         },
 
-        /**启动一个流程实例。<br/>
+        /**启动一个流程实例。如果不传参数则弹出流程启动界面，显示当前用户有权限启动的流程。如果传入app则弹出流程启动界面，显示app对应的的流程。如果传入app和process则直接发起流程。<br/>
          * @method startProcess
          * @static
-         * @param {String} app  - 流程应用的名称、别名或ID。
-         * @param {String} process  - 要启动的流程的名称、别名或ID。
+         * @param {String|Array} [app]  - 流程应用的名称、别名或ID。
+         * @param {String} [process]  - 要启动的流程的名称、别名或ID。
          * @param {Object} [data]   - 流程启动时默认的业务数据。
          * @param {String | Array} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框;如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数，可以获取到启动的数据。
@@ -4083,19 +4083,28 @@ MWF.xScript.Environment = function(ev){
          * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
          * @param {Boolean} [skipDraftCheck]  - 是否跳过新建检查（默认根据流程的新建检查配置），设置true则不进行新建检查。
          * @example
-         //启动一个发文管理实例
+         * //弹出流程发起界面
+         * this.form.startProcess();
+         * @example
+         * //弹出公文管理发起界面
+         * this.form.startProcess("公文管理");
+         * @example
+         * //弹出公文管理和人事管理的发起界面
+         * this.form.startProcess(["公文管理","人事管理"]);
+         * @example
+         * //启动一个发文管理实例
          this.form.startProcess("公文管理", "发文管理");
          * @example
-         //启动一个发文管理实例，标题为：my file title，启动后提示
-         this.form.startProcess("公文管理", "发文管理", {"title": "my file title"}, "张三@kfb_zhangsan@I", function(json){
-            this.form.notice("create file success!", "success");
-        }, false, false, function(workApp){
-              if( layout.inBrowser ){ //浏览器模式
-                //workApp 为流程的window对象
-              }else{
-                //workApp 为流程Work app对象
-              }
-        });
+         * //启动一个发文管理实例，标题为：my file title，启动后提示
+         * this.form.startProcess("公文管理", "发文管理", {"title": "my file title"}, "张三@kfb_zhangsan@I", function(json){
+         *   this.form.notice("create file success!", "success");
+         * }, false, false, function(workApp){
+         *     if( layout.inBrowser ){ //浏览器模式
+         *       //workApp 为流程的window对象
+         *     }else{
+         *       //workApp 为流程Work app对象
+         *     }
+         * });
          */
         "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck){
             if (arguments.length>2){

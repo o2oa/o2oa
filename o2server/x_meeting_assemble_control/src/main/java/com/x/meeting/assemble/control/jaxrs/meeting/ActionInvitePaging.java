@@ -1,20 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -31,10 +16,23 @@ import com.x.meeting.assemble.control.WrapTools;
 import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
 import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.Meeting_;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
-class ActionPaging extends BaseAction {
+class ActionInvitePaging extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPaging.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionInvitePaging.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
@@ -51,10 +49,7 @@ class ActionPaging extends BaseAction {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Meeting> root = cq.from(Meeting.class);
 
-			Predicate p = cb.equal(root.get(Meeting_.applicant), effectivePerson.getDistinguishedName());
-
-			Expression<List<String>> expression = root.get(Meeting_.invitePersonList);
-			p = cb.or(p, expression.in(effectivePerson.getDistinguishedName()));
+			Predicate p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(Meeting_.invitePersonList));
 
 			p = filterSubject(cb, root, p, wi.getSubject());
 			p = filterRoom(cb, root, p, wi.getRoom());
@@ -71,9 +66,11 @@ class ActionPaging extends BaseAction {
 
 			p = filterApplicant(cb, root, p, wi.getApplicant());
 
-			p = filterInvitePerson(cb, root, p, wi.getInvitePersonList());
-
 			p = filterAcceptPerson(cb, root, p, wi.getAcceptPersonList());
+
+			if(BooleanUtils.isTrue(wi.getRejectFlag())) {
+				p = filterRejectPerson(cb, root, p, effectivePerson.getDistinguishedName());
+			}
 
 			p = filterCheckinPerson(cb, root, p, wi.getCheckinPersonList());
 
@@ -156,14 +153,14 @@ class ActionPaging extends BaseAction {
 		@FieldDescribe("创建人员.")
 		private String applicant;
 
-		@FieldDescribe("邀请人员,身份,组织.")
-		private String invitePersonList;
-
 		@FieldDescribe("接受人员.")
 		private String acceptPersonList;
 
 		@FieldDescribe("签到人员.")
 		private String checkinPersonList;
+
+		@FieldDescribe("返回我拒绝会议.")
+		private Boolean rejectFlag;
 
 		@FieldDescribe("会议是否手工结束.(true|false)")
 		private Boolean manualCompleted;
@@ -258,14 +255,6 @@ class ActionPaging extends BaseAction {
 			this.type = type;
 		}
 
-		public String getInvitePersonList() {
-			return invitePersonList;
-		}
-
-		public void setInvitePersonList(String invitePersonList) {
-			this.invitePersonList = invitePersonList;
-		}
-
 		public String getAcceptPersonList() {
 			return acceptPersonList;
 		}
@@ -314,5 +303,12 @@ class ActionPaging extends BaseAction {
 			this.sortType = sortType;
 		}
 
+		public Boolean getRejectFlag() {
+			return rejectFlag;
+		}
+
+		public void setRejectFlag(Boolean rejectFlag) {
+			this.rejectFlag = rejectFlag;
+		}
 	}
 }

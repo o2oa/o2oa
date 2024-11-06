@@ -4,7 +4,7 @@
 		"overflow": "hidden",
 		"float": "right",
 		"-webkit-user-select": "text",
-		"-moz-user-select": "text" 
+		"-moz-user-select": "text"
 	},
 	"invokeListNode": {
         "width": "260px",
@@ -21,7 +21,7 @@
 		"border-left": "1px solid #505050",
 		"background-color": "#FFF",
 		"-webkit-user-select": "none",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 
     "invokeListResizeNode": {
@@ -129,6 +129,13 @@
         "font-weight": "bold",
         "margin": "10px 10px 0px 10px"
     },
+    "propertyOrgNode": {
+        "min-height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "margin": "0px 10px",
+        "color": "#666"
+    },
     "propertyTextNode": {
         "height": "24px",
         "line-height": "24px",
@@ -177,7 +184,7 @@
 		"overflow": "hidden",
 		"background": "#CCC",
 		"-webkit-user-select": "none",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 	"designFrame": {
 		"width": "100%",
@@ -191,11 +198,11 @@
 		//"height": "100%",
 		"width": "auto",
 		"margin": "15px",
-		"box-shadow": "0px 0px 20px #606060", 
+		"box-shadow": "0px 0px 20px #606060",
 		"background": "#FFF",
 		"-webkit-user-select": "none",
 		"overflow": "hidden",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 	"propertyTitleNode": {
 		"height": "26px",

@@ -1424,6 +1424,10 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         this.appList = [];
         this.columnList = [];
         this.setOptions(options);
+        if( this.options.appFlag ){
+            var appFlag = this.options.appFlag;
+            this.options.appFlag = o2.typeOf(appFlag) === "string" ? [appFlag] : appFlag;
+        }
         if (layout.mobile){
             this.showStartProcessArea_mobile();
         }else{
@@ -1556,12 +1560,28 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
 
                 if( this.options.appFlag ){
                     json_process.data = json_process.data.filter(function (d){
-                        return [d.id, d.name, d.alias].contains(this.options.appFlag);
-                    }.bind(this));
+                        return [d.id, d.name, d.alias].some(function(item){
+                            if( this.options.appFlag.contains(item) ){
+                                d.tmpOrder = this.options.appFlag.indexOf(item);
+                                return true;
+                            }
+                            return false;
+                        }.bind(this));
+                    }.bind(this)).sort(function (a, b){
+                        return a.tmpOrder - b.tmpOrder;
+                    });
 
                     json_column.data = json_column.data.filter(function (d){
-                        return [d.id, d.appName, d.appAlias].contains(this.options.appFlag);
-                    }.bind(this));
+                        return [d.id, d.appName, d.appAlias].some(function(item){
+                            if( this.options.appFlag.contains(item) ){
+                                d.tmpOrder = this.options.appFlag.indexOf(item);
+                                return true;
+                            }
+                            return false;
+                        }.bind(this));
+                    }.bind(this)).sort(function (a, b){
+                        return a.tmpOrder - b.tmpOrder;
+                    });;
                 }
 
                 this.appStartableData = json_process.data;
@@ -1692,8 +1712,17 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
             if( this.options.appFlag ){
                 o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPersonAndTerminal("mobile", function (appjson) {
                     appjson.data = appjson.data.filter(function (d){
-                        return [d.id, d.name, d.alias].contains( this.options.appFlag );
-                    }.bind(this));
+                        return [d.id, d.name, d.alias].some(function(item){
+                           if( this.options.appFlag.contains(item) ){
+                               d.tmpOrder = this.options.appFlag.indexOf(item);
+                               return true;
+                           }
+                           return false;
+                        }.bind(this));
+                    }.bind(this)).sort(function(a, b){
+                        return a.tmpOrder - b.tmpOrder;
+                    });
+
                     appjson.data.each(function (app) {
                         if (app.processList && app.processList.length > 0) {
                             var appNode = new Element("div.appNode").inject(this.startProcessListNode);

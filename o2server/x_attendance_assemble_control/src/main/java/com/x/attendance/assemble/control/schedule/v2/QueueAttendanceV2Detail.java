@@ -311,9 +311,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
     private void generateAppealInfo(EntityManagerContainer emc, Business business, AttendanceV2Config config,
                                     List<AttendanceV2CheckInRecord> recordList, boolean fieldWorkMarkError, boolean isWorkDay)
             throws Exception {
-        if (emc != null && business != null
-                && config != null && BooleanUtils.isTrue(config.getAppealEnable())
-                && recordList != null && !recordList.isEmpty()) {
+        if (emc != null && business != null && recordList != null && !recordList.isEmpty()) {
             for (AttendanceV2CheckInRecord record : recordList) {
                 List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory()
                         .listAppealInfoWithRecordId(record.getId());

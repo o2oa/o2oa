@@ -21,6 +21,7 @@ public class SlicePropertiesBuilder {
 	public static String driver_kingbase = "com.kingbase.Driver";
 	public static String driver_kingbase8 = "com.kingbase8.Driver";
 	public static String driver_oscar = "com.oscar.Driver";
+	public static String driver_vastbase = "cn.com.vastbase.Driver";
 	/* 避免db2在aix版本和lwl版本字段长度不一致的问题 */
 	public static String dictionary_db2 = "db2(characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
 	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=-1,maxEmbeddedBlobSize=-1)";
@@ -35,20 +36,22 @@ public class SlicePropertiesBuilder {
 	public static String dictionary_kingbase = "com.x.base.core.openjpa.jdbc.sql.KingbaseDictionary";
 	public static String dictionary_kingbase8 = "com.x.base.core.openjpa.jdbc.sql.Kingbase8Dictionary";
 	public static String dictionary_oscar = "com.x.base.core.openjpa.jdbc.sql.OscarDictionary";
+	public static String dictionary_vastbase = "com.x.base.core.openjpa.jdbc.sql.VastbaseDictionary";
 
-	public static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
-	public static String validationQuery_oracle = "select 1 from dual";
-	public static String validationQuery_mysql = "select 1";
-	public static String validationQuery_postgresql = "select 1";
-	public static String validationQuery_informix = "select 1";
-	public static String validationQuery_h2 = "select 1";
-	public static String validationQuery_dm = "select getdate()";
-	public static String validationQuery_sqlserver = "select 1";
-	public static String validationQuery_gbase = "select 1 from dual";
-	public static String validationQuery_gbasemysql = "select now()";
-	public static String validationQuery_kingbase = "select now()";
-	public static String validationQuery_kingbase8 = "select now()";
-	public static String validationQuery_oscar = "select 1 from dual";
+//	public static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
+//	public static String validationQuery_oracle = "select 1 from dual";
+//	public static String validationQuery_mysql = "select 1";
+//	public static String validationQuery_postgresql = "select 1";
+//	public static String validationQuery_informix = "select 1";
+//	public static String validationQuery_h2 = "select 1";
+//	public static String validationQuery_dm = "select getdate()";
+//	public static String validationQuery_sqlserver = "select 1";
+//	public static String validationQuery_gbase = "select 1 from dual";
+//	public static String validationQuery_gbasemysql = "select now()";
+//	public static String validationQuery_kingbase = "select now()";
+//	public static String validationQuery_kingbase8 = "select now()";
+//	public static String validationQuery_oscar = "select 1 from dual";
+//	public static String validationQuery_vastbase = "select 1";
 
 	// 单个slice名称
 	public static String getName(Integer i) throws Exception {
@@ -86,6 +89,8 @@ public class SlicePropertiesBuilder {
 			return driver_kingbase8;
 		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
 			return driver_oscar;
+		} else if (StringUtils.containsIgnoreCase(url, "jdbc:vastbase:")) {
+			return driver_vastbase;
 		}
 		throw new Exception("can not get driverClassName of url: " + url + ".");
 	}
@@ -117,71 +122,10 @@ public class SlicePropertiesBuilder {
 			return dictionary_kingbase8;
 		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
 			return dictionary_oscar;
+		} else if (StringUtils.containsIgnoreCase(url, "jdbc:vastbase:")) {
+			return dictionary_vastbase;
 		}
 		throw new Exception("can not get dictionary of url: " + url + ".");
 	}
-
-//	public static boolean hasSchemaOfUrl(String url) throws Exception {
-//		if (StringUtils.containsIgnoreCase(url, "jdbc:db2:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oracle:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:mysql:")) {
-//			return false;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:postgresql:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:informix-sqli:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbasedbt-sqli:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbase:")) {
-//			return false;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:h2:tcp:")) {
-//			return false;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:dm:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:sqlserver:")) {
-//			return false;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
-//			return true;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
-//			return true;
-//		}
-//		return false;
-//		//throw new Exception("can not get schema of url: " + url + ".");
-//	}
-
-//	public static String validationQueryOfUrl(String url) throws Exception {
-//		if (StringUtils.containsIgnoreCase(url, "jdbc:db2:")) {
-//			return validationQuery_db2;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oracle:")) {
-//			return validationQuery_oracle;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:mysql:")) {
-//			return validationQuery_mysql;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:postgresql:")) {
-//			return validationQuery_postgresql;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:informix-sqli:")) {
-//			return validationQuery_informix;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbasedbt-sqli:")) {
-//			return validationQuery_gbase;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:gbase:")) {
-//			return validationQuery_gbasemysql;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:h2:tcp:")) {
-//			return validationQuery_h2;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:dm:")) {
-//			return validationQuery_dm;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:sqlserver:")) {
-//			return validationQuery_sqlserver;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase:")) {
-//			return validationQuery_kingbase;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
-//			return validationQuery_kingbase8;
-//		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
-//			return validationQuery_oscar;
-//		}
-//		throw new Exception("can not get schema of url: " + url + ".");
-//	}
 
 }

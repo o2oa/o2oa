@@ -219,7 +219,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var path = paths.length ? paths.join(".") : null;
 
         var asy = o2.typeOf(async) === "boolean" ? async : (this.json.itemDictAsync !== false);
-        var data = dict.get(path, null, null, asy, refresh === true);
+        var data = dict.get(path, null, null, asy, true);
         if (data && typeOf(data.then) === "function") {
             return data.then(function (data) {
                 return this.parseDictOptions(data);

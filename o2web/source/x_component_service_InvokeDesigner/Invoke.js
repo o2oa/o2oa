@@ -236,6 +236,8 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyNameNode.set("value", this.data.name || "");
         this.designer.propertyAliasNode.set("value", this.data.alias || "");
 
+        this.designer.executorListSelector.setData( this.data.executorList || []);
+
         this.designer.propertyEnableTokenNode.getElement("option[value='"+ this.data.enableToken +"']").set("selected", true );
         this.designer.propertyEnableNode.getElement("option[value='"+ this.data.enable +"']").set("selected", true );
 

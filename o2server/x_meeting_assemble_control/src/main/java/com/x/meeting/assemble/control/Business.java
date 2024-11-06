@@ -208,10 +208,8 @@ public class Business {
 		return false;
 	}
 
-	public void estimateConfirmStatus(Meeting meeting) throws Exception {
+	public void estimateConfirmStatus(Meeting meeting) {
 		if (StringUtils.isEmpty(meeting.getAuditor())) {
-			meeting.setConfirmStatus(ConfirmStatus.allow);
-		} else if (StringUtils.equals(meeting.getAuditor(), meeting.getApplicant())) {
 			meeting.setConfirmStatus(ConfirmStatus.allow);
 		} else {
 			meeting.setConfirmStatus(ConfirmStatus.wait);

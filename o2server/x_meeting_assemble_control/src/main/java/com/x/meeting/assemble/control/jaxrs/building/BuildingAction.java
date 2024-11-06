@@ -69,6 +69,25 @@ public class BuildingAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示在所有building和下属的room，和room下面所有的会议", action = ActionListWithStartCompletedMeeting.class)
+	@GET
+	@Path("list/start/{start}/completed/{completed}/allmeeting")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithStartCompletedMeeting(@Suspended final AsyncResponse asyncResponse,
+									   @Context HttpServletRequest request, @JaxrsParameterDescribe("开始时间") @PathParam("start") String start,
+									   @JaxrsParameterDescribe("结束时间") @PathParam("completed") String completed) {
+		ActionResult<List<ActionListWithStartCompletedMeeting.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithStartCompletedMeeting().execute(effectivePerson, start, completed);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示在所有building和下属的room，和room下面将来的会议，同时判断在指定时间内room是否空闲", action = ActionListWithStartCompleted.class)
 	@GET
 	@Path("list/start/{start}/completed/{completed}")

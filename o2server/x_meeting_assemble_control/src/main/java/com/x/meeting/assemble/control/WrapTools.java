@@ -44,7 +44,7 @@ public class WrapTools {
 	public static <T extends WrapOutBuilding> void setRoom(Business business, T t) throws Exception {
 		List<String> ids = business.room().listWithBuilding(t.getId());
 		List<WrapOutRoom> list = roomOutCopier.copy(business.entityManagerContainer().list(Room.class, ids));
-		SortTools.asc(list, false, "floor", "name");
+		SortTools.asc(list, true, Room.orderNumber_FIELDNAME, Room.name_FIELDNAME);
 		t.setRoomList(list);
 	}
 
@@ -77,6 +77,21 @@ public class WrapTools {
 		wrap.setMeetingList(list);
 	}
 
+	public static <T extends WrapOutRoom> void setAllMeeting(Business business, List<T> wraps, boolean allowOnly,Date startTime, Date completedTime)
+			throws Exception {
+		for (WrapOutRoom wrap : wraps) {
+			setAllMeeting(business, wrap, allowOnly,startTime,completedTime);
+		}
+	}
+
+	public static void setAllMeeting(Business business, WrapOutRoom wrap, boolean allowOnly,Date startTime, Date completedTime) throws Exception {
+		List<String> ids = new ArrayList<>();
+		ids = business.meeting().listAllWithRoom(wrap.getId(),allowOnly,startTime,completedTime);
+		List<WrapOutMeeting> list = meetingOutCopier.copy(business.entityManagerContainer().list(Meeting.class, ids));
+		SortTools.asc(list, false, "startTime");
+		wrap.setMeetingList(list);
+	}
+
 	public static <T extends WrapOutMeeting> void decorate(Business business, List<T> list,
 			EffectivePerson effectivePerson) throws Exception {
 		for (T o : list) {
@@ -86,13 +101,17 @@ public class WrapTools {
 
 	public static <T extends WrapOutMeeting> void decorate(Business business, T t, EffectivePerson effectivePerson)
 			throws Exception {
-		Date now = new Date();
-		if (now.before(t.getStartTime())) {
-			t.setStatus("wait");
-		} else if (now.after(t.getCompletedTime())) {
-			t.setStatus("completed");
+		if(ConfirmStatus.wait.equals(t.getConfirmStatus())){
+			t.setStatus("applying");
 		} else {
-			t.setStatus("processing");
+			Date now = new Date();
+			if (now.before(t.getStartTime())) {
+				t.setStatus("wait");
+			} else if (now.after(t.getCompletedTime())) {
+				t.setStatus("completed");
+			} else {
+				t.setStatus("processing");
+			}
 		}
 		t.setMyApply(false);
 		t.setMyWaitConfirm(false);
@@ -124,6 +143,10 @@ public class WrapTools {
 		Room room = business.entityManagerContainer().find(t.getRoom(), Room.class);
 		if (null != room) {
 			t.setWoRoom(WrapTools.roomOutCopier.copy(room));
+		}
+		Building building = business.entityManagerContainer().find(room.getBuilding(),Building.class);
+		if(null != building){
+			t.setRoomAddress(building.getName());
 		}
 	}
 

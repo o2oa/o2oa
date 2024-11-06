@@ -154,7 +154,9 @@ export default content({
     if (this.bind.form && this.bind.form.id && this.bind.form.id !== "") { // 修改
       this.bind.fTitle = lp.groupUpdate;
       // 回查工作场所对象
-      this.loadWorkPlaceObjectsByIds(this.bind.form.workPlaceIdList);
+      if (this.bind.form.workPlaceIdList && this.bind.form.workPlaceIdList.length > 0) {
+        this.loadWorkPlaceObjectsByIds(this.bind.form.workPlaceIdList);
+      }
       // 日期列表分拆
       if (this.bind.form.workDateList) {
         const dateList = this.bind.form.workDateList.split(",");
@@ -341,8 +343,10 @@ export default content({
               }
             }
             if (!isIn) {
+              const c = this.bind.dateCycleList[0]
               this.bind.requiredCheckInDateForTableList.push({
                 date: chooseDate,
+                cycle: c
               });
             }
           }.bind(this),
@@ -556,10 +560,10 @@ export default content({
     }
     
     // 工作地址
-    if ( this.bind.workPlaceSelector.workAddressSelected.length < 1) {
-      o2.api.page.notice(lp.groupForm.workPlaceErrorNotEmpty, 'error');
-      return ;
-    }
+    // if ( this.bind.workPlaceSelector.workAddressSelected.length < 1) {
+    //   o2.api.page.notice(lp.groupForm.workPlaceErrorNotEmpty, 'error');
+    //   return ;
+    // }
     let workPlaceIdList = [];
     for (let index = 0; index < this.bind.workPlaceSelector.workAddressSelected.length; index++) {
       const element = this.bind.workPlaceSelector.workAddressSelected[index];

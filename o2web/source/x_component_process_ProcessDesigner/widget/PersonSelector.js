@@ -131,25 +131,25 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
 
         if (names && names.length){
             names.each(function(name){
-                var data = (typeOf(name)==="string") ? {"name": name, "id": name}: name;
+                var data = (typeOf(name)==="string") ? {"name": name.split('@')[0], "id": name, "distinguishedName":name}: name;
                 var distinguishedName = (typeOf(name)==="string") ? name : data.distinguishedName;
                 var flag = distinguishedName.split("@").getLast();
                 var widget;
                 switch (flag.toLowerCase()){
                     case "i":
-                        widget = new MWF.widget.O2Identity(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Identity(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     case "p":
-                        widget = new MWF.widget.O2Person(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Person(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     case "u":
-                        widget = new MWF.widget.O2Unit(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Unit(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     case "g":
-                        widget = new MWF.widget.O2Group(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Group(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     default:
-                        widget = new MWF.widget.O2Other(name, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Other(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                 }
                 this.identitys.push(widget);
             }.bind(this));

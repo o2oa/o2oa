@@ -242,8 +242,11 @@ MWF.xApplication.Meeting.RoomForm = new Class({
             "       <div item='deviceList' style='"+ boxStyle +"'></div>" +
             "</td></tr>" +
             "<tr><td styles='formTableTitle'>"+lp.available+":</td>" +
-            "    <td styles='formTableValue' colspan='3'>" +
+            "    <td styles='formTableValue'>" +
             "       <div item='available' style='"+ boxStyle +"'></div>" +
+            "<td styles='formTableTitle2'>"+lp.orderNumber+":</td>" +
+            "    <td styles='formTableTitle'>" +
+            "       <div item='orderNumber' ></div></td>" +
             "</td></tr>" +
             "<tr><td styles='formTableTitle'></td>" +
             "    <td styles='formTableValue' colspan='3' style='padding-top: 30px;'>"+
@@ -328,6 +331,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                     },
                     capacity: { notEmpty : true, tType: "number", text : lp.capacity },
                     roomNumber: {},
+                    orderNumber: {},
                     phoneNumber: {},
                     deviceList: { type : "checkbox",
                         value : this.data.device ? this.data.device.split("#") : "",
@@ -826,6 +830,11 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 
             "<tr style='display:"+ ( this.isNew ? "none" : "") +" ;' item='checkPersonTr'><td styles='formTableTitle'>"+this.lp.needSignInPerson+":</td>" +
             "    <td styles='formTableValue' item='checkinPersonList'></td></tr>" +
+
+            "<tr><td styles='formTableTitle'>"+this.lp.externalPerson+":</td>" +
+            "    <td styles='formTableValue' item='externalPerson'></td></tr>" +
+
+
             "<tr><td styles='formTableTitle'>"+this.lp.meetingSubject+":</td>" +
             "    <td styles='formTableValue' item='subject'></td></tr>" +
             "<tr><td styles='formTableTitle'>"+this.lp.meetingDescription+":</td>" +
@@ -986,6 +995,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             }.bind(this)
                         } },
                     subject: {},
+                    externalPerson :{},
                     roomLink: {
                         type: this.app.isAutoCreateOnlineRoom() ? ( this.isNew ? "text" : "innerText" ) : "text",
                         attr: {
@@ -1854,10 +1864,13 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var color = "#ccc";
         switch (data.status){
             case "wait":
-                color = "#4990E2";
+                color = "#51B749";
                 break;
             case "processing":
-                color = "#66CC7F";
+                color = "#5484ED";
+                break;
+            case "applying":
+                color = "#F9905A";
                 break;
             case "completed":
                 color = "#666";
@@ -1867,7 +1880,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             color = "#F6A623";
         }
         if (data.confilct){
-            color = "#FF7F7F";
+            color = "#FBD75B";
         }
 
         debugger;
@@ -2300,18 +2313,26 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
 
         switch (this.data.status){
             case "wait":
-                this.colorNode.setStyles({"background-color": "#4990E2"});
-                this.timeNode.setStyles({"color": "#4990E2"});
+                this.colorNode.setStyles({"background-color": "#51B749"});
+                this.timeNode.setStyles({"color": "#51B749"});
                 break;
             case "processing":
-                this.colorNode.setStyles({"background-color": "#66CC7F"});
-                this.timeNode.setStyles({"color": "#66CC7F"});
+                this.colorNode.setStyles({"background-color": "#5484ED"});
+                this.timeNode.setStyles({"color": "#5484ED"});
                 break;
             case "completed":
                 //add attachment
-                this.colorNode.setStyles({"background-color": "#ccc"});
+                this.colorNode.setStyles({"background-color": "#FBD75B"});
+                this.timeNode.setStyles({"color": "#FBD75B"});
+                break;
+
+            case "applying":
+                //add attachment
+                this.colorNode.setStyles({"background-color": "#F9905A"});
                 this.timeNode.setStyles({"color": "#ccc"});
                 break;
+
+
         }
         if (this.data.myWaitAccept){
             this.colorNode.setStyles({"background-color": "#F6A623"});
@@ -2670,12 +2691,12 @@ MWF.xApplication.Meeting.SideBar = new Class({
 
         var html = "<div class='titleDiv'>"+this.lp.config.meetingStatus+"</div>" +
             "<div class = 'statusStyle'>"+
-            "   <div class='statusIconStyle' style='background-color:#4990E2'></div>" +
+            "   <div class='statusIconStyle' style='background-color:#51B749'></div>" +
             "   <div class = 'statusTextStyle'>"+this.lp.config.wait+"</div></div>" +
             "</div>"+
 
             "<div class = 'statusStyle'>"+
-            "   <div class='statusIconStyle' style='background-color:#66CC7F'></div>" +
+            "   <div class='statusIconStyle' style='background-color:#5484ED'></div>" +
             "   <div class = 'statusTextStyle'>"+this.lp.config.progress+"</div></div>" +
             "</div>"+
 
@@ -2685,7 +2706,7 @@ MWF.xApplication.Meeting.SideBar = new Class({
             "</div>"+
 
             "<div class = 'statusStyle'>"+
-            "   <div  class='statusIconStyle' style='background-color:#ccc'></div>" +
+            "   <div  class='statusIconStyle' style='background-color:#FBD75B'></div>" +
             "   <div class = 'statusTextStyle'>"+this.lp.config.completed+"</div></div>" +
             "</div>"+
 
@@ -2785,14 +2806,18 @@ MWF.xApplication.Meeting.SideBar = new Class({
 
                 switch (d.status){
                     case "wait":
-                        colorNode.setStyles({"background-color": "#4990E2"});
+                        colorNode.setStyles({"background-color": "#51B749"});
                         break;
                     case "processing":
-                        colorNode.setStyles({"background-color": "#66CC7F"});
+                        colorNode.setStyles({"background-color": "#5484ED"});
                         break;
                     case "completed":
                         //add attachment
-                        colorNode.setStyles({"background-color": "#ccc"});
+                        colorNode.setStyles({"background-color": "#FBD75B"});
+                        break;
+                    case "applying":
+                        //add attachment
+                        colorNode.setStyles({"background-color": "#F9905A"});
                         break;
                 }
                 if (d.myWaitAccept){

@@ -1,5 +1,6 @@
 package com.x.meeting.assemble.control.wrapout;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class WrapOutMeeting extends Meeting {
 	private static final long serialVersionUID = -969148596991975992L;
 	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
-	/* 会议状态 */
+	@FieldDescribe("会议状态")
 	private String status;
 	/* 我申请的 */
 	private Boolean myApply;
@@ -29,6 +30,16 @@ public class WrapOutMeeting extends Meeting {
 	private WrapOutRoom woRoom;
 
 	private List<WrapOutAttachment> attachmentList;
+	/* 会议室地址 */
+	private String roomAddress;
+
+	public String getRoomAddress() {
+		return roomAddress;
+	}
+
+	public void setRoomAddress(String roomAddress) {
+		this.roomAddress = roomAddress;
+	}
 
 	public Long getRank() {
 		return rank;
