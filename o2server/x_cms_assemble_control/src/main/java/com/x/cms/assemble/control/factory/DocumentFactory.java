@@ -474,8 +474,8 @@ public class DocumentFactory extends AbstractFactory {
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
-		if(BooleanUtils.isTrue(isAdmin)){
-			if(!BooleanUtils.isTrue(isAuthor)) {
+		if(BooleanUtils.isNotTrue(isAdmin)){
+			if(BooleanUtils.isNotTrue(isAuthor)) {
 				Subquery<Review> subQuery = cq.subquery(Review.class);
 				Root<Review> root1 = subQuery.from(em1.getMetamodel().entity(Review.class));
 				subQuery.select(root1);
@@ -596,8 +596,8 @@ public class DocumentFactory extends AbstractFactory {
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
-		if(BooleanUtils.isTrue(isAdmin)){
-			if(!BooleanUtils.isTrue(isAuthor)) {
+		if(BooleanUtils.isNotTrue(isAdmin)){
+			if(BooleanUtils.isNotTrue(isAuthor)) {
 				Subquery<Review> subquery = cq.subquery(Review.class);
 				Root<Review> root1 = subquery.from(em1.getMetamodel().entity(Review.class));
 				subquery.select(root1);
