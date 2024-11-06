@@ -343,8 +343,10 @@ export default content({
               }
             }
             if (!isIn) {
+              const c = this.bind.dateCycleList[0]
               this.bind.requiredCheckInDateForTableList.push({
                 date: chooseDate,
+                cycle: c
               });
             }
           }.bind(this),
