@@ -384,17 +384,17 @@ MWF.xDesktop.WebSocket = new Class({
         }
         // im_create 暂时不变
         if (data.type == "im_create") {
-            // 系统消息
-            if (layout.desktop.message) {
+            // 系统消息提示
+            if (layout.desktop.message && data.person !== layout.session.user.distinguishedName) {
                 var jsonBody = imBody.body;
                 var conversationId = imBody.conversationId;
                 var body = JSON.parse(jsonBody);
                 var msgBody = body.body; //默认text 文本消息
-                if (body.type && body.type == "emoji") { //表情 消息
+                if (body.type && body.type === "emoji") { //表情 消息
                     msgBody = "["+MWF.LP.desktop.messsage.emoji+"]";
-                } else if (body.type == "process") {
+                } else if (body.type === "process") {
                     msgBody = "["+MWF.LP.desktop.messsage.processWork+"]";
-                } else if (body.type == "cms") {
+                } else if (body.type === "cms") {
                     msgBody = "["+MWF.LP.desktop.messsage.cmsDoc+"]";
                 }
                 var content = "<font style='color: #333; font-weight: bold'>"+o2.txt(data.title)+"</font>: "+o2.txt(msgBody);

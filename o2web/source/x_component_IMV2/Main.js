@@ -445,7 +445,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				var isOld = false;
 				for (var i = 0; i < this.conversationNodeItemList.length; i++) {
 					var c = this.conversationNodeItemList[i];
-					if (newConv.id == c.data.id) {
+					if (newConv.id === c.data.id) {
 						isOld = true;
 						this.tapConv(c.data);
 						break;
@@ -880,15 +880,15 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 	},
 	// 创建聊天窗口
 	load: function() {
-			var url = this.path + this.options.style + "/chat.html";
+			const url = this.path + this.options.style + "/chat.html";
 			this.conversationId = this.data.id;
 			this.container.empty();
 			if (this.emojiBoxNode) {
 				this.emojiBoxNode.destroy();
 				this.emojiBoxNode = null;
 			}
-			this.container.loadHtml(url, { "bind": { "convName": this.data.title, "lp": this.lp }, "module": this }, function () {
-				var me = layout.session.user.distinguishedName;
+			this.container.loadHtml(url, { "bind": { "convName": this.getChatTitle(), "lp": this.lp }, "module": this }, function () {
+				const me = layout.session.user.distinguishedName;
 				if (this.data.type === "group") {
 					this.chatTitleMoreBtnNode.setStyle("display", "block");
 					this.chatTitleMoreBtnNode.addEvents({
@@ -946,6 +946,26 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 				this.loadBusinessIcon();
 			}.bind(this));
 
+	},
+	getChatTitle: function () {
+		let title = this.data.title
+		if (this.data.type && this.data.type === "single") {
+			let chatPerson = "";
+			if (this.data.personList && this.data.personList instanceof Array) {
+				for (let j = 0; j < this.data.personList.length; j++) {
+					const person = this.data.personList[j];
+					if (person !== layout.session.user.distinguishedName) {
+						chatPerson = person;
+					}
+				}
+			}
+			let name = chatPerson;
+			if (chatPerson.indexOf("@") !== -1) {
+				name = name.substring(0, chatPerson.indexOf("@"));
+			}
+			title = name;
+		}
+		return title
 	},
 	// 内部一些节点添加事件
 	addChatEventListener: function () {
@@ -2625,33 +2645,7 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 		this.load();
 	},
 	load: function () {
-		var avatarDefault = this.main._getIcon();
-		var convData = {
-			"id": this.data.id,
-			"avatarUrl": avatarDefault,
-			"title": this.data.title,
-			"time": "",
-			"lastMessage": "",
-			"lastMessageType": "text"
-		};
-		var distinguishedName = layout.session.user.distinguishedName;
-		if (this.data.type && this.data.type === "single") {
-			var chatPerson = "";
-			if (this.data.personList && this.data.personList instanceof Array) {
-				for (var j = 0; j < this.data.personList.length; j++) {
-					var person = this.data.personList[j];
-					if (person !== distinguishedName) {
-						chatPerson = person;
-					}
-				}
-			}
-			convData.avatarUrl = this.main._getIcon(chatPerson);
-			var name = chatPerson;
-			if (chatPerson.indexOf("@") != -1) {
-				name = name.substring(0, chatPerson.indexOf("@"));
-			}
-			convData.title = name;
-		}
+		var convData = this.getConversationData()
 		if (this.data.lastMessage) {
 			//todo 其它消息类型
 			var mBody = JSON.parse(this.data.lastMessage.body);
@@ -2703,6 +2697,35 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			}
 		});
 	},
+	getConversationData: function () {
+		var avatarDefault = this.main._getIcon();
+		var convData = {
+			"id": this.data.id,
+			"avatarUrl": avatarDefault,
+			"title": this.data.title,
+			"time": "",
+			"lastMessage": "",
+			"lastMessageType": "text"
+		};
+		if (this.data.type && this.data.type === "single") {
+			var chatPerson = "";
+			if (this.data.personList && this.data.personList instanceof Array) {
+				for (var j = 0; j < this.data.personList.length; j++) {
+					var person = this.data.personList[j];
+					if (person !== layout.session.user.distinguishedName) {
+						chatPerson = person;
+					}
+				}
+			}
+			convData.avatarUrl = this.main._getIcon(chatPerson);
+			var name = chatPerson;
+			if (chatPerson.indexOf("@") !== -1) {
+				name = name.substring(0, chatPerson.indexOf("@"));
+			}
+			convData.title = name;
+		}
+		return convData;
+	},
 	/**
 	 *
 	 * 刷新会话列表的最后消息内容 
@@ -2744,7 +2767,8 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 	refreshData: function (data) {
 		this.data = data;
 		// 更新聊天窗口上的标题 修改标题的时候使用
-		this.titleNode.set("text", data.title);
+		const convData = this.getConversationData()
+		this.titleNode.set("text", convData.title);
 	},
 	addCheckClass: function () {
 		if (this.nodeBaseItem) {
