@@ -27,7 +27,6 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 		// this.buttonContainer = this.node.getElement(".MWFADButtonContainer");
 		// this.buttonArea = this.node.getElement(".MWFADButtonArea");
 		// this.buttonNode = this.node.getElement(".MWFADBbutton");
-		debugger;
 		this.node.empty();
 		this.loadContent();
 		this.loadButton();
@@ -105,7 +104,6 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 		this.reloadMaplist();
 	},
 	setPropertiesOrStyles: function(name){
-		debugger;
 		switch (name) {
 			case "styles":
 				try{
@@ -142,7 +140,6 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 
 	},
 	_checkView: function(callback, name, oldValue, newValue){
-		debugger;
 		if( name !== "queryView" )return;
 		if( !oldValue ){
 			oldValue = [];

@@ -84,8 +84,6 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
         if (!this.form.isSubform) this._createIconAction();
 		this._setNodeEvent();
 
-		debugger;
-
 	},
     loadAttachmentController: function(){
         MWF.require("MWF.widget.AttachmentController", function(){

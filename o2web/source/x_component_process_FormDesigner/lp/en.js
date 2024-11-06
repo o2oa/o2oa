@@ -356,7 +356,16 @@ MWF.xApplication.process.FormDesigner.LP={
 		"relatedLink": "Related Link",
 		"associatedDocument": "Associated Document",
 		"security": "Security Label",
-		"securityInfo": "Only one \"classification identification\" field is allowed"
+		"securityInfo": "Only one \"classification identification\" field is allowed",
+		"group_O2OA": "O2OA component",
+		"oo_input": "Input box",
+		"oo_button": "Button",
+		"oo_radioGroup": "Single Choice",
+		"oo_checkGroup": "check",
+		"oo_select": "Drop down box",
+		"oo_textarea": "Multi line text",
+		"oo_calendar": "calendar",
+		"oo_datetime": "Date box"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1468,7 +1477,14 @@ MWF.xApplication.process.FormDesigner.LP={
 		"checkOtherFlow": "Verify other circulation methods",
 		"checkOtherFlowNote": "When adding, resetting, or returning, execute the verification script. Obtain the flow method (add as: addTask, reset as: reset, return as: goBack) through this. form. opinion, and other parameters of the flow through this. form. flowData",
 		"forceClearCustomViewStyle": "Clear custom styles when switching",
-		"forceClearCustomStyle": "Clear custom styles when switching"
+		"forceClearCustomStyle": "Clear custom styles when switching",
+		"showMode": "pattern",
+		"defaultView": "Initial View",
+		"dayView": "day",
+		"monthView": "month",
+		"yearView": "year",
+		"secondEnable": "Select seconds",
+		"weekBegin": "Starting every week"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
@@ -1551,7 +1567,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"clearNoDomModule": "Clear component configurations that are not in the HTML tree",
 		"autoSave": "AutoSave",
 		"brush": "brush",
-		"viewAllVersion": "View all form versions"
+		"viewAllVersion": "View all form versions",
+		"add": "newly build",
+		"gotoApp": "Open the current application"
 	}
 }
 MWF.xApplication.process.FormDesigner["lp."+o2.language] = MWF.xApplication.process.FormDesigner.LP

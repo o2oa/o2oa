@@ -462,7 +462,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                     var cssClass = "";
                     if (this.json.css && this.json.css.code) cssClass = this.loadCss();
-
+                    if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
 
                     //this.container.setStyle("opacity", 0);
 

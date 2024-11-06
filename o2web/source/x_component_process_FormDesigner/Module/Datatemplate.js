@@ -196,7 +196,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		return "../x_component_process_FormDesigner/Module/Datatemplate/modulesTemplate.json";
 	},
 	appendModules: function( relativeNode, position, wrapDiv ){
-		debugger;
 		MWF.getJSON(this.getModulesTemplateUrl(), function(responseJSON, responseText){
 
 			var parentModule = this.parentContainer || this.inContainer || this.onDragModule;

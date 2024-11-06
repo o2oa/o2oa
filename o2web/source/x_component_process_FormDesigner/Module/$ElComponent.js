@@ -11,7 +11,6 @@ MWF.xApplication.process.FormDesigner.Module.$ElComponent = MWF.FC$ElComponent =
 	},
 
 	initialize: function(form, options){
-		debugger;
 		this.setOptions(options);
 		this._initModuleType();
 		this.path = "../x_component_process_FormDesigner/Module/"+this.className+"/";

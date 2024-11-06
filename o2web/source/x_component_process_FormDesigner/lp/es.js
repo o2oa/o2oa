@@ -356,7 +356,16 @@ MWF.xApplication.process.FormDesigner.LP={
 		"relatedLink": "recomendación",
 		"associatedDocument": "Un documento asociado",
 		"security": "Etiqueta de seguridad",
-		"securityInfo": "Solo se permite un campo de \"identificación de nivel secreto\""
+		"securityInfo": "Solo se permite un campo de \"identificación de nivel secreto\"",
+		"group_O2OA": "Componentes de o2oa",
+		"oo_input": "Cuadro de entrada",
+		"oo_button": "Botones",
+		"oo_radioGroup": "Elecciones individuales",
+		"oo_checkGroup": "Casillas",
+		"oo_select": "Desplegable",
+		"oo_textarea": "Texto multilínea",
+		"oo_calendar": "Calendario",
+		"oo_datetime": "Marco de fecha"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1467,7 +1476,14 @@ MWF.xApplication.process.FormDesigner.LP={
 		"checkOtherFlow": "Verificar otros métodos de circulación",
 		"checkOtherFlowNote": "Ejecute el guión de verificación cuando se agregue, restablezca o devuelva, obtenga el método de circulación a través de este.formulario.currentrouteme (agregue la etiqueta a: addatask, restablezca a: reset, devuelva a: goback), obtenga una opinión a través de este.formulario.opinion, obtenga otros parámetros de la circulación a través de este.formulario.flowdata",
 		"forceClearCustomViewStyle": "Limpiar estilos personalizados al cambiar",
-		"forceClearCustomStyle": "Limpiar estilos personalizados al cambiar"
+		"forceClearCustomStyle": "Limpiar estilos personalizados al cambiar",
+		"showMode": "Modo",
+		"defaultView": "Vista inicial",
+		"dayView": "Día",
+		"monthView": "Mes",
+		"yearView": "Año",
+		"secondEnable": "Segundos de selección",
+		"weekBegin": "A partir de la semana"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
@@ -1551,7 +1567,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"clearNoDomModule": "Borrar configuraciones de componentes que no están en el árbol HTML",
 		"autoSave": "AutoGuardar",
 		"brush": "cepillar",
-		"viewAllVersion": "Ver todas las versiones del formulario"
+		"viewAllVersion": "Ver todas las versiones del formulario",
+		"add": "Nueva construcción",
+		"gotoApp": "Abrir su aplicación"
 	}
 }
 MWF.xApplication.process.FormDesigner["lp."+o2.language] = MWF.xApplication.process.FormDesigner.LP

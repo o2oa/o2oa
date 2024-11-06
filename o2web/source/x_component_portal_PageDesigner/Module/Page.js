@@ -1070,6 +1070,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
                 styleNode.appendChild(cssTextNode);
             }
 		}
+		if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
 	},
 
     setAllStyles: function(){

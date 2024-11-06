@@ -72,31 +72,14 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
     },
     setPropertiesOrStyles: function(name){
         if (name=="styles"){
-            // if (this.parentContainer){
-            //     if (this.parentContainer.moduleName == "datagrid$Data"){
-            //         //if (!this.json.styles.width) this.json.styles.width = "90%";
-            //     }
-            // }
             try{
                 this.setCustomStyles();
             }catch(e){}
-            //this.setCustomStyles();
         }
         if (name=="inputStyles"){
             try{
                 this.setCustomInputStyles();
             }catch(e){}
-            //
-            // var text = this.node.getLast("div");
-            // text.clearStyles();
-            // text.setStyles(this.css.moduleText);
-            //
-            // Object.each(this.json.inputStyles, function(value, key){
-            //     var reg = /^border\w*/ig;
-            //     if (!key.test(reg)){
-            //         text.setStyle(key, value);
-            //     }
-            // }.bind(this));
         }
         if (name=="properties"){
             this.node.setProperties(this.json.properties);
@@ -189,7 +172,6 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
 
     setCustomStyles: function(){
         this._recoveryModuleData();
-        //debugger;
         //var border = this.node.getStyle("border");
         this.node.clearStyles();
         this.node.setStyles(this.css.moduleNode);

@@ -28,11 +28,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		this.containers = [];
 		this.elements = [];
 		this.selectedMultiTds = [];
-
-		debugger;
 	},
 	clearTemplateStyles: function(styles){
-		debugger;
 		if (styles){
 			if (styles.styles) this.removeStyles(styles.styles, "styles");
 			if (styles.tableStyles) this.removeStyles(styles.tableStyles, "tableStyles");
@@ -51,7 +48,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		}
 	},
 	setTemplateStyles: function(styles){
-		debugger;
 		if (styles.styles) this.copyStyles(styles.styles, "styles");
 		if (styles.tableStyles) this.copyStyles(styles.tableStyles, "tableStyles");
 		if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleStyles");
@@ -358,7 +354,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 	_setEditStyle_custom: function(name, obj, oldValue){
 		if (name=="id"){
 			if (oldValue && this.json.id!=oldValue){
-				debugger;
 				var reg = new RegExp("^"+oldValue, "i");
 				this.containers.each(function(container){
 					var id = container.json.id;
@@ -439,7 +434,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		}.bind(this);
 
 		if( name === "impexpType" ){
-			debugger;
 			//允许导入
 			var importenable  = this.json.impexpType === "impexp" || this.json.impexpType === "imp";
 			//允许导出

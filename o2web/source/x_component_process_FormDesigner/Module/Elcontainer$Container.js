@@ -69,7 +69,6 @@ MWF.xApplication.process.FormDesigner.Module.Elcontainer$Main = MWF.FCElcontaine
 
         this._initModule();
         this._loadTreeNode(parent);
-debugger;
         if (!this.json.id){
             var id = this._getNewId(((parent) ? parent.json.id : null));
             this.json.id = id;

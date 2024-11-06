@@ -98,7 +98,7 @@ MWF.xApplication.process.FormDesigner.Module.Button = MWF.FCButton = new Class({
 	_preprocessingModuleData: function(){
 		var button = this.node.getElement("button");
 		button.clearStyles();
-		debugger;
+
 		button.setStyles(this.css.buttonStyles);
 
 		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
@@ -124,7 +124,7 @@ MWF.xApplication.process.FormDesigner.Module.Button = MWF.FCButton = new Class({
 	},
 	setCustomStyles: function(){
 		this._recoveryModuleData();
-		//debugger;
+
 		var border = this.node.getStyle("border");
 		this.node.clearStyles();
 		this.node.setStyles(this.css.moduleNode);

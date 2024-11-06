@@ -2450,6 +2450,32 @@ MWF.xScript.Environment = function(ev){
         MWF.defineProperties(this, o);
     }.bind(this);
 
+
+    /**
+     * 执行代码片段，类似eval。使用Function包装。
+     * @module exec()
+     * @o2category server.common
+     * @o2ordernumber 151
+     * @o2cn 方法定义
+     * @param text {String} 需要执行的代码片段
+     * @param bind {Object} 代码片段中this的指向
+     * @param arg {Object} 传入参数。如：{x:1, y:'5'}，在代码片段中可使用 x 和 y 变量。
+     * @param throwError {boolean} 当代码片段运行错误时，是否抛出错误
+     * @returns {any} 返回执行的代码片段的返回值
+     */
+    this.exec = function(text, bind, arg=null, throwError=true){
+        const b = bind || globalThis;
+        const p = (arg) ? Object.values(arg) : [];
+        const k = (arg) ? Object.keys(arg).join(',') : '';
+        try {
+            return Function('return function('+k+'){' + text + '}')().apply(b, p);
+        }catch(e){
+            if (throwError) throw e;
+            console.error(e);
+            return '';
+        }
+    }
+
     //如果前端事件有异步调用，想要在异步调用结束后继续运行页面加载，
     //可在调用前执行 var resolve = this.wait();
     //在异步调用结束后 执行 resolve.cb()；

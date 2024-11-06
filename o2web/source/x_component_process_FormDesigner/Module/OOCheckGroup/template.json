@@ -1,0 +1,94 @@
+{
+	"id": "",
+	"name": "",
+	"type": "OOCheckGroup",
+	"description": "",
+	"itemType": "values",
+	"itemValues": [],
+	"countPerline": "0",
+	"itemScript": {
+		"code": "",
+		"html": ""
+	},
+	"defaultValue": {
+		"code": "",
+		"html": ""
+	},
+    "compute": "create", //create, show, save
+	"events": {
+		"queryLoad" : {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad" : {
+		  "code": "",
+		  "html": ""
+		},
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+	  	"change" : {
+		  "code": "",
+		  "html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"buttonStyles": {},
+	"styles": {},
+	"container": "",
+	"showSectionKey": true,
+	"sectionNodeStyles": {"overflow": "hidden"},
+	"sectionKeyStyles": {"float": "left"},
+	"sectionContentStyles": {"float": "left"},
+	"keyContentSeparator": "："
+}

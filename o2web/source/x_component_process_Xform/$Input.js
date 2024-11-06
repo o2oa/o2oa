@@ -381,7 +381,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         if (this.json.compute == "save") this._setValue(this._computeValue());
         return this.getInputData();
 	},
-    getInputData: function(){
+        getInputData: function(){
         if (this.node.getFirst()){
             return this.node.getFirst().get("value");
         }else{

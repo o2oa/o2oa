@@ -103,8 +103,16 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class(
     },
     _getO2Source: function(){
         this._getO2Address();
+        if (!this.json.isDelay){
+            this._getO2Uri();
+            this._invoke(function(){
+                this._loadSub(this.node);
+                this.fireEvent("loadData");
+            }.bind(this));
+        }
+    },
+    active: function(){
         this._getO2Uri();
-
         this._invoke(function(){
             this._loadSub(this.node);
             this.fireEvent("loadData");

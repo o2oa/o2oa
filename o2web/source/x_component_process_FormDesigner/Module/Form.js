@@ -97,7 +97,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     },
 
 	load : function(data){
-		debugger;
 		this.data = data;
 		this.json = data.json;
 		this.html = data.html;
@@ -825,7 +824,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			module.moveNode.setStyle("display","none");
 		}
 
-		//debugger;
 		this.draggingModule = module;
 		//if( !this.node.getFirst() ){
 		//	this.inject( "top" );
@@ -1029,7 +1027,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 
 	_getFormData: function(callback){
-		debugger;
     	this.fireEvent("queryGetFormData");
 
     	this._preprocessingModuleData();
@@ -1086,7 +1083,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		//return this.data;
 	},
 	_clearNoDomModule : function(){
-		debugger;
 		var existModuleList = {};
 		Object.each(  this.moduleList, function( module ){
 			if( module.json && module.json.id )existModuleList[ module.json.id ] = true;
@@ -1112,7 +1108,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		}.bind(this));
 	},
 	save: function(callback){
-		// debugger;
         // this.moduleList.each(function(module){
 		// 	if (module.moduleName==="subform"){
 		// 		module.refreshSubform();
@@ -1180,7 +1175,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     // implodeJsonData: function(str){
     //     if (str){
     //         //try{
-    //         debugger;
     //         var data = JSON.decode(str);
     //         if (data){
     //             var json = data.json;
@@ -1329,7 +1323,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
 		Object.each(this.json.styles, function(value, key){
 			var reg = /^border\w*/ig;
-			if (!key.test(reg)){
+			if (!key.test(reg) && key.toString().toLowerCase()!=='height'){
 				this.node.setStyle(key, value);
 			}
 		}.bind(this));
@@ -1499,6 +1493,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
                 styleNode.appendChild(cssTextNode);
             }
         }
+		if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
     },
     setAllStyles: function(){
         this.setPropertiesOrStyles("styles");

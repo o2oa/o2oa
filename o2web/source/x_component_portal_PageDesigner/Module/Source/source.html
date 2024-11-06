@@ -73,6 +73,13 @@
                 <td class="editTableTitle">{{$.lp.path}}:</td>
                 <td class="editTableValue"><input type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
         </table>
         <div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center;">{{$.lp.parameter}}</div>
         <div class="MWFParameterArea" name="parameters"></div>

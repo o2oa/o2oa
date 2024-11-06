@@ -381,7 +381,6 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 		}.bind(this);
 
 		if( name === "impexpType" ){
-			debugger;
 			//允许导入
 			var importenable  = this.json.impexpType === "impexp" || this.json.impexpType === "imp";
 			//允许导出

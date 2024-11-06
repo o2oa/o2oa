@@ -1,0 +1,189 @@
+:root {
+    --oo-color-main: #2E82F7;
+    --oo-color-main-light: #64a3ec;
+    --oo-color-main-deep: #337acc;
+    --oo-color-over: #ddebfc;
+    --oo-color-deep: #092E59;
+    --oo-color-light: #F5F8FC;
+    --oo-color-hover: #f3f8fd;
+    --oo-color-icon: #9293A6;
+    --oo-color-hover2: #E3EEFC;
+    --oo-color-odd-even: #FAFAFA;
+
+    /*--oo-color-main: #232f3e;*/
+    /*--oo-color-main-light: #545B64;*/
+    /*--oo-color-main-deep: #121923;*/
+    /*--oo-color-over: #e7eaec;*/
+    /*--oo-color-deep: #1e2a38;*/
+    /*--oo-color-light: #f3f4f5;*/
+    /*--oo-color-hover: #ededef;*/
+    /*--oo-color-icon: #9293A6;*/
+
+    --oo-color-gray1: #CCCCCC;
+    --oo-color-gray2: #F0F0F0;
+    --oo-color-gray-9: #999999;
+    --oo-color-gray-b: #BBBBBB;
+    --oo-color-gray-e: #EEEEEE;
+    --oo-color-gray-e1: #E1E1E1;
+    --oo-color-gray-d: #DDDDDD;
+    --oo-color-gray-d1: #D1D1D1;
+    --oo-color-gray-f0: #F0F0F0;
+    --oo-color-gray-f3: #F3F3F3;
+    --oo-color-gray-f9: #F9F9F9;
+
+    --oo-color-bg-white: #FFFFFF;
+
+    --oo-color-text: #333333;
+    --oo-color-text2: #666666;
+    --oo-color-text3: #999999;
+    --oo-color-text4: #CCCCCC;
+    --oo-color-text-white: #FFFFFF;
+    --oo-color-highlight: #F23030;
+    --oo-color-badge: #F23030;
+    --oo-color-layout-bg: #F0F0F0;
+
+
+    --oo-color-error: #FB4747;
+    --oo-color-error-bg: #FFF5F0;
+    --oo-color-error-border: rgba(242,48,48,0.25);
+    --oo-color-info: #4A90E2;
+    --oo-color-info-bg: #F0F7FF;
+    --oo-color-info-border: rgba(41,122,204,0.25);
+    --oo-color-warn: #F1A801;
+    --oo-color-warn-bg: #FFFAF0;
+    --oo-color-warn-border: rgba(204,155,41,0.25);
+    --oo-color-success: #66CC80;
+    --oo-color-success-bg: #F0FFF4;
+    --oo-color-success-border: rgba(41,204,82,0.25);
+
+    --oo-shadow-border: 0 0 0 1px var(--oo-color-gray-d);
+    --oo-shadow-border-focus: 0 0 0 1px var(--oo-color-main);
+
+    --oo-font-family: "PingFangSC-Regular", "Microsoft YaHei", "YaHei", "SimSun", "宋体", sans-serif;
+    --oo-font-size-default: 1rem;   /*~16*/
+    --oo-font-size-small: 0.875rem;     /*~14*/
+    --oo-font-size-smaller: 0.75rem;   /*~12*/
+    --oo-font-size-large: 1.25rem;     /*~20*/
+    --oo-font-size-larger: 1.5rem;    /*~24*/
+    --oo-font-size-largest: 2rem;   /*~32*/
+    --oo-font-size-huge: 3.5rem;      /*~56*/
+
+    --oo-default-radius: 2px;
+    --oo-area-radius:4px;
+
+    --oo-height-default: 2.098rem;
+
+    /****** menu *****/
+    --oo-menu-padding: 0.5em 0;
+    --oo-menu-radius: 4px;
+    --oo-menu-border-color: var(--oo-color-gray-d);
+    --oo-menu-shadow: 0em 0em 0.5em 0.125em var(--oo-color-gray-e);
+    --oo-menu-bg-color: var(--oo-color-bg-white);
+    --oo-dialog-shadow: 0.2em 0.2em 1em 0.125em var(--oo-color-gray-b);
+    /*****************/
+
+
+    background: transparent;
+
+
+    box-sizing: border-box;
+
+    font-family: "PingFangSC-Regular", "Microsoft YaHei", "YaHei", "SimSun", "宋体", sans-serif;
+
+    padding: 0;
+}
+
+/* 手机浏览器 */
+@media only screen and (max-width: 767px) {
+    /* 样式适用于屏幕宽度小于等于 767px 的设备 */
+    :root {
+        font-size: 16px;
+    }
+}
+@media only screen and (max-width: 767px) and (orientation: landscape) {
+    /* 样式适用于屏幕宽度小于等于 767px 的设备 */
+    :root {
+        font-size: 10px;
+    }
+}
+
+/* 平板 */
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+    /* 样式适用于屏幕宽度在 768px 到 1023px 之间的设备 */
+    :root {
+        font-size: 16px;
+    }
+}
+
+/* 主流分辨率的 PC 浏览器 */
+
+/*!* 分辨率小于或等于1024 *!*/
+/*@media only screen and (min-width: 767px) and (max-width: 1024px) {*/
+/*    :root {*/
+/*        font-size: 6px;*/
+/*    }*/
+/*}*/
+/* 分辨率大于1366x768并且小于或等于1366x992 */
+@media only screen and (min-width: 1025px) and (max-width: 1366px) {
+    :root {
+        font-size: 14px;
+    }
+}
+
+/* 分辨率大于1366x768并且小于或等于1768x992 */
+@media only screen and (min-width: 1367px) and (max-width: 1600px) {
+    :root {
+        font-size: 14px;
+    }
+}
+
+/* 分辨率大于1768x992并且小于或等于1920x1080 */
+@media only screen and (min-width: 1601px) and (max-width: 1920px) {
+    :root {
+        font-size: 14px;
+    }
+}
+
+/* 分辨率大于1920x1080并且小于或等于2160x1440 */
+@media only screen and (min-width: 1921px) and (max-width: 2160px) {
+    :root {
+        font-size: 14px;
+    }
+}
+
+/* 分辨率大于2160x1440并且小于或等于2500 */
+@media only screen and (min-width: 2161px) and (max-width: 2500px) {
+    :root {
+        font-size: 15px;
+    }
+}
+
+
+@media only screen and (min-width: 2501px) and (max-width: 2820px) {
+    :root {
+        font-size: 16px;
+    }
+}
+
+@media only screen and (min-width: 2821px) and (max-width: 3440px) {
+    :root {
+        font-size: 18px;
+    }
+}
+@media only screen and (min-width: 3441px) and (max-width: 3840px) {
+    :root {
+        font-size: 24px;
+    }
+}
+
+@media only screen and (min-width: 3841px) and (max-width: 7655px) {
+    :root {
+        font-size: 28px;
+    }
+}
+
+@media only screen and (min-width: 7656px) {
+    :root {
+        font-size: 36px;
+    }
+}

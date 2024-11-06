@@ -533,7 +533,8 @@ o2.LP={
 		"changePasswordSuccess": "Successfully change password",
 		"userAppCameraHtml": "<div>open <div styles='bindTipLinkArea'>APP </div> and scan</div>",
 		"loginToPage": "Login to the page",
-		"accessError": "Failed to access background service"
+		"accessError": "Failed to access background service",
+		"return": "return"
 	},
 	"script": {
 		"error": "Script operation error, please check the following details"

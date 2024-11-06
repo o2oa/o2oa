@@ -533,7 +533,8 @@ o2.LP={
 		"changePasswordSuccess": "Se ha modificado correctamente la contraseña",
 		"userAppCameraHtml": "<div>Abre <div styles='bindTipLinkArea'>APP</div> para escanear</div>",
 		"loginToPage": "Iniciar sesión en la versión web",
-		"accessError": "Falló al acceder a los servicios de backend"
+		"accessError": "Falló al acceder a los servicios de backend",
+		"return": "Volver"
 	},
 	"script": {
 		"error": "Error de ejecución del script, por favor revise la información detallada a continuación."

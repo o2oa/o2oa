@@ -160,6 +160,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     },
 
     setOptions: function () {
+        debugger;
         var optionItems = this.getOptions();
         this._setOptions(optionItems);
     },

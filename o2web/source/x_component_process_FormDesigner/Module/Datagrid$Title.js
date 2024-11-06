@@ -279,7 +279,6 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 		}
 	},
 	_switchShow: function( isChangeTd ){
-		debugger;
 		var tr = this.node.getParent("tr");
 		var table = tr.getParent("table");
 		var colIndex = this.node.cellIndex;

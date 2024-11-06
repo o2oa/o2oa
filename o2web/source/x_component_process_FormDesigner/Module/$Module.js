@@ -339,7 +339,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}, null);
 	},
 	selectedContainer: function(){
-		debugger;
 		if (this.parentContainer) this.parentContainer.selected();
 	},
 	styleBrush: function(){
@@ -449,7 +448,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 		this.form.unSelectedMulti();
 		this.node.setStyles({
-			"border-width": "1px",
+			"border-width": "1.5px",
 			"border-color": "red"
 		});
 
@@ -1114,7 +1113,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 	setCustomStyles: function(){
 		this._recoveryModuleData();
-		//debugger;
 		var border = this.node.getStyle("border");
 		this.node.clearStyles();
 		this.node.setStyles(this.css.moduleNode);
@@ -1182,7 +1180,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	_setEditStyle: function(name, obj, oldValue){
 		var title = "";
 		var text = "";
-		debugger;
 		if (name==="name"){
 			title = this.json.name || this.json.id;
 			if (this.json.type==="Common"){

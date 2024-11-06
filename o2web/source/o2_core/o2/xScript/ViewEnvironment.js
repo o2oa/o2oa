@@ -3884,6 +3884,19 @@ MWF.xScript.ViewEnvironment = function (ev) {
         MWF.defineProperties(this, o);
     }.bind(this);
 
+    this.exec = function(text, bind, arg=null, throwError=true){
+        const b = bind || globalThis;
+        const p = (arg) ? Object.values(arg) : [];
+        const k = (arg) ? Object.keys(arg).join(',') : '';
+        try {
+            return Function('return function('+k+'){' + text + '}')().apply(b, p);
+        }catch(e){
+            if (throwError) throw e;
+            console.error(e);
+            return '';
+        }
+    }
+
 
     //仅前台对象-----------------------------------------
     //form

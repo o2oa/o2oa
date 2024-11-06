@@ -350,6 +350,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "group_process": "流程组件",
         "group_filetext": "文件编辑组件",
         "group_function": "功能组件",
+        "group_O2OA": "O2OA组件",
         "group_element": "Element组件",
 
         "el_container": "布局容器",
@@ -374,6 +375,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_carousel": "幻灯片",
         "el-menu": "导航菜单",
         "el_common": "通用",
+
+        "oo_input": "输入框",
+        "oo_button": "按钮",
+        "oo_radioGroup": "单选",
+        "oo_checkGroup": "复选",
+        "oo_select": "下拉框",
+        "oo_textarea": "多行文本",
+        "oo_calendar": "日历",
+        "oo_datetime": "日期框",
+
 
         "importer": "数据导入",
         "readLog": "阅读记录",
@@ -1224,6 +1235,15 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_autofocus": "默认焦点",
         "el_isText": "显示文字",
         "el_iconPosition": "图标位置",
+
+        "showMode": "模式",
+        "defaultView": "初始视图",
+        "dayView": "日",
+        "monthView": "月",
+        "yearView": "年",
+        "secondEnable": "选择秒",
+        "weekBegin": "每周开始",
+
 
         "layout": "布局",
         "layoutCode": "布局代码",

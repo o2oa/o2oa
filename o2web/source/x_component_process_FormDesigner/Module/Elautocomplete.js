@@ -62,7 +62,6 @@ MWF.xApplication.process.FormDesigner.Module.Elautocomplete = MWF.FCElautocomple
 			},
 			methods: {
 				"$fetchSuggestions": function(qs, cb){
-					debugger;
 					if (this.json.itemType!=='script'){
 						if (this.json.itemValues){
 							cb(this.json.itemValues.map(function(v){

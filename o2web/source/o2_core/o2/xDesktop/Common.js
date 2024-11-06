@@ -472,25 +472,29 @@ MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
     }
 };
 MWF.xDesktop.$globalEvents = {};
-MWF.xDesktop.addEvent = function(name, type, fn){
+MWF.xDesktop.addEvent = function(appName, type, fn){
+    const name = appName || '$all';
     if (!MWF.xDesktop.$globalEvents[name]) MWF.xDesktop.$globalEvents[name] = {};
     if (!MWF.xDesktop.$globalEvents[name][type]) MWF.xDesktop.$globalEvents[name][type] = [];
     MWF.xDesktop.$globalEvents[name][type].push(fn);
 };
 
-MWF.xDesktop.addEvents = function(name, o){
+MWF.xDesktop.addEvents = function(appName, o){
+    const name = appName || '$all';
     if (!MWF.xDesktop.$globalEvents[name]) MWF.xDesktop.$globalEvents[name] = {};
     Object.each(o, function(fn, type){
         MWF.xDesktop.addEvent(name, type, fn);
     }.bind(this));
 };
 
-MWF.xDesktop.removeEvent = function(name, type, fn){
+MWF.xDesktop.removeEvent = function(appName, type, fn){
+    const name = appName || '$all';
     if (!MWF.xDesktop.$globalEvents[name]) return true;
     if (!MWF.xDesktop.$globalEvents[name][type]) return true;
     MWF.xDesktop.$globalEvents[name][type].erase(fn);
 };
-MWF.xDesktop.removeEvents = function(name, type){
+MWF.xDesktop.removeEvents = function(appName, type){
+    const name = appName || '$all';
     if (!MWF.xDesktop.$globalEvents[name]) return true;
     if (!MWF.xDesktop.$globalEvents[name][type]) return true;
     MWF.xDesktop.$globalEvents[name][type] = [];

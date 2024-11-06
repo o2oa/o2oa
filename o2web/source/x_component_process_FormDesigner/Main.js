@@ -1525,6 +1525,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     },
 	saveForm: function(){
         if (!this.isSave){
+            debugger
             var txt = this.checkSubform();
             if (txt){
                 txt = this.lp.checkFormSaveError+txt;

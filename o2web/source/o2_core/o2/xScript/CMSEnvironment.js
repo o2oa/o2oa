@@ -1807,6 +1807,20 @@ MWF.xScript.CMSEnvironment = function(ev){
         o[name] = {"value": fun, "configurable": over};
         MWF.defineProperties(this, o);
     }.bind(this);
+
+    this.exec = function(text, bind, arg=null, throwError=true){
+        const b = bind || globalThis;
+        const p = (arg) ? Object.values(arg) : [];
+        const k = (arg) ? Object.keys(arg).join(',') : '';
+        try {
+            return Function('return function('+k+'){' + text + '}')().apply(b, p);
+        }catch(e){
+            if (throwError) throw e;
+            console.error(e);
+            return '';
+        }
+    }
+
     //如果前端事件有异步调用，想要在异步调用结束后继续运行页面加载，
     //可在调用前执行 var resolve = this.wait();
     //在异步调用结束后 执行 resolve.cb()；

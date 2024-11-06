@@ -75,7 +75,6 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
             this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
         }else{
-            debugger;
             this.toolbarNode = new Element("div").inject(this.node);
 
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);

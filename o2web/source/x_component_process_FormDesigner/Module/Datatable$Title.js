@@ -304,7 +304,6 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		}
 	},
 	_setEditStyle_custom: function(name){
-		debugger;
 		if (name=="name"){
 			if (!this.json.name){
 				this.node.set("text", "DataTitle");

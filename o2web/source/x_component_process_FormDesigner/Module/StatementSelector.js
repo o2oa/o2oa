@@ -23,7 +23,6 @@ MWF.xApplication.process.FormDesigner.Module.StatementSelector = MWF.FCStatement
 		this.containerNode = null;
 	},
 	_checkView: function(callback){
-		debugger;
 		if( this.property && this.property.viewFilter ){
 			if (this.json["queryStatement"] && this.json["queryStatement"]!="none"){
 				this.property.viewFilter.resetStatementData( this.json["queryStatement"].id );
