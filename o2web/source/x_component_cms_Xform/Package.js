@@ -100,6 +100,35 @@ MWF.xApplication.cms.Xform.Html = MWF.CMSHtml =  new Class({
 	Extends: MWF.APPHtml
 });
 
+MWF.xApplication.cms.Xform.OOInput = MWF.CMSOOInput =  new Class({
+    Extends: MWF.APPOOInput
+});
+
+MWF.xApplication.cms.Xform.OOCheckGroup = MWF.CMSOOCheckGroup =  new Class({
+    Extends: MWF.APPOOCheckGroup
+});
+
+MWF.xApplication.cms.Xform.OODatetime = MWF.CMSOODatetime =  new Class({
+    Extends: MWF.APPOODatetime
+});
+
+MWF.xApplication.cms.Xform.OOButton = MWF.CMSOOButton =  new Class({
+    Extends: MWF.APPOOButton
+});
+
+MWF.xApplication.cms.Xform.OORadioGroup = MWF.CMSOORadioGroup =  new Class({
+    Extends: MWF.APPOORadioGroup
+});
+
+MWF.xApplication.cms.Xform.OOSelect = MWF.CMSOOSelect =  new Class({
+    Extends: MWF.APPOOSelect
+});
+
+MWF.xApplication.cms.Xform.OOTextarea = MWF.CMSOOTextarea =  new Class({
+    Extends: MWF.APPOOTextarea
+});
+
+
 //MWF.xDesktop.requireApp("cms.Xform", "Tab", null, false);
 
 //MWF.xApplication.cms.Xform.tab$Page = MWF.CMSTab$Page = new Class({
