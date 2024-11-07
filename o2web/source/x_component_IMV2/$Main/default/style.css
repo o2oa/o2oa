@@ -751,26 +751,26 @@
 }
 
 .chat-left_triangle {
-  height: 0px;
-  width: 0px;
+  height: 0;
+  width: 0;
   border-width: 6px;
   border-style: solid;
   border-color: transparent white transparent transparent;
   position: relative;
-  left: -12px;
-  top: 3px;
+  left: -17px;
+  top: 0;
   float: left;
 }
 
 .chat-right_triangle {
-  height: 0px;
-  width: 0px;
+  height: 0;
+  width: 0;
   border-width: 6px;
   border-style: solid;
   border-color: transparent transparent transparent #b2e281;
   position: relative;
-  right: -12px;
-  top: 3px;
+  right: -17px;
+  top: 0;
   float: right;
 }
 .chat-content-emoji {
