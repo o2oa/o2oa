@@ -83,6 +83,7 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.editable) this.json.editable = false;
         if (!this.json.size) this.json.size = "";
+        if (!this.json.valueFormat) this.json.valueFormat = this.json.format || "";
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.description) this.json.description = "";
         this.json.pickerOptions = {
@@ -107,7 +108,7 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         html += " :range-separator=\"rangeSeparator\"";
         html += " :start-placeholder=\"startPlaceholder\"";
         html += " :end-placeholder=\"endPlaceholder\"";
-        html += " :value-format=\"format\"";
+        html += " :value-format=\"valueFormat\"";
         html += " :format=\"format\"";
         html += " :picker-options=\"pickerOptions\"";
         // html += " :picker-options=\"{" +
@@ -132,6 +133,10 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         if (this.json.vueSlot) html += this.json.vueSlot;
 
         html += "</el-date-picker>";
+
+        console.log('this.json', this.json);
+        console.log('html', html);
+
         return html;
     },
     getInputData: function(){
@@ -158,4 +163,4 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
             var value = arr.length === 0  ? arr[0] : arr;
             this.setData(value, true);
         }
-}); 
+});

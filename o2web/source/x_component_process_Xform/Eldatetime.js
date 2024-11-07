@@ -78,6 +78,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.editable) this.json.editable = false;
         if (!this.json.size) this.json.size = "";
+        if (!this.json.valueFormat) this.json.valueFormat = this.json.format || "";
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.description) this.json.description = "";
         if (!this.json.arrowControl) this.json.arrowControl = false;
@@ -94,7 +95,6 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         // }
     },
     _createElementHtml: function() {
-        debugger;
         var html = "<el-date-picker";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :type=\"selectType\"";
@@ -107,7 +107,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         html += " :range-separator=\"rangeSeparator\"";
         html += " :start-placeholder=\"startPlaceholder\"";
         html += " :end-placeholder=\"endPlaceholder\"";
-        html += " :value-format=\"format\"";
+        html += " :value-format=\"valueFormat\"";
         html += " :format=\"format\"";
         html += " :picker-options=\"pickerOptions\"";
         html += " :arrow-control=\"arrowControl\"";

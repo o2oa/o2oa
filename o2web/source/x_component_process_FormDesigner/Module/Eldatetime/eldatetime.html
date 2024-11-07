@@ -29,6 +29,10 @@
 					}"}"/>{{$.lp.datetimerange}}
 				</td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.valueFormat}}:</td>
+				<td class="editTableValue"><input type="text" name="valueFormat" value="text{$.valueFormat || $.format}" class="editTableInput"/></td>
+			</tr>
 			<tr id="text{$.pid}formatTr">
 				<td class="editTableTitle">{{$.lp.format}}:</td>
 				<td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
@@ -143,7 +147,7 @@
 
 		<div class="MWFValidation" name="validationConfig"></div>
 		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
-		
+
 	</div>
 	<div title="Vue"  class="MWFTab">
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Data</div>
