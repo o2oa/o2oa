@@ -52,6 +52,7 @@ class ActionPaging extends BaseAction {
 			Root<Meeting> root = cq.from(Meeting.class);
 
 			Predicate p = cb.equal(root.get(Meeting_.applicant), effectivePerson.getDistinguishedName());
+			p = cb.or(p, cb.equal(root.get(Meeting_.auditor), effectivePerson.getDistinguishedName()));
 
 			Expression<List<String>> expression = root.get(Meeting_.invitePersonList);
 			p = cb.or(p, expression.in(effectivePerson.getDistinguishedName()));
