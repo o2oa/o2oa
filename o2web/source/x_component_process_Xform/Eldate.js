@@ -134,9 +134,6 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
 
         html += "</el-date-picker>";
 
-        console.log('this.json', this.json);
-        console.log('html', html);
-
         return html;
     },
     getInputData: function(){
