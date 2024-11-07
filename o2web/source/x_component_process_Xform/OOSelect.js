@@ -38,6 +38,29 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		// this._showValue(contentNode, data.data);
 	},
 
+	_loadDomEvents: function(){
+		Object.each(this.json.events, function(e, key){
+			if (e.code){
+				if (this.options.moduleEvents.indexOf(key)===-1){
+					var target;
+					switch (key){
+						case "change":
+							target = this.node;
+							break;
+						case 'blur': case 'focus':
+							target = (this.node._elements ? this.node._elements.input : null) || this.node;
+							break;
+						default:
+							target = (this.node._elements ? this.node._elements.box : null) || this.node;
+					}
+					target.addEvent(key, function(event){
+						return this.form.Macro.fire(e.code, this, event);
+					}.bind(this));
+				}
+			}
+		}.bind(this));
+	},
+
 	__showValue: function(node, value, optionItems){
         // if (value){
         //     if (typeOf(value)!=="array") value = [value];
@@ -248,4 +271,4 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	validationMode: function () {
 		this.validationText = '';
 	}
-}); 
+});

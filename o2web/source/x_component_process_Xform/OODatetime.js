@@ -12,7 +12,28 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
     loadDescription: function () {
         this.node.setAttribute('placeholder', this.json.description || '');
     },
-
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    var target;
+                    switch (key){
+                        case "change":
+                            target = this.node;
+                            break;
+                        case 'blur': case 'focus':
+                            target = (this.node._elements ? this.node._elements.input : null) || this.node;
+                            break;
+                        default:
+                            target = (this.node._elements ? this.node._elements.box : null) || this.node;
+                    }
+                    target.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
     _loadNodeEdit: function () {
         this.node.set({
             'id': this.json.id,
@@ -52,24 +73,25 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         }
 
 
-        this.node.setAttribute("yearOnly", false);
-        this.node.setAttribute("monthOnly", false);
-        this.node.setAttribute("dateOnly", false);
-        this.node.setAttribute("weekOnly", false);
-        this.node.setAttribute("timeOnly", false);
+        this.node.setAttribute("year-only", false);
+        this.node.setAttribute("month-only", false);
+        this.node.setAttribute("date-only", false);
+        this.node.setAttribute("week-only", false);
+        this.node.setAttribute("time-only", false);
 
-        if (this.json.datatype){
-            if (this.json.datatype !== "dateTime"){
+        if (this.json.dataType){
+            if (this.json.dataType !== "dateTime"){
+                console.log('this.json.dataType', this.json.dataType)
                 this.node.setAttribute(this.json.dataType, true);
             }
         }
         if (this.json.secondEnable === "yes"){
-            this.node.setAttribute("secondEnable", true);
+            this.node.setAttribute("second-enable", true);
         }else{
-            this.node.setAttribute("secondEnable", false);
+            this.node.setAttribute("second-enable", false);
         }
 
-        this.node.setAttribute("weekBegin", this.json.secondEnable || 1);
+        this.node.setAttribute("week-begin", this.json.weekBegin || 1);
 
         if (this.json.format) this.node.setAttribute("format", this.json.format);
 
@@ -117,4 +139,4 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
     validationMode: function () {
         this.validationText = '';
     }
-}); 
+});
