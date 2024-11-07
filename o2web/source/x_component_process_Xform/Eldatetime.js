@@ -94,6 +94,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         // }
     },
     _createElementHtml: function() {
+        debugger;
         var html = "<el-date-picker";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :type=\"selectType\"";
@@ -156,4 +157,4 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             var value = arr.length === 0  ? arr[0] : arr;
             this.setData(value, true);
         }
-}); 
+});

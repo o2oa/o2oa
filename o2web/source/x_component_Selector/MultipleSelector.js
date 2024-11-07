@@ -611,6 +611,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
 
+        if( !MWF.O2Selector.selectedIndex )MWF.O2Selector.selectedIndex = 1;
         var selectedIndexMap = {};
         var firstType = this.options.types[0];
         var values = this.options[firstType+'Options'] ? this.options[firstType+'Options'].values : [];
@@ -956,7 +957,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             }
         }
         this.selectedItems.sort(function (a, b){
-            return a.selectedIndex - b.selectedIndex;
+            return (a.selectedIndex || 9999999) - (b.selectedIndex || 9999999);
         });
         return this.selectedItems;
     },

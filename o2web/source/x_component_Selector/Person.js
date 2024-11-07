@@ -2707,7 +2707,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             this.data.isFromValues = false;
         }
 
-        if(!this.selectedIndex)this.selectedIndex = MWF.O2Selector.selectedIndex++;
+        if(!this.selectedIndex && MWF.O2Selector.selectedIndex)this.selectedIndex = MWF.O2Selector.selectedIndex++;
 
         this.getData(function(){
             this.node.setStyle("display","");
