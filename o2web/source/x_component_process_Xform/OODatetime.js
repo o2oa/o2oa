@@ -81,7 +81,6 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
 
         if (this.json.dataType){
             if (this.json.dataType !== "dateTime"){
-                console.log('this.json.dataType', this.json.dataType)
                 this.node.setAttribute(this.json.dataType, true);
             }
         }
