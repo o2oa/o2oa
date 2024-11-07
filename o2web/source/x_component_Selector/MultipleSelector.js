@@ -1,6 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 //MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
+if(!MWF.O2Selector)MWF.O2Selector = {};
 MWF.xApplication.Selector.MultipleSelector = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
