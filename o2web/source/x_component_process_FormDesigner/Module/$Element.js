@@ -13,7 +13,6 @@ MWF.xApplication.process.FormDesigner.Module.$Element = MWF.FC$Element = new Cla
 
 	_dragIn: function(module){
 		module.onDragModule = this;
-		console.log(module.moduleName);
         if (this.parentContainer.moduleName === "datagrid$Data") {
 			this.parentContainer._dragIn(module);
 		}else if( this.parentContainer.moduleName === "datatable$Data" && !this.parentContainer.options.allowModules.contains( module.moduleName )){
