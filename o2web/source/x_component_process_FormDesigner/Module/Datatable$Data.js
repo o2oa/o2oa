@@ -28,21 +28,26 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 				"title": MWF.APPFD.LP.formAction["selectParent"]
 			}
 		],
-		"allowModules": ["textfield", "number", "currency", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "combox", "image", "label",
-			"htmleditor", "tinymceeditor", "button","imageclipper", "address", "attachment", "elinput", "elcheckbox", "elselect", "elautocomplete", "elnumber", "elradio", "elcascader",
-			"elswitch", "elslider", "eltime", "eldate", "eldatetime", "elrate"]
+		"allowModules": [
+			"textfield", "number", "currency", "personfield", "orgfield", "org", "calendar",
+			"textarea", "select", "radio", "checkbox", "combox", "image", "label",
+			"htmleditor", "tinymceeditor", "button","imageclipper", "address", "attachment",
+			"elinput", "elcheckbox", "elselect", "elautocomplete", "elnumber", "elradio", "elcascader",
+			"elswitch", "elslider", "eltime", "eldate", "eldatetime", "elrate",
+			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup"
+		]
 	},
-	
+
 	initialize: function(form, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_FormDesigner/Module/Datatable$Data/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/Datatable$Data/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "container";
 		this.moduleName = "datatable$Data";
-		
+
 		this.Node = null;
 		this.form = form;
 	},
@@ -63,12 +68,12 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		this.node= node;
 		this.node.store("module", this);
 		this.node.setStyles(this.css.moduleNode);
-		
+
 		if (!this.json.id){
 			var id = this._getNewId(parent.json.id);
 			this.json.id = id;
 		}
-		
+
 		node.set({
 			"MWFType": "datatable$Data",
 			"id": this.json.id
@@ -80,7 +85,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		this._initModule();
 		this._loadTreeNode(parent);
 		this.form.parseModules(this, this.node);
-		
+
 		this.parentContainer = this.treeNode.parentNode.module;
         this._setEditStyle_custom("id");
         this.checkSequence();
@@ -204,7 +209,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 			}
 		}
 	},
-	
+
 	_showActions: function(){
 		if (this.actionArea){
 			this._setActionAreaPosition();
@@ -221,10 +226,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 				break;
 			}
 		}
-		
+
 		var tr = this.node.getParent("tr");
 		var table = tr.getParent("table");
-		
+
 		var colIndex = this.node.cellIndex;
 		var titleTr = table.rows[0];
 		var dataTr = table.rows[1];
@@ -242,7 +247,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 				this.parentContainer.elements.push(thElement);
 			}.bind(this));
 		}
-		
+
 		var baseTd = dataTr.cells[colIndex];
 		for (var n=1; n<=cols; n++){
 			var newTd = new Element("td").inject(baseTd, position);
@@ -254,7 +259,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 				this.parentContainer.containers.push(tdContainer);
 			}.bind(this));
 		}
-		
+
 		this.unSelected();
 		this.selected();
 
@@ -264,10 +269,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		var tr = this.node.getParent("tr");
 		var table = tr.getParent("table");
 		var colIndex = this.node.cellIndex;
-		
+
 		var titleTr = table.rows[0];
 		var dataTr = table.rows[1];
-		
+
 		if (tr.cells.length<=1){
 			this.parentContainer.destroy();
 		}else{
@@ -279,13 +284,13 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 				thModule.parentContainer.elements.erase(thModule);
 				thModule.destroy();
 			}
-			
+
 			var tdModule = deleteTd.retrieve("module");
 			if (tdModule){
 				tdModule.parentContainer.containers.erase(tdModule);
 				tdModule.destroy();
 			}
-			
+
 		}
 	},
 	_switchShow : function (isShow) {
@@ -296,5 +301,5 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		}
 		this.node.setStyle("opacity", isShow ? "1" : "0.3");
 	}
-	
+
 });
