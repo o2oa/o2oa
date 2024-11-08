@@ -56,7 +56,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
                 }.bind(this));
                 this.node.set("text", this.json.rangeSeparator ? ds.join(this.json.rangeSeparator) : ds );
             }else{
-                this.node.set("text", this.formatDate(new Date(data), format) );
+                this.node.set("text", data ? this.formatDate(new Date(data), format) : "");
             }
 
             if( this.json.elProperties ){
