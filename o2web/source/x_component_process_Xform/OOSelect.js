@@ -218,6 +218,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	// 		this[mothed](value, fireChange);
 	// 	}
 	// },
+
 	__setValue: function(value){
 		this._setBusinessData(value);
 		this.node.value = value;
@@ -257,10 +258,12 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	},
 
 	__setData: function(data, fireChange){
+		var old = this.getInputData();
 		this.moduleValueAG = null;
 		this._setBusinessData(data);
 		this.node.set('value', data || '');
 		this.fieldModuleLoaded = true;
+		if (fireChange && old!==data) this.fireEvent("change");
 		return value;
 	},
 

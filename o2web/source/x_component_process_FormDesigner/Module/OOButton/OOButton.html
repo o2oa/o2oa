@@ -28,8 +28,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.disabled}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="disabled" value="true" text{($.showIcon)?'checked':''}/>{{$.lp.yes}}
-                    <input type="radio" name="disabled" value="false" text{(!$.showIcon)?'checked':''}/>{{$.lp.no}}
+                    <input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>

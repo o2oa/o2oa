@@ -119,6 +119,13 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
             'text': MWF.xApplication.process.Xform.LP.ANNInput
         }).inject(this.modelNode);
     },
+    __setData: function(data, fireChange){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        this.node.value = data;
+        if (fireChange && old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+    },
     __setValue: function (value) {
         this.moduleValueAG = null;
         this._setBusinessData(value);
