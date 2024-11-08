@@ -55,9 +55,13 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
     },
     __setReadonly: function(data){
         if (this.isReadonly()){
+            var format = this.json.format || this.json.valueFormat;
             if( o2.typeOf(data) === "array" ){
                 if( ["monthrange","daterange"].contains(this.json.selectType) ) {
-                    this.node.set("text", this.json.rangeSeparator ? data.join(this.json.rangeSeparator) : data);
+                    var ds = data.map(function (d){
+                        return this.formatDate(new Date(d), format);
+                    }.bind(this));
+                    this.node.set("text", this.json.rangeSeparator ? ds.join(this.json.rangeSeparator) : ds);
                 }else{
                     this.node.set("text", data );
                 }
@@ -159,5 +163,46 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
             this.excelData = arr;
             var value = arr.length === 0  ? arr[0] : arr;
             this.setData(value, true);
+        },
+        formatDate: function (date, format) {
+            var o = {
+                'M+': date.getMonth() + 1, // 月份
+                'd+': date.getDate(), // 日
+                'h+': date.getHours() % 12 === 0 ? 12 : date.getHours() % 12, // 小时
+                'H+': date.getHours(), // 小时
+                'm+': date.getMinutes(), // 分
+                's+': date.getSeconds(), // 秒
+                'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+                d: date.getDay(),
+                S: date.getMilliseconds(), // 毫秒
+                a: date.getHours() < 12 ? 'am' : 'pm', // 上午/下午
+                A: date.getHours() < 12 ? 'AM' : 'PM', // AM/PM
+            };
+            if (/(y+)/.test(format)) {
+                format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+            }
+            if (/(W+)/.test(format)) {
+                o['W+'] = this.weekNumberOfDate(date);
+            }
+            for (let k in o) {
+                if (new RegExp('(' + k + ')').test(format)) {
+                    format = format.replace(
+                        RegExp.$1,
+                        RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length)
+                    );
+                }
+            }
+            return format;
+        },
+        weekNumberOfDate: function ( date ){
+            var target  = new Date(date.getTime());
+            var dayNumber   =  ( 7 + date.getDay() - parseInt( (this.json.firstDayOfWeek || 0) ) ) % 7;
+            target.setDate(target.getDate() - dayNumber + 3);
+            var firstThursday = target.valueOf();
+            target.setMonth(0, 1);
+            if (target.getDay() !== 4) {
+                target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+            }
+            return 1 + Math.ceil((firstThursday - target) / 608400000); // 604800000 = 7 * 24 * 3600 * 1000
         }
 });

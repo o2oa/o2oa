@@ -1,4 +1,4 @@
-o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
+o2.xDesktop.requireApp("process.Xform", "Eldate", null, false);
 /** @class Eldatetime 基于Element UI的日期时间选择组件。
  * @o2cn 日期时间选择
  * @example
@@ -17,7 +17,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
     /** @lends o2.xApplication.process.Xform.Eldatetime# */
     {
     Implements: [Events],
-    Extends: MWF.APP$Elinput,
+    Extends: MWF.APPEldate,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         /**
@@ -37,10 +37,6 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
          */
         "elEvents": ["focus", "blur", "change"]
     },
-    _loadMergeReadContentNode: function( contentNode, data ){
-        var d = o2.typeOf( data.data ) === "array" ? data.data : [data.data];
-        contentNode.set("text", d.join( this.json.rangeSeparator ? " "+this.json.rangeSeparator+" " : " 至 " ) );
-    },
     _queryLoaded: function(){
         var data = this._getBusinessData();
         if( data ){
@@ -52,11 +48,15 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         }
     },
     __setReadonly: function(data){
+        var format = this.json.format || this.json.valueFormat;
         if (this.isReadonly()){
             if( o2.typeOf(data) === "array" ){
-                this.node.set("text", this.json.rangeSeparator ? data.join(this.json.rangeSeparator) : data );
+                var ds = data.map(function (d){
+                    return this.formatDate(new Date(d), format);
+                }.bind(this));
+                this.node.set("text", this.json.rangeSeparator ? ds.join(this.json.rangeSeparator) : ds );
             }else{
-                this.node.set("text", data );
+                this.node.set("text", this.formatDate(new Date(data), format) );
             }
 
             if( this.json.elProperties ){
@@ -145,16 +145,5 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             }
         }
         return this.json[this.json.$id];
-    },
-
-        getExcelData: function(){
-            var value = this.getData();
-            return o2.typeOf(value) === "array" ? value.join(", ") : value;
-        },
-        setExcelData: function(data){
-            var arr = this.stringToArray(data);
-            this.excelData = arr;
-            var value = arr.length === 0  ? arr[0] : arr;
-            this.setData(value, true);
-        }
+    }
 });
