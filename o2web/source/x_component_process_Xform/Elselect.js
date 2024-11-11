@@ -338,6 +338,11 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 var text = this.__getOptionsText(options, values);
                 this.node.set("text", text.join(","));
 
+                if( !this.eventLoaded ){
+                    this._loadDomEvents();
+                    this.eventLoaded = true;
+                }
+
                 this.fireEvent("load");
                 this.isLoaded = true;
             }.bind(this));
@@ -415,4 +420,4 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 this.moduleExcelAG = null;
             }.bind(this))
         }
-}); 
+});

@@ -66,6 +66,11 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
 
+            if( !this.eventLoaded ){
+                this._loadDomEvents();
+                this.eventLoaded = true;
+            }
+
             this.fireEvent("postLoad");
             this.fireEvent("load");
             this.isLoaded = true;
@@ -145,5 +150,16 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             }
         }
         return this.json[this.json.$id];
-    }
+    },
+
+        getExcelData: function(){
+            var value = this.getData();
+            return o2.typeOf(value) === "array" ? value.join(", ") : value;
+        },
+        setExcelData: function(data){
+            var arr = this.stringToArray(data);
+            this.excelData = arr;
+            var value = arr.length === 0  ? arr[0] : arr;
+            this.setData(value, true);
+        }
 });

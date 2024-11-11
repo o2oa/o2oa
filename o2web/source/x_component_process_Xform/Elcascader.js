@@ -219,6 +219,11 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                         this.node.setStyles( this._parseStyles(this.json.elStyles) );
                     }
 
+                    if( !this.eventLoaded ){
+                        this._loadDomEvents();
+                        this.eventLoaded = true;
+                    }
+
                     this.fireEvent("load");
                     this.isLoaded = true;
                 }
@@ -387,4 +392,4 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 this.setData(data);
             }
         }
-}); 
+});

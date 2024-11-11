@@ -1,6 +1,6 @@
 MWF.xApplication = MWF.xApplication || {};
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
-MWF.xApplication.Selector.LP={
+MWF.xApplication.Selector.LP = MWF.SelectorLP ={
 	"title": "Select",
 	"multiSelectTitle": "Select",
 	"selectPerson": "Select Person",

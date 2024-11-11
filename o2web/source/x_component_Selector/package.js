@@ -21,6 +21,7 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
         MWF.O2Selector.selectedIndex = 1;
         if( !MWF.xApplication.Selector.LP ){
             MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
+            if( !MWF.SelectorLP )MWF.SelectorLP = MWF.xApplication.Selector.LP;
         }
         //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
         this.loading = true;

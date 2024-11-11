@@ -35,7 +35,7 @@ MWF.xApplication.Org.Main = new Class({
 		this.startMenuNode = new Element("div", {
 			"styles": this.css.startMenuNode
 		}).inject(this.node);
-		
+
 		this.menu = new MWF.xApplication.Org.Menu(this, this.startMenuNode, {
 			"onPostLoad": function(){
 
@@ -50,7 +50,7 @@ MWF.xApplication.Org.Main = new Class({
 			if (this.menu) this.menu.onResize();
 		}.bind(this));
 	},
-	
+
 	clearContent: function(){
 		if (this.orgConfiguratorContentNode){
             if (this.orgConfigurator){
@@ -189,7 +189,7 @@ MWF.xApplication.Org.Main = new Class({
         this.importPersonTitleNode.set("text", this.lp.importPersonTitle);
         this.importPersonTemplateNode.set("html", infor);
         this.importPersonNode.set("text", this.lp.importPersonAction);
-		
+
 
         this.importPersonNode.addEvent("click", function(){
             this.importPersonResultNode.hide();
@@ -258,13 +258,13 @@ MWF.xApplication.Org.Main = new Class({
         }
         return {"navi": idx};
     }
-	
+
 });
 
 
 MWF.xApplication.Org.Menu = new Class({
 	Implements: [Options, Events],
-	
+
 	initialize: function(app, node, options){
 		this.setOptions(options);
 		this.app = app;
@@ -307,7 +307,7 @@ MWF.xApplication.Org.Menu = new Class({
 				}
 			}.bind(this));
 			this.setStartMenuWidth();
-			
+
 			this.fireEvent("postLoad");
 		}.bind(this));
 	},
@@ -376,7 +376,7 @@ MWF.xApplication.Org.Menu = new Class({
         this.app.pingyinArea = new Element("div", {"styles": this.app.css.startMenuNaviLeftPingyinNode}).inject(this.node, "top");
 		this.morph.start(css).chain(function(){
 			this.node.setStyles(css);
-			
+
 			// MWF.require("MWF.widget.ScrollBar", function(){
 			// 	new MWF.widget.ScrollBar(this.node, {
 			// 		"style":"xApp_ProcessManager_StartMenu", "distance": 100, "friction": 4,	"axis": {"x": false, "y": true}
@@ -387,7 +387,7 @@ MWF.xApplication.Org.Menu = new Class({
 	setNodeCenter: function(node){
 		var size = node.getSize();
 		var contentSize = this.app.node.getSize();
-		
+
 		var top = contentSize.y/2 - size.y/2;
 		var left = contentSize.x/2 - size.x/2;
 
@@ -397,21 +397,21 @@ MWF.xApplication.Org.Menu = new Class({
 	},
 	getStartMenuNormalSize: function(){
 		var naviItemNode = this.node.getFirst();
-		
+
 		var size = naviItemNode.getComputedSize();
 		var mt = naviItemNode.getStyle("margin-top").toFloat();
 		var mb = naviItemNode.getStyle("margin-bottom").toFloat();
 		var height = size.totalWidth+mt+mb;
-		
+
 		var ml = naviItemNode.getStyle("margin-left").toFloat();
 		var mr = naviItemNode.getStyle("margin-right").toFloat();
 		var width = size.totalWidth+ml+mr;
-		
+
 		return {"width": width, "height": height*this.startNavis.length};
 	},
 	setStartMenuWidth: function(){
 		var naviItemNode = this.node.getFirst();
-		
+
 		var size = naviItemNode.getComputedSize();
 		var ml = naviItemNode.getStyle("margin-left").toFloat();
 		var mr = naviItemNode.getStyle("margin-right").toFloat();
