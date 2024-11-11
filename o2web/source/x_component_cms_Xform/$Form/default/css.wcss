@@ -13,7 +13,7 @@
 		"width": "18px",
 		"height": "18px",
 		"float": "right",
-		"cursor": "pointer" 
+		"cursor": "pointer"
 	},
     "orgfieldIcon": {
         "background": "url(../x_component_cms_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
@@ -63,7 +63,7 @@
 		"width": "18px",
 		"height": "18px",
 		"float": "right",
-		"cursor": "pointer" 
+		"cursor": "pointer"
 	},
 	"selectIcon": {
 		"background": "url(../x_component_cms_Xform/$Form/default/icon/pull.png) center center no-repeat",
@@ -186,7 +186,6 @@
 		"float": "left"
 	},
   "datatableMoveLineAction": {
-    "width": "5px",
     "color": "#aaa",
     "cursor": "pointer",
     "float": "left"
