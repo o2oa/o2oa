@@ -267,4 +267,4 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
          if(children && o2.typeOf(children)==="array" )this._parseData( children, config );
      }
 
-}); 
+});

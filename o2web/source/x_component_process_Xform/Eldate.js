@@ -71,6 +71,11 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
 
+            if( !this.eventLoaded ){
+                this._loadDomEvents();
+                this.eventLoaded = true;
+            }
+
             this.fireEvent("postLoad");
             this.fireEvent("load");
             this.isLoaded = true;
@@ -158,4 +163,4 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
             var value = arr.length === 0  ? arr[0] : arr;
             this.setData(value, true);
         }
-}); 
+});
