@@ -1,0 +1,37 @@
+{
+  "OOInput": {
+    "icon": "textfield.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_input,
+    "className": "OOInput"
+  },
+  "OOButton": {
+    "icon": "button.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_button,
+    "className": "OOButton"
+  },
+  "OORadioGroup": {
+    "icon": "radio.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_radioGroup,
+    "className": "OORadioGroup"
+  },
+  "OOCheckGroup": {
+    "icon": "checkbox.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_checkGroup,
+    "className": "OOCheckGroup"
+  },
+  "OOSelect": {
+    "icon": "select.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_select,
+    "className": "OOSelect"
+  },
+  "OOTextarea": {
+    "icon": "textarea.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_textarea,
+    "className": "OOTextarea"
+  },
+  "OODatetime": {
+    "icon": "calendar.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_datetime,
+    "className": "OODatetime"
+  }
+}

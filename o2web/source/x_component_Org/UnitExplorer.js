@@ -1097,7 +1097,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             }.bind(this));
         }.bind(this));
     },
-    
+
     checkSaveBaseInfor: function(callback){
         if (!this.data.id){
             if (this.baseInfor){
@@ -1289,7 +1289,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
 
         tdContents[7].setStyles(this.style.baseInforContentNode_edit).empty();
         this.orderNumberInputNode = new Element("input", {"styles": this.style.inputNode, "type":"number"}).inject(tdContents[7]);
-        this.orderNumberInputNode.set("value", (this.data.orderNumber || ""));
+        this.orderNumberInputNode.set("value", (o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber ));
         //this.controllerListInputNode.set("value", ((this.data.controllerList) ? this.data.controllerList.join(", ") : ""));
 
         if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, this.superUnitInputNode, {"style": "xform"});
@@ -1475,7 +1475,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
             //tdContents[5].setStyles(this.style.baseInforContentNode).set("text", ((this.data.controllerList.length) ? this.data.controllerList.join(", "): ""));
             tdContents[5].setStyles(this.style.baseInforContentNode).empty();
             tdContents[6].setStyles(this.style.baseInforContentNode).empty();
-            tdContents[7].setStyles(this.style.baseInforContentNode).set("text", this.data.orderNumber || "");
+            tdContents[7].setStyles(this.style.baseInforContentNode).set("text", o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber );
 
             if( !flag ){
                 if (this.data.oldSuperior) this.data.superior = this.data.oldSuperior;

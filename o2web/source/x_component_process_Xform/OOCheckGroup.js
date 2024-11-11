@@ -94,6 +94,13 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
             this[mothed](value, fireChange);
         }
     },
+    __setData: function(data, fireChange){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        this.node.value = data;
+        if (fireChange && old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+    },
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
@@ -126,4 +133,4 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
     // validationMode: function () {
     //     this.validationText = '';
     // }
-}); 
+});

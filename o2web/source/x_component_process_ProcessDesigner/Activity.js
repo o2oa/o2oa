@@ -412,14 +412,16 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
             this.set.toFront();
             this.set.isFront = true;
         }
-        //this.paperSize = $(this.paper.canvas).getParent().getSize();
+        var paperSize = this.process.getPaperSize();
+
 
         if ((this.set.ox+dx)<0)	dx = 0 - this.set.ox;
-        if ((this.set.ox+dx+this.width)>this.paperSize.x){
-            this.paperSize.x = this.set.ox+dx+this.width;
-            this.paper.setSize(this.paperSize.x, this.paperSize.y);
+        if ((this.set.ox+dx+this.width)>paperSize.x){
+            //this.paperSize.x = this.set.ox+dx+this.width;
+            this.process.setPaperSizeX( this.set.ox+dx+this.width );
+            this.paper.setSize(paperSize.x, paperSize.y);
             //alert("set width");
-            $(this.paper.canvas).getParent().setStyle("width", ""+this.paperSize.x+"px");
+            $(this.paper.canvas).getParent().setStyle("width", ""+paperSize.x+"px");
         }
         //if ((this.set.ox+dx+this.width)<this.paperOriginalSize.x){
         //    if (this.paperSize.x > this.paperOriginalSize.x){
@@ -431,11 +433,12 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         //}
 
         if ((this.set.oy + dy)<0) dy = 0 - this.set.oy;
-        if ((this.set.oy + dy+this.height)>this.paperSize.y){
-            this.paperSize.y = this.set.oy + dy+this.height;
-            this.paper.setSize(this.paperSize.x, this.paperSize.y);
+        if ((this.set.oy + dy+this.height)>paperSize.y){
+            //this.paperSize.y = this.set.oy + dy+this.height;
+            this.process.setPaperSizeY( this.set.oy + dy+this.height );
+            this.paper.setSize(paperSize.x, paperSize.y);
             //alert("set height");
-            $(this.paper.canvas).getParent().setStyle("height", ""+this.paperSize.y+"px");
+            $(this.paper.canvas).getParent().setStyle("height", ""+paperSize.y+"px");
         }
         //if ((this.set.oy + dy+this.height)<this.paperOriginalSize.y){
         //    if (this.paperSize.y > this.paperOriginalSize.y){

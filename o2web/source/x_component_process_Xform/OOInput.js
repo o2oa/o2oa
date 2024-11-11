@@ -16,7 +16,28 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
     loadDescription: function () {
         this.node.setAttribute('placeholder', this.json.description || '');
     },
-
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    var target;
+                    switch (key){
+                        case "change":
+                            target = this.node;
+                            break;
+                        case 'blur': case 'focus':
+                            target = (this.node._elements ? this.node._elements.input : null) || this.node;
+                            break;
+                        default:
+                            target = (this.node._elements ? this.node._elements.box : null) || this.node;
+                    }
+                    target.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
     _loadNodeEdit: function () {
         // var node = new Element('oo-input', {
         //     'id': this.json.id,
@@ -105,6 +126,13 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
             'text': MWF.xApplication.process.Xform.LP.ANNInput
         }).inject(this.modelNode);
     },
+    __setData: function(data, fireChange){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        this.node.value = data;
+        if (fireChange && old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+    },
     __setValue: function (value) {
         this.moduleValueAG = null;
         this._setBusinessData(value);
@@ -125,4 +153,4 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
     validationMode: function () {
         this.validationText = '';
     }
-}); 
+});

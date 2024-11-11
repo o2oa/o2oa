@@ -14,15 +14,15 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		"style": "default",
         "isView": false
 	},
-	
+
 	initialize: function(paper, process, designer, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_ProcessDesigner/$Process/";
 		this.cssPath = "../x_component_process_ProcessDesigner/$Process/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
-		
+
 		this.designer = designer;
 		this.process = process;
 		this.process.projectionData = (process.project) ? JSON.parse(process.project) : null;
@@ -32,9 +32,9 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		if(this.designer.application) this.process.application = this.designer.application.id;
 
 	//	if(this.designer.category) this.process.processCategory = this.designer.category.data.id;
-		
+
 	//	this.process.starterMode = "assign";
-		
+
 		this.activityTemplates = null;
 		this.routeTemplates = null;
 
@@ -57,14 +57,14 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         this.messages = {};
 
 		this.activitys=[];
-		
+
 		this.selectedActivitys = [];
 		this.selectedActivityDatas = [];
-		
+
 		this.scripts = {};
 		this.routes = {};
 		this.routeDatas = {};
-		
+
 		this.isGrid = true;
 
         //activity loaded
@@ -84,29 +84,29 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         this.loadedServices = false;
         this.loadedAgents = false;
         this.loadedMessages = false;
-		
+
 		this.isCreateRoute = false;
 		this.currentCreateRoute = null;
-		
+
 		this.isCopyRoute = false;
 		this.currentCopyRoute = null;
-		
+
 		this.isBrokenLine = false;
-		
+
 		this.isChangeRouteTo = false;
 		this.isChangeRouteFrom = false;
 		this.currentChangeRoute = null;
 
 		this.unSelectedEvent = true;
-		
+
 		this.panel = null;
 		this.property = null;
 
     //    this.isFocus = false;
-		
+
 		this.isNewProcess = (this.process.id) ? false : true;
 	},
-	
+
 	load : function(){
 //		if (this.isNewProcess){
 //			this.process.createTime = new Date().format('db');
@@ -124,7 +124,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
             this.fireEvent("postLoad");
 		}.bind(this));
-		
+
 		this.setEvent();
 		this.setMenu();
 		this.showProperty();
@@ -162,14 +162,14 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			this.process.id = this.checkUUIDs.pop().id;
 			this.process.createTime = new Date().format('db');
 			this.process.updateTime = new Date().format('db');
-			
+
 			for (var i=0; i<this.activitys.length; i++){
 				if (this.activitys[i].type!="begin"){
 					delete this[this.activitys[i].type+"s"][this.activitys[i].data.id];
 				}
 				this.activitys[i].data.id = this.checkUUIDs.pop().id;
 				this.activitys[i].data.process = this.process.id;
-				
+
 				if (this.activitys[i].type!="begin"){
 					this[this.activitys[i].type+"s"][this.activitys[i].data.id] = this.activitys[i];
 				}
@@ -179,7 +179,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	loadProcessScripts: function(){
 		if (this.process.scriptList){
 			this.process.scriptList.each(function(script){
@@ -187,7 +187,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			}.bind(this));
 		}
 	},
-	
+
 	setStyle: function(style){
 		this.options.style = style;
 		this.reload(this.process);
@@ -243,7 +243,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         //    "focus": function(){this.isFocus = true;}.bind(this)
         //});
 	},
-	
+
 	checkSelectMulti: function(e){
 		if (!e.rightClick){
 			var x = e.event.offsetX;
@@ -276,30 +276,30 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		var pMove = {"x": e.event.offsetX, "y": e.event.offsetY};
 		if (MWFRaphael.getPointDistance(p,pMove)>8){
 			this.paper.canvas.removeEvent("mousemove", this.checkSelectMultiMouseMoveBind);
-			
+
 			if (!this.isCreateRoute && !this.isCopyRoute && !this.isBrokenLine && !this.isChangeRouteTo && !this.isChangeRouteFrom){
 				var x = Math.min(p.x, pMove.x);
 				var y = Math.min(p.y, pMove.y);
 				var width = Math.abs(pMove.x-p.x);
 				var height = Math.abs(pMove.y-p.y);
-				
+
 				var selectBox = this.paper.rect(x, y, width, height, 0).attr({
 					"fill": "#a8caec",
 					"stroke": "#3399ff",
 					"stroke-width": "0.8",
 					"fill-opacity": 0.5
 				});
-				
+
 				this.beginSelectMultiMouseMoveBind = function(e){
 					this.beginSelectMultiMouseMove(e, p, selectBox);
 				}.bind(this);
 				this.endSelectMultiMouseMoveBind = function(e){
 					return this.endSelectMulti(e, p, selectBox);
 				}.bind(this);
-				
-				
+
+
 				this.unSelectedAll();
-				
+
 				this.paper.canvas.addEvent("mousemove", this.beginSelectMultiMouseMoveBind);
 				this.paper.canvas.addEvent("mouseup", this.endSelectMultiMouseMoveBind);
 			}
@@ -314,7 +314,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		var y = Math.min(p.y, pMove.y);
 		var width = Math.abs(pMove.x-p.x);
 		var height = Math.abs(pMove.y-p.y);
-		
+
 //		rect.attr("path", MWFRaphael.getRectPath(x, y, width, height, 0));
 		rect.attr({
 			//"path", MWFRaphael.getRectPath(x, y, width, height, 0)
@@ -323,7 +323,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			"width": width,
 			"height": height
 		});
-		
+
 		this.checkSelectActivity(e, p, rect);
 	},
 	endSelectMulti: function(e, p, rect){
@@ -345,7 +345,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		var y = Math.min(p.y, pMove.y);
 		var toX = Math.max(p.x, pMove.x);
 		var toY = Math.max(p.y, pMove.y);
-		
+
 		this.activitys.each(function(activity){
 			var ax = activity.center.x;
 			var ay = activity.center.y;
@@ -430,7 +430,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			this.showProperty();
 	//		if (this.currentSelected){
 	//			this.currentSelected.unSelected();
-	//		} 
+	//		}
 		}
 	},
 	setMenu: function(){
@@ -440,28 +440,28 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 					//var obj = this.getPointElement(e.event.layerX, e.event.layerY);
 					var obj = this.getPointElement(e.event.offsetX, e.event.offsetY);
 					switch (obj.type){
-						case "activity": 
+						case "activity":
 							this.addActivityMenu(obj.bind);
 							break;
-						case "route": 
+						case "route":
 							this.addRouteMenu(obj.bind);
 							break;
-						default: 
+						default:
 							this.addProcessMenu();
 					};
-					
+
 				}.bind(this)
 			});
 			this.menu.load();
 		}.bind(this));
 	},
-	
+
 	addPublicMenu: function(bind, newRoute){
 		var newRouteFun = newRoute;
 		if (!newRouteFun) newRouteFun = this.createRoute.bind(this);
-		
+
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.newRoute, "click", newRouteFun, this.designer.path+""+this.options.style+"/toolbarIcon/"+"newRouter.gif");
-		
+
 		if (!this.newActivityMenu){
 			MWF.require("MWF.widget.Menu", null, false);
 			this.newActivityMenu = new MWF.widget.Menu(this.paper.canvas, {"event": null});
@@ -481,10 +481,10 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	},
 	addActivityMenu: function(bind){
 		this.menu.clearItems();
-		
+
 		var newRoute = function(){bind.quickCreateRoute();};
 		this.addPublicMenu(bind, newRoute);
-		
+
 		this.menu.addMenuLine();
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.copyActivity, "click", function(e){this.copyActivity(bind);}.bind(this), this.designer.path+""+this.options.style+"/toolbarIcon/"+"copy.png");
 		this.menu.addMenuLine();
@@ -492,36 +492,36 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	},
 	addRouteMenu: function(bind){
 		this.menu.clearItems();
-		
+
 		this.addPublicMenu();
-		
+
 		this.menu.addMenuLine();
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.deleteRoute, "click", function(e){this.deleteRoute(e, bind);}.bind(this), this.designer.path+""+this.options.style+"/toolbarIcon/"+"deleteRouter.gif");
 	},
 	addProcessMenu: function(){
 		var process = this;
 		this.menu.clearItems();
-	
+
 		this.addPublicMenu();
-	
+
 		this.menu.addMenuLine();
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.saveProcess, "click", this.save.bind(this), this.designer.path+""+this.options.style+"/toolbarIcon/"+"save.gif");
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.saveProcessNew, "click", this.saveNew.bind(this), this.designer.path+""+this.options.style+"/toolbarIcon/"+"saveNew.gif", true);
 
 		this.menu.addMenuLine();
-		
+
 		if (this.isGrid){
 			this.menu.addMenuItem(MWF.APPPD.LP.menu.hideGrid, "click", function(){process.switchGrid(this);}, this.designer.path+""+this.options.style+"/toolbarIcon/"+"gridding.gif");
 		}else{
 			this.menu.addMenuItem(MWF.APPPD.LP.menu.showGrid, "click", function(){process.switchGrid(this);}, this.designer.path+""+this.options.style+"/toolbarIcon/"+"gridding.gif");
 		}
-		
+
 		this.menu.addMenuLine();
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.checkProcess, "click", this.checkProcess.bind(this), this.designer.path+""+this.options.style+"/toolbarIcon/"+"checkProcess.gif", true);
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.exportProcess, "click", this.exportProcess.bind(this), this.designer.path+""+this.options.style+"/toolbarIcon/"+"processExplode.gif", true);
 		this.menu.addMenuLine();
 		this.menu.addMenuItem(MWF.APPPD.LP.menu.printProcess, "click", this.printProcess.bind(this), this.designer.path+""+this.options.style+"/toolbarIcon/"+"print.gif", true);
-		
+
 	},
 	saveNew: function(e){
 		//unrealized
@@ -669,10 +669,10 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			this.showGrid();
 		}
 	},
-	
+
 	showGrid: function(){
 		this.designer.paperNode.setStyle("background-image", "url("+MWF.defaultPath+"/process/ProcessChart/$Process/"+this.options.style+"/griddingbg.gif)");
-		
+
 //		if (this.GridSet){
 //			this.GridSet.show();
 //		}else{
@@ -706,14 +706,14 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 //		}
 		this.isGrid = false;
 	},
-	
+
 	getPointElement: function(x, y){
 		var els = this.paper.getElementsByPoint(x, y);
 		var bindObject = null;
 		var bindType = "none";
-		
+
 		if (els.length){
-			
+
 			for (var i=0; i<els.length; i++){
 				var bind = els[i].data("bind");
 				if (bind){
@@ -771,14 +771,14 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//	this.routes[item.id].load();
 		}.bind(this));
 	},
-	
+
 	createPropertyPanel: function(){
         if (!this.options.isView){
             this.panel = new MWF.APPPD.Process.Panel(this);
             this.panel.load();
         }
 	},
-	
+
 	loadedActivitys: function(callback){
 		if (this.loadedBegin && this.loadedEnds && this.loadedCancels && this.loadedConditions && this.loadedChoices
 			&& this.loadedSplits && this.loadedParallels && this.loadedMerges && this.loadedManuals && this.loadedEmbeds
@@ -957,7 +957,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
 		//this.process
 	},
-	
+
 	getActivityTemplate: function(callback){
 		if (this.activityTemplates){
 			if (callback) callback();
@@ -1002,7 +1002,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			r.send();
 		}
 	},
-	
+
 	createActivity: function(d, c, position){
 		if (d=="begin"){
 			if (this.begin){
@@ -1042,7 +1042,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		}.bind(this));
         return activity;
 	},
-	
+
 	createManualActivity: function(){
         this.createActivity("manual", "Manual");
 	},
@@ -1073,12 +1073,12 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	createEndActivity: function(){
 		this.createActivity("end", "End");
 	},
-	
+
 	createRoute: function(){
 		if (!this.isCopyRoute && !this.isCreateRoute){
 			this.getRouteTemplates(function(){
 				var routerData = Object.clone(this.routeTemplates.route);
-	
+
 				//routerData.id = this.designer.actions.getUUID();
                 this.designer.actions.getUUID(function(id){routerData.id = id;});
 
@@ -1089,20 +1089,20 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
                 route.isBack = true;
 				route.load();
                 route.set.toBack();
-				
+
 				this.beginRouteCreate(route);
-	
+
 			}.bind(this));
 		}
-		
+
 	},
 	beginRouteCreate: function(route){
 		this.isCreateRoute  = true;
 		this.currentCreateRoute = route;
 		this.designer.setToolBardisabled("createRoute");
-		
+
 		//route.set.toFront();
-		
+
 		this.routeCreateFromMouseMoveBind = function(e){
 			this.routeCreateFromMouseMove(e);
 		}.bind(this);
@@ -1113,7 +1113,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//var y = e.event.layerY.toFloat();
 		var x = e.event.offsetX.toFloat();
 		var y = e.event.offsetY.toFloat();
-		
+
 		var dx = x - this.currentCreateRoute.beginPoint.x-5;
 		var dy = y - this.currentCreateRoute.beginPoint.y+5;
 		this.currentCreateRoute.set.transform("t"+dx+","+dy);
@@ -1123,7 +1123,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		var route = this.currentCreateRoute;
 		route.setActivity(null, activity);
 		route.reload();
-		
+
 		this.routeCreateToMouseMoveBind = function(e){
 			this.routeCreateToMouseMove(e);
 		}.bind(this);
@@ -1134,7 +1134,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//var y = e.event.layerY.toFloat();
 		var x = e.event.offsetX.toFloat();
 		var y = e.event.offsetY.toFloat();
-		
+
 		var route = this.currentCreateRoute;
 		route.tmpEndPoint = {"x": x-3, "y": y-3};
 		route.reload();
@@ -1148,31 +1148,31 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
 		route.isBack = false;
 		route.reload();
-		
+
 		activity.shap.attr(activity.style.shap);
-		
+
 		this.endRouteCreate();
 	},
 	endRouteCreate: function(){
 		var route = this.currentCreateRoute;
 		route.selected();
-		
+
 		this.isCreateRoute  = false;
 		this.currentCreateRoute = null;
 
 		route.setListItemData();
 		this.designer.setToolBardisabled("decision");
-		
+
 		this.setNewRouteProcessData(route);
 	},
 	setNewRouteProcessData: function(route){
 		this.routes[route.data.id] = route;
 		this.process.routeList.push(route.data);
-		
+
 		route.fromActivity.setRouteData(route.data.id);
 //		if (!route.fromActivity.data.routeList) route.fromActivity.data.routeList = [];
 //		route.fromActivity.data.routeList.push(route.data.id);
-		
+
 		route.data.activity = route.toActivity.data.id;
 		route.data.activityType = route.toActivity.type;
 	},
@@ -1183,10 +1183,10 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		}
 		route.destroy();
 		delete route;
-		
+
 		this.isCreateRoute  = false;
 		this.currentCreateRoute = null;
-		
+
 		if (this.routeCreateFromMouseMoveBind) this.paper.canvas.removeEvent("mousemove", this.routeCreateFromMouseMoveBind);
 		if (this.routeCreateToMouseMoveBind) this.paper.canvas.removeEvent("mousemove", this.routeCreateToMouseMoveBind);
 	},
@@ -1203,7 +1203,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			if (this.menu) this.menu.pause(1);
 		}
 	},
-	
+
 	clearSelected: function(){
 		this.begin.unSelectActivity();
 		for (a in this.ends) this.ends[a].unSelected();
@@ -1214,11 +1214,11 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		for (a in this.publishs) this.publishs[a].unSelected();
 		for (a in this.invokes) this.invokes[a].unSelected();
 	},
-	
+
 	copyRoute: function(route){
 		if (!this.isCopyRoute && !this.isCreateRoute){
 			var newRouteData = Object.clone(route.data);
-			
+
 			//newRouteData.id = Raphael.createUUID();
 			//newRouteData.id = this.designer.actions.getUUID();
             this.designer.actions.getUUID(function(id){newRouteData.id = id;});
@@ -1226,14 +1226,14 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			var route = new MWF.APPPD.Route(newRouteData, this);
 			route.load();
 			route.isBack = true;
-				
+
 			this.isCopyRoute = true;
-			this.currentCopyRoute = route; 
-			
+			this.currentCopyRoute = route;
+
 			this.beginRouteCopy(route);
 		}
 	},
-	
+
 	beginRouteCopy: function(route){
 		this.routeCopyMouseMoveBind = function(e){
 			this.copyRouteMouseMove(e, route);
@@ -1248,10 +1248,10 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		var route = this.currentCopyRoute;
 		this.paper.canvas.removeEvent("mousemove", this.routeCopyMouseMoveBind);
 		route.setActivity(null, activity);
-		
+
 		route.isBack = false;
 		route.reload();
-		
+
 		activity.shap.attr(activity.style.shap);
 
 		this.endRouteCopy();
@@ -1259,32 +1259,32 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	endRouteCopy: function(){
 		var route = this.currentCopyRoute;
 		route.selected();
-		
+
 		this.isCopyRoute  = false;
 		this.currentCopyRoute = null;
 
 		route.setListItemData();
 		this.designer.setToolBardisabled("decision");
-		
+
 		this.setCopyRouteProcessData(route);
 	},
 	routeAddCancel: function(){
 		var route = this.currentCopyRoute;
 		route.destroy();
 		delete route;
-		
+
 		this.isCopyRoute  = false;
 		this.currentCopyRoute = null;
-		
+
 		if (this.routeAddMouseMoveBind) this.paper.canvas.removeEvent("mousemove", this.routeAddMouseMoveBind);
 	},
 	setCopyRouteProcessData: function(route){
 		this.process.routeList.push(route.data);
-		
+
 		route.fromActivity.setRouteData(route.data.id);
 	//	if (!route.fromActivity.data.routeList) route.fromActivity.data.routeList = [];
 	//	route.fromActivity.data.routeList.push(route.data.id);
-		
+
 		this.routeDatas[route.data.id] = route.data;
 	},
 	deleteRoute: function(e, route){
@@ -1309,11 +1309,11 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         this.designer.actions.getUUID(function(id){activityData.id = id;});
 
 		activityData.process = this.process.id;
-		
+
 		activity = new MWF.APPPD.Activity[c](activityData, this);
 		activity.create();
 		activity.selected();
-		
+
 		if (type=="begin"){
 			this.begin = activity;
 			this.process.begin = activityData;
@@ -1377,8 +1377,21 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             this.explodePanel.load();
         }.bind(this));
 
-    }
-	
+    },
+	getPaperSize: function (){
+		if( !this.paperSize ){
+			this.paperSize = $(this.paper.canvas).getParent().getSize();
+		}
+		return this.paperSize;
+	},
+	setPaperSizeX: function (x){
+		if(!this.paperSize)this.getPaperSize();
+		this.paperSize.x = x;
+	},
+	setPaperSizeY: function (y){
+		if(!this.paperSize)this.getPaperSize();
+		this.paperSize.y = y;
+	}
 });
 
 MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
@@ -1389,9 +1402,9 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 
 		var paperSize = this.process.designer.paperNode.getSize();
 		this.left = (paperSize.x.toFloat())-376;
-		
+
 		this.height = (paperSize.y.toFloat())-6;
-		
+
 		this.stopParseJson = false;
 	},
 	load: function(){
@@ -1399,13 +1412,13 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 		this.createModuleListTab();
 		this.createPropertyTab();
 		this.createPanelResizeNode();
-		
+
 		this.moduleTabContent.inject(this.panelNode);
 		this.panelResizeNode.inject(this.panelNode);
 		this.propertyTabContent.inject(this.panelNode);
-		
+
 		MWF.require("MWF.widget.Panel", function(){
-			
+
 			this.modulePanel = new MWF.widget.Panel(this.panelNode, {
 				"title": MWF.APPPD.LP.property,
 				"isClose": false,
@@ -1422,62 +1435,62 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 				}.bind(this)
 			});
 			this.modulePanel.load();
-			
+
 			this.setPanelSize(this.panelModulePercent);
-			
+
 		}.bind(this));
-		
+
 	},
-	
+
 	setPanelSize: function(percent){
 		var contentSize = this.modulePanel.content.getSize();
 		var resizeSize = this.panelResizeNode.getSize();
 		var resizeMarginTop = this.panelResizeNode.getStyle("margin-top");
 		var resizeMarginBottom = this.panelResizeNode.getStyle("margin-bottom");
-		
+
 		var useHeight = (contentSize.y.toFloat()) - (resizeSize.y.toFloat()) - (resizeMarginTop.toFloat()) - (resizeMarginBottom.toFloat());
-		
+
 		var p = percent;
 		if (!p) p = 0.3;
 		var moduleHeight = useHeight*p;
 		var propertyHeight = useHeight - moduleHeight;
-		
+
 		this.moduleListContent.setStyle("height", moduleHeight);
 		if (!this.propertyPanel) this.propertyListContent.setStyle("height", propertyHeight);
-		
+
 		var moduleListTabSize = this.moduleListTab.tabNodeContainer.getSize();
-		
+
 		this.moduleListTab.pages.each(function(page){
 			var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
 			var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-			
+
 			var tabContentNodeAreaHeight = moduleHeight - topMargin - bottomMargin - moduleListTabSize.y.toFloat()-2;
 			page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
 		}.bind(this));
-		
+
 		if (!this.propertyPanel) {
 			var propertyListTabSize = this.propertyListTab.tabNodeContainer.getSize();
 			this.propertyListTab.pages.each(function(page){
 				var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
 				var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-				
+
 				var tabContentNodeAreaHeight = propertyHeight - topMargin - bottomMargin - propertyListTabSize.y.toFloat()-2;
 				page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
 			}.bind(this));
 		}
 //		var contentNodeContainerHeight = moduleHeight - moduleListTabSize.y.toFloat()-2;
 //		this.moduleListTab.contentNodeContainer.setStyle("height", contentNodeContainerHeight);
-//		
+//
 //		contentNodeContainerHeight = propertyHeight - propertyListTabSize.y.toFloat()-2;
 //		this.propertyListTab.contentNodeContainer.setStyle("height", contentNodeContainerHeight);
-		
+
 		if (this.jsonStringConfirmNode)this.setJsonStringConfirmNodePosition();
 	},
 	createPanelResizeNode: function(){
 		this.panelResizeNode = new Element("div", {
 			"styles": this.process.css.panelResizeNode
 		});
-		
+
 		this.panelResizeNode.addEvent("mousedown", function(e){
 			this.beginPanelResize(e);
 		}.bind(this));
@@ -1494,7 +1507,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 		this.panelResizeSelecttBind = function(){
 			return false;
 		}.bind(this);
-		
+
 		$(document.body).addEvent("selectstart",this.panelResizeSelecttBind);
 		$(document.body).addEvent("mousemove",this.panelResizeMouseMoveBind);
 		$(document.body).addEvent("mouseup",this.panelResizeMouseUpBind);
@@ -1505,50 +1518,50 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 
 		var moduleHeight = (y.toFloat()) - (modulePosition.y.toFloat());
 		if (moduleHeight<40) moduleHeight = 40;
-		
+
 		var contentSize = this.modulePanel.content.getSize();
 		var resizeSize = this.panelResizeNode.getSize();
 		var resizeMarginTop = this.panelResizeNode.getStyle("margin-top");
 		var resizeMarginBottom = this.panelResizeNode.getStyle("margin-bottom");
-		
+
 		var useHeight = (contentSize.y.toFloat()) - (resizeSize.y.toFloat()) - (resizeMarginTop.toFloat()) - (resizeMarginBottom.toFloat());
-		
+
 		var propertyHeight = useHeight - moduleHeight;
-		
+
 		if (propertyHeight<40){
 			propertyHeight = 40;
 			moduleHeight = useHeight - propertyHeight;
-		} 
+		}
 		this.moduleListContent.setStyle("height", moduleHeight);
 		this.propertyListContent.setStyle("height", propertyHeight);
-		
+
 		var moduleListTabSize = this.moduleListTab.tabNodeContainer.getSize();
 		var propertyListTabSize = this.propertyListTab.tabNodeContainer.getSize();
-		
+
 		this.moduleListTab.pages.each(function(page){
 			var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
 			var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-			
+
 			var tabContentNodeAreaHeight = moduleHeight - topMargin - bottomMargin - (moduleListTabSize.y.toFloat())-2;
 			page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
 		}.bind(this));
-		
+
 		this.propertyListTab.pages.each(function(page){
 			var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
 			var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-			
+
 			var tabContentNodeAreaHeight = propertyHeight - topMargin - bottomMargin - propertyListTabSize.y.toFloat()-2;
 			page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
 		}.bind(this));
-		
+
 //		var contentNodeContainerHeight = moduleHeight - moduleListTabSize.y.toFloat()-2;
 //		this.moduleListTab.contentNodeContainer.setStyle("height", contentNodeContainerHeight);
-//		
+//
 //		contentNodeContainerHeight = propertyHeight - propertyListTabSize.y.toFloat()-2;
 //		this.propertyListTab.contentNodeContainer.setStyle("height", contentNodeContainerHeight);
-		
+
 		if (this.jsonStringConfirmNode)this.setJsonStringConfirmNodePosition();
-		
+
 		this.panelModulePercent = moduleHeight.toFloat()/useHeight.toFloat();
 	},
 	loadJson: function(json){
@@ -1588,7 +1601,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 		this.jsonStringNode.set("text", "");
 		this.jsonObjectNode.empty();
 		if (this.jsonParse) this.jsonParse = null;
-		
+
 	//	if (this.jsonMarkNode) this.jsonMarkNode.hide();
 	},
 	createJsonStringNode: function(){
@@ -1615,7 +1628,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 	//	this.loadObjectTree();
 		return this.jsonObjectNode;
 	},
-	
+
 	createJsonStringConfirmNode: function(){
 		this.jsonStringConfirmNode = new Element("div", {
 			"styles": {
@@ -1668,7 +1681,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 			"left" : size.x-26
 		});
 	},
-	
+
 	createPropertyTab: function(){
 		this.propertyTabContent = new Element("div");
 		this.propertyListContent = new Element("div", {
@@ -1678,7 +1691,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 			"styles": this.process.css.propertyListNode
 		});
 		this.process.propertyListNode = this.propertyListNode;
-		
+
 		this.jsonObjectNode = this.createJsonObjectNode();
 		this.jsonStringNode = this.createJsonStringNode();
 		this.jsonStringNode.addEvents({
@@ -1691,7 +1704,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 			"blur": function(e){
 				if (this.jsonStringConfirmNode){
 					if (!this.jsonStringConfirmNode.retrieve("flag")) this.jsonStringConfirmNode.setStyle("display", "none");
-				} 
+				}
 			}.bind(this)
 		});
 
@@ -1745,11 +1758,11 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 
 			// this.propertyListTab.tabNodeContainerArea
 			// showAdvanced
-			
+
 			this.process.setScrollBar(this.propertyTabPage.contentNodeArea, "small", null, null);
 			this.process.setScrollBar(this.objectTabPage.contentNodeArea, "small", null, null);
 			this.process.setScrollBar(this.stringTabPage.contentNodeArea, "small", null, null);
-			
+
 			this.objectTabPage.setOptions({
 				"onShow": function(){
 					this.loadJson(this.data);
@@ -1773,22 +1786,22 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 				//event.stop();
 				this.propertyTabMove(event);
 			}.bind(this));
-			
-			
+
+
 		//	this.propertyDrag = new Drag(this.propertyTabContent, {
 		//		"handle": this.propertyListTab.tabNodeContainer,
 		//		"snap": 10,
 		//		"onStart": function(el, e){
-					
+
 		//		}.bind(this)
 		//	});
-			
-			
+
+
 		}.bind(this), false);
-		
+
 	//	this.propertyListContent.setStyle("height", 300);
 	},
-	
+
 	propertyTabMove: function(event){
 //		var tmpContent = this.propertyListContent.clone().setStyles(this.propertyListContent.getCoordinates()).setStyles({
 //			"opacity": 0.7,
@@ -1796,7 +1809,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 //			"z-index": this.modulePanel.container.getStyle("z-index").toInt()+1,
 //			"position": "absolute"
 //	    }).inject(this.process.designer.paperNode);
-		
+
 		var size = this.propertyListContent.getSize();
 		var tmpContent = new Element("div", {
 			"styles": {
@@ -1807,14 +1820,14 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 				"height": size.y,
 				"background-color": "#EEE",
 				"position": "absolute"
-			}			
+			}
 		}).inject(this.process.designer.paperNode);
 		tmpContent.position({
 			relativeTo: this.propertyListContent,
 		    position: 'upperLeft',
 		    edge: 'upperLeft'
 		});
-		
+
 		var drag = new Drag.Move(tmpContent, {
 			"droppables": [this.process.designer.paperNode, this.panelNode],
 			"onEnter": function(dragging, inObj){
@@ -1847,20 +1860,20 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 				dragging.destroy();
 			}
 		});
-		
+
 		drag.start(event);
 	},
-	
+
 	propertyOut: function(dragging){
 		if (!this.propertyPanel){
-			var coordinates = dragging.getCoordinates();		
+			var coordinates = dragging.getCoordinates();
 			var p = this.process.designer.paperNode.getPosition();
-			
+
 			var propertyPanelNode = new Element("div");
 			this.propertyListContent.inject(propertyPanelNode);
-			
+
 			MWF.require("MWF.widget.Panel", function(){
-				
+
 				this.propertyPanel = new MWF.widget.Panel(propertyPanelNode, {
 					"title": MWF.APPPD.LP.property,
 					"isClose": false,
@@ -1874,11 +1887,11 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 					}.bind(this)
 				});
 				this.propertyPanel.load();
-				
+
 				this.propertyOutSetHeight();
-				
+
 				this.setPropertyPanelSize(this.panelModulePercent);
-				
+
 			}.bind(this));
 		};
 	},
@@ -1891,7 +1904,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 		this.propertyListTab.pages.each(function(page){
 			var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
 			var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-			
+
 			var tabContentNodeAreaHeight = propertyHeight - topMargin - bottomMargin - propertyListTabSize.y.toFloat()-2;
 			page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
 		}.bind(this));
@@ -1901,26 +1914,26 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 		this.panelModulePercent = "1";
 		this.setPanelSize(this.panelModulePercent);
 	},
-	
+
 	propertyIn: function(){
 		this.propertyListContent.inject(this.propertyTabContent);
 		if (this.propertyPanel) this.propertyPanel.closePanel();
 		this.propertyPanel = null;
 		this.propertyInSetHeight();
 	},
-	
+
 	propertyInSetHeight: function(){
 		this.panelResizeNode.setStyles(this.process.css.panelResizeNode);
 		this.panelModulePercent = "0.3";
 		this.setPanelSize(this.panelModulePercent);
 	},
-	
+
 	createModuleListTab: function(){
 		this.moduleTabContent = new Element("div");
 		this.moduleListContent = new Element("div", {
 			"styles": this.process.css.moduleListContent
 		}).inject(this.moduleTabContent);
-		
+
 		this.activityListNode = new Element("div", {
 			"styles": this.process.css.activityListNode
 		});
@@ -1938,19 +1951,19 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 		    "properties": this.process.css.routeListTable
 		}).inject(this.routeListNode);
 		this.process.routeTable = this.routeTable;
-		
+
 		MWF.require("MWF.widget.Tab", function(){
 			this.moduleListTab = new MWF.widget.Tab(this.moduleListContent, {"style": "moduleList"});
 			this.moduleListTab.load();
-			
+
 		//	this.process.setScrollBar(this.moduleListTab.contentNodeContainer, null, null, null);
 
 			var activityTabPage = this.moduleListTab.addTab(this.activityListNode, MWF.APPPD.LP.activity, false);
 			this.process.setScrollBar(activityTabPage.contentNodeArea, "small", null, null);
-			
+
 			var routeTabPage = this.moduleListTab.addTab(this.routeListNode, MWF.APPPD.LP.route, false);
 			this.process.setScrollBar(routeTabPage.contentNodeArea, "small", null, null);
-			
+
 			activityTabPage.showTab();
 
 		}.bind(this), false);
@@ -1989,11 +2002,11 @@ MWF.xApplication.process.ProcessDesigner.Process.JsonParse = new Class({
 		if (this.objectTree){
 			this.objectTree.node.destroy();
 			this.objectTree = null;
-		} 
+		}
 		MWF.require("MWF.widget.Tree", function(){
 			this.objectTree = new MWF.widget.Tree(this.jsonObjectNode, {"style": "jsonview"});
 			this.objectTree.load();
-			
+
 			var str = this.parseJsonObject(0, this.objectTree, "",  "JSON", this.json, true);
 			var jsonStr = str.substring(0, str.length-2);
 			if (!this.stopParseJson){
@@ -2001,10 +2014,10 @@ MWF.xApplication.process.ProcessDesigner.Process.JsonParse = new Class({
 			}else{
 				this.stopParseJson = false;
 			}
-			
+
 		}.bind(this));
 	},
-	
+
 	parseJsonObject: function(level, treeNode, title, p, v, expand){
 		if (this.stopParseJson){
 		//	alert(this.stopParseJson);
@@ -2023,13 +2036,13 @@ MWF.xApplication.process.ProcessDesigner.Process.JsonParse = new Class({
 		if (title) title="\""+title+"\": ";
 		var jsonStr = "";
 		var nextLevel = level+1;
-		
+
 		switch (typeOf(v)){
 			case "object":
 				o.text = p;
 				o.icon = "object.png";
 				var node = treeNode.appendChild(o);
-								
+
 				var jsonStrBegin = tab+title+"{";
 				var jsonStrEnd = tab+"}";
 				for (i in v){
@@ -2037,44 +2050,44 @@ MWF.xApplication.process.ProcessDesigner.Process.JsonParse = new Class({
 				}
 				jsonStr = jsonStrBegin+"\n"+jsonStr.substring(0, jsonStr.length-2)+"\n"+jsonStrEnd+",\n";
 				break;
-				
+
 			case "array":
 				o.text = p;
 				o.icon = "array.png";
 				var node = treeNode.appendChild(o);
-				
+
 				var jsonStrBegin = tab+title+"[";
 				var jsonStrEnd = tab+"]";
-				
+
 				v.each(function(item, idx){
 					jsonStr += this.parseJsonObject(nextLevel, node, "", "["+idx+"]", item, false);
 				}.bind(this));
-				
+
 				jsonStr = jsonStrBegin+"\n"+jsonStr.substring(0, jsonStr.length-2)+"\n"+jsonStrEnd+",\n";
 				break;
-				
-			case "string":	
+
+			case "string":
 				jsonStr += tab+title+"\""+v+"\",\n";
-				
+
 				o.text = p + " : \""+v+"\"";
 				o.icon = "string.png";
-				//var node = 
+				//var node =
 				treeNode.appendChild(o);
-				
+
 				break;
-			case "date":	
+			case "date":
 				jsonStr += tab+title+"\""+v+"\",\n";
 				o.text = p + " : \""+v+"\"";
 				o.icon = "string.png";
-				//var node = 
+				//var node =
 				treeNode.appendChild(o);
 				break;
-				
-			default: 
+
+			default:
 				jsonStr += tab+title+v+",\n";
 				o.text = p + " : "+v;
 				o.icon = "string.png";
-				//var node = 
+				//var node =
 				treeNode.appendChild(o);
 		}
 		return jsonStr;

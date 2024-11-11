@@ -3,14 +3,14 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Module", null, false);
 MWF.xApplication.process.FormDesigner.Module.$Element = MWF.FC$Element = new Class({
 	Extends: MWF.FC$Module,
 	Implements: [Options, Events],
-	
+
 	_setNodeProperty: function(){
 		if (this.form.moduleList.indexOf(this)==-1) this.form.moduleList.push(this);
 		if (this.form.moduleNodeList.indexOf(this.node)==-1) this.form.moduleNodeList.push(this.node);
 		if (this.form.moduleElementNodeList.indexOf(this.node)==-1) this.form.moduleElementNodeList.push(this.node);
 		this.node.store("module", this);
 	},
-	
+
 	_dragIn: function(module){
 		module.onDragModule = this;
         if (this.parentContainer.moduleName === "datagrid$Data") {
@@ -98,11 +98,11 @@ MWF.xApplication.process.FormDesigner.Module.$Element = MWF.FC$Element = new Cla
         if (this.property) this.property.destroy();
 		this.node.destroy();
 		this.actionArea.destroy();
-		
+
 		delete this.form.json.moduleList[this.json.id];
 		this.json = null;
 		delete this.json;
-		
+
 		this.treeNode.destroy();
 		o2.release(this);
 	},
@@ -116,5 +116,5 @@ MWF.xApplication.process.FormDesigner.Module.$Element = MWF.FC$Element = new Cla
         o[json.id] = json;
         return o;
     }
-	
+
 });

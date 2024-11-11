@@ -52,11 +52,11 @@
                 <td class="editTableValue">
                     <div>
                         <label><input type="radio" name="dataType" value="dateTime" text{($.dataType==='dateTime')?'checked':''}/>{{$.lp.dateTime}}</label>
-                        <label><input type="radio" name="dataType" value="dateOnly" text{($.dataType==='dateOnly')?'checked':''}/>{{$.lp.dateOnly}}</label>
-                        <label><input type="radio" name="dataType" value="monthOnly" text{($.dataType==='monthOnly')?'checked':''}/>{{$.lp.monthOnly}}</label><br>
-                        <label><input type="radio" name="dataType" value="yearOnly" text{($.dataType==='yearOnly')?'checked':''}/>{{$.lp.yearOnly}}</label>
-                        <label><input type="radio" name="dataType" value="timeOnly" text{($.dataType==='timeOnly')?'checked':''}/>{{$.lp.timeOnly}}</label>
-                        <label><input type="radio" name="dataType" value="weekOnly" text{($.dataType==='weekOnly')?'checked':''}/>{{$.lp.weekOnly}}</label>
+                        <label><input type="radio" name="dataType" value="date-only" text{($.dataType==='date-only')?'checked':''}/>{{$.lp.dateOnly}}</label>
+                        <label><input type="radio" name="dataType" value="month-only" text{($.dataType==='month-only')?'checked':''}/>{{$.lp.monthOnly}}</label><br>
+                        <label><input type="radio" name="dataType" value="year-only" text{($.dataType==='year-only')?'checked':''}/>{{$.lp.yearOnly}}</label>
+                        <label><input type="radio" name="dataType" value="time-only" text{($.dataType==='time-only')?'checked':''}/>{{$.lp.timeOnly}}</label>
+                        <label><input type="radio" name="dataType" value="week-only" text{($.dataType==='week-only')?'checked':''}/>{{$.lp.weekOnly}}</label>
                     </div>
                 </td>
             </tr>
@@ -100,12 +100,12 @@
                 </td>
             </tr>
         </table>
-		
+
 		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
-		
+
 	</div>
 
     <div title="{{$.lp.section}}" class="MWFTab">

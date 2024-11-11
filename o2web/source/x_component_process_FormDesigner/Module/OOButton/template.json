@@ -4,6 +4,7 @@
 	"type": "OOButton",
 	"description": "",
     "dataType": "text",
+	"disabled": false,
 	"defaultValue": {
 		"code": "",
 		"html": ""

@@ -25,8 +25,8 @@ MWF.xApplication.process.FormDesigner.Module.OORadioGroup = MWF.FCOORadioGroup =
 
 		this._createNodeContent();
 	},
-	_createNodeContent: function(){
-		var radioNode = new Element(this.options.tag, {styles:{"float": "left"}}).inject(this.moveNode || this.node);
+	_createNodeContent: function( node ){
+		var radioNode = new Element(this.options.tag, {styles:{"float": "left"}}).inject(node || this.moveNode || this.node);
 
 		var infoNode = new Element("div", {
 			styles: {
@@ -35,7 +35,7 @@ MWF.xApplication.process.FormDesigner.Module.OORadioGroup = MWF.FCOORadioGroup =
 				"gap": "0.25em",
 				"padding": "0 0.2em"
 			}
-		}).inject(this.moveNode || this.node);
+		}).inject(node || this.moveNode || this.node);
 
 		var icon = new Element("div", {
 			"styles": this.css.textfieldIcon
@@ -49,7 +49,7 @@ MWF.xApplication.process.FormDesigner.Module.OORadioGroup = MWF.FCOORadioGroup =
 	_resetModuleDomNode: function(){
 		if (this.json.preprocessing){
 			this.node.empty();
-			this._createNodeContent();
+			this._createNodeContent(this.node);
 		}
 	},
 

@@ -639,6 +639,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "timeSelectType_slider" : "滑块",
         "timeSelectType_select" : "下拉",
         "format": "格式化",
+        "valueFormat": "绑定值格式化",
 
         "rateTexts": "极差, 失望, 一般, 满意, 惊喜",
         "allowHalf": "允许半选",

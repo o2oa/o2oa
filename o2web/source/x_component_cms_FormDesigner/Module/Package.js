@@ -84,4 +84,11 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Eltree", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Eldropdown", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elcarousel", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Security", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOInput", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOButton", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OORadioGroup", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOCheckGroup", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOSelect", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOTextarea", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OODatetime", null, false);
 

@@ -2769,7 +2769,14 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			if( tJson ){
 				var json = Object.clone(tJson);
 
-				if( !this.options.isEdited || !this.options.isEditable )json.isReadonly = true;
+				if( !this.options.isEdited || !this.options.isEditable ){
+					if( json.hasOwnProperty('showMode') ){
+						json.showMode = 'read';
+					}else{
+						json.isReadonly = true;
+					}
+
+				}
 
 				var templateJsonId = json.id;
 

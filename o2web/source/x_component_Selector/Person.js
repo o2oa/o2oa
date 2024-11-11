@@ -1,6 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 //MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
+if(!MWF.O2Selector)MWF.O2Selector = {};
 MWF.xApplication.Selector.Person = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -2707,7 +2708,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             this.data.isFromValues = false;
         }
 
-        if(!this.selectedIndex)this.selectedIndex = MWF.O2Selector.selectedIndex++;
+        if(!this.selectedIndex && MWF.O2Selector.selectedIndex)this.selectedIndex = MWF.O2Selector.selectedIndex++;
 
         this.getData(function(){
             this.node.setStyle("display","");

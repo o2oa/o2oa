@@ -114,10 +114,12 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     },
     createModuleScript: function(v){
         switch (v.type){
+            case "OOButton":
             case "Button":
                 this.loadButtonScript(v); break;
             case "Calendar":
                 this.loadCalendarScript(v); break;
+            case "OOCheckGroup":
             case "Checkbox":
                 this.loadCheckboxScript(v); break;
             case "Div":
@@ -134,8 +136,10 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadPersonfieldScript(v); break;
             case "Org":
                 this.loadOrgScript(v); break;
+            case "OORadioGroup":
             case "Radio":
                 this.loadRadioScript(v); break;
+            case "OOSelect":
             case "Select":
                 this.loadSelectScript(v); break;
             case "Source":
@@ -156,8 +160,11 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadTable$TdScript(v); break;
             case "Table":
                 this.loadTableScript(v); break;
+            case "OOTextarea":
             case "Textarea":
                 this.loadTextareaScript(v); break;
+            case "OODatetime":
+            case "OOInput":
             case "Textfield":
                 this.loadTextfieldScript(v); break;
             case "Tree":
@@ -251,7 +258,7 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.addScriptItem(v.itemScript, "code", v, "itemScript");
                 break;
             case "Elcommon":
-                this.addScriptItem(v.vueTemplate, "code", v, "vueTemplate");
+                // this.addScriptItem(v.vueTemplate, "code", v, "vueTemplate");
                 this.addScriptItem(v.vueApp, "code", v, "vueApp");
                 this.addScriptItem(v.vueCss, "code", v, "vueCss");
                 this.loadEventsScript(v);
@@ -369,7 +376,7 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
         this.addScriptItem(data.dateTimeRangeScript, "code", data, "dateTimeRangeScript");
         this.addScriptItem(data.dateRangeScript, "code", data, "dateRangeScript");
-        this.addScriptItem(data.timeRangeScript, "code", data, "timeRangeScript"); 
+        this.addScriptItem(data.timeRangeScript, "code", data, "timeRangeScript");
         this.addScriptItem(data.enableDate, "code", data, "enableDate");
         this.addScriptItem(data.enableHours, "code", data, "enableHours");
         this.addScriptItem(data.enableMinutes, "code", data, "enableMinutes");

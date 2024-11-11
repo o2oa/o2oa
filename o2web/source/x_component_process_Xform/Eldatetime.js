@@ -1,4 +1,4 @@
-o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
+o2.xDesktop.requireApp("process.Xform", "Eldate", null, false);
 /** @class Eldatetime 基于Element UI的日期时间选择组件。
  * @o2cn 日期时间选择
  * @example
@@ -17,7 +17,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
     /** @lends o2.xApplication.process.Xform.Eldatetime# */
     {
     Implements: [Events],
-    Extends: MWF.APP$Elinput,
+    Extends: MWF.APPEldate,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         /**
@@ -37,10 +37,6 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
          */
         "elEvents": ["focus", "blur", "change"]
     },
-    _loadMergeReadContentNode: function( contentNode, data ){
-        var d = o2.typeOf( data.data ) === "array" ? data.data : [data.data];
-        contentNode.set("text", d.join( this.json.rangeSeparator ? " "+this.json.rangeSeparator+" " : " 至 " ) );
-    },
     _queryLoaded: function(){
         var data = this._getBusinessData();
         if( data ){
@@ -52,11 +48,15 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         }
     },
     __setReadonly: function(data){
+        var format = this.json.format || this.json.valueFormat;
         if (this.isReadonly()){
             if( o2.typeOf(data) === "array" ){
-                this.node.set("text", this.json.rangeSeparator ? data.join(this.json.rangeSeparator) : data );
+                var ds = data.map(function (d){
+                    return this.formatDate(new Date(d), format);
+                }.bind(this));
+                this.node.set("text", this.json.rangeSeparator ? ds.join(this.json.rangeSeparator) : ds );
             }else{
-                this.node.set("text", data );
+                this.node.set("text", data ? this.formatDate(new Date(data), format) : "");
             }
 
             if( this.json.elProperties ){
@@ -64,6 +64,11 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             }
             if (this.json.elStyles){
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
+
+            if( !this.eventLoaded ){
+                this._loadDomEvents();
+                this.eventLoaded = true;
             }
 
             this.fireEvent("postLoad");
@@ -78,6 +83,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.editable) this.json.editable = false;
         if (!this.json.size) this.json.size = "";
+        if (!this.json.valueFormat) this.json.valueFormat = this.json.format || "";
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.description) this.json.description = "";
         if (!this.json.arrowControl) this.json.arrowControl = false;
@@ -106,7 +112,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         html += " :range-separator=\"rangeSeparator\"";
         html += " :start-placeholder=\"startPlaceholder\"";
         html += " :end-placeholder=\"endPlaceholder\"";
-        html += " :value-format=\"format\"";
+        html += " :value-format=\"valueFormat\"";
         html += " :format=\"format\"";
         html += " :picker-options=\"pickerOptions\"";
         html += " :arrow-control=\"arrowControl\"";
@@ -156,4 +162,4 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             var value = arr.length === 0  ? arr[0] : arr;
             this.setData(value, true);
         }
-}); 
+});
