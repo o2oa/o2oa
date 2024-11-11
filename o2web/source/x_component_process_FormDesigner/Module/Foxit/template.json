@@ -1,0 +1,22 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Foxit",
+	"description": "",
+	"template": "",
+	"api" : "http://webofd.foxitjj.com:99/viewer/pc/index.html",
+	"script": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+		"afterOpen": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

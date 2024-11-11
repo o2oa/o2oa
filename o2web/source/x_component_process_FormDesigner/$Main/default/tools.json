@@ -278,7 +278,11 @@
     "text": "OFD View",
     "className": "OfdView"
   },
-
+  "Foxit": {
+    "icon": "foxit.png",
+    "text": "Foxit",
+    "className": "Foxit"
+  },
   "elcontainer": {
     "fontIcon": "el-icon-s-grid",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.el_container,

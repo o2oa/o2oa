@@ -1377,6 +1377,9 @@ MWF.xApplication.process.FormDesigner.LP={
 			"logoImg": "Logotipo superior izquierdo (172x40)",
 			"logoUrl": "Enlace del logotipo"
 		},
+		"foxit" : {
+			"api" : "API"
+		},
 		"smartbi": {
 			"select": "Selección de recursos",
 			"displayToolbar": "Mostrar barra de herramientas",
