@@ -23,8 +23,10 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectScript" : "选择脚本",
     "selectDictionary" : "选择数据字典",
     "selectImportModel": "选择导入模型",
+    "selectFieldProperty": "选择字段属性",
 
     "searchDescription" : "搜索内容",
+    "searchDescriptionFieldProperty": "展开过的表单可以搜索字段",
 
     "waitingSelect" : "待选",
     "selected" : "已选",
@@ -58,7 +60,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
         "process": "流程管理",
         "cms": "内容管理",
         "portal": "门户管理",
-        "service": "服务管理"
+        "service": "服务管理",
+        "currentForm": "当前表单"
     },
 
     "cancel": "取消",
@@ -71,6 +74,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "portal": "门户管理",
     "query": "数据中心",
     "service": "服务管理",
+    "currentForm": "当前表单",
 
     "systemStyle" : "系统样式",
     "customStyle" : "自定义样式（脚本）",

@@ -1736,6 +1736,34 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             this.close();
         });
     },
+    copyPropertyToModule: function (){
+        if( !this.form.currentSelectedModule ){
+            this.notice( MWF.APPFD.LP.selectCopyModuleNotice, 'info');
+            return;
+        }
+        var module = this.form.currentSelectedModule;
+        this.selector = new MWF.O2Selector(this.content, {
+            count: 1,
+            title: MWF.APPFD.LP.selectCopyModule,
+            type: 'FieldProperty',
+            currentFormFields: Object.values(this.form.json.moduleList),
+            onComplete: function (items){
+                if( !items.length )return;
+                for( var key in items[0].data ){
+                    var value = items[0].data[key];
+                    if( !['id', 'type', 'pid'].contains(key) && module.json[key] !== value ){
+                        module.json[key] = value;
+                        module.setPropertiesOrStyles(key, value);
+                        module._setEditStyle(key, null, value);
+                        // this.setScriptJsEditor(module, change.name, change.fromValue);
+                    }
+                }
+                if( module.property ){
+                    module.property.reset();
+                }
+            }.bind(this)
+        });
+    },
     onPostClose: function(){
         if (this.pcForm){
             MWF.release(this.pcForm.moduleList);
