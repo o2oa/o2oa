@@ -764,6 +764,8 @@ public class Config {
 					"application/vnd.openxmlformats-officedocument.presentationml.presentation");
 			/* 名片 */
 			mimeTypes.addMimeMapping("vcf", "text/x-vcard");
+			/* ofd文件 */
+			mimeTypes.addMimeMapping("ofd", "application/ofd");
 			/* 流媒体都改为stream输出，不支持浏览器在线播放，如需在线播放请用第三方插件 */
 			mimeTypes.addMimeMapping("mov", MediaType.APPLICATION_OCTET_STREAM);
 			mimeTypes.addMimeMapping("movie", MediaType.APPLICATION_OCTET_STREAM);
