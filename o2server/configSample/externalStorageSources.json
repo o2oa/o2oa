@@ -181,11 +181,11 @@
   ],
   "store": {
     "demo": {
-      "protocol": "hdfs",
+      "protocol": "sftp",
       "username": "",
       "password": "",
       "host": "127.0.0.1",
-      "port": 9000.0,
+      "port": 22.0,
       "name": ""
     }
   },

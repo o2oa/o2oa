@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.tika.Tika;
 
 import com.google.gson.JsonElement;
-import com.itextpdf.io.codec.Base64;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -49,7 +49,7 @@ class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 
-		byte[] bytes = Base64.decode(wi.getContent());
+		byte[] bytes = Base64.decodeBase64(wi.getContent());
 
 		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
 

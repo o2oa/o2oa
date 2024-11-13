@@ -35,8 +35,6 @@ public class Event extends SliceJpaObject {
 
 	public static final String EVENTTYPE_UPDATETABLE = "updateTable";
 
-	public static final String EVENTTYPE_ARCHIVEHADOOP = "archiveHadoop";
-
 	public String getId() {
 		return id;
 	}

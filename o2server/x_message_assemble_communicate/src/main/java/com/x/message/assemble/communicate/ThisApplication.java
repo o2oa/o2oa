@@ -58,8 +58,6 @@ public class ThisApplication {
 
 	public static final TableConsumeQueue tableConsumeQueue = new TableConsumeQueue();
 
-	public static final HadoopConsumeQueue hadoopConsumeQueue = new HadoopConsumeQueue();
-
 	private static final Map<Session, String> WSCLIENTS = new ConcurrentHashMap<>();
 
 	public static Map<Session, String> wsClients() {
@@ -90,7 +88,6 @@ public class ThisApplication {
 		context().startQueue(mailConsumeQueue);
 		context().startQueue(jdbcConsumeQueue);
 		context().startQueue(tableConsumeQueue);
-		context().startQueue(hadoopConsumeQueue);
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
 			context().startQueue(qiyeweixinConsumeQueue);

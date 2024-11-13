@@ -1,17 +1,5 @@
 package com.x.processplatform.assemble.surface.factory.element;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -21,12 +9,18 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-
-import net.sf.ehcache.Ehcache;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 public abstract class ElementFactory extends AbstractFactory {
-
-    protected Ehcache cache;
 
     public ElementFactory(Business abstractBusiness) throws Exception {
         super(abstractBusiness);

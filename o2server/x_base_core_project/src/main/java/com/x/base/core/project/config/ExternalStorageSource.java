@@ -9,7 +9,7 @@ import com.x.base.core.project.tools.Crypto;
 
 /**
  * 第三方附件存储配置
- * 
+ *
  * @author sword
  */
 public class ExternalStorageSource extends ConfigObject {
@@ -47,7 +47,7 @@ public class ExternalStorageSource extends ConfigObject {
 	public static final Boolean DEFAULT_DEEPPATH = false;
 	public static final String DEFAULT_STORE = "";
 
-	@FieldDescribe("协议,可选值ftp、sftp、webdav、file、hdfs、ali")
+	@FieldDescribe("协议,可选值ftp、sftp、webdav、file、ali")
 	private StorageProtocol protocol;
 	@FieldDescribe("登录用户名.")
 	private String username;

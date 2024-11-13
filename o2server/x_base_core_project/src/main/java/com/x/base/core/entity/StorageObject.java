@@ -1,5 +1,10 @@
 package com.x.base.core.entity;
 
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.StringTools;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -14,7 +19,6 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
-
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -25,10 +29,8 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.apache.commons.vfs2.FileObject;
@@ -42,12 +44,6 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileType;
 import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
-
-import com.x.base.core.entity.annotation.CheckPersist;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.StringTools;
 
 @MappedSuperclass
 public abstract class StorageObject extends SliceJpaObject {
@@ -238,11 +234,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		} else {
 			this.setEncryptKey("");
 		}
-		if (Objects.equals(StorageProtocol.hdfs, mapping.getProtocol())) {
-			return this.hdfsUpdateContent(mapping, input);
-		} else {
-			return this.vfsUpdateContent(mapping, input);
-		}
+		return this.vfsUpdateContent(mapping, input);
 	}
 
 	/**
@@ -268,11 +260,7 @@ public abstract class StorageObject extends SliceJpaObject {
 	 * @throws Exception
 	 */
 	public Long readContent(StorageMapping mapping, OutputStream output) throws Exception {
-		if (Objects.equals(mapping.getProtocol(), StorageProtocol.hdfs)) {
-			return hdfsReadContent(mapping, output);
-		} else {
-			return vfsReadContent(mapping, output);
-		}
+		return vfsReadContent(mapping, output);
 	}
 
 	/**
@@ -283,19 +271,11 @@ public abstract class StorageObject extends SliceJpaObject {
 	 * @throws Exception
 	 */
 	public boolean existContent(StorageMapping mapping) throws Exception {
-		if (Objects.equals(mapping.getProtocol(), StorageProtocol.hdfs)) {
-			return hdfsExistContent(mapping);
-		} else {
-			return vfsExistContent(mapping);
-		}
+		return vfsExistContent(mapping);
 	}
 
 	public void deleteContent(StorageMapping mapping) throws Exception {
-		if (Objects.equals(mapping.getProtocol(), StorageProtocol.hdfs)) {
-			hdfsDeleteContent(mapping);
-		} else {
-			vfsDeleteContent(mapping);
-		}
+		vfsDeleteContent(mapping);
 	}
 
 	/**
@@ -372,9 +352,6 @@ public abstract class StorageObject extends SliceJpaObject {
 		case file:
 			prefix = "file://";
 			break;
-		case hdfs:
-			// 路径不采用带用户名的homeDirctory,直接返回
-			return StringUtils.isEmpty(mapping.getPrefix()) ? "/" : ("/" + mapping.getPrefix());
 		default:
 			break;
 		}
@@ -501,23 +478,6 @@ public abstract class StorageObject extends SliceJpaObject {
 		return length;
 	}
 
-	private long hdfsUpdateContent(StorageMapping mapping, InputStream input) throws Exception {
-		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-				.get(hdfsConfiguration(mapping))) {
-			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
-			if (fileSystem.exists(path)) {
-				fileSystem.delete(path, false);
-			}
-			try (org.apache.hadoop.fs.FSDataOutputStream output = fileSystem.create(path)) {
-				long length = computeIfHandleEncrypt(input, output);
-				this.setStorage(mapping.getName());
-				this.setLastUpdateTime(new Date());
-				this.setLength(length);
-				return length;
-			}
-		}
-	}
-
 	/**
 	 * vfs读取数据
 	 *
@@ -547,22 +507,6 @@ public abstract class StorageObject extends SliceJpaObject {
 					&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 				/* webdav关闭会试图去关闭commons.httpClient */
 				manager.closeFileSystem(fo.getFileSystem());
-			}
-		}
-		return length;
-	}
-
-	private Long hdfsReadContent(StorageMapping mapping, OutputStream output) throws Exception {
-		long length = -1L;
-		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-				.get(hdfsConfiguration(mapping))) {
-			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
-			if (fileSystem.exists(path)) {
-				try (org.apache.hadoop.fs.FSDataInputStream input = fileSystem.open(path)) {
-					length = computeIfHandleDecrypt(input, output);
-				}
-			} else {
-				throw new FileNotFoundException(path + " not existed, object:" + this.toString() + ".");
 			}
 		}
 		return length;
@@ -608,37 +552,6 @@ public abstract class StorageObject extends SliceJpaObject {
 				manager.closeFileSystem(fo.getFileSystem());
 			}
 		}
-	}
-
-	private boolean hdfsExistContent(StorageMapping mapping) throws Exception {
-		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-				.get(hdfsConfiguration(mapping))) {
-			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
-			return fileSystem.exists(path);
-		}
-	}
-
-	private void hdfsDeleteContent(StorageMapping mapping) throws Exception {
-		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-				.get(hdfsConfiguration(mapping))) {
-			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
-			if (fileSystem.exists(path)) {
-				fileSystem.delete(path, false);
-			}
-		}
-	}
-
-	private org.apache.hadoop.conf.Configuration hdfsConfiguration(StorageMapping mapping) {
-		if ((!StringUtils.equals(System.getProperty("HADOOP_USER_NAME"), mapping.getUsername()))
-				&& StringUtils.isNotBlank(mapping.getUsername())) {
-			System.setProperty("HADOOP_USER_NAME", mapping.getUsername());
-		}
-		org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
-		configuration.set("fs.default.name",
-				StorageProtocol.hdfs + "://" + mapping.getHost() + ":" + mapping.getPort());
-		configuration.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-		configuration.set("fs.hdfs.impl.disable.cache", BooleanUtils.TRUE);
-		return configuration;
 	}
 
 	private Long computeIfHandleEncrypt(InputStream inputStream, OutputStream outputStream)

@@ -1,27 +1,5 @@
 package com.x.program.center.jaxrs.captcha;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Random;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.Producer;
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.google.code.kaptcha.util.Config;
 import com.google.common.collect.Streams;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -33,6 +11,20 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Captcha;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Optional;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import javax.imageio.ImageIO;
+import org.apache.commons.lang3.ArrayUtils;
 
 class V2Create extends BaseAction {
 
@@ -67,22 +59,7 @@ class V2Create extends BaseAction {
 		}
 	}
 
-	private static Function<Pair<Integer, Integer>, Optional<Pair<String, byte[]>>> kaptcha = param -> {
-		Producer producer = createProducer(param.first(), param.second());
-		// 生成随机字符串
-		String verifyCode = producer.createText();
-		// 生成图片
-		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			BufferedImage bufferedImage = producer.createImage(verifyCode);
-			ImageIO.write(bufferedImage, "png", out);
-			return Optional.of(Pair.of(verifyCode, out.toByteArray()));
-		} catch (Exception | Error e) {
-			// catch all exception
-			LOGGER.warn("can not create captcha, use mnist image instead, com.google.code.kaptcha not available:{}.",
-					e.getMessage());
-		}
-		return Optional.empty();
-	};
+	private static Function<Pair<Integer, Integer>, Optional<Pair<String, byte[]>>> kaptcha = param -> Optional.empty();
 
 	private static Function<Pair<Integer, Integer>, Optional<Pair<String, byte[]>>> mnist = param -> {
 		Random random = new SecureRandom();
@@ -139,19 +116,4 @@ class V2Create extends BaseAction {
 
 	}
 
-	private static Producer createProducer(Integer width, Integer height) {
-		Properties properties = new Properties();
-		properties.setProperty(Constants.KAPTCHA_BORDER, "no");
-		properties.setProperty(Constants.KAPTCHA_BORDER_COLOR, "105,179,90");
-		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_COLOR, "black");
-		properties.setProperty(Constants.KAPTCHA_IMAGE_WIDTH, width.toString());
-		properties.setProperty(Constants.KAPTCHA_IMAGE_HEIGHT, height.toString());
-		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_LENGTH, "4");
-		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_FONT_SIZE, "40");
-		properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_STRING, "1234567890");
-		Config config = new Config(properties);
-		DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
-		defaultKaptcha.setConfig(config);
-		return defaultKaptcha;
-	}
 }

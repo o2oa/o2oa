@@ -1,24 +1,18 @@
 package com.x.message.assemble.communicate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
-
-import net.sf.ehcache.Ehcache;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class AbstractFactory {
 
 	protected Business business;
-
-	protected Ehcache cache;
 
 	protected AbstractFactory(Business business) {
 		if (null == business) {
