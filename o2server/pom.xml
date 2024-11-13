@@ -252,10 +252,6 @@
 			<artifactId>dom4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 		</dependency>
@@ -368,10 +364,6 @@
 			<artifactId>cache-ri-impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-client</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 		</dependency>
@@ -428,14 +420,6 @@
 			<artifactId>lucene-luke</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-hdfs</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-solrj</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.github.jsqlparser</groupId>
 			<artifactId>jsqlparser</artifactId>
 		</dependency>
@@ -467,6 +451,10 @@
 				<groupId>org.graalvm.tools</groupId>
 				<artifactId>chromeinspector</artifactId>
 			</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -649,12 +637,12 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.12.0</version>
+				<version>3.16.0</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-cli</groupId>
 				<artifactId>commons-cli</artifactId>
-				<version>1.4</version>
+				<version>1.8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-beanutils</groupId>
@@ -664,7 +652,7 @@
 			<dependency>
 				<groupId>commons-net</groupId>
 				<artifactId>commons-net</artifactId>
-				<version>3.6</version>
+				<version>3.11.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -679,27 +667,33 @@
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.13</version>
+				<version>1.17.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.7</version>
+				<version>2.17.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-vfs2-jackrabbit2</artifactId>
 				<version>2.9.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.hadoop</groupId>
+						<artifactId>hadoop-hdfs-client</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-pool2</artifactId>
-				<version>2.9.0</version>
+				<version>2.12.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-text</artifactId>
-				<version>1.10.0</version>
+				<version>1.12.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
@@ -714,7 +708,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-configuration2</artifactId>
-				<version>2.9.0</version>
+				<version>2.11.0</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-fileupload</groupId>
@@ -877,11 +871,6 @@
 				<version>2.1.4</version>
 			</dependency>
 			<dependency>
-				<groupId>net.sf.ehcache</groupId>
-				<artifactId>ehcache</artifactId>
-				<version>2.10.5</version>
-			</dependency>
-			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
 				<version>2.4.0-rc2</version>
@@ -930,16 +919,6 @@
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-luke</artifactId>
 				<version>9.4.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-hdfs</artifactId>
-				<version>9.2.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-solrj</artifactId>
-				<version>9.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>de.vandermeer</groupId>
@@ -1197,11 +1176,6 @@
 				<version>1.1.1</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.hadoop</groupId>
-				<artifactId>hadoop-client</artifactId>
-				<version>3.3.5</version>
-			</dependency>
-			<dependency>
 				<groupId>com.sun.mail</groupId>
 				<artifactId>javax.mail</artifactId>
 				<version>1.6.2</version>
@@ -1209,17 +1183,17 @@
 			<dependency>
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-annotations</artifactId>
-				<version>2.2.0</version>
+				<version>2.2.25</version>
 			</dependency>
 			<dependency>
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-core</artifactId>
-				<version>2.2.0</version>
+				<version>2.2.25</version>
 			</dependency>
 			<dependency>
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-jaxrs2</artifactId>
-				<version>2.2.0</version>
+				<version>2.2.25</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jgit</groupId>
@@ -1281,6 +1255,11 @@
 				<groupId>org.graalvm.tools</groupId>
 				<artifactId>chromeinspector</artifactId>
 				<version>${graalvm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>33.3.1-jre</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

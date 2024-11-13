@@ -1,20 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hadoop.thirdparty.com.google.common.collect.Lists;
-
+import com.google.common.collect.Lists;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -39,6 +25,18 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class V2ListActivityGoBack extends BaseAction {
 

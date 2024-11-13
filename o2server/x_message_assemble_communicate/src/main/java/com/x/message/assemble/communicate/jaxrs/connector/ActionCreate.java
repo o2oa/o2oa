@@ -1,17 +1,5 @@
 package com.x.message.assemble.communicate.jaxrs.connector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-import org.graalvm.polyglot.Source;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -34,6 +22,16 @@ import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.Instant;
 import com.x.message.core.entity.Message;
 import com.x.organization.core.express.Organization;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.graalvm.polyglot.Source;
 
 class ActionCreate extends BaseAction {
 
@@ -139,9 +137,6 @@ class ActionCreate extends BaseAction {
 			message = this.v3Message(wi, consumer);
 			break;
 		case MessageConnector.CONSUME_TABLE:
-			message = this.v3Message(wi, consumer);
-			break;
-		case MessageConnector.CONSUME_HADOOP:
 			message = this.v3Message(wi, consumer);
 			break;
 		case MessageConnector.CONSUME_ANDFX:
@@ -437,9 +432,6 @@ class ActionCreate extends BaseAction {
 				break;
 			case MessageConnector.CONSUME_TABLE:
 				ThisApplication.tableConsumeQueue.send(message);
-				break;
-			case MessageConnector.CONSUME_HADOOP:
-				ThisApplication.hadoopConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_ANDFX:
 				ThisApplication.andFxConsumeQueue.send(message);

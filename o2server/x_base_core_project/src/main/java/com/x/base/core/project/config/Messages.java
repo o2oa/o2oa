@@ -20,7 +20,6 @@ import com.x.base.core.project.config.Message.ApiConsumer;
 import com.x.base.core.project.config.Message.CalendarConsumer;
 import com.x.base.core.project.config.Message.Consumer;
 import com.x.base.core.project.config.Message.DingdingConsumer;
-import com.x.base.core.project.config.Message.HadoopConsumer;
 import com.x.base.core.project.config.Message.JdbcConsumer;
 import com.x.base.core.project.config.Message.KafkaConsumer;
 import com.x.base.core.project.config.Message.MailConsumer;
@@ -44,8 +43,7 @@ public class Messages extends ConfigObject {
             MessageConnector.CONSUME_ZHENGWUDINGDING, MessageConnector.CONSUME_QIYEWEIXIN,
             MessageConnector.CONSUME_MPWEIXIN, MessageConnector.CONSUME_CALENDAR, MessageConnector.CONSUME_KAFKA,
             MessageConnector.CONSUME_ACTIVEMQ, MessageConnector.CONSUME_RESTFUL, MessageConnector.CONSUME_MAIL,
-            MessageConnector.CONSUME_API, MessageConnector.CONSUME_JDBC, MessageConnector.CONSUME_TABLE,
-            MessageConnector.CONSUME_HADOOP);
+            MessageConnector.CONSUME_API, MessageConnector.CONSUME_JDBC, MessageConnector.CONSUME_TABLE);
 
     private static final Message MESSAGE_NOTICE = new Message(MessageConnector.CONSUME_WS,
             MessageConnector.CONSUME_PMS_INNER, MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_WELINK,
@@ -54,8 +52,7 @@ public class Messages extends ConfigObject {
 
     private static final Message MESSAGE_OUTER = new Message(MessageConnector.CONSUME_KAFKA,
             MessageConnector.CONSUME_ACTIVEMQ, MessageConnector.CONSUME_RESTFUL, MessageConnector.CONSUME_MAIL,
-            MessageConnector.CONSUME_API, MessageConnector.CONSUME_JDBC, MessageConnector.CONSUME_TABLE,
-            MessageConnector.CONSUME_HADOOP);
+            MessageConnector.CONSUME_API, MessageConnector.CONSUME_JDBC, MessageConnector.CONSUME_TABLE);
 
     public Messages() {
         super();
@@ -261,10 +258,7 @@ public class Messages extends ConfigObject {
         o.consumers.put("activemq_demo", XGsonBuilder.instance().toJsonTree(ActivemqConsumer.defaultInstance()));
         o.consumers.put("restful_demo", XGsonBuilder.instance().toJsonTree(RestfulConsumer.defaultInstance()));
         o.consumers.put("mail_demo", XGsonBuilder.instance().toJsonTree(MailConsumer.defaultInstance()));
-//		o.consumers.put("api_demo", XGsonBuilder.instance().toJsonTree(ApiConsumer.defaultInstance()));
         o.consumers.put("jdbc_demo", XGsonBuilder.instance().toJsonTree(JdbcConsumer.defaultInstance()));
-//		o.consumers.put("table_demo", XGsonBuilder.instance().toJsonTree(TableConsumer.defaultInstance()));
-        o.consumers.put("hadoop_demo", XGsonBuilder.instance().toJsonTree(HadoopConsumer.defaultInstance()));
         o.consumers.put("andfx_demo", XGsonBuilder.instance().toJsonTree(new Message.AndFxConsumer()));
         o.loaders = new LinkedHashMap<>();
         o.filters = new LinkedHashMap<>();
@@ -885,9 +879,6 @@ public class Messages extends ConfigObject {
                         break;
                     case MessageConnector.CONSUME_TABLE:
                         list.add(gson.fromJson(jsonElement, TableConsumer.class));
-                        break;
-                    case MessageConnector.CONSUME_HADOOP:
-                        list.add(gson.fromJson(jsonElement, HadoopConsumer.class));
                         break;
                     default:
                         list.add(gson.fromJson(jsonElement, Consumer.class));

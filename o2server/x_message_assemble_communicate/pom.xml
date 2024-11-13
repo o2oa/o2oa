@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-client</artifactId>
-			<version>5.17.0</version>
+			<version>5.18.6</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.geronimo.specs</groupId>

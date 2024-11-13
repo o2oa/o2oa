@@ -8,7 +8,6 @@ import com.x.base.core.project.tools.NumberTools;
 
 public class Cache extends ConfigObject {
 
-	// public static final String TYPE_EHCACHE = "ehcache";
 	public static final String TYPE_REDIS = "redis";
 	public static final String TYPE_GUAVA = "guava";
 
@@ -19,7 +18,6 @@ public class Cache extends ConfigObject {
 	public Cache() {
 		this.type = TYPE_GUAVA;
 		this.redis = Redis.defaultInstance();
-		// this.ehcache = Ehcache.defaultInstance();
 		this.guava = Guava.defaultInstance();
 	}
 
@@ -27,14 +25,11 @@ public class Cache extends ConfigObject {
 		return this.type;
 	}
 
-	@FieldDescribe("缓存类型:ehcache,redis,guava")
+	@FieldDescribe("缓存类型:redis,guava")
 	private String type;
 
 	@FieldDescribe("redis配置")
 	private Redis redis;
-
-//	@FieldDescribe("ehcache配置")
-//	private Ehcache ehcache;
 
 	@FieldDescribe("guava配置")
 	private Guava guava;
@@ -42,10 +37,6 @@ public class Cache extends ConfigObject {
 	public Redis getRedis() {
 		return this.redis == null ? new Redis() : this.redis;
 	}
-
-//	public Ehcache getEhcache() {
-//		return this.ehcache == null ? new Ehcache() : this.ehcache;
-//	}
 
 	public Guava getGuava() {
 		return this.guava == null ? new Guava() : this.guava;
@@ -136,26 +127,6 @@ public class Cache extends ConfigObject {
 			return NumberTools.nullOrLessThan(this.index, 0) ? DEFAULT_INDEX : this.index;
 		}
 
-	}
-
-	public static class Ehcache extends ConfigObject {
-		private static final long serialVersionUID = 1L;
-		public static final Boolean DEFAULT_JMXENABLE = false;
-
-		public static Ehcache defaultInstance() {
-			return new Ehcache();
-		}
-
-		public Ehcache() {
-			this.jmxEnable = DEFAULT_JMXENABLE;
-		}
-
-		@FieldDescribe("是否启用jmx")
-		private Boolean jmxEnable;
-
-		public Boolean getJmxEnable() {
-			return BooleanUtils.isTrue(jmxEnable);
-		}
 	}
 
 	public static class Guava extends ConfigObject {

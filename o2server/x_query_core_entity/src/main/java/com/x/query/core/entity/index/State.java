@@ -51,8 +51,6 @@ public class State extends SliceJpaObject {
     public static final String FREQ_HIGH = "high";
 
     public static final String MODE_LOCALDIRECTORY = "localDirectory";
-    public static final String MODE_HDFSDIRECTORY = "hdfsDirectory";
-    public static final String MODE_SHAREDDIRECTORY = "sharedDirectory";
 
     public State() {
         this.properties = new StateProperties();

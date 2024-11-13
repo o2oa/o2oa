@@ -1,19 +1,16 @@
 package com.x.base.core.project.message;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.Context;
-import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.x_message_assemble_communicate;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageConnector {
 
@@ -229,12 +226,10 @@ public class MessageConnector {
     public static final String CONSUME_JDBC = "jdbc";
     // 自建表
     public static final String CONSUME_TABLE = "table";
-    // hadoop dfs
-    public static final String CONSUME_HADOOP = "hadoop";
     // 自定消费者类型前缀
     public static final String CONSUME_CUSTOM_PREFIX = "custom_";
 
-    public static final Set<String> TYPES = Collections.unmodifiableSet(Sets.newHashSet(TYPE_APPLICATION_CREATE,
+    public static final Set<String> TYPES = Set.of(TYPE_APPLICATION_CREATE,
             TYPE_APPLICATION_UPDATE, TYPE_APPLICATION_DELETE, TYPE_PROCESS_CREATE, TYPE_PROCESS_UPDATE,
             TYPE_PROCESS_DELETE, TYPE_ACTIVITY_MESSAGE, TYPE_WORK_TO_WORKCOMPLETED, TYPE_WORK_CREATE, TYPE_WORK_DELETE,
             TYPE_WORKCOMPLETED_CREATE, TYPE_WORKCOMPLETED_DELETE, TYPE_TASK_TO_TASKCOMPLETED, TYPE_TASK_CREATE,
@@ -247,7 +242,7 @@ public class MessageConnector {
             TYPE_TEAMWORK_TASKCREATE, TYPE_TEAMWORK_TASKUPDATE, TYPE_TEAMWORK_TASKDELETE, TYPE_TEAMWORK_TASKOVERTIME,
             TYPE_TEAMWORK_CHAT, TYPE_CMS_PUBLISH, TYPE_CMS_PUBLISH_TO_CREATOR, TYPE_BBS_SUBJECTCREATE,
             TYPE_BBS_REPLYCREATE, TYPE_MIND_FILESEND, TYPE_MIND_FILESHARE, TYPE_IM_CREATE, TYPE_IM_REVOKE, TYPE_IM_CONVERSATION_DELETE, TYPE_IM_CONVERSATION_UPDATE,
-            TYPE_ATTENDANCE_CHECK_IN_ALERT, TYPE_ATTENDANCE_CHECK_IN_EXCEPTION));
+            TYPE_ATTENDANCE_CHECK_IN_ALERT, TYPE_ATTENDANCE_CHECK_IN_EXCEPTION);
 
     private static Context context;
 

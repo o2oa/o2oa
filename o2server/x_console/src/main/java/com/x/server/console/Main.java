@@ -51,7 +51,6 @@ public class Main {
 		Log4j2Configuration.reconfigure();
 		ResourceFactory.init();
 		CommandFactory.printStartHelp();
-		Hadoop.init();// 初始化hadoop环境
 		new Resource(Config.RESOURCE_COMMANDQUEUE, commandQueue);// 注册控制台命令队列,命令队列唯一不可改.
 		// 注册 commandTerminatedSignal阻塞队列
 		new Resource(Config.RESOURCE_COMMANDTERMINATEDSIGNAL_CTL_RD, new LinkedBlockingQueue<>());
