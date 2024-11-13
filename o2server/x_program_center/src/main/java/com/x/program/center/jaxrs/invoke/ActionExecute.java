@@ -34,8 +34,12 @@ class ActionExecute extends BaseAction {
 
 		checkRemoteAddrRegex(request, invoke);
 
-		if (BooleanUtils.isTrue(invoke.getEnableToken())) {
+		if (BooleanUtils.isTrue(invoke.getEnableToken()) && effectivePerson.isAnonymous()) {
 			throw new ExceptionEnableToken(invoke.getName());
+		}
+
+		if(effectivePerson.isNotManager()){
+			checkAccess(invoke, effectivePerson);
 		}
 
 		return execute(request, effectivePerson, jsonElement, cacheCategory, invoke);
