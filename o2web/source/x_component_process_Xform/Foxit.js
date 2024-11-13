@@ -159,7 +159,7 @@ MWF.xApplication.process.Xform.Foxit = MWF.APPFoxit =  new Class({
         });
 
         var host = o2.Actions.getHost( "x_processplatform_assemble_surface" );
-        var fileUrl = o2.filterUrl(host + "/x_processplatform_assemble_surface/jaxrs/attachment/download/" + this.documentId);
+        var fileUrl = o2.filterUrl(host + "/x_processplatform_assemble_surface/jaxrs/attachment/download/" + this.documentId + "/stream");
 
         var xtoken = layout.session.token;
         fileUrl = fileUrl + "?"+o2.tokenName+"=" + xtoken;
