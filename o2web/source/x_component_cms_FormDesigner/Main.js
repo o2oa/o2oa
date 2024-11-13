@@ -1627,7 +1627,8 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             ['Org', 'OOOrg','Author','Reader'],
             ['Checkbox', 'OOCheckGroup', 'Radio', 'OORadioGroup', 'Select', 'OOSelect'],
             ['Calendar', 'OODatetime'],
-            ['Textfield', 'Textarea', 'OOInput', 'OOTextarea'],
+            ['Textfield', 'Textarea', 'OOInput', 'OOTextarea'],,
+            ['Button', 'OOButton']
         ].filter(function (types){
             return types.contains( module.json.type );
         });

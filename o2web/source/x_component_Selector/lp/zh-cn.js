@@ -26,7 +26,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectFieldProperty": "选择字段属性",
 
     "searchDescription" : "搜索内容",
-    "searchDescriptionFieldProperty": "展开过的表单可以搜索字段",
+    "searchDescriptionFieldProperty": "展开过的表单可以搜索组件",
 
     "waitingSelect" : "待选",
     "selected" : "已选",

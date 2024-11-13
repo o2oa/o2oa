@@ -1747,6 +1747,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             ['Checkbox', 'OOCheckGroup', 'Radio', 'OORadioGroup', 'Select', 'OOSelect'],
             ['Calendar', 'OODatetime'],
             ['Textfield', 'Textarea', 'OOInput', 'OOTextarea'],
+            ['Button', 'OOButton']
         ].filter(function (types){
             return types.contains( module.json.type );
         });
