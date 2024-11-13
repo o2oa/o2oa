@@ -65,7 +65,7 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_HTTP_WHITE = "*";
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
-	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 86400;
+	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 0;
 	private static final Map<String, String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN", "简体中文", "en", "English");
 	private static final Boolean DEFAULT_GRAALVMEVALASPROMISE = true;
 
