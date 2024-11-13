@@ -1742,10 +1742,21 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             return;
         }
         var module = this.form.currentSelectedModule;
+        var modulesTypes = [
+            ['Org', 'OOOrg','Author','Reader'],
+            ['Checkbox', 'OOCheckGroup', 'Radio', 'OORadioGroup', 'Select', 'OOSelect'],
+            ['Calendar', 'OODatetime'],
+            ['Textfield', 'Textarea', 'OOInput', 'OOTextarea'],
+        ].filter(function (types){
+            return types.contains( module.json.type );
+        });
+        modulesTypes = modulesTypes.length ? modulesTypes[0] : [module.json.type];
+
         this.selector = new MWF.O2Selector(this.content, {
             count: 1,
             title: MWF.APPFD.LP.selectCopyModule,
             type: 'FieldProperty',
+            moduleTypes: modulesTypes,
             currentFormFields: Object.values(this.form.json.moduleList),
             onComplete: function (items){
                 if( !items.length )return;

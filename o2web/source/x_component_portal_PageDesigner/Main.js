@@ -2100,4 +2100,43 @@ MWF.xApplication.portal.PageDesigner.ToolsGroup = new Class({
             }.bind(this));
         }
     },
+    copyPropertyToModule: function (){
+        if( !this.form.currentSelectedModule ){
+            this.notice( MWF.APPFD.LP.selectCopyModuleNotice, 'info');
+            return;
+        }
+        var module = this.form.currentSelectedModule;
+        var modulesTypes = [
+            ['Org', 'OOOrg','Author','Reader'],
+            ['Checkbox', 'OOCheckGroup', 'Radio', 'OORadioGroup', 'Select', 'OOSelect'],
+            ['Calendar', 'OODatetime'],
+            ['Textfield', 'Textarea', 'OOInput', 'OOTextarea'],
+        ].filter(function (types){
+            return types.contains( module.json.type );
+        });
+        modulesTypes = modulesTypes.length ? modulesTypes[0] : [module.json.type];
+
+        this.selector = new MWF.O2Selector(this.content, {
+            count: 1,
+            title: MWF.APPFD.LP.selectCopyModule,
+            type: 'FieldProperty',
+            moduleTypes: modulesTypes,
+            currentFormFields: Object.values(this.form.json.moduleList),
+            onComplete: function (items){
+                if( !items.length )return;
+                for( var key in items[0].data ){
+                    var value = items[0].data[key];
+                    if( !['id', 'type', 'pid'].contains(key) && module.json[key] !== value ){
+                        module.json[key] = value;
+                        module.setPropertiesOrStyles(key, value);
+                        module._setEditStyle(key, null, value);
+                        // this.setScriptJsEditor(module, change.name, change.fromValue);
+                    }
+                }
+                if( module.property ){
+                    module.property.reset();
+                }
+            }.bind(this)
+        });
+    },
 });

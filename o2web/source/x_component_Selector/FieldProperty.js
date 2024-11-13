@@ -8,7 +8,8 @@ MWF.xApplication.Selector.FieldProperty = new Class({
         "values": [],
         "names": [],
         "appType" : ["currentForm","process","portal","cms"],
-        "excludeModuleTypes": ["Div","Table$Td","Datatable$Data","Datatable$Title","Label"],
+        "moduleTypes": [],
+        "excludeModuleTypes": [], //"Div","Table$Td","Datatable$Data","Datatable$Title","Label"
         "currentFormFields": [],
         "applications": [],
         "expand": false,
@@ -179,8 +180,10 @@ MWF.xApplication.Selector.FieldProperty.ItemCategory = new Class({
         if (!this.loaded) {
             if( this.level === 1 ){
                 if( this.data._appType === "currentForm" ){
-                    this.selector.options.currentFormFields.filter(function (d){
-                        return !this.selector.options.excludeModuleTypes.contains(d.type);
+                    var options = this.selector.options;
+                    options.currentFormFields.filter(function (d){
+                        var flag = options.moduleTypes.length ? options.moduleTypes.contains(d.type) : true;
+                        return !options.excludeModuleTypes.contains(d.type) && flag;
                     }.bind(this)).sort(function (a, b){
                         return a.id.localeCompare(b.id);
                     }).each(function (d) {
@@ -259,8 +262,10 @@ MWF.xApplication.Selector.FieldProperty.ItemCategory = new Class({
                 }
                 action.then(function (json){
                     var formData = JSON.decode(MWF.decodeJsonString(json.data.data));
+                    var options = this.selector.options;
                     Object.values(formData.json.moduleList).filter(function (d){
-                        return !this.selector.options.excludeModuleTypes.contains(d.type);
+                        var flag = options.moduleTypes.length ? options.moduleTypes.contains(d.type) : true;
+                        return !options.excludeModuleTypes.contains(d.type) && flag;
                     }.bind(this)).sort(function (a, b){
                         return a.id.localeCompare(b.id);
                     }).each(function (d) {
