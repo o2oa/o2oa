@@ -6,7 +6,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-//	protected Ehcache cache = ApplicationCache.instance().getCache(OutputCacheObject.class);
 	protected CacheCategory cacheCategory = new CacheCategory(OutputCacheObject.class);
 
 	public static class OutputCacheObject {

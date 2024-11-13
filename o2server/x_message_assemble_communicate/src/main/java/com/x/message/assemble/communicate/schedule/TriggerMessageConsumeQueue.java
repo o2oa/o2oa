@@ -1,11 +1,10 @@
 package com.x.message.assemble.communicate.schedule;
 
-import org.quartz.JobExecutionContext;
-
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.message.assemble.communicate.ThisApplication;
+import org.quartz.JobExecutionContext;
 
 public class TriggerMessageConsumeQueue extends AbstractJob {
 
@@ -14,7 +13,7 @@ public class TriggerMessageConsumeQueue extends AbstractJob {
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		LOGGER.debug(
-				"schedule trigger kafkaConsumeQueue, activeMqConsumeQueue, restfulConsumeQueue, mailConsumeQueue, apiConsumeQueue, jdbcConsumeQueue, tableConsumeQueue, hadoopConsumeQueue.");
+				"schedule trigger kafkaConsumeQueue, activeMqConsumeQueue, restfulConsumeQueue, mailConsumeQueue, apiConsumeQueue, jdbcConsumeQueue, tableConsumeQueue.");
 		ThisApplication.kafkaConsumeQueue.send(null);
 		ThisApplication.activemqConsumeQueue.send(null);
 		ThisApplication.restfulConsumeQueue.send(null);
@@ -22,7 +21,6 @@ public class TriggerMessageConsumeQueue extends AbstractJob {
 		ThisApplication.apiConsumeQueue.send(null);
 		ThisApplication.jdbcConsumeQueue.send(null);
 		ThisApplication.tableConsumeQueue.send(null);
-		ThisApplication.hadoopConsumeQueue.send(null);
 	}
 
 }

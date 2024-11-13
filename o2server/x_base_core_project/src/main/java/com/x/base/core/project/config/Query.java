@@ -1,19 +1,16 @@
 package com.x.base.core.project.config;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.NumberTools;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.File;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.utils.SystemUtils;
 import org.quartz.CronExpression;
-
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.NumberTools;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Query extends ConfigObject {
 
@@ -110,8 +107,6 @@ public class Query extends ConfigObject {
             Index o = new Index();
             o.enable = DEFAULT_ENABLE;
             o.mode = DEFAULT_MODE;
-            o.hdfsDirectoryDefaultFS = DEFAULT_HDFSDIRECTORYDEFAULTFS;
-            o.hdfsDirectoryPath = DEFAULT_HDFSDIRECTORYPATH;
             o.sharedDirectoryPath = DEFAULT_SHAREDDIRECTORYPATH;
             o.maxSegments = DEFAULT_MAXSEGMENTS;
             o.optimizeIndexEnable = DEFAULT_OPTIMIZEINDEXENABLE;
@@ -186,11 +181,8 @@ public class Query extends ConfigObject {
         public static final String DIRECTORY_SEARCH = "search";
 
         public static final String MODE_LOCALDIRECTORY = "localDirectory";
-        public static final String MODE_HDFSDIRECTORY = "hdfsDirectory";
         public static final String MODE_SHAREDDIRECTORY = "sharedDirectory";
 
-        public static final String DEFAULT_HDFSDIRECTORYDEFAULTFS = "hdfs://127.0.0.1:9000";
-        public static final String DEFAULT_HDFSDIRECTORYPATH = "/repository/index";
         public static final String DEFAULT_SHAREDDIRECTORYPATH = "/repository/index";
         public static final String DEFAULT_MODE = MODE_LOCALDIRECTORY;
         public static final Integer DEFAULT_MAXSEGMENTS = 1;
@@ -284,17 +276,9 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用.")
         private Boolean enable;
 
-        @FieldDescribe("索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
-        @Schema(description = "索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
+        @FieldDescribe("索引模式:localDirectory(本地文件系统),sharedDirectory(共享文件系统目录).")
+        @Schema(description = "索引模式:localDirectory(本地文件系统),sharedDirectory(共享文件系统目录).")
         private String mode;
-
-        @FieldDescribe("hadoop文件系统地址.")
-        @Schema(description = "hadoop文件系统地址.")
-        private String hdfsDirectoryDefaultFS;
-
-        @FieldDescribe("hadoop文件系统目录.")
-        @Schema(description = "hadoop文件系统目录.")
-        private String hdfsDirectoryPath;
 
         @FieldDescribe("共享文件系统目录.")
         @Schema(description = "共享文件系统目录.")
@@ -575,20 +559,6 @@ public class Query extends ConfigObject {
             } else {
                 return DEFAULT_OPTIMIZEINDEXCRON;
             }
-        }
-
-        /**
-         * 如果有空返回默认路径,如果有值那么判断时候否是从根目录开始,补全根目录标识.
-         * 
-         * @return
-         */
-        public String getHdfsDirectoryPath() {
-            return StringUtils.isEmpty(this.hdfsDirectoryPath) ? DEFAULT_HDFSDIRECTORYPATH : adjustHdfsDirectoryPath();
-        }
-
-        private String adjustHdfsDirectoryPath() {
-            return StringUtils.startsWith(this.hdfsDirectoryPath, "/") ? this.hdfsDirectoryPath
-                    : "/" + hdfsDirectoryPath;
         }
 
         public Integer getMaxSegments() {
@@ -913,19 +883,11 @@ public class Query extends ConfigObject {
         }
 
         public String getMode() {
-            if (StringUtils.equalsIgnoreCase(MODE_HDFSDIRECTORY, this.mode)) {
-                return MODE_HDFSDIRECTORY;
-            }
             if (StringUtils.equalsIgnoreCase(MODE_SHAREDDIRECTORY, this.mode)) {
                 return MODE_SHAREDDIRECTORY;
             } else {
                 return MODE_LOCALDIRECTORY;
             }
-        }
-
-        public String getHdfsDirectoryDefaultFS() {
-            return StringUtils.isEmpty(this.hdfsDirectoryDefaultFS) ? DEFAULT_HDFSDIRECTORYDEFAULTFS
-                    : this.hdfsDirectoryDefaultFS;
         }
 
     }

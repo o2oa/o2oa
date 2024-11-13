@@ -163,23 +163,6 @@ public class EndProcessor extends AbstractEndProcessor {
 		// 回写到父Work
 		tryUpdateParentWork(aeiObjects);
 		addUpdateTableEvent(aeiObjects);
-		addArchiveHadoopEvent(aeiObjects);
-	}
-
-	private void addArchiveHadoopEvent(AeiObjects aeiObjects) {
-		try {
-			if (BooleanUtils.isTrue(Config.processPlatform().getArchiveHadoop().getEnable())) {
-				aeiObjects.entityManagerContainer().beginTransaction(Event.class);
-				Event event = new Event();
-				event.setJob(aeiObjects.getWork().getJob());
-				event.setType(Event.EVENTTYPE_ARCHIVEHADOOP);
-				aeiObjects.entityManagerContainer().persist(event, CheckPersistType.all);
-				aeiObjects.entityManagerContainer().commit();
-				ThisApplication.archiveHadoopQueue.send(event.getId());
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
 	}
 
 	private void addUpdateTableEvent(AeiObjects aeiObjects) {

@@ -1,18 +1,16 @@
 package com.x.base.core.project.config;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.message.MessageConnector;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 public class Message extends GsonPropertyObject {
 
@@ -151,8 +149,6 @@ public class Message extends GsonPropertyObject {
 			return new JdbcConsumer();
 		case MessageConnector.CONSUME_TABLE:
 			return new TableConsumer();
-		case MessageConnector.CONSUME_HADOOP:
-			return new HadoopConsumer();
 		default:
 			return new Consumer(type);
 		}
@@ -518,49 +514,6 @@ public class Message extends GsonPropertyObject {
 
 		public String getMethod() {
 			return StringUtils.isBlank(this.method) ? DEFAULT_METHOD : this.method;
-		}
-	}
-
-	public static class HadoopConsumer extends Consumer {
-
-		private static final long serialVersionUID = -8274136904009320770L;
-
-		public static HadoopConsumer defaultInstance() {
-			HadoopConsumer o = new HadoopConsumer();
-			o.fsDefaultFS = DEFAULT_FS_DEFAULTFS;
-			o.username = DEFAULT_USERNAME;
-			o.path = DEFAULT_PATH;
-			o.consumer = null;
-			return o;
-		}
-
-		public HadoopConsumer() {
-			super(MessageConnector.CONSUME_HADOOP, false);
-		}
-
-		private static final String DEFAULT_FS_DEFAULTFS = "hdfs://";
-		private static final String DEFAULT_USERNAME = "";
-		private static final String DEFAULT_PATH = "";
-
-		@FieldDescribe("hadoop地址.")
-		private String fsDefaultFS;
-
-		@FieldDescribe("hadoop用户名.")
-		private String username;
-
-		@FieldDescribe("fs路径前缀.")
-		private String path;
-
-		public String getFsDefaultFS() {
-			return StringUtils.isEmpty(this.fsDefaultFS) ? DEFAULT_FS_DEFAULTFS : this.fsDefaultFS;
-		}
-
-		public String getUsername() {
-			return StringUtils.isEmpty(this.username) ? DEFAULT_USERNAME : this.username;
-		}
-
-		public String getPath() {
-			return StringUtils.isEmpty(this.path) ? DEFAULT_PATH : this.path;
 		}
 	}
 

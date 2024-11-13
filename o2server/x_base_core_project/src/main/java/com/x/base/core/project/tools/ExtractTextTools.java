@@ -1,26 +1,22 @@
 package com.x.base.core.project.tools;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.util.List;
-
 import javax.imageio.ImageIO;
-
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
 import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.cos.COSDocument;
-import org.apache.pdfbox.io.RandomAccessBuffer;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.tika.Tika;
-
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-
-import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.Tesseract;
 
 public class ExtractTextTools {
 
@@ -95,9 +91,8 @@ public class ExtractTextTools {
 
 	public static String pdf(byte[] bytes) {
 		try {
-			PDFParser parser = new PDFParser(new RandomAccessBuffer(bytes));
-			parser.parse();
-			try (COSDocument cos = parser.getDocument(); PDDocument pd = new PDDocument(cos)) {
+			PDFParser parser = new PDFParser(new RandomAccessReadBuffer(bytes));
+			try (COSDocument cos = parser.parse().getDocument(); PDDocument pd = new PDDocument(cos)) {
 				PDFTextStripper stripper = new PDFTextStripper();
 				stripper.setStartPage(1);
 				stripper.setEndPage(pd.getNumberOfPages());

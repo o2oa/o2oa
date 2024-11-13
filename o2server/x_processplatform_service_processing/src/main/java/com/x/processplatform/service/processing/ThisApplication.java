@@ -34,8 +34,6 @@ public class ThisApplication {
 
 	public static final UpdateTableQueue updateTableQueue = new UpdateTableQueue();
 
-	public static final ArchiveHadoopQueue archiveHadoopQueue = new ArchiveHadoopQueue();
-
 	private static ProcessingToProcessingSignalStack processingToProcessingSignalStack = new ProcessingToProcessingSignalStack();
 
 	public static ProcessingToProcessingSignalStack getProcessingToProcessingSignalStack() {
@@ -54,7 +52,6 @@ public class ThisApplication {
 			context().startQueue(syncJaxrsInvokeQueue);
 			context().startQueue(syncJaxwsInvokeQueue);
 			context().startQueue(updateTableQueue);
-			context().startQueue(archiveHadoopQueue);
 			if (BooleanUtils.isTrue(Config.processPlatform().getMerge().getEnable())) {
 				context.schedule(Merge.class, Config.processPlatform().getMerge().getCron());
 			}
@@ -73,9 +70,6 @@ public class ThisApplication {
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getUpdateTable().getEnable())) {
 				context.schedule(UpdateTable.class, Config.processPlatform().getUpdateTable().getCron());
-			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getArchiveHadoop().getEnable())) {
-				context.schedule(ArchiveHadoop.class, Config.processPlatform().getArchiveHadoop().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getHandoverConfig().getEnable())) {
 				context.schedule(HandoverJob.class, Config.processPlatform().getHandoverConfig().getCron());
