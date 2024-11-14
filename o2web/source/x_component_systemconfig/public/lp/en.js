@@ -836,7 +836,7 @@ MWF.xApplication.systemconfig.LP={
 		"indexMode": "Index Storage Location",
 		"modeOptions": {
 			"localDirectory": "Local File System",
-			"hdfsDirectory": "hadoop file system",
+			// "hdfsDirectory": "hadoop file system",
 			"sharedDirectory": "Shared File System"
 		},
 		"hdfsDirectoryDefaultFS": "hadoop file system address",
@@ -1179,7 +1179,7 @@ MWF.xApplication.systemconfig.LP={
 				"ftps": "ftps",
 				"ftp": "ftp",
 				"file": "file",
-				"hdfs": "hdfs",
+				// "hdfs": "hdfs",
 				"cifs": "cifs",
 				"ali": "Alibaba Cloud Storage",
 				"s3": "Amazon Cloud Storage",
