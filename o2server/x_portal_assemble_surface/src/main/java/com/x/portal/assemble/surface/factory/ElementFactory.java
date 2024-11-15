@@ -1,10 +1,5 @@
 package com.x.portal.assemble.surface.factory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -13,12 +8,12 @@ import com.x.portal.assemble.surface.AbstractFactory;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
-
-import net.sf.ehcache.Ehcache;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class ElementFactory extends AbstractFactory {
-
-	protected Ehcache cache;
 
 	public ElementFactory(Business abstractBusiness) throws Exception {
 		super(abstractBusiness);

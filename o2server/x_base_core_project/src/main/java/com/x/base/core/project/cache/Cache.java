@@ -13,7 +13,6 @@ import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 
 public interface Cache {
 
-	// public static final String TYPE_EHCACHE = "ehcache";
 	public static final String TYPE_REDIS = "redis";
 	public static final String TYPE_GUAVA = "guava";
 

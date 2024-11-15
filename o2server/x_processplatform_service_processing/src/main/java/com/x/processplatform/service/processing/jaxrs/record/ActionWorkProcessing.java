@@ -21,6 +21,9 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Identity;
+import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.organization.Unit;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
@@ -114,8 +117,20 @@ class ActionWorkProcessing extends BaseAction {
 				// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
 				checkIfWorkAlreadyCompleted(business, rec, param.workLog.getJob());
 				rec.setIdentity(param.identity);
+				Identity identity = business.organization().identity().getObject(rec.getIdentity());
+				if (null != identity) {
+					rec.setIdentityOrderNumber(identity.getOrderNumber());
+				}
 				rec.setUnit(param.unit);
+				Unit unit = business.organization().unit().getObject(rec.getUnit());
+				if (null != unit) {
+					rec.setUnitOrderNumber(unit.getOrderNumber());
+				}
 				rec.setPerson(param.person);
+				Person person = business.organization().person().getObject(rec.getPerson());
+				if (null != person) {
+					rec.setPersonOrderNumber(person.getOrderNumber());
+				}
 				rec.setRouteName(param.routeName);
 				rec.setOpinion(param.opinion);
 				elapsed(rec);

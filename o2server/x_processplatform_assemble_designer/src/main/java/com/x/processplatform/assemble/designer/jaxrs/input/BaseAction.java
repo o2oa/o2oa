@@ -22,9 +22,6 @@ import com.x.processplatform.core.entity.element.Application_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-//	protected Ehcache inputCache = ApplicationCache.instance().getCache(BaseAction.class.getName(), 100,
-//			ApplicationCache.MINUTES_20, ApplicationCache.MINUTES_20);
-
 	protected CacheCategory cacheCategory = new CacheCategory(BaseAction.class);
 
 	public enum Method {

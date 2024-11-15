@@ -1,13 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.comment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -22,8 +14,11 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.express.tools.filter.QueryFilter;
-
-import net.sf.ehcache.Element;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionListNextWithFilter extends BaseAction {
 
@@ -35,9 +30,8 @@ public class ActionListNextWithFilter extends BaseAction {
 		List<Wo> wos = new ArrayList<>();
 		Wi wrapIn = null;
 		Boolean check = true;
-		Element element = null;
 		QueryFilter queryFilter = null;
-		
+
 		if ( StringUtils.isEmpty( flag ) || "(0)".equals(flag)) {
 			flag = null;
 		}
@@ -65,10 +59,10 @@ public class ActionListNextWithFilter extends BaseAction {
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
 			} else {
-				try {	
+				try {
 					Long total = documentCommentInfoQueryService.countWithFilter( effectivePerson, queryFilter );
 					List<DocumentCommentInfo>  documentCommentInfoList = documentCommentInfoQueryService.listWithFilter( effectivePerson, count, flag, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter );
-					
+
 					if( ListTools.isNotEmpty( documentCommentInfoList )) {
 						for( DocumentCommentInfo documentCommentInfo : documentCommentInfoList ) {
 							Wo wo = Wo.copier.copy(documentCommentInfo);
@@ -87,20 +81,20 @@ public class ActionListNextWithFilter extends BaseAction {
 					result.error(e);
 					logger.error(e, effectivePerson, request, null);
 				}
-			}		
+			}
 		}
 		return result;
 	}
 	public static class Wi extends WrapInQueryDocumentCommentInfo{
-		
+
 	}
 	public static class Wo extends DocumentCommentInfo {
-		
+
 		private Long rank;
 
 		@FieldDescribe("内容")
 		private String content = "";
-		
+
 		public String getContent() {
 			return content;
 		}
@@ -108,7 +102,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		public void setContent(String content) {
 			this.content = content;
 		}
-		
+
 		public Long getRank() {
 			return rank;
 		}
@@ -124,15 +118,15 @@ public class ActionListNextWithFilter extends BaseAction {
 		static WrapCopier<DocumentCommentInfo, Wo> copier = WrapCopierFactory.wo( DocumentCommentInfo.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
 
 	}
-	
+
 	public static class ResultObject {
 
 		private Long total;
-		
+
 		private List<Wo> wos;
 
 		public ResultObject() {}
-		
+
 		public ResultObject(Long count, List<Wo> data) {
 			this.total = count;
 			this.wos = data;

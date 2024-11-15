@@ -1,5 +1,13 @@
 package com.x.base.core.project.config;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.Host;
+import com.x.base.core.project.tools.NumberTools;
+import com.x.base.core.project.x_program_center;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -18,10 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -29,15 +35,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.jetty.http.MimeTypes;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.x.base.core.project.x_program_center;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.BaseTools;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.Host;
-import com.x.base.core.project.tools.NumberTools;
 
 public class Config {
 
@@ -108,14 +105,6 @@ public class Config {
 	public static final String DIR_COMMONS_EXT = "commons/ext";
 	public static final String DIR_COMMONS_LANGUAGE = "commons/language";
 	public static final String DIR_COMMONS_FONTS = "commons/fonts";
-	public static final String DIR_COMMONS_HADOOP = DIR_COMMONS + "/hadoop";
-	public static final String DIR_COMMONS_HADOOP_WINDOWS = DIR_COMMONS_HADOOP + "/" + OS_WINDOWS;
-	public static final String DIR_COMMONS_HADOOP_AIX = DIR_COMMONS + "/ " + OS_AIX;
-	public static final String DIR_COMMONS_HADOOP_LINUX = DIR_COMMONS + "/" + OS_LINUX;
-	public static final String DIR_COMMONS_HADOOP_MACOS = DIR_COMMONS + "/" + OS_MACOS;
-	public static final String DIR_COMMONS_HADOOP_RASPI = DIR_COMMONS + "/" + OS_RASPI;
-	public static final String DIR_COMMONS_HADOOP_ARM = DIR_COMMONS + "/" + OS_ARM;
-	public static final String DIR_COMMONS_HADOOP_MIPS = DIR_COMMONS + "/" + OS_MIPS;
 	public static final String DIR_CONFIG = "config";
 	public static final String DIR_CONFIG_COVERTOWEBSERVER = "config/coverToWebServer";
 	public static final String DIR_CONFIGSAMPLE = "configSample";
@@ -775,6 +764,8 @@ public class Config {
 					"application/vnd.openxmlformats-officedocument.presentationml.presentation");
 			/* 名片 */
 			mimeTypes.addMimeMapping("vcf", "text/x-vcard");
+			/* ofd文件 */
+			mimeTypes.addMimeMapping("ofd", "application/ofd");
 			/* 流媒体都改为stream输出，不支持浏览器在线播放，如需在线播放请用第三方插件 */
 			mimeTypes.addMimeMapping("mov", MediaType.APPLICATION_OCTET_STREAM);
 			mimeTypes.addMimeMapping("movie", MediaType.APPLICATION_OCTET_STREAM);
@@ -1375,62 +1366,6 @@ public class Config {
 
 	public static boolean isMacosJava11() throws Exception {
 		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_MACOS + "_" + JAVAVERSION_JAVA11));
-	}
-
-	public static Path path_commons_hadoop_windows(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_WINDOWS);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_commons_hadoop_linux(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_LINUX);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_commons_hadoop_aix(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_AIX);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_commons_hadoop_macos(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MACOS);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_commons_hadoop_raspi(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_RASPI);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_commons_hadoop_arm(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_ARM);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_commons_hadoop_mips(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MIPS);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
 	}
 
 	public static Path path_local_dump(boolean force) throws IOException, URISyntaxException {

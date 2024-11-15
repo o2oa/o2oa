@@ -581,7 +581,6 @@ public class NodeAgent extends Thread {
 			jars.add(o.getAbsolutePath());
 		}
 		filter = new WildcardFileFilter("openjpa-*.jar");
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("ehcache-*.jar"));
 		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));

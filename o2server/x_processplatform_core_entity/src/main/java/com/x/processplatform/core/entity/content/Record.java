@@ -307,6 +307,57 @@ public class Record extends SliceJpaObject {
 		this.startTime = startTime;
 	}
 
+	public static final String PERSONORDERNUMBER_FIELDNAME = "personOrderNumber";
+	@Transient
+	@FieldDescribe("人员排序值")
+	private Integer personOrderNumber;
+
+	public Integer getPersonOrderNumber() {
+		if ((null == personOrderNumber) && (null != this.properties)) {
+			this.personOrderNumber = this.properties.getPersonOrderNumber();
+		}
+		return personOrderNumber;
+	}
+
+	public void setPersonOrderNumber(Integer personOrderNumber) {
+		this.getProperties().setPersonOrderNumber(personOrderNumber);
+		this.personOrderNumber = personOrderNumber;
+	}
+
+	public static final String IDENTITYORDERNUMBER_FIELDNAME = "identityOrderNumber";
+	@Transient
+	@FieldDescribe("身份排序值")
+	private Integer identityOrderNumber;
+
+	public Integer getIdentityOrderNumber() {
+		if ((null == identityOrderNumber) && (null != this.properties)) {
+			this.identityOrderNumber = this.properties.getIdentityOrderNumber();
+		}
+		return identityOrderNumber;
+	}
+
+	public void setIdentityOrderNumber(Integer identityOrderNumber) {
+		this.getProperties().setIdentityOrderNumber(identityOrderNumber);
+		this.identityOrderNumber = identityOrderNumber;
+	}
+
+	public static final String UNITORDERNUMBER_FIELDNAME = "unitOrderNumber";
+	@Transient
+	@FieldDescribe("组织排序值")
+	private Integer unitOrderNumber;
+
+	public Integer getUnitOrderNumber() {
+		if ((null == unitOrderNumber) && (null != this.properties)) {
+			this.unitOrderNumber = this.properties.getUnitOrderNumber();
+		}
+		return unitOrderNumber;
+	}
+
+	public void setUnitOrderNumber(Integer unitOrderNumber) {
+		this.getProperties().setUnitOrderNumber(unitOrderNumber);
+		this.unitOrderNumber = unitOrderNumber;
+	}
+
 	public RecordProperties getProperties() {
 		if (null == this.properties) {
 			this.properties = new RecordProperties();

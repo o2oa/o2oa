@@ -9,13 +9,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfoConfig;
-import org.apache.hadoop.yarn.webapp.hamlet2.Hamlet;
-
-import javax.servlet.http.HttpServletRequest;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author sword

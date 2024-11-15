@@ -1,13 +1,12 @@
 package com.x.base.core.project.config;
 
+import com.x.base.core.entity.StorageProtocol;
+import com.x.base.core.entity.StorageType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import com.x.base.core.entity.StorageProtocol;
-import com.x.base.core.entity.StorageType;
-import com.x.base.core.project.annotation.FieldDescribe;
 
 public class ExternalStorageSources extends ConfigObject {
 
@@ -65,8 +64,8 @@ public class ExternalStorageSources extends ConfigObject {
 			s.setName("");
 			s.setUsername("");
 			s.setPassword("");
-			s.setProtocol(StorageProtocol.hdfs);
-			s.setPort(9000);
+			s.setProtocol(StorageProtocol.sftp);
+			s.setPort(22);
 			this.store.put("demo", s);
 		}
 		return this.store;

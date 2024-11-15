@@ -177,9 +177,6 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("同步到自建表设置.")
 	private UpdateTable updateTable;
 
-	@FieldDescribe("归档到Hadoop.")
-	private ArchiveHadoop archiveHadoop;
-
 	@FieldDescribe("权限交接定时配置.")
 	private HandoverConfig handoverConfig;
 
@@ -211,10 +208,6 @@ public class ProcessPlatform extends ConfigObject {
 			this.extensionEvents = new ExtensionEvents();
 		}
 		return extensionEvents;
-	}
-
-	public ArchiveHadoop getArchiveHadoop() {
-		return this.archiveHadoop == null ? new ArchiveHadoop() : this.archiveHadoop;
 	}
 
 	public Urge getUrge() {
@@ -838,68 +831,6 @@ public class ProcessPlatform extends ConfigObject {
 			return custom;
 		}
 
-	}
-
-	public static class ArchiveHadoop extends ConfigObject {
-
-		private static final long serialVersionUID = -8274136904009320770L;
-
-		public static ArchiveHadoop defaultInstance() {
-			return new ArchiveHadoop();
-		}
-
-		public ArchiveHadoop() {
-			this.enable = DEFAULT_ENABLE;
-			this.cron = DEFAULT_CRON;
-			this.fsDefaultFS = DEFAULT_FS_DEFAULTFS;
-			this.username = DEFAULT_USERNAME;
-			this.path = DEFAULT_PATH;
-		}
-
-		private static final Boolean DEFAULT_ENABLE = false;
-		public static final String DEFAULT_CRON = "20 20 * * * ?";
-		private static final String DEFAULT_FS_DEFAULTFS = "hdfs://";
-		private static final String DEFAULT_USERNAME = "";
-		private static final String DEFAULT_PATH = "";
-
-		@FieldDescribe("是否启用")
-		private Boolean enable = DEFAULT_ENABLE;
-
-		@FieldDescribe("定时cron表达式.")
-		private String cron = DEFAULT_CRON;
-
-		@FieldDescribe("hadoop地址.")
-		private String fsDefaultFS;
-
-		@FieldDescribe("hadoop用户名.")
-		private String username;
-
-		@FieldDescribe("fs路径前缀.")
-		private String path;
-
-		public String getCron() {
-			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
-				return this.cron;
-			} else {
-				return DEFAULT_CRON;
-			}
-		}
-
-		public Boolean getEnable() {
-			return BooleanUtils.isTrue(this.enable);
-		}
-
-		public String getFsDefaultFS() {
-			return StringUtils.isEmpty(this.fsDefaultFS) ? DEFAULT_FS_DEFAULTFS : this.fsDefaultFS;
-		}
-
-		public String getUsername() {
-			return StringUtils.isEmpty(this.username) ? DEFAULT_USERNAME : this.username;
-		}
-
-		public String getPath() {
-			return StringUtils.isEmpty(this.path) ? DEFAULT_PATH : this.path;
-		}
 	}
 
 	public static class UpdateTable extends ConfigObject {

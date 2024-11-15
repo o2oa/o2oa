@@ -45,7 +45,7 @@ public abstract class JettySeverTools {
 	 * org/eclipse/jetty/http/MimeTypes JaxWsDynamicClientFactory
 	 * 需要在WebAppClassLoader加载 jakarta.xml.bind-api-*.jar
 	 */
-	private static final Collection<String> FILTER_STRINGS = Arrays.asList("openjpa-*.jar", "ehcache-*.jar",
+	private static final Collection<String> FILTER_STRINGS = Arrays.asList("openjpa-*.jar",
 			"jetty-all-*.jar", "jetty-proxy-*.jar", "quartz-*.jar", "filters-*.jar", "jakarta.xml.bind-api-*.jar",
 			"swagger-*.jar");
 
