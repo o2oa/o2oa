@@ -14,8 +14,6 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 		this.setOptions(options);
 		this.node = $(node);
         this.app = designer;
-
-        debugger;
 		
 		this.path = "../x_component_process_FormDesigner/widget/$EventsEditor/";
 		this.cssPath = "../x_component_process_FormDesigner/widget/$EventsEditor/"+this.options.style+"/css.wcss";

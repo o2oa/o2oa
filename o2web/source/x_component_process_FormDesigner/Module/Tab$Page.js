@@ -136,7 +136,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		}
 	},
 	"addPage": function( ev ){
-		debugger;
 		var tabPageModule;
 		var page = this.tab.addPage(null, function(module) {
 			tabPageModule = module;
@@ -352,7 +351,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 	},
 	setCustomStyles: function(){
 		this._recoveryModuleData();
-		//debugger;
 		// var border = this.node.getStyle("border");
 		// this.node.clearStyles();
 		// this.node.setStyles(this.css.moduleNode);

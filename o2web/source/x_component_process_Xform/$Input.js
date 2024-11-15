@@ -327,7 +327,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
      * @return {Boolean} 是否只读.
      */
 	isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead());
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
     },
 	getTextData: function(){
 		//var value = this.node.get("value");
@@ -588,7 +588,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             var v = (data.valueType==="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":
-                    if (!v){
+                    if (!v || (o2.typeOf(v)==="array" && !v.length)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }

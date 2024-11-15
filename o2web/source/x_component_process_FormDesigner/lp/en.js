@@ -365,7 +365,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_select": "Drop down box",
 		"oo_textarea": "Multi line text",
 		"oo_calendar": "calendar",
-		"oo_datetime": "Date box"
+		"oo_datetime": "Date box",
+		"oo_org": "personnel"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1484,7 +1485,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"monthView": "month",
 		"yearView": "year",
 		"secondEnable": "Select seconds",
-		"weekBegin": "Starting every week"
+		"weekBegin": "Starting every week",
+		"valueFormat": "Binding value formatting",
+		"readModeEvents": "Does the reading mode respond to mouse events"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

@@ -146,7 +146,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
         var style = "form";
         if (this.form.options.mode=="Mobile") style = "mobileForm";
 
-		//debugger;
 		var menuNode = this.node.getElement(".MWFMenu");
 		if (menuNode) menuNode.destroy();
 
@@ -461,7 +460,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 	}
 	// setCustomStyles: function(){
 	// 	this._recoveryModuleData();
-	// 	//debugger;
 	// 	var border = this.node.getStyle("border");
 	// 	this.node.clearStyles();
 	// 	this.node.setStyles(this.css.moduleNode);

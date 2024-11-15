@@ -91,7 +91,6 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
             }).inject(this.actionTitleArea);
 
             this.restoreActionButtonButton.addEvent("click", function(){
-                debugger;
                 this.restoreButtonAction();
             }.bind(this));
         }

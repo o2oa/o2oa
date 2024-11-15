@@ -1924,6 +1924,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return flag;
     },
     formValidation: function (routeName, opinion, medias) {
+        debugger;
         if (this.options.readonly) return true;
         this.Macro.environment.form.currentRouteName = routeName;
         this.Macro.environment.form.opinion = opinion;

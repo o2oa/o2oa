@@ -199,7 +199,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
     checkLoaded: function( flag ){
         if(!flag)this.loadedCount++;
-        debugger;
 	    if( this.ready && this.loadingCount === this.loadedCount ){
             if(this.module.hasOwnProperty("isPropertyLoaded"))this.module.isPropertyLoaded = true;
             if( this.propertyTabScrollY && this.propertyTab && this.propertyTab.pages ){
@@ -424,7 +423,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 							copy.clearStyles(true);
 
                             //MWF.require("MWF.widget.HtmlEditor", function(){
-                            //    debugger;
                             //    var editor = new MWF.widget.HtmlEditor(htmlNode);
                             //    editor.load(function(){
                             //        editor.editor.setValue(copy.outerHTML)
@@ -1254,7 +1252,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 // MWF.xDesktop.requireApp("process.FormDesigner", "widget.FiledConfigurator", function(){
                 //     var filedConfigurator = new MWF.xApplication.process.FormDesigner.widget.FiledConfigurator(node, this.designer, {
                 //         "onChange": function(){
-                //             debugger;
                 //             this.data[name] = filedConfigurator.getData();
                 //         }.bind(this)
                 //     }, data);
@@ -1753,7 +1750,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                         "maxObj": this.designer.formContentNode,
                         "onChange": function (eventName, newValue, oldValue, compareName) {
-                            debugger;
                             this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
                         }.bind(this)
                     });
@@ -1798,7 +1794,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
-                        debugger;
                         var oldValue = this.data[name];
                         this.data[name] = htmlArea.getValue();
                         this.changeData(name, null, oldValue);
@@ -2325,7 +2320,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }.bind(this));
 
             var changeDictItemValue = function (newValue) {
-                debugger;
                 var name = dictItemNode.get("name");
                 var oldValue = this.data[name];
                 this.data[name] = newValue;
@@ -2442,9 +2436,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadQueryStatementItem: function(){
         var containers = this.propertyContent.getElements(".MWFQueryStatementItemContainer");
         containers.each(function (container) {
-
-            debugger;
-
             var viewNode = container.getElement(".MWFQueryStatementNode");
 
             var viewColumnSelects = container.getElements(".MWFStatementItemSelect");
@@ -2506,8 +2497,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 if( view && view.id ){
                     MWF.Actions.load("x_query_assemble_designer").StatementAction.get(view.id, function(json){
                         var viewData = JSON.decode(json.data.view || {});
-
-                        debugger;
 
                         var columnList = viewData.data.selectEntryList || viewData.data.selectList || [];
                         viewColumnSelects.each(function (select) {
@@ -2942,8 +2931,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var actionContent = this.data[name];
             var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
-
-                // debugger;
                 // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
                 //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                 //     "noCreate": true,
@@ -3023,9 +3010,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 					"title": title,
 					"collapse": (collapse) ? true : false,
 					"onChange": function(){
-						//this.data[name] = maplist.toJson();
-						//
-                        debugger;
                         var oldData = this.data[name];
                         this.changeJsonDate(name, maplist.toJson());
                         this.changeStyle(name, oldData);
@@ -3325,7 +3309,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 	},
 	
 	setValue: function(name, value, obj, notCheckHistory){
-	    debugger;
 		if (name==="id"){
 			if (value!==this.module.json.id) {
                 if (!value) {
@@ -3633,8 +3616,6 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
                     "title": title,
                     "collapse": (collapse) ? true : false,
                     "onChange": function(){
-                        //this.data[name] = maplist.toJson();
-                        debugger;
                         var oldData = this.getOldValueList(name);
                         this.changeJsonDate(name, maplist.toJson());
                         this.changeStyle(name, oldData);

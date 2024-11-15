@@ -61,8 +61,6 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 
 		this.hasEditDefaultModuleList = ["textfield", "checkbox", "datatable", "datatemplate", "org", "textarea", "elautocomplete", "elcheckbox", "elinput"];
 
-		debugger;
-
 		if( o2.typeOf( this.data.sectionMerge ) === "null" )this.data.sectionMerge = "none";
 		if( o2.typeOf( this.data.mergeTypeRead ) === "null" )this.data.mergeTypeRead = "default";
 		if( o2.typeOf( this.data.showSectionKey ) === "null" )this.data.showSectionKey = true;
@@ -201,7 +199,6 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 		}.bind(this), true);
 	},
 	checkShow: function(d){
-		debugger;
 		if( !d )d = this.data;
 		var _self = this;
 		var showCondition = {
@@ -397,8 +394,6 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 						this.property.changeData(name, null, oldData);
 					}.bind(this),
 					"onDelete": function(key){
-						debugger;
-
 						this.module.deletePropertiesOrStyles(name, key);
 					}.bind(this),
 					"isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))

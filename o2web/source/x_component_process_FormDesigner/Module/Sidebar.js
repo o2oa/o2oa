@@ -210,7 +210,6 @@ MWF.xApplication.process.FormDesigner.Module.Sidebar = MWF.FCSidebar = new Class
         }else{
             this.toolbarNode = this.node.getFirst("div");
             this.toolbarNode.empty();
-            debugger;
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
 
             if (this.json.defaultTools){

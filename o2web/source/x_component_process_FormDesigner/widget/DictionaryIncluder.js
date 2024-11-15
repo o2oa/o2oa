@@ -29,7 +29,6 @@ MWF.xApplication.process.FormDesigner.widget.DictionaryIncluder = new Class({
         this.loadListNode(data);
 	},
     loadEditorNode: function(){
-	    debugger;
         var html = "<table width='100%' border='0' cellpadding='5' cellspacing='0' class='editTable'>" +
             "<tr><td>"+this.lp.selectDictionary+"</td><td><div class='dictionarySelectorArea'></div></td></tr>" +
             "<tr><td>"+this.lp.path+"</td><td><input type='text' style='width:90%'/></td></tr>"+
@@ -87,7 +86,6 @@ MWF.xApplication.process.FormDesigner.widget.DictionaryIncluder = new Class({
         };
     },
     add: function(){
-	    debugger;
         this.hideErrorNode();
         var data = this.getCurrentData();
 
@@ -137,7 +135,6 @@ MWF.xApplication.process.FormDesigner.widget.DictionaryIncluder = new Class({
         if (this.errorNode) this.errorNode.destroy();
     },
     modify: function(){
-	    debugger;
         if (this.currentItem){
             this.hideErrorNode();
 
@@ -229,7 +226,6 @@ MWF.xApplication.process.FormDesigner.widget.DictionaryIncluder.Item = new Class
         this.load();
     },
     load: function(){
-        debugger;
         this.node = new Element("div", {"styles": this.css.itemNode}).inject(this.container);
         this.deleteNode = new Element("div", {"styles": this.css.itemDeleteNode}).inject(this.node);
         this.contentNode = new Element("div", {"styles": this.css.itemContentNode}).inject(this.node);

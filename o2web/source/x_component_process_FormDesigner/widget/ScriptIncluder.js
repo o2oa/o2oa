@@ -29,7 +29,6 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
         this.loadListNode(data);
 	},
     loadEditorNode: function(){
-	    debugger;
         var html = "<table width='100%' border='0' cellpadding='5' cellspacing='0' class='editTable'>" +
             "<tr><td style='width: 60px; '>"+this.lp.asyncLoad+"</td><td align='left'>"+
             "<input type='radio' name='"+(this.designer.appId||"")+"asyncLoadScript' value='true' checked/>"+this.lp.yes+
@@ -223,7 +222,6 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder.Item = new Class({
         this.load();
     },
     load: function(){
-        debugger;
         this.node = new Element("div", {"styles": this.css.itemNode}).inject(this.container);
         this.deleteNode = new Element("div", {"styles": this.css.itemDeleteNode}).inject(this.node);
         this.contentNode = new Element("div", {"styles": this.css.itemContentNode}).inject(this.node);

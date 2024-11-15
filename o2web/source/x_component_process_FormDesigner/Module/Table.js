@@ -224,8 +224,6 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	mergerCell: function(){
 
 		if (this.form.selectedModules.length>1){
-
-			debugger;
 			var fromLogList;
 			if(this.form.history)fromLogList = this.createHistoryLogList(this.form.selectedModules);
 

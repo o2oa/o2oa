@@ -1154,7 +1154,6 @@ _worker._findProcessPlatformParse_form = function(designer, option, module){
 };
 
 _worker._findProcessPlatformParse_view = function(designer, option, module){
-    debugger;
     if (designer.patternList && designer.patternList.length){
         if (!this.designerPropertysData) this.designerPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
         var patternPropertys = designer.patternList.map(function(a){return a.property;});
@@ -1257,7 +1256,6 @@ _worker._findProcessPlatformParse_statement = function(designer, option, module)
         if (!this.designerPropertysData) this.designerPropertysData = _worker.action.sendRequest(_worker._getRequestOption({"url": "../x_component_FindDesigner/propertys.json"}));
         // var patternPropertys = designer.patternList.map(function(a){return a.property;});
         // if (patternPropertys.indexOf("view")!=-1){
-debugger;
             var p = _worker._getDesignerData(designer, module);
             if (p) {
                 p.then(function (arr) {
@@ -1380,7 +1378,6 @@ _worker._findProcessPlatformParse_process = function(designer, option, module){
 
                 designer.patternList.forEach(function(pattern){
                     if (pattern.elementType === "process"){
-                        debugger;
                         var propertyDefinition = this.designerPropertysData.process[pattern.property];
                         processData.type = pattern.elementType;
                         _worker.findInDesignerProperty(pattern.property, propertyDefinition, processData, option, module, designer, null, [pattern.property]);
@@ -1429,7 +1426,6 @@ _worker._findProcessPlatformParse = function(resultList, option, module){
             case "form":
             case "page":
             case "widget":
-                debugger;
                 _worker._findProcessPlatformParse_form(designer, option, module);
                 break;
             case "process":
@@ -1493,7 +1489,6 @@ _worker._doFindDesigner = function(option, idx){
             if (this.filterOptionList.length>idx){
                 _worker._doFindDesigner(null, idx);
             }else{
-                debugger;
                 _worker._findCompletedReply();
             }
             //this.filterOptionList[idx];
@@ -1535,7 +1530,6 @@ onmessage = function(e) {
         // //_worker._doFindDesigner(this.filterOptionList[0]);
         // this.filterOptionList = [this.filterOptionList[0]];
         _worker._readyMessageReply();
-        debugger;
         _worker._doFindDesignerFromFilterOption();
     });
 

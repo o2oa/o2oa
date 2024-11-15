@@ -1390,7 +1390,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     },
 	loadFormData: function(callback){
 		this.actions.getForm(this.options.id, function(form){
-		    debugger;
 			if (form){
 			    var formTemplete = null;
                 MWF.getJSON("../x_component_process_FormDesigner/Module/Form/template/form.json", {
@@ -1531,7 +1530,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     },
 	saveForm: function(){
         if (!this.isSave){
-            debugger
             var txt = this.checkSubform();
             if (txt){
                 txt = this.lp.checkFormSaveError+txt;

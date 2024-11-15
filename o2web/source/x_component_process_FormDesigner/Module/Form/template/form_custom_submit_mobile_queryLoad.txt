@@ -26,8 +26,6 @@ window.O2ProcessorMobile = new Class({
     Implements: [Events],
     initialize: function (macro) {
 
-        debugger;
-
         this.macro = macro;
         this.app = macro.form.app;
         this.form = this.app.appForm;
@@ -470,7 +468,6 @@ window.O2ProcessorMobile = new Class({
             list.push(this.splitByStartNumber(k).name)
         }.bind(this));
 
-        debugger;
         var flag = true;
         var matchRoutes = [];
         list.each(function (routeGroupName) {
@@ -776,8 +773,6 @@ window.O2ProcessorMobile = new Class({
         //var y = size.y;
         //var x = size.x;
         //兼容以前的默认高宽
-
-        debugger;
 
         var bodySize = $(document.body).getSize();
         var x = bodySize.x;
@@ -1230,7 +1225,6 @@ window.O2ProcessorMobile = new Class({
 
     },
     showOrgsByRoute: function (route) {
-        //debugger;
         this.loadOrgs(route);
     },
     isSameArray: function (arr1, arr2) {
@@ -1269,7 +1263,6 @@ window.O2ProcessorMobile = new Class({
         return flag;
     },
     saveOrgsWithCheckEmpower: function (callback) {
-        debugger;
         if (!this.orgItems || !this.orgItems.length) {
             if (callback) callback();
             return true;

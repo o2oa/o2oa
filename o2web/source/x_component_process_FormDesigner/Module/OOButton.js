@@ -86,7 +86,7 @@ MWF.xApplication.process.FormDesigner.Module.OOButton = MWF.FCOOButton = new Cla
 	setCustomStyles: function(){
 		var border = this.node.getStyle("border");
 		this._recoveryModuleData();
-		//debugger;
+
 		this.node.clearStyles();
 		this.node.setStyles(this.css.moduleNode);
 

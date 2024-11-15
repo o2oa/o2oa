@@ -384,6 +384,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "oo_textarea": "多行文本",
         "oo_calendar": "日历",
         "oo_datetime": "日期框",
+        "oo_org": "人员",
 
 
         "importer": "数据导入",
@@ -1244,6 +1245,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "yearView": "年",
         "secondEnable": "选择秒",
         "weekBegin": "每周开始",
+
+        "readModeEvents": "阅读模式下是否响应鼠标事件",
 
 
         "layout": "布局",

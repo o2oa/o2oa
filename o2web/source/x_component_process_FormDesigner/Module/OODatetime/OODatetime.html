@@ -30,6 +30,12 @@
                 </td>
             </tr>
             <tr>
+                <td colspan="2"><b>{{$.lp.readModeEvents}}:</b>
+                    <input type="radio" name="readModeEvents" value="yes" text{($.readModeEvents=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="readModeEvents" value="no" text{($.readModeEvents!=='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.title}}:</td>
                 <td class="editTableValue" id="text{$.pid}isTitleArea">
                     <input type="text" name="label" value="text{$.label}" class="editTableInput"/>

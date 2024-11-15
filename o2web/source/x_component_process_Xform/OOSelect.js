@@ -42,18 +42,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		Object.each(this.json.events, function(e, key){
 			if (e.code){
 				if (this.options.moduleEvents.indexOf(key)===-1){
-					var target;
-					switch (key){
-						case "change":
-							target = this.node;
-							break;
-						case 'blur': case 'focus':
-							target = (this.node._elements ? this.node._elements.input : null) || this.node;
-							break;
-						default:
-							target = (this.node._elements ? this.node._elements.box : null) || this.node;
-					}
-					target.addEvent(key, function(event){
+					this.node.addEvent(key, function(event){
 						return this.form.Macro.fire(e.code, this, event);
 					}.bind(this));
 				}
@@ -114,14 +103,28 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			this.node.setAttribute('label', this.json.label);
 		}
 
-		if (this.json.showMode === 'readonlyMode') {
-			this.node.setAttribute('readonly', true);
-		} else if (this.json.showMode === 'disabled') {
-			this.node.setAttribute('disabled', true);
-		} else if (this.json.showMode === 'read') {
+		this.node.setAttribute('readonly', false);
+		this.node.setAttribute('readmode', false);
+		this.node.setAttribute('disabled', false);
+		if (!this.isReadonly()){
+			if (this.json.showMode === 'readonlyMode') {
+				this.node.setAttribute('readonly', true);
+			} else if (this.json.showMode === 'disabled') {
+				this.node.setAttribute('disabled', true);
+			} else if (this.json.showMode === 'read') {
+				this.node.setAttribute('readmode', true);
+				if (this.json.readModeEvents!=='yes'){
+					this.node.setStyle('pointer-events', 'none');
+				}
+			} else {
+			}
+		}else{
 			this.node.setAttribute('readmode', true);
-		} else {
+			if (this.json.readModeEvents!=='yes'){
+				this.node.setStyle('pointer-events', 'none');
+			}
 		}
+
 
         this.node.addEvent("change", function( ev ){
 			var v = this.getInputData("change");
@@ -273,5 +276,6 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	},
 	validationMode: function () {
 		this.validationText = '';
+		this.node.unInvalidStyle();
 	}
 });

@@ -365,7 +365,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_select": "Desplegable",
 		"oo_textarea": "Texto multilínea",
 		"oo_calendar": "Calendario",
-		"oo_datetime": "Marco de fecha"
+		"oo_datetime": "Marco de fecha",
+		"oo_org": "Personal"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1483,7 +1484,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"monthView": "Mes",
 		"yearView": "Año",
 		"secondEnable": "Segundos de selección",
-		"weekBegin": "A partir de la semana"
+		"weekBegin": "A partir de la semana",
+		"valueFormat": "Formato de valor vinculado",
+		"readModeEvents": "Si responde a eventos del ratón en modo de lectura"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

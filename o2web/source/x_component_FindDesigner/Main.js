@@ -40,7 +40,6 @@ MWF.xApplication.FindDesigner.Main = new Class({
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.setSizeNode();
 			this.createToolbar();
-debugger;
 			this.initFilter();
 
 			if (callback) callback();
@@ -294,7 +293,6 @@ debugger;
 		if (!itemNodes.length) this.setSelectedRange();
 	},
 	selectFindRange: function(loadFun){
-		debugger;
 		o2.requireApp("Selector", "package", function(){
 			new o2.O2Selector(this.content, {
 				"values": this.selectedModules,
@@ -313,7 +311,6 @@ debugger;
 						o2.require("o2.widget.O2Identity", function(){
 							list.each(function(app){
 								//this.selectedModules.push(app.data);
-								debugger;
 								app.data.name = this.lp[app.data.moduleType] + "-" + app.data.name;
 								var item = new o2.widget.O2Other(app.data, this.rangeSelectedContentNode, {"canRemove": true, "style": "find", "onRemove": function(item){this.removeRangeItem(item);}.bind(this)});
 								item.node.store("data", item.data);
@@ -401,7 +398,6 @@ debugger;
 		this.updateFindProgress();
 	},
 	doFindResult: function(data){
-		debugger
 		if (data.data) this.showFindResult(data.data, data.option);
 	},
 
@@ -470,7 +466,6 @@ debugger;
 						this.scriptDesignerDataObject[this.editor.pattern.designerId].text = this.editor.getValue();
 					}
 				}else{
-					debugger;
 					if (this.designerDataObject && this.designerDataObject[this.editor.pattern.designerId]){
 						var d = this.designerDataObject[this.editor.pattern.designerId];
 						switch (this.editor.pattern.pattern.propertyType){
@@ -573,7 +568,6 @@ debugger;
 			this.tree.modules[data.module] = moduleNode;
 		}
 		this.updatePatternCount(moduleNode);
-debugger;
 		var appNode = (moduleNode.apps) ? moduleNode.apps[data.appId] : null;
 		if (!appNode){
 			appNode = this.createResultAppItem(data.appName, data.appName, moduleNode);
@@ -996,10 +990,8 @@ debugger;
 		}
 	}),
 	openPatternFormEditor_default: function(data, node){
-		debugger;
 		// var d = this.getValueWithPath(data, node.pattern);
 		// if (d){
-			debugger;
 			var content = this.getDefaultEditorContent(data, node.pattern);
 			this.editor = new this.commonEditor(this.previewContentNode);
 			this.editor.addEvent("destroy", function(){
@@ -1019,7 +1011,6 @@ debugger;
 		// }
 	 },
 	openPatternFormEditor_duty: function(data, node){
-		debugger;
 		if (node.pattern.pattern.valueKey=="name"){
 			this.openPatternFormEditor_default(data, node)
 		}else {
@@ -1105,7 +1096,6 @@ debugger;
 	},
 
 	openPatternFormEditor_map: function(data, node){
-		debugger;
 		var d = this.getValueWithPath(data, node.pattern);
 
 		if (d){
@@ -1327,7 +1317,6 @@ debugger;
 	},
 
 	reFindInFormDesigner: function(){
-		debugger;
 		if (this.editor && this.editor.designerNode){
 
 			var pathStr = this.editor.pattern.pattern.path.join(".");
@@ -1338,7 +1327,6 @@ debugger;
 			}.bind(this));
 
 			var pattern = this.editor.pattern;
-debugger;
 			switch (pattern.pattern.propertyType){
 				case "html":
 				case "script":
@@ -1570,7 +1558,6 @@ debugger;
 	},
 
 	saveDesigner: function(){
-		debugger;
 		if (this.editor && this.editor.pattern){
 			var pattern = this.editor.pattern;
 			var data = this.editor.designerData;
@@ -2000,7 +1987,6 @@ debugger;
 	checkSelectDesignerElement_form: function(app, pattern, idx){
 		var flag = false;
 		var form;
-		debugger;
 		try{
 			if (pattern.pattern.mode=="PC"){
 				app.changeDesignerModeToPC();

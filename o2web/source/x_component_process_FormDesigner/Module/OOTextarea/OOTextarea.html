@@ -29,6 +29,12 @@
                     <label><input type="radio" name="showMode" value="read" text{($.showMode==='read')?'checked':''}/>{{$.lp.read}}</label>
                 </td>
             </tr>
+            <tr>
+                <td colspan="2"><b>{{$.lp.readModeEvents}}:</b>
+                    <input type="radio" name="readModeEvents" value="yes" text{($.readModeEvents=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="readModeEvents" value="no" text{($.readModeEvents!=='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
 <!--            <tr>-->
 <!--                <td class="editTableTitle">{{$.lp.readonly}}:</td>-->
 <!--                <td class="editTableValue">-->

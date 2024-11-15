@@ -371,6 +371,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	_setNodeEvent: function(){
+		debugger;
 		if (this.form.moduleType!="subform" && this.form.moduleType!="widget" && this.form.moduleType!="subpage"){
 			if (!this.isSetEvents){
 				this.node.addEvent("click", function(e){

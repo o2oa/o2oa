@@ -33,5 +33,10 @@
     "icon": "calendar.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_datetime,
     "className": "OODatetime"
+  },
+  "OOOrg": {
+    "icon": "personfield.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
+    "className": "OOOrg"
   }
 }

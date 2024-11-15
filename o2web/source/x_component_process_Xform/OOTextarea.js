@@ -20,18 +20,7 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
         Object.each(this.json.events, function(e, key){
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)===-1){
-                    var target;
-                    switch (key){
-                        case "change":
-                            target = this.node;
-                            break;
-                        case 'blur': case 'focus':
-                            target = (this.node._elements ? this.node._elements.input : null) || this.node;
-                            break;
-                        default:
-                            target = (this.node._elements ? this.node._elements.box : null) || this.node;
-                    }
-                    target.addEvent(key, function(event){
+                    this.node.addEvent(key, function(event){
                         return this.form.Macro.fire(e.code, this, event);
                     }.bind(this));
                 }
@@ -66,14 +55,25 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
         this.node.setAttribute('readmode', false);
         this.node.setAttribute('disabled', false);
 
-        if (this.json.showMode === 'readonlyMode') {
-            this.node.setAttribute('readonly', true);
-        } else if (this.json.showMode === 'disabled') {
-            this.node.setAttribute('disabled', true);
-        } else if (this.json.showMode === 'read') {
+        if (!this.isReadonly()){
+            if (this.json.showMode === 'readonlyMode') {
+                this.node.setAttribute('readonly', true);
+            } else if (this.json.showMode === 'disabled') {
+                this.node.setAttribute('disabled', true);
+            } else if (this.json.showMode === 'read') {
+                this.node.setAttribute('readmode', true);
+                if (this.json.readModeEvents!=='yes'){
+                    this.node.setStyle('pointer-events', 'none');
+                }
+            } else {
+            }
+        }else{
             this.node.setAttribute('readmode', true);
-        } else {
+            if (this.json.readModeEvents!=='yes'){
+                this.node.setStyle('pointer-events', 'none');
+            }
         }
+
 
         if (this.json.showMode){
             this.node.setAttribute("type", this.json.dataType);
@@ -149,5 +149,6 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
     },
     validationMode: function () {
         this.validationText = '';
+        this.node.unInvalidStyle();
     }
 });

@@ -98,7 +98,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     validation: function (routeName, opinion) {
-        if (!this.isReadonly()){
+        if (!this.isReadonly() && this.json.showMode!=="disabled"){
             if (this.getInputData){
                 this._setBusinessData(this.getInputData("change"));
             }
@@ -257,7 +257,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return null;
     },
     isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead());
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
     },
     isAllSectionShow: function(){
         return this.json.showAllSection && this.json.section === "yes" && this.isSectionData();

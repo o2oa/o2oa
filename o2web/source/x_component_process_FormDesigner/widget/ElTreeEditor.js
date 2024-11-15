@@ -276,7 +276,6 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 	},
 
 	initialize: function(tree, data){
-		debugger;
 		Object.each({
 			// "expand": true,
 			"label": ""
@@ -754,7 +753,6 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 	},
 	
 	addChild: function(){
-		debugger;
 		var obj = Object.clone(this.tree.nodejson);
 		if (!this.data.children) this.data.children = [];
 		this.data.children.push(obj);

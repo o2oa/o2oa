@@ -148,7 +148,7 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
 		this.node.addEvent("selectstart", function(){
 			return false;
 		});
-        // debugger;
+
         // if (this.json.subformSelected && this.json.subformSelected!="none" && this.json.subformType!=="script"){
         //     this.redoSelectedSubform(this.json.subformSelected, $(this.property.data.pid+"selectSubform").getElement("select"), "");
         // }else{

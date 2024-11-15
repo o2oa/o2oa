@@ -41,8 +41,6 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 		var lp = this.lp;
 		var moduleName = this.module.moduleName;
 
-		debugger;
-
 		if( o2.typeOf( this.data.showAllSection ) === "null" )this.data.showAllSection = false;
 		if( o2.typeOf( this.data.showSectionBy ) === "null" )this.data.showSectionBy = true;
 		if( o2.typeOf( this.data.sequenceBy ) === "null" )this.data.sequenceBy = "section";
@@ -99,7 +97,6 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 		}.bind(this), true);
 	},
 	checkShow: function(d){
-		debugger;
 		if( !d )d = this.data;
 		var _self = this;
 		var showCondition = {
@@ -202,8 +199,6 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 						this.property.changeData(name, null, oldData);
 					}.bind(this),
 					"onDelete": function(key){
-						debugger;
-
 						this.module.deletePropertiesOrStyles(name, key);
 					}.bind(this),
 					"isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))

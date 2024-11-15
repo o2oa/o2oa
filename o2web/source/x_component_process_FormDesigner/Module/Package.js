@@ -90,3 +90,4 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.OOCheckGroup", null, fal
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.OOSelect", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.OOTextarea", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.OODatetime", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.OOOrg", null, false);

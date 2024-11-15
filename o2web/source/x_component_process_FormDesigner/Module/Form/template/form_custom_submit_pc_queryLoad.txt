@@ -30,8 +30,6 @@ window.O2Processor = new Class({
     Implements: [Events],
     initialize : function( macro ){
 
-        debugger;
-
         this.macro = macro;
         this.app = macro.form.app;
         this.form = this.app.appForm;
@@ -69,7 +67,6 @@ window.O2Processor = new Class({
         this.setEmbeddedEvents();
     },
     popup : function( defaultRoute ){
-        debugger;
         this.defaultRoute = defaultRoute || "";
         if( this.status === "closed" ) {
             this.status = "popup";
@@ -101,7 +98,6 @@ window.O2Processor = new Class({
             this.positionSeted = false; //重新设置位置
             this.setSize( this.getCurrentRouteOrgList().length );
         }else{
-            debugger;
             this.status = "popup";
             if( !this.maskNode )this.createMaskNode();
             if( !this.container ){
@@ -530,7 +526,6 @@ window.O2Processor = new Class({
             (node.getStyle("border-bottom-width").toInt() || 0 );
     },
     setSize : function( currentOrgLength ){
-        debugger;
         var lines = ((currentOrgLength+1)/2).toInt();
 
         if( lines > 0 ){
@@ -709,7 +704,6 @@ window.O2Processor = new Class({
             list.push( this.splitByStartNumber( k).name )
         }.bind(this));
 
-        debugger;
         var flag = true;
         var matchRoutes = [];
         list.each( function( routeGroupName ){
@@ -868,7 +862,6 @@ window.O2Processor = new Class({
 
     },
     selectRoute: function(node){
-        debugger;
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
                 this.selectedRoute.setStyles(this.css.routeNode);
@@ -984,7 +977,6 @@ window.O2Processor = new Class({
         return parseFloat(d).toString() !== "NaN"
     },
     handwriting: function(){
-        debugger;
         if (!this.handwritingNode) this.createHandwriting();
         if(this.handwritingNodeMask)this.handwritingNodeMask.show();
         this.handwritingNode.show();
@@ -1347,8 +1339,6 @@ window.O2Processor = new Class({
             });
         }
 
-        debugger;
-
         var orgItems_old = this.orgItemsObject[route] || [];
         var orgItemMap_old = this.orgItemsMap[route] || {};
 
@@ -1447,7 +1437,6 @@ window.O2Processor = new Class({
 
     },
     showOrgsByRoute: function (route) {
-        //debugger;
         this.loadOrgs(route);
     },
     clearAllOrgs: function () {
@@ -1493,8 +1482,6 @@ window.O2Processor = new Class({
         return flag;
     },
     saveOrgsWithCheckEmpower : function( callback ){
-        debugger;
-
         if( !this.orgItems || !this.orgItems.length ){
             if( callback )callback();
             return true;
@@ -2360,9 +2347,6 @@ O2Processor.Org = new Class({
         return this.orgAction;
     },
     setData: function(value){
-
-        debugger;
-
         if (!value) return false;
         var oldValues = this.getValue();
         var values = [];

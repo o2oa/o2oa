@@ -137,7 +137,6 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 		this.selectNode(e);
 	},
 	addChild: function(){
-		debugger;
 		var obj = Object.clone(this.tree.nodejson);
 		if (!this.data.children) this.data.children = [];
 		this.data.children.push(obj);
@@ -256,7 +255,6 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 					"checked" : this.data.type === "text",
 					"events" : {
 						"click": function () {
-							debugger;
 							this.data.type = "text";
 							radio_type_1.checked = false;
 							this.setTitle();
@@ -289,7 +287,6 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				// }).inject(td);
 
 				//styles
-				debugger;
 				if( !Object.keys(this.data.styles).length ){
 					this.data.styles = Object.clone( defaultStyles[ this.data.type ] );
 				}

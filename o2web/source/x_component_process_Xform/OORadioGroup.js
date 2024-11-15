@@ -45,12 +45,23 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
             this.node.setAttribute('col', this.json.countPerline);
         }
 
-        if (this.json.showMode === 'disabled') {
-            this.node.setAttribute('disabled', true);
-        } else if (this.json.showMode === 'read') {
+        if (!this.isReadonly()){
+            if (this.json.showMode === 'disabled') {
+                this.node.setAttribute('disabled', true);
+            } else if (this.json.showMode === 'read') {
+                this.node.setAttribute('readmode', true);
+                if (this.json.readModeEvents!=='yes'){
+                    this.node.setStyle('pointer-events', 'none');
+                }
+            } else {
+            }
+        }else{
             this.node.setAttribute('readmode', true);
-        } else {
+            if (this.json.readModeEvents!=='yes'){
+                this.node.setStyle('pointer-events', 'none');
+            }
         }
+
 
         this.node.addEvent('change', function () {
             var v = this.getInputData('change');
@@ -193,5 +204,6 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
     },
     validationMode: function () {
         this.validationText = '';
+        this.node.unInvalidStyle();
     }
 });

@@ -204,7 +204,6 @@ MWF.widget.O2DictItem = new Class({
         };
 
         var p;
-        debugger;
         if( dict.appType === "service" ){
             p = path === "root" ? action.getDictRoot(dict.id) : action.getDictData(dict.id, encodePath( path ));
         }else{

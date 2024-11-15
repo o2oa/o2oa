@@ -201,12 +201,10 @@
                     <td class="editTableTitle"></td>
                     <td class="editTableValue">
                         <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked  data-notAutoHistory onclick="if (this.checked){
-                                debugger;
                                 this.getParent('.inputAreaNode_vf').getElements('tr.parameterInputTr').hide();
                                 this.getParent('.inputAreaNode_vf').getElements('tr.filterListInputTr').setStyle('display','');
                             }"/>通过路径添加默认条件<br>
                         <input type="radio" class="restrictParameterInput_form_vf" value="custom" name="text{$.id}viewFilterType" data-notAutoHistory onclick="if (this.checked){
-                                debugger;
                                 this.getParent('.inputAreaNode_vf').getElements('tr.parameterInputTr').setStyle('display','');
                                 this.getParent('.inputAreaNode_vf').getElements('tr.filterListInputTr').hide();
                             }"/>通过参数添加默认条件

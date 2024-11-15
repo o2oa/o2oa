@@ -422,7 +422,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if(this.editable){
 				var actionTh = new Element("th.mwf_addlineaction", {"styles": {"width": "46px"}}).inject(this.titleTr, "top"); //操作列
 				if(this.addable){
-					var addLineAction = new Element("div", {
+					var addLineAction = new Element("div.addLineAction", {
 						"styles": this.form.css.addLineAction,
 						"events": {
 							"click": function(e){
@@ -3042,7 +3042,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}
 	},
 	createAddAction: function(td){
-		this.addLineAction = new Element("div", {
+		this.addLineAction = new Element("div.addLineAction", {
 			"styles": this.form.css.addLineAction,
 			"events": {
 				"click": function(ev){
@@ -3053,7 +3053,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}).inject(td);
 	},
 	createCompleteAction: function(td){
-		this.completeLineAction = new Element("div", {
+		this.completeLineAction = new Element("div.completeLineAction", {
 			"styles": this.form.css.completeLineAction,
 			"events": {
 				"click": function(ev){
@@ -3064,7 +3064,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}).inject(td);
 	},
 	createCancelEditAction: function(td){
-		this.cancelLineEditAction = new Element("div", {
+		this.cancelLineEditAction = new Element("div.cancelLineEditAction", {
 			"styles": this.form.css.delLineAction,
 			"events": {
 				"click": function(ev){
@@ -3075,7 +3075,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}).inject(td);
 	},
 	createDelAction: function(td){
-		this.delLineAction = new Element("div", {
+		this.delLineAction = new Element("div.delLineAction", {
 			"styles": this.form.css.delLineAction,
 			"events": {
 				"click": function(ev){

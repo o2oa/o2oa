@@ -118,7 +118,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Content = MWF.FCTab$Content = n
 	}
 	// setCustomStyles: function(){
 	// 	this._recoveryModuleData();
-	// 	//debugger;
 	// 	var border = this.node.getStyle("border");
 	// 	this.node.clearStyles();
 	// 	this.node.setStyles(this.css.moduleNode);
