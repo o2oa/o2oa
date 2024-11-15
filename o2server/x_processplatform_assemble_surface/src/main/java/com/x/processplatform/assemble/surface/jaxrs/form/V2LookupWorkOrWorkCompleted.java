@@ -88,11 +88,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 			if (null != work) {
 				this.form = this.getFormWithWork(business, work);
 			} else if (null != workCompleted) {
-				this.form = business.form().pick(workCompleted.getForm());
-				if (null == this.form) {
-					StoreForm storeForm = workCompleted.getStoreForm();
-					this.wo = XGsonBuilder.convert(storeForm, Wo.class);
-				}
+				this.form = getFormWithWorkCompleted(business, workCompleted);
 			}
 		}
 	}
@@ -107,6 +103,17 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 		}
 		if (null == o) {
 			Application application = business.application().pick(work.getApplication());
+			if ((null != application) && StringUtils.isNotEmpty(application.getDefaultForm())) {
+				o = business.form().pick(application.getDefaultForm());
+			}
+		}
+		return o;
+	}
+
+	private Form getFormWithWorkCompleted(Business business, WorkCompleted workCompleted) throws Exception {
+		Form o = business.form().pick(workCompleted.getForm());
+		if (null == o) {
+			Application application = business.application().pick(workCompleted.getApplication());
 			if ((null != application) && StringUtils.isNotEmpty(application.getDefaultForm())) {
 				o = business.form().pick(application.getDefaultForm());
 			}
@@ -149,7 +156,6 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 		}, ThisApplication.forkJoinPool());
 	}
 
-	
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2LookupWorkOrWorkCompleted$Wo")
 	public static class Wo extends AbstractWo {
 
