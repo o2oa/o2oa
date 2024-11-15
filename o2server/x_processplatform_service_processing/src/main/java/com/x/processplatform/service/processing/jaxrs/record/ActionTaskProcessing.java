@@ -19,6 +19,9 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Identity;
+import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.organization.Unit;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
@@ -93,8 +96,20 @@ class ActionTaskProcessing extends BaseAction {
 				Business business = new Business(emc);
 				rec = new Record(param.workLog);
 				rec.setIdentity(param.taskCompleted.getIdentity());
+				Identity identity = business.organization().identity().getObject(rec.getIdentity());
+				if (null != identity) {
+					rec.setIdentityOrderNumber(identity.getOrderNumber());
+				}
 				rec.setPerson(param.taskCompleted.getPerson());
+				Person person = business.organization().person().getObject(rec.getPerson());
+				if (null != person) {
+					rec.setPersonOrderNumber(person.getOrderNumber());
+				}
 				rec.setUnit(param.taskCompleted.getUnit());
+				Unit unit = business.organization().unit().getObject(rec.getUnit());
+				if (null != unit) {
+					rec.setUnitOrderNumber(unit.getOrderNumber());
+				}
 				rec.setRouteName(param.taskCompleted.getRouteName());
 				rec.setOpinion(param.taskCompleted.getOpinion());
 				rec.setMediaOpinion(param.taskCompleted.getMediaOpinion());
