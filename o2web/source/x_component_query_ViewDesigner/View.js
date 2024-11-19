@@ -1071,7 +1071,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         if (styles.tableProperties) this.copyStyles(styles.tableProperties, "tableProperties");
     },
     switchTemplateStyles : function( oldTemplateStyles ){
-        f (oldTemplateStyles["view"]) this.clearTemplateStyles(oldTemplateStyles["view"]);
+        if (oldTemplateStyles["view"]) this.clearTemplateStyles(oldTemplateStyles["view"]);
         if (this.templateStyles["view"]) this.setTemplateStyles(this.templateStyles["view"]);
         this.setAllStyles();
 

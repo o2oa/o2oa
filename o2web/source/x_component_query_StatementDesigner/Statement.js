@@ -2115,52 +2115,86 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                 this.viewContentTableNode.getElements(".viewContentCheckboxTd").setStyle("display", "none");
             }
         }
-        if (name == "data.viewStyleType") {
+        // if (name == "data.viewStyleType") {
+        //
+        //     var file = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].file : null;
+        //     var extendFile = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].extendFile : null;
+        //     this.loadTemplateStyles(file, extendFile, function (templateStyles) {
+        //         this.templateStyles = templateStyles;
+        //
+        //         var oldFile, oldExtendFile;
+        //         if (oldValue && this.stylesList[oldValue]) {
+        //             oldFile = this.stylesList[oldValue].file;
+        //             oldExtendFile = this.stylesList[oldValue].extendFile;
+        //         }
+        //         this.loadTemplateStyles(oldFile, oldExtendFile, function (oldTemplateStyles) {
+        //
+        //             this.json.data.styleConfig = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType] : null;
+        //
+        //             if (oldTemplateStyles["view"]) this.clearTemplateStyles(oldTemplateStyles["view"]);
+        //             if (this.templateStyles["view"]) this.setTemplateStyles(this.templateStyles["view"]);
+        //             this.setAllStyles();
+        //
+        //             this.actionbarList.each(function (module) {
+        //                 if (oldTemplateStyles["actionbar"]) {
+        //                     module.clearTemplateStyles(oldTemplateStyles["actionbar"]);
+        //                 }
+        //                 module.setStyleTemplate();
+        //                 module.setAllStyles();
+        //             })
+        //
+        //             this.pagingList.each(function (module) {
+        //                 if (oldTemplateStyles["paging"]) {
+        //                     module.clearTemplateStyles(oldTemplateStyles["paging"]);
+        //                 }
+        //                 module.setStyleTemplate();
+        //                 module.setAllStyles();
+        //             });
+        //         }.bind(this))
+        //
+        //     }.bind(this))
+        // }
+        if (name==="data.viewStyleType"){
 
-            var file = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].file : null;
-            var extendFile = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].extendFile : null;
-            this.loadTemplateStyles(file, extendFile, function (templateStyles) {
-                this.templateStyles = templateStyles;
+            var loadOldTemplateStyle = function () {
+				if( typeOf(oldValue) === "object" && oldValue.type === "script" ){ //如果原来是自定义表单样式
+					this.loadCustomTemplateStyles( oldValue , function (oldTemplateStyles) {
+						this.switchTemplateStyles( oldTemplateStyles );
+					}.bind(this))
+				}else{
+					var oldFile, oldExtendFile;
+					if( typeOf(oldValue) === "object" )oldValue === oldValue.id;
+					if( oldValue && this.stylesList[oldValue] ){
+						oldFile = this.stylesList[oldValue].file;
+						oldExtendFile = this.stylesList[oldValue].extendFile;
+					}
+					this.loadTemplateStyles( oldFile, oldExtendFile, function( oldTemplateStyles ){
+						this.switchTemplateStyles( oldTemplateStyles );
+					}.bind(this))
+				}
+			}.bind(this);
 
-                var oldFile, oldExtendFile;
-                if (oldValue && this.stylesList[oldValue]) {
-                    oldFile = this.stylesList[oldValue].file;
-                    oldExtendFile = this.stylesList[oldValue].extendFile;
-                }
-                this.loadTemplateStyles(oldFile, oldExtendFile, function (oldTemplateStyles) {
+			var viewStyleType = this.json.data.viewStyleType;
+			if( typeOf(viewStyleType) === "object" && viewStyleType.type === "script" ){
+				this.loadCustomTemplateStyles( viewStyleType , function (templateStyles) {
+					this.templateStyles = templateStyles;
+					loadOldTemplateStyle();
+					this.json.data.styleConfig = viewStyleType;
+				}.bind(this))
+			}else{
+			    if( typeOf(viewStyleType) === "object" )viewStyleType = viewStyleType.id;
 
+			    var file = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].file : null;
+                var extendFile = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].extendFile : null;
+                this.loadTemplateStyles( file, extendFile, function( templateStyles ){
+                    this.templateStyles = templateStyles;
+                    loadOldTemplateStyle();
                     this.json.data.styleConfig = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType] : null;
 
-                    if (oldTemplateStyles["view"]) this.clearTemplateStyles(oldTemplateStyles["view"]);
-                    if (this.templateStyles["view"]) this.setTemplateStyles(this.templateStyles["view"]);
-                    this.setAllStyles();
-
-                    this.actionbarList.each(function (module) {
-                        if (oldTemplateStyles["actionbar"]) {
-                            module.clearTemplateStyles(oldTemplateStyles["actionbar"]);
-                        }
-                        module.setStyleTemplate();
-                        module.setAllStyles();
-                    })
-
-                    this.pagingList.each(function (module) {
-                        if (oldTemplateStyles["paging"]) {
-                            module.clearTemplateStyles(oldTemplateStyles["paging"]);
-                        }
-                        module.setStyleTemplate();
-                        module.setAllStyles();
-                    });
-
-                    // this.moduleList.each(function(module){
-                    //     if (oldTemplateStyles[module.moduleName]){
-                    //         module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
-                    //     }
-                    //     module.setStyleTemplate();
-                    //     module.setAllStyles();
-                    // }.bind(this));
                 }.bind(this))
+			}
 
-            }.bind(this))
+
         }
         if (name == "data.viewStyles") {
             this.setCustomStyles();

@@ -76,7 +76,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadJSONArea();
 
                     this.loadEventsEditor();
-                    this.loadViewStylesArea();
+                    // this.loadViewStylesArea();
                     this.loadPagingStylesArea();
                     this.loadActionStylesArea();
                     this.loadActionArea();
@@ -588,7 +588,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             var _self = this;
             viewStyleNodes.each(function(node){
                 debugger;
-                var data = this.data.data[node.get("name")];
+                var nodeName = node.get("name").split(".").getLast();
+                var data = this.data.data[nodeName];
                 if( typeOf( data ) === "string" ){
                     for( var key in this.module.view.stylesList ){
                         var s = this.module.view.stylesList[key];
@@ -650,10 +651,9 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                         }else{
                             data = d.id;
                         }
-                        var name = node.get("name");
-                        var oldValue = this.data.data[name];
-                        this.data.data[name] = data;
-                        this.changeData(name, node, oldValue);
+                        var oldValue = this.data.data[nodeName];
+                        this.data.data[nodeName] = data;
+                        this.changeData(node.get('name'), node, oldValue);
                     }.bind(this)
                 });
 
@@ -661,7 +661,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 if( next && next.get("class") === "MWFScriptSelectRefresh" ){
                     var refreshNode = new Element("div", {"styles": this.view.css.propertyRefreshFormNode}).inject(next);
                     refreshNode.addEvent("click", function(e){
-                        _self.changeData(this.get("name"), this );
+                        _self.changeData(this.get('name'), this );
                     }.bind(node));
                 }
             }.bind(this));
