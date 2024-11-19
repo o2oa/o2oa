@@ -640,6 +640,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                         var data;
                         if( d.type === "script" ){
                             data = {
+                                "appType": d.appType,
                                 "type" : "script",
                                 "name": d.name,
                                 "alias": d.alias,

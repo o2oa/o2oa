@@ -876,23 +876,35 @@ o2.widget.O2FormStyle = new Class({
     open : function (e) {
         if( typeOf(this.data)==="object" && this.data.id && this.data.appId && this.data.type === "script"){
             var appName;
-            if( this.data.appType === "cms" ){
-                appName = "cms.ScriptDesigner";
-            }else{
-                appName = "process.ScriptDesigner";
+            switch (this.data.appType){
+                case "service":
+                    appName = "service.ScriptDesigner";
+                    break;
+                case "cms":
+                    appName = "cms.ScriptDesigner";
+                    break;
+                default:
+                    appName = "process.ScriptDesigner";
             }
             var appId = appName + this.data.id;
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {
-                    "id": this.data.id,
-                    "appId": appId,
-                    "application":{
-                        "name": this.data.appName || this.data.applicationName || "",
-                        "id": this.data.appId
-                    }
-                };
+                var options;
+                if( this.data.appType === 'service' ){
+                    options = {
+                        "id": this.data.id
+                    };
+                }else{
+                    options = {
+                        "id": this.data.id,
+                        "appId": appId,
+                        "application":{
+                            "name": this.data.appName || this.data.applicationName || "",
+                            "id": this.data.appId
+                        }
+                    };
+                }
                 layout.desktop.openApplication(e, appName, options);
             }
         }

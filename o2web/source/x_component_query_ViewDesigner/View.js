@@ -948,46 +948,38 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     },
 
     loadTemplateStyle : function( callback ){
+        var setStyles = function ( templateStyles ){
+            this.templateStyles = templateStyles;
+
+            if( !this.json.data.viewStyleType )this.json.data.viewStyleType = "default";
+
+            if ( this.templateStyles && this.templateStyles["view"]){
+                if(!this.json.data.viewStyles){
+                    this.json.data.viewStyles = Object.clone(this.templateStyles["view"]);
+                }else{
+                    this.setTemplateStyles(this.templateStyles["view"]);
+                }
+            }
+
+            this.setCustomStyles();
+            if(callback)callback();
+        }.bind(this)
+
         this.loadStylesList(function(){
             var oldStyleValue = "";
-            if ((!this.json.data.viewStyleType) || !this.stylesList[this.json.data.viewStyleType]) this.json.data.viewStyleType="default";
-            // if (this.options.mode=="Mobile"){
-            //     if (this.json.viewStyleType != "defaultMobile"){
-            //         var styles = this.stylesList[this.json.viewStyleType];
-            //         if( !styles || typeOf(styles.mode)!=="array" || !styles.mode.contains( "mobile" ) ){
-            //             oldStyleValue = this.json.viewStyleType;
-            //             this.json.viewStyleType = "defaultMobile";
-            //         }
-            //     }
-            // }
-
-            this.loadTemplateStyles( this.stylesList[this.json.data.viewStyleType].file, this.stylesList[this.json.data.viewStyleType].extendFile,
-                function( templateStyles ){
-                    this.templateStyles = templateStyles;
-
-                    // this.loadDomModules();
-                    if( !this.json.data.viewStyleType )this.json.data.viewStyleType = "default";
-
-                    if ( this.templateStyles && this.templateStyles["view"]){
-                        if(!this.json.data.viewStyles){
-                            this.json.data.viewStyles = Object.clone(this.templateStyles["view"]);
-                        }else{
-                            this.setTemplateStyles(this.templateStyles["view"]);
-                        }
-                    }
-
-                    this.setCustomStyles();
-                    // this.node.setProperties(this.json.data.properties);
-
-                    if(callback)callback();
-
-                    // this.setNodeEvents();
-
-                    // if (this.options.mode=="Mobile"){
-                    //     if (oldStyleValue) this._setEditStyle("viewStyleType", null, oldStyleValue);
-                    // }
-                }.bind(this)
-            );
+            if (!this.json.data.viewStyleType) this.json.data.viewStyleType="default";
+            var viewStyleType = this.json.data.viewStyleType;
+            if( typeOf( viewStyleType ) === "object" && viewStyleType.type === "script"  ){ //如果是自定义表单样式
+                this.loadCustomTemplateStyles( viewStyleType, function ( templateStyles ) {
+                    setStyles( templateStyles )
+                }.bind(this))
+            }else {
+                this.loadTemplateStyles( this.stylesList[viewStyleType].file, this.stylesList[viewStyleType].extendFile,
+                    function( templateStyles ){
+                        setStyles( templateStyles )
+                    }.bind(this)
+                );
+            }
         }.bind(this));
     },
     isForceClearCustomStyle: function (){

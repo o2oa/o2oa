@@ -2202,31 +2202,44 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
 
     loadTemplateStyle: function (callback) {
+        var setStyles = function (templateStyles){
+            this.templateStyles = templateStyles;
+            // if (!viewStyleType) this.json.data.viewStyleType = "default";
+
+            if (this.templateStyles && this.templateStyles["view"]) {
+                var viewStyles = Object.clone(this.templateStyles["view"]);
+                if (viewStyles.contentGroupTd) delete viewStyles.contentGroupTd;
+                if (viewStyles.groupCollapseNode) delete viewStyles.groupCollapseNode;
+                if (viewStyles.groupExpandNode) delete viewStyles.groupExpandNode;
+                if (!this.json.data.viewStyles) {
+                    this.json.data.viewStyles = viewStyles;
+                } else {
+                    this.setTemplateStyles(viewStyles);
+                }
+            }
+
+            this.setCustomStyles();
+
+            if (callback) callback();
+        }.bind(this);
+
         this.loadStylesList(function () {
             var oldStyleValue = "";
-            if ((!this.json.data.viewStyleType) || !this.stylesList[this.json.data.viewStyleType]) this.json.data.viewStyleType = "default";
-            this.loadTemplateStyles(this.stylesList[this.json.data.viewStyleType].file, this.stylesList[this.json.data.viewStyleType].extendFile,
-                function (templateStyles) {
-                    this.templateStyles = templateStyles;
-                    if (!this.json.data.viewStyleType) this.json.data.viewStyleType = "default";
+            if (!this.json.data.viewStyleType) this.json.data.viewStyleType = "default";
+            var viewStyleType = this.json.data.viewStyleType;
+            if( typeOf( viewStyleType ) === "object" && viewStyleType.type === "script"  ){ //如果是自定义表单样式
+				this.loadCustomTemplateStyles( viewStyleType, function ( templateStyles ) {
+                    setStyles( templateStyles )
+				}.bind(this))
+			}else {
+			    this.loadTemplateStyles(this.stylesList[viewStyleType].file, this.stylesList[viewStyleType].extendFile,
+                    function (templateStyles) {
+                        setStyles( templateStyles )
+                    }.bind(this)
+                );
+			}
 
-                    if (this.templateStyles && this.templateStyles["view"]) {
-                        var viewStyles = Object.clone(this.templateStyles["view"]);
-                        if (viewStyles.contentGroupTd) delete viewStyles.contentGroupTd;
-                        if (viewStyles.groupCollapseNode) delete viewStyles.groupCollapseNode;
-                        if (viewStyles.groupExpandNode) delete viewStyles.groupExpandNode;
-                        if (!this.json.data.viewStyles) {
-                            this.json.data.viewStyles = viewStyles;
-                        } else {
-                            this.setTemplateStyles(viewStyles);
-                        }
-                    }
 
-                    this.setCustomStyles();
-
-                    if (callback) callback();
-                }.bind(this)
-            );
         }.bind(this));
     },
     clearTemplateStyles: function (styles) {
