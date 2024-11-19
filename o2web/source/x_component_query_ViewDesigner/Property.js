@@ -514,6 +514,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         var cmsapplicationNodes = this.propertyContent.getElements(".MWFSelectCMSApplication");
         var cmscategoryNodes = this.propertyContent.getElements(".MWFSelecCMStCategory");
 
+        var viewStyleNodes = this.propertyContent.getElements(".MWFViewStyleSelect");
+
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function () {
             applicationNodes.each(function (node) {
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
@@ -580,6 +582,88 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                         this.savePersonSelectItem(node, ids);
                     }.bind(this)
                 });
+            }.bind(this));
+
+
+            var _self = this;
+            viewStyleNodes.each(function(node){
+                debugger;
+                var data = this.data.data[node.get("name")];
+                if( typeOf( data ) === "string" ){
+                    for( var key in this.module.view.stylesList ){
+                        var s = this.module.view.stylesList[key];
+                        if( ((!data && key==="default") || (data===key)) ){
+                            data = {
+                                name : s.name,
+                                id : key
+                            };
+                            break;
+                        }
+                    }
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
+                    "type": "FormStyle",
+                    "count": 1,
+                    "names": [data],
+                    "selectorOptions" : {
+                        "appType": "service",
+                        "stylesUrl": "../x_component_query_ViewDesigner/$View/skin/config.json",
+                        "mode" : "pc" //( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc"
+                    },
+                    "validFun" : function (ids) {
+                        var flag = true;
+                        if( ids.length === 0 ){
+                            this.designer.notice(MWF.xApplication.query.ViewDesigner.LP.mustSelectFormStyle, "error");
+                            flag = false;
+                        }else if( ids[0].data.type === "script" ){
+                            o2.Actions.load('x_program_center').ScriptAction.flag( ids[0].data.alias || ids[0].data.name,  {}, function( json ) {
+                                try{
+                                    var f = eval("(function(){\n return "+json.data.text+"\n})");
+                                    var j = f();
+                                    if( typeOf(j) !== "object" ){
+                                        this.designer.notice( MWF.xApplication.query.ViewDesigner.LP.notValidJson, "error" );
+                                        flag = false;
+                                    }
+                                }catch (e) {
+                                    this.designer.notice( MWF.xApplication.query.ViewDesigner.LP.notValidJson +"："+ e.message, "error" );
+                                    flag = false;
+                                }
+                            }.bind(this), function () {
+                                flag = false;
+                            }, false);
+                        }
+                        return flag;
+                    }.bind(this),
+                    "onChange": function(ids){
+                        var d = ids[0].data;
+                        var data;
+                        if( d.type === "script" ){
+                            data = {
+                                "type" : "script",
+                                "name": d.name,
+                                "alias": d.alias,
+                                "id": d.id,
+                                "appName" : d.appName || d.applicationName,
+                                "appId": d.appId,
+                                "application": d.application
+                            };
+                        }else{
+                            data = d.id;
+                        }
+                        var name = node.get("name");
+                        var oldValue = this.data.data[name];
+                        this.data.data[name] = data;
+                        this.changeData(name, node, oldValue);
+                    }.bind(this)
+                });
+
+                var next = node.getNext();
+                if( next && next.get("class") === "MWFScriptSelectRefresh" ){
+                    var refreshNode = new Element("div", {"styles": this.view.css.propertyRefreshFormNode}).inject(next);
+                    refreshNode.addEvent("click", function(e){
+                        _self.changeData(this.get("name"), this );
+                    }.bind(node));
+                }
             }.bind(this));
 
         }.bind(this));
