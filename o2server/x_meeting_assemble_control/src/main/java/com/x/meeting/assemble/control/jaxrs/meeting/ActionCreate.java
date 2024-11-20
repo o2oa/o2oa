@@ -94,7 +94,7 @@ class ActionCreate extends BaseAction {
 
 			meeting.setAcceptPersonList(this.convertToPerson(business, meeting.getAcceptPersonList()));
 			meeting.setRejectPersonList(this.convertToPerson(business, meeting.getRejectPersonList()));
-			meeting.getInvitePersonList().remove(meeting.getApplicant());
+//			meeting.getInvitePersonList().remove(meeting.getApplicant());
 
 			business.estimateConfirmStatus(meeting);
 			emc.beginTransaction(Meeting.class);

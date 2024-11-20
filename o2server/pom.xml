@@ -626,7 +626,7 @@
 			<dependency>
 				<groupId>javax</groupId>
 				<artifactId>javaee-api</artifactId>
-				<version>7.0</version>
+				<version>8.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.code.gson</groupId>
