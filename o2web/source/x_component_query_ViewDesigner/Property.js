@@ -76,7 +76,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadJSONArea();
 
                     this.loadEventsEditor();
-                    // this.loadViewStylesArea();
+                    this.loadViewStylesArea();
                     this.loadPagingStylesArea();
                     this.loadActionStylesArea();
                     this.loadActionArea();
