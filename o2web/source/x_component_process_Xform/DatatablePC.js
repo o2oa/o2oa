@@ -3238,7 +3238,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			var iconNode = new Element("div", {
 				"styles": {
 					"width": "20px",
-					"height": "20px",
+					"line-height": "20px",
 					"float": "left",
 					"background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
 				}
