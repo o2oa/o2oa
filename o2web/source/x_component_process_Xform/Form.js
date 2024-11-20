@@ -3395,8 +3395,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "fromLeft": (Browser.name === "firefox") ? e.event.clientX - 20 : e.event.x - 20,
                 "width": width,
                 "height": height,
-                "container": this.app.content,
-                "maskNode": mask || this.app.content,
+                "container": layout.mobile ? $(document.body) : this.app.content,
+                "maskNode": mask || (layout.mobile ? $(document.body) : this.app.content),
                 "buttonList": [
                     {
                         "type": "ok",
