@@ -804,7 +804,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             tools.each(function (tool) {
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
                 var classBg = "";
-                debugger;
                 if (tool.action === "processWork" || tool.action === "flowWork" || tool.action === "retractWork" || tool.id === "action_processWork" || tool.id === "action_retract" || tool.id === "action_flowWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                     classBg = "mainColor_bg mainColor_border";
@@ -1802,7 +1801,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //     this.app.fireEvent("beforeClose");
         // //    this.fireEvent("afterClose");
         // }
-        // debugger;
         // if (!this.options.readonly)
         //     if (this.businessData.work) this.workAction.checkDraft(this.businessData.work.id);
 
@@ -1924,7 +1922,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return flag;
     },
     formValidation: function (routeName, opinion, medias) {
-        debugger;
         if (this.options.readonly) return true;
         this.Macro.environment.form.currentRouteName = routeName;
         this.Macro.environment.form.opinion = opinion;
@@ -2122,7 +2119,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
 
         //处理忽略授权
-        debugger;
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
 
         var _self = this;
@@ -2730,7 +2726,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "defaultRoute": defaultRoute,
                 "isHandwriting": this.json.isHandwriting === "no" ? false : true,
                 "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
-                    debugger;
                     if (!medias || !medias.length) {
                         medias = mds;
                     } else {
@@ -3035,7 +3030,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
 
-        debugger;
         if (!this.submitFormModule) {
             if (!MWF["APPSubmitform"]) {
                 MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
@@ -3298,7 +3292,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         }.bind(this));
                     }else{
                         _self.submitWork(routeName, opinion, medias, function () {
-                            debugger;
                             this.destroy();
                             processNode.destroy();
                             if (_self.processDlg) _self.processDlg.close();
@@ -4263,7 +4256,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         }
                     ],
                     "onPostShow": function () {
-                        debugger;
                         var node = this.node.getElement('.activesArea');
                         activitys.forEach(function(a, i){
                             _self.createGoBackActivity(node, a, i);
@@ -4322,7 +4314,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
     doGoBack: function(dlg, activitys){
         var node = dlg.node;
-        debugger;
         var check = node.querySelector('input[name="goBackActivity"]:checked');
 
         if (!check) {
@@ -5105,7 +5096,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var opinion = $("rerouteWork_opinion").get("value");
         var select = $("rerouteWork_selectActivity");
 
-        debugger;
         var checkbox = dlg.node.getElement(".rerouteWork_mergeWork");
         var mergeWork = !!(checkbox && checkbox.checked);
 

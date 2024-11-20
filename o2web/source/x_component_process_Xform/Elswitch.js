@@ -47,7 +47,6 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
      * json.disabled = true;     //设置输入框为禁用
      */
     // _loadNode: function(){
-    //     debugger;
     //     if (this.isReadonly()) this.json.disabled = true;
     //     this._loadNodeEdit();
     // },

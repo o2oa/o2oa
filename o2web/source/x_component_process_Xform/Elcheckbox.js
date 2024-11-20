@@ -114,7 +114,6 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         }
     },
     __showValue: function(node, value, optionItems){
-        debugger;
         if (value){
             var texts = [];
             optionItems.each(function(item){

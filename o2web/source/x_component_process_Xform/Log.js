@@ -21,7 +21,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         /**
          * 加载数据后事件。
          * @event MWF.xApplication.process.Xform.Log#postLoadData
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}   `
          * @example
          * //触发该事件的时候可以获取到流程数据workLog
          * var workLog = this.target.workLog;
@@ -489,6 +489,10 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             this.loadRecordTaskLine_default(log, childNode, false);
         }
     },
+
+    getRecordTaskLineTextStyle: function(){
+        return this.json.textStyle;
+    },
     loadRecordTaskLine_default: function(task, node, isTask, margin, isZebra, nodeStyle, noIconNode){
 
         var style = "logTaskNode";
@@ -527,7 +531,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         var atts = [];
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
-            html = this.json.textStyle;
+            html = this.getRecordTaskLineTextStyle();
 
             var lp = MWF.xApplication.process.Xform.LP;
             if (task.type=="empower") html = "<font style='color:#ff5400;'>{person}</font>（{department}）"+lp.in+"【{activity}】"+lp.activity+"，"+lp.empowerTo +"<font style='color:#ff5400;'>{empowerTo}</font>。（{time}）</font>";
@@ -647,15 +651,16 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                 }
             }
         }else{
-            var person = (task.person) ? task.person.substring(0, task.person.indexOf("@")) : "";
-            if (task.properties.empowerFromIdentity){
-                var ep = o2.name.cn(task.properties.empowerFromIdentity);
-                person = person + " "+MWF.xApplication.process.Xform.LP.replace+" " + ep;
-            }
-            html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
-                MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
-            textNode.set("html", html);
-            if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+            this.loadRecordTaskLine_default_currentTask(task, textNode, iconNode);
+            // var person = (task.person) ? task.person.substring(0, task.person.indexOf("@")) : "";
+            // if (task.properties.empowerFromIdentity){
+            //     var ep = o2.name.cn(task.properties.empowerFromIdentity);
+            //     person = person + " "+MWF.xApplication.process.Xform.LP.replace+" " + ep;
+            // }
+            // html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
+            //     MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
+            // textNode.set("html", html);
+            // if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
         this.fireEvent("postLoadLine",[{
             "data" : task,
@@ -666,6 +671,17 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         }]);
     },
 
+    loadRecordTaskLine_default_currentTask: function(task, textNode, iconNode){
+        var person = (task.person) ? task.person.substring(0, task.person.indexOf("@")) : "";
+        if (task.properties.empowerFromIdentity){
+            var ep = o2.name.cn(task.properties.empowerFromIdentity);
+            person = person + " "+MWF.xApplication.process.Xform.LP.replace+" " + ep;
+        }
+        html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
+            MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
+        textNode.set("html", html);
+        if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+    },
 
     loadRecordLogText: function(list, container){
         this.lineClass = "logTaskNode";
@@ -1754,7 +1770,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         var html;
         var company = "";
         var atts = [];
-        if (!isTask){
+        if (!isTask || true){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             var html = this.json.textStyle;
             if (task.processingType=="empower") html = MWF.xApplication.process.Xform.LP.empowerToHtml;

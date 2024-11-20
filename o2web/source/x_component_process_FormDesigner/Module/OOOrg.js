@@ -30,10 +30,17 @@ MWF.xApplication.process.FormDesigner.Module.OOOrg = MWF.FCOOOrg = new Class({
 				this.node.removeAttribute("bgcolor");
 			}
 		}
-		if (name==="dataType"){
-			this.node.setAttribute("type", this.json.dataType);
-			this.node._elements.input.value = '';
+		if (name==="required"){
+			if (this.json.required){
+				this.node.setAttribute("required", true);
+			}else{
+				this.node.removeAttribute("required");
+			}
 		}
+		// if (name==="dataType"){
+		// 	this.node.setAttribute("type", this.json.dataType);
+		// 	this.node._elements.input.value = '';
+		// }
 
 		if (name==="showIcon"){
 			if (this.json.showIcon==="yes"){

@@ -69,7 +69,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         }
     },
     _getOptions: function (async, refresh) {
-        debugger;
         switch (this.json.itemType) {
             case "values":
                 return this.json.itemValues;
@@ -160,7 +159,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     },
 
     setOptions: function () {
-        debugger;
         var optionItems = this.getOptions();
         this._setOptions(optionItems);
     },

@@ -30,7 +30,13 @@ MWF.xApplication.process.FormDesigner.Module.OOTextarea = MWF.FCOOTextarea = new
 				this.node.removeAttribute("bgcolor");
 			}
 		}
-
+		if (name==="required"){
+			if (this.json.required){
+				this.node.setAttribute("required", true);
+			}else{
+				this.node.removeAttribute("required");
+			}
+		}
 		if (name==="showIcon"){
 			if (this.json.showIcon==="yes"){
 				this.node.setAttribute("right-icon", "edit");

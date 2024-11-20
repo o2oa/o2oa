@@ -141,7 +141,6 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     // appendVueExtend: function(app){
     //     if (!app.methods) app.methods = {};
     //     app.methods.$loadElEvent = function(ev){
-    //         debugger;
     //         this.validationMode();
     //         if (ev==="change") this._setBusinessData(this.getInputData());
     //         if (this.json.events && this.json.events[ev] && this.json.events[ev].code){

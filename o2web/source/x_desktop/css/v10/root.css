@@ -56,8 +56,9 @@
     --oo-color-success-bg: #F0FFF4;
     --oo-color-success-border: rgba(41,204,82,0.25);
 
-    --oo-shadow-border: 0 0 0 1px var(--oo-color-gray-d);
-    --oo-shadow-border-focus: 0 0 0 1px var(--oo-color-main);
+    --oo-shadow-border: inset 0 0 0 1px var(--oo-color-gray-d);
+    --oo-shadow-border-focus: inset 0 0 0 1px var(--oo-color-main);
+    --oo-shadow-border-error: inset 0 0 0 1px var(--oo-color-error);
 
     --oo-font-family: "PingFangSC-Regular", "Microsoft YaHei", "YaHei", "SimSun", "宋体", sans-serif;
     --oo-font-size-default: 1rem;   /*~16*/

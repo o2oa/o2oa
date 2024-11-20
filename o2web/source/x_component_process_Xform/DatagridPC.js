@@ -663,9 +663,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 		},
 		_completeLineEdit: function( ev ){
-
-			debugger;
-
 			//this.currentEditLine.getElemets(td);
 			if (!this.editValidation()){
 				return false;
@@ -803,7 +800,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			this._cloneModule(cell, module, idx);
 		},
 		_cloneModule : function(cell, module, idx){
-			debugger;
 			cell.empty();
 			if( module.node && module.json ){
 				var json = Object.clone( module.json );
@@ -903,7 +899,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 				this.editorTr.inject(currentTr, "after");
 			}
 			this.isEdit =true;
-			debugger;
+
 			this._loadSequence();
 			this.validationMode();
 			this.fireEvent("addLine",[this.editorTr]);
@@ -1012,7 +1008,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 				"limit": {"x": [coordinates.left, coordinates.left]},
 				onDrop: function(dragging, droppable){
 					dragging.destroy();
-					//debugger;
+
 					var color = tr.retrieve("bgcolor");
 					if (color){
 						tr.tween("background", color);
@@ -1116,8 +1112,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			var lastTr = lastTrs[lastTrs.length-1];
 			//var tds = lastTr.getElements("td");
 
-			debugger;
-
 			if (this.gridData.data){
 				this.gridData.data.each(function(data, idx){
 					var tr = this.table.insertRow(idx+1);
@@ -1171,7 +1165,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		},
 
 		_loadImportExportAction: function(){
-			debugger;
 			this.impexpNode = this.node.getElement("div.impexpNode");
 			if( this.impexpNode )this.impexpNode.destroy();
 			this.impexpNode = null;
@@ -1871,7 +1864,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		},
 
 		exportToExcel : function () {
-			debugger;
 			var titleThs = this.titleTr.getElements("th");
 			// var editorTds = this.editorTr.getElements("td");
 
@@ -1989,7 +1981,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			new MWF.xApplication.process.Xform.DatagridPC.ExcelUtils(this).exportToExcel( resultArr, arg.title || title, colWidthArr, dateIndexArr );
 		},
 		importFromExcel : function () {
-			debugger;
 			var columnList = [];
 
 			var dateColArray = []; //日期列
@@ -2212,7 +2203,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 
 		},
 		exportWithImportDataToExcel : function ( columnList, importedData ) {
-			debugger;
 			var titleThs = this.titleTr.getElements("th");
 			// var editorTds = this.editorTr.getElements("td");
 
@@ -2342,9 +2332,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 					lineData.errorTextListExcel = errorTextListExcel;
 					flag = false;
 				}
-
-				debugger;
-
 			}.bind(this));
 
 			var arg = {

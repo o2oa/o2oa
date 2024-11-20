@@ -410,6 +410,8 @@ MWF.xApplication.process.Xform.LP={
 	"docDeleted": "El documento ha sido eliminado o no tiene permiso para abrir este documento.",
 	"system": "Sistema",
 	"attachmentSecurity": "Identificación del nivel de confidencialidad del Anexo",
-	"uploading": "Se está cargando el anexo, por favor espere a que se complete la carga del anexo antes de realizar esta operación."
+	"uploading": "Se está cargando el anexo, por favor espere a que se complete la carga del anexo antes de realizar esta operación.",
+	"requiredHint": "Por favor, rellene el campo \"(...).",
+	"requiredHintField": "Esto"
 }
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP

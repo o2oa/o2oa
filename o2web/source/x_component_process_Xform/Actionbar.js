@@ -310,7 +310,6 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             this.form.Macro.exec(script, this);
         },
         saveWork: function(){
-            debugger;
             this.form.saveWork();
         },
         closeWork: function(){

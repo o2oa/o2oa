@@ -452,7 +452,6 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 		return div;
 	},
 	loadSectionKeyNode: function () {
-		debugger;
 		var styleName = this.datatable.isShowSectionKey() ? "sectionKeyStyles" : "sectionByStyles";
 		var sectionKeyStyles = this.datatable._parseStyles( this.datatable.json[styleName] || {} );
 		var keyNode = new Element("div.mwf_sectionkey", {
@@ -625,7 +624,6 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 		if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
 
 		// if(this.options.isNew && this.options.isEdited){
-		// 	debugger;
 		// 	this.data = this.getData();
 		// 	if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
 		// 	this.options.isNew = false;

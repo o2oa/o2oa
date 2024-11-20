@@ -31,7 +31,8 @@ MWF.xApplication.process.FormDesigner.Module.Log = MWF.FCLog = new Class({
 		//this.node.empty();
 		
 		this.node.setStyles(this.css.moduleNode);
-		
+		this.node.set("data-mwf-el-type", "MWFFormDesignerLog");
+
 		this._loadNodeStyles();
 		
 		this._initModule();
@@ -77,6 +78,7 @@ MWF.xApplication.process.FormDesigner.Module.Log = MWF.FCLog = new Class({
 		this.node = this.moveNode.clone(true, true);
 		this.node.setStyles(this.css.moduleNode);
 		this.node.set("id", this.json.id);
+		this.node.set("data-mwf-el-type", "MWFFormDesignerLog");
 		this.node.addEvent("selectstart", function(){
 			return false;
 		});

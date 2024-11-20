@@ -44,6 +44,7 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 		this.node = this.moveNode.clone(true, true);
 		this.node.setStyles(this.css.moduleNode);
 		this.node.set("id", this.json.id);
+		this.node.set("data-mwf-el-type", "MWFFormDesignerAttachment");
 		this.node.addEvent("selectstart", function(e){
 			e.preventDefault();
 		});
@@ -86,8 +87,10 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 
 	},
     loadAttachmentController: function(){
+		this.node.set("data-mwf-el-type", "MWFFormDesignerAttachment");
         MWF.require("MWF.widget.AttachmentController", function(){
             this.attachmentController = new MWF.widget.ATTER(this.node, this, {
+				"title": "Attachment",
 				"readonly": true,
 				"size": this.json.size,
 				"toolbarGroupHidden" : this.json.toolbarGroupHidden || [],

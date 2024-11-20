@@ -309,6 +309,9 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentArea": "附件区域",
     "intelligentCorrection" : "智能纠错",
 
+    "requiredHint": "请填写{label}字段",
+    "requiredHintField": "此",
+
     "maxItemCountNotice": "最多允许添加{n}项",
     "selectItemNotice": "请先选择条目",
     "minItemNotice": "最少需要保留{n}项，删除后的条目小于需保留的条目，请检查",

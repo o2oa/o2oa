@@ -36,7 +36,6 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     // },
     //
     // initialize: function(node, json, form, options){
-    //     debugger;
     //     this.node = $(node);
     //     this.node.store("module", this);
     //     this.json = json;

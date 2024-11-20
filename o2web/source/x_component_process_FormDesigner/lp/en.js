@@ -1487,7 +1487,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"secondEnable": "Select seconds",
 		"weekBegin": "Starting every week",
 		"valueFormat": "Binding value formatting",
-		"readModeEvents": "Does the reading mode respond to mouse events"
+		"readModeEvents": "Does the reading mode respond to mouse events",
+		"required": "Required"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

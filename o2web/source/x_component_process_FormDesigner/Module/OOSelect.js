@@ -30,6 +30,14 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 				this.node.removeAttribute("bgcolor");
 			}
 		}
+		if (name==="required"){
+			if (this.json.required){
+				this.node.setAttribute("required", true);
+			}else{
+				this.node.removeAttribute("required");
+			}
+		}
+
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-select", {

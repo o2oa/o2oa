@@ -379,7 +379,6 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             }
         },
         setExcelData: function(d, type){
-            debugger;
             var arr = this.stringToArray(d);
             this.excelData = arr;
             arr = arr.map(function (a) {

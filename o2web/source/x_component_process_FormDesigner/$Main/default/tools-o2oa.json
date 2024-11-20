@@ -38,5 +38,15 @@
     "icon": "personfield.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
+  },
+  "div": {
+    "icon": "div.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
+    "className": "Div"
+  },
+  "label": {
+    "icon": "label.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.label,
+    "className": "Label"
   }
 }

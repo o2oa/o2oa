@@ -39,6 +39,14 @@ MWF.xApplication.process.FormDesigner.Module.OODatetime = MWF.FCOODatetime = new
 				this.node.removeAttribute("right-icon", "");
 			}
 		}
+
+		if (name==="required"){
+			if (this.json.required){
+				this.node.setAttribute("required", true);
+			}else{
+				this.node.removeAttribute("required");
+			}
+		}
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-datetime", {

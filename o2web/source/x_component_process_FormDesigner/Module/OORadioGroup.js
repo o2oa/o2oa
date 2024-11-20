@@ -104,5 +104,6 @@ MWF.xApplication.process.FormDesigner.Module.OORadioGroup = MWF.FCOORadioGroup =
 	},
 	setCustomInputStyles: function(){
 		this._recoveryModuleData();
-	}
+	},
+	_preprocessingModuleData: function(){}
 });

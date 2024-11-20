@@ -79,7 +79,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             });
 
             this.button.addEvent("click", function(){
-                debugger;
                 this.selectedData = null;
                 this.selectView(function(data){
                     // if(data.length === 0){
@@ -372,8 +371,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             //var disableSelectJobs = Array.clone(selectedJobs);
             disableSelectJobs.push( this.getBundle() );
 
-            debugger;
-
             var viewJsonList = [];
 
             this.selectedBundleMap = {};
@@ -499,8 +496,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                                 var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
 
                                 pageViewNode.setStyle("height", viewHeight);
-
-                                debugger;
 
                                 var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
                                     "isloadContent": this.status !== "showResult",

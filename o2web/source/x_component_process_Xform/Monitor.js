@@ -22,7 +22,6 @@ MWF.xApplication.process.Xform.Monitor = MWF.APPMonitor =  new Class(
         this.node.empty();
 
         MWF.xDesktop.requireApp("process.Xform", "widget.Monitor", function(){
-        //    debugger;
             var process = (this.form.businessData.work) ? this.form.businessData.work.process : this.form.businessData.workCompleted.process;
             /**
              * @summary 流程图对象，是一个 MWF.xApplication.process.Xform.widget.Monitor 类实例

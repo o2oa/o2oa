@@ -1245,6 +1245,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "yearView": "年",
         "secondEnable": "选择秒",
         "weekBegin": "每周开始",
+        "required": "必填",
 
         "readModeEvents": "阅读模式下是否响应鼠标事件",
 

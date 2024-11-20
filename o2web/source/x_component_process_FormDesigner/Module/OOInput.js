@@ -42,6 +42,13 @@ MWF.xApplication.process.FormDesigner.Module.OOInput = MWF.FCOOInput = new Class
 				this.node.removeAttribute("right-icon");
 			}
 		}
+		if (name==="required"){
+			if (this.json.required){
+				this.node.setAttribute("required", true);
+			}else{
+				this.node.removeAttribute("required");
+			}
+		}
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-input", {

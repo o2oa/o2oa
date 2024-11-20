@@ -250,8 +250,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			//this._loadUserInterface();
 		},
 		_loadUserInterface: function(){
-			// this.fireEvent("queryLoad");
-			debugger;
 			//区段合并后编辑
 			if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
 				if( this.json.mergeTypeEdit === "script" ){
@@ -2193,7 +2191,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.importActionNode.setStyles(styles);
 
 				this.importActionNode.addEvent("click", function () {
-					debugger;
 					this.importFromExcel();
 				}.bind(this))
 			}
@@ -2674,7 +2671,6 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
 
 		// if(this.options.isNew && this.options.isEdited){
-		// 	debugger;
 		// 	this.data = this.getData();
 		// 	if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
 		// 	this.options.isNew = false;

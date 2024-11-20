@@ -1176,7 +1176,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     oo_trPr.appendChild(oo_tblHeader);
                 }
 
-                debugger;
                 var tdIdx = 0;
                 //垂直合并单元格
                 var nextIdx = tdIdx;

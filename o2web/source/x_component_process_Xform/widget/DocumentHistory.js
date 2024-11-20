@@ -52,7 +52,6 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     },
 
     loadHistoryToolbar: function(){
-        debugger;
         var html = "";
         if (this.historyDataList && this.historyDataList.length && this.historyDataList[0].json.v!="6"){
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/play.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.play+"\" MWFButtonAction=\"play\"></span>";
@@ -700,7 +699,6 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
         }
 
-        // debugger;
         // var p = node.getPosition(node.getOffsetParent());
         // if (p.x<0) p.x=0;
         // var y = (p.y-10-insertInforDiv.getSize().y);

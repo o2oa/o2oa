@@ -29,6 +29,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.required}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="required" value="true" text{($.required==true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="required" value="false" text{($.required!=true)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.title}}:</td>
                 <td class="editTableValue" id="text{$.pid}isTitleArea">
                     <input type="text" name="label" value="text{$.label}" class="editTableInput"/>

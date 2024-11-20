@@ -1486,7 +1486,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"secondEnable": "Segundos de selección",
 		"weekBegin": "A partir de la semana",
 		"valueFormat": "Formato de valor vinculado",
-		"readModeEvents": "Si responde a eventos del ratón en modo de lectura"
+		"readModeEvents": "Si responde a eventos del ratón en modo de lectura",
+		"required": "Obligatorio"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

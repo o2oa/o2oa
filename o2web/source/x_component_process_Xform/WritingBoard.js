@@ -270,7 +270,6 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
         upload: function( callback ){
             var img = this.tablet.getImage( null, true );
             if(img)Promise.resolve( img ).then(function( image ){
-                debugger;
                 Promise.resolve( this.tablet.getFormData(image) ).then(function (formData) {
                     var fileName = "handwriting"+"_"+new Date().getTime();
                     if( image.type && image.type.contains("/") ) {

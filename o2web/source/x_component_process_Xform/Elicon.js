@@ -74,7 +74,6 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
     //     this._createVueApp();
     // },
     // _createVueApp: function(){
-    //     debugger;
     //     if (!this.vm) this._loadVue(this._mountVueApp.bind(this));
     // },
     //

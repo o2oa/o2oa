@@ -73,7 +73,21 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
                 this.node.setStyle('pointer-events', 'none');
             }
         }
-
+        if (this.json.required){
+            this.node.setAttribute("required", true);
+            if (!this.json.validationConfig) this.json.validationConfig = [];
+            var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
+            this.json.validationConfig.push({
+                status : "all",
+                decision : "",
+                valueType : "value",
+                operateor : "isnull",
+                value : "",
+                prompt : MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
+            });
+        }else{
+            this.node.removeAttribute("required");
+        }
 
         if (this.json.dataType){
             this.node.setAttribute("type", this.json.dataType);

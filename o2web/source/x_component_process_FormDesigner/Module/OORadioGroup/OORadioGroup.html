@@ -23,6 +23,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.required}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="required" value="true" text{($.required==true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="required" value="false" text{($.required!=true)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2"><b>{{$.lp.readModeEvents}}:</b>
                     <input type="radio" name="readModeEvents" value="yes" text{($.readModeEvents=='yes')?'checked':''}/>{{$.lp.yes}}
                     <input type="radio" name="readModeEvents" value="no" text{($.readModeEvents!=='yes')?'checked':''}/>{{$.lp.no}}

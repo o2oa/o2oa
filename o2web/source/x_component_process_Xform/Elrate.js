@@ -28,7 +28,6 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
         "elEvents": ["change"]
     },
     // _loadNode: function(){
-    //     debugger;
     //     if (this.isReadonly()) this.json.disabled = true;
     //     this._loadNodeEdit();
     // },
