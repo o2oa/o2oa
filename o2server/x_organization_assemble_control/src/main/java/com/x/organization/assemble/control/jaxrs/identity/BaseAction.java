@@ -31,4 +31,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return os.get(0);
 	}
 
+	protected boolean isMember(List<String> names, Identity identity){
+		return names.stream().anyMatch(ln -> identity.getUnitLevelName().startsWith(ln));
+	}
+
 }
