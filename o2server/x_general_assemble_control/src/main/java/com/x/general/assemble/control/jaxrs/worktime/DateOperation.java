@@ -1,5 +1,8 @@
 package com.x.general.assemble.control.jaxrs.worktime;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,9 +11,10 @@ import java.util.Date;
 import java.util.List;
 
 public class DateOperation {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DateOperation.class);
     /**
      * 根据样式得到格式化对象SimpleDateFormat
-     * 
+     *
      * @param date
      * @param style
      * @return
@@ -22,7 +26,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的日期部分
-     * 
+     *
      * @param date
      * @return yyyy-MM-dd
      */
@@ -32,7 +36,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的时间部分
-     * 
+     *
      * @param date
      * @return HH:mm:ss
      */
@@ -70,74 +74,92 @@ public class DateOperation {
 
     /**
      * 将字符串转换为日期格式 会尝试多种格式转换，转换成功后返回结果
-     * 
+     *
      * @param dateString
      * @return
      * @throws Exception
      */
-    public Date getDateFromString(String dateString) throws Exception {
+    public Date getDateFromString(String dateString) {
         Date date = null;
         try {
             date = getDateFromString(dateString, "yyyy-MM-dd HH:mm:ss");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "yyyy-MM-dd HH:mm");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "yyyy/MM/dd HH:mm:ss");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "yyyy-MM-dd");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "yyyy/MM/dd");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "yyyyMMdd");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "yyyyMMddHHmmss");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "HH:mm:ss");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         try {
             date = getDateFromString(dateString, "HH:mm");
             return date;
         } catch (Exception e) {
-            e.printStackTrace();
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug(e.getMessage());
+            }
         }
 
         return date;
@@ -169,7 +191,7 @@ public class DateOperation {
 
     /**
      * 得到某日期加上或减去天数后的日期,day为负数时减去
-     * 
+     *
      * @param dateString
      * @param day
      * @param style
@@ -183,7 +205,7 @@ public class DateOperation {
 
     /**
      * 得到某日期加上或减去天数后的日期,day为负数时减去
-     * 
+     *
      * @param date
      * @param day
      * @return
@@ -197,7 +219,7 @@ public class DateOperation {
 
     /**
      * 得到某日期加上或减去月份后的日期,month为负数时减去
-     * 
+     *
      * @param date
      * @param month
      * @return "yyyy-MM-dd"
@@ -211,7 +233,7 @@ public class DateOperation {
 
     /**
      * 得到某日期加上或减去分钟后的日期,min为负数时减去
-     * 
+     *
      * @param date
      * @param min
      * @return
@@ -225,7 +247,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的日
-     * 
+     *
      * @param date
      * @return
      */
@@ -249,7 +271,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的月份
-     * 
+     *
      * @param date
      * @return
      */
@@ -273,7 +295,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的年份
-     * 
+     *
      * @param date
      * @return
      */
@@ -297,7 +319,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的小时
-     * 
+     *
      * @param date
      * @return
      */
@@ -311,7 +333,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的分钟
-     * 
+     *
      * @param date
      * @return
      */
@@ -321,7 +343,7 @@ public class DateOperation {
 
     /**
      * 得到某日期的秒
-     * 
+     *
      * @param date
      * @return
      */
@@ -331,7 +353,7 @@ public class DateOperation {
 
     /**
      * 得到某年有多少天
-     * 
+     *
      * @param date
      * @return
      * @throws ParseException
@@ -345,7 +367,7 @@ public class DateOperation {
 
     /**
      * 得到某年有多少天
-     * 
+     *
      * @param date
      * @return
      * @throws ParseException
@@ -359,7 +381,7 @@ public class DateOperation {
 
     /**
      * 得到某年有多少天
-     * 
+     *
      * @param year
      * @return
      * @throws ParseException
@@ -373,7 +395,7 @@ public class DateOperation {
 
     /**
      * 得到某月有多少天
-     * 
+     *
      * @param date
      * @return
      * @throws ParseException
@@ -386,7 +408,7 @@ public class DateOperation {
 
     /**
      * 得到某月有多少天
-     * 
+     *
      * @param date
      * @return
      * @throws ParseException
@@ -400,7 +422,7 @@ public class DateOperation {
 
     /**
      * 得到某月有多少天
-     * 
+     *
      * @param date
      * @return
      * @throws ParseException
@@ -413,7 +435,7 @@ public class DateOperation {
 
     /**
      * 得到当前的日期
-     * 
+     *
      * @return
      */
     public String getNowDate() {
@@ -422,7 +444,7 @@ public class DateOperation {
 
     /**
      * 得到当前的时间
-     * 
+     *
      * @return
      */
     public String getNowTime() {
@@ -431,7 +453,7 @@ public class DateOperation {
 
     /**
      * 得到当前的时间 yyyyMMddHHmmss
-     * 
+     *
      * @return
      */
     public String getNowTimeChar() {
@@ -440,7 +462,7 @@ public class DateOperation {
 
     /**
      * 得到当前的时间 yyyy-MM-dd HH:mm:ss
-     * 
+     *
      * @return
      */
     public String getNowDateTime() {
@@ -449,7 +471,7 @@ public class DateOperation {
 
     /**
      * 得到两个时间之前的分差
-     * 
+     *
      * @param date1 yyyy-MM-dd HH:mm:ss
      * @param date2 yyyy-MM-dd HH:mm:ss
      * @return
@@ -478,7 +500,7 @@ public class DateOperation {
 
     /**
      * 得到两个时间之前的分差
-     * 
+     *
      * @param date1 yyyy-MM-dd HH:mm:ss
      * @param date2 yyyy-MM-dd HH:mm:ss
      * @return
@@ -492,7 +514,7 @@ public class DateOperation {
 
     /**
      * 日期格式转换 从YYYY-MM-DD转换到YYYYMMDD
-     * 
+     *
      * @param dateString
      * @return
      * @throws ParseException
@@ -569,7 +591,7 @@ public class DateOperation {
 
     /**
      * 将时间格式转换为 **月**日**时**分的格式
-     * 
+     *
      * @param dateString
      * @param style
      * @return
@@ -602,7 +624,7 @@ public class DateOperation {
 
     /**
      * 将时间格式转换为 **月**日**时**分**秒 的格式
-     * 
+     *
      * @param dateString
      * @param style
      * @return
@@ -638,7 +660,7 @@ public class DateOperation {
 
     /**
      * 获取日期在一年中的周数 结果从1开始
-     * 
+     *
      * @param dateString yyyy-mm-dd
      * @return
      * @throws Exception
@@ -653,7 +675,7 @@ public class DateOperation {
 
     /**
      * 判断是否周末
-     * 
+     *
      * @param recordDate
      * @return
      */
@@ -674,7 +696,7 @@ public class DateOperation {
 
     /**
      * 根据提供的年份月份，获取当月所有的日期字符串：yyyy-mm-dd
-     * 
+     *
      * @param s_year
      * @param _month
      * @return
@@ -705,7 +727,7 @@ public class DateOperation {
 
     /**
      * 根据提供的两个时间之间所有的日期字符串：yyyy-mm-dd
-     * 
+     *
      * @param startDate
      * @param endDate
      * @return
@@ -714,11 +736,11 @@ public class DateOperation {
     public List<String> listDateStringBetweenDate(Date startDate, Date endDate) throws Exception {
         List<String> result = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
-        startDate = getDateFromString(getDateStringFromDate(startDate, "yyyy-MM-dd"));
-        endDate = getDateFromString(getDateStringFromDate(endDate, "yyyy-MM-dd") + " 23:59:59");
+        startDate = DateTools.floorDate(startDate, 0);
+        endDate = DateTools.addSeconds(DateTools.ceilDate(endDate, 0), -1);
         cal.setTime(startDate);
         while (cal.getTime().before(endDate)) {
-            result.add(getDateStringFromDate(cal.getTime(), "yyyy-MM-dd"));
+            result.add(DateTools.format(cal.getTime(), DateTools.format_yyyyMMdd));
             cal.add(Calendar.DATE, 1);
         }
         return result;
@@ -726,7 +748,7 @@ public class DateOperation {
 
     /**
      * 获取日期所在月份的第一天
-     * 
+     *
      * @param recordDate
      * @return
      * @throws Exception
@@ -739,7 +761,7 @@ public class DateOperation {
 
     /**
      * 获取日期所在月份的第一天
-     * 
+     *
      * @param recordDate yyyy-MM-dd
      * @return
      * @throws Exception
@@ -752,7 +774,7 @@ public class DateOperation {
 
     /**
      * 获取当月的最后一日
-     * 
+     *
      * @param date
      * @return
      */
@@ -765,7 +787,7 @@ public class DateOperation {
 
     /**
      * 将日期转换为日历
-     * 
+     *
      * @param date 日期
      * @return 日历
      */
@@ -777,7 +799,7 @@ public class DateOperation {
 
     /**
      * 获取日期所在月份的第一天
-     * 
+     *
      * @param recordDate
      * @return
      * @throws Exception
@@ -789,7 +811,7 @@ public class DateOperation {
 
     /**
      * 获取日期所在月份的第一天
-     * 
+     *
      * @param recordDate yyyy-MM-dd
      * @return
      * @throws Exception
