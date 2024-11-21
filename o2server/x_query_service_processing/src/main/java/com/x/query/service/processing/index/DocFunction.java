@@ -462,7 +462,6 @@ public class DocFunction {
 
     private static String storageObjectToText(Tika tika, StorageObject storageObject) throws Exception {
         StringBuilder builder = new StringBuilder();
-        builder.append(storageObject.getName());
         try {
             StorageMapping mapping = ThisApplication.context().storageMappings().get(storageObject.getClass(),
                     storageObject.getStorage());
