@@ -1508,6 +1508,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "weeks": {
             "arr": ["周一","周二","周三","周四","周五","周六","周日"]
         },
+        "foxit" : {
+            "api" : "API"
+        },
         "tabletWidth": "手写板宽度",
         "tabletHeight": "手写板高度",
         "tabletSizeNote": "仅PC端有效，移动端横向满屏",
