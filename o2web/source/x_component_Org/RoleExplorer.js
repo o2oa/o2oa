@@ -306,7 +306,7 @@ MWF.xApplication.Org.RoleExplorer.RoleContent = new Class({
         this.checkSaveBaseInfor(function(){
             MWF.xDesktop.requireApp("Selector", "Person", function(){
                 var selector = new MWF.xApplication.Selector.Person(this.explorer.app.content,{
-                    "values": this.data.personList,
+                    "values": this.data.woPersonList,
                     "onComplete": function(items){
                         var ids = [];
                         var persons = [];
@@ -334,7 +334,7 @@ MWF.xApplication.Org.RoleExplorer.RoleContent = new Class({
         this.checkSaveBaseInfor(function(){
             MWF.xDesktop.requireApp("Selector", "Group", function(){
                 var selector = new MWF.xApplication.Selector.Group(this.explorer.app.content,{
-                    "values": this.data.groupList,
+                    "values": this.data.woGroupList,
                     "onComplete": function(items){
                         var ids = [];
                         var groups = [];
