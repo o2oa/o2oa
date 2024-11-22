@@ -836,7 +836,7 @@ MWF.xApplication.systemconfig.LP={
 		"indexMode": "Ubicación de almacenamiento del índice",
 		"modeOptions": {
 			"localDirectory": "Sistema de archivos local",
-			"hdfsDirectory": "Sistema de archivos HDFS",
+			// "hdfsDirectory": "Sistema de archivos HDFS",
 			"sharedDirectory": "Sistema de archivos compartido"
 		},
 		"hdfsDirectoryDefaultFS": "Dirección del sistema de archivos HDFS",
@@ -1180,7 +1180,7 @@ MWF.xApplication.systemconfig.LP={
 				"ftps": "FTPS",
 				"ftp": "FTP",
 				"file": "Archivo",
-				"hdfs": "HDFS",
+				// "hdfs": "HDFS",
 				"cifs": "CIFS",
 				"ali": "Almacenamiento en la nube de Alibaba",
 				"s3": "Almacenamiento en la nube de Amazon",
@@ -1375,7 +1375,7 @@ MWF.xApplication.systemconfig.LP={
 			"mail": "Correo electrónico",
 			"jdbc": "JDBC",
 			"table": "Tabla de datos",
-			"hadoop": "Hadoop",
+			// "hadoop": "Hadoop",
 			"andfx": "Mensaje de oficina móvil"
 		},
 		"consumerInfoTitle": "Configuración del canal de mensajes",

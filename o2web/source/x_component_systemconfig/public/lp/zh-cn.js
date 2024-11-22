@@ -1056,7 +1056,7 @@ o2.xApplication.systemconfig.LP = {
         "indexMode": "索引存储位置",
         "modeOptions": {
             "localDirectory": "本地文件系统",
-            "hdfsDirectory": "hadoop文件系统",
+            // "hdfsDirectory": "hadoop文件系统",
             "sharedDirectory": "共享文件系统"
         },
         "hdfsDirectoryDefaultFS": "hadoop文件系统地址",
@@ -1200,7 +1200,7 @@ o2.xApplication.systemconfig.LP = {
         "appIndexTaskFilterProcessInfo": "办公中心列表流程查询条件，为空就是都查询",
         "appIndexTaskFilterProcessSelectorTitle": "流程选择",
         "appIndexCmsFilterCategroySelectorTitle": "分类选择",
-        
+
 
 
         "systemMessageSwitch": "显示系统通知",
@@ -1443,7 +1443,7 @@ o2.xApplication.systemconfig.LP = {
                 "ftps": "ftps",
                 "ftp": "ftp",
                 "file": "file",
-                "hdfs": "hdfs",
+                // "hdfs": "hdfs",
                 "cifs": "cifs",
                 "ali": "阿里云存储",
                 "s3":"亚马逊云存储",
@@ -1643,7 +1643,7 @@ o2.xApplication.systemconfig.LP = {
             "mail": "邮件",
             "jdbc": "JDBC",
             "table": "数据表",
-            "hadoop": "Hadoop",
+            // "hadoop": "Hadoop",
             "andfx": "移动办公消息"
         },
         "consumerInfoTitle": "消息通道配置",
