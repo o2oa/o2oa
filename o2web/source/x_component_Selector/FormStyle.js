@@ -10,6 +10,7 @@ MWF.xApplication.Selector.FormStyle = new Class({
         "names": [],
         "expand": false,
         "mode" : "pc",
+        "appType": "process",
         "forceSearchInItem" : true
     },
     setInitTitle: function(){
@@ -20,7 +21,7 @@ MWF.xApplication.Selector.FormStyle = new Class({
         this.className = "FormStyle";
     },
     loadSelectItems: function(addToNext){
-        var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/config.json";
+        var stylesUrl = this.options.stylesUrl ||  "../x_component_process_FormDesigner/Module/Form/skin/config.json";
         MWF.getJSON(stylesUrl,{
                 "onSuccess": function(json){
                     debugger;
@@ -42,22 +43,29 @@ MWF.xApplication.Selector.FormStyle = new Class({
 
                     var json = {};
                     var array = [];
-                    o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listPaging(1, 1000, {}, function( scriptJson ){
+                    var promise;
+                    if( this.options.appType === "service" ){
+                        promise = o2.Actions.load("x_program_center").ScriptAction.listPaging(1, 1000, {});
+                    }else{
+                        promise = o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listPaging(1, 1000, {});
+                    }
+                    promise.then( function( scriptJson ){
                         scriptJson.data.each(function (script) {
                             if (!json[script.application]) {
                                 json[script.application] = {
-                                    name : script.applicationName,
-                                    applicationName: script.applicationName,
-                                    appName: script.applicationName,
-                                    application: script.application,
-                                    appId: script.application
+                                    name : script.applicationName || 'service',
+                                    applicationName: script.applicationName || 'service',
+                                    appName: script.applicationName || 'service',
+                                    application: script.application || 'service',
+                                    appId: script.application || 'service'
                                 };
                                 json[script.application].scriptList = [];
                             }
-                            script.appName = script.applicationName;
-                            script.appId = script.application;
+                            script.appName = script.applicationName || 'service';
+                            script.appId = script.application || 'service';
                             script.type = "script";
-                            json[script.application].scriptList.push(script)
+                            script.appType = this.options.appType;
+                            json[script.application].scriptList.push(script);
                         }.bind(this));
                         for (var application in json) {
                             if (json[application].scriptList && json[application].scriptList.length) {

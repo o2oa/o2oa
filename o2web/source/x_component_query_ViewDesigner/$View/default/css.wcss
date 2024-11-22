@@ -406,5 +406,12 @@
         "background-color": "#F9F9F9",
         "border": "1px dotted blue",
         "white-space": "nowrap"
-    }
+    },
+     "propertyRefreshFormNode": {
+         "width": "24px",
+         "height": "24px",
+         "float": "right",
+         "background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
+         "cursor": "pointer"
+     }
 }
