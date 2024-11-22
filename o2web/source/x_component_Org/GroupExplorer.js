@@ -379,7 +379,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.checkSaveBaseInfor(function(){
             MWF.xDesktop.requireApp("Selector", "Person", function(){
                 var selector = new MWF.xApplication.Selector.Person(this.explorer.app.content,{
-                    "values": this.data.personList,
+                    "values": this.data.woPersonList,
                     "onComplete": function(items){
                         var ids = [];
                         var persons = [];
@@ -407,7 +407,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.checkSaveBaseInfor(function(){
             MWF.xDesktop.requireApp("Selector", "Identity", function(){
                 var selector = new MWF.xApplication.Selector.Identity(this.explorer.app.content,{
-                    "values": this.data.identityList,
+                    "values": this.data.woIdentityList,
                     "onComplete": function(items){
                         var ids = [];
                         var identitys = [];
@@ -434,7 +434,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.checkSaveBaseInfor(function(){
             MWF.xDesktop.requireApp("Selector", "Group", function(){
                 var selector = new MWF.xApplication.Selector.Group(this.explorer.app.content,{
-                    "values": this.data.groupList,
+                    "values": this.data.woGroupList,
                     "onComplete": function(items){
                         var ids = [];
                         var groups = [];
@@ -461,7 +461,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.checkSaveBaseInfor(function(){
             MWF.xDesktop.requireApp("Selector", "Unit", function(){
                 var selector = new MWF.xApplication.Selector.Unit(this.explorer.app.content,{
-                    "values": this.data.unitList,
+                    "values": this.data.woUnitList,
                     "onComplete": function(items){
                         var ids = [];
                         var groups = [];
