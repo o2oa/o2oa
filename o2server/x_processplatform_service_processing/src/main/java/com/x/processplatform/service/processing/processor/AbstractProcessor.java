@@ -227,12 +227,12 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				// 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码可能修改了data数据.
 				aeiObjects.entityManagerContainer().commit();
 			}
-			if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScript())
-					|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScriptText())) {
-				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-						aeiObjects.getProcess(), Business.EVENT_PROCESSAFTEREND);
-				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
-			}
+//			if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterExecuteScript())
+//					|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterExecuteScriptText())) {
+//				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+//						aeiObjects.getProcess(), Business.EVENT_AFTEREXECUTE);
+//				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
+//			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
