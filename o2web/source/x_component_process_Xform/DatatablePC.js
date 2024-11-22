@@ -3241,7 +3241,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			}).inject(node);
 			var textNode = new Element("div", {
 				"styles": {
-					"height": "20px",
+					"height": "auto",
 					"line-height": "20px",
 					"margin-left": "20px",
 					"color": "red",
