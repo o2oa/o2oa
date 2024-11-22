@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>9.1</version>
+		<version>9.2</version>
 	</parent>
 	<artifactId>x_query_assemble_surface</artifactId>
 	<packaging>war</packaging>
