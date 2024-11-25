@@ -277,7 +277,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         return layout.desktop.openApplication(this.event, "process.Work", op);
     },
     openDoc: function(id, event, row){
-        f( !o2.api ){
+        if( !o2.api ){
             MWF.require("MWF.framework", function () {
                 o2.api.page.openDocument(id);
             }.bind(this));
