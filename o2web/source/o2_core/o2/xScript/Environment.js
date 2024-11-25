@@ -1383,6 +1383,28 @@ MWF.xScript.Environment = function(ev){
             return (!!async) ? promise : v;
         },
 
+        //查询职务和组织对应的身份--返回身份的对象数组
+        listIdentityWithUnitWithDuty: function(unit, duty, nested, async){
+            var v = null;
+
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+
+            var data = {
+                "unitList": getNameFlag(unit),
+                "nameList": getNameFlag(duty),
+                "recursiveUnit": !!nested
+            };
+            var promise = o2.Actions.load('x_organization_assemble_express').UnitDutyAction.listIdentityWithUnitWithNameObject( data, cb, null, !!async );
+            promise.name = "org";
+
+            return (!!async) ? promise : v;
+        },
+
         //组织**********
         //获取组织
         getUnit: function(name, async, findCN){
@@ -1460,6 +1482,57 @@ MWF.xScript.Environment = function(ev){
             //     return v;
             // }
         },
+
+        listSupUnitWithLevel: function(name, level, async){
+            var v;
+            var supUnitList = this.listSupUnit( name, true, !!async);
+            var unitList = this.getUnit( name, false, !!async );
+
+            var cb = function(sups, units){
+                v = [].concat(
+                    sups,
+                    typeOf( units ) === "object" ? [units] : units
+                ).filter(function (u){
+                    return u.level === level;
+                });
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+            if( typeof supUnitList.then === 'function' ){
+                return Promise.all([supUnitList, unitList]).then(function( result){
+                    return cb(result[0], result[1]);
+                });
+            }else{
+                return cb(supUnitList, unitList);
+            }
+        },
+
+        listSupUnitWithType: function(name, type, async){
+            var v;
+            var supUnitList = this.listSupUnit( name, true, !!async);
+            var unitList = this.getUnit( name, false, !!async );
+
+            var cb = function(sups, units){
+                v = [].concat(
+                    sups,
+                    typeOf( units ) === "object" ? [units] : units
+                ).filter(function (u){
+                    return (u.typeList || []).contains( type );
+                });
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+            if( typeof supUnitList.then === 'function' ){
+                return Promise.all([supUnitList, unitList]).then(function( result){
+                    return cb(result[0], result[1]);
+                });
+            }else{
+                return cb(supUnitList, unitList);
+            }
+        },
+
         //根据个人身份获取组织
         //flag 数字    表示获取第几层的组织
         //     字符串  表示获取指定类型的组织

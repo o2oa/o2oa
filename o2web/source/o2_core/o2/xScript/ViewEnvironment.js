@@ -953,6 +953,62 @@ MWF.xScript.ViewEnvironment = function (ev) {
             return (!!async) ? promise : v;
         },
 
+
+        /**
+         * 根据组织标识和职务标识获取对应的身份对象数组：identity对象数组。
+         * @method listIdentityWithUnitWithDuty
+         * @o2membercategory identity
+         * @methodOf module:org
+         * @static
+         * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {String|String[]} duty - 职务的distinguishedName、id、name。
+         * @param {Boolean} [nested] true包括嵌套的下级组织；；默认false。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|IdentityData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回身份对象数组。
+         * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithUnitSubNestedObject|example=Identity
+         * @o2syntax
+         * //同步执行，返回直接组织身份对象数组。
+         * var identityList = this.org.listIdentityWithUnitWithDuty( unit, duty );
+         *
+         *
+         * //同步执行，返回嵌套组织身份对象数组。
+         * var identityList = this.org.listIdentityWithUnitWithDuty( unit, duty, true );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listIdentityWithUnitWithDuty( unit, duty, false, true);
+         * promise.then(function(identityList){
+         *     //identityList 返回直接组织身份对象数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listIdentityWithUnitWithDuty( unit, duty, false, function(identityList){
+         *     //identityList 返回直接组织身份对象数组。
+         * })
+         */
+        listIdentityWithUnitWithDuty: function(unit, duty, nested, async){
+            var v = null;
+
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+
+            var data = {
+                "unitList": getNameFlag(unit),
+                "nameList": getNameFlag(duty),
+                "recursiveUnit": !!nested
+            };
+            var promise = o2.Actions.load('x_organization_assemble_express').UnitDutyAction.listIdentityWithUnitWithNameObject( data, cb, null, !!async );
+            promise.name = "org";
+
+            return (!!async) ? promise : v;
+        },
+
+
         //组织**********
         //获取组织
         /**
@@ -1114,6 +1170,117 @@ MWF.xScript.ViewEnvironment = function (ev) {
             //     return v;
             // }
         },
+
+
+        /**
+         根据组织标识和指定层级批量获取上级组织的对象数组（包括传入的数组）：unit对象数组。
+         * @method listSupUnitWithLevel
+         * @o2membercategory unit
+         * @methodOf module:org
+         * @static
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {Number} level  指定的层级
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|UnitData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
+         * @o2syntax
+         * //同步执行，返回嵌套上级组织数组。
+         * var unitList = this.org.listSupUnitWithLevel( name, level );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupUnitWithLevel( name, level, true);
+         * promise.then(function(unitList){
+         *     //unitList 为返回的直接上级组织数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listSupUnitWithLevel( name, level, function(unitList){
+         *     //unitList 为返回嵌套上级组织数组。
+         * })
+         */
+        listSupUnitWithLevel: function(name, level, async){
+            var v;
+            var supUnitList = this.listSupUnit( name, true, !!async);
+            var unitList = this.getUnit( name, false, !!async );
+
+            var cb = function(sups, units){
+                v = [].concat(
+                    sups,
+                    typeOf( units ) === "object" ? [units] : units
+                ).filter(function (u){
+                    return u.level === level;
+                });
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+            if( typeof supUnitList.then === 'function' ){
+                return Promise.all([supUnitList, unitList]).then(function( result){
+                    return cb(result[0], result[1]);
+                });
+            }else{
+                return cb(supUnitList, unitList);
+            }
+        },
+
+
+        /**
+         根据组织标识和指定组织类型批量获取上级组织的对象数组（包括传入的数组）：unit对象数组。
+         * @method listSupUnitWithType
+         * @o2membercategory unit
+         * @methodOf module:org
+         * @static
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {String} type  指定的组织类型
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|UnitData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
+         * @o2syntax
+         * //同步执行，返回嵌套上级组织数组。
+         * var unitList = this.org.listSupUnitWithType( name, level );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupUnitWithType( name, level, true);
+         * promise.then(function(unitList){
+         *     //unitList 为返回的直接上级组织数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listSupUnitWithType( name, level, function(unitList){
+         *     //unitList 为返回嵌套上级组织数组。
+         * })
+         */
+        listSupUnitWithType: function(name, type, async){
+            var v;
+            var supUnitList = this.listSupUnit( name, true, !!async);
+            var unitList = this.getUnit( name, false, !!async );
+
+            var cb = function(sups, units){
+                v = [].concat(
+                    sups,
+                    typeOf( units ) === "object" ? [units] : units
+                ).filter(function (u){
+                    return (u.typeList || []).contains( type );
+                });
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+            if( typeof supUnitList.then === 'function' ){
+                return Promise.all([supUnitList, unitList]).then(function( result){
+                    return cb(result[0], result[1]);
+                });
+            }else{
+                return cb(supUnitList, unitList);
+            }
+        },
+
+
+
         //根据个人身份获取组织
         //flag 数字    表示获取第几层的组织
         //     字符串  表示获取指定类型的组织
