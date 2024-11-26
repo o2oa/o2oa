@@ -138,6 +138,7 @@ MWF.xApplication.attendancev2.LP={
 	"workAddressManagerTitle": "Gestión de lugares de trabajo",
 	"workAddressSelector": "Seleccionar lugar de trabajo",
 	"workAddressAdd": "Agregar lugar de trabajo",
+	"workAddressUpdate": "Modificar lugar de trabajo",
 	"workAddressView": "Ver el lugar de trabajo",
 	"workAddressName": "Nombre del lugar",
 	"workAddressRange": "Rango de error",

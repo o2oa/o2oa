@@ -1,7 +1,7 @@
 import {component as content} from '@o2oa/oovm';
 import {lp, o2} from '@o2oa/component';
-import { isPositiveInt, isEmpty } from '../../../utils/common';
-import { attendanceWorkPlaceV2Action } from '../../../utils/actions';
+import {isPositiveInt, isEmpty} from '../../../utils/common';
+import {attendanceWorkPlaceV2Action} from '../../../utils/actions';
 import template from './temp.html';
 import style from "./style.scope.css";
 import oInput from '../../../components/o-input';
@@ -15,27 +15,31 @@ export default content({
     template,
     components: {oInput, oTextarea, baiduMap, amap},
     autoUpdate: true,
-    bind(){
+    bind() {
         return {
             lp,
             fTitle: lp.workAddressAdd,
             form: {
-              placeName: "",
-              errorRange: "200",
-              longitude: "",
-              latitude: "",
-              description: "",
-              isView: false,
-              positionType: "amap" // baidu amap
+                placeName: "",
+                errorRange: "200",
+                longitude: "",
+                latitude: "",
+                description: "",
+                status: "a", // a 新增 ，u 更新， v 查看
+                isView: false,
+                positionType: "amap" // baidu amap
             },
         };
     },
     // 如果有数据过来
     beforeRender() {
+        console.debug(this.bind.form)
         // 有值 表示是查看
-        if (this.bind.form.id) {
+        if (this.bind.form.id && this.bind.form.status === 'v') {
             this.bind.form.isView = true;
             this.bind.fTitle = lp.workAddressView;
+        } else if (this.bind.form.id && this.bind.form.status === 'u') {
+            this.bind.fTitle = lp.workAddressAdd;
         }
     },
     close() {
@@ -46,24 +50,24 @@ export default content({
         let myForm = this.bind.form;
         if (isEmpty(myForm.longitude) || isEmpty(myForm.latitude)) {
             o2.api.page.notice(lp.workAddressForm.lnglatNotEmpty, 'error');
-            return ;
+            return;
         }
         if (isEmpty(myForm.placeName)) {
             o2.api.page.notice(lp.workAddressForm.titleNotEmpty, 'error');
-            return ;
+            return;
         }
         if (isEmpty(myForm.errorRange)) {
             o2.api.page.notice(lp.workAddressForm.rangeNotEmpty, 'error');
-            return ;
+            return;
         }
         if (!isPositiveInt(myForm.errorRange)) {
             o2.api.page.notice(lp.workAddressForm.rangeNeedNumber, 'error');
-            return ;
+            return;
         }
         const json = await attendanceWorkPlaceV2Action("post", myForm);
         console.debug('新增成功', json);
         o2.api.page.notice(lp.workAddressForm.success, 'success');
         this.close();
     },
-   
+
 });

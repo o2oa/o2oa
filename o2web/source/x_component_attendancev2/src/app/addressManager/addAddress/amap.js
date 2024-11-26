@@ -21,6 +21,7 @@ export default content({
       form: {
         longitude: "",
         latitude: "",
+        status: "a", // a 新增 ，u 更新， v 查看
         isView: false,
       },
       isMax: false, // 地图放大
@@ -55,7 +56,7 @@ export default content({
     }
   },
   loadViewOrLocation() {
-    if (this.bind.form.isView) {
+    if (this.bind.form.status !== 'a') {
       this.loadMapView();
     } else {
       this.initDefaultNumberMapView();
@@ -89,7 +90,8 @@ export default content({
     if (!this.bind.form.isView) {
       // 创建工作场所需要添加点击事件
       this.addMapClick();
-    } else {
+    }
+    if (this.bind.form.status !== 'a') {
       this.addMarkPoint(point, this.bind.form.placeName);
     }
   },
