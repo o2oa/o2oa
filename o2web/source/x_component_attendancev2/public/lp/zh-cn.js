@@ -147,6 +147,7 @@ MWF.xApplication.attendancev2.LP = {
   workAddressManagerTitle: "工作场所管理",
   workAddressSelector: "选择工作场所",
   workAddressAdd: "新建工作场所",
+  workAddressUpdate: "修改工作场所",
   workAddressView: "查看工作场所",
   workAddressName: "场所名称",
   workAddressRange: "误差范围",

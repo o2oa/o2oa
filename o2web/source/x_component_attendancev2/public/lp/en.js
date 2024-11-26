@@ -138,6 +138,7 @@ MWF.xApplication.attendancev2.LP={
 	"workAddressManagerTitle": "Workplace Management",
 	"workAddressSelector": "Select Workplace",
 	"workAddressAdd": "Add Workplace",
+	"workAddressUpdate": "Update Workplace",
 	"workAddressView": "View Workplace",
 	"workAddressName": "Place Name",
 	"workAddressRange": "Error Range",

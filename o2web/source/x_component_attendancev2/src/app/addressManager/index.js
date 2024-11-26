@@ -56,11 +56,17 @@ export default content({
       return;
     }
     this.$parent.openAddressForm({
-      bind: { form: { positionType: this.bind.mapConfig.mapType } },
+      bind: { form: { positionType: this.bind.mapConfig.mapType, status: 'a' } },
     });
   },
   // 查看位置
+  clickOpenEdit(address) {
+    address.status = 'u'
+    this.$parent.openAddressForm({ bind: { form: address } });
+  },
+  // 查看位置
   clickOpenView(address) {
+    address.status = 'v'
     this.$parent.openAddressForm({ bind: { form: address } });
   },
   // 删除工作场所
