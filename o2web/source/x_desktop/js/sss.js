@@ -466,6 +466,16 @@ var org = {
         return this.getObject(this.oIdentity, v);
     },
 
+    //查询职务和组织对应的身份--返回身份的对象数组
+    listIdentityWithUnitWithDuty: function(unit, duty, nested){
+        var data = {
+            "unitList": getNameFlag(unit),
+            "nameList": getNameFlag(duty),
+            "recursiveUnit": !!nested
+        };
+        return this.oUnitDuty.listIdentityWithUnitWithNameObject( data );
+    },
+
     //组织**********
     //获取组织
     getUnit: function(name){
@@ -495,6 +505,31 @@ var org = {
         }
         return this.getObject(this.oUnit, v);
     },
+
+    listSupUnitWithLevel: function(name, level){
+        var supUnitList = this.listSupUnit( name, true);
+        var unitList = this.getUnit( name );
+
+        return [].concat(
+            supUnitList,
+            library.typeOf( unitList ) === 'object' ? [unitList] : unitList,
+        ).filter(function (u){
+            return u.level === level;
+        });
+    },
+
+    listSupUnitWithType: function(name, type){
+        var supUnitList = this.listSupUnit( name, true);
+        var unitList = this.getUnit( name );
+
+        return [].concat(
+            supUnitList,
+            library.typeOf( unitList ) === 'object' ? [unitList] : unitList,
+        ).filter(function (u){
+            return (u.typeList || []).contains( type );
+        });
+    },
+
     //根据个人身份获取组织
     //flag 数字    表示获取第几层的组织
     //     字符串  表示获取指定类型的组织

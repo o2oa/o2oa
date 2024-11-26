@@ -1170,6 +1170,16 @@ Object.assign(org,  {
         return this.getObject(this.oIdentity, this.oIdentity[(nested) ? 'listWithUnitSubNested' : 'listWithUnitSubDirect'](_getNameFlag(name)));
     },
 
+    //查询职务和组织对应的身份--返回身份的对象数组
+    listIdentityWithUnitWithDuty: function(unit, duty, nested){
+        var data = {
+            "unitList": _getNameFlag(unit),
+            "nameList": _getNameFlag(duty),
+            "recursiveUnit": !!nested
+        };
+        return this.oUnitDuty.listIdentityWithUnitWithNameObject( data );
+    },
+
     //组织**********
     //获取组织
     /**
@@ -1230,6 +1240,30 @@ Object.assign(org,  {
      */
     listSupUnit: function(name, nested){
         return this.getObject(this.oUnit, this.oUnit[(nested) ? 'listWithUnitSupNested' : 'listWithUnitSupDirect'](_getNameFlag(name)));
+    },
+
+    listSupUnitWithLevel: function(name, level){
+        var supUnitList = this.listSupUnit( name, true);
+        var unitList = this.getUnit( name );
+
+        return [].concat(
+            supUnitList,
+            Array.isArray(unitList) ? unitList : [unitList]
+        ).filter(function (u){
+            return u.level === level;
+        });
+    },
+
+    listSupUnitWithType: function(name, type){
+        var supUnitList = this.listSupUnit( name, true);
+        var unitList = this.getUnit( name );
+
+        return [].concat(
+            supUnitList,
+            Array.isArray(unitList) ? unitList : [unitList]
+        ).filter(function (u){
+            return (u.typeList || []).contains( type );
+        });
     },
 
     //根据个人身份获取组织
