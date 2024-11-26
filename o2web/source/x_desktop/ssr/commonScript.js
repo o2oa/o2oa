@@ -1170,16 +1170,6 @@ Object.assign(org,  {
         return this.getObject(this.oIdentity, this.oIdentity[(nested) ? 'listWithUnitSubNested' : 'listWithUnitSubDirect'](_getNameFlag(name)));
     },
 
-    //查询职务和组织对应的身份--返回身份的对象数组
-    listIdentityWithUnitWithDuty: function(unit, duty, nested){
-        var data = {
-            "unitList": _getNameFlag(unit),
-            "nameList": _getNameFlag(duty),
-            "recursiveUnit": !!nested
-        };
-        return this.oUnitDuty.listIdentityWithUnitWithNameObject( data );
-    },
-
     //组织**********
     //获取组织
     /**

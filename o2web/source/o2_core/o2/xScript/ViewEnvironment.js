@@ -953,62 +953,6 @@ MWF.xScript.ViewEnvironment = function (ev) {
             return (!!async) ? promise : v;
         },
 
-
-        /**
-         * 根据组织标识和职务标识获取对应的身份对象数组：identity对象数组。
-         * @method listIdentityWithUnitWithDuty
-         * @o2membercategory identity
-         * @methodOf module:org
-         * @static
-         * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-         * @param {String|String[]} duty - 职务的distinguishedName、id、name。
-         * @param {Boolean} [nested] true包括嵌套的下级组织；；默认false。
-         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
-         * @return {Promise|IdentityData[]} 当async为true时，返回
-         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
-         * 否则返回身份对象数组。
-         * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithUnitSubNestedObject|example=Identity
-         * @o2syntax
-         * //同步执行，返回直接组织身份对象数组。
-         * var identityList = this.org.listIdentityWithUnitWithDuty( unit, duty );
-         *
-         *
-         * //同步执行，返回嵌套组织身份对象数组。
-         * var identityList = this.org.listIdentityWithUnitWithDuty( unit, duty, true );
-         *
-         * //异步执行，返回Promise对象
-         * var promise = this.org.listIdentityWithUnitWithDuty( unit, duty, false, true);
-         * promise.then(function(identityList){
-         *     //identityList 返回直接组织身份对象数组。
-         * })
-         *
-         * //异步执行，在回调方法中获取
-         * this.org.listIdentityWithUnitWithDuty( unit, duty, false, function(identityList){
-         *     //identityList 返回直接组织身份对象数组。
-         * })
-         */
-        listIdentityWithUnitWithDuty: function(unit, duty, nested, async){
-            var v = null;
-
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)==="function") return async(v);
-                return v;
-            };
-
-
-            var data = {
-                "unitList": getNameFlag(unit),
-                "nameList": getNameFlag(duty),
-                "recursiveUnit": !!nested
-            };
-            var promise = o2.Actions.load('x_organization_assemble_express').UnitDutyAction.listIdentityWithUnitWithNameObject( data, cb, null, !!async );
-            promise.name = "org";
-
-            return (!!async) ? promise : v;
-        },
-
-
         //组织**********
         //获取组织
         /**

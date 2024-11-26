@@ -1383,28 +1383,6 @@ MWF.xScript.Environment = function(ev){
             return (!!async) ? promise : v;
         },
 
-        //查询职务和组织对应的身份--返回身份的对象数组
-        listIdentityWithUnitWithDuty: function(unit, duty, nested, async){
-            var v = null;
-
-            var cb = function(json){
-                v = json.data;
-                if (async && o2.typeOf(async)==="function") return async(v);
-                return v;
-            };
-
-
-            var data = {
-                "unitList": getNameFlag(unit),
-                "nameList": getNameFlag(duty),
-                "recursiveUnit": !!nested
-            };
-            var promise = o2.Actions.load('x_organization_assemble_express').UnitDutyAction.listIdentityWithUnitWithNameObject( data, cb, null, !!async );
-            promise.name = "org";
-
-            return (!!async) ? promise : v;
-        },
-
         //组织**********
         //获取组织
         getUnit: function(name, async, findCN){
