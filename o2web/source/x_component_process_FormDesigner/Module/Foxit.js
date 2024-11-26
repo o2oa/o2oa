@@ -15,7 +15,7 @@ MWF.xApplication.process.FormDesigner.Module.Foxit = MWF.FCFoxit = new Class({
 		this.cssPath = "../x_component_process_FormDesigner/Module/Foxit/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
-		this.moduleType = "element";
+		this.moduleType = "foxit";
 		this.moduleName = "foxit";
 
 		this.form = form;
