@@ -1,7 +1,9 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.RandomAccessFile;
 import java.net.ServerSocket;
@@ -48,7 +50,8 @@ public class General extends ConfigObject {
 					FileOutputStream.class.getName(), RandomAccessFile.class.getName(), Socket.class.getName(),
 					ServerSocket.class.getName(), ZipFile.class.getName(), ZipInputStream.class.getName(),
 					ZipOutputStream.class.getName(), ScriptEngine.class.getName(), ScriptEngineManager.class.getName(),
-					URL.class.getName(), URI.class.getName(), Class.class.getName(), Context.class.getName()));
+					URL.class.getName(), URI.class.getName(), Class.class.getName(), Context.class.getName(),
+					FileInputStream.class.getName(), FileReader.class.getName()));
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
