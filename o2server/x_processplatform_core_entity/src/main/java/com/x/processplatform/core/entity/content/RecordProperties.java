@@ -21,9 +21,6 @@ public class RecordProperties extends JsonProperties {
 	@FieldDescribe("record中记录的处理人身份所在组织排序值.")
 	private Integer unitOrderNumber = null;
 
-	@FieldDescribe("record中记录的处理人身份所在组织层级排序值.")
-	private String unitLevelOrderNumber = "";
-
 	@FieldDescribe("record中记录的处理人身份所在组织层级名.")
 	private String unitLevelName = "";
 
@@ -281,14 +278,6 @@ public class RecordProperties extends JsonProperties {
 
 	public void setUnitOrderNumber(Integer unitOrderNumber) {
 		this.unitOrderNumber = unitOrderNumber;
-	}
-
-	public String getUnitLevelOrderNumber() {
-		return unitLevelOrderNumber;
-	}
-
-	public void setUnitLevelOrderNumber(String unitLevelOrderNumber) {
-		this.unitLevelOrderNumber = unitLevelOrderNumber;
 	}
 
 	public String getUnitLevelName() {
