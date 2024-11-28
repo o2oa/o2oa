@@ -807,9 +807,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		firstDate.setDate(1);
 		// var day = firstDate.getDay();
 
-		var day = (7 + firstDate.getDay() - this.options.weekBegin) % 7
-
-		debugger;
+		var day = (7 + firstDate.getDay() - this.options.weekBegin) % 7;
 
 		var tmpDate = firstDate.clone();
 		for (var i=day-1; i>=0; i--){
