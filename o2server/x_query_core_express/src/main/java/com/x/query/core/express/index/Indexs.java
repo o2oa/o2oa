@@ -285,6 +285,7 @@ public class Indexs {
 		return new ArrayList<>();
 	}
 
+	// 只处理processPlatform_ 和 cms_
 	private static List<String> directoriesPath(final java.nio.file.Path path) throws IOException {
 		List<String> list = new ArrayList<>();
 		try (Stream<java.nio.file.Path> stream = Files.walk(path, 1)) {
@@ -295,7 +296,9 @@ public class Indexs {
 					LOGGER.error(e);
 				}
 				return false;
-			}).filter(Files::isDirectory).map(path::relativize).map(java.nio.file.Path::toString).forEach(list::add);
+			}).filter(Files::isDirectory).map(path::relativize).filter(o -> StringUtils
+					.startsWithAny(o.getFileName().toString(), PREFIX_FIELD_PROCESSPLATFORM, PREFIX_FIELD_CMS))
+					.map(java.nio.file.Path::toString).forEach(list::add);
 		}
 		return list;
 	}
