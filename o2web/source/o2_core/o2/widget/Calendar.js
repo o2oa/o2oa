@@ -22,6 +22,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"beforeCurrent": true,
 		"clearEnable": true,
 
+		"weekBegin": 0, //0表示周日，1表示周一
+
 		"range": false,
 		"rangeNodes": [],
 		"rangeRule": "asc",  //asc + ,  des -
@@ -803,7 +805,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		var firstDate = baseDate.clone();
 		firstDate.setDate(1);
-		var day = firstDate.getDay();
+		// var day = firstDate.getDay();
+
+		var day = (7 + firstDate.getDay() - this.options.weekBegin) % 7;
 
 		var tmpDate = firstDate.clone();
 		for (var i=day-1; i>=0; i--){
@@ -1597,8 +1601,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		//var days_abbr = Locale.get("Date").days_abbr;
 		var days_abbr = o2.LP.widget.days_abbr;
 		cells.each(function(item, idx){
-			item.set("text", days_abbr[idx]);
-		});
+			item.set("text", days_abbr[ (idx + this.options.weekBegin) % 7 ]);
+		}.bind(this));
 		return cells;
 	},
 	setTitleStyle: function(){

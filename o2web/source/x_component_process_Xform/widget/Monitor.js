@@ -280,20 +280,22 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         MWFRaphael.load(function(){
             this.paperInNode =  new Element("div", {"styles": this.css.paperInNode}).inject(this.paperNode);
             this.paper = Raphael(this.paperInNode, "98%", "99%");
-            if (layout.mobile){
-                var s = this.paper.canvas.getSize();
-                var x = s.x*this.mobileScale;
-                var y = s.y*this.mobileScale;
-                this.paper.canvas.set({
-                    "viewBox": "0 0 "+x+" "+y+"",
-                    "preserveAspectRatio": "xMinYMin meet"
-                });
-            }
+
             this.paper.container = this.paperNode;
 
             MWF.xDesktop.requireApp("process.ProcessDesigner", "Process", function(){
                 this.process = new MWF.APPPD.Process(this.paper, this.processData, this, {"style":"flat", "isView": true,
                     "onPostLoad": function(){
+                        if (layout.mobile){
+                            var s = this.paper.canvas.getSize();
+                            var x = s.x*this.mobileScale;
+                            var y = s.y*this.mobileScale;
+                            this.paper.canvas.set({
+                                "viewBox": "0 0 "+x+" "+y+"",
+                                "preserveAspectRatio": "xMinYMin meet"
+                            });
+                        }
+
                         this.loadWorkLog();
                         this.fireEvent("postLoad");
                     }.bind(this)
