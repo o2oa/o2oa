@@ -48,6 +48,7 @@ public class Indexs {
 
 	public static final String CATEGORY_PROCESSPLATFORM = "processPlatform";
 	public static final String CATEGORY_CMS = "cms";
+	public static final String CATEGORY_EXTRA = "extra";
 	public static final String CATEGORY_SEARCH = "search";
 
 	public static final String TYPE_WORKCOMPLETED = "workCompleted";

@@ -12,66 +12,90 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "com.x.query.core.express.jaxrs.search.ActionPostWi")
 public class ActionPostWi extends GsonPropertyObject {
 
-    private static final long serialVersionUID = 1360655000630283661L;
+	private static final long serialVersionUID = 1360655000630283661L;
 
-    @FieldDescribe("搜索内容.")
-    @Schema(description = "搜索内容.")
-    private String query;
+	@FieldDescribe("搜索内容.")
+	@Schema(description = "搜索内容.")
+	private String query;
 
-    @FieldDescribe("分页.")
-    @Schema(description = "分页.")
-    private Integer page;
+	@FieldDescribe("分页.")
+	@Schema(description = "分页.")
+	private Integer page;
 
-    @FieldDescribe("数量.")
-    @Schema(description = "数量.")
-    private Integer size;
+	@FieldDescribe("数量.")
+	@Schema(description = "数量.")
+	private Integer size;
 
-    @FieldDescribe("人员.")
-    @Schema(description = "人员.")
-    private String person;
+	@FieldDescribe("人员.")
+	@Schema(description = "人员.")
+	private String person;
 
-    @FieldDescribe("过滤条件.")
-    @Schema(description = "过滤条件.")
-    List<Filter> filterList = new ArrayList<>();
+	@FieldDescribe("过滤条件.")
+	@Schema(description = "过滤条件.")
+	private List<Filter> filterList = new ArrayList<>();
 
-    public String getQuery() {
-        return query;
-    }
+	@FieldDescribe("检索分类.")
+	@Schema(description = "检索分类.")
+	private String category = "";
 
-    public void setQuery(String query) {
-        this.query = query;
-    }
+	@FieldDescribe("检索仓库.")
+	@Schema(description = "检索仓库.")
+	private String key = "";
 
-    public Integer getPage() {
-        return page;
-    }
+	public String getCategory() {
+		return category;
+	}
 
-    public void setPage(Integer page) {
-        this.page = page;
-    }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    public Integer getSize() {
-        return size;
-    }
+	public String getKey() {
+		return key;
+	}
 
-    public void setSize(Integer size) {
-        this.size = size;
-    }
+	public void setKey(String key) {
+		this.key = key;
+	}
 
-    public String getPerson() {
-        return person;
-    }
+	public String getQuery() {
+		return query;
+	}
 
-    public void setPerson(String person) {
-        this.person = person;
-    }
+	public void setQuery(String query) {
+		this.query = query;
+	}
 
-    public List<Filter> getFilterList() {
-        return filterList;
-    }
+	public Integer getPage() {
+		return page;
+	}
 
-    public void setFilterList(List<Filter> filterList) {
-        this.filterList = filterList;
-    }
+	public void setPage(Integer page) {
+		this.page = page;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
+
+	public String getPerson() {
+		return person;
+	}
+
+	public void setPerson(String person) {
+		this.person = person;
+	}
+
+	public List<Filter> getFilterList() {
+		return filterList;
+	}
+
+	public void setFilterList(List<Filter> filterList) {
+		this.filterList = filterList;
+	}
 
 }

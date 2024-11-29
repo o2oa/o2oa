@@ -99,7 +99,7 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		return this.get(type, name);
 	}
 
-	private StorageMapping get(StorageType storageType, String name) {
+	public StorageMapping get(StorageType storageType, String name) {
 		StorageMapping storageMapping = null;
 		CopyOnWriteArrayList<StorageMapping> list = this.get(storageType);
 		if (null != list) {
