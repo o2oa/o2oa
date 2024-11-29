@@ -172,10 +172,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_username.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputUserIcon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "22px",
+      "height": "22px",
+      "position": "absolute",
+  	   "background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_username.png) no-repeat",
   },
   "inputMail" : {
 	"color" : "#666",

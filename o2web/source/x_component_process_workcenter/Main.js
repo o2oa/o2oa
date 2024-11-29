@@ -15,7 +15,16 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.lp = MWF.xApplication.process.workcenter.LP;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 	},
-	loadApplication: function(callback){
+	loadApplication: function (){
+		if( !o2.api ){
+			MWF.require("MWF.framework", function () {
+				this._loadApplication();
+			}.bind(this));
+		}else{
+			this._loadApplication();
+		}
+	},
+	_loadApplication: function(callback){
 		var url = this.path+this.options.style+"/view/view.html";
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.setLayout();
