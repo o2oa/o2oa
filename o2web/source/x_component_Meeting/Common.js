@@ -1693,6 +1693,10 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             if( !errorText )this.formTableArea.getElement("[item='subject']").scrollIntoView(false);
             errorText +=this.lp.meeting_input_subject_error;
         }
+        if (!this.data.hostPerson) {
+            if( !errorText )this.formTableArea.getElement("[item='hostPerson']").scrollIntoView(false);
+            errorText +=this.lp.meeting_input_hostPerson_error;
+        }
         if( this.data.mode === "online" ){
             if ( !this.app.isAutoCreateOnlineRoom() && !this.data.roomLink && !this.data.roomId ) {
                 if( !errorText )this.formTableArea.getElement("[item='roomLink']").scrollIntoView(false);

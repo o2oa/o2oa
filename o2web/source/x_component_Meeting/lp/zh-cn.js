@@ -131,6 +131,7 @@ MWF.xApplication.Meeting.LP = {
     "meeting_input_person_error": "邀请参会人员不能为空！",
     "meeting_input_date_error": "会议开始时间不能早于现在！",
     "meeting_input_time_error": "会议结束时间不能早于开始时间！",
+    "meeting_input_hostPerson_error": "主持人不能为空！",
 
 
     //"meeting_input_subject_error": "请填写完整会议标题！",
