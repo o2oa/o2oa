@@ -151,6 +151,36 @@ MWF.xApplication.process.Xform.Foxit = MWF.APPFoxit =  new Class({
         };
         this._setBusinessData(data);
     },
+    loadFoxitByAttId : function (attId){
+
+        var host = o2.Actions.getHost( "x_processplatform_assemble_surface" );
+        var fileUrl = o2.filterUrl(host + "/x_processplatform_assemble_surface/jaxrs/attachment/download/" + attId + "/stream");
+
+        var xtoken = layout.session.token;
+        fileUrl = fileUrl + "?"+o2.tokenName+"=" + xtoken;
+
+
+        //var callbackUrl = o2.filterUrl(host + "/x_processplatform_assemble_surface/jaxrs/attachment/update/"+attId+"/work/" + this.form.businessData.work.id);
+        //callbackUrl = callbackUrl + "?"+o2.tokenName+"=" + xtoken + "&fileName=文件正文.ofd";
+
+
+        if(this.iframe){
+            this.iframe.set("src",this.json.api + "?docuri=" + encodeURIComponent(fileUrl) );
+        }else {
+            this.iframe = new Element("iframe").inject(this.iframeNode);
+            this.iframe.set("src",this.json.api + "?docuri=" + encodeURIComponent(fileUrl));
+            this.iframe.set("scrolling","no");
+            this.iframe.set("frameborder",0);
+            this.iframe.setStyles({
+                "height" : "100%",
+                "width" : "100%"
+            });
+        }
+        if(this.emptyNode) {
+            this.emptyNode.hide();
+        }
+        this.fireEvent("afterOpen");
+    },
     loadFoxit: function(){
 
         this.iframeNode = new Element("div").inject(this.node);

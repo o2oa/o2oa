@@ -2907,7 +2907,6 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             return;
         }
         var srv = layout.serviceAddressList["x_libreoffice_assemble_control"];
-        var protocol = window.location.protocol;
         var module;
         if(this.att.data.activity){
             module = "processPlatform";
@@ -2916,10 +2915,15 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             module = "cms";
         }
 
-        var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
+        var defaultPort = layout.config.app_protocol === 'https' ? "443" : "80";
         var appPort = srv.port || window.location.port;
-        var url = protocol + "//" + (srv.host || window.location.hostname) + ":"  + ((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort) +  srv.context + "/jaxrs/office/doc/to/pdf/"+ module +"/" + this.att.data.id;
-        window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
+        var protocol = layout.config.app_protocol || window.location.protocol;
+        var hostname = srv.host || window.location.hostname;
+        var context = srv.context || '';
+
+        var url = protocol + "//" + hostname + (appPort && appPort.toString() !== defaultPort ? ":" + appPort : "") + context + "/jaxrs/office/doc/to/pdf/" + module + "/" + this.att.data.id;
+
+        window.open("../o2_lib/pdfjs/web/viewer.html?file=" + encodeURIComponent(url));
     },
     previewOfd : function(){
         this.app.getAttachmentUrl(this.att,  function (url) {
