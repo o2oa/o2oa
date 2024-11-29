@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.config;
 
+import com.x.base.core.project.config.Token;
+import com.x.base.core.project.gson.XGsonBuilder;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -30,6 +33,7 @@ import com.x.base.core.project.tools.StringTools;
 public class ActionOpen extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOpen.class);
 	private static final String NODE_CONFIG = "node";
+	private static final String TOKEN_CONFIG = "token.json";
 
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -60,6 +64,15 @@ public class ActionOpen extends BaseAction {
 			}
 			wo.setFileContent(gson.toJson(nodeInfoList));
 			wo.setSample(false);
+		}else if(TOKEN_CONFIG.equalsIgnoreCase(fileName)){
+			Token token = Config.token();
+			Token nToken = new Token();
+			token.copyTo(nToken);
+			if(BooleanUtils.isFalse(Config.general().getConfigApiEnable())) {
+				nToken.getSsos().forEach(s -> s.setKey("***"));
+				nToken.getOauthClients().forEach(o -> o.setClientSecret("***"));
+			}
+			wo.setFileContent(XGsonBuilder.toJson(nToken));
 		}else {
 			File file = new File(Config.base(), "config/" + fileName);
 			wo.setSample(false);
