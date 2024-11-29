@@ -591,7 +591,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		this.deleteElements.each(function(app){
 			applicationList.push(app.data.name);
 		});
-		var confirmStr = this.lp.application.deleteElementsConfirm+" ("+applicationList.join("、")+") ";
+		var confirmStr = this.lp.application.deleteElementsConfirm+" ("+o2.txt(applicationList.join("、"))+") ";
 		// var check = "<br/><br/><input style='display:none' type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllConfirm;
         var check = "<br/><br/><input style='display:none' type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllInfo;
 		confirmStr += check;
