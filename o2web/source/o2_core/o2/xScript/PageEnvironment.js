@@ -812,6 +812,57 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 //     return v;
                 // }
             },
+
+            listSupUnitWithLevel: function(name, level, async){
+                var v;
+                var supUnitList = this.listSupUnit( name, true, !!async);
+                var unitList = this.getUnit( name, false, !!async );
+
+                var cb = function(sups, units){
+                    v = [].concat(
+                        sups,
+                        typeOf( units ) === "object" ? [units] : units
+                    ).filter(function (u){
+                        return u.level === level;
+                    });
+                    if (async && o2.typeOf(async)==="function") return async(v);
+                    return v;
+                };
+
+                if( typeof supUnitList.then === 'function' ){
+                    return Promise.all([supUnitList, unitList]).then(function( result){
+                        return cb(result[0], result[1]);
+                    });
+                }else{
+                    return cb(supUnitList, unitList);
+                }
+            },
+
+            listSupUnitWithType: function(name, type, async){
+                var v;
+                var supUnitList = this.listSupUnit( name, true, !!async);
+                var unitList = this.getUnit( name, false, !!async );
+
+                var cb = function(sups, units){
+                    v = [].concat(
+                        sups,
+                        typeOf( units ) === "object" ? [units] : units
+                    ).filter(function (u){
+                        return (u.typeList || []).contains( type );
+                    });
+                    if (async && o2.typeOf(async)==="function") return async(v);
+                    return v;
+                };
+
+                if( typeof supUnitList.then === 'function' ){
+                    return Promise.all([supUnitList, unitList]).then(function( result){
+                        return cb(result[0], result[1]);
+                    });
+                }else{
+                    return cb(supUnitList, unitList);
+                }
+            },
+
             //根据个人身份获取组织
             //flag 数字    表示获取第几层的组织
             //     字符串  表示获取指定类型的组织
