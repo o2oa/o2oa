@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.graalvm.polyglot.Source;
@@ -31,6 +33,9 @@ public class CacheRedisImpl implements Cache {
 
 	private CacheRedisNotifyThread notifyThread;
 
+	private static final ConcurrentSkipListSet<String> TRUST_CLASS = new ConcurrentSkipListSet<>();
+
+
 	public CacheRedisImpl(String application) {
 		this.notifyQueue = new LinkedBlockingQueue<>();
 		this.application = application;
@@ -47,6 +52,7 @@ public class CacheRedisImpl implements Cache {
 			try (Jedis jedis = RedisTools.getJedis();
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+				TRUST_CLASS.add(o.getClass().getName());
 				oos.writeObject(o);
 				byte[] bytes = baos.toByteArray();
 				jedis.set(concrete(category, key).getBytes(StandardCharsets.UTF_8), bytes, setParams);
@@ -63,7 +69,15 @@ public class CacheRedisImpl implements Cache {
 			if ((null != bytes) && bytes.length > 0) {
 				try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 						ObjectInputStream ois = new ObjectInputStream(bais)) {
-					return Optional.ofNullable(ois.readObject());
+					Object o = ois.readObject();
+					if(o != null) {
+						if (TRUST_CLASS.contains(o.getClass().getName())) {
+							return Optional.of(o);
+						} else {
+							LOGGER.warn("class:{} not in trust class list.",
+									o.getClass().getName());
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
