@@ -559,25 +559,37 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
         html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
             "<tr item='credentialTr'>" +
-            "   <td styles='formTableValueTop20' item='credential'>" +
+            "   <td styles='formTableValueTop20'>" +
             "       <div style='position: relative;'><div item='credential'></div><div class='inputUserIcon'></div></div>" +
             "   </td>" +
             "</tr>" +
-            "<tr item='passwordTr'><td styles='formTableValueTop20' item='password'></td></tr>";
+            "<tr item='passwordTr'>" +
+            "   <td styles='formTableValueTop20'>" +
+            "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
+            "   </td>" +
+            "</tr>";
         if (this.captchaLogin) {
             html += "<tr item='captchaTr'><td styles='formTableValueTop20'>" +
-                "<div item='captchaAnswer' style='float:left;'></div><div item='captchaPic' style='float:left;padding-left:5px'></div><div item='changeCaptchaAction' style='float:left;'></div>" +
+                "<div style='float:left;'>" +
+                "       <div style='position: relative;'><div item='captchaAnswer'></div><div class='inputVerificationCodeIcon'></div></div>" +
+                "</div>" +
+                "<div item='captchaPic' style='float:left;padding-left:5px'></div>" +
+                "<div item='changeCaptchaAction' style='float:left;'></div>" +
                 "</td></tr>";
         }
         if (this.codeLogin) {
             html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop20'>" +
-                "   <div item='codeAnswer' style='float:left;'></div>" +
+                "   <div style='float:left;'>" +
+                "       <div style='position: relative;'><div item='codeAnswer'></div><div class='inputVerificationCode2Icon'></div></div>" +
+                "   </div>" +
                 "   <div item='verificationAction' style='float:left;'></div>" +
                 "   <div item='resendVerificationAction' style='float:left;display:none;'></div>" +
                 "</td></tr>";
         }else if(this.twoFactorLogin){
             html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop60'>" +
-                "   <div item='codeAnswerWithTwoFactorlogin' style='float:left;'></div>" +
+                "   <div style='float:left;'>"+
+                "       <div style='position: relative;'><div item='codeAnswerWithTwoFactorlogin'></div><div class='inputVerificationCode3Icon'></div></div>" +
+                "   </div>" +
                 "</td></tr>";
             html += "<tr item='twoFactorloginStep2Tr' style='display: none'><td styles='formTableValueTop20' item='twoFactorloginStep2Action'></td></tr>";
         }
@@ -1403,30 +1415,52 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableTitle' lable='name' width='200'></td>" +
-            "   <td styles='formTableValue' item='name' width='350'></td>" +
+            "   <td styles='formTableValue' width='350'>" +
+            "       <div style='position: relative;'><div item='name'></div><div class='inputUserIcon'></div></div>" +
+            "   </td>" +
             "   <td styles='formTableValue' item='nameTip'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='password'></td>" +
-            "   <td styles='formTableValue' item='password'></td>" +
+            "   <td styles='formTableValue'>" +
+            "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
+            "   </td>" +
             "   <td styles='formTableValue'><div item='passwordStrengthArea'></div></div><div item='passwordTip'></div></td></tr>" +
             "<tr><td styles='formTableTitle' lable='confirmPassword'></td>" +
-            "   <td styles='formTableValue' item='confirmPassword'></td>" +
+            "   <td styles='formTableValue'>" +
+            "       <div style='position: relative;'><div item='confirmPassword'></div><div class='inputComfirmPasswordIcon'></div></div>" +
+            "   </td>" +
             "   <td styles='formTableValue' item='confirmPasswordTip'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='genderType'></td>" +
             "   <td styles='formTableValue' item='genderType'></td>" +
             "   <td styles='formTableValue' item='genderTypeTip'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='mail'></td>" +
-            "   <td styles='formTableValue' item='mail'></td>" +
+            "   <td styles='formTableValue'>" +
+            "       <div style='position: relative;'><div item='mail'></div><div class='inputMailIcon'></div></div>" +
+            "   </td>" +
             "   <td styles='formTableValue' item='mailTip'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='mobile'></td>" +
-            "   <td styles='formTableValue' item='mobile'></td>" +
+            "   <td styles='formTableValue'>" +
+            "       <div style='position: relative;'><div item='mobile'></div><div class='inputMobileIcon'></div></div>" +
+            "   </td>" +
             "   <td styles='formTableValue' item='mobileTip'></td></tr>";
         if (signUpMode === "code") {
             html += "<tr><td styles='formTableTitle' lable='codeAnswer'></td>" +
-                "   <td styles='formTableValue'><div item='codeAnswer' style='float:left;'></div><div item='verificationAction' style='float:left;'></div><div item='resendVerificationAction' style='float:left;display:none;'></div></td>" +
+                "   <td styles='formTableValue'>" +
+                "       <div style='float:left;'>" +
+                "           <div style='position: relative;'><div item='codeAnswer'></div><div class='inputVerificationCode2Icon'></div></div>" +
+                "       </div>" +
+                "       <div item='verificationAction' style='float:left;'></div>" +
+                "       <div item='resendVerificationAction' style='float:left;display:none;'></div>" +
+                "   </td>" +
                 "   <td styles='formTableValue' item='verificationCodeTip'></td></tr>";
         } else {
             html += "<tr><td styles='formTableTitle' lable='captchaAnswer'></td>" +
-                "   <td styles='formTableValue'><div item='captchaAnswer' style='float:left;'></div><div item='captchaPic' style='float:left;'></div><div item='changeCaptchaAction' style='float:left;'></div></td>" +
+                "   <td styles='formTableValue'>" +
+                "       <div style='float:left;'>" +
+                "           <div style='position: relative;'><div item='captchaAnswer'></div><div class='inputVerificationCodeIcon'></div></div>" +
+                "       </div>" +
+                "       <div item='captchaPic' style='float:left;'></div>" +
+                "       <div item='changeCaptchaAction' style='float:left;'></div>" +
+                "   </td>" +
                 "   <td styles='formTableValue' item='captchaAnswerTip'></td></tr>";
         }
         html += "<tr><td styles='formTableTitle'></td>" +
@@ -1940,10 +1974,15 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
     loadStepForm_1: function () {
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableTitle' lable='name' width='80'></td>" +
-            "   <td styles='formTableValue' item='name' width='350'></td></tr>" +
+            "   <td styles='formTableValue' width='350'>" +
+            "       <div style='position: relative;'><div item='name'></div><div class='inputUserIcon'></div></div>" +
+            "   </td>" +
+            "</tr>" +
             "<tr><td styles='formTableTitle' lable='codeAnswer'></td>" +
             "   <td styles='formTableValue'>" +
-            "       <div item='codeAnswer' style='float:left;'></div>" +
+            "       <div style='float:left;'>" +
+            "           <div style='position: relative;'><div item='codeAnswer'></div><div class='inputVerificationCode2Icon'></div></div>" +
+            "       </div>" +
             "       <div item='verificationAction' style='float:left;'></div>" +
             "       <div item='resendVerificationAction' style='float:left;display:none;'></div></td>" +
             "   </tr>" +
@@ -2008,10 +2047,14 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
 
         html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableTitle' lable='password' width='80'></td>" +
-            "   <td styles='formTableValue' item='password' width='350'></td>" +
+            "   <td styles='formTableValue' width='350'>" +
+            "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
+            "   </td>" +
             "   <td styles='formTableValue'><div item='passwordStrengthArea'></div></td></tr>" +
             "<tr><td styles='formTableTitle' lable='confirmPassword'></td>" +
-            "   <td styles='formTableValue' item='confirmPassword'></td>" +
+            "   <td styles='formTableValue'>" +
+            "       <div style='position: relative;'><div item='confirmPassword'></div><div class='inputComfirmPasswordIcon'></div></div>" +
+            "   </td>" +
             "   <td styles='formTableValue'></td></tr>" +
             "<tr><td styles='formTableTitle'></td>" +
             "   <td styles='formTableValue' item='nextStep'></td>" +
@@ -2353,10 +2396,16 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
         this.actions = MWF.Actions.get("x_organization_assemble_personal");
 
         var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
-            "<tr><td styles='formTableValueTop20' item='password'></td></tr>" +
-            "<tr><td styles='formTableValueTop20' item='newPassword'></td>" +
+            "<tr><td styles='formTableValueTop20'>" +
+            "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
+            "</td></tr>" +
+            "<tr><td styles='formTableValueTop20'>" +
+            "       <div style='position: relative;'><div item='newPassword'></div><div class='inputPasswordIcon'></div></div>" +
+            "</td>" +
             "<tr><td styles='formTableValue'><div item='passwordTip'></div></td></tr>" +
-            "<tr><td styles='formTableValueTop20' item='confirmPassword'></td>" +
+            "<tr><td styles='formTableValueTop20'>" +
+            "       <div style='position: relative;'><div item='confirmPassword'></div><div class='inputComfirmPasswordIcon'></div></div>" +
+            "</td></tr>" +
             "<tr><td styles='formTableValueTop20' item='submitAction'></td></tr>" +
             "<tr><td><div item='forgetPassword'></div><div item='gotoLoginAction'></div></td></tr>"+
             "<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
