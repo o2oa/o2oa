@@ -59,7 +59,7 @@ public class GraalvmScriptingFactory {
 
 	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();
 	private static Source commonScriptSource;
-	private static Set<String> scriptingBlockedClasses;
+	private static Set<String> scriptingAllowedClasses;
 
 	private static Type stringsType = new TypeToken<ArrayList<String>>() {
 	}.getType();
@@ -68,7 +68,7 @@ public class GraalvmScriptingFactory {
 		LOCK.lock();
 		try {
 			commonScriptSource = null;
-			scriptingBlockedClasses = null;
+			scriptingAllowedClasses = null;
 		} catch (Exception e) {
 			LOGGER.error(e);
 		} finally {
@@ -140,7 +140,9 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static boolean allowClass(String className) {
-		return !getScriptingBlockedClasses().contains(className);
+		return className.startsWith("com.x.base")
+				|| className.startsWith("com.x.organization")
+				|| getScriptingAllowedClasses().contains(className);
 	}
 
 	public static Optional<Boolean> evalAsBoolean(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
@@ -226,19 +228,19 @@ public class GraalvmScriptingFactory {
 		return new ArrayList<>();
 	}
 
-	private static Set<String> getScriptingBlockedClasses() {
-		if (null == scriptingBlockedClasses) {
-			scriptingBlockedClasses = new HashSet<>();
+	private static Set<String> getScriptingAllowedClasses() {
+		if (null == scriptingAllowedClasses) {
+			scriptingAllowedClasses = new HashSet<>();
 			LOCK.lock();
 			try {
-				scriptingBlockedClasses.addAll(Config.general().getScriptingBlockedClasses());
+				scriptingAllowedClasses.addAll(Config.general().getScriptingAllowedClasses());
 			} catch (Exception e) {
 				LOGGER.error(e);
 			} finally {
 				LOCK.unlock();
 			}
 		}
-		return scriptingBlockedClasses;
+		return scriptingAllowedClasses;
 	}
 
 	private static Source getcommonScriptSource() {
@@ -335,10 +337,10 @@ public class GraalvmScriptingFactory {
 
 		/**
 		 * 对jsonElement抽取可能是身份,个人,组织,群组的文本值,不进行递归的抽取,仅抽取地一层
-		 * 
+		 *
 		 * @param jsonElement
 		 * @return
-		 * 
+		 *
 		 */
 		public static List<String> stringOrDistinguishedNameAsList(JsonElement jsonElement) {
 			List<String> list = new ArrayList<>();
