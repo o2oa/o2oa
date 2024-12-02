@@ -336,7 +336,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             Promise.resolve(this.json.options || this.moduleSelectAG).then(function(options){
                 var values = (o2.typeOf(data) !== "array") ? [data] : data;
                 var text = this.__getOptionsText(options, values);
-                this.node.set("text", text.join(","));
+                this.node.set("text", text.join(",") || values.join(','));
 
                 if( !this.eventLoaded ){
                     this._loadDomEvents();
