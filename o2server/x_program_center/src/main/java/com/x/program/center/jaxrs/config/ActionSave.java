@@ -37,7 +37,7 @@ import com.x.message.core.entity.Message;
  */
 public class ActionSave extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSave.class);
-	private static final String messageConfig = "messages.json";
+	private static final String MESSAGE_CONFIG = "messages.json";
 	private static final String FILE_NAME_TYPE = ".json";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
@@ -69,7 +69,7 @@ public class ActionSave extends BaseAction {
 			throw new ExceptionJsonError();
 		}
 
-		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable()) && !MESSAGE_CONFIG.equals(fileName)) {
 			throw new ExceptionModifyConfig();
 		}
 		LOGGER.info("{}修改配置文件：{}", effectivePerson.getDistinguishedName(), fileName);
@@ -87,7 +87,7 @@ public class ActionSave extends BaseAction {
 			LOGGER.error(e);
 		}
 		this.configFlush(effectivePerson);
-		if(messageConfig.equals(fileName)){
+		if(MESSAGE_CONFIG.equals(fileName)){
 			CacheManager.notify(Message.class);
 		}
 		wo.setTime(df.format(new Date()));
