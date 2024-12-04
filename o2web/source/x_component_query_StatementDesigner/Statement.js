@@ -975,6 +975,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 return "PP_C_WORKCOMPLETED";
             case "com.x.processplatform.core.entity.content.Review":
                 return "PP_C_REVIEW";
+            case "com.x.processplatform.core.entity.content.Record":
+                return "PP_C_Record";
             case "com.x.cms.core.entity.Document":
                 return "CMS_DOCUMENT";
             case "com.x.cms.core.entity.Review":

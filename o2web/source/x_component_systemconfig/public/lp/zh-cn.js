@@ -396,6 +396,9 @@ o2.xApplication.systemconfig.LP = {
         "tokenCookieHttpOnly": "启用Cookie HttpOnly",
         "tokenCookieHttpOnlyInfo": "保存token的cookie是否启用httponly",
 
+        "xadminEnable": "是否启用超级管理员（xadmin）账户",
+        "xadminEnableInfo": "如需禁用请确保已在组织管理的管理员角色中配置了用户",
+
         "tokenCookieSecure": "启用Cookie Secure",
         "tokenCookieSecureInfo": "保存token的cookie是否启用secure，表示仅在https协议才会传输此cookie",
 
