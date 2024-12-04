@@ -8,7 +8,6 @@ import com.x.base.core.project.annotation.ModuleType;
 @Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "数据查询设计", packageName = "com.x.query.assemble.designer", containerEntities = {
         "com.x.query.core.entity.Item", "com.x.query.core.entity.Query",
         "com.x.query.core.entity.View", "com.x.query.core.entity.Stat",
-//		"com.x.query.core.entity.Reveal",
         "com.x.query.core.entity.neural.Entry", "com.x.query.core.entity.neural.InText",
         "com.x.query.core.entity.neural.OutText", "com.x.query.core.entity.neural.InValue",
         "com.x.query.core.entity.neural.OutValue", "com.x.query.core.entity.neural.Model",
@@ -18,6 +17,7 @@ import com.x.base.core.project.annotation.ModuleType;
         "com.x.processplatform.core.entity.content.Task", "com.x.processplatform.core.entity.content.TaskCompleted",
         "com.x.processplatform.core.entity.content.Read", "com.x.processplatform.core.entity.content.ReadCompleted",
         "com.x.processplatform.core.entity.element.Process", "com.x.processplatform.core.entity.content.Attachment",
+        "com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.content.Record",
         "com.x.cms.core.entity.Document", "com.x.cms.core.entity.AppInfo", "com.x.cms.core.entity.CategoryInfo",
         "com.x.cms.core.entity.DocumentViewRecord", "com.x.cms.core.entity.DocumentCommentInfo",
         "com.x.cms.core.entity.Review", "com.x.organization.core.entity.Person", "com.x.organization.core.entity.Unit",
