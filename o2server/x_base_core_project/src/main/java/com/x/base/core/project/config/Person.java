@@ -76,6 +76,7 @@ public class Person extends ConfigObject {
 		this.tokenName = DEFAULT_TOKENNAME;
 		this.enableSafeLogout = DEFAULT_ENABLESAFELOGOUT;
 		this.encryptType = DEFAULT_ENCRYPTTYPE;
+		this.xadminEnable = true;
 	}
 
 	public static Person defaultInstance() {
@@ -155,6 +156,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("加密方式,支持国密:SM4,AES")
 	private String encryptType;
+
+	@FieldDescribe("是否启用超级管理员（xadmin）账户.")
+	private Boolean xadminEnable;
 
 	public String getEncryptType() {
 		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
@@ -370,5 +374,13 @@ public class Person extends ConfigObject {
 
 	public void setTwoFactorLogin(Boolean twoFactorLogin) {
 		this.twoFactorLogin = twoFactorLogin;
+	}
+
+	public Boolean getXadminEnable() {
+		return BooleanUtils.isNotFalse(xadminEnable);
+	}
+
+	public void setXadminEnable(Boolean xadminEnable) {
+		this.xadminEnable = xadminEnable;
 	}
 }

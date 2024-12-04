@@ -201,10 +201,11 @@ public class Token extends ConfigObject {
 	public boolean isInitialManager(String name) throws Exception {
 		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return Config.ternaryManagement().isTernaryManagement(name);
-		} else {
+		} else if(BooleanUtils.isTrue(Config.person().getXadminEnable())){
 			return StringUtils.equals(this.getInitialManager(), name)
 					|| StringUtils.equals(this.getInitialManagerDistinguishedName(), name);
 		}
+		return false;
 	}
 
 	public boolean verifyPassword(String name, String password) throws Exception {
