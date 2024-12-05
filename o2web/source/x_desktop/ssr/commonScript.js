@@ -1772,7 +1772,9 @@ const include = function( optionsOrName , callback ){
         service: serviceActions,
     }
 
-    const json = (type==='service') ? actionsMap[type].getScript(name) : actionsMap[type].getScript(name, application, {"importedList":includedScripts[application]});
+    const arg1 = (type==='portal') ? application : name;
+    const arg2 = (type==='portal') ? name : application;
+    const json = (type==='service') ? actionsMap[type].getScript(name) : actionsMap[type].getScript(arg1, arg2, {"importedList":includedScripts[application]});
     includedScripts[application] = includedScripts[application].concat(json.data.importedList);
     includedScripts[application].push(name);
     if (json.data && json.data.text){
