@@ -1094,7 +1094,7 @@ MWF.xApplication.Profile.Main = new Class({
                 this.passwordInputNode.set("value", "");
                 this.morePasswordInputNode.set("value", "");
                 this.notice(this.lp.changePasswordOk, "success");
-            }.bind(this));
+            }.bind(this), null, false);
 
             if (layout.config.mail){
                 var url = "http://"+layout.config.mail+"//names.nsf?changepassword&password="+encodeURIComponent(oldPassword)+"&passwordnew="+encodeURIComponent(password)+"&passwordconfirm="+encodeURIComponent(password);
