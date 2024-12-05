@@ -171,7 +171,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		//	}
 		//);
     //},
-	
+
 	loadModule: function(json, dom, parent){
 		var module, className;
 		if( !json ){
@@ -207,7 +207,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		}
 	},
 
-	
+
 	createModule: function(className, e){
 		//var classPre = MWF.CMSFD.RedesignModules.indexOf( className.toLowerCase() ) != -1 ? "CMSFC" : "FC";
 		var classPre = "CMSFC";

@@ -39,25 +39,25 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
     },
 	initialize: function(designer, container, options){
         this.initializeBase(options);
-		
+
 		this.container = null;
 		this.page = this;
         this.form = this;
         this.moduleType = "page";
-		
+
 		this.moduleList = [];
 		this.moduleNodeList = [];
-		
+
 		this.moduleContainerNodeList = [];
 		this.moduleElementNodeList = [];
 		this.moduleComponentNodeList = [];
 
 	//	this.moduleContainerList = [];
 		this.dataTemplate = {};
-		
+
 		this.designer = designer;
 		this.container = container;
-		
+
 		this.selectedModules = [];
 	},
 	reload: function(data){
@@ -110,7 +110,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		if (this.isNewPage) this.checkUUID();
 		if(this.designer.application) this.data.json.applicationName = this.designer.application.name;
 		if(this.designer.application) this.data.json.application = this.designer.application.id;
-		
+
 		this.container.set("html", this.html);
         this.loadStylesList(function(){
             var oldStyleValue = "";
@@ -281,15 +281,25 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 
 		this.loadDomTree();
 	},
-	
+
 	loadDomTree: function(){
 		MWF.require("MWF.widget.Tree", function(){
 			this.domTree = new MWF.widget.Tree(this.designer.propertyDomArea, {"style": "domtree"});
 			this.domTree.load();
-			
+
 			this.createPageTreeNode();
 			this.parseModules(this, this.node);
 		}.bind(this));
+	},
+	hideDomTree: function (){
+		if( this.domTree && this.domTree.node ){
+			this.domTree.node.hide();
+		}
+	},
+	showDomTree: function (){
+		if( this.domTree && this.domTree.node ){
+			this.domTree.node.show();
+		}
 	},
 	createPageTreeNode: function(){
 		var text = "<"+this.json.type+"> "+this.json.name+" ["+this.options.mode+"] ";
@@ -361,7 +371,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			module = this.loadModule(obj.json, obj.dom, parent);
 		}.bind(this));
 	},
-	
+
 	getDomjson: function(dom){
 		var mwfType = dom.get("MWFtype");
 
@@ -379,7 +389,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 				}
 		}
 	},
-	
+
 	loadModule: function(json, dom, parent){
 		var module;
         if (json) {
@@ -397,7 +407,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
         }
 		return module;
 	},
-	
+
 	setNodeEvents: function(){
 		this.node.addEvent("click", function(e){
 			this.selected();
@@ -420,7 +430,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		}.bind(this), async);
 		return module;
 	},
-	
+
 	createModule: function(className, e){
 		this.getTemplateData(className, function(data){
 			var moduleData = Object.clone(data);
@@ -456,11 +466,11 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		this.unSelectedMulti();
 
 		this.currentSelectedModule = this;
-		
+
 		if (this.treeNode){
 			this.treeNode.selectNode();
 		}
-		
+
 		this.showProperty();
     //    this.isFocus = true;
 	},
@@ -471,7 +481,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		if (this.multimoduleActionsArea) this.multimoduleActionsArea.setStyle("display", "none");
 	},
 	unSelectAll: function(){
-		
+
 	},
 	_beginSelectMulti: function(){
 		if (this.currentSelectedModule) this.currentSelectedModule.unSelected();
@@ -495,7 +505,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 				"padding": "1px",
 				"padding-right": "0px",
 				"border": "1px solid #AAA",
-				"box-shadow": "0px 2px 5px #999", 
+				"box-shadow": "0px 2px 5px #999",
 				"z-index": 10001
 			}
 		}).inject(this.page.container, "after");
@@ -511,7 +521,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			this.multimoduleActionsArea.setStyle("display", "block");
 		}
 	},
-	
+
 	_getFirstMultiSelectedModule: function(){
 		var firstModule = null;
 		this.selectedModules.each(function(module){
@@ -530,8 +540,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		});
 		return firstModule;
 	},
-	
-	
+
+
 	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
@@ -541,7 +551,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 					if (callback) callback();
 				}.bind(this)
 			});
-			this.property.load();	
+			this.property.load();
 		}else{
 			this.property.show();
 			if (callback) callback();
@@ -550,12 +560,12 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
     hideProperty: function(){
         if (this.property) this.property.hide();
     },
-	
+
 	unSelected: function(){
 		this.currentSelectedModule = null;
         this.hideProperty();
 	},
-	
+
 	_dragIn: function(module){
 		if (!this.Component) module.inContainer = this;
 		module.parentContainer = this;
@@ -926,7 +936,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		this.node.setStyles(this.css.pageNode);
 		var y = this.container.getSize().y-2;
 		this.node.setStyle("min-height", ""+y+"px");
-		
+
 		if (this.initialStyles) this.node.setStyles(this.initialStyles);
 		this.node.setStyle("border", border);
 
@@ -1204,5 +1214,5 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			//}.bind(this), null, false);
 		}.bind(this), null, false);
 	}
-	
+
 });
