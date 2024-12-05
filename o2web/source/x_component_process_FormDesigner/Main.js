@@ -455,6 +455,10 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
         if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.pcForm;
+        this.pcForm.showDomTree();
+        ( this.pcForm.currentSelectedModule || this.pcForm ).selected();
+
+        if( this.mobileForm )this.mobileForm.hideDomTree();
 
         if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){
             this.loadAllScript();
@@ -493,7 +497,11 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 this.formMobileData = Object.clone(this.formData);
             }
             this.mobileForm.load(this.formMobileData);
+        }else{
+            this.mobileForm.showDomTree();
+            ( this.mobileForm.currentSelectedModule || this.mobileForm ).selected();
         }
+        if( this.pcForm )this.pcForm.hideDomTree();
 
         if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.mobileForm;
