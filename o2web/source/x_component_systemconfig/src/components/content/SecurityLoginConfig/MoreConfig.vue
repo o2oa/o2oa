@@ -73,6 +73,16 @@
       </el-switch>
     </div>
 
+    <div class="item_title">{{lp._loginConfig.xadminEnable}}</div>
+    <div class="item_info">{{lp._loginConfig.xadminEnableInfo}}</div>
+    <div class="item_info">
+      <el-switch
+          @change="saveConfig('person', 'xadminEnable', xadminEnable)"
+          v-model="xadminEnable"
+          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable">
+      </el-switch>
+    </div>
+
     <div class="item_title">{{lp._loginConfig.tokenCookieHttpOnly}}</div>
     <div class="item_info">{{lp._loginConfig.tokenCookieHttpOnlyInfo}}</div>
     <div class="item_info">
@@ -109,6 +119,7 @@ const appTokenExpiredMinutes = ref(4320);
 const tokenName = ref('x-token');
 const enableSafeLogout = ref(false);
 const superPermission = ref(true);
+const xadminEnable = ref(true);
 const tokenCookieHttpOnly = ref(false);
 const tokenCookieSecure = ref(false);
 
@@ -125,6 +136,7 @@ const load = async () => {
   if (data.tokenName) tokenName.value = data.tokenName;
   enableSafeLogout.value = !!data.enableSafeLogout;
   superPermission.value = data.superPermission!==false;
+  xadminEnable.value = data.xadminEnable!==false;
   tokenCookieHttpOnly.value = data.tokenCookieHttpOnly===true;
   tokenCookieSecure.value = data.tokenCookieSecure===true;
 }

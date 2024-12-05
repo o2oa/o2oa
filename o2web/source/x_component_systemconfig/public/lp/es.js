@@ -336,6 +336,8 @@ MWF.xApplication.systemconfig.LP={
 		"tokenNameInfo": "El nombre predeterminado del token es x-token. Puede modificar el nombre del token aquí para evitar conflictos de cookies en el mismo dominio. Esto es especialmente útil cuando se implementan varias instancias de O2OA en el mismo dominio. (Se requiere reiniciar el servidor)",
 		"tokenCookieHttpOnly": "Habilitar httponly",
 		"tokenCookieHttpOnlyInfo": "Si la cookie que guarda el token está habilitada para httponly",
+		"xadminEnable": "Si se debe habilitar la cuenta de superadministrador (xadmin)",
+		"xadminEnableInfo": "Si necesita deshabilitarlo, asegúrese de que el usuario haya sido configurado en el rol de administrador de la gestión de la organización",
 		"tokenCookieSecure": "Habilitar cookies seguras",
 		"tokenCookieSecureInfo": "Si está habilitado seguro para la cookie que guarda el token, indicando que esta cookie solo se transmitirá bajo el protocolo https",
 		"enableSafeLogout": "Habilitar el cierre de sesión seguro",
