@@ -56,7 +56,7 @@ public class MessageAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("发送的消息内容") JsonElement jsonElement) {
 		ActionResult<ActionSendMessage.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionSendMessage().execute(request, this.effectivePerson(request), jsonElement);
+			result = new ActionSendMessage().execute(jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionSendMessage(e, "发送消息时发生异常！");

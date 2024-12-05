@@ -17,7 +17,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
@@ -25,20 +24,16 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.jpush.assemble.control.Business;
 import com.x.jpush.assemble.control.JpushConst;
 import com.x.jpush.core.entity.PushDevice;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionSendMessage extends StandardJaxrsAction {
 
     private static Logger logger = LoggerFactory.getLogger(ActionSendMessage.class);
 
-    protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,
-                                       JsonElement jsonElement) throws Exception {
+    protected ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
         logger.info("execute action 'ActionSendMessage' .");
         ActionResult<Wo> result = new ActionResult<>();
         Wo wraps = new Wo();
@@ -54,7 +49,7 @@ public class ActionSendMessage extends StandardJaxrsAction {
             logger.info("极光推送通道启用中，消息发送到极光推送，人员：{}", wi.getPerson());
             List<PushDevice> pushDeviceList = business.pushDeviceFactory().listJpushDevice(wi.getPerson());
             if (pushDeviceList != null && !pushDeviceList.isEmpty()) {
-                send2Jpush(pushDeviceList, wi.getMessage(), business.pushDeviceFactory().jpushClient());
+                send2Jpush(pushDeviceList, wi, business.pushDeviceFactory().jpushClient());
             } else {
                 logger.info("极光推送设备为空，{}", wi.getPerson());
             }
@@ -72,31 +67,49 @@ public class ActionSendMessage extends StandardJaxrsAction {
      * 极光推送消息
      *
      * @param pushDeviceList
-     * @param message
+     * @param wi
      * @param client
      * @throws Exception
      */
-    private void send2Jpush(List<PushDevice> pushDeviceList, String message, JPushClient client) throws Exception {
+    private void send2Jpush(List<PushDevice> pushDeviceList, Wi wi, JPushClient client) throws Exception {
         List<String> jiguangDeviceList = pushDeviceList.stream().map(PushDevice::getDeviceId)
                 .collect(Collectors.toList());
+        var iosBuilder = IosNotification
+                .newBuilder()
+                .setSound("") // 默认铃声
+                .setBadge(1)
+                .setAlert(wi.getMessage());
+        var androidBuilder = AndroidNotification
+                .newBuilder()
+                .setPriority(0)
+                .setBadgeClass(JpushConst.launchActivity)
+                .setBadgeAddNum(1)
+                .setAlert(wi.getMessage());
+        if (wi.getStringExtras() != null) {
+            wi.getStringExtras()
+                    .forEach(iosBuilder::addExtra);
+            wi.getStringExtras().forEach(androidBuilder::addExtra);
+        }
+        if (wi.getNumberExtras() != null) {
+            wi.getNumberExtras()
+                    .forEach(iosBuilder::addExtra);
+            wi.getNumberExtras().forEach(androidBuilder::addExtra);
+        }
+        if (wi.getBooleanExtras() != null) {
+            wi.getBooleanExtras()
+                    .forEach(iosBuilder::addExtra);
+            wi.getBooleanExtras().forEach(androidBuilder::addExtra);
+        }
+        if (wi.getJsonExtras() != null) {
+            wi.getJsonExtras()
+                    .forEach(iosBuilder::addExtra);
+            wi.getJsonExtras().forEach(androidBuilder::addExtra);
+        }
         Notification n = Notification.newBuilder()
                 // ios 消息
-                .addPlatformNotification(
-						IosNotification
-								.newBuilder()
-								.setSound("") // 默认铃声
-								.setBadge(1)
-								.setAlert(message)
-								.build())
+                .addPlatformNotification(iosBuilder.build())
                 // android 消息
-                .addPlatformNotification(
-						AndroidNotification
-								.newBuilder()
-								.setPriority(0)
-								.setBadgeClass(JpushConst.launchActivity)
-								.setBadgeAddNum(1)
-								.setAlert(message)
-								.build())
+                .addPlatformNotification(androidBuilder.build())
                 .build();
 
         PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
@@ -121,6 +134,47 @@ public class ActionSendMessage extends StandardJaxrsAction {
 
         @FieldDescribe("消息内容")
         private String message;
+
+        @FieldDescribe("字符串扩展")
+        private Map<String, String> stringExtras;
+        @FieldDescribe("数字扩展")
+        private Map<String, Number> numberExtras;
+        @FieldDescribe("布尔串扩展")
+        private Map<String, Boolean> booleanExtras;
+        @FieldDescribe("对象扩展")
+        private Map<String, JsonObject> jsonExtras;
+
+        public Map<String, String> getStringExtras() {
+            return stringExtras;
+        }
+
+        public void setStringExtras(Map<String, String> stringExtras) {
+            this.stringExtras = stringExtras;
+        }
+
+        public Map<String, Number> getNumberExtras() {
+            return numberExtras;
+        }
+
+        public void setNumberExtras(Map<String, Number> numberExtras) {
+            this.numberExtras = numberExtras;
+        }
+
+        public Map<String, Boolean> getBooleanExtras() {
+            return booleanExtras;
+        }
+
+        public void setBooleanExtras(Map<String, Boolean> booleanExtras) {
+            this.booleanExtras = booleanExtras;
+        }
+
+        public Map<String, JsonObject> getJsonExtras() {
+            return jsonExtras;
+        }
+
+        public void setJsonExtras(Map<String, JsonObject> jsonExtras) {
+            this.jsonExtras = jsonExtras;
+        }
 
         public String getPerson() {
             return person;
