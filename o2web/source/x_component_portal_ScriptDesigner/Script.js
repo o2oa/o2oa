@@ -104,8 +104,19 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
         if (this.options.showTab) this.page.showTabIm();
 
     },
+    getMode: function (){
+        if( ( this.data.name || "" ).contains('.') ){
+            switch(this.data.name.split('.').getLast()){
+                case 'html': return 'html';
+                case 'css': return 'css';
+                case 'json': return 'json';
+                default: return 'javascript';
+            }
+        }
+        return 'javascript';
+    },
     loadEditor:function(){
-        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"option": {"value": this.data.text}});
+        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"option": {"value": this.data.text, "mode": this.getMode()}});
         this.editor.load(function(){
             if (this.data.text){
                 this.editor.setValue(this.data.text);
