@@ -75,17 +75,17 @@
       <BaseCron v-model:value="processData.updateTable.cron" :label="lp._processConfig.cron" @change="save('updateTable')"></BaseCron>
     </div>
 
-    <div class="item_title">{{lp._processConfig.archiveHadoop}}</div>
-    <div class="item_info">{{lp._processConfig.archiveHadoopInfo}}</div>
-    <div class="item_info">
-      <BaseBoolean v-model:value="processData.archiveHadoop.enable" :label="lp._processConfig.enable" :label-style="{width: '100px'}"></BaseBoolean>
-      <BaseCron v-model:value="processData.archiveHadoop.cron" :label="lp._processConfig.cron" :label-style="{width: '100px'}"></BaseCron>
-      <BaseInput v-model:value="processData.archiveHadoop.fsDefaultFS" :label="lp._processConfig.fsDefaultFS" :label-style="{width: '100px'}"></BaseInput>
-      <BaseInput v-model:value="processData.archiveHadoop.username" :label="lp._processConfig.username" :label-style="{width: '100px'}"></BaseInput>
-      <BaseInput v-model:value="processData.archiveHadoop.path" :label="lp._processConfig.path" :label-style="{width: '100px'}"></BaseInput>
+<!--    <div class="item_title">{{lp._processConfig.archiveHadoop}}</div>-->
+<!--    <div class="item_info">{{lp._processConfig.archiveHadoopInfo}}</div>-->
+<!--    <div class="item_info">-->
+<!--      <BaseBoolean v-model:value="processData.archiveHadoop.enable" :label="lp._processConfig.enable" :label-style="{width: '100px'}"></BaseBoolean>-->
+<!--      <BaseCron v-model:value="processData.archiveHadoop.cron" :label="lp._processConfig.cron" :label-style="{width: '100px'}"></BaseCron>-->
+<!--      <BaseInput v-model:value="processData.archiveHadoop.fsDefaultFS" :label="lp._processConfig.fsDefaultFS" :label-style="{width: '100px'}"></BaseInput>-->
+<!--      <BaseInput v-model:value="processData.archiveHadoop.username" :label="lp._processConfig.username" :label-style="{width: '100px'}"></BaseInput>-->
+<!--      <BaseInput v-model:value="processData.archiveHadoop.path" :label="lp._processConfig.path" :label-style="{width: '100px'}"></BaseInput>-->
 
-      <button class="mainColor_bg" @click="saveHadoop('archiveHadoop')">{{saveHadoopText}}</button>
-    </div>
+<!--      <button class="mainColor_bg" @click="saveHadoop('archiveHadoop')">{{saveHadoopText}}</button>-->
+<!--    </div>-->
 
   </div>
 </template>
@@ -100,23 +100,13 @@ import BaseItem from '@/components/item/BaseItem.vue';
 import BaseBoolean from "@/components/item/BaseBoolean";
 
 const processData = ref();
-const saveHadoopText = ref(lp._processConfig.saveHadoop)
-
-const saveHadoop = (key)=>{
-  // saveHadoopText.value = lp._processConfig.saveHadooping;
-  save(key).then(()=>{
-    component.notice(lp._processConfig.saveHadoopSuccess, 'success');
-    // setTimeout(()=>{
-    //   saveHadoopText.value = lp._processConfig.saveHadoopSuccess;
-    //
-    //   setTimeout(()=>{
-    //     saveHadoopText.value = lp._processConfig.saveHadoop;
-    //   }, 1000)
-    //
-    // }, 300)
-
-  });
-}
+// const saveHadoopText = ref(lp._processConfig.saveHadoop)
+//
+// const saveHadoop = (key)=>{
+//   save(key).then(()=>{
+//     component.notice(lp._processConfig.saveHadoopSuccess, 'success');
+//   });
+// }
 
 const save = (key)=>{
     debugger;
