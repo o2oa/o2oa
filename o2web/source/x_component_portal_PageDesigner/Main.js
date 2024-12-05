@@ -440,6 +440,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             if (this.page.currentSelectedModule==this){
                 return true;
             }else{
+                this.mobilePreSelectedModule = this.page.currentSelectedModule;
                 this.page.currentSelectedModule.unSelected();
             }
         }
@@ -449,8 +450,13 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         }
         this.page.unSelectedMulti();
 
+        if( this.mobilePage )this.mobilePage.hideDomTree();
+
         if (this.page.designTabPageScriptAreaNode) this.page.designTabPageScriptAreaNode.hide();
         this.page = this.pcPage;
+        this.pcPage.showDomTree();
+        ( this.pcPreSelectedModule || this.pcPage ).selected();
+
         if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){
             this.loadAllScript();
         }
@@ -473,6 +479,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             if (this.page.currentSelectedModule==this){
                 return true;
             }else{
+                this.pcPreSelectedModule = this.page.currentSelectedModule;
                 this.page.currentSelectedModule.unSelected();
             }
         }
@@ -481,6 +488,8 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             this.page.propertyMultiTd = null;
         }
         this.page.unSelectedMulti();
+
+        if( this.pcPage )this.pcPage.hideDomTree();
 
         if (!this.mobilePage){
             this.designMobileNode.set("id", "designMobileNode");
@@ -492,6 +501,9 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
             // this.mobilePage = new MWF.PCPage(this, this.designMobileNode, {"mode": "Mobile"});
             // this.mobilePage.load(this.pageMobileData);
+        }else{
+            this.mobilePage.showDomTree();
+            ( this.mobilePreSelectedModule || this.mobilePage ).selected();
         }
 
         if (this.page.designTabPageScriptAreaNode) this.page.designTabPageScriptAreaNode.hide();

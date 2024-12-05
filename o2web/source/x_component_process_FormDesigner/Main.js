@@ -444,6 +444,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             if (this.form.currentSelectedModule==this){
                 return true;
             }else{
+                this.mobilePreSelectedModule = this.form.currentSelectedModule;
                 this.form.currentSelectedModule.unSelected();
             }
         }
@@ -453,12 +454,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         }
         this.form.unSelectedMulti();
 
+        if( this.mobileForm )this.mobileForm.hideDomTree();
+
         if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.pcForm;
         this.pcForm.showDomTree();
-        ( this.pcForm.currentSelectedModule || this.pcForm ).selected();
-
-        if( this.mobileForm )this.mobileForm.hideDomTree();
+        ( this.pcPreSelectedModule || this.pcForm ).selected();
 
         if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){
             this.loadAllScript();
@@ -482,6 +483,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             if (this.form.currentSelectedModule==this){
                 return true;
             }else{
+                this.pcPreSelectedModule = this.form.currentSelectedModule;
                 this.form.currentSelectedModule.unSelected();
             }
         }
@@ -491,6 +493,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         }
         this.form.unSelectedMulti();
 
+        if( this.pcForm )this.pcForm.hideDomTree();
+
         if (!this.mobileForm){
             this.mobileForm = new MWF.FCForm(this, this.designMobileNode, {"mode": "Mobile"});
             if (!Object.keys(this.formMobileData.json.moduleList).length){
@@ -499,9 +503,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             this.mobileForm.load(this.formMobileData);
         }else{
             this.mobileForm.showDomTree();
-            ( this.mobileForm.currentSelectedModule || this.mobileForm ).selected();
+            ( this.mobilePreSelectedModule || this.mobileForm ).selected();
         }
-        if( this.pcForm )this.pcForm.hideDomTree();
 
         if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.mobileForm;
