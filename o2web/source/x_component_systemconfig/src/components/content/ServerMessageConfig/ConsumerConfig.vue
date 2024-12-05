@@ -81,11 +81,11 @@
           <BaseInput label="table" v-model:value="currentData.table" :label-style="labelStyle"/>
         </div>
 
-        <div v-if="currentData.type==='hadoop'">
-          <BaseInput label="fsDefaultFS" v-model:value="currentData.fsDefaultFS" :label-style="labelStyle"/>
-          <BaseInput label="path" v-model:value="currentData.path" :label-style="labelStyle"/>
-          <BaseInput label="username" v-model:value="currentData.username" :label-style="labelStyle"/>
-        </div>
+<!--        <div v-if="currentData.type==='hadoop'">-->
+<!--          <BaseInput label="fsDefaultFS" v-model:value="currentData.fsDefaultFS" :label-style="labelStyle"/>-->
+<!--          <BaseInput label="path" v-model:value="currentData.path" :label-style="labelStyle"/>-->
+<!--          <BaseInput label="username" v-model:value="currentData.username" :label-style="labelStyle"/>-->
+<!--        </div>-->
 
       </div>
     </div>
