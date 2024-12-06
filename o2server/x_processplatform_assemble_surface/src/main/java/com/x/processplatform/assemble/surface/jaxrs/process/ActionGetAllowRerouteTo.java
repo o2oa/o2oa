@@ -212,7 +212,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Agent, WoAgent> copier = WrapCopierFactory.wo(Agent.class, WoAgent.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoBegin")
@@ -220,7 +220,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Begin, WoBegin> copier = WrapCopierFactory.wo(Begin.class, WoBegin.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoCancel")
@@ -228,7 +228,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Cancel, WoCancel> copier = WrapCopierFactory.wo(Cancel.class, WoCancel.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoChoice")
@@ -236,7 +236,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Choice, WoChoice> copier = WrapCopierFactory.wo(Choice.class, WoChoice.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoDelay")
@@ -244,7 +244,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Delay, WoDelay> copier = WrapCopierFactory.wo(Delay.class, WoDelay.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoEmbed")
@@ -252,7 +252,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Embed, WoEmbed> copier = WrapCopierFactory.wo(Embed.class, WoEmbed.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoEnd")
@@ -260,7 +260,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<End, WoEnd> copier = WrapCopierFactory.wo(End.class, WoEnd.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoInvoke")
@@ -268,7 +268,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Invoke, WoInvoke> copier = WrapCopierFactory.wo(Invoke.class, WoInvoke.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoManual")
@@ -276,7 +276,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Manual, WoManual> copier = WrapCopierFactory.wo(Manual.class, WoManual.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoMerge")
@@ -284,7 +284,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Merge, WoMerge> copier = WrapCopierFactory.wo(Merge.class, WoMerge.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoParallel")
@@ -292,7 +292,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Parallel, WoParallel> copier = WrapCopierFactory.wo(Parallel.class, WoParallel.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoPublish")
@@ -300,7 +300,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 7325540706018402262L;
 		static WrapCopier<Publish, WoPublish> copier = WrapCopierFactory.wo(Publish.class, WoPublish.class,
-				ListTools.toList(Publish.name_FIELDNAME, Publish.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Publish.name_FIELDNAME, Activity.description_FIELDNAME, Publish.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoService")
@@ -308,7 +308,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Service, WoService> copier = WrapCopierFactory.wo(Service.class, WoService.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoSplit")
@@ -316,7 +316,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Split, WoSplit> copier = WrapCopierFactory.wo(Split.class, WoSplit.class,
-				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
+				ListTools.toList(Activity.name_FIELDNAME, Activity.description_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	private List<WoAgent> filterAgents(Business business, Process process) throws Exception {
