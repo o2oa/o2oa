@@ -75,7 +75,7 @@ public class ApplicationDict extends SliceJpaObject {
 
 	public static final String project_FIELDNAME = "project";
 	@FieldDescribe("归属项目.")
-	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + project_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String project;
 
