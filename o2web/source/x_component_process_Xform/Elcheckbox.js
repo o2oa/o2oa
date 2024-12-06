@@ -348,6 +348,26 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     getInputData: function(){
         return this.json[this.json.$id];
     },
+
+    /**
+     * @summary 获取选中项的text。
+     * @return {String[Array]} 返回选中项的text数组
+     * @example
+     * var texts = this.form.get('fieldId').getText(); //获取选中项的文本数组
+     */
+    getText: function(){
+        var d = this.getTextData();
+        if( typeOf(d.then) === "function" ){
+            return d.then(function( d1 ){
+                var texts = d1.text;
+                return (texts && texts.length) ? texts : [];
+            })
+        }else{
+            var texts = d.text;
+            return (texts && texts.length) ? texts : [];
+        }
+    },
+
     _loadVueCss: function(){
         if (this.styleNode){
             this.node.removeClass(this.styleNode.get("id"));

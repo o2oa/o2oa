@@ -354,6 +354,24 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             }
         }.bind(this));
     },
+        /**
+         * @summary 获取选中项的text。
+         * @return {String} 返回选中项的text
+         * @example
+         * var text = this.form.get('fieldId').getText(); //获取选中项的文本
+         */
+        getText: function(){
+            var d = this.getTextData();
+            if( typeOf(d.then) === "function" ){
+                return d.then(function( d1 ){
+                    var texts = d1.text;
+                    return (texts && texts.length) ? texts[0] : "";
+                })
+            }else{
+                var texts = d.text;
+                return (texts && texts.length) ? texts[0] : "";
+            }
+        },
 
     getExcelData: function( type ){
 		var value = this.getData();
