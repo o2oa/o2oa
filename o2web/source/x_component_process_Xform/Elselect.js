@@ -404,7 +404,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                     var texts = d1.text;
                     var ts = (texts && texts.length) ? texts : [];
                     return this.json.multiple ? ts : (ts[0] || "");
-                })
+                }.bind(this));
             }else{
                 var texts = d.text;
                 var ts = (texts && texts.length) ? texts : [];
