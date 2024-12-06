@@ -2,6 +2,9 @@ package com.x.message.assemble.communicate.jaxrs.im;
 
 import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
 
+import com.x.message.assemble.communicate.Business;
+import com.x.message.core.entity.IMConversationExt;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,10 +75,34 @@ public class ActionConversationUpdate extends BaseAction {
                 throw new ExceptionConversationCheckError(
                         value.getMsg() == null ? "脚本校验不通过" : value.getMsg());
             }
-
+            Business business = new Business(emc);
             conversation.setUpdateTime(new Date());
             emc.check(conversation, CheckPersistType.all);
             emc.commit();
+
+            // 如果有成员变化 需要更新 IMConversationExt
+            // 计算新增的项
+            List<String> added = new ArrayList<>(conversation.getPersonList());
+            added.removeAll(oldMembers);
+            for (String person : added) {
+                IMConversationExt conversationExt = new IMConversationExt();
+                conversationExt.setConversationId(conversation.getId());
+                conversationExt.setPerson(person);
+                emc.beginTransaction(IMConversationExt.class);
+                emc.persist(conversationExt, CheckPersistType.all);
+                emc.commit();
+            }
+            // 计算删除的项
+            List<String> removed = new ArrayList<>(oldMembers);
+            removed.removeAll(conversation.getPersonList());
+            for (String s : removed) {
+                IMConversationExt ext = business.imConversationFactory().getConversationExt(s, conversation.getId());
+                if (ext != null) {
+                    emc.beginTransaction(IMConversationExt.class);
+                    emc.delete(IMConversationExt.class, ext.getId());
+                    emc.commit();
+                }
+            }
             // 发送消息
             sendConversationMsg(oldMembers, conversation,
                     MessageConnector.TYPE_IM_CONVERSATION_UPDATE);

@@ -37,16 +37,6 @@ public class ActionGetConversation extends BaseAction {
 			if (ext != null) {
 				wo.setIsTop(ext.getIsTop());
 				wo.setUnreadNumber(business.imConversationFactory().unreadNumber(ext));
-			} else {
-				IMConversationExt conversationExt = new IMConversationExt();
-				conversationExt.setConversationId(conversation.getId());
-				conversationExt.setPerson(effectivePerson.getDistinguishedName());
-				emc.beginTransaction(IMConversationExt.class);
-				emc.persist(conversationExt, CheckPersistType.all);
-				emc.commit();
-				wo.setIsTop(false);
-				wo.setUnreadNumber(business.imConversationFactory().unreadNumber(conversationExt));
-
 			}
 			wo.setLastMessage(WoMsg.copier.copy(business.imConversationFactory().lastMessage(wo.getId())));
 			result.setData(wo);

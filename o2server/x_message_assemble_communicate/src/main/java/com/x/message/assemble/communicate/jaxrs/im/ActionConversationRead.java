@@ -27,9 +27,7 @@ public class ActionConversationRead extends BaseAction {
 			IMConversationExt ext = business.imConversationFactory()
 					.getConversationExt(effectivePerson.getDistinguishedName(), conversationId);
 			if (ext == null) {
-				ext = new IMConversationExt();
-				ext.setConversationId(conversationId);
-				ext.setPerson(effectivePerson.getDistinguishedName());
+				throw new ExceptionEmptyBusinessObject(conversationId+ "-" + effectivePerson.getDistinguishedName());
 			}
 			ext.setLastReadTime(new Date());
 			emc.beginTransaction(IMConversationExt.class);

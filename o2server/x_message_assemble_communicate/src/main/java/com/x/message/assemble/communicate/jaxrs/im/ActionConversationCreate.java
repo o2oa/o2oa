@@ -3,21 +3,12 @@ package com.x.message.assemble.communicate.jaxrs.im;
 import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_GROUP;
 import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
 
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.x_jpush_assemble_control;
-import com.x.base.core.project.x_program_center;
-import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Application;
-import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -26,9 +17,14 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.IMConversation;
+import com.x.message.core.entity.IMConversationExt;
+import java.util.List;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionConversationCreate extends BaseAction {
 
@@ -62,7 +58,7 @@ public class ActionConversationCreate extends BaseAction {
             if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) {
                 Business business = new Business(emc);
                 List<IMConversation> list = business.imConversationFactory()
-                        .listConversationWithPerson(effectivePerson.getDistinguishedName());
+                        .listConversationWithPerson2(effectivePerson.getDistinguishedName());
                 if (list != null && !list.isEmpty()) {
                     for (IMConversation c : list) {
                         if (ListTools.isSameList(c.getPersonList(), conversation.getPersonList())) {
@@ -146,6 +142,17 @@ public class ActionConversationCreate extends BaseAction {
             emc.beginTransaction(IMConversation.class);
             emc.persist(conversation, CheckPersistType.all);
             emc.commit();
+
+            // 必须同时创建 IMConversationExt
+            for (int i = 0; i < conversation.getPersonList().size(); i++) {
+                String person = conversation.getPersonList().get(i);
+                IMConversationExt conversationExt = new IMConversationExt();
+                conversationExt.setConversationId(conversation.getId());
+                conversationExt.setPerson(person);
+                emc.beginTransaction(IMConversationExt.class);
+                emc.persist(conversationExt, CheckPersistType.all);
+                emc.commit();
+            }
 
             ActionResult<Wo> result = new ActionResult<>();
             Wo wo = Wo.copier.copy(conversation);

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -21,6 +22,8 @@ import com.x.message.core.entity.IMConversationExt_;
 import com.x.message.core.entity.IMConversation_;
 import com.x.message.core.entity.IMMsg;
 import com.x.message.core.entity.IMMsg_;
+import javax.persistence.criteria.Subquery;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class IMConversationFactory extends AbstractFactory {
 
@@ -39,9 +42,18 @@ public class IMConversationFactory extends AbstractFactory {
 	public List<IMConversation> listConversationWithPersonAndBusinessId(String person, String businessId) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(IMConversation.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
+		EntityManager emExt = this.entityManagerContainer().get( IMConversationExt.class );
+		CriteriaBuilder cbExt = emExt.getCriteriaBuilder();
 		CriteriaQuery<IMConversation> cq = cb.createQuery(IMConversation.class);
 		Root<IMConversation> root = cq.from(IMConversation.class);
-		Predicate p = cb.isMember(person, root.get(IMConversation_.personList));
+		// 子条件
+		Subquery<IMConversationExt> subQuery = cq.subquery(IMConversationExt.class);
+		Root<IMConversationExt> root1 = subQuery.from(emExt.getMetamodel().entity(IMConversationExt.class));
+		subQuery.select(root1);
+		Predicate p_permission = cbExt.equal(root1.get(IMConversationExt_.person), person);
+		p_permission = cbExt.and(p_permission, cbExt.equal(root1.get(IMConversationExt_.conversationId), root.get(IMConversation_.id)));
+		subQuery.where(p_permission);
+		Predicate p = cb.exists(subQuery);
 		p = cb.and(p, cb.equal(root.get(IMConversation_.businessId), businessId));
 		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
@@ -54,15 +66,35 @@ public class IMConversationFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<IMConversation> listConversationWithPerson(String person) throws Exception {
+//	public List<IMConversation> listConversationWithPerson(String person) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(IMConversation.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<IMConversation> cq = cb.createQuery(IMConversation.class);
+//		Root<IMConversation> root = cq.from(IMConversation.class);
+//		Predicate p = cb.isMember(person, root.get(IMConversation_.personList));
+//		cq.select(root).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
+	public List<IMConversation> listConversationWithPerson2(String person) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(IMConversation.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
+		EntityManager emExt = this.entityManagerContainer().get( IMConversationExt.class );
+		CriteriaBuilder cbExt = emExt.getCriteriaBuilder();
 		CriteriaQuery<IMConversation> cq = cb.createQuery(IMConversation.class);
 		Root<IMConversation> root = cq.from(IMConversation.class);
-		Predicate p = cb.isMember(person, root.get(IMConversation_.personList));
+		// 子条件
+		Subquery<IMConversationExt> subQuery = cq.subquery(IMConversationExt.class);
+		Root<IMConversationExt> root1 = subQuery.from(emExt.getMetamodel().entity(IMConversationExt.class));
+		subQuery.select(root1);
+		Predicate p_permission = cbExt.equal(root1.get(IMConversationExt_.person), person);
+		p_permission = cbExt.and(p_permission, cbExt.equal(root1.get(IMConversationExt_.conversationId), root.get(IMConversation_.id)));
+		subQuery.where(p_permission);
+		Predicate p = cb.exists(subQuery);
 		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+
 
 
 	/**
