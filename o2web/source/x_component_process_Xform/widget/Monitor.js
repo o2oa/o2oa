@@ -197,6 +197,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             prevRoute.arrow.attr(this.css.passedRouteFillShap);
         }
 
+        this.ensureRectIsVisible(activity);
 
         this.showPlayLog(activity,log);
         this.playsStatus.index++;
@@ -212,13 +213,52 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }.bind(this), 2000);
     },
     showPlayLog: function(activity,log){
-        var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
-        var size = this.paperNode.getSize();
+        // var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
+        // var size = this.paperNode.getSize();
         this.playLogNode = this.createWorkLogNode([log], activity);
         this.playLogNode.setStyle("display", this.playLogNode.get("html") ? "block" : "none");
-        var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
+        // var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
+        var p = this.getlogNodePosition(activity, this.playLogNode);
         this.playLogNode.setPosition({"x": p.x, "y": p.y});
     },
+
+    ensureRectIsVisible: function(activity) {
+        // 获取矩形的位置和尺寸
+        var rectTop = activity.point.y;
+        var rectLeft = activity.point.x;
+        var rectHeight = activity.height;
+        var rectWidth = activity.width;
+        var rectBottom = rectTop + rectHeight;
+        var rectRight = rectLeft + rectWidth;
+
+        var scrollParent = this.paperNode;
+
+        // 获取父滚动区域的尺寸和滚动位置
+        var scrollSize = scrollParent.getSize();
+        var scrollTop = scrollParent.scrollTop;
+        var scrollLeft = scrollParent.scrollLeft;
+        var scrollBottom = scrollSize.y + scrollTop;
+        var scrollRight = scrollSize.x + scrollLeft;
+
+        // 检查是否需要垂直滚动
+        if (rectTop < scrollTop) {
+            // 矩形顶部在视口上方，需要向上滚动
+            scrollParent.scrollTop = rectTop;
+        } else if (rectBottom > scrollBottom) {
+            // 矩形底部在视口下方，需要向下滚动
+            scrollParent.scrollTop = rectBottom - scrollSize.y;
+        }
+
+        // 检查是否需要水平滚动
+        if (rectLeft < scrollLeft) {
+            // 矩形左侧在视口左方，需要向左滚动
+            scrollParent.scrollLeft = rectLeft;
+        } else if (rectRight > scrollRight) {
+            // 矩形右侧在视口右方，需要向右滚动
+            scrollParent.scrollLeft = rectRight - scrollSize.x;
+        }
+    },
+
 
     playStop: function(){
         this.playIcon.remove();
@@ -429,7 +469,106 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             }
         }.bind(this.process));
     },
-    getlogNodePosition: function(activity, node, offset, psize){
+    getlogNodePosition : function(activity, node, offset, psize){
+        var targetCoondinates = {
+            left: activity.point.x,
+            top: activity.point.y,
+            width: activity.width,
+            height: activity.height,
+            right: activity.point.x + activity.width,
+            bottom: activity.point.y + activity.height
+        };
+
+        var containerScroll = this.paperNode.getScroll();
+        var containerSize = this.paperNode.getSize();
+        var nodeSize = node.getSize();
+        var left;
+
+        var offsetX = 10;
+
+        var priorityOfX = [ "center", "right", "left" ];
+        for( var i=0; i<priorityOfX.length; i++ ){
+            if( priorityOfX[i] === "left" ){
+                if( targetCoondinates.left - containerScroll.x > containerSize.x - targetCoondinates.right){
+                    left = targetCoondinates.left - nodeSize.x - offsetX;
+                    positionX = "left";
+                    break;
+                }
+            }
+            if( priorityOfX[i] === "right" ){
+                if( containerSize.x  + containerScroll.x - targetCoondinates.right > nodeSize.x ){
+                    left = targetCoondinates.right + offsetX;
+                    positionX = "right";
+                    break;
+                }
+            }
+        }
+        if( !left ){
+            if( targetCoondinates.left - containerScroll.x > containerSize.x - targetCoondinates.right){
+                left = targetCoondinates.left - nodeSize.x - offsetX;
+                positionX = "left";
+            }else{
+                left = targetCoondinates.right + offsetX;
+                positionX = "right";
+            }
+        }
+
+        var top;
+        var priorityOfY = [ "middle", "bottom", "top" ];
+        for( var i=0; i<priorityOfY.length; i++ ){
+            if( priorityOfY[i] === "middle" ){
+                if( targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) > containerScroll.y &&
+                    targetCoondinates.bottom - (targetCoondinates.height/2) + ( nodeSize.y / 2 ) - containerScroll.y < containerSize.y ){
+                    top = targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) ;
+                    this.positionY = "middle";
+                    break;
+                }
+            }
+            if( priorityOfY[i] === "top" ){
+                if( targetCoondinates.top - containerScroll.y > containerSize.y - targetCoondinates.bottom ){
+                    top = targetCoondinates.bottom - nodeSize.y;
+                    this.positionY = "top";
+                    break;
+                }
+            }
+            if( priorityOfY[i] === "bottom" ){
+                if( containerSize.y  + containerScroll.y - targetCoondinates.bottom > nodeSize.y ){
+                    top = targetCoondinates.top;
+                    this.positionY = "bottom";
+                    break;
+                }
+            }
+        }
+        if( !top ){
+            if( targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) > containerScroll.y &&
+                targetCoondinates.bottom - (targetCoondinates.height/2) + ( nodeSize.y / 2 ) - containerScroll.y < containerSize.y ){
+                top = targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) ;
+                this.positionY = "middle";
+            } else if( targetCoondinates.top - containerScroll.y > containerSize.y - targetCoondinates.bottom ){
+                top = targetCoondinates.bottom - nodeSize.y;
+                this.positionY = "top";
+            }else{
+                top = targetCoondinates.top;
+                this.positionY = "bottom";
+            }
+        }
+
+        // var arrowOffsetY = 0;
+        // if( this.options.isFitToContainer ){
+        if( top < containerScroll.y ){
+            // arrowOffsetY = containerScroll.y - top;
+            top = containerScroll.y;
+        }else if( top + nodeSize.y > containerSize.y  + containerScroll.y ){
+            // arrowOffsetY = containerSize.y  + containerScroll.y - top - nodeSize.y;
+            top = containerSize.y  + containerScroll.y - nodeSize.y;
+        }
+
+        return {
+            "x" : left,
+            "y" : top
+        };
+    },
+    getlogNodePosition_bak: function(activity, node, offset, psize){
         offset.x = 0;
         offset.y = 0;
         var size = node.getSize();
@@ -475,6 +614,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     },
     showWorklog: function(activity, offset, psize){
         this.hideCurrentWorklog();
+
         if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs, activity);
 
         this.currentWorklogNode = activity.worklogNode;
