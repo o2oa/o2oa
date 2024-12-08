@@ -197,7 +197,9 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             prevRoute.arrow.attr(this.css.passedRouteFillShap);
         }
 
-        this.ensureRectIsVisible(activity);
+        if( !layout.mobile ){
+            this.ensureRectIsVisible(activity);
+        }
 
         this.showPlayLog(activity,log);
         this.playsStatus.index++;
@@ -218,8 +220,9 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         this.playLogNode = this.createWorkLogNode([log], activity);
         this.playLogNode.setStyle("display", this.playLogNode.get("html") ? "block" : "none");
         // var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
-        var p = this.getlogNodePosition(activity, this.playLogNode);
-        this.playLogNode.setPosition({"x": p.x, "y": p.y});
+        // this.playLogNode.setPosition({"x": p.x, "y": p.y});
+
+        this.setWorkLogPosition(activity, this.playLogNode);
     },
 
     ensureRectIsVisible: function(activity) {
@@ -239,6 +242,21 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         var scrollLeft = scrollParent.scrollLeft;
         var scrollBottom = scrollSize.y + scrollTop;
         var scrollRight = scrollSize.x + scrollLeft;
+
+        if( layout.mobile ){
+            rectTop = rectTop / this.mobileScale;
+            rectLeft = rectLeft / this.mobileScale;
+            rectHeight = rectHeight / this.mobileScale;
+            rectWidth = rectWidth / this.mobileScale;
+            rectBottom = (rectTop + rectHeight) / this.mobileScale;
+            rectRight = (rectLeft + rectWidth) / this.mobileScale;
+            // scrollTop = scrollTop / this.mobileScale;
+            // scrollLeft = scrollLeft / this.mobileScale;
+            // scrollBottom = scrollBottom / this.mobileScale;
+            // scrollRight = scrollRight / this.mobileScale;
+            // scrollSize.x = scrollSize.x * this.mobileScale;
+            // scrollSize.y = scrollSize.y * this.mobileScale;
+        }
 
         // 检查是否需要垂直滚动
         if (rectTop < scrollTop) {
@@ -619,13 +637,17 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
         this.currentWorklogNode = activity.worklogNode;
         this.currentWorklogNode.setStyle("display", !!this.currentWorklogNode.get("html") ? "block" : "none");
+        this.setWorkLogPosition(activity, activity.worklogNode, offset, psize);
+    },
+    setWorkLogPosition(activity, logNode, offset, psize){
+        if( !logNode )logNode = activity.worklogNode;
         if( layout.mobile ){
             var pSize = this.paperNode.getSize();
             var bodySize =  $(document.body).getSize();
             if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
                 var mobileActionNode = document.body.getElement(".o2_form_mobile_actions");
-                activity.worklogNode.inject( $(document.body) );
-                activity.worklogNode.setStyles({
+                logNode.inject( $(document.body) );
+                logNode.setStyles({
                     "display": "block",
                     "position": "absolute",
                     "width": "calc( 100% - 4px )",
@@ -633,10 +655,10 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                     "bottom": mobileActionNode ? (mobileActionNode.getSize().y+1+"px") : "1px",
                     "left": "0px"
                 });
-                activity.worklogNode.setStyle("left", (bodySize.x - activity.worklogNode.getSize().x)/2 + "px");
+                logNode.setStyle("left", (bodySize.x - logNode.getSize().x)/2 + "px");
             }else{
-                activity.worklogNode.inject( this.paperNode );
-                activity.worklogNode.setStyles({
+                logNode.inject( this.paperNode );
+                logNode.setStyles({
                     "display": "block",
                     "position": "absolute",
                     "width": "calc( 100% - 4px )",
@@ -644,11 +666,11 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                     "bottom": "1px",
                     "left": "0px"
                 });
-                activity.worklogNode.setStyle("left", (pSize.x - activity.worklogNode.getSize().x)/2 + "px");
+                logNode.setStyle("left", (pSize.x - logNode.getSize().x)/2 + "px");
             }
         }else{
-            var p = this.getlogNodePosition(activity, activity.worklogNode, offset, psize)
-            activity.worklogNode.setPosition({"x": p.x, "y": p.y});
+            var p = this.getlogNodePosition(activity, logNode, offset, psize);
+            logNode.setPosition({"x": p.x, "y": p.y});
         }
     },
     hideCurrentWorklog: function(){
