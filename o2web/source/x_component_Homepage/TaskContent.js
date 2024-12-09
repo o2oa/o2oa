@@ -658,6 +658,9 @@ MWF.xApplication.Homepage.TaskContent.TaskCompleted = new Class({
             "onAfterDelete": this.reloadTasks.bind(this),
             "onAfterReaded": this.reloadReads.bind(this),
         };
+        if( d.form ){
+            options.formid = d.form;
+        }
         layout.openApplication(e, "process.Work", options);
     }
 });

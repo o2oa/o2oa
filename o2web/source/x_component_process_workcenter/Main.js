@@ -1549,9 +1549,9 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
 		var _self = this;
-		this.getReference(data).then(function(data){
+		this.getReference(data).then(function(refData){
 			//data.workLog = json.data;
-			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
+			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": refData, "sourceData": data}, "module": _self});
 		});
 		this.infoDlg = o2.DL.open({
 			// "top": p.y,
@@ -1657,6 +1657,7 @@ MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
 	getReference: function(data){
 		return this.action.TaskCompletedAction.getReference(data.id).then(function(json){
 			json.data.item = json.data.taskCompleted;
+			json.data.sourceData = data;
 			return json.data;
 		});
 	},
@@ -1673,7 +1674,18 @@ MWF.xApplication.process.workcenter.TaskCompletedList = new Class({
 		// 	_self.total = json.size;
 		// 	return json.data;
 		// }.bind(this));
-	}
+	},
+
+	openWork: function(e, data){
+		var option = {};
+		if( data._ && data._.sourceData && data._.sourceData.form )option.formid = data._.sourceData.form;
+		o2.api.form.openWork(data.id, "", data.title, option);
+	},
+	openJob: function(e, data){
+		var option = {};
+		if( data.sourceData && data.sourceData.form )option.formid = data.sourceData.form;
+		o2.api.form.openJob(data.item.job, null, option);
+	},
 });
 MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
 	Extends: MWF.xApplication.process.workcenter.ReadList,
@@ -1700,7 +1712,7 @@ MWF.xApplication.process.workcenter.ReadCompletedList = new Class({
 		// 	_self.total = json.size;
 		// 	return json.data;
 		// }.bind(this));
-	}
+	},
 });
 
 MWF.xApplication.process.workcenter.DraftList = new Class({
