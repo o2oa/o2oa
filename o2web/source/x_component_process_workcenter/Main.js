@@ -15,22 +15,13 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.lp = MWF.xApplication.process.workcenter.LP;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 	},
-	loadApplication: function (){
-		if( !o2.api ){
-			MWF.require("MWF.framework", function () {
-				this._loadApplication();
-			}.bind(this));
-		}else{
-			this._loadApplication();
-		}
-	},
-	_loadApplication: function(callback){
+	loadApplication: function(callback){
 		var url = this.path+this.options.style+"/view/view.html";
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.setLayout();
 			this.loadCount();
 			var list = (this.status) ? (this.status.navi || "task") : "task";
-			this.loadList(list, null, callback);
+			this.loadList(list, callback);
 			// if (callback) callback();
 		}.bind(this));
 	},
@@ -94,7 +85,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.countData.myCreated = json.data.count;
 		}.bind(this));
 	},
-	loadList: function(type, e, callback){
+	loadList: function(type, callback){
 		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
 		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
 		this.currentMenu = this[type+"MenuNode"];
@@ -192,11 +183,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
-			if (data.completedList) {
-				data.completedList.forEach(function (item) {
-					item.name = (item.name === "completed") ? this.lp.completed : this.lp.processing;
-				}.bind(this));
-			}
 			this.currentList.filterAttribute = data;
 			var filterCategoryList = ['review','myCreated'].contains(this.currentList.options.type) ? this.lp.filterCategoryListReview : this.lp.filterCategoryList;
 			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList, filterCategoryList: filterCategoryList}, "module": this})
@@ -321,15 +307,15 @@ MWF.xApplication.process.workcenter.Main = new Class({
 
 			var map = {}, mapById = {};
 			data[0].each(function (d) {
-				if (d.processList && d.processList.length){
-					var type = d.applicationCategory || "未分类";
-					if( !map[type] )map[type] = [];
-					map[type].push(d);
+                if (d.processList && d.processList.length){
+                    var type = d.applicationCategory || "未分类";
+                    if( !map[type] )map[type] = [];
+                    map[type].push(d);
 
 					d.processList.each(function (process) {
 						mapById[ process.id ] = process;
 					});
-				}
+                }
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
@@ -633,7 +619,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
-				if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
+                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
@@ -919,7 +905,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
-			"taskId": data.id,
+            "taskId": data.id,
 			"onPostClose": function(){
 				if (this.refresh) this.refresh();
 			}.bind(this)
@@ -1325,6 +1311,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		}
 
 	},
+
 	batchProcessTask: function(e){
 		if (this.selectedTaskList && this.selectedTaskList.length){
 			var data = this.selectedTaskList[0];
@@ -1379,10 +1366,11 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var _self = this;
 		return this.action.ReadAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.count;
 			json.data.each(function (d){
 				d.allowRapid = true;
 			})
+
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
 
@@ -1479,7 +1467,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		if (this.selectedTaskList && this.selectedTaskList.length){
 			var p = [];
 			this.selectedTaskList.forEach(function(task){
-				if (!opinion) opinion = "";
+				if (!opinion) opinion = routeName;
 
 				p.push(this.action.ReadAction.processing(task.id, {"opinion": opinion}, function(json){
 
@@ -1491,6 +1479,9 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 			}.bind(this));
 		}
 	},
+
+
+
 	setReadCompleted: function(e, data){
 		if (data.item) data = data.item;
 		var _self = this;
