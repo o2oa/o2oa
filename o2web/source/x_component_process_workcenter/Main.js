@@ -21,7 +21,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.setLayout();
 			this.loadCount();
 			var list = (this.status) ? (this.status.navi || "task") : "task";
-			this.loadList(list, callback);
+			this.loadList(list, null, callback);
 			// if (callback) callback();
 		}.bind(this));
 	},
@@ -85,7 +85,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.countData.myCreated = json.data.count;
 		}.bind(this));
 	},
-	loadList: function(type, callback){
+	loadList: function(type, e, callback){
 		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
 		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
 		this.currentMenu = this[type+"MenuNode"];
@@ -183,6 +183,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
+			if (data.completedList) {
+				data.completedList.forEach(function (item) {
+					item.name = (item.name === "completed") ? this.lp.completed : this.lp.processing;
+				}.bind(this));
+			}
 			this.currentList.filterAttribute = data;
 			var filterCategoryList = ['review','myCreated'].contains(this.currentList.options.type) ? this.lp.filterCategoryListReview : this.lp.filterCategoryList;
 			filterContent.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data, filter: this.currentList.filterList, filterCategoryList: filterCategoryList}, "module": this})
