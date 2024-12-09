@@ -131,7 +131,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
                          * var selector = this.form.get("fieldId").selector.selector; //获取人员选择框对象
                          * var options = selector.options; //获取人员选择框的选项
                          */
-                        options.style = '';
+                        options.style = 'v10';
                         this.selector = new MWF.O2Selector(this.form.app.content, options);
                     }
                 }

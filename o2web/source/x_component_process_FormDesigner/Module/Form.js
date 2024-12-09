@@ -248,10 +248,20 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		if( this.json.noticeSuccessStyle )delete this.json.noticeSuccessStyle;
 		if( this.json.noticeOkStyle )delete this.json.noticeOkStyle;
 		if( this.json.noticeNoticeStyle )delete this.json.noticeNoticeStyle;
+
+		if (styles.cssLink){
+			this.json.cssLink = "";
+			o2.removeCss(styles.cssLink);
+		}
     },
     setTemplateStyles: function(styles){
         if (styles.styles) this.copyStyles(styles.styles, "styles");
         if (styles.properties) this.copyStyles(styles.properties, "properties");
+		if (styles.cssLink){
+			this.json.cssLink = styles.cssLink;
+			this.container.loadCss(styles.cssLink);
+		}
+
 		//if( styles.confirmStyle )this.json.confirmStyle = styles.confirmStyle;
 		//if( styles.dialogStyle )this.json.dialogStyle = styles.dialogStyle;
 		//if( styles.selectorStyle )this.json.selectorStyle = styles.selectorStyle;

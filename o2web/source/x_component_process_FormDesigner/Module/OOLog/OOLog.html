@@ -1,0 +1,288 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+<!--			<tr>-->
+<!--				<td class="editTableTitle">Class:</td>-->
+<!--				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>-->
+<!--			</tr>-->
+
+		</table>
+
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.style}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked){
+		    		$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+		    		$('text{$.pid}handwritingSize').setStyle('display', '');
+		    	}" name="mode" text{($.mode=='default')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
+					<input class="editTableRadio" onclick="if (this.checked){
+		    	 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+		    		$('text{$.pid}handwritingSize').setStyle('display', 'none');
+		    	 }"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>{{$.lp.text}}
+					<input class="editTableRadio" onclick="if (this.checked){
+                 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'none');
+		    		$('text{$.pid}handwritingSize').setStyle('display', '');
+                 }"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>{{$.lp.recordTable}}<br>
+					<input class="editTableRadio" onclick="if (this.checked){
+				 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'none');
+		    		$('text{$.pid}handwritingSize').setStyle('display', '');
+				 }"  name="mode" text{($.mode=='media')?'checked':''} type="radio" value="media"/>{{$.lp.recordMedia}}
+				</td>
+			</tr>
+		</table>
+
+		<table id="text{$.pid}handwritingSize" style=""
+			   width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue"><b>{{$.lp.expandHandwritten}}:</b>
+					<input class="editTableRadio" name="handwritingExpanded" text{($.handwritingExpanded)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+					<input class="editTableRadio" name="handwritingExpanded" text{(!$.handwritingExpanded)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableValue"><b>{{$.lp.handwrittenWidth}}:</b>
+					<input type="text" name="handwritingWidth" value="text{$.handwritingWidth}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;{{$.lp.validOnPcSide}}</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableValue"><b>{{$.lp.handwrittenHeight}}:</b>
+					<input type="text" name="handwritingHeight" value="text{$.handwritingHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;{{$.lp.validOnPcSide}}</span>
+				</td>
+			</tr>
+		</table>
+
+<!--		<div id="text{$.pid}labelTextStyleValue" title="{{$.lp.logFormat}}" style="display: text{( !$.mode || ($.mode=='text') || ($.mode=='default')) ?'block':'none'}">-->
+<!--&lt;!&ndash;			<div style="text-align:center; line-height:20px; height: 20px; background: #f0f0f0; border-top: 1px solid #cccccc">{{$.lp.logFormat}}</div>&ndash;&gt;-->
+<!--&lt;!&ndash;			<textarea  name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>&ndash;&gt;-->
+<!--			<div class="MWFHtmlEditorArea" name="textStyle" title="{{$.lp.logFormat}} (H)"></div>-->
+<!--			<div class="MWFScriptArea" name="textStyleScript" title="{{$.lp.logFormatScript}} (S)" collapse="true"></div>-->
+<!--		</div>-->
+
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.currentPerson}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isTask" text{($.isTask)?'checked':''} type="radio" value="true"/>{{$.lp.show}}
+					<input class="editTableRadio" name="isTask" text{(!$.isTask)?'checked':''} type="radio" value="false"/>{{$.lp.hide}}
+				</td>
+			</tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.readReaded}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isShowRead" text{($.isShowRead!==false)?'checked':''} type="radio" value="true"/>{{$.lp.show}}
+					<input class="editTableRadio" name="isShowRead" text{($.isShowRead===false)?'checked':''} type="radio" value="false"/>{{$.lp.hide}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readTitle}}:</td>
+				<td class="editTableValue"><input type="text" name="showReadTitle" value="text{$.showReadTitle}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readedTitle}}:</td>
+				<td class="editTableValue"><input type="text" name="showReadCompletedTitle" value="text{$.showReadCompletedTitle}" class="editTableInput"/></td>
+			</tr>
+		</table>
+
+	</div>
+	<div title="{{$.lp.filter}}" class="MWFTab">
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterActivityExactMatch" value="yes"
+					   text{($.filterActivityExactMatch && $.filterActivityExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterActivity}}</div>
+		</div>
+		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivity">text{$.filterActivity}</textarea></div>
+
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterActivityAliasExactMatch" value="yes"
+					   text{($.filterActivityAliasExactMatch && $.filterActivityAliasExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterActivityAlias}}</div>
+		</div>
+		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivityAlias">text{$.filterActivityAlias}</textarea></div>
+
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterPersonExactMatch" value="yes"
+					   text{($.filterPersonExactMatch && $.filterPersonExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterPerson}}</div>
+		</div>
+		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterPerson">text{$.filterPerson}</textarea></div>
+
+		<div style="background-color:#EEE;">
+			<div style="float:right;line-height:24px;height:24px;width: 80px;">
+				<input type="checkbox" name="filterRouteExactMatch" value="yes"
+					   text{($.filterRouteExactMatch && $.filterRouteExactMatch.indexOf('yes')!=-1)?'checked':''}>{{$.lp.exactMatch}}
+			</div>
+			<div style="height:24px; line-height:24px;  padding-left:10px; margin-right: 80px;">{{$.lp.filterRoute}}</div>
+		</div>
+		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterRoute">text{$.filterRoute}</textarea></div>
+
+		<div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="{{$.lp.filterScript}} (S)"></div></div>
+	</div>
+	<div title="{{$.lp.category}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.category}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="category" text{(!$.category || $.category=='none')?'checked':''} type="radio" value="none" onclick="if (this.checked){
+						$('text{$.pid}tableStyleArea').setStyle('display', 'none');
+						$('text{$.pid}expandArea').setStyle('display', 'none');
+						$('text{$.pid}sortInCategory').setStyle('display', 'none');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
+					}" />{{$.lp.none}}
+					<input class="editTableRadio" name="category" text{( $.category=='activity')?'checked':''} type="radio" value="activity" onclick="if (this.checked){
+						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
+						$('text{$.pid}expandArea').setStyle('display', 'block');
+						$('text{$.pid}sortInCategory').setStyle('display', 'block');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
+					}"/>{{$.lp.activity}}
+					<input class="editTableRadio" name="category" text{( $.category=='activityGroup')?'checked':''} type="radio" value="activityGroup" onclick="if (this.checked){
+						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
+						$('text{$.pid}expandArea').setStyle('display', 'block');
+						$('text{$.pid}sortInCategory').setStyle('display', 'block');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
+					}"/>{{$.lp.opinionGroup}}
+					<input class="editTableRadio" name="category" text{( $.category=='unit')?'checked':''} type="radio" value="unit" onclick="if (this.checked){
+						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
+						$('text{$.pid}expandArea').setStyle('display', 'block');
+						$('text{$.pid}sortInCategory').setStyle('display', 'block');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
+					}"/>{{$.lp.unit}}
+					<span id="text{$.pid}unitLevelNameArea" style="display: text{($.logType!=='worklog') ?'':'none'}">
+						<input class="editTableRadio" name="category" text{( $.category=='unitLevelName')?'checked':''} type="radio" value="unitLevelName" onclick="if (this.checked){
+							$('text{$.pid}tableStyleArea').setStyle('display', 'block');
+							$('text{$.pid}expandArea').setStyle('display', 'block');
+							$('text{$.pid}sortInCategory').setStyle('display', 'block');
+							$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'block');
+						}"/>{{$.lp.unitLevelName}}
+					</span>
+				</td>
+			</tr>
+		</table>
+
+		<div id="text{$.pid}categoryByUnitLevelName" style="display: text{($.logType!=='worklog' && $.category=='unitLevelName') ?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.unitLevel}}:</td>
+					<td class="editTableValue">
+						<select name="unitLevel">
+							<option text{($.unitLevel=='1' || !$.unitLevel )?'selected':''} value="1">1</option>
+							<option text{($.unitLevel=='2')?'selected':''} value="2">2</option>
+							<option text{($.unitLevel=='3')?'selected':''} value="3">3</option>
+							<option text{($.unitLevel=='4')?'selected':''} value="4">4</option>
+							<option text{($.unitLevel=='5')?'selected':''} value="5">5</option>
+							<option text{($.unitLevel=='6')?'selected':''} value="6">6</option>
+							<option text{($.unitLevel=='7')?'selected':''} value="7">7</option>
+							<option text{($.unitLevel=='8')?'selected':''} value="8">8</option>
+							<option text{($.unitLevel=='9')?'selected':''} value="9">9</option>
+							<option text{($.unitLevel=='10')?'selected':''} value="10">10</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="text{$.pid}sortInCategory" title="分类内排序" style="display: text{($.category && $.category!='none') ?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.sortInCategory}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="sortTypeInCategory" text{(!$.sortTypeInCategory || $.sortTypeInCategory=='default')?'checked':''} type="radio" value="default" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}" />{{$.lp.sortByActivity}}
+						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeAsc')?'checked':'' } type="radio" value="completedTimeAsc" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}" />{{$.lp.sortByTimeAsc}}
+						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeDesc')?'checked':''} type="radio" value="completedTimeDesc" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}"/>{{$.lp.sortByTimeDesc}}
+						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='none')?'checked':''} type="radio" value="none" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}"/>{{$.lp.noSort}}
+						<!--<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory=='script')?'checked':''} type="radio" value="script" onclick="if (this.checked){-->
+						<!--$('text{$.pid}sortInCategoryScript').setStyle('display', 'block');-->
+						<!--}"/>脚本-->
+					</td>
+				</tr>
+			</table>
+			<!--<div class="MWFScriptArea" name="sortInCategoryScript" title="分类内排序脚本(S)" collapse="true" style="display: text{($.sortTypeInCategory && $.sortTypeInCategory=='script') ?'block':'none'}"></div>-->
+		</div>
+
+		<div title="{{$.lp.categoryTable}}"  id="text{$.pid}tableStyleArea" style="display: text{($.category && $.category!=='none') ?'block':'none'}">
+			<div class="MWFMaplist" name="tableProperties" collapse="true" title="{{$.lp.categoryTableAttr}}"></div>
+			<div class="MWFMaplist" name="tableStyles" collapse="true" title="{{$.lp.categoryTableStyle}}"></div>
+			<div class="MWFMaplist" name="titleTdStyles" collapse="true" title="{{$.lp.categoryTitleCellStyle}}"></div>
+			<div class="MWFMaplist" name="contentTdStyles" collapse="true" title="{{$.lp.categoryContentCellStyle}}"></div>
+			<div class="MWFMaplist" name="contentDivStyles" collapse="true" title="{{$.lp.categoryContentCellInnerStyle}}"></div>
+		</div>
+
+		<div title="{{$.lp.expandOrCollapse}}"  id="text{$.pid}expandArea" style="display: text{($.category && $.category!=='none') ?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.expandOrCollapse}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="expand" text{(!$.expand || $.expand=='disable')?'checked':''} type="radio" value="disable" onclick="if (this.checked){
+							$('text{$.pid}expandStyleArea').setStyle('display', 'none');
+						}" />{{$.lp.disabled}}
+						<input class="editTableRadio" name="expand" text{( $.expand=='enable')?'checked':''} type="radio" value="enable" onclick="if (this.checked){
+							$('text{$.pid}expandStyleArea').setStyle('display', 'block');
+						}"/>{{$.lp.enabled}}
+					</td>
+				</tr>
+			</table>
+			<div title="{{$.lp.defaultExpandCount}}"  id="text{$.pid}expandStyleArea" style="display: text{($.expand && $.expand=='enable') ?'block':'none'}">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.defaultExpandCount}}:</td>
+						<td class="editTableValue"><input type="text" name="expandCount" value="text{$.expandCount}" class="editTableInput"/></td>
+						</td>
+					</tr>
+					<tr>
+						<td class="editTableTitle">{{$.lp.expandHtml}}:</td>
+						<td class="editTableValue"><textarea  name="expandHTML" class="editTableTextarea">text{$.expandHTML}</textarea></td>
+					</tr>
+					<tr>
+						<td class="editTableTitle">{{$.lp.collapseHtml}}:</td>
+						<td class="editTableValue"><textarea  name="collapseHTML" class="editTableTextarea">text{$.collapseHTML}</textarea></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

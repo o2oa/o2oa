@@ -677,10 +677,27 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             var ep = o2.name.cn(task.properties.empowerFromIdentity);
             person = person + " "+MWF.xApplication.process.Xform.LP.replace+" " + ep;
         }
-        html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
-            MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
-        textNode.set("html", html);
-        if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+
+        if (this.json.textTaskStyle){
+            var html = this.json.textTaskStyle;
+            html = html.replace(/{person}/g, person)
+            .replace(/{department}/g, o2.name.cn(task.unit))
+            .replace(/{activity}/g, task.fromActivityName)
+            .replace(/{route}/g, MWF.xApplication.process.Xform.LP.processing + ' ...')
+            .replace(/{img}/g, '')
+            .replace(/{opinion}/g, '')
+            .replace(/{time}/g, task.properties.startTime)
+
+            textNode.set("html", html);
+            if (iconNode) iconNode.setStyle("background-image", "url(" + "../x_component_process_Xform/$Form/" + this.form.options.style + "/icon/rightRed.png)");
+
+        }else{
+            html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
+                MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
+            textNode.set("html", html);
+            if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+
+        }
     },
 
     loadRecordLogText: function(list, container){

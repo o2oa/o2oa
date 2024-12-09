@@ -104,7 +104,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
     //    this.isFocus = false;
 
-		this.isNewProcess = (this.process.id) ? false : true;
+		this.isNewProcess = (!this.process.id);
 	},
 
 	load : function(){

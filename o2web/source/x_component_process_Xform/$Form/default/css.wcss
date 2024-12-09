@@ -100,30 +100,34 @@
 	"addLineAction": {
 		"width": "20px",
 		"height": "20px",
-		"background": "url(../x_component_process_Xform/$Form/default/icon/addline.png) center center no-repeat",
+//		"background": "url(../x_component_process_Xform/$Form/default/icon/addline.png) center center no-repeat",
 		"cursor": "pointer",
-		"float": "left"
+		"float": "left",
+      "line-height": "20px"
 	},
 	"delLineAction": {
 		"width": "20px",
 		"height": "20px",
-		"background": "url(../x_component_process_Xform/$Form/default/icon/delline.png) center center no-repeat",
+//		"background": "url(../x_component_process_Xform/$Form/default/icon/delline.png) center center no-repeat",
 		"cursor": "pointer",
-		"float": "left"
+		"float": "left",
+      "line-height": "20px"
 	},
 	"completeLineAction": {
 		"width": "20px",
 		"height": "20px",
-		"background": "url(../x_component_process_Xform/$Form/default/icon/check.png) center center no-repeat",
+//		"background": "url(../x_component_process_Xform/$Form/default/icon/check.png) center center no-repeat",
 		"cursor": "pointer",
-		"float": "left"
+		"float": "left",
+      "line-height": "20px"
 	},
 	"moveLineAction": {
 		"width": "5px",
 		"height": "20px",
 		"background": "url(../x_component_process_Xform/$Form/default/icon/move.png) center center no-repeat",
 		"cursor": "move",
-		"float": "left"
+		"float": "left",
+      "line-height": "20px"
 	},
     "datatableMoveLineAction": {
       "color": "#aaa",

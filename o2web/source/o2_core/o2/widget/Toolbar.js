@@ -167,6 +167,9 @@ o2.widget.ToolbarButton = new Class({
 			var buttonHide = this.node.get("MWFHide");
 			this.options.hide = !!buttonHide;
 
+			var buttonIcon = this.node.get("MWFButtonIcon");
+			if (buttonIcon) this.options.icon = buttonIcon;
+
             //var buttonActionScript = this.node.get("MWFButtonActionScript");
             //if (buttonActionScript) this.options.actionScript = buttonActionScript;
 		}
@@ -178,7 +181,7 @@ o2.widget.ToolbarButton = new Class({
 		this.node.title = this.options.title;
 		this.node.set("styles", this.toolbar.css.button);
 
-		if (this.options.pic) this.picNode = this._createImageNode(this.options.pic);
+		if (this.options.pic || this.options.icon) this.picNode = this._createImageNode(this.options.pic);
 		if (this.options.text) this.textNode = this._createTextNode(this.options.text);
 
 		this.setDisable(this.options.disable);
@@ -243,9 +246,14 @@ o2.widget.ToolbarButton = new Class({
 		}
 	},
 	_createImageNode: function(src){
-		if (src){
+		if (src || this.options.icon){
 			var div = new Element("span", {"styles": this.toolbar.css.buttonImgDiv}).inject(this.node);
-			var img = this.imgNode = new Element("img", {
+			this.iconNode = new Element("span."+"ooicon-"+this.options.icon, {
+				"styles": {display: "none"}
+			}).inject(div);
+			if (this.toolbar.css.buttonIcon) this.iconNode.setStyles(this.toolbar.css.buttonIcon);
+
+			if (src) this.imgNode = new Element("img", {
 				"styles": this.toolbar.css.buttonImg,
 				"src": src
 			}).inject(div);

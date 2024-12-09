@@ -257,6 +257,11 @@ oo-file {
     display: inline-block;
 }
 
+.v10_dialog_content .MWF_configAttachmentPower>div>div:last-child{
+    padding: 8px!important;
+    background-color: #f7f7f7;
+}
+
 
 .oo-confirm-icon-info {
     color: var(--oo-color-info);
@@ -332,6 +337,10 @@ oo-file {
     -moz-osx-font-smoothing: grayscale;
 }
 
+
+.ooicon-stop:before {
+    content: "\e737";
+}
 
 .ooicon-jian:before {
     content: "\e735";

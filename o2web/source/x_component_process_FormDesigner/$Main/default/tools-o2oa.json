@@ -39,6 +39,16 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
+  "OOLog": {
+    "icon": "log.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
+    "className": "OOLog"
+  },
+  "Actionbar": {
+    "icon": "actionbar.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Actionbar,
+    "className": "Actionbar"
+  },
   "div": {
     "icon": "div.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
@@ -48,5 +58,15 @@
     "icon": "label.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.label,
     "className": "Label"
+  },
+  "attachment": {
+    "icon": "attachment.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.attachment,
+    "className": "Attachment"
+  },
+  "subform": {
+    "icon": "subform.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
+    "className": "Subform"
   }
 }

@@ -487,7 +487,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         this.icon.attr(atts.iatt);
 
         this.routes.each(function(route){
-            if (this.process.selectedActivitys.indexOf(route.toActivity) != -1){
+            if (this.process.selectedActivitys.indexOf(route.toActivity) !== -1){
                 route.corners.each(function(corner, idx){
                     //	var p = this.positionPoints[idx];
                     var p = corner.data("point");
@@ -496,6 +496,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
                     var cornerPath = MWFRaphael.getRectPath(cx-2.5,cy-2.5, 5, 5, 0);
                     corner.attr("path", cornerPath);
                     route.positionPoints[idx] = {"x": cx, "y": cy};
+                    route.data.track = route.positionPointsToString();
 
                 }.bind(this));
             }

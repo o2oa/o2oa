@@ -2906,10 +2906,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var options = {
+                    "iconType": this.data.iconType,
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
                     "target" : node.get("data-target"),
-                    "onChange": function( historyOptions ){
+                    "onChange": function(historyOptions){
+
                         historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);

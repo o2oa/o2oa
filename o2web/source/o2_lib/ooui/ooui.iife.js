@@ -44,9 +44,12 @@ var K0=Object.defineProperty;var J0=(L,w,E)=>w in L?K0(L,w,{enumerable:!0,config
     --simple-active-bg: var(--oo-color-gray-d);\r
     --simple-focus-bg: var(--oo-color-gray1);\r
 \r
-    --light-hover-bg: var(--oo-color-light);\r
-    --light-active-bg: var(--oo-color-gray-e);\r
-    --light-focus-bg: var(--oo-color-gray-9);\r
+    --light-hover-bg: var(--oo-color-main);\r
+    --light-active-bg: var(--oo-color-main-deep);\r
+    --light-focus-bg: var(--oo-color-bg-white);\r
+    --light-hover-color: var(--oo-color-text-white);\r
+    --light-active-color: var(--oo-color-text-white);\r
+    --light-focus-color: var(--oo-color-text3);\r
 \r
     --icon-hover-bg: var(--oo-color-gray-e1);\r
     --icon-active-bg: var(--oo-color-gray-d);\r
@@ -60,7 +63,7 @@ var K0=Object.defineProperty;var J0=(L,w,E)=>w in L?K0(L,w,{enumerable:!0,config
     cursor: pointer;\r
     color: var(--color);\r
     background-color: var(--bg);\r
-    transition: background 0.5s;\r
+    transition: background 0.1s, color 0.1s;\r
     text-align: center;\r
     display: flex;\r
     align-items: baseline;\r
@@ -142,12 +145,15 @@ div.text{\r
 \r
 .button.light:hover{\r
     background-color: var(--light-hover-bg);\r
+    color: var(--light-hover-color);\r
 }\r
 .button.light:active{\r
     background-color: var(--light-active-bg);\r
+    color: var(--light-active-color);\r
 }\r
 .button.light:focus{\r
     background-color: var(--light-focus-bg);\r
+    color: var(--light-focus-color);\r
 }\r
 \r
 .button.icon:hover{\r
@@ -977,6 +983,7 @@ input{\r
 }\r
 .content{\r
     --label: var(--oo-color-text2);\r
+    --label-width: 10em;\r
     --icon-left: var(--oo-color-text2);\r
     --icon-right: var(--oo-color-text2);\r
     --focus: var(--oo-color-main);\r
@@ -987,7 +994,7 @@ input{\r
     --placeholder: var(--oo-color-text4);\r
     --disabled: var(--oo-color-gray2);\r
     --shadow: var(--oo-shadow-border);\r
-    --shadow-focus: var(--oo-shadow-border-focus)\r
+    --shadow-focus: var(--oo-shadow-border-focus);\r
 }\r
 .content {\r
     height: 100%;\r

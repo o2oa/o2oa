@@ -594,7 +594,12 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"backActivitySelectTitle": "Selección de actividades que permitan la devolución",
 		"backActivitySelectInfo": "Puede seleccionar el nodo de actividad que la actividad actual permite devolver, y solo se puede devolver la actividad permitida que ha sido transferida. También puede establecer un método de procesamiento después de la devolución por separado para cada actividad de devolución permitida.",
 		"groupRange": "Alcance del Grupo",
-		"specifyGroup": "Grupo designado"
+		"specifyGroup": "Grupo designado",
+		"cmsCreator": "Editor",
+		"cmsCreatorId": "Identificación del editor",
+		"specifyCmsCreator": "Especificar un editor",
+		"useScript": "Usar guiones",
+		"cmsCreatorScript": "Guión del editor"
 	}
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP
