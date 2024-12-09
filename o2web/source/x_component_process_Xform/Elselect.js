@@ -391,6 +391,27 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             return value;
         },
 
+        /**
+         * @summary 获取选中项的text。
+         * @return {String||String[Array]} 返回选中项的text或数组，返回类型依赖是否为多选
+         * @example
+         * var texts = this.form.get('fieldId').getText(); //获取选中项的文本或数组
+         */
+        getText: function(){
+            var d = this.getTextData();
+            if( typeOf(d.then) === "function" ){
+                return d.then(function( d1 ){
+                    var texts = d1.text;
+                    var ts = (texts && texts.length) ? texts : [];
+                    return this.json.multiple ? ts : (ts[0] || "");
+                }.bind(this));
+            }else{
+                var texts = d.text;
+                var ts = (texts && texts.length) ? texts : [];
+                return this.json.multiple ? ts : (ts[0] || "");
+            }
+        },
+
         getExcelData: function(){
             var data = this.json[this.json.$id];
             if( !data )return "";

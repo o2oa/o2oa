@@ -4066,7 +4066,12 @@ MWF.xScript.Environment = function(ev){
          this.form.createDocument({
             category : "通知公告",
             data : {"subject": "关于XX的通知"},
-            callback : function(json){
+            callback : function(documentId, json, documentApp){
+              if( layout.inBrowser ){ //浏览器模式
+                //documentApp 为文档的window对象
+              }else{
+                //documentApp 为文档document app对象
+              }
                 this.form.notice("创建成功!", "success");
             }.bind(this)
          });
