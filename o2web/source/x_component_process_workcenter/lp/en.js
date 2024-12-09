@@ -138,65 +138,65 @@ MWF.xApplication.process.workcenter.LP={
 	"myCreated": "My drafting",
 	"noReview": "No reference",
 	"noMyCreated": "No files I created",
-	"filterCategoryShortListReview": {
-		"0": {
+	"filterCategoryShortListReview": [
+		{
 			"key": "applicationList",
 			"name": "application"
 		},
-		"1": {
+		{
 			"key": "processList",
 			"name": "flow"
 		},
-		"2": {
+		{
 			"key": "activityNameList",
 			"name": "activity"
 		},
-		"3": {
+		{
 			"key": "creatorUnitList",
 			"name": "department"
 		},
-		"4": {
+		{
 			"key": "startTimeMonthList",
 			"name": "Create month"
 		},
-		"5": {
+		{
 			"key": "completedList",
 			"name": "complete"
 		},
-		"6": {
+		{
 			"key": "key",
 			"name": "keyword"
 		}
-	},
-	"filterCategoryListReview": {
-		"0": {
+	],
+	"filterCategoryListReview": [
+		{
 			"key": "applicationList",
 			"name": "apply name"
 		},
-		"1": {
+		{
 			"key": "processList",
 			"name": "Process Name"
 		},
-		"2": {
+		{
 			"key": "activityNameList",
 			"name": "Handling activities"
 		},
-		"3": {
+		{
 			"key": "creatorUnitList",
 			"name": "Create department"
 		},
-		"4": {
+		{
 			"key": "startTimeMonthList",
 			"name": "Create month"
 		},
-		"5": {
+		{
 			"key": "completedList",
 			"name": "Is the circulation completed"
 		},
-		"6": {
+		{
 			"key": "key",
 			"name": "keyword"
 		}
-	}
+	]
 }
 MWF.xApplication.process.workcenter["lp."+o2.language] = MWF.xApplication.process.workcenter.LP
