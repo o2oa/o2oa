@@ -259,12 +259,12 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         // }, null, 2));
 
         if( layout.mobile ){
-            rectTop = rectTop / this.mobileScale;
-            rectLeft = rectLeft / this.mobileScale;
-            rectHeight = rectHeight / this.mobileScale;
-            rectWidth = rectWidth / this.mobileScale;
-            rectBottom = (rectTop + rectHeight) / this.mobileScale;
-            rectRight = (rectLeft + rectWidth) / this.mobileScale;
+            // rectTop = rectTop / this.mobileScale;
+            // rectLeft = rectLeft / this.mobileScale;
+            // rectHeight = rectHeight / this.mobileScale;
+            // rectWidth = rectWidth / this.mobileScale;
+            // rectBottom = (rectTop + rectHeight) / this.mobileScale;
+            // rectRight = (rectLeft + rectWidth) / this.mobileScale;
             // scrollTop = scrollTop / this.mobileScale;
             // scrollLeft = scrollLeft / this.mobileScale;
             // scrollBottom = scrollBottom / this.mobileScale;
