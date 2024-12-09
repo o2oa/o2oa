@@ -2001,105 +2001,105 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 					if (json.data.agentList) json.data.agentList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#agent",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.cancelList) json.data.cancelList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#cancel",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.choiceList) json.data.choiceList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#choice",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.conditionList) json.data.conditionList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#condition",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.delayList) json.data.delayList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#delay",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.embedList) json.data.embedList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#embed",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.publishList) json.data.publishList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#publish",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.endList) json.data.endList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#end",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.invokeList) json.data.invokeList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#invoke",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.manualList) json.data.manualList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#manual",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.mergeList) json.data.mergeList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#merge",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.messageList) json.data.messageList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#message",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.parallelList) json.data.parallelList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#parallel",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.serviceList) json.data.serviceList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#service",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 
 					if (json.data.splitList) json.data.splitList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#split",
-							"text": activity.name
+							"text": activity.description===""?activity.name:activity.name+"(" + activity.description + ")"
 						}).inject(select);
 					}.bind(_self));
 				}.bind(_self));
