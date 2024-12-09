@@ -749,8 +749,8 @@ MWF.xApplication.systemconfig.LP={
 	"_processConfig": {
 		"baseConfig": "Basic Config",
 		"timerConfig": "Timer Config",
-		"maintenanceIdentity": "Process maintainer identity",
-		"selectMaintenanceIdentity": "Select process maintainer identity",
+		"maintenanceIdentity": "To whom should the transfer be made when the person handling the transaction cannot be found",
+		"selectMaintenanceIdentity": "Select identity",
 		"maintenanceIdentityInfo": "When an unexpected error occurs in the process work and the corresponding processor cannot be found, the system will first try to assign the work to the identity of the creator. If the creation identity is not available, then it will be assigned to the identity set here.",
 		"formVersionCount": "The number of historical versions of the form to keep",
 		"formVersionCountInfo": "Every time a form is saved, the system can keep a copy as a historical version, so that the previous design can be retrieved in some special cases. Here configure the maximum number of reserved historical versions of the form. If this number is exceeded, the earliest historical version will be deleted.",

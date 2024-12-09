@@ -3,7 +3,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"newProcess": "新流程",
 
     "tools": "工具",
-	"unnamed": "未命名",	
+	"unnamed": "未命名",
 	"unknow": "未知",
 	"unrealized": "此功能未实现",
 	"activity": "活动",
@@ -59,18 +59,18 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 			"end": "结束活动",
 			"parallel": "并行活动"
 		},
-		
+
 		"copyActivity": "复制活动",
-		
+
 		"deleteActivity": "删除活动",
 		"deleteRoute": "删除路由",
-		
+
 		"saveProcess": "保存流程",
 		"saveProcessNew": "保存为新版本",
 		"checkProcess": "检查流程",
 		"exportProcess": "导出流程",
 		"printProcess": "打印流程",
-		
+
 		"showGrid": "显示网格",
 		"hideGrid": "隐藏网格"
 	},
@@ -255,9 +255,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"stratIdentity": "启动人",
 		"startUnit": "启动组织",
 		"starGroup": "启动群组",
-		"manager": "管理者",
-		"maintenanceIdentity": "维护人",
-		"managerScript": "管理者脚本",
+		"manager": "流程实例维护人",
+		"maintenanceIdentity": "找不到处理人时流转给谁",
+		"managerScript": "流程实例维护人脚本",
 
 
 		"number": "编号",
