@@ -243,6 +243,21 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         var scrollBottom = scrollSize.y + scrollTop;
         var scrollRight = scrollSize.x + scrollLeft;
 
+        // console.log(JSON.stringify({
+        //     rectTop: rectTop,
+        //     rectLeft: rectLeft,
+        //     rectRight: rectRight,
+        //     rectBottom: rectBottom,
+        //     rectHeight: rectHeight,
+        //     rectWidth: rectWidth,
+        //     scrollTop: scrollTop,
+        //     scrollLeft:scrollLeft,
+        //     scrollBottom: scrollBottom,
+        //     scrollRight:scrollRight,
+        //     scrollSizeX: scrollSize.x,
+        //     scrollSizeY: scrollSize.y
+        // }, null, 2));
+
         if( layout.mobile ){
             rectTop = rectTop / this.mobileScale;
             rectLeft = rectLeft / this.mobileScale;
@@ -291,6 +306,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         //this.toolbar.childrenButton[1].setDisable(true);
         //this.toolbar.childrenButton[2].setDisable(true);
 
+        this.clearCount();
         this.loadWorkLog();
     },
 
@@ -372,11 +388,27 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }, null, this.processid)
     },
 
-
+    clearCount: function (){
+        var activitys = {};
+        this.worklog.each(function(log){
+            var activityType = log.fromActivityType;
+            var activity = (activityType.toLowerCase()=="begin") ? this.process.begin : this.process[activityType+"s"][log.fromActivity];
+            activity.passedCount = 0;
+            activity.worklogs = [];
+            if (!activitys[log.fromActivity]) activitys[log.fromActivity] = activity
+        }.bind(this));
+        if (this.recordList){
+            this.recordList.each(function (r, i){
+                var activity = activitys[r.fromActivity];
+                if(activity)activity.recordCount = 0;
+            }.bind(this));
+        }
+    },
     loadWorkLog: function(){
         this.countNodes = [];
         var activitys = {};
         this.worklogToken = {};
+
         this.worklog.each(function(log){
             this.worklogToken[log.fromActivityToken] = log;
             var activityType = log.fromActivityType;
