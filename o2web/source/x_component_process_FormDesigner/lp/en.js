@@ -393,6 +393,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"preloadScript": "PreloadScript",
 		"script": "Script",
 		"dict": "Dictonary",
+		"useCache": "Use cache",
+		"useCacheNote": "In order to speed up, the data dictionary will be cached when it is first opened, and the modified data dictionary will be retrieved only after refreshing the webpage. If you choose otherwise, it will be retrieved from the server every time.",
 		"dictName": "Dictonary Name",
 		"dictPath": "Data Path",
 		"valueKey": "Value attribute name",
