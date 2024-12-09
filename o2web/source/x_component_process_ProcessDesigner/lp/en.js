@@ -591,7 +591,12 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"completedCancelEventInfo": "When the sub process flows to the cancellation activity, this event will be executed",
 		"completedEventInfo": "When the sub process flows to the end or cancels the activity, this event will be executed",
 		"groupRange": "Group scope",
-		"specifyGroup": "Designated groups"
+		"specifyGroup": "Designated groups",
+		"cmsCreator": "Publisher",
+		"cmsCreatorId": "Publisher Identification",
+		"specifyCmsCreator": "Specify a publisher",
+		"useScript": "Using scripts",
+		"cmsCreatorScript": "Publisher script"
 	}
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

@@ -106,9 +106,14 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
             this.setEvent();
         }else{
-            this.contentScrollNode.setStyle("display", "block");
-            if (this.bottomNode) this.bottomNode.setStyle("display", "block");
-            if (this.titleNode) this.titleNode.setStyle("display", "block");
+            // this.contentScrollNode.setStyle("display", "block");
+            // if (this.bottomNode) this.bottomNode.setStyle("display", "block");
+            // if (this.titleNode) this.titleNode.setStyle("display", "block");
+
+            this.contentScrollNode.show();
+            if (this.bottomNode) this.bottomNode.show();
+            if (this.titleNode) this.titleNode.show();
+
             //this.topNode.setStyle("display", "block");
             this.content.empty();
         }
@@ -141,7 +146,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
             this.setEvent();
         }else{
-            this.minActionAreaNode.setStyle("display", "");
+            this.minActionAreaNode.show();
             //this.minContent.setStyle("display", "block");
             //this.minContent.empty();
             this.minActionAreaNode.empty();
@@ -269,11 +274,14 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         this.contentScrollNode = new Element("div.contentScrollNode", {"styles": this.css.contentScrollNode}).inject(this.node);
         this.content = new Element("div.content", {"styles": this.css.contentNode}).inject(this.contentScrollNode);
 
-        o2.require("o2.widget.ScrollBar", function(){
-            new o2.widget.ScrollBar(this.contentScrollNode, {
-                "style":"attachment", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true}
-            });
-        }.bind(this));
+        var scrollFlag = this.contentScrollNode.getStyle("overflow-y");
+        if (scrollFlag!=="auto" && scrollFlag!=="scroll"){
+            o2.require("o2.widget.ScrollBar", function(){
+                new o2.widget.ScrollBar(this.contentScrollNode, {
+                    "style":"attachment", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true}
+                });
+            }.bind(this));
+        }
     },
     createBottomNode: function(){
         this.bottomNode = new Element("div", {"styles": this.css.bottomNode}).inject(this.node);
@@ -329,7 +337,9 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.topNode.empty();
             this.editActionBoxNode = null;
             this.editActionsGroupNode=null;
-            this.topNode.setStyle("display","");
+            // this.topNode.setStyle("display","");
+            this.topNode.show();
+
             if( this.isHiddenTop ){
                 if( this.oldContentScrollNodeHeight && this.contentScrollNode ){
                     this.contentScrollNode.setStyle("min-height",this.oldContentScrollNodeHeight);
@@ -1289,10 +1299,15 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
     changeControllerSizeToMin: function(){
         if (this.options.size!="min"){
-            if (this.contentScrollNode) this.contentScrollNode.setStyle("display", "none");
-            if (this.bottomNode) this.bottomNode.setStyle("display", "none");
-            if (this.topNode) this.topNode.setStyle("display", "none");
-            if (this.titleNode) this.titleNode.setStyle("display", "none");
+            // if (this.contentScrollNode) this.contentScrollNode.setStyle("display", "none");
+            // if (this.bottomNode) this.bottomNode.setStyle("display", "none");
+            // if (this.topNode) this.topNode.setStyle("display", "none");
+            // if (this.titleNode) this.titleNode.setStyle("display", "none");
+
+            if (this.contentScrollNode) this.contentScrollNode.hide();
+            if (this.bottomNode) this.bottomNode.hide();
+            if (this.topNode) this.topNode.hide();
+            if (this.titleNode) this.titleNode.hide();
 
             if (!this.nodeMorph) this.nodeMorph = new Fx.Morph(this.node, {"duration": 100});
 
@@ -1303,9 +1318,13 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
     },
     changeControllerSizeToMax: function(){
+        debugger;
         if (this.options.size!="max") {
-            if (this.minActionAreaNode) this.minActionAreaNode.setStyle("display", "none");
-            if (this.minContent) this.minContent.setStyle("display", "none");
+            // if (this.minActionAreaNode) this.minActionAreaNode.setStyle("display", "none");
+            // if (this.minContent) this.minContent.setStyle("display", "none");
+
+            if (this.minActionAreaNode) this.minActionAreaNode.hide();
+            if (this.minContent) this.minContent.hide();
 
             if (!this.nodeMorph) this.nodeMorph = new Fx.Morph(this.node, {"duration": 100});
 
@@ -1535,7 +1554,7 @@ o2.widget.AttachmentController.Attachment = new Class({
 
         this.sequenceNode = new Element("div", {"styles": this.css.attachmentSeqNode_sequence, "text": (this.seq || 1)}).inject(this.node);
 
-        this.iconNode = new Element("div", {"styles": this.css.attachmentIconNode_list}).inject(this.node);
+        this.iconNode = new Element("div", {"styles": this.css.attachmentIconNode_sequence || this.css.attachmentIconNode_list}).inject(this.node);
         this.iconImgAreaNode = new Element("div", {"styles": this.css.attachmentIconImgAreaNode_list}).inject(this.iconNode);
         this.iconImgNode = new Element("img", {"styles": this.css.attachmentIconImgNode_list}).inject(this.iconImgAreaNode);
         this.iconImgNode.set({"src": this.getIcon(), "border": 0});

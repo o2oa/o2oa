@@ -1488,7 +1488,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"weekBegin": "Starting every week",
 		"valueFormat": "Binding value formatting",
 		"readModeEvents": "Does the reading mode respond to mouse events",
-		"required": "Required"
+		"required": "Required",
+		"logTaskFormat": "To Do Format"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

@@ -707,26 +707,14 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
     getTableTblW: function(table){
         var type = "dxa";
-        //var w = table.clientWidth;
-        // var w;
-        // var tag = table.tagName.toString().toLowerCase();
-        // if  (tag==="td" || tag==="th"){
-        //     w = table.clientWidth;
-        //     w = this.pxToPt(w);
-        // }else{
-        //     w = table.style.width;
-        //     if (!w) w = table.style.width;
-        //     if (!w) w = table.get("width");
-        // }
-
         var w = table.style.width;
-        //if (!w) w = table.style.width;
         if (!w){
             w = table.get("width");
-            //if (w) w = this.pxToPt(w);
+        }
+        if (!w){
+            w = this.getMsoStyle(table)["mso-width"];
         }
 
-        //if (w) w = this.pxToPt(w);
         if (w && o2.typeOf(w)==="string"){
             var u = w.substring(w.length-1, w.length);
             if (u==="%"){
@@ -743,7 +731,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             w = 0;
             type = "auto";
         }else{
-            //w = w.toFloat();
             if (type === "dxa") w = w.toFloat()*20;
         }
         return {"w": w, "type": type};
@@ -805,43 +792,73 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         return attr;
     },
-    getTableTblGrid: function(table){
+    getTableTblGrid(table){
         var grids = [];
         var trs = table.rows;
         for (var i = 0; i < trs.length; i++){
             var idx = 0;
-            tds = trs[i].cells;
+            var tds = trs[i].cells;
             for (var j=0; j<tds.length; j++){
                 var td = tds[j];
                 var colspan = td.get("colspan");
-                if (!colspan || colspan.toInt()===1) {
+                var w = this.getTableTblW(td);
+                var pt = (w.type==='dxa') ? w.w/20 : this.pxToPt(td.clientWidth);
+
+                if (!colspan || parseInt(colspan)===1) {
                     while (grids.length<=idx) grids.push(0);
-                    var pt = this.pxToPt(td.clientWidth);
                     if (pt>grids[idx]) grids[idx] = pt;
                 }else{
-                    var addTd = colspan.toInt()-1;
-                    var tempTds = [];
-                    for (var n=0; n<addTd; n++) tempTds.push(new Element("td").inject(td, "after"));
+                    var n = parseInt(colspan);
+                    pt = pt / n;
 
-                    while (grids.length<=idx) grids.push(0);
-                    var pt = this.pxToPt(td.clientWidth);
-                    if (pt>grids[idx]) grids[idx] = pt;
-
-                    tempTds.each(function(tmpTd){
-                        idx++;
+                    for (var m=1; m<=n; m++){
                         while (grids.length<=idx) grids.push(0);
-                        var pt = this.pxToPt(tmpTd.clientWidth);
                         if (pt>grids[idx]) grids[idx] = pt;
-                    }.bind(this));
-                    tempTds.each(function(tmpTd){
-                        tmpTd.destroy();
-                    });
+                        idx++;
+                    }
                 }
                 idx++;
             }
         }
         return grids;
     },
+    // getTableTblGrid: function(table){
+    //     var grids = [];
+    //     var trs = table.rows;
+    //     for (var i = 0; i < trs.length; i++){
+    //         var idx = 0;
+    //         tds = trs[i].cells;
+    //         for (var j=0; j<tds.length; j++){
+    //             var td = tds[j];
+    //             var colspan = td.get("colspan");
+    //             if (!colspan || colspan.toInt()===1) {
+    //                 while (grids.length<=idx) grids.push(0);
+    //                 var pt = this.pxToPt(td.clientWidth);
+    //                 if (pt>grids[idx]) grids[idx] = pt;
+    //             }else{
+    //                 var addTd = colspan.toInt()-1;
+    //                 var tempTds = [];
+    //                 for (var n=0; n<addTd; n++) tempTds.push(new Element("td").inject(td, "after"));
+    //
+    //                 while (grids.length<=idx) grids.push(0);
+    //                 var pt = this.pxToPt(td.clientWidth);
+    //                 if (pt>grids[idx]) grids[idx] = pt;
+    //
+    //                 tempTds.each(function(tmpTd){
+    //                     idx++;
+    //                     while (grids.length<=idx) grids.push(0);
+    //                     var pt = this.pxToPt(tmpTd.clientWidth);
+    //                     if (pt>grids[idx]) grids[idx] = pt;
+    //                 }.bind(this));
+    //                 tempTds.each(function(tmpTd){
+    //                     tmpTd.destroy();
+    //                 });
+    //             }
+    //             idx++;
+    //         }
+    //     }
+    //     return grids;
+    // },
     getTdValign: function(td){
         var v = "";
         var valign = td.getStyle("vertical-align") || td.get("valign");

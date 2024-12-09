@@ -1321,22 +1321,28 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             //var pNode = this.toolNode.getOffsetParent();
 
+            debugger;
             var paddingTop = (this.isFullScreen) ? 0 : (node || this.form.node).getStyle("padding-top");
+            var pTop = window.getComputedStyle(this.scrollNode).paddingTop;
             try {
                 paddingTop = paddingTop.toInt();
+                pTop = pTop.toInt();
             }catch (e) {
                 paddingTop = 0;
+                pTop = 0;
             }
 
             if (p.y<paddingTop && this.toolNode.offsetParent){
-                this.toolbarNode.inject(node || this.scrollNode);
+                paddingTop = paddingTop - pTop;
+                this.toolbarNode.inject(node || this.scrollNode, "top");
                 this.toolbarNode.setStyles({
-                    "position": "absolute",
+                    "position": "sticky",
                     "width": ""+x+"px",
                     "z-index": 200,
                     "top": paddingTop+"px",
                     "left": ""+p.x+"px"
                 });
+                var position = this.scrollNode.getStyle('position');
             }else{
                 this.toolbarNode.inject(this.toolNode);
                 this.toolbarNode.setStyles({"position": "static", "width": "auto"});
@@ -1946,12 +1952,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this));
 
         if (!layout.mobile){
-            this.scrollNode = this.toolbarNode.getParentSrcollNode();
-            if (this.scrollNode){
-                this.scrollNode.addEvent("scroll", function(){
-                    this.resetToolbarEvent();
-                }.bind(this));
-            }
+            window.setTimeout(function(){
+                this.scrollNode = this.toolbarNode.getParentSrcollNode();
+                if (this.scrollNode){
+                    this.scrollNode.addEvent("scroll", function(){
+                        this.resetToolbarEvent();
+                    }.bind(this));
+                }
+            }.bind(this), 1000)
         }
 
         //if (this.json.canDoublePage!=="n" && !layout.mobile){
@@ -2826,7 +2834,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     editor.on( 'blur', function( e ) {
                         if (!!editorName) this.getAttachmentTextData();
                         var　v = e.editor.editable().$.get("text");
-                        if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
+                        if (!v || v=="　　"){
+                            if (this.json && this.json.defaultValue){
+                                e.editor.setData(this.json.defaultValue.filetext);
+                            }
+                        }
                     }.bind(this) );
 
                     editor.on( 'loaded', function( e ) {

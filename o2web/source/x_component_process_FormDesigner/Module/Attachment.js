@@ -90,6 +90,7 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 		this.node.set("data-mwf-el-type", "MWFFormDesignerAttachment");
         MWF.require("MWF.widget.AttachmentController", function(){
             this.attachmentController = new MWF.widget.ATTER(this.node, this, {
+				"style": this.json.style || "default",
 				"title": "Attachment",
 				"readonly": true,
 				"size": this.json.size,

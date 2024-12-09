@@ -434,7 +434,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     load: function (callback) {
         this.loadMacro(function () {
-            debugger
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
                 if (flag && this.formDataText){
@@ -463,6 +462,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var cssClass = "";
                     if (this.json.css && this.json.css.code) cssClass = this.loadCss();
                     if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
+                    if (this.json.cssLink) this.container.loadCss(this.json.cssLink);
 
                     //this.container.setStyle("opacity", 0);
 
@@ -5008,6 +5008,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "url": this.app.path + "reroute.html",
                 "lp": MWF.xApplication.process.Xform.LP.form,
                 "container": this.app.content,
+                "maskNode": this.app.content,
                 "isClose": true,
                 "buttonList": [
                     {
@@ -5035,7 +5036,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var createActivityOption = function(list, name){
                         list.each(function (activity) {
                             var activityType = name.replace("List", "");
-                            new Element("option", {
+                            var op = new Element("option", {
                                 "value": activity.id + "#"+activityType,
                                 "text": activity.name
                             }).inject(select);

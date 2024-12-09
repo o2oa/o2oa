@@ -990,6 +990,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "validOnPcSide": "（pc端有效）",
         "handwrittenHeight": "手写意见高度",
         "logFormat": "格式",
+        "logTaskFormat": "待办格式",
         "logFormatScript": "格式脚本",
         "logHtmlScript": "html脚本",
         "currentPerson": "当前处理人",

@@ -474,7 +474,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.topNode.empty();
             this.editActionBoxNode = null;
             this.editActionsGroupNode = null;
-            this.topNode.setStyle("display", "");
+            // this.topNode.setStyle("display", "");
+            this.topNode.show();
             if (this.isHiddenTop) {
                 //this.container.setStyle("height", this.container.getSize().y + 45 );
                 //this.node.setStyle("height", this.node.getSize().y + 45 );
@@ -493,7 +494,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             if (this.contentScrollNode) {
                 this.oldContentScrollNodeHeight = this.contentScrollNode.getStyle("min-height");
                 this.contentScrollNode.setStyle("min-height", this.node.getStyle("min-height"));
-                this.topNode.setStyle("display", "none");
+                this.topNode.hide();
             }
             this.isHiddenTop = true;
         }
@@ -607,7 +608,13 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         var isShowRight = this.options.isSizeChange && !hiddenGroup.contains("view");
 
         if(this.minSeparateNode)this.minSeparateNode.setStyle( "display", isShowLeft && isShowRight ? "" : "none" );
-        if(this.minActionAreaNode )this.minActionAreaNode.setStyle( "display", isShowLeft || isShowRight ? "" : "none" );
+        if(this.minActionAreaNode ){
+            if (isShowLeft || isShowRight){
+                this.minActionAreaNode.show();
+            }else{
+                this.minActionAreaNode.hide();
+            }
+        }
     },
 
     checkAttachmentConfigAction: function () {
@@ -909,6 +916,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             "style": this.module.form.json.dialogStyle || "user",
             "isResize": false,
             "content": node,
+            "container": this.module.form.app.content,
+            "maskNode": this.module.form.app.content,
             "buttonList": [
                 {
                     "type": "ok",
@@ -939,7 +948,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         var lp = MWF.xApplication.process.Xform.LP;
         var css = this.module.form.css;
-        var node = new Element("div", { "styles": (layout.mobile ? css.attachmentPermissionNode_mobile : css.attachmentPermissionNode) }).inject(this.node);
+        var node = new Element("div.MWF_configAttachmentPower", { "styles": (layout.mobile ? css.attachmentPermissionNode_mobile : css.attachmentPermissionNode) }).inject(this.node);
         var attNames = new Element("div", { "styles": css.attachmentPermissionNamesNode }).inject(node);
         var attNamesTitle = new Element("div", { "styles": css.attachmentPermissionNamesTitleNode, "text": lp.attachmentPermissionInfo }).inject(attNames);
         var attNamesArea = new Element("div", { "styles": css.attachmentPermissionNamesAreaNode }).inject(attNames);
@@ -965,6 +974,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             "style": this.module.form.json.dialogStyle || "user",
             "isResize": false,
             "content": node,
+            "container": this.module.form.app.content,
+            "maskNode": this.module.form.app.content,
             "buttonList": [
                 {
                     "type": "ok",
@@ -1341,8 +1352,10 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 "style": this.module.form.json.dialogStyle || "user",
                 "isResize": false,
                 "content": node,
-                "width": "auto",
-                "height": "auto",
+                "width": "720",
+                "height": "740",
+                "container": this.module.form.app.content,
+                "maskNode": this.module.form.app.content,
                 "buttonList": [
                     {
                         "type": "ok",

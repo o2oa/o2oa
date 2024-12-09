@@ -6,6 +6,15 @@
       "pc"
     ]
   },
+  "v10": {
+    "name": "v10",
+    "file": "styles_v10.json",
+    "extendFile": "styles_v10_extend.json",
+    "mode": [
+      "pc",
+      "mobile"
+    ]
+  },
   "default": {
     "name": "传统样式",
     "file": "styles_default.json",

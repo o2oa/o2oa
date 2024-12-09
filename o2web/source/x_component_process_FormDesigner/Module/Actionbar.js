@@ -34,12 +34,14 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 	},
     setTemplateStyles: function(styles){
         this.json.style = styles.style;
+        this.json.iconType = styles.iconType;
         this.json.iconOverStyle = styles.iconOverStyle || "";
         this.json.customIconStyle = styles.customIconStyle;
         this.json.customIconOverStyle = styles.customIconOverStyle || "";
     },
     clearTemplateStyles: function(styles){
         this.json.style = "form";
+        this.json.iconType = "";
         this.json.iconOverStyle = "";
         this.json.customIconStyle = "";
         this.json.customIconOverStyle = "";
@@ -60,7 +62,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 		}).inject(this.form.container);
 	},
     _createNode: function(callback){
-        this.node = new Element("div", {
+        this.node = new Element("div.form-toolbar-area", {
             "id": this.json.id,
             "MWFType": "actionbar",
             "styles": this.css.moduleNode,
@@ -75,7 +77,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
             this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
         }else{
-            this.toolbarNode = new Element("div").inject(this.node);
+            this.toolbarNode = new Element("div.form-toolbar").inject(this.node);
 
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
 
@@ -120,12 +122,15 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             }.bind(this), false);
         }
     },
+    _getToolbarNode: function(){
+        return this.node.getFirst("div");
+    },
     _refreshActionbar: function(){
         if (this.form.options.mode == "Mobile"){
             this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
             this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
         }else{
-            this.toolbarNode = this.node.getFirst("div");
+            this.toolbarNode = this._getToolbarNode();
             this.toolbarNode.empty();
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
             if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
@@ -159,7 +164,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
             this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
         }else{
-            this.toolbarNode = this.node.getFirst("div");
+            this.toolbarNode = this._getToolbarNode();
             this.toolbarNode.empty();
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
             if (!this.json.actionStyles){
@@ -268,7 +273,8 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         tools.each(function(tool){
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.getImagePath(tool.img, tool.customImg),
+                "MWFButtonImage": this.json.iconType==="font" ? "" : this.getImagePath(tool.img, tool.customImg),
+                "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
@@ -295,7 +301,8 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         tools.each(function(tool){
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.path+""+this.options.style +"/custom/"+path+tool.img,
+                "MWFButtonImage": this.json.iconType==="font" ? "" : this.path+""+this.options.style +"/custom/"+path+tool.img,
+                "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text

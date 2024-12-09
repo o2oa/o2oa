@@ -35,11 +35,11 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.appearance}}:</td>
                 <td class="editTableValue">
-                    <label><input type="radio" name="appearance" value="default" text{($.showMode!=='cancel' && $.showMode!=='light' && $.showMode!=='simple' && $.showMode!=='icon')?'checked':''}/>{{$.lp.default }}</label>
-                    <label><input type="radio" name="appearance" value="cancel" text{($.showMode==='cancel')?'checked':''}/>cancel</label>
-                    <label><input type="radio" name="appearance" value="light" text{($.showMode==='light')?'checked':''}/>light</label>
-                    <label><input type="radio" name="appearance" value="simple" text{($.showMode==='simple')?'checked':''}/>simple</label>
-                    <label><input type="radio" name="appearance" value="icon" text{($.showMode==='icon')?'checked':''}/>icon</label>
+                    <label><input type="radio" name="appearance" value="default" text{($.appearance!=='cancel' && $.appearance!=='light' && $.appearance!=='simple' && $.appearance!=='icon')?'checked':''}/>{{$.lp.default }}</label>
+                    <label><input type="radio" name="appearance" value="cancel" text{($.appearance==='cancel')?'checked':''}/>cancel</label>
+                    <label><input type="radio" name="appearance" value="light" text{($.appearance==='light')?'checked':''}/>light</label>
+                    <label><input type="radio" name="appearance" value="simple" text{($.appearance==='simple')?'checked':''}/>simple</label>
+                    <label><input type="radio" name="appearance" value="icon" text{($.appearance==='icon')?'checked':''}/>icon</label>
                 </td>
             </tr>
 
