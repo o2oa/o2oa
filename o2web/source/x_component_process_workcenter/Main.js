@@ -105,7 +105,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	_loadListContent: function(type, callback){
 		var list = this[(type+"-list").camelCase()];
 		if (!list){
-			console.log('MWF.xApplication.process.workcenter.'+type.capitalize()+"List");
 			list = new MWF.xApplication.process.workcenter[type.capitalize()+"List"](this, { "onLoadData": this.hideSkeleton.bind(this) });
 			this[(type+"-list").camelCase()] = list;
 		}
