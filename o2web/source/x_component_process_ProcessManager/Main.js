@@ -870,7 +870,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         }
 
         this.data.maintainerList.each(function (d){
-            new MWF.widget.O2Identity({"name": d}, this.maintainerContentAreaNode, {"style": "application"});
+            new MWF.widget.O2Person({"name": d}, this.maintainerContentAreaNode, {"style": "application"});
         }.bind(this));
     },
 
@@ -902,9 +902,10 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         }
         var options = {
             "type": "identity",
+            "resultType": "person",
             "count": 0,
             "title": this.app.lp.application.setMaintainer,
-            "values": [this.data.maintenanceIdentity],
+            "values": this.data.maintainerList,
             "onComplete": function(items){
                 this.maintainerContentAreaNode.empty();
                 if (items && items.length){
@@ -913,7 +914,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
                     });
                     this.data.maintenanceIdentity = "";
                     items.each(function(item){
-                        new MWF.widget.O2Identity(item.data, this.maintainerContentAreaNode, {"style": "application"});
+                        new MWF.widget.O2Person(item.data, this.maintainerContentAreaNode, {"style": "application"});
                     }.bind(this));
                 }else{
                     this.data.maintenanceIdentity = "";
