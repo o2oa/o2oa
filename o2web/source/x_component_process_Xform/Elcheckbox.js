@@ -351,7 +351,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
 
     /**
      * @summary 获取选中项的text。
-     * @return {String[Array]} 返回选中项的text数组
+     * @return {String[]} 返回选中项的text数组
      * @example
      * var texts = this.form.get('fieldId').getText(); //获取选中项的文本数组
      */
