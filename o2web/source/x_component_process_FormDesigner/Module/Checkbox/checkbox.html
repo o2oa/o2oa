@@ -144,7 +144,7 @@
                     <td class="editTableTitle">{{$.lp.useCache}}:</td>
                     <td class="editTableValue">
                         <input type="radio" name="dictUseCache" value="true" text{($.dictUseCache!==false)?'checked':''}/>{{$.lp.yes}}
-                        <input type="radio" name="dictUseCache" value="false" text{(!$.dictUseCache===false)?'checked':''}/>{{$.lp.no}}
+                        <input type="radio" name="dictUseCache" value="false" text{($.dictUseCache===false)?'checked':''}/>{{$.lp.no}}
                         <div style="color:#999;">{{$.lp.useCacheNote}}</div>
                     </td>
                 </tr>
