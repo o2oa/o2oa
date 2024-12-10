@@ -75,7 +75,7 @@
 		  </tr>
 
 		</table>
-		
+
 		<div id="text{$.pid}selectEditItemValues" style="display: text{(!$.itemType || $.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
 		<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
 		<div id="text{$.pid}selectFirstOption" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}">
@@ -131,6 +131,14 @@
                     <td class="editTableTitle">{{$.lp.textKey}}:</td>
                     <td class="editTableValue">
                         <input type="text" name="dictTextKey" value="text{$.dictTextKey}" class="editTableInput"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.useCache}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="dictUseCache" value="true" text{($.dictUseCache!==false)?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="dictUseCache" value="false" text{($.dictUseCache===false)?'checked':''}/>{{$.lp.no}}
+                        <div style="color:#999;">{{$.lp.useCacheNote}}</div>
                     </td>
                 </tr>
             </table>
@@ -202,7 +210,7 @@
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
-		
+
 	</div>
     <div title="{{$.lp.section}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

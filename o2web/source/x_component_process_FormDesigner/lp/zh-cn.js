@@ -428,6 +428,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "preloadScript": "预加载脚本",
         "script": "脚本",
         "dict": "数据字典",
+        "useCache": "使用缓存",
+        "useCacheNote": "选是，在首次打开时会缓存数据字典，需刷新网页才会重新获取修改的数据字典。选否则每次从服务器获取。",
         "dictName": "字典名称",
         "dictPath": "数据路径",
         "valueKey": "值属性名",

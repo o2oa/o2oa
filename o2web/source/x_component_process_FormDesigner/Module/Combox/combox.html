@@ -164,6 +164,14 @@
                         <input type="text" name="dictTextKey" value="text{$.dictTextKey}" class="editTableInput"/>
                     </td>
                 </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.useCache}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="dictUseCache" value="true" text{($.dictUseCache!==false)?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="dictUseCache" value="false" text{($.dictUseCache===false)?'checked':''}/>{{$.lp.no}}
+                        <div style="color:#999;">{{$.lp.useCacheNote}}</div>
+                    </td>
+                </tr>
             </table>
         </div>
         <div id="text{$.pid}selectEditItemView" style="display: text{($.itemType=='view')?'block':'none'}" class="MWFQueryViewItemContainer">
