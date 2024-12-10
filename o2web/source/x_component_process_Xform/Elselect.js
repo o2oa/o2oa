@@ -393,7 +393,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
 
         /**
          * @summary 获取选中项的text。
-         * @return {String||String[Array]} 返回选中项的text或数组，返回类型依赖是否为多选
+         * @return {String|String[]} 返回选中项的text或数组，返回类型依赖是否为多选
          * @example
          * var texts = this.form.get('fieldId').getText(); //获取选中项的文本或数组
          */
