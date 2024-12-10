@@ -46,26 +46,29 @@ MWF.xApplication.Selector.FormStyle = new Class({
                     var promise;
                     if( this.options.appType === "service" ){
                         promise = o2.Actions.load("x_program_center").ScriptAction.listPaging(1, 1000, {});
+                    }else if(this.options.appType === "cms"){
+                        promise = o2.Actions.load("x_cms_assemble_control").ScriptAction.listPaging(1, 1000, {});
                     }else{
                         promise = o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listPaging(1, 1000, {});
                     }
                     promise.then( function( scriptJson ){
                         scriptJson.data.each(function (script) {
-                            if (!json[script.application]) {
-                                json[script.application] = {
-                                    name : script.applicationName || 'service',
-                                    applicationName: script.applicationName || 'service',
-                                    appName: script.applicationName || 'service',
-                                    application: script.application || 'service',
-                                    appId: script.application || 'service'
+                            var key =  script.application || script.appId;
+                            if (!json[key]) {
+                                json[key] = {
+                                    name : script.applicationName || script.appName || 'service',
+                                    applicationName: script.applicationName || script.appName || 'service',
+                                    appName: script.applicationName || script.appName || 'service',
+                                    application: script.application || script.appId || 'service',
+                                    appId: script.application || script.appId || 'service'
                                 };
-                                json[script.application].scriptList = [];
+                                json[key].scriptList = [];
                             }
-                            script.appName = script.applicationName || 'service';
-                            script.appId = script.application || 'service';
+                            script.appName = script.applicationName || script.appName || 'service';
+                            script.appId = script.application || script.appId || 'service';
                             script.type = "script";
                             script.appType = this.options.appType;
-                            json[script.application].scriptList.push(script);
+                            json[key].scriptList.push(script);
                         }.bind(this));
                         for (var application in json) {
                             if (json[application].scriptList && json[application].scriptList.length) {
