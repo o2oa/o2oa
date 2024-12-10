@@ -108,7 +108,8 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         // }else{
         //     if (callback) callback();
         // }
-        o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+        var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
+        o2.loadAll({"css": elcssUrl, "js": [vue, "elementui"]}, { "sequence": true }, callback);
     },
     _mountVueApp: function(){
         if (!this.vueApp) this.vueApp = this._createVueExtend();
