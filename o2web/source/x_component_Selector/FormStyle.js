@@ -66,6 +66,8 @@ MWF.xApplication.Selector.FormStyle = new Class({
                             }
                             script.appName = script.applicationName || script.appName || 'service';
                             script.appId = script.application || script.appId || 'service';
+                            if( !script.application )script.application = script.appId;
+                            if( !script.applicationName )script.applicationName = script.appName;
                             script.type = "script";
                             script.appType = this.options.appType;
                             json[key].scriptList.push(script);

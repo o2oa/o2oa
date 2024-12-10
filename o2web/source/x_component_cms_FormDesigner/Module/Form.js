@@ -421,7 +421,6 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
      //   }
 	//	this._setEditStyle_custom(name, obj, oldValue);
 	//},
-
 	_setEditStyle: function(name, obj, oldValue){
 		if (name=="name"){
 			var title = this.json.name || this.json.id;
