@@ -749,8 +749,8 @@ MWF.xApplication.systemconfig.LP={
 	"_processConfig": {
 		"baseConfig": "Configuración básica",
 		"timerConfig": "Temporizador",
-		"maintenanceIdentity": "Identidad de mantenimiento del flujo de trabajo.",
-		"selectMaintenanceIdentity": "Seleccione la identidad de mantenimiento del flujo de trabajo.",
+		"maintenanceIdentity": "¿A quién se transferirá cuando no se pueda encontrar un procesador?.",
+		"selectMaintenanceIdentity": "Elige identidad",
 		"maintenanceIdentityInfo": "Si ocurre un error inesperado en el proceso de trabajo y no se puede encontrar al procesador correspondiente, el sistema primero intentará asignar el trabajo a la identidad del creador. Si no se puede obtener la identidad del creador, el trabajo se asignará a la identidad que se establece aquí.",
 		"formVersionCount": "Número máximo de versiones de historial de formularios",
 		"formVersionCountInfo": "Cada vez que se guarda un formulario, el sistema puede guardar una copia como una versión histórica para recuperar diseños anteriores en casos especiales. Configure aquí el número máximo de versiones históricas que se pueden guardar. Si se supera este número, se eliminará la versión más antigua del historial.",

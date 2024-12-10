@@ -941,8 +941,8 @@ o2.xApplication.systemconfig.LP = {
         "baseConfig": "基本配置",
         "timerConfig": "定时器配置",
 
-        "maintenanceIdentity": "流程维护人身份",
-        "selectMaintenanceIdentity": "选择流程维护人身份",
+        "maintenanceIdentity": "找不到处理人时流转给谁",
+        "selectMaintenanceIdentity": "选择身份",
         "maintenanceIdentityInfo": "当流程工作发生意外错误，无法找到对应的处理人情况下，系统先尝试将工作分配给创建者身份，如果创建身份也不可获取，那么就分配给此处设定的身份",
 
         "formVersionCount": "表单历史版本保留数量",
