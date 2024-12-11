@@ -26,6 +26,7 @@ import com.hankcs.lucene.HanLPAnalyzer;
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.StorageType;
 import com.x.base.core.entity.dataitem.DataItemConverter;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.tuple.Quadruple;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
@@ -276,24 +277,37 @@ class ActionUpdateExtraDocument extends BaseAction {
 
 		private static final long serialVersionUID = 8642852156734924824L;
 
+		@FieldDescribe("文档分类,在扩展中可以保持为空")
 		private String type = "";
 
+		@FieldDescribe("索引仓库名称,最终将以EXTRA_{key}的形式创建索引目录")
 		private String key = "";
 
+		@FieldDescribe("文档标识")
 		private String id = "";
 
+		@FieldDescribe("业务数据")
 		private JsonObject data;
 
+		@FieldDescribe("文件名,存储类型,存储名称,路径")
 		private List<Quadruple<String, StorageType, String, String>> storageList = new ArrayList<>();
 
+		@FieldDescribe("可阅读人员列表")
 		private List<String> readerList = new ArrayList<>();
 
+		@FieldDescribe("标题")
 		private String title = "";
 
+		@FieldDescribe("创建时间")
 		private Date createTime;
+
+		@FieldDescribe("更新时间")
 		private Date updateTime;
 
+		@FieldDescribe("创建人")
 		private String creatorPerson = "";
+
+		@FieldDescribe("创建身份所在组织")
 		private String creatorUnit = "";
 
 		public String getType() {
