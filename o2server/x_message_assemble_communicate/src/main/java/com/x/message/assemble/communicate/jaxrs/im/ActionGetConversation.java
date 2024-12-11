@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
@@ -57,7 +58,7 @@ public class ActionGetConversation extends BaseAction {
 		private WoMsg lastMessage;
 
 		static WrapCopier<IMConversation, Wo> copier = WrapCopierFactory.wo(IMConversation.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+				ListTools.toList(JpaObject.FieldsInvisible, IMConversation.icon_FIELDNAME));
 
 		public Boolean getIsTop() {
 			return isTop;

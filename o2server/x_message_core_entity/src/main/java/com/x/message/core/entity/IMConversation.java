@@ -142,6 +142,21 @@ public class IMConversation extends SliceJpaObject  {
     private String businessType;
 
 
+    public static final String icon_FIELDNAME = "groupIcon";
+    @FieldDescribe("群聊头像.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_128K, name = ColumnNamePrefix + icon_FIELDNAME)
+    private String groupIcon;
+
+    public String getGroupIcon() {
+        return groupIcon;
+    }
+
+    public void setGroupIcon(String groupIcon) {
+        this.groupIcon = groupIcon;
+    }
+
     public String getBusinessId() {
         return businessId;
     }

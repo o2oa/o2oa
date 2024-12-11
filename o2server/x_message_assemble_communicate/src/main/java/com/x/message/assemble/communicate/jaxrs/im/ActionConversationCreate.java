@@ -131,6 +131,7 @@ public class ActionConversationCreate extends BaseAction {
                 conversation.setBusinessBody(businessBody);
             }
 
+            // 如果配置了脚本了 需要进行校验 成功才能创建会话
             ConversationInvokeValue value = checkConversationInvoke(effectivePerson, "create",
                     conversation.getType(), conversation.getPersonList(), null, null, null);
             if (BooleanUtils.isFalse(value.getResult())) {
@@ -142,7 +143,8 @@ public class ActionConversationCreate extends BaseAction {
             emc.beginTransaction(IMConversation.class);
             emc.persist(conversation, CheckPersistType.all);
             emc.commit();
-
+            // 生成 icon
+            generateConversationIcon(conversation.getId());
             // 必须同时创建 IMConversationExt
             for (int i = 0; i < conversation.getPersonList().size(); i++) {
                 String person = conversation.getPersonList().get(i);
@@ -153,7 +155,6 @@ public class ActionConversationCreate extends BaseAction {
                 emc.persist(conversationExt, CheckPersistType.all);
                 emc.commit();
             }
-
             ActionResult<Wo> result = new ActionResult<>();
             Wo wo = Wo.copier.copy(conversation);
             result.setData(wo);

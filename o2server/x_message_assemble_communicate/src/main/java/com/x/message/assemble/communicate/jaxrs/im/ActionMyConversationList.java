@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import com.x.base.core.project.tools.ListTools;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -99,8 +100,9 @@ public class ActionMyConversationList extends BaseAction {
 		private IMConversationExt ext;
 
 		private static final long serialVersionUID = 3434938936805201380L;
+
 		static WrapCopier<IMConversation, Wo> copier = WrapCopierFactory.wo(IMConversation.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+				ListTools.toList(JpaObject.FieldsInvisible, IMConversation.icon_FIELDNAME));
 
 		public Boolean getIsTop() {
 			return isTop;

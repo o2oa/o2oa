@@ -2,6 +2,8 @@ package com.x.message.assemble.communicate.jaxrs.im;
 
 import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
 
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversationExt;
 import java.util.ArrayList;
@@ -103,6 +105,11 @@ public class ActionConversationUpdate extends BaseAction {
                     emc.commit();
                 }
             }
+            // 人员变化 重新生成头像
+            if (!ListTools.isSameList(oldMembers, conversation.getPersonList())) {
+                generateConversationIcon(conversation.getId());
+                CacheManager.notify(IMConversation.class);
+            }
             // 发送消息
             sendConversationMsg(oldMembers, conversation,
                     MessageConnector.TYPE_IM_CONVERSATION_UPDATE);
@@ -174,7 +181,7 @@ public class ActionConversationUpdate extends BaseAction {
         private static final long serialVersionUID = 3434938936805201380L;
         static WrapCopier<IMConversation, Wo> copier = WrapCopierFactory.wo(IMConversation.class,
                 Wo.class, null,
-                JpaObject.FieldsInvisible);
+                ListTools.toList(JpaObject.FieldsInvisible, IMConversation.icon_FIELDNAME));
     }
 
 }

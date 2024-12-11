@@ -150,6 +150,24 @@ public class ImAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "会话头像", action = ActionGetConversationIcon.class)
+	@GET
+	@Path("conversation/{id}/icon")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void conversationIcon(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("会话id") @PathParam("id") String id) {
+		ActionResult<ActionGetConversationIcon.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetConversationIcon().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+
 	@JaxrsMethodDescribe(value = "根据业务id查询会话，当前用户在会话中.", action = ActionConversationFindByBusinessId.class)
 	@GET
 	@Path("conversation/business/{businessId}")
