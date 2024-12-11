@@ -5872,6 +5872,45 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *    //xhr 为 xmlHttpRequest
      * });
      */
+
+    /**
+     * 往数据表中部门修改单条数据。
+     * @method partUpdateRow
+     * @methodOf module:Table
+     * @instance
+     * @param {String} id 需要修改的数据id。
+     * @param {Object} data 需要修改的部分数据，其他数据不变。
+     * @param {Function} [success] 调用成功时的回调函数。
+     * @param {Function} [failure] 调用错误时的回调函数。
+     * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
+     * @o2syntax
+     * table.partUpdateRow( id, data, success, failure, async )
+     * //或
+     * var promise = table.partUpdateRow( id, data );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
+     * @example
+     * var table = new this.Table("table1");
+     * var data = {
+     *    "id" : "2cf3a20d-b166-490b-8d29-05544db3d79b",
+     *    "subject": "标题一"
+     *  };
+     * table.partUpdateRow( "2cf3a20d-b166-490b-8d29-05544db3d79b", data, function(data){
+     *    //data 形如
+     *    //{
+     *    //   "type": "success",
+     *    //  "data": {
+     *    //      "value": true //true表示修改成功
+     *    //  },
+     *    //  "message": "",
+     *    //  "date": "2021-11-01 18:32:27"
+     *    //}
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     */
     this.Table = MWF.xScript.createTable();
 };
 
@@ -5912,6 +5951,9 @@ if( !MWF.xScript.createTable )MWF.xScript.createTable = function(){
         };
         this.updateRow = function(id, data, success, error, async){
             return this.action.rowUpdate(this.name, id, data, success, error, async);
+        };
+        this.partUpdateRow = function(id, data, success, error, async){
+            return this.action.rowPartUpdate(this.name, id, data, success, error, async);
         };
     }
 };

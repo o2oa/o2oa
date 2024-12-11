@@ -2566,6 +2566,9 @@ if (!MWF.xScript.createTable) MWF.xScript.createTable = function(){
         this.updateRow = function(id, data, success, error, async){
             return this.action.rowUpdate(this.name, id, data, success, error, async);
         };
+        this.partUpdateRow = function(id, data, success, error, async){
+            return this.action.rowPartUpdate(this.name, id, data, success, error, async);
+        };
     }
 };
 if (!MWF.xScript.JSONData) {
