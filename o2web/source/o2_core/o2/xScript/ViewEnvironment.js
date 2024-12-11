@@ -5874,7 +5874,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      */
 
     /**
-     * 往数据表中部门修改单条数据。
+     * 往数据表中部分修改单条数据。
      * @method partUpdateRow
      * @methodOf module:Table
      * @instance
