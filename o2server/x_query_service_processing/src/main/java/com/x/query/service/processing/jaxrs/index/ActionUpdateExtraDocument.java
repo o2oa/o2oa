@@ -289,7 +289,7 @@ class ActionUpdateExtraDocument extends BaseAction {
 		@FieldDescribe("业务数据")
 		private JsonObject data;
 
-		@FieldDescribe("文件名,存储类型,存储名称,路径")
+		@FieldDescribe("存储路径,存储类型,存储名称,附件标题")
 		private List<Quadruple<String, StorageType, String, String>> storageList = new ArrayList<>();
 
 		@FieldDescribe("可阅读人员列表")
