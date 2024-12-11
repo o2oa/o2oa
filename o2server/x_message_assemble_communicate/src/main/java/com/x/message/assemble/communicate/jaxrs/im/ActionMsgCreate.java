@@ -66,9 +66,9 @@ public class ActionMsgCreate extends BaseAction {
 			emc.check(conversation, CheckPersistType.all);
 			emc.commit();
 			if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) { // 单聊才有这种情况
-				List<String> persons = conversation.getPersonList().stream().filter((s)-> !Objects.equals(s, effectivePerson.getDistinguishedName())).collect(Collectors.toList());
-				if (!persons.isEmpty()) {
-					String person = persons.get(0);
+//				List<String> persons = conversation.getPersonList().stream().filter((s)-> !Objects.equals(s, effectivePerson.getDistinguishedName())).collect(Collectors.toList());
+				for (int i = 0; i < conversation.getPersonList().size(); i++) {
+					String person = conversation.getPersonList().get(i);
 					// 更新会话扩展 如果已经删除的 有新消息就改为未删除
 					Business business = new Business(emc);
 					IMConversationExt ext = business.imConversationFactory()
@@ -80,7 +80,6 @@ public class ActionMsgCreate extends BaseAction {
 						emc.commit();
 					}
 				}
-
 			}
 
 

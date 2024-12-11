@@ -19,6 +19,7 @@ import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
+import org.apache.commons.lang3.BooleanUtils;
 
 import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_GROUP;
 import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
@@ -47,7 +48,7 @@ public class ActionMyConversationList extends BaseAction {
 			}
 
 			List<Wo> trueWos = wos.stream().filter((wo) -> { // 已删除的单聊不展现
-				if (wo.getExt() != null && wo.getExt().getIsDeleted() != null && wo.getExt().getIsDeleted() && wo.getType().equals(CONVERSATION_TYPE_SINGLE)) {
+				if (wo.getExt() != null && wo.getExt().getIsDeleted() != null && BooleanUtils.isTrue(wo.getExt().getIsDeleted()) && wo.getType().equals(CONVERSATION_TYPE_SINGLE)) {
 					return false;
 				}
 				return true;
