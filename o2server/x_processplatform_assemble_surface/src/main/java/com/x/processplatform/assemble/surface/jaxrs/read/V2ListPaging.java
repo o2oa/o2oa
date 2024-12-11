@@ -51,7 +51,10 @@ class V2ListPaging extends V2Base {
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.V2ListPaging$Wo")
 	public static class Wo extends AbstractWo {
 		private static final long serialVersionUID = -4773789253221941109L;
-		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class,
-				JpaObject.singularAttributeField(Read.class, true, false), JpaObject.FieldsInvisible);
+//		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class,
+//				JpaObject.singularAttributeField(Read.class, true, false), JpaObject.FieldsInvisible);
+
+		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 	}
 }
