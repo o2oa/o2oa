@@ -40,7 +40,6 @@ public class ActionMsgCreate extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			IMMsg msg = this.convertToWrapIn(jsonElement, IMMsg.class);
-
 			if (msg.getConversationId() == null || msg.getConversationId().isEmpty()) {
 				throw new ExceptionMsgEmptyConversationId();
 			}
@@ -51,11 +50,9 @@ public class ActionMsgCreate extends BaseAction {
 			escapeHTML(msg); // 清除可执行的代码
 			msg.setCreateTime(new Date());
 			LOGGER.info("escape html json:" + msg.getBody());
-
 			emc.beginTransaction(IMMsg.class);
 			emc.persist(msg, CheckPersistType.all);
 			emc.commit();
-
 			// 更新会话最后消息时间
 			emc.beginTransaction(IMConversation.class);
 			IMConversation conversation = emc.find(msg.getConversationId(), IMConversation.class);
@@ -66,9 +63,8 @@ public class ActionMsgCreate extends BaseAction {
 			emc.check(conversation, CheckPersistType.all);
 			emc.commit();
 			if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) { // 单聊才有这种情况
-				List<String> persons = conversation.getPersonList().stream().filter((s)-> !Objects.equals(s, effectivePerson.getDistinguishedName())).collect(Collectors.toList());
-				if (!persons.isEmpty()) {
-					String person = persons.get(0);
+				for (int i = 0; i < conversation.getPersonList().size(); i++) {
+					String person = conversation.getPersonList().get(i);
 					// 更新会话扩展 如果已经删除的 有新消息就改为未删除
 					Business business = new Business(emc);
 					IMConversationExt ext = business.imConversationFactory()
@@ -80,45 +76,10 @@ public class ActionMsgCreate extends BaseAction {
 						emc.commit();
 					}
 				}
-
 			}
-
 
 			// 发送ws消息
 			sendWsMessage(conversation, msg, MessageConnector.TYPE_IM_CREATE, effectivePerson);
-
-//			List<String> persons = conversation.getPersonList();
-//			persons.removeIf(s -> (effectivePerson.getDistinguishedName().equals(s)));
-//			for (int i = 0; i < persons.size(); i++) {
-//				String name = "";
-//				try {
-//					name = effectivePerson.getDistinguishedName().substring(0,
-//							effectivePerson.getDistinguishedName().indexOf("@"));
-//				} catch (Exception e) {
-//					LOGGER.error(e);
-//				}
-//				String person = persons.get(i);
-//				LOGGER.info("发送im消息， person: " + person);
-//				String title = "来自 " + name + " 的消息";
-//				MessageConnector.send(MessageConnector.TYPE_IM_CREATE, title, person, msg);
-//				// 如果消息接收者没有在线 连接ws 就发送一个推送消息
-//				try {
-//					if (!ThisApplication.wsClients().containsValue(person)) {
-//						LOGGER.info("向app 推送im消息， person: " + person);
-//						Message message = new Message();
-//						String body = imMessageBody(msg);
-//						message.setTitle(title + ": " + body);
-//						message.setPerson(person);
-//						message.setType(MessageConnector.TYPE_IM_CREATE);
-//						message.setId("");
-//						if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
-//							ThisApplication.pmsinnerConsumeQueue.send(message);
-//						}
-//					}
-//				} catch (Exception e) {
-//					LOGGER.error(e);
-//				}
-//			}
 
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = Wo.copier.copy(msg);

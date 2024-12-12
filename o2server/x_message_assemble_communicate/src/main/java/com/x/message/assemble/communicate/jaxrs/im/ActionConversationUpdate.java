@@ -2,6 +2,11 @@ package com.x.message.assemble.communicate.jaxrs.im;
 
 import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
 
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.tools.ListTools;
+import com.x.message.assemble.communicate.Business;
+import com.x.message.core.entity.IMConversationExt;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,10 +77,38 @@ public class ActionConversationUpdate extends BaseAction {
                 throw new ExceptionConversationCheckError(
                         value.getMsg() == null ? "脚本校验不通过" : value.getMsg());
             }
-
+            Business business = new Business(emc);
             conversation.setUpdateTime(new Date());
             emc.check(conversation, CheckPersistType.all);
             emc.commit();
+
+            // 如果有成员变化 需要更新 IMConversationExt
+            // 计算新增的项
+            List<String> added = new ArrayList<>(conversation.getPersonList());
+            added.removeAll(oldMembers);
+            for (String person : added) {
+                IMConversationExt conversationExt = new IMConversationExt();
+                conversationExt.setConversationId(conversation.getId());
+                conversationExt.setPerson(person);
+                emc.beginTransaction(IMConversationExt.class);
+                emc.persist(conversationExt, CheckPersistType.all);
+                emc.commit();
+            }
+            // 计算删除的项
+            List<String> removed = new ArrayList<>(oldMembers);
+            removed.removeAll(conversation.getPersonList());
+            for (String s : removed) {
+                IMConversationExt ext = business.imConversationFactory().getConversationExt(s, conversation.getId());
+                if (ext != null) {
+                    emc.beginTransaction(IMConversationExt.class);
+                    emc.delete(IMConversationExt.class, ext.getId());
+                    emc.commit();
+                }
+            }
+            // 人员变化 重新生成头像
+            if (!ListTools.isSameList(oldMembers, conversation.getPersonList())) {
+                generateConversationIcon(conversation.getId());
+            }
             // 发送消息
             sendConversationMsg(oldMembers, conversation,
                     MessageConnector.TYPE_IM_CONVERSATION_UPDATE);
@@ -147,7 +180,7 @@ public class ActionConversationUpdate extends BaseAction {
         private static final long serialVersionUID = 3434938936805201380L;
         static WrapCopier<IMConversation, Wo> copier = WrapCopierFactory.wo(IMConversation.class,
                 Wo.class, null,
-                JpaObject.FieldsInvisible);
+                ListTools.toList(JpaObject.FieldsInvisible, IMConversation.icon_FIELDNAME));
     }
 
 }

@@ -27,6 +27,7 @@ import com.x.jpush.core.entity.PushDevice;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ActionSendMessage extends StandardJaxrsAction {
@@ -111,14 +112,13 @@ public class ActionSendMessage extends StandardJaxrsAction {
                 // android 消息
                 .addPlatformNotification(androidBuilder.build())
                 .build();
-
         PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
                 .setAudience(Audience.registrationId(jiguangDeviceList))
                 .setNotification(n)
 				.setOptions(
                         Options
                                 .newBuilder()
-                                .setApnsProduction(true)
+                                .setApnsProduction(!BooleanUtils.isFalse(wi.getApnsProduction()))
                                 .setThirdPartyChannelV2(Config.pushConfig().getThirdPartyChannel()) // 第三方通道的特殊参数
                                 .build()) // ios 发布证书
 				.build();
@@ -143,6 +143,16 @@ public class ActionSendMessage extends StandardJaxrsAction {
         private Map<String, Boolean> booleanExtras;
         @FieldDescribe("对象扩展")
         private Map<String, JsonObject> jsonExtras;
+
+        private Boolean apnsProduction;
+
+        public Boolean getApnsProduction() {
+            return apnsProduction;
+        }
+
+        public void setApnsProduction(Boolean apnsProduction) {
+            this.apnsProduction = apnsProduction;
+        }
 
         public Map<String, String> getStringExtras() {
             return stringExtras;

@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import com.x.base.core.project.tools.ListTools;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,6 @@ public class ActionConversationFindByBusinessId extends BaseAction {
 
 		private static final long serialVersionUID = -3327091155757964236L;
 		static WrapCopier<IMConversation, Wo> copier = WrapCopierFactory.wo(IMConversation.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+				ListTools.toList(JpaObject.FieldsInvisible, IMConversation.icon_FIELDNAME));
 	}
 }

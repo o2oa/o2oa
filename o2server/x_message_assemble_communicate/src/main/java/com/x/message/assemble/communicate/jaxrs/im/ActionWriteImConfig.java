@@ -23,8 +23,11 @@ public class ActionWriteImConfig extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
-
-		ActionResult<Wo> result = new ActionResult<Wo>();
+		if (!effectivePerson.isManager()) {
+			throw new ExceptionConversationCheckError("没有权限");
+		}
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 		for (Map.Entry<String, JsonElement> en : Config.web().entrySet()) {
@@ -38,7 +41,6 @@ public class ActionWriteImConfig extends BaseAction {
 		saveWi.setFileContent(content);
 		ActionResponse response = CipherConnectionAction.post(false,
 				Config.url_x_program_center_jaxrs("config", "save"), saveWi);
-		Wo wo = new Wo();
 		if (response != null) {
 			SaveConfigWo saveWo = response.getData(SaveConfigWo.class);
 			if (saveWo != null && saveWo.getStatus() != null) {
