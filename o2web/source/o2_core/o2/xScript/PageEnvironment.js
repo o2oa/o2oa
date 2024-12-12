@@ -1592,7 +1592,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         //     var includedScripts = window.includedScripts;
         // }
         var includedScripts = [];
-        var _includeSingle = function (optionsOrName, callback, async) {
+        var _includeSingle = function (optionsOrName, callback, async, type) {
             var options = optionsOrName;
             if (typeOf(options) == "string") {
                 options = {name: options};
@@ -1695,7 +1695,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         });
 
                         includedScripts = includedScripts.concat(json.data.importedList);
-                        MWF.Macro.exec(json.data.text, this);
+                        if( !type || type === "script" )MWF.Macro.exec(json.data.text, this);
                         if (callback) callback.apply(this);
                     } else {
                         if (callback) callback.apply(this);
