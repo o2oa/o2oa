@@ -8,6 +8,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -114,6 +115,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     conversation.setUpdateTime(new Date());
                     emc.check(conversation, CheckPersistType.all);
                     emc.commit();
+                    CacheManager.notify(IMConversation.class);
                 }
             } catch (Exception e) {
                 LOGGER.error(e);

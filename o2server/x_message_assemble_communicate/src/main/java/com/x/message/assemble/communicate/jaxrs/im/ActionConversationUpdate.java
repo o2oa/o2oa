@@ -108,7 +108,6 @@ public class ActionConversationUpdate extends BaseAction {
             // 人员变化 重新生成头像
             if (!ListTools.isSameList(oldMembers, conversation.getPersonList())) {
                 generateConversationIcon(conversation.getId());
-                CacheManager.notify(IMConversation.class);
             }
             // 发送消息
             sendConversationMsg(oldMembers, conversation,
