@@ -111,14 +111,17 @@ public class ResponseFactory {
 				if (null != maxAge) {
 					CacheControl cacheControl = new CacheControl();
 					cacheControl.setMaxAge(maxAge);
-					if (wo.getStreamingOutput() != null){
-						return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
+					if (wo.getStreamingOutput() != null) {
+						return Response.ok(wo.getStreamingOutput())
+								.header(Content_Disposition, wo.getContentDisposition())
 								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
-								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).lastModified(wo.getLastModified()).build();
-					}else {
+								.header(Accept_Ranges, "none").cacheControl(cacheControl)
+								.lastModified(wo.getLastModified()).build();
+					} else {
 						return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
 								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
-								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).lastModified(wo.getLastModified()).build();
+								.header(Accept_Ranges, "none").cacheControl(cacheControl)
+								.lastModified(wo.getLastModified()).build();
 					}
 				} else {
 					EntityTag tag = new EntityTag(etagWoFile(wo));
@@ -126,13 +129,14 @@ public class ResponseFactory {
 						return Response.notModified().tag(tag).build();
 					}
 					if (wo.getStreamingOutput() != null) {
-						return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
+						return Response.ok(wo.getStreamingOutput())
+								.header(Content_Disposition, wo.getContentDisposition())
 								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
-								.header(Accept_Ranges, "bytes").tag(tag).build();
+								.header(Accept_Ranges, "none").tag(tag).build();
 					} else {
 						return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
 								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
-								.header(Accept_Ranges, "bytes").tag(tag).build();
+								.header(Accept_Ranges, "none").tag(tag).build();
 					}
 				}
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
@@ -196,7 +200,7 @@ public class ResponseFactory {
 		CRC32 crc = new CRC32();
 		if (StringUtils.isNotEmpty(wo.getFastETag())) {
 			crc.update(wo.getFastETag().getBytes(DefaultCharset.charset_utf_8));
-		} else if(wo.getBytes()!=null && wo.getBytes().length < TAG_MAX_FILE_SIZE){
+		} else if (wo.getBytes() != null && wo.getBytes().length < TAG_MAX_FILE_SIZE) {
 			crc.update(wo.getBytes());
 		} else {
 			crc.update(StringTools.uniqueToken().getBytes(DefaultCharset.charset_utf_8));
