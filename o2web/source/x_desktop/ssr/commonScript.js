@@ -2693,6 +2693,42 @@ const Table = function(name){
     this.updateRow = function(id, data, success, failure){
         return this.action.rowUpdate(this.name, id, data, success, failure);
     };
+
+    /**
+     * 往数据表中部分修改单条数据。
+     * @method updateRow
+     * @methodOf module:server.Table
+     * @instance
+     * @param {String} id 需要修改的数据id。
+     * @param {Object} data 需要修改的部分数据，其他数据不变。
+     * @param {Function} [success] 调用成功时的回调函数。
+     * @param {Function} [failure] 调用错误时的回调函数。
+     * @o2syntax
+     * table.updateRow( id, data, success, failure )
+     * @example
+     * const table = new this.Table("table1");
+     * const data = {
+     *    "id" : "2cf3a20d-b166-490b-8d29-05544db3d79b",
+     *    "subject": "标题一",
+     *    ... //其他字段
+     *  };
+     * table.updateRow( "2cf3a20d-b166-490b-8d29-05544db3d79b", data, function(data){
+     *    //data 形如
+     *    //{
+     *    //   "type": "success",
+     *    //  "data": {
+     *    //      "value": true //true表示修改成功
+     *    //  },
+     *    //  "message": "",
+     *    //  "date": "2021-11-01 18:32:27"
+     *    //}
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     */
+    this.partUpdateRow = function(id, data, success, failure){
+        return this.action.rowPartUpdate(this.name, id, data, success, failure);
+    };
 }
 
 /**
