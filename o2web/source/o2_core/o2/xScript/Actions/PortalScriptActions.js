@@ -14,10 +14,10 @@ MWF.xScript.Actions.PortalScriptActions = new Class({
         }
     },
     getScriptByName: function(application, name, included, success, failure, async){
-        this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"portal": application, "name": name},	"success": success,	"failure": failure});
+        return this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"portal": application, "name": name},	"success": success,	"failure": failure});
     },
     getScript: function(id, success, failure, async){
-        this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
+        return this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
     }
 
     //getScriptTextDepend: function(id, text, included, success, failure){

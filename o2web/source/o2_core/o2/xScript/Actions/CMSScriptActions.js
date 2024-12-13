@@ -13,10 +13,10 @@ MWF.xScript.Actions.CMSScriptActions = new Class({
         }
     },
     getScriptByName: function(appId, uniqueName, included, success, failure, async){
-        this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"appId": appId, "uniqueName": uniqueName},	"success": success,	"failure": failure});
+        return this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"appId": appId, "uniqueName": uniqueName},	"success": success,	"failure": failure});
     },
     getScript: function(id, success, failure, async){
-        this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
+        return this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
     },
 
     //getScriptTextDepend: function(id, text, included, success, failure){
