@@ -217,7 +217,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
                 var iconPath = this.json.customIconStyle ? (this.json.customIconStyle+ "/") : "";
                 return path+""+this.form.options.style+"/custom/"+iconPath+img;
             }else{
-                return path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+img;
+                return path+(this.options.style||"default") +"/tools/"+ (this.json.iconStyle || this.json.style || "default") +"/"+img;
             }
         },
         getImageOverPath: function(img, iscustom){

@@ -1029,6 +1029,9 @@ bind.Table = function(name){
     this.updateRow = function(id, data, success, error, async){
         this.action.rowUpdate(this.name, id, data, success, error, async);
     };
+    this.partUpdateRow = function(id, data, success, error, async){
+        this.action.rowPartUpdate(this.name, id, data, success, error, async);
+    };
 }
 
 bind.statement = {
