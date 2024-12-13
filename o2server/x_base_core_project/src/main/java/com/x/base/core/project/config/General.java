@@ -1,42 +1,21 @@
 package com.x.base.core.project.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.RandomAccessFile;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.Host;
 import com.x.base.core.project.tools.NumberTools;
-import org.graalvm.polyglot.Context;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class General extends ConfigObject {
 

@@ -280,7 +280,7 @@ public class DateTools {
 		return ceilMonth(date, adjust);
 	}
 
-	public static Date ceilMonth(Date date, Integer adjust) throws Exception {
+	public static Date ceilMonth(Date date, Integer adjust) {
 		Calendar cal = DateUtils.toCalendar(date);
 		if ((null != adjust) && (adjust != 0)) {
 			cal.add(Calendar.MONTH, adjust);
@@ -295,7 +295,7 @@ public class DateTools {
 		return floorDate(date, adjust);
 	}
 
-	public static Date floorDate(Date date, Integer adjust) throws Exception {
+	public static Date floorDate(Date date, Integer adjust) {
 		Calendar cal = DateUtils.toCalendar(date);
 		if ((null != adjust) && (adjust != 0)) {
 			cal.add(Calendar.DATE, adjust);
@@ -314,7 +314,7 @@ public class DateTools {
 		return ceilDate(date, adjust);
 	}
 
-	public static Date ceilDate(Date date, Integer adjust) throws Exception {
+	public static Date ceilDate(Date date, Integer adjust) {
 		Calendar cal = DateUtils.toCalendar(date);
 		if ((null != adjust) && (adjust != 0)) {
 			cal.add(Calendar.DATE, adjust);

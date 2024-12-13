@@ -16,6 +16,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -314,5 +315,13 @@ public class Crypto {
 
 		return new String(decryptAes(debase64Bytes, keyBytes));
 
+	}
+
+	private static final String DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWcVZIS57VeOUzi8c01WKvwJK9uRe6hrGTUYmF6J/pI6/UvCbdBWCoErbzsBZOElOH8Sqal3vsNMVLjPYClfoDyYDaUlakP3ldfnXJzAFJVVubF53KadG+fwnh9ZMvxdh7VXVqRL3IQBDwGgzX4rmSK+qkUJjc3OkrNJPB7LLD8QIDAQAB";
+	public static void main(String[] args) throws Exception{
+		Date date = DateTools.floorDate(new Date(), 61);
+		String dateTime = DateTools.format(date);
+		System.out.println(rsaEncrypt(dateTime, DEFAULT_PUBLIC_KEY));
+		System.out.println(URLEncoder.encode("抱歉！当前产品未授权或授权已过期，请通过官网(www.o2oa.net)联系客服.", DefaultCharset.charset));
 	}
 }

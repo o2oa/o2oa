@@ -65,8 +65,6 @@ public class ActionControl extends ActionBase {
 				td(cmd);
 			} else if (cmd.hasOption(CMD_EC)) {
 				ec(cmd);
-			} else if (cmd.hasOption(CMD_DD)) {
-				dd(cmd);
 			} else if (cmd.hasOption(CMD_RD)) {
 				rd(cmd);
 			} else if (cmd.hasOption(CMD_CLH2)) {
@@ -130,7 +128,6 @@ public class ActionControl extends ActionBase {
 		displayOptions.addOption(hdOption());
 		displayOptions.addOption(tdOption());
 		displayOptions.addOption(ecOption());
-		displayOptions.addOption(ddOption());
 		displayOptions.addOption(rdOption());
 		displayOptions.addOption(clh2Option());
 		displayOptions.addOption(ufOption());
