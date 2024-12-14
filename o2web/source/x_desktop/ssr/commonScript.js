@@ -1396,6 +1396,23 @@ Object.assign(org,  {
         return this.getObject(this.oUnit, this.oUnit.listWithUnitDuty(name, idflag));
     },
 
+    /**
+     * 列式所有顶层组织。
+     * @method listTopUnit
+     * @o2membercategory unit
+     * @methodOf module:server
+     * @static
+     * @return {Promise|UnitData[]} 当async为true时，返回
+     * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
+     * @o2syntax
+     * //同步执行，返回顶层组织数组。
+     * var unitList = this.org.listTopUnit();
+     */
+    listTopUnit: function(){
+        var action = Actions.load("x_organization_assemble_control").UnitAction;
+        return action.listTop().data;
+    },
+
     //组织职务***********
     //获取指定的组织职务的身份
     /**

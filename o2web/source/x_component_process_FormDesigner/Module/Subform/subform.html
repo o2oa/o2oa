@@ -1,5 +1,5 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="{{$.lp.base}}" class="MWFTab"> 
+	<div title="{{$.lp.base}}" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 		  <tr>
 		    <td class="editTableTitle">{{$.lp.id}}:</td>
@@ -9,6 +9,13 @@
 		    <td class="editTableTitle">{{$.lp.name}}:</td>
 		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 		  </tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
 		  <tr>
 		    <td class="editTableTitle">{{$.lp.description}}:</td>
 		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
