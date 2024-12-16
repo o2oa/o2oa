@@ -38,7 +38,8 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         this.height = 40;
     },
     getPoint: function(){
-        this.paperSize = $(this.paper.canvas).getParent().getSize();
+        var parentNode = $(this.paper.canvas).getParent() || this.process.designer.paperInNode;
+        this.paperSize = parentNode.getSize();
         this.paperOriginalSize = {x: this.paperSize.x*0.99, y: this.paperSize.y*0.99};
 
         var height = this.paperSize.y;

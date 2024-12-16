@@ -2216,13 +2216,27 @@ MWF.xScript.Environment = function(ev){
     // }
 
     /**
+     * 在流程、门户、内容管理或服务管理中可以创建了脚本配置。</br>
+     * 默认情况下系统以javascript格式进行编辑。
+     * 这个时候可以使用<code class='language-js'>this.include()</code>引用脚本配置。</br>
+     * 在v9.2以后，如果脚本配置名称以.json 、 .html 或 .css结束，系统会加载相应的编辑器。
+     * 这种情况您可以使用如下方法获取内容。
+     * <pre><code class='language-js'>this.includeHmtl();
+     * this.includeCss();
+     * this.includeJson();
+     * </code></pre>
+     * @module include
+     * @o2cn 脚本配置相应api
+     * @o2category web
+     * @o2ordernumber 140
+     */
+
+    /**
      * this.include是一个方法，当您在流程、门户、内容管理或服务管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
      * v8.0及以后版本中增加了服务管理的脚本配置。<br/>
      * <b>（建议使用表单中的预加载脚本，需要判断加载的时候才使用本方法加载脚本，此时建议异步加载有助于表单加载速度。）</b><br/>
-     * @module include
-     * @o2cn 脚本引用
-     * @o2category web
-     * @o2ordernumber 140
+     * @method include
+     * @methodOf module:include
      * @param {(String|Object|String[]|Object[])} optionsOrName 可以是脚本标识字符串（数组）或者是对象（数组）。
      * <pre><code class='language-js'>
      * //如果需要引用本应用的脚本配置，将options设置为String或者String Array。
@@ -2308,6 +2322,241 @@ MWF.xScript.Environment = function(ev){
      * var userNameNode = this.page.get("userName").node; //获取Dom对象
      * var urerName = this.getUserName(); //使用initScript脚本中的方法
      * userNameNode.set("text", urerName ); //为DOM对象设置值
+     */
+
+    /**
+     * 当脚本配置保存的是html文件（名称以.html结束），this.includeHtml可以以获取html内容。
+     * @method includeHtml
+     * @since v9.2
+     * @methodOf module:include
+     * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+     * <pre><code class='language-js'>
+     * //如果需要获取本应用的html(在脚本配置中)，将options设置为String。
+     * this.includeHtml("test.html") //脚本配置的名称、别名或id
+     *
+     * //如果需要获取其他应用的html，将options设置为Object;
+     * this.includeHtml({
+     *       //type: 应用类型。可以为 portal  process  cms  service。
+     *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+     *       type : "portal",
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+     *       name : "test.html" // 脚本配置的名称、别名或id
+     * })
+     *
+     * //获取服务管理中的html
+     * this.includeHtml({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取流程管理中的html
+     * this.includeHtml({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取内容管理中的html
+     * this.includeHtml({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取门户管理中的html
+     * this.includeHtml({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     * </code></pre>
+     * @param {Function} [callback] 加载后执行的回调方法
+     * @param {Boolean} [async] 是否异步加载，默认为true
+     * @o2syntax
+     * this.includeHtml( optionsOrName, callback, async )
+     * @example
+     * //使用promise获取html
+     * //在本应用的脚本库里配置了html，名称为test.html
+     * var promise = this.includeHtml("test.html");
+     * promise.then(function(html){
+     *      //假设表单上有一个容器，标识为div
+     *      var div = this.form.get('div').node;
+     *      //将html渲染在div节点上，可以查看 api o2.loadHtmlText
+     *     o2.loadHtmlText(html, {dom: div})
+     * }.bind(this))
+     * @example
+     * //在回调中获取html
+     * //在本应用的脚本库里配置了html，名称为test.html
+     * this.includeHtml("test.html", function(html){
+     *      //假设表单上有一个容器，标识为div
+     *      var div = this.form.get('div').node;
+     *      //将html渲染在div节点上，可以查看 api o2.loadHtmlText
+     *      o2.loadHtmlText(html, {dom: div})
+     * }.bind(this))
+     * @example
+     * //同步获取html（不推荐）
+     * //在门户的脚本库里配置了html，名称为test.html
+     * var html = this.includeHtml({
+     *   "type": "portal",
+     *   "application": "appName", //门户的标识
+     *   "name": "test.html"
+     * }, null, false);
+     * var div = this.form.get('div').node; //假设表单/页面上有一个容器，标识为div
+     * div.set('html', html); //将html渲染在div节点上
+     */
+
+
+    /**
+     * 当脚本配置保存的是css文件（名称以.css结束），this.includeCss可以以获取html内容。
+     * @method includeCss
+     * @since v9.2
+     * @methodOf module:include
+     * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+     * <pre><code class='language-js'>
+     * //如果需要获取本应用的css(在脚本配置中)，将options设置为String。
+     * this.includeCss("test.css") //脚本配置的名称、别名或id
+     *
+     * //如果需要获取其他应用的html，将options设置为Object;
+     * this.includeCss({
+     *       //type: 应用类型。可以为 portal  process  cms  service。
+     *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+     *       type : "portal",
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+     *       name : "initScript" // 脚本配置的名称、别名或id
+     * })
+     *
+     * //获取服务管理中的html
+     * this.includeCss({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取流程管理中的html
+     * this.includeCss({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取内容管理中的html
+     * this.includeCss({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取门户管理中的html
+     * this.includeCss({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     * </code></pre>
+     * @param {Function} [callback] 加载后执行的回调方法
+     * @param {Boolean} [async] 是否异步加载，默认为true
+     * @o2syntax
+     * this.includeCss( optionsOrName, callback, async )
+     * @example
+     * //使用promise获取css文本
+     * //在本应用的脚本库里配置了css，名称为test.css
+     * var promise = this.includeCss("test.css");
+     * promise.then(function(cssText){
+     *      //将css作用在表单/页面上，具体可以查看 api: o2.loadCssText
+     *     var node = this.form.getApp().content;
+     *     o2.loadCssText(cssText, {dom: node})
+     * }.bind(this))
+     * @example
+     * //在回调中获取css文本
+     * //在本应用的脚本库里配置了css，名称为test.css
+     * this.includeCss("test.css", function(cssText){
+     *      o2.loadCssText(cssText, {dom: document.body}) //把css作为全局渲染
+     * }.bind(this))
+     * @example
+     * //同步获取css文本（不推荐）
+     * //在门户的脚本库里配置了css，名称为test.css
+     * var cssText = this.includeCss({
+     *   "type": "portal",
+     *   "application": "appName", //门户的标识
+     *   "name": "test.css"
+     * }, null, false);
+     * var node = this.form.getApp().content;
+     * o2.loadCssText(cssText, {dom: node})
+     */
+
+    /**
+     * 当脚本配置保存的是json文件（名称以.json结束），this.includeJson可以以获取json内容。
+     * @method includeJson
+     * @since v9.2
+     * @methodOf module:include
+     * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+     * <pre><code class='language-js'>
+     * //如果需要获取本应用的json(在脚本配置中)，将options设置为String。
+     * this.includeJson("test.json") //脚本配置的名称、别名或id
+     *
+     * //如果需要获取其他应用的html，将options设置为Object;
+     * this.includeJson({
+     *       //type: 应用类型。可以为 portal  process  cms  service。
+     *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+     *       type : "portal",
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+     *       name : "initScript" // 脚本配置的名称、别名或id
+     * })
+     *
+     * //获取服务管理中的json对象
+     * this.includeJson({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取流程管理中的json对象
+     * this.includeJson({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取内容管理中的json对象
+     * this.includeJson({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取门户管理中的json对象
+     * this.includeJson({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     * </code></pre>
+     * @param {Function} [callback] 加载后执行的回调方法
+     * @param {Boolean} [async] 是否异步加载，默认为true
+     * @o2syntax
+     * this.includeJson( optionsOrName, callback, async )
+     * @example
+     * //使用promise获取json数据
+     * //在本应用的脚本库里配置了json，名称为test.json
+     * var promise = this.includeJson("test.json");
+     * promise.then(function(json){
+     *      //json为获取的数据
+     * }.bind(this))
+     * @example
+     * //在回调中获取json数据
+     * //在本应用的脚本库里配置了json，名称为test.json
+     * this.includeJson("test.json", function(json){
+     *      //json为获取的数据
+     * }.bind(this))
+     * @example
+     * //同步获取json数据（不推荐）
+     * //在门户的脚本库里配置了css，名称为test.json
+     * var json = this.includeJson({
+     *   "type": "portal",
+     *   "application": "appName", //门户的标识
+     *   "name": "test.json"
+     * }, null, false);
      */
 
     var _getScriptAction = function ( type ){
