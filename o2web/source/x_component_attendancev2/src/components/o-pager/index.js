@@ -22,6 +22,7 @@ export default content({
       //   },0),
       //   size: 15, // 条目数
       // },
+      inputPage: '', // 输入的页码
     };
   },
   afterRender() {
@@ -93,4 +94,13 @@ export default content({
     this.bind.page = this.bind.totalPage;
     this.loadDataEvent();
   },
+  clickPositivePage() {
+    const inPage = parseInt(this.bind.inputPage)
+    if (inPage <= this.bind.totalPage && inPage > 0) {
+      this.bind.page = inPage;
+      this.loadDataEvent();
+    } else {
+      o2.api.page.notice(lp.components.errorPageNumber, 'error');
+    }
+  }
 });

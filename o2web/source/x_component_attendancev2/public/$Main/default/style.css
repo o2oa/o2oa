@@ -264,8 +264,9 @@
   font-size: 16px;
 }
 .light-border-button {
-  border: 1px solid #f23030 !important;
+  border: 1px solid #DEDEDE !important;
   background-color: #ffffff !important;
+  color: #666666;
 }
 .white-bg {
   background-color: white;
@@ -275,7 +276,7 @@
   height: 100%;
 }
 .att button {
-  border-radius: 100px;
+  border-radius: var(--att-default-radius);
   border: 0;
   padding: 6px 20px;
   cursor: pointer;
@@ -730,11 +731,11 @@
 
 /* 灰色背景的卡片 */
 .a-card {
-  border: 1px solid #dedede;
+  /*border: 1px solid #dedede;*/
   list-style: none;
   position: relative;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: var(--att-default-radius);
 }
 .a-card-gray {
   background-color: rgba(23, 26, 29, 0.04);

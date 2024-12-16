@@ -7,6 +7,12 @@
       <div class="pager-number-area">{{ $m.numberCalc($.totalCount, $.page) }}
           <div oo-each="$.pageList" oo-item="index" class="{{$.page == index.value ? 'pager-item mainColor_bg':'pager-item'}}" @click="this.clickNumberPage(index.value)">{{index.value}}</div>
       </div>
-     
+
   </div>
+    <div class="pager-input-page">
+       <span>到第</span>
+        <oo-input style="width: 40px;height: 26px;margin: 0 10px;" type="number" oo-model="inputPage" ></oo-input>
+       <span>页</span>
+        <oo-button style="height: 26px;margin: 0 10px;"  type="light" @click="clickPositivePage">{{$.lp.positive}}</oo-button>
+    </div>
 </div>
