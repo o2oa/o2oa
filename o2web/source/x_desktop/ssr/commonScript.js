@@ -1668,14 +1668,29 @@ const serviceActions = new Action("x_program_center", {
 //}
 //或者name: "" // 脚本名称/别名/id
 const includedScripts = {};
+
+/**
+ * 在流程、门户、内容管理或服务管理中可以创建了脚本配置。</br>
+ * 默认情况下系统以javascript格式进行编辑。
+ * 这个时候可以使用<code class='language-js'>this.include()</code>引用脚本配置。</br>
+ * 在v9.2以后，如果脚本配置名称以.json 、 .html 或 .css结束，系统会加载相应的编辑器。
+ * 这种情况您可以使用如下方法获取内容。
+ * <pre><code class='language-js'>this.includeHmtl();
+ * this.includeCss();
+ * this.includeJson();
+ * </code></pre>
+ * @module server.common.include
+ * @o2cn 脚本配置相应api
+ * @o2category server.common
+ * @o2ordernumber 175
+ */
+
 /**
  * this.include是一个方法，当您在流程、门户、内容管理或服务管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
  * v8.0及以后版本中增加了服务管理的脚本配置。<br/>
- * @module include()
+ * @method include
+ * @methodOf module:server.common.
  * @o2cn 脚本引用
- * @o2category server.common
- * @o2ordernumber 175
- *
  * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
  * <pre><code class='language-js'>
  *
@@ -1746,6 +1761,191 @@ const includedScripts = {};
  * const sql = this.getFileSQL();
  * return `SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE ${sql}`;
  */
+
+/**
+ * 当脚本配置保存的是html文件（名称以.html结束），this.includeHtml可以以获取html内容。
+ * @method includeHtml
+ * @since v9.2
+ * @methodOf module:server.common.include
+ * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+ * <pre><code class='language-js'>
+ * //如果需要获取本应用的html(在脚本配置中)，将options设置为String。
+ * this.includeHtml("test.html") //脚本配置的名称、别名或id
+ *
+ * //如果需要获取其他应用的html，将options设置为Object;
+ * this.includeHtml({
+ *       //type: 应用类型。可以为 portal  process  cms  service。
+ *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+ *       type : "portal",
+ *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+ *       name : "test.html" // 脚本配置的名称、别名或id
+ * })
+ *
+ * //获取服务管理中的html
+ * this.includeHtml({
+ *   "type": "service",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取流程管理中的html
+ * this.includeHtml({
+ *   "type": "process",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取内容管理中的html
+ * this.includeHtml({
+ *   "type": "cms",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取门户管理中的html
+ * this.includeHtml({
+ *   "type": "portal",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ * </code></pre>
+ * @param {Function} [callback] 加载后执行的回调方法
+ * @param {Boolean} [async] 是否异步加载，默认为true
+ * @o2syntax
+ * this.includeHtml( optionsOrName, callback, async )
+ * @example
+ * //同步获取html（不推荐）
+ * //在门户的脚本库里配置了html，名称为test.html
+ * var html = this.includeHtml({
+ *   "type": "portal",
+ *   "application": "appName", //门户的标识
+ *   "name": "test.html"
+ * });
+ */
+
+
+/**
+ * 当脚本配置保存的是css文件（名称以.css结束），this.includeCss可以以获取html内容。
+ * @method includeCss
+ * @since v9.2
+ * @methodOf  module:server.common.include
+ * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+ * <pre><code class='language-js'>
+ * //如果需要获取本应用的css(在脚本配置中)，将options设置为String。
+ * this.includeCss("test.css") //脚本配置的名称、别名或id
+ *
+ * //如果需要获取其他应用的html，将options设置为Object;
+ * this.includeCss({
+ *       //type: 应用类型。可以为 portal  process  cms  service。
+ *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+ *       type : "portal",
+ *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+ *       name : "initScript" // 脚本配置的名称、别名或id
+ * })
+ *
+ * //获取服务管理中的html
+ * this.includeCss({
+ *   "type": "service",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取流程管理中的html
+ * this.includeCss({
+ *   "type": "process",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取内容管理中的html
+ * this.includeCss({
+ *   "type": "cms",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取门户管理中的html
+ * this.includeCss({
+ *   "type": "portal",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ * </code></pre>
+ * @param {Function} [callback] 加载后执行的回调方法
+ * @param {Boolean} [async] 是否异步加载，默认为true
+ * @o2syntax
+ * this.includeCss( optionsOrName, callback, async )
+ * @example
+ * //同步获取css文本（不推荐）
+ * //在门户的脚本库里配置了css，名称为test.css
+ * var cssText = this.includeCss({
+ *   "type": "portal",
+ *   "application": "appName", //门户的标识
+ *   "name": "test.css"
+ * });
+ */
+
+/**
+ * 当脚本配置保存的是json文件（名称以.json结束），this.includeJson可以以获取json内容。
+ * @method includeJson
+ * @since v9.2
+ * @methodOf  module:server.common.include
+ * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+ * <pre><code class='language-js'>
+ * //如果需要获取本应用的json(在脚本配置中)，将options设置为String。
+ * this.includeJson("test.json") //脚本配置的名称、别名或id
+ *
+ * //如果需要获取其他应用的html，将options设置为Object;
+ * this.includeJson({
+ *       //type: 应用类型。可以为 portal  process  cms  service。
+ *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+ *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+ *       type : "portal",
+ *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+ *       name : "initScript" // 脚本配置的名称、别名或id
+ * })
+ *
+ * //获取服务管理中的json对象
+ * this.includeJson({
+ *   "type": "service",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取流程管理中的json对象
+ * this.includeJson({
+ *   "type": "process",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取内容管理中的json对象
+ * this.includeJson({
+ *   "type": "cms",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //获取门户管理中的json对象
+ * this.includeJson({
+ *   "type": "portal",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ * </code></pre>
+ * @param {Function} [callback] 加载后执行的回调方法
+ * @param {Boolean} [async] 是否异步加载，默认为true
+ * @o2syntax
+ * this.includeJson( optionsOrName, callback, async )
+ * @example
+ * //同步获取json数据（不推荐）
+ * //在门户的脚本库里配置了css，名称为test.json
+ * var json = this.includeJson({
+ *   "type": "portal",
+ *   "application": "appName", //门户的标识
+ *   "name": "test.json"
+ * });
+ */
+
 const include = function( optionsOrName , callback ){
     const options = (typeof optionsOrName) == "string" ? { name : optionsOrName } : optionsOrName;
     const name = options.name;
@@ -1782,6 +1982,49 @@ const include = function( optionsOrName , callback ){
         if (callback) callback.apply(globalThis);
     }
 }
+
+const _includeSource = function (optionsOrName, callback, fileType) {
+    const options = (typeof optionsOrName) == "string" ? { name : optionsOrName } : optionsOrName;
+    const name = options.name;
+
+    const type = (!options.type) ? 'process' : options.type;
+    const application = type === "service" ? "service" : options.application;
+
+    if (!name || !type || !application){
+        log.error("can not find script. missing script name or application");
+        return false;
+    }
+
+    const actionsMap = {
+        portal: portalActions,
+        process: processActions,
+        cms: cmsActions,
+        service: serviceActions,
+    }
+
+    const arg1 = (type==='portal') ? application : name;
+    const arg2 = (type==='portal') ? name : application;
+    const json = (type==='service') ? actionsMap[type].getScript(name) : actionsMap[type].getScript(arg1, arg2, {"importedList":includedScripts[application]});
+
+    let result;
+    if (json.data && json.data.text){
+        result = json.data.text;
+        if( fileType === 'json' ){
+            result = JSON.parse(result);
+        }
+        if (callback) callback.call(globalThis, result);
+    }
+    return result;
+};
+const includeHtml = function (optionsOrName, callback){
+    return _includeSource.apply(this, [optionsOrName, callback, 'html'])
+};
+const includeJson = function (optionsOrName, callback){
+    return _includeSource.apply(this, [optionsOrName, callback, 'json'])
+};
+const includeCss = function (optionsOrName, callback){
+    return _includeSource.apply(this, [optionsOrName, callback, 'css']);
+};
 
 //Dict数据字典
 /**
@@ -4293,6 +4536,9 @@ const o= {
     serviceActions: { value: serviceActions },
     includedScripts: { value: includedScripts },
     include: { value: include },
+    includeHtml: { value: includeHtml },
+    includeCss: { value: includeCss },
+    includeJson: { value: includeJson },
     Dict: { value: Dict },
     Table: { value: Table },
     statement: { value: statement },
