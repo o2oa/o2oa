@@ -101,7 +101,7 @@
 /* 选中的框 */
 .schedule_selectedFrame {
   position: absolute;
-  border: 3px solid var(--el-color-primary);
+  border: 3px solid var(--oo-color-main);
   box-sizing: border-box!important;
 }
 .t-popup {

@@ -189,6 +189,10 @@
   --att-default-radius: 2px;
 }
 
+.mainColor_bg {
+  background-color: var(--oo-color-main) !important;
+}
+
 /* common */
 .margin-top {
   margin-top: 10px;
@@ -368,7 +372,7 @@
 }
 
 .att .primary_color {
-  color: var(--el-color-primary) !important;
+  color: var(--oo-color-main) !important;
 }
 .att .operator_link_underline {
   color: #666666;
@@ -431,9 +435,8 @@
 /* form 表单弹出窗口 */
 .index_page_form_container {
   width: 500px;
-  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.25);
-  float: right;
-  height: 100%;
+  background-color: white;
+  margin: 0.71rem 0;
 }
 /* 主页顶层样式 */
 .manager-box {
@@ -510,7 +513,6 @@
   z-index: 1026;
 }
 .o2-form {
-  background-color: var(--att-color-bg);
   position: relative;
   height: 100%;
   width: 100%;
@@ -734,7 +736,7 @@
   /*border: 1px solid #dedede;*/
   list-style: none;
   position: relative;
-  background: #ffffff;
+  background-color: var(--att-color-bg);
   border-radius: var(--att-default-radius);
 }
 .a-card-gray {
@@ -749,7 +751,7 @@
 }
 .a-card-head-tile {
   border-radius: 0 16px 16px 0;
-  background-color: var(--el-color-primary);
+  background-color: var(--oo-color-main);
   color: #ffffff;
   font-size: 12px;
   display: inline-block;

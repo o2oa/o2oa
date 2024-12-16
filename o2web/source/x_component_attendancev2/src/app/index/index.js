@@ -97,7 +97,7 @@ export default content({
   async openFomVm(c, bindData) {
     this.formVm = await c.generate("#form", bindData, this);
     this.dom.querySelector("#form").classList.add("index_page_form_container");
-    this.dom.querySelector("#formMask").classList.replace("cc-mask-hide", "cc-mask-show");
+    // this.dom.querySelector("#formMask").classList.replace("cc-mask-hide", "cc-mask-show");
   },
   // 关闭表单
   closeFormVm() {
@@ -105,7 +105,7 @@ export default content({
       this.formVm.destroy();
     }
     this.dom.querySelector("#form").classList.remove("index_page_form_container");
-    this.dom.querySelector("#formMask").classList.replace("cc-mask-show", "cc-mask-hide");
+    // this.dom.querySelector("#formMask").classList.replace("cc-mask-show", "cc-mask-hide");
   },
   
   async loadCurrentPersonInfo() {

@@ -118,7 +118,7 @@
   font-weight: 600;
 }
 .item-cal-date .item-cal-date-today {
-  background-color: var(--el-color-primary)!important;
+  background-color: var(--oo-color-main)!important;
   color: #ffffff;
 }
 .item-cal-record {

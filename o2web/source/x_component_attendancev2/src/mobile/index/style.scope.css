@@ -28,7 +28,7 @@
   }
 }
 .mobile-page .primary_color {
-  color: var(--el-color-primary)!important;
+  color: var(--oo-color-main)!important;
 }
 .mobile-page-header {
   height: 48px;

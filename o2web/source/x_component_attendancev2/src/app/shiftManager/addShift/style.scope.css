@@ -2,7 +2,7 @@
 .r-box {
   display: inline-block;
   flex-wrap: nowrap;
-  border-bottom: 1px solid var(--el-color-primary);
+  border-bottom: 1px solid var(--oo-color-main);
   transition: all 0.3s;
 }
 .r-item {
@@ -15,8 +15,8 @@
   cursor: pointer;
 }
 .r-item-active {
-  color: var(--el-color-primary)!important;
-  border-bottom: 2px solid var(--el-color-primary);
+  color: var(--oo-color-main)!important;
+  border-bottom: 2px solid var(--oo-color-main);
 }
 
 
