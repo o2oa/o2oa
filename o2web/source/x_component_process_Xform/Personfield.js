@@ -930,4 +930,4 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         }
     }
 
-}); 
+});
