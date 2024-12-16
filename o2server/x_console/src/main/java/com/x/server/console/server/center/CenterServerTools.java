@@ -5,6 +5,7 @@ import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.ApiAccessFilter;
+import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -16,6 +17,15 @@ import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.ServerRequestLogBody;
 import com.x.server.console.server.Servers;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.TimeZone;
+import javax.servlet.DispatcherType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -31,16 +41,6 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
-
-import javax.servlet.DispatcherType;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.TimeZone;
 
 public class CenterServerTools extends JettySeverTools {
 
@@ -158,10 +158,16 @@ public class CenterServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void setExposeJest( QuickStartWebApp webApp) throws Exception {
-		FilterHolder denialOfServiceFilterHolder = new FilterHolder(new ApiAccessFilter());
-		webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-		webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
+	private static void setExposeJest(QuickStartWebApp webApp) {
+		FilterHolder apiAccessFilterHolder = new FilterHolder(new ApiAccessFilter());
+		webApp.addFilter(apiAccessFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
+		webApp.addFilter(apiAccessFilterHolder, "/describe/sources/*",
+				EnumSet.of(DispatcherType.REQUEST));
+
+		FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
+		Config.general().getAccessDenyUris().forEach(
+				uri -> webApp.addFilter(denialOfServiceFilterHolder, uri,
+						EnumSet.of(DispatcherType.REQUEST)));
 	}
 
 	private static RequestLog requestLog(CenterServer centerServer) throws Exception {

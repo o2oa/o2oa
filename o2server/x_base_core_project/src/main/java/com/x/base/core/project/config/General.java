@@ -1,42 +1,21 @@
 package com.x.base.core.project.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.RandomAccessFile;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.Host;
 import com.x.base.core.project.tools.NumberTools;
-import org.graalvm.polyglot.Context;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class General extends ConfigObject {
 
@@ -46,6 +25,9 @@ public class General extends ConfigObject {
     private static final Set<String> DEFAULT_SCRIPTINGALLOWEDCLASSES = new HashSet<>(
             Arrays.asList(String.class.getName(), List.class.getName(), ArrayList.class.getName(),
                     Arrays.class.getName()));
+    private static final Set<String> DEFAULT_ACCESSDENYURIS = Set.of(
+            "/jaxrs/application.wadl"
+    );
     private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
     private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
     private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
@@ -89,6 +71,7 @@ public class General extends ConfigObject {
         o.webServerCacheControlMaxAge = DEFAULT_WEBSERVERCACHECONTROLMAXAGE;
         o.supportedLanguages = DEFAULT_SUPPORTED_LANGUAGES;
         o.graalvmEvalAsPromise = DEFAULT_GRAALVMEVALASPROMISE;
+        o.accessDenyUris = DEFAULT_ACCESSDENYURIS;
         return o;
     }
 
@@ -154,6 +137,18 @@ public class General extends ConfigObject {
 
     @FieldDescribe("graalvm执行脚本包装为promise.")
     private Boolean graalvmEvalAsPromise;
+
+    @FieldDescribe("限制访问的uri地址.")
+    private Set<String> accessDenyUris;
+
+    public Set<String> getAccessDenyUris() {
+        return (null == this.accessDenyUris) ? DEFAULT_ACCESSDENYURIS
+                : this.accessDenyUris;
+    }
+
+    public void setAccessDenyUris(Set<String> accessDenyUris) {
+        this.accessDenyUris = accessDenyUris;
+    }
 
     public Boolean getGraalvmEvalAsPromise() {
         return BooleanUtils.isNotFalse(this.graalvmEvalAsPromise);
