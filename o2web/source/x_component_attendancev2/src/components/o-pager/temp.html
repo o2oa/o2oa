@@ -1,9 +1,9 @@
 <div class="pager-node">
   <div class="pager-content">
       <div class="pager-first" @click="clickFirstPage">{{$.lp.firstPage}}</div>
-      <div class="pager-prev o2icon-triangle_left" @click="clickPrePage"></div>
+<!--      <div class="pager-prev o2icon-triangle_left" @click="clickPrePage"></div>-->
       <div class="pager-last" @click="clickLastPage">{{ $.lp.lastPage + '(' + $.totalPage + ')' }}</div>
-      <div class="pager-next o2icon-triangle_right" @click="clickNextPage"></div>
+<!--      <div class="pager-next o2icon-triangle_right" @click="clickNextPage"></div>-->
       <div class="pager-number-area">{{ $m.numberCalc($.totalCount, $.page) }}
           <div oo-each="$.pageList" oo-item="index" class="{{$.page == index.value ? 'pager-item mainColor_bg':'pager-item'}}" @click="this.clickNumberPage(index.value)">{{index.value}}</div>
       </div>

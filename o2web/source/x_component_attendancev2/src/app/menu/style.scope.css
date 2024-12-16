@@ -25,6 +25,7 @@
   overflow: hidden;
   color: #333;
   margin-right: 10px;
+  padding: 0 10px;
   height: 40px;
   line-height: 40px;
   cursor: pointer;
@@ -54,6 +55,5 @@
 .title_selected {
   font-weight: 700;
   background-color: #EBF1F7 !important;
-  border-radius: 4px !important;
 }
 

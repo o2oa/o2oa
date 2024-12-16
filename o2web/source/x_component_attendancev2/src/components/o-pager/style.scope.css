@@ -15,7 +15,7 @@
 .pager-next {
   height: 24px;
   width: 80px;
-  border-radius: 12px;
+  border-radius: var(--att-default-radius);
   background: #ffffff;
   border: 1px solid #e6e6e6;
   font-size: 12px;

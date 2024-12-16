@@ -185,19 +185,19 @@ export default content({
             id: "1-1",
             title: lp.menu.myStatistic,
             action: "myAttendance",
-            icon: "o2icon-icon_tongji"
+            icon: "ooicon-data-center"
           },
           {
             id: "1-2",
             title: lp.menu.myAppealList,
             action: "appealManager",
-            icon: "o2icon-icon_kaoiqinyichang"
+            icon: "ooicon-emoji-prompt"
           },
           {
             id: "1-3",
             title: lp.menu.leavemanager,
             action: "leaveManager",
-            icon: "o2icon-icon_shijian"
+            icon: "ooicon-clock"
           },
         ],
       },
@@ -209,25 +209,25 @@ export default content({
             id: "2-1",
             title: lp.menu.detailStatisticFilter,
             action: "detailStatisticManager",
-            icon: "o2icon-icon_huizong"
+            icon: "ooicon-work-management"
           },
           {
             id: "2-2",
             title: lp.menu.detailFilter,
             action: "detailManager",
-            icon: "o2icon-icon_meirihuizong"
+            icon: "ooicon-work-management2"
           },
           {
             id: "2-3",
             title: lp.menu.recordList,
             action: "recordManager",
-            icon: "o2icon-icon_yuanshijilu"
+            icon: "ooicon-list-alt"
           },
           {
             id: "2-4",
             title: lp.menu.appealList,
             action: "appealAdminManager",
-            icon: "o2icon-icon_kaoiqinyichang"
+            icon: "ooicon-emoji-prompt"
           },
         ],
       },
@@ -245,25 +245,25 @@ export default content({
             id: "3-2",
             title: lp.menu.groupmanager,
             action: "groupManager",
-            icon: "o2icon-icon_kaoqinzu"
+            icon: "ooicon-group"
           },
           {
             id: "3-3",
             title: lp.menu.addressmanger,
             action: "addressManager",
-            icon: "o2icon-icon_changsuo"
+            icon: "ooicon-workcenter"
           },
           {
             id: "3-4",
             title: lp.menu.leavemanager,
             action: "leaveManager",
-            icon: "o2icon-icon_qingjia"
+            icon: "ooicon-clock"
           },
           {
             id: "3-5",
             title: lp.menu.configmanager,
             action: "configManager",
-            icon: "o2icon-icon_peizhi"
+            icon: "ooicon-config"
           },
         ],
       },
