@@ -160,6 +160,7 @@ export default content({
         accessMenus.push(
           {
             title: lp.menu.config,
+            id: '3',
             access: 2,
             sub: [
               {
@@ -179,6 +180,7 @@ export default content({
     return [
       {
         title: lp.menu.myAttendance,
+        id: '1',
         access: 0,
         sub: [
           {
@@ -203,6 +205,7 @@ export default content({
       },
       {
         title: lp.menu.statistic,
+        id: '2',
         access: 1,
         sub: [
           {
@@ -233,6 +236,7 @@ export default content({
       },
       {
         title: lp.menu.config,
+        id: '3',
         access: 2,
         sub: [
           {

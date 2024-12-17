@@ -2,7 +2,6 @@
   background-color: #fff;
   overflow: auto;
 }
-
 .index_page_nav_menu {
   margin: 0;
   padding: 0;
@@ -15,7 +14,18 @@
 }
 .index_page_nav_menu_title_container {
   display: flex;
-  align-items: center;
+  /*align-items: center;*/
+  padding: 0 1.25em;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0.3rem 0;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--oo-color-text2);
+  transition: background-color 0.3s, color 0.3s;
+}
+.index_page_nav_menu_title_container:hover {
+  background-color: var(--oo-color-hover);
 }
 .index_page_nav_menu_title_container .index_page_nav_menu_title {
   font-size: 15px;
@@ -23,16 +33,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  color: #333;
   margin-right: 10px;
-  padding: 0 10px;
   height: 40px;
   line-height: 40px;
   cursor: pointer;
 }
 .index_page_nav_sub_menu_container {
-  color: #666666;
-  padding-left: 20px;
+  padding-left: 2.2rem;
 }
 .index_page_nav_sub_menu_title {
   padding-left: 5px;
