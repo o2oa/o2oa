@@ -13,10 +13,10 @@ MWF.xScript.Actions.ServiceScriptActions = new Class({
         }
     },
     getScriptByName: function(name, included, success, failure, async){
-        this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
+        return this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
     },
     getScript: function(id, success, failure, async){
-        this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
+        return this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
     },
 
     //getScriptTextDepend: function(id, text, included, success, failure){

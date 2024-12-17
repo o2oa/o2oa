@@ -2216,13 +2216,27 @@ MWF.xScript.Environment = function(ev){
     // }
 
     /**
+     * 在流程、门户、内容管理或服务管理中可以创建了脚本配置。</br>
+     * 默认情况下系统以javascript格式进行编辑。
+     * 这个时候可以使用<code class='language-js'>this.include()</code>引用脚本配置。</br>
+     * 在v9.2以后，如果脚本配置名称以.json 、 .html 或 .css结束，系统会加载相应的编辑器。
+     * 这种情况您可以使用如下方法获取内容。
+     * <pre><code class='language-js'>this.includeHmtl();
+     * this.includeCss();
+     * this.includeJson();
+     * </code></pre>
+     * @module include
+     * @o2cn 脚本配置相应api
+     * @o2category web
+     * @o2ordernumber 140
+     */
+
+    /**
      * this.include是一个方法，当您在流程、门户、内容管理或服务管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
      * v8.0及以后版本中增加了服务管理的脚本配置。<br/>
      * <b>（建议使用表单中的预加载脚本，需要判断加载的时候才使用本方法加载脚本，此时建议异步加载有助于表单加载速度。）</b><br/>
-     * @module include
-     * @o2cn 脚本引用
-     * @o2category web
-     * @o2ordernumber 140
+     * @method include
+     * @methodOf module:include
      * @param {(String|Object|String[]|Object[])} optionsOrName 可以是脚本标识字符串（数组）或者是对象（数组）。
      * <pre><code class='language-js'>
      * //如果需要引用本应用的脚本配置，将options设置为String或者String Array。
@@ -2310,10 +2324,309 @@ MWF.xScript.Environment = function(ev){
      * userNameNode.set("text", urerName ); //为DOM对象设置值
      */
 
+    /**
+     * 当脚本配置保存的是html文件（名称以.html结束），this.includeHtml可以以获取html内容。
+     * @method includeHtml
+     * @since v9.2
+     * @methodOf module:include
+     * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+     * <pre><code class='language-js'>
+     * //如果需要获取本应用的html(在脚本配置中)，将options设置为String。
+     * this.includeHtml("test.html") //脚本配置的名称、别名或id
+     *
+     * //如果需要获取其他应用的html，将options设置为Object;
+     * this.includeHtml({
+     *       //type: 应用类型。可以为 portal  process  cms  service。
+     *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+     *       type : "portal",
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+     *       name : "test.html" // 脚本配置的名称、别名或id
+     * })
+     *
+     * //获取服务管理中的html
+     * this.includeHtml({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取流程管理中的html
+     * this.includeHtml({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取内容管理中的html
+     * this.includeHtml({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取门户管理中的html
+     * this.includeHtml({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     * </code></pre>
+     * @param {Function} [callback] 加载后执行的回调方法
+     * @param {Boolean} [async] 是否异步加载，默认为true
+     * @o2syntax
+     * this.includeHtml( optionsOrName, callback, async )
+     * @example
+     * //使用promise获取html
+     * //在本应用的脚本库里配置了html，名称为test.html
+     * var promise = this.includeHtml("test.html");
+     * promise.then(function(html){
+     *      //假设表单上有一个容器，标识为div
+     *      var div = this.form.get('div').node;
+     *      //将html渲染在div节点上，可以查看 api o2.loadHtmlText
+     *     o2.loadHtmlText(html, {dom: div})
+     * }.bind(this))
+     * @example
+     * //在回调中获取html
+     * //在本应用的脚本库里配置了html，名称为test.html
+     * this.includeHtml("test.html", function(html){
+     *      //假设表单上有一个容器，标识为div
+     *      var div = this.form.get('div').node;
+     *      //将html渲染在div节点上，可以查看 api o2.loadHtmlText
+     *      o2.loadHtmlText(html, {dom: div})
+     * }.bind(this))
+     * @example
+     * //同步获取html（不推荐）
+     * //在门户的脚本库里配置了html，名称为test.html
+     * var html = this.includeHtml({
+     *   "type": "portal",
+     *   "application": "appName", //门户的标识
+     *   "name": "test.html"
+     * }, null, false);
+     * var div = this.form.get('div').node; //假设表单/页面上有一个容器，标识为div
+     * div.set('html', html); //将html渲染在div节点上
+     */
+
+
+    /**
+     * 当脚本配置保存的是css文件（名称以.css结束），this.includeCss可以以获取html内容。
+     * @method includeCss
+     * @since v9.2
+     * @methodOf module:include
+     * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+     * <pre><code class='language-js'>
+     * //如果需要获取本应用的css(在脚本配置中)，将options设置为String。
+     * this.includeCss("test.css") //脚本配置的名称、别名或id
+     *
+     * //如果需要获取其他应用的html，将options设置为Object;
+     * this.includeCss({
+     *       //type: 应用类型。可以为 portal  process  cms  service。
+     *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+     *       type : "portal",
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+     *       name : "initScript" // 脚本配置的名称、别名或id
+     * })
+     *
+     * //获取服务管理中的html
+     * this.includeCss({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取流程管理中的html
+     * this.includeCss({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取内容管理中的html
+     * this.includeCss({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取门户管理中的html
+     * this.includeCss({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     * </code></pre>
+     * @param {Function} [callback] 加载后执行的回调方法
+     * @param {Boolean} [async] 是否异步加载，默认为true
+     * @o2syntax
+     * this.includeCss( optionsOrName, callback, async )
+     * @example
+     * //使用promise获取css文本
+     * //在本应用的脚本库里配置了css，名称为test.css
+     * var promise = this.includeCss("test.css");
+     * promise.then(function(cssText){
+     *      //将css作用在表单/页面上，具体可以查看 api: o2.loadCssText
+     *     var node = this.form.getApp().content;
+     *     o2.loadCssText(cssText, {dom: node})
+     * }.bind(this))
+     * @example
+     * //在回调中获取css文本
+     * //在本应用的脚本库里配置了css，名称为test.css
+     * this.includeCss("test.css", function(cssText){
+     *      o2.loadCssText(cssText, {dom: document.body}) //把css作为全局渲染
+     * }.bind(this))
+     * @example
+     * //同步获取css文本（不推荐）
+     * //在门户的脚本库里配置了css，名称为test.css
+     * var cssText = this.includeCss({
+     *   "type": "portal",
+     *   "application": "appName", //门户的标识
+     *   "name": "test.css"
+     * }, null, false);
+     * var node = this.form.getApp().content;
+     * o2.loadCssText(cssText, {dom: node})
+     */
+
+    /**
+     * 当脚本配置保存的是json文件（名称以.json结束），this.includeJson可以以获取json内容。
+     * @method includeJson
+     * @since v9.2
+     * @methodOf module:include
+     * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
+     * <pre><code class='language-js'>
+     * //如果需要获取本应用的json(在脚本配置中)，将options设置为String。
+     * this.includeJson("test.json") //脚本配置的名称、别名或id
+     *
+     * //如果需要获取其他应用的html，将options设置为Object;
+     * this.includeJson({
+     *       //type: 应用类型。可以为 portal  process  cms  service。
+     *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+     *       type : "portal",
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
+     *       name : "initScript" // 脚本配置的名称、别名或id
+     * })
+     *
+     * //获取服务管理中的json对象
+     * this.includeJson({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取流程管理中的json对象
+     * this.includeJson({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取内容管理中的json对象
+     * this.includeJson({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //获取门户管理中的json对象
+     * this.includeJson({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     * </code></pre>
+     * @param {Function} [callback] 加载后执行的回调方法
+     * @param {Boolean} [async] 是否异步加载，默认为true
+     * @o2syntax
+     * this.includeJson( optionsOrName, callback, async )
+     * @example
+     * //使用promise获取json数据
+     * //在本应用的脚本库里配置了json，名称为test.json
+     * var promise = this.includeJson("test.json");
+     * promise.then(function(json){
+     *      //json为获取的数据
+     * }.bind(this))
+     * @example
+     * //在回调中获取json数据
+     * //在本应用的脚本库里配置了json，名称为test.json
+     * this.includeJson("test.json", function(json){
+     *      //json为获取的数据
+     * }.bind(this))
+     * @example
+     * //同步获取json数据（不推荐）
+     * //在门户的脚本库里配置了css，名称为test.json
+     * var json = this.includeJson({
+     *   "type": "portal",
+     *   "application": "appName", //门户的标识
+     *   "name": "test.json"
+     * }, null, false);
+     */
+
+    var _getScriptAction = function ( type ){
+        var scriptAction;
+        switch (type) {
+            case "portal" :
+                if (this.scriptActionPortal) {
+                    scriptAction = this.scriptActionPortal;
+                } else {
+                    MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
+                    scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
+                }
+                break;
+            case "process" :
+                if (this.scriptActionProcess) {
+                    scriptAction = this.scriptActionProcess;
+                } else {
+                    MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
+                    scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
+                }
+                break;
+            case "cms" :
+                if (this.scriptActionCMS) {
+                    scriptAction = this.scriptActionCMS;
+                } else {
+                    MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
+                    scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
+                }
+                break;
+            case "service" :
+                if (this.scriptActionService) {
+                    scriptAction = this.scriptActionService;
+                } else {
+                    MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                    scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                }
+                break;
+        }
+        return scriptAction;
+    }
+
+
+    //缓存名称、别名、id
+    var _parseScriptImportList = function (json, type){
+        var includedScripts = [];
+        var importedList = json.data.importedList || [];
+        importedList.each(function (flag) {
+            if (type === "portal") {
+                includedScripts.push(type + "-" + json.data.portal + "-" + flag);
+                if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
+                if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
+            } else if (type === "cms") {
+                includedScripts.push(type + "-" + json.data.appId + "-" + flag);
+                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+            } else if (type === "process") {
+                includedScripts.push(type + "-" + json.data.application + "-" + flag);
+                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+            }else if (type === "service") {
+                includedScripts.push(type + "-" + flag);
+            }
+        });
+        return includedScripts.concat(importedList);
+    }
+
     var includedScripts = [];
     var _includeSingle = function( optionsOrName , callback, async){
         var options = optionsOrName;
-        if( typeOf( options ) == "string" ){
+        if( typeOf( options ) === "string" ){
             options = { name : options };
         }
         var name = options.name;
@@ -2328,99 +2641,32 @@ MWF.xScript.Environment = function(ev){
         if( type === "service" ){
             key = type + "-" + name;
         }
+
+        //js 加载过就不重新加载了
         if (includedScripts.indexOf( key )> -1){
             if (callback) callback.apply(this);
             return;
         }
-        //if (includedScripts.indexOf( name )> -1){
-        //    if (callback) callback.apply(this);
-        //    return;
-        //}
-        if( (options.enableAnonymous || options.anonymous) && type === "cms" ){
-            o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName( application, name, function(json){
-                if (json.data){
-                    includedScripts.push( key );
-                    //名称、别名、id
-                    ( json.data.importedList || [] ).each( function ( flag ) {
-                        includedScripts.push( type + "-" + json.data.appId + "-" + flag );
-                        if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
-                        if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
-                    });
-                    includedScripts = includedScripts.concat(json.data.importedList || []);
-                    MWF.CMSMacro.exec(json.data.text, this);
-                    if (callback) callback.apply(this);
+
+        var successCallback = function (json) {
+            if (json.data) {
+                includedScripts.push(key);
+                includedScripts = includedScripts.concat( _parseScriptImportList(json, type) );
+                if( (options.enableAnonymous || options.anonymous ) && type === "cms" ){
+                    MWF.CMSMacro.exec(json.data.text, this)
                 }else{
-                    if (callback) callback.apply(this);
-                }
-            }.bind(this), null, false);
-        }else {
-            var scriptAction;
-            switch (type) {
-                case "portal" :
-                    if (this.scriptActionPortal) {
-                        scriptAction = this.scriptActionPortal;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
-                        scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
-                    }
-                    break;
-                case "process" :
-                    if (this.scriptActionProcess) {
-                        scriptAction = this.scriptActionProcess;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
-                        scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
-                    }
-                    break;
-                case "cms" :
-                    if (this.scriptActionCMS) {
-                        scriptAction = this.scriptActionCMS;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
-                        scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
-                    }
-                    break;
-                case "service" :
-                    if (this.scriptActionService) {
-                        scriptAction = this.scriptActionService;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
-                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
-                    }
-                    break;
-            }
-
-            var successCallback = function (json) {
-                if (json.data) {
-                    includedScripts.push(key);
-
-                    //名称、别名、id
-                    json.data.importedList.each(function (flag) {
-                        if (type === "portal") {
-                            includedScripts.push(type + "-" + json.data.portal + "-" + flag);
-                            if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
-                            if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
-                        } else if (type === "cms") {
-                            includedScripts.push(type + "-" + json.data.appId + "-" + flag);
-                            if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                            if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                        } else if (type === "process") {
-                            includedScripts.push(type + "-" + json.data.application + "-" + flag);
-                            if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                            if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                        }else if (type === "service") {
-                            includedScripts.push(type + "-" + flag);
-                        }
-                    });
-                    includedScripts = includedScripts.concat(json.data.importedList);
-
                     MWF.Macro.exec(json.data.text, this);
-                    if (callback) callback.apply(this);
-                } else {
-                    if (callback) callback.apply(this);
                 }
-            }.bind(this);
+                if (callback) callback.apply(this);
+            } else {
+                if (callback) callback.apply(this);
+            }
+        }.bind(this);
 
+        if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
+            o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, successCallback, null, !!async);
+        } else {
+            var scriptAction = _getScriptAction.call(this, type);
             if( type === "service" ){
                 scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
             }else{
@@ -2429,7 +2675,7 @@ MWF.xScript.Environment = function(ev){
         }
     };
     this.include = function( optionsOrName , callback, async){
-        if (o2.typeOf(optionsOrName)=="array"){
+        if (o2.typeOf(optionsOrName)==="array"){
             if (!!async){
                 var count = optionsOrName.length;
                 var loaded = 0;
@@ -2449,6 +2695,60 @@ MWF.xScript.Environment = function(ev){
         }else{
             _includeSingle.apply(this, [optionsOrName , callback, async])
         }
+    };
+
+    var includedSourceMap = {};
+    var _includeSource = function (optionsOrName, callback, async, fileType) {
+        var options = typeOf(optionsOrName) === "string" ? {name: optionsOrName} : optionsOrName;
+        var name = options.name;
+        var type = options.type === "service" ? options.type : ((options.type && options.application) ? options.type : "portal");
+        var application = options.application || _form.json.application;
+        var key = type === "service" ? (type + "-" + name) : (type + "-" + application + "-" + name);
+        var data, result;
+        if( includedSourceMap[key] ){
+            data = includedSourceMap[key];
+            if(callback)callback( data.text );
+            return !!async ? Promise.resolve( data.text ) : data.text;
+        }
+        var successCallback = function (json) {
+            if (json.data) {
+                var includeds = [key];
+                includeds = includeds.concat( _parseScriptImportList(json, type) );
+                includeds.each(function(k){
+                    includedSourceMap[k] = json.data;
+                })
+                result = json.data.text;
+                if( fileType === 'json' ){
+                    result = JSON.parse(result);
+                }
+                if (callback) callback.call(this, result);
+            } else {
+                result = '';
+                if (callback) callback.call(this, '');
+            }
+            return result;
+        }.bind(this);
+        var p;
+        if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
+            p = o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, !!async ? null : successCallback, null, !!async);
+        } else {
+            var scriptAction = _getScriptAction.call(this, type);
+            if( type === "service" ){
+                p = scriptAction.getScriptByName(name, includedScripts, successCallback, !!async ? null : successCallback, null, !!async);
+            }else{
+                p = scriptAction.getScriptByName(application, name, includedScripts, !!async ? null : successCallback, null, !!async);
+            }
+        }
+        return !!async ? p.then( successCallback ) : result;
+    };
+    this.includeHtml = function (optionsOrName, callback, async){
+        return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'html'])
+    };
+    this.includeJson = function (optionsOrName, callback, async){
+        return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'json'])
+    };
+    this.includeCss = function (optionsOrName, callback, async){
+        return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'css']);
     };
 
     /**
