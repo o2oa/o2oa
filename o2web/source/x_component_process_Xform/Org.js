@@ -179,19 +179,23 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                     size = { y: 26 }
                 }else{
                     size = this.node.getFirst().getSize();
-                    w = size.x-3;
-                    if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
-                        if (COMMON.Browser.safari) w = w - 20;
-                    }
+                    // w = size.x-3;
+                    // if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                    //     if (COMMON.Browser.safari) w = w - 20;
+                    // }
                 }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "height": ""+size.y+"px",
                     "line-height": ""+size.y+"px"
                 });
-                if( w )this.descriptionNode.setStyles({
-                    "width": ""+w+"px"
+                this.descriptionNode.setStyles({
+                    "width": "auto",
+                    "overflow": "auto"
                 });
+                // if( w )this.descriptionNode.setStyles({
+                //     "width": ""+w+"px"
+                // });
                 this.setDescriptionEvent();
             }
         }

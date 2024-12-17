@@ -123,10 +123,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                     size = { y: 26 }
                 }else{
                     size = this.node.getFirst().getSize();
-                    w = size.x-3;
-                    if( this.hasIcon() ){
-                        if (COMMON.Browser.safari) w = w-20;
-                    }
+                    // w = size.x-3;
+                    // if( this.hasIcon() ){
+                    //     if (COMMON.Browser.safari) w = w-20;
+                    // }
                 }
 
                 /**
@@ -138,8 +138,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                     "height": ""+size.y+"px",
                     "line-height": ""+size.y+"px"
                 });
-                if( w )this.descriptionNode.setStyles({
-                    "width": ""+w+"px"
+                // if( w )this.descriptionNode.setStyles({
+                //     "width": ""+w+"px"
+                // });
+                this.descriptionNode.setStyles({
+                    "width": "auto",
+                    "overflow": "auto"
                 });
                 this.setDescriptionEvent();
             }
