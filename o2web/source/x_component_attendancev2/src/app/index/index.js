@@ -97,7 +97,7 @@ export default content({
   async openFomVm(c, bindData) {
     this.formVm = await c.generate("#form", bindData, this);
     this.dom.querySelector("#form").classList.add("index_page_form_container");
-    this.dom.querySelector("#formMask").classList.replace("cc-mask-hide", "cc-mask-show");
+    // this.dom.querySelector("#formMask").classList.replace("cc-mask-hide", "cc-mask-show");
   },
   // 关闭表单
   closeFormVm() {
@@ -105,7 +105,7 @@ export default content({
       this.formVm.destroy();
     }
     this.dom.querySelector("#form").classList.remove("index_page_form_container");
-    this.dom.querySelector("#formMask").classList.replace("cc-mask-show", "cc-mask-hide");
+    // this.dom.querySelector("#formMask").classList.replace("cc-mask-show", "cc-mask-hide");
   },
   
   async loadCurrentPersonInfo() {
@@ -160,6 +160,7 @@ export default content({
         accessMenus.push(
           {
             title: lp.menu.config,
+            id: '3',
             access: 2,
             sub: [
               {
@@ -179,60 +180,63 @@ export default content({
     return [
       {
         title: lp.menu.myAttendance,
+        id: '1',
         access: 0,
         sub: [
           {
             id: "1-1",
             title: lp.menu.myStatistic,
             action: "myAttendance",
-            icon: "o2icon-icon_tongji"
+            icon: "ooicon-data-center"
           },
           {
             id: "1-2",
             title: lp.menu.myAppealList,
             action: "appealManager",
-            icon: "o2icon-icon_kaoiqinyichang"
+            icon: "ooicon-emoji-prompt"
           },
           {
             id: "1-3",
             title: lp.menu.leavemanager,
             action: "leaveManager",
-            icon: "o2icon-icon_shijian"
+            icon: "ooicon-clock"
           },
         ],
       },
       {
         title: lp.menu.statistic,
+        id: '2',
         access: 1,
         sub: [
           {
             id: "2-1",
             title: lp.menu.detailStatisticFilter,
             action: "detailStatisticManager",
-            icon: "o2icon-icon_huizong"
+            icon: "ooicon-work-management"
           },
           {
             id: "2-2",
             title: lp.menu.detailFilter,
             action: "detailManager",
-            icon: "o2icon-icon_meirihuizong"
+            icon: "ooicon-work-management2"
           },
           {
             id: "2-3",
             title: lp.menu.recordList,
             action: "recordManager",
-            icon: "o2icon-icon_yuanshijilu"
+            icon: "ooicon-list-alt"
           },
           {
             id: "2-4",
             title: lp.menu.appealList,
             action: "appealAdminManager",
-            icon: "o2icon-icon_kaoiqinyichang"
+            icon: "ooicon-emoji-prompt"
           },
         ],
       },
       {
         title: lp.menu.config,
+        id: '3',
         access: 2,
         sub: [
           {
@@ -245,25 +249,25 @@ export default content({
             id: "3-2",
             title: lp.menu.groupmanager,
             action: "groupManager",
-            icon: "o2icon-icon_kaoqinzu"
+            icon: "ooicon-group"
           },
           {
             id: "3-3",
             title: lp.menu.addressmanger,
             action: "addressManager",
-            icon: "o2icon-icon_changsuo"
+            icon: "ooicon-workcenter"
           },
           {
             id: "3-4",
             title: lp.menu.leavemanager,
             action: "leaveManager",
-            icon: "o2icon-icon_qingjia"
+            icon: "ooicon-clock"
           },
           {
             id: "3-5",
             title: lp.menu.configmanager,
             action: "configManager",
-            icon: "o2icon-icon_peizhi"
+            icon: "ooicon-config"
           },
         ],
       },

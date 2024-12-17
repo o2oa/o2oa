@@ -10,7 +10,7 @@
   font-size: 14px;
   background-color: #fff;
   background-image: none;
-  border-radius: 18px;
+  border-radius: var(--att-default-radius);
   border: 1px solid #dedede;
   transition: all 0.3s;
   align-items: center;
@@ -56,7 +56,7 @@
   font-size: 14px;
   white-space: nowrap;
   background: #fff;
-  border-radius: 6px;
+  border-radius: var(--att-default-radius);
   box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
     0 9px 28px 8px rgb(0 0 0 / 5%);
 }

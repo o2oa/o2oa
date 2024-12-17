@@ -182,6 +182,15 @@
   --att-record-status-leave-color: #78c06e;
   /* 旷工 */
   --att-record-status-absenteeism-color: #ff8080;
+
+  --att-color-bg: #f7f7f7;
+  --att-color-divider: #e6e6e6;
+
+  --att-default-radius: 2px;
+}
+
+.mainColor_bg {
+  background-color: var(--oo-color-main) !important;
 }
 
 /* common */
@@ -259,19 +268,19 @@
   font-size: 16px;
 }
 .light-border-button {
-  border: 1px solid !important;
+  border: 1px solid #DEDEDE !important;
   background-color: #ffffff !important;
-  border-color: #f23030 !important;
+  color: #666666;
 }
 .white-bg {
   background-color: white;
 }
 .att {
-  background-color: white;
+  background-color: var(--att-color-bg);
   height: 100%;
 }
 .att button {
-  border-radius: 100px;
+  border-radius: var(--att-default-radius);
   border: 0;
   padding: 6px 20px;
   cursor: pointer;
@@ -281,20 +290,20 @@
 .att_table thead {
   width: 100%;
   height: 40px;
-  background-color: #f0f0f0;
+  background-color: var(--att-color-bg);
   color: rgb(102, 102, 102);
   font-weight: normal;
   line-height: 40px;
   font-size: 15px;
 }
 .att_table th {
-  background-color: #f0f0f0;
+  background-color: var(--att-color-bg);
   text-align: center;
   line-height: 24px;
-  padding: 8px 0px;
+  padding: 8px 0;
   font-weight: normal;
-  border-top: 1px solid rgb(255, 255, 255);
-  border-bottom: 1px solid rgb(230, 230, 230);
+  /*border-top: 1px solid rgb(255, 255, 255);*/
+  /*border-bottom: 1px solid var(--att-color-divider);*/
 }
 .att_table tr {
   overflow: hidden;
@@ -311,7 +320,7 @@
   height: 39px;
   text-align: center;
   overflow: hidden;
-  border-bottom: 1px solid rgb(230, 230, 230);
+  border-bottom: 1px solid var(--att-color-divider);
 }
 
 /* 滚动的 table */
@@ -329,7 +338,7 @@
 }
 .scroll-table thead th {
   line-height: 24px;
-  padding: 8px 0px;
+  padding: 8px 0;
   font-weight: normal;
   /* position: sticky; */
   top: 0;
@@ -363,7 +372,7 @@
 }
 
 .att .primary_color {
-  color: var(--el-color-primary) !important;
+  color: var(--oo-color-main) !important;
 }
 .att .operator_link_underline {
   color: #666666;
@@ -407,31 +416,27 @@
 .index_page_content_container {
   display: flex;
   height: 100%;
+  gap: 0.71rem;
+  padding-right: 0.71rem;
 }
 .index_page_nav_container {
   flex-shrink: 0;
   overflow: auto;
-  width: 260px;
-  padding: 20px;
-  box-shadow: inset -1px 0 0 rgb(126 134 142 / 16%);
+  width: 12rem;
+  background-color: white;
 }
 .index_page_route_container {
-  flex-grow: 1;
+  flex: 1;
   overflow: hidden;
   position: relative;
-  /* min-width: 670px; */
-  background-color: #f0f0f0;
+  background-color: white;
+  margin: 0.71rem 0;
 }
 /* form 表单弹出窗口 */
 .index_page_form_container {
   width: 500px;
-  box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.25);
-  /* position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0; */
-  float: right;
-  height: 100%;
+  background-color: white;
+  margin: 0.71rem 0;
 }
 /* 主页顶层样式 */
 .manager-box {
@@ -508,7 +513,6 @@
   z-index: 1026;
 }
 .o2-form {
-  background-color: #f7f7f7;
   position: relative;
   height: 100%;
   width: 100%;
@@ -729,11 +733,11 @@
 
 /* 灰色背景的卡片 */
 .a-card {
-  border: 1px solid #dedede;
+  /*border: 1px solid #dedede;*/
   list-style: none;
   position: relative;
-  background: #ffffff;
-  border-radius: 8px;
+  background-color: var(--att-color-bg);
+  border-radius: var(--att-default-radius);
 }
 .a-card-gray {
   background-color: rgba(23, 26, 29, 0.04);
@@ -747,7 +751,7 @@
 }
 .a-card-head-tile {
   border-radius: 0 16px 16px 0;
-  background-color: var(--el-color-primary);
+  background-color: var(--oo-color-main);
   color: #ffffff;
   font-size: 12px;
   display: inline-block;

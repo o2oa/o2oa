@@ -77,6 +77,7 @@ MWF.xApplication.attendancev2.LP = {
     chooseDatePlaceholder: "请选择日期",
     selectPlaceholder: "请选择",
     selectOrgPersonOverCount: "只能选择({count})个数据！",
+    errorPageNumber: "请输入正确的页码！",
   },
   // 我的
   myAttendanceTitle: "我的统计",

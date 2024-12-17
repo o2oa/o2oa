@@ -54,11 +54,11 @@
           <div class="text_hint_info">{{$.lp.scheduleForm.monthInfo}}</div>
         </div>
         <div style="margin: 10px 0;float: right;">
-          <button class="light-border-button mainColor_border primary_color"
+          <button class="light-border-button "
               @click="copyFromLastMonth">{{$.lp.scheduleForm.copyFromLastMonthBtn}}</button>
-          <button class="light-border-button mainColor_border primary_color"
+          <button class="light-border-button "
                   @click="downloadScheduleTemplate">{{$.lp.scheduleForm.downloadExcelTempBtn}}</button>
-          <button class="light-border-button mainColor_border primary_color"
+          <button class="light-border-button "
                   @click="uploadScheduleTemplate">{{$.lp.scheduleForm.uploadExcelBtn}}</button>
         </div>
         <div style="clear: both;"></div>
@@ -89,7 +89,7 @@
         <div class="schedule_selectedFrame" id="selectedFrame" style="display: none;">
           <div style="position: absolute; top: 0px; left: 0px; width: 100%;">
             <div class="t-popup" style="position: absolute;margin: 0px;">
-              <div class="t-popup__content" style="margin: 0px; padding: 0px; border-radius: 8px;">
+              <div class="t-popup__content" style="margin: 0px; padding: 0px; border-radius: 2px;">
                 <div class="selected_popup">
                   <div class="schedule_list">
                     <!-- 班次列表 -->
