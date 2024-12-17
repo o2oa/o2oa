@@ -32,6 +32,8 @@ public class Kingbase8R6Dictionary extends DBDictionary {
 		this.schemaCase = SCHEMA_CASE_LOWER;
 		// 适配 V8R6
 		this.doubleTypeName = "DOUBLE PRECISION";
+		// 20241217 this.booleanTypeName = "BOOLEAN";
+		this.booleanTypeName = "INTEGER";
 		this.validationSQL = "SELECT NOW()";
 		this.supportsSelectStartIndex = true;
 		this.supportsSelectEndIndex = true;
@@ -51,8 +53,7 @@ public class Kingbase8R6Dictionary extends DBDictionary {
 		this.longVarcharTypeName = "TEXT";
 		this.charTypeName = "CHAR{0}";
 		this.varcharTypeName = "VARCHAR{0}";
-		/* add by Ray */
-		this.bitTypeName = "BOOL";
+
 		this.systemSchemaSet.addAll(Arrays.asList(new String[] { "INFORMATION_SCHEMA", "SYS_CATALOG" }));
 		this.fixedSizeTypeNameSet.addAll(Arrays.asList(new String[] { "TEXT", "XML", "INTERVAL YEAR", "INTERVAL MONTH",
 				"INTERVAL DAY", "INTERVAL HOUR", "INTERVAL MINUTE", "INTERVAL SECOND", " INTERVAL YEAR TO MONTH",
@@ -118,7 +119,7 @@ public class Kingbase8R6Dictionary extends DBDictionary {
 	}
 
 	/* add by Ray */
-	protected BooleanRepresentation booleanRepresentation = BooleanRepresentationFactory.BOOLEAN;
+	protected BooleanRepresentation booleanRepresentation = BooleanRepresentationFactory.INT_10;
 
 	/**
 	 * Convert the specified column of the SQL ResultSet to the proper java type.
@@ -133,11 +134,6 @@ public class Kingbase8R6Dictionary extends DBDictionary {
 	public void setBoolean(PreparedStatement stmnt, int idx, boolean val, Column col) throws SQLException {
 		booleanRepresentation.setBoolean(stmnt, idx, val);
 	}
-
-//	public void setBoolean(PreparedStatement paramPreparedStatement, int paramInt, boolean paramBoolean,
-//			Column paramColumn) throws SQLException {
-//		paramPreparedStatement.setBoolean(paramInt, paramBoolean);
-//	}
 
 	/* add by Ray end */
 
