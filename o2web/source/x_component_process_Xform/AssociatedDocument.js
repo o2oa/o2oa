@@ -61,7 +61,8 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         //  * @event MWF.xApplication.process.Xform.AssociatedDocument#openDocument
         //  * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
         //  */
-        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult", "afterSelectResult", "deleteDocument","openDocument"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult",
+            "afterSelectResult", "deleteDocument","afterDeleteDocument","openDocument"]
     },
 
 	_loadUserInterface: function(){
