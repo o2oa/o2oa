@@ -51,12 +51,18 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
          * @event MWF.xApplication.process.Xform.AssociatedDocument#deleteDocument
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
+        /**
+         * 删除关联文档后执行的事件。可以通过this.event获取删除的记录。
+         * @event MWF.xApplication.process.Xform.AssociatedDocument#afterDeleteDocument
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         // /**
         //  * 打开关联文档前执行的事件。
         //  * @event MWF.xApplication.process.Xform.AssociatedDocument#openDocument
         //  * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
         //  */
-        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult", "afterSelectResult", "deleteDocument","openDocument"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult",
+            "afterSelectResult", "deleteDocument","afterDeleteDocument","openDocument"]
     },
 
 	_loadUserInterface: function(){
@@ -316,6 +322,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             },function (json) {
                 itemNode.destroy();
                 _self.documentList.erase(d);
+                _self.fireEvent("afterDeleteDocument", [d]);
                 this.close();
                 //this.showDocumentList();
             }.bind(this));
@@ -604,5 +611,5 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this))
         }
     }
-	
-}); 
+
+});
