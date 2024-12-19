@@ -1912,6 +1912,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }
     },
+    getCurrentRouteAlias: function (){
+        if( this.flow && this.flow.currentAction === 'process'){
+            var processor = this.flow.processor;
+            if( processor && processor.routeRadio  ){
+                return processor.routeRadio.getData().data.alias;
+            }
+        }
+        return null;
+    },
     formSaveValidation: function(){
         var flag = true;
         Object.each(this.forms, function (field, key) {
@@ -1923,6 +1932,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     formValidation: function (routeName, opinion, medias) {
         if (this.options.readonly) return true;
+        this.Macro.environment.form.currentRouteAlias = this.getCurrentRouteAlias();
         this.Macro.environment.form.currentRouteName = routeName;
         this.Macro.environment.form.opinion = opinion;
         this.Macro.environment.form.medias = medias;
@@ -1936,6 +1946,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return flag;
     },
     validationOtherFlow: function (routeName, opinion, processor, flowData) {
+        this.Macro.environment.form.currentRouteAlias = null;
         this.Macro.environment.form.currentRouteName = routeName;
         this.Macro.environment.form.opinion = opinion;
         this.Macro.environment.form.flowData = flowData;
@@ -1957,6 +1968,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return true;
     },
     validation: function (routeName, opinion, processor, medias) {
+        this.Macro.environment.form.currentRouteAlias = this.getCurrentRouteAlias();
         this.Macro.environment.form.currentRouteName = routeName;
         this.Macro.environment.form.opinion = opinion;
         this.Macro.environment.form.medias = medias;
