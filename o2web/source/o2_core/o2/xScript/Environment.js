@@ -4580,6 +4580,17 @@ MWF.xScript.Environment = function(ev){
     //this.form.currentRouteName = _form.json.currentRouteName;
 
     /**
+     * 在用户提交的时候，选择的路由别名。仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
+     * @member currentRouteAlias
+     * @memberOf module:form
+     * @static
+     * @return {String} 用户选择的路由别名。
+     * @o2syntax
+     * var currentRouteAlias = this.form.currentRouteAlias;
+     */
+    //this.form.currentRouteAlias = _form.json.currentRouteAlias;
+
+    /**
      * 在用户提交的时候，输入的意见。仅在表单的“校验意见”和“校验路由”脚本中可用。只读。<b>（仅流程表单中可用）</b>。
      * @member opinion
      * @memberOf module:form
