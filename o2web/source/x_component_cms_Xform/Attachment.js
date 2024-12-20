@@ -728,7 +728,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
         if(this.json.ignoreSite) {
             ( this._getBusinessData() || [] ).each(function (att) {
                 var flag = this.form.businessData.attachmentList.some(function (attData) {
-                    return att.id === attData.id;
+                    return (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
                 }.bind(this));
                 if(flag)this.attachmentController.addAttachment(att);
             }.bind(this));
@@ -747,6 +747,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                         "control": d.data.control,
                         "name": d.data.name,
                         "id": d.data.id,
+                        "businessId": d.data.businessId,
                         "person": d.data.person,
                         "creatorUid": d.data.creatorUid,
                         "seqNumber": d.data.seqNumber,
@@ -791,7 +792,8 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                 data: {
                     attachmentId: attachment.data.id,
                     param: this.json.id,
-                    site: this.json.site || this.json.id
+                    site: this.json.site || this.json.id,
+                    businessId: attachment.data.businessId
                 }
             };
             window.o2android.postMessage(JSON.stringify(body));

@@ -37,6 +37,7 @@
                     "activityName": "拟稿",
                     "extension": "jpg",
                     "id": "9514758e-9e28-4bfe-87d7-824f2811f173",
+	 				"businessId": "1234758e-9e28-4bfe-87d7-824f2811f173",
                     "lastUpdateTime": "2020-12-09 21:48:03",
                     "length": 452863.0,
                     "name": "111.jpg",
@@ -2701,7 +2702,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		if( this.template.isShowAllSection ){
 			lineList = this.template.sectionLineEdited ? this.template.sectionLineEdited.lineList : this.template.lineList;
 		}else if( this.template.isMergeRead ) {
-			lineList = this.template.lineList; 
+			lineList = this.template.lineList;
 		}else{
 			lineList = this.template.lineList;
 		}

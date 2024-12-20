@@ -3036,7 +3036,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
-            "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
+            "isDownloadBatch": "hidden", //this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
@@ -3075,7 +3075,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if(this.json.ignoreSite) {
             ( this._getBusinessData() || [] ).each(function (att) {
                 var flag = this.form.businessData.attachmentList.some(function (attData) {
-                    return att.id === attData.id;
+                    return (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
                 }.bind(this));
                 if(flag)this.attachmentController.addAttachment(att);
             }.bind(this));
@@ -3094,6 +3094,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
                         "control": d.data.control,
                         "name": d.data.name,
                         "id": d.data.id,
+                        "businessId": d.data.businessId,
                         "person": d.data.person,
                         "creatorUid": d.data.creatorUid,
                         "orderNumber": d.data.orderNumber,
@@ -3137,7 +3138,8 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
                 data: {
                     attachmentId: attachment.data.id,
                     param: this.json.id,
-                    site: this.json.site || this.json.id
+                    site: this.json.site || this.json.id,
+                    businessId: attachment.data.businessId
                 }
             };
             window.o2android.postMessage(JSON.stringify(body));
