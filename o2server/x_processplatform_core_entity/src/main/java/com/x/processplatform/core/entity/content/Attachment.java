@@ -82,6 +82,9 @@ public class Attachment extends StorageObject {
 		if (StringTools.utf8Length(this.getProperties().getName()) > length_255B) {
 			this.name = StringTools.utf8FileNameSubString(this.getProperties().getName(), length_255B);
 		}
+		if(StringUtils.isBlank(this.businessId)){
+			this.businessId = createId();
+		}
 	}
 
 	@PostLoad
@@ -282,7 +285,6 @@ public class Attachment extends StorageObject {
 	@FieldDescribe("关联的存储名称.")
 	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + storage_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = true)
-	@Index(name = TABLE + IndexNameMiddle + storage_FIELDNAME)
 	private String storage;
 
 	public static final String length_FIELDNAME = "length";
@@ -526,6 +528,12 @@ public class Attachment extends StorageObject {
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromPath_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String fromPath;
+
+	public static final String businessId_FIELDNAME = "businessId";
+	@FieldDescribe("附件业务ID，需要和job一起来确定唯一的ID.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + businessId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String businessId;
 
 	public static final String PROPERTIES_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -812,5 +820,13 @@ public class Attachment extends StorageObject {
 
 	public void setStringValue03(String stringValue03) {
 		this.stringValue03 = stringValue03;
+	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
 	}
 }

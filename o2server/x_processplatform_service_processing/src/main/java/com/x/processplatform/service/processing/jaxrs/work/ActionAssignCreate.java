@@ -143,7 +143,9 @@ class ActionAssignCreate extends BaseAction {
 			toAttachment.setFromId(formAttachment.getId());
 			toAttachment.setFromPath(formAttachment.path());
 			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
+			toAttachment.setBusinessId(formAttachment.getBusinessId());
 		} else {
+			toAttachment.setBusinessId(formAttachment.getBusinessId());
 			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
 			toAttachment.saveContent(toMapping, o.readContent(fromMapping), o.getName(), Config.general().getStorageEncrypt());
 		}
