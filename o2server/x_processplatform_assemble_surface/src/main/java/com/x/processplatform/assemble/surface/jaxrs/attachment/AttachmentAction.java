@@ -1034,17 +1034,17 @@ public class AttachmentAction extends StandardJaxrsAction {
             @ApiResponse(content = { @Content(schema = @Schema(implementation = ActionChangeOrderNumber.Wo.class)) }) })
     @JaxrsMethodDescribe(value = "更新指定附件标识的附件排序号.", action = ActionChangeOrderNumber.class)
     @GET
-    @Path("{id}/work/{workId}/change/ordernumber/{orderNumber}")
+    @Path("{id}/work/{workOrWorkCompleted}/change/ordernumber/{orderNumber}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void changeOrderNumber(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
             @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-            @JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+            @JaxrsParameterDescribe("工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted,
             @JaxrsParameterDescribe("排序号") @PathParam("orderNumber") Integer orderNumber) {
         ActionResult<ActionChangeOrderNumber.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionChangeOrderNumber().execute(effectivePerson, id, workId, orderNumber);
+            result = new ActionChangeOrderNumber().execute(effectivePerson, id, workOrWorkCompleted, orderNumber);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, null);
             result.error(e);
