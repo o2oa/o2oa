@@ -3802,7 +3802,9 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							"text": "确认",
 							"action": function () {
 								var orderNumber = inputNode.get("value");
-								this.app.action.AttachmentAction.changeOrderNumber(attachment.id,attachment.id,orderNumber,function( json ){
+
+								debugger
+								this.app.action.AttachmentAction.changeOrderNumber(attachment.id,this.data.id,orderNumber,function( json ){
 									this.loadAttachement();
 								}.bind(this),null,false);
 								sortDlg.close();
