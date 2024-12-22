@@ -53,7 +53,7 @@ layout.addReady(function(){
         //     }
         // }
 
-        window.addEventListener('popstate', function (event) {
+        if(!o2.portalPopstate)o2.portalPopstate = function (event) {
             uri = new URI(document.location.href);
             id = uri.getData("id");
             page = uri.getData("page");
@@ -64,6 +64,8 @@ layout.addReady(function(){
             // var appName = "portal.Portal";
             // var option = {"portalId": id, "pageId": page, "widgetId":widget };
             layout.app.toPortal(id, page, null, true);
-        }.bind(this));
+        }.bind(this);
+
+        window.addEventListener('popstate', o2.portalPopstate);
     })(layout);
 });
