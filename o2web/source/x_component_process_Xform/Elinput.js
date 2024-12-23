@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/input|Element UI Input 输入框}
  */
 MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elinput# */
+    /** @lends MWF.xApplication.process.Xform.Elinput# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -200,4 +200,4 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
             }
         }
     }
-}); 
+});

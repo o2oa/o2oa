@@ -5,7 +5,7 @@ o2.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @hideconstructor
  * */
 o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
-    /** @lends o2.xApplication.process.Xform.$ElModule# */
+    /** @lends MWF.xApplication.process.Xform.$ElModule# */
     {
     Implements: [Events],
     Extends: MWF.APP$Module,

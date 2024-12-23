@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|Element UI Cascader 级联选择器}
  */
 MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elcascader# */
+    /** @lends MWF.xApplication.process.Xform.Elcascader# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,

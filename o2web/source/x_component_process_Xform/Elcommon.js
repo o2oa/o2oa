@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$ElModule", null, false);
  * @hideconstructor
  */
 o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elcommon# */
+    /** @lends MWF.xApplication.process.Xform.Elcommon# */
     {
     Implements: [Events],
     Extends: o2.APP$ElModule,
@@ -221,4 +221,4 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
             }.bind(this));
         }
     },
-}); 
+});

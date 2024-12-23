@@ -13,7 +13,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|Element UI Tree 树形控件}
  */
 MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elcarousel# */
+    /** @lends MWF.xApplication.process.Xform.Elcarousel# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -326,4 +326,4 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
         }
     }
 
-}); 
+});
