@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "Eldate", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/datetime-picker|Element UI DateTimePicker 日期时间选择器}
  */
 MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
-    /** @lends o2.xApplication.process.Xform.Eldatetime# */
+    /** @lends MWF.xApplication.process.Xform.Eldatetime# */
     {
     Implements: [Events],
     Extends: MWF.APPEldate,

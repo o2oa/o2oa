@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/rate|Element UI Rate 评分}
  */
 MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elrate# */
+    /** @lends MWF.xApplication.process.Xform.Elrate# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -114,4 +114,4 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
         html += "</el-rate>";
         return html;
     }
-}); 
+});

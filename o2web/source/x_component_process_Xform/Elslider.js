@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/slider|Element UI Slider 滑块}
  */
 MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elslider# */
+    /** @lends MWF.xApplication.process.Xform.Elslider# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -147,4 +147,4 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
     // __setReadonly: function(data){
     //
     // }
-}); 
+});

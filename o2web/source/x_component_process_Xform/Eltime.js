@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/time-picker|Element UI TimePicker 时间选择器}
  */
 MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
-    /** @lends o2.xApplication.process.Xform.Eltime# */
+    /** @lends MWF.xApplication.process.Xform.Eltime# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -169,4 +169,4 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
             var value = arr.length === 0  ? arr[0] : arr;
             this.setData(value, true);
         }
-}); 
+});

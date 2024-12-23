@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/switch|Element UI Switch 开关}
  */
 MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elswitch# */
+    /** @lends MWF.xApplication.process.Xform.Elswitch# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,

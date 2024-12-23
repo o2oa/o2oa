@@ -23,7 +23,7 @@ if( !o2.APP$ElSelector ){
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elautocomplete# */
+    /** @lends MWF.xApplication.process.Xform.Elautocomplete# */
     {
     Implements: [Events],
     Extends: MWF.APP$ElSelector,
@@ -208,4 +208,4 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         html += "</el-autocomplete>";
         return html;
     }
-}); 
+});

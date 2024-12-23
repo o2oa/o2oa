@@ -9,7 +9,7 @@ if( !o2.APP$ElSelector ){
     Object.assign(o2.APP$ElSelector.prototype, o2.APP$Selector.prototype);
 }
 
-/** @class Elselect 基于Element UI的选择框组de件。
+/** @class Elselect 基于Element UI的选择框组组件。
  * @o2cn 选择框
  * @example
  * //可以在脚本中获取该组件
@@ -24,7 +24,7 @@ if( !o2.APP$ElSelector ){
  * @see {@link https://element.eleme.cn/#/zh-CN/component/select|Element UI Select 选择器}
  */
 MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elselect# */
+    /** @lends MWF.xApplication.process.Xform.Elselect# */
     {
     Implements: [Events],
     Extends: MWF.APP$ElSelector,
@@ -367,7 +367,6 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         }.bind(this));
         return text;
     },
-
         getDataByText: function(text){
             var opt = this.json.options;
             if( !opt )return "";

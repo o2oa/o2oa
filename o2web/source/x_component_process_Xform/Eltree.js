@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/tree|Element UI Tree 树形控件}
  */
 MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
-    /** @lends o2.xApplication.process.Xform.Eltree# */
+    /** @lends MWF.xApplication.process.Xform.Eltree# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,

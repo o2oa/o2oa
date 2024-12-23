@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/input-number|Element UI InputNumber 计数器}
  */
 MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elnumber# */
+    /** @lends MWF.xApplication.process.Xform.Elnumber# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -190,4 +190,4 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
         html += "</el-input-number>";
         return html;
     }
-}); 
+});

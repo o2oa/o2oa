@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/color-picker|Element UI ColorPicker 颜色选择器}
  */
 MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elcolorpicker# */
+    /** @lends MWF.xApplication.process.Xform.Elcolorpicker# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -131,4 +131,4 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
         html += "</el-color-picker>";
         return html;
     }
-}); 
+});
