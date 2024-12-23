@@ -140,8 +140,7 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static boolean allowClass(String className) {
-		return className.startsWith("com.x.base")
-				|| className.startsWith("com.x.organization")
+		return className.startsWith("com.x.base") || className.startsWith("com.x.organization")
 				|| getScriptingAllowedClasses().contains(className);
 	}
 
@@ -376,7 +375,7 @@ public class GraalvmScriptingFactory {
 			for (Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				if (StringUtils.equals(entry.getKey(), JpaObject.DISTINGUISHEDNAME)
 						&& entry.getValue().isJsonPrimitive() && entry.getValue().getAsJsonPrimitive().isString()) {
-					list.add((entry.getValue().getAsJsonPrimitive().getAsString()));
+					list.add(entry.getValue().getAsJsonPrimitive().getAsString());
 				}
 			}
 		}

@@ -2,7 +2,11 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -33,12 +37,29 @@ class V2ListPaging extends V2Base {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
-			List<Wo> wos = emc.fetchDescPaging(Task.class, Wo.copier, p, page, size, Task.sequence_FIELDNAME);
-			result.setData(wos);
-			result.setCount(emc.count(Task.class, p));
-			this.relate(business, result.getData(), wi);
+			List<Task> os = list(business, this.adjustPage(page), this.adjustSize(size), p);
+			result.setData(Wo.copier.copy(os));
+			result.setCount(count(business, p));
 			return result;
 		}
+	}
+
+	private List<Task> list(Business business, Integer page, Integer size, Predicate predicate) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
+		Root<Task> root = cq.from(Task.class);
+		cq.select(root).where(predicate).orderBy(cb.desc(root.get(JpaObject.sequence_FIELDNAME)));
+		return em.createQuery(cq).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
+	}
+
+	private Long count(Business business, Predicate predicate) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Task> root = cq.from(Task.class);
+		cq.select(cb.count(root)).where(predicate);
+		return em.createQuery(cq).getSingleResult();
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2ListPaging$Wi")
