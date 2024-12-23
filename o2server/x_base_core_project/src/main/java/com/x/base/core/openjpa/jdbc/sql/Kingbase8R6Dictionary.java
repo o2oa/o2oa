@@ -34,6 +34,8 @@ public class Kingbase8R6Dictionary extends DBDictionary {
 		this.doubleTypeName = "DOUBLE PRECISION";
 		// 20241217 this.booleanTypeName = "BOOLEAN";
 		this.booleanTypeName = "INTEGER";
+		this.bitTypeName = "INTEGER";
+		// 20241217 end
 		this.validationSQL = "SELECT NOW()";
 		this.supportsSelectStartIndex = true;
 		this.supportsSelectEndIndex = true;
