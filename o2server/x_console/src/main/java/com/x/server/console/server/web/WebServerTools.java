@@ -4,6 +4,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.jaxrs.ApiAccessFilter;
+import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -157,8 +158,13 @@ public class WebServerTools extends JettySeverTools {
 	}
 
 	private static void setExposeApi(WebAppContext webApp) {
-		FilterHolder denialOfServiceFilterHolder = new FilterHolder(new ApiAccessFilter());
-		webApp.addFilter(denialOfServiceFilterHolder, "/api/*", EnumSet.of(DispatcherType.REQUEST));
+		FilterHolder apiAccessFilterHolder = new FilterHolder(new ApiAccessFilter());
+		webApp.addFilter(apiAccessFilterHolder, "/api/*", EnumSet.of(DispatcherType.REQUEST));
+
+		FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
+		Config.general().getAccessDenyUris().forEach(
+				uri -> webApp.addFilter(denialOfServiceFilterHolder, uri,
+						EnumSet.of(DispatcherType.REQUEST)));
 	}
 
 	private static void moveNonDefaultDirectoryToWebroot() throws Exception {
