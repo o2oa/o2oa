@@ -7,7 +7,7 @@ MWF.xDesktop.requireApp("process.Xform", "Elradio", null, false);
  * var radio = this.form.get("name"); //获取组件
  * //方法2
  * var radio = this.target; //在组件事件脚本中获取
- * @extends MWF.xApplication.process.Xform.$Module
+ * @extends MWF.xApplication.process.Xform.Elradio
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor

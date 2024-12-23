@@ -17,7 +17,7 @@ if( !o2.APP$ElSelector ){
  * var input = this.form.get("name"); //获取组件
  * //方法2
  * var input = this.target; //在组件事件脚本中获取
- * @extends MWF.xApplication.process.Xform.$Module
+ * @extends MWF.xApplication.process.Xform.$Selector
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
