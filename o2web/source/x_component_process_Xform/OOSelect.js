@@ -84,8 +84,9 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 
 		this.node.set({
 			'id': this.json.id,
-			'MWFType': this.json.type
-		})
+			'MWFType': this.json.type,
+			"label-style": "width:6.2vw; min-width:5em; max-width:9em"
+		});
 
 	},
     _loadNodeEdit: function(){

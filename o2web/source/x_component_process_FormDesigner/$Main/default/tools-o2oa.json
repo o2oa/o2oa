@@ -39,10 +39,10 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
-  "OOLog": {
+  "Log": {
     "icon": "log.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
-    "className": "OOLog"
+    "className": "Log"
   },
   "Actionbar": {
     "icon": "actionbar.png",
@@ -63,6 +63,11 @@
     "icon": "attachment.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.attachment,
     "className": "Attachment"
+  },
+  "codeedit": {
+    "icon": "codeeditor.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.codeedit,
+    "className": "Codeeditor"
   },
   "subform": {
     "icon": "subform.png",

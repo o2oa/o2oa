@@ -43,6 +43,7 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 		this.moveNode = new Element("oo-select", {
 			"MWFType": "OOSelect",
 			"id": this.json.id,
+			// "label-style": "width:6.2vw; min-width:5em; max-width:9em",
 			"styles": this.css.moduleNodeMove,
 			"placeholder": this.json.id,
 			"readonly": "true",

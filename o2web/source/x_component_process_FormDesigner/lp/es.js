@@ -366,7 +366,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_textarea": "Texto multilínea",
 		"oo_calendar": "Calendario",
 		"oo_datetime": "Marco de fecha",
-		"oo_org": "Personal"
+		"oo_org": "Personal",
+		"codeedit": "Editor de guiones"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1488,7 +1489,10 @@ MWF.xApplication.process.FormDesigner.LP={
 		"valueFormat": "Formato de valor vinculado",
 		"readModeEvents": "Si responde a eventos del ratón en modo de lectura",
 		"required": "Obligatorio",
-		"logTaskFormat": "Formato pendiente"
+		"logTaskFormat": "Formato pendiente",
+		"scriptMode": "Tipo de guión",
+		"scriptEditor": "Editor de guiones",
+		"lineNumber": "Mostrar el número de línea"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

@@ -1,0 +1,53 @@
+{
+	"container": {
+		"border": "1px solid #dedede",
+		"border-radius": "4px",
+		"overflow": "auto",
+		"background-color": "#FFF",
+		"height": "14em",
+		"display": "flex",
+		"flex-direction": "column"
+	},
+	
+	"titleNode": {
+		"height": "2em",
+		"line-height": "2em",
+		"background": "#F7F7F7",
+		"border-top": "#999"
+	},
+	"titleTextNode": {
+	    "text-align": "center",
+		"line-height": "2em",
+		"padding-left": "5px",
+		"margin": "0 2em",
+	},
+	"contentNode": {
+	    "height": "100%",
+		"overflow": "hidden",
+		"font-size": "12px",
+		"cursor": "default",
+		"padding": "3px 3px"
+	},
+	"referenceNode": {
+	    "float": "left",
+        "width": "2em",
+        "height": "2em",
+        "background": "url("+o2.session.path+"/widget/$ScriptArea/default/icon/reference.png) center center no-repeat",
+        "cursor": "pointer"
+	},
+	"titleActionNode": {
+		"float": "right",
+		"width": "2em",
+		"height": "2em",
+		"background": "url("+o2.session.path+"/widget/$ScriptArea/default/icon/max.png) center center no-repeat",
+		"cursor": "pointer"
+	},
+	"inforNode":{
+	    "padding": "0px 10px",
+	    "height": "30px",
+        "color": "#999",
+        "line-height": "30px"
+	}
+
+	
+}

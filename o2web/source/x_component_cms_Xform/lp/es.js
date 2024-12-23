@@ -459,6 +459,8 @@ MWF.xApplication.cms.Xform.LP={
 	"commend": {
 		"do": "Me gusta",
 		"undo": "Cancelar 'Me gusta'"
-	}
+	},
+	"requiredHint": "Rellene el campo (...) de la etiqueta",
+	"requiredHintField": "Esto"
 }
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP

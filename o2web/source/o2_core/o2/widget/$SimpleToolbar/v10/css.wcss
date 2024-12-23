@@ -1,0 +1,108 @@
+{
+	"container": {
+		"background-color": "#ffffff",
+		"padding-top": "0",
+		"word-wrap": "normal",
+		"word-break": "keep-all",
+		"cursor": "pointer",
+		"height": "auto",
+		"display": "flex",
+		"font-size": "1em",
+		"margin": "0px auto",
+		"padding-bottom": "0",
+		"padding-left": "1em",
+		"padding-right": "1em",
+		"border-top": "0",
+		"border-bottom": "0",
+		"flex-wrap": "wrap",
+		"gap": "0.5em 0.3em",
+		"border-radius" : "3px",
+		"border" : "0px",
+		"overflow": "hidden"
+	},
+	"toolbarSeparator": {
+	},
+
+	"button": {
+		"display": "flex",
+		"position": "static",
+		"float": "left",
+		"border": "0.071em solid #cccccc",
+		"color": "inherit",
+		"background-color": "#FFFFFF",
+		"height": "2.3em",
+		"padding-left": "0.5em",
+		"padding-right": "0.5em",
+		"cursor": "pointer",
+		"border-radius": "0.2em",
+		"transition1": "background-color 0.3s, color 0.3s",
+		"align-items": "baseline",
+		"box-shadow": "rgb(230, 230, 230) 0px 0px 0px 0px"
+	},
+	"buttonImgDiv": {
+		"display": "block",
+		"float": "left",
+		"padding-top": "0.5em",
+		"padding-bottom": "0.071em",
+		"padding-left": "0.071em",
+		"padding-right": "0.071em",
+		"cursor": "pointer",
+		"margin-right": "3px"
+	},
+	"buttonImg": {
+		"height": "1em",
+		"width": "1em",
+		"cursor": "pointer",
+		"margin-top": "0",
+		"display": "none"
+	},
+	"buttonIcon": {
+		"display": "block"
+	},
+	"buttonTextDiv": {
+		"display": "block",
+		"float": "left",
+		"height": "2.3em",
+		"padding-left": "0.142em",
+		"padding-right": "0.142em",
+		"line-height": "2.3em",
+		"cursor": "pointer"
+	},
+
+	"buttonDisable": {
+		"color": "#ffffff"
+	},
+	"buttonImgDivDisable": {
+		"color": "#999"
+	},
+	"buttonTextDivDisable": {
+		"color": "#999"
+	},
+
+	"buttonOver": {
+		"color": "#ffffff",
+		"background-color": "var(--oo-color-main)",
+		"border": "1px solid var(--oo-color-main)",
+		"box-shadow": "#cccccc 0px 0px 10px 1px"
+	},
+	"buttonOut": {
+		"color": "inherit",
+		"background-color": "#FFFFFF",
+		"border": "1px solid #cccccc",
+		"box-shadow": "none"
+	},
+	"buttonDown": {
+		"color": "#ffffff",
+		"background-color": "var(--oo-color-main-deep)",
+		"border": "1px solid var(--oo-color-main-deep)",
+		"box-shadow": "none"
+	},
+	"buttonUp": {
+		"color": "#ffffff",
+		"background-color": "var(--oo-color-main)",
+		"border": "1px solid var(--oo-color-main)",
+		"box-shadow": "#cccccc 0px 0px 10px 1px"
+	},
+	"toolbarButtonDownNode": {
+	}
+}

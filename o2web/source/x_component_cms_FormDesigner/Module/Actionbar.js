@@ -41,7 +41,6 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 	},
 	_checkProcessTool: function(){
 		//删除从流程拷贝过来的系统按钮
-		debugger;
 		var processTools = ( this.json.multiTools || [] ).filter( function (tool) {
 			return ["closeWork","saveWork","processWork","rerouteWork","resetWork","addTask","addSplit","retractWork","rollback",
 				"deleteWork","printWork","pressWork","pauseTask","resumeTask"].contains( tool.action )
@@ -62,17 +61,20 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			o2.xhr_get(this.path+"toolbars.json", function(xhr){
 				var multiTools = JSON.parse(xhr.responseText).map( function (d) { d.system = true; return d; });
 				this.json.multiTools = multiTools.concat( toolList );
-				debugger;
 			}.bind(this), null,null,true);
 		}
 	},
 	setTemplateStyles: function(styles){
 		this.json.style = styles.style;
+		this.json.iconType = styles.iconType;
+		this.json.iconOverStyle = styles.iconOverStyle || "";
 		this.json.customIconStyle = styles.customIconStyle;
 		this.json.customIconOverStyle = styles.customIconOverStyle;
 	},
 	clearTemplateStyles: function(styles){
 		this.json.style = "form";
+		this.json.iconType = "";
+		this.json.iconOverStyle = "";
 		this.json.customIconStyle = "blue";
 		this.json.customIconOverStyle = "white";
 	},
@@ -81,7 +83,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		this._resetActionbar();
 	},
 	_createNode: function(callback){
-		this.node = new Element("div", {
+		this.node = new Element("div.form-toolbar-area", {
 			"id": this.json.id,
 			"MWFType": "actionbar",
 			"styles": this.css.moduleNode,
@@ -302,7 +304,8 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 				"MWFnodetype": tool.type,
 				//"MWFButtonImage": this.path+""+this.options.style +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
 				//"MWFButtonImageOver": this.path+""+this.options.style+"/tools/"+ (this.json.style || "default") +"/"+tool.img_over,
-                "MWFButtonImage": this.getImagePath(tool.img, tool.customImg),
+                "MWFButtonImage": this.json.iconType==="font" ? "" : this.getImagePath(tool.img, tool.customImg),
+				"MWFButtonIcon": tool.icon,
                 "MWFButtonImageOver": this.getImageOverPath(tool.img_over, tool.img, tool.customImg),
 				"title": tool.title,
 				"MWFButtonAction": tool.action,
@@ -328,7 +331,8 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		tools.each(function(tool){
 			var actionNode = new Element("div", {
 				"MWFnodetype": tool.type,
-				"MWFButtonImage": this.path+""+this.options.style +"/custom/"+ style +"/"+tool.img,
+				"MWFButtonImage": this.json.iconType==="font" ? "" : this.path+""+this.options.style +"/custom/"+ style +"/"+tool.img,
+				"MWFButtonIcon": tool.icon,
 				"MWFButtonImageOver": this.path+""+this.options.style+"/custom/"+ style_over +"/"+tool.img,
 				"title": tool.title,
 				"MWFButtonAction": tool.action,
@@ -346,11 +350,14 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		if (name=="hideSystemTools"){
 			if (this.json.hideSystemTools){
 				this.systemTools.each(function(tool){
-					tool.setStyle("display", "none");
+					// tool.setStyle("display", "none");
+					tool.hide();
 				});
+
 			}else{
 				this.systemTools.each(function(tool){
-					tool.setStyle("display", "block");
+					// tool.setStyle("display", "block");
+					tool.show()
 				});
 			}
 		}
@@ -358,13 +365,15 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			if (this.json.hideSetPopularDocumentTool){
 				this.systemTools.each(function(tool){
 					if( tool.get("MWFButtonAction") == "setPopularDocument" ){
-						tool.setStyle("display", "none");
+						// tool.setStyle("display", "none");
+						tool.hide();
 					}
 				});
 			}else{
 				this.systemTools.each(function(tool){
 					if( tool.get("MWFButtonAction") == "setPopularDocument" ){
-						tool.setStyle("display", "block");
+						// tool.setStyle("display", "block");
+						tool.show();
 					}
 				});
 			}

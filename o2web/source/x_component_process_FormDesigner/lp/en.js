@@ -366,7 +366,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_textarea": "Multi line text",
 		"oo_calendar": "calendar",
 		"oo_datetime": "Date box",
-		"oo_org": "personnel"
+		"oo_org": "personnel",
+		"codeedit": "Script editor "
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1489,7 +1490,10 @@ MWF.xApplication.process.FormDesigner.LP={
 		"valueFormat": "Binding value formatting",
 		"readModeEvents": "Does the reading mode respond to mouse events",
 		"required": "Required",
-		"logTaskFormat": "To Do Format"
+		"logTaskFormat": "To Do Format",
+		"scriptMode": "Script type",
+		"scriptEditor": "Script editor ",
+		"lineNumber": "set number "
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

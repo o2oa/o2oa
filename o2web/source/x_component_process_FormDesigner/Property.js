@@ -123,6 +123,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadTreeData();
                     this.loadArrayList();
                     this.loadEventsEditor();
+                    debugger;
                     this.loadActionArea();
                     this.loadActionStylesArea();
                     this.loadHTMLArea();
@@ -1809,7 +1810,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         this.designer.saveForm();
                     }.bind(this)
                 });
-                htmlArea.load({"code": scriptContent});
+                var htmlContentData = {"code": scriptContent};
+                htmlArea.htmlContentData = htmlContentData;
+                htmlArea.load(htmlContentData);
+                node.htmlArea = htmlArea;
             }.bind(this));
 
         }.bind(this));
@@ -2899,6 +2903,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this));
     },
     loadActionArea: function(){
+        debugger;
 	    var multiActionArea = this.propertyContent.getElements(".MWFMultiActionArea");
         multiActionArea.each(function(node){
             var name = node.get("name");

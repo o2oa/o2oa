@@ -7,6 +7,7 @@
     "action": "closeDocument",
     "text": "{{$.lp.close}}",
     "id": "action_close",
+    "icon": "close",
     "read": true,
     "edit" : true
   },
@@ -19,6 +20,7 @@
     "id": "action_edit",
     "text": "{{$.lp.edit}}",
     "control": "allowEditDocument",
+    "icon": "edit",
     "read": true,
     "edit" : false
   },
@@ -31,6 +33,7 @@
     "text": "{{$.lp.save}}",
     "id": "action_saveData",
     "control": "allowSave",
+    "icon": "save",
     "read": false,
     "edit" : true
   },
@@ -43,6 +46,7 @@
     "text": "{{$.lp.publish}}",
     "id": "action_publishDocument",
     "control": "allowPublishDocument",
+    "icon": "publish",
     "read": false,
     "edit" : true
   },
@@ -55,6 +59,7 @@
     "text": "{{$.lp.publishDelayed}}",
     "id": "action_publishDocumentDelayed",
     "control": "allowPublishDocumentDelayed",
+    "icon": "clock",
     "read": false,
     "edit" : true
   },
@@ -67,6 +72,7 @@
     "text": "{{$.lp.saveDraft}}",
     "id": "action_saveDraftDocument",
     "control": "allowPublishDocument",
+    "icon": "save",
     "read": false,
     "edit" : true
   },
@@ -79,6 +85,7 @@
     "id": "action_popular",
     "text": "{{$.lp.popular}}",
     "control": "allowPopularDocument",
+    "icon": "hot-article",
     "read": true,
     "edit" : true
   },
@@ -91,6 +98,7 @@
     "text": "{{$.lp.delete}}",
     "id": "action_delete",
     "control": "allowDeleteDocument",
+    "icon": "delete",
     "read": true,
     "edit" : true
   },
@@ -102,6 +110,7 @@
     "action": "printDocument",
     "text": "{{$.lp.print}}",
     "id": "action_print",
+    "icon": "print",
     "read": true,
     "edit" : true
   },
@@ -113,6 +122,7 @@
     "action": "setTop",
     "text": "{{$.lp.setTop}}",
     "id": "action_setTop",
+    "icon": "update",
     "read": true,
     "edit" : true,
     "control": "allowSetTop"
@@ -125,6 +135,7 @@
     "action": "cancelTop",
     "text": "{{$.lp.cancelTop}}",
     "id": "action_cancelTop",
+    "icon": "process-cancel",
     "read": true,
     "edit" : true,
     "control": "allowCancelTop"
@@ -139,6 +150,7 @@
     "id": "action_downloadAll",
     "control": "",
     "condition": "",
+    "icon": "file_download",
     "read": true,
     "edit" : true
   }

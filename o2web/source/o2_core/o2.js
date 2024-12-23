@@ -544,7 +544,7 @@ if (!window.o2) {
             "d3": ["../o2_lib/d3/d3.min.js"],
             "ace": ["../o2_lib/ace/src-min-noconflict/ace.js", "../o2_lib/ace/src-min-noconflict/ext-language_tools.js"],
             //"ace": ["../o2_lib/ace/src-noconflict/ace.js","../o2_lib/ace/src-noconflict/ext-language_tools.js"],
-            "monaco": ["../o2_lib/vs/loader.js"],
+            "monaco": ["../o2_lib/vs/min/vs/loader.js"],
             "JSBeautifier": ["../o2_lib/JSBeautifier/beautify.js"],
             "JSBeautifier_css": ["../o2_lib/JSBeautifier/beautify-css.js"],
             "JSBeautifier_html": ["../o2_lib/JSBeautifier/beautify-html.js"],

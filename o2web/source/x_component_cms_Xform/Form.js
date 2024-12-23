@@ -242,6 +242,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
                 var cssClass = "";
                 if (this.json.css && this.json.css.code) cssClass = this.loadCss();
+                if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
+                if (this.json.cssLink) this.container.loadCss(this.json.cssLink);
 
                 this.container.set("html", this.html);
                 this.node = this.container.getFirst();

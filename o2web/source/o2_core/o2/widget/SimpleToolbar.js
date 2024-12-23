@@ -107,6 +107,9 @@ o2.widget.SimpleToolbarButton = new Class({
 			var buttonAction = this.node.get("MWFButtonAction");
 			if (buttonAction) this.options.action = buttonAction;
 
+			var buttonIcon = this.node.get("MWFButtonIcon");
+			if (buttonIcon) this.options.icon = buttonIcon;
+
             //var buttonActionScript = this.node.get("MWFButtonActionScript");
             //if (buttonActionScript) this.options.actionScript = buttonActionScript;
 		}
@@ -118,7 +121,7 @@ o2.widget.SimpleToolbarButton = new Class({
 		this.node.title = this.options.title;
 		this.node.set("styles", this.toolbar.css.button);
 
-		if (this.options.pic) this.picNode = this._createImageNode(this.options.pic);
+		if (this.options.pic || this.options.icon) this.picNode = this._createImageNode(this.options.pic);
 		if (this.options.text) this.textNode = this._createTextNode(this.options.text);
 
 		this.setDisable(this.options.disable);
@@ -142,12 +145,14 @@ o2.widget.SimpleToolbarButton = new Class({
 			if (this.picNode){
 				this.picNode.set("styles", this.toolbar.css.buttonImgDivDisable);
 				var img = this.picNode.getElement("img");
-				var src = img.get("src");
-				var ext = src.substr(src.lastIndexOf("."), src.length);
-				src = src.substr(0, src.lastIndexOf("."));
-				src = src+"_gray"+ext;
-				this.src_gray = src;
-				img.set("src", src);
+				if (img) {
+					var src = img.get("src");
+					var ext = src.substr(src.lastIndexOf("."), src.length);
+					src = src.substr(0, src.lastIndexOf("."));
+					src = src + "_gray" + ext;
+					this.src_gray = src;
+					img.set("src", src);
+				}
 			}
 			if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDivDisable);
 		}else{
@@ -155,18 +160,25 @@ o2.widget.SimpleToolbarButton = new Class({
 			if (this.picNode){
 				this.picNode.set("styles", this.toolbar.css.buttonImgDiv);
 				var img = this.picNode.getElement("img");
-				var src = img.get("src");
-				src = src.replace("_gray", "");
-				this.src_gray = src;
-				img.set("src", src);
+				if (img) {
+					var src = img.get("src");
+					src = src.replace("_gray", "");
+					this.src_gray = src;
+					img.set("src", src);
+				}
 			}
 			if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDiv);
 		}
 	},
 	_createImageNode: function(src){
-		if (src){
+		if (src || this.options.icon){
 			var div = new Element("span", {"styles": this.toolbar.css.buttonImgDiv}).inject(this.node);
-			var img = this.img = new Element("img", {
+			this.iconNode = new Element("span."+"ooicon-"+this.options.icon, {
+				"styles": {display: "none"}
+			}).inject(div);
+			if (this.toolbar.css.buttonIcon) this.iconNode.setStyles(this.toolbar.css.buttonIcon);
+
+			if (src) this.img = new Element("img", {
 				"styles": this.toolbar.css.buttonImg,
 				"src": src
 			}).inject(div);
@@ -196,13 +208,13 @@ o2.widget.SimpleToolbarButton = new Class({
 	},
 	_buttonMouseOver: function(){
 		if (this.modifiyStyle) if (!this.options.disable){
-			if(this.options.pic_over)this.img.set("src",this.options.pic_over)
+			if(this.options.pic_over && this.img) this.img.set("src",this.options.pic_over)
 			this.node.set("styles", this.toolbar.css.buttonOver);
 		};
 	},
 	_buttonMouseOut: function(){
 		if (this.modifiyStyle) if (!this.options.disable){
-			this.img.set("src",this.options.pic)
+			if (this.img) this.img.set("src",this.options.pic)
 			this.node.set("styles", this.toolbar.css.buttonOut);
 		};
 	},

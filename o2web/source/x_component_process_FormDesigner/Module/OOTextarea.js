@@ -39,7 +39,7 @@ MWF.xApplication.process.FormDesigner.Module.OOTextarea = MWF.FCOOTextarea = new
 		}
 		if (name==="showIcon"){
 			if (this.json.showIcon==="yes"){
-				this.node.setAttribute("right-icon", "edit");
+				this.node.setAttribute("right-icon", this.json.properties["right-icon"] || "edit");
 			}else{
 				this.node.removeAttribute("right-icon");
 			}
@@ -49,6 +49,7 @@ MWF.xApplication.process.FormDesigner.Module.OOTextarea = MWF.FCOOTextarea = new
 		this.moveNode = new Element("oo-textarea", {
 			"MWFType": "OOTextarea",
 			"id": this.json.id,
+			// "label-style": "width:6.2vw; min-width:5em; max-width:9em",
 			"styles": this.css.moduleNodeMove,
 			"placeholder": this.json.id,
 			"readonly": "true",

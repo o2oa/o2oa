@@ -17,29 +17,25 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         this.node.setAttribute('placeholder', this.json.description || '');
     },
     _loadDomEvents: function(){
-        Object.each(this.json.events, function(e, key){
-            if (e.code){
-                if (this.options.moduleEvents.indexOf(key)===-1){
-                    this.node.addEvent(key, function(event){
-                        return this.form.Macro.fire(e.code, this, event);
-                    }.bind(this));
+        if (!((this.json.showMode === 'read' || this.isReadonly()) && this.json.readModeEvents!=='yes')) {
+            Object.each(this.json.events, function(e, key){
+                if (e.code){
+                    if (this.options.moduleEvents.indexOf(key)===-1){
+                        this.node.addEvent(key, function(event){
+                            return this.form.Macro.fire(e.code, this, event);
+                        }.bind(this));
+                    }
                 }
-            }
-        }.bind(this));
+            }.bind(this));
+        }
     },
     _loadNodeEdit: function () {
         this.node.set({
             'id': this.json.id,
             'MWFType': this.json.type,
-            'validity-blur': 'true'
+            'validity-blur': 'true',
+            "label-style": "width:6.2vw; min-width:5em; max-width:9em"
         });
-
-        if (this.json.properties) {
-            this.node.set(this.json.properties);
-        }
-        if (this.json.styles) {
-            this.node.setStyles(this.json.styles);
-        }
 
         if (this.json.label) {
             this.node.setAttribute('label', this.json.label);
@@ -49,6 +45,13 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
             this.node.setAttribute('right-icon', 'person');
         } else if (this.form.json.nodeStyleWithhideModuleIcon) {
             this.node.setAttribute('right-icon', '');
+        }
+
+        if (this.json.properties) {
+            this.node.set(this.json.properties);
+        }
+        if (this.json.styles) {
+            this.node.setStyles(this.json.styles);
         }
 
         this.node.setAttribute('readonly', false);
@@ -62,16 +65,16 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
                 this.node.setAttribute('disabled', true);
             } else if (this.json.showMode === 'read') {
                 this.node.setAttribute('readmode', true);
-                if (this.json.readModeEvents!=='yes'){
-                    this.node.setStyle('pointer-events', 'none');
-                }
+                // if (this.json.readModeEvents!=='yes'){
+                //     this.node.setStyle('pointer-events', 'none');
+                // }
             } else {
             }
         }else{
             this.node.setAttribute('readmode', true);
-            if (this.json.readModeEvents!=='yes'){
-                this.node.setStyle('pointer-events', 'none');
-            }
+            // if (this.json.readModeEvents!=='yes'){
+            //     this.node.setStyle('pointer-events', 'none');
+            // }
         }
 
         if (this.json.required){
@@ -206,7 +209,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         this.moduleValueAG = null;
         this._setBusinessData(value);
         // this.node.set('value', value || '');
-        this.node.value = value.map(v=>v.distinguishedName);
+        this.node.value = value.map(v=>(v.distinguishedName || v)).join(', ');
         this.fieldModuleLoaded = true;
         return value;
     },
@@ -222,5 +225,13 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
     validationMode: function () {
         this.validationText = '';
         this.node.unInvalidStyle();
+    },
+
+    _setValue: function(value){
+        var flag = false;
+        if (typeOf(value)!=="array") value = (!!value) ? [value] : [];
+
+        this.__setValue(value);
+        return value;
     }
 });

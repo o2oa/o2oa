@@ -12,6 +12,7 @@ MWF.xApplication.process.FormDesigner.Module.OODatetime = MWF.FCOODatetime = new
 	_loadNodeStyles: function(){
 		this.node.setAttribute('readonly', true);
 		this.node.setAttribute('read', true);
+
 	},
 	_setEditStyle_custom: function(name){
 		if (name==="id") this.node.set("placeholder", this.json.id);
@@ -34,7 +35,7 @@ MWF.xApplication.process.FormDesigner.Module.OODatetime = MWF.FCOODatetime = new
 
 		if (name==="showIcon"){
 			if (this.json.showIcon==="yes"){
-				this.node.setAttribute("right-icon", "calendar");
+				this.node.setAttribute("right-icon", this.json.properties["right-icon"] || "calendar");
 			}else{
 				this.node.removeAttribute("right-icon", "");
 			}
@@ -51,6 +52,7 @@ MWF.xApplication.process.FormDesigner.Module.OODatetime = MWF.FCOODatetime = new
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-datetime", {
 			"MWFType": "OODatetime",
+			// "label-style": "width:6.2vw; min-width:5em; max-width:9em",
 			"id": this.json.id,
 			"styles": this.css.moduleNodeMove,
 			"placeholder": this.json.id,

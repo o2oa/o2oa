@@ -47,20 +47,27 @@ MWF.xApplication.process.FormDesigner.Module.Log = MWF.FCLog = new Class({
         this.json.moduleName = this.moduleName;
 	},
 	clearTemplateStyles: function(styles){
-		if (styles){
-			if (styles.properties) this.removeStyles(styles.properties, "tableProperties");
-			if (styles.tableStyles) this.removeStyles(styles.tableStyles, "tableStyles");
-			if (styles.titleStyles) this.removeStyles(styles.titleStyles, "titleTdStyles");
-			if (styles.contentStyles) this.removeStyles(styles.contentStyles, "contentTdStyles");
-
+		if (this.json.templateType) {
+			if (styles) {
+				if (styles[this.json.templateType]){
+					if (styles[this.json.templateType].styles) this.removeStyles(styles[this.json.templateType].styles, "styles");
+					if (styles[this.json.templateType].properties) this.removeStyles(styles[this.json.templateType].properties, "properties");
+				}
+			}
 		}
 	},
 
 	setTemplateStyles: function(styles){
-		if (styles.properties) this.copyStyles(styles.properties, "tableProperties");
-		if (styles.tableStyles) this.copyStyles(styles.tableStyles, "tableStyles");
-		if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleTdStyles");
-		if (styles.contentStyles) this.copyStyles(styles.contentStyles, "contentTdStyles");
+		if (this.json.templateType){
+			if (styles[this.json.templateType]){
+				var t = styles[this.json.templateType];
+				if (t.styles) this.copyStyles(t.styles, "styles");
+				if (t.properties) this.copyStyles(t.properties, "properties");
+				if (t.textStyle) this.json.textStyle = t.textStyle;
+				if (t.textTaskStyle) this.json.textTaskStyle = t.textTaskStyle;
+				if (t.mode) this.json.mode = t.mode;
+			}
+		}
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
@@ -120,4 +127,50 @@ MWF.xApplication.process.FormDesigner.Module.Log = MWF.FCLog = new Class({
 	// 	this.json.recoveryStyles = null;
 	// 	this._createIcon();
 	// }
+	_setEditStyle_custom: function(name, obj, oldValue){
+		if (name=="templateType"){
+			if (this.form.templateStyles){
+				var moduleStyles = this.form.templateStyles[this.moduleName];
+				if (moduleStyles) {
+					if (oldValue){
+						if (moduleStyles[oldValue]){
+							this.removeStyles(moduleStyles[oldValue].styles, "styles");
+							this.removeStyles(moduleStyles[oldValue].styles, "properties");
+						}
+					}
+
+					if (moduleStyles[this.json.templateType]){
+						var t = moduleStyles[this.json.templateType];
+						if (t.styles) this.copyStyles(t.styles, "styles");
+						if (t.styles) this.copyStyles(t.properties, "properties");
+						if (t.textStyle) this.json.textStyle = t.textStyle;
+						if (t.textTaskStyle) this.json.textTaskStyle = t.textTaskStyle;
+						if (t.mode) this.json.mode = t.mode;
+
+						this._setHtmlAreaValue("textStyle");
+						this._setHtmlAreaValue("textTaskStyle");
+
+						var node = this.property.propertyContent.querySelector("input[name$='mode'][value='"+this.json.mode+"']");
+						if (node){
+							node.checked = true;
+						}
+
+					}
+
+					this.setPropertiesOrStyles("styles");
+					this.setPropertiesOrStyles("properties");
+
+					this.reloadMaplist();
+				}
+			}
+		}
+	},
+	_setHtmlAreaValue: function(name){
+		var node = this.property.propertyContent.querySelector(".MWFHtmlEditorArea[name='"+name+"']");
+		if (node.htmlArea.jsEditor){
+			node.htmlArea.jsEditor.setValue(this.json.textStyle);
+		}else{
+			node.htmlArea.htmlContentData.code = this.json.textStyle;
+		}
+	}
 });

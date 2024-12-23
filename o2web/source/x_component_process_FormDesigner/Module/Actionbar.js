@@ -322,11 +322,13 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 		if (name=="hideSystemTools"){
             if (this.json.hideSystemTools){
                 this.systemTools.each(function(tool){
-                    tool.setStyle("display", "none");
+                    // tool.setStyle("display", "none");
+                    tool.hide();
                 });
             }else{
                 this.systemTools.each(function(tool){
-                    tool.setStyle("display", "block");
+                    // tool.setStyle("display", "block");
+                    tool.show();
                 });
             }
         }

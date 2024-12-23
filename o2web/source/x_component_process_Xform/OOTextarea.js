@@ -31,8 +31,9 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
         this.node.set({
             'id': this.json.id,
             'MWFType': this.json.type,
-            'validity-blur': 'true'
-        })
+            'validity-blur': 'true',
+            "label-style": "width:6.2vw; min-width:5em; max-width:9em"
+        });
 
         if (this.json.properties) {
             this.node.set(this.json.properties);

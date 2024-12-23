@@ -1,0 +1,70 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Codeeditor",
+	"description": "",
+	"mode": "javascript",
+	"events": {
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"queryLoad": {
+			"code": "",
+			"html": ""
+		},
+		"load": {
+			"code": "",
+			"html": ""
+		},
+		"postLoad": {
+			"code": "",
+			"html": ""
+		},
+		"destroy": {
+			"code": "",
+			"html": ""
+		},
+		"maxSize": {
+			"code": "",
+			"html": ""
+		},
+		"returnSize": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		},
+		"postLoadEditor": {
+			"code": "",
+			"html": ""
+		},
+		"save": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"editorProperties": {
+		"autoGrow_maxHeight": 400,
+		"autoGrow_minHeight": 300,
+		"resize_enabled": true,
+		"resize_maxHeight": "3000",
+		"resize_minHeight": "200",
+		"autoParagraph": true,
+		"autoUpdateElement": true,
+		"enterMode": 1,
+		"height": "200", 
+		"width": "",
+		"readOnly": false,
+		"title": ""
+	},
+    "config": {
+      "code": "",
+      "html": ""
+    },
+	"class": "",
+	"styles": {},
+	"container": ""
+}

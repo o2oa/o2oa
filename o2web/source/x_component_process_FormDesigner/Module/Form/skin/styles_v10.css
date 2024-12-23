@@ -48,6 +48,9 @@
 .form-content-area div[mwftype="OORadioGroup"] {
     flex: 1 1 46%;
 }
+.content-item *{
+    box-sizing: border-box !important;
+}
 .form-content-area oo-datetime{
     min-width: 6.8em;
 }
@@ -74,36 +77,37 @@ div[mwftype="datatable"] .mwf_sequence{
 
 /* 意见区域 */
 /* 流程意见默认样式 */
-div[mwftype="log"]>div{
+div.form-log[mwftype="log"]>div{
     border-radius: var(--oo-default-radius);
     border: 0!important;
     padding: 0 !important;
+    /*box-shadow: var(--oo-shadow-border);*/
 }
-div[mwftype="log"]>div>div{
+div.form-log[mwftype="log"]>div>div{
     padding: 0.5em;
     border-bottom: 1px solid #DEDEDE;
     background-color: #ffffff !important;
 }
-div[mwftype="log"]>div>div>div{
+div.form-log[mwftype="log"]>div>div>div{
     display: flex;
     align-items: center;
 }
-div[mwftype="log"]>div>div>div>div:nth-child(2){
+div.form-log[mwftype="log"]>div>div>div>div:nth-child(2){
     margin-left: 0 !important;
     flex: 1 ;
 }
 
-div[mwftype="log"] .logItem{
+div.form-log[mwftype="log"] .logItem{
     display: flex;
     gap: 1em;
     align-items: center;
     line-height: 1.8em;
 }
-div[mwftype="log"] .logItem img{
+div.form-log[mwftype="log"] .logItem img{
     width: 11.85em;
     font-size: 0.875rem;
 }
-div[mwftype="log"] .logItemIcon{
+div.form-log[mwftype="log"] .logItemIcon{
     width: 4em;
     height: 4em;
     background-size: 3em 3em;
@@ -111,21 +115,87 @@ div[mwftype="log"] .logItemIcon{
     background-repeat: no-repeat;
 }
 
-div[data-mwf-el-type="MWFFormDesignerLog"]>div>div{
+div.form-log[data-mwf-el-type="MWFFormDesignerLog"]>div>div{
     padding: 0 !important;
     border-bottom: 1px solid #DEDEDE;
     background-color: transparent !important;
 }
 
-.form-log{
-
+div.form-log-simple{
+    background-color: #f7f7f7;
+    padding: 1em;
+    border-radius: 6px;
 }
-.form-content-area div[mwftype="log"]>div{
+
+.form-description{
+    background-color: var(--oo-color-over);
     border-radius: var(--oo-default-radius);
-    box-shadow: var(--oo-shadow-border);
-    border: 0!important;
+    margin: 1em 0 1em 1.2em;
+    padding: 1em;
+    gap: 1em;
+    line-height: 1.5em;
+    align-items: flex-start;
+}
+.form-description .ooicon-tanhao{
+    color: var(--oo-color-main);
+    font-size: 2em;
+    font-weight: bold;
+    padding: 0.2em 0;
 }
 
+
+
+
+.form-side-content{
+    position: absolute;
+    right: 0.8em;
+    top: 40%;
+}
+.form-side-bookmark-content{
+    width: 6em;
+    min-height: 2em;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0.3em 0 #DEDEDE;
+    border-radius: 0.42857em;
+    padding: 0.5em;
+    text-align: center;
+}
+
+.form-side-bookmark-content>div{
+    padding: 0.5em 0.5em;
+    cursor: pointer;
+}
+.form-side-bookmark-content>div:hover{
+    background-color: var(--oo-color-hover);
+}
+
+.form-side-top{
+    margin-top: 0.5em;
+    width: 6em;
+    background: #2E82F7;
+    box-shadow: 0 0 0.3em 0 #DEDEDE;
+    border-radius: 0.42857em;
+    padding: 0.5em 0.5em;
+    color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+}
+
+.item-label{
+    min-width: 4.3em;
+    max-width: 9em;
+    padding: 0.5em 0.35em;
+    margin-right: 0.5em;
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    flex: 0 0 6.2vw;
+    color: var(--oo-color-text2);
+    line-height: 2em;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box !important;
+}
 
 /* 手机浏览器 */
 @media only screen and (max-width: 1023px) {

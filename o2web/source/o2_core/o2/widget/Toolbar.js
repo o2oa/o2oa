@@ -401,15 +401,19 @@ o2.widget.ToolbarMenu = new Class({
 			if (this.picNode){
 				this.picNode.set("styles", this.toolbar.css.buttonImgDivDisable);
 				var img = this.picNode.getElement("img");
-				var src = img.get("src");
-				
-				var ext = src.substr(src.lastIndexOf("."), src.length);
-				src = src.substr(0, src.lastIndexOf("."));
-				src = src+"_gray"+ext;
-				
-			//	src = src.substr(0, src.lastIndexOf("."));
-			//	src = src+"_gray.gif";
-				img.set("src", src);
+
+				if (img){
+					var src = img.get("src");
+
+					var ext = src.substr(src.lastIndexOf("."), src.length);
+					src = src.substr(0, src.lastIndexOf("."));
+					src = src+"_gray"+ext;
+
+					//	src = src.substr(0, src.lastIndexOf("."));
+					//	src = src+"_gray.gif";
+					img.set("src", src);
+				}
+
 			}
 			if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDivDisable);
 		}else{
@@ -417,9 +421,11 @@ o2.widget.ToolbarMenu = new Class({
 			if (this.picNode){
 				this.picNode.set("styles", this.toolbar.css.buttonImgDiv);
 				var img = this.picNode.getElement("img");
-				var src = img.get("src");
-				src = src.replace("_gray", "");
-				img.set("src", src);
+				if (img) {
+					var src = img.get("src");
+					src = src.replace("_gray", "");
+					img.set("src", src);
+				}
 			}
 			if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDiv);
 		}
