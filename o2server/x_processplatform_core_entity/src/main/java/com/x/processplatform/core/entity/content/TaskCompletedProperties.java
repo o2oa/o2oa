@@ -12,8 +12,11 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	private static final long serialVersionUID = -7986324325800894903L;
 
-	@FieldDescribe("从task带过来的上一处理人")
+	@FieldDescribe("从task带过来的上一处理人列表")
 	private List<String> prevTaskIdentityList;
+
+	@FieldDescribe("从task带过来的上一处理人")
+	private String prevTaskIdentity;
 
 	@Deprecated(since = "8.2")
 	@FieldDescribe("后续处理人")
@@ -51,6 +54,17 @@ public class TaskCompletedProperties extends JsonProperties {
 		return prevTaskList;
 	}
 
+	public List<String> getNextTaskIdentityList() {
+		if (null == this.nextTaskIdentityList) {
+			this.nextTaskIdentityList = new ArrayList<>();
+		}
+		return nextTaskIdentityList;
+	}
+
+	public void setNextTaskIdentityList(List<String> nextTaskIdentityList) {
+		this.nextTaskIdentityList = nextTaskIdentityList;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -61,24 +75,21 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	public List<String> getPrevTaskIdentityList() {
 		if (null == this.prevTaskIdentityList) {
-			this.prevTaskIdentityList = new ArrayList<String>();
+			this.prevTaskIdentityList = new ArrayList<>();
 		}
 		return prevTaskIdentityList;
 	}
 
-	public List<String> getNextTaskIdentityList() {
-		if (null == this.nextTaskIdentityList) {
-			this.nextTaskIdentityList = new ArrayList<String>();
-		}
-		return nextTaskIdentityList;
-	}
-
-	public void setNextTaskIdentityList(List<String> nextTaskIdentityList) {
-		this.nextTaskIdentityList = nextTaskIdentityList;
-	}
-
 	public void setPrevTaskIdentityList(List<String> prevTaskIdentityList) {
 		this.prevTaskIdentityList = prevTaskIdentityList;
+	}
+
+	public String getPrevTaskIdentity() {
+		return prevTaskIdentity;
+	}
+
+	public void setPrevTaskIdentity(String prevTaskIdentity) {
+		this.prevTaskIdentity = prevTaskIdentity;
 	}
 
 	public String getOpinion() {
