@@ -165,9 +165,8 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 				this.opinion = this.getProperties().getOpinion();
 			}
 			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
+			this.prevTaskIdentity = this.properties.getPrevTaskIdentity();
 			this.act = this.properties.getAct();
-//			this.empowerFrom = this.properties.getEmpowerFrom();
-//			this.empowerTo = this.properties.getEmpowerTo();
 		}
 	}
 
@@ -365,6 +364,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 			}
 		}
 		this.getProperties().setPrevTaskIdentityList(task.getProperties().getPrevTaskIdentityList());
+		this.getProperties().setPrevTaskIdentity(task.getProperties().getPrevTaskIdentity());
 		if ((null != this.expireTime) && (expireTime.before(completedTime))) {
 			this.expired = true;
 		} else {
@@ -399,6 +399,23 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public void setPrevTaskIdentityList(List<String> prevTaskIdentityList) {
 		this.getProperties().setPrevTaskIdentityList(prevTaskIdentityList);
 		this.prevTaskIdentityList = prevTaskIdentityList;
+	}
+
+	public static final String PREVTASKIDENTITY_FIELDNAME = "prevTaskIdentity";
+	@Transient
+	@FieldDescribe("上一人工环节处理人.")
+	private String prevTaskIdentity;
+
+	public String getPrevTaskIdentity() {
+		if ((null != this.properties) && (null == this.prevTaskIdentity)) {
+			this.prevTaskIdentity = this.properties.getPrevTaskIdentity();
+		}
+		return this.prevTaskIdentity;
+	}
+
+	public void setPrevTaskIdentity(String prevTaskIdentity) {
+		this.getProperties().setPrevTaskIdentity(prevTaskIdentity);
+		this.prevTaskIdentity = prevTaskIdentity;
 	}
 
 	public static final String ACT_FIELDNAME = "act";
