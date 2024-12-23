@@ -1225,26 +1225,40 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
     _loadModuleEvents : function(){
+        this.moduleEventMap = {};
         Object.each(this.viewJson.events, function(e, key){
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)!==-1){
-                    this.addEvent(key, function(event, target){
+                    this.moduleEventMap[key] = function(event, target){
                         return this.Macro.fire(e.code, target || this, event);
-                    }.bind(this));
+                    }.bind(this);
+                    this.addEvent(key, this.moduleEventMap[key]);
                 }
             }
         }.bind(this));
     },
+    _removeModuleEvents: function (){
+        Object.each(this.moduleEventMap, function(fun, key){
+            this.removeEvent(key, this.moduleEventMap[key]);
+        }.bind(this))
+    },
     _loadDomEvents: function(){
+        this.domEventMap = {};
         Object.each(this.viewJson.events, function(e, key){
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)===-1){
-                    this.node.addEvent(key, function(event){
+                    this.domEventMap[key] = function(event){
                         return this.Macro.fire(e.code, this, event);
-                    }.bind(this));
+                    }.bind(this);
+                    this.node.addEvent(key, this.domEventMap[key]);
                 }
             }
         }.bind(this));
+    },
+    _removeDomEvents: function (){
+        Object.each(this.domEventMap, function(fun, key){
+            this.removeEvent(key, this.domEventMap[key]);
+        }.bind(this))
     },
 
     //搜索相关开始
@@ -2042,6 +2056,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.searchMorph = null;
         this.viewSearchCustomContentNode = null;
         this.paging = null;
+
+        this._removeModuleEvents();
+        this._removeDomEvents();
+        if( this.setContentHeightFun ){
+            this.container.removeEvent("resize", this.setContentHeightFun);
+        }
 
         var newJson = Object.merge( Object.clone(this.originalJson), json );
         this.container.empty();
