@@ -68,7 +68,8 @@ public class User extends GsonPropertyObject {
 	private String mobile;
 	private String gender;
 	private String email;
-	private Integer isleader;
+	private List<Integer> is_leader_in_dept;
+	private List<String> direct_leader;
 	private String avatar;
 	private String telephone;
 	private Integer enable;
@@ -76,6 +77,7 @@ public class User extends GsonPropertyObject {
 	private Integer status;
 	private String qr_code;
 	private String external_position;
+	private Long main_department;
 	private Extattr extattr;
 
 	public static class Extattr {
@@ -177,12 +179,20 @@ public class User extends GsonPropertyObject {
 		this.email = email;
 	}
 
-	public Integer getIsleader() {
-		return isleader;
+	public List<Integer> getIs_leader_in_dept() {
+		return is_leader_in_dept;
 	}
 
-	public void setIsleader(Integer isleader) {
-		this.isleader = isleader;
+	public void setIs_leader_in_dept(List<Integer> is_leader_in_dept) {
+		this.is_leader_in_dept = is_leader_in_dept;
+	}
+
+	public List<String> getDirect_leader() {
+		return direct_leader;
+	}
+
+	public void setDirect_leader(List<String> direct_leader) {
+		this.direct_leader = direct_leader;
 	}
 
 	public String getAvatar() {
@@ -239,6 +249,14 @@ public class User extends GsonPropertyObject {
 
 	public void setExternal_position(String external_position) {
 		this.external_position = external_position;
+	}
+
+	public Long getMain_department() {
+		return main_department;
+	}
+
+	public void setMain_department(Long main_department) {
+		this.main_department = main_department;
 	}
 
 	public Extattr getExtattr() {
