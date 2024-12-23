@@ -74,11 +74,10 @@ class V2ListPaging extends V2Base {
 
 		private static final long serialVersionUID = -4773789253221941109L;
 
-//		static WrapCopier<Task, Wo> copier = WrapCopierFactory.wo(Task.class, Wo.class,
-//				JpaObject.singularAttributeField(Task.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<Task, Wo> copier = WrapCopierFactory.wo(Task.class, Wo.class,
+				JpaObject.singularAttributeField(Task.class, true, false), JpaObject.FieldsInvisible);
 
-		static WrapCopier<Task, Wo> copier = WrapCopierFactory.wo(Task.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+ 
 
 	}
 }
