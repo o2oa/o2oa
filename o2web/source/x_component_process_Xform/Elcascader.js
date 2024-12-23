@@ -14,7 +14,7 @@ o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
  * @see {@link https://element.eleme.cn/#/zh-CN/component/cascader|Element UI Cascader 级联选择器}
  */
 MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elcascader# */
+    /** @lends MWF.xApplication.process.Xform.Elcascader# */
     {
     Implements: [Events],
     Extends: MWF.APP$Elinput,
@@ -230,7 +230,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             }.bind(this));
         }
     },
-    __getOptionsText: function(options, values){
+    __getOptionsText: function(options, values, isGetArray){
         if (!!this.json.props.multiple){
             var text = [];
             values.forEach(function(v){
@@ -240,21 +240,23 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                     text = text.concat(this.__getLastOptionsTextValue(options, v));
                 }
             }.bind(this));
-            return text.join(",");
+            return isGetArray ? text : text.join(",");
         }else{
             if( typeOf( values ) === "array" ){
-                return this.__getOptionsTextValue(options, values).join(",");
+                var arr = this.__getOptionsTextValue(options, values);
+                return isGetArray ? arr : arr.join(",");
             }else{
                 return this.__getLastOptionsTextValue(options, values)
             }
         }
     },
     __getOptionsTextValue: function(options, values, prefix, prefixLabel){
+        var separator = this.json.separator || "/";
         var text = [];
-        var v = typeOf( values ) === "string" ? values : values.join("/");
+        var v = typeOf( values ) === "string" ? values : values.join(separator);
         options.forEach(function(op){
-            var opValue = (prefix) ? prefix + "/" + op[this.json.props.value] : op[this.json.props.value];
-            var opLabel = (prefixLabel) ? prefixLabel + "/" + op[this.json.props.label] : op[this.json.props.label];
+            var opValue = (prefix) ? prefix + separator + op[this.json.props.value] : op[this.json.props.value];
+            var opLabel = (prefixLabel) ? prefixLabel + separator + op[this.json.props.label] : op[this.json.props.label];
             if (opValue == v) {
                 text.push(opLabel);
             }else if (v.startsWith(opValue) && op[this.json.props.children] && op[this.json.props.children].length){
@@ -263,7 +265,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         }.bind(this));
         if (!this.json.showAllLevels){
             return text.map(function(t){
-                return t.substring(t.indexOf("/")+1, t.length);
+                return t.substring(t.indexOf(separator)+1, t.length);
             });
         }else{
             return text;
@@ -324,13 +326,14 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             }
         },
         _getEachDataByText: function(options, texts, prefix, prefixLabel){
+            var separator = this.json.separator || "/";
             var value = [];
-            var t = typeOf( texts ) === "string" ? texts : texts.join("/");
+            var t = typeOf( texts ) === "string" ? texts : texts.join(separator);
             options.forEach(function(op){
-                var opValue = (prefix) ? prefix + "/" + op[this.json.props.value] : op[this.json.props.value];
-                var opLabel = (prefixLabel) ? prefixLabel + "/" + op[this.json.props.label] : op[this.json.props.label];
+                var opValue = (prefix) ? prefix + separator + op[this.json.props.value] : op[this.json.props.value];
+                var opLabel = (prefixLabel) ? prefixLabel + separator + op[this.json.props.label] : op[this.json.props.label];
                 if (opLabel === t) {
-                    value.push(opValue.split("/"));
+                    value.push(opValue.split(separator));
                 }else if (t.startsWith(opLabel) && op[this.json.props.children] && op[this.json.props.children].length){
                     value = value.concat(this._getEachDataByText(op[this.json.props.children], texts, opValue, opLabel));
                 }
@@ -361,28 +364,44 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             return value;
         },
 
+        /**
+         * @summary 获取选中项的text。
+         * @return {Array} 返回选中项的text数组
+         * @example
+         * var texts = this.form.get('fieldId').getText(); //获取选中项的文本数组
+         */
+        getText: function(){
+            return this._getText( true );
+        },
+        _getText: function( isGetArray ){
+            var data = this.json[this.json.$id];
+            if( !data )return "";
+
+            var opt = this.json.options;
+            if( !opt )return "";
+            if( o2.typeOf(opt.then)==="function" ){
+                return Promise.resolve(opt).then(function(options){
+                    return this.__getOptionsText(options, data, isGetArray);
+                }.bind(this));
+            }else{
+                return this.__getOptionsText(opt, data, isGetArray);
+            }
+        },
+
         getExcelData: function( type ){
             var data = this.json[this.json.$id];
             if( !data )return "";
 		    if( type === "value" )return data;
 
-            var text, opt = this.json.options;
-            if( !opt )return "";
-            if( o2.typeOf(opt.then)==="function" ){
-                return Promise.resolve(opt).then(function(options){
-                    text = this.__getOptionsText(options, data);
-                    return typeOf(text) === "array" ? text.join(", ") : (text || "");
-                }.bind(this));
-            }else{
-                text = this.__getOptionsText(opt, data);
-                return typeOf(text) === "array" ? text.join(", ") : (text || "");
-            }
+            var text = this._getText();
+            return typeOf(text) === "array" ? text.join(", ") : (text || "");
         },
         setExcelData: function(d, type){
+            var separator = this.json.separator || "/";
             var arr = this.stringToArray(d);
             this.excelData = arr;
             arr = arr.map(function (a) {
-                return a.contains("/") ? a.split("/") : a;
+                return a.contains(separator) ? a.split(separator) : a;
             });
             if( type === "value" ){
                 this.setData(arr);

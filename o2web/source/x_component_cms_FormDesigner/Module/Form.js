@@ -10,7 +10,9 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Datatable", "Datatable$Title", "Datatable$Data",
 			"Datatemplate", "Htmleditor", "TinyMCEEditor", "Number", "Currency", "Office", "Orgfield", "Personfield", "Readerfield", "Authorfield", "Org",
 			"Reader", "Author", "Radio", "Select", "Textarea", "Textfield", "Address","Combox",
-			"Elcascader","Elcheckbox","Elcolorpicker", "Eldate", "Eldatetime", "Elinput", "Elnumber", "Elradio", "Elrate", "Elselect", "Elslider", "Elswitch", "ElTime"],
+			"Elcascader","Elcheckbox","Elcolorpicker", "Eldate", "Eldatetime", "Elinput", "Elnumber", "Elradio", "Elrate", "Elselect", "Elslider", "Elswitch", "ElTime",
+			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup"
+			],
 		"injectActions" : [
 			{
 				"name" : "top",
@@ -132,27 +134,30 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			}
 		);
 	},
-	loadStylesList: function(callback){
+	loadStylesList: function(callback) {
 		//var stylesUrl = "../x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
 		//var stylesUrl = "../x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
-		var configUrl = "../x_component_cms_FormDesigner/Module/Form/skin/config.json";
-		MWF.getJSON(configUrl,{
-				"onSuccess": function(responseJSON){
-					this.stylesList = responseJSON;
-					if (callback) callback(this.stylesList);
-				}.bind(this),
-				"onRequestFailure": function(){
-					this.stylesList = {};
-					if (callback) callback(this.stylesList);
-				}.bind(this),
-				"onError": function(){
-					this.stylesList = {};
-					if (callback) callback(this.stylesList);
-				}.bind(this)
-			}
-		);
+		if (this.stylesList) {
+			callback(this.stylesList);
+		} else {
+			var configUrl = "../x_component_cms_FormDesigner/Module/Form/skin/config.json";
+			MWF.getJSON(configUrl, {
+					"onSuccess": function (responseJSON) {
+						this.stylesList = responseJSON;
+						if (callback) callback(this.stylesList);
+					}.bind(this),
+					"onRequestFailure": function () {
+						this.stylesList = {};
+						if (callback) callback(this.stylesList);
+					}.bind(this),
+					"onError": function () {
+						this.stylesList = {};
+						if (callback) callback(this.stylesList);
+					}.bind(this)
+				}
+			);
+		}
 	},
-
     //loadStylesList: function(callback){
 		//var stylesUrl = "../x_component_cms_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
 		//MWF.getJSON(stylesUrl,{
@@ -171,7 +176,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		//	}
 		//);
     //},
-	
+
 	loadModule: function(json, dom, parent){
 		var module, className;
 		if( !json ){
@@ -207,7 +212,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		}
 	},
 
-	
+
 	createModule: function(className, e){
 		//var classPre = MWF.CMSFD.RedesignModules.indexOf( className.toLowerCase() ) != -1 ? "CMSFC" : "FC";
 		var classPre = "CMSFC";
@@ -242,6 +247,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			this.property.load();
 		}else{
 			this.property.show();
+			if (callback) callback();
 		}
 	},
 	save: function(callback){
@@ -415,7 +421,6 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
      //   }
 	//	this._setEditStyle_custom(name, obj, oldValue);
 	//},
-
 	_setEditStyle: function(name, obj, oldValue){
 		if (name=="name"){
 			var title = this.json.name || this.json.id;
@@ -426,45 +431,45 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			this.treeNode.setTitle(this.json.id);
 			this.node.set("id", this.json.id);
 		}
-		if (name=="formStyleType"){
+		if ( name=="formStyleType" ){
 
-			var file = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].file : null;
-			var extendFile = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].extendFile : null;
-			this.loadTemplateStyles( file, extendFile, function( templateStyles ){
-				//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
-				this.templateStyles = templateStyles;
-
-				var oldFile, oldExtendFile;
-				if( oldValue && this.stylesList[oldValue] ){
-					oldFile = this.stylesList[oldValue].file;
-					oldExtendFile = this.stylesList[oldValue].extendFile;
+			var loadOldTemplateStyle = function () {
+				if( typeOf(oldValue) === "object" && oldValue.type === "script" ){ //如果原来是自定义表单样式
+					this.loadCustomTemplateStyles( oldValue , function (oldTemplateStyles) {
+						this.switchTemplateStyles( oldTemplateStyles );
+					}.bind(this))
+				}else{
+					var oldFile, oldExtendFile;
+					if( typeOf(oldValue) === "object" )oldValue === oldValue.id;
+					if( oldValue && this.stylesList[oldValue] ){
+						oldFile = this.stylesList[oldValue].file;
+						oldExtendFile = this.stylesList[oldValue].extendFile;
+					}
+					this.loadTemplateStyles( oldFile, oldExtendFile, function( oldTemplateStyles ){
+						this.switchTemplateStyles( oldTemplateStyles );
+					}.bind(this))
 				}
-				this.loadTemplateStyles( oldFile, oldExtendFile, function( oldTemplateStyles ){
-					//if (oldValue) {
-					//	var oldTemplateStyles = this.stylesList[oldValue];
-					//	if (oldTemplateStyles){
-					//		if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
-					//	}
-					//}
+			}.bind(this);
 
-					this.json.styleConfig = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
-
-					if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
-					if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
-
-					this.setAllStyles();
-
-					this.moduleList.each(function(module){
-						if (oldTemplateStyles[module.moduleName]){
-							module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
-						}
-						module.setStyleTemplate();
-						module.setAllStyles();
-					}.bind(this));
+			var formStyleType = this.json.formStyleType;
+			if( typeOf(formStyleType) === "object" && formStyleType.type === "script" ){
+				this.loadCustomTemplateStyles( formStyleType , function (templateStyles) {
+					this.templateStyles = templateStyles;
+					loadOldTemplateStyle();
+					this.json.styleConfig = formStyleType;
 				}.bind(this))
+			}else{
+				if( typeOf(formStyleType) === "object" )formStyleType = formStyleType.id;
 
-			}.bind(this))
-		}
+				var file = (this.stylesList && formStyleType) ? this.stylesList[formStyleType].file : null;
+				var extendFile = (this.stylesList && formStyleType) ? this.stylesList[formStyleType].extendFile : null;
+				this.loadTemplateStyles( file, extendFile, function( templateStyles ){
+					this.templateStyles = templateStyles;
+					loadOldTemplateStyle();
+					this.json.styleConfig = (this.stylesList && formStyleType) ? this.stylesList[formStyleType] : null;
+				}.bind(this))
+			}
+        }
 		if (name==="css"){
 			this.reloadCss();
 		}

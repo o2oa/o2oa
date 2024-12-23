@@ -33,31 +33,42 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @JaxrsDescribe("检索接口.")
 public class IndexAction extends StandardJaxrsAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexAction.class);
-    private static final String OPERATIONID_PREFIX = "IndexAction::";
+	private static final Logger LOGGER = LoggerFactory.getLogger(IndexAction.class);
 
-    @Operation(summary = "目录中索引数量,category,type,key为空统计search目录数量.", operationId = OPERATIONID_PREFIX
-            + "count", responses = {
-                    @ApiResponse(content = {
-                            @Content(schema = @Schema(implementation = ActionDirectoryDocumentCount.Wo.class)) }) }, requestBody = @RequestBody(content = {
-                                    @Content(schema = @Schema(implementation = ActionDirectoryDocumentCount.Wi.class)) }))
-    @JaxrsMethodDescribe(value = "目录中索引数量,category,type,key为空统计search目录数量.", action = ActionDirectoryDocumentCount.class)
-    @POST
-    @Path("directory/document/count")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void directoryDocumentCount(@Suspended final AsyncResponse asyncResponse,
-            @Context HttpServletRequest request,
-            JsonElement jsonElement) {
-        ActionResult<ActionDirectoryDocumentCount.Wo> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionDirectoryDocumentCount().execute(effectivePerson, jsonElement);
-        } catch (Exception e) {
-            LOGGER.error(e, effectivePerson, request, null);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
+	@JaxrsMethodDescribe(value = "目录中索引数量,category,type,key为空统计search目录数量.", action = ActionDirectoryDocumentCount.class)
+	@POST
+	@Path("directory/document/count")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void directoryDocumentCount(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionDirectoryDocumentCount.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDirectoryDocumentCount().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "更新扩展文档.", action = ActionUpdateExtraDocument.class)
+	@POST
+	@Path("update/extra/document")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateExtraDocument(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionUpdateExtraDocument.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateExtraDocument().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 }

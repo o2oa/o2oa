@@ -19,11 +19,11 @@
   line-height: 32px;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
-  border-radius: 0 16px 0 16px;
+  border-radius: 0 var(--att-default-radius) 0 16px;
   cursor: pointer;
 }
 .bd-map {
   height: 100%;
-  border-radius: 16px;
+  border-radius: var(--att-default-radius);
   border: 1px solid #E6E6E6;
 }

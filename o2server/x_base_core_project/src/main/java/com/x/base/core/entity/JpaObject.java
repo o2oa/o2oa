@@ -15,6 +15,7 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -294,7 +295,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	private static void singularAttributeField(Field field, Boolean excludeInvisible, Boolean excludeLob,
 			List<String> names) {
-		if (null == field.getAnnotation(ContainerTable.class)) {
+		if ((null == field.getAnnotation(ContainerTable.class))) {
 			if (BooleanUtils.isTrue(excludeInvisible) && FieldsInvisible.contains(field.getName())) {
 				return;
 			}

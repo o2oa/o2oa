@@ -15,7 +15,7 @@
 .pager-next {
   height: 24px;
   width: 80px;
-  border-radius: 12px;
+  border-radius: var(--att-default-radius);
   background: #ffffff;
   border: 1px solid #e6e6e6;
   font-size: 12px;
@@ -48,7 +48,14 @@
   float: left;
 }
 .pager-item {
-  float: left;
+    float: left;
     width: 24px;
     margin-left: 10px;
+}
+.pager-input-page {
+  height: 60px;
+  font-size: 12px;
+  line-height: 24px;
+  display: flex;
+  margin: 0 10px;
 }

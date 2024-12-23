@@ -153,21 +153,30 @@ MWF.xApplication.Selector.Unit = new Class({
         return new MWF.xApplication.Selector.Unit.ItemSelected(data, selector, item, selectedNode)
     },
     _listItemByPinyin: function(callback, failure, key){
-        if (this.options.units.length){
-            var units = [];
-            this.options.units.each(function(u){
-                if (typeOf(u)==="string"){
-                    units.push(u);
-                }
-                if (typeOf(u)==="object"){
-                    units.push(u.distinguishedName);
-                }
-            });
-            key = {"key": key, "unitList": units};
+        if( this.options.expandSubEnable ){
+            if (this.options.units.length){
+                var units = [];
+                this.options.units.each(function(u){
+                    if (typeOf(u)==="string"){
+                        units.push(u);
+                    }
+                    if (typeOf(u)==="object"){
+                        units.push(u.distinguishedName);
+                    }
+                });
+                key = {"key": key, "unitList": units};
+            }
+            this.orgAction.listUnitByPinyininitial(function(json){
+                if (callback) callback.apply(this, [json]);
+            }.bind(this), failure, key);
+        }else{
+            if (key){
+                this.initSearchArea(true);
+                this.searchInItems(key);
+            }else{
+                this.initSearchArea(false);
+            }
         }
-        this.orgAction.listUnitByPinyininitial(function(json){
-            if (callback) callback.apply(this, [json]);
-        }.bind(this), failure, key);
     },
     _newItem: function(data, selector, container, level, category, delay){
         return new MWF.xApplication.Selector.Unit.Item(data, selector, container, level, category, delay);

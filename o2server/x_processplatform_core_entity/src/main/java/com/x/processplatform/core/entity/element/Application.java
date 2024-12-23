@@ -83,6 +83,7 @@ public class Application extends SliceJpaObject {
 		if (null != this.properties) {
 			this.defaultForm = this.getProperties().getDefaultForm();
 			this.maintenanceIdentity = this.getProperties().getMaintenanceIdentity();
+			this.maintainerList = this.getProperties().getMaintainerList();
 		}
 	}
 
@@ -133,6 +134,19 @@ public class Application extends SliceJpaObject {
 	public void setMaintenanceIdentity(String maintenanceIdentity) {
 		this.maintenanceIdentity = maintenanceIdentity;
 		this.getProperties().setMaintenanceIdentity(maintenanceIdentity);
+	}
+
+	@FieldDescribe("当前应用下所以流程的流程实例维护者列表")
+	@Transient
+	private List<String> maintainerList;
+
+	public List<String> getMaintainerList() {
+		return maintainerList;
+	}
+
+	public void setMaintainerList(List<String> maintainerList) {
+		this.maintainerList = maintainerList;
+		this.getProperties().setMaintainerList(maintainerList);
 	}
 
 	public static final String name_FIELDNAME = "name";

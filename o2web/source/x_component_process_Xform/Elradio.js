@@ -7,7 +7,7 @@ MWF.xDesktop.requireApp("process.Xform", "Radio", null, false);
  * var radio = this.form.get("name"); //获取组件
  * //方法2
  * var radio = this.target; //在组件事件脚本中获取
- * @extends MWF.xApplication.process.Xform.$Module
+ * @extends MWF.xApplication.process.Xform.$Selector
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
@@ -249,7 +249,8 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         // }else{
         //     if (callback) callback();
         // }
-        o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+        var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
+        o2.loadAll({"css": elcssUrl, "js": [vue, "elementui"]}, { "sequence": true }, callback);
     },
     // _loadVue: function(callback){
     //     if (!window.Vue){
@@ -354,6 +355,24 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             }
         }.bind(this));
     },
+        /**
+         * @summary 获取选中项的text。
+         * @return {String} 返回选中项的text
+         * @example
+         * var text = this.form.get('fieldId').getText(); //获取选中项的文本
+         */
+        getText: function(){
+            var d = this.getTextData();
+            if( typeOf(d.then) === "function" ){
+                return d.then(function( d1 ){
+                    var texts = d1.text;
+                    return (texts && texts.length) ? texts[0] : "";
+                })
+            }else{
+                var texts = d.text;
+                return (texts && texts.length) ? texts[0] : "";
+            }
+        },
 
     getExcelData: function( type ){
 		var value = this.getData();

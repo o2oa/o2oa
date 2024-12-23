@@ -60,10 +60,6 @@ class ActionGet extends BaseAction {
 			List<Group> os = business.group().pick(wo.getGroupList());
 			wos = Wo.copier.copy(os);
 		}
-		/*wos = wos.stream()
-				.sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-						.thenComparing(Comparator.comparing(Wo::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());*/
 		wo.setWoGroupList(wos);
 	}
 

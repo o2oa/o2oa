@@ -22,6 +22,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"beforeCurrent": true,
 		"clearEnable": true,
 
+		"weekBegin": 0, //0表示周日，1表示周一
+
 		"range": false,
 		"rangeNodes": [],
 		"rangeRule": "asc",  //asc + ,  des -
@@ -803,7 +805,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		var firstDate = baseDate.clone();
 		firstDate.setDate(1);
-		var day = firstDate.getDay();
+		// var day = firstDate.getDay();
+
+		var day = (7 + firstDate.getDay() - this.options.weekBegin) % 7;
 
 		var tmpDate = firstDate.clone();
 		for (var i=day-1; i>=0; i--){
@@ -1141,12 +1145,12 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			}else {
 				this.calculateCurrentHour(h);
 				this.createDisabledNodes(this.itmeHNode, 24, "h");
-				this.hSlider = new Slider(this.itmeHNode, this.itmeHNode.getFirst(), {
-					range: [0, 23],
-					initialStep: this.cHour,
-					onChange: function(value){
-						var v = value.toInt();
-						if( this.isEnableHour(this.cDate, v) ){
+
+				var hourChangehandler = o2.Calendar.antiShake( function ( value ){
+					var value1 = Math.round(value);
+					var nearValue = this.isEnableHour(this.cDate, value1, true);
+					var v = nearValue === true ? value1 : nearValue;
+					if( this.selectedHour === v )return;
 							this.selectedHour = v;
 							this.cHour = v;
 							this.showHNode.set("text", this.addZero(v, 2));
@@ -1166,7 +1170,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 								this.itmeSNode.getFirst().set("text", this.addZero( this.cSecond, 2));
 								this.showSNode.set("text", this.addZero( this.cSecond, 2) );
 							}
-						}
+				}.bind(this), 200, this);
+
+				this.hSlider = new Slider(this.itmeHNode, this.itmeHNode.getFirst(), {
+					range: [0, 23],
+					initialStep: this.cHour,
+					onChange: function(value){
+						hourChangehandler(value);
 					}.bind(this)
 				});
 				// if( this.options.enableHours ){
@@ -1177,12 +1187,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 				this.calculateCurrentMinute(m);
 				this.createDisabledNodes(this.itmeMNode, 60, "m");
-				this.mSlider = new Slider(this.itmeMNode, this.itmeMNode.getFirst(), {
-					range: [0, 59],
-					initialStep: this.cMinute,
-					onChange: function(value){
-						var v = value.toInt();
-					    if( this.isEnableMinute(this.cDate, this.cHour, v) ){
+				var minuteChangehandler = o2.Calendar.antiShake( function(value){
+					var value1 = Math.round(value);
+					var nearValue = this.isEnableMinute(this.cDate, this.cHour, value1, true);
+					var v = nearValue === true ? value1 : nearValue;
+					if( this.selectedMinute === v )return;
                             this.selectedMinute = v;
                             this.cMinute = v;
                             this.showMNode.set("text", this.addZero( v, 2));
@@ -1195,7 +1204,12 @@ o2.widget.Calendar = o2.Calendar = new Class({
 								this.itmeSNode.getFirst().set("text", this.addZero( this.cSecond, 2));
 								this.showSNode.set("text", this.addZero( this.cSecond, 2) );
 							}
-						}
+				}.bind(this), 200, this);
+				this.mSlider = new Slider(this.itmeMNode, this.itmeMNode.getFirst(), {
+					range: [0, 59],
+					initialStep: this.cMinute,
+					onChange: function(value){
+						minuteChangehandler(value);
 					}.bind(this)
 				});
 				this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
@@ -1204,17 +1218,22 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				if( this.options.secondEnable && this.itmeSNode ){
 					this.calculateCurrentSecond(s);
 					this.createDisabledNodes(this.itmeSNode, 60, "s");
-					this.sSlider = new Slider(this.itmeSNode, this.itmeSNode.getFirst(), {
-						range: [0, 59],
-						initialStep: this.cSecond,
-						onChange: function(value){
-							var v = value.toInt();
-                            if( this.isEnableSecond(this.cDate, this.cHour, this.cMinute, v) ){
+
+					var secondChangehandler = o2.Calendar.antiShake( function(value){
+						var value1 = Math.round(value);
+						var nearValue = this.isEnableSecond(this.cDate, this.cHour, this.cMinute, value1, true);
+						var v = nearValue === true ? value1 : nearValue;
+						if( this.selectedSecond === v )return;
                                 this.selectedSecond = v;
                                 this.cSecond = v;
                                 this.showSNode.set("text", this.addZero( v, 2));
                                 this.itmeSNode.getFirst().set("text", this.addZero( v, 2));
-						    }
+					}.bind(this), 200, this);
+					this.sSlider = new Slider(this.itmeSNode, this.itmeSNode.getFirst(), {
+						range: [0, 59],
+						initialStep: this.cSecond,
+						onChange: function(value){
+							secondChangehandler(value);
 						}.bind(this)
 					});
 					this.itmeSNode.getFirst().set("text", this.addZero( this.cSecond, 2));
@@ -1597,8 +1616,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		//var days_abbr = Locale.get("Date").days_abbr;
 		var days_abbr = o2.LP.widget.days_abbr;
 		cells.each(function(item, idx){
-			item.set("text", days_abbr[idx]);
-		});
+			item.set("text", days_abbr[ (idx + this.options.weekBegin) % 7 ]);
+		}.bind(this));
 		return cells;
 	},
 	setTitleStyle: function(){
@@ -2145,7 +2164,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	// 	var ar = this.getEnableHours(date);
 	// 	return this._getEnableStartEnd( ar, 0, 23 );
 	// },
-	isEnableHour: function (thisDate, hour) {
+	isEnableHour: function (thisDate, hour, nearly) {
 		var hs = this.getEnableHours( thisDate );
 		if( !hs || !hs.length || (hs[0] === 0 && hs[1] === 23) )return true;
 		if( typeOf(hs[0]) === "array" ){
@@ -2156,7 +2175,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			if(  hs[0] <= hour && hour <= hs[1] )return true;
 		}
-		return false;
+		return nearly ? o2.Calendar.findClosest( hs.flatten(), hour ) : false;
 	},
 	getEnableMinutes: function(date, h){
 		var fun = this.options.enableMinutes;
@@ -2172,7 +2191,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if( typeOf(ar[0]) !== "array" )ar = [ar];
 		return o2.Calendar.RangeArrayUtils.complementary([0, 59], ar, null, 1);
 	},
-	isEnableMinute: function (thisDate, hour, minute) {
+	isEnableMinute: function (thisDate, hour, minute, nearly) {
 		var ms = this.getEnableMinutes( thisDate, hour );
 		if( !ms || !ms.length || (ms[0] === 0 && ms[1] === 59))return true;
 		if( typeOf(ms[0]) === "array" ){
@@ -2183,7 +2202,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			if(  ms[0] <= minute && minute <= ms[1] )return true;
 		}
-		return false;
+		return nearly ? o2.Calendar.findClosest( ms.flatten(), minute ) : false;
 	},
 	getEnableSeconds: function(date, h, m){
 		var fun = this.options.enableSeconds;
@@ -2199,7 +2218,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if( typeOf(ar[0]) !== "array" )ar = [ar];
 		return o2.Calendar.RangeArrayUtils.complementary([0, 59], ar, null, 1);
 	},
-	isEnableSecond: function (thisDate, hour, minute, second) {
+	isEnableSecond: function (thisDate, hour, minute, second, nearly) {
 		var ss = this.getEnableSeconds( thisDate, hour, minute );
 		if( !ss || !ss.length || (ss[0] === 0 && ss[1] === 59))return true;
 		if( typeOf(ss[0]) === "array" ){
@@ -2210,8 +2229,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			if(  ss[0] <= second && second <= ss[1] )return true;
 		}
-		return false;
-	}
+		return nearly ? o2.Calendar.findClosest( ss.flatten(), second ) : false;
+	},
 	// _getEnableStartEnd: function( ar, start, end ){
 	// 	if( !ar || !ar.length || (ar[0] === start && ar[1] === 23) )return [start, 23];
 	// 	var s, e;
@@ -2229,6 +2248,31 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 });
 
+o2.Calendar.antiShake = function (fun, wait, bind){
+	var time = null;
+	return function (args){
+		if(time){
+			clearTimeout(time);
+		}
+		time = setTimeout(fun.call(bind, args), wait);
+	}
+};
+
+o2.Calendar.findClosest = function(arr, target) {
+	if (!arr.length) {
+		return null; // 如果数组为空，返回null
+	}
+	var closest = arr[0];
+	var minDiff = Math.abs(arr[0] - target);
+	for (var i = 1; i < arr.length; i++) {
+		var currentDiff = Math.abs(arr[i] - target);
+		if (currentDiff < minDiff) {
+			minDiff = currentDiff;
+			closest = arr[i];
+		}
+	}
+	return closest;
+}
 
 o2.Calendar.MobileSelect = new Class({
 	Implements: [Options, Events],

@@ -24,6 +24,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
+import org.apache.commons.lang3.BooleanUtils;
 
 /*执行服务器命令*/
 public class ActionCommand extends BaseAction {
@@ -33,6 +34,9 @@ public class ActionCommand extends BaseAction {
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
+			throw new ExceptionCommandDisable();
+		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String ctl = wi.getCtl();
 		String nodeName = wi.getNodeName();

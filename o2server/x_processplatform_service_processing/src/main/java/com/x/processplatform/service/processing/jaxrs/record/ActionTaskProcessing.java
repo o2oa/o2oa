@@ -109,6 +109,7 @@ class ActionTaskProcessing extends BaseAction {
 				Unit unit = business.organization().unit().getObject(rec.getUnit());
 				if (null != unit) {
 					rec.setUnitOrderNumber(unit.getOrderNumber());
+					rec.setUnitLevelName(unit.getLevelName());
 				}
 				rec.setRouteName(param.taskCompleted.getRouteName());
 				rec.setOpinion(param.taskCompleted.getOpinion());

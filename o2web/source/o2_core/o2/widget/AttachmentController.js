@@ -245,7 +245,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 e.preventDefault();
                 e.stopPropagation();
             }, false);
-            this.minContent.addEventListener("drop", function( e ) {
+            this.minContent.addEventListener("drop", function (e) {
                 this.uploadAttachment(e, null, e.dataTransfer.files);
                 event.preventDefault();
             }.bind(this), false);
@@ -857,7 +857,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if (this.module) this.module.uploadAttachment(e, node, files);
     },
     doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files){
-        if (this.options.isUpload && this.options.isUpload !== "hidden" ){
+        if ( !this.options.readonly && ( this.options.isUpload && this.options.isUpload !== "hidden") ){
             if (FormData.expiredIE){
                 this.doInputUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery);
             }else{

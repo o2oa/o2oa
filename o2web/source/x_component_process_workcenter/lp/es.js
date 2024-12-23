@@ -129,9 +129,8 @@ MWF.xApplication.process.workcenter.LP={
 	"noReadCompleted": "No hay archivos leídos",
 	"noDraft": "No hay borradores de archivo",
 	"createWork": "Crear un nuevo archivo de flujo de trabajo",
-	"readConfirm" : "¿Está seguro de que desea marcar los archivos seleccionados como leídos?",
-
 	"batch": "Procesamiento por lotes",
+	"readConfirm" : "¿Está seguro de que desea marcar los archivos seleccionados como leídos?",
 	"selectBatch": "Seleccione múltiples tareas pendientes en la misma actividad para procesarlas por lotes",
 	"cannotSelectBatch": "No se puede procesar por lotes las tareas pendientes en diferentes actividades",
 	"unnamed": "Sin título",

@@ -18,7 +18,7 @@ import com.x.base.core.project.tools.ListTools;
 
 public class QiyeweixinFactory {
 
-	private static Logger logger = LoggerFactory.getLogger(QiyeweixinFactory.class);
+	private static final Logger logger = LoggerFactory.getLogger(QiyeweixinFactory.class);
 
 	private String accessToken;
 
@@ -33,6 +33,8 @@ public class QiyeweixinFactory {
 			users.addAll(this.users(o));
 		}
 		users = ListTools.trim(users, true, true);
+		logger.info("qi ye wei xin sync org num:{}, user num:{}", orgs.size(), users.size());
+		logger.info("qw打印一个用户信息:{}", users.get(0).toString());
 	}
 
 	public List<User> getUsers() {

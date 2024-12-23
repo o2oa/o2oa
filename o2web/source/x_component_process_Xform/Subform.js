@@ -239,6 +239,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                 this.node.set("html", this.subformData.html);
                 Object.each(this.subformData.json.moduleList, function (module, key) {
                     var formKey = key;
+                    if( this.json.isReadonly )module.isReadonly = true;
                     if (this.form.json.moduleList[key]) {
                         formKey = this.json.id + "_" + key;
                         var moduleNode = this.node.getElement("#" + key);

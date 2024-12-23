@@ -111,6 +111,14 @@
                         <select class="MWFViewColumnSelect" name="viewTextColumn" style="max-width: 270px;"></select>
                     </td>
                 </tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.useCache}}:</td>
+					<td class="editTableValue">
+						<input type="radio" name="dictUseCache" value="true" text{($.dictUseCache!==false)?'checked':''}/>{{$.lp.yes}}
+						<input type="radio" name="dictUseCache" value="false" text{($.dictUseCache===false)?'checked':''}/>{{$.lp.no}}
+						<div style="color:#999;">{{$.lp.useCacheNote}}</div>
+					</td>
+				</tr>
             </table>
             <div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.filter}}</div>
             <div class="MWFViewFilterWithTemplate"></div>
@@ -199,7 +207,7 @@
 
 		<div class="MWFValidation" name="validationConfig"></div>
 		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
-		
+
 	</div>
 	<div title="Vue"  class="MWFTab">
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Data</div>

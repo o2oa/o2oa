@@ -282,7 +282,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                         starRowIndex = level+1+offsetRowIndex;
                         endColName = this.index2ColName(i-1+offsetColumnIndex);
                         endRowIndex = (lastTitles[level+1] ? level+1 : maxTitleLevel)+offsetRowIndex;
-                        if( (startColName !== endColName || starRowIndex !== endRowIndex) && (i===0 || titleDataParsed[i-1][leve]) ){
+                        if( (startColName !== endColName || starRowIndex !== endRowIndex) && (i===0 || titleDataParsed[i-1][level]) ){
                             sheet.mergeCells(startColName+starRowIndex+':'+endColName+endRowIndex);
                         }
                     }

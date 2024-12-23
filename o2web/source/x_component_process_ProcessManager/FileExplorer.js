@@ -335,7 +335,7 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
         if (!this.data) this.data = this.getNewData();
 
         this.fileMaskNode = new Element("div", {"styles": this.css.createTemplateMaskNode}).inject(this.app.content);
-        this.fileAreaNode = new Element("div", {"styles": this.css.createFormTemplateAreaNode}).inject(this.app.content);
+        this.fileAreaNode = new Element("div", {"styles": this.css.fileDesignerAreaNode}).inject(this.app.content);
         this.fileAreaNode.fade("in");
 
         this.titleNode = new Element("div", {"styles": this.css.fileDesignerTitleNode}).inject(this.fileAreaNode);

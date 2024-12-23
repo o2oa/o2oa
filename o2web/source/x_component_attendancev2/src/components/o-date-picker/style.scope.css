@@ -10,7 +10,7 @@
   font-size: 14px;
   background-color: #fff;
   background-image: none;
-  border-radius: 18px;
+  border-radius: var(--att-default-radius);
   border: 1px solid #dedede;
   transition: all 0.3s;
   align-items: center;

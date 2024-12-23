@@ -1114,6 +1114,117 @@ MWF.xScript.ViewEnvironment = function (ev) {
             //     return v;
             // }
         },
+
+
+        /**
+         根据组织标识和指定层级批量获取上级组织的对象数组（包括传入的数组）：unit对象数组。
+         * @method listSupUnitWithLevel
+         * @o2membercategory unit
+         * @methodOf module:org
+         * @static
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {Number} level  指定的层级
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|UnitData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
+         * @o2syntax
+         * //同步执行，返回嵌套上级组织数组。
+         * var unitList = this.org.listSupUnitWithLevel( name, level );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupUnitWithLevel( name, level, true);
+         * promise.then(function(unitList){
+         *     //unitList 为返回的直接上级组织数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listSupUnitWithLevel( name, level, function(unitList){
+         *     //unitList 为返回嵌套上级组织数组。
+         * })
+         */
+        listSupUnitWithLevel: function(name, level, async){
+            var v;
+            var supUnitList = this.listSupUnit( name, true, !!async);
+            var unitList = this.getUnit( name, false, !!async );
+
+            var cb = function(sups, units){
+                v = [].concat(
+                    sups,
+                    typeOf( units ) === "object" ? [units] : units
+                ).filter(function (u){
+                    return u.level === level;
+                });
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+            if( typeof supUnitList.then === 'function' ){
+                return Promise.all([supUnitList, unitList]).then(function( result){
+                    return cb(result[0], result[1]);
+                });
+            }else{
+                return cb(supUnitList, unitList);
+            }
+        },
+
+
+        /**
+         根据组织标识和指定组织类型批量获取上级组织的对象数组（包括传入的数组）：unit对象数组。
+         * @method listSupUnitWithType
+         * @o2membercategory unit
+         * @methodOf module:org
+         * @static
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {String} type  指定的组织类型
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|UnitData[]} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回组织数组。
+         * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
+         * @o2syntax
+         * //同步执行，返回嵌套上级组织数组。
+         * var unitList = this.org.listSupUnitWithType( name, level );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.listSupUnitWithType( name, level, true);
+         * promise.then(function(unitList){
+         *     //unitList 为返回的直接上级组织数组。
+         * })
+         *
+         * //异步执行，在回调方法中获取
+         * this.org.listSupUnitWithType( name, level, function(unitList){
+         *     //unitList 为返回嵌套上级组织数组。
+         * })
+         */
+        listSupUnitWithType: function(name, type, async){
+            var v;
+            var supUnitList = this.listSupUnit( name, true, !!async);
+            var unitList = this.getUnit( name, false, !!async );
+
+            var cb = function(sups, units){
+                v = [].concat(
+                    sups,
+                    typeOf( units ) === "object" ? [units] : units
+                ).filter(function (u){
+                    return (u.typeList || []).contains( type );
+                });
+                if (async && o2.typeOf(async)==="function") return async(v);
+                return v;
+            };
+
+            if( typeof supUnitList.then === 'function' ){
+                return Promise.all([supUnitList, unitList]).then(function( result){
+                    return cb(result[0], result[1]);
+                });
+            }else{
+                return cb(supUnitList, unitList);
+            }
+        },
+
+
+
         //根据个人身份获取组织
         //flag 数字    表示获取第几层的组织
         //     字符串  表示获取指定类型的组织
@@ -3739,53 +3850,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
     // }else{
     //     var includedScripts = window.includedScripts;
     // }
-    var includedScripts = [];
-    var _includeSingle = function (optionsOrName, callback, async) {
-        var options = optionsOrName;
-        if (typeOf(options) == "string") {
-            options = { name: options };
-        }
-        var name = options.name;
-        var type;
-        if( options.type === "service" ){
-            type = options.type;
-        }else{
-            type = (options.type && options.application) ? options.type : "portal";
-        }
-        var application = options.application || _form.json.application;
-        var key = type + "-" + application + "-" + name;
-        if( type === "service" ){
-            key = type + "-" + name;
-        }
-        if (includedScripts.indexOf(key) > -1) {
-            if (callback) callback.apply(this);
-            return;
-        }
-        //if (includedScripts.indexOf( name )> -1){
-        //    if (callback) callback.apply(this);
-        //    return;
-        //}
-        if( ( options.enableAnonymous || options.anonymous ) && type === "cms" ){
-            o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName( application, name, function(json){
-                if (json.data){
-                    includedScripts.push( key );
-                    //名称、别名、id
-                    ( json.data.importedList || [] ).each( function ( flag ) {
-                        includedScripts.push( type + "-" + json.data.appId + "-" + flag );
-                        if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
-                        if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
-                    });
-                    includedScripts = includedScripts.concat(json.data.importedList || []);
-                    MWF.CMSMacro.exec(json.data.text, this);
-                    if (callback) callback.apply(this);
-                }else{
-                    if (callback) callback.apply(this);
-                }
-            }.bind(this), null, false);
-        }else {
+        var _getScriptAction = function ( type ){
             var scriptAction;
             switch (type) {
-                case "portal":
+                case "portal" :
                     if (this.scriptActionPortal) {
                         scriptAction = this.scriptActionPortal;
                     } else {
@@ -3793,7 +3861,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                         scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
                     }
                     break;
-                case "process":
+                case "process" :
                     if (this.scriptActionProcess) {
                         scriptAction = this.scriptActionProcess;
                     } else {
@@ -3801,7 +3869,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                         scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
                     }
                     break;
-                case "cms":
+                case "cms" :
                     if (this.scriptActionCMS) {
                         scriptAction = this.scriptActionCMS;
                     } else {
@@ -3818,38 +3886,78 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     }
                     break;
             }
+            return scriptAction;
+        }
 
-            var successCallback = function (json) {
+
+        //缓存名称、别名、id
+        var _parseScriptImportList = function (json, type){
+            var includedScripts = [];
+            var importedList = json.data.importedList || [];
+            importedList.each(function (flag) {
+                if (type === "portal") {
+                    includedScripts.push(type + "-" + json.data.portal + "-" + flag);
+                    if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
+                    if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
+                } else if (type === "cms") {
+                    includedScripts.push(type + "-" + json.data.appId + "-" + flag);
+                    if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                    if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                } else if (type === "process") {
+                    includedScripts.push(type + "-" + json.data.application + "-" + flag);
+                    if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                    if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                }else if (type === "service") {
+                    includedScripts.push(type + "-" + flag);
+                }
+            });
+            return includedScripts.concat(importedList);
+        }
+
+    var includedScripts = [];
+    var _includeSingle = function (optionsOrName, callback, async) {
+        var options = optionsOrName;
+        if (typeOf(options) === "string") {
+            options = { name: options };
+        }
+        var name = options.name;
+        var type;
+        if( options.type === "service" ){
+            type = options.type;
+        }else{
+            type = (options.type && options.application) ? options.type : "portal";
+        }
+        var application = options.application || _form.json.application;
+        var key = type + "-" + application + "-" + name;
+        if( type === "service" ){
+            key = type + "-" + name;
+        }
+
+        //js 加载过就不重新加载了
+        if (includedScripts.indexOf(key) > -1) {
+            if (callback) callback.apply(this);
+            return;
+        }
+
+        var successCallback = function (json) {
                 if (json.data) {
                     includedScripts.push(key);
-
-                    //名称、别名、id
-                    json.data.importedList.each( function ( flag ) {
-                        if( type === "portal" ){
-                            includedScripts.push( type + "-" + json.data.portal + "-" + flag );
-                            if( json.data.portalName )includedScripts.push( type + "-" + json.data.portalName + "-" + flag );
-                            if( json.data.portalAlias )includedScripts.push( type + "-" + json.data.portalAlias + "-" + flag );
-                        }else if( type === "cms" ){
-                            includedScripts.push( type + "-" + json.data.appId + "-" + flag );
-                            if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
-                            if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
-                        }else if( type === "process" ){
-                            includedScripts.push( type + "-" + json.data.application + "-" + flag );
-                            if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
-                            if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
-                        }else if (type === "service") {
-                            includedScripts.push(type + "-" + flag);
-                        }
-                    });
-
-                    includedScripts = includedScripts.concat(json.data.importedList);
-                    MWF.Macro.exec(json.data.text, this);
+                    includedScripts = includedScripts.concat( _parseScriptImportList(json, type) );
+                    if( (options.enableAnonymous || options.anonymous ) && type === "cms" ){
+                        MWF.CMSMacro.exec(json.data.text, this)
+                    }else{
+                        MWF.Macro.exec(json.data.text, this);
+                    }
                     if (callback) callback.apply(this);
                 } else {
                     if (callback) callback.apply(this);
                 }
             }.bind(this);
 
+            if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
+                o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, successCallback, null, !!async);
+            } else {
+                var scriptAction = _getScriptAction.call(this, type);
             if( type === "service" ){
                 scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
             }else{
@@ -3858,7 +3966,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }
     };
     this.include = function( optionsOrName , callback, async){
-        if (o2.typeOf(optionsOrName)=="array"){
+        if (o2.typeOf(optionsOrName)==="array"){
             if (!!async){
                 var count = optionsOrName.length;
                 var loaded = 0;
@@ -3878,6 +3986,60 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }else{
             _includeSingle.apply(this, [optionsOrName , callback, async])
         }
+    };
+
+    var includedSourceMap = {};
+    var _includeSource = function (optionsOrName, callback, async, fileType) {
+        var options = typeOf(optionsOrName) === "string" ? {name: optionsOrName} : optionsOrName;
+        var name = options.name;
+        var type = options.type === "service" ? options.type : ((options.type && options.application) ? options.type : "portal");
+        var application = options.application || _form.json.application;
+        var key = type === "service" ? (type + "-" + name) : (type + "-" + application + "-" + name);
+            var data, result;
+        if( includedSourceMap[key] ){
+                data = includedSourceMap[key];
+                if(callback)callback( data.text );
+                return !!async ? Promise.resolve( data.text ) : data.text;
+        }
+        var successCallback = function (json) {
+            if (json.data) {
+                var includeds = [key];
+                includeds = includeds.concat( _parseScriptImportList(json, type) );
+                includeds.each(function(k){
+                    includedSourceMap[k] = json.data;
+                })
+                result = json.data.text;
+                if( fileType === 'json' ){
+                    result = JSON.parse(result);
+                }
+                if (callback) callback.call(this, result);
+            } else {
+                result = '';
+                if (callback) callback.call(this, '');
+            }
+            return result;
+        }.bind(this);
+        var p;
+        if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
+            p = o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, !!async ? null : successCallback, null, !!async);
+        } else {
+            var scriptAction = _getScriptAction.call(this, type);
+            if( type === "service" ){
+                p = scriptAction.getScriptByName(name, includedScripts, successCallback, !!async ? null : successCallback, null, !!async);
+            }else{
+                p = scriptAction.getScriptByName(application, name, includedScripts, !!async ? null : successCallback, null, !!async);
+            }
+        }
+        return !!async ? p.then( successCallback ) : result;
+    };
+    this.includeHtml = function (optionsOrName, callback, async){
+         return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'html'])
+    };
+    this.includeJson = function (optionsOrName, callback, async){
+          return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'json'])
+    };
+    this.includeCss = function (optionsOrName, callback, async){
+         return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'css']);
     };
 
     this.define = function (name, fun, overwrite) {
@@ -5761,6 +5923,45 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *    //xhr 为 xmlHttpRequest
      * });
      */
+
+    /**
+     * 往数据表中部分修改单条数据。
+     * @method partUpdateRow
+     * @methodOf module:Table
+     * @instance
+     * @param {String} id 需要修改的数据id。
+     * @param {Object} data 需要修改的部分数据，其他数据不变。
+     * @param {Function} [success] 调用成功时的回调函数。
+     * @param {Function} [failure] 调用错误时的回调函数。
+     * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
+     * @o2syntax
+     * table.partUpdateRow( id, data, success, failure, async )
+     * //或
+     * var promise = table.partUpdateRow( id, data );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
+     * @example
+     * var table = new this.Table("table1");
+     * var data = {
+     *    "id" : "2cf3a20d-b166-490b-8d29-05544db3d79b",
+     *    "subject": "标题一"
+     *  };
+     * table.partUpdateRow( "2cf3a20d-b166-490b-8d29-05544db3d79b", data, function(data){
+     *    //data 形如
+     *    //{
+     *    //   "type": "success",
+     *    //  "data": {
+     *    //      "value": true //true表示修改成功
+     *    //  },
+     *    //  "message": "",
+     *    //  "date": "2021-11-01 18:32:27"
+     *    //}
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     */
     this.Table = MWF.xScript.createTable();
 };
 
@@ -5801,6 +6002,9 @@ if( !MWF.xScript.createTable )MWF.xScript.createTable = function(){
         };
         this.updateRow = function(id, data, success, error, async){
             return this.action.rowUpdate(this.name, id, data, success, error, async);
+        };
+        this.partUpdateRow = function(id, data, success, error, async){
+            return this.action.rowPartUpdate(this.name, id, data, success, error, async);
         };
     }
 };

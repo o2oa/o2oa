@@ -167,10 +167,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_username.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputUserIcon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "22px",
+      "height": "22px",
+      "position": "absolute",
+  	   "background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_username.png) no-repeat",
   },
   "inputMail" : {
 	"color" : "#666",
@@ -179,10 +186,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_e_mail.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputMailIcon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "24px",
+      "height": "22px",
+      "position": "absolute",
+  	   "background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_e_mail.png) no-repeat",
   },
   "inputMobile" : {
 	"color" : "#666",
@@ -191,10 +205,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_phone.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputMobileIcon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "22px",
+      "height": "22px",
+      "position": "absolute",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_phone.png) no-repeat",
   },
   "inputGenderType" : {
 	"color" : "#666",
@@ -214,10 +235,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_password_or.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputPasswordIcon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "22px",
+      "height": "22px",
+      "position": "absolute",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_password_or.png) no-repeat",
   },
   "inputComfirmPassword": {
 	"color" : "#666",
@@ -226,10 +254,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_password.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputComfirmPasswordIcon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "22px",
+      "height": "22px",
+      "position": "absolute",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_password.png) no-repeat",
   },
   "inputVerificationCode" : {
 	"color" : "#666",
@@ -238,10 +273,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_verify_code.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputVerificationCodeIcon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "22px",
+      "height": "22px",
+      "position": "absolute",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_verify_code.png) no-repeat",
   },
   "inputVerificationCode2" : {
 	"color" : "#666",
@@ -250,10 +292,17 @@
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
-	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_verify_code.png) no-repeat 18px center",
 	"background-color":"#FFF",
 	"padding-left" : "58px",
 	"border-radius" : "4px"
+  },
+  "inputVerificationCode2Icon":{
+      "top": "calc( 50% - 11px )",
+      "left": "18px",
+      "width": "22px",
+      "height": "22px",
+      "position": "absolute",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_verify_code.png) no-repeat",
   },
   "inputSendVerification" : {
 	"margin-left" : "20px",

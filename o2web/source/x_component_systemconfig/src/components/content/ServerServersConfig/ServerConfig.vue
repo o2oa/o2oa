@@ -8,7 +8,7 @@
 
     <div v-if="sameConfig">
       <div class="systemconfig_item_title">{{lp._serversConfig.serverConfig}}</div>
-      <div class="systemconfig_item_info">{{lp._serversConfig.serverConfigInfo}}</div>
+      <div class="systemconfig_item_info" v-html="lp._serversConfig.serverConfigInfo"></div>
 
       <div class="item_info">
         <label class="item_label">{{lp._serversConfig.serverPortInfo}}</label>
@@ -47,7 +47,7 @@
           <el-collapse-item name="center">
             <template #title>
               <div class="item_server_item_slot">{{lp._systemInfo.centerServer}}</div>
-              <div class="systemconfig_item_info">{{lp._serversConfig.serverConfigInfo}}</div>
+              <div class="systemconfig_item_info" v-html="lp._serversConfig.serverConfigInfo"></div>
             </template>
             <div>
 <!--              <div class="systemconfig_item_info">{{lp._serversConfig.serverConfigInfo}}</div>-->
@@ -86,7 +86,7 @@
           <el-collapse-item name="application">
             <template #title>
               <div class="item_server_item_slot">{{lp._systemInfo.appServer}}</div>
-              <div class="systemconfig_item_info">{{lp._serversConfig.serverConfigInfo}}</div>
+              <div class="systemconfig_item_info" v-html="lp._serversConfig.serverConfigInfo"></div>
             </template>
             <div>
 <!--              <div class="systemconfig_item_info">{{lp._serversConfig.serverConfigInfo}}</div>-->
@@ -118,7 +118,7 @@
           <el-collapse-item name="web">
             <template #title>
               <div class="item_server_item_slot">{{lp._systemInfo.webServer}}</div>
-              <div class="systemconfig_item_info">{{lp._serversConfig.serverConfigInfo}}</div>
+              <div class="systemconfig_item_info" v-html="lp._serversConfig.serverConfigInfo"></div>
             </template>
             <div>
 <!--              <div class="systemconfig_item_info">{{lp._serversConfig.serverConfigInfo}}</div>-->

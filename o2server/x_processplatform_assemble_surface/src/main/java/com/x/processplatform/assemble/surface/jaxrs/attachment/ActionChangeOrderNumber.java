@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -26,11 +28,11 @@ class ActionChangeOrderNumber extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionChangeOrderNumber.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, Integer order)
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workOrWorkCompleted, Integer order)
 			throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}, workId:{}, order:{}.", effectivePerson::getDistinguishedName, () -> id,
-				() -> workId, () -> order);
+				() -> workOrWorkCompleted, () -> order);
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -39,13 +41,25 @@ class ActionChangeOrderNumber extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			Work work = emc.find(workId, Work.class);
+			Work work = emc.find(workOrWorkCompleted, Work.class);
+			WorkCompleted workCompleted = null;
 			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Attachment.class);
+				workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionAccessDenied(effectivePerson, workId);
+			if ((null == work) && (null == workCompleted)) {
+				throw new ExceptionEntityNotExist(workOrWorkCompleted, Work.class);
+			}
+			if (null != work) {
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
+				if (BooleanUtils.isNotTrue(control.getAllowSave())) {
+					throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+				}
+			} else {
+				Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+						.enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+					throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+				}
 			}
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);

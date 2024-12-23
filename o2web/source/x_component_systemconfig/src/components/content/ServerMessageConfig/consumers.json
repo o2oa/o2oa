@@ -103,14 +103,5 @@
     "loader": "",
     "filter": "",
     "enable": true
-  },
-  "hadoop": {
-    "fsDefaultFS": "hdfs://",
-    "username": "",
-    "path": "",
-    "type": "hadoop",
-    "loader": "",
-    "filter": "",
-    "enable": true
   }
 }

@@ -175,7 +175,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
      */
     getTextData: function () {
         var ops;
-        if (this.isReadonly()) {
+        if (this.isReadonly() || !this._getInputTextData ) {
             ops = this.getOptionsObj();
             var data = this._getBusinessData();
             var d = typeOf(data) === "array" ? data : [data];
@@ -201,8 +201,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         if (!text.length) text = [""];
         return {"value": value, "text": text};
     },
-
-
     getOptionsWithDict: function (async, refresh) {
         if (!this.json.itemDict || !this.json.itemDict.length) return [];
         var obj = this.json.itemDict[0];
@@ -217,7 +215,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var path = paths.length ? paths.join(".") : null;
 
         var asy = o2.typeOf(async) === "boolean" ? async : (this.json.itemDictAsync !== false);
-        var data = dict.get(path, null, null, asy, true);
+        var data = dict.get(path, null, null, asy, !this.json.dictUseCache);
         if (data && typeOf(data.then) === "function") {
             return data.then(function (data) {
                 return this.parseDictOptions(data);

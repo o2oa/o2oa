@@ -85,6 +85,7 @@ class ActionCopyToWork extends BaseAction {
 					}
 					StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 					Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(), w.getSite());
+					attachment.setBusinessId(o.getBusinessId());
 					if (BooleanUtils.isTrue(w.getSoftCopy())) {
 						attachment.setName(o.getName());
 						attachment.setDeepPath(mapping.getDeepPath());

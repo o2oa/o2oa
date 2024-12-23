@@ -401,55 +401,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.prevTaskIdentityList = prevTaskIdentityList;
 	}
 
-//	public static final String PREVTASKLIST_FIELDNAME = "prevTaskList";
-//	@Transient
-//	@FieldDescribe("上一人工环节待办对象列表")
-//	private List<PrevTask> prevTaskList;
-//
-//	public List<PrevTask> getPrevTaskList() {
-//		if ((null != this.properties) && (null == this.prevTaskList)) {
-//			this.prevTaskList = this.properties.getPrevTaskList();
-//		}
-//		return this.prevTaskList;
-//	}
-//
-//	public void setPrevTaskList(List<PrevTask> prevTaskList) {
-//		this.getProperties().setPrevTaskList(prevTaskList);
-//		this.prevTaskList = prevTaskList;
-//	}
-
-//	public static final String EMPOWERFROM_FIELDNAME = "empowerFrom";
-//	@FieldDescribe("授权来源.")
-//	private String empowerFrom;
-//
-//	public String getEmpowerFrom() {
-//		if ((null != this.properties) && (null == this.empowerFrom)) {
-//			this.empowerFrom = this.properties.getEmpowerFrom();
-//		}
-//		return this.empowerFrom;
-//	}
-//
-//	public void setEmpowerFrom(String empowerFrom) {
-//		this.getProperties().setEmpowerTo(empowerFrom);
-//		this.empowerFrom = empowerFrom;
-//	}
-//
-//	public static final String EMPOWERTO_FIELDNAME = "empowerTo";
-//	@FieldDescribe("授权对象")
-//	private String empowerTo;
-//
-//	public String getEmpowerTo() {
-//		if ((null != this.properties) && (null == this.empowerTo)) {
-//			this.empowerTo = this.properties.getEmpowerTo();
-//		}
-//		return this.empowerTo;
-//	}
-//
-//	public void setEmpowerTo(String empowerTo) {
-//		this.getProperties().setEmpowerTo(empowerTo);
-//		this.empowerTo = empowerTo;
-//	}
-
 	public static final String ACT_FIELDNAME = "act";
 	@Transient
 	@FieldDescribe("Ticket创建方式,empower,create,reset,add.")

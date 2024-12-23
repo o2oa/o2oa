@@ -812,6 +812,57 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 //     return v;
                 // }
             },
+
+            listSupUnitWithLevel: function(name, level, async){
+                var v;
+                var supUnitList = this.listSupUnit( name, true, !!async);
+                var unitList = this.getUnit( name, false, !!async );
+
+                var cb = function(sups, units){
+                    v = [].concat(
+                        sups,
+                        typeOf( units ) === "object" ? [units] : units
+                    ).filter(function (u){
+                        return u.level === level;
+                    });
+                    if (async && o2.typeOf(async)==="function") return async(v);
+                    return v;
+                };
+
+                if( typeof supUnitList.then === 'function' ){
+                    return Promise.all([supUnitList, unitList]).then(function( result){
+                        return cb(result[0], result[1]);
+                    });
+                }else{
+                    return cb(supUnitList, unitList);
+                }
+            },
+
+            listSupUnitWithType: function(name, type, async){
+                var v;
+                var supUnitList = this.listSupUnit( name, true, !!async);
+                var unitList = this.getUnit( name, false, !!async );
+
+                var cb = function(sups, units){
+                    v = [].concat(
+                        sups,
+                        typeOf( units ) === "object" ? [units] : units
+                    ).filter(function (u){
+                        return (u.typeList || []).contains( type );
+                    });
+                    if (async && o2.typeOf(async)==="function") return async(v);
+                    return v;
+                };
+
+                if( typeof supUnitList.then === 'function' ){
+                    return Promise.all([supUnitList, unitList]).then(function( result){
+                        return cb(result[0], result[1]);
+                    });
+                }else{
+                    return cb(supUnitList, unitList);
+                }
+            },
+
             //根据个人身份获取组织
             //flag 数字    表示获取第几层的组织
             //     字符串  表示获取指定类型的组织
@@ -1540,10 +1591,74 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         // }else{
         //     var includedScripts = window.includedScripts;
         // }
+        var _getScriptAction = function ( type ){
+            var scriptAction;
+            switch (type) {
+                case "portal" :
+                    if (this.scriptActionPortal) {
+                        scriptAction = this.scriptActionPortal;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
+                        scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
+                    }
+                    break;
+                case "process" :
+                    if (this.scriptActionProcess) {
+                        scriptAction = this.scriptActionProcess;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
+                        scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
+                    }
+                    break;
+                case "cms" :
+                    if (this.scriptActionCMS) {
+                        scriptAction = this.scriptActionCMS;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
+                        scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
+                    }
+                    break;
+                case "service" :
+                    if (this.scriptActionService) {
+                        scriptAction = this.scriptActionService;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                    }
+                    break;
+            }
+            return scriptAction;
+        }
+
+
+        //缓存名称、别名、id
+        var _parseScriptImportList = function (json, type){
+            var includedScripts = [];
+            var importedList = json.data.importedList || [];
+            importedList.each(function (flag) {
+                if (type === "portal") {
+                    includedScripts.push(type + "-" + json.data.portal + "-" + flag);
+                    if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
+                    if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
+                } else if (type === "cms") {
+                    includedScripts.push(type + "-" + json.data.appId + "-" + flag);
+                    if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                    if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                } else if (type === "process") {
+                    includedScripts.push(type + "-" + json.data.application + "-" + flag);
+                    if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                    if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                }else if (type === "service") {
+                    includedScripts.push(type + "-" + flag);
+                }
+            });
+            return includedScripts.concat(importedList);
+        }
+
         var includedScripts = [];
         var _includeSingle = function (optionsOrName, callback, async) {
             var options = optionsOrName;
-            if (typeOf(options) == "string") {
+            if (typeOf(options) === "string") {
                 options = {name: options};
             }
             var name = options.name;
@@ -1558,99 +1673,32 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             if( type === "service" ){
                 key = type + "-" + name;
             }
+
+            //js 加载过就不重新加载了
             if (includedScripts.indexOf(key) > -1) {
                 if (callback) callback.apply(this);
                 return;
             }
-            //if (includedScripts.indexOf( name )> -1){
-            //    if (callback) callback.apply(this);
-            //    return;
-            //}
-            if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
-                o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, function (json) {
-                    if (json.data) {
-                        includedScripts.push(key);
-                        //名称、别名、id
-                        (json.data.importedList || []).each(function (flag) {
-                            includedScripts.push(type + "-" + json.data.appId + "-" + flag);
-                            if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                            if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                        });
-                        includedScripts = includedScripts.concat(json.data.importedList || []);
-                        MWF.CMSMacro.exec(json.data.text, this);
-                        if (callback) callback.apply(this);
-                    } else {
-                        if (callback) callback.apply(this);
-                    }
-                }.bind(this), null, false);
-            } else {
-                var scriptAction;
-                switch (type) {
-                    case "portal" :
-                        if (this.scriptActionPortal) {
-                            scriptAction = this.scriptActionPortal;
-                        } else {
-                            MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
-                            scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
-                        }
-                        break;
-                    case "process" :
-                        if (this.scriptActionProcess) {
-                            scriptAction = this.scriptActionProcess;
-                        } else {
-                            MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
-                            scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
-                        }
-                        break;
-                    case "cms" :
-                        if (this.scriptActionCMS) {
-                            scriptAction = this.scriptActionCMS;
-                        } else {
-                            MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
-                            scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
-                        }
-                        break;
-                    case "service" :
-                        if (this.scriptActionService) {
-                            scriptAction = this.scriptActionService;
-                        } else {
-                            MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
-                            scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
-                        }
-                        break;
-                }
 
-                var successCallback = function (json) {
-                    if (json.data) {
-                        includedScripts.push(key);
-
-                        //名称、别名、id
-                        json.data.importedList.each(function (flag) {
-                            if (type === "portal") {
-                                includedScripts.push(type + "-" + json.data.portal + "-" + flag);
-                                if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
-                                if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
-                            } else if (type === "cms") {
-                                includedScripts.push(type + "-" + json.data.appId + "-" + flag);
-                                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                            } else if (type === "process") {
-                                includedScripts.push(type + "-" + json.data.application + "-" + flag);
-                                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                            }else if (type === "service") {
-                                includedScripts.push(type + "-" + flag);
-                            }
-                        });
-
-                        includedScripts = includedScripts.concat(json.data.importedList);
+            var successCallback = function (json) {
+                if (json.data) {
+                    includedScripts.push(key);
+                    includedScripts = includedScripts.concat( _parseScriptImportList(json, type) );
+                    if( (options.enableAnonymous || options.anonymous ) && type === "cms" ){
+                        MWF.CMSMacro.exec(json.data.text, this)
+                    }else{
                         MWF.Macro.exec(json.data.text, this);
-                        if (callback) callback.apply(this);
-                    } else {
-                        if (callback) callback.apply(this);
                     }
-                }.bind(this);
+                    if (callback) callback.apply(this);
+                } else {
+                    if (callback) callback.apply(this);
+                }
+            }.bind(this);
 
+            if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
+                o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, successCallback, null, !!async);
+            } else {
+                var scriptAction = _getScriptAction.call(this, type);
                 if( type === "service" ){
                     scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
                 }else{
@@ -1659,7 +1707,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             }
         };
         this.include = function (optionsOrName, callback, async) {
-            if (o2.typeOf(optionsOrName) == "array") {
+            if (o2.typeOf(optionsOrName) === "array") {
                 if (!!async) {
                     var count = optionsOrName.length;
                     var loaded = 0;
@@ -1679,6 +1727,60 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             } else {
                 _includeSingle.apply(this, [optionsOrName, callback, async])
             }
+        };
+
+        var includedSourceMap = {};
+        var _includeSource = function (optionsOrName, callback, async, fileType) {
+            var options = typeOf(optionsOrName) === "string" ? {name: optionsOrName} : optionsOrName;
+            var name = options.name;
+            var type = options.type === "service" ? options.type : ((options.type && options.application) ? options.type : "portal");
+            var application = options.application || _form.json.application;
+            var key = type === "service" ? (type + "-" + name) : (type + "-" + application + "-" + name);
+            var data, result;
+            if( includedSourceMap[key] ){
+                data = includedSourceMap[key];
+                if(callback)callback( data.text );
+                return !!async ? Promise.resolve( data.text ) : data.text;
+            }
+            var successCallback = function (json) {
+                if (json.data) {
+                    var includeds = [key];
+                    includeds = includeds.concat( _parseScriptImportList(json, type) );
+                    includeds.each(function(k){
+                        includedSourceMap[k] = json.data;
+                    })
+                    result = json.data.text;
+                    if( fileType === 'json' ){
+                        result = JSON.parse(result);
+                    }
+                    if (callback) callback.call(this, result);
+                } else {
+                    result = '';
+                    if (callback) callback.call(this, '');
+                }
+                return result;
+            }.bind(this);
+            var p;
+            if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
+                p = o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, !!async ? null : successCallback, null, !!async);
+            } else {
+                var scriptAction = _getScriptAction.call(this, type);
+                if( type === "service" ){
+                    p = scriptAction.getScriptByName(name, includedScripts, successCallback, !!async ? null : successCallback, null, !!async);
+                }else{
+                    p = scriptAction.getScriptByName(application, name, includedScripts, !!async ? null : successCallback, null, !!async);
+                }
+            }
+            return !!async ? p.then( successCallback ) : result;
+        };
+        this.includeHtml = function (optionsOrName, callback, async){
+            return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'html'])
+        };
+        this.includeJson = function (optionsOrName, callback, async){
+            return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'json'])
+        };
+        this.includeCss = function (optionsOrName, callback, async){
+            return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'css']);
         };
 
         this.define = function (name, fun, overwrite) {
@@ -2514,6 +2616,9 @@ if (!MWF.xScript.createTable) MWF.xScript.createTable = function(){
         };
         this.updateRow = function(id, data, success, error, async){
             return this.action.rowUpdate(this.name, id, data, success, error, async);
+        };
+        this.partUpdateRow = function(id, data, success, error, async){
+            return this.action.rowPartUpdate(this.name, id, data, success, error, async);
         };
     }
 };

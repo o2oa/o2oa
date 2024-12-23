@@ -160,7 +160,7 @@ public class SyncOrganization {
 			/* 如果人员没有手机号,那么就先跳过这个人 */
 			if (null != person) {
 				people.add(person);
-				Identity identity = this.checkIdentity(business, result, person, unit, o);
+				Identity identity = this.checkIdentity(business, result, person, unit, o, org.getId().equals(o.getMain_department()));
 				identities.add(identity);
 				if ((null != o.getExtattr()) && (ListTools.isNotEmpty(o.getExtattr().getAttrs()))) {
 					for (Attr attr : o.getExtattr().getAttrs()) {
@@ -384,6 +384,7 @@ public class SyncOrganization {
 		person.setMobile(user.getMobile());
 		person.setMail(user.getEmail());
 		person.setOfficePhone(user.getTelephone());
+		person.setGenderType(Objects.equals("1", user.getGender()) ? GenderType.m : GenderType.f);
 		emc.check(person, CheckPersistType.all);
 		emc.commit();
 		result.getUpdatePersonList().add(person.getDistinguishedName());
@@ -457,7 +458,7 @@ public class SyncOrganization {
 		result.getRemovePersonList().add(person.getDistinguishedName());
 	}
 
-	private Identity checkIdentity(Business business, PullResult result, Person person, Unit unit, User user)
+	private Identity checkIdentity(Business business, PullResult result, Person person, Unit unit, User user, boolean isMajor)
 			throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		EntityManager em = emc.get(Identity.class);
@@ -473,16 +474,16 @@ public class SyncOrganization {
 			order = user.getOrder().get(user.getDepartment().indexOf(Long.parseLong(unit.getQiyeweixinId(), 10)));
 		}
 		if (os.size() == 0) {
-			identity = this.createIdentity(business, result, person, unit, user, order);
+			identity = this.createIdentity(business, result, person, unit, user, order, isMajor);
 		} else {
 			identity = os.get(0);
-			identity = this.updateIdentity(business, result, unit, identity, user, order);
+			identity = this.updateIdentity(business, result, unit, identity, user, order, isMajor);
 		}
 		return identity;
 	}
 
 	private Identity createIdentity(Business business, PullResult result, Person person, Unit unit, User user,
-			Long order) throws Exception {
+			Long order, boolean isMajor) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(Identity.class);
 		Identity identity = new Identity();
@@ -496,8 +497,11 @@ public class SyncOrganization {
 		if (order != null) {
 			identity.setOrderNumber(order.intValue());
 		}
-		// 人员有多个身份不能设置多个主身份
-		identity.setMajor(false);
+		identity.setMajor(isMajor);
+		if(isMajor){
+			emc.listEqual(Identity.class,
+					Identity.person_FIELDNAME, person.getId()).forEach(i -> i.setMajor(false));
+		}
 		emc.persist(identity, CheckPersistType.all);
 		emc.commit();
 		result.getCreateIdentityList().add(identity.getDistinguishedName());
@@ -505,17 +509,32 @@ public class SyncOrganization {
 	}
 
 	private Identity updateIdentity(Business business, PullResult result, Unit unit, Identity identity, User user,
-			Long order) throws Exception {
-		if (null != order) {
-			if (!StringUtils.equals(Objects.toString(identity.getOrderNumber(), ""), Objects.toString(order, ""))) {
-				EntityManagerContainer emc = business.entityManagerContainer();
-				emc.beginTransaction(Identity.class);
-				if (order != null) {
-					identity.setOrderNumber(order.intValue());
-				}
-				emc.commit();
-				result.getUpdateIdentityList().add(identity.getDistinguishedName());
+			Long order, boolean isMajor) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		if (!StringUtils.equals(Objects.toString(identity.getOrderNumber(), ""), Objects.toString(order, ""))) {
+			emc.beginTransaction(Identity.class);
+			if (order != null) {
+				identity.setOrderNumber(order.intValue());
 			}
+			emc.commit();
+			result.getUpdateIdentityList().add(identity.getDistinguishedName());
+		}
+		if(!Boolean.valueOf(isMajor).equals(identity.getMajor())){
+			emc.beginTransaction(Identity.class);
+			if(isMajor) {
+				List<Identity> identityList = emc.listEqual(Identity.class,
+						Identity.person_FIELDNAME, identity.getPerson());
+				for (Identity o : identityList) {
+					if (identity.getId().equals(o.getId())) {
+						identity.setMajor(true);
+					} else {
+						o.setMajor(false);
+					}
+				}
+			}else{
+				identity.setMajor(false);
+			}
+			emc.commit();
 		}
 		return identity;
 	}

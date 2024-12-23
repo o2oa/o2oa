@@ -93,7 +93,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			for (WoTask woTask : wo.getTaskList()) {
 				wo.getRecordList().add(taskToRecord(woTask));
 			}
-			jobView(effectivePerson, work);
+			jobView(effectivePerson, work.getJob());
 		} else if (null != workCompleted) {
 			CompletableFuture<Void> workCompletedJsonFuture = this.workCompletedJsonFuture(workCompleted, wo);
 			CompletableFuture<Void> workCompletedDataFuture = this.workCompletedDataFuture(workCompleted, wo);
@@ -113,6 +113,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			creatorUnitFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 			attachmentFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 			workCompletedRecordFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			jobView(effectivePerson, workCompleted.getJob());
 		}
 
 		if (BooleanUtils
@@ -131,12 +132,10 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	 * @param work
 	 * @throws Exception
 	 */
-	private void jobView(EffectivePerson effectivePerson, Work work) throws Exception {
-		ThisApplication.context().applications()
-				.getQuery(
-						x_processplatform_service_processing.class, Applications.joinQueryUri("job", "v2",
-								work.getJob(), "person", effectivePerson.getDistinguishedName(), "view"),
-						work.getJob());
+	private void jobView(EffectivePerson effectivePerson, String job) throws Exception {
+		ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("job", "v2", job, "person", effectivePerson.getDistinguishedName(), "view"),
+				job);
 	}
 
 	private WoRecord taskToRecord(WoTask woTask) {

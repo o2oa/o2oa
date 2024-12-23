@@ -21,6 +21,12 @@ MWF.xApplication.query.ViewDesigner.LP={
 	"copy": "Copia",
 	"ok": "Aceptar",
 	"cancel": "Cancelar",
+
+	"mustSelectFormStyle": "Debe seleccionar un estilo de formulario",
+	"notValidJson": "Formato JSON no válido",
+	"mustSelectDict": "Primero seleccione el diccionario de datos",
+	"mustSelect": "Por favor seleccione",
+
 	"action": {
 		"move": "Mover",
 		"delete": "Eliminar",

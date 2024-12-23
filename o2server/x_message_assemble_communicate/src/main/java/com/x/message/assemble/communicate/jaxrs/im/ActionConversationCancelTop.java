@@ -23,9 +23,7 @@ public class ActionConversationCancelTop extends BaseAction {
 			IMConversationExt ext = business.imConversationFactory()
 					.getConversationExt(effectivePerson.getDistinguishedName(), conversationId);
 			if (ext == null) {
-				ext = new IMConversationExt();
-				ext.setConversationId(conversationId);
-				ext.setPerson(effectivePerson.getDistinguishedName());
+				throw new ExceptionEmptyBusinessObject(conversationId+ "-" + effectivePerson.getDistinguishedName());
 			}
 			ext.setIsTop(false);
 			emc.beginTransaction(IMConversationExt.class);

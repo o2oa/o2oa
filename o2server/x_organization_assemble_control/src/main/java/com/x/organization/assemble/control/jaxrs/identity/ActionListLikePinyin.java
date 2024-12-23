@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.identity;
 
+import com.x.organization.core.entity.Unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -131,10 +132,6 @@ class ActionListLikePinyin extends BaseAction {
 			unitDutyIdentities = ListTools.trim(unitDutyIdentities, true, true);
 			set.addAll(unitDutyIdentities);
 		}
-		if (ListTools.isNotEmpty(wi.getUnitList())) {
-			List<String> identityIds = business.expendUnitToIdentity(wi.getUnitList());
-			set.addAll(identityIds);
-		}
 		if (ListTools.isNotEmpty(wi.getGroupList())) {
 			List<String> identityIds = business.expendGroupToIdentity(wi.getGroupList());
 			set.addAll(identityIds);
@@ -144,6 +141,13 @@ class ActionListLikePinyin extends BaseAction {
 		}
 		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList().stream()
 				.distinct().collect(Collectors.toList());
+		if (ListTools.isNotEmpty(wi.getUnitList())) {
+			List<String> unitList = business.unit().pick(wi.getUnitList()).stream().map(Unit::getLevelName).collect(
+					Collectors.toList());
+			if(ListTools.isNotEmpty(unitList)){
+				os = os.stream().filter(o-> isMember(unitList, o)).collect(Collectors.toList());
+			}
+		}
 		wos = Wo.copier.copy(os);
 		wos = business.identity().sort(wos);
 		return wos;

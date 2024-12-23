@@ -30,6 +30,11 @@ MWF.xApplication.query.ViewDesigner.LP = {
     "searchPlacholder": "输入名称/别名/id搜索",
     "searchAndSort": "排序和搜索",
 
+    "mustSelectFormStyle" : "必须选择一种样式",
+    "notValidJson" : "错误的json格式",
+    "mustSelectDict" : "请先选择数据字典",
+    "mustSelect": "请选择",
+
     "action": {
         "move": "移动",
         "delete": "删除",

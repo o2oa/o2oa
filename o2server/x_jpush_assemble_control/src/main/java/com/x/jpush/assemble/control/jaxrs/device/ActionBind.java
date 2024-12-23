@@ -28,22 +28,15 @@ public class ActionBind extends BaseAction {
 		Wo wraps = new Wo();
 		if (jsonElement == null) {
 			throw new ExceptionDeviceParameterEmpty();
-
 		}
-
 		Wi wi = convertToWrapIn(jsonElement, Wi.class);
 		if (StringUtils.isEmpty(wi.getDeviceName()) || StringUtils.isEmpty(wi.getDeviceType())) {
 			throw new ExceptionDeviceParameterEmpty();
-
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			String pushType = wi.getPushType();
-			if (StringUtils.isEmpty(pushType)) {
-				pushType = PushDevice.PUSH_TYPE_JPUSH; // 默认极光推送
-			}
 			String person = effectivePerson.getDistinguishedName();
-			String unique = deviceUnique(wi.getDeviceType(), wi.getDeviceName(), pushType, person);
+			String unique = deviceUnique(wi.getDeviceType(), wi.getDeviceName(), PushDevice.PUSH_TYPE_JPUSH, person);
 			if (business.pushDeviceFactory().existDeviceUnique(unique)) {
 				wraps.setValue(true);
 				result.setMessage("当前设备已存在！");
@@ -52,32 +45,13 @@ public class ActionBind extends BaseAction {
 				pushDevice.setDeviceId(wi.getDeviceName());
 				pushDevice.setDeviceType(wi.getDeviceType());
 				pushDevice.setPerson(person);
-				pushDevice.setPushType(pushType);
+				pushDevice.setPushType(PushDevice.PUSH_TYPE_JPUSH);
 				pushDevice.setUnique(unique);
 				emc.beginTransaction(PushDevice.class);
 				emc.persist(pushDevice, CheckPersistType.all);
 				emc.commit();
 				wraps.setValue(true);
 			}
-			// 以前存放在个人属性中， 现在切换到数据库
-//            List<String> deviceList = business.organization().personAttribute()
-//                    .listAttributeWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY);
-//            String device = wi.getDeviceName()+"_"+wi.getDeviceType().toLowerCase();
-//            if(ListTools.isNotEmpty( deviceList ) ){
-//                if (deviceList.contains(device)) {
-//                    wraps.setValue(false);
-//                    result.setMessage("当前设备已存在！");
-//                }else {
-//                    deviceList.add(device);
-//                    wraps.setValue(business.organization().personAttribute()
-//                            .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
-//                }
-//            }else {
-//                deviceList = new ArrayList<>();
-//                deviceList.add(device);
-//                wraps.setValue(business.organization().personAttribute()
-//                        .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
-//            }
 			result.setData(wraps);
 		}
 		logger.info("action 'ActionBind' execute completed!");
@@ -88,18 +62,8 @@ public class ActionBind extends BaseAction {
 
 		@FieldDescribe("设备号deviceName")
 		private String deviceName;
-		@FieldDescribe("设备类型deviceType：ios|android")
+		@FieldDescribe("设备类型deviceType：ios|android|hmos")
 		private String deviceType;
-		@FieldDescribe("推送通道类型：jpush|huawei")
-		private String pushType;
-
-		public String getPushType() {
-			return pushType;
-		}
-
-		public void setPushType(String pushType) {
-			this.pushType = pushType;
-		}
 
 		public String getDeviceName() {
 			return deviceName;

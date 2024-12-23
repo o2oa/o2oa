@@ -7,7 +7,7 @@ MWF.xDesktop.requireApp("process.Xform", "Elradio", null, false);
  * var radio = this.form.get("name"); //获取组件
  * //方法2
  * var radio = this.target; //在组件事件脚本中获取
- * @extends MWF.xApplication.process.Xform.$Module
+ * @extends MWF.xApplication.process.Xform.Elradio
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
@@ -348,6 +348,26 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     getInputData: function(){
         return this.json[this.json.$id];
     },
+
+    /**
+     * @summary 获取选中项的text。
+     * @return {String[]} 返回选中项的text数组
+     * @example
+     * var texts = this.form.get('fieldId').getText(); //获取选中项的文本数组
+     */
+    getText: function(){
+        var d = this.getTextData();
+        if( typeOf(d.then) === "function" ){
+            return d.then(function( d1 ){
+                var texts = d1.text;
+                return (texts && texts.length) ? texts : [];
+            })
+        }else{
+            var texts = d.text;
+            return (texts && texts.length) ? texts : [];
+        }
+    },
+
     _loadVueCss: function(){
         if (this.styleNode){
             this.node.removeClass(this.styleNode.get("id"));

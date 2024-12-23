@@ -187,7 +187,7 @@
                 </td>
             </tr>
 
-            <tr>
+            <tr style="text{($.$inDatatable)?'display:none':''}">
                 <td class="editTableTitle">{{$.lp.allowDownloadBatch}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isDownloadBatch" text{($.isDownloadBatch!=='n' && $.isDownloadBatch!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}

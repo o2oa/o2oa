@@ -220,19 +220,23 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
                     size = { y: 26 }
                 }else{
                     size = this.node.getFirst().getSize();
-                    w = size.x-3;
-                    if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
-                        w = size.x-23;
-                    }
+                    // w = size.x-3;
+                    // if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+                    //     w = size.x-23;
+                    // }
                 }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "height": ""+size.y+"px",
                     "line-height": ""+size.y+"px"
                 });
-                if( w )this.descriptionNode.setStyles({
-                    "width": ""+w+"px"
+                this.descriptionNode.setStyles({
+                    "width": "auto",
+                    "overflow": "auto"
                 });
+                // if( w )this.descriptionNode.setStyles({
+                //     "width": ""+w+"px"
+                // });
                 this.setDescriptionEvent();
             }
         }
@@ -277,5 +281,5 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         this.excelData = value;
         this.setData(value, true);
     }
-	
-}); 
+
+});

@@ -32,8 +32,9 @@
 .my-statistic-block-divider {
   height: 100%;
   width: 1px;
-  background-color: #E6E6E6;
-  margin: 0 14px;
+  /*background-color: #E6E6E6;*/
+  /*margin: 0 14px;*/
+  margin: 0 5px;
 }
 .my-statistic-block-item .statistic-label {
   font-size: 14px;
@@ -64,7 +65,7 @@
   width: calc( 100% - 14px );
   display: flex;
   flex-direction: row;
-  background: #F7F7F7;
+  background: var(--att-color-bg);
   border-radius: 8px;
   margin: 0 7px;
 }
@@ -99,7 +100,7 @@
   background-color: rgb(248, 251, 255)!important;
 }
 .my-cal-body-line .rest {
-  background-color: #F7F7F7!important;
+  background-color: var(--att-color-bg) !important;
 }
 .my-cal-body-line .out {
   opacity: 0.4!important;
@@ -117,7 +118,7 @@
   font-weight: 600;
 }
 .item-cal-date .item-cal-date-today {
-  background-color: var(--el-color-primary)!important;
+  background-color: var(--oo-color-main)!important;
   color: #ffffff;
 }
 .item-cal-record {

@@ -105,7 +105,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	_loadListContent: function(type, callback){
 		var list = this[(type+"-list").camelCase()];
 		if (!list){
-			console.log('MWF.xApplication.process.workcenter.'+type.capitalize()+"List");
 			list = new MWF.xApplication.process.workcenter[type.capitalize()+"List"](this, { "onLoadData": this.hideSkeleton.bind(this) });
 			this[(type+"-list").camelCase()] = list;
 		}
@@ -312,15 +311,15 @@ MWF.xApplication.process.workcenter.Main = new Class({
 
 			var map = {}, mapById = {};
 			data[0].each(function (d) {
-				if (d.processList && d.processList.length){
-					var type = d.applicationCategory || "未分类";
-					if( !map[type] )map[type] = [];
-					map[type].push(d);
+                if (d.processList && d.processList.length){
+                    var type = d.applicationCategory || "未分类";
+                    if( !map[type] )map[type] = [];
+                    map[type].push(d);
 
 					d.processList.each(function (process) {
 						mapById[ process.id ] = process;
 					});
-				}
+                }
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
@@ -624,7 +623,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
-				if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
+                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
@@ -910,7 +909,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
-			"taskId": data.id,
+            "taskId": data.id,
 			"onPostClose": function(){
 				if (this.refresh) this.refresh();
 			}.bind(this)
@@ -1316,6 +1315,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		}
 
 	},
+
 	batchProcessTask: function(e){
 		if (this.selectedTaskList && this.selectedTaskList.length){
 			var data = this.selectedTaskList[0];
@@ -1370,10 +1370,11 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var _self = this;
 		return this.action.ReadAction.listMyFilterPaging(this.page, this.size, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
-			_self.total = json.count;
 			json.data.each(function (d){
 				d.allowRapid = true;
 			})
+
+			_self.total = json.count;
 			return json.data;
 		}.bind(this));
 
@@ -1470,7 +1471,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		if (this.selectedTaskList && this.selectedTaskList.length){
 			var p = [];
 			this.selectedTaskList.forEach(function(task){
-				if (!opinion) opinion = "";
+				if (!opinion) opinion = routeName;
 
 				p.push(this.action.ReadAction.processing(task.id, {"opinion": opinion}, function(json){
 
@@ -1482,6 +1483,9 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 			}.bind(this));
 		}
 	},
+
+
+
 	setReadCompleted: function(e, data){
 		if (data.item) data = data.item;
 		var _self = this;

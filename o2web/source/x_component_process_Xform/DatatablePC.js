@@ -38,6 +38,7 @@
           "activityName": "拟稿",
           "extension": "jpg",
           "id": "9514758e-9e28-4bfe-87d7-824f2811f173",
+ 		  "businessId": "1234758e-9e28-4bfe-87d7-824f2811f173",
           "lastUpdateTime": "2020-12-09 21:48:03",
           "length": 452863.0,
           "name": "111.jpg",
@@ -2950,7 +2951,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 
 					for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
 						var attData = this.form.businessData.attachmentList[i];
-						if( attData.id === d.id ){
+						if( (attData.businessId && attData.businessId === d.businessId) || attData.id === d.id ){
 							this.form.businessData.attachmentList.erase(attData);
 							break;
 						}
@@ -3241,7 +3242,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			}).inject(node);
 			var textNode = new Element("div", {
 				"styles": {
-					"height": "20px",
+					"height": "auto",
 					"line-height": "20px",
 					"margin-left": "20px",
 					"color": "red",
@@ -3310,7 +3311,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
 				data[key] = (data[key] || []).filter(function(att, index){
 					for( var i=0; i<attachmentList.length; i++){
-						if( attachmentList[i].id === att.id )return true;
+						if( (attachmentList[i].businessId && attachmentList[i].businessId === att.businessId) || attachmentList[i].id === att.id )return true;
 					}
 					return false;
 				}.bind(this))

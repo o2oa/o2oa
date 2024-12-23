@@ -146,6 +146,10 @@ public class Record extends SliceJpaObject {
 			this.nextManualList = this.properties.getNextManualList();
 			this.nextManualTaskIdentityList = this.getProperties().getNextManualTaskIdentityList();
 			this.startTime = this.getProperties().getStartTime();
+			this.personOrderNumber = this.getProperties().getPersonOrderNumber();
+			this.identityOrderNumber = this.getProperties().getIdentityOrderNumber();
+			this.unitOrderNumber = this.getProperties().getUnitOrderNumber();
+			this.unitLevelName = this.getProperties().getUnitLevelName();
 		}
 	}
 
@@ -154,7 +158,6 @@ public class Record extends SliceJpaObject {
 		this.recordTime = new Date();
 		this.order = recordTime.getTime();
 		this.properties = new RecordProperties();
-
 	}
 
 	public Record(WorkLog workLog, Task task) {
@@ -356,6 +359,23 @@ public class Record extends SliceJpaObject {
 	public void setUnitOrderNumber(Integer unitOrderNumber) {
 		this.getProperties().setUnitOrderNumber(unitOrderNumber);
 		this.unitOrderNumber = unitOrderNumber;
+	}
+
+	public static final String UNITLEVELNAME_FIELDNAME = "unitLevelName";
+	@Transient
+	@FieldDescribe("组织层级")
+	private String unitLevelName;
+
+	public String getUnitLevelName() {
+		if ((null == unitLevelName) && (null != this.properties)) {
+			this.unitLevelName = this.properties.getUnitLevelName();
+		}
+		return unitLevelName;
+	}
+
+	public void setUnitLevelName(String unitLevelName) {
+		this.getProperties().setUnitLevelName(unitLevelName);
+		this.unitLevelName = unitLevelName;
 	}
 
 	public RecordProperties getProperties() {

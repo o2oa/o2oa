@@ -119,7 +119,6 @@ MWF.xApplication.Selector.Person = new Class({
         this.className = "Person";
     },
     load: function(){
-        debugger;
         this.fireEvent("queryLoad",[this]);
         if( this.options.contentUrl ){
             this.loadWithUrl()
@@ -1017,9 +1016,10 @@ MWF.xApplication.Selector.Person = new Class({
                 "styles": this.css.searchInputDiv
             }).inject( this.selectNode);
         }
+
         this.searchInput = new Element("input", {
             "styles": this.css.searchInput, //(this.options.count.toInt()===1) ? this.css.searchInputSingle : this.css.searchInput,
-            "placeholder" : MWF.SelectorLP.searchDescription,
+            "placeholder" : MWF.SelectorLP['searchDescription'+this.className] || MWF.SelectorLP.searchDescription,
             "type": "text"
         }).inject(this.searchInputDiv);
 

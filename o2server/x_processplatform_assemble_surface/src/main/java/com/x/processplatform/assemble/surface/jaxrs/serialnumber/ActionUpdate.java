@@ -30,7 +30,8 @@ class ActionUpdate extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(o.getApplication());
 			}
-			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")
+					&& !(effectivePerson.isPerson(application.getControllerList()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(SerialNumber.class);

@@ -148,7 +148,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
         var item = this.app.options.application;
         var id = item.id;
         var name = item.name;
-
+        if( !data.countMethod )data.countMethod = "assign";
         data.id = someItem.id;
         data.isNewStatement = false;
         data.application = id;
@@ -172,6 +172,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
             data.alias = oldName+"_copy"+i;
             i++;
         }
+        if( !data.countMethod )data.countMethod = "assign";
         data.id = "";
         data.isNewStatement = true;
         data.application = id;
@@ -314,6 +315,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
                     data.alias = oldName+"_copy"+i;
                     i++;
                 }
+                if( !data.countMethod )data.countMethod = "assign";
                 data.id = "";
                 data.isNewStatement = true;
                 data.application = id;

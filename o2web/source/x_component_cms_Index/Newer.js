@@ -556,6 +556,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
         var appId = "cms.Document"+id;
         if (_self.app.desktop && _self.app.desktop.apps && _self.app.desktop.apps[appId]){
             _self.app.desktop.apps[appId].setCurrent();
+            return _self.app.desktop.apps[appId];
         }else {
             var options = {
                 "readonly" :false,

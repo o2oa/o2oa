@@ -440,6 +440,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             if (this.page.currentSelectedModule==this){
                 return true;
             }else{
+                this.mobilePreSelectedModule = this.page.currentSelectedModule;
                 this.page.currentSelectedModule.unSelected();
             }
         }
@@ -449,8 +450,13 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         }
         this.page.unSelectedMulti();
 
+        if( this.mobilePage )this.mobilePage.hideDomTree();
+
         if (this.page.designTabPageScriptAreaNode) this.page.designTabPageScriptAreaNode.hide();
         this.page = this.pcPage;
+        this.pcPage.showDomTree();
+        ( this.pcPreSelectedModule || this.pcPage ).selected();
+
         if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){
             this.loadAllScript();
         }
@@ -473,6 +479,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             if (this.page.currentSelectedModule==this){
                 return true;
             }else{
+                this.pcPreSelectedModule = this.page.currentSelectedModule;
                 this.page.currentSelectedModule.unSelected();
             }
         }
@@ -481,6 +488,8 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             this.page.propertyMultiTd = null;
         }
         this.page.unSelectedMulti();
+
+        if( this.pcPage )this.pcPage.hideDomTree();
 
         if (!this.mobilePage){
             this.designMobileNode.set("id", "designMobileNode");
@@ -492,6 +501,9 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
             // this.mobilePage = new MWF.PCPage(this, this.designMobileNode, {"mode": "Mobile"});
             // this.mobilePage.load(this.pageMobileData);
+        }else{
+            this.mobilePage.showDomTree();
+            ( this.mobilePreSelectedModule || this.mobilePage ).selected();
         }
 
         if (this.page.designTabPageScriptAreaNode) this.page.designTabPageScriptAreaNode.hide();
@@ -1950,7 +1962,47 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         }, {
             "navi": 0
         });
-    }
+    },
+    copyPropertyToModule: function (){
+        if( !this.page.currentSelectedModule ){
+            this.notice( MWF.APPPOD.LP.selectCopyModuleNotice, 'info');
+            return;
+        }
+        var module = this.page.currentSelectedModule;
+        var modulesTypes = [
+            ['Org', 'OOOrg','Author','Reader'],
+            ['Checkbox', 'OOCheckGroup', 'Radio', 'OORadioGroup', 'Select', 'OOSelect'],
+            ['Calendar', 'OODatetime'],
+            ['Textfield', 'Textarea', 'OOInput', 'OOTextarea'],
+            ['Button', 'OOButton']
+        ].filter(function (types){
+            return types.contains( module.json.type );
+        });
+        modulesTypes = modulesTypes.length ? modulesTypes[0] : [module.json.type];
+
+        this.selector = new MWF.O2Selector(this.content, {
+            count: 1,
+            title: MWF.APPPOD.LP.selectCopyModule,
+            type: 'FieldProperty',
+            moduleTypes: modulesTypes,
+            currentFormFields: Object.values(this.page.json.moduleList),
+            onComplete: function (items){
+                if( !items.length )return;
+                for( var key in items[0].data ){
+                    var value = items[0].data[key];
+                    if( !['id', 'type', 'pid'].contains(key) && module.json[key] !== value ){
+                        module.json[key] = value;
+                        module.setPropertiesOrStyles(key, value);
+                        module._setEditStyle(key, null, value);
+                        // this.setScriptJsEditor(module, change.name, change.fromValue);
+                    }
+                }
+                if( module.property ){
+                    module.property.reset();
+                }
+            }.bind(this)
+        });
+    },
 });
 
 MWF.xApplication.portal.PageDesigner.ToolsGroup = new Class({

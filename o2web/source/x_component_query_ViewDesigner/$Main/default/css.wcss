@@ -4,7 +4,7 @@
 		"overflow": "hidden",
 		"float": "right",
 		"-webkit-user-select": "text",
-		"-moz-user-select": "text" 
+		"-moz-user-select": "text"
 	},
 	"viewListNode": {
         "width": "260px",
@@ -22,7 +22,7 @@
 		"border-left": "1px solid #505050",
 		"background-color": "#FFF",
 		"-webkit-user-select": "none",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 
     "viewListResizeNode": {
@@ -95,7 +95,7 @@
 		"overflow": "hidden",
 		"background": "#CCC",
 		"-webkit-user-select": "none",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 	"designFrame": {
 		"width": "100%",
@@ -108,12 +108,12 @@
 	"designNode": {
 		//"height": "100%",
 		"margin": "15px",
-		"box-shadow": "0px 0px 20px #606060", 
+		"box-shadow": "0px 0px 20px #606060",
 		"background": "#FFF",
 		"-webkit-user-select": "none",
 		"overflow": "hidden",
 		"background": "url(../x_component_query_ViewDesigner/$Main/default/designerBg.png)",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 	"propertyTitleNode": {
 		"height": "26px",
@@ -233,5 +233,5 @@
         "background": "url(../x_component_process_ProcessManager/$Explorer/default/icon/icon_clear.png) no-repeat center center",
         "display": "none",
         "background-size": "12px 12px"
-    },
+    }
 }

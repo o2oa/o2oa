@@ -394,6 +394,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"preloadScript": "Pre-cargar script",
 		"script": "Script",
 		"dict": "Diccionario de datos",
+		"useCache": "Usar caché",
+		"useCacheNote": "Para acelerar el proceso, el diccionario de datos se almacenará en caché cuando se abra por primera vez. Debe actualizar la página web para volver a obtener el diccionario de datos modificado. Seleccione lo contrario para obtenerlo desde el servidor cada vez.",
 		"dictName": "nombre del diccionario",
 		"dictPath": "Ruta de datos",
 		"valueKey": "Nombre del atributo de valor",
@@ -1378,6 +1380,9 @@ MWF.xApplication.process.FormDesigner.LP={
 			"feedbackUrl": "Dirección de comentario",
 			"logoImg": "Logotipo superior izquierdo (172x40)",
 			"logoUrl": "Enlace del logotipo"
+		},
+		"foxit" : {
+			"api" : "API"
 		},
 		"smartbi": {
 			"select": "Selección de recursos",

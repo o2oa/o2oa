@@ -865,9 +865,13 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
             this.changeMaintainer();
         }.bind(this));
 
-        if (this.data.maintenanceIdentity){
-            new MWF.widget.O2Identity({"name": this.data.maintenanceIdentity}, this.maintainerContentAreaNode, {"style": "application"});
+        if( !this.data.maintainerList || !this.data.maintainerList.length ){
+            this.data.maintainerList = this.data.maintenanceIdentity ? [this.data.maintenanceIdentity] : [];
         }
+
+        this.data.maintainerList.each(function (d){
+            new MWF.widget.O2Person({"name": d}, this.maintainerContentAreaNode, {"style": "application"});
+        }.bind(this));
     },
 
     changeAdministrators: function(){
@@ -893,19 +897,28 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         var selector = new MWF.O2Selector(this.app.content, options);
     },
     changeMaintainer: function(){
+        if( !this.data.maintainerList || !this.data.maintainerList.length ){
+            this.data.maintainerList = this.data.maintenanceIdentity ? [this.data.maintenanceIdentity] : [];
+        }
         var options = {
             "type": "identity",
-            "count": 1,
+            "resultType": "person",
+            "count": 0,
             "title": this.app.lp.application.setMaintainer,
-            "values": [this.data.maintenanceIdentity],
+            "values": this.data.maintainerList,
             "onComplete": function(items){
                 this.maintainerContentAreaNode.empty();
                 if (items && items.length){
-                    var item = items[0];
-                    this.data.maintenanceIdentity = item.data.distinguishedName;
-                    var admin = new MWF.widget.O2Identity(item.data, this.maintainerContentAreaNode, {"style": "application"});
+                    this.data.maintainerList = items.map(function(item){
+                        return item.data.distinguishedName;
+                    });
+                    this.data.maintenanceIdentity = "";
+                    items.each(function(item){
+                        new MWF.widget.O2Person(item.data, this.maintainerContentAreaNode, {"style": "application"});
+                    }.bind(this));
                 }else{
                     this.data.maintenanceIdentity = "";
+                    this.data.maintainerList = [];
                 }
 
                 this.app.restActions.saveApplication(this.data, function(json){

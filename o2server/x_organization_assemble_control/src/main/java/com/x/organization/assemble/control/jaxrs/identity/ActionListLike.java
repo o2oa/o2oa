@@ -1,19 +1,5 @@
 package com.x.organization.assemble.control.jaxrs.identity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.collections4.set.ListOrderedSet;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -31,7 +17,19 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.collections4.set.ListOrderedSet;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionListLike extends BaseAction {
 
@@ -136,12 +134,6 @@ class ActionListLike extends BaseAction {
 			unitDutyIdentities = ListTools.trim(unitDutyIdentities, true, true);
 			set.addAll(unitDutyIdentities);
 		}
-		if (ListTools.isNotEmpty(wi.getUnitList())) {
-			List<String> units = business.expendUnitToUnit(wi.getUnitList());
-			if (!units.isEmpty()) {
-				p = cb.and(p, root.get(Identity_.unit).in(units));
-			}
-		}
 		if (ListTools.isNotEmpty(wi.getGroupList())) {
 			List<String> identityIds = business.expendGroupToIdentity(wi.getGroupList());
 			set.addAll(identityIds);
@@ -151,6 +143,14 @@ class ActionListLike extends BaseAction {
 		}
 		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList().stream()
 				.distinct().collect(Collectors.toList());
+
+		if (ListTools.isNotEmpty(wi.getUnitList())) {
+			List<String> unitList = business.unit().pick(wi.getUnitList()).stream().map(Unit::getLevelName).collect(
+					Collectors.toList());
+			if(ListTools.isNotEmpty(unitList)){
+				os = os.stream().filter(o-> isMember(unitList, o)).collect(Collectors.toList());
+			}
+		}
 		wos = Wo.copier.copy(os);
 		wos = business.identity().sort(wos);
 		return wos;

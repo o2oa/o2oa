@@ -237,7 +237,7 @@ MWF.xApplication.MinderEditor.Main = new Class({
     loadExtentResource : function (callback) {
         var kityminderPath = "../o2_lib/kityminder/";
         COMMON.AjaxModule.load("../o2_lib/jquery/jquery-2.2.4.min.js", function () {
-            COMMON.AjaxModule.load(kityminderPath + "core/dist/kityminder.core.extend.js", function () {
+            COMMON.AjaxModule.load(kityminderPath + "core/kityminder.core.extend.js", function () {
                 var jquery = jQuery.noConflict();
                 if (callback)callback();
             }.bind(this));

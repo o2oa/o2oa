@@ -511,6 +511,16 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.parseModules(this, this.node);
 		}.bind(this));
 	},
+	hideDomTree: function (){
+		if( this.domTree && this.domTree.node ){
+			this.domTree.node.hide();
+		}
+	},
+	showDomTree: function (){
+		if( this.domTree && this.domTree.node ){
+			this.domTree.node.show();
+		}
+	},
 	createFormTreeNode: function(){
         var text = "<"+this.json.type+"> "+this.json.name+" ["+this.options.mode+"] ";
 		var o = {

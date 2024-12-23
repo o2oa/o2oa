@@ -9,7 +9,7 @@ if( !o2.APP$ElSelector ){
     Object.assign(o2.APP$ElSelector.prototype, o2.APP$Selector.prototype);
 }
 
-/** @class Elselect 基于Element UI的选择框组de件。
+/** @class Elselect 基于Element UI的选择框组组件。
  * @o2cn 选择框
  * @example
  * //可以在脚本中获取该组件
@@ -17,14 +17,14 @@ if( !o2.APP$ElSelector ){
  * var input = this.form.get("name"); //获取组件
  * //方法2
  * var input = this.target; //在组件事件脚本中获取
- * @extends MWF.xApplication.process.Xform.$Module
+ * @extends MWF.xApplication.process.Xform.$Selector
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
  * @see {@link https://element.eleme.cn/#/zh-CN/component/select|Element UI Select 选择器}
  */
 MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
-    /** @lends o2.xApplication.process.Xform.Elselect# */
+    /** @lends MWF.xApplication.process.Xform.Elselect# */
     {
     Implements: [Events],
     Extends: MWF.APP$ElSelector,
@@ -336,7 +336,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             Promise.resolve(this.json.options || this.moduleSelectAG).then(function(options){
                 var values = (o2.typeOf(data) !== "array") ? [data] : data;
                 var text = this.__getOptionsText(options, values);
-                this.node.set("text", text.join(","));
+                this.node.set("text", text.join(",") || values.join(','));
 
                 if( !this.eventLoaded ){
                     this._loadDomEvents();
@@ -367,7 +367,6 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         }.bind(this));
         return text;
     },
-
         getDataByText: function(text){
             var opt = this.json.options;
             if( !opt )return "";
@@ -389,6 +388,27 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 }
             }.bind(this));
             return value;
+        },
+
+        /**
+         * @summary 获取选中项的text。
+         * @return {String|String[]} 返回选中项的text或数组，返回类型依赖是否为多选
+         * @example
+         * var texts = this.form.get('fieldId').getText(); //获取选中项的文本或数组
+         */
+        getText: function(){
+            var d = this.getTextData();
+            if( typeOf(d.then) === "function" ){
+                return d.then(function( d1 ){
+                    var texts = d1.text;
+                    var ts = (texts && texts.length) ? texts : [];
+                    return this.json.multiple ? ts : (ts[0] || "");
+                }.bind(this));
+            }else{
+                var texts = d.text;
+                var ts = (texts && texts.length) ? texts : [];
+                return this.json.multiple ? ts : (ts[0] || "");
+            }
         },
 
         getExcelData: function(){

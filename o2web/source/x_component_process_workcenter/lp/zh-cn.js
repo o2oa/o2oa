@@ -112,7 +112,6 @@ MWF.xApplication.process.workcenter.LP = {
 	"noMyCreated": "没有我创建的文件",
 	"createWork": "新建流程文件",
 	"readConfirm" : "您确定要将选中的文件标记为已读吗？",
-
 	"batch": "批量处理",
 	"selectBatch": "选中多个相同环节的待办进行批量处理",
 	"cannotSelectBatch": "不同环节的待办不能进行批量处理",

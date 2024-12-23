@@ -1,10 +1,5 @@
 package com.x.organization.assemble.control.jaxrs.role;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -21,6 +16,8 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Role;
+import java.util.List;
+import java.util.Optional;
 
 class ActionGet extends BaseAction {
 
@@ -59,21 +56,12 @@ class ActionGet extends BaseAction {
 	private void referenceGroup(Business business, Wo wo) throws Exception {
 		List<Group> os = business.group().pick(wo.getGroupList());
 		List<WoGroup> wos = WoGroup.copier.copy(os);
-		wos = wos.stream()
-				.sorted(Comparator.comparing(WoGroup::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-						.thenComparing(Comparator.comparing(WoGroup::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());
 		wo.setWoGroupList(wos);
 	}
 
 	private void referencePerson(Business business, Wo wo) throws Exception {
 		List<Person> os = business.person().pick(wo.getPersonList());
 		List<WoPerson> wos = WoPerson.copier.copy(os);
-		wos = wos.stream()
-				.sorted(Comparator.comparing(WoPerson::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-						.thenComparing(
-								Comparator.comparing(WoPerson::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());
 		wo.setWoPersonList(wos);
 	}
 

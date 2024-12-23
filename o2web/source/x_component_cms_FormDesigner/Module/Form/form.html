@@ -23,7 +23,9 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.formStyle}}:</td>
                 <td class="editTableValue">
-                    <select class="MWFFormStyle" name="formStyleType"></select>
+<!--                    <select class="MWFFormStyle" name="formStyleType"></select>-->
+                    <div class="MWFFormStyleSelect" name="formStyleType"></div>
+                    <div class="MWFScriptSelectRefresh"></div>
                     <br/>
                     <input class="editTableRadio" name="forceClearCustomStyle" type="checkbox" value="yes"/>{{$.lp.forceClearCustomStyle}}
                 </td>
@@ -53,7 +55,7 @@
 
 		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
 		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
-		
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
@@ -65,7 +67,7 @@
         </table>
 
         <div class="MWFCssArea" name="css" title="CSS"></div>
-		
+
 		<!--<div class="MWFScriptArea" name="jsheader" title="JS Header"></div>-->
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

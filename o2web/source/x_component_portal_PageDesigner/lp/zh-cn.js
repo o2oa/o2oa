@@ -189,6 +189,9 @@ MWF.APPPOD.LP = {
     "implodeOfficeEmpty": "请先选择要导入的Word或Excel文件",
     "applicationNotFound": "未找到应用",
 
+    "selectCopyModule": "请选择需要复制属性的组件",
+    "selectCopyModuleNotice": "请先选择组件！",
+
     "scriptTitle": {
         "validationOpinion": "表单意见校验",
         "validationRoute": "表单路由校验",
@@ -305,6 +308,7 @@ MWF.APPPOD.LP = {
         "officeImplode": "从WORD导入（仅支持Word 97-2003文件 *.doc）",
         "help": "帮助",
         "clearNoDomModule": "清除未在HTML树中的组件配置",
+        "copyProperty": "拷贝组件属性",
         "autoSave": "自动保存",
         "brush": "格式刷",
         "viewAllVersion": "查看所有页面版本"

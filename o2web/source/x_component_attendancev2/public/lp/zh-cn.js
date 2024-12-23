@@ -77,6 +77,7 @@ MWF.xApplication.attendancev2.LP = {
     chooseDatePlaceholder: "请选择日期",
     selectPlaceholder: "请选择",
     selectOrgPersonOverCount: "只能选择({count})个数据！",
+    errorPageNumber: "请输入正确的页码！",
   },
   // 我的
   myAttendanceTitle: "我的统计",
@@ -147,6 +148,7 @@ MWF.xApplication.attendancev2.LP = {
   workAddressManagerTitle: "工作场所管理",
   workAddressSelector: "选择工作场所",
   workAddressAdd: "新建工作场所",
+  workAddressUpdate: "修改工作场所",
   workAddressView: "查看工作场所",
   workAddressName: "场所名称",
   workAddressRange: "误差范围",

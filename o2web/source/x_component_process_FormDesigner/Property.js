@@ -7,7 +7,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		"style": "default",
 		"path": "../x_component_process_FormDesigner/property/property.html"
 	},
-	
+
 	initialize: function(module, propertyNode, designer, options){
 		this.setOptions(options);
 		this.module = module;
@@ -307,7 +307,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
     },
-	
+
 	loadTreeData: function(){
 		var arrays = this.propertyContent.getElements(".MWFTreeData");
 		arrays.each(function(node){
@@ -1475,7 +1475,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         //    image.load(this.data[name])
         //}.bind(this));
     },
-	
+
 	loadEventsEditor: function(){
 		var events = this.propertyContent.getElement(".MWFEventsArea");
 		if (events){
@@ -1760,7 +1760,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
         }
     },
-	
+
 	loadArrayList: function(){
 		var arrays = this.propertyContent.getElements(".MWFArraylist");
 		arrays.each(function(node){
@@ -2123,12 +2123,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         }
                     }
                 }
+                debugger;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "FormStyle",
                     "count": 1,
                     "names": [data],
                     "selectorOptions" : {
-                        "mode" : ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc"
+                        "mode" : ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc",
+                        "appType": this.appType === 'cms' ? 'cms' : 'process',
+                        "stylesUrl": this.appType === 'cms' ? "../x_component_cms_FormDesigner/Module/Form/skin/config.json" : null
                     },
                     "validFun" : function (ids) {
                         var flag = true;
@@ -2136,7 +2139,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.designer.notice(MWF.APPFD.LP.mustSelectFormStyle, "error");
                             flag = false;
                         }else if( ids[0].data.type === "script" ){
-                            this.designer.actions.getScriptByName(  ids[0].data.name, ids[0].data.application,  function( json ) {
+                            debugger;
+                            this.designer.actions.getScriptByName(  ids[0].data.name, ids[0].data.application || ids[0].data.appId,  function( json ) {
                                 try{
                                     var f = eval("(function(){\n return "+json.data.text+"\n})");
                                     var j = f();
@@ -3191,7 +3195,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 				}
 			}
 		}.bind(this));
-		
+
 		var selects = this.propertyContent.getElements("select");
 
 		selects.each(function(select){
@@ -3203,7 +3207,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 //property.setSelectValue(jsondata, select);
 			}
 		});
-		
+
 		var textareas = this.propertyContent.getElements("textarea");
 		textareas.each(function(input){
 			var jsondata = input.get("name");
@@ -3219,7 +3223,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 });
 			}
 		}.bind(this));
-		
+
 	},
     checkHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
         if( this.isLoaded() && this.module.form.history ){
@@ -3314,7 +3318,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.changeJsonDate(name, value);
         this.changeData(name, select, oldValue);
 	},
-	
+
 	setValue: function(name, value, obj, notCheckHistory){
 		if (name==="id"){
 			if (value!==this.module.json.id) {
@@ -3455,7 +3459,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 	saveScriptItem: function(node, script){
 		var jsondata = node.get("name");
 		var scriptList = this.data[jsondata];
-		
+
 		var data = script.data;
 		var scriptData = this.process.scripts[script.data.id];
 		if (!scriptData){
@@ -3480,7 +3484,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var SmartBINodes = this.propertyContent.getElements(".MWFSmartBISelect");
         var SmartBIToolbarNodes = this.propertyContent.getElements(".MWFSmartBIToolbar");
         var SmartBILeftTreeNodes = this.propertyContent.getElements(".MWFSmartBILeftTree");
-        
+
         if (SmartBINodes.length){
             var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
             var node = SmartBINodes[0];
@@ -3490,13 +3494,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var value = e.target.options[e.target.selectedIndex].value;
                 this.setValue(e.target.getParent("div").get("name"), value, select);
             }.bind(this));
-            
+
             var refreshNode = new Element("div.propertyRefreshFormNode",{styles:this.form.css.propertyRefreshFormNode}).inject(node);
             refreshNode.addEvent("click",function(){
                 SmartBIAction.ResourceAction.sync(function(){
                     this.setSmartBIOptions(select)
                 }.bind(this))
-            }.bind(this)) 
+            }.bind(this))
         }
         if(SmartBIToolbarNodes.length){
             SmartBIToolbarNodes.addEvent("change",function(e){
@@ -3521,7 +3525,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
         var selectedValue = this.data.smartbiresource;
         SmartBIAction.ResourceAction.list(function(json){
-            json.data.each(function(d){ 
+            json.data.each(function(d){
                 new Element("option", {
                     "text": d.name,
                     "value": d.resid,

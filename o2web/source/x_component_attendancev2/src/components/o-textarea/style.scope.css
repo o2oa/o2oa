@@ -25,7 +25,7 @@
   line-height: 30px;
   background-color: #fff;
   background-image: none;
-  border-radius: 18px;
+  border-radius: var(--att-default-radius);
   border: 1px solid #DEDEDE;
   transition: all .3s;
   color: #666666;

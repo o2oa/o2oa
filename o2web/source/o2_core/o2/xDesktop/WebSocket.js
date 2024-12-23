@@ -500,30 +500,61 @@ MWF.xDesktop.WebSocket = new Class({
         var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.createTime : ""));
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
-            //应用市场中的云文件，门户cloudFile
-            o2.Actions.load("x_portal_assemble_surface").PortalAction.get("cloudFile", function () {
-                layout.desktop.openApplication(e, "portal.Portal", {
-                    portalId : "cloudFile"
+
+
+            if(layout.serviceAddressList["x_pan_assemble_control"]){
+                layout.desktop.openApplication(e, "Drive", null, {
+                    "status": {
+                        "tab": "share",
+                        "node": data.person
+                    }
                 });
-            }, function(){
+            }else{
+
+                //应用市场中的云文件，门户cloudFile
+                o2.Actions.load("x_portal_assemble_surface").PortalAction.get("cloudFile", function () {
+                    layout.desktop.openApplication(e, "portal.Portal", {
+                        portalId : "cloudFile"
+                    });
+                }, function(){
+                    layout.desktop.openApplication(e, "File", null, {
+                        "status": {
+                            "tab": "share",
+                            "node": data.person
+                        }
+                    });
+                })
+            }
+
+
+
+        });
+
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+
+
+            if(layout.serviceAddressList["x_pan_assemble_control"]){
+                layout.desktop.openApplication(e, "Drive", null, {
+                    "status": {
+                        "tab": "share",
+                        "node": data.person
+                    }
+                });
+                return false;
+            }else{
                 layout.desktop.openApplication(e, "File", null, {
                     "status": {
                         "tab": "share",
                         "node": data.person
                     }
                 });
-            })
-        });
 
-        messageItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.addUnread(-1);
-            layout.desktop.message.hide();
-            layout.desktop.openApplication(e, "File", null, {
-                "status": {
-                    "tab": "share",
-                    "node": data.person
-                }
-            });
+            }
+
+
+
         });
     },
     getMeeting: function(data, callback){

@@ -396,6 +396,9 @@ o2.xApplication.systemconfig.LP = {
         "tokenCookieHttpOnly": "启用Cookie HttpOnly",
         "tokenCookieHttpOnlyInfo": "保存token的cookie是否启用httponly",
 
+        "xadminEnable": "是否启用超级管理员（xadmin）账户",
+        "xadminEnableInfo": "如需禁用请确保已在组织管理的管理员角色中配置了用户",
+
         "tokenCookieSecure": "启用Cookie Secure",
         "tokenCookieSecureInfo": "保存token的cookie是否启用secure，表示仅在https协议才会传输此cookie",
 
@@ -753,7 +756,7 @@ o2.xApplication.systemconfig.LP = {
         "sameConfigInfo": "O2OA有三个逻辑服务器：中心服务、应用服务和WEB服务，默认情况下它们使用同一个端口和同一套配置，您也可以为三个服务分开配置不同的端口、主机等信息。",
 
         "serverConfig": "服务器配置",
-        "serverConfigInfo": "在此配置服务器相关参数（需要重启服务器）",
+        "serverConfigInfo": "在此配置服务器相关参数<span style='color:red;'>（需要重启服务器）</span>",
 
         "serverPort": "服务端口",
         "serverPortInfo": "服务器监听端口",
@@ -810,19 +813,19 @@ o2.xApplication.systemconfig.LP = {
         "requestLogEnable": "启用HTTP日志",
         "requestLogBodyEnable": "记录Body内容",
         "requestLogRetainDays": "日志保留天数",
-        "requestLogInfo": "在此处配置服务器HTTP日志相关内容（需要重启服务器）：" +
+        "requestLogInfo": "在此处配置服务器HTTP日志相关内容<span style='color:red;'>（需要重启服务器）</span>：" +
             "<ul><li>启用HTTP日志后，日志文件保存在服务器logs目录下。(启用三员管理的情况下，HTTP日志始终会启用)</li>" +
             "<li>记录Body内容会得到更详细的日志信息，但也会大大增加磁盘空间占用和服务器开销。</li>" +
             "<li>设置日志最多保留的天数，超过此天数的日志文件会被删除</li></ul>",
 
         "webSocketEnable": "是否启用WebSocket",
-        "webSocketEnableInfo": "WebSocket用于服务器给WEB用户的消息提醒和聊天等功能，如果启用了WebSocket，请正确配置nginx、WAF等网络系统，以确保允许WebSocket协议通讯。（需要重启服务器）",
+        "webSocketEnableInfo": "WebSocket用于服务器给WEB用户的消息提醒和聊天等功能，如果启用了WebSocket，请正确配置nginx、WAF等网络系统，以确保允许WebSocket协议通讯。<span style='color: red;'>（需要重启服务器）</span>",
 
         "deployWarEnable": "是否允许前端部署自定义应用",
-        "deployWarEnableInfo": "此配置控制自定义应用（war）是否允许在WEB端上传部署（需要重启服务器）",
+        "deployWarEnableInfo": "此配置控制自定义应用（war）是否允许在WEB端上传部署<span style='color: red;'>（需要重启服务器）</span>",
 
         "deployResourceEnable": "是否允许前端部署Web资源",
-        "deployResourceEnableInfo": "此配置控制前端组件和静态资源，是否允许在WEB端上传部署（需要重启服务器）",
+        "deployResourceEnableInfo": "此配置控制前端组件和静态资源，是否允许在WEB端上传部署<span style='color: red;'>（需要重启服务器）</span>",
 
         "statEnable": "启用Druid统计",
         "statExclusions": "统计忽略路径",
@@ -938,8 +941,8 @@ o2.xApplication.systemconfig.LP = {
         "baseConfig": "基本配置",
         "timerConfig": "定时器配置",
 
-        "maintenanceIdentity": "流程维护人身份",
-        "selectMaintenanceIdentity": "选择流程维护人身份",
+        "maintenanceIdentity": "找不到处理人时流转给谁",
+        "selectMaintenanceIdentity": "选择身份",
         "maintenanceIdentityInfo": "当流程工作发生意外错误，无法找到对应的处理人情况下，系统先尝试将工作分配给创建者身份，如果创建身份也不可获取，那么就分配给此处设定的身份",
 
         "formVersionCount": "表单历史版本保留数量",
@@ -1056,7 +1059,7 @@ o2.xApplication.systemconfig.LP = {
         "indexMode": "索引存储位置",
         "modeOptions": {
             "localDirectory": "本地文件系统",
-            "hdfsDirectory": "hadoop文件系统",
+            // "hdfsDirectory": "hadoop文件系统",
             "sharedDirectory": "共享文件系统"
         },
         "hdfsDirectoryDefaultFS": "hadoop文件系统地址",
@@ -1200,7 +1203,7 @@ o2.xApplication.systemconfig.LP = {
         "appIndexTaskFilterProcessInfo": "办公中心列表流程查询条件，为空就是都查询",
         "appIndexTaskFilterProcessSelectorTitle": "流程选择",
         "appIndexCmsFilterCategroySelectorTitle": "分类选择",
-        
+
 
 
         "systemMessageSwitch": "显示系统通知",
@@ -1443,7 +1446,7 @@ o2.xApplication.systemconfig.LP = {
                 "ftps": "ftps",
                 "ftp": "ftp",
                 "file": "file",
-                "hdfs": "hdfs",
+                // "hdfs": "hdfs",
                 "cifs": "cifs",
                 "ali": "阿里云存储",
                 "s3":"亚马逊云存储",
@@ -1643,7 +1646,7 @@ o2.xApplication.systemconfig.LP = {
             "mail": "邮件",
             "jdbc": "JDBC",
             "table": "数据表",
-            "hadoop": "Hadoop",
+            // "hadoop": "Hadoop",
             "andfx": "移动办公消息"
         },
         "consumerInfoTitle": "消息通道配置",

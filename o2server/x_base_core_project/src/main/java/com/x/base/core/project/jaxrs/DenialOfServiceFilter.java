@@ -1,7 +1,6 @@
 package com.x.base.core.project.jaxrs;
 
 import java.io.IOException;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -10,17 +9,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import com.x.base.core.project.http.FilterTools;
-
 public class DenialOfServiceFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
 			throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) res;
-		response.setStatus(403);
-		response.setHeader("Content-Type", "application/json;charset=UTF-8");
-		response.getWriter().write(FilterTools.APPLICATION_403_JSON);
+		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		response.setHeader("Content-Type", "text/html;charset=utf-8");
+		response.getWriter()
+				.write("<html><body><h2>HTTP ERROR 404 Not Found</h2></body></html>");
 	}
 
 	@Override

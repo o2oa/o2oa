@@ -445,6 +445,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             if (this.form.currentSelectedModule==this){
                 return true;
             }else{
+                this.mobilePreSelectedModule = this.form.currentSelectedModule;
                 this.form.currentSelectedModule.unSelected();
             }
         }
@@ -454,8 +455,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }
         this.form.unSelectedMulti();
 
+        if( this.mobileForm )this.mobileForm.hideDomTree();
+
         if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.pcForm;
+        this.pcForm.showDomTree();
+        ( this.pcPreSelectedModule || this.pcForm ).selected();
 
         if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){
             this.loadAllScript();
@@ -479,6 +484,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             if (this.form.currentSelectedModule==this){
                 return true;
             }else{
+                this.pcPreSelectedModule = this.form.currentSelectedModule;
                 this.form.currentSelectedModule.unSelected();
             }
         }
@@ -488,12 +494,17 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }
         this.form.unSelectedMulti();
 
+        if( this.pcForm )this.pcForm.hideDomTree();
+
         if (!this.mobileForm){
             this.mobileForm = new MWF.CMSFCForm(this, this.designMobileNode, {"mode": "Mobile"});
             if (!Object.keys(this.formMobileData.json.moduleList).length){
                 this.formMobileData = Object.clone(this.formData);
             }
             this.mobileForm.load(this.formMobileData);
+        }else{
+            this.mobileForm.showDomTree();
+            ( this.mobilePreSelectedModule || this.mobileForm ).selected();
         }
 
         if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
@@ -1425,9 +1436,9 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     getFieldList: function(){
         //fieldTypes = ["calender", "checkbox", "datagrid", "htmledit", "number", "personfield", "radio", "select", "textarea", "textfield"];
         dataTypes = {
-            "string": ["htmledit", "radio", "select", "textarea", "textfield"],
-            "person": ["personfield", "readerfield","authorfield", "org", "reader","author"],
-            "date": ["calender"],
+             "string": ["htmledit", "radio", "select", "textarea", "textfield","imageclipper","htmleditor","tinymceeditor","ooinput","ootextarea","ooselect","ooradioGroup"],
+            "person": ["personfield","orgfield","org","ooorg"],
+            "date": ["calender","oodatetime"],
             "number": ["number","currency"],
             "array": ["checkbox"]
         };
@@ -1615,6 +1626,48 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             this.close();
         }, function(){
             this.close();
+        });
+    },
+    copyPropertyToModule: function (){
+        if( !this.form.currentSelectedModule ){
+            this.notice( MWF.APPFD.LP.selectCopyModuleNotice, 'info');
+            return;
+        }
+        var module = this.form.currentSelectedModule;
+        var modulesTypes = [
+            ['Org', 'OOOrg','Author','Reader'],
+            ['Checkbox', 'OOCheckGroup', 'Radio', 'OORadioGroup', 'Select', 'OOSelect'],
+            ['Calendar', 'OODatetime'],
+            ['Textfield', 'Textarea', 'OOInput', 'OOTextarea'],,
+            ['Button', 'OOButton']
+        ].filter(function (types){
+            return types.contains( module.json.type );
+        });
+        modulesTypes = modulesTypes.length ? modulesTypes[0] : [module.json.type];
+
+        console.log(modulesTypes);
+
+        this.selector = new MWF.O2Selector(this.content, {
+            count: 1,
+            title: MWF.APPFD.LP.selectCopyModule,
+            type: 'FieldProperty',
+            moduleTypes: modulesTypes,
+            currentFormFields: Object.values(this.form.json.moduleList),
+            onComplete: function (items){
+                if( !items.length )return;
+                for( var key in items[0].data ){
+                    var value = items[0].data[key];
+                    if( !['id', 'type', 'pid'].contains(key) && module.json[key] !== value ){
+                        module.json[key] = value;
+                        module.setPropertiesOrStyles(key, value);
+                        module._setEditStyle(key, null, value);
+                        // this.setScriptJsEditor(module, change.name, change.fromValue);
+                    }
+                }
+                if( module.property ){
+                    module.property.reset();
+                }
+            }.bind(this)
         });
     },
     onPostClose: function(){

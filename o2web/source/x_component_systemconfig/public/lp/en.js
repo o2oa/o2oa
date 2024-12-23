@@ -336,6 +336,8 @@ MWF.xApplication.systemconfig.LP={
 		"tokenNameInfo": "The default token name of the system is x-token, and you can modify the token name here to prevent cookie conflicts under the same Domain, which is especially useful when deploying multiple sets of O2OA under the same Domain.(The server needs to be restarted after modification.)",
 		"tokenCookieHttpOnly": "Enable httponly",
 		"tokenCookieHttpOnlyInfo": "Whether the cookie that saves the token is enabled for httponly",
+		"xadminEnable": "Whether to enable the super administrator (xadmin) account",
+		"xadminEnableInfo": "If you want to disable, make sure that the user has been configured in the administrator role of organization management",
 		"tokenCookieSecure": "Enable Cookie Secure",
 		"tokenCookieSecureInfo": "Whether secure is enabled for the cookie that saves the token, indicating that this cookie will only be transmitted under the https protocol",
 		"enableSafeLogout": "Enable Secure Logout",
@@ -747,8 +749,8 @@ MWF.xApplication.systemconfig.LP={
 	"_processConfig": {
 		"baseConfig": "Basic Config",
 		"timerConfig": "Timer Config",
-		"maintenanceIdentity": "Process maintainer identity",
-		"selectMaintenanceIdentity": "Select process maintainer identity",
+		"maintenanceIdentity": "To whom should the transfer be made when the person handling the transaction cannot be found",
+		"selectMaintenanceIdentity": "Select identity",
 		"maintenanceIdentityInfo": "When an unexpected error occurs in the process work and the corresponding processor cannot be found, the system will first try to assign the work to the identity of the creator. If the creation identity is not available, then it will be assigned to the identity set here.",
 		"formVersionCount": "The number of historical versions of the form to keep",
 		"formVersionCountInfo": "Every time a form is saved, the system can keep a copy as a historical version, so that the previous design can be retrieved in some special cases. Here configure the maximum number of reserved historical versions of the form. If this number is exceeded, the earliest historical version will be deleted.",
@@ -836,7 +838,7 @@ MWF.xApplication.systemconfig.LP={
 		"indexMode": "Index Storage Location",
 		"modeOptions": {
 			"localDirectory": "Local File System",
-			"hdfsDirectory": "hadoop file system",
+			// "hdfsDirectory": "hadoop file system",
 			"sharedDirectory": "Shared File System"
 		},
 		"hdfsDirectoryDefaultFS": "hadoop file system address",
@@ -1179,7 +1181,7 @@ MWF.xApplication.systemconfig.LP={
 				"ftps": "ftps",
 				"ftp": "ftp",
 				"file": "file",
-				"hdfs": "hdfs",
+				// "hdfs": "hdfs",
 				"cifs": "cifs",
 				"ali": "Alibaba Cloud Storage",
 				"s3": "Amazon Cloud Storage",

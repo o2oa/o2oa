@@ -151,8 +151,8 @@ MWF.xApplication.process.ProcessManager.LP={
 		"setUsableUnit": "Establecer unidades utilizables",
 		"setAppUsableIdentity": "Establecer identidades utilizables para la aplicación",
 		"setAppUsableUnit": "Establecer unidades utilizables para la aplicación",
-		"maintenanceIdentity": "Mantenimiento del flujo de trabajo",
-		"setMaintainer": "Establecer mantenimiento del flujo de trabajo"
+		"maintenanceIdentity": "Mantenedor de instancia de proceso",
+		"setMaintainer": "Establecer mantenedor de instancia de proceso"
 	},
 	"createSelectTemplate": "Crear: Seleccionar plantilla",
 	"templateCategory": "Categoría de plantillas:",
