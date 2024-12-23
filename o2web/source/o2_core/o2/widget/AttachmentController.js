@@ -14,6 +14,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "isReplace": true,
         "isDownload": true,
         "isPreviewAtt": true,
+        "isPreviewAtt": true,
         "isSizeChange": true,
         "isConfig": true,
         "isOrder": true,

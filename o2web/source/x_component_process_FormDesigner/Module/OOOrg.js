@@ -44,7 +44,7 @@ MWF.xApplication.process.FormDesigner.Module.OOOrg = MWF.FCOOOrg = new Class({
 
 		if (name==="showIcon"){
 			if (this.json.showIcon==="yes"){
-				this.node.setAttribute("right-icon", "person");
+				this.node.setAttribute("right-icon", this.json.properties["right-icon"] || "person");
 			}else{
 				this.node.removeAttribute("right-icon");
 			}
@@ -54,6 +54,7 @@ MWF.xApplication.process.FormDesigner.Module.OOOrg = MWF.FCOOOrg = new Class({
 		this.moveNode = new Element("oo-selector", {
 			"MWFType": "OOOrg",
 			"id": this.json.id,
+			// "label-style": "width:6.2vw; min-width:5em; max-width:9em",
 			"styles": this.css.moduleNodeMove,
 			"placeholder": this.json.id,
 			"readonly": "true",

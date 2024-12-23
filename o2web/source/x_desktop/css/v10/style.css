@@ -262,6 +262,9 @@ oo-file {
     background-color: #f7f7f7;
 }
 
+oo-nav{
+    display: block;
+}
 
 .oo-confirm-icon-info {
     color: var(--oo-color-info);

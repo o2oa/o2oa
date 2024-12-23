@@ -109,6 +109,7 @@ o2.widget.JavascriptEditor = new Class({
         // }
     },
     loadMonaco: function(callback){
+        this.editorLoading = true;
         MWF.require("MWF.xDesktop.shortcut");
         if (o2.editorData.javascriptEditor){
             this.theme = o2.editorData.javascriptEditor.monaco_theme;
@@ -127,10 +128,9 @@ o2.widget.JavascriptEditor = new Class({
             this.editorClass = o2.widget.monaco;
 
             this.editorClass.load(function(){
-
                 this.editor = monaco.editor.create(this.node, {
                     value: this.options.option.value,
-                    language: this.options.option.mode,
+                    language: this.options.option.mode || 'javascript',
                     theme: this.theme,
                     fontSize: this.fontSize,
                     lineNumbersMinChars: 3,
@@ -140,8 +140,6 @@ o2.widget.JavascriptEditor = new Class({
                 });
                 this.focus();
                 window.setTimeout(this.setMonacoLayout.bind(this), 500);
-
-
                 this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function(e){
                     this.fireEvent("save");
                 }.bind(this));
@@ -185,7 +183,7 @@ o2.widget.JavascriptEditor = new Class({
                     this.monacoModel.o2Editor = this;
                     this.registerCompletion();
                 //}.bind(this));
-
+                this.editorLoading = false;
                 this.fireEvent("postLoad");
                 if (callback) callback();
 
@@ -194,8 +192,10 @@ o2.widget.JavascriptEditor = new Class({
     },
 
     loadAce: function(callback){
+        this.editorLoading = true;
+
         if (o2.editorData.javascriptEditor){
-            this.theme = o2.editorData.javascriptEditor.theme;
+            this.theme = o2.editorData.javascriptEditor.theme || "tomorrow";
             this.fontSize = o2.editorData.javascriptEditor.fontSize;
         }else{
             o2.editorData.javascriptEditor = {
@@ -273,6 +273,8 @@ o2.widget.JavascriptEditor = new Class({
                 //o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
                     this.registerCompletion();
                 //}.bind(this));
+
+                this.editorLoading = false;
 
                 this.fireEvent("postLoad");
                 if (callback) callback();
@@ -393,23 +395,45 @@ o2.widget.JavascriptEditor = new Class({
                 this.setValue(value);
             }.bind(this));
         }else{
-            this.options.type = o2.editorData.javascriptEditor.editor;
-            if (this.options.type.toLowerCase()=="ace"){
-                this.loadAce(callback);
-            }
-            if (this.options.type.toLowerCase()=="monaco"){
-                this.loadMonaco(callback);
-            }
-            if (this.options.type.toLowerCase()=="codeMirror"){
-                this.loadCodeMirror(callback);
-            }
+            this.options.type = type;
+            // if (this.options.type.toLowerCase()=="ace"){
+            //     this.loadAce(callback);
+            // }
+            // if (this.options.type.toLowerCase()=="monaco"){
+            //     this.loadMonaco(callback);
+            // }
+            // if (this.options.type.toLowerCase()=="codeMirror"){
+            //     this.loadCodeMirror(callback);
+            // }
         }
     },
+
+    reload: function(){
+        this.getEditorTheme(function(json){
+            var type = this.options.forceType || o2.editorData.javascriptEditor.editor || "monaco";
+            if (type !== this.options.type){
+                if (!this.editorLoading){
+                    var value = this.getValue();
+                    this.destroyEditor();
+                    this.load(function(){
+                        this.setValue(value);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+
     destroyEditor: function(){
         if (this.editor){
             switch (this.options.type.toLowerCase()) {
                 case "ace": this.editor.destroy(); this.node.empty(); break;
-                case "monaco": this.editor.dispose(); break;
+                case "monaco":
+                    if (this.monacoCurrentModel) {
+                        this.monacoCurrentModel.dispose();
+                        this.monacoCurrentModel = null;
+                    }
+                    this.editor.dispose();
+                    break;
             }
         }
     },
@@ -417,6 +441,34 @@ o2.widget.JavascriptEditor = new Class({
 	    this.fireEvent("destroy");
 	    this.destroyEditor();
 	    o2.release(this);
+    },
+    setMode: function(mode){
+        if (mode !== this.options.option.mode){
+            this.options.option.mode = mode;
+            if (this.editor){
+                switch (this.options.type.toLowerCase()) {
+                    case "ace":
+                        if ( this.currentLanguage !== this.options.option.mode){
+                            this.editor.session.setMode("ace/mode/"+this.options.option.mode);
+                        }
+                        break;
+                    case "monaco":
+                        window.setTimeout(function(){
+                            if (!this.monacoCurrentModel || this.monacoCurrentModel.getLanguageId() !== this.options.option.mode) {
+                                var value = this.getValue();
+                                if (this.monacoCurrentModel) {
+                                    this.monacoCurrentModel.dispose();
+                                    this.monacoCurrentModel = null;
+                                }
+                                this.monacoCurrentModel = monaco.editor.createModel(value, this.options.option.mode);
+                                this.currentLanguage = this.options.option.mode;
+                                this.editor.setModel(this.monacoCurrentModel);
+                            }
+                        }.bind(this), 10)
+                        break;
+                }
+            }
+        }
     },
     setTheme: function(theme){
         if (this.editor){

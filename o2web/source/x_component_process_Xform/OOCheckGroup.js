@@ -20,7 +20,8 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
     _loadNodeEdit: function () {
         var node = new Element(this.options.tag, {
             'id': this.json.id,
-            'MWFType': this.json.type
+            'MWFType': this.json.type,
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em"
         }).inject(this.node, 'before');
         this.node.destroy();
         this.node = node;

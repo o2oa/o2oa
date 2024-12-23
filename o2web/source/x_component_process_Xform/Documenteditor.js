@@ -1962,24 +1962,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }.bind(this), 1000)
         }
 
-        //if (this.json.canDoublePage!=="n" && !layout.mobile){
-            this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
-            this.doublePageAction.addEvent("click", function(){
-                if (this.options.pageShow!=="double"){
-                    this._doublePage();
-                }else{
-                    this.options.pageShow="single";
-                    this.reload();
-                    // this._singlePage();
-                    var _self = this;
-                    window.setTimeout(function(){
-                        _self.scaleTo(_self.documenteditorScale);
-                    },10);
+        //    取消双野功能 todo
+        this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
+        this.doublePageAction.addEvent("click", function(){
+            if (this.options.pageShow!=="double"){
+                this._doublePage();
+            }else{
+                this.options.pageShow="single";
+                this.reload();
+                // this._singlePage();
+                var _self = this;
+                window.setTimeout(function(){
+                    _self.scaleTo((_self.json.isScale !== "y") ? 1 : _self.documenteditorScale);
+                },10);
 
-                }
-            }.bind(this));
-            if (this.json.canDoublePage==="n" || layout.mobile) this.doublePageAction.hide();
-        //}
+            }
+        }.bind(this));
+        if (this.json.canDoublePage==="n" || layout.mobile) this.doublePageAction.hide();
+
 
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
         if (this.json.isScale !== "y") this.zoomActionArea.hide();

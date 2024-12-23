@@ -144,6 +144,7 @@ if( !MWF.CMSProperty_Process ){
                 var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
                 MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
                     var options = {
+                        "iconType": this.data.iconType,
                         "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                         "isSystemTool" : true,
                         "target" : node.get("data-target"),
@@ -170,6 +171,7 @@ if( !MWF.CMSProperty_Process ){
                 var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
                 MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
                     var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                        "iconType": this.data.iconType,
                         "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                         "onChange": function(historyOptions){
                             historyOptions = historyOptions || {};

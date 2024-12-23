@@ -9,6 +9,7 @@ o2.widget.ScriptArea = new Class({
         "style": "default",
         "helpStyle" : "default",
         "maxObj": document.body,
+        "maxPosition": "relative",
         "isload": false,
         "isbind": true,
         "mode": "javascript",
@@ -28,6 +29,7 @@ o2.widget.ScriptArea = new Class({
         this._loadCss();
     },
     load: function(content){
+        this.contentCode = content || {code: ''};
         if (this.fireEvent("queryLoad")){
             this.container.set("styles", this.css.container);
             this.container.inject(this.node);
@@ -37,6 +39,12 @@ o2.widget.ScriptArea = new Class({
             this.createContent(content);
 
             this.fireEvent("postLoad");
+        }
+    },
+    setData: function(data){
+        this.contentCode = {code: data.code || data};
+        if (this.jsEditor){
+            this.jsEditor.setValue(data.code || data);
         }
     },
     createTitleNode: function(){
@@ -53,6 +61,8 @@ o2.widget.ScriptArea = new Class({
                 "click": this.toggleSize.bind(this)
             }
         }).inject(this.titleNode);
+        this.titleActionNode.hide();
+
         this.referenceNode = new Element("div", {
             "styles": this.css.referenceNode,
             "title": "open API",
@@ -78,7 +88,7 @@ o2.widget.ScriptArea = new Class({
         }
     },
     maxSize: function(){
-
+        if (!this.jsEditor) return;
         var obj = this.options.maxObj;
         var coordinates = obj.getCoordinates(obj.getOffsetParent());
 
@@ -88,7 +98,7 @@ o2.widget.ScriptArea = new Class({
         this.jsEditor.max();
         this.container.inject(obj, "top");
         this.container.setStyles({
-            "position": "relative",
+            "position": this.options.maxPosition || "relative",
             // "top": coordinates.top,
             // "left": coordinates.left,
             //"top": coordinates.top+"px",
@@ -139,6 +149,9 @@ o2.widget.ScriptArea = new Class({
     toJson: function(){
         return (this.editor) ? {"code": this.editor.getValue(), "html": this.editor.getValue()} : this.contentCode;
     },
+    getData: function(){
+        return (this.editor) ? this.editor.getValue() : (this.contentCode.code || this.contentCode);
+    },
     createContent: function(content){
         var codeIcon = (this.options.type!=="service") ? "web_code.png" : "code.png";
         var codeEmptyIcon = (this.options.type!=="service") ? "web_code_empty.png" : "code_empty.png";
@@ -153,7 +166,6 @@ o2.widget.ScriptArea = new Class({
         }else{
             this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/"+codeIcon+") center center no-repeat");
         }
-        this.contentCode = content;
 
         if (this.options.isload){
             this.loadEditor(content);
@@ -161,9 +173,10 @@ o2.widget.ScriptArea = new Class({
             var inforNode = new Element("div", {"styles": this.css.inforNode, "text": o2.LP.widget.scriptAreaEditNotice}).inject(this.contentNode);
             var _self = this;
             inforNode.addEvent("click", function(){
-                this.destroy();
+                this.hide();
                 _self.loadEditor(content);
             });
+            this.inforNode = inforNode;
         }
 
     },
@@ -232,7 +245,7 @@ o2.widget.ScriptArea = new Class({
                 // }.bind(this));
 
                 this.jsEditor.resize();
-                this.fireEvent("postLoad");
+                this.fireEvent("postLoadEditor");
             }.bind(this),
             "onSave": function(){
                 this.fireEvent("change");
@@ -241,6 +254,7 @@ o2.widget.ScriptArea = new Class({
         });
         this.jsEditor.load();
         if (this.options.isbind) this.bind(content);
+        this.titleActionNode.show();
 
         // this.createScriptReferenceMenu();
         //
@@ -280,8 +294,28 @@ o2.widget.ScriptArea = new Class({
     },
     destroy: function(){
         this.fireEvent("destroy");
+        if (this.jsEditor){
+            this.jsEditor.destroy();
+        }
         this.container.destroy();
         o2.release(this);
+    },
+    setReadonly: function(readonly){
+        if (readonly){
+            if (this.jsEditor){
+                this.jsEditor.destroy();
+                this.jsEditor = null;
+            }
+            this.referenceNode.hide();
+            this.titleActionNode.hide();
+            this.inforNode.hide();
+        }else{
+            this.referenceNode.show();
+            this.titleActionNode.show();
+            if (!this.jsEditor){
+                this.inforNode.show();
+            }
+        }
     }
 });
 

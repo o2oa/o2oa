@@ -7,15 +7,19 @@ o2.widget.monaco = {
             if (!this.isLoadding){
                 this.isLoadding = true;
                 o2.load("monaco", {"sequence": true}, function(){
-                    require.config({ paths: { "vs": "../o2_lib/vs" }});
+                    var currentScriptPath = window.location.href;
+                    var baseUrl = currentScriptPath.substring(0, currentScriptPath.lastIndexOf('/') + 1) + '../o2_lib/'; // 计算 baseUrl
+                    require.config({
+                        baseUrl: baseUrl,
+                        paths: { "vs": "vs/min/vs" }
+                    });
                     require(["vs/editor/editor.main"], function() {
                         this.isLoadding = false;
                         while (this.callbackList.length){
                             this.callbackList.shift()();
                         }
-                        //define.amd = false;
-                        //if (callback) callback();
                     }.bind(this));
+
                 }.bind(this));
             }
         }else{

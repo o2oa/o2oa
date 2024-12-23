@@ -1,0 +1,69 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.scriptEditor}}:</td>
+				<td class="editTableValue">
+					<label><input class="editTableRadio" name="scriptEditor" text{($.scriptEditor!=='monaco' && $.scriptEditor!=='ace')?'checked':''} type="radio" value="auto"/>auto</label>
+					<label><input class="editTableRadio" name="scriptEditor" text{($.scriptEditor=='monaco')?'checked':''} type="radio" value="monaco"/>monaco</label>
+					<label><input class="editTableRadio" name="scriptEditor" text{($.scriptEditor=='ace')?'checked':''} type="radio" value="ace"/>ace</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.scriptMode}}:</td>
+				<td class="editTableValue">
+					<label><input class="editTableRadio" name="mode" text{($.mode=='javascript')?'checked':''} type="radio" value="javascript"/>javascript</label>
+<!--					<label><input class="editTableRadio" name="mode" text{($.mode=='java')?'checked':''} type="radio" value="java"/>java</label>-->
+					<label><input class="editTableRadio" name="mode" text{($.mode=='html')?'checked':''} type="radio" value="html"/>html</label>
+					<label><input class="editTableRadio" name="mode" text{($.mode=='json')?'checked':''} type="radio" value="json"/>json</label>
+					<label><input class="editTableRadio" name="mode" text{($.mode=='css')?'checked':''} type="radio" value="css"/>css</label>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.lineNumber}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="lineNumber" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="lineNumber" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+
+		<div class="MWFMaplist" name="editorProperties" title="{{$.lp.attribute}}"></div>
+		<div style="text-align:center">{{$.lp.ckeditorInfo}} <a target="_blank" href="http://docs.ckeditor.com/">CKEditor Documentation</a></div>
+		<br/>
+
+		<div class="MWFHtmlEditorArea" name="templateCode" title="{{$.lp.defaultValue}} (H)"></div>
+
+		<div class="MWFValidation" name="validationConfig"></div>
+		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab" style="overflow: hidden">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

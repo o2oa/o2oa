@@ -24,7 +24,8 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
     _loadNodeEdit: function () {
         var node = new Element(this.options.tag, {
             'id': this.json.id,
-            'MWFType': this.json.type
+            'MWFType': this.json.type,
+            "label-style": "width:6.2vw; min-width:5em; max-width:9em"
         }).inject(this.node, 'before');
         this.node.destroy();
         this.node = node;

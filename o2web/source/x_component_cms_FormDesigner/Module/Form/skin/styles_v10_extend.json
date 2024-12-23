@@ -1,0 +1,50 @@
+{
+  "name": "绿色扁平",
+  "form": {
+    "textareaDisableResize" : true,
+    "confirmStyle" : "v10_confirm",
+    "dialogStyle" : "v10",
+    "nodeStyleWithhideModuleIcon" : {
+        "margin-right" : "0px"
+    },
+    "confirmIcon" : {
+      "success" : "../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
+      "error" : "../x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
+      "info" : "../x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
+      "warn" : "../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
+    },
+    "buttonStyle": {
+      "color" : "#777",
+      "border-radius": "4px",
+      "border": "1px solid #DCDFE6",
+      "cursor": "pointer",
+      "height": "36px",
+      "line-height": "36px",
+      "padding": "0px 15px",
+      "background-color": "#f4f7f6"
+    },
+    "errorStyle" : {
+      "node" : {
+        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error16.png) no-repeat 5px center",
+        "color" : "#3C4658",
+        "min-height" : "30px",
+        "padding-left" : "30px",
+        "padding-right" : "30px",
+        "line-height" : "30px",
+        "background-color": "#ffeee6",
+        "border" : "1px solid #ffddcc",
+        "border-radius" : "3px",
+        "position" : "relative"
+      },
+      "close" : {
+        "position" : "absolute",
+        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/close12.png) no-repeat center center",
+        "width" : "16px",
+        "height" : "16px",
+        "right" : "10px",
+        "top" : "6px",
+        "cursor" : "pointer"
+      }
+    }
+  }
+}

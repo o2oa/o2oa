@@ -26,7 +26,10 @@ MWF.xApplication.process.FormDesigner.Module.OORadioGroup = MWF.FCOORadioGroup =
 		this._createNodeContent();
 	},
 	_createNodeContent: function( node ){
-		var radioNode = new Element(this.options.tag, {styles:{"float": "left"}}).inject(node || this.moveNode || this.node);
+		var radioNode = new Element(this.options.tag, {
+			styles:{"float": "left"},
+			// "label-style": "width:6.2vw; min-width:5em; max-width:9em"
+		}).inject(node || this.moveNode || this.node);
 
 		var infoNode = new Element("div", {
 			styles: {

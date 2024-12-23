@@ -42,6 +42,14 @@
       "pc"
     ]
   },
+  "v10": {
+    "name": "V10",
+    "file": "styles_v10.json",
+    "extendFile": "styles_v10_extend.json",
+    "mode": [
+      "pc"
+    ]
+  },
   "defaultMobile": {
     "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.defaultMobileStyle,
     "file": "styles_defaultMobile.json",

@@ -130,9 +130,19 @@ MWF.xApplication.cms.Xform.OOSelect = MWF.CMSOOSelect =  new Class({
     Extends: MWF.APPOOSelect
 });
 
+MWF.xDesktop.requireApp("process.Xform", "OOOrg", null, false);
+MWF.xApplication.cms.Xform.OOOrg = MWF.CMSOOOrg =  new Class({
+    Extends: MWF.APPOOOrg
+});
+
 MWF.xDesktop.requireApp("process.Xform", "OOTextarea", null, false);
 MWF.xApplication.cms.Xform.OOTextarea = MWF.CMSOOTextarea =  new Class({
     Extends: MWF.APPOOTextarea
+});
+
+MWF.xDesktop.requireApp("process.Xform", "Codeeditor", null, false);
+MWF.xApplication.cms.Xform.Codeeditor = MWF.CMSCodeeditor =  new Class({
+    Extends: MWF.APPCodeeditor
 });
 
 

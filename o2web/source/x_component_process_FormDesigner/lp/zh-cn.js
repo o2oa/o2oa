@@ -341,6 +341,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "iframe": "Iframe",
         "documenteditor": "公文编辑器",
         "htmledit": "HTML编辑器",
+        "codeedit": "脚本编辑器",
         "office": "Office控件(Ntko)",
         "yozoOffice" : "永中控件",
         "statementSelector": "选择查询视图",
@@ -1568,7 +1569,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "titleAddTo": "标题行添加",
         "firstLine": "首行",
         "lastLine": "末行",
-        "forceClearCustomStyle": "切换时清除自定义样式"
+        "forceClearCustomStyle": "切换时清除自定义样式",
+
+        "scriptMode": "脚本类型",
+        "scriptEditor": "脚本编辑器",
+        "lineNumber": "显示行号"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",

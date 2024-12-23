@@ -15,7 +15,7 @@
 		"border-top": "0",
 		"border-bottom": "0",
 		"flex-wrap": "wrap",
-		"gap": "0.5em 1em"
+		"gap": "0.5em 0.3em"
 	},
 	"toolbarSeparator": {
 		"display": "block",

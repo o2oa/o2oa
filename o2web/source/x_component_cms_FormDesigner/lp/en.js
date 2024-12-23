@@ -356,7 +356,18 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"relatedLink": "Related Link",
 		"associatedDocument": "Associated Document",
 		"security": "Security Label",
-		"securityInfo": "Only one \"classification identification\" field is allowed"
+		"securityInfo": "Only one \"classification identification\" field is allowed",
+		"group_O2OA": "O2OA component",
+		"oo_input": "Input box",
+		"oo_button": "Button",
+		"oo_radioGroup": "Single Choice",
+		"oo_checkGroup": "check",
+		"oo_select": "Drop down box",
+		"oo_textarea": "Multi line text",
+		"oo_calendar": "calendar",
+		"oo_datetime": "Date box",
+		"oo_org": "personnel",
+		"codeedit": "Script editor "
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1467,7 +1478,18 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"checkOtherFlow": "Verify other circulation methods",
 		"checkOtherFlowNote": "When adding, resetting, or returning, execute the verification script. Obtain the flow method (add as: addTask, reset as: reset, return as: goBack) through this. form. opinion, and other parameters of the flow through this. form. flowData",
 		"allowDownloadBatch": "Allow batch downloads",
-		"forceClearCustomStyle": "Clear custom styles when switching"
+		"forceClearCustomStyle": "Clear custom styles when switching",
+		"valueFormat": "Binding value formatting",
+		"logTaskFormat": "To Do Format",
+		"showMode": "pattern",
+		"defaultView": "Initial View",
+		"dayView": "day",
+		"monthView": "month",
+		"yearView": "year",
+		"secondEnable": "Select seconds",
+		"weekBegin": "Starting every week",
+		"required": "Required",
+		"readModeEvents": "Does the reading mode respond to mouse events"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
@@ -1549,7 +1571,9 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"clearNoDomModule": "Clear component configurations that are not in the HTML tree",
 		"autoSave": "AutoSave",
 		"brush": "brush",
-		"viewAllVersion": "View all form versions"
+		"viewAllVersion": "View all form versions",
+		"add": "newly build",
+		"gotoApp": "Open the current application"
 	},
 	"formType": {
 		"empty": "Empty form",

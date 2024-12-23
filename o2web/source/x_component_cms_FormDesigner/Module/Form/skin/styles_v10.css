@@ -1,0 +1,208 @@
+/* 表单主容器 */
+.form-layout{
+    height: 100%;
+    overflow: auto;
+    grid-template-rows: 3.8em 1fr;
+    background-color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+}
+/* 操作条容器 */
+.form-toolbar-area{
+    box-shadow: 0 2px 10px 0 var(--oo-color-gray-e1);
+    background-color: #ffffff;
+    /*flex: 0 1 3.8em;*/
+    padding: 0.7em 0;
+    display: flex !important;
+    position: relative;
+    z-index: 100;
+}
+.form-toolbar{
+    display: flex !important;
+    gap: 0.5em 1em;
+    flex-wrap: wrap;
+    border: 0 !important;
+    width: 80% !important;
+    margin: auto !important;
+    min-width: 42em;
+}
+.form-content-area{
+    padding: 2em 3em;
+    display: flex !important;
+    background-color:#ffffff !important;
+    gap: 1em 2em;
+    flex-wrap: wrap;
+    /*align-items: center;*/
+    position: relative;
+}
+
+.form-content-area .content-item,
+.form-content-area oo-input,
+.form-content-area oo-selector,
+.form-content-area oo-textarea,
+.form-content-area oo-radio-group,
+.form-content-area oo-checkbox-group,
+.form-content-area oo-select,
+.form-content-area oo-datetime,
+.form-content-area div[mwftype="OOCheckGroup"],
+.form-content-area div[mwftype="OORadioGroup"] {
+    flex: 1 1 46%;
+}
+.form-content-area oo-datetime{
+    min-width: 6.8em;
+}
+.flex{
+    display: flex !important;
+    align-items: center;
+    gap: 0.25em;
+}
+
+
+/* 数据表格 **/
+.mwf_addlineaction .addLineAction{
+    line-height: 20px !important;
+    text-align: center !important;
+}
+div[mwftype="datatable"] .mwf_sequence{
+    text-align: center;
+}
+
+
+
+
+
+
+/* 意见区域 */
+/* 流程意见默认样式 */
+div.form-log[mwftype="log"]>div{
+    border-radius: var(--oo-default-radius);
+    border: 0!important;
+    padding: 0 !important;
+    /*box-shadow: var(--oo-shadow-border);*/
+}
+div.form-log[mwftype="log"]>div>div{
+    padding: 0.5em;
+    border-bottom: 1px solid #DEDEDE;
+    background-color: #ffffff !important;
+}
+div.form-log[mwftype="log"]>div>div>div{
+    display: flex;
+    align-items: center;
+}
+div.form-log[mwftype="log"]>div>div>div>div:nth-child(2){
+    margin-left: 0 !important;
+    flex: 1 ;
+}
+
+div.form-log[mwftype="log"] .logItem{
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    line-height: 1.8em;
+}
+div.form-log[mwftype="log"] .logItem img{
+    width: 11.85em;
+    font-size: 0.875rem;
+}
+div.form-log[mwftype="log"] .logItemIcon{
+    width: 4em;
+    height: 4em;
+    background-size: 3em 3em;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+div.form-log[data-mwf-el-type="MWFFormDesignerLog"]>div>div{
+    padding: 0 !important;
+    border-bottom: 1px solid #DEDEDE;
+    background-color: transparent !important;
+}
+
+div.form-log-simple{
+    background-color: #f7f7f7;
+    padding: 1em;
+    border-radius: 6px;
+}
+
+.form-description{
+    background-color: var(--oo-color-over);
+    border-radius: var(--oo-default-radius);
+    margin: 1em 0 1em 1.2em;
+    padding: 1em;
+    gap: 1em;
+    line-height: 1.5em;
+    align-items: flex-start;
+}
+.form-description .ooicon-tanhao{
+    color: var(--oo-color-main);
+    font-size: 2em;
+    font-weight: bold;
+    padding: 0.2em 0;
+}
+
+
+
+
+.form-side-content{
+    position: absolute;
+    right: 0.8em;
+    top: 40%;
+}
+.form-side-bookmark-content{
+    width: 6em;
+    min-height: 2em;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0.3em 0 #DEDEDE;
+    border-radius: 0.42857em;
+    padding: 0.5em;
+    text-align: center;
+}
+
+.form-side-bookmark-content>div{
+    padding: 0.5em 0.5em;
+    cursor: pointer;
+}
+.form-side-bookmark-content>div:hover{
+    background-color: var(--oo-color-hover);
+}
+
+.form-side-top{
+    margin-top: 0.5em;
+    width: 6em;
+    background: #2E82F7;
+    box-shadow: 0 0 0.3em 0 #DEDEDE;
+    border-radius: 0.42857em;
+    padding: 0.5em 0.5em;
+    color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+}
+
+.item-label{
+    min-width: 4.3em;
+    max-width: 9em;
+    padding: 0.5em 0.35em;
+    margin-right: 0.5em;
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    flex: 0 0 6.2vw;
+    color: var(--oo-color-text2);
+    line-height: 2em;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box !important;
+}
+
+/* 手机浏览器 */
+@media only screen and (max-width: 1023px) {
+    /* 样式适用于屏幕宽度小于等于 1023px 的设备 */
+    .form-layout{
+        width: 99%;
+        min-width: 99%;
+        margin: auto;
+    }
+    .form-content-area oo-input{
+        flex: 1 1 100%;
+    }
+}
