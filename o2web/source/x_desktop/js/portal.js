@@ -57,13 +57,15 @@ layout.addReady(function(){
             uri = new URI(document.location.href);
             id = uri.getData("id");
             page = uri.getData("page");
+            parameters = uri.getData("parameters");
             if (event.state){
                 id = event.state.id;
                 page = event.state.page;
+                parameters = event.state.parameters;
             }
             // var appName = "portal.Portal";
             // var option = {"portalId": id, "pageId": page, "widgetId":widget };
-            layout.app.toPortal(id, page, null, true);
+            layout.app.toPortal(id, page, parameters, true);
         }.bind(this);
 
         window.addEventListener('popstate', o2.portalPopstate);
