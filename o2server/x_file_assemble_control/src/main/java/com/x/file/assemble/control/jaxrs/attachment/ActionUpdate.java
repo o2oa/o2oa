@@ -51,7 +51,7 @@ class ActionUpdate extends BaseAction {
 			if (null != wi.getEditorList()) {
 				editorList = business.organization().person().list(wi.getEditorList());
 			}
-			if(StringUtils.isNotBlank(wi.getName()) && StringTools.isFileName(wi.getName())){
+			if(StringUtils.isNotBlank(wi.getName()) && !StringTools.isFileName(wi.getName())){
 				throw new ExceptionFileNameInvalid(wi.getName());
 			}
 			/* 从共享用户和共享编辑者里面去掉当前用户和创建者 */
