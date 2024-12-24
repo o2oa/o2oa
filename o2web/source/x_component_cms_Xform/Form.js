@@ -245,26 +245,24 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
                 if (this.json.cssLink) this.container.loadCss(this.json.cssLink);
 
-                    this.container.set("html", this.html);
-                    this.node = this.container.getFirst();
-                    if (cssClass) this.node.addClass(cssClass);
+                this.container.set("html", this.html);
+                this.node = this.container.getFirst();
+                if (cssClass) this.node.addClass(cssClass);
 
-                    this._loadEvents();
-                    this.loadRelatedScript();
+                this._loadEvents();
+                this.loadRelatedScript();
 
-                    if (this.fireEvent("queryLoad")) {
-                        // MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
+                if (this.fireEvent("queryLoad")) {
+                    // MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
 
-                        //		this.container.setStyles(this.css.container);
-                        this._loadBusinessData();
-                        this.fireEvent("beforeLoad");
-                        if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
+                    //		this.container.setStyles(this.css.container);
+                    this._loadBusinessData();
+                    this.fireEvent("beforeLoad");
+                    if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
 
-                        this.loadContent(callback);
-                    }
-                }.bind(this))
-
-
+                    this.loadContent(callback);
+                }
+        
             }.bind(this));
         },
         loadLanguage: function(callback){
