@@ -151,6 +151,14 @@ MWF.xApplication.query.QueryManager.LP={
 		"statementConfig": "Statement",
 		"importerConfig": "ImportModel",
 		"queryProperty": "Property"
-	}
+	},
+	"name": "name",
+	"alias": "alias",
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search"
 }
 MWF.xApplication.query.QueryManager["lp."+o2.language] = MWF.xApplication.query.QueryManager.LP

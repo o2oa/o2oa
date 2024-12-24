@@ -125,6 +125,14 @@ MWF.xApplication.portal.PortalManager.LP={
 	},
 	"createSelectTemplate": "Crear: Seleccionar plantilla",
 	"templateCategory": "Categoría de plantilla:",
-	"all": "Todos"
+	"all": "Todos",
+	"name": "Nombre",
+	"alias": "Alias",
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id"
 }
 MWF.xApplication.portal.PortalManager["lp."+o2.language] = MWF.xApplication.portal.PortalManager.LP

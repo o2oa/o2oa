@@ -113,7 +113,16 @@ MWF.xApplication.query.StatDesigner.LP={
 		"saveAs": "Guardar como",
 		"autoSave": "Guardar automáticamente",
 		"preview": "vista previa",
-		"help": "ayuda"
-	}
+		"help": "ayuda",
+		"add": "Nueva construcción",
+		"gotoApp": "Abrir su aplicación"
+	},
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id",
+	"searchAndSort": "Clasificación y búsqueda"
 }
 MWF.xApplication.query.StatDesigner["lp."+o2.language] = MWF.xApplication.query.StatDesigner.LP

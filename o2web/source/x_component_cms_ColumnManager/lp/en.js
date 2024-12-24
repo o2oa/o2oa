@@ -335,6 +335,12 @@ MWF.xApplication.cms.ColumnManager.LP={
 	"mappingData": "Mapping Data",
 	"dataName": "Name",
 	"dataPath": "Path",
-	"dataType": "Type"
+	"dataType": "Type",
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search"
 }
 MWF.xApplication.cms.ColumnManager["lp."+o2.language] = MWF.xApplication.cms.ColumnManager.LP

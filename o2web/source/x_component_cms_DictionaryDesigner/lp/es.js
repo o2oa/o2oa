@@ -46,7 +46,17 @@ MWF.xApplication.cms.DictionaryDesigner.LP={
 		"saveas": "Guardar diccionario de datos como",
 		"help": "ayuda",
 		"search": "Buscar",
-		"autoSave": "AutoGuardar"
-	}
+		"autoSave": "AutoGuardar",
+		"add": "Nueva construcción",
+		"gotoApp": "Abrir su aplicación"
+	},
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id",
+	"searchAndSort": "Clasificación y búsqueda",
+	"duplicateNewNote": "Ya hay un nuevo diccionario de datos, por favor guarde primero"
 }
 MWF.xApplication.cms.DictionaryDesigner["lp."+o2.language] = MWF.xApplication.cms.DictionaryDesigner.LP

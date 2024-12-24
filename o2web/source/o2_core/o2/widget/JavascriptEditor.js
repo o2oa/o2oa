@@ -140,20 +140,22 @@ o2.widget.JavascriptEditor = new Class({
                 });
                 this.focus();
                 window.setTimeout(this.setMonacoLayout.bind(this), 500);
-                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function(e){
+                debugger;
+                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function(e){
+                    debugger;
                     this.fireEvent("save");
                 }.bind(this));
 
-                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I, function(e){
+                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyI, function(e){
                     this.format();
                 }.bind(this));
-                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F, function(e){
+                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyF, function(e){
                     this.format();
                 }.bind(this));
 
-                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F, function(e){
-                    this.format();
-                }.bind(this));
+                // this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEYF, function(e){
+                //     this.format();
+                // }.bind(this));
 
                 // this.editor.onKeyDown(function(e){
                 //     debugger;

@@ -372,7 +372,9 @@ MWF.xApplication.systemconfig.LP={
 		"bindDnPwdInfo": "Contraseña de administrador para enlazar.",
 		"ldapEnabledError": "Por favor, configure todos los parámetros de LDAP antes de habilitar la autenticación LDAP.",
 		"appTokenExpired": "Duración válida del inicio de sesión en el lado de la aplicación",
-		"appTokenExpiredInfo": "Después de que el usuario inicie sesión en el sistema, si no interactúa con el servidor durante mucho tiempo, el sistema cancelará esta sesión. Aquí puede configurar la duración válida del inicio de sesión en minutos. Para terminales móviles."
+		"appTokenExpiredInfo": "Después de que el usuario inicie sesión en el sistema, si no interactúa con el servidor durante mucho tiempo, el sistema cancelará esta sesión. Aquí puede configurar la duración válida del inicio de sesión en minutos. Para terminales móviles.",
+		"twoFactorLogin": "Activar inicio de sesión de autenticación de dos factores",
+		"twoFactorLoginInfo": "Después de activarlo, el sistema enviará un código de verificación de SMS después de que el usuario introduzca la contraseña de la cuenta, y el usuario introducirá el Código de verificación de SMS para iniciar sesión. Xadmin y el administrador de tres miembros no envían mensajes de texto y vuelven a introducir la contraseña en la interfaz de código de verificación de mensajes de texto. Dos métodos de inicio de sesión, la autenticación de dos factores y el Código de verificación de mensajes cortos, se excluyen mutuamente."
 	},
 	"_ssoConfig": {
 		"ssoConfig": "Claves de autenticación",
@@ -838,7 +840,6 @@ MWF.xApplication.systemconfig.LP={
 		"indexMode": "Ubicación de almacenamiento del índice",
 		"modeOptions": {
 			"localDirectory": "Sistema de archivos local",
-			// "hdfsDirectory": "Sistema de archivos HDFS",
 			"sharedDirectory": "Sistema de archivos compartido"
 		},
 		"hdfsDirectoryDefaultFS": "Dirección del sistema de archivos HDFS",
@@ -1182,7 +1183,6 @@ MWF.xApplication.systemconfig.LP={
 				"ftps": "FTPS",
 				"ftp": "FTP",
 				"file": "Archivo",
-				// "hdfs": "HDFS",
 				"cifs": "CIFS",
 				"ali": "Almacenamiento en la nube de Alibaba",
 				"s3": "Almacenamiento en la nube de Amazon",
@@ -1377,7 +1377,6 @@ MWF.xApplication.systemconfig.LP={
 			"mail": "Correo electrónico",
 			"jdbc": "JDBC",
 			"table": "Tabla de datos",
-			// "hadoop": "Hadoop",
 			"andfx": "Mensaje de oficina móvil"
 		},
 		"consumerInfoTitle": "Configuración del canal de mensajes",

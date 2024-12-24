@@ -341,7 +341,9 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"saveAs": "save as",
 		"autoSave": "Auto Save",
 		"preview": "preview",
-		"help": "help"
+		"help": "help",
+		"add": "newly build",
+		"gotoApp": "Open the current application"
 	},
 	"newStatement": "New Statement",
 	"statement": "Statement",
@@ -421,6 +423,19 @@ MWF.xApplication.query.StatementDesigner.LP={
 	"documentCommentInfo": "Content Management Comment Record (DocumentCommentInfo)",
 	"cmsReviewInstanceSql": "Content Management Readable (PP-C-REView)",
 	"documentViewRecordSql": "Content Management Reading Record (PP-C-REView)",
-	"documentCommentInfoSql": "Content Management Comment Record (PP-C-REView)"
+	"documentCommentInfoSql": "Content Management Comment Record (PP-C-REView)",
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search",
+	"searchAndSort": "Sorting and Search",
+	"mustSelectFormStyle": "You must choose a style",
+	"notValidJson": "Incorrect JSON format",
+	"mustSelectDict": "Please select a data dictionary first",
+	"mustSelect": "Please choose",
+	"recordInstance": "Flow Record",
+	"recordInstanceSql": "Flow Record (PP_C_Secord)"
 }
 MWF.xApplication.query.StatementDesigner["lp."+o2.language] = MWF.xApplication.query.StatementDesigner.LP

@@ -196,7 +196,7 @@ MWF.xApplication.Meeting.LP={
 		"floor": "Floor",
 		"device": "Equipment",
 		"photo": "Photo",
-		"orderNumber" : "orderNumber",
+		"orderNumber": "orderNumber",
 		"capacity": "Capacity",
 		"auditor": "Auditor",
 		"available": "Status",
@@ -270,6 +270,7 @@ MWF.xApplication.Meeting.LP={
 	"needSignInPerson": "Checked in",
 	"printQrcode": "Print QR Code for Sign-in",
 	"weeklyViewTitle": "{month}, week {week}",
-	"onlineConfigNotJson": "The online meeting configuration is not in the correct JSON format"
+	"onlineConfigNotJson": "The online meeting configuration is not in the correct JSON format",
+	"meeting_input_hostPerson_error": "The host cannot be empty!"
 }
 MWF.xApplication.Meeting["lp."+o2.language] = MWF.xApplication.Meeting.LP

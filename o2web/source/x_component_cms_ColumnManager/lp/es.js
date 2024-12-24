@@ -335,6 +335,12 @@ MWF.xApplication.cms.ColumnManager.LP={
 	"saveDraftOnClose": {
 		"0": "Guardar automáticamente el documento al cerrar el borrador",
 		"1": "No guardar automáticamente el documento al cerrar el borrador"
-	}
+	},
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id"
 }
 MWF.xApplication.cms.ColumnManager["lp."+o2.language] = MWF.xApplication.cms.ColumnManager.LP

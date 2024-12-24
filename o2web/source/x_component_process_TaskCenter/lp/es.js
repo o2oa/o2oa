@@ -70,6 +70,7 @@ MWF.xApplication.process.TaskCenter.LP={
 	"setReadedConfirmTitle": "Confirmación",
 	"open": "Abrir",
 	"workcenter": "El nuevo centro de oficina ya está en línea. ¿Desea cambiar al nuevo centro de oficina?",
-	"gotoWorkcenter": "Cambiar al nuevo centro de oficina"
+	"gotoWorkcenter": "Cambiar al nuevo centro de oficina",
+	"myCreated": "Lo creé."
 }
 MWF.xApplication.process.TaskCenter["lp."+o2.language] = MWF.xApplication.process.TaskCenter.LP

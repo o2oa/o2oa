@@ -1384,8 +1384,8 @@ MWF.xApplication.process.FormDesigner.LP={
 			"logoImg": "left logo（172x40）",
 			"logoUrl": "logo link"
 		},
-		"foxit" : {
-			"api" : "API"
+		"foxit": {
+			"api": "API"
 		},
 		"smartbi": {
 			"select": "select",
@@ -1583,7 +1583,10 @@ MWF.xApplication.process.FormDesigner.LP={
 		"brush": "brush",
 		"viewAllVersion": "View all form versions",
 		"add": "newly build",
-		"gotoApp": "Open the current application"
-	}
+		"gotoApp": "Open the current application",
+		"copyProperty": "Copy component properties"
+	},
+	"selectCopyModule": "Please select the component whose properties need to be copied",
+	"selectCopyModuleNotice": "Please select the component first!"
 }
 MWF.xApplication.process.FormDesigner["lp."+o2.language] = MWF.xApplication.process.FormDesigner.LP

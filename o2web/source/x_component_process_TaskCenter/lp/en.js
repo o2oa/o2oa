@@ -70,6 +70,7 @@ MWF.xApplication.process.TaskCenter.LP={
 	"open": "Open",
 	"completedList": "Completion status",
 	"workcenter": "The new version of the office center has been launched. Do you want to switch to the new version of the office center?",
-	"gotoWorkcenter": "Switch to the new version of the office center"
+	"gotoWorkcenter": "Switch to the new version of the office center",
+	"myCreated": "I created it"
 }
 MWF.xApplication.process.TaskCenter["lp."+o2.language] = MWF.xApplication.process.TaskCenter.LP
