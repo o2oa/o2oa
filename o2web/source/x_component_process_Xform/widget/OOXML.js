@@ -84,7 +84,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     },
     getZipTemplate: function(){
         //var zipFileName = (this.options.firstPageNumber) ? "template.zip" : "template.zip";
-        var zipFileName = "template.zip";
+        var zipFileName = "zsygzhmb.zip";
         return fetch(this.path+zipFileName).then(function(res){
             return res.blob().then(JSZip.loadAsync);
         });
