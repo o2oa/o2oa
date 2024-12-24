@@ -505,6 +505,8 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
 
 
 
+
+
         this.set.movex = dx;
         this.set.movey = dy;
 
