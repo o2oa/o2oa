@@ -130,7 +130,22 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         if (!value) value = this._computeValue();
         return value;
     },
-
+    __setData: function(data, fireChange){
+        var old = this._getBusinessData();
+        var date = this.toDate(data);
+        var val = date ? date.format(this.json.valueFormat || this.json.format) : data;
+        var text = date ? date.format(this.json.format) : data;
+        this._setBusinessData(val);
+        if (this.node.getFirst()){
+            this.node.getFirst().set("value", text);
+            this.checkDescription();
+            this.validationMode();
+        }else{
+            this.node.set("text", text);
+        }
+        if (fireChange && old!==val) this.fireEvent("change");
+        this.moduleValueAG = null;
+    },
     __setValue: function(value){
         var date = this.toDate(value);
         var val = date ? date.format(this.json.valueFormat || this.json.format) : value;
