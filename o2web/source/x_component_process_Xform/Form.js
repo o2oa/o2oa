@@ -2614,6 +2614,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "zindex": 20001,
                 "isResize": false,
                 "content": flowNode,
+                "container": this.app.content,
                 "maskNode": this.app.content,
                 "positionHeight": 900,
                 "maxHeight": 900,

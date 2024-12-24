@@ -65,6 +65,17 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             });
         }
     },
+    // getData: function(when){
+    //     if (this.json.compute == "save") this._setValue(this._computeValue());
+    //     return this.getInputData();
+    // },
+    getInputData: function(){
+        if (typeOf(this.tmpDateString) === 'string'){
+             return this.tmpDateString;
+        }else{
+            return this._getBusinessData();
+        }
+    },
     _getValueAg: function(value,isDate){
         if (value && value.isAG){
             return value.then(function(v){
@@ -79,6 +90,24 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             }
         }
     },
+    resetData: function(){
+        this.setData(this.getValue());
+    },
+    /**
+     * @summary 获取显示的值，或格式化后的文本。
+     * @return {String} 获取显示的值，或格式化后的文本
+     * @example
+     * var text = this.form.get('fieldId').getText(); //获取选中项的文本
+     */
+    getText: function (){
+        if( this.node.getFirst() ){
+            return this.node.getFirst().get("value");
+        }else{
+            var value = this._getBusinessData();
+            var date = this.toDate(value);
+            return date ? date.format(this.json.format) : value;
+        }
+    },
     getValue: function(isDate){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
@@ -91,27 +120,24 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             return d || null;
         }else{
             //if (d) value = Date.parse(value).format(this.json.format);
-            return (d) ? d.format(this.json.format) : "";
+            return (d) ? d.format( this.json.valueFormat || this.json.format) : "";
         }
 
         return value || "";
     },
-    getValueStr : function(){
+    getValueStr: function(){
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
         return value;
     },
 
     __setValue: function(value){
-        var v;
-        if( typeOf( value ) === "date" ){
-            v = (value) ? ( Date.parse(value)).format(this.json.format) : "";
-        }else{
-            v = value;
-        }
-        this._setBusinessData(value);
-        if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
-        if (this.isReadonly()) this.node.set("text", v);
+        var date = this.toDate(value);
+        var val = date ? date.format(this.json.valueFormat || this.json.format) : value;
+        var text = date ? date.format(this.json.format) : value;
+        this._setBusinessData(val);
+        if (this.node.getFirst()) this.node.getFirst().set("value", text || "");
+        if (this.isReadonly()) this.node.set("text", text);
         this.moduleValueAG = null;
         this.fieldModuleLoaded = true;
         return value;
@@ -139,24 +165,30 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     //"target": this.form.node,
                     "target": o2.session.isMobile ? $(document.body) : this.form.app.content,
                     "format": this.json.format,
-                    "onComplate": function(formateDate, date){
+                    "onComplate": function(formatedDate, date){
+                        this.tmpDateString = date.format( this.json.valueFormat || this.json.format );
                         this.validationMode();
                         if(this.validation()){
                             var v = this.getInputData("change");
                             this._setBusinessData(v);
+                            this.tmpDateString = null;
                             //this._setEnvironmentData(v);
                         }
                         this.fireEvent("complete");
                     }.bind(this),
-                    "onChange": function(){
+                    "onChange": function(formatedDate, date){
+                        this.tmpDateString = date.format( this.json.valueFormat || this.json.format );
                         this._setBusinessData(this.getInputData("change"));
+                        this.tmpDateString = null;
                         this.fireEvent("change");
                     }.bind(this),
                     "onClear": function(){
                         this.validationMode();
                         if(this.validation()){
+                            this.tmpDateString = "";
                             var v = this.getInputData("change");
                             this._setBusinessData(v);
+                            this.tmpDateString = null;
                             //this._setEnvironmentData(v);
                         }
                         this.fireEvent("clear");
@@ -342,6 +374,14 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                 break;
         }
     },
+    toDate: function( value ){
+        if( !value )return null;
+        switch (typeOf(value)) {
+            case "string": return (new Date(value) === "Invalid Date") ? null : Date.parse(value);
+            case "date": return value;
+            default: return null;
+        }
+    },
     getPureDate: function (date) {
         var d;
         switch (typeOf(date)) {
@@ -352,7 +392,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         return d.clearTime();
     },
     unformatDate : function( dateStr ){
-        var formatStr = this.json.format;
+        var formatStr = this.json.valueFormat || this.json.format;
         var matchArr = [ "%Y", "%m", "%d", "%H", "%M", "%S", "%z", "%Z" ];
         var lengthArr = [ 4, 2, 2, 2, 2, 2, 5, 3];
         var indexArr = [ formatStr.indexOf("%Y"), formatStr.indexOf("%m"), formatStr.indexOf("%d"), formatStr.indexOf("%H"), formatStr.indexOf("%M"), formatStr.indexOf("%S"), formatStr.indexOf("%z"), formatStr.indexOf("%Z") ];
