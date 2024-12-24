@@ -73,9 +73,9 @@ public class Crypto {
 		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
 			bt = encryptSm4(data.getBytes(StandardCharsets.UTF_8), key);
 		} else if (StringUtils.equalsIgnoreCase(type, TYPE_AES)) {
-			bt = encryptAes(data.getBytes(), DigestUtils.md5(key));
+			bt = encryptAes(data.getBytes(StandardCharsets.UTF_8), DigestUtils.md5(key));
 		} else {
-			bt = encrypt(data.getBytes(), key.getBytes());
+			bt = encrypt(data.getBytes(StandardCharsets.UTF_8), key.getBytes());
 		}
 		String str = Base64.encodeBase64URLSafeString(bt);
 		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
