@@ -710,6 +710,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             var moduleAgList = [];
             this.modules.each( function(module){
+                if( !module )return;
                 if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
                 if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
             });
@@ -2614,6 +2615,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "zindex": 20001,
                 "isResize": false,
                 "content": flowNode,
+                "container": this.app.content,
                 "maskNode": this.app.content,
                 "positionHeight": 900,
                 "maxHeight": 900,

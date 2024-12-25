@@ -60,6 +60,10 @@
 		    <td class="editTableTitle">{{$.lp.format}}:</td>
 		    <td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
 		  </tr>
+        <tr>
+            <td class="editTableTitle">{{$.lp.valueFormat}}:</td>
+            <td class="editTableValue"><input type="text" name="valueFormat" value="text{$.valueFormat || $.format}" class="editTableInput"/></td>
+        </tr>
 		  <!--<tr>-->
 		    <!--<td class="editTableTitle">选择范围:</td>-->
 		     <!--<td class="editTableValue">-->
@@ -67,9 +71,9 @@
 		    	<!--<input type="radio" name="range" value="range" text{($.range=='range')?'checked':''}/>时间范围-->
 		    <!--</td>-->
 		  <!--</tr>-->
-		  
+
 		</table>
-		
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <div class="MWFMaplist" name="inputStyles" title="{{$.lp.inputStyle}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
@@ -88,7 +92,7 @@
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
-		
+
 	</div>
 
     <div title="{{$.lp.range}}" class="MWFTab">
