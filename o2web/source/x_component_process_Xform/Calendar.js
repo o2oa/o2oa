@@ -133,7 +133,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
     __setData: function(data, fireChange){
         var old = this._getBusinessData();
         var date = this.toDate(data);
-        var val = date ? date.format(this.json.valueFormat || this.json.format) : data;
+        var val = (date && this.json.valueFormat) ? date.format(this.json.valueFormat) : data;
         var text = date ? date.format(this.json.format) : data;
         this._setBusinessData(val);
         if (this.node.getFirst()){
