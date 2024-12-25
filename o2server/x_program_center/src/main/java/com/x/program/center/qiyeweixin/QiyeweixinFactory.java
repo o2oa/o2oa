@@ -84,10 +84,9 @@ public class QiyeweixinFactory {
 			if (userId.length() < 11) { // 用户名太短的情况
 				userId = String.format("%11s", userId).replace(" ","0");
 			}
-			if (userId.length() > 11) { // 用户名超长的情况
-				userId = userId.substring(userId.length() - 11); // 截取最后的11位
+			if (userId.length() > 32) { // 用户名超长的情况
+				userId = userId.substring(userId.length() - 32);
 			}
-			logger.debug("这里是补全11位，{}.", userId);
 			user.setMobile(userId);
 		}
 	}
