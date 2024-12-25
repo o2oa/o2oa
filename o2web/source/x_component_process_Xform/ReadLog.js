@@ -144,12 +144,12 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                         .replace(/{startDatetime}/g, log.startTime)
                         .replace(/{startDate}/g, log.startTime.substring(0.10))
                         .replace(/{startDatetime}/g, log.startTime)
-                        .replace(/{unit}/g, o2.name.cn(log.unit))
-                        .replace(/{department}/g, o2.name.cn(log.unit))
+                        .replace(/{unit}/g, o2.txt(o2.name.cn(log.unit)))
+                        .replace(/{department}/g, o2.txt(o2.name.cn(log.unit)))
                         .replace(/{identity}/g, o2.name.cn(log.identity))
-                        .replace(/{activity}/g, o2.name.cn(log.activityName))
-                        .replace(/{title}/g, log.title || "")
-                        .replace(/{opinion}/g, log.opinion || "");
+                        .replace(/{activity}/g, o2.txt(o2.name.cn(log.activityName)))
+                        .replace(/{title}/g, o2.txt(log.title) || "")
+                        .replace(/{opinion}/g, o2.txt(log.opinion) || "");
                     rightDiv.appendHTML(html);
 
                     if (this.lineClass === "logTaskNode"){
