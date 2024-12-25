@@ -814,7 +814,15 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             }.bind(this)
         });
     },
-
+    clearNoDomModule: function(e){
+        var _self = this;
+        this.confirm("warn", e.picNode,  MWF.APPPOD.LP.clearNoDomModuleTitle, MWF.APPPOD.LP.clearNoDomModuleContent, 460, 120, function(){
+            _self.page._clearNoDomModule();
+            this.close();
+        }, function(){
+            this.close();
+        });
+    },
     checkLoadAllScript: function(){
         if (this.page || this.form){
             this.loadAllScript();

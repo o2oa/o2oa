@@ -710,6 +710,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             var moduleAgList = [];
             this.modules.each( function(module){
+                if( !module )return;
                 if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
                 if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
             });
@@ -2614,6 +2615,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "zindex": 20001,
                 "isResize": false,
                 "content": flowNode,
+                "container": this.app.content,
                 "maskNode": this.app.content,
                 "positionHeight": 900,
                 "maxHeight": 900,
@@ -5250,7 +5252,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     _self.mask.loadNode(_self.app.content);
 
                     _self.doDeleteWork(function () {
-                        _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
+                        _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + o2.txt(_self.businessData.work.title) + "”", "success");
                         if (_self.mask) {
                             _self.mask.hide();
                             _self.mask = null;
@@ -5347,7 +5349,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.doDeleteWork(function () {
                             _self.fireEvent("afterDelete");
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
-                            _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
+                            _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + o2.txt(_self.businessData.work.title) + "”", "success");
                             if (_self.mask) {
                                 _self.mask.hide();
                                 _self.mask = null;
@@ -5395,7 +5397,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.doDeleteWork(function () {
                             _self.fireEvent("afterDelete");
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
-                            _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
+                            _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + o2.txt(_self.businessData.work.title) + "”", "success");
                             _self.app.close();
                             this.close();
                             if (_self.mask) {
@@ -5512,7 +5514,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var _self = this;
 
             //"您确定要将“" + title + "”标记为已阅吗？";
-            var title = this.businessData.work.title;
+            var title = o2.txt(this.businessData.work.title);
             var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
             MWF.xApplication.process.Xform.LP.form.setReadedConfirmInfo = text;
 
@@ -5793,7 +5795,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     job: this.businessData.work.job,
                 }
             } else {
-                this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "error")
+                this.app.notice(o2.txt(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted), "error")
                 return
             }
             MWF.xDesktop.requireApp("IMV2", "Starter", function () {
@@ -6463,7 +6465,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.doTerminateWork(function () {
                             _self.fireEvent("afterTerminat");
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterTerminat");
-                            _self.app.notice(MWF.xApplication.process.Xform.LP.workTerminate + ": “" + _self.businessData.work.title + "”", "success");
+                            _self.app.notice(MWF.xApplication.process.Xform.LP.workTerminate + ": “" + o2.txt(_self.businessData.work.title) + "”", "success");
                             _self.json.mode === "Mobile" ? _self.finishOnMobile() : _self.app.close();
                             this.close();
                         }.bind(this), function (xhr, text, error) {

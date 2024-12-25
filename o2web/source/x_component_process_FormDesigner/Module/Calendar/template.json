@@ -10,6 +10,7 @@
   "range": "single",
   "selectType": "datetime",
   "format": "%Y-%m-%d %H:%M:%S",
+  "valueFormat": "%Y-%m-%d %H:%M:%S",
   "compute": "create",
   //create, show, save
   "section": "no",
