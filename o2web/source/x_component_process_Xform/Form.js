@@ -710,6 +710,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             var moduleAgList = [];
             this.modules.each( function(module){
+                if( !module )return;
                 if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
                 if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
             });

@@ -167,6 +167,9 @@ MWF.APPPOD.LP = {
     "checkSubpagePcInfor": "PC页面中，有以下子字段冲突：<br>{subform}<br>",
     "checkSubpageMobileInfor": "Mobile页面中，有以下子字段冲突：<br>{subform}",
 
+    "clearNoDomModuleTitle" : "清除未在HTML树中的组件配置",
+    "clearNoDomModuleContent" : "是否清除未在HTML树中的组件配置？清除后需要保存生效。",
+
 
     "design": "设计",
     "script": "脚本",

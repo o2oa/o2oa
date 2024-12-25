@@ -451,6 +451,18 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			}.bind(this), async);
 		}
 	},
+	_clearNoDomModule : function(){
+		var existModuleList = {};
+		Object.each(  this.moduleList, function( module ){
+			if( module.json && module.json.id )existModuleList[ module.json.id ] = true;
+		});
+		Object.each( this.data.json.moduleList , function( module, key ){
+			//if( !this.node.getElement( "#" + module.id ) && !existModuleList[ module.id ] ){
+			if( module && module.id && !existModuleList[ module.id ] ){
+				delete this.data.json.moduleList[key];
+			}
+		}.bind(this));
+	},
 	selected: function(){
 		if (this.currentSelectedModule){
 			if (this.currentSelectedModule==this){
