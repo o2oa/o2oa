@@ -71,7 +71,6 @@ Object.assign(o2.APP$Elinput.prototype, {
         }
     },
     getInputData: function(){
-        debugger;
         return this.json[this.json.$id];
     },
     // _getVueModelBindId: function(){
