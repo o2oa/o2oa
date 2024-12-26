@@ -173,7 +173,7 @@ o2.widget.ScriptArea = new Class({
             var inforNode = new Element("div", {"styles": this.css.inforNode, "text": o2.LP.widget.scriptAreaEditNotice}).inject(this.contentNode);
             var _self = this;
             inforNode.addEvent("click", function(){
-                this.hide();
+                this.remove();
                 _self.loadEditor(content);
             });
             this.inforNode = inforNode;

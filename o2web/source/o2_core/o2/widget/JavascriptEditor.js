@@ -348,7 +348,6 @@ o2.widget.JavascriptEditor = new Class({
                     /[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/
                 ],
                 getCompletions: function(editor, session, pos, prefix, callback){
-                    debugger;
                     var codeRange = session.getWordRange(pos.row, 0);
                     codeRange.setEnd(pos.row, pos.column);
                     var x = session.getTextRange(codeRange);
@@ -629,19 +628,19 @@ o2.widget.JavascriptEditor = new Class({
         var mode = this.options.option.mode.toString().toLowerCase();
         if (mode==="javascript"){
             o2.load("JSBeautifier", function(){
-                this.editor.setValue(js_beautify(editor.getValue()));
+                this.editor.setValue(js_beautify(this.editor.getValue()));
             }.bind(this));
         }else if (mode==="html"){
             o2.load("JSBeautifier_html", function(){
-                this.editor.setValue(html_beautify(editor.getValue()));
+                this.editor.setValue(html_beautify(this.editor.getValue()));
             }.bind(this));
         }else if (mode==="css"){
             o2.load("JSBeautifier_css", function(){
-                this.editor.setValue(css_beautify(editor.getValue()));
+                this.editor.setValue(css_beautify(this.editor.getValue()));
             }.bind(this));
         }else{
             o2.load("JSBeautifier", function(){
-                this.editor.setValue(js_beautify(editor.getValue()));
+                this.editor.setValue(js_beautify(this.editor.getValue()));
             }.bind(this));
         }
     },
@@ -651,8 +650,8 @@ o2.widget.JavascriptEditor = new Class({
     format: function(){
         if (this.editor){
             switch (this.options.type.toLowerCase()) {
-                case "ace": this.formatAce();
-                case "monaco": this.formatMonaco();
+                case "ace": this.formatAce(); break;
+                case "monaco": this.formatMonaco(); break;
             }
         }
     },
