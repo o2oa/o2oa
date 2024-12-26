@@ -135,16 +135,36 @@ o2.widget.JavascriptEditor = new Class({
                 });
                 this.focus();
                 window.setTimeout(this.setMonacoLayout.bind(this), 500);
-                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function(e){
-                    this.fireEvent("save");
-                }.bind(this));
 
-                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyI, function(e){
-                    this.format();
-                }.bind(this));
-                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyF, function(e){
-                    this.format();
-                }.bind(this));
+                var _self = this;
+                this.editor.addAction({
+                    id: "save",
+                    label: "Save",
+                    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+                    run: function (ed) {
+                        _self.fireEvent("save");
+                    },
+                });
+
+                this.editor.addAction({
+                    id: "save",
+                    label: "Save",
+                    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyI, monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyF],
+                    run: function (ed) {
+                        _self.format();
+                    },
+                });
+
+                // this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function(e){
+                //     this.fireEvent("save");
+                // }.bind(this));
+                //
+                // this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyI, function(e){
+                //     this.format();
+                // }.bind(this));
+                // this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyF, function(e){
+                //     this.format();
+                // }.bind(this));
 
                 // this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEYF, function(e){
                 //     this.format();
