@@ -35,12 +35,12 @@ o2.widget.ScriptArea = new Class({
             this.container.inject(this.node);
 
             this.createTitleNode();
-
             this.createContent(content);
 
             this.fireEvent("postLoad");
         }
     },
+
     setData: function(data){
         this.contentCode = {code: data.code || data};
         if (this.jsEditor){
@@ -75,6 +75,11 @@ o2.widget.ScriptArea = new Class({
             "styles": this.css.titleTextNode,
             "text": this.options.title
         }).inject(this.titleNode);
+    },
+    setTitle: function(title){
+        if (this.titleTextNode){
+            this.titleTextNode.set('text', title);
+        }
     },
     openApi: function(){
         o2.openWindow(this.options.api || "../api")
@@ -173,13 +178,13 @@ o2.widget.ScriptArea = new Class({
             var inforNode = new Element("div", {"styles": this.css.inforNode, "text": o2.LP.widget.scriptAreaEditNotice}).inject(this.contentNode);
             var _self = this;
             inforNode.addEvent("click", function(){
-                this.hide();
+                this.remove();
                 _self.loadEditor(content);
             });
             this.inforNode = inforNode;
         }
-
     },
+
     bind: function(content){
         if( o2.typeOf(content) !== "object" )return;
         this.value = content.code;
@@ -225,7 +230,6 @@ o2.widget.ScriptArea = new Class({
             },
             "onPostLoad": function(){
                 this.editor = this.jsEditor.editor;
-                //this.editor.id = "2";
 
                 this.jsEditor.addEditorEvent("change", function() {
                     this.fireEvent("change");
@@ -233,16 +237,6 @@ o2.widget.ScriptArea = new Class({
                 this.jsEditor.addEditorEvent("blur", function() {
                     this.fireEvent("blur");
                 }.bind(this));
-
-                // this.editor.on("change", function() {
-                //     this.fireEvent("change");
-                // }.bind(this));
-                // this.editor.on("paste", function() {
-                //     o2.load("JSBeautifier", function(){
-                //         this.editor.setValue(js_beautify(this.editor.getValue()));
-                //     }.bind(this));
-                //     this.fireEvent("paste");
-                // }.bind(this));
 
                 this.jsEditor.resize();
                 this.fireEvent("postLoadEditor");
@@ -256,18 +250,8 @@ o2.widget.ScriptArea = new Class({
         if (this.options.isbind) this.bind(content);
         this.titleActionNode.show();
 
-        // this.createScriptReferenceMenu();
-        //
-        //
-        // this.jsEditor.addEvent("reference", function(editor, e, e1){
-        //     if (!this.scriptReferenceMenu){
-        //         this.createScriptReferenceMenu(this.showReferenceMenu.bind(this));
-        //     }else{
-        //         this.showReferenceMenu();
-        //     }
-        // }.bind(this));
         var codeIcon = (this.options.type!=="service") ? "web_code.png" : "code.png";
-        this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/"+codeIcon+") center center no-repeat")
+        this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/"+codeIcon+") center center no-repeat");
     },
 
     createScriptReferenceMenu: function(callback){
@@ -299,23 +283,6 @@ o2.widget.ScriptArea = new Class({
         }
         this.container.destroy();
         o2.release(this);
-    },
-    setReadonly: function(readonly){
-        if (readonly){
-            if (this.jsEditor){
-                this.jsEditor.destroy();
-                this.jsEditor = null;
-            }
-            this.referenceNode.hide();
-            this.titleActionNode.hide();
-            this.inforNode.hide();
-        }else{
-            this.referenceNode.show();
-            this.titleActionNode.show();
-            if (!this.jsEditor){
-                this.inforNode.show();
-            }
-        }
     }
 });
 

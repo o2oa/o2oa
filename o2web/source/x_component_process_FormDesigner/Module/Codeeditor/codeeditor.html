@@ -46,6 +46,13 @@
 					<input type="radio" name="lineNumber" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.title}}:</td>
+				<td class="editTableValue" id="text{$.pid}isTitleArea">
+					<input type="text" name="title" value="text{$.label}" class="editTableInput"/>
+				</td>
+			</tr>
 		</table>
 
 		<div class="MWFMaplist" name="editorProperties" title="{{$.lp.attribute}}"></div>

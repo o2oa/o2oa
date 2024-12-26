@@ -98,7 +98,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
 			this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
 		}else{
-			this.toolbarNode = new Element("div").inject(this.node);
+			this.toolbarNode = new Element("div.form-toolbar").inject(this.node);
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
 
 			o2.xhr_get(this.path+"toolbars.json", function(xhr){

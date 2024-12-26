@@ -73,11 +73,37 @@ MWF.xApplication.process.FormDesigner.Module.Codeeditor = MWF.FCCodeeditor = new
 
 		if (name==="isReadonly"){
 			if (this.editor){
-				this.editor.setReadonly(this.json.isReadonly);
+				this.setReadonly(this.json.isReadonly);
+			}
+		}
+
+		if (name==="title"){
+			if (this.editor){
+				this.editor.setTitle(this.json.title);
 			}
 		}
 	},
-	
+
+	setReadonly: function(readonly){
+		if (readonly){
+			if (this.editor){
+				if (this.editor.jsEditor){
+					this.editor.jsEditor.destroy();
+					this.editor.jsEditor = null;
+				}
+				this.editor.titleNode.hide();
+				this.editor.inforNode.hide();
+			}
+		}else{
+			if (this.editor){
+				this.editor.titleNode.show();
+				this.editor.inforNode.show();
+				this.editor.inforNode.inject(this.editor.contentNode);
+			}
+		}
+	},
+
+
 
 	_initModule: function(){
 		this.node.empty();
@@ -88,7 +114,7 @@ MWF.xApplication.process.FormDesigner.Module.Codeeditor = MWF.FCCodeeditor = new
 		this._setNodeEvent();
 	},
 
-	loadCodeeditor(){
+	loadCodeeditor: function(){
 		if (this.editor || this.editorLoading) return;
 		this.editorLoading = true;
 		MWF.require("MWF.widget.ScriptArea", function(){
@@ -110,11 +136,11 @@ MWF.xApplication.process.FormDesigner.Module.Codeeditor = MWF.FCCodeeditor = new
 			this.editor.load();
 
 			this.form.designer.addEvent("queryClose", function(){
-				console.log('app closed destroy ... ');
-				debugger;
 				if (this.editor) this.editor?.destroy?.()
 			}.bind(this));
 			this.editorLoading = false;
+
+			this.setReadonly(this.json.isReadonly);
 		}.bind(this));
 	},
 

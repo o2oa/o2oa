@@ -89,24 +89,19 @@ o2.widget.JavascriptEditor = new Class({
     },
     setMonacoLayout: function(){
 	    if (this.editor && this.node){
-	        if (this.focusEditor) {
-                var size = this.node.getSize();
-                var osize = this.node.retrieve("nodeSize");
-                if (!osize || (osize && (osize.x !== size.x || osize.y !== size.y))) {
-                    this.node.store("nodeSize", size);
+	        // if (this.focusEditor) {
+            //     var size = this.node.getSize();
+            //     var osize = this.node.retrieve("nodeSize");
+            //     if (!osize || (osize && (osize.x !== size.x || osize.y !== size.y))) {
+            //         this.node.store("nodeSize", size);
                     try {
                         this.editor.layout();
                     } catch (e) {
                     }
-                }
-                //if (!osize) this.node.store("nodeSize", size);
-            }
-                window.setTimeout(this.setMonacoLayout.bind(this), 500);
+            //     }
+            // }
+            // window.setTimeout(this.setMonacoLayout.bind(this), 500);
         }
-
-	    // if (this.editor && this.editor.getDomNode()){
-        //
-        // }
     },
     loadMonaco: function(callback){
         this.editorLoading = true;
@@ -140,9 +135,7 @@ o2.widget.JavascriptEditor = new Class({
                 });
                 this.focus();
                 window.setTimeout(this.setMonacoLayout.bind(this), 500);
-                debugger;
                 this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function(e){
-                    debugger;
                     this.fireEvent("save");
                 }.bind(this));
 
@@ -169,6 +162,8 @@ o2.widget.JavascriptEditor = new Class({
                 this.editor.onDidFocusEditorText(function(e){
                     o2.shortcut.keyboard.deactivate();
                     this.focusEditor = true;
+                    this.setMonacoLayout();
+
                 }.bind(this));
                 this.editor.onDidBlurEditorText(function(e){
                     o2.shortcut.keyboard.activate();
