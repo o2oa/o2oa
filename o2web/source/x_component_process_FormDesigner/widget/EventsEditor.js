@@ -222,6 +222,7 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 						this.checkIcon();
 					}.bind(this),
                     "onSave": function(){
+						debugger;
                         var json = this.codeEditor.toJson();
                         this.data.code = json.code;
                         this.data.html = json.html;
