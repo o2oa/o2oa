@@ -253,7 +253,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
         this.areaNode.setStyle("height", ""+y+"px");
         this.designNode.setStyle("height", ""+(y-18)+"px");
         this.scriptNode.setStyle("height", ""+(y-18)+"px");
-        if (this.scriptEditor) if (this.scriptEditor.editor) this.scriptEditor.editor.resize();
+        if (this.scriptEditor) if (this.scriptEditor.editor) this.scriptEditor.resize();
     },
 
     reload : function(){
