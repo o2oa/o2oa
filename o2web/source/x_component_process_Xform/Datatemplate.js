@@ -2078,15 +2078,15 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			delete this.allField[oldId];
 			this.allField[id] = module;
 
-			if(this.form.all[oldId]){
+			if(this.form.all[oldId] && this.form.all[oldId] === module){
 				delete this.form.all[oldId];
-				this.form.all[id] = module;
 			}
+			this.form.all[id] = module;
 
-			if(this.form.forms[oldId]){
+			if(this.form.forms[oldId] && this.form.forms[oldId] === module){
 				delete this.form.forms[oldId];
-				this.form.forms[id] = module;
 			}
+			if( module.field )this.form.forms[id] = module;
 
 			this.checkSequence(module, templateJsonId);
 		}.bind(this));
@@ -2612,7 +2612,7 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
 							}
 						}
 					}
-				});
+				}, true);
 				if(!module.parentLine)module.parentLine = this;
 				if(!module.parentDatatemplate)module.parentDatatemplate = this.template;
 

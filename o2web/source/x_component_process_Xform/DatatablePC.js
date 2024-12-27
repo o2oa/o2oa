@@ -2734,15 +2734,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
             delete this.allField[oldId];
             this.allField[id] = module;
 
-            if(this.form.all[oldId]){
+			if(this.form.all[oldId] && this.form.all[oldId] === module){
                 delete this.form.all[oldId];
-                this.form.all[id] = module;
             }
+            this.form.all[id] = module;
 
-            if(this.form.forms[oldId]){
+            if(this.form.forms[oldId] && this.form.forms[oldId] === module){
                 delete this.form.forms[oldId];
-                this.form.forms[id] = module;
             }
+            if( module.field )this.form.forms[id] = module;
 
             if( hasIndexArg || hasIndexInSectionLineArg ){
 				this.loadSequence();
@@ -3570,7 +3570,7 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
 						}
 					}
 
-				});
+				}, true);
 				if(!module.parentLine)module.parentLine = this;
 				if(!module.parentDatatable)module.parentDatatable = this.datatable;
 

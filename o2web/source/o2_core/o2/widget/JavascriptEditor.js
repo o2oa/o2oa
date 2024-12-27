@@ -152,8 +152,8 @@ o2.widget.JavascriptEditor = new Class({
                 });
 
                 this.editor.addAction({
-                    id: "save",
-                    label: "Save",
+                    id: "format",
+                    label: "Format",
                     keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyI, monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyF],
                     run: function (ed) {
                         _self.format();
