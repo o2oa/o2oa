@@ -52,16 +52,17 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.reload();
     },
     reload: function(){
-        if (!this.vm) return;
-
-        var node = this.vm.$el;
-        this.vm.$destroy();
-        node.empty();
+        if (this.vm) {
+            var node = this.vm.$el;
+            this.vm.$destroy();
+            node.empty();
+        }
 
         this.vm = null;
 
         this.vueApp = null;
 
+        this._resetNodeEdit();
         this._loadUserInterface();
     },
     _loadNode: function(){
@@ -220,6 +221,10 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.moduleValueAG = null;
         this._setBusinessData(value);
         this.json[this.json.$id] = value;
+        if( this.json.isReadonly() ){
+            var text = this.getText();
+            this.node.set('text', text||value);
+        }
     },
     __setData: function(data){
         this.moduleValueAG = null;
