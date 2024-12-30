@@ -221,7 +221,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.moduleValueAG = null;
         this._setBusinessData(value);
         this.json[this.json.$id] = value;
-        if( this.json.isReadonly() ){
+        if( this.isReadonly() ){
             var text = this.getText();
             this.node.set('text', text||value);
         }
