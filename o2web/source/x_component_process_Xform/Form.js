@@ -2729,6 +2729,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 //_self.app.content.unmask();
                 _self.fireEvent("closeProcessor", [this]);
                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("closeProcessor", [this]);
+                _self.flow = null;
             },
             "opinionOptions": {
                 "opinion": op.opinion,
