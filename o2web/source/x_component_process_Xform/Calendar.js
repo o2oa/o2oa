@@ -192,7 +192,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                         this.fireEvent("complete");
                     }.bind(this),
                     "onChange": function(formatedDate, date){
-                        this.tmpDateString = date.format( this.json.valueFormat || this.json.format );
+                        this.tmpDateString = date ? date.format( this.json.valueFormat || this.json.format ) : "";
                         this._setBusinessData(this.getInputData("change"));
                         this.tmpDateString = null;
                         this.fireEvent("change");
