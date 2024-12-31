@@ -255,13 +255,6 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	_getInputTextData: function(){
 		return {"value": this.node.value , "text": this.node.text};
 	},
-
-	/**
-	 * @summary 获取选中项的text。
-	 * @return {String} 返回选中项的text
-	 * @example
-	 * var text = this.form.get('fieldId').getText(); //获取选中项的文本
-	 */
 	getText: function(){
 		return this.node.text;
 	},
