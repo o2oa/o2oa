@@ -61,7 +61,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
                                 return;
                             }
 
-                            var wrapDiv = "yes";
+                            var wrapDiv = "no";
                             dlg.node.getElements(".wrapDiv").each( function (el) {
                                 if( el.get("checked") )wrapDiv = el.get("value");
                             });
@@ -172,54 +172,31 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
     appendWidgetModules: function( widgetid, relativeNode, position, wrapDiv ){
         MWF.Actions.get("x_portal_assemble_designer").getWidget(widgetid, function(json){
 
-            var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
-            this.containerModule = this.page.createModuleImmediately("Div", parentModule, relativeNode || this.copyNode, position || "before", false, false);
-
-            this.node = this.containerModule.node;
-
             var data = this.getWidgetData( json.data );
-
-            var moduleList = this.page.json.moduleList;
-
-
-            var tmpNode = new Element("div").inject( this.page.container );
-            tmpNode.set("html", data.html);
-            var html = tmpNode.getFirst().get("html");
-            tmpNode.destroy();
-
-            this.node.set("html", html );
-
-            Object.each(data.json.moduleList, function (moduleJson) {
-                var oid = moduleJson.id;
-                var id = moduleJson.id;
-                var idx = 1;
-                while (this.page.json.moduleList[id]) {
-                    id = oid + "_" + idx;
-                    idx++;
-                }
-
-                if (oid != id) {
-                    moduleJson.id = id;
-                    var moduleNode = this.node.getElementById(oid);
-                    if (moduleNode) moduleNode.set("id", id);
-                }
-                this.page.json.moduleList[moduleJson.id] = moduleJson;
-            }.bind(this));
+            this.parseJson(data);
 
             if( wrapDiv === "no" ){
+                var tmpNode = new Element("div").inject( this.page.container );
+                tmpNode.set("html", data.html);
+                var html = tmpNode.getFirst().get("html");
+                tmpNode.destroy();
+
                 this.node.getChildren().each( function (el) {
                     if( el.get("MWFType") && el.get("id")){
                         var id = el.get("id");
                         el.inject( relativeNode || this.copyNode, position || "before" );
+
+                        this.page.parseModules( parentModule, parentModule.node);
                     }
-                }.bind(this));
-                this.page.parseModules( parentModule, parentModule.node);
-                //this.containerModule.delete();
-                this.page.selected();
-                this.containerModule.destroy();
+                }.bind(this))
             }else{
-                this.page.parseModules(this.containerModule, this.node);
+                var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
+                this.containerModule = this.page.createModuleImmediately("Div", parentModule,
+                    relativeNode || this.copyNode, position || "before", false, false
+                );
+                this.page.parseModules(this.containerModule, this.containerModule.node);
             }
+            this.page.selected();
 
             //var copyModuleNode = this.node.getFirst();
             //while (copyModuleNode) {
@@ -243,6 +220,38 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
             //    if (oldStyleValue) this._setEditStyle("pageStyleType", null, oldStyleValue);
             //}
         }.bind(this), null, false);
+    },
+    parseJson: function (data){
+        var datatemplateJsons = [];
+        var idMap = {};
+
+        var originalIds = {};
+        Object.each(data.json.moduleList, function (moduleJson){
+            originalIds[moduleJson.id] = true;
+        });
+
+        Object.each(data.json.moduleList, function (moduleJson) {
+            var oid = moduleJson.id;
+            var id = moduleJson.id;
+            var idx = 1;
+            while (this.page.json.moduleList[id] || ( originalIds[id] && idx > 1 )) {
+                id = oid + "_" + idx;
+                idx++;
+            }
+
+            if (oid !== id) {
+                idMap[oid] = id;
+                moduleJson.id = id;
+                var moduleNode = this.node.getElementById(oid);
+                if (moduleNode) moduleNode.set("id", id);
+            }
+            if( moduleJson.type === "Datatemplate" )datatemplateJsons.push(moduleJson);
+            this.page.json.moduleList[moduleJson.id] = moduleJson;
+        }.bind(this));
+
+        datatemplateJsons.each(function (json) {
+            this.page.designer.checkDatatemplateRelativeId(json, idMap);
+        }.bind(this));
     },
     getWidgetData: function(data){
         var widgetDataStr = null;
