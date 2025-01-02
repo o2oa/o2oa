@@ -341,6 +341,54 @@ oo-nav{
 }
 
 
+.ooicon-daiban:before {
+    content: "\e742";
+}
+
+.ooicon-yiban:before {
+    content: "\e73f";
+}
+
+.ooicon-caogao:before {
+    content: "\e740";
+}
+
+.ooicon-daiyue:before {
+    content: "\e741";
+}
+
+.ooicon-ijian:before {
+    content: "\e743";
+}
+
+.ooicon-files:before {
+    content: "\e73e";
+}
+
+.ooicon-upload:before {
+    content: "\e73d";
+}
+
+.ooicon-gprs:before {
+    content: "\e73b";
+}
+
+.ooicon-lashen:before {
+    content: "\e73c";
+}
+
+.ooicon-kaiqi:before {
+    content: "\e738";
+}
+
+.ooicon-jia1:before {
+    content: "\e739";
+}
+
+.ooicon-icon_weikaiqi:before {
+    content: "\e73a";
+}
+
 .ooicon-stop:before {
     content: "\e737";
 }

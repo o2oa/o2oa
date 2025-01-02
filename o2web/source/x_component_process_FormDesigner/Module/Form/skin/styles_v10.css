@@ -197,6 +197,18 @@ div.form-log-simple{
     box-sizing: border-box !important;
 }
 
+/*** 视图样式 *********************************/
+tr.viewTitleLine>td {
+    background-color: #f7f7f7 !important;
+    border: 0 !important;
+}
+.form-content-view table tr:nth-child(odd) td{
+    background-color: #f7f7f7 !important;
+    border: 0 !important;
+}
+
+
+
 /* 手机浏览器 */
 @media only screen and (max-width: 1023px) {
     /* 样式适用于屏幕宽度小于等于 1023px 的设备 */

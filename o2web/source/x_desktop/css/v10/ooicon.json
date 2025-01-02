@@ -6,6 +6,90 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "42968749",
+      "name": "daiban",
+      "font_class": "daiban",
+      "unicode": "e742",
+      "unicode_decimal": 59202
+    },
+    {
+      "icon_id": "42968713",
+      "name": "yiban",
+      "font_class": "yiban",
+      "unicode": "e73f",
+      "unicode_decimal": 59199
+    },
+    {
+      "icon_id": "42968172",
+      "name": "caogao",
+      "font_class": "caogao",
+      "unicode": "e740",
+      "unicode_decimal": 59200
+    },
+    {
+      "icon_id": "42968171",
+      "name": "daiyue",
+      "font_class": "daiyue",
+      "unicode": "e741",
+      "unicode_decimal": 59201
+    },
+    {
+      "icon_id": "42968169",
+      "name": "ijian",
+      "font_class": "ijian",
+      "unicode": "e743",
+      "unicode_decimal": 59203
+    },
+    {
+      "icon_id": "42961674",
+      "name": "files",
+      "font_class": "files",
+      "unicode": "e73e",
+      "unicode_decimal": 59198
+    },
+    {
+      "icon_id": "42959975",
+      "name": "upload",
+      "font_class": "upload",
+      "unicode": "e73d",
+      "unicode_decimal": 59197
+    },
+    {
+      "icon_id": "42877509",
+      "name": "gprs",
+      "font_class": "gprs",
+      "unicode": "e73b",
+      "unicode_decimal": 59195
+    },
+    {
+      "icon_id": "42877508",
+      "name": "lashen",
+      "font_class": "lashen",
+      "unicode": "e73c",
+      "unicode_decimal": 59196
+    },
+    {
+      "icon_id": "42722823",
+      "name": "kaiqi",
+      "font_class": "kaiqi",
+      "unicode": "e738",
+      "unicode_decimal": 59192
+    },
+    {
+      "icon_id": "42722822",
+      "name": "jia",
+      "font_class": "jia1",
+      "unicode": "e739",
+      "unicode_decimal": 59193
+    },
+    {
+      "icon_id": "42722821",
+      "name": "icon_weikaiqi",
+      "font_class": "icon_weikaiqi",
+      "unicode": "e73a",
+      "unicode_decimal": 59194
+    },
+    {
       "icon_id": "42538240",
       "name": "stop",
       "font_class": "stop",

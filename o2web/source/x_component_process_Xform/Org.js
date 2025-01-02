@@ -1107,7 +1107,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         if (change) this.fireEvent("change");
     },
     setData: function(value, fireChange){
-        if (!value) return false;
+        // if (!value) return false;
         var oldValues = this.getData();
         if (value.length==1 && !(value[0])) value=[];
 
