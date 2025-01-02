@@ -113,32 +113,32 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 
 		this.container.set("html", this.html);
 		this.loadStylesList(function(){
-			var pageStyleType = this.json.pageStyleType;
-			if( typeOf( pageStyleType ) === "object" && pageStyleType.type === "script"  ){ //如果是自定义表单样式
-				this.loadCustomTemplateStyles( pageStyleType, function ( templateStyles ) {
+			var formStyleType = this.json.formStyleType;
+			if( typeOf( formStyleType ) === "object" && formStyleType.type === "script"  ){ //如果是自定义表单样式
+				this.loadCustomTemplateStyles( formStyleType, function ( templateStyles ) {
 					this._load( templateStyles );
 				}.bind(this));
 			}else {
-				if( typeOf( pageStyleType ) === "object" )pageStyleType = pageStyleType.id;
+				if( typeOf( formStyleType ) === "object" )formStyleType = formStyleType.id;
 
 				var oldStyleValue = "";
-				if ((!pageStyleType) || !this.stylesList[pageStyleType]){
-					this.json.pageStyleType = "none";
-					pageStyleType = "none";
+				if ((!formStyleType) || !this.stylesList[formStyleType]){
+					this.json.formStyleType = "none";
+					formStyleType = "none";
 				}
 				if (this.options.mode == "Mobile") {
-					if ( pageStyleType != "none") {
-						var styles = this.stylesList[pageStyleType];
+					if ( formStyleType != "none") {
+						var styles = this.stylesList[formStyleType];
 						if (!styles || typeOf(styles.mode) !== "array" || !styles.mode.contains("mobile")) {
-							oldStyleValue = pageStyleType;
-							this.json.pageStyleType = "none";
-							pageStyleType = "none";
+							oldStyleValue = formStyleType;
+							this.json.formStyleType = "none";
+							formStyleType = "none";
 						}
 					}
 				}
 
-				this.loadTemplateStyles(this.stylesList[pageStyleType].file, this.stylesList[pageStyleType].extendFile, function (templateStyles) {
-					//this.templateStyles = (this.stylesList && this.json.pageStyleType) ? this.stylesList[this.json.pageStyleType] : null;
+				this.loadTemplateStyles(this.stylesList[formStyleType].file, this.stylesList[formStyleType].extendFile, function (templateStyles) {
+					//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 					this._load(templateStyles, oldStyleValue);
 				}.bind(this));
 			}
@@ -148,7 +148,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		this.templateStyles = templateStyles;
 		this.loadDomModules();
 
-		if (this.json.pageStyleType && this.templateStyles && this.templateStyles["form"]){
+		if (this.json.formStyleType && this.templateStyles && this.templateStyles["form"]){
 			this.setTemplateStyles(this.templateStyles["form"]);
 		}
 		this.setCustomStyles();
@@ -157,7 +157,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		this.setNodeEvents();
 
 		if (this.options.mode=="Mobile"){
-			if (oldStyleValue) this._setEditStyle("pageStyleType", null, oldStyleValue);
+			if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
 		}
 
 		this.selected();
@@ -1131,7 +1131,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			this.treeNode.setTitle(this.json.id);
 			this.node.set("id", this.json.id);
 		}
-		if ( name=="pageStyleType" ){
+		if ( name=="formStyleType" ){
 
 			var loadOldTemplateStyle = function () {
 				if( typeOf(oldValue) === "object" && oldValue.type === "script" ){ //如果原来是自定义表单样式
@@ -1151,22 +1151,22 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 				}
 			}.bind(this);
 
-			var pageStyleType = this.json.pageStyleType;
-			if( typeOf(pageStyleType) === "object" && pageStyleType.type === "script" ){
-				this.loadCustomTemplateStyles( pageStyleType , function (templateStyles) {
+			var formStyleType = this.json.formStyleType;
+			if( typeOf(formStyleType) === "object" && formStyleType.type === "script" ){
+				this.loadCustomTemplateStyles( formStyleType , function (templateStyles) {
 					this.templateStyles = templateStyles;
 					loadOldTemplateStyle();
-					this.json.styleConfig = pageStyleType;
+					this.json.styleConfig = formStyleType;
 				}.bind(this))
 			}else{
-				if( typeOf(pageStyleType) === "object" )pageStyleType = pageStyleType.id;
+				if( typeOf(formStyleType) === "object" )formStyleType = formStyleType.id;
 
-				var file = (this.stylesList && pageStyleType) ? this.stylesList[pageStyleType].file : null;
-				var extendFile = (this.stylesList && pageStyleType) ? this.stylesList[pageStyleType].extendFile : null;
+				var file = (this.stylesList && formStyleType) ? this.stylesList[formStyleType].file : null;
+				var extendFile = (this.stylesList && formStyleType) ? this.stylesList[formStyleType].extendFile : null;
 				this.loadTemplateStyles( file, extendFile, function( templateStyles ){
 					this.templateStyles = templateStyles;
 					loadOldTemplateStyle();
-					this.json.styleConfig = (this.stylesList && pageStyleType) ? this.stylesList[pageStyleType] : null;
+					this.json.styleConfig = (this.stylesList && formStyleType) ? this.stylesList[formStyleType] : null;
 				}.bind(this))
 			}
 		}
