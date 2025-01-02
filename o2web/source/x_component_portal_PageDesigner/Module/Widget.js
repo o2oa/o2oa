@@ -37,10 +37,10 @@ MWF.xApplication.portal.PageDesigner.Module.Widget = MWF.PCWidget = new Class({
             // }
         ]
 	},
-	
+
 	initialize: function(page, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_portal_PageDesigner/Module/Widget/";
 		this.cssPath = "../x_component_portal_PageDesigner/Module/Widget/"+this.options.style+"/css.wcss";
 
@@ -464,7 +464,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widget = MWF.PCWidget = new Class({
         this.widgetData.json.properties = this.page.json.properties;
         this.widgetData.json.jsheader = {"code": "", "html": ""};
         this.widgetData.json.events = {};
-        this.widgetData.json.pageStyleType = this.page.json.pageStyleType;
+        this.widgetData.json.formStyleType = this.page.json.formStyleType;
         //this.widgetData.json.id = this.json.id;
 
         this.widgetModule = new MWF.PCWidget.Page(this.page, this.node,{
@@ -537,7 +537,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widget.Page = new Class({
         //this.node.setProperties(this.json.properties);
         //this.setNodeEvents();
         if (this.options.mode==="Mobile"){
-            if (oldStyleValue) this._setEditStyle("pageStyleType", null, oldStyleValue);
+            if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
         }
     },
     loadDomModules: function(){
