@@ -401,7 +401,7 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
         this.setToggleIconNode();
     },
     unSelected: function(){
-        if (this.content.baseInfor.mode==="edit") return false;
+        if (!this.content || !this.content.baseInfor || this.content.baseInfor.mode==="edit") return false;
         this.explorer.currentItem = null;
         this.contentNode.setStyles(this.style.contentNode);
         this.textNode.setStyles(this.style.unitTextNode);

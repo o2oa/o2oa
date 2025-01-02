@@ -788,7 +788,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
     },
 
     unSelected: function(){
-        if (this.content.baseInfor.mode==="edit") return false;
+        if (!this.content || !this.content.baseInfor || this.content.baseInfor.mode==="edit") return false;
         if (!this.deleteSelected){
             this.explorer.currentItem = null;
             this.contentNode.setStyles(this.style.contentNode);

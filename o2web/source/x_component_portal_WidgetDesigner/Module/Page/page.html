@@ -23,21 +23,24 @@
                     <!--<select class="" name="titleField"></select>-->
                 <!--</td>-->
             <!--</tr>-->
-<!--            <tr>-->
-<!--                <td class="editTableTitle">样式:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <select class="MWFFormStyle" name="formStyleType"></select>-->
-<!--                </td>-->
-<!--            </tr>-->
+            <tr>
+                <td class="editTableTitle">{{$.lp.formStyle}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFFormStyleSelect" name="formStyleType"></div>
+                    <div class="MWFScriptSelectRefresh"></div>
+                    <br/>
+                    <input class="editTableRadio" name="forceClearCustomStyle" type="checkbox" value="yes"/>{{$.lp.forceClearCustomStyle}}
+                </td>
+            </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.icon}}:</td>
                 <td class="editTableValue"><div class="MWFIcon" name="formIcon"></div></td>
             </tr>
         </table>
-		
+
 		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
 		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
-		
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
         <div class="MWFCssArea" name="css" title="CSS"></div>

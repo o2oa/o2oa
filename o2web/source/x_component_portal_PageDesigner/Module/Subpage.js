@@ -37,10 +37,10 @@ MWF.xApplication.portal.PageDesigner.Module.Subpage = MWF.PCSubpage = new Class(
             // }
         ]
 	},
-	
+
 	initialize: function(page, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_portal_PageDesigner/Module/Subpage/";
 		this.cssPath = "../x_component_portal_PageDesigner/Module/Subpage/"+this.options.style+"/css.wcss";
 
@@ -445,7 +445,7 @@ MWF.xApplication.portal.PageDesigner.Module.Subpage = MWF.PCSubpage = new Class(
         this.subpageData.json.properties = this.page.json.properties;
         this.subpageData.json.jsheader = {"code": "", "html": ""};
         this.subpageData.json.events = {};
-        this.subpageData.json.pageStyleType = this.page.json.pageStyleType;
+        this.subpageData.json.formStyleType = this.page.json.formStyleType;
         //this.subpageData.json.id = this.json.id;
 
         this.subpageModule = new MWF.PCSubpage.Page(this.page, this.node,{
@@ -518,7 +518,7 @@ MWF.xApplication.portal.PageDesigner.Module.Subpage.Page = new Class({
         //this.node.setProperties(this.json.properties);
         //this.setNodeEvents();
         if (this.options.mode==="Mobile"){
-            if (oldStyleValue) this._setEditStyle("pageStyleType", null, oldStyleValue);
+            if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
         }
     },
     loadDomModules: function(){

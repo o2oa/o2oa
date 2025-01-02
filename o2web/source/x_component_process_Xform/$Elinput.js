@@ -12,11 +12,11 @@ Object.assign(o2.APP$Elinput.prototype, {
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead() );
     },
     reload: function(){
-        if (!this.vm) return;
-
-        var node = this.vm.$el;
-        this.vm.$destroy();
-        node.empty();
+        if (this.vm) {
+            var node = this.vm.$el;
+            this.vm.$destroy();
+            node.empty();
+        }
 
         this.vm = null;
 
