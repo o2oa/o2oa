@@ -39,16 +39,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
-  "Log": {
-    "icon": "log.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.log,
-    "className": "Log"
-  },
-  "Actionbar": {
-    "icon": "actionbar.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.Actionbar,
-    "className": "Actionbar"
-  },
   "div": {
     "icon": "div.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.div,

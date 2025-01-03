@@ -152,6 +152,14 @@ MWF.xApplication.query.QueryManager.LP={
 		"importerConfig": "Importación",
 		"queryProperty": "Propiedades"
 	},
-	"deleteElementTable": "¿¿ está seguro de que quiere eliminar el formulario seleccionado y el sistema eliminará automáticamente la configuración de consulta correspondiente después de eliminarlo?"
+	"deleteElementTable": "¿¿ está seguro de que quiere eliminar el formulario seleccionado y el sistema eliminará automáticamente la configuración de consulta correspondiente después de eliminarlo?",
+	"name": "Nombre",
+	"alias": "Alias",
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id"
 }
 MWF.xApplication.query.QueryManager["lp."+o2.language] = MWF.xApplication.query.QueryManager.LP

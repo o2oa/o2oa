@@ -72,7 +72,8 @@ MWF.xApplication.attendancev2.LP={
 		"timeMinutesSelectorMinute": "Minute",
 		"chooseDatePlaceholder": "Select Date",
 		"selectPlaceholder": "Select",
-		"selectOrgPersonOverCount": "You can select up to ({count}) data!"
+		"selectOrgPersonOverCount": "You can select up to ({count}) data!",
+		"errorPageNumber": "Please enter the correct page number!"
 	},
 	"myAttendanceTitle": "My Statistics",
 	"myAttendanceCalendar": "Attendance Calendar",

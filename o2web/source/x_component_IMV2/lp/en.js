@@ -55,6 +55,21 @@ MWF.xApplication.IMV2.LP={
 	"file": "[File]",
 	"messageXadminNotSupport": "The xadmin cannot use chat, please switch to normal user login!",
 	"messageDeleteSingleConversationAlert": "确定要删除当前会话吗，删除后将看不到以前的聊天记录？",
-	"messageDeleteGroupConversationAlert": "确定要删除当前会话吗，这会解散当前群聊并删除聊天记录？"
+	"messageDeleteGroupConversationAlert": "确定要删除当前会话吗，这会解散当前群聊并删除聊天记录？",
+	"chooseConversationSearchInputPlaceholder": "Enter keywords and press enter to search",
+	"msgCollectionTitle": "My collection",
+	"msgHistory": "Chat history",
+	"msgTypeHistory": "[Chat Record]",
+	"msgTypeImage": "[Image]",
+	"msgTypeEmoji": "[emoji]",
+	"msgMenuItemSelectMsg": "Multiple Choice",
+	"msgMenuItemForwardMsg": "forward",
+	"msgMenuItemCollectionMsg": "Collection",
+	"msgMenuItemQuoteMsg": "quote",
+	"msgNeedSelectMessage": "Please select at least one message!",
+	"msgCollectionSuccess": "Collection successful!",
+	"msgDragArea": "Drag file to send message",
+	"settingsConversationCheckInvokeMsg": "Interface for checking session creation and updates",
+	"settingsEnableOnlyOfficePreviewMsg": "Do you want to use OnlyOffice preview file (requires installing OnlyOffice extension application first)"
 }
 MWF.xApplication.IMV2["lp."+o2.language] = MWF.xApplication.IMV2.LP

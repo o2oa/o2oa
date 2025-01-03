@@ -338,7 +338,9 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"saveAs": "Guardar como",
 		"autoSave": "Guardar automáticamente",
 		"preview": "vista previa",
-		"help": "ayuda"
+		"help": "ayuda",
+		"add": "Nueva construcción",
+		"gotoApp": "Abrir su aplicación"
 	},
 	"actionBar": {
 		"exportExcel": "Exportar Microsoft"
@@ -420,6 +422,19 @@ MWF.xApplication.query.StatementDesigner.LP={
 	"documentCommentInfo": "Registros de comentarios de gestión de contenidos (documentmenterinfo)",
 	"cmsReviewInstanceSql": "Gestión de contenidos legible (pp c review)",
 	"documentViewRecordSql": "Registros de lectura de gestión de contenidos (pp c review)",
-	"documentCommentInfoSql": "Registros de comentarios de gestión de contenidos (pp c review)"
+	"documentCommentInfoSql": "Registros de comentarios de gestión de contenidos (pp c review)",
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id",
+	"searchAndSort": "Clasificación y búsqueda",
+	"mustSelectFormStyle": "Hay que elegir un estilo",
+	"notValidJson": "Formato json incorrecto",
+	"mustSelectDict": "Por favor, elija el diccionario de datos primero.",
+	"mustSelect": "Por favor, elija",
+	"recordInstance": "Registro de circulación (registro)",
+	"recordInstanceSql": "Registro de circulación (pp c record)"
 }
 MWF.xApplication.query.StatementDesigner["lp."+o2.language] = MWF.xApplication.query.StatementDesigner.LP

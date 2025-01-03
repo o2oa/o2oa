@@ -897,7 +897,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			subNode = nextNode;
 		}
 	},
-	_getPageData: function(){
+	_getPageData: function(callback){
 		this.fireEvent("queryGetPageData");
 		var copy = this.node.clone(true, true);
 		copy.clearStyles(true);

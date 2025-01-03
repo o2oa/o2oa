@@ -22,6 +22,8 @@ var assetRev = require('gulp-o2oa-asset-rev');
 const os = require('os');
 var through2 = require('through2');
 var path = require('path');
+const debug = require('gulp-debug');
+
 
 var git = require('gulp-git');
 const sourcemaps = require('gulp-sourcemaps');

@@ -95,6 +95,14 @@ MWF.xApplication.service.ServiceManager.LP={
 		"available": "Available range"
 	},
 	"createSelectTemplate": "New: Select Template",
-	"templateCategory": "Template classification:"
+	"templateCategory": "Template classification:",
+	"name": "name",
+	"alias": "alias",
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search"
 }
 MWF.xApplication.service.ServiceManager["lp."+o2.language] = MWF.xApplication.service.ServiceManager.LP
