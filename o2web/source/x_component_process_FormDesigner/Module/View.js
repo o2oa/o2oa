@@ -7,10 +7,10 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 		"style": "default",
 		"propertyPath": "../x_component_process_FormDesigner/Module/View/view.html"
 	},
-	
+
 	initialize: function(form, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_FormDesigner/Module/View/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/View/"+this.options.style+"/css.wcss";
 
@@ -30,23 +30,23 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 		this.json = json;
 		this.node= node;
 		this.node.store("module", this);
-		
+
 		//this.node.empty();
-		
+
 		this.node.setStyles(this.css.moduleNode);
-		
+
 		this._loadNodeStyles();
-		
+
 		this._initModule();
 		this._loadTreeNode(parent);
 
         //this.setCustomStyles();
-		
+
 		this.parentContainer = this.treeNode.parentNode.module;
         this._setEditStyle_custom("id");
 
         this.json.moduleName = this.moduleName;
-        
+
 	//	this.parseModules();
 	},
 	_createMoveNode: function(){
@@ -82,7 +82,7 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 		this.node.addEvent("selectstart", function(){
 			return false;
 		});
-		
+
 		this.iconNode = new Element("div", {
 			"styles": this.css.iconNode
 		}).inject(this.node);
