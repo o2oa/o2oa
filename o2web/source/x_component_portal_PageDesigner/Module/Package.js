@@ -43,3 +43,41 @@ MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Application", null, false
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SmartBI", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.ElementUI", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Htmleditor", null, false);
+
+MWF.xApplication.portal.PageDesigner.Module.OOButton = MWF.PCOOButton = new Class({
+    Extends: MWF.FCOOButton
+});
+MWF.xApplication.portal.PageDesigner.Module.OOInput = MWF.PCOOInput = new Class({
+    Extends: MWF.FCOOInput
+});
+MWF.xApplication.portal.PageDesigner.Module.OOOOCheckGroup = MWF.PCOOCheckGroup = new Class({
+    Extends: MWF.FCOOCheckGroup
+});
+MWF.xApplication.portal.PageDesigner.Module.OODatetime = MWF.PCOODatetime = new Class({
+    Extends: MWF.FCOODatetime
+});
+MWF.xApplication.portal.PageDesigner.Module.OOOrg = MWF.PCOOOrg = new Class({
+    Extends: MWF.FCOOOrg
+});
+MWF.xApplication.portal.PageDesigner.Module.OORadioGroup = MWF.PCOORadioGroup = new Class({
+    Extends: MWF.FCOORadioGroup
+});
+MWF.xApplication.portal.PageDesigner.Module.OOSelect = MWF.PCOOSelect = new Class({
+    Extends: MWF.FCOOSelect
+});
+MWF.xApplication.portal.PageDesigner.Module.OOTextarea = MWF.PCOOTextarea = new Class({
+    Extends: MWF.FCOOTextarea
+});
+MWF.xApplication.portal.PageDesigner.Module.Codeeditor = MWF.PCCodeeditor = new Class({
+    Extends: MWF.FCCodeeditor
+});
+
+MWF.PCOOButton.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCOOInput.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCOOCheckGroup.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCOODatetime.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCOOOrg.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCOORadioGroup.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCOOSelect.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCOOTextarea.templateJsonPath = "../x_component_process_FormDesigner/Module/";
+MWF.PCCodeeditor.templateJsonPath = "../x_component_process_FormDesigner/Module/";

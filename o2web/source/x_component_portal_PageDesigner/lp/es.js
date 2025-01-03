@@ -285,7 +285,8 @@ MWF.xApplication.portal.PageDesigner.LP={
 		"clearNoDomModule": "Borrar configuraciones de componentes que no están en el árbol HTML",
 		"autoSave": "AutoGuardar",
 		"brush": "cepillar",
-		"viewAllVersion": "Ver todas las versiones del formulario"
+		"viewAllVersion": "Ver todas las versiones del formulario",
+		"copyProperty": "Atributos del componente de copia"
 	},
 	"version": {
 		"title": "Ver registro de versiones del formulario",
@@ -298,6 +299,10 @@ MWF.xApplication.portal.PageDesigner.LP={
 		"resumeConfirm": "Confirmación",
 		"resumeInfo": "¿Está seguro de que desea restaurar el formulario? Después de confirmar la restauración, se actualizará el formulario actual y deberá guardarlo manualmente para que surta efecto.",
 		"resumeSuccess": "Restauración exitosa"
-	}
+	},
+	"clearNoDomModuleTitle": "Borrar la configuración de los componentes que no están en el árbol htl",
+	"clearNoDomModuleContent": "¿¿ borrar la configuración de los componentes que no están en el árbol httpl? Después de la limpieza, es necesario guardarlo para entrar en vigor.",
+	"selectCopyModule": "Por favor, elija el componente que necesita copiar el atributo",
+	"selectCopyModuleNotice": "¡¡ por favor, elija el componente primero!"
 }
 MWF.xApplication.portal.PageDesigner["lp."+o2.language] = MWF.xApplication.portal.PageDesigner.LP
