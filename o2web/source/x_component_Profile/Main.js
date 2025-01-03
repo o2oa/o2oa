@@ -385,7 +385,8 @@ MWF.xApplication.Profile.Main = new Class({
         this.emPowerContentNode = this.tab.pages[i].contentNode.getElement("div.o2_profile_emPower_content");
 
         MWF.require("MWF.widget.Tab", function() {
-            this.tabEmpower = new MWF.widget.Tab(this.emPowerContentNode, {"style": "empower"});
+            this.tabEmpower = new MWF.widget.Tab(this.emPowerContentNode, {"style": "empower_v10"});
+            // this.tabEmpower = new MWF.widget.Tab(this.emPowerContentNode, {"style": "empower"});
             this.tabEmpower.load();
 
             tabEmpowerNodes.each(function(node){
@@ -1344,7 +1345,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
                             "line-height": "36px",
                             "background": "#FFFFFF",
                             "border": "1px solid #DEDEDE",
-                            "border-radius": "100px",
+                            "border-radius": "4px",
                             "font-family": "MicrosoftYaHei",
                             "padding":"0 5px",
                             "font-size": "14px",

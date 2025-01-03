@@ -1,17 +1,19 @@
 {
     "itemNode": {
-        "background-color": "#fdfdc8",
+//        "background-color": "#fdfdc8",
+        "background-color": "var(--oo-color-hover)",
         "position": "absolute",
         "-webkit-user-select": "none",
         "-moz-user-select": "none",
         "box-shadow": "0px 0px 10px #cccccc",
-        "border": "1px solid #999999",
+        "border": "1px solid #bbbbbb",
         "z-index": 100
     },
     "itemTitleNode": {
         "height": "30px",
-        "background-color": "#f8f7b6",
-        "line-height": "20px"
+//        "background-color": "#f8f7b6",
+        "background-color": "var(--oo-color-over)",
+        "line-height": "20px",
     },
     "itemTextarea": {
         "border": "0px",
@@ -32,10 +34,10 @@
         "float": "left",
         "height": "16px",
         "width": "16px",
-        "border": "1px solid #f8f7b6",
+//        "border": "1px solid #f8f7b6",
         "text-align": "center",
         "cursor": "pointer",
-        "background": "url("+"../x_component_Note/$Main/default/icon/add.png) no-repeat center center",
+//        "background": "url("+"../x_component_Note/$Main/default/icon/add.png) no-repeat center center",
         "margin": "6px auto 6px 6px"
     },
     "addActionNode_over": {
@@ -45,9 +47,9 @@
         "float": "right",
         "height": "16px",
         "width": "16px",
-        "border": "1px solid #f8f7b6",
+//        "border": "1px solid #f8f7b6",
         "cursor": "pointer",
-        "background": "url("+"../x_component_Note/$Main/default/icon/close.png) no-repeat center center",
+//        "background": "url("+"../x_component_Note/$Main/default/icon/close.png) no-repeat center center",
         "margin": "6px 6px auto 6px"
     },
     "closeActionNode_over":{
@@ -61,7 +63,7 @@
         "-webkit-user-select": "none",
         "-moz-user-select": "none",
         "cursor": "nw-resize",
-        "background": "url("+"../x_component_Note/$Main/default/icon/resize.png) no-repeat center center",
+//        "background": "url("+"../x_component_Note/$Main/default/icon/resize.png) no-repeat center center",
         "margin": "0px 2px 2px 0px"
     }
 }

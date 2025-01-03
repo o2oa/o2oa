@@ -55,6 +55,21 @@ MWF.xApplication.IMV2.LP={
 	"file": "[Archivo]",
 	"messageXadminNotSupport": "Los usuarios de xadmin no pueden usar Chat, ¡por favor cambie a un usuario normal para iniciar sesión!",
 	"messageDeleteSingleConversationAlert": "¿Está seguro de que desea eliminar esta conversación y perder todos los registros de chat relacionados?",
-	"messageDeleteGroupConversationAlert": "¿Está seguro de que desea eliminar esta conversación grupal, disolviendo el grupo y perdiendo todos los registros de chat relacionados?"
+	"messageDeleteGroupConversationAlert": "¿Está seguro de que desea eliminar esta conversación grupal, disolviendo el grupo y perdiendo todos los registros de chat relacionados?",
+	"chooseConversationSearchInputPlaceholder": "Introduzca la palabra clave y vuelva a la búsqueda",
+	"msgCollectionTitle": "Mi colección",
+	"msgHistory": "Registro de chat",
+	"msgTypeHistory": "[historial de chat]",
+	"msgTypeImage": "[imagen]",
+	"msgTypeEmoji": "[expresión]",
+	"msgMenuItemSelectMsg": "Selección múltiple",
+	"msgMenuItemForwardMsg": "Reenvío",
+	"msgMenuItemCollectionMsg": "Colección",
+	"msgMenuItemQuoteMsg": "Cita",
+	"msgNeedSelectMessage": "¡¡ por favor, elija al menos un mensaje!",
+	"msgCollectionSuccess": "¡Colección exitosa!",
+	"msgDragArea": "Arrastre al archivo para enviar un mensaje",
+	"settingsConversationCheckInvokeMsg": "Interfaz de Inspección para la creación y actualización de sesiones",
+	"settingsEnableOnlyOfficePreviewMsg": "¿ usar el archivo de previsualización de onlyoffice (necesita instalar primero la aplicación de extensión de onlyoffice)"
 }
 MWF.xApplication.IMV2["lp."+o2.language] = MWF.xApplication.IMV2.LP

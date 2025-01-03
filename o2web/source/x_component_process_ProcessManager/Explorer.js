@@ -199,7 +199,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         //-----search category---------------------
         //-----------------------------------------
         //-----------------------------------------
-        alert("search Element");
+        // alert("search Element");
     },
 
     loadContentNode: function(){

@@ -25,6 +25,12 @@
     "text": MWF.APPPOD.LP.modules.group_function,
   },
   {
+    "name": "O2OA UI",
+    "json": "tools-o2oa.json",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.group_O2OA,
+    "className": "Textfield"
+  },
+  {
     "name": "element",
     "json": "tools-element.json",
     "text": MWF.APPPOD.LP.modules.group_element,

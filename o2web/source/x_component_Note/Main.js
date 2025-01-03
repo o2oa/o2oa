@@ -143,10 +143,10 @@ MWF.xApplication.Note.NoteItem = new Class({
         this.textarea = new Element("textarea", {"styles": this.css.itemTextarea}).inject(this.node);
         this.bottomNode = new Element("div", {"styles": this.css.itemBottomNode}).inject(this.node);
 
-        this.addActionNode = new Element("div", {"styles": this.css.addActionNode}).inject(this.titleNode);
-        this.closeActionNode = new Element("div", {"styles": this.css.closeActionNode}).inject(this.titleNode);
+        this.addActionNode = new Element("div.ooicon-create", {"styles": this.css.addActionNode}).inject(this.titleNode);
+        this.closeActionNode = new Element("div.ooicon-close", {"styles": this.css.closeActionNode}).inject(this.titleNode);
 
-        this.resizeActionNode = new Element("div", {"styles": this.css.resizeActionNode}).inject(this.bottomNode);
+        this.resizeActionNode = new Element("div.ooicon-lashen", {"styles": this.css.resizeActionNode}).inject(this.bottomNode);
 
         this.node.setStyles({
             "height": this.noteData.size.height,

@@ -59,7 +59,19 @@
     align-items: center;
     gap: 0.25em;
 }
-
+.label {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    color: var(--oo-color-text2);
+    padding: 0.5em 0.35em;
+    margin-right: 0.5em;
+    justify-content: flex-end;
+    width: 6.5vw;
+    min-width: 4.3em;
+    max-width: 9em;
+}
 
 /* 数据表格 **/
 .mwf_addlineaction .addLineAction{

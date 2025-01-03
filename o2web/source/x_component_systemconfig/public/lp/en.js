@@ -372,7 +372,9 @@ MWF.xApplication.systemconfig.LP={
 		"bindDnPwdInfo": "Bind administrator's password",
 		"ldapEnabledError": "Please configure all LDAP parameters completely before enabling LDAP authentication.",
 		"appTokenExpired": "Effective duration of app login",
-		"appTokenExpiredInfo": "After logging into the system, if a user does not interact with the server for a long time, the system will log out of this login. You can set the effective login duration here, in minutes. Used for mobile devices."
+		"appTokenExpiredInfo": "After logging into the system, if a user does not interact with the server for a long time, the system will log out of this login. You can set the effective login duration here, in minutes. Used for mobile devices.",
+		"twoFactorLogin": "Enable two factor authentication login",
+		"twoFactorLoginInfo": "After activation, the system will send a SMS verification code to the user after entering their account password, and the user will then enter the SMS verification code to log in. Xadmin and the three staff administrators do not send text messages, and enter the password again on the SMS verification code interface. The two login methods of two factor authentication and SMS verification code are mutually exclusive."
 	},
 	"_ssoConfig": {
 		"ssoConfig": "Authentication Key Config",
@@ -838,7 +840,6 @@ MWF.xApplication.systemconfig.LP={
 		"indexMode": "Index Storage Location",
 		"modeOptions": {
 			"localDirectory": "Local File System",
-			// "hdfsDirectory": "hadoop file system",
 			"sharedDirectory": "Shared File System"
 		},
 		"hdfsDirectoryDefaultFS": "hadoop file system address",
@@ -1181,7 +1182,6 @@ MWF.xApplication.systemconfig.LP={
 				"ftps": "ftps",
 				"ftp": "ftp",
 				"file": "file",
-				// "hdfs": "hdfs",
 				"cifs": "cifs",
 				"ali": "Alibaba Cloud Storage",
 				"s3": "Amazon Cloud Storage",

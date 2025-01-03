@@ -34,6 +34,7 @@
 	},
 	"moduleNode": {
 		"border": "1px dashed #333",
+		"border-radius": "var(--oo-default-radius)",
 		"min-height": "14em",
 		"cursor": "pointer",
 		"line-height": "22px",

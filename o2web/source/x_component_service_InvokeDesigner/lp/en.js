@@ -64,7 +64,18 @@ MWF.xApplication.service.InvokeDesigner.LP={
 		"fontSize": "Font size",
 		"style": "style",
 		"scriptEditor": "Script Editor",
-		"viewAllVersions": "View all script versions"
-	}
+		"viewAllVersions": "View all script versions",
+		"add": "newly build",
+		"gotoApp": "Open the current application"
+	},
+	"executorList": "Execution permission",
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search",
+	"searchAndSort": "Sorting and Search",
+	"duplicateNewNote": "There is already a new interface, please save it first"
 }
 MWF.xApplication.service.InvokeDesigner["lp."+o2.language] = MWF.xApplication.service.InvokeDesigner.LP

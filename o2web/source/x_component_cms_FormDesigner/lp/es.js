@@ -1488,7 +1488,15 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"secondEnable": "Segundos de selección",
 		"weekBegin": "A partir de la semana",
 		"required": "Obligatorio",
-		"readModeEvents": "Si responde a eventos del ratón en modo de lectura"
+		"readModeEvents": "Si responde a eventos del ratón en modo de lectura",
+		"useCache": "Usar caché",
+		"useCacheNote": "La opción es que el diccionario de datos se almacenará en caché cuando se abra por primera vez, y es necesario actualizar la página web para recuperar el diccionario de datos modificado. Elija de lo contrario cada vez que lo obtenga del servidor.",
+		"foxit": {
+			"api": "API"
+		},
+		"scriptMode": "Tipo de guión",
+		"scriptEditor": "Editor de guiones",
+		"lineNumber": "Mostrar el número de línea"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
@@ -1573,7 +1581,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"brush": "cepillar",
 		"viewAllVersion": "Ver todas las versiones del formulario",
 		"add": "Nueva construcción",
-		"gotoApp": "Abrir su aplicación"
+		"gotoApp": "Abrir su aplicación",
+		"copyProperty": "Atributos del componente de copia"
 	},
 	"formType": {
 		"empty": "Formulario en blanco",
@@ -1595,6 +1604,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"sectionTitle": "Título de sección",
 		"section": "Sección",
 		"lightBlue": "Estilo azul claro"
-	}
+	},
+	"selectCopyModule": "Por favor, elija el componente que necesita copiar el atributo",
+	"selectCopyModuleNotice": "¡¡ por favor, elija el componente primero!"
 }
 MWF.xApplication.cms.FormDesigner["lp."+o2.language] = MWF.xApplication.cms.FormDesigner.LP

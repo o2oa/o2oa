@@ -127,6 +127,14 @@ MWF.xApplication.portal.PortalManager.LP={
 		"loaded": "Data source loading completed",
 		"deleteViewTitle": "Delete Data Source Confirmation",
 		"deleteView": "Are you sure you want to delete the current data source?"
-	}
+	},
+	"name": "name",
+	"alias": "alias",
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search"
 }
 MWF.xApplication.portal.PortalManager["lp."+o2.language] = MWF.xApplication.portal.PortalManager.LP
