@@ -242,7 +242,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
             var copyModuleJson = this.page.getDomjson(copyModuleNode);
             var module = this.page.loadModule(copyModuleJson, copyModuleNode, parentModule);
             module._setEditStyle_custom("id");
-            module.selected();
+            // module.selected();
 
             moduleList.push( module );
 
