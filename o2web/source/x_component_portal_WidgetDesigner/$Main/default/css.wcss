@@ -181,7 +181,7 @@
 		"-webkit-user-select": "none",
 		"overflow": "auto",
 		"font-size": "14px",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 	"designMobileNode": {
 	    "margin": "15px",

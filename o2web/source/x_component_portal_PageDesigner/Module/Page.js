@@ -916,7 +916,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
 			MWF.getJSON(stylesUrl, function (responseJSON) {
 					if (responseJSON && responseJSON.form) {
-						data.json = Object.merge(data.json, responseJSON.form);
+						this.data.json = Object.merge(this.data.json, responseJSON.form);
 					}
 					if (callback) callback();
 				}.bind(this), false
