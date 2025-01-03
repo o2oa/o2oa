@@ -300,6 +300,8 @@ MWF.xApplication.portal.PageDesigner.LP={
 		"resumeInfo": "¿Está seguro de que desea restaurar el formulario? Después de confirmar la restauración, se actualizará el formulario actual y deberá guardarlo manualmente para que surta efecto.",
 		"resumeSuccess": "Restauración exitosa"
 	},
+	"clearNoDomModuleTitle": "Borrar la configuración de los componentes que no están en el árbol htl",
+	"clearNoDomModuleContent": "¿¿ borrar la configuración de los componentes que no están en el árbol httpl? Después de la limpieza, es necesario guardarlo para entrar en vigor.",
 	"selectCopyModule": "Por favor, elija el componente que necesita copiar el atributo",
 	"selectCopyModuleNotice": "¡¡ por favor, elija el componente primero!"
 }

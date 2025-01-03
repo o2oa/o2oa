@@ -4,7 +4,8 @@
 		"overflow": "hidden",
 		"line-height": "2px",
 		"float": "left",
-		"min-width": "99.9%"
+		"min-width": "99.9%",
+		"position": "relative"
 	},
 	"moduleNode": {
 		"border": "1px dashed #333",
