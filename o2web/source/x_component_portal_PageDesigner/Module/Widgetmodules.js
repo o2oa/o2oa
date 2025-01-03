@@ -188,7 +188,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
             relativeNode || this.copyNode, position || "before", true, false
         );
         wrapModule._setEditStyle_custom("id");
-        wrapModule.selected();
+        // wrapModule.selected();
 
         var node = wrapModule.node;
         node.set('html', data.html);
@@ -201,7 +201,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
             var copyModuleJson = this.page.getDomjson(copyModuleNode);
             var module = this.page.loadModule(copyModuleJson, copyModuleNode, wrapModule);
             module._setEditStyle_custom("id");
-            module.selected();
+            // module.selected();
 
             moduleList.push( module );
 
