@@ -1,5 +1,6 @@
 package com.x.program.center.qiyeweixin;
 
+import com.x.base.core.project.tools.StringTools;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -379,12 +380,16 @@ public class SyncOrganization {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(Person.class);
 		person.setQiyeweixinHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)));
-		// person.setEmployee(user.getJobNumber());
 		person.setName(user.getName());
-		person.setMobile(user.getMobile());
+		if(StringTools.isMobile(user.getMobile())) {
+			person.setMobile(user.getMobile());
+		}
 		person.setMail(user.getEmail());
 		person.setOfficePhone(user.getTelephone());
-		person.setGenderType(Objects.equals("1", user.getGender()) ? GenderType.m : GenderType.f);
+		if(StringUtils.isNotBlank(user.getGender())) {
+			person.setGenderType(
+					Objects.equals("1", user.getGender()) ? GenderType.m : GenderType.f);
+		}
 		emc.check(person, CheckPersistType.all);
 		emc.commit();
 		result.getUpdatePersonList().add(person.getDistinguishedName());
