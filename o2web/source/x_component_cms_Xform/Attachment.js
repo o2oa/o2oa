@@ -175,6 +175,18 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
 
         //}.bind(this));
     },
+    reload: function( refresh ){
+        this.node.empty();
+        if( refresh ){
+            o2.Actions.load("x_cms_assemble_control").FileInfoAction.
+                listFileInfoByDocumentId(this.form.businessData.document.id, function(json){
+                    this.form.businessData.attachmentList = json.data;
+                    this.loadAttachmentController();
+            }.bind(this));
+        }else{
+            this.loadAttachmentController();
+        }
+    },
     loadAttachmentSelecter: function (option, callback) {
         MWF.require("MWF.widget.AttachmentSelector", function () {
             var options = {
