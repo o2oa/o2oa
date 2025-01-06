@@ -1635,6 +1635,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      * @param refresh {Boolean} 是否重新从后台获取附件列表.
      * @example
      *  this.form.get("fieldId").reload(); //重新加载
+     * @example
+     *  this.form.get("fieldId").reload( true ); //重新从后台获取附件并重新加载
      */
     reload: function( refresh ){
         this.node.empty();
