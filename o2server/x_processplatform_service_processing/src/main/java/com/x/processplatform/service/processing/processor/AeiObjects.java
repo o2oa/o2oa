@@ -1094,7 +1094,8 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().remove(deleteTaskCompleted, CheckRemoveType.all);
 					// 要删除此已经办前此人其他的已办lastest标记为true
 					this.getTaskCompleteds().stream()
-							.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
+							.filter(p -> !this.getDeleteTaskCompleteds().contains(p)
+									&& StringUtils.equals(o.getPerson(), p.getPerson())
 									&& (!StringUtils.equals(o.getId(), p.getId())))
 							.sorted(Comparator
 									.comparing(TaskCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo))
