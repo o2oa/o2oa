@@ -94,16 +94,23 @@ public abstract class Plan extends GsonPropertyObject {
 	public Integer count;
 
 	private Table order(Table table) {
-		if ((null != table) && (!table.isEmpty()) && (!orderList.isEmpty())) {
-			TableRowComparator comparator = new TableRowComparator(this.orderList);
-			List<Row> list = table.stream().sorted(comparator).collect(Collectors.toList());
-			table.clear();
-			table.addAll(list);
+		if ((null != table) && (!table.isEmpty())) {
+			TableRowComparator comparator = null;
+			if ((null != runtime.orderList) && (!runtime.orderList.isEmpty())) {
+				comparator = new TableRowComparator(runtime.orderList);
+			} else if ((null != this.orderList) && (!orderList.isEmpty())) {
+				comparator = new TableRowComparator(this.orderList);
+			}
+			if (null != comparator) {
+				List<Row> list = table.stream().sorted(comparator).collect(Collectors.toList());
+				table.clear();
+				table.addAll(list);
+			}
 		}
 		return table;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("rawtypes")
 	private GroupTable group(Table table) {
 		final String orderType = (null == this.group) ? SelectEntry.ORDER_ORIGINAL : this.group.orderType;
 		Map<Object, List<Row>> map = table.stream().collect(Collectors.groupingBy(row -> row.find(this.group.column)));
@@ -358,7 +365,7 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	private void fillSelectEntry(List<String> bundles, SelectEntry selectEntry, Table table) throws Exception {
-		if(StringUtils.isBlank(selectEntry.path)){
+		if (StringUtils.isBlank(selectEntry.path)) {
 			return;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

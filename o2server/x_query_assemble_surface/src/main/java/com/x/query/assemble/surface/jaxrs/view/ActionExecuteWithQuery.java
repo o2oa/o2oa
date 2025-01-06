@@ -21,6 +21,8 @@ import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.Runtime;
+import com.x.query.core.express.plan.SelectEntry;
+
 import org.apache.commons.collections4.list.TreeList;
 
 import java.util.HashMap;
@@ -59,8 +61,8 @@ class ActionExecuteWithQuery extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 			}
-			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount(), false);
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(),
+					wi.getParameter(), wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
@@ -73,6 +75,10 @@ class ActionExecuteWithQuery extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		@FieldDescribe("前端指定排序列")
+		private List<SelectEntry> orderList = new TreeList<>();
+
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 		private List<FilterEntry> filterList = new TreeList<>();
@@ -88,6 +94,14 @@ class ActionExecuteWithQuery extends BaseAction {
 
 		@FieldDescribe("秘钥串，结果集不为空时必须传.")
 		private String key;
+
+		public List<SelectEntry> getOrderList() {
+			return orderList;
+		}
+
+		public void setOrderList(List<SelectEntry> orderList) {
+			this.orderList = orderList;
+		}
 
 		public List<FilterEntry> getFilterList() {
 			return filterList;

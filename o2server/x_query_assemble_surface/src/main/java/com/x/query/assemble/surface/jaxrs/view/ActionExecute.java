@@ -1,5 +1,11 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.list.TreeList;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,11 +28,7 @@ import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.Runtime;
-import org.apache.commons.collections4.list.TreeList;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.x.query.core.express.plan.SelectEntry;
 
 class ActionExecute extends BaseAction {
 
@@ -61,7 +63,7 @@ class ActionExecute extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 			}
-			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(),wi.getOrderList(), wi.getParameter(),
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 		}
@@ -71,9 +73,12 @@ class ActionExecute extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		@FieldDescribe("前端指定排序列")
+		private List<SelectEntry> orderList = new TreeList<>();
+
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
-
 		private List<FilterEntry> filterList = new TreeList<>();
 
 		@FieldDescribe("参数")
@@ -127,6 +132,15 @@ class ActionExecute extends BaseAction {
 		public void setKey(String key) {
 			this.key = key;
 		}
+
+		public List<SelectEntry> getOrderList() {
+			return orderList;
+		}
+
+		public void setOrderList(List<SelectEntry> orderList) {
+			this.orderList = orderList;
+		}
+
 	}
 
 }
