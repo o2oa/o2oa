@@ -839,10 +839,13 @@ MWF.ProcessFlow.ProcessorMobile = new Class({
         if (!routeConfigList) routeConfigList = this.getRouteConfigList();
 
         var optionList = [], isSelectedDefault = false, defaultRoute;
-        routeConfigList.each(function (route, i) {
+        var visibleRouteConfigList = routeConfigList.filter(function(route){
             if ( route.hiddenScriptText ) {
-                if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
+                return this.form.Macro.exec(route.hiddenScriptText, this).toString() !== "true";
             }
+            return true;
+        }.bind(this));
+        visibleRouteConfigList.each(function (route, i) {
             var routeName = route.name;
             if (route.displayNameScriptText && this.form && this.form.Macro) {
                 routeName = this.form.Macro.exec(route.displayNameScriptText, this);
@@ -857,7 +860,7 @@ MWF.ProcessFlow.ProcessorMobile = new Class({
                 defaultRoute = route.id;
                 this.options.defaultRoute = "";
                 isSelectedDefault = true;
-            }else if ( !isSelectedDefault && (routeConfigList.length == 1 || route.sole )) { //sole表示优先路由
+            }else if ( !isSelectedDefault && (visibleRouteConfigList.length === 1 || route.sole )) { //sole表示优先路由
                 defaultRoute = route.id;
             }
         }.bind(this));
