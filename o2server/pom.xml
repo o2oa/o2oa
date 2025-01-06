@@ -435,26 +435,26 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 		</dependency>
-			<dependency>
-				<groupId>org.graalvm.sdk</groupId>
-				<artifactId>graal-sdk</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.js</groupId>
-				<artifactId>js</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.js</groupId>
-				<artifactId>js-scriptengine</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.tools</groupId>
-				<artifactId>profiler</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.graalvm.tools</groupId>
-				<artifactId>chromeinspector</artifactId>
-			</dependency>
+		<dependency>
+			<groupId>org.graalvm.sdk</groupId>
+			<artifactId>graal-sdk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>profiler</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>chromeinspector</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -848,6 +848,12 @@
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers-standard-package</artifactId>
 				<version>2.9.2</version>
+				<exclusions>
+					<exclusion>
+						<groupId>xerces</groupId><!--排除xml-apis-->
+						<artifactId>xercesImpl</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge.tess4j</groupId>

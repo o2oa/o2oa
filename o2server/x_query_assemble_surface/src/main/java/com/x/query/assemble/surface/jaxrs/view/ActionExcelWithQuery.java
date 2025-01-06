@@ -29,6 +29,7 @@ import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.Runtime;
+import com.x.query.core.express.plan.SelectEntry;
 
 class ActionExcelWithQuery extends BaseAction {
 
@@ -65,8 +66,8 @@ class ActionExcelWithQuery extends BaseAction {
 			if (!business.readable(effectivePerson, view)) {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
-			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount(), true);
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(),
+					wi.getParameter(), wi.getCount(), true);
 			runtime.bundleList = wi.getBundleList();
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
@@ -87,6 +88,9 @@ class ActionExcelWithQuery extends BaseAction {
 
 		private static final long serialVersionUID = -51802802412712709L;
 
+		@FieldDescribe("前端指定排序列")
+		private List<SelectEntry> orderList = new TreeList<>();
+
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 
@@ -106,6 +110,14 @@ class ActionExcelWithQuery extends BaseAction {
 
 		@FieldDescribe("秘钥串，结果集不为空时必须传.")
 		private String key;
+
+		public List<SelectEntry> getOrderList() {
+			return orderList;
+		}
+
+		public void setOrderList(List<SelectEntry> orderList) {
+			this.orderList = orderList;
+		}
 
 		public List<FilterEntry> getFilterList() {
 			return filterList;

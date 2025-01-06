@@ -8,6 +8,7 @@ import org.apache.commons.collections4.list.TreeList;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.cms.core.entity.query.OrderEntry;
 
 public class Runtime extends GsonPropertyObject {
 
@@ -31,6 +32,9 @@ public class Runtime extends GsonPropertyObject {
 
 	@FieldDescribe("过滤")
 	public List<FilterEntry> filterList = new TreeList<>();
+
+	@FieldDescribe("指定排序")
+	public List<SelectEntry> orderList = new TreeList<>();
 
 	@FieldDescribe("参数")
 	public Map<String, String> parameter = new HashMap<>();
