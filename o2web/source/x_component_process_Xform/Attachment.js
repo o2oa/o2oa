@@ -1630,8 +1630,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         this.fieldModuleLoaded = true;
     },
-    /*
-     * @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
+    /** @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
+     * @memberof MWF.xApplication.process.Xform.Attachment
      * @param refresh {Boolean} 是否重新从后台获取附件列表.
      * @example
      *  this.form.get("fieldId").reload(); //重新加载
