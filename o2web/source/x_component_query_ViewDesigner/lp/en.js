@@ -165,6 +165,7 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"asc": "ascending order",
 		"desc": "Descending Order",
 		"orderToNumber": "Convert to numeric sort",
+		"switchOrder": "Click to switch order",
 		"category": "category",
 		"hidden": "Hidden",
 		"org": "Organization Object",

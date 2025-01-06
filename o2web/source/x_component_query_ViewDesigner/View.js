@@ -1681,6 +1681,7 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
         if (name=="path") this.resetTextNode();
+        if( name==="isSwitchOrder" )this.resetTextNode();
         if (name=="column"){
             this.view.json.data.orderList.each(function(order){
                 if (order.column==oldValue) order.column = this.json.column
@@ -1693,7 +1694,38 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (!listText) listText = "unnamed";
 
         this.textNode.set("text", this.json.displayName);
+
+        if( this.json.isSwitchOrder ){
+            this.textNode.setStyles({
+                "display": "flex",
+                "align-items": "center",
+                "cursor": "pointer"
+            })
+            this.sortNode = new Element("div", {
+                styles: { "padding-left": "10px", 'font-size': "12px" }
+            }).inject(this.textNode);
+            new Element("div.ooicon-icon_arrow_up").inject(this.sortNode);
+            new Element("div.ooicon-drop_down").inject(this.sortNode);
+        }else{
+           if(this.sortNode){
+               this.sortNode.destroy();
+               this.sortNode = null;
+           }
+        }
+
         this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
+
+        // this.target.node.setStyles({
+        //     "display": "flex",
+        //     "align-items": "center",
+        //     "cursor": "pointer"
+        // })
+        // var div = new Element("div", {
+        //     styles: { "padding-left": "10px" }
+        // }).inject(this.target.node);
+        // var ascSortNode = new Element("div.ooicon-icon_arrow_up.mainColor_color").inject(div);
+        // var descSortNode = new Element("div.ooicon-drop_down").inject(div);
+
     },
     "delete": function(e){
         var _self = this;

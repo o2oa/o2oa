@@ -122,6 +122,13 @@
                             <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="false" text{($.numberOrder)!==true?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.switchOrder}}:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="isSwitchOrder" type="radio" value="true" text{($.isSwitchOrder)===true?'checked':''}/>{{$.lp.yes}}
+                            <input class="MWFWorkDataCheck" name="isSwitchOrder" type="radio" value="false" text{($.isSwitchOrder)!==true?'checked':''}/>{{$.lp.no}}
+                        </td>
+                    </tr>
                     <tr class="MWFColumnExportGroup">
                         <td class="editTableTitle">{{$.lp.category}}:</td>
                         <td class="editTableValue">
