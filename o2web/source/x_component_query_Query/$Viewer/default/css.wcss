@@ -379,6 +379,16 @@
         "padding": "0px 10px",
         "border-bottom": "1px solid #CCC"
     },
+    "viewTitleTextNode": {
+      "display": "flex",
+      "align-items": "center",
+      "cursor": "pointer"
+   },
+   "viewTitleOrderNode": {
+     "font-size": "14px",
+     "padding-left": "10px",
+     "color": "#bbb"
+  },
     "viewContentTrNode": {
         //"background": "transparent"
         "background": "#ffffff"

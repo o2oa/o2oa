@@ -162,6 +162,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          */
         this.viewJson = null;
         this.filterItems = [];
+        this.manualOrderColumnMap = {};
         this.searchStatus = "none"; //none, custom, default
 
         /**
@@ -459,14 +460,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
 
             this.entries = {};
-            this.viewJson.selectList.each(function(column){
+            this.viewJson.selectList.each(function(column, index){
                 this.entries[column.column] = column;
                 if (!column.hideColumn){
+                    debugger;
                     var viewCell = new Element("td", {
-                        "styles": viewTitleCellNode,
-                        "text": column.displayName
+                        "styles": viewTitleCellNode
                     }).inject(this.viewTitleLine);
+                    var textNode = new Element("div", {
+                        "styles": this.css.viewTitleTextNode,
+                        "text": column.displayName
+                    }).inject(viewCell);
                     var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
+                    if( column.isSwitchOrder ){
+                        size.x += 24;
+                    }
                     viewCell.setStyle("min-width", ""+size.x+"px");
                     if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
 
@@ -478,6 +486,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     if( column.events && column.events.loadTitle && column.events.loadTitle.code ){
                         var code = column.events.loadTitle.code;
                         this.Macro.fire( code, {"node" : viewCell, "json" : column, "data" : column.displayName, "view" : this});
+                    }
+
+                    if( column.isSwitchOrder ){
+                        var sortNode = new Element("div", {
+                            styles: this.css.viewTitleOrderNode
+                        }).inject(textNode);
+                        new Element("div.o2-up.ooicon-icon_arrow_up").inject(sortNode);
+                        new Element("div.o2-down.ooicon-drop_down").inject(sortNode);
+                        var _self = this;
+                        textNode.addEvent('click', function(){
+                            _self.switchOrder(this.sortNode, this.column, this.index);
+                        }.bind({ sortNode: sortNode, column: column, index: index }));
+                        this.setOrderStyle(column, sortNode);
                     }
                 }else{
                     this.hideColumns.push(column.column);
@@ -494,6 +515,41 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
             if( this.options.isloadContent )this.lookup(data, callback);
+        }
+    },
+    switchOrder: function (node, column){
+        var map = this.manualOrderColumnMap;
+        switch (map[column.column]){
+            case 'asc':
+                map[column.column] = 'desc';
+                break;
+            case 'desc':
+                map[column.column] = '';
+                break;
+            default:
+                map[column.column] = 'asc';
+                break;
+        }
+        this.createViewNode(this.requestBody);
+        // this.setOrderStyle(column, node);
+    },
+    setOrderStyle: function (column, node){
+        var upNode = node.getElement('.o2-up');
+        var downNode = node.getElement('.o2-down');
+        var orderType = this.manualOrderColumnMap[column.column] || ( column.isSwitchOrder && this.isSortedType(column.orderType) );
+        switch (orderType){
+            case 'asc':
+                upNode.addClass('mainColor_color');
+                downNode.removeClass('mainColor_color');
+                break;
+            case 'desc':
+                upNode.removeClass('mainColor_color');
+                downNode.addClass('mainColor_color');
+                break;
+            default:
+                upNode.removeClass('mainColor_color');
+                downNode.removeClass('mainColor_color');
+                break;
         }
     },
     getExpandFlag : function(){
@@ -661,6 +717,30 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.exportExcelStart = null;
         this.exportExcelEnd = null;
     },
+    isSortedType: function(value){
+        return ['asc', 'desc'].contains(value);
+    },
+    setOrderList: function (d){
+        var map = this.manualOrderColumnMap;
+        if( Object.keys(map).length === 0 ){
+            delete d.orderList;
+            return;
+        }
+        var orderList = [];
+        this.viewJson.selectList.each(function(column, index){
+            if( map.hasOwnProperty(column.column) ){
+                var orderType = map[column.column];
+                if( this.isSortedType(orderType) ){
+                    var c = Object.clone(column);
+                    c.orderType = orderType;
+                    orderList.push(c);
+                }
+            }else{
+                this.isSortedType(column.orderType) && orderList.push(Object.clone(column));
+            }
+        }.bind(this));
+        d.orderList = orderList;
+    },
     lookup: function(data, callback){
         if( this.lookuping )return;
         this.lookuping = true;
@@ -669,6 +749,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
                 var d = data || {};
                 d.count = this.json.count;
+
+                this.requestBody = data;
+
+                this.setOrderList(d);
+
                 this.lookupAction.bundleView(this.json.id, d, function(json){
                     this.bundleItems = json.data.valueList;
                     this.bundleKey = json.data.key;
@@ -1165,6 +1250,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             filter.destroy();
         }.bind(this));
         this.filterItems = [];
+        this.manualOrderColumnMap = {};
         if (this.viewSearchInputNode) this.viewSearchInputNode.set("text", this.lp.searchKeywork);
 
         this.closeCustomSearch();
