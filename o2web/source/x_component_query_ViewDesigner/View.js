@@ -1720,7 +1720,6 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
     },
     setOrderStyle: function (){
-        debugger;
         var upNode = this.sortNode.getElement('.o2-up');
         var downNode = this.sortNode.getElement('.o2-down');
         var orderType = this.json.orderType;

@@ -463,7 +463,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.viewJson.selectList.each(function(column, index){
                 this.entries[column.column] = column;
                 if (!column.hideColumn){
-                    debugger;
                     var viewCell = new Element("td", {
                         "styles": viewTitleCellNode
                     }).inject(this.viewTitleLine);
@@ -941,7 +940,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this), null, async === false ? false : true );
     },
     showAssociatedDocumentResult: function(failureList, successList){
-        debugger;
         var fL = [];
         failureList.each(function( f ){
             if( f.properties.view === this.json.id )fL.push( f.targetBundle );
