@@ -143,10 +143,11 @@ public class WrapTools {
 		Room room = business.entityManagerContainer().find(t.getRoom(), Room.class);
 		if (null != room) {
 			t.setWoRoom(WrapTools.roomOutCopier.copy(room));
-		}
-		Building building = business.entityManagerContainer().find(room.getBuilding(),Building.class);
-		if(null != building){
-			t.setRoomAddress(building.getName());
+
+			Building building = business.entityManagerContainer().find(room.getBuilding(),Building.class);
+			if(null != building){
+				t.setRoomAddress(building.getName());
+			}
 		}
 	}
 
