@@ -67,7 +67,7 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
          * }
          */
         /**
-         * 创建每行需要导入的数据前触发，this.event指向当前行对象，您可以通过修改this.event.importData来修改数据。
+         * 创建每行需要导入的数据前触发，this.event指向当前行对象，您可以通过修改this.event.importedData来修改数据。
          * @event MWF.xApplication.process.Xform.Importer#beforeCreateRowData
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
@@ -209,5 +209,5 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
         }
         return title || ""
     }
-	
-}); 
+
+});
