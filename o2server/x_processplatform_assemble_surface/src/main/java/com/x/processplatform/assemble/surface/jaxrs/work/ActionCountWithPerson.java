@@ -41,12 +41,14 @@ class ActionCountWithPerson extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String person = null;
-		String appId = "";
+		String appId = appFlag;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			person = business.organization().person().get(credential);
-			Application application = emc.flag(appFlag, Application.class);
-			appId = application.getId();
+			if(StringUtils.isNotBlank(appId)) {
+				Application application = emc.flag(appFlag, Application.class);
+				appId = application.getId();
+			}
 		}
 		if (StringUtils.isNotEmpty(person)) {
 			final String dn = person;
