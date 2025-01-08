@@ -316,7 +316,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                     viewName = data.view;
                 }
             }
-        }else{
+        }else if(this.json.queryView){
             appName = this.json.queryView.appName;
             viewName = this.json.queryView.name;
             viewId = this.json.queryView.id;
