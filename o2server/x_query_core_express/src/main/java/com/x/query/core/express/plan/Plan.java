@@ -26,8 +26,6 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +40,8 @@ import com.x.base.core.entity.dataitem.ItemPrimitiveType;
 import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
@@ -96,9 +96,10 @@ public abstract class Plan extends GsonPropertyObject {
 	private Table order(Table table) {
 		if ((null != table) && (!table.isEmpty())) {
 			TableRowComparator comparator = null;
-			if ((null != runtime.orderList) && (!runtime.orderList.isEmpty())) {
-				comparator = new TableRowComparator(runtime.orderList);
-			} else if ((null != this.orderList) && (!orderList.isEmpty())) {
+//			if ((null != runtime.orderList) && (!runtime.orderList.isEmpty())) {
+//				comparator = new TableRowComparator(runtime.orderList);
+//			} else
+			if ((null != this.orderList) && (!this.orderList.isEmpty())) {
 				comparator = new TableRowComparator(this.orderList);
 			}
 			if (null != comparator) {
@@ -279,8 +280,7 @@ public abstract class Plan extends GsonPropertyObject {
 		List<String> bundles = this.listBundle();
 		this.group = this.findGroupSelectEntry();
 		// 支持前端指定排序
-		this.orderList = ((null != runtime.orderList) && (!runtime.orderList.isEmpty())) ? runtime.orderList
-				: this.listOrderSelectEntry();
+		this.orderList = this.listOrderSelectEntry();
 		if ((null != this.runtime.count) && (this.runtime.count > 0) && (this.runtime.count < bundles.size())) {
 			bundles = bundles.subList(0, this.runtime.count);
 		}
@@ -339,6 +339,10 @@ public abstract class Plan extends GsonPropertyObject {
 
 	private List<SelectEntry> listOrderSelectEntry() {
 		List<SelectEntry> list = new TreeList<>();
+		if ((null != runtime.orderList) && (!runtime.orderList.isEmpty())) {
+			list.addAll(runtime.orderList);
+			return list;
+		}
 		SelectEntry g = this.findGroupSelectEntry();
 		if ((null != g) && (g.isOrderType())) {
 			list.add(g);
