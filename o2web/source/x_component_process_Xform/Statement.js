@@ -57,7 +57,9 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
         this.node.empty();
     },
     _afterLoaded: function(){
-        if (this.json.queryStatement){
+        if(!!this.json.statementType){
+            this.loadView();
+        }else if (this.json.queryStatement){
             this.loadView();
         }
     },
@@ -86,8 +88,33 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
             this.loadView( callback );
         }
     },
+    getViewName: function (){
+        var appName, statementName, statementId;
+        if (this.json.statementType === "script") {
+            if (this.json.statementScript && this.json.statementScript.code) {
+                var data = this.form.Macro.exec(this.json.statementScript.code, this);
+                if (typeOf(data) === 'object') {
+                    appName = data.application;
+                    statementName = data.statement;
+                }else if(typeOf(data) === 'string'){
+                    statementName = data;
+                }
+            }
+        }else{
+            appName = (this.json.queryStatement) ? this.json.queryStatement.appName : this.json.application;
+            statementName =  (this.json.queryStatement) ? this.json.queryStatement.name : this.json.statementName;
+            statementId = (this.json.queryStatement) ? this.json.queryStatement.id : this.json.statementId;
+        }
+        return {appName: appName, statementName: statementName, statementId: statementId};
+    },
     loadView: function( callback ){
-        if (!this.json.queryStatement) return "";
+        // if (!this.json.queryStatement) return "";
+        var viewObj = this.getViewName();
+        var appName = viewObj.appName, statementName = viewObj.statementName, statementId = viewObj.statementId;
+        if( !statementName && !statementId ){
+            if(callback) callback();
+            return ;
+        }
 
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
@@ -111,9 +138,9 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
 
         //var data = JSON.parse(this.json.data);
         var viewJson = {
-            "application": (this.json.queryStatement) ? this.json.queryStatement.appName : this.json.application,
-            "statementName": (this.json.queryStatement) ? this.json.queryStatement.name : this.json.statementName,
-            "statementId": (this.json.queryStatement) ? this.json.queryStatement.id : this.json.statementId,
+            "application": appName,
+            "statementName": statementName,
+            "statementId": statementId,
             "isTitle": this.json.isTitle || "yes",
             "select": this.json.select || "none",
             "titleStyles": this.json.titleStyles,

@@ -18,7 +18,7 @@
 <!--		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>-->
 <!--		  </tr>-->
 		</table>
-		
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
@@ -31,12 +31,37 @@
 		<div>
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
-					<td class="editTableTitle">{{$.lp.view}}:</td>
-					<td class="editTableValue"><div class="MWFQueryViewSelect" name="queryView"></div></td>
+					<td class="editTableValue" colspan="2">
+						<input type="radio" onclick="if (this.checked) {
+							$('text{$.pid}selectView').setStyle('display', 'block');
+							$('text{$.pid}scriptView').setStyle('display', 'none');
+						}" name="viewType" value="select" text{($.viewType!='script')?'checked':''}/>{{$.lp.select}}{{$.lp.view}}
+						<input type="radio" onclick="if (this.checked) {
+							$('text{$.pid}selectView').setStyle('display', 'none');
+							$('text{$.pid}scriptView').setStyle('display', 'block');
+						}" name="viewType" value="script" text{($.viewType=='script')?'checked':''}/>{{$.lp.calculation}}{{$.lp.view}}<br/>
+					</td>
 				</tr>
 			</table>
+			<div id="text{$.pid}selectView" style="display: text{($.viewType!='script')?'block':'none'}">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.view}}:</td>
+						<td class="editTableValue"><div class="MWFQueryViewSelect" name="queryView"></div></td>
+					</tr>
+				</table>
+			</div>
+			<div id="text{$.pid}scriptView" style="display: text{($.viewType=='script')?'block':'none'}">
+				<div style="padding: 5px;">
+					return { <br/>
+					&nbsp;&nbsp;"application" : "applicationName", //{{$.lp.computeSubmitAnnotation1}} <br/>
+					&nbsp;&nbsp;"view" : "viewName" //{{$.lp.view}}{{$.lp.nameAliasID}}<br/>
+					};
+				</div>
+				<div class="MWFScriptArea" name="viewScript" title="{{$.lp.view}}{{$.lp.script}} (S)"></div>
+			</div>
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
+				<tr title="如果没有立即载入，需要使用this.form.get(viewId).active()加载">
 					<td class="editTableTitle">{{$.lp.loadNow}}:</td>
 					<td class="editTableValue">
 						<input type="radio" name="loadView" value="yes" text{($.loadView!='no')?'checked':''}/>{{$.lp.yes}}
