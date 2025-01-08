@@ -54,7 +54,8 @@ MWF.xApplication.Selector.LP={
 		"process": "Proceso",
 		"cms": "Contenido",
 		"portal": "Portal",
-		"service": "Servicio"
+		"service": "Servicio",
+		"currentForm": "Formulario actual"
 	},
 	"cancel": "Cancelar",
 	"back": "Volver",
@@ -71,6 +72,9 @@ MWF.xApplication.Selector.LP={
 	"selectChildren": "Seleccionar todo lo siguiente",
 	"selectItemMaxText": "Puede seleccionar un máximo de {count} opciones.",
 	"service1": "Servicio",
-	"agent": "Agente"
+	"agent": "Agente",
+	"selectFieldProperty": "Seleccionar atributos de campo",
+	"searchDescriptionFieldProperty": "El formulario ampliado puede buscar componentes",
+	"currentForm": "Formulario actual"
 }
 MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP

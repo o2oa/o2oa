@@ -33,6 +33,7 @@ import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.ProcessPlatformPlan;
 import com.x.query.core.express.plan.Runtime;
+import com.x.query.core.express.plan.SelectEntry;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -183,8 +184,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
-			List<FilterEntry> filterList, Map<String, String> parameter, Integer count, boolean isBundle)
-			throws Exception {
+			List<FilterEntry> filterList, List<SelectEntry> orderList, Map<String, String> parameter, Integer count,
+			boolean isBundle) throws Exception {
 		Runtime runtime = new Runtime();
 		runtime.person = effectivePerson.getDistinguishedName();
 		runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
@@ -241,6 +242,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		runtime.parameter = parameter;
 		runtime.filterList = filterList;
+		runtime.orderList = orderList;
 		runtime.count = this.getCount(view, count, isBundle);
 		return runtime;
 	}

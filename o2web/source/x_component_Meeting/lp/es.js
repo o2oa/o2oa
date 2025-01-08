@@ -194,7 +194,7 @@ MWF.xApplication.Meeting.LP={
 		"building": "Ubicación",
 		"floor": "Piso",
 		"device": "Dispositivos",
-		"orderNumber" : "orderNumber",
+		"orderNumber": "orderNumber",
 		"photo": "Foto",
 		"capacity": "Capacidad",
 		"auditor": "Revisor",
@@ -270,6 +270,7 @@ MWF.xApplication.Meeting.LP={
 	"printQrcode": "Imprimir código QR para el registro de asistencia",
 	"weeklyViewTitle": "{month}, Semana {week}",
 	"meeting_input_url_number_error": "¡¡ el enlace de la reunión y el número de la reunión no pueden estar vacíos al mismo tiempo!",
-	"onlineConfigNotJson": "La configuración de la Conferencia en línea no está configurada para el formato json correcto"
+	"onlineConfigNotJson": "La configuración de la Conferencia en línea no está configurada para el formato json correcto",
+	"meeting_input_hostPerson_error": "¡El presentador no puede estar vacío!"
 }
 MWF.xApplication.Meeting["lp."+o2.language] = MWF.xApplication.Meeting.LP

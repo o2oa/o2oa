@@ -1681,6 +1681,7 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
         if (name=="path") this.resetTextNode();
+        if( name==="isSwitchOrder" || name==="orderType" )this.resetTextNode();
         if (name=="column"){
             this.view.json.data.orderList.each(function(order){
                 if (order.column==oldValue) order.column = this.json.column
@@ -1693,7 +1694,64 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (!listText) listText = "unnamed";
 
         this.textNode.set("text", this.json.displayName);
+
+        if( this.json.isSwitchOrder || this.isSortedType(this.json.orderType) ){
+            this.textNode.setStyles({
+                "display": "flex",
+                "align-items": "center",
+                "cursor": "pointer"
+            })
+            this.sortNode = new Element("div", {
+                styles: { "padding-left": "10px", 'font-size': "12px" }
+            }).inject(this.textNode);
+            new Element("div.o2-up.ooicon-icon_arrow_up").inject(this.sortNode);
+            new Element("div.o2-down.ooicon-drop_down").inject(this.sortNode);
+            if( !this.json.isSwitchOrder ){
+                this.sortNode.setStyle("cursor", "not-allowed");
+            }
+            this.setOrderStyle();
+        }else{
+           if(this.sortNode){
+               this.sortNode.destroy();
+               this.sortNode = null;
+           }
+        }
+
         this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
+    },
+    setOrderStyle: function (){
+        var upNode = this.sortNode.getElement('.o2-up');
+        var downNode = this.sortNode.getElement('.o2-down');
+        var orderType = this.json.orderType;
+        if( !this.json.isSwitchOrder ){
+            switch (orderType){
+                case 'asc':
+                    downNode.hide(); break;
+                case 'desc':
+                    upNode.hide(); break;
+                default:
+                    upNode.hide();
+                    downNode.hide();
+                    break;
+            }
+        }
+        switch (orderType){
+            case 'asc':
+                upNode.addClass('mainColor_color');
+                downNode.removeClass('mainColor_color');
+                break;
+            case 'desc':
+                upNode.removeClass('mainColor_color');
+                downNode.addClass('mainColor_color');
+                break;
+            default:
+                upNode.removeClass('mainColor_color');
+                downNode.removeClass('mainColor_color');
+                break;
+        }
+    },
+    isSortedType: function(value){
+        return ['asc', 'desc'].contains(value);
     },
     "delete": function(e){
         var _self = this;

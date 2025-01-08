@@ -1630,15 +1630,27 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         this.fieldModuleLoaded = true;
     },
-    /*
-     * @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
+    /** @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
+     * @memberof MWF.xApplication.process.Xform.Attachment
+     * @param refresh {Boolean} 是否重新从后台获取附件列表.
      * @example
      *  this.form.get("fieldId").reload(); //重新加载
+     * @example
+     *  this.form.get("fieldId").reload( true ); //重新从后台获取附件并重新加载
      */
-    reload: function(){
+    reload: function( refresh ){
         this.node.empty();
         if (this.form.businessData.work.startTime){
-            this.loadAttachmentController();
+            if( refresh ){
+                var job = (this.form.businessData.work || this.form.businessData.workCompleted ).job;
+                o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.
+                    listWithJob(job, function(json){
+                        this.form.businessData.attachmentList = json.data;
+                        this.loadAttachmentController();
+                }.bind(this));
+            }else{
+                this.loadAttachmentController();
+            }
         }
     },
     getFlagDefaultFalse: function( key ){

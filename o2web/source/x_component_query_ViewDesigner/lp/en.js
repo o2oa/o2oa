@@ -21,12 +21,10 @@ MWF.xApplication.query.ViewDesigner.LP={
 	"copy": "Copy",
 	"ok": "OK",
 	"cancel": "Cancel",
-
 	"mustSelectFormStyle": "You must select a form style",
 	"notValidJson": "Wrong json format",
 	"mustSelectDict": "Please select the data dictionary first",
 	"mustSelect": "Please select.",
-
 	"action": {
 		"move": "Move",
 		"delete": "Delete",
@@ -167,6 +165,8 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"asc": "ascending order",
 		"desc": "Descending Order",
 		"orderToNumber": "Convert to numeric sort",
+		"switchOrder": "Click to switch order",
+		"switchOrderByCurrent": "Click to sort by current column only",
 		"category": "category",
 		"hidden": "Hidden",
 		"org": "Organization Object",
@@ -347,7 +347,16 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"saveAs": "save as",
 		"autoSave": "Auto Save",
 		"preview": "preview",
-		"help": "help"
-	}
+		"help": "help",
+		"add": "newly build",
+		"gotoApp": "Open the current application"
+	},
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search",
+	"searchAndSort": "Sorting and Search"
 }
 MWF.xApplication.query.ViewDesigner["lp."+o2.language] = MWF.xApplication.query.ViewDesigner.LP

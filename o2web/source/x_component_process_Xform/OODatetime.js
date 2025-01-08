@@ -28,7 +28,7 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
             'id': this.json.id,
             'MWFType': this.json.type,
             'validity-blur': 'true',
-            "label-style": "width:6.2vw; min-width:5em; max-width:9em"
+            // "label-style": "width:6.2vw; min-width:5em; max-width:9em"
         });
 
         if (this.json.properties) {

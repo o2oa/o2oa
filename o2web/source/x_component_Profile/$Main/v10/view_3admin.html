@@ -1,0 +1,47 @@
+<div class="o2_profile_contentNode">
+    <div class="o2_profile_configNode" title="{{$.lp.inforConfig}}">
+        <div class="o2_profile_inforConfigArea">
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.name }}</div>
+                <div class="o2_profile_inforContent">{{ $.data.name }}</div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.employee }}</div>
+                <div class="o2_profile_inforContent">{{ $.data.employee }}</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="o2_profile_configNode" title="{{$.lp.layoutConfig}}" style="display:none;">
+        <div class="o2_profile_layoutTitle">{{ $.lp.layoutAction }}</div>
+        <div class="o2_profile_layoutButtonArea">
+            <div class="o2_profile_layoutClearDataAction" style="display:none;">{{ $.lp.clear }}</div>
+
+            {{if MWF.AC.isAdministrator() }}
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.setDefault }}</div>
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.clearDefault }}</div>
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.setForce }}</div>
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.clearForce }}</div>
+            {{ end if }}
+
+        </div>
+
+        <div class="o2_profile_layoutTitle">{{ $.lp.desktopBackground }}</div>
+        <div class="o2_profile_layoutButtonArea"></div>
+    </div>
+
+
+    <div class="o2_profile_configNode" title="{{$.lp.ideaConfig}}">
+        <textarea class="o2_profile_ideasArea"></textarea>
+        <div class="o2_profile_ideasSave" style="display:none;">{{ $.lp.saveIdea }}</div>
+
+        {{if MWF.AC.isAdministrator() }}
+        <div class="o2_profile_ideasSave">{{ $.lp.saveIdeaDefault }}</div>
+        {{ end if }}
+
+    </div>
+
+</div>

@@ -313,7 +313,8 @@ MWF.xApplication.portal.PageDesigner.LP={
 		"clearNoDomModule": "Clear component configurations that are not in the HTML tree",
 		"autoSave": "AutoSave",
 		"brush": "brush",
-		"viewAllVersion": "View all page versions"
+		"viewAllVersion": "View all page versions",
+		"copyProperty": "Copy component properties"
 	},
 	"version": {
 		"title": "View page version history",
@@ -326,6 +327,10 @@ MWF.xApplication.portal.PageDesigner.LP={
 		"resumeConfirm": "Resume Confirmation",
 		"resumeInfo": "Are you sure you need to perform a form recovery operation? After confirming the restoration, the current form will be updated, and the current page needs to be manually saved to take effect.",
 		"resumeSuccess": "Resume Successfully"
-	}
+	},
+	"clearNoDomModuleTitle": "Clear component configurations that are not in the HTML tree",
+	"clearNoDomModuleContent": "Do you want to clear component configurations that are not in the HTML tree? After clearing, it needs to be saved to take effect.",
+	"selectCopyModule": "Please select the component whose properties need to be copied",
+	"selectCopyModuleNotice": "Please select the component first!"
 }
 MWF.xApplication.portal.PageDesigner["lp."+o2.language] = MWF.xApplication.portal.PageDesigner.LP

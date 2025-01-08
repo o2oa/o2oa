@@ -117,7 +117,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
              * @event MWF.xApplication.query.Query.Viewer#exportRow
              */
             "exportRow"
-         ]
+        ]
         // "actions": {
         //     "lookup": {"uri": "/jaxrs/view/flag/{view}/query/{application}/execute", "method":"PUT"},
         //     "getView": {"uri": "/jaxrs/view/flag/{view}/query/{application}"}
@@ -162,6 +162,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          */
         this.viewJson = null;
         this.filterItems = [];
+        this.manualOrderColumnMap = {};
         this.searchStatus = "none"; //none, custom, default
 
         /**
@@ -459,14 +460,20 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
 
             this.entries = {};
-            this.viewJson.selectList.each(function(column){
+            this.viewJson.selectList.each(function(column, index){
                 this.entries[column.column] = column;
                 if (!column.hideColumn){
                     var viewCell = new Element("td", {
-                        "styles": viewTitleCellNode,
-                        "text": column.displayName
+                        "styles": viewTitleCellNode
                     }).inject(this.viewTitleLine);
+                    var textNode = new Element("div", {
+                        "styles": this.css.viewTitleTextNode,
+                        "text": column.displayName
+                    }).inject(viewCell);
                     var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
+                    if( column.isSwitchOrder ){
+                        size.x += 24;
+                    }
                     viewCell.setStyle("min-width", ""+size.x+"px");
                     if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
 
@@ -478,6 +485,23 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     if( column.events && column.events.loadTitle && column.events.loadTitle.code ){
                         var code = column.events.loadTitle.code;
                         this.Macro.fire( code, {"node" : viewCell, "json" : column, "data" : column.displayName, "view" : this});
+                    }
+
+                    if( column.isSwitchOrder || this.isSortedType(column.orderType) ){
+                        var sortNode = new Element("div", {
+                            styles: this.css.viewTitleOrderNode
+                        }).inject(textNode);
+                        new Element("div.o2-up.ooicon-icon_arrow_up").inject(sortNode);
+                        new Element("div.o2-down.ooicon-drop_down").inject(sortNode);
+                        var _self = this;
+                        if( column.isSwitchOrder ){
+                            textNode.addEvent('click', function(){
+                                _self.switchOrder(this.sortNode, this.column, this.index);
+                            }.bind({ sortNode: sortNode, column: column, index: index }));
+                        }else{
+                            sortNode.setStyle("cursor", "not-allowed");
+                        }
+                        this.setOrderStyle(column, sortNode);
                     }
                 }else{
                     this.hideColumns.push(column.column);
@@ -494,6 +518,85 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
             if( this.options.isloadContent )this.lookup(data, callback);
+        }
+    },
+    switchOrder: function (node, column){
+        var map = this.manualOrderColumnMap;
+        var clearOtherOrder = function (){
+            this.viewJson.selectList.each(function(c, index){
+                if( c.column === column.column )return;
+                if( map.hasOwnProperty(c.column) ){
+                    map[c.column] = "";
+                }else if(this.isSortedType(c.orderType)){
+                    map[c.column] = "";
+                }
+            }.bind(this));
+        }.bind(this);
+        var restoreOtherOrder = function (){
+            this.viewJson.selectList.each(function(c, index){
+                if( c.column === column.column )return;
+                if( map.hasOwnProperty(c.column) && this.isSortedType(c.orderType) ){
+                    delete map[c.column];
+                }
+            }.bind(this));
+        }.bind(this);
+        switch ( this.getOrderType(column) ){
+            case 'asc':
+                map[column.column] = 'desc';
+                if(column.orderByCurrent)clearOtherOrder();
+                break;
+            case 'desc':
+                map[column.column] = '';
+                if(column.orderByCurrent)restoreOtherOrder();
+                break;
+            default:
+                map[column.column] = 'asc';
+                if(column.orderByCurrent)clearOtherOrder();
+                break;
+        }
+        this.createViewNode(this.requestBody);
+        // this.setOrderStyle(column, node);
+    },
+    getOrderType: function (column){
+        var orderType;
+        if( this.manualOrderColumnMap.hasOwnProperty(column.column) ){
+            orderType = this.manualOrderColumnMap[column.column];
+        }else{
+            if( this.isSortedType(column.orderType) ){
+                orderType = column.orderType;
+            }
+        }
+        return orderType;
+    },
+    setOrderStyle: function (column, node){
+        var upNode = node.getElement('.o2-up');
+        var downNode = node.getElement('.o2-down');
+        var orderType = this.getOrderType(column);
+        if( !column.isSwitchOrder ){
+            switch (orderType){
+                case 'asc':
+                    downNode.hide(); break;
+                case 'desc':
+                    upNode.hide(); break;
+                default:
+                    upNode.hide();
+                    downNode.hide();
+                    break;
+            }
+        }
+        switch (orderType){
+            case 'asc':
+                upNode.addClass('mainColor_color');
+                downNode.removeClass('mainColor_color');
+                break;
+            case 'desc':
+                upNode.removeClass('mainColor_color');
+                downNode.addClass('mainColor_color');
+                break;
+            default:
+                upNode.removeClass('mainColor_color');
+                downNode.removeClass('mainColor_color');
+                break;
         }
     },
     getExpandFlag : function(){
@@ -661,6 +764,30 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.exportExcelStart = null;
         this.exportExcelEnd = null;
     },
+    isSortedType: function(value){
+        return ['asc', 'desc'].contains(value);
+    },
+    setOrderList: function (d){
+        var map = this.manualOrderColumnMap;
+        if( Object.keys(map).length === 0 ){
+            delete d.orderList;
+            return;
+        }
+        var orderList = [];
+        this.viewJson.selectList.each(function(column, index){
+            if( map.hasOwnProperty(column.column) ){
+                var orderType = map[column.column];
+                if( this.isSortedType(orderType) ){
+                    var c = Object.clone(column);
+                    c.orderType = orderType;
+                    orderList.push(c);
+                }
+            }else{
+                this.isSortedType(column.orderType) && orderList.push(Object.clone(column));
+            }
+        }.bind(this));
+        d.orderList = orderList;
+    },
     lookup: function(data, callback){
         if( this.lookuping )return;
         this.lookuping = true;
@@ -669,6 +796,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
                 var d = data || {};
                 d.count = this.json.count;
+
+                this.requestBody = data;
+
+                this.setOrderList(d);
+
                 this.lookupAction.bundleView(this.json.id, d, function(json){
                     this.bundleItems = json.data.valueList;
                     this.bundleKey = json.data.key;
@@ -766,6 +898,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         d.bundleList = valueList;
         d.key = this.bundleKey;
 
+        this.setOrderList(d);
+
         while (this.viewTable.rows.length>1){
             this.viewTable.deleteRow(-1);
         }
@@ -806,7 +940,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this), null, async === false ? false : true );
     },
     showAssociatedDocumentResult: function(failureList, successList){
-        debugger;
         var fL = [];
         failureList.each(function( f ){
             if( f.properties.view === this.json.id )fL.push( f.targetBundle );
@@ -1165,6 +1298,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             filter.destroy();
         }.bind(this));
         this.filterItems = [];
+        this.manualOrderColumnMap = {};
         if (this.viewSearchInputNode) this.viewSearchInputNode.set("text", this.lp.searchKeywork);
 
         this.closeCustomSearch();

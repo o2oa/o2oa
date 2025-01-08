@@ -118,7 +118,16 @@ MWF.xApplication.query.TableDesigner.LP={
 		"tableImplode": "Data Import",
 		"tableExcelExplode": "Excel export",
 		"tableExcelImplode": "Excel import",
-		"tableClear": "Clear table data"
-	}
+		"tableClear": "Clear table data",
+		"add": "newly build",
+		"gotoApp": "Open the current application"
+	},
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search",
+	"searchAndSort": "Sorting and Search"
 }
 MWF.xApplication.query.TableDesigner["lp."+o2.language] = MWF.xApplication.query.TableDesigner.LP

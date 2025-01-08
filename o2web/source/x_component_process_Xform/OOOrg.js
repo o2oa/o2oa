@@ -34,7 +34,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
             'id': this.json.id,
             'MWFType': this.json.type,
             'validity-blur': 'true',
-            "label-style": "width:6.2vw; min-width:5em; max-width:9em"
+            // "label-style": "width:6.2vw; min-width:5em; max-width:9em"
         });
 
         if (this.json.label) {
@@ -201,6 +201,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
     __setData: function(data, fireChange){
         var old = this.getInputData();
         this._setBusinessData(data);
+        debugger;
         this.node.value = data;
         if (fireChange && old!==data) this.fireEvent("change");
         this.moduleValueAG = null;

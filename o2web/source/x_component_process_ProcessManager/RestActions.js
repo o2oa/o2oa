@@ -284,7 +284,7 @@ MWF.xApplication.process.ProcessManager.RestActions = new Class({
 		address = address.replace(/{id}/g, formData.json.categoryId);
 		var callback = new MWF.xApplication.process.ProcessManager.RestActions.Callback(success, failure);
 		var data = MWF.encodeJsonString(JSON.encode(formData));
-		alert(data)
+		// alert(data)
 		var json = "{\"id\":\""+formData.json.id+"\", \"data\": \""+data+"\", \"name\":\""+formData.json.name+"\", \"alias\":\""+formData.json.name+"\", \"description\":\""+formData.json.description+"\", \"formCategory\": \""+formData.json.formCategory+"\"}";
 		MWF.restful("POST", address, json, callback);
 	},

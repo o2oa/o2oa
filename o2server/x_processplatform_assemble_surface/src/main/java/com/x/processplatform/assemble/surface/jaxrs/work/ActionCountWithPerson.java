@@ -28,6 +28,7 @@ import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
+import com.x.processplatform.core.entity.element.Application;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -35,14 +36,17 @@ class ActionCountWithPerson extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCountWithPerson.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential, String appId) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential, String appFlag) throws Exception {
 		LOGGER.debug("execute:{}, credential:{}.", effectivePerson::getDistinguishedName, () -> credential);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String person = null;
+		String appId = "";
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			person = business.organization().person().get(credential);
+			Application application = emc.flag(appFlag, Application.class);
+			appId = application.getId();
 		}
 		if (StringUtils.isNotEmpty(person)) {
 			final String dn = person;
@@ -67,10 +71,11 @@ class ActionCountWithPerson extends BaseAction {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if(StringUtils.isBlank(appId)) {
+				if (StringUtils.isBlank(appId)) {
 					count = emc.countEqual(Task.class, Task.person_FIELDNAME, dn);
-				}else{
-					count = emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, dn, Task.application_FIELDNAME, appId);
+				} else {
+					count = emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, dn, Task.application_FIELDNAME,
+							appId);
 				}
 			} catch (Exception e) {
 				LOGGER.error(e);
@@ -90,7 +95,7 @@ class ActionCountWithPerson extends BaseAction {
 				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 				Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 				Predicate p = cb.equal(root.get(TaskCompleted_.person), dn);
-				if(StringUtils.isNotBlank(appId)){
+				if (StringUtils.isNotBlank(appId)) {
 					p = cb.and(p, cb.equal(root.get(TaskCompleted_.application), appId));
 				}
 				p = cb.and(p, cb.or(cb.equal(root.get(TaskCompleted_.latest), true),
@@ -107,10 +112,11 @@ class ActionCountWithPerson extends BaseAction {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if(StringUtils.isBlank(appId)) {
+				if (StringUtils.isBlank(appId)) {
 					count = emc.countEqual(Read.class, Read.person_FIELDNAME, dn);
-				}else{
-					count = emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, dn, Read.application_FIELDNAME, appId);
+				} else {
+					count = emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, dn, Read.application_FIELDNAME,
+							appId);
 				}
 			} catch (Exception e) {
 				LOGGER.error(e);
@@ -123,10 +129,11 @@ class ActionCountWithPerson extends BaseAction {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if(StringUtils.isBlank(appId)) {
+				if (StringUtils.isBlank(appId)) {
 					count = emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn);
-				}else{
-					count = emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn, ReadCompleted.application_FIELDNAME, appId);
+				} else {
+					count = emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn,
+							ReadCompleted.application_FIELDNAME, appId);
 				}
 			} catch (Exception e) {
 				LOGGER.error(e);
@@ -139,10 +146,11 @@ class ActionCountWithPerson extends BaseAction {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if(StringUtils.isBlank(appId)) {
+				if (StringUtils.isBlank(appId)) {
 					count = emc.countEqual(Review.class, Review.person_FIELDNAME, dn);
-				}else{
-					count = emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, dn, Review.application_FIELDNAME, appId);
+				} else {
+					count = emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, dn,
+							Review.application_FIELDNAME, appId);
 				}
 			} catch (Exception e) {
 				LOGGER.error(e);

@@ -143,8 +143,17 @@ MWF.xApplication.query.ImporterDesigner.LP={
 		"saveAs": "Guardar como",
 		"autoSave": "Guardar automáticamente",
 		"preview": "vista previa",
-		"help": "ayuda"
+		"help": "ayuda",
+		"add": "Nueva construcción",
+		"gotoApp": "Abrir su aplicación"
 	},
-	"autoAddColumns": "Generar columnas a partir de la tabla de datos"
+	"autoAddColumns": "Generar columnas a partir de la tabla de datos",
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id",
+	"searchAndSort": "Clasificación y búsqueda"
 }
 MWF.xApplication.query.ImporterDesigner["lp."+o2.language] = MWF.xApplication.query.ImporterDesigner.LP

@@ -501,18 +501,25 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
 
                 }.bind(this));
             }
+
+            if (route.data.position){
+                var t = route.getTextPoint();
+                var tx = t.x.toFloat() + dx.toFloat() - this.set.movex;
+                var ty = t.y.toFloat() + dy.toFloat() - this.set.movey;
+                route.text.attr({
+                    "x": tx,
+                    "y": ty
+                });
+                route.data.position = tx + "," + ty;
+            }
+
         }.bind(this));
-
-
 
 
 
         this.set.movex = dx;
         this.set.movey = dy;
 
-        //	var path = this.shap.attr("path");
-        //	path = Raphael.transformPath(path, "t"+this.set.movex+","+this.set.movey);
-        //	this.redrawRoute(path);
         this.redrawRoute();
 
         this.paper.safari();

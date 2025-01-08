@@ -267,5 +267,5 @@ MWF.xApplication.Org.LP={
 			"value": "2"
 		}
 	]
-};
+}
 MWF.xApplication.Org["lp."+o2.language] = MWF.xApplication.Org.LP

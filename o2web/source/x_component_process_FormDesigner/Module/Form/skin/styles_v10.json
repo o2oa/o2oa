@@ -408,5 +408,11 @@
       "label-Align": "right",
       "view-style": "background-color:#f7f7f7"
     }
+  },
+  "Statement": {
+    "styles": {},
+    "properties": {
+      "class": "form-content-view"
+    }
   }
 }

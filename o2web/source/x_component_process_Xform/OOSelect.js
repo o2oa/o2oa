@@ -31,6 +31,10 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		this.fireEvent("postLoad");
 	},
 
+	loadDescription: function () {
+		this.node.setAttribute('placeholder', this.json.description || '');
+	},
+
     _loadNode: function(){
 		this._loadNodeEdit();
     },
@@ -85,7 +89,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		this.node.set({
 			'id': this.json.id,
 			'MWFType': this.json.type,
-			"label-style": "width:6.2vw; min-width:5em; max-width:9em"
+			// "label-style": "width:6.2vw; min-width:5em; max-width:9em"
 		});
 
 	},

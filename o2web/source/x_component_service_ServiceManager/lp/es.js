@@ -95,6 +95,14 @@ MWF.xApplication.service.ServiceManager.LP={
 	"interfaceConfig": "Interfaces",
 	"scriptConfig": "Scripts",
 	"dataConfig": "Datos",
-	"disable": "Deshabilitar"
+	"disable": "Deshabilitar",
+	"name": "Nombre",
+	"alias": "Alias",
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id"
 }
 MWF.xApplication.service.ServiceManager["lp."+o2.language] = MWF.xApplication.service.ServiceManager.LP

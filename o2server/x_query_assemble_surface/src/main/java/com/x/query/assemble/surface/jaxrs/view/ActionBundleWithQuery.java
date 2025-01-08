@@ -19,6 +19,8 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Runtime;
+import com.x.query.core.express.plan.SelectEntry;
+
 import org.apache.commons.collections4.list.TreeList;
 
 import java.util.HashMap;
@@ -51,8 +53,8 @@ class ActionBundleWithQuery extends BaseAction {
 			if (null == wi) {
 				wi = new Wi();
 			}
-			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount(), true);
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(),
+					wi.getParameter(), wi.getCount(), true);
 		}
 		Wo wo = new Wo();
 		wo.setValueList(this.fetchBundle(business, view, runtime, ThisApplication.forkJoinPool()));
@@ -82,6 +84,9 @@ class ActionBundleWithQuery extends BaseAction {
 
 		private static final long serialVersionUID = 6425066184455473281L;
 
+		@FieldDescribe("前端指定排序列")
+		private List<SelectEntry> orderList = new TreeList<>();
+
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 
@@ -92,6 +97,14 @@ class ActionBundleWithQuery extends BaseAction {
 
 		@FieldDescribe("数量")
 		private Integer count = 0;
+
+		public List<SelectEntry> getOrderList() {
+			return orderList;
+		}
+
+		public void setOrderList(List<SelectEntry> orderList) {
+			this.orderList = orderList;
+		}
 
 		public List<FilterEntry> getFilterList() {
 			return filterList;

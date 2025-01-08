@@ -1489,7 +1489,15 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"secondEnable": "Select seconds",
 		"weekBegin": "Starting every week",
 		"required": "Required",
-		"readModeEvents": "Does the reading mode respond to mouse events"
+		"readModeEvents": "Does the reading mode respond to mouse events",
+		"useCache": "Using cache",
+		"useCacheNote": "Yes, the data dictionary will be cached when first opened, and the webpage needs to be refreshed to retrieve the modified data dictionary. Select otherwise to retrieve from the server every time.",
+		"foxit": {
+			"api": "API"
+		},
+		"scriptMode": "Script type",
+		"scriptEditor": "Script editor ",
+		"lineNumber": "set number "
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
@@ -1573,7 +1581,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"brush": "brush",
 		"viewAllVersion": "View all form versions",
 		"add": "newly build",
-		"gotoApp": "Open the current application"
+		"gotoApp": "Open the current application",
+		"copyProperty": "Copy component properties"
 	},
 	"formType": {
 		"empty": "Empty form",
@@ -1595,6 +1604,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"section": "section",
 		"greenFlat": "Green flat",
 		"lightBlue": "Light blue style"
-	}
+	},
+	"selectCopyModule": "Please select the component whose properties need to be copied",
+	"selectCopyModuleNotice": "Please select the component first!"
 }
 MWF.xApplication.cms.FormDesigner["lp."+o2.language] = MWF.xApplication.cms.FormDesigner.LP

@@ -24,24 +24,36 @@ MWF.xApplication.process.Xform.Codeeditor = MWF.APPCodeeditor =  new Class({
         }
     },
 
+
     _loadUserInterface: function(){
         this.node.empty();
         if (this.isReadonly()){
-
+            var value = this._getBusinessData();
+            this.highlighting(value);
+            this.node.setStyles({
+                "padding": "0.5em 0.6em",
+                "background-color": "#f7f7f7",
+                "overflow": "auto",
+                "font-size": "0.875em",
+                "border-radius": "var(--oo-default-radius)"
+            })
         }else{
-            var config = Object.clone(this.json.editorProperties);
-            if (this.json.config){
-                if (this.json.config.code){
-                    var obj = this.form.Macro.exec(this.json.config.code, this);
-                    Object.each(obj, function(v, k){
-                        config[k] = v;
-                    });
-                }
-            }
-            this.loadCodeeditor(config);
+            this.loadCodeeditor();
         }
     },
-    loadCodeeditor(){
+    highlighting: function(value){
+        var contentType = this.json.mode ? 'text/'+this.json.mode : 'text/javascript';
+        this.preNode = new Element('pre').inject(this.node);
+        this.preNode.set('data-lang', contentType);
+        this.preNode.set('text', value || ' ');
+
+        o2.require("o2.widget.monaco", function(){
+            o2.widget.monaco.load(function(){
+                monaco.editor.colorizeElement(this.preNode, {});
+            }.bind(this));
+        }.bind(this));
+    },
+    loadCodeeditor: function(){
         MWF.require("MWF.widget.ScriptArea", function(){
             this.editor = new MWF.widget.ScriptArea(this.node, {
                 "title": this.json.title || "",
@@ -82,12 +94,9 @@ MWF.xApplication.process.Xform.Codeeditor = MWF.APPCodeeditor =  new Class({
                 "onDestroy": function(){
                     this.fireEvent('destroy');
                 }.bind(this),
-
-
                 "style": this.json.style || "v10"
             });
             this.editor.load({code: this._getBusinessData()});
-            // this._loadEvents()
         }.bind(this));
     },
 

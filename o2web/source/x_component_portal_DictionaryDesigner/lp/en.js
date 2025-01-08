@@ -44,7 +44,17 @@ MWF.xApplication.portal.DictionaryDesigner.LP={
 		"saveas": "Save data dictionary as",
 		"help": "help",
 		"search": "search",
-		"autoSave": "AutoSave"
-	}
+		"autoSave": "AutoSave",
+		"add": "newly build",
+		"gotoApp": "Open the current application"
+	},
+	"sorkKeyNote": "-Sort by-",
+	"createTime": "Creation time",
+	"updateTime": "Update time",
+	"asc": "positive sequence",
+	"desc": "Reverse order",
+	"searchPlacholder": "Enter name/alias/id search",
+	"searchAndSort": "Sorting and Search",
+	"duplicateNewNote": "There is already a new data dictionary, please save it first"
 }
 MWF.xApplication.portal.DictionaryDesigner["lp."+o2.language] = MWF.xApplication.portal.DictionaryDesigner.LP

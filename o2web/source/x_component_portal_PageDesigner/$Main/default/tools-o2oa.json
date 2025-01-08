@@ -1,0 +1,57 @@
+{
+  "OOInput": {
+    "icon": "textfield.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_input,
+    "className": "OOInput"
+  },
+  "OOButton": {
+    "icon": "button.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_button,
+    "className": "OOButton"
+  },
+  "OORadioGroup": {
+    "icon": "radio.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_radioGroup,
+    "className": "OORadioGroup"
+  },
+  "OOCheckGroup": {
+    "icon": "checkbox.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_checkGroup,
+    "className": "OOCheckGroup"
+  },
+  "OOSelect": {
+    "icon": "select.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_select,
+    "className": "OOSelect"
+  },
+  "OOTextarea": {
+    "icon": "textarea.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_textarea,
+    "className": "OOTextarea"
+  },
+  "OODatetime": {
+    "icon": "calendar.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_datetime,
+    "className": "OODatetime"
+  },
+  "OOOrg": {
+    "icon": "personfield.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
+    "className": "OOOrg"
+  },
+  "div": {
+    "icon": "div.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
+    "className": "Div"
+  },
+  "label": {
+    "icon": "label.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.label,
+    "className": "Label"
+  },
+  "codeedit": {
+    "icon": "codeeditor.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.codeedit,
+    "className": "Codeeditor"
+  }
+}

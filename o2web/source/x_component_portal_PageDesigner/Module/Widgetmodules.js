@@ -55,13 +55,13 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
                     {
                         "text": MWF.APPFD.LP.button.ok,
                         "action": function(){
-                             var widgetid = module.widgetSelect.options[module.widgetSelect.selectedIndex].value;
+                            var widgetid = module.widgetSelect.options[module.widgetSelect.selectedIndex].value;
                             if( !widgetid || widgetid==="none" ){
                                 module.page.designer.notice(module.page.designer.lp.notice.selectWidget, "error");
                                 return;
                             }
 
-                            var wrapDiv = "yes";
+                            var wrapDiv = "no";
                             dlg.node.getElements(".wrapDiv").each( function (el) {
                                 if( el.get("checked") )wrapDiv = el.get("value");
                             });
@@ -170,93 +170,143 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
         delete this;
     },
     appendWidgetModules: function( widgetid, relativeNode, position, wrapDiv ){
-        MWF.Actions.get("x_portal_assemble_designer").getWidget(widgetid, function(json){
+        this.getWidgetData( widgetid ).then(function(data) {
 
-            var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
-            this.containerModule = this.page.createModuleImmediately("Div", parentModule, relativeNode || this.copyNode, position || "before", false, false);
-
-            this.node = this.containerModule.node;
-
-            var data = this.getWidgetData( json.data );
-
-            var moduleList = this.page.json.moduleList;
-
-
-            var tmpNode = new Element("div").inject( this.page.container );
-            tmpNode.set("html", data.html);
-            var html = tmpNode.getFirst().get("html");
-            tmpNode.destroy();
-
-            this.node.set("html", html );
-
-            Object.each(data.json.moduleList, function (moduleJson) {
-                var oid = moduleJson.id;
-                var id = moduleJson.id;
-                var idx = 1;
-                while (this.page.json.moduleList[id]) {
-                    id = oid + "_" + idx;
-                    idx++;
-                }
-
-                if (oid != id) {
-                    moduleJson.id = id;
-                    var moduleNode = this.node.getElementById(oid);
-                    if (moduleNode) moduleNode.set("id", id);
-                }
-                this.page.json.moduleList[moduleJson.id] = moduleJson;
-            }.bind(this));
-
-            if( wrapDiv === "no" ){
-                this.node.getChildren().each( function (el) {
-                    if( el.get("MWFType") && el.get("id")){
-                        var id = el.get("id");
-                        el.inject( relativeNode || this.copyNode, position || "before" );
-                    }
-                }.bind(this));
-                this.page.parseModules( parentModule, parentModule.node);
-                //this.containerModule.delete();
-                this.page.selected();
-                this.containerModule.destroy();
+            if( wrapDiv === "yes" ){
+                this.appendWithWrap(data, relativeNode, position);
             }else{
-                this.page.parseModules(this.containerModule, this.node);
+                this.appendWithoutWrap(data, relativeNode, position);
             }
 
-            //var copyModuleNode = this.node.getFirst();
-            //while (copyModuleNode) {
-            //    //copyModuleNode.inject(injectNode, where);
-            //    var copyModuleJson = this.page.getDomjson(copyModuleNode);
-            //    var module = this.page.loadModule(copyModuleJson, copyModuleNode, this.containerModule);
-            //    module._setEditStyle_custom("id");
-            //    module.selected();
-            //    //loadModule: function(json, dom, parent)
-            //
-            //    copyModuleNode = copyModuleNode.getNext();
-            //}
-
+            this.page.selected();
             this._clearDragComplete();
-
-            //this.setCustomStyles();
-            //this.node.setProperties(this.json.properties);
-            //this.setNodeEvents();
-
-            //if (this.options.mode==="Mobile"){
-            //    if (oldStyleValue) this._setEditStyle("pageStyleType", null, oldStyleValue);
-            //}
-        }.bind(this), null, false);
+        }.bind(this));
     },
-    getWidgetData: function(data){
-        var widgetDataStr = null;
-        if (this.page.options.mode !== "Mobile"){
-            widgetDataStr = data.data;
-        }else{
-            widgetDataStr = data.mobileData;
+    appendWithWrap(data, relativeNode, position){
+        var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
+        var wrapModule = this.page.createModuleImmediately("Div", parentModule,
+            relativeNode || this.copyNode, position || "before", true, false
+        );
+        wrapModule._setEditStyle_custom("id");
+        // wrapModule.selected();
+
+        var node = wrapModule.node;
+        node.set('html', data.html);
+
+        this.checkId(data, node);
+
+        var moduleList = [];
+        var copyModuleNode = node.getFirst();
+        while (copyModuleNode) {
+            var copyModuleJson = this.page.getDomjson(copyModuleNode);
+            var module = this.page.loadModule(copyModuleJson, copyModuleNode, wrapModule);
+            module._setEditStyle_custom("id");
+            // module.selected();
+
+            moduleList.push( module );
+
+            copyModuleNode = copyModuleNode.getNext();
         }
-        var d = null;
-        if (widgetDataStr){
-            d = JSON.decode(MWF.decodeJsonString(widgetDataStr));
-            d.updateTime = data.updateTime;
+
+        if( this.page.history ){
+            wrapModule.addHistoryLog("create", [wrapModule].concat(moduleList));
         }
-        return d;
+    },
+    appendWithoutWrap(data, relativeNode, position){
+        var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
+        var node = new Element("div", {
+            "styles": {"display": "none"},
+            "html": data.html
+        }).inject(this.page.designer.content);
+
+        this.checkId(data, node);
+
+        // var injectNode = this.page.node;
+        // var where = "bottom";
+        // var parent = this.page;
+        // if (this.page.currentSelectedModule) {
+        //     var toModule = this.page.currentSelectedModule;
+        //     injectNode = toModule.node;
+        //     parent = toModule;
+        //
+        //     if (toModule.moduleType != "container" && toModule.moduleType != "page") {
+        //         where = "after";
+        //         parent = toModule.parentContainer;
+        //     }
+        // }
+
+        var moduleList = [];
+        var copyModuleNode = node.getFirst();
+        while (copyModuleNode) {
+            copyModuleNode.inject( relativeNode || this.copyNode, position || "before" );
+            var copyModuleJson = this.page.getDomjson(copyModuleNode);
+            var module = this.page.loadModule(copyModuleJson, copyModuleNode, parentModule);
+            module._setEditStyle_custom("id");
+            module.selected();
+
+            moduleList.push( module );
+
+            copyModuleNode = node.getFirst();
+        }
+        node.destroy();
+        node = null;
+
+        if( this.page.history && moduleList.length){
+            moduleList[0].addHistoryLog("create", moduleList);
+        }
+    },
+    checkId(data, node){
+        var datatemplateJsons = [];
+        var idMap = {};
+        var originalIds = {};
+        Object.each(data.json.moduleList, function (moduleJson) {
+            originalIds[moduleJson.id] = true;
+        });
+
+        Object.each(data.json.moduleList, function (moduleJson) {
+            var oid = moduleJson.id;
+            var id = moduleJson.id;
+            var idx = 1;
+            while (this.page.json.moduleList[id] || (originalIds[id] && idx > 1)) {
+                id = oid + "_" + idx;
+                idx++;
+            }
+            if (oid !== id) {
+                idMap[oid] = id;
+                moduleJson.id = id;
+                var moduleNode = node.getElementById(oid);
+                if (moduleNode) moduleNode.set("id", id);
+            }
+            if (moduleJson.type === "Datatemplate") datatemplateJsons.push(moduleJson);
+            this.page.json.moduleList[moduleJson.id] = moduleJson;
+        }.bind(this));
+
+        datatemplateJsons.each(function (json) {
+            this.page.designer.checkDatatemplateRelativeId(json, idMap);
+        }.bind(this));
+    },
+    getWidgetData: function(widgetid){
+        return MWF.Actions.get("x_portal_assemble_designer").getWidget(widgetid, function(json){
+            var data = json.data;
+            var widgetDataStr = null;
+            if (this.page.options.mode !== "Mobile"){
+                widgetDataStr = data.data;
+            }else{
+                widgetDataStr = data.mobileData;
+            }
+            var d = null;
+            if (widgetDataStr){
+                d = JSON.decode(MWF.decodeJsonString(widgetDataStr));
+                d.updateTime = data.updateTime;
+            }
+
+            var tmpNode = new Element("div").inject( this.page.container );
+            tmpNode.set("html", d.html);
+            d.html = tmpNode.getFirst().get("html");
+            tmpNode.destroy();
+
+            return d;
+        }.bind(this));
     }
 
 });

@@ -854,42 +854,42 @@ MWF.xApplication.Meeting.Config = new Class({
         if( !d.disableViewList.contains( "toMyMeeting" )  ){
             html +=
                 "   <div style='"+ viewStyle +"'>" +
-                "<input type='radio' name='configSelectDefaultView' "+(((!d.defaultView) || d.defaultView=="toMyMeeting") ? "checked" : "")+" value='toMyMeeting'>"+ ( d.toMyMeetingViewName || this.lp.myMeeting )+
+                "<input type='radio' name='configSelectDefaultView' "+(((!d.defaultView) || d.defaultView=="toMyMeeting") ? "checked" : "")+" value='toMyMeeting'>"+ o2.txt( d.toMyMeetingViewName || this.lp.myMeeting )+
                 "   </div>";
         }
 
         if( !d.disableViewList.contains( "toMonth" )  ){
             html +=
                 "   <div style='"+ viewStyle +"'>" +
-                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toMonth") ? "checked" : "")+" value='toMonth'>"+ ( d.toMonthViewName || this.lp.month )+
+                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toMonth") ? "checked" : "")+" value='toMonth'>"+ o2.txt( d.toMonthViewName || this.lp.month )+
                 "   </div>";
         }
 
         if( !d.disableViewList.contains( "toWeek" )  ){
             html +=
                 "   <div style='"+ viewStyle +"'>" +
-                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toWeek") ? "checked" : "")+" value='toWeek'>"+( d.toWeekViewName || this.lp.week )+
+                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toWeek") ? "checked" : "")+" value='toWeek'>"+ o2.txt( d.toWeekViewName || this.lp.week )+
                 "   </div>";
         }
 
         if( !d.disableViewList.contains( "toDay" )  ){
             html +=
                 "   <div style='"+ viewStyle +"'>" +
-                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toDay") ? "checked" : "")+" value='toDay'>"+(d.toDayViewName || this.lp.day)+
+                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toDay") ? "checked" : "")+" value='toDay'>"+ o2.txt(d.toDayViewName || this.lp.day)+
                 "   </div>";
         }
 
         if( !d.disableViewList.contains( "toList" )  ){
             html +=
                 "   <div style='"+ viewStyle +"'>" +
-                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toList") ? "checked" : "")+" value='toList'>"+(d.toListViewName || this.lp.list)+
+                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toList") ? "checked" : "")+" value='toList'>"+ o2.txt(d.toListViewName || this.lp.list)+
                 "   </div>";
         }
 
         if( !d.disableViewList.contains( "toRoom" )  ){
             html +=
                 "   <div style='"+ viewStyle +"'>" +
-                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toRoom") ? "checked" : "")+" value='toRoom'>"+(d.toRoomViewName || this.lp.room)+
+                "<input type='radio' name='configSelectDefaultView' "+((d.defaultView=="toRoom") ? "checked" : "")+" value='toRoom'>"+ o2.txt(d.toRoomViewName || this.lp.room)+
                 "   </div>";
         }
 

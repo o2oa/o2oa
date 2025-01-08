@@ -182,7 +182,7 @@
 		"background": "url("+"../x_component_process_FormDesigner/$Main/default/designerBg.png)",
 		"-webkit-user-select": "none",
 		"overflow": "auto",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
 	"designMobileNode": {
 	    "margin": "15px",

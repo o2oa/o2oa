@@ -21,12 +21,10 @@ MWF.xApplication.query.ViewDesigner.LP={
 	"copy": "Copia",
 	"ok": "Aceptar",
 	"cancel": "Cancelar",
-
 	"mustSelectFormStyle": "Debe seleccionar un estilo de formulario",
 	"notValidJson": "Formato JSON no válido",
 	"mustSelectDict": "Primero seleccione el diccionario de datos",
 	"mustSelect": "Por favor seleccione",
-
 	"action": {
 		"move": "Mover",
 		"delete": "Eliminar",
@@ -164,6 +162,8 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"asc": "Ascendente",
 		"desc": "Descendente",
 		"orderToNumber": "Convertir a orden numérico",
+		"switchOrder": "Haga clic para cambiar el orden",
+		"switchOrderByCurrent": "Haga clic para ordenar solo por la columna actual",
 		"category": "Categoría",
 		"hidden": "Oculto",
 		"org": "Objeto de organización",
@@ -344,10 +344,19 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"saveAs": "Guardar como",
 		"autoSave": "Guardar automáticamente",
 		"preview": "vista previa",
-		"help": "ayuda"
+		"help": "ayuda",
+		"add": "Nueva construcción",
+		"gotoApp": "Abrir su aplicación"
 	},
 	"actionBar": {
 		"exportExcel": "Exportar Microsoft"
-	}
+	},
+	"sorkKeyNote": "- ordenar -",
+	"createTime": "Tiempo de creación",
+	"updateTime": "Tiempo de actualización",
+	"asc": "Orden positivo",
+	"desc": "Orden inverso",
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id",
+	"searchAndSort": "Clasificación y búsqueda"
 }
 MWF.xApplication.query.ViewDesigner["lp."+o2.language] = MWF.xApplication.query.ViewDesigner.LP

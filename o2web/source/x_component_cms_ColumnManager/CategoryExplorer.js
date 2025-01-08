@@ -1380,7 +1380,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Form = new Class({
             "styles": this.css.itemStatusBottomNode
         }).inject(this.itemStatusNode);
 
-        if (this.data.name.icon) this.icon = this.data.name.icon;
+        if (this.data.icon) this.icon = this.data.icon;
         var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
 
         var itemIconNode = new Element("div", {
@@ -2182,7 +2182,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
     _open: function(e){
         var _self = this;
         if( this.explorer.isOnDragging )return;
-        if( this.editMode )return; 
+        if( this.editMode )return;
         if( this.data.id == "defaultList" ){
 
         }else if( this.data.type == "list" ){

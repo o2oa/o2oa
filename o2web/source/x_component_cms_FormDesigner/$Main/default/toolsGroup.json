@@ -29,12 +29,12 @@
     "json": "tools-filetext.json",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_filetext,
   },
-//  {
-//    "name": "O2OA UI",
-//    "json": "tools-o2oa.json",
-//    "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_O2OA,
-//    "className": "Textfield"
-//  },
+  {
+    "name": "O2OA UI",
+    "json": "tools-o2oa.json",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_O2OA,
+    "className": "Textfield"
+  },
   {
     "name": "element",
     "json": "tools-element.json",
