@@ -125,8 +125,17 @@
                     <tr>
                         <td class="editTableTitle">{{$.lp.switchOrder}}:</td>
                         <td class="editTableValue">
-                            <input class="MWFWorkDataCheck" name="isSwitchOrder" type="radio" value="true" text{($.isSwitchOrder)===true?'checked':''}/>{{$.lp.yes}}
-                            <input class="MWFWorkDataCheck" name="isSwitchOrder" type="radio" value="false" text{($.isSwitchOrder)!==true?'checked':''}/>{{$.lp.no}}
+                            <input name="isSwitchOrder" type="radio" value="true" text{($.isSwitchOrder)===true?'checked':''}
+                                   onclick="if(this.checked){ $('text{$.pid}switchOrderByCurrent').setStyle('display', '');}"/>{{$.lp.yes}}
+                            <input name="isSwitchOrder" type="radio" value="false" text{($.isSwitchOrder)!==true?'checked':''}
+                                onclick="debugger; if(this.checked){ $('text{$.pid}switchOrderByCurrent').setStyle('display', 'none');}"/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                    <tr id="text{$.pid}switchOrderByCurrent" style="display: text{($.isSwitchOrder) ? 'table-row' : 'none'}">
+                        <td class="editTableTitle">{{$.lp.switchOrderByCurrent}}:</td>
+                        <td class="editTableValue">
+                            <input name="orderByCurrent" type="radio" value="true" text{($.orderByCurrent)===true?'checked':''}/>{{$.lp.yes}}
+                            <input name="orderByCurrent" type="radio" value="false" text{($.orderByCurrent)!==true?'checked':''}/>{{$.lp.no}}
                         </td>
                     </tr>
                     <tr class="MWFColumnExportGroup">

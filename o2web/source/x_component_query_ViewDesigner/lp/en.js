@@ -166,6 +166,7 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"desc": "Descending Order",
 		"orderToNumber": "Convert to numeric sort",
 		"switchOrder": "Click to switch order",
+		"switchOrderByCurrent": "Click to sort by current column only",
 		"category": "category",
 		"hidden": "Hidden",
 		"org": "Organization Object",
