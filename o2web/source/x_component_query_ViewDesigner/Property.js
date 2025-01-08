@@ -37,6 +37,9 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             }.bind(this));
         }
         this.propertyNode.addEvent("keydown", function (e) {
+            if (e.control && e.key === 'c') {
+                if( MWF.clipboard && MWF.clipboard.data )MWF.clipboard.data = null;
+            }
             e.stopPropagation();
         });
     },

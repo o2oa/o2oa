@@ -11,7 +11,12 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.fireEvent("postLoad");
                 }.bind(this));
             }
-            this.process.propertyListNode.addEvent("keydown", function(e){e.stopPropagation();});
+            this.process.propertyListNode.addEvent("keydown", function(e){
+                if (e.control && e.key === 'c') {
+                    if( MWF.clipboard && MWF.clipboard.data )MWF.clipboard.data = null;
+                }
+                e.stopPropagation();
+            });
         }
 	},
 	editProperty: function(td){
@@ -104,7 +109,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             if (this.propertyContent) this.propertyContent.setStyle("display", "none");
         }
     },
-	
+
 	loadPropertyTab: function(){
 		var tabNodes = this.propertyContent.getElements(".MWFTab");
 		if (tabNodes.length){
@@ -128,13 +133,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 			}.bind(this));
 		}
 	},
-	
+
 	setEditNodeEvent: function(){
 		var property = this;
 	//	var inputs = this.propertyContent.getElements(".editTableInput");
 		var inputs = this.propertyContent.getElements("input");
 		inputs.each(function(input){
-			
+
 			var jsondata = input.get("name");
 
             var id = this.process.process.id;
@@ -198,7 +203,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 //property.setSelectValue(jsondata, select);
             }
         });
-		
+
 		var textareas = this.propertyContent.getElements("textarea");
 		textareas.each(function(input){
 			var jsondata = input.get("name");
@@ -214,7 +219,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 });
 			}
 		}.bind(this));
-		
+
 	},
     setSelectValue: function(name, select){
         var idx = select.selectedIndex;
@@ -1427,7 +1432,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 	saveScriptItem: function(node, script){
 		var jsondata = node.get("name");
 		var scriptList = this.data[jsondata];
-		
+
 		var data = script.data;
 		var scriptData = this.process.scripts[script.data.id];
 		if (!scriptData){
@@ -1450,29 +1455,29 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 			}.bind(this));
 		}
 	},
-	
+
 	showMultiActivity: function(activitys){
 		this.hide();
 		var multiActivityTable = new HtmlTable({
 		    "properties": this.process.css.activityListTable
 		}).inject(this.propertyContent);
-		
+
 		activitys.each(function(activity){
 			this.row = multiActivityTable.push([
-				{	
+				{
 			    	"content": " ",
 			    	"properties": {
 			    		"styles": activity.style.listIcon
 			        }
 			    },
-			    {	
+			    {
 			    	"content": activity.data.name,
 			    	"properties": {
 			    		"width": "80px",
 			    		"styles": this.process.css.list.listText
 			        }
 			    },
-			    {	
+			    {
 			    	"content": " "+activity.data.description,
 			    	"properties": {
 			    		"styles": this.process.css.list.listTextDescription
