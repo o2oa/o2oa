@@ -39,12 +39,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 				this.fireEvent("postLoad");
 			}.bind(this));
 		}
-        this.propertyNode.addEvent("keydown", function(e){
-            if (e.control && e.key === 'c') {
-                if( MWF.clipboard && MWF.clipboard.data )MWF.clipboard.data = null;
-            }
-            e.stopPropagation();
-        });
+        this.propertyNode.addEvent("keydown", function(e){e.stopPropagation();});
 	},
     reset: function(){
         this.propertyTabIndex = 0;

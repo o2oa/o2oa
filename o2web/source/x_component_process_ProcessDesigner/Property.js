@@ -11,12 +11,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.fireEvent("postLoad");
                 }.bind(this));
             }
-            this.process.propertyListNode.addEvent("keydown", function(e){
-                if (e.control && e.key === 'c') {
-                    if( MWF.clipboard && MWF.clipboard.data )MWF.clipboard.data = null;
-                }
-                e.stopPropagation();
-            });
+            this.process.propertyListNode.addEvent("keydown", function(e){e.stopPropagation();});
         }
 	},
 	editProperty: function(td){

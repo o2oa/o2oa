@@ -36,12 +36,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 this.fireEvent("postLoad");
             }.bind(this));
         }
-        this.propertyNode.addEvent("keydown", function (e) {
-            if (e.control && e.key === 'c') {
-                if( MWF.clipboard && MWF.clipboard.data )MWF.clipboard.data = null;
-            }
-            e.stopPropagation();
-        });
+        this.propertyNode.addEvent("keydown", function (e) {e.stopPropagation();});
     },
     editProperty: function (td) {
     },
