@@ -160,6 +160,16 @@ o2.widget.JavascriptEditor = new Class({
                     },
                 });
 
+                //复制时需要清空MWF.clipboard.data，否则会误拷贝设计元素
+                this.editor.addAction({
+                    id: "copy",
+                    label: "Copy",
+                    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC],
+                    run: function (ed){
+                        if( MWF.clipboard.data )MWF.clipboard.data = null;
+                    }
+                });
+
                 // this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function(e){
                 //     this.fireEvent("save");
                 // }.bind(this));
@@ -271,6 +281,15 @@ o2.widget.JavascriptEditor = new Class({
                             editor.showKeyboardShortcuts()
                         })
                     }.bind(this)
+                });
+
+                //复制时需要清空MWF.clipboard.data，否则会误拷贝设计元素
+                this.editor.commands.addCommand({
+                    name: 'copy',
+                    bindKey: {win: 'Ctrl-C',  mac: 'Command-C'},
+                    exec: function(editor) {
+                        if(MWF.clipboard.data)MWF.clipboard.data = null;
+                    }
                 });
 
                 this.editor.on("blur", function(){
