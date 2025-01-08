@@ -7,7 +7,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
 		"style": "default",
 		"path": "../x_component_query_FormDesigner/property/property.html"
 	},
-	
+
 	initialize: function(module, propertyNode, designer, options){
 		this.setOptions(options);
 		this.module = module;
@@ -16,7 +16,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
 		this.data = module.json;
 		this.htmlPath = this.options.path;
 		this.designer = designer;
-		
+
 		this.propertyNode = propertyNode;
 	},
 	load: function(){
@@ -100,7 +100,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
 			var tabAreaNode = new Element("div", {
 				"styles": this.view.css.propertyTabNode
 			}).inject(tmpNode, "before");
-			
+
 			MWF.require("MWF.widget.Tab", function(){
 				var tab = new MWF.widget.Tab(tabAreaNode, {"style": "formPropertyList"});
 				tab.load();
@@ -111,14 +111,14 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
 					this.setScrollBar(page.contentNodeArea, "small", null, null);
 				}.bind(this));
 				tabPages[0].showTab();
-				
+
 				this.propertyTab = tab;
-				
+
 				this.designer.resizeNode();
 			}.bind(this), false);
 		}
 	},
-	
+
 	setEditNodeEvent: function(){
 		var property = this;
 	//	var inputs = this.process.propertyListNode.getElements(".editTableInput");
@@ -178,7 +178,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
                 }
             }
 		}.bind(this));
-		
+
 		var selects = this.propertyContent.getElements("select");
 		selects.each(function(select){
 			var jsondata = select.get("name");
@@ -189,7 +189,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
                 //property.setSelectValue(jsondata, select);
 			}
 		});
-		
+
 		var textareas = this.propertyContent.getElements("textarea");
 		textareas.each(function(input){
 			var jsondata = input.get("name");
@@ -205,7 +205,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
                 });
 			}
 		}.bind(this));
-		
+
 	},
     loadCalendar: function(node){
         MWF.require("MWF.widget.Calendar", function(){
@@ -297,7 +297,7 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
         this.changeJsonDate(names, value);
         this.changeData(name, select, oldValue);
 	},
-	
+
 	setValue: function(name, value, obj){
         var names = name.split(".");
         var oldValue = this.data;

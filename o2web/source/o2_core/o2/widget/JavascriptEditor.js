@@ -160,6 +160,9 @@ o2.widget.JavascriptEditor = new Class({
                     },
                 });
 
+                //复制时需要清空MWF.clipboard.data，否则会误拷贝设计元素
+                this.node.addEvent("keydown", function(e){ e.stopPropagation(); });
+
                 // this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function(e){
                 //     this.fireEvent("save");
                 // }.bind(this));
@@ -281,10 +284,8 @@ o2.widget.JavascriptEditor = new Class({
                     this.fireEvent("change");
                 }.bind(this));
 
-
-                this.node.addEvent("keydown", function(e){
-                    e.stopPropagation();
-                });
+                //复制时需要清空MWF.clipboard.data，否则会误拷贝设计元素
+                this.node.addEvent("keydown", function(e){ e.stopPropagation(); });
 
                 if( this.fontSize ){
                     this.setFontSize( this.fontSize );

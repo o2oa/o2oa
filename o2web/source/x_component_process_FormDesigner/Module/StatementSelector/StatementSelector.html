@@ -14,7 +14,7 @@
 		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 		  </tr>
 		</table>
-		
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
@@ -93,10 +93,32 @@
         <div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">{{$.lp.query}}:</td>
-                    <td class="editTableValue"><div class="MWFQueryStatementSelect" name="queryStatement"></div></td>
+                    <td class="editTableValue" colspan="2">
+                        <input type="radio" onclick="if (this.checked) {
+							$('text{$.pid}selectStatement').setStyle('display', 'block');
+							$('text{$.pid}scriptStatement').setStyle('display', 'none');
+						}" name="statementType" value="select" text{($.statementType!='script')?'checked':''}/>{{$.lp.select}}{{$.lp.statement}}
+                        <input type="radio" onclick="if (this.checked) {
+							$('text{$.pid}selectStatement').setStyle('display', 'none');
+							$('text{$.pid}scriptStatement').setStyle('display', 'block');
+						}" name="statementType" value="script" text{($.statementType=='script')?'checked':''}/>{{$.lp.calculation}}{{$.lp.statement}}<br/>
+                    </td>
                 </tr>
             </table>
+            <div id="text{$.pid}selectStatement" style="display: text{($.statementType!='script')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.query}}:</td>
+                        <td class="editTableValue"><div class="MWFQueryStatementSelect" name="queryStatement"></div></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="text{$.pid}scriptStatement" style="display: text{($.statementType=='script')?'block':'none'}">
+                <div style="padding: 5px;">
+                    return "statementName" //{{$.lp.statement}}{{$.lp.nameAliasID}}
+                </div>
+                <div class="MWFScriptArea" name="statementScript" title="{{$.lp.statement}}{{$.lp.script}} (S)"></div>
+            </div>
         </div>
 
         <div class="MWFMaplist" name="titleStyles" title="{{$.lp.boxTitleStyle}}"></div>

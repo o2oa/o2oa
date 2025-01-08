@@ -57,7 +57,9 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
         this.node.empty();
     },
     _afterLoaded: function(){
-        if (this.json.queryView){
+        if(!!this.json.viewType){
+            this.loadView();
+        }else if (this.json.queryView){
             this.loadView();
         }else{
             if (this.json.selectViewType==="cms"){
@@ -94,8 +96,30 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
             this.loadView( callback );
         }
     },
+    getViewName: function (){
+        var appName, viewName;
+        if (this.json.viewType === "script") {
+            if (this.json.viewScript && this.json.viewScript.code) {
+                var data = this.form.Macro.exec(this.json.viewScript.code, this);
+                if (data) {
+                    appName = data.application;
+                    viewName = data.view;
+                }
+            }
+        }else{
+            appName = (this.json.queryView) ? this.json.queryView.appName : this.json.application;
+            viewName = (this.json.queryView) ? this.json.queryView.name : this.json.viewName;
+        }
+        return {appName: appName, viewName: viewName};
+    },
     loadView: function( callback ){
-        if (!this.json.queryView || !this.json.queryView.name || !this.json.queryView.appName) return "";
+        var viewObj = this.getViewName();
+        var appName = viewObj.appName, viewName = viewObj.viewName;
+        if( !appName || !viewName ){
+            if(callback) callback();
+            return ;
+        }
+
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
             filter = [];
@@ -108,8 +132,8 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
 
         //var data = JSON.parse(this.json.data);
         var viewJson = {
-            "application": (this.json.queryView) ? this.json.queryView.appName : this.json.application,
-            "viewName": (this.json.queryView) ? this.json.queryView.name : this.json.viewName,
+            "application": appName,
+            "viewName": viewName,
             "isTitle": this.json.isTitle || "yes",
             "select": this.json.select || "none",
             "titleStyles": this.json.titleStyles,

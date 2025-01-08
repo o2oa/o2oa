@@ -50,7 +50,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
             }else if (this.options.type.toLowerCase()==="duty"){
                 var dutys = JSON.decode(this.options.names);
                 dutys.each(function(d){
-                    var dutyItem = new MWF.widget.O2Duty(d, this.node, {
+                    var dutyItem = new MWF.widget.O2ProcessDuty(d, this.node, {
                         "canRemove": true,
                         "onRemove": function(item, e){
                             var _self = this;
@@ -334,7 +334,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput = Class
         var code = this.scriptEditor.editor.editor.getValue();
         this.data.code = code;
         if (!this.item){
-            var dutyItem = new MWF.widget.O2Duty(this.data, this.itemNode, {
+            var dutyItem = new MWF.widget.O2ProcessDuty(this.data, this.itemNode, {
                 "canRemove": true,
                 "onRemove": function(item, e){
                     var _self = item;
@@ -481,7 +481,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput = Class
     // }
 });
 
-MWF.widget.O2Duty = new Class({
+MWF.widget.O2ProcessDuty = new Class({
     Extends: MWF.widget.O2Group,
     getPersonData: function(){
     },

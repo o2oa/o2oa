@@ -6,10 +6,10 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
 		"style": "default",
 		"propertyPath": "../x_component_process_FormDesigner/Module/Statement/statement.html"
 	},
-	
+
 	initialize: function(form, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_FormDesigner/Module/Statement/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/Statement/"+this.options.style+"/css.wcss";
 
@@ -110,7 +110,7 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
         this._setViewNodeTitle();
     },
     _checkView: function(callback){
-        if (this.json["queryStatement"] && this.json["queryStatement"]!="none"){
+        if ((this.json.statementType !== "script") && this.json["queryStatement"] && this.json["queryStatement"]!="none"){
             this.iconNode.setStyle("display", "none");
             if (this.viewNode) this.viewNode.destroy();
             this.viewNode = null;
@@ -131,6 +131,7 @@ MWF.xApplication.process.FormDesigner.Module.Statement = MWF.FCStatement = new C
         }
     },
     _setEditStyle: function(name, input, oldValue){
+        if(name=="statementType")this._checkView();
         if (name=="queryStatement"){
             if (this.json[name]!=oldValue) this._checkView();
         }

@@ -7,10 +7,10 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 		"style": "default",
 		"propertyPath": "../x_component_process_FormDesigner/Module/View/view.html"
 	},
-	
+
 	initialize: function(form, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_FormDesigner/Module/View/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/View/"+this.options.style+"/css.wcss";
 
@@ -30,23 +30,23 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 		this.json = json;
 		this.node= node;
 		this.node.store("module", this);
-		
+
 		//this.node.empty();
-		
+
 		this.node.setStyles(this.css.moduleNode);
-		
+
 		this._loadNodeStyles();
-		
+
 		this._initModule();
 		this._loadTreeNode(parent);
 
         //this.setCustomStyles();
-		
+
 		this.parentContainer = this.treeNode.parentNode.module;
         this._setEditStyle_custom("id");
 
         this.json.moduleName = this.moduleName;
-        
+
 	//	this.parseModules();
 	},
 	_createMoveNode: function(){
@@ -82,7 +82,7 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 		this.node.addEvent("selectstart", function(){
 			return false;
 		});
-		
+
 		this.iconNode = new Element("div", {
 			"styles": this.css.iconNode
 		}).inject(this.node);
@@ -175,7 +175,7 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
         }
     },
     _setEditStyle: function(name, input, oldValue){
-        if (name=="view" || name=="processView" || name=="CMSView" || name=="queryView"){
+        if (name=="viewType" || name=="view" || name=="processView" || name=="CMSView" || name=="queryView"){
             if (this.json[name]!=oldValue) this._checkView();
         }
         if (name=="select") this._checkSelect();
@@ -216,7 +216,7 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
         }
     },
     _checkView: function(callback){
-        if (this.json["queryView"] && this.json["queryView"]!="none"){
+        if (this.json.viewType !== "script" && this.json["queryView"] && this.json["queryView"]!="none"){
             this.iconNode.setStyle("display", "none");
             if (this.viewNode) this.viewNode.destroy();
             this.viewNode = null;
