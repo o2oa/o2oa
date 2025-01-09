@@ -125,16 +125,16 @@
 /*    }*/
 /*}*/
 /* 分辨率大于1366x768并且小于或等于1366x992 */
-@media only screen and (min-width: 1025px) and (max-width: 1366px) {
+@media only screen and (min-width: 1025px) and (max-width: 1367px) {
     :root {
-        font-size: 14px;
+        font-size: 12px;
     }
 }
 
 /* 分辨率大于1366x768并且小于或等于1768x992 */
-@media only screen and (min-width: 1367px) and (max-width: 1600px) {
+@media only screen and (min-width: 1368px) and (max-width: 1600px) {
     :root {
-        font-size: 14px;
+        font-size: 13px;
     }
 }
 

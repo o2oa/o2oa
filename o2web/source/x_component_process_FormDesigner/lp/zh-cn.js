@@ -577,6 +577,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "asyncMode": "异步模式",
         "asyncLoad": "异步加载",
 
+        "isReader": "作为内容管理读者",
+        "isAuther": "作为内容管理编辑者",
+
         "identity": "身份",
         "unit": "组织",
         "duty": "职位",
