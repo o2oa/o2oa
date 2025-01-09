@@ -11,9 +11,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.message.assemble.communicate.Business;
-import com.x.message.core.entity.IMConversation;
+import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.IMMsg;
-import com.x.message.core.entity.IMMsgCollection;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -43,30 +42,10 @@ public class ActionDeleteMessageByConversation extends BaseAction {
                 throw new ExceptionConversationCheckError("日期不正确！");
             }
         }
-        ActionResult<Wo> result = new ActionResult<>();
-        Wo wo = new Wo();
-        startThread(wi);
-        wo.setMessage("删除任务已经开始执行，因数据大小不同所需时间不确定，可观察日志信息！");
-        wo.setValue(true);
-        result.setData(wo);
-        return result;
-    }
-
-    private void startThread(Wi wi) {
-        Thread thread = new Thread(() -> {
-            try {
-                deleteMessages(wi);
-            } catch (Exception e) {
-                LOGGER.info("删除消息任务失败，{}", wi.toString());
-                LOGGER.error(e);
-            }
-        });
-        thread.start();
-    }
-
-    private void deleteMessages(Wi wi) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
+            ActionResult<Wo> result = new ActionResult<>();
+            Wo wo = new Wo();
             Date beforeDate = null;
             if (StringUtils.isNotEmpty(wi.getBeforeDay())) {
                 beforeDate = DateTools.parseDate(wi.getBeforeDay());
@@ -74,32 +53,30 @@ public class ActionDeleteMessageByConversation extends BaseAction {
             int count = 0;
             boolean hasMore = true;
             while (hasMore) {
-                // 因为要删除数据，所以一直只查询第一页
+                // 因为正在删除数据，所以一直只查询第一页
                 List<IMMsg> msgList = business.imConversationFactory()
                         .listMsgWithConversation(1, 20, wi.getConversationId(), beforeDate);
                 if (null != msgList && !msgList.isEmpty()) {
                     for (IMMsg imMsg : msgList) {
-                        List<IMMsgCollection> collections = business.imConversationFactory()
-                                .listCollectionByPersonAndMsgId(null, imMsg.getId());
-                        if (null != collections && !collections.isEmpty()) {
-                            for (IMMsgCollection collection : collections) {
-                                emc.beginTransaction(IMMsgCollection.class);
-                                emc.remove(collection);
-                                emc.commit();
-                            }
-                        }
-                        emc.beginTransaction(IMMsg.class);
-                        emc.remove(imMsg);
-                        emc.commit();
+                        ThisApplication.imMessageDeleteQueue.send(imMsg);
                         count++;
                     }
-                } else {
+                }
+                if (msgList == null || msgList.size() < 20) {
                     hasMore = false;
                 }
             }
-            LOGGER.info("删除消息任务执行完成, 删除消息数量 {} ！！！！！！！！！", String.valueOf(count));
+            LOGGER.info("  删除消息数量 "+count+" ！！！！！！！！！");
+            wo.setMessage("删除任务已经开始执行，因数据大小不同所需时间不确定，可观察日志信息！");
+            wo.setValue(true);
+            result.setData(wo);
+            return result;
         }
+
     }
+
+
+
 
     public static class Wi extends GsonPropertyObject {
 

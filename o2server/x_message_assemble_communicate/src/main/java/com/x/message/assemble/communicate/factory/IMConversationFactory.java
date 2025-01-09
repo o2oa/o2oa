@@ -176,6 +176,16 @@ public class IMConversationFactory extends AbstractFactory {
         }
     }
 
+    // 根据bodyFileId字段搜索消息
+    public List<IMMsg> listMessageByFileId(String fileId) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<IMMsg> cq = cb.createQuery(IMMsg.class);
+        Root<IMMsg> root = cq.from(IMMsg.class);
+        Predicate p = cb.equal(root.get(IMMsg_.bodyFileId), fileId);
+        return em.createQuery( cq.select(root).where(p) ).getResultList();
+    }
+
     /**
      * 根据 id 列表获取消息对象列表
      *

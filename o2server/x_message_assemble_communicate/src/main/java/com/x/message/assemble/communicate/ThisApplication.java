@@ -58,6 +58,8 @@ public class ThisApplication {
 
 	public static final TableConsumeQueue tableConsumeQueue = new TableConsumeQueue();
 
+	public static final IMMessageDeleteQueue imMessageDeleteQueue = new IMMessageDeleteQueue();
+
 	private static final Map<Session, String> WSCLIENTS = new ConcurrentHashMap<>();
 
 	public static Map<Session, String> wsClients() {
@@ -112,6 +114,7 @@ public class ThisApplication {
 		context().startQueue(andFxConsumeQueue);
 		context().startQueue(wsConsumeQueue);
 		context().startQueue(calendarConsumeQueue);
+		context().startQueue(imMessageDeleteQueue);
 	}
 
 	public static void destroy() {

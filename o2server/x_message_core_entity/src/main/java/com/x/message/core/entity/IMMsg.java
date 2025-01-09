@@ -73,6 +73,11 @@ public class IMMsg extends SliceJpaObject {
     @Column(length = length_10M, name = ColumnNamePrefix + body_FIELDNAME)
     private String body;
 
+    public static final String bodyFileId_FIELDNAME = "bodyFileId";
+    @FieldDescribe("消息内容如果是有 fileId 的填入这个字段.")
+    @Column(length = length_64B, name = ColumnNamePrefix + bodyFileId_FIELDNAME)
+    private String bodyFileId;
+
 
     public static final String createPerson_FIELDNAME = "createPerson";
     @FieldDescribe("创建人，消息发送人")
@@ -117,5 +122,13 @@ public class IMMsg extends SliceJpaObject {
 
     public void setQuoteMessageId(String quoteMessageId) {
         this.quoteMessageId = quoteMessageId;
+    }
+
+    public String getBodyFileId() {
+        return bodyFileId;
+    }
+
+    public void setBodyFileId(String bodyFileId) {
+        this.bodyFileId = bodyFileId;
     }
 }
