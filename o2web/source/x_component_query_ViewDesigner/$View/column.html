@@ -128,16 +128,29 @@
                             <input name="isSwitchOrder" type="radio" value="true" text{($.isSwitchOrder)===true?'checked':''}
                                    onclick="if(this.checked){ $('text{$.pid}switchOrderByCurrent').setStyle('display', '');}"/>{{$.lp.yes}}
                             <input name="isSwitchOrder" type="radio" value="false" text{($.isSwitchOrder)!==true?'checked':''}
-                                onclick="debugger; if(this.checked){ $('text{$.pid}switchOrderByCurrent').setStyle('display', 'none');}"/>{{$.lp.no}}
+                                onclick="if(this.checked){ $('text{$.pid}switchOrderByCurrent').setStyle('display', 'none');}"/>{{$.lp.no}}
                         </td>
                     </tr>
-                    <tr id="text{$.pid}switchOrderByCurrent" style="display: text{($.isSwitchOrder) ? 'table-row' : 'none'}">
-                        <td class="editTableTitle">{{$.lp.switchOrderByCurrent}}:</td>
-                        <td class="editTableValue">
-                            <input name="orderByCurrent" type="radio" value="true" text{($.orderByCurrent)===true?'checked':''}/>{{$.lp.yes}}
-                            <input name="orderByCurrent" type="radio" value="false" text{($.orderByCurrent)!==true?'checked':''}/>{{$.lp.no}}
-                        </td>
-                    </tr>
+                </table>
+                <div id="text{$.pid}switchOrderByCurrent" style="display: text{($.isSwitchOrder) ? '' : 'none'}">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.switchOrderByCurrent}}:</td>
+                            <td class="editTableValue">
+                                <input name="orderByCurrent" type="radio" value="true" text{($.orderByCurrent)===true?'checked':''}/>{{$.lp.yes}}
+                                <input name="orderByCurrent" type="radio" value="false" text{($.orderByCurrent)!==true?'checked':''}/>{{$.lp.no}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.firstOrder}}:</td>
+                            <td class="editTableValue">
+                                <input name="firstOrder" type="radio" value="asc" text{($.firstOrder)!=='desc'?'checked':''}/>{{$.lp.asc}}
+                                <input name="firstOrder" type="radio" value="desc" text{($.firstOrder)==='desc'?'checked':''}/>{{$.lp.desc}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr class="MWFColumnExportGroup">
                         <td class="editTableTitle">{{$.lp.category}}:</td>
                         <td class="editTableValue">

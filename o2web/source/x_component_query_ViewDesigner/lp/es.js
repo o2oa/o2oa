@@ -164,6 +164,7 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"orderToNumber": "Convertir a orden numérico",
 		"switchOrder": "Haga clic para cambiar el orden",
 		"switchOrderByCurrent": "Haga clic para ordenar solo por la columna actual",
+		"firstOrder": "Primer clic",
 		"category": "Categoría",
 		"hidden": "Oculto",
 		"org": "Objeto de organización",

@@ -542,15 +542,15 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this);
         switch ( this.getOrderType(column) ){
             case 'asc':
-                map[column.column] = 'desc';
+                map[column.column] = column.firstOrder === 'desc' ? '' : 'desc';
                 if(column.orderByCurrent)clearOtherOrder();
                 break;
             case 'desc':
-                map[column.column] = '';
+                map[column.column] = column.firstOrder === 'desc' ? 'asc' : '';
                 if(column.orderByCurrent)restoreOtherOrder();
                 break;
             default:
-                map[column.column] = 'asc';
+                map[column.column] = column.firstOrder || 'asc';
                 if(column.orderByCurrent)clearOtherOrder();
                 break;
         }
