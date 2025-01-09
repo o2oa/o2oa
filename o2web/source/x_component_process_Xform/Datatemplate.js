@@ -2252,18 +2252,38 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	setEvents: function (module, id) {
 		if( this.template.addActionIdList.contains( id )){
 			this.addActionList.push( module );
-			module.node.addEvent("click", function (ev) {
-				this.template._insertLine( ev, this )
-			}.bind(this))
+
+			var addAddEvent = function (){
+				module.node.addEvent("click", function (ev) {
+					this.template._insertLine( ev, this )
+				}.bind(this));
+			}.bind(this);
+
+			if( module.json.type.substr(0, 2) === "El" ){
+				module.vm ? addAddEvent() : module.addEvent("load", addAddEvent);
+			}else{
+				addAddEvent();
+			}
+
 			if( !this.template.editable )module.node.hide();
 			if( !this.options.isAddable )module.node.hide();
 		}
 
 		if( this.template.deleteActionIdList.contains(id)){
 			this.deleteActionList.push( module );
-			module.node.addEvent("click", function (ev) {
-				this.template._deleteLine( ev, this )
-			}.bind(this))
+
+			var addDeleteEvent = function (){
+				module.node.addEvent("click", function (ev) {
+					this.template._deleteLine( ev, this )
+				}.bind(this));
+			}.bind(this);
+
+			if( module.json.type.substr(0, 2) === "El" ){
+				module.vm ? addDeleteEvent() : module.addEvent("load", addDeleteEvent);
+			}else{
+				addDeleteEvent();
+			}
+
 			if( !this.template.editable )module.node.hide();
 			if( !this.options.isDeleteable )module.node.hide();
 		}
@@ -2271,9 +2291,18 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		if( this.template.selectorId === id){
 			this.selector = module;
 			// module.setData(""); //默认不选择
-			module.node.addEvent("click", function (ev) {
-				this.checkSelect();
-			}.bind(this))
+			var addSelectEvent = function (){
+				module.node.addEvent("click", function (ev) {
+					this.checkSelect();
+				}.bind(this));
+			}.bind(this);
+
+			if( module.json.type.substr(0, 2) === "El" ){
+				module.vm ? addSelectEvent() : module.addEvent("load", addSelectEvent);
+			}else{
+				addSelectEvent();
+			}
+
 			if( !this.template.editable )module.node.hide();
 			if( !this.options.isDeleteable )module.node.hide();
 			this.unselect();
