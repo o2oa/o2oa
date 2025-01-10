@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
@@ -41,6 +42,7 @@ class ActionEdit extends BaseAction {
             Wi.copier.copy(wi, application);
             application.setLastUpdatePerson(effectivePerson.getDistinguishedName());
             application.setLastUpdateTime(new Date());
+            emc.check(application, CheckPersistType.all);
             emc.commit();
             CacheManager.notify(Application.class);
             Wo wo = new Wo();
