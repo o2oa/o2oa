@@ -321,6 +321,10 @@ tr.viewTitleLine>td {
     /* border: 0 !important; */
 }
 
+.page-content-section div[mwftype='view'] tr:hover>td{
+    background-color: var(--oo-color-hover) !important;
+}
+
 /*** 页面布局 *******************************/
 /** 左导航-右列表 **/
 .page-nav-content *{

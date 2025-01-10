@@ -875,7 +875,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             "onPostLoad": function () {
                 if(this.jsEditor)this.jsEditor.setFontSize( "12px" );
             },
-            "style": "formula"
+            "style": "default"
         });
         this.propertyRequireBodyScriptArea.load({code: ""});
 
