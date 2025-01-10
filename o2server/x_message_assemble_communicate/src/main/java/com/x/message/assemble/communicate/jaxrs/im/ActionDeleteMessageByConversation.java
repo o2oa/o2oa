@@ -25,7 +25,6 @@ public class ActionDeleteMessageByConversation extends BaseAction {
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
             throws Exception {
-        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
         if (!effectivePerson.isManager()) {
             throw new ExceptionConversationCheckError("没有权限，需要管理员操作");
         }
@@ -42,10 +41,33 @@ public class ActionDeleteMessageByConversation extends BaseAction {
                 throw new ExceptionConversationCheckError("日期不正确！");
             }
         }
+        LOGGER.info("消息删除开始执行 执行人：{} ，删除条件：{}", effectivePerson.getDistinguishedName(), wi.toString());
+        ActionResult<Wo> result = new ActionResult<>();
+        Wo wo = new Wo();
+        startThread(wi);
+        wo.setMessage("删除任务已经开始执行，因数据大小不同所需时间不确定，可观察日志信息！");
+        wo.setValue(true);
+        result.setData(wo);
+        return result;
+
+
+    }
+
+    private void startThread(Wi wi) {
+        Thread thread = new Thread(() -> {
+            try {
+                deleteMessages(wi);
+            } catch (Exception e) {
+                LOGGER.info("删除消息任务失败，{}", wi.toString());
+                LOGGER.error(e);
+            }
+        });
+        thread.start();
+    }
+
+    private void deleteMessages(Wi wi) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            ActionResult<Wo> result = new ActionResult<>();
-            Wo wo = new Wo();
             Date beforeDate = null;
             if (StringUtils.isNotEmpty(wi.getBeforeDay())) {
                 beforeDate = DateTools.parseDate(wi.getBeforeDay());
@@ -62,19 +84,18 @@ public class ActionDeleteMessageByConversation extends BaseAction {
                         count++;
                     }
                 }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LOGGER.error(e);
+                }
                 if (msgList == null || msgList.size() < 20) {
                     hasMore = false;
                 }
             }
-            LOGGER.info("  删除消息数量 "+count+" ！！！！！！！！！");
-            wo.setMessage("删除任务已经开始执行，因数据大小不同所需时间不确定，可观察日志信息！");
-            wo.setValue(true);
-            result.setData(wo);
-            return result;
+            LOGGER.info("  删除消息数量 " + count + " ！！！！！！！！！");
         }
-
     }
-
 
 
 

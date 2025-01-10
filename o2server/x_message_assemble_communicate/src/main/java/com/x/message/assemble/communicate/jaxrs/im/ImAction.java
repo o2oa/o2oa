@@ -313,6 +313,25 @@ public class ImAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "查询会话列表，管理员使用.", action = ActionPersonConversationList.class)
+	@POST
+	@Path("conversation/list/with/person")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getPersonConversationList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<List<ActionPersonConversationList.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionPersonConversationList().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+
 	@JaxrsMethodDescribe(value = "删除群聊，只有群主可以删除.", action = ActionDeleteGroupConversation.class)
 	@DELETE
 	@Path("conversation/{id}/group")
@@ -577,7 +596,7 @@ public class ImAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "清除聊天消息，至少传入一个条件参数.", action = ActionDeleteMessageByConversation.class)
+	@JaxrsMethodDescribe(value = "清除聊天消息，至少传入一个条件参数，管理员使用.", action = ActionDeleteMessageByConversation.class)
 	@POST
 	@Path("msg/clear")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

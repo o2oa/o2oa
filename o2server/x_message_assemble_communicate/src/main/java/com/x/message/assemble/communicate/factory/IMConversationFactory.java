@@ -154,9 +154,25 @@ public class IMConversationFactory extends AbstractFactory {
     }
 
     /**
+     * 查询某个会话消息总数量
+     * @param conversationId 会话 id
+     * @return
+     * @throws Exception
+     */
+    public Long conversationMessageTotalCount(String conversationId) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<IMMsg> root = cq.from(IMMsg.class);
+        Predicate p = cb.equal(root.get(IMMsg_.conversationId), conversationId);
+        cq.select(cb.count(root)).where(p);
+        return em.createQuery(cq).getSingleResult();
+    }
+
+    /**
      * 获取会话中的最后一条消息
      *
-     * @param conversationId
+     * @param conversationId 会话 id
      * @return
      * @throws Exception
      */

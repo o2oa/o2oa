@@ -53,7 +53,7 @@ public class IMMessageDeleteQueue extends AbstractQueue<IMMsg> {
             emc.remove(message);
             emc.commit();
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("删除消息完成， id {}", imMsg.getId());
+                LOGGER.debug("删除消息完成， id {}", message.toString());
             }
             if (StringUtils.isNotEmpty(fileId)) { // 消息是带文件的 删除对应的文件和数据
                 if (LOGGER.isDebugEnabled()) {
