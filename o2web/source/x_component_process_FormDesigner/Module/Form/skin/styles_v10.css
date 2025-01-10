@@ -272,7 +272,54 @@ tr.viewTitleLine>td {
     border: 0 !important;
 }
 
+.page-content-section div[mwftype='view'] {
+    flex: 100%;
+    background-color: #ffffff;
+    border-radius: var(--oo-default-radius);
+    box-sizing: border-box !important;
+    height: 100%;
+    overflow: hidden;
+}
+.page-content-section div[mwftype='view']>div {
+    display: flex;
+    flex-direction: column;
+}
 
+.page-content-section div[mwftype='view']>div>div:nth-child(3) {
+    height: auto !important;
+    flex: 1;
+    /* overflow: auto !important;
+    padding: 1em; */
+}
+.page-content-section div[mwftype='view']>div>div:nth-child(3)>div {
+    overflow: auto !important;
+    padding: 1em;
+}
+
+.page-content-section div[mwftype='view']>div>div:nth-child(4)>div {
+    height: 3em !important;
+}
+.page-content-section div[mwftype='view']>div>div:nth-child(4)>div>div {
+    margin-top: 0.5em !important;
+}
+.page-content-section div[mwftype='view'] table td{
+    color: var(--oo-color-text2);
+    border-bottom: 1px solid #dfdfdf !important;
+    transition: background-color 0.3s;
+}
+.page-content-section div[mwftype='view'] table tr:nth-child(odd) td{
+    /* background-color: unset; */
+    /* border: 0 !important; */
+}
+.page-content-section div[mwftype='view'] table tr:nth-child(even) td{
+    /* background-color: unset; */
+    /* border: 0 !important; */
+}
+.page-content-section div[mwftype='view'] table tr:nth-child(1) td{
+    background-color: #f7f7f7 !important;
+    white-space: nowrap;
+    /* border: 0 !important; */
+}
 
 /*** 页面布局 *******************************/
 /** 左导航-右列表 **/
