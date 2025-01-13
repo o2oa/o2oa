@@ -159,6 +159,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
 
     _createElementHtml: function(radioValues){
         var id = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
+        id = (id.indexOf("@")!==-1) ? id.replace(/@/g, "_") : id;
         this.json["$id"] = (id.indexOf("-")!==-1) ? id.replace(/-/g, "_") : id;
 
         var html = "<el-radio-group class='o2_vue' style='box-sizing: border-box!important'";

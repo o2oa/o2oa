@@ -2726,7 +2726,8 @@ MDomItem.Rtf = new Class({
             });
             item.set( attr );
             if(parent)item.inject(parent);
-            if( value )item.set("html", value);
+
+            if( value )item.set("html", this.parseHtml(value));
 
             var editorConfig = {
                 //"autoGrow_maxHeight": 400,
