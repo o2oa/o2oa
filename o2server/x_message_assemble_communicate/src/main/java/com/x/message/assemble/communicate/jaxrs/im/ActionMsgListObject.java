@@ -14,6 +14,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMMsg;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,9 @@ public class ActionMsgListObject extends BaseAction {
                 throw new ExceptionEmptyId();
             }
             List<IMMsg> msgList = business.imConversationFactory().listMsgObject(wi.getMsgIdList());
+            if (msgList == null) { // 有可能搜不到
+                msgList = new ArrayList<>();
+            }
             List<Wo> wos = Wo.copier.copy(msgList);
             for (Wo wo : wos) {
                 if (StringUtils.isNotEmpty(wo.getQuoteMessageId())) {

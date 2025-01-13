@@ -8,6 +8,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
+import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
 import java.util.Date;
@@ -58,9 +59,8 @@ public class ActionMsgRevoke extends BaseAction {
                 throw new ExceptionMsgRevokeOutOfTime();
             }
 
-            emc.beginTransaction(IMMsg.class);
-            emc.remove(imMsg);
-            emc.commit();
+            // 删除消息
+            ThisApplication.imMessageDeleteQueue.send(imMsg);
 
             // 发送ws消息
             sendWsMessage(conversation, imMsg, MessageConnector.TYPE_IM_REVOKE, effectivePerson);

@@ -11,9 +11,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.message.assemble.communicate.Business;
-import com.x.message.core.entity.IMConversation;
+import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.IMMsg;
-import com.x.message.core.entity.IMMsgCollection;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +25,6 @@ public class ActionDeleteMessageByConversation extends BaseAction {
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
             throws Exception {
-        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
         if (!effectivePerson.isManager()) {
             throw new ExceptionConversationCheckError("没有权限，需要管理员操作");
         }
@@ -43,6 +41,7 @@ public class ActionDeleteMessageByConversation extends BaseAction {
                 throw new ExceptionConversationCheckError("日期不正确！");
             }
         }
+        LOGGER.info("消息删除开始执行 执行人：{} ，删除条件：{}", effectivePerson.getDistinguishedName(), wi.toString());
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
         startThread(wi);
@@ -50,6 +49,8 @@ public class ActionDeleteMessageByConversation extends BaseAction {
         wo.setValue(true);
         result.setData(wo);
         return result;
+
+
     }
 
     private void startThread(Wi wi) {
@@ -74,32 +75,29 @@ public class ActionDeleteMessageByConversation extends BaseAction {
             int count = 0;
             boolean hasMore = true;
             while (hasMore) {
-                // 因为要删除数据，所以一直只查询第一页
+                // 因为正在删除数据，所以一直只查询第一页
                 List<IMMsg> msgList = business.imConversationFactory()
                         .listMsgWithConversation(1, 20, wi.getConversationId(), beforeDate);
                 if (null != msgList && !msgList.isEmpty()) {
                     for (IMMsg imMsg : msgList) {
-                        List<IMMsgCollection> collections = business.imConversationFactory()
-                                .listCollectionByPersonAndMsgId(null, imMsg.getId());
-                        if (null != collections && !collections.isEmpty()) {
-                            for (IMMsgCollection collection : collections) {
-                                emc.beginTransaction(IMMsgCollection.class);
-                                emc.remove(collection);
-                                emc.commit();
-                            }
-                        }
-                        emc.beginTransaction(IMMsg.class);
-                        emc.remove(imMsg);
-                        emc.commit();
+                        ThisApplication.imMessageDeleteQueue.send(imMsg);
                         count++;
                     }
-                } else {
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LOGGER.error(e);
+                }
+                if (msgList == null || msgList.size() < 20) {
                     hasMore = false;
                 }
             }
-            LOGGER.info("删除消息任务执行完成, 删除消息数量 {} ！！！！！！！！！", String.valueOf(count));
+            LOGGER.info("  删除消息数量 " + count + " ！！！！！！！！！");
         }
     }
+
+
 
     public static class Wi extends GsonPropertyObject {
 

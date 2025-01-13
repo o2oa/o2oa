@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversationExt;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import com.google.gson.JsonElement;
@@ -94,9 +95,15 @@ public class ActionMsgCreate extends BaseAction {
 		if ("text".equals(body.getType())) {
 			String msgBody = body.getBody();
 			String msgBodyEscape = StringEscapeUtils.escapeHtml4(msgBody);
-			LOGGER.info(msgBodyEscape);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(msgBodyEscape);
+			}
 			body.setBody(msgBodyEscape);
 			msg.setBody(gson.toJson(body));
+		}
+		// 特殊处理 fileId 字段
+		if (StringUtils.isNotEmpty(body.getFileId())) {
+			msg.setBodyFileId(body.getFileId());
 		}
 	}
 
@@ -114,6 +121,15 @@ public class ActionMsgCreate extends BaseAction {
 		 */
 		private String type;
 		private String body;
+		private String fileId;
+
+		public String getFileId() {
+			return fileId;
+		}
+
+		public void setFileId(String fileId) {
+			this.fileId = fileId;
+		}
 
 		public String getType() {
 			return type;
