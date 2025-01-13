@@ -190,6 +190,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "orderToNumber":"转换成数字排序",
         "switchOrder": "允许点击切换顺序",
         "switchOrderByCurrent": "点击后只按当前列排序",
+        "firstOrder": "首次点击",
         "category":"分类",
         "hidden":"隐藏",
         "org":"组织对象",

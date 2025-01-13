@@ -77,9 +77,12 @@
 		<!--<div id="text{$.pid}labelEditTextValue" title="值" style="display: text{($.valueType=='text')?'block':'none'}">-->
 			<!--<textarea  name="text" class="editTableTextarea">text{$.text}</textarea>-->
 		<!--</div>-->
+
 		<div id="text{$.pid}parametersMapList" class="MWFMaplist" name="parametersMapList" title="{{$.lp.parameter}}" style="display: text{($.parameterType !=='script')?'block':'none'}" ></div>
 		<div id="text{$.pid}parametersScript" class="MWFScriptArea" name="parametersScript" title="{{$.lp.parameterScript}}" style="display: text{($.parameterType=='script')?'block':'none'}"></div>
 
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
 
 	<!--<div title="事件"  class="MWFTab">-->

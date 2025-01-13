@@ -82,7 +82,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
             if (this.view.getViewRes && this.view.getViewRes.res) if (this.view.getViewRes.res.isRunning()) this.view.getViewRes.res.cancel();
         }
         this.node.empty();
-        this.loadView( callback );
+        this.loadView( callback, true );
     },
     /**
      * @summary 当视图被设置为延迟加载（未立即载入），通过active方法激活
@@ -93,7 +93,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
         if (this.view){
             if (!this.view.loadingAreaNode) this.view.loadView( callback );
         }else{
-            this.loadView( callback );
+            this.loadView( callback, true );
         }
     },
     getViewName: function (){
@@ -112,7 +112,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
         }
         return {appName: appName, viewName: viewName};
     },
-    loadView: function( callback ){
+    loadView: function( callback, force ){
         var viewObj = this.getViewName();
         var appName = viewObj.appName, viewName = viewObj.viewName;
         if( !appName || !viewName ){
@@ -157,7 +157,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
          * var view = this.form.get("fieldId").view; //获取组件对象
          */
             this.view = new MWF.xApplication.query.Query.Viewer(this.node, viewJson, {
-                "isload": (this.json.loadView!=="no"),
+                "isload": force || (this.json.loadView!=="no"),
                 "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
                 "onLoadLayout": function () {
                     this.fireEvent("loadViewLayout");

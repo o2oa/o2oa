@@ -385,10 +385,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 styleNode.appendChild(cssTextNode);
             }
             return "css" + id;
-        }else if( cssText ){
-            return "css" + this.json.id.replace(/\-/g, "");
         }
-        return "";
+        return "css" + this.json.id.replace(/\-/g, "");
     },
     keyLock: function (async) {
         var lockData = null;
@@ -459,8 +457,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                     if (!this.businessData.control.allowSave) this.setOptions({ "readonly": true });
 
-                    var cssClass = "";
-                    if (this.json.css && this.json.css.code) cssClass = this.loadCss();
+                    // var cssClass = "";
+                    // if (this.json.css && this.json.css.code) cssClass = this.loadCss();
+                    var cssClass = this.loadCss();
                     if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
                     if (this.json.cssLink) this.container.loadCss(this.json.cssLink);
 
@@ -469,7 +468,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                     this.container.set("html", this.html);
                     this.node = this.container.getFirst();
-                    if (cssClass) this.node.addClass(cssClass);
+
+                    if (cssClass && !this.node.hasClass(cssClass)) this.node.addClass(cssClass);
 
                     this._loadEvents();
 

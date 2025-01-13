@@ -74,7 +74,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
             if (this.view.getViewRes && this.view.getViewRes.res) if (this.view.getViewRes.res.isRunning()) this.view.getViewRes.res.cancel();
         }
         this.node.empty();
-        this.loadView( callback );
+        this.loadView( callback, true );
     },
     /**
      * @summary 当查询视图被设置为延迟加载（未立即载入），通过active方法激活
@@ -85,7 +85,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
         if (this.view){
             if (!this.view.loadingAreaNode) this.view.loadView( callback );
         }else{
-            this.loadView( callback );
+            this.loadView( callback, true );
         }
     },
     getViewName: function (){
@@ -107,7 +107,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
         }
         return {appName: appName, statementName: statementName, statementId: statementId};
     },
-    loadView: function( callback ){
+    loadView: function( callback, force ){
         // if (!this.json.queryStatement) return "";
         var viewObj = this.getViewName();
         var appName = viewObj.appName, statementName = viewObj.statementName, statementId = viewObj.statementId;
@@ -165,7 +165,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
          * var view = this.form.get("fieldId").view; //获取组件对象
          */
             this.view = new MWF.xApplication.query.Query.Statement(this.node, viewJson, {
-                "isload": (this.json.loadView!=="no"),
+                "isload": force || (this.json.loadView!=="no"),
                 "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
                 "onLoadLayout": function () {
                     this.fireEvent("loadViewLayout");
