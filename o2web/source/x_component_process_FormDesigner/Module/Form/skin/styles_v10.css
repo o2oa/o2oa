@@ -396,6 +396,9 @@ tr.viewTitleLine>td {
     flex: 0 0 28%;
 }
 
+.hide{
+    display: none !important;
+}
 
 /* 手机浏览器 */
 @media only screen and (max-width: 1023px) {

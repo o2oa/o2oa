@@ -69,6 +69,11 @@
     "text": MWF.APPPOD.LP.modules.view,
     "className": "View"
   },
+  "ViewSelector": {
+    "icon": "viewSelector.png",
+    "text": MWF.APPPOD.LP.modules.ViewSelector,
+    "className": "ViewSelector"
+  },
   "stat": {
     "icon": "stat.png",
     "text": MWF.APPPOD.LP.modules.stat,
@@ -99,6 +104,11 @@
     "text": MWF.APPPOD.LP.modules.textarea,
     "className": "Textarea"
   },
+  "number": {
+    "icon": "number.png",
+    "text": MWF.APPPOD.LP.modules.number,
+    "className": "Number"
+  },
   "select": {
     "icon": "select.png",
     "text": MWF.APPPOD.LP.modules.select,
@@ -124,15 +134,30 @@
     "text": MWF.APPPOD.LP.modules.combox,
     "className": "Combox"
   },
+  "currency": {
+    "icon": "currency.png",
+    "text": MWF.APPPOD.LP.modules.currency,
+    "className": "Currency"
+  },
+  "widget": {
+    "icon": "subpage.png",
+    "text": MWF.APPPOD.LP.modules.widget,
+    "className": "Widget"
+  },
+  "widgetmodules": {
+    "icon": "subpage.png",
+    "text": MWF.APPPOD.LP.modules.widgetmodules,
+    "className": "Widgetmodules"
+  },
   "statement": {
     "icon": "statement.png",
     "text": MWF.APPPOD.LP.modules.statement,
     "className": "Statement"
   },
-  "datagrid": {
-    "icon": "datagrid.png",
-    "text": MWF.APPPOD.LP.modules.datagrid,
-    "className": "Datagrid"
+  "statementSelector": {
+    "icon": "statementSelector.png",
+    "text": MWF.APPPOD.LP.modules.statementSelector,
+    "className": "StatementSelector"
   },
   "datatable": {
     "icon": "datagrid.png",
@@ -148,10 +173,125 @@
     "icon": "importer.png",
     "text": MWF.APPPOD.LP.modules.importer,
     "className": "Importer"
-  }
+  },
+  "application": {
+    "icon": "application.png",
+    "text": MWF.APPPOD.LP.modules.application,
+    "className": "Application"
+  },
 //  "SmartBI": {
 //    "icon": "smartbi.png",
 //    "text": MWF.APPPOD.LP.modules.SmartBI,
 //    "className": "SmartBI"
-//  }
+//  },
+  "htmledit": {
+    "icon": "htmleditor.png",
+    "text": MWF.APPPOD.LP.modules.htmledit,
+    "className": "Htmleditor"
+  },
+  "elcontainer": {
+    "fontIcon": "el-icon-s-grid",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_container,
+    "className": "Elcontainer"
+  },
+  "elinput": {
+    "fontIcon": "el-icon-edit",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_input,
+    "className": "Elinput"
+  },
+  "elautocomplete": {
+    "fontIcon": "el-icon-finished",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_autocomplete,
+    "className": "Elautocomplete"
+  },
+  "elnumber": {
+    "fontIcon": "el-icon-edit-outline",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_number,
+    "className": "Elnumber"
+  },
+  "elradio": {
+    "fontIcon": "el-icon-success",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_radio,
+    "className": "Elradio"
+  },
+  "elcheckbox": {
+    "fontIcon": "el-icon-circle-plus",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_checkbox,
+    "className": "Elcheckbox"
+  },
+  "elselect": {
+    "fontIcon": "el-icon-arrow-down",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_select,
+    "className": "Elselect"
+  },
+  "elcascader": {
+    "fontIcon": "el-icon-d-arrow-right",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_cascader,
+    "className": "Elcascader"
+  },
+  "elswitch": {
+    "fontIcon": "el-icon-open",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_switch,
+    "className": "Elswitch"
+  },
+  "elslider": {
+    "fontIcon": "el-icon-s-operation",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_slider,
+    "className": "Elslider"
+  },
+  "eltime": {
+    "fontIcon": "el-icon-time",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_time,
+    "className": "Eltime"
+  },
+  "eldate": {
+    "fontIcon": "el-icon-date",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_date,
+    "className": "Eldate"
+  },
+  "eldatetime": {
+    "fontIcon": "el-icon-time",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_datetime,
+    "className": "Eldatetime"
+  },
+  "elbutton": {
+    "fontIcon": "el-icon-thumb",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_button,
+    "className": "Elbutton"
+  },
+  "elicon": {
+    "fontIcon": "el-icon-picture-outline-round",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_icon,
+    "className": "Elicon"
+  },
+  "elrate": {
+    "fontIcon": "el-icon-star-off",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_rate,
+    "className": "Elrate"
+  },
+  "elcolorpicker": {
+    "fontIcon": "el-icon-help",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_colorpicker,
+    "className": "Elcolorpicker"
+  },
+  "eltree": {
+    "fontIcon": "o2-icon-tree",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_tree,
+    "className": "Eltree"
+  },
+  "eldropdown": {
+    "fontIcon": "el-icon-caret-bottom",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_dropdown,
+    "className": "Eldropdown"
+  },
+  "elcarousel": {
+    "fontIcon": "el-icon-film",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_carousel,
+    "className": "Elcarousel"
+  },
+  "elcommon": {
+    "fontIcon": "el-icon-full-screen",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.el_common,
+    "className": "Elcommon"
+  }
 }
