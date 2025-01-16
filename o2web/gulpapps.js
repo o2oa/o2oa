@@ -97,7 +97,8 @@ var apps = [
     { "folder": "x_component_appstore_application", "tasks": [] },
     { "folder": "x_component_systemconfig", "tasks": [] },
     { "folder": "x_component_attendancev2", "tasks": [] },
-    { "folder": "x_init", "tasks": [] }
+    { "folder": "x_init", "tasks": [] },
+    { "folder": "x_test", "tasks": ["move", "min"] },
 ];
 
 module.exports = apps;
