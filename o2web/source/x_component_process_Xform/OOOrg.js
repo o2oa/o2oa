@@ -210,7 +210,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         this.moduleValueAG = null;
         this._setBusinessData(value);
         // this.node.set('value', value || '');
-        this.node.value = value.map(v=>(v.distinguishedName || v)).join(', ');
+        this.node.value = value.map(v => (v.distinguishedName || v)).join(', ');
         this.fieldModuleLoaded = true;
         return value;
     },

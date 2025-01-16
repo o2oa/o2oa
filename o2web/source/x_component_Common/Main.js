@@ -311,6 +311,7 @@ MWF.xApplication.Common.Main = new Class({
 		//this.content.setStyles({"height": "100%", "overflow": "hidden"});
 
 		window.addEvent("resize", function () {
+			debugger;
 			this.fireAppEvent("resize");
 		}.bind(this));
 		// $(document.body).addEvent("resize", function(){

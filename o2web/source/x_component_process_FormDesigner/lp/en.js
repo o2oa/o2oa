@@ -1503,7 +1503,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"logTaskFormat": "To Do Format",
 		"scriptMode": "Script type",
 		"scriptEditor": "Script editor ",
-		"lineNumber": "set number "
+		"lineNumber": "set number ",
+		"isReader": "As a content management reader",
+		"isAuther": "As a content management editor"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

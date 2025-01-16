@@ -59,11 +59,23 @@
                     <input type="radio" name="showCard" value="no" text{($.showCard=='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitle">{{$.lp.dataStructure}}:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input type="radio" name="storeRange" value="full" text{($.storeRange=='full')?'checked':''}/>{{$.lp.complete}}-->
+<!--                    <input type="radio" name="storeRange" value="simple" text{($.storeRange!=='full')?'checked':''}/>{{$.lp.simple}}-->
+<!--                </td>-->
+<!--            </tr>-->
             <tr>
-                <td class="editTableTitle">{{$.lp.dataStructure}}:</td>
-                <td class="editTableValue">
-                    <input type="radio" name="storeRange" value="full" text{($.storeRange=='full')?'checked':''}/>{{$.lp.complete}}
-                    <input type="radio" name="storeRange" value="simple" text{($.storeRange!=='full')?'checked':''}/>{{$.lp.simple}}
+                <td class="editTableTitle" colspan="2"><b>{{$.lp.isReader}}:</b>
+                    <input type="radio" name="isReader" value="yes" text{($.isReader==='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isReader" value="no" text{($.isReader!=='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle" colspan="2"><b>{{$.lp.isAuther}}:</b>
+                    <input type="radio" name="isAuther" value="yes" text{($.isAuther==='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isAuther" value="no" text{($.isAuther!=='yes')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>

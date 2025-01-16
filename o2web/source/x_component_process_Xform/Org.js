@@ -320,7 +320,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             if (o2.typeOf(fd)=="array"){
                 fd.each(function(v){values.push(v);});
             }else{
-                values.push(fd);
+                if (fd) values.push(fd);
             }
 
             // if (fd && fd.isAG){

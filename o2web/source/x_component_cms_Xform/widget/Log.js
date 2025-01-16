@@ -167,6 +167,7 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
         if( this.options.mode != "text" )height = height + lineHeight;
         this.contentScrollNode.setStyle("height", height+"px");
     },
+
     setScroll: function(){
         MWF.require("MWF.widget.ScrollBar", function () {
             this.scrollBar = new MWF.widget.ScrollBar(this.contentScrollNode, {

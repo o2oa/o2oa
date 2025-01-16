@@ -409,7 +409,7 @@
       "view-style": "background-color:#f7f7f7"
     }
   },
-  "Statement": {
+  "statement": {
     "styles": {},
     "properties": {
       "class": "form-content-view"

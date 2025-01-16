@@ -267,6 +267,10 @@ o2.xDesktop.Default = new Class({
         var skinCss = this.path+this.options.style+ "/style-skin.css";
         var html = this.path+this.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-pc.html" : "/layout-pc.html");
 
+        var cssv10 = "/x_desktop/css/v10/"+this.options.style+ "/style-skin.css";
+        this.node.loadCss(cssv10);
+
+
         this.node.loadAll({ "css": [css], "html": [html]}, {"bind": {"user": this.session.user}, "module": this},function(){
             var oReq = new XMLHttpRequest();
             oReq.addEventListener("load", function(){
@@ -540,10 +544,17 @@ o2.xDesktop.Default = new Class({
     },
     changeLayoutSkin: function(style){
         var skinCss = this.path+this.options.style+ "/style-skin.css";
+        var cssv10 = "/x_desktop/css/v10/"+this.options.style+ "/style-skin.css";
+
         o2.removeCss(skinCss);
+        o2.removeCss(cssv10);
+
         this.options.style = style;
         skinCss = this.path+this.options.style+"/style-skin.css";
+        cssv10 = "/x_desktop/css/v10/"+this.options.style+ "/style-skin.css";
+
         this.node.loadCss(skinCss);
+        this.node.loadCss(cssv10);
     },
     changeToDesktopStyle: function(e){
         //MWF.xDesktop.confirm("infor", e, o2.LP.desktop.changeViewTitle, {"html": o2.LP.desktop.changeView}, 500, 100, function(){

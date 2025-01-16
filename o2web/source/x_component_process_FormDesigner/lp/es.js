@@ -1502,7 +1502,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"logTaskFormat": "Formato pendiente",
 		"scriptMode": "Tipo de guión",
 		"scriptEditor": "Editor de guiones",
-		"lineNumber": "Mostrar el número de línea"
+		"lineNumber": "Mostrar el número de línea",
+		"isReader": "Como lector de gestión de contenidos",
+		"isAuther": "Como editor de gestión de contenidos"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

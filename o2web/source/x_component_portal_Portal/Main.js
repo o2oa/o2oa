@@ -278,6 +278,11 @@ MWF.xApplication.portal.Portal.Main = new Class({
 
                 this.appForm.load();
 
+                this.addEvent('resize', function(){
+                    debugger;
+                    this.appForm.fireEvent('resize');
+                }.bind(this));
+
                 if (callback) callback();
                 if (this.mask) this.mask.hide();
             //}.bind(this));
