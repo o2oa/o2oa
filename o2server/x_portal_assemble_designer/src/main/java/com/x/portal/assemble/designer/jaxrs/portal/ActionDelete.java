@@ -1,5 +1,8 @@
 package com.x.portal.assemble.designer.jaxrs.portal;
 
+import com.x.base.core.project.tools.ListTools;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.ApplicationDictItem;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -35,10 +38,14 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Page.class);
 			emc.beginTransaction(Script.class);
 			emc.beginTransaction(File.class);
+			emc.beginTransaction(ApplicationDict.class);
+			emc.beginTransaction(ApplicationDictItem.class);
 			this.removeWidget(business, portal.getId());
 			this.removePage(business, portal.getId());
 			this.removeScript(business, portal.getId());
 			this.removeFile(business, portal.getId());
+			this.removeApplicationDictItem(business, portal.getId());
+			this.removeApplicationDict(business, portal.getId());
 			emc.remove(portal, CheckRemoveType.all);
 			emc.commit();
 			CacheManager.notify(Portal.class);
@@ -50,6 +57,24 @@ class ActionDelete extends BaseAction {
 			wo.setValue(true);
 			result.setData(wo);
 			return result;
+		}
+	}
+
+	private void removeApplicationDict(Business business, String portalId) throws Exception {
+		List<String> ids = business.applicationDict().listWithApplication(portalId);
+		EntityManagerContainer emc = business.entityManagerContainer();
+		for (ApplicationDict o : emc.list(ApplicationDict.class, ids)) {
+			emc.remove(o, CheckRemoveType.all);
+		}
+	}
+
+	private void removeApplicationDictItem(Business business, String portalId) throws Exception {
+		List<String> ids = business.applicationDictItem().listWithApplication(portalId);
+		EntityManagerContainer emc = business.entityManagerContainer();
+		for (List<String> list : ListTools.batch(ids, 1000)) {
+			for (ApplicationDictItem o : emc.list(ApplicationDictItem.class, list)) {
+				emc.remove(o);
+			}
 		}
 	}
 
