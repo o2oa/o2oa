@@ -125,8 +125,8 @@ export default content({
     if (this.bind.appealEnable ) {
       // 检查是否能够申诉 有可能超过限制次数
       const checkResult = await appealInfoAction("startCheck", appeal.id);
-      if (checkResult) {
-        const process = await processAction("get", json.processId);
+      if (checkResult && this.imConfig.processId) {
+        const process = await processAction("get", this.imConfig.processId);
         MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
           var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, app, {
               "latest" : false,
