@@ -317,9 +317,11 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                             if (callback) callback();
                         }.bind(this));
                     } else {
+                        this.subformData = null;
                         if (callback) callback();
                     }
                 } else {
+                    this.subformData = null;
                     if (callback) callback();
                 }
             }
@@ -342,6 +344,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                     }.bind(this));
                 }
             } else {
+                this.subformData = null;
                 if (callback) callback();
             }
         }
@@ -474,9 +477,11 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                             if (callback) callback();
                         }.bind(this));
                     } else {
+                        this.subformData = null;
                         if (callback) callback();
                     }
                 } else {
+                    this.subformData = null;
                     if (callback) callback();
                 }
             }
@@ -493,6 +498,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                     if (callback) callback();
                 }.bind(this));
             } else {
+                this.subformData = null;
                 if (callback) callback();
             }
         }
