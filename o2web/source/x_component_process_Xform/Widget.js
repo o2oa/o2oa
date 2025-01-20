@@ -269,9 +269,11 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                             if (callback) callback();
                         }.bind(this));
                     }else{
+                        this.widgetData = null;
                         if (callback) callback();
                     }
                 }else{
+                    this.widgetData = null;
                     if (callback) callback();
                 }
             }
@@ -296,6 +298,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                     }.bind(this));
                 }
             }else{
+                this.widgetData = null;
                 if (callback) callback();
             }
         }
