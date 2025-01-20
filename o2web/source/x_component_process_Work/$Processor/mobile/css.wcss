@@ -2,8 +2,6 @@
     "routeContainer" : {
         "overflow" : "hidden"
     },
-
-
     "routeSelectorTile": {
         "overflow": "hidden",
         "height": "30px",
@@ -40,7 +38,6 @@
         "background-color": "#E3E3E3",
         "background": "url(../x_component_process_Work/$Processor/process/routegroup_selected.png) no-repeat 5px center"
     },
-
     "routeNode": {
         "float": "left",
         "margin-left": "20px",
@@ -64,7 +61,6 @@
         "background": "url(../x_component_process_Work/$Processor/process/checked.png) no-repeat 5px center",
         "background-color": "#3296FA"
     },
-
     "routeOpinionTile": {
         "overflow": "hidden",
         "height": "30px",
@@ -76,10 +72,8 @@
         "padding-left": "20px"
     },
     "routeOpinionArea": {
-//        "height": "129px",
         "border-bottom": "0px solid #6681a5"
     },
-
     "inputOpinionNode": {
         "height": "129px",
         "border-left": "0px solid #6681a5",
@@ -285,5 +279,4 @@
     "selectorContent_noItem": {
         "padding" : "0px"
     }
-
 }
