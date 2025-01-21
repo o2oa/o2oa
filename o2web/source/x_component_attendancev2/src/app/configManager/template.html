@@ -88,20 +88,6 @@
                 </div>
             </div>
         </div>
-        <!-- 关闭旧版考勤打卡 -->
-        <div class="margin-top">
-            <div class="form-item-label">
-                {{$.lp.config.closeOldAttendance}}
-            </div>
-            <div class="form-item-content margin-top padding-bottom">
-                <div class="margin-top margin-left flex" @click="clickCloseOldAttendance">
-                    <div class="o2-icon-14">
-                        <i class="{{ $.form.closeOldAttendance ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
-                    </div>
-                    <label style="margin: 5px;" >{{$.lp.config.closeOldAttendanceLabel}}</label>
-                </div>
-            </div>
-        </div>
 
         <div style="margin-top: 32px;">
             <button style="width: 320px;" class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
