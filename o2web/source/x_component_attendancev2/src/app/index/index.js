@@ -4,14 +4,12 @@ import { myAction } from "../../utils/actions";
 import { EventBus } from "../../utils/eventBus";
 import template from "./template.html";
 import style from "./style.scope.css";
-import myMenu from "../menu";
 
 export default content({
   style,
   template,
   autoUpdate: true,
   components: {
-    myMenu,
     appContainer: {
       watch: ["menu.currentMenu"],
       async load() {
@@ -35,13 +33,23 @@ export default content({
     const menu = this.getCurrentPersonMenu();
     this.bind.menu.menuData = menu;
     if (menu.length) {
-      this.bind.menu.currentMenu = menu[0].sub[0];
+      this.bind.menu.currentMenu = menu[0].children[0];
     }
-    this._initEventBus();
+    this._initEventBus()
+  },
+  async afterRender() {
+    this._initOONav()
   },
   // 初始化 EventBus
   _initEventBus() {
     this.eventBus = new EventBus();
+  },
+  _initOONav() {
+    const ooNav = document.querySelector('oo-nav')
+    ooNav.addEventListener('select', (e) => {
+      this.bind.menu.currentMenu = e.detail.data
+    })
+    ooNav.setMenu(this.bind.menu.menuData)
   },
   // 添加监听
   listenEventBus(eventName, callback) {
@@ -97,7 +105,6 @@ export default content({
   async openFomVm(c, bindData) {
     this.formVm = await c.generate("#form", bindData, this);
     this.dom.querySelector("#form").classList.add("index_page_form_container");
-    // this.dom.querySelector("#formMask").classList.replace("cc-mask-hide", "cc-mask-show");
   },
   // 关闭表单
   closeFormVm() {
@@ -105,7 +112,6 @@ export default content({
       this.formVm.destroy();
     }
     this.dom.querySelector("#form").classList.remove("index_page_form_container");
-    // this.dom.querySelector("#formMask").classList.replace("cc-mask-show", "cc-mask-hide");
   },
   
   async loadCurrentPersonInfo() {
@@ -125,29 +131,10 @@ export default content({
         } 
       }
     }
-    // if (o2.AC.isAttendanceManager() || o2.AC.isAdministrator()) {
-    //   this.bind.admin = "admin";
-    // } else {
-    //   const personInfo = await personalAction("get");
-    //   let isReadAdmin = false;
-    //   let dutyList = [];
-    //   if (personInfo && personInfo.woIdentityList) {
-    //     for (const { woUnitDutyList } of personInfo.woIdentityList) {
-    //       if (woUnitDutyList && woUnitDutyList.some((duty) => duty.name === "考勤管理员")) {
-    //         dutyList.push(...woUnitDutyList.filter((duty) => duty.name === "考勤管理员"));
-    //         isReadAdmin = true;
-    //       }
-    //     }
-    //   }
-    //   if (isReadAdmin) {
-    //     this.bind.admin = "readAdmin";
-    //     content.myDutyList = dutyList;
-    //   }
-    // }
   },
   // 普通菜单数据
   getCurrentPersonMenu() {
-    const menus = this.menuDataAll();
+    const menus = this.navDataAll();
     let access = 0;
     if (this.bind.admin === "readAdmin") {
       access = 1;
@@ -156,18 +143,19 @@ export default content({
     }
     let accessMenus = menus.filter((menu) => menu.access <= access);
     if (this.bind.assistAdmin) { // 协助管理员 添加考勤组管理菜单
-      if ( !accessMenus.some((m)=> m.access == 2) ) {
+      if ( !accessMenus.some((m)=> m.access === 2) ) {
         accessMenus.push(
           {
-            title: lp.menu.config,
-            id: '3',
-            access: 2,
-            sub: [
+            "title": lp.menu.config,
+            "text": lp.menu.config,
+            "name": '3',
+            "access": 2,
+            "children": [
               {
-                id: "3-2",
-                title: lp.menu.groupmanager,
-                action: "groupManager",
-                icon: "o2icon-icon_kaoqinzu"
+                "name": "3-2",
+                "text": lp.menu.groupmanager,
+                "action": "groupManager",
+                icon: "ooicon-group"
               }
             ],
           }
@@ -176,101 +164,107 @@ export default content({
     }
     return accessMenus;
   },
-  menuDataAll() {
+  navDataAll() {
     return [
       {
-        title: lp.menu.myAttendance,
-        id: '1',
-        access: 0,
-        sub: [
+        "name": "1",
+        "icon": "",
+        "title": lp.menu.myAttendance,
+        "text": lp.menu.myAttendance,
+        "access": 0,
+        "children": [
           {
-            id: "1-1",
-            title: lp.menu.myStatistic,
-            action: "myAttendance",
-            icon: "ooicon-data-center"
+            "name": "1-1",
+            "text": lp.menu.myStatistic,
+            "action": "myAttendance",
+            "icon": "ooicon-data-center",
+            "selected": true,
           },
           {
-            id: "1-2",
-            title: lp.menu.myAppealList,
-            action: "appealManager",
-            icon: "ooicon-emoji-prompt"
+            "name": "1-2",
+            "text": lp.menu.myAppealList,
+            "action": "appealManager",
+            "icon": "ooicon-emoji-prompt"
           },
           {
-            id: "1-3",
-            title: lp.menu.leavemanager,
-            action: "leaveManager",
-            icon: "ooicon-clock"
+            "name": "1-3",
+            "text": lp.menu.leavemanager,
+            "action": "leaveManager",
+            "icon": "ooicon-clock"
+          }
+        ]
+      },
+      {
+        "title": lp.menu.statistic,
+        "text": lp.menu.statistic,
+        "name": '2',
+        "access": 1,
+        "children": [
+          {
+            "name": "2-1",
+            "text": lp.menu.detailStatisticFilter,
+            "action": "detailStatisticManager",
+            "icon": "ooicon-work-management"
+          },
+          {
+            "name": "2-2",
+            "text": lp.menu.detailFilter,
+            "action": "detailManager",
+            "icon": "ooicon-work-management2"
+          },
+          {
+            "name": "2-3",
+            "text": lp.menu.recordList,
+            "action": "recordManager",
+            "icon": "ooicon-list-alt"
+          },
+          {
+            "name": "2-4",
+            "text": lp.menu.appealList,
+            "action": "appealAdminManager",
+            "icon": "ooicon-emoji-prompt"
           },
         ],
       },
       {
-        title: lp.menu.statistic,
-        id: '2',
-        access: 1,
-        sub: [
+        "title": lp.menu.config,
+        "text": lp.menu.config,
+        "name": '3',
+        "access": 2,
+        "children": [
           {
-            id: "2-1",
-            title: lp.menu.detailStatisticFilter,
-            action: "detailStatisticManager",
-            icon: "ooicon-work-management"
+            "name": "3-1",
+            "text": lp.menu.shiftManager,
+            "action": "shiftManager",
+            "icon": "ooicon-onduty"
           },
           {
-            id: "2-2",
-            title: lp.menu.detailFilter,
-            action: "detailManager",
-            icon: "ooicon-work-management2"
-          },
-          {
-            id: "2-3",
-            title: lp.menu.recordList,
-            action: "recordManager",
-            icon: "ooicon-list-alt"
-          },
-          {
-            id: "2-4",
-            title: lp.menu.appealList,
-            action: "appealAdminManager",
-            icon: "ooicon-emoji-prompt"
-          },
-        ],
-      },
-      {
-        title: lp.menu.config,
-        id: '3',
-        access: 2,
-        sub: [
-          {
-            id: "3-1",
-            title: lp.menu.shiftManager,
-            action: "shiftManager",
-            icon: "o2icon-icon_banciguanli"
-          },
-          {
-            id: "3-2",
-            title: lp.menu.groupmanager,
-            action: "groupManager",
+            "name": "3-2",
+            "text": lp.menu.groupmanager,
+            "action": "groupManager",
             icon: "ooicon-group"
           },
           {
-            id: "3-3",
-            title: lp.menu.addressmanger,
-            action: "addressManager",
-            icon: "ooicon-workcenter"
+            "name": "3-3",
+            "text": lp.menu.addressmanger,
+            "action": "addressManager",
+            "icon": "ooicon-workcenter"
           },
           {
-            id: "3-4",
-            title: lp.menu.leavemanager,
-            action: "leaveManager",
-            icon: "ooicon-clock"
+            "name": "3-4",
+            "text": lp.menu.leavemanager,
+            "action": "leaveManager",
+            "icon": "ooicon-clock"
           },
           {
-            id: "3-5",
-            title: lp.menu.configmanager,
-            action: "configManager",
-            icon: "ooicon-config"
+            "name": "3-5",
+            "text": lp.menu.configmanager,
+            "action": "configManager",
+            "icon": "ooicon-config"
           },
         ],
-      },
-    ];
+      }
+    ]
   },
+
 });

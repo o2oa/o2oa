@@ -25,7 +25,7 @@ export default content({
         exceptionAlertTime: "09:30",
         appealMaxTimes: 0,
         detailStatisticCronString: "0 0 3 * * ?", //默认凌晨 3 点
-        closeOldAttendance: false, // 是否关闭旧考勤
+        closeOldAttendance: true, // 是否关闭旧考勤
       },
       holidayList: [],
       workDayList: [],
@@ -100,7 +100,7 @@ export default content({
       form.processName = "";
       form.appealMaxTimes = 0;
     }
-
+    form.closeOldAttendance = true
     const result = await configAction("post", form);
     console.log(result);
     o2.api.page.notice(lp.saveSuccess, "success");
@@ -270,8 +270,5 @@ export default content({
           }
         );
     });
-  },
-  clickCloseOldAttendance() {
-    this.bind.form.closeOldAttendance = !this.bind.form.closeOldAttendance;
   },
 });
