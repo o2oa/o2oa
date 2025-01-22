@@ -312,15 +312,13 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             size.y = parseInt(this.options.positionHeight);
         }
 
-        var container = $(document.body);
-        var bodySize = $(document.body).getSize();
+        var container = layout.desktop.currentApp ? layout.desktop.currentApp.content : $(document.body);
+        var bodySize = container.getSize();
         if( this.options.positionNode ){
             var positionNodeSize = this.options.positionNode.getSize();
             if(positionNodeSize.y<bodySize.y || positionNodeSize.x < bodySize.x){
                 container = this.options.positionNode;
             }
-        }else if (layout.desktop.currentApp){
-            container = layout.desktop.currentApp.content;
         }else{
             if (this.options.container){
                 var cSize = this.options.container.getSize();
