@@ -9,11 +9,11 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
 //
 //		if (this.options.mark){
 //			if (!this.markNode){
-//				
+//
 //				this.markNode = new Element("div", {
 //					styles: this.css.mark
 //				}).inject($(document.body));
-//				
+//
 //			}
 ////			if (this.options.markNode){
 ////				var size = this.options.markNode.getComputedSize();
@@ -35,7 +35,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
 //					"height": "0px"
 //				});
 ////			}
-//			
+//
 //			this.markNode.setStyle("display", "block");
 //		}
 //	},
@@ -109,7 +109,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             this.titleAction = null;
         }
 
-		if (this.title) this.setTitleEvent(); 
+		if (this.title) this.setTitleEvent();
 	//	if (this.titleText) this.getTitle();
 		if (this.content) this.getContent();
 		if (this.titleAction) this.getAction();
@@ -313,13 +313,18 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         }
 
         var container = $(document.body);
-        if( this.options.positionNode && this.options.positionNode.getSize().y<$(document.body).getSize().y ){
-            container = this.options.positionNode;
+        var bodySize = $(document.body).getSize();
+        if( this.options.positionNode ){
+            var positionNodeSize = this.options.positionNode.getSize();
+            if(positionNodeSize.y<bodySize.y || positionNodeSize.x < bodySize.x){
+                container = this.options.positionNode;
+            }
         }else if (layout.desktop.currentApp){
             container = layout.desktop.currentApp.content;
         }else{
             if (this.options.container){
-                if (this.options.container.getSize().y<$(document.body).getSize().y){
+                var cSize = this.options.container.getSize();
+                if (cSize.y<bodySize.y || cSize.x<bodySize.x){
                     container = this.options.container;
                 }
             }
