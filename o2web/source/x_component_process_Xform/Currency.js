@@ -112,28 +112,30 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
             this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
         }
 
-        this.node.getFirst().addEvent("change", function(){
+        input = this.node.getElement('input');
+        input.addEvent("change", function(){
             this.validationMode();
             if (this.validation()) {
                 var value = this.getInputData("change");
                 this._setBusinessData(value);
-                this.node.getFirst().set("value", this.formatNumber( value.toString() ));
+                input.set("value", this.formatNumber( value.toString() ));
                 this.fireEvent("change");
             }
         }.bind(this));
 
-        this.node.getFirst().addEvent("blur", function(){
+        input.addEvent("blur", function(){
             this.validation();
         }.bind(this));
-        this.node.getFirst().addEvent("keyup", function(){
+        input.addEvent("keyup", function(){
             this.validationMode();
         }.bind(this));
     },
     __setData: function(data, fireChange){
         var old = this.getInputData();
         this._setBusinessData(data);
-        if (this.node.getFirst()){
-            this.node.getFirst().set("value", this.formatNumber(data));
+        var input = this.node.getElement('input');
+        if (input){
+            input.set("value", this.formatNumber(data));
             this.checkDescription();
             this.validationMode();
         }else{
