@@ -2587,6 +2587,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var flowNode = new Element("div", { "styles": this.app.css.flowNode_Area }).inject(this.node);
         flowNode.setStyle("opacity", 0);
 
+        debugger;
+
         var setSize = function (notRecenter) {
 
             var dlg = this;

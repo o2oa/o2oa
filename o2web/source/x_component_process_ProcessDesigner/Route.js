@@ -37,6 +37,8 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
             this.listItem = new MWF.APPPD.Route.List(this);
             this.listItem.load();
         }
+
+        this.checkPaperSize();
     },
     getRoutePoint: function () {
         var points = [];
@@ -48,6 +50,23 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
             }.bind(this));
         }
         return points;
+    },
+    checkPaperSize: function () {
+        var paperSize = this.process.getPaperSize();
+
+        var maxX = 0, maxY = 0;
+        this.positionPoints.each(function(point){
+            maxX = Math.max(maxX, parseFloat(point.x));
+            maxY = Math.max(maxY, parseFloat(point.y));
+        })
+
+        if (maxX>paperSize.x || maxY>paperSize.y) {
+            if(maxX>paperSize.x)this.process.setPaperSizeX( maxX );
+            if(maxY>paperSize.y)this.process.setPaperSizeY( maxY );
+            this.paper.setSize(paperSize.x, paperSize.y);
+            if(maxX>paperSize.x)$(this.paper.canvas).getParent().setStyle("width", ""+paperSize.x+"px");
+            if(maxY>paperSize.y)$(this.paper.canvas).getParent().setStyle("height", ""+paperSize.y+"px");
+        }
     },
     reload: function (fromPath, toPath) {
         if (this.toActivity && this.fromActivity) {
@@ -1040,19 +1059,19 @@ MWF.xApplication.process.ProcessDesigner.Route.List = new Class({
 			name = MWF.APPPD.LP.unknow;
 		}
 		this.row = this.process.routeTable.push([
-			    {	
+			    {
 			    	"content": " ",
 			    	"properties": {
 			    		"styles": this.process.css.route.icon
 			        }
 			    },
-			    {	
+			    {
 			    	"content": routeName+" (to "+name+")",
 			    	"properties": {
 			    		"styles": this.process.css.list.listText
 			        }
 			    },
-			    {	
+			    {
 			    	"content": "<img src=\""+"../x_component_process_ProcessDesigner/$Process/default/icon/copy.png"+"\" />",
 			    	"properties": {
 			    		"styles": this.process.css.list.listIcon,
@@ -1061,7 +1080,7 @@ MWF.xApplication.process.ProcessDesigner.Route.List = new Class({
 			    		}
 			        }
 			    },
-			    {	
+			    {
 			    	"content": "<img src=\""+"../x_component_process_ProcessDesigner/$Process/default/icon/delete.png"+"\" />",
 			    	"properties": {
 			    		"styles": this.process.css.list.listIcon,
@@ -1070,7 +1089,7 @@ MWF.xApplication.process.ProcessDesigner.Route.List = new Class({
 			    		}
 			        }
 			    }
-			
+
 			]
 		);
 		this.row.tr.addEvent("click", function(){
@@ -1105,7 +1124,7 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
 	Extends: MWF.APPPD.Property,
 	initialize: function(route, options){
 		this.setOptions(options);
-		
+
 		this.route = route;
 		this.process = route.process;
 		this.paper = this.process.paper;
