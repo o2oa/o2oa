@@ -3,7 +3,6 @@ package com.x.base.core.openjpa.jdbc.sql;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-
 import org.apache.openjpa.jdbc.sql.DBDictionary;
 import org.apache.openjpa.lib.util.Localizer;
 

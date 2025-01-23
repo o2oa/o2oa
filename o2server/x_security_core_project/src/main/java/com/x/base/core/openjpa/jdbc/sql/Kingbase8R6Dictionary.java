@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-
 import org.apache.openjpa.jdbc.kernel.exps.FilterValue;
 import org.apache.openjpa.jdbc.schema.Column;
 import org.apache.openjpa.jdbc.schema.Sequence;
@@ -20,14 +19,22 @@ import org.apache.openjpa.jdbc.sql.SQLBuffer;
 import org.apache.openjpa.lib.jdbc.DelegatingConnection;
 import org.apache.openjpa.lib.jdbc.DelegatingPreparedStatement;
 
-public class Kingbase8Dictionary extends DBDictionary {
+public class Kingbase8R6Dictionary extends DBDictionary {
 	public String allSequencesSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S'";
 	public String namedSequencesFromAllSchemasSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where  SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S' AND SYS_CLASS.RELNAME = ?";
 	public String allSequencesFromOneSchemaSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S' AND SYS_NAMESPACE.NSPNAME = ?";
 	public String namedSequenceFromOneSchemaSQL = "select SYS_NAMESPACE.NSPNAME as SEQUENCE_SCHEMA, SYS_CLASS.RELNAME as SEQUENCE_NAME from SYS_NAMESPACE,SYS_CLASS where  SYS_NAMESPACE.OID=SYS_CLASS.RELNAMESPACE and SYS_CLASS.RELKIND='S' AND SYS_CLASS.RELNAME = ? AND SYS_NAMESPACE.NSPNAME = ?";
 
-	public Kingbase8Dictionary() {
-		this.platform = "KingbaseES8";
+	public Kingbase8R6Dictionary() {
+		this.platform = "KingbaseES8R6";
+		// 适配 V8R6
+		this.schemaCase = SCHEMA_CASE_LOWER;
+		// 适配 V8R6
+		this.doubleTypeName = "DOUBLE PRECISION";
+		// 20241217 this.booleanTypeName = "BOOLEAN";
+		this.booleanTypeName = "INTEGER";
+		this.bitTypeName = "INTEGER";
+		// 20241217 end
 		this.validationSQL = "SELECT NOW()";
 		this.supportsSelectStartIndex = true;
 		this.supportsSelectEndIndex = true;
@@ -47,8 +54,7 @@ public class Kingbase8Dictionary extends DBDictionary {
 		this.longVarcharTypeName = "TEXT";
 		this.charTypeName = "CHAR{0}";
 		this.varcharTypeName = "VARCHAR{0}";
-		/* add by Ray */
-		this.bitTypeName = "BOOL";
+
 		this.systemSchemaSet.addAll(Arrays.asList(new String[] { "INFORMATION_SCHEMA", "SYS_CATALOG" }));
 		this.fixedSizeTypeNameSet.addAll(Arrays.asList(new String[] { "TEXT", "XML", "INTERVAL YEAR", "INTERVAL MONTH",
 				"INTERVAL DAY", "INTERVAL HOUR", "INTERVAL MINUTE", "INTERVAL SECOND", " INTERVAL YEAR TO MONTH",
@@ -114,7 +120,7 @@ public class Kingbase8Dictionary extends DBDictionary {
 	}
 
 	/* add by Ray */
-	protected BooleanRepresentation booleanRepresentation = BooleanRepresentationFactory.BOOLEAN;
+	protected BooleanRepresentation booleanRepresentation = BooleanRepresentationFactory.INT_10;
 
 	/**
 	 * Convert the specified column of the SQL ResultSet to the proper java type.
@@ -129,11 +135,6 @@ public class Kingbase8Dictionary extends DBDictionary {
 	public void setBoolean(PreparedStatement stmnt, int idx, boolean val, Column col) throws SQLException {
 		booleanRepresentation.setBoolean(stmnt, idx, val);
 	}
-
-//	public void setBoolean(PreparedStatement paramPreparedStatement, int paramInt, boolean paramBoolean,
-//			Column paramColumn) throws SQLException {
-//		paramPreparedStatement.setBoolean(paramInt, paramBoolean);
-//	}
 
 	/* add by Ray end */
 
@@ -211,7 +212,7 @@ public class Kingbase8Dictionary extends DBDictionary {
 
 	private static class KingbasePreparedStatement extends DelegatingPreparedStatement {
 		public KingbasePreparedStatement(PreparedStatement paramPreparedStatement, Connection paramConnection,
-				Kingbase8Dictionary paramKingbaseDictionary) {
+				Kingbase8R6Dictionary paramKingbaseDictionary) {
 			super(paramPreparedStatement, paramConnection);
 		}
 
@@ -229,21 +230,21 @@ public class Kingbase8Dictionary extends DBDictionary {
 	}
 
 	private static class KingbaseConnection extends DelegatingConnection {
-		private final Kingbase8Dictionary _dict;
+		private final Kingbase8R6Dictionary _dict;
 
-		public KingbaseConnection(Connection paramConnection, Kingbase8Dictionary paramKingbaseDictionary) {
+		public KingbaseConnection(Connection paramConnection, Kingbase8R6Dictionary paramKingbaseDictionary) {
 			super(paramConnection);
 			this._dict = paramKingbaseDictionary;
 		}
 
 		protected PreparedStatement prepareStatement(String paramString, boolean paramBoolean) throws SQLException {
-			return new Kingbase8Dictionary.KingbasePreparedStatement(super.prepareStatement(paramString, false), this,
+			return new KingbasePreparedStatement(super.prepareStatement(paramString, false), this,
 					this._dict);
 		}
 
 		protected PreparedStatement prepareStatement(String paramString, int paramInt1, int paramInt2,
 				boolean paramBoolean) throws SQLException {
-			return new Kingbase8Dictionary.KingbasePreparedStatement(
+			return new KingbasePreparedStatement(
 					super.prepareStatement(paramString, paramInt1, paramInt2, false), this, this._dict);
 		}
 	}

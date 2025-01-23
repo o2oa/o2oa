@@ -2,7 +2,6 @@ package com.x.base.core.openjpa.jdbc.sql;
 
 import org.apache.openjpa.jdbc.sql.BooleanRepresentationFactory;
 import org.apache.openjpa.jdbc.sql.DBDictionary;
-import org.apache.openjpa.lib.util.Localizer;
 
 public class OscarDictionary extends DBDictionary {
 

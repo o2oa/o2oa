@@ -8,15 +8,12 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Collections;
-
 import org.apache.openjpa.jdbc.identifier.DBIdentifier;
 import org.apache.openjpa.jdbc.schema.Column;
 import org.apache.openjpa.jdbc.sql.BooleanRepresentationFactory;
 import org.apache.openjpa.jdbc.sql.DBDictionary;
-import org.apache.openjpa.jdbc.sql.InformixDictionary;
 import org.apache.openjpa.jdbc.sql.SQLExceptions;
 import org.apache.openjpa.lib.util.Localizer;
-//import org.apache.openjpa.jdbc.sql.InformixDictionary;
 import org.apache.openjpa.lib.util.ReferenceHashSet;
 import org.apache.openjpa.lib.util.collections.AbstractReferenceMap;
 

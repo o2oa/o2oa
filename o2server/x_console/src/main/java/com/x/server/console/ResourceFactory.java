@@ -1,5 +1,7 @@
 package com.x.server.console;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +26,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -49,11 +52,13 @@ import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
 /**
- * 
+ *
  * @author ray
  *
  */
 public class ResourceFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFactory.class);
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
@@ -82,15 +87,30 @@ public class ResourceFactory {
 
 	/**
 	 * 生成DataSources并绑定到jndi
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private static void initDataSources() throws Exception {
+		if (!checkLicense()) {
+			LOGGER.print(Config.LICENSE_TIP);
+			return;
+		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
 			internal();
 		}
+	}
+
+	private static boolean checkLicense() {
+		try {
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.license.LicenseTools");
+			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
+			return BooleanUtils.isTrue(result);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
 	}
 
 	/**
@@ -108,7 +128,7 @@ public class ResourceFactory {
 	/**
 	 * 需要将custom模块中的entity加入到扫描目录中,
 	 * 所以需要对custom中的web-inf/classes目录下的实体类进行扫描,先把war解压到临时目录然后读取classes目录下的类
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -137,7 +157,7 @@ public class ResourceFactory {
 		LinkedBlockingQueue<JsonElement> eventQueue = new LinkedBlockingQueue<>();
 		EventQueueExecutor eventQueueExecutor = new EventQueueExecutor(eventQueue);
 		eventQueueExecutor.start();
-		
+
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUE, eventQueue);
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
 		new Resource(Config.RESOURCE_NODE_APPLICATIONS, new ConcurrentHashMap<String, Object>(10));
@@ -224,7 +244,7 @@ public class ResourceFactory {
 
 	/**
 	 * internal 使用的是H2 server,在执行close dataserver已经完成了数据库关闭,dataSource无法destory.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private static void internal() throws Exception {

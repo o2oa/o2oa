@@ -38,6 +38,7 @@
 	</properties>
 	<modules>
 		<module>x_base_core_project</module>
+		<module>x_security_core_project</module>
 		<!-- 顺序 -->
 		<module>x_query_core_entity</module>
 		<module>x_attendance_core_entity</module>
@@ -91,7 +92,8 @@
 		<module>x_program_center</module>
 		<module>x_program_init</module>
 		<module>x_console</module>
-	</modules>
+
+  </modules>
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
