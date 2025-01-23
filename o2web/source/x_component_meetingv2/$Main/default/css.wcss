@@ -1,0 +1,666 @@
+{
+	"topMenu": {
+	    "height": "50px",
+	    "position": "absolute",
+	    "top": "0px",
+	    "width": "calc( 100% - 10px )",
+        "padding-left": "10px",
+	    "color": "#FFF",
+	    "line-height": "50px",
+	    "font-size": "14px",
+	    "font-family": "Microsoft YaHei",
+	    "background-color": "#fff",
+        "overflow" : "hidden"
+	},
+    "topMenuRight" : {
+        "float" : "right",
+        "margin-right" : "20px"
+    },
+    "contentNode_inContainer" : {
+        "margin-top" : "50px",
+        "height": "100%",
+        "overflow": "hidden"
+    },
+	"contentNode": {
+	    "height": "100%",
+	    "overflow": "hidden"
+	},
+	"bottomMenu": {
+        "height": "60px",
+        "position": "absolute",
+        "bottom": "0px",
+        "width": "100%",
+        "color": "#FFF",
+        "font-family": "Microsoft YaHei",
+        "background-color": "#365775"
+    },
+    "topMenuNode": {
+        "height": "50px",
+        "color" : "#333",
+        "font-size" : "16px",
+        "line-height": "50px",
+        "float": "left",
+        "cursor": "pointer",
+        "padding-left" : "15px",
+        "padding-right" : "15px",
+        "overflow" : "hidden"
+    },
+    "topMenuNode_right" : {
+        "height": "50px",
+        "color" : "#333",
+        "font-size" : "16px",
+        "line-height": "50px",
+        "float": "left",
+        "padding-left" : "10px",
+        "padding-right" : "10px",
+        "cursor": "pointer"
+    },
+    "topMenuNode_over": {
+        "color" : "#3C76B7"
+    },
+    "topMenuNode_down": {
+        "color" : "#3C76B7"
+    },
+    "topMenuIconNode": {
+        "line-height": "50px",
+        "height": "50px",
+        "width": "20px",
+        "color": "#999",
+        "float": "left"
+    },
+    "topMenuIconNode_over": {
+        "color": "#3C76B7"
+    },
+    "topMenuTextNode": {
+        "line-height": "50px",
+        "height": "50px",
+        "float": "left"
+    },
+    "bottomMenuNode": {
+        "height": "40px",
+        "width": "40px",
+        "margin": "10px",
+        "float": "left",
+        "cursor": "pointer"
+    },
+
+    "topMenuPoint": {
+        "height": "10px",
+        "color": "#FFF",
+        "position": "absolute",
+        "bottom": "0px",
+        "width": "100%",
+        "color": "#FFF",
+        "line-height": "6px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "text-align": "center"
+    },
+    "menuPointAction":{
+        "width": "30px",
+        "height": "10px",
+        "margin": "auto",
+        "background": "url(../x_component_meetingv2/$Main/default/icon/point.png) no-repeat center center"
+    },
+
+    "bottomMenuPoint": {
+        "height": "10px",
+        "color": "#FFF",
+        "position": "absolute",
+        "top": "0px",
+        "width": "100%",
+        "color": "#FFF",
+        "line-height": "6px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "text-align": "center"
+    },
+
+//    "popupformTopNode": {
+//        "color" : "#333",
+//        "height": "30px",
+//        "background-color": "#eee",
+//        "border-top": "1px solid #ddd",
+//        "border-bottom": "1px solid #b6b6b6",
+//        "line-height": "30px",
+//        "font-size": "14px",
+//        "font-weight": "bold",
+//        "padding-left": "20px",
+//        "text-align": "left"
+//    },
+//    "popupformTopIconNode" : {
+//        "width": "28px",
+//        "height": "32px",
+//        "float": "left",
+//        "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+//    },
+//    "popupformTopTextNode" : {
+//        "font-size": "16px",
+//        "float": "left",
+//        "width" : "480px",
+//        "overflow" : "hidden",
+//        "text-overflow" : "ellipsis",
+//        "white-space":"nowrap"
+//    },
+//    "popupformTopContentNode" : {
+//        "float" : "right",
+//        "padding-right" : "10px",
+//        "text-align" : "right"
+//    },
+//    "popupformTopCloseActionNode": {
+//        "width": "30px",
+//        "height": "30px",
+//        "float": "right",
+//        "background": "url(../x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
+//        "cursor": "pointer"
+//    },
+
+
+
+    "createRoomNode": {
+        "overflow": "auto",
+        "background-color": "#EEE",
+        "position": "absolute",
+        "width": "60%",
+        "height": "60%",
+        "top": "0px",
+        "opacity": 0,
+        "z-index": "100"
+    },
+    "createRoomAreaNode": {
+        "width": "70%",
+        "max-width": "800px",
+        "min-width": "500px",
+        "margin": "0px auto",
+        "padding": "20px"
+    },
+    "createRoomTitleNode": {
+        "font-size": "36px",
+        "color": "#666",
+        "height": "80px",
+        "line-height": "80px",
+        "padding": "0px 40px",
+        "border-bottom": "3px solid #666"
+    },
+    "createRoomContentNode": {
+        "overflow": "hidden",
+        "padding": "10px 20px"
+    },
+    "createRoomBottomNode": {
+        "overflow": "hidden",
+        "padding": "10px",
+        "width": "280px",
+        "margin": "auto"
+    },
+    "createRoomFormNode": {
+        "clear": "both",
+        "overflow": "hidden",
+        "margin-bottom": "10px"
+    },
+    "createRoomFormNode2": {
+        "overflow": "hidden",
+        "margin-bottom": "10px",
+        "width": "48%",
+        "float": "left"
+    },
+    "createRoomFormNode3": {
+        "overflow": "hidden",
+        "margin-bottom": "10px",
+        "width": "48%",
+        "float": "right"
+    },
+
+    "createRoomFormTitleNode": {
+        "font-size": "18px",
+        "color": "#555",
+        "height": "30px",
+        "line-height": "30px"
+    },
+    "createRoomFormContentNode": {
+        "height": "30px",
+        "font-size": "14px",
+        "color": "#333"
+    },
+    "createRoomFormAuditorNode": {
+        "height": "24px",
+        "margin-bottom": "6px",
+        "overflow": "hidden",
+        "border": "1px solid #999",
+        "font-size": "14px",
+        "background-color": "#FFF",
+        "color": "#666",
+        "cursor": "pointer",
+        "width": "98%"
+    },
+    "createRoomFormContentNode2": {
+        "padding-top": "2px",
+        "min-height": "22px",
+        "font-size": "14px",
+        "background": "#FFF",
+        "overflow": "hidden",
+        "border": "1px solid #999",
+        "width": "98%",
+        "color": "#333"
+    },
+    "createRoomFormInput": {
+        "height": "22px",
+        "border": "1px solid #999",
+        "font-size": "14px",
+        "color": "#666",
+        "width": "98%"
+    },
+    "createRoomFormSelect": {
+        "height": "26px",
+        "font-size": "14px",
+        "color": "#666",
+        "border": "1px solid #999",
+        "width": "98%"
+    },
+    "createRoomOkActionNode": {
+        "height": "30px",
+        "width": "85px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "padding-left": "65px",
+        "font-size": "16px",
+        "font-family": "Microsoft YaHei",
+        "border-radius": "3px",
+        "border": "1px solid #354f67",
+        "color": "#FFF",
+        "margin-right": "20px",
+        "margin-top": "20px",
+        "box-shadow": "0px 0px 0px #666",
+        "background": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/editOk_bg.png) no-repeat"
+    },
+    "createRoomCancelActionNode": {
+        "height": "30px",
+        "width": "60px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "padding-left": "40px",
+        "font-size": "16px",
+        "font-family": "Microsoft YaHei",
+        "border-radius": "3px",
+        "color": "#FFF",
+        "margin-top": "20px",
+        "box-shadow": "0px 0px 0px #666",
+        "border": "1px solid #999",
+        "background": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/editCancel_bg.png) no-repeat"
+    },
+
+    "createRoomSelectBuildingNode": {
+        "border-left": "1px solid #999",
+        "border-right": "1px solid #999",
+        "border-bottom": "1px solid #999",
+        "min-height": "50px",
+        "max-height": "300px",
+        "overflow": "auto",
+        "background-color": "#FFF",
+        "position": "absolute"
+    },
+    "createRoomBuildingSelectItem": {
+        "height": "50px",
+        "cursor": "default",
+        "margin-bottom": "0px",
+        "overflow": "hidden"
+    },
+    "createRoomBuildingSelectItem_over": {
+        "background-color": "#bacae8"
+    },
+    "createRoomBuildingSelectItemName": {
+        "height": "24px",
+        "line-height": "24px",
+        "overflow": "hidden",
+        "color": "#333",
+        "margin": "5px 10px 0px 10px",
+        "font-size": "19px"
+    },
+    "createRoomBuildingSelectItemAddr": {
+        "height": "16px",
+        "lin-height": "16px",
+        "overflow": "hidden",
+        "color": "#999",
+        "margin": "0px 10px 5px 10px",
+        "font-size": "12px"
+    },
+
+    "createRoomErrorInfoNode": {
+        "color": "#FF0000",
+        "height": "20px",
+        "line-height": "20px",
+        "position": "relative",
+        "text-align": "right",
+        "padding-right": "20px",
+        "top": "-50px"
+    },
+
+    "createMeetingInfoTitleNode": {
+        "margin-left": "60px",
+        "font-size": "28px"
+    },
+    "createMeetingInfoContentNode": {
+        "overflow": "hidden",
+        "padding": "0px 30px"
+    },
+    "createMeetingInfoLineNode": {
+//        "height": "60px",
+//        "margin": "10px 0px"
+    },
+    "createMeetingInfoItemTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "18px"
+    },
+    "createMeetingInfoItemEditNode": {
+        "height": "30px"
+    },
+    "createMeetingInfoItemInputNode": {
+        "border": "2px solid #CCC",
+        "height": "22px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "22px",
+        "width": "100%"
+    },
+    "createMeetingInfoItemSelectNode": {
+        "border": "2px solid #CCC",
+        "height": "22px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "22px",
+        "margin-right": "10px",
+        "min-width": "80px"
+    },
+    "createMeetingInfoItemDivNode": {
+        "border": "1px solid #CCC",
+        "border-radius" : "4px",
+        "background-color": "#FFF",
+        "height": "30px",
+        "font-size": "16px",
+        "color": "#333",
+        "line-height": "30px",
+        "width": "99%",
+        "background" : "url(../x_component_meetingv2/$Main/default/apply/down.png) 98% center no-repeat"
+    },
+    "createMeetingInfoSelectRoomNode": {
+        "background-color": "#FFF",
+        //"min-height": "30px",
+        "max-height": "400px",
+        "overflow-y": "auto",
+        "border": "1px solid #999",
+        "position": "absolute"
+    },
+    "createMeetingInfoSelectRoomItem1Node": {
+        "height": "50px",
+        "padding": "5px 5px",
+        "overflow": "hidden",
+        "background-color": "#DDD"
+    },
+    "createMeetingInfoSelectRoomItem1NameNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "24px",
+        "font-weight": "bold",
+        "color": "#333"
+    },
+    "createMeetingInfoSelectRoomItem1AddrNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#999"
+    },
+    "createMeetingInfoSelectRoomItemRoomNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#999"
+    },
+    "roomTitleNode": {
+        "height": "40px",
+        "cursor": "pointer",
+        "color": "#333",
+        "padding": "5px 20px",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
+
+    "roomTitleCapacityNode": {
+        "width": "40px",
+        "margin-right": "10px",
+        "height": "40px",
+        "float": "right",
+        "color": "#999",
+        "line-height": "40px",
+        "font-size": "14px",
+        "text-align": "right"
+    },
+    "roomTitleInforNode": {
+        "margin-right": "50px",
+        "height": "40px"
+    },
+    "roomTitleNumberNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "padding-left": "5px",
+        "color": "#444",
+        "float": "left"
+    },
+    "roomTitleNameNode":{
+        "height": "20px",
+        "line-height": "20px",
+        "padding-left": "5px",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "float": "left"
+    },
+    "roomTitleIconsNode": {
+        "height": "20px"
+    },
+    "roomTitleIconNode": {
+        "height": "20px",
+        "width": "18px",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "roomTitleDisabledIconNode": {
+        "width": "40px",
+        "height": "40px",
+        "background": "url(../x_component_meetingv2/$Main/default/apply/disabled.png) no-repeat center center",
+        "position": "relative",
+        "top": "-40px",
+        "margin-right": "50px",
+        "float": "right"
+    },
+    "createMeetingContentHeadNode": {
+        "height": "80px",
+        "line-height": "80px",
+        "padding": "0px 20px",
+        "overflow": "hidden",
+        "border-bottom": "2px solid #31369e",
+        "margin": "0px 20px"
+    },
+    "createMeetingSaveNode": {
+        "height": "80px",
+        "width": "60px",
+        "float": "right",
+        "background": "url(../x_component_meetingv2/$Main/default/apply/save.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "createMeetingSaveNode_over": {
+        "background": "url(../x_component_meetingv2/$Main/default/apply/save_over.png) no-repeat center center"
+    },
+    "createMeetingSaveNode_down": {
+        "background": "url(../x_component_meetingv2/$Main/default/apply/save_down.png) no-repeat center center"
+    },
+    "createMeetingSubjectNode": {
+        "height": "80px",
+        "margin-right": "60px"
+    },
+
+    "createMeetingSubjectInputNode": {
+        "height": "80px",
+        "font-size": "32px",
+        "width": "99%",
+        "color": "#555",
+        "border": "0px",
+        "background": "transparent"
+    },
+    "createMeetingAttachmentNode": {
+        "min-height": "40px",
+        "overflow": "hidden",
+        "margin": "10px 0px"
+    },
+    "createMeetingAttachmentTitleNode": {
+        "width": "200px",
+        "margin-left": "20px",
+        "font-size": "18px",
+        "color": "#666",
+        "float": "left",
+        "height": "40px",
+        "line-height": "40px"
+    },
+    "createMeetingAttachmentContentNode": {
+//        "margin-left": "220px",
+        "margin-right": "20px",
+        "min-height": "40px",
+        "overflow": "hidden"
+    },
+
+    "createMeetingDescriptionNode": {
+        "overflow": "hidden",
+        "border-top": "2px solid #31369e",
+        "margin": "0px 20px",
+        "padding": "20px 0px"
+    },
+    "createMeetingDescriptionAreaNode": {
+        "overflow": "hidden",
+        "margin": "0px 20px"
+    },
+    "createMeetingDescriptionInputNode": {
+        "border": "0px",
+        "width": "100%",
+        "font-size": "14px",
+        "overflow": "auto",
+        "font-family": "Microsoft YaHei",
+        "color": "#666"
+    },
+    "configNode": {
+        "box-shadow": "inset 1px 0 0 0 #CCCCCC",
+        "background": "#F8F8F8",
+        "width": "330px",
+        "position": "absolute",
+        "right": "0px",
+        "top": "50px",
+        "opacity": "0",
+        "overflow": "auto"
+    },
+    "configNode_admin": {
+        "box-shadow": "inset 1px 0 0 0 #CCCCCC",
+        "background": "#F8F8F8",
+        "width": "430px",
+        "position": "absolute",
+        "right": "0px",
+        "top": "50px",
+        "opacity": "0",
+        "overflow": "auto"
+    },
+    "configContentNode": {
+        "margin": "20px",
+        "overflow": "hidden"
+    },
+    "configContentLine": {
+        "height": "1px",
+        "border-bottom": "1px dashed #ccc",
+        "margin-top" : "20px",
+        "margin-bottom" : "20px"
+    },
+    "configProcessNode": {
+        "height": "30px",
+        "border-bottom": "1px dashed #ccc",
+        "background": "url(../x_component_meetingv2/$Main/default/icon/addPerson.png) no-repeat right center",
+        "margin-top" : "10px",
+        "cursor": "pointer",
+        "margin-bottom" : "20px"
+    },
+    "configMeetingViewerNode" : {
+        "min-height": "30px",
+        "overflow" : "hidden",
+        "border-bottom": "1px dashed #ccc",
+        "background": "url(../x_component_meetingv2/$Main/default/icon/addPerson.png) no-repeat right center",
+        "margin-top" : "10px",
+        "cursor": "pointer",
+        "margin-bottom" : "20px"
+    },
+    "configTitleDiv": {
+        "line-height": "30px",
+        "width": "auto",
+        "color": "#333",
+        "font-size": "18px",
+        "margin-bottom" : "10px"
+    },
+
+    "configActionNode": {
+        "height": "50px",
+        "margin": "20px"
+    },
+    "configActionSaveNode": {
+        "background": "#3C76B7",
+        "border-radius": "4px",
+        "width" : "120px",
+        "height" : "40px",
+        "line-height" : "40px",
+        "border" : "0px",
+        "color" : "#fff",
+        "cursor" : "pointer",
+        "text-align"  : "center",
+        "margin-right" : "20px",
+        "font-size" : "18px",
+        "float" : "right"
+    },
+    "configActionCancelNode": {
+        "background": "#f0f0f0",
+        "border-radius": "4px",
+        "width" : "80px",
+        "height" : "40px",
+        "line-height" : "40px",
+        "margin-right" : "20px",
+        "color" : "#666",
+        "border" : "0px",
+        "font-size" : "18px",
+        "text-align"  : "center",
+        "cursor" : "pointer",
+        "float" : "right"
+    },
+    "dealStartedWorkAction": {
+        "color": "#0000FF",
+        "cursor": "pointer"
+    },
+    "inputAcceptButton" : {
+        "background-color": "#3C76B7",
+        "border-radius": "4px",
+        "padding" : "0px 10px",
+        "line-height" : "30px",
+        "height" : "30px",
+        "border" : "0px",
+        "color" : "#fff",
+        "cursor" : "pointer",
+        "float" : "left",
+        "font-size" : "14px"
+    },
+    "inputDenyButton" : {
+        "background-color": "#f0f0f0",
+        "border-radius": "4px",
+        "padding" : "0px 10px",
+        "display" : "inline-block",
+        "line-height" : "30px",
+        "margin-left": "10px",
+        "height" : "30px",
+        "border" : "0px",
+        "color" : "#666",
+        "cursor" : "pointer",
+        "font-size" : "14px"
+    }
+}

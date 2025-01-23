@@ -45,7 +45,15 @@ var MDomItem_ClassType = {
     "imageclipper" : "ImageClipper",
     "rtf" : "Rtf",
     "org" : "Org",
-    "a" : "A"
+    "a" : "A",
+    "oo-button": 'OOButton',
+    "oo-checkgroup" : "OOCheckGroup",
+    "oo-datetime" : "OODatetime",
+    "oo-input": "OOInput",
+    "oo-org": "OOSelector",
+    "oo-radiogroup": "OORadioGroup",
+    "oo-select": "OOSelect",
+    "oo-textarea" : "OOTextarea"
 };
 
 var MDomItem = new Class({
@@ -148,40 +156,88 @@ var MDomItem = new Class({
         this.node = this.container;
         this.items = [];
 
-        this.setOptionList( options );
+        this.checkOptions(options);
+
+        // this.setOptionList( options );
     },
-    setOptionList : function( options ){  //目的是使用options里的function异步方法通过 function(callback){ ...获取value; callback( value );  } 来回调设置option
-        var callbackNameList = [];
-        for(var o in options ){	//允许使用 function 来计算设置, on开头的属性被留作 fireEvent
-            if( o != "validRule" && o!="validMessage" && o.substr(0,2)!="on" && typeOf( options[o] )== "function" ){
-                var fun = options[o];
-                if( fun.length && /\(\s*([\s\S]*?)\s*\)/.exec(fun)[1].split(/\s*,\s*/)[0] == "callback" ){ //如果有行参(fun.length!=0),并且第一形参是callback，注意，funciont不能bind(this),否则不能判断
-                    callbackNameList.push( o );
-                }else{
-                    options[o] = fun( options, this ); //执行fun
-                }
+    checkOptions: function (opts){
+        var ps = [];
+        var keys_ps = [];
+        var hasFun = false;
+
+        for( var key in opts ){
+            if( key !== "validRule" && key!=="validMessage" && key.substr(0,2)!=="on" && typeOf(opts[key])==="function" ){
+                hasFun = true;
+                break;
             }
         }
-        this.setFunOption( options, callbackNameList, true ); //递归执行回调设置options
-    },
-    setFunOption : function( options, callbackNameList, isFirst ){
-        this.optionsReady = false;
-        if( callbackNameList.length == 0 ){
-            this.setOptions( options );
+
+        if( !hasFun ){
             this.optionsReady = true;
-            if( this.loadFunctionCalled ){ //如果外部程序已经执行过load，但是由于options没有设置完成而中断，需要再调用一下load
-                this.load();
-            }
+            this.setOptions( opts );
         }else{
-            if( isFirst )options = Object.merge( {}, options ); //避免外部程序对options的修改
-            var name = callbackNameList.shift(); //返回第一个元素，然后在callbackNameList删除第一元素
-            var fun = options[name];  //对应的参数，是一个function
-            fun( function( val ){  //执行function
-                options[name] = val; //在回调内部给option赋值
-                this.setFunOption( options, callbackNameList, false );  //继续执行下一个回调
-            }.bind(this), options );
+            var options = Object.merge( {}, opts );
+            Object.each( options, (o, key)=>{
+                if( key !== "validRule" && key!=="validMessage" && key.substr(0,2)!=="on" && typeOf(o)==="function" ){
+                    var value = o.apply(this, [options]);
+                    if( value.then && typeOf(value.then) === 'function'  ){
+                        ps.push(value);
+                        keys_ps.push(key);
+                    }else{
+                        options[key] = value;
+                    }
+                }
+            });
+            if( ps.length ){
+                this.optionsReady = false;
+                Promise.all(ps).then( (arr)=>{
+                    arr.forEach((v, i)=>{
+                        options[keys_ps[i]] = v;
+                    });
+                    this.optionsReady = true;
+                    this.setOptions( options );
+                    if( this.loadFunctionCalled ){ //如果外部程序已经执行过load，但是由于options没有设置完成而中断，需要再调用一下load
+                        this.load();
+                    }
+                })
+            }else{
+                this.optionsReady = true;
+                this.setOptions( options );
+            }
         }
     },
+    // setOptionList : function( options ){  //目的是使用options里的function异步方法通过 function(callback){ ...获取value; callback( value );  } 来回调设置option
+    //     var callbackNameList = [];
+    //     for(var o in options ){	//允许使用 function 来计算设置, on开头的属性被留作 fireEvent
+    //         if( o != "validRule" && o!="validMessage" && o.substr(0,2)!="on" && typeOf( options[o] )== "function" ){
+    //             var fun = options[o];
+    //             if( fun.length && /\(\s*([\s\S]*?)\s*\)/.exec(fun)[1].split(/\s*,\s*/)[0] == "callback" ){ //如果有行参(fun.length!=0),并且第一形参是callback，注意，funciont不能bind(this),否则不能判断
+    //                 callbackNameList.push( o );
+    //             }else{
+    //                 options[o] = fun( options, this ); //执行fun
+    //             }
+    //         }
+    //     }
+    //     this.setFunOption( options, callbackNameList, true ); //递归执行回调设置options
+    // },
+    // setFunOption : function( options, callbackNameList, isFirst ){
+    //     this.optionsReady = false;
+    //     if( callbackNameList.length == 0 ){
+    //         this.setOptions( options );
+    //         this.optionsReady = true;
+    //         if( this.loadFunctionCalled ){ //如果外部程序已经执行过load，但是由于options没有设置完成而中断，需要再调用一下load
+    //             this.load();
+    //         }
+    //     }else{
+    //         if( isFirst )options = Object.merge( {}, options ); //避免外部程序对options的修改
+    //         var name = callbackNameList.shift(); //返回第一个元素，然后在callbackNameList删除第一元素
+    //         var fun = options[name];  //对应的参数，是一个function
+    //         fun( function( val ){  //执行function
+    //             options[name] = val; //在回调内部给option赋值
+    //             this.setFunOption( options, callbackNameList, false );  //继续执行下一个回调
+    //         }.bind(this), options );
+    //     }
+    // },
     load: function () {
         if( !this.optionsReady ){ //如果options没有设置完成
             this.loadFunctionCalled = true;
@@ -1067,7 +1123,8 @@ MDomItem.Textarea = new Class({
         }
         var parent = module.container ;
         var className = this.getClassName();
-        item = new Element( "textarea", {
+        item = this.createInput();
+        item.set({
             "name" : options.name,
             "value" : value
         });
@@ -1079,6 +1136,9 @@ MDomItem.Textarea = new Class({
         MDomItem.Util.bindEvent( this, item, options.event);
         if(parent)item.inject(parent);
         this.items.push( item );
+    },
+    createInput: function (){
+        return new Element("textarea");
     },
     loadRead : function(){
         var module = this.module;
@@ -3334,4 +3394,315 @@ MDomItem.File = new Class({
     getErrorText : function(){
 
     }
+});
+
+MDomItem.OOInput = new Class({
+    initialize: function ( module ) {
+        this.module = module;
+        this.options = module.options;
+        this.css = module.css;
+        this.app = module.app;
+        this.items = module.items;
+        this.container = this.mElement = module.container
+        this.valSeparator = module.valSeparator;
+    },
+    load : function(){
+        var module = this.module;
+        var options = this.options;
+        var item;
+        var value ;
+        if( typeOf( options.value ) === "boolean" ){
+            value = options.value.toString();
+        }else{
+            value = options.value || options.defaultValue
+        }
+        var parent = module.container ;
+        var className = this.getClassName();
+        item = this.createInput();
+        item.set({
+            "name" : options.name,
+            "value" : value
+        });
+        item.set( options.attr || {} );
+
+        if (options.label) {
+            item.setAttribute('label', options.label);
+        }
+
+        item.setAttribute('readonly', false);
+        item.setAttribute('readmode', false);
+        item.setAttribute('disabled', false);
+
+        if (options.isEdited){
+            switch (options.showMode){
+                case 'readonlyMode':
+                    item.setAttribute('readonly', true);
+                    break;
+                case 'disabled':
+                    item.setAttribute('disabled', true);
+                    break;
+                case 'read':
+                    item.setAttribute('readmode', true);
+                    break;
+            }
+        }else{
+            item.setAttribute('readmode', true);
+        }
+        if (options.required || options.notEmpty){
+            item.setAttribute("required", true);
+        }else{
+            item.removeAttribute("required");
+        }
+
+        if (options.dataType){
+            this.node.setAttribute("type", options.dataType);
+        }
+
+        if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( options.clazz )item.addClass( options.clazz );
+        item.setStyles( options.style || {} );
+        this.bindDefaultEvent( item );
+        MDomItem.Util.bindEvent( this, item, options.event);
+
+        if(parent)item.inject(parent);
+        this.items.push( item );
+    },
+    createInput: function (){
+        var input = new Element("oo-input");
+        if (this.options.showIcon !== 'no') {
+            input.setAttribute('right-icon', 'edit');
+        }
+        return input;
+    },
+    bindDefaultEvent : function( item ){
+        if( this.options.unsetDefaultEvent )return;
+        if( this.options.validImmediately ){
+            item.addEvent("blur", function(){ this.module.verify( true ); }.bind(this))
+        }
+    },
+    get : function( vort ){
+        if( this.options.disable ){
+            return ( vort === "value" || vort === "text" ) ? null : {
+                value : null,
+                text : null
+            };
+        }
+        var name = this.options.name;
+        var item = this.mElement.getElement("[name='"+name+"']");
+        var value = item.get("value");
+        if( vort === "value")return value;
+        if( vort === "text")return value;
+        return {
+            value : value,
+            text : value
+        };
+    },
+    setValue : function( value ){
+        if( this.options.disable ){
+            return;
+        }
+        var item = this.mElement.getElement("[name='"+ this.options.name + "']");
+        item.set( "value", value );
+    },
+    getErrorText : function(){
+        return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
+    },
+    getClassName : function(){
+        var className = null ;
+        if( this.options.className === "none" ){
+        }else if( this.options.className !== "") {
+            className = this.options.className;
+        }else {
+            className = "";
+        }
+        return className;
+    }
+})
+
+MDomItem.OOTextarea = new Class({
+    Extends: MDomItem.OOInput,
+    createInput: function (){
+        return new Element("oo-textarea");
+    },
+});
+
+MDomItem.OODatetime = new Class({
+    Extends: MDomItem.OOInput,
+    createInput: function (){
+        var input = new Element("oo-datetime");
+        input.setAttribute("year-only", false);
+        input.setAttribute("month-only", false);
+        input.setAttribute("date-only", false);
+        input.setAttribute("week-only", false);
+        input.setAttribute("time-only", false);
+
+        var options = this.options;
+        if (options.dataType && options.dataType !== "dateTime"){
+            input.setAttribute(options.dataType, true);
+        }
+        if (options.secondEnable === "yes"){
+            input.setAttribute("second-enable", true);
+        }else{
+            input.setAttribute("second-enable", false);
+        }
+
+        input.setAttribute("week-begin", options.weekBegin || 1);
+
+        if (options.format) this.node.setAttribute("format", options.format);
+        return input;
+    }
+});
+
+MDomItem.OOSelector = new Class({
+    Extends: MDomItem.Org,
+    load: function(){
+        var item;
+        var options = this.options;
+
+        if( !options.orgOptions )options.orgOptions = {};
+        options.orgOptions.style = 'v10';
+        options.orgOptions.tabStyle = 'v10';
+
+        var name = this.options.name;
+        var value = this.options.value || this.options.defaultValue ;
+        var styles = this.options.style || {};
+        var parent =  this.container ;
+        var className = this.getClassName() ;
+        if( !value ){
+            this.orgData = [];
+        }else{
+            switch (typeOf( value )){
+                case 'array': this.orgData = value; break;
+                case 'string': this.orgData = value.split( this.valSeparator ); break;
+                case 'object': this.orgData = [value]; break;
+                default: this.orgData = [];
+            }
+        }
+        item = new Element( "oo-selector");
+        item.set({
+            "name" : options.name,
+            "value" : value
+        });
+        item.set( options.attr || {} );
+
+        if (options.label) {
+            item.setAttribute('label', options.label);
+        }
+
+        if(options.showIcon !== 'no')item.setAttribute('right-icon', 'person');
+
+        item.setAttribute('readonly', false);
+        item.setAttribute('readmode', false);
+        item.setAttribute('disabled', false);
+
+        if (options.isEdited){
+            switch (options.showMode){
+                case 'readonlyMode':
+                    item.setAttribute('readonly', true);
+                    break;
+                case 'disabled':
+                    item.setAttribute('disabled', true);
+                    break;
+                case 'read':
+                    item.setAttribute('readmode', true);
+                    break;
+            }
+        }else{
+            item.setAttribute('readmode', true);
+        }
+        if (options.required || options.notEmpty){
+            item.setAttribute("required", true);
+        }else{
+            item.removeAttribute("required");
+        }
+        if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
+        this.loadOrgWidget( this.orgData, item, true );
+        this.bindDefaultEvent( item );
+        MDomItem.Util.bindEvent( this,  item, this.options.event );
+        if(parent)item.inject(parent);
+        this.items.push( item );
+    }
+});
+
+MDomItem.OOCheckGroup = new Class({
+    Extends: MDomItem.OOInput,
+});
+
+MDomItem.OORadioGroup = new Class({
+    Extends: MDomItem.OOInput,
+});
+
+MDomItem.OOSelect = new Class({
+    Extends: MDomItem.OOInput,
+    createInput: function (){
+        var input = new Element('oo-select');
+        if(this.options.selectGroup) {
+            this.renderGroup(input);
+        }else if(this.options.selectOption){
+            this.renderOption(input);
+        }else{
+            this.renderOption2(input);
+        }
+        return input;
+    },
+    renderOption: function(input){
+        var options = this.options;
+        var valueKey = options.valueKey || 'value';
+        var labelKey = options.labelKey || 'label';
+        options.selectOption.forEach( option=>{
+            var optionNode = new Element("oo-option", {
+                "value": option[valueKey]
+            });
+            if( options.disabled ){
+                optionNode.setAttribute('disabled', true);
+            }
+            optionNode.setAttribute('text', option[labelKey]);
+            optionNode.inject(input);
+        });
+    },
+    renderOption2: function(input){
+        debugger;
+        var selectValue = this.options.selectValue || this.options.selectText;
+        var selectText = this.options.selectText || this.options.selectValue ;
+        var selectValues = typeOf( selectValue ) === "array" ? selectValue : selectValue.split( this.valSeparator );
+        var selectTexts =  typeOf( selectText ) === "array" ? selectText : selectText.split(this.valSeparator);
+
+        for( var i=0; i<selectValues.length; i++){
+            var optionNode = new Element("oo-option", {
+                "value": selectValues[i]
+            });
+            // if( options.disabled ){
+            //     optionNode.setAttribute('disabled', true);
+            // }
+            optionNode.setAttribute('text', selectTexts[i]);
+            optionNode.inject(input);
+        }
+    },
+    renderGroup: function (input){
+        var options = this.options;
+        var groupLabelKey = options.grouplabelKey || 'label';
+        var valueKey = options.valueKey || 'value';
+        var labelKey = options.labelKey || 'label';
+        var childrenKey = options.childrenKey || 'children';
+        options.selectGroup.forEach( group=>{
+            var groupNode = new Element('oo-option-group').inject(input);
+            groupNode.setAttribute('text', group[groupLabelKey]);
+            (group[childrenKey] || []).forEach( option => {
+                var optionNode = new Element("oo-option", {
+                    "value": option[valueKey]
+                });
+                if( options.disabled ){
+                    optionNode.setAttribute('disabled', true);
+                }
+                optionNode.setAttribute('text', option[labelKey]);
+                optionNode.inject(groupNode);
+            });
+        });
+    }
+});
+
+MDomItem.OOButton = new Class({
+    Extends: MDomItem.OOInput,
 });
