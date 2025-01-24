@@ -183,12 +183,12 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				}
 				// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
 				LOGGER.debug("o2oa workUrl：" + workUrl);
-				o2oaUrl = o2oaUrl + workUrl;
+				o2oaUrl = o2oaUrl + URLEncoder.encode(workUrl, DefaultCharset.name);
 			} else {
-				o2oaUrl = o2oaUrl + openPage;
+				o2oaUrl = o2oaUrl + URLEncoder.encode(openPage, DefaultCharset.name);
 			}
 			LOGGER.info("o2oa 地址：" + o2oaUrl);
-			return o2oaUrl;
+			return o2oaUrl+"&encode=true";
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -264,13 +264,12 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 					if (StringUtils.isEmpty(id)) {
 						return null;
 					}
-					String docUrl = "cmsdocMobile.html?id=" + id;
-					o2oaUrl = o2oaUrl + docUrl;
+					o2oaUrl = o2oaUrl + URLEncoder.encode(  "cmsdocMobile.html?id=" + id, DefaultCharset.name);
 				} else {
-					o2oaUrl = o2oaUrl + openPage;
+					o2oaUrl = o2oaUrl + URLEncoder.encode(openPage, DefaultCharset.name);
 				}
 				LOGGER.info("o2oa 业务地址：" + o2oaUrl);
-				return o2oaUrl;
+				return o2oaUrl+"&encode=true";
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
