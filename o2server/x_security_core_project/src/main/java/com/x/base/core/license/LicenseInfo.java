@@ -11,10 +11,16 @@ import java.util.Date;
 public class LicenseInfo extends GsonPropertyObject {
     @FieldDescribe("客户名称.")
     private String name;
+    @FieldDescribe("顶层组织名称.")
+    private String unitName;
     @FieldDescribe("邮箱.")
     private String email;
     @FieldDescribe("授权版本.")
     private String version;
+    @FieldDescribe("版本类型：商业版|信创版.")
+    private String versionType;
+    @FieldDescribe("授权模式：集群|单节点.")
+    private String model;
     @FieldDescribe("授权时间.")
     private Date startTime;
     @FieldDescribe("授权到期时间.")
@@ -58,5 +64,29 @@ public class LicenseInfo extends GsonPropertyObject {
 
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
+    }
+
+    public String getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(String versionType) {
+        this.versionType = versionType;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }

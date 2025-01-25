@@ -300,13 +300,6 @@ public class Crypto {
 
 	}
 
-	public static void main(String[] args) throws Exception{
-		KeyPair keyPair = generateKeyPair();
-		String publicKey = Base64.encodeBase64String(keyPair.getPublic().getEncoded());
-		String privateKey = Base64.encodeBase64String(keyPair.getPrivate().getEncoded());
-		System.out.println(publicKey);
-		System.out.println(privateKey);
-	}
 	public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA);
 		keyPairGenerator.initialize(2048);
