@@ -223,98 +223,52 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
 
         var boxStyle = (this.isEdited || this.isNew) ? "border:1px solid #ccc; border-radius: 4px;overflow: hidden;padding:8px;" : "";
 
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
-                //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
-            "<tr><td styles='formTableTitle'>"+ lp.name+":</td>" +
-            "    <td styles='formTableValue' item='name' colspan='3' ></td></tr>" +
-            "<tr><td styles='formTableTitle'>"+ lp.building +":</td>" +
-            "    <td styles='formTableValue' item='buildingName' colspan='3'></td></tr>" +
-            "<tr><td styles='formTableTitle'>"+ lp.floor +":</td>" +
-            "    <td styles='formTableValue' item='floor'></td>"+
-            "    <td styles='formTableTitle2'>"+ lp.capacity +":</td>" +
-            "    <td styles='formTableValue' item='capacity'></td></tr>" +
-            "<tr><td styles='formTableTitle'>"+lp.roomNumber+":</td>" +
-            "    <td styles='formTableValue' item='roomNumber'></td>" +
-            "    <td styles='formTableTitle2'>"+lp.phone+":</td>" +
-            "    <td styles='formTableValue' item='phoneNumber'></td></tr>" +
-            "<tr><td styles='formTableTitle'>"+lp.device+":</td>" +
-            "    <td styles='formTableValue' colspan='3'>" +
-            "       <div item='deviceList' style='"+ boxStyle +"'></div>" +
-            "</td></tr>" +
-            "<tr><td styles='formTableTitle'>"+lp.available+":</td>" +
-            "    <td styles='formTableValue'>" +
-            "       <div item='available' style='"+ boxStyle +"'></div>" +
-            "<td styles='formTableTitle2'>"+lp.orderNumber+":</td>" +
-            "    <td styles='formTableTitle'>" +
-            "       <div item='orderNumber' ></div></td>" +
-            "</td></tr>" +
-            "<tr><td styles='formTableTitle'></td>" +
-            "    <td styles='formTableValue' colspan='3' style='padding-top: 30px;'>"+
-            "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
-            "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
-            "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
-            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
-            "   </td></tr>" +
-            "</table>";
+        var html = `<div styles='formTable'>
+            <div item='name'></div>
+            <div item='building'></div>
+            <div style="display: flex;">
+                <div item='floor' style="flex: 1;"></div>
+                <div item='capacity' style="flex: 1;"></div>
+            </div>
+            <div style="display: flex;">
+                <div item='roomNumber' style="flex: 1;"></div>
+                <div item='phoneNumber' style="flex: 1;"></div>
+            </div>
+            <div item='deviceList'></div>
+            <div style="display: flex;">
+                <div item='available' style="flex: 1;"></div>
+                <div item='orderNumber' style="flex: 1;"></div>
+            </div>
+            <div style='padding-top: 30px;display: flex;'>
+               <div item='saveAction' style='display:${( (this.isEdited || this.isNew) ? "" : "none")};'></div>
+               <div item='editAction' style='display:${editEnable ? "" : "none"}};'></div>
+               <div item='removeAction' style='display:${this.isEdited ? "" : "none"};'></div>
+               <div item='cancelAction'></div>
+           </div>
+           </div>`;
         this.formTableArea.set("html", html);
 
         var data = this.data || {};
         this.buildingId = data.building;
-        if( this.buildingId ){
-            this.getBuliding()
-        }
+        // if( this.buildingId ){
+        //     this.getBuliding()
+        // }
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "meeting",
+                style : "v10",
                 itemTemplate: {
-                    name: { text : lp.name, notEmpty : true },
-                    buildingName: {
-                        text : lp.building,  notEmpty : true,
-                        value : this.buildingName || "",
-                        event : {
-                            "click": function(){this.listBuilding();}.bind(this),
-                            //"blur": function(){}.bind(this),
-                            "change": function(){ this.buildingId = null; }.bind(this),
-                            "focus": function(){
-                                this.listBuildingHide();
-                                this.listBuilding();
-                            }.bind(this),
-                            "keydown": function(e){
-                                //if ([13,40,38].indexOf(e.code)!=-1){
-                                //    if (!this.selectBuildingNode){
-                                //        this.listBuilding();
-                                //    }
-                                //}
-                                switch (e.code){
-                                    case 13:
-                                        this.listBuildingHide();
-                                        this.listBuilding();
-                                        break;
-                                    case 40:
-                                        this.selectBuildingNext();
-                                        break;
-                                    case 38:
-                                        this.selectBuildingPrev();
-                                        break;
-                                    case 38:
-                                        this.selectBuildingConfirm();
-                                        break;
-                                    default:
-                                        // this.listBuildingHide();
-                                        // this.listBuilding();
-                                }
-                                // if (e.code==13){
-                                //     this.listBuildingHide();
-                                //     this.listBuilding();
-                                // }
-                                // if (e.code==40) this.selectBuildingNext();
-                                // if (e.code==38) this.selectBuildingPrev();
-                                // if (e.code==32) this.selectBuildingConfirm(e);
-                            }.bind(this)
+                    name: { type:'oo-input', label : lp.name, notEmpty : true },
+                    building: {
+                        type:'oo-select', label : lp.building,  notEmpty : true, labelKey: 'name', valueKey: 'id',
+                        // value : this.buildingName || "",
+                        selectOption: ()=>{
+                            return this.actions.listBuilding().then(function(json){
+                                return json.data;
+                            });
                         }
                     },
-                    floor: { type: "select", defaultValue: "1", notEmpty : true, text : lp.floor,
+                    floor: { type: "oo-select", defaultValue: "1", notEmpty : true, label : lp.floor,
                         selectText : function(){
                             var floors = [];
                             for (var i=-2; i<=50; i++){
@@ -329,29 +283,29 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
                             return floors;
                         }.bind(this)
                     },
-                    capacity: { notEmpty : true, tType: "number", text : lp.capacity },
-                    roomNumber: {},
-                    orderNumber: {},
-                    phoneNumber: {},
-                    deviceList: { type : "checkbox",
+                    capacity: { type:'oo-input', notEmpty : true, tType: "number", label : lp.capacity },
+                    roomNumber: {type:'oo-input', label: lp.roomNumber},
+                    orderNumber: {type:'oo-input', label: lp.orderNumber},
+                    phoneNumber: {type:'oo-input', label: lp.phone},
+                    deviceList: { type : "oo-checkgroup", label: lp.device,
                         value : this.data.device ? this.data.device.split("#") : "",
                         selectValue : function(){ return Object.keys(this.lp.device); }.bind(this),
                         selectText : function(){ return Object.values(this.lp.device); }.bind(this)
                     },
-                    available: { type : "radio", defaultValue : "true",
+                    available: { type : "oo-radiogroup", defaultValue : "true", label: lp.available,
                         selectValue : [ "true", "false" ],
                         selectText : [ this.lp.enable, this.lp.disable ]
                     },
-                    saveAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.save, event : {
+                    saveAction : { type : "oo-button", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
-                    removeAction : { type : "button", className : "inputCancelButton", value : this.lp.delete , event : {
+                    removeAction : { type : "oo-button", appearance : "cancel", value : this.lp.delete , event : {
                         click : function( item, ev ){ this.removeRoom(ev); }.bind(this)
                     } },
-                    editAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.editRoom , event : {
+                    editAction : { type : "oo-button", value : this.lp.editRoom , event : {
                         click : function(){ this.editRoom(); }.bind(this)
                     } },
-                    cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
+                    cancelAction : { type : "oo-button", appearance : "cancel", value : this.lp.close , event : {
                         click : function(){ this.close(); }.bind(this)
                     } }
                 }
@@ -370,11 +324,11 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
 
         this.edit();
     },
-    getBuliding : function(){
-        this.actions.getBuilding( this.buildingId, function(json){
-            this.buildingName = json.data.name
-        }.bind(this), null, false )
-    },
+    // getBuliding : function(){
+    //     this.actions.getBuilding( this.buildingId, function(json){
+    //         this.buildingName = json.data.name
+    //     }.bind(this), null, false )
+    // },
     reset: function(){
         this.formTableArea.empty();
         this._createTableContent();
@@ -397,151 +351,6 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
             view.reload();
         }.bind(this));
     },
-    selectBuildingNext: function(){
-        if (this.selectBuildingNode){
-            var node=null;
-            if (this.selectBuildingNode.selectedNode){
-                node = this.selectBuildingNode.selectedNode.getNext();
-                if (!node) node = this.selectBuildingNode.getFirst();
-                this.selectBuildingNode.selectedNode.setStyle("background-color", this.selectBuildingNode.selectedNode.retrieve("bg"));
-            }else{
-                node = this.selectBuildingNode.getFirst();
-            }
-            if (node){
-                var color = node.getStyle("background-color");
-                node.store("bg", color);
-                node.setStyles(this.css.createRoomBuildingSelectItem_over);
-                this.selectBuildingNode.selectedNode = node;
-            }
-        }
-    },
-    selectBuildingPrev: function(){
-        if (this.selectBuildingNode){
-            var node = null;
-            if (this.selectBuildingNode.selectedNode){
-                var node = this.selectBuildingNode.selectedNode.getPrevious();
-                if (!node) node = this.selectBuildingNode.getLast();
-                this.selectBuildingNode.selectedNode.setStyle("background-color", this.selectBuildingNode.selectedNode.retrieve("bg"));
-            }else{
-                node = this.selectBuildingNode.getLast();
-            }
-            if (node){
-                var color = node.getStyle("background-color");
-                node.store("bg", color);
-                node.setStyles(this.css.createRoomBuildingSelectItem_over);
-                this.selectBuildingNode.selectedNode = node;
-            }
-        }
-    },
-    selectBuildingConfirm: function(e){
-        if (this.selectBuildingNode.selectedNode){
-            this.selectBuilding(this.selectBuildingNode.selectedNode);
-            e.preventDefault();
-        }
-    },
-
-    //cancelCreateRoom: function(){
-    //    this.createRoomNode.destroy();
-    //},
-    listBuildingData: function(key, callback){
-        if (key){
-            this.actions.listBuildingByKey(key, function(json){
-                if (callback) callback(json);
-            });
-        }else{
-            this.actions.listBuilding(function(json){
-                if (callback) callback(json);
-            });
-        }
-    },
-    listBuilding: function(){
-        debugger;
-        if( this.selectBuildingNode )return;
-        if( this.listing )return;
-        this.listing = true;
-        var item = this.form.getItem("buildingName");
-        var key = item.getValue();
-        this.listBuildingData(key, function(json){
-            if (json.data && json.data.length){
-                this.selectBuildingNode = new Element("div", {"styles": this.css.createRoomSelectBuildingNode}).inject(item.container);
-                this.setSelectBuildingNodeSize();
-                this.listBuildingHideFun = this.listBuildingHide.bind(this);
-                this.formMaskNode.addEvent("mousedown", this.listBuildingHideFun);
-                this.formNode.addEvent("mousedown", this.listBuildingHideFun);
-
-                var _self = this;
-                json.data.each(function(building, idx){
-                    var node = new Element("div", {"styles": this.css.createRoomBuildingSelectItem}).inject(this.selectBuildingNode);
-                    var nameNode = new Element("div", {"styles": this.css.createRoomBuildingSelectItemName, "text": building.name}).inject(node);
-                    var addrNode = new Element("div", {"styles": this.css.createRoomBuildingSelectItemAddr, "text": building.address}).inject(node);
-                    if ((idx % 2)==1) node.setStyle("background-color", "#f1f6ff");
-                    node.store("building", building.id);
-
-                    node.addEvents({
-                        "mouseover": function(e){
-                            var color = this.getStyle("background-color");
-                            this.store("bg", color);
-                            this.setStyles(_self.css.createRoomBuildingSelectItem_over);
-                        },
-                        "mouseout": function(e){
-                            this.setStyle("background-color", this.retrieve("bg"));
-                        },
-                        "mousedown": function(e){e.stopPropagation();},
-                        "click": function(e){
-                            _self.selectBuilding(this);
-                        }
-                    });
-
-                }.bind(this));
-            }
-            this.listing = false;
-        }.bind(this));
-        // if( !key ){
-        //     listBuilding
-        // }else{
-        //
-        // }
-        // this.actions.listBuildingByKey(key, function(json){
-        //
-        // }.bind(this));
-    },
-    selectBuilding: function(node){
-        var id = node.retrieve("building");
-        var text = node.getFirst().get("text");
-        this.form.getItem("buildingName").setValue(text);
-        this.buildingId = id;
-
-        this.listBuildingHide();
-    },
-
-    setSelectBuildingNodeSize: function(){
-        var buildingInput = this.form.getItem("buildingName").getElements()[0];
-
-        //var p = buildingInput.getPosition(buildingInput.getOffsetParent());
-
-        this.selectBuildingNode.position({
-            relativeTo: buildingInput,
-            position: 'bottomLeft',
-            edge: 'upperCenter',
-            offset: {x: 4, y: 0}
-        });
-        //this.selectBuildingNode.setStyle("left", p.x);
-
-        var size = buildingInput.getSize();
-        var w = size.x-8;
-        this.selectBuildingNode.setStyle("width", ""+w+"px");
-    },
-    listBuildingHide: function(){
-        if (this.selectBuildingNode){
-            //this.removeEvent("resize", this.setSelectBuildingNodeSizeFun);
-
-            this.selectBuildingNode.destroy();
-            this.selectBuildingNode = null;
-
-            this.formMaskNode.removeEvent("mousedown", this.listBuildingHideFun);
-            this.formNode.removeEvent("mousedown", this.listBuildingHideFun);
-        }
-    },
     save: function(){
         this.getData(function(data){
             this.actions.saveRoom(data, function(json){
@@ -556,7 +365,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
         var data = this.form.getResult(true,null,true,false,true);
         if( !data )return;
         data.device = data.deviceList.join("#");
-        data.available = data.available == "true";
+        data.available = data.available === "true";
 
         if (!this.buildingId){
             this.actions.saveBuilding({"name": data.buildingName, "address": ""}, function(json){
@@ -800,17 +609,17 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
             <div item='hostPerson'></div>
             <div item='hostUnit'></div>
             
-            <div item='inviteMemberList'></div> 
-            ${(!this.isNew && d.myWaitAccept) ? "<div item='acceptAction'></div><div item='rejectAction'></div>" : ""}
-            <div item='acceptPersonList' style='display:${d.acceptPersonList?.length ?'':'none'}'></div>
-            <div item='rejectPersonList' style='display:${d.rejectPersonList?.length?'':'none'}'></div>
+            <div item='inviteMemberList'></div>
+            ${(!this.isNew && data.myWaitAccept) ? "<div style='padding-left: 132px;'><span item='acceptAction'></span><span item='rejectAction'></span></div>" : ""}
+            <div item='acceptPersonList' style='display:${data.acceptPersonList?.length ?'':'none'}'></div>
+            <div item='rejectPersonList' style='display:${data.rejectPersonList?.length?'':'none'}'></div>
             <div item='inviteDelPersonList' style='display:${this.isShowInviteDelPersonList()?'':'none'}'></div>
             
             <div style='display:${ this.isNew ? "none" : ""};' item='checkinPersonList'></div>
             <div item='externalPerson'></div>
             <div item='subject'></div>
             <div item='summary'></div>
-            <div style='display:none ;' item='attachment'></div>
+            <div style='display:none;' item="attachmentRow"><div style='display:none;'>${this.lp.meetingAttachment}</div><div style="flex: 1" item='attachment'></div></div>
             </div>`;
         this.formTableArea.set("html", html);
 
@@ -825,7 +634,7 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
         }
 
         this.meetingRoomArea = this.formTableArea.getElement("[item='meetingRoom']");
-        this.attachmentTr = this.formTableArea.getElement("[item='attachmentTr']");
+        this.attachmentRow = this.formTableArea.getElement("[item='attachmentRow']");
         this.attachmentArea = this.formTableArea.getElement("[item='attachment']");
 
         this.qrCodeArea = this.formTableArea.getElement("[item='qrCode']");
@@ -963,10 +772,10 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
                         selectText : this.app.meetingConfig.typeList || [],
                         notEmpty: true
                     },
-                    acceptAction : { type : "oo-button", value : this.lp.accept,  className : "inputAcceptButton", clazz: "mainColor_bg",
+                    acceptAction : { type : "oo-button", value : this.lp.accept,
                         event : {  click : function( it, ev ){ this.accept(ev); }.bind(this) }
                     },
-                    rejectAction : { type : "oo-button", value : this.lp.reject, style : {"margin-left": "20px"}, className : "inputDenyButton",
+                    rejectAction : { type : "oo-button", value : this.lp.reject, appearance : "cancel", style: {'margin-left': "10px"},
                         event : {  click : function( it, ev ){ this.reject(ev) }.bind(this) }
                     }
                 }
@@ -1024,7 +833,7 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
                         }
                     },
                     removeAction: {
-                        type: "oo-button", className: "inputCancelButton", value: this.lp.cancelMeeting, event: {
+                        type: "oo-button", appearance: 'cancel', className: "inputCancelButton", value: this.lp.cancelMeeting, event: {
                             click: function (item, ev) {
                                 this.cancelMeeting(ev);
                             }.bind(this)
@@ -1038,22 +847,22 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
                         }
                     },
                     startImmediatelyAction: {
-                        type: "oo-button", className: "inputCancelButton", value: this.lp.startMeetingImmediately, event: {
+                        type: "oo-button", appearance: 'cancel', className: "inputCancelButton", value: this.lp.startMeetingImmediately, event: {
                             click: function () {
                                 this.startImmediately();
                             }.bind(this)
                         }
                     },
                     finishImmediatelyAction: {
-                        type: "oo-button", className: "inputCancelButton", value: this.lp.endMeetingImmediately, event: {
+                        type: "oo-button", appearance: 'cancel', className: "inputCancelButton", value: this.lp.endMeetingImmediately, event: {
                             click: function () {
                                 this.finishImmediately();
                             }.bind(this)
                         }
                     },
                     cancelAction: {
-                        type: "oo-button", className: "inputCancelButton", value: this.lp.close, event: {
-                            click: function () {
+                        type: "oo-button", appearance: 'cancel', className: "inputCancelButton", value: this.lp.close, event: {
+                            click: function (){
                                 this.close();
                             }.bind(this)
                         }
@@ -1244,7 +1053,7 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
     },
 
     loadAttachment: function(){
-        this.attachmentArea.show();
+        this.attachmentRow.setStyle('display', 'flex');
         this.attachmentNode = new Element("div", {"styles": this.css.createMeetingAttachmentNode}).inject(this.attachmentArea);
         var attachmentContentNode = new Element("div", {"styles": this.css.createMeetingAttachmentContentNode}).inject(this.attachmentNode);
         MWF.require("MWF.widget.AttachmentController", function(){

@@ -3608,7 +3608,8 @@ MDomItem.OOSelector = new Class({
         var value = this.options.value || this.options.defaultValue ;
         var styles = this.options.style || {};
         var parent =  this.container ;
-        var className = this.getClassName() ;
+        var className = this.getClassName();
+        console.log(value);
         if( !value ){
             this.orgData = [];
         }else{
@@ -3701,13 +3702,145 @@ MDomItem.OOSelector = new Class({
     }
 });
 
-MDomItem.OOCheckGroup = new Class({
-    Extends: MDomItem.OOInput,
-});
-
 MDomItem.OORadioGroup = new Class({
     Extends: MDomItem.OOInput,
+    load : function(){
+        var module = this.module;
+        var options = this.options;
+        var item;
+        var value ;
+        if( typeOf( options.value ) === "boolean" ){
+            value = options.value.toString();
+        }else{
+            value = options.value || options.defaultValue
+        }
+        var parent = module.container ;
+        var className = this.getClassName();
+        item = this.createInput();
+        item.set({
+            "name" : options.name,
+            "value" : value
+        });
+
+        if (options.label) {
+            item.setAttribute('label', this.module.fitLabel(options.label));
+        }
+
+        if (!options.col || options.col==="0") {
+            item.removeAttribute('col');
+        }else{
+            item.setAttribute('col', options.col);
+        }
+
+        if (options.isEdited){
+            if(options.attr?.readonly===true)options.showMode = 'read';
+            switch (options.showMode){
+                case 'disabled':
+                    item.setAttribute('disabled', true);
+                    break;
+                case 'read':
+                    item.setAttribute('readmode', true);
+                    if (options.readModeEvents!=='yes'){
+                        item.setStyle('pointer-events', 'none');
+                    }
+                    break;
+            }
+        }else{
+            item.setAttribute('readmode', true);
+            if (options.readModeEvents!=='yes'){
+                item.setStyle('pointer-events', 'none');
+            }
+        }
+        if (options.required || options.notEmpty){
+            item.setAttribute("required", true);
+        }else{
+            item.removeAttribute("required");
+        }
+
+        if (options.dataType){
+            this.node.setAttribute("type", options.dataType);
+        }
+
+        if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        item.set( options.attr || {} );
+        if( options.clazz )item.addClass( options.clazz );
+        item.setStyles( options.style || {} );
+        this.bindDefaultEvent( item );
+        MDomItem.Util.bindEvent( this, item, options.event);
+
+        if(parent)item.inject(parent);
+        this.items.push( item );
+    },
+    createInput: function (){
+        var input = new Element('oo-radio-group');
+        this.itemTag = 'oo-radio';
+        if(this.options.selectOption){
+            this.renderOption(input);
+        }else{
+            this.renderOption2(input);
+        }
+        if( this.css?.OORadioGroup )input.setStyles(this.css.OORadioGroup);
+        if( this.css?.OORadioGroupProperties )input.set(this.css.OORadioGroupProperties);
+        return input;
+    },
+    renderOption: function(input){
+        var options = this.options;
+        var valueKey = options.valueKey || 'value';
+        var labelKey = options.labelKey || 'label';
+        options.selectOption.forEach( option=>{
+            var optionNode = new Element(this.itemTag, {
+                "value": option[valueKey],
+                "type": "radio",
+                "name": options.name,
+                "text": option[labelKey],
+                "styles": options.buttonStyles || {}
+            });
+            if( options.disabled ){
+                optionNode.setAttribute('disabled', true);
+            }
+            optionNode.inject(input);
+        });
+    },
+    renderOption2: function(input){
+        var options = this.options;
+        var selectValue = this.options.selectValue || this.options.selectText;
+        var selectText = this.options.selectText || this.options.selectValue ;
+        var selectValues = typeOf( selectValue ) === "array" ? selectValue : selectValue.split( this.valSeparator );
+        var selectTexts =  typeOf( selectText ) === "array" ? selectText : selectText.split(this.valSeparator);
+
+        for( var i=0; i<selectValues.length; i++){
+            var optionNode = new Element(this.itemTag, {
+                "value": selectValues[i],
+                "type": "radio",
+                "name": options.name,
+                "text": selectTexts[i],
+                "styles": options.buttonStyles || {}
+            });
+            if( options.disabled ){
+                optionNode.setAttribute('disabled', true);
+            }
+            // optionNode.setAttribute('text', selectTexts[i]);
+            optionNode.inject(input);
+        }
+    },
 });
+
+MDomItem.OOCheckGroup = new Class({
+    Extends: MDomItem.OORadioGroup,
+    createInput: function (){
+        var input = new Element('oo-checkbox-group');
+        this.itemTag = 'oo-checkbox';
+        if(this.options.selectOption){
+            this.renderOption(input);
+        }else{
+            this.renderOption2(input);
+        }
+        if( this.css?.OOCheckGroup )input.setStyles(this.css.OOCheckGroup);
+        if( this.css?.OOCheckGroupProperties )input.set(this.css.OOCheckGroupProperties);
+        return input;
+    }
+});
+
 
 MDomItem.OOSelect = new Class({
     Extends: MDomItem.OOInput,
@@ -3794,4 +3927,14 @@ MDomItem.OOButton = new Class({
         if( this.css?.OOButtonProperties )input.set(this.css.OOButtonProperties);
         return input;
     },
+    getClassName : function(){
+        var className = null ;
+        if( this.options.className === "none" ){
+        }else if( this.options.className !== "") {
+            className = this.options.className;
+        }else {
+            className = "";
+        }
+        return className;
+    }
 });
