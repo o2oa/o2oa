@@ -156,6 +156,8 @@ var MDomItem = new Class({
         this.node = this.container;
         this.items = [];
 
+        this.orginalOptions = options;
+
         this.checkOptions(options);
 
         // this.setOptionList( options );
@@ -238,6 +240,13 @@ var MDomItem = new Class({
     //         }.bind(this), options );
     //     }
     // },
+    reload: function (){
+        this.mElement.empty();
+        this.items = [];
+        this.optionsReady = false;
+        this.checkOptions(this.orginalOptions);
+        this.load();
+    },
     load: function () {
         if( !this.optionsReady ){ //如果options没有设置完成
             this.loadFunctionCalled = true;
@@ -278,6 +287,21 @@ var MDomItem = new Class({
             });
             r.send();
         }
+    },
+    fitLabel: function (label){
+        if( label && label.length < 4 ){
+            if( /^[\u4e00-\u9fa5]+$/.test(label) ){ //全汉字
+                switch( label.length ){
+                    case 2:
+                        return label[0] + '　　'　+ label[1];
+                    case 3:
+                        return label[0] + ' '　+ label[1] + ' '　+ label[2];
+                    default:
+                        return label;
+                }
+            }
+        }
+        return label;
     },
     editMode : function( keep ){
         if(keep)this.save();
@@ -2371,12 +2395,7 @@ MDomItem.Button = new Class({
         var parent = this.container ;
         var className = this.getClassName() ;
 
-        item = new Element( "button", {
-            "type" : "button",
-            "name" : name,
-            "value" : value,
-            "text" : value
-        });
+        item = this.createInput();
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
@@ -2384,6 +2403,15 @@ MDomItem.Button = new Class({
         MDomItem.Util.bindEvent( this, item, event);
         if(parent)item.inject(parent);
         this.items.push( item );
+    },
+    createInput: function (){
+        var options = this.options;
+        return new Element( "button", {
+            "type" : "button",
+            "name" : options.name,
+            "value" : options.value,
+            "text" : options.value
+        });
     },
     get : function( vort ){
         if( this.options.disable ){
@@ -3205,7 +3233,11 @@ MDomItem.Org = new Class({
                     this.orgObjData.push( it.data );
                 }.bind(this));
                 this.OrgWidgetList = [];
-                this.loadOrgWidget( this.orgObjData, item, true );
+                if( item.tagName.toLowerCase() === 'oo-selector' ){
+                    item.value = this.orgData;
+                }else{
+                    this.loadOrgWidget( this.orgObjData, item, true );
+                }
                 this.modified = true;
                 this.items[0].fireEvent("change", [this.module, ev]);
                 if( this.options.validImmediately )this.module.verify( true );
@@ -3423,10 +3455,9 @@ MDomItem.OOInput = new Class({
             "name" : options.name,
             "value" : value
         });
-        item.set( options.attr || {} );
 
         if (options.label) {
-            item.setAttribute('label', options.label);
+            item.setAttribute('label', this.module.fitLabel(options.label));
         }
 
         item.setAttribute('readonly', false);
@@ -3434,6 +3465,7 @@ MDomItem.OOInput = new Class({
         item.setAttribute('disabled', false);
 
         if (options.isEdited){
+            if(options.attr?.readonly===true)options.showMode = 'readonlyMode';
             switch (options.showMode){
                 case 'readonlyMode':
                     item.setAttribute('readonly', true);
@@ -3459,6 +3491,7 @@ MDomItem.OOInput = new Class({
         }
 
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        item.set( options.attr || {} );
         if( options.clazz )item.addClass( options.clazz );
         item.setStyles( options.style || {} );
         this.bindDefaultEvent( item );
@@ -3472,6 +3505,8 @@ MDomItem.OOInput = new Class({
         if (this.options.showIcon !== 'no') {
             input.setAttribute('right-icon', 'edit');
         }
+        if( this.css?.OOInput )input.setStyles(this.css.OOInput);
+        if( this.css?.OOInputProperties )input.set(this.css.OOInputProperties);
         return input;
     },
     bindDefaultEvent : function( item ){
@@ -3502,7 +3537,7 @@ MDomItem.OOInput = new Class({
             return;
         }
         var item = this.mElement.getElement("[name='"+ this.options.name + "']");
-        item.set( "value", value );
+        item.set('value', value || '');
     },
     getErrorText : function(){
         return MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}",this.options.text);
@@ -3522,8 +3557,11 @@ MDomItem.OOInput = new Class({
 MDomItem.OOTextarea = new Class({
     Extends: MDomItem.OOInput,
     createInput: function (){
-        return new Element("oo-textarea");
-    },
+        var input = new Element("oo-textarea");
+        if( this.css?.OOTextarea )input.setStyles(this.css.OOTextarea);
+        if( this.css?.OOTextareaProperties )input.set(this.css.OOTextareaProperties);
+        return input;
+    }
 });
 
 MDomItem.OODatetime = new Class({
@@ -3549,6 +3587,9 @@ MDomItem.OODatetime = new Class({
         input.setAttribute("week-begin", options.weekBegin || 1);
 
         if (options.format) this.node.setAttribute("format", options.format);
+
+        if( this.css?.OODatetime )input.setStyles(this.css.OODatetime);
+        if( this.css?.OODatetimeProperties )input.set(this.css.OODatetimeProperties);
         return input;
     }
 });
@@ -3583,10 +3624,12 @@ MDomItem.OOSelector = new Class({
             "name" : options.name,
             "value" : value
         });
+        if( this.css?.OOOrg )item.setStyles(this.css.OOOrg);
+        if( this.css?.OOOrgProperties )item.set(this.css.OOOrgProperties);
         item.set( options.attr || {} );
 
         if (options.label) {
-            item.setAttribute('label', options.label);
+            item.setAttribute('label', this.module.fitLabel(options.label));
         }
 
         if(options.showIcon !== 'no')item.setAttribute('right-icon', 'person');
@@ -3596,6 +3639,7 @@ MDomItem.OOSelector = new Class({
         item.setAttribute('disabled', false);
 
         if (options.isEdited){
+            if( options.attr?.readonly===true )options.showMode = readonlyMode;
             switch (options.showMode){
                 case 'readonlyMode':
                     item.setAttribute('readonly', true);
@@ -3605,6 +3649,10 @@ MDomItem.OOSelector = new Class({
                     break;
                 case 'read':
                     item.setAttribute('readmode', true);
+                    break;
+                default:
+                    this.bindDefaultEvent( item );
+                    MDomItem.Util.bindEvent( this,  item, options.event );
                     break;
             }
         }else{
@@ -3618,11 +3666,38 @@ MDomItem.OOSelector = new Class({
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
         if( this.options.clazz )item.addClass( this.options.clazz );
-        this.loadOrgWidget( this.orgData, item, true );
-        this.bindDefaultEvent( item );
-        MDomItem.Util.bindEvent( this,  item, this.options.event );
+        // this.loadOrgWidget( this.orgData, item, true );
         if(parent)item.inject(parent);
         this.items.push( item );
+    },
+    setValue : function( value ){
+        if( this.options.disable ){
+            return;
+        }
+        var item = this.mElement.getElement("[name='"+ this.options.name + "']");
+        if( !value ){
+            this.orgData = [];
+        }else{
+            switch (typeOf( value )){
+                case 'array': this.orgData = value; break;
+                case 'string': this.orgData = value.split( this.valSeparator ); break;
+                case 'object': this.orgData = [value]; break;
+                default: this.orgData = [];
+            }
+        }
+        this.orgObjData = null;
+        item.value = this.orgData;
+        this.module.orgData = this.orgData;
+    },
+    getClassName : function(){
+        var className = null ;
+        if( this.options.className === "none" ){
+        }else if( this.options.className !== "") {
+            className = this.options.className;
+        }else {
+            className = "";
+        }
+        return className;
     }
 });
 
@@ -3645,6 +3720,8 @@ MDomItem.OOSelect = new Class({
         }else{
             this.renderOption2(input);
         }
+        if( this.css?.OOSelect )input.setStyles(this.css.OOSelect);
+        if( this.css?.OOSelectProperties )input.set(this.css.OOSelectProperties);
         return input;
     },
     renderOption: function(input){
@@ -3704,5 +3781,17 @@ MDomItem.OOSelect = new Class({
 });
 
 MDomItem.OOButton = new Class({
-    Extends: MDomItem.OOInput,
+    Extends: MDomItem.Button,
+    createInput: function (){
+        var options = this.options;
+        var input = new Element("oo-button");
+        input.setAttribute('type', options.appearance || "default");
+        if ( options.text || options.value) input.setAttribute('text', options.text || options.value);
+        if ( options.leftIcon) input.setAttribute('left-icon', options.leftIcon);
+        if ( options.rightIcon) input.setAttribute('right-icon', options.rightIcon);
+        if ( options.disabled) input.setAttribute('disabled', options.disabled);
+        if( this.css?.OOButton )input.set(this.css.OOButton);
+        if( this.css?.OOButtonProperties )input.set(this.css.OOButtonProperties);
+        return input;
+    },
 });

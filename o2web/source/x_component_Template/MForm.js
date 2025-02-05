@@ -133,6 +133,15 @@ var MForm = new Class({
             if( callback )callback();
         }
     },
+    reload: function (){
+        this.itemTemplate = {};
+        this.items = {};
+        this.itemsByKey = {};
+        this.itemContainers.each(function(node){
+            node.empty();
+        });
+        this.load();
+    },
     changeMode: function(keepData){
         debugger;
         // this.itemContainers.each(function(node){
@@ -300,7 +309,7 @@ var MForm = new Class({
         //if( template.disable )return;
 
         template.objectId = template.name;
-        var item = new MDomItem(container, template, this, this.app, this.css ); 
+        var item = new MDomItem(container, template, this, this.app, this.css );
         if( this.options.verifyType == "batchSingle" ){
             item.options.warningType = "single";
         }else{
@@ -372,6 +381,9 @@ var MForm = new Class({
         } else {
             return false;
         }
+    },
+    get: function (name){
+        return this.getItem(name);
     },
     getItem : function( name ){
         return this.items[name] || this.itemsByKey[name];
