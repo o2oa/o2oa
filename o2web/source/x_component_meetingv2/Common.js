@@ -241,7 +241,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
             </div>
             <div style='padding-top: 30px;display: flex;'>
                <div item='saveAction' style='display:${( (this.isEdited || this.isNew) ? "" : "none")};'></div>
-               <div item='editAction' style='display:${editEnable ? "" : "none"}};'></div>
+               <div item='editAction' style='display:${editEnable ? "" : "none"};'></div>
                <div item='removeAction' style='display:${this.isEdited ? "" : "none"};'></div>
                <div item='cancelAction'></div>
            </div>
