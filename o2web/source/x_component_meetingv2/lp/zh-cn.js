@@ -210,6 +210,7 @@ MWF.xApplication.meetingv2.LP = {
     "delete_building_hasRoom" : "“{name}”下还有会议室，不能删除。",
     "delete_building": "您确定要删除“{name}”吗",
     "delete_room": "您确定要删除会议室“{name}”吗",
+    "add": "新增",
 
     "roomForm": {
         "name": "会议室名称",

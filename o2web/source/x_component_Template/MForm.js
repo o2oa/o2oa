@@ -355,6 +355,9 @@ var MForm = new Class({
         var key_value = {};
         for (var it in this.items ) {
             var item = this.items[it];
+            if(['oo-button', 'button', 'a'].contains((item.options.type || 'text').toLowerCase())){
+                continue;
+            }
             var value = onlyModified ? item.getModifiedValue() : item.getValue();
             if( value != null ){
                 if (typeOf(value) === "array") {

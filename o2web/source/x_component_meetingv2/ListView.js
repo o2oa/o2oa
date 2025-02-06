@@ -58,48 +58,80 @@ MWF.xApplication.meetingv2.ListView = new Class({
         this.contentAreaNode.setStyle("margin-right",sideBar.x+"px");
     },
     loadLeftNavi: function(){
-        var menuNode = new Element("div.menuNode", {"styles": this.css.menuNode, "text": this.app.lp.listNavi.myApply}).inject(this.leftNode);
-        this.loadNaviItem(this.app.lp.listNavi.wait, "toApplyWait");
-        this.loadNaviItem(this.app.lp.listNavi.processing, "toApplyProcessing");
-        this.loadNaviItem(this.app.lp.listNavi.completed, "toApplyCompleted");
+        this.nav = new Element("oo-nav", {
+            searchable: false
+        }).inject(this.leftNode);
+        this.nav.setMenu([{
+            text: this.app.lp.listNavi.myApply,
+            icon: 'information',
+            expanded: true,
+            children: [
+                { text: this.app.lp.listNavi.wait, icon: 'daiban',  action: 'toApplyWait', selected: true },
+                { text: this.app.lp.listNavi.processing, icon: 'log-viewer',  action: 'toApplyProcessing' },
+                { text: this.app.lp.listNavi.completed, icon: 'yiban', action: 'toApplyCompleted' },
+                { text: this.app.lp.listNavi.apply, icon: 'process-flow', action: 'toApply' }
+            ]
+        },{
+            text: this.app.lp.listNavi.myMeeting,
+            icon: 'daiyue',
+            expanded: true,
+            children: [
+                { text: this.app.lp.listNavi.wait, icon: 'daiban', action: 'toMeetingWait' },
+                { text: this.app.lp.listNavi.processing, icon: 'log-viewer', action: 'toMeetingProcessing' },
+                { text: this.app.lp.listNavi.completed, icon: 'yiban', action: 'toMeetingCompleted' },
+                { text: this.app.lp.listNavi.reject, icon: 'process-cancel', action: 'toMeetingReject' }
+            ]
+        }]);
+        this.nav.addEventListener('active', (e) => {
+            var data = e.detail.data;
+            if (data.action) {
+                this[data.action]( data );
+            }
+        });
+        this.nav.getSelectedItem().active();
 
-        this.loadNaviItem(this.app.lp.listNavi.apply, "toApply");
-
-
-        var menuNode = new Element("div.menuNode", {"styles": this.css.menuNode, "text": this.app.lp.listNavi.myMeeting}).inject(this.leftNode);
-        this.loadNaviItem(this.app.lp.listNavi.wait, "toMeetingWait");
-        this.loadNaviItem(this.app.lp.listNavi.processing, "toMeetingProcessing");
-        this.loadNaviItem(this.app.lp.listNavi.completed, "toMeetingCompleted");
-        this.loadNaviItem(this.app.lp.listNavi.reject, "toMeetingReject");
+        // var menuNode = new Element("div.menuNode", {"styles": this.css.menuNode, "text": this.app.lp.listNavi.myApply}).inject(this.leftNode);
+        // this.loadNaviItem(this.app.lp.listNavi.wait, "toApplyWait");
+        // this.loadNaviItem(this.app.lp.listNavi.processing, "toApplyProcessing");
+        // this.loadNaviItem(this.app.lp.listNavi.completed, "toApplyCompleted");
+        //
+        // this.loadNaviItem(this.app.lp.listNavi.apply, "toApply");
+        //
+        //
+        // var menuNode = new Element("div.menuNode", {"styles": this.css.menuNode, "text": this.app.lp.listNavi.myMeeting}).inject(this.leftNode);
+        // this.loadNaviItem(this.app.lp.listNavi.wait, "toMeetingWait");
+        // this.loadNaviItem(this.app.lp.listNavi.processing, "toMeetingProcessing");
+        // this.loadNaviItem(this.app.lp.listNavi.completed, "toMeetingCompleted");
+        // this.loadNaviItem(this.app.lp.listNavi.reject, "toMeetingReject");
 
         //var menuNode = new Element("div", {"styles": this.css.menuNode, "text": this.app.lp.listNavi.room}).inject(this.leftNode);
     },
-    loadNaviItem: function(text, action){
-        var itemNode = new Element("div", {"styles": this.css.menuItemNode, "text": text}).inject(this.leftNode);
-        var _self = this;
-        itemNode.addEvents({
-            "mouseover": function(){if (_self.currentNavi != this) this.setStyles(_self.css.menuItemNode_over);},
-            "mouseout": function(){if (_self.currentNavi != this) this.setStyles(_self.css.menuItemNode);},
-            "click": function(){
-                if (_self.currentNavi){
-                    _self.currentNavi.setStyles(_self.css.menuItemNode);
-                    _self.currentNavi.removeClass("mainColor_bg_opacity");
-                    _self.currentNavi.removeClass("mainColor_color");
-                }
-                _self.currentNavi = this;
-                this.setStyles(_self.css.menuItemNode_current);
-                _self.currentNavi.addClass("mainColor_bg_opacity");
-                _self.currentNavi.addClass("mainColor_color");
-                if (_self[action]) _self[action]();
-            }
-        });
-        itemNode.store("action",action);
-        if( this.options.action == action){
-            itemNode.click();
-        }else if( action == "toApplyWait"){
-            itemNode.click();
-        }
-    },
+    // loadNaviItem: function(text, action){
+    //     var itemNode = new Element("div", {"styles": this.css.menuItemNode, "text": text}).inject(this.leftNode);
+    //     var _self = this;
+    //     itemNode.addEvents({
+    //         "mouseover": function(){if (_self.currentNavi != this) this.setStyles(_self.css.menuItemNode_over);},
+    //         "mouseout": function(){if (_self.currentNavi != this) this.setStyles(_self.css.menuItemNode);},
+    //         "click": function(){
+    //             if (_self.currentNavi){
+    //                 _self.currentNavi.setStyles(_self.css.menuItemNode);
+    //                 _self.currentNavi.removeClass("mainColor_bg_opacity");
+    //                 _self.currentNavi.removeClass("mainColor_color");
+    //             }
+    //             _self.currentNavi = this;
+    //             this.setStyles(_self.css.menuItemNode_current);
+    //             _self.currentNavi.addClass("mainColor_bg_opacity");
+    //             _self.currentNavi.addClass("mainColor_color");
+    //             if (_self[action]) _self[action]();
+    //         }
+    //     });
+    //     itemNode.store("action",action);
+    //     if( this.options.action == action){
+    //         itemNode.click();
+    //     }else if( action == "toApplyWait"){
+    //         itemNode.click();
+    //     }
+    // },
 
     toApplyWait: function(){
         if (this.currentView) this.currentView.destroy();
@@ -444,6 +476,14 @@ MWF.xApplication.meetingv2.ListView.View.Line = new Class({
 
         this.node.getElements("td").setStyles(this.css.listViewTableTd);
 
+        this.node.addEvents({
+            mouseenter: ()=>{
+                this.node.addClass( 'mainColor_bg_opacity' );
+            },
+            mouseleave: ()=>{
+                this.node.removeClass( 'mainColor_bg_opacity' );
+            }
+        });
         this.node.addEvent("click", function(e){
             this.openMeeting(e);
         }.bind(this));

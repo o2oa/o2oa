@@ -193,14 +193,14 @@ MWF.xApplication.meetingv2.Main = new Class({
     loadTopMenus_right: function(){
         this.topMenuRight = new Element("div", {"styles": this.css.topMenuRight }).inject(this.topMenu);
 
-        this.createTopMenu_right(this.lp.addMeeting, "o2icon-create", "addMeeting");
-        if (this.isManager)this.createTopMenu_right(this.lp.addRoom, "o2icon-icon_newhuiyishi", "addRoom");
+        this.createTopMenu_right(this.lp.addMeeting, "ooicon-add-circle", "addMeeting");
+        if (this.isManager)this.createTopMenu_right(this.lp.addRoom, "ooicon-home_zd", "addRoom");
 
         //var refreshNode = this.createTopMenu_right(this.lp.refresh, "refresh", "refresh");
         //refreshNode.setStyle("float", "right");
 
         if( this.options.settingEnable ){
-            var configNode = this.createTopMenu_right(this.lp.setting, "o2icon-config", "config");
+            var configNode = this.createTopMenu_right(this.lp.setting, "ooicon-config", "config");
             configNode.setStyle("float", "right");
         }
     },
@@ -235,12 +235,12 @@ MWF.xApplication.meetingv2.Main = new Class({
         return actionNode;
     },
     loadTopMenus: function(){
-        this.createTopMenu(this.lp.myMeeting, "o2icon-person", "toMyMeeting");
-        this.createTopMenu(this.lp.month, "o2icon-month", "toMonth");
-        this.createTopMenu(this.lp.week, "o2icon-week", "toWeek");
-        this.createTopMenu(this.lp.day, "o2icon-day", "toDay");
-        this.createTopMenu(this.lp.list, "o2icon-list", "toList");
-        this.createTopMenu(this.lp.room, "o2icon-home", "toRoom");
+        this.createTopMenu(this.lp.myMeeting, "ooicon-meeting", "toMyMeeting");
+        this.createTopMenu(this.lp.month, "ooicon-calendar", "toMonth");
+        this.createTopMenu(this.lp.week, "ooicon-weekly", "toWeek");
+        this.createTopMenu(this.lp.day, "ooicon-clock", "toDay");
+        this.createTopMenu(this.lp.list, "ooicon-list-alt", "toList");
+        this.createTopMenu(this.lp.room, "ooicon-home", "toRoom");
         this.loadTopMenus_right();
     },
     isViewAvailable : function( action ){

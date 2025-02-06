@@ -23,34 +23,30 @@ MWF.xApplication.meetingv2.BuildingForm = new Class({
     },
     _createTableContent: function () {
         this.formTopTextNode.set( "text", this.lp.editBuilding );
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
-            "<tr><td styles='formTableTitle' lable='name'></td>" +
-            "    <td styles='formTableValue' item='name' colspan='3' ></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='address'></td>" +
-            "    <td styles='formTableValue' item='address' colspan='3'></td></tr>" +
-            "<tr><td styles='formTableTitle'></td>" +
-            "    <td styles='formTableValue' colspan='3' style='padding-top: 30px;'>"+
-            "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
-            "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
-            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew ) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
-            "   </td></tr>" +
-            "</table>";
+        var html = `<div class='formTable'>
+            <div item='name' colspan='3' ></div>
+            <div item='address' colspan='3'></div>
+            <div style="padding-top: 30px;display: flex;justify-content: center;">
+               <div item='saveAction' style='float:left;display:${(this.isEdited || this.isNew) ? "" : "none"};'></div>
+               <div item='removeAction' style='float:left;display:${this.isEdited ? "" : "none"};'></div>
+               <div item='cancelAction'></div>
+            </div>`;
         this.formTableArea.set("html", html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, this.data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "meeting",
+                style : "v10",
                 itemTemplate: {
-                    name: { text : this.lp.name, notEmpty : true },
-                    address: { text : this.lp.address },
-                    saveAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.save, event : {
+                    name: { type: 'oo-input', text : this.lp.name, notEmpty : true },
+                    address: { type: 'oo-input', text : this.lp.address },
+                    saveAction : { type : "oo-button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
-                    removeAction : { type : "button", className : "inputCancelButton", value : this.lp.delete , event : {
+                    removeAction : { type : "oo-button", className : "inputCancelButton", appearance:'cancel', value : this.lp.delete , event : {
                         click : function( item, ev ){ this.removeBuilding(ev); }.bind(this)
                     } },
-                    cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
+                    cancelAction : { type : "oo-button", className : "inputCancelButton", appearance:'cancel', value : this.lp.close , event : {
                         click : function(){ this.close(); }.bind(this)
                     } }
                 }
@@ -239,7 +235,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
                 <div item='available' style="flex: 1;"></div>
                 <div item='orderNumber' style="flex: 1;"></div>
             </div>
-            <div style='padding-top: 30px;display: flex;'>
+            <div style='padding-top: 30px;display: flex;justify-content: center;'>
                <div item='saveAction' style='display:${( (this.isEdited || this.isNew) ? "" : "none")};'></div>
                <div item='editAction' style='display:${editEnable ? "" : "none"};'></div>
                <div item='removeAction' style='display:${this.isEdited ? "" : "none"};'></div>
@@ -249,7 +245,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
         this.formTableArea.set("html", html);
 
         var data = this.data || {};
-        this.buildingId = data.building;
+        // this.buildingId = data.building;
         // if( this.buildingId ){
         //     this.getBuliding()
         // }
@@ -260,12 +256,33 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
                 itemTemplate: {
                     name: { type:'oo-input', label : lp.name, notEmpty : true },
                     building: {
-                        type:'oo-select', label : lp.building,  notEmpty : true, labelKey: 'name', valueKey: 'id',
+                        type:'oo-select', label : lp.building,  notEmpty : true, labelKey: 'text', valueKey: 'id',
                         // value : this.buildingName || "",
                         selectOption: ()=>{
                             return this.actions.listBuilding().then(function(json){
+                                json.data.forEach(function(item){
+                                    item.text = `${item.name}(${item.address})`;
+                                })
                                 return json.data;
                             });
+                        },
+                        onPostLoad:  (item)=>{
+                            if( this.isEdited || this.isNew ){
+                                var ooinput = item.items[0];
+                                var addButton = new Element("oo-button", {
+                                    'slot':'after-outer',
+                                    style: "font-size:14px;width:5em;",
+                                    text: this.lp.add
+                                }).inject( ooinput );
+                                addButton.addEventListener('click', (e)=>{
+                                    var form = new MWF.xApplication.meetingv2.BuildingForm(this,this.data, {
+                                        onPostSave: ()=>{
+                                            item.reload();
+                                        }
+                                    }, {app:this.app});
+                                    form.create();
+                                });
+                            }
                         }
                     },
                     floor: { type: "oo-select", defaultValue: "1", notEmpty : true, label : lp.floor,
@@ -283,7 +300,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
                             return floors;
                         }.bind(this)
                     },
-                    capacity: { type:'oo-input', notEmpty : true, tType: "number", label : lp.capacity },
+                    capacity: { type:'oo-input', notEmpty : true, dataType: "number", label : lp.capacity },
                     roomNumber: {type:'oo-input', label: lp.roomNumber},
                     orderNumber: {type:'oo-input', label: lp.orderNumber},
                     phoneNumber: {type:'oo-input', label: lp.phone},
@@ -296,16 +313,16 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
                         selectValue : [ "true", "false" ],
                         selectText : [ this.lp.enable, this.lp.disable ]
                     },
-                    saveAction : { type : "oo-button", value : this.lp.save, event : {
+                    saveAction : { type : "oo-button", value : this.lp.save, className: "inputOkButton", event : {
                         click : function(){ this.save();}.bind(this)
                     } },
-                    removeAction : { type : "oo-button", appearance : "cancel", value : this.lp.delete , event : {
+                    removeAction : { type : "oo-button", appearance : "cancel", value : this.lp.delete , className: "inputCancelButton", event : {
                         click : function( item, ev ){ this.removeRoom(ev); }.bind(this)
                     } },
-                    editAction : { type : "oo-button", value : this.lp.editRoom , event : {
+                    editAction : { type : "oo-button", value : this.lp.editRoom , className: "inputOkButton", event : {
                         click : function(){ this.editRoom(); }.bind(this)
                     } },
-                    cancelAction : { type : "oo-button", appearance : "cancel", value : this.lp.close , event : {
+                    cancelAction : { type : "oo-button", appearance : "cancel", value : this.lp.close , className: "inputCancelButton", event : {
                         click : function(){ this.close(); }.bind(this)
                     } }
                 }
@@ -367,15 +384,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
         data.device = data.deviceList.join("#");
         data.available = data.available === "true";
 
-        if (!this.buildingId){
-            this.actions.saveBuilding({"name": data.buildingName, "address": ""}, function(json){
-                data.building = json.data.id;
-                if (callback) callback(data);
-            }.bind(this));
-        }else{
-            data.building = this.buildingId;
-            if (callback) callback(data);
-        }
+        if (callback) callback(data);
     }
 });
 
@@ -810,15 +819,14 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
         var editEnable = this.editEnable;
         var startImmediatelyEnable = this.startImmediatelyEnable;
         var finishImmediatelyEnable = this.finishImmediatelyEnable;
-        var html = "<div style='width: 700px;margin:0px auto;'><table><tr><td styles='formTableTitle' width='80'></td>" +
-            "    <td styles='formTableValue' style='padding-top: 10px;'>"+
+        var html = "<div style='display:flex; justify-content: center;'>" +
             "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
             "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
             "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "" : "none") +";'></div>"+
             "       <div item='finishImmediatelyAction' style='float:left;display:"+ ( finishImmediatelyEnable ? "" : "none") +";'></div>"+
             "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
             "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable || startImmediatelyEnable || finishImmediatelyEnable ) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
-            "   </td></tr></table></div>";
+            "   </div>";
         this.formBottomNode.set("html", html);
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.actionForm = new MForm(this.formBottomNode, {}, {
