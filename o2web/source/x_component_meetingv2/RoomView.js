@@ -524,8 +524,10 @@ MWF.xApplication.meetingv2.RoomView.Room = new Class({
 
         var deviceList = ( this.data.device || "" ).split("#");
         deviceList.each(function(name){
-            var node = new Element("div", {"styles": this.css.roomItemIconNode, "title": this.app.lp.device[name]}).inject(this.iconsNode);
-            node.setStyle("background-image", "url(../x_component_meetingv2/$RoomView/default/icon/device/"+  name + ( this.enable ? "" : "_disable" ) +".png)");
+            if(name){
+                var node = new Element("div", {"styles": this.css.roomItemIconNode, "title": this.app.lp.device[name]}).inject(this.iconsNode);
+                node.setStyle("background-image", "url(../x_component_meetingv2/$RoomView/default/icon/device/"+  name + ( this.enable ? "" : "_disable" ) +".png)");
+            }
         }.bind(this));
 
         this.actionsNode = new Element("div.actionsNode", {
