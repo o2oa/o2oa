@@ -106,7 +106,7 @@
     },
     "calendarTableTh": {
         "width": "12.5%",
-        "background-color" : "#f0f0f0",
+        "background-color" : "#f3f3f3",
         "color": "#333",
         "font-size": "18px",
         "font-weight" : "normal",
@@ -117,25 +117,23 @@
     },
     "calendarTableTh_pre": {
         "width": "12.5%",
-        "background-color" : "#f0f0f0",
+        "background-color" : "#f3f3f3",
         "color": "#666",
         "font-size": "18px",
         "font-weight" : "normal",
-        //"min-width": "120px",
         "border-bottom": "1px solid #CCC",
-        "border-left": "1px solid #f0f0f0",
+        "border-left": "1px solid #f3f3f3",
         "text-align" : "center",
         "overflow" : "hidden"
     },
     "calendarTableTh_today": {
         "width": "12.5%",
-        "background-color" : "#f0f0f0",
+        "background-color" : "#f3f3f3",
         "color": "#3C76B7",
         "font-size": "18px",
         "font-weight" : "normal",
-        //"min-width": "120px",
         "border-bottom": "1px solid #CCC",
-        "border-left": "1px solid #f0f0f0",
+        "border-left": "1px solid #f3f3f3",
         "text-align" : "center",
         "overflow" : "hidden"
     },

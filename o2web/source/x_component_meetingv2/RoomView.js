@@ -175,14 +175,14 @@ MWF.xApplication.meetingv2.RoomView = new Class({
             });
         }.bind(this));
 
-        this.helpNode = new Element("div", {
+        this.helpNode = new Element("div.ooicon-help_outline", {
             "styles": this.css.roomHelpNode,
             "events" : {
                 mouseover : function(){
-                    this.helpNode.setStyles( this.css.roomHelpNode_over );
+                    this.helpNode.addClass( 'mainColor_color' );
                 }.bind(this),
                 mouseout : function(){
-                    this.helpNode.setStyles( this.css.roomHelpNode );
+                    this.helpNode.removeClass( 'mainColor_color' );
                 }.bind(this)
             }
         }).inject(this.roomDateArea);
