@@ -82,7 +82,7 @@ MWF.xApplication.meetingv2.Main = new Class({
     },
     loadLayout: function(){
 
-        this.content.loadCss("../x_component_meetingv2/$Main/default/style.css");
+        // this.content.loadCss("../x_component_meetingv2/$Main/default/style.css");
 
         if( this.status && this.status.action ){
             this.defaultAction = this.status.action;

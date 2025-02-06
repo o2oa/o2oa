@@ -188,12 +188,12 @@ MWF.xApplication.meetingv2.MonthView.Calendar = new Class({
 
     },
     setTitleNode: function(){
-        this.prevMonthNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
+        this.prevMonthNode =  new Element("div.ooicon-arrow_back", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
 
         var text = this.date.format(this.app.lp.dateFormatMonth);
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextMonthNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
+        this.nextMonthNode =  new Element("div.ooicon-arrow_forward", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
 
         this.prevMonthNode.addEvents({
             "mouseover": function(){
@@ -748,8 +748,8 @@ MWF.xApplication.meetingv2.MonthView.Calendar.MonthSelector = new Class({
 
         this.monthSelectTitleNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleNode}).inject(this.monthSelectNode);
 
-        this.monthSelectPrevYearNode = new Element("div.o2icon-triangle_left", {"styles": this.css.calendarMonthSelectTitlePrevYearNode}).inject(this.monthSelectTitleNode);
-        this.monthSelectNextYearNode = new Element("div.o2icon-triangle_right", {"styles": this.css.calendarMonthSelectTitleNextYearNode}).inject(this.monthSelectTitleNode);
+        this.monthSelectPrevYearNode = new Element("div.ooicon-arrow_back", {"styles": this.css.calendarMonthSelectTitlePrevYearNode}).inject(this.monthSelectTitleNode);
+        this.monthSelectNextYearNode = new Element("div.ooicon-arrow_forward", {"styles": this.css.calendarMonthSelectTitleNextYearNode}).inject(this.monthSelectTitleNode);
         this.monthSelectTextNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleTextNode}).inject(this.monthSelectTitleNode);
         this.monthSelectTextNode.addClass("MWF_calendar_current");
         this.monthSelectTextNode.set("text", this.year);

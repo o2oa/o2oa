@@ -112,7 +112,7 @@ MWF.xApplication.meetingv2.BuildingTooltip = new Class({
             //}).inject(this.node);
             var container = this.node.getElement("[item='containr']");
 
-            this.editAction = new Element("div.o2icon-edit2", {
+            this.editAction = new Element("div.ooicon-edit", {
                 styles: this.css.action_edit,
                 title : this.lp.editAddress,
                 events : {
@@ -132,7 +132,7 @@ MWF.xApplication.meetingv2.BuildingTooltip = new Class({
                 }
             }).inject(container);
 
-            this.removeAction = new Element("div.o2icon-delete", {
+            this.removeAction = new Element("div.ooicon-delete", {
                 styles: this.css.action_remove,
                 title: this.lp.removeBuilding,
                 events : {
@@ -1895,7 +1895,7 @@ MWF.xApplication.meetingv2.MeetingArea = new Class({
         if( this.userName == this.data.applicant || this.userId == this.data.applicant || MWF.AC.isMeetingAdministrator() ){
 
             if( this.data.status=="wait"  ){
-                this.editAction = new Element("div.o2icon-edit2", {
+                this.editAction = new Element("div.ooicon-edit", {
                     styles: this.css.action_edit,
                     events : {
                         mouseover : function(){
@@ -1917,7 +1917,7 @@ MWF.xApplication.meetingv2.MeetingArea = new Class({
                 //if (this.data.myWaitAccept) this.createAcceptActions();
                 //if (this.data.status=="wait" && this.isEdit) this.createCancelActions();
 
-                this.removeAction = new Element("div.o2icon-delete", {
+                this.removeAction = new Element("div.ooicon-delete", {
                     styles: this.css.action_remove,
                     events : {
                         mouseover : function(){
@@ -1939,7 +1939,7 @@ MWF.xApplication.meetingv2.MeetingArea = new Class({
 
 
         if (this.data.myWaitAccept){
-            this.acceptAction = new Element("div.o2icon-checkbox", {
+            this.acceptAction = new Element("div.ooicon-check_outline", {
                 styles: this.css.action_accept,
                 title : this.app.lp.accept,
                 events : {
@@ -1958,7 +1958,7 @@ MWF.xApplication.meetingv2.MeetingArea = new Class({
                 }
             }).inject(this.actionBar);
 
-            this.rejectAction = new Element("div.o2icon-off", {
+            this.rejectAction = new Element("div.ooicon-process-cancel", {
                 styles: this.css.action_reject,
                 title : this.app.lp.reject,
                 events : {

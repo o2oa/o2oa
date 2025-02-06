@@ -70,7 +70,7 @@ MWF.xApplication.meetingv2.RoomView = new Class({
             "styles": this.css.roomDateNode,
             "text" : dateText
         }).inject(this.roomDateArea);
-        this.roomIconNode = new Element("i.o2icon-triangle_down", {
+        this.roomIconNode = new Element("i.ooicon-drop_down", {
             "styles": this.css.roomIconNode
         }).inject(this.roomDateNode);
 
@@ -549,7 +549,7 @@ MWF.xApplication.meetingv2.RoomView.Room = new Class({
     loadActions: function(){
 
         if( MWF.AC.isMeetingAdministrator() ){
-            this.editAction = new Element("div.o2icon-edit2", {
+            this.editAction = new Element("div.ooicon-edit", {
                 styles: this.css.roomAction_edit,
                 events : {
                     mouseover : function(){
@@ -567,7 +567,7 @@ MWF.xApplication.meetingv2.RoomView.Room = new Class({
                 }
             }).inject(this.actionsNode);
 
-            this.removeAction = new Element("div.o2icon-delete", {
+            this.removeAction = new Element("div.ooicon-delete", {
                 styles: this.css.roomAction_remove,
                 events : {
                     mouseover : function(){
@@ -587,7 +587,7 @@ MWF.xApplication.meetingv2.RoomView.Room = new Class({
         }
 
         if( this.enable ){
-            this.createMeetingAction = new Element("div.o2icon-create", {
+            this.createMeetingAction = new Element("div.ooicon-add-circle", {
                 tltile : this.app.lp.addMeeting,
                 styles: this.css.createMeetingAction,
                 events : {

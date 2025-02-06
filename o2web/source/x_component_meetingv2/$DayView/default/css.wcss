@@ -47,20 +47,20 @@
     "float" : "left",
     "width" : "50px",
     "height" : "50px",
-    "background" : "url(../x_component_meetingv2/$DayView/default/icon/left_gray.png) no-repeat center center"
+    "font-size": "32px",
+    "color": "#999"
   },
   "leftNode_over" : {
-    "background" : "url(../x_component_meetingv2/$DayView/default/icon/left.png) no-repeat center center"
   },
   "rightNode" : {
     "cursor" : "pointer",
     "float" : "left",
     "width" : "50px",
     "height" : "50px",
-    "background" : "url(../x_component_meetingv2/$DayView/default/icon/right_gray.png) no-repeat center center"
+    "font-size": "32px",
+    "color": "#999"
   },
   "rightNode_over" : {
-    "background" : "url(../x_component_meetingv2/$DayView/default/icon/right.png) no-repeat center center"
   },
   "dayNode" : {
     "width" : "300px",
@@ -96,7 +96,7 @@
     "position" : "absolute",
     "top" : "40px",
     "right" : "20px",
-    "background" : "url(../x_component_meetingv2/$Main/default/icon/icon_zengjia.png) no-repeat center center",
+    "color": "#666",
     "width" : "16px",
     "height" : "16px",
     "cursor" : "pointer"
@@ -105,7 +105,6 @@
     "position" : "absolute",
     "top" : "40px",
     "right" : "20px",
-    "background" : "url(../x_component_meetingv2/$Main/default/icon/icon_zengjia_click2.png) no-repeat center center",
     "width" : "16px",
     "height" : "16px",
     "cursor" : "pointer"

@@ -241,7 +241,7 @@ MWF.xApplication.meetingv2.WeekView.Calendar = new Class({
 
     },
     setTitleNode: function(){
-        this.prevWeekNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
+        this.prevWeekNode =  new Element("div.ooicon-arrow_back", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
 
         // var text = this.baseDate.format(this.app.lp.dateFormatMonth)
         //     + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
@@ -253,7 +253,7 @@ MWF.xApplication.meetingv2.WeekView.Calendar = new Class({
 
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextWeekNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
+        this.nextWeekNode =  new Element("div.ooicon-arrow_forward", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
 
         this.prevWeekNode.addEvents({
             "mouseover": function(){
@@ -667,7 +667,7 @@ MWF.xApplication.meetingv2.WeekView.Room = new Class({
     loadActions: function(){
 
         if( MWF.AC.isMeetingAdministrator() ){
-            this.editAction = new Element("div.o2icon-edit2", {
+            this.editAction = new Element("div.ooicon-edit", {
                 styles: this.css.roomAction_edit,
                 events : {
                     mouseover : function(){
@@ -685,7 +685,7 @@ MWF.xApplication.meetingv2.WeekView.Room = new Class({
                 }
             }).inject(this.actionsNode);
 
-            this.removeAction = new Element("div.o2icon-delete", {
+            this.removeAction = new Element("div.ooicon-delete", {
                 styles: this.css.roomAction_remove,
                 events : {
                     mouseover : function(){
@@ -705,7 +705,7 @@ MWF.xApplication.meetingv2.WeekView.Room = new Class({
         }
 
         if( this.enable ){
-            this.createMeetingAction = new Element("div.o2icon-create", {
+            this.createMeetingAction = new Element("div.ooicon-add-circle", {
                 tltile : this.app.lp.addMeeting,
                 styles: this.css.createMeetingAction,
                 events : {
