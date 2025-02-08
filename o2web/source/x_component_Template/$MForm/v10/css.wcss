@@ -3,15 +3,25 @@
         "width": "100%"
     },
   "OOInputProperties": {
-    "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+    "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
     "label-Align": "right",
     "view-style": "background-color:#f7f7f7"
   },
+  "OOInputProperties3": {
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
+      "label-Align": "right",
+      "view-style": "background-color:#f7f7f7"
+    },
   "OOTextarea":{
       "width": "100%"
   },
   "OOTextareaProperties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
+      "label-Align": "right",
+      "view-style": "background-color:#f7f7f7"
+    },
+  "OOTextareaProperties3": {
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
       "label-Align": "right",
       "view-style": "background-color:#f7f7f7"
     },
@@ -19,7 +29,12 @@
       "width": "100%"
   },
   "OODatetimeProperties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
+      "label-Align": "right",
+      "view-style": "background-color:#f7f7f7"
+    },
+  "OODatetimeProperties3": {
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
       "label-Align": "right",
       "view-style": "background-color:#f7f7f7"
     },
@@ -27,15 +42,25 @@
         "width": "100%"
     },
   "OOOrgProperties":{
-   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
    "label-Align": "right",
    "view-style": "background-color:#f7f7f7"
  },
+  "OOOrgProperties3": {
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
+      "label-Align": "right",
+      "view-style": "background-color:#f7f7f7"
+    },
 "OORadioGroup":{
     "width": "100%"
 },
  "OORadioGroupProperties":{
-   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
+   "label-Align": "right",
+   "view-style": "background-color:#f7f7f7"
+ },
+ "OORadioGroupProperties3":{
+   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
    "label-Align": "right",
    "view-style": "background-color:#f7f7f7"
  },
@@ -43,7 +68,12 @@
      "width": "100%"
  },
  "OOCheckGroupProperties":{
-   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
+   "label-Align": "right",
+   "view-style": "background-color:#f7f7f7"
+ },
+ "OOCheckGroupProperties3":{
+   "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
    "label-Align": "right",
    "view-style": "background-color:#f7f7f7"
  },
@@ -51,7 +81,12 @@
      "width": "100%"
  },
  "OOSelectProperties":{
-    "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+    "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
+    "label-Align": "right",
+    "view-style": "background-color:#f7f7f7"
+  },
+ "OOSelectProperties3":{
+    "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
     "label-Align": "right",
     "view-style": "background-color:#f7f7f7"
   },
@@ -61,157 +96,150 @@
     "background-color":"#FFF",
     "height": "30px",
     "font-size": "16px",
-    "border-radius" : "4px"
+    "border-radius": "4px"
   },
-  "inputTime" : {
+  "inputTime": {
     "width": "99%",
-    "border-radius" : "4px",
+    "border-radius": "4px",
     "border":"1px solid #ccc",
     "background-color":"#FFF",
     "height": "30px",
     "font-size": "16px",
-    "background" : "url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+    "background": "url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
   },
-  "inputTimeUnformatWidth" : {
-    "border-radius" : "4px",
+  "inputTimeUnformatWidth": {
+    "border-radius": "4px",
     "border":"1px solid #ccc",
     "background-color":"#FFF",
     "height": "30px",
     "font-size": "16px",
-    "background" : "url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+    "background": "url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
   },
-  "inputPerson" : {
+  "inputPerson": {
     "width": "99%",
-    "border-radius" : "4px",
+    "border-radius": "4px",
     "border":"1px solid #ccc",
     "background-color":"#FFF",
     "min-height": "30px",
-    "overflow" : "hidden",
+    "overflow": "hidden",
     "font-size": "16px",
-    "background" : "url(../x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+    "background": "url(../x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
   },
-  "inputTextarea" : {
+  "inputTextarea": {
     "width": "99%",
-    "border-radius" : "4px",
+    "border-radius": "4px",
     "border":"1px solid #ccc",
     "background-color":"#FFF",
     "height": "80px"
   },
-  "inputCheckbox" : {
-    "float" : "left",
-    "margin-right" : "12px"
+  "inputCheckbox": {
+    "float": "left",
+    "margin-right": "12px"
   },
-  "inputRadio" : {
-    "float" : "left",
-    "margin-right" : "12px"
+  "inputRadio": {
+    "float": "left",
+    "margin-right": "12px"
   },
-  "inputSelect" : {
+  "inputSelect": {
     "width": "99%",
-    "border-radius" : "4px",
+    "border-radius": "4px",
     "border":"1px solid #ccc",
     "background-color":"#FFF",
     "font-size": "16px",
     "height": "30px"
   },
-  "inputSelectUnformatWidth" : {
+  "inputSelectUnformatWidth": {
     "margin-right":"5px",
-    "border-radius" : "4px",
+    "border-radius": "4px",
     "border":"1px solid #ccc",
     "background-color":"#FFF",
     "font-size": "16px",
     "height": "30px"
   },
-  "inputButton" : {
+  "inputButton": {
     "background": "#3C76B7",
     "border-radius": "4px",
-    "padding" : "0px 10px",
-    "line-height" : "30px",
-    "height" : "30px",
-    "border" : "0px",
-    "color" : "#fff",
-    "cursor" : "pointer",
-    "font-size" : "14px"
+    "padding": "0px 10px",
+    "line-height": "30px",
+    "height": "30px",
+    "border": "0px",
+    "color": "#fff",
+    "cursor": "pointer",
+    "font-size": "14px"
   },
-  "inputButtonGrey" : {
+  "inputButtonGrey": {
     "background": "#f0f0f0",
     "border-radius": "4px",
-    "padding" : "0px 10px",
-    "line-height" : "30px",
-    "height" : "30px",
-    "border" : "0px",
-    "color" : "#666",
-    "cursor" : "pointer",
-    "font-size" : "14px"
+    "padding": "0px 10px",
+    "line-height": "30px",
+    "height": "30px",
+    "border": "0px",
+    "color": "#666",
+    "cursor": "pointer",
+    "font-size": "14px"
   },
-  "inputAcceptButton" : {
+  "inputAcceptButton": {
     "background-color": "#3C76B7",
     "border-radius": "4px",
-    "padding" : "0px 10px",
-    "line-height" : "30px",
-    "height" : "30px",
-    "border" : "0px",
-    "color" : "#fff",
-    "cursor" : "pointer",
-    "float" : "left",
-    "font-size" : "14px"
+    "padding": "0px 10px",
+    "line-height": "30px",
+    "height": "30px",
+    "border": "0px",
+    "color": "#fff",
+    "cursor": "pointer",
+    "float": "left",
+    "font-size": "14px"
   },
-  "inputDenyButton" : {
+  "inputDenyButton": {
     "background-color": "#f0f0f0",
     "border-radius": "4px",
-    "padding" : "0px 10px",
-    "float" : "left",
-    "line-height" : "30px",
-    "height" : "30px",
-    "border" : "0px",
-    "color" : "#666",
-    "cursor" : "pointer",
-    "font-size" : "14px"
+    "padding": "0px 10px",
+    "float": "left",
+    "line-height": "30px",
+    "height": "30px",
+    "border": "0px",
+    "color": "#666",
+    "cursor": "pointer",
+    "font-size": "14px"
   },
-  "inputOkButton" : {
+  "inputOkButton": {
     "background": "#3C76B7",
     "border-radius": "4px",
-    "width" : "230px",
-    "height" : "40px",
-    "border" : "0px",
-    "color" : "#fff",
-    "cursor" : "pointer",
-    "font-size" : "18px"
+    "width": "230px",
+    "height": "40px",
+    "border": "0px",
+    "color": "#fff",
+    "cursor": "pointer",
+    "font-size": "18px"
   },
-  "inputCancelButton" : {
+  "inputCancelButton": {
     "background": "#f0f0f0",
     "border-radius": "4px",
-    "width" : "110px",
-    "height" : "40px",
-    "color" : "#666",
-    "border" : "0px",
-    "margin-left" : "20px",
-    "font-size" : "18px",
-    "cursor" : "pointer"
+    "width": "110px",
+    "height": "40px",
+    "color": "#666",
+    "border": "0px",
+    "margin-left": "20px",
+    "font-size": "18px",
+    "cursor": "pointer"
   },
-  "inputA" : {
-    "color" : "#3C76B7",
-    "cursor" : "pointer"
+  "inputA": {
+    "color": "#3C76B7",
+    "cursor": "pointer"
   },
-
-  "formTable" : {
-    "display": "grid",
-    "grid-template-rows": "3em",
-    "gap": "0.8em",
-    "align-items": "center"
-  },
-  "warmMessageNode" : {
-    "margin-top" : "10px",
+  "warmMessageNode": {
+    "margin-top": "10px",
     "font-size": "16px",
     "color":"#ff5c42",
     "padding-left": "20px",
-    "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+    "background": "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
   },
-  "warningMessageNode" : {
-    "margin-top" : "10px",
+  "warningMessageNode": {
+    "margin-top": "10px",
     "font-size": "16px",
     "color":"#ff5c42",
     "padding-left": "20px",
-    "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+    "background": "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
   }
 }
 

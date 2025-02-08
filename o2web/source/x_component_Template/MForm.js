@@ -21,6 +21,7 @@ var MForm = new Class({
     Implements: [Options, Events],
     options : {
         style : "default",
+        mvcStyle: "",
         isNew : false,
         isEdited : false,
         emptyItemContainer : true,
@@ -60,6 +61,10 @@ var MForm = new Class({
         if( !this.data || this.data == "" ){
             this.isSourceDataEmpty = true;
             this.data = [{}];
+        }
+
+        if(this.options.mvcStyle){
+            this.container.loadCss("../x_component_Template/$MForm/" + this.options.mvcStyle + "/style.css");
         }
 
         this.itemTemplateUrl = this.options.itemTemplateUrl;

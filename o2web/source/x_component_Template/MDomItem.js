@@ -288,20 +288,23 @@ var MDomItem = new Class({
             r.send();
         }
     },
-    fitLabel: function (label) {
+    getLabelLength: function (label){
         if (label && label.length < 4) {
             if (/^[\u4e00-\u9fa5]+$/.test(label)) { //全汉字
-                switch (label.length) {
-                    case 2:
-                        return label[0] + '　　' + label[1];
-                    case 3:
-                        return label[0] + ' ' + label[1] + ' ' + label[2];
-                    default:
-                        return label;
-                }
+                return label.length;
             }
         }
-        return label;
+        return 0;
+    },
+    fitLabel: function (label) {
+        switch (this.getLabelLength(label)) {
+            case 2:
+                return label[0] + '　　' + label[1];
+            case 3:
+                return label[0] + ' ' + label[1] + ' ' + label[2];
+            default:
+                return label;
+        }
     },
     editMode: function (keep) {
         if (keep) this.save();
@@ -3537,7 +3540,8 @@ MDomItem.OOInput = new Class({
             input.setAttribute('right-icon', 'edit');
         }
         if (this.css?.OOInput) input.setStyles(this.css.OOInput);
-        if (this.css?.OOInputProperties) input.set(this.css.OOInputProperties);
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOInputProperties3' : 'OOInputProperties';
+        if (this.css[propertyName]) input.set(this.css[propertyName]);
         return input;
     },
     bindDefaultEvent: function (item) {
@@ -3592,7 +3596,10 @@ MDomItem.OOTextarea = new Class({
     createInput: function () {
         var input = new Element("oo-textarea");
         if (this.css?.OOTextarea) input.setStyles(this.css.OOTextarea);
-        if (this.css?.OOTextareaProperties) input.set(this.css.OOTextareaProperties);
+
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOTextareaProperties3' : 'OOTextareaProperties';
+        if (this.css[propertyName]) input.set(this.css[propertyName]);
+
         return input;
     }
 });
@@ -3622,7 +3629,10 @@ MDomItem.OODatetime = new Class({
         if (options.format) input.setAttribute("format", options.format);
 
         if (this.css?.OODatetime) input.setStyles(this.css.OODatetime);
-        if (this.css?.OODatetimeProperties) input.set(this.css.OODatetimeProperties);
+
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OODatetimeProperties3' : 'OODatetimeProperties';
+        if (this.css[propertyName]) input.set(this.css[propertyName]);
+
         return input;
     }
 });
@@ -3666,11 +3676,14 @@ MDomItem.OOSelector = new Class({
             "value": value
         });
         if (this.css?.OOOrg) item.setStyles(this.css.OOOrg);
-        if (this.css?.OOOrgProperties) item.set(this.css.OOOrgProperties);
+
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOOrgProperties3' : 'OOOrgProperties';
+        if (this.css[propertyName]) item.set(this.css[propertyName]);
+
         item.set(options.attr || {});
 
-        if (options.label) {
-            item.setAttribute('label', this.module.fitLabel(options.label));
+        if (options.label || options.text) {
+            item.setAttribute('label', this.module.fitLabel(options.label || options.text));
         }
 
         if (options.showIcon !== 'no') item.setAttribute('right-icon', 'person');
@@ -3827,7 +3840,10 @@ MDomItem.OORadioGroup = new Class({
             this.renderOption2(input);
         }
         if (this.css?.OORadioGroup) input.setStyles(this.css.OORadioGroup);
-        if (this.css?.OORadioGroupProperties) input.set(this.css.OORadioGroupProperties);
+
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OORadioGroupProperties3' : 'OORadioGroupProperties';
+        if (this.css[propertyName]) input.set(this.css[propertyName]);
+
         return input;
     },
     renderOption: function (input) {
@@ -3883,7 +3899,10 @@ MDomItem.OOCheckGroup = new Class({
             this.renderOption2(input);
         }
         if (this.css?.OOCheckGroup) input.setStyles(this.css.OOCheckGroup);
-        if (this.css?.OOCheckGroupProperties) input.set(this.css.OOCheckGroupProperties);
+
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOCheckGroupProperties3' : 'OOCheckGroupProperties';
+        if (this.css[propertyName]) input.set(this.css[propertyName]);
+
         return input;
     }
 });
@@ -3901,7 +3920,10 @@ MDomItem.OOSelect = new Class({
             this.renderOption2(input);
         }
         if (this.css?.OOSelect) input.setStyles(this.css.OOSelect);
-        if (this.css?.OOSelectProperties) input.set(this.css.OOSelectProperties);
+
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOSelectProperties3' : 'OOSelectProperties';
+        if (this.css[propertyName]) input.set(this.css[propertyName]);
+
         return input;
     },
     renderOption: function (input) {

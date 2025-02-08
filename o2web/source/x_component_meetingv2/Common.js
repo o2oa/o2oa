@@ -24,8 +24,8 @@ MWF.xApplication.meetingv2.BuildingForm = new Class({
     _createTableContent: function () {
         this.formTopTextNode.set( "text", this.lp.editBuilding );
         var html = `<div class='formTable'>
-            <div item='name' colspan='3' ></div>
-            <div item='address' colspan='3'></div>
+            <div item='name'></div>
+            <div item='address'></div>
             <div style="padding-top: 30px;display: flex;justify-content: center;">
                <div item='saveAction' style='float:left;display:${(this.isEdited || this.isNew) ? "" : "none"};'></div>
                <div item='removeAction' style='float:left;display:${this.isEdited ? "" : "none"};'></div>
@@ -36,7 +36,7 @@ MWF.xApplication.meetingv2.BuildingForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, this.data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10",
+                style : "v10", mvcStyle: "v10",
                 itemTemplate: {
                     name: { type: 'oo-input', text : this.lp.name, notEmpty : true },
                     address: { type: 'oo-input', text : this.lp.address },
@@ -252,7 +252,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10",
+                style : "v10", mvcStyle: "v10",
                 itemTemplate: {
                     name: { type:'oo-input', label : lp.name, notEmpty : true },
                     building: {
@@ -628,7 +628,10 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
             <div item='externalPerson'></div>
             <div item='subject'></div>
             <div item='summary'></div>
-            <div style='display:none;' item="attachmentRow"><div style='display:none;'>${this.lp.meetingAttachment}</div><div style="flex: 1" item='attachment'></div></div>
+            <div item="attachmentRow" class="formLine hide">
+                <div class='formLabel'>${this.lp.meetingAttachment}</div>
+                <div class="formValue" item='attachment'></div>
+            </div>
             </div>`;
         this.formTableArea.set("html", html);
 
@@ -652,7 +655,7 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10",
+                style : "v10", mvcStyle: "v10",
                 itemTemplate: {
                     applicant : {  label: lp.applyPerson, type : "oo-org", orgType : "person", isEdited : false,
                         defaultValue : this.userName
@@ -1061,12 +1064,12 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
     },
 
     loadAttachment: function(){
-        this.attachmentRow.setStyle('display', 'flex');
+        this.attachmentRow.removeClass('hide');
         this.attachmentNode = new Element("div", {"styles": this.css.createMeetingAttachmentNode}).inject(this.attachmentArea);
         var attachmentContentNode = new Element("div", {"styles": this.css.createMeetingAttachmentContentNode}).inject(this.attachmentNode);
         MWF.require("MWF.widget.AttachmentController", function(){
             this.attachmentController = new MWF.widget.AttachmentController(attachmentContentNode, this, {
-                "style": "v10",
+                "style": "v10", mvcStyle: "v10",
                 "size": "min",
                 "isSizeChange": false,
                 "isReplace": false,
