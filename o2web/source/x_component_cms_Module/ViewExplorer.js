@@ -171,6 +171,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         this.selectEnable = this.options.selectEnable;
 
         this.items = [];
+        this.manualOrderColumnMap = {};
         this.selectedItems = [];
         this.hideColumns = [];
         this.openColumns = [];
