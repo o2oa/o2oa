@@ -194,6 +194,10 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                 o2.load(["../x_component_WpsOfficeEditor/web-office-sdk-solution-v2.0.2.umd.min.js"], {"sequence": true}, function () {
                     if (callback) callback();
                 }.bind(this));
+            }else if(this.version === "jbWps"){
+                o2.load(["../x_component_WpsOfficeEditor/open-jssdk-v0.1.2.umd.js"], {"sequence": true}, function () {
+                    if (callback) callback();
+                }.bind(this));
             }else {
                 o2.load(["../x_component_WpsOfficeEditor/web-office-sdk-v1.1.19.umd.js"], {"sequence": true}, function () {
                     if (callback) callback();
@@ -398,6 +402,21 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                     "mode" : this.mode
                 };
                 this.wpsOffice = WebOfficeSDK.init(config);
+            }else if(this.version === "jbWps"){
+                this.action.CustomAction.getJbWpsFileUrl(this.documentId,{
+                    "mode" : this.mode,
+                    "appToken" : this.appToken
+                },function( json ){
+                    this.wpsUrl = json.data.wpsUrl;
+                    config.url = this.wpsUrl+ "&_w_tokentype=1";
+
+                }.bind(this),null,false);
+                // console.log(this.wpsUrl)
+                this.wpsOffice = OpenSDK.config(config);
+                this.wpsOffice.setToken({
+                    token: layout.session.token,
+                    timeout: 100 * 60 * 1000 // token超时时间, 可配合refreshToken配置函数使用，当超时前将调用refreshToken
+                });
             }else {
                 this.action.CustomAction.getWpsFileUrl(this.documentId,{
                     "mode" : this.mode,
