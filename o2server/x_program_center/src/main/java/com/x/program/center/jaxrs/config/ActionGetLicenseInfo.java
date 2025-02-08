@@ -22,10 +22,9 @@ class ActionGetLicenseInfo extends BaseAction {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		Wo wo = new Wo();
 		wo.setVersion(Config.version());
-		wo.setVersionType("社区版");
 		try {
-			Class<?> licenseToolsCls = Class.forName("com.x.base.core.license.LicenseTools");
-			String info = (String) MethodUtils.invokeStaticMethod(licenseToolsCls, "getLicenseInfo");
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
+			String info = (String) MethodUtils.invokeStaticMethod(licenseToolsCls, "getInfo");
 			if(StringUtils.isNotBlank(info)){
 				wo = XGsonBuilder.instance().fromJson(info, Wo.class);
 			}

@@ -73,7 +73,7 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 
 	private static boolean checkLicense() {
 		try {
-			Class<?> licenseToolsCls = Class.forName("com.x.base.core.license.LicenseTools");
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
 			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
 			return BooleanUtils.isTrue(result);
 		} catch (Exception e) {

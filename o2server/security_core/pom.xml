@@ -9,7 +9,7 @@
     <version>9.2</version>
   </parent>
 
-  <artifactId>x_security_core_project</artifactId>
+  <artifactId>security_core</artifactId>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -19,6 +19,22 @@
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.github.wvengen</groupId>
+        <artifactId>proguard-maven-plugin</artifactId>
+        <version>2.6.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>proguard</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <proguardInclude>${project.basedir}/proguard.cfg</proguardInclude>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -42,47 +58,6 @@
               </arguments>
             </configuration>
           </execution>
-          <execution>
-            <id>enhanceBaseBuilder</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <addOutputToClasspath>true</addOutputToClasspath>
-              <includePluginDependencies>true</includePluginDependencies>
-              <includeProjectDependencies>true</includeProjectDependencies>
-              <mainClass>com.x.base.core.entity.tools.EnhanceBaseBuilder
-              </mainClass>
-              <arguments>
-                <argument>${project.build.directory}</argument>
-                <argument>${project.build.outputDirectory}</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-jar</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>../store/jars</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>target</directory>
-                  <includes>
-                    <include>${project.artifactId}.jar</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -95,6 +70,14 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.0.0-M2</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
     </plugins>
   </build>

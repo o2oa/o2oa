@@ -1,9 +1,5 @@
 package com.x.server.console;
 
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.server.console.log.Log4j2Configuration;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,10 +18,15 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
+
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.server.console.log.Log4j2Configuration;
 
 public class Main {
 
@@ -65,25 +66,10 @@ public class Main {
 		// 启动定时任务
 		SchedulerBuilder.start();
 
-		if (checkLicense()) {
-			if (BooleanUtils.isTrue(Config.currentNode().autoStart())) {
-				commandQueue.put("start");
-			}
-		}else{
-			LOGGER.print(Config.LICENSE_TIP);
+		if (BooleanUtils.isTrue(Config.currentNode().autoStart())) {
+			commandQueue.put("start");
 		}
 		CommandThreads.join();
-	}
-
-	private static boolean checkLicense() {
-		try {
-			Class<?> licenseToolsCls = Class.forName("com.x.base.core.license.LicenseTools");
-			Boolean result = (Boolean)MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
-			return BooleanUtils.isTrue(result);
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return false;
 	}
 
 	private static void cleanCommandSwap(String base) {

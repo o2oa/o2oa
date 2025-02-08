@@ -1,7 +1,27 @@
 package com.x.server.console;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
+import com.google.gson.JsonElement;
+import com.x.base.core.container.factory.SlicePropertiesBuilder;
+import com.x.base.core.entity.Storage;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DataServer;
+import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
+import com.x.base.core.project.tools.H2Tools;
+import com.x.base.core.project.tools.JarTools;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.PathTools;
+import com.x.server.console.node.EventQueueExecutor;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,9 +36,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.naming.NamingException;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
@@ -28,28 +46,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
-import com.google.gson.JsonElement;
-import com.x.base.core.container.factory.SlicePropertiesBuilder;
-import com.x.base.core.entity.Storage;
-import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.config.CenterServer;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataServer;
-import com.x.base.core.project.config.ExternalDataSource;
-import com.x.base.core.project.tools.ClassLoaderTools;
-import com.x.base.core.project.tools.H2Tools;
-import com.x.base.core.project.tools.JarTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PathTools;
-import com.x.server.console.node.EventQueueExecutor;
-
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 
 /**
  *
@@ -104,7 +100,7 @@ public class ResourceFactory {
 
 	private static boolean checkLicense() {
 		try {
-			Class<?> licenseToolsCls = Class.forName("com.x.base.core.license.LicenseTools");
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
 			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
 			return BooleanUtils.isTrue(result);
 		} catch (Exception e) {

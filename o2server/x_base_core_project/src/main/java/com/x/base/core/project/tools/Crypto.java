@@ -271,7 +271,7 @@ public class Crypto {
 
 		byte[] keyBytes = DigestUtils.md5(key);
 
-		byte[] passwordBytes = data.getBytes();
+		byte[] passwordBytes = data.getBytes(StandardCharsets.UTF_8);
 
 		byte[] aesBytes = encryptAes(passwordBytes, keyBytes);
 
@@ -294,15 +294,9 @@ public class Crypto {
 
 		byte[] keyBytes = DigestUtils.md5(key);
 
-		byte[] debase64Bytes = Base64.decodeBase64(data.getBytes());
+		byte[] debase64Bytes = Base64.decodeBase64(data.getBytes(StandardCharsets.UTF_8));
 
 		return new String(decryptAes(debase64Bytes, keyBytes));
 
-	}
-
-	public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
-		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA);
-		keyPairGenerator.initialize(2048);
-		return keyPairGenerator.generateKeyPair();
 	}
 }

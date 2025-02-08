@@ -1,14 +1,20 @@
-package com.x.base.core.license;
+package com.x.base.core.lc;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author chengjian
  * @date 2025/01/22 16:38
  **/
-public class LicenseInfo extends GsonPropertyObject {
+public class LcInfo implements Serializable {
+
+    private static final long serialVersionUID = 5186387814272374911L;
+
+    @FieldDescribe("客户编号.")
+    private String unique;
     @FieldDescribe("客户名称.")
     private String name;
     @FieldDescribe("顶层组织名称.")
@@ -17,7 +23,7 @@ public class LicenseInfo extends GsonPropertyObject {
     private String email;
     @FieldDescribe("授权版本.")
     private String version;
-    @FieldDescribe("版本类型：商业版|信创版.")
+    @FieldDescribe("版本类型.")
     private String versionType;
     @FieldDescribe("授权模式：集群|单节点.")
     private String model;
@@ -25,6 +31,17 @@ public class LicenseInfo extends GsonPropertyObject {
     private Date startTime;
     @FieldDescribe("授权到期时间.")
     private Date expireTime;
+
+    @FieldDescribe("支持的数据库列表.")
+    private List<String> supportDbList;
+
+    public String getUnique() {
+        return unique;
+    }
+
+    public void setUnique(String unique) {
+        this.unique = unique;
+    }
 
     public String getName() {
         return name;
@@ -88,5 +105,13 @@ public class LicenseInfo extends GsonPropertyObject {
 
     public void setUnitName(String unitName) {
         this.unitName = unitName;
+    }
+
+    public List<String> getSupportDbList() {
+        return supportDbList;
+    }
+
+    public void setSupportDbList(List<String> supportDbList) {
+        this.supportDbList = supportDbList;
     }
 }
