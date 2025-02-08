@@ -153,7 +153,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 		o.setFromActivityToken(woTask.getActivityToken());
 		o.setFromActivityType(woTask.getActivityType());
 		o.setPerson(woTask.getPerson());
-		o.setIdentity(o.getIdentity());
+		o.setIdentity(woTask.getIdentity());
 		o.setUnit(woTask.getUnit());
 		o.getProperties().setStartTime(woTask.getStartTime());
 		o.getProperties().setEmpowerFromIdentity(woTask.getEmpowerFromIdentity());
