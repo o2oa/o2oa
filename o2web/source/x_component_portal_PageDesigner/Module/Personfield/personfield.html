@@ -147,7 +147,7 @@
                     <td class="editTableTitle">区段依据:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='department' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>处理人<br/>
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='department')?'checked':''} type="radio" value="department"/>处理部门<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='unit')?'checked':''} type="radio" value="department"/>处理部门<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>活动ID<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>脚本<br/>
                     </td>
