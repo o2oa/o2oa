@@ -1945,7 +1945,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					case "person":
 						return layout.desktop.session.user.id;
 					case "unit":
-						return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+						return (this.form.businessData.task) ? (this.form.businessData.task.unitDn || this.form.businessData.task.unit) : "";
 					case "activity":
 						return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
 					case "splitValue":

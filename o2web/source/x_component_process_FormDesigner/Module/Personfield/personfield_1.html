@@ -70,12 +70,12 @@
                 </td>
             </tr>
         </table>
-		
+
 		<div class="MWFFormulaArea" name="defaultValue" title="默认值脚本 (S)"></div>
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
-		
+
 	</div>
     <div title="选择" class="MWFTab">
         <div style="height: 24px; line-height:24px; font-weight:bold;background-color: #DDD; border-top:1px solid #999; padding: 0px 6px">人员选择配置</div>
@@ -154,7 +154,7 @@
                     <td class="editTableTitle">区段依据:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>处理人<br/>
-                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='department')?'checked':''} type="radio" value="unit"/>处理人所在组织<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='unit')?'checked':''} type="radio" value="unit"/>处理人所在组织<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>活动ID<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>脚本<br/>
                     </td>
