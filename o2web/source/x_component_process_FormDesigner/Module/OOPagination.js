@@ -1,13 +1,13 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
-MWF.xDesktop.requireApp("process.FormDesigner", "Module.Button", null, false);
-MWF.xApplication.process.FormDesigner.Module.OOButton = MWF.FCOOButton = new Class({
-	Extends: MWF.FCButton,
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Element", null, false);
+MWF.xApplication.process.FormDesigner.Module.OOPagination = MWF.FCOOPagination = new Class({
+	Extends: MWF.FC$Element,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"type": "OOButton",
-		"path": "../x_component_process_FormDesigner/Module/OOButton/",
-		"propertyPath": "../x_component_process_FormDesigner/Module/OOButton/OOButton.html"
+		"type": "OOPagination",
+		"path": "../x_component_process_FormDesigner/Module/OOPagination/",
+		"propertyPath": "../x_component_process_FormDesigner/Module/OOPagination/OOPagination.html"
 	},
 	initialize: function(form, options){
 		this.setOptions(options);
@@ -24,8 +24,8 @@ MWF.xApplication.process.FormDesigner.Module.OOButton = MWF.FCOOButton = new Cla
 		this.containerNode = null;
 	},
 	_createMoveNode: function(){
-		this.moveNode = new Element("oo-button", {
-			"MWFType": "OOButton",
+		this.moveNode = new Element("oo-pagination", {
+			"MWFType": "OOPagination",
 			"id": this.json.id,
 			"styles": this.css.moduleNodeMove,
 			"events": {

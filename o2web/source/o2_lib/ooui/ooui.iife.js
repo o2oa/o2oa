@@ -96,9 +96,6 @@ var $6=Object.defineProperty;var N6=(b,x,E)=>x in b?$6(b,x,{enumerable:!0,config
     padding: 0.3125em;\r
     gap: 0;\r
 }\r
-.button.icon .text{\r
-    display: none;\r
-}\r
 \r
 div.prefix{\r
     display: none;\r
@@ -113,6 +110,10 @@ div.text{\r
     display: inline-flex;\r
     align-items: center;\r
     justify-content: center;\r
+}\r
+\r
+.button.icon div.text{\r
+    display: none;\r
 }\r
 \r
 .content>.icon{\r

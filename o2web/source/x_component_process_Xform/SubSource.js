@@ -40,7 +40,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
         this._loadModuleEvents();
         this._queryLoaded();
         this._loadUserInterface();
-        //this._loadStyles();
+        this._loadStyles();
         //this._loadEvents();
         // this._loadDomEvents();
 
@@ -49,8 +49,9 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
     _loadUserInterface: function(){
         this.loopNodes = [];
         this.subSourceItems = [];
-        var node = new Element("div").inject(this.node, "before");
-        this.node.inject(node);
+        // var node = new Element("div.subsource").inject(this.node, "before");
+        var node = this.node.clone(false).inject(this.node, "before");
+        // this.node.inject(node);
         this.loopNode = this.node.dispose();
         this.node = node;
         var id = node.get("id");
