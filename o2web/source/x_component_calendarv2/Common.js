@@ -23,7 +23,7 @@ MWFCalendarv2.EventForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "style": "meeting",
+        "style": "v10",
         "okClass": "mainColor_bg",
         "width": "800",
         "height": "475",
@@ -38,7 +38,8 @@ MWFCalendarv2.EventForm = new Class({
         "startTime" : null,
         "endTime" : null,
         "isWholeday" : false,
-        "defaultCalendarId" : ""
+        "defaultCalendarId" : "",
+        "scrollType": "window"
     },
     open: function (e) {
         if( this.options.isFull ){
@@ -246,7 +247,8 @@ MWFCalendarv2.EventForm = new Class({
         if( this.options.isFull ){
             this.formTableContainer.setStyles({
                 "width" : "auto",
-                "padding-left" : "40px"
+                "padding-left" : "40px",
+                "padding-right" : "40px"
             });
         }else{
             this.formTableContainer.setStyle("width","80%");
@@ -373,18 +375,18 @@ MWFCalendarv2.EventForm = new Class({
                     },
                     remind : { text : this.lp.remind, type : "oo-select", selectText : this.lp.remindIntervalArr,
                         selectValue : ["", "-5_s","-5_m","-10_m","-15_m","-30_m","-1_h","-2_h"] },
-                    isAllDayEvent : { type : "oo-checkbox", selectValue : ["true"], selectText : [ this.lp.allDay ], event : {
+                    isAllDayEvent : { type : "oo-checkgroup", text:"　", selectValue : ["true"], selectText : [ this.lp.allDay ], event : {
                         change : function(item ){
                             var itemStart = item.form.getItem("startTimeInput");
                             var itemEnd = item.form.getItem("endTimeInput");
                             if( item.getValue() === "true" && !itemStart.options.disable && !itemEnd.options.disable ){
-                                itemStart.getElements().setStyle("display","none");
-                                itemEnd.getElements().setStyle("display","none")
+                                itemStart.setStyle("display","none");
+                                itemEnd.setStyle("display","none");
                             }else{
                                 if( itemStart.options.disable )itemStart.enable();
                                 if( itemEnd.options.disable )itemEnd.enable();
-                                itemStart.getElements().setStyle("display","");
-                                itemEnd.getElements().setStyle("display","")
+                                itemStart.setStyle("display","");
+                                itemEnd.setStyle("display","");
                             }
                         }.bind(this)
                     } },
@@ -406,7 +408,7 @@ MWFCalendarv2.EventForm = new Class({
                             }
                         }.bind(this)
                     }},
-                    repeatUntilAvailable : { text : this.lp.repeatUntilAvailable, type : "oo-radio",
+                    repeatUntilAvailable : { text : this.lp.repeatUntilAvailable, type : "oo-radiogroup",
                         selectText : this.lp.repeatUntilAvailableTextArr,
                         selectValue : ["NONE", "AVAILABLE"],
                         defaultValue : "NONE"
@@ -470,19 +472,20 @@ MWFCalendarv2.EventForm = new Class({
         return rule.toString();
     },
     getHtml : function(){
+        var data = this.data || {};
       if( this.options.isFull ){
-          return `<div style='overflow: hidden;'>
-              <div item='baseInforContainer' style='float: left; width : 500px;'>
+          return `<div style='display: flex;gap:2em;'>
+              <div item='baseInforContainer' style='flex: 1;'>
                   <div class='formTable'>
                     <div item='calendarId'></div>
                     <div item='title'></div>
                     <div style="display: flex;">
                       <div item='startDateInput' style='flex:2;'></div>
-                      <div item='startTimeInput' style='flex:1;'></div>
+                      <div item='startTimeInput' style='flex:1;display:${data.isAllDayEvent ? "" : "none" }'></div>
                     </div>
                     <div style="display: flex;">
                       <div item='endDateInput' style='flex:2;'></div>
-                      <div item='endTimeInput' style='flex:1;'></div>
+                      <div item='endTimeInput' style='flex:1;display:${data.isAllDayEvent ? "" : "none" }'></div>
                     </div>
                     <div item='isAllDayEvent'></div>
                     <div item='locationName'></div>
@@ -490,14 +493,11 @@ MWFCalendarv2.EventForm = new Class({
                     <div item='repeat'></div>
                     <div item='repeatWeekArea' class="formLine" style='display:${this.data.repeat === RRule["WEEKLY"] ? "" : "none"};'>
                         <div class="formLabel"></div>
-                        <div class="formValue" item='repeatWeek'></div>
+                        <div class="formValue" item='repeatWeek' style="display: flex;justify-content: space-between;"></div>
                     </div>
                      <div item='repeatUntilArea' class="formLine" style='display:${(!this.data.repeat || this.data.repeat === "") ? "none" : ""};'>
-                         <div class="formLabel"></div>
-                         <div style="display: flex;">
-                              <div item='repeatUntilAvailable'></div>
-                              <div item='repeatUntilDate' style='width:170px;'></div>
-                        </div>
+                          <div item='repeatUntilAvailable' style="flex: 2"></div>
+                          <div item='repeatUntilDate' style="flex: 1"></div>
                      </div>
                       <div class="formLine">
                         <div class="formLabel">${this.lp.color}</div>
@@ -505,9 +505,9 @@ MWFCalendarv2.EventForm = new Class({
                       </div>
                   </div>
               </div>
-              <div style='float: left; width : 500px;' item='commentContainer'>
+              <div style='flex: 1;' item='commentContainer'>
                   <div class="formLine">
-                    <div class="formLabel">${this.lp.content}</div>
+                    <div style="padding:0.5em 0.35em;">${this.lp.content}</div>
                     <div class='formValue' item='color' style='overflow: hidden;'></div>
                   </div>
                   <div item='comment'></div>
@@ -520,11 +520,11 @@ MWFCalendarv2.EventForm = new Class({
               <div item='title'></div>
               <div style="display: flex;">
                  <div item='startDateInput' style='flex:2;'></div>
-                 <div item='startTimeInput' style='flex:1;'></div>
+                 <div item='startTimeInput' style='flex:1;display:${data.isAllDayEvent ? "" : "none" }'></div>
               </div>
               <div style="display: flex;">
                 <div item='endDateInput' style='flex:2;'></div>
-                <div item='endTimeInput' style='flex:1;'></div>
+                <div item='endTimeInput' style='flex:1;display:${data.isAllDayEvent ? "" : "none" }'></div>
               </div>
               <div item='isAllDayEvent'></div>
               <div item='remind'></div>
@@ -627,8 +627,6 @@ MWFCalendarv2.EventForm = new Class({
             "background" : "#f7f7f7",
             "color" : "#666",
             "padding" : "0px 9px",
-            "margin-right" : "9px",
-            "float" : "left",
             "font-size" : "12px",
             "cursor" : "pointer"
         };
@@ -692,12 +690,12 @@ MWFCalendarv2.EventForm = new Class({
     },
     _createBottomContent : function(){
         var editable = this.isEditable( this.data );
-        var html = `<div style='padding-top: 15px;display: flex;'>
+        var html = `<div style='padding-top: 20px;display: flex;justify-content: center;align-items: center;'>
                    <div item='saveAction' style='float:left;display:${( (editable && this.isEdited) || this.isNew) ? "" : "none"}'></div>
                    <div item='editAction' style='float:left;display:${(!editable || (this.isEdited || this.isNew))  ? "none" : ""};'></div>
                    <div item='removeAction' style='float:left;display:${( editable && this.isEdited ) ? "" : "none"};'></div>
                    <div item='cancelAction'></div>
-                   <div item='moreInfor' style='float: right;margin-top:5px;'></div>"+
+                   <div item='moreInfor' style='float: right;margin-left:20px;'></div>
             </div>`;
         this.formBottomNode.set("html", html);
         MWF.xDesktop.requireApp("Template", "MForm", function () {
@@ -713,16 +711,16 @@ MWFCalendarv2.EventForm = new Class({
                     },
                     saveAction : { type : "oo-button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
-                    } },
+                    }},
                     removeAction : { type : "oo-button", className : "inputCancelButton", appearance:'cancel', value : this.lp.cancelEvent , event : {
                         click : function( item, ev ){ this.cancelEvent(ev); }.bind(this)
-                    } },
+                    }},
                     editAction : { type : "oo-button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.editEvent , event : {
                         click : function(){ this.editEvent(); }.bind(this)
-                    } },
+                    }},
                     cancelAction : { type : "oo-button", className : "inputCancelButton", appearance:'cancel', value : this.lp.close , event : {
                         click : function(){ this.close(); }.bind(this)
-                    } }
+                    }}
                 }
             }, this.app);
             form.load();
@@ -1106,10 +1104,10 @@ MWFCalendarv2.CalendarForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "style": "meeting",
+        "style": "v10",
         "okClass": "mainColor_bg",
         "width": "800",
-        "height": "500",
+        "height": "420",
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : false,
@@ -1118,7 +1116,8 @@ MWFCalendarv2.CalendarForm = new Class({
         "maxAction" : true,
         "resizeable" : true,
         "closeAction": true,
-        "resultSeparator" : null
+        "resultSeparator" : null,
+        "scrollType": "window"
     },
     _createTableContent: function () {
         var data = this.data;
@@ -1370,7 +1369,7 @@ MWFCalendarv2.SaveOptionDialog = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "style": "meeting",
+        "style": "v10",
         "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",
@@ -1381,14 +1380,16 @@ MWFCalendarv2.SaveOptionDialog = new Class({
         "draggable": true,
         //"maxAction" : true,
         "closeAction": true,
-        "title" : MWF.xApplication.calendarv2.LP.saveOptionDialogTitle
+        "title" : MWF.xApplication.calendarv2.LP.saveOptionDialogTitle,
+        "scrollType": "window"
     },
     _createTableContent : function(){
 
         this.formTableContainer.setStyles({
             "width" : "auto",
             "padding-top" : "20px",
-            "padding-left" : "40px"
+            "padding-left" : "40px",
+            "padding-right" : "40px"
         });
 
         var lp = MWF.xApplication.calendarv2.LP;
@@ -1432,7 +1433,7 @@ MWFCalendarv2.DeleteOptionDialog = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "style": "meeting",
+        "style": "v10",
         "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",
@@ -1443,13 +1444,15 @@ MWFCalendarv2.DeleteOptionDialog = new Class({
         "draggable": true,
         //"maxAction" : true,
         "closeAction": true,
-        "title" : MWF.xApplication.calendarv2.LP.deleteOptionDialogTitle
+        "title" : MWF.xApplication.calendarv2.LP.deleteOptionDialogTitle,
+        "scrollType": "window"
     },
     _createTableContent : function(){
         this.formTableContainer.setStyles({
             "width" : "auto",
             "padding-top" : "20px",
-            "padding-left" : "40px"
+            "padding-left" : "40px",
+            "padding-right" : "40px"
         });
 
         var lp = MWF.xApplication.calendarv2.LP;

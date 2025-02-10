@@ -10,7 +10,7 @@ MWF.xApplication.meetingv2.BuildingForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "style": "meeting",
+        "style": "v10",
         "width": "800",
         "height": "300",
         "hasTop": true,
@@ -19,7 +19,8 @@ MWF.xApplication.meetingv2.BuildingForm = new Class({
         "hasTopContent" : false,
         "hasBottom": false,
         "draggable": true,
-        "closeAction": true
+        "closeAction": true,
+        "scrollType": "window"
     },
     _createTableContent: function () {
         this.formTopTextNode.set( "text", this.lp.editBuilding );
@@ -191,16 +192,17 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "style": "meeting",
+        "style": "v10",
         "width": "900",
-        "height": "500",
+        "height": "450",
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : false,
         "hasTopContent" : false,
         "hasBottom": false,
         "draggable": true,
-        "closeAction": true
+        "closeAction": true,
+        "scrollType": "window"
     },
     _createTableContent: function () {
         if( this.isNew ){
@@ -219,7 +221,7 @@ MWF.xApplication.meetingv2.RoomForm = new Class({
 
         var boxStyle = (this.isEdited || this.isNew) ? "border:1px solid #ccc; border-radius: 4px;overflow: hidden;padding:8px;" : "";
 
-        var html = `<div styles='formTable'>
+        var html = `<div class='formTable'>
             <div item='name'></div>
             <div item='building'></div>
             <div style="display: flex;">
@@ -463,7 +465,7 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "style": "meeting",
+        "style": "v10",
         "width": 900,
         "height": 780,
         "hasTop": true,
@@ -474,7 +476,8 @@ MWF.xApplication.meetingv2.MeetingForm = new Class({
         "draggable": true,
         "closeAction": true,
         "maxAction" : true,
-        "buttonList": []
+        "buttonList": [],
+        "scrollType": "window"
     },
     open: function (e) {
         this.fireEvent("queryOpen");
@@ -2436,3 +2439,4 @@ MWF.xApplication.meetingv2.SideBar = new Class({
         this.node.destory();
     }
 });
+
