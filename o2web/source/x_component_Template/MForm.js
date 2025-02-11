@@ -21,6 +21,7 @@ var MForm = new Class({
     Implements: [Options, Events],
     options : {
         style : "default",
+        mvcStyle: "",
         isNew : false,
         isEdited : false,
         emptyItemContainer : true,
@@ -60,6 +61,10 @@ var MForm = new Class({
         if( !this.data || this.data == "" ){
             this.isSourceDataEmpty = true;
             this.data = [{}];
+        }
+
+        if(this.options.mvcStyle){
+            this.container.loadCss("../x_component_Template/$MForm/" + this.options.mvcStyle + "/style.css");
         }
 
         this.itemTemplateUrl = this.options.itemTemplateUrl;
@@ -132,6 +137,15 @@ var MForm = new Class({
         }else{
             if( callback )callback();
         }
+    },
+    reload: function (){
+        this.itemTemplate = {};
+        this.items = {};
+        this.itemsByKey = {};
+        this.itemContainers.each(function(node){
+            node.empty();
+        });
+        this.load();
     },
     changeMode: function(keepData){
         debugger;
@@ -300,7 +314,7 @@ var MForm = new Class({
         //if( template.disable )return;
 
         template.objectId = template.name;
-        var item = new MDomItem(container, template, this, this.app, this.css ); 
+        var item = new MDomItem(container, template, this, this.app, this.css );
         if( this.options.verifyType == "batchSingle" ){
             item.options.warningType = "single";
         }else{
@@ -346,6 +360,9 @@ var MForm = new Class({
         var key_value = {};
         for (var it in this.items ) {
             var item = this.items[it];
+            if(['oo-button', 'button', 'a'].contains((item.options.type || 'text').toLowerCase())){
+                continue;
+            }
             var value = onlyModified ? item.getModifiedValue() : item.getValue();
             if( value != null ){
                 if (typeOf(value) === "array") {
@@ -372,6 +389,9 @@ var MForm = new Class({
         } else {
             return false;
         }
+    },
+    get: function (name){
+        return this.getItem(name);
     },
     getItem : function( name ){
         return this.items[name] || this.itemsByKey[name];

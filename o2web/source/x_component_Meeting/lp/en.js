@@ -190,6 +190,7 @@ MWF.xApplication.Meeting.LP={
 	"delete_building_hasRoom": "There are still meeting rooms under '{name}' and cannot be deleted.",
 	"delete_building": "Are you sure you want to delete '{name}'",
 	"delete_room": "Are you sure you want to delete the meeting room '{name}'",
+	"add": "add",
 	"roomForm": {
 		"name": "Name",
 		"building": "Location",

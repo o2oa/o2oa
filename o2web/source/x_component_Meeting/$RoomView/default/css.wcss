@@ -106,16 +106,14 @@
         "color": "#666"
     },
     "roomHelpNode" : {
+        "color": "#999",
         "float" : "right",
         "margin-right" : "25px",
         "margin-top" : "10px",
         "width" : "24px",
         "height" : "30px",
-        "line-height" : "30px",
-        "background": "url(../x_component_Meeting/$Main/default/icon/icon_wen.png) no-repeat center center"
-    },
-    "roomHelpNode_over" : {
-        "background": "url(../x_component_Meeting/$Main/default/icon/icon_wen_click.png) no-repeat center center"
+        "font-size": "16px",
+        "line-height" : "30px"
     },
 
     "roomTopArea" : {

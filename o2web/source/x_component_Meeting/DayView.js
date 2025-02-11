@@ -43,26 +43,26 @@ MWF.xApplication.Meeting.DayView = new Class({
             "styles": this.css.contentNode
         }).inject(this.contentContainerNode);
 
-        this.leftNode = new Element("div",{
+        this.leftNode = new Element("div.ooicon-arrow_back",{
             "styles" : this.css.leftNode
         }).inject(this.node);
         this.leftNode.addEvents( {
             "click" : function(){ this.decrementDay() }.bind(this),
-            "mouseover" : function(){ this.leftNode.setStyles( this.css.leftNode_over ) }.bind(this),
-            "mouseout" : function(){ this.leftNode.setStyles( this.css.leftNode ) }.bind(this)
+            "mouseover" : function(){ this.leftNode.addClass( 'mainColor_color' ) }.bind(this),
+            "mouseout" : function(){ this.leftNode.removeClass( 'mainColor_color' ) }.bind(this)
         });
 
         this.dayContainerNode = new Element("div", {
             "styles": this.css.dayContainerNode
         }).inject(this.node);
 
-        this.rightNode = new Element("div",{
+        this.rightNode = new Element("div.ooicon-arrow_forward",{
             "styles" : this.css.rightNode
         }).inject(this.node);
         this.rightNode.addEvents( {
             "click" : function(){ this.incrementDay() }.bind(this),
-            "mouseover" : function(){ this.rightNode.setStyles( this.css.rightNode_over ) }.bind(this),
-            "mouseout" : function(){ this.rightNode.setStyles( this.css.rightNode ) }.bind(this)
+            "mouseover" : function(){ this.rightNode.addClass( 'mainColor_color' ) }.bind(this),
+            "mouseout" : function(){ this.rightNode.removeClass( 'mainColor_color' ) }.bind(this)
         });
 
         //this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
@@ -289,7 +289,7 @@ MWF.xApplication.Meeting.DayView.Day = new Class({
         if( this.today.diff(this.date) >= 0  ){
             var className;
             className = !this.isToday ? "dayCreateIconNode" : "dayCreateIconNode_today";
-            this.dayCreateIconNode = new Element("div.dayCreateIconNode", {
+            this.dayCreateIconNode = new Element("div.ooicon-add-circle", {
                 "styles": this.css[ className ],
                 "events" : {
                     "click" : function(){
