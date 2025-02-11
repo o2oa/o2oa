@@ -32,7 +32,7 @@ MWF.xApplication.Calendar.Main = new Class({
     loadApplication: function(callback) {
         this.canlendarData = null;
 
-        this.content.loadCss("../x_component_Calendar/$Main/default/style.css");
+        // this.content.loadCss("../x_component_Calendar/$Main/default/style.css");
 
         MWF.UD.getDataJson("calendarConfig", function(json){
             this.calendarConfig = json || {};
@@ -204,7 +204,7 @@ MWF.xApplication.Calendar.Main = new Class({
             }
         }).inject( this.titleContentNode );
 
-        this.newCalendarIcon = new Element("i.o2icon-newfiles", {
+        this.newCalendarIcon = new Element("i.ooicon-add-circle", {
             styles : this.css.newCalendarIcon
         }).inject(this.newCalendarNode, "top");
 
@@ -239,13 +239,13 @@ MWF.xApplication.Calendar.Main = new Class({
     loadTopMenus_right: function(){
         this.topMenuRight = new Element("div", {"styles": this.css.topMenuRight }).inject(this.topMenu);
 
-        this.createTopMenu_right(this.lp.addEvent, "o2icon-create", "addCalendarEvent");
+        this.createTopMenu_right(this.lp.addEvent, "ooicon-add-circle", "addCalendarEvent");
         //this.createTopMenu_right("新建日历", "icon_newapply", "addCalendar");
 
         //var refreshNode = this.createTopMenu_right(this.lp.refresh, "refresh", "refresh");
         //refreshNode.setStyle("float", "right");
 
-        var configNode = this.createTopMenu_right(this.lp.setting, "o2icon-config", "config");
+        var configNode = this.createTopMenu_right(this.lp.setting, "ooicon-config", "config");
         configNode.setStyle("float", "right");
     },
     createTopMenu_right : function(text, icon, action){
@@ -281,10 +281,10 @@ MWF.xApplication.Calendar.Main = new Class({
     loadTopMenus: function(){
         this.topMenuNodeMap = {};
         //this.createTopMenu(this.lp.myCalendar, "icon_huiyi", "toMyCalendar");
-        this.createTopMenu(this.lp.month, "o2icon-month", "toMonth");
-        this.createTopMenu(this.lp.week, "o2icon-week", "toWeek");
-        this.createTopMenu(this.lp.day, "o2icon-day", "toDay");
-        this.createTopMenu(this.lp.list, "o2icon-list", "toList");
+        this.createTopMenu(this.lp.month, "ooicon-calendar", "toMonth");
+        this.createTopMenu(this.lp.week, "ooicon-weekly", "toWeek");
+        this.createTopMenu(this.lp.day, "ooicon-clock", "toDay");
+        this.createTopMenu(this.lp.list, "ooicon-list-alt", "toList");
 
         this.loadTopMenus_middle();
         this.loadTopMenus_right();
@@ -778,7 +778,7 @@ MWF.xApplication.Calendar.Navi = new Class({
             }
         }).inject( this.node );
 
-        this.seeMoreIcon = new Element("i.o2icon-calendar-add", {
+        this.seeMoreIcon = new Element("i.ooicon-onlyoffice", {
             styles : this.css.seeMoreIcon
         }).inject(this.seeMore, "top");
     },
@@ -823,7 +823,7 @@ MWF.xApplication.Calendar.Navi = new Class({
         return ids;
     },
     loadMyCalendar : function(){
-        var listNode = this.createCategoryNode(this.lp.myCalendar);
+        var listNode = this.createCategoryNode(this.lp.myCalendar, 'ooicon-person');
 
         this.myCalendars.each( function( d ){
             this.myCalendarNaviItem.push( new MWF.xApplication.Calendar.NaviItem( this, listNode, d, {
@@ -832,7 +832,7 @@ MWF.xApplication.Calendar.Navi = new Class({
         }.bind(this))
     },
     loadUnitCalendar : function(){
-        var listNode = this.createCategoryNode(this.lp.unitCalendar);
+        var listNode = this.createCategoryNode(this.lp.unitCalendar, 'ooicon-department');
 
         this.unitCalendars.each( function( d ){
             this.unitCalendarNaviItem.push( new MWF.xApplication.Calendar.NaviItem( this, listNode, d, {
@@ -841,7 +841,7 @@ MWF.xApplication.Calendar.Navi = new Class({
         }.bind(this))
     },
     loadFollowCalendar : function(){
-        var listNode = this.createCategoryNode(this.lp.myFollowCalendar);
+        var listNode = this.createCategoryNode(this.lp.myFollowCalendar, 'ooicon-process-add-task-person');
 
         this.followCalendars.each( function( d ){
             this.followCalendarNaviItem.push( new MWF.xApplication.Calendar.NaviItem( this, listNode, d, {
@@ -863,14 +863,21 @@ MWF.xApplication.Calendar.Navi = new Class({
         //    }
         //}).inject( this.naviNode );
     },
-    createCategoryNode : function( text ){
+    createCategoryNode : function( text, icon ){
         var _self = this;
 
-        var categoryNaviNode = new Element("div.categoryNaviNode", {
+        var categoryNaviNode = new Element(`div.categoryNaviNode`, {
             "styles": this.css.categoryNaviNode
         }).inject(this.naviNode);
 
-        var expendNode = new Element("div.categoryExpendNode", {
+        var iconNode = new Element(`div.${icon}`).inject(categoryNaviNode);
+
+        var textNode = new Element("div.categoryNaviTextNode",{
+            "styles": this.css.categoryNaviTextNode,
+            "text": text //this.defaultRevealData.id == "defaultList" ? this.data.name : this.defaultRevealData.showName
+        }).inject( categoryNaviNode);
+
+        var expendNode = new Element("div.ooicon-drop_down", {
             styles : this.css.categoryExpendNode
         }).inject(categoryNaviNode);
 
@@ -878,19 +885,14 @@ MWF.xApplication.Calendar.Navi = new Class({
             var target = this.categoryNaviNode;
             if( target.retrieve("isExpended") ){
                 target.store("isExpended" , false);
-                target.retrieve("expendNode").setStyles( _self.css.categoryCollapseNode );
-                target.retrieve("listNode").setStyle("display","none")
+                target.retrieve("expendNode").removeClass('ooicon-drop_down').addClass('ooicon-arrow_forward');
+                target.retrieve("listNode").setStyle("display","none");
             }else{
                 target.store("isExpended" , true);
-                target.retrieve("expendNode").setStyles( _self.css.categoryExpendNode );
-                target.retrieve("listNode").setStyle("display","")
+                target.retrieve("expendNode").addClass('ooicon-drop_down').removeClass('ooicon-arrow_forward');
+                target.retrieve("listNode").setStyle("display","");
             }
         }.bind( { categoryNaviNode : categoryNaviNode } ));
-
-        var textNode = new Element("div.categoryNaviTextNode",{
-            "styles": this.css.categoryNaviTextNode,
-            "text": text //this.defaultRevealData.id == "defaultList" ? this.data.name : this.defaultRevealData.showName
-        }).inject( categoryNaviNode);
 
         var listNode = new Element("div.viewNaviListNode",{
             "styles" : this.css.viewNaviListNode
@@ -1224,7 +1226,7 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
                     }).inject( middleNode );
 
                     var followedAction, followAction;
-                    var followedAction = new Element("div",{
+                    var followedAction = new Element("div.ooicon-checkmark mainColor_color",{
                         styles : this.css.marketItemFollowedAction,
                         text : lp.followed,
                         title : lp.clickToCancelFollow,
@@ -1241,7 +1243,7 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
                     }).inject(node);
                     if( !d.followed )followedAction.setStyle("display","none");
 
-                    var followAction = new Element("div",{
+                    var followAction = new Element("div.ooicon-create mainColor_color",{
                         styles : this.css.marketItemFollowAction,
                         text : lp.follow ,
                         events : {

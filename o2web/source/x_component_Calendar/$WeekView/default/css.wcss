@@ -18,7 +18,7 @@
     "scrollNode_inContainer" : {
         "overflow-x": "hidden",
         "overflow-y": "hidden",
-        "background-color" : "#f0f0f0"
+        "background-color" : "#f3f3f3"
     },
     "contentWarpNode" : {
         //"width": "1170px",
@@ -109,7 +109,7 @@
         "height": "40px"
     },
     "calendarTableTh_hour": {
-        "background-color" : "#f0f0f0",
+        "background-color" : "#f3f3f3",
         "color": "#333",
         "font-size": "18px",
         "font-weight" : "normal",
@@ -119,13 +119,13 @@
         "overflow" : "hidden"
     },
     "calendarTableTh": {
-        "background-color" : "#f0f0f0",
+        "background-color" : "#f3f3f3",
         "color": "#333",
         "font-size": "18px",
         "font-weight" : "normal",
         //"min-width": "120px",
         "border-bottom": "1px solid #CCC",
-        "border-left": "1px solid #f0f0f0",
+        "border-left": "1px solid #f3f3f3",
         "text-align" : "center",
         "overflow" : "hidden"
     },

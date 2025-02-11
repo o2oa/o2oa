@@ -202,7 +202,7 @@
     },
     "calendarTableTh": {
         "width": "14.28%",
-        "background-color" : "#f0f0f0",
+        "background-color" : "#f3f3f3",
         "color": "#333",
         "font-size": "18px",
         "font-weight" : "normal",
@@ -211,13 +211,13 @@
         "text-align" : "center"
     },
     "calendarTableTh_pre": {
-        "background-color" : "#f0f0f0",
+        "background-color" : "#f3f3f3",
         "color": "#666",
         "font-size": "18px",
         "font-weight" : "normal",
         //"min-width": "120px",
         "border-bottom": "1px solid #CCC",
-        "border-left": "1px solid #f0f0f0",
+        "border-left": "1px solid #f3f3f3",
         "text-align" : "center",
         "overflow" : "hidden"
     },

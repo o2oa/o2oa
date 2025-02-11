@@ -9,7 +9,7 @@ MWF.xApplication.Calendar.LP = {
     "year" : "年",
     "month": "月",
     "day": "日",
-    "list": "日程",
+    "list": "列表",
     "today": "今天",
     "tomorrow": "明天",
     "afterTomorrow": "后天",
@@ -20,6 +20,7 @@ MWF.xApplication.Calendar.LP = {
     "enable": "可用",
     "disable": "停用",
     "modifyConfirm": "确定修改",
+    "deleteConfirm": "确定删除",
     "cancel": "取消",
     "close": "关闭",
     "save": "保存",
@@ -63,11 +64,11 @@ MWF.xApplication.Calendar.LP = {
 
     "saveOptionDialogTitle": "修改重复日程",
     "selectModifyCalendarTypeNotice": "请选择您要修改日程的类型",
-    "calendarModifyTypeArr":["只修改当前日程", "修改当前日程和之后的此重复日程","修改所有此重复日程"],
+    "calendarModifyTypeArr":["当前日程", "当前日程和之后的此重复日程","所有此重复日程"],
 
     "deleteOptionDialogTitle": "删除重复日程",
     "selectDeleteCalendarTypeNotice" : "请选择您要删除日程的类型",
-    "calendarDeleteTypeArr":["只修改当前日程", "修改当前日程和之后的此重复日程","修改所有此重复日程"],
+    "calendarDeleteTypeArr":["当前日程", "当前日程和之后的此重复日程","所有此重复日程"],
 
     "countEvents": "项日程",
     "noEventWeek": "一周内无日程",
@@ -85,7 +86,7 @@ MWF.xApplication.Calendar.LP = {
     "addEvent": "新建日程",
     "editEvent" : "编辑日程",
      "readEvent" : "查看日程",
-    "color" : "颜色",
+    "color" : "颜　　色",
     "repeatFrequencyArr" : ["不","每天","每周","每月（当日）","每年（当日）"],
     "repeatFrequencyArr2" : ["不重复","每天","每周","每月（当日）","每年（当日）"],
     "repeatInfor" : "每{frequency}重复",
@@ -102,7 +103,7 @@ MWF.xApplication.Calendar.LP = {
     "eventDescription": "日程描述",
     "eventAttachment": "附件",
     "eventDetail" : "日程详情",
-    "content" : "内容",
+    "content" : "内　　容",
     "none": "无",
 
     "address" : "地点",

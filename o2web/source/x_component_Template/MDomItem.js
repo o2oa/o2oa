@@ -182,7 +182,7 @@ var MDomItem = new Class({
             Object.each(options, (o, key) => {
                 if (key !== "validRule" && key !== "validMessage" && key.substr(0, 2) !== "on" && typeOf(o) === "function") {
                     var value = o.apply(this, [options]);
-                    if (value.then && typeOf(value.then) === 'function') {
+                    if (value && value.then && typeOf(value.then) === 'function') {
                         ps.push(value);
                         keys_ps.push(key);
                     } else {
@@ -265,7 +265,6 @@ var MDomItem = new Class({
         this.fireEvent("postLoad", [this]);
     },
     _loadCss: function (reload) {
-        debugger;
         var key = encodeURIComponent(this.cssPath);
         if (!reload && o2.widget.css[key]) {
             this.css = !this.css ? o2.widget.css[key] : Object.merge({}, o2.widget.css[key], this.css);
@@ -400,7 +399,6 @@ var MDomItem = new Class({
         this.createElement();
     },
     reset: function () {
-        debugger;
         if (typeOf(this.dom.reset) === "function") {
             this.dom.reset();
         } else {
@@ -2883,9 +2881,7 @@ MDomItem.Rtf = new Class({
 
             var imgSrc = MWF.xDesktop.getImageSrc();
             var imgHost = imgSrc.split("/x_file_assemble_control/")[0];
-            debugger;
             this.editor.on("instanceReady", function (e) {
-                debugger;
                 var editable = e.editor.editable && e.editor.editable();
                 if (!editable) return;
                 var imgs = editable.find("img");
@@ -3228,7 +3224,6 @@ MDomItem.Org = new Class({
     bindDefaultEvent: function (item) {
         if (this.options.unsetDefaultEvent) return;
         item.addEvent("click", function (ev) {
-            debugger;
             this.module.fireEvent("querySelect", this.module);
             var options = this.options;
             var opt = {
@@ -3473,6 +3468,7 @@ MDomItem.OOInput = new Class({
         this.valSeparator = module.valSeparator;
     },
     load: function () {
+        if (this.options.disable) return;
         var module = this.module;
         var options = this.options;
         var item;
@@ -3640,6 +3636,7 @@ MDomItem.OODatetime = new Class({
 MDomItem.OOSelector = new Class({
     Extends: MDomItem.Org,
     load: function () {
+        if (this.options.disable) return;
         var item;
         var options = this.options;
 
@@ -3765,6 +3762,7 @@ MDomItem.OOSelector = new Class({
 MDomItem.OORadioGroup = new Class({
     Extends: MDomItem.OOInput,
     load: function () {
+        if (this.options.disable) return;
         var module = this.module;
         var options = this.options;
         var item;
@@ -3827,6 +3825,7 @@ MDomItem.OORadioGroup = new Class({
         item.setStyles(options.style || {});
 
         if (parent) item.inject(parent);
+        console.log('load:' + this.options.name);
         this.items.push(item);
         this.bindDefaultEvent(item);
         MDomItem.Util.bindEvent(this, item, options.event);
@@ -3907,7 +3906,6 @@ MDomItem.OOCheckGroup = new Class({
     }
 });
 
-
 MDomItem.OOSelect = new Class({
     Extends: MDomItem.OOInput,
     createInput: function () {
@@ -3942,7 +3940,6 @@ MDomItem.OOSelect = new Class({
         });
     },
     renderOption2: function (input) {
-        debugger;
         var selectValue = this.options.selectValue || this.options.selectText;
         var selectText = this.options.selectText || this.options.selectValue;
         var selectValues = typeOf(selectValue) === "array" ? selectValue : selectValue.split(this.valSeparator);

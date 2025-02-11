@@ -16,7 +16,6 @@
     "overflow" : "hidden"
   },
   "contentContainerNode" : {
-    //"background-color": "#FFF",
     "height" : "100%",
     "overflow": "hidden"
   },
@@ -25,18 +24,6 @@
     "-moz-user-select": "none"
   },
 
-//  "node": {
-//    "margin": "10px 0px",
-//    "overflow": "hidden",
-//    "background-color": "#EEE",
-//    "position": "absolute",
-//    "width": "100%",
-//    "top": "0px",
-//    "left": "200px",
-//    "display": "block",
-//    "opacity": "0",
-//    "overflow" : "hidden"
-//  },
 
   "dayContainerNode" : {
     "float" : "left",
@@ -47,24 +34,23 @@
     "float" : "left",
     "width" : "50px",
     "height" : "50px",
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/left_gray.png) no-repeat center center"
+    "font-size": "32px",
+    "color": "#999"
   },
   "leftNode_over" : {
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/left.png) no-repeat center center"
   },
   "rightNode" : {
     "cursor" : "pointer",
     "float" : "left",
     "width" : "50px",
     "height" : "50px",
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/right_gray.png) no-repeat center center"
+    "font-size": "32px",
+    "color": "#999"
   },
   "rightNode_over" : {
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/right.png) no-repeat center center"
   },
   "dayNode" : {
     "width" : "300px",
-    //"height" : "800px",
     "margin-top" : "20px",
     "margin-left" : "15px",
     "margin-right" : "15px",
@@ -96,7 +82,7 @@
     "position" : "absolute",
     "top" : "40px",
     "right" : "20px",
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_zengjia.png) no-repeat center center",
+    "color": "#666",
     "width" : "16px",
     "height" : "16px",
     "cursor" : "pointer"
@@ -105,7 +91,6 @@
     "position" : "absolute",
     "top" : "40px",
     "right" : "20px",
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_zengjia_click2.png) no-repeat center center",
     "width" : "16px",
     "height" : "16px",
     "cursor" : "pointer"

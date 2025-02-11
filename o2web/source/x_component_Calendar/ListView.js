@@ -127,12 +127,12 @@ MWF.xApplication.Calendar.ListView = new Class({
         //    this.titleNode.setStyle("display","")
         //}
         //this.titleNode = new Element("div").inject(this.view.titleContainer);
-        this.prevMonthNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
+        this.prevMonthNode =  new Element("div.ooicon-arrow_back", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
 
         var text = this.date.format(this.app.lp.dateFormatMonth);
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextMonthNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
+        this.nextMonthNode =  new Element("div.ooicon-arrow_forward", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
 
         this.prevMonthNode.addEvents({
             "mouseover": function(){
@@ -445,7 +445,7 @@ MWF.xApplication.Calendar.ListView.View.Line = new Class({
             this.openCalendar(e);
         }.bind(this));
     },
-    openCalendar: function(e){ 
+    openCalendar: function(e){
         this.form = new MWF.xApplication.Calendar.EventForm(this,this.data.data, {
             isFull : true
         }, {app:this.app});

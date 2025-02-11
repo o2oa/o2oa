@@ -61,39 +61,24 @@
     "listViewTableTh": {
         "height": "40px",
         "font-size": "14px",
-        "background-color": "#F0F0F0",
-        "text-align": "left",
+        "font-weight": "normal",
+        "color": "#333",
+        "font-weight": "bold",
         "padding": "0px 10px",
-        "font-weight" : "normal",
-        "color": "#333"
+        "border-bottom": "1px solid rgb(204, 204, 204)",
+        "background": "#f7f7f7",
+        "text-align": "left"
     },
     "listViewTableTd": {
-        "height": "50px",
-        "line-height": "50px",
-        "border-bottom": "1px solid #CCC",
-        "background-color": "#FFF",
+        "height": "30px",
+        "line-height": "30px",
+        "border-bottom": "1px solid #dfdfdf",
         "color": "#666",
-        "padding": "0px 10px",
+        "padding": "5px",
         "font-size": "14px",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "text-align": "left"
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     "dayAreaNode": {
         "height": "100%",

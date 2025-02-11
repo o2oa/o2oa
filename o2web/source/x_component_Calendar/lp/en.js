@@ -10,7 +10,7 @@ MWF.xApplication.Calendar.LP={
 	"year": "year",
 	"month": "Month",
 	"day": "Day",
-	"list": "Schedule",
+	"list": "list",
 	"today": "Today",
 	"tomorrow": "Tomorrow",
 	"afterTomorrow": "The Day After Tomorrow",
@@ -21,6 +21,7 @@ MWF.xApplication.Calendar.LP={
 	"enable": "Available",
 	"disable": "Disable",
 	"modifyConfirm": "Confirm to modify",
+	"deleteConfirm": "Confirm to delete",
 	"cancel": "Cancel",
 	"close": "Close",
 	"save": "Save",
@@ -68,16 +69,16 @@ MWF.xApplication.Calendar.LP={
 	"saveOptionDialogTitle": "Modify repeat schedule",
 	"selectModifyCalendarTypeNotice": "Please select the type of schedule you want to modify",
 	"calendarModifyTypeArr": [
-		"Only modify the current schedule",
-		"Modify the current schedule and this repeating schedule afterwards",
-		"Modify all this repeating schedule"
+		"The current schedule",
+		"The current schedule and this repeating schedule afterwards",
+		"All this repeating schedule"
 	],
 	"deleteOptionDialogTitle": "Delete duplicate schedule",
 	"selectDeleteCalendarTypeNotice": "Please select the type of calendar you want to delete",
 	"calendarDeleteTypeArr": [
-		"Only modify the current schedule",
-		"Modify the current schedule and this repeating schedule afterwards",
-		"Modify all this repeating schedule"
+		"The current schedule",
+		"The current schedule and this repeating schedule afterwards",
+		"All this repeating schedule"
 	],
 	"countEvents": "Item Schedule",
 	"noEventWeek": "No event within a week",

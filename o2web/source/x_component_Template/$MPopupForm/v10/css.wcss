@@ -10,21 +10,23 @@
   },
   "formAreaNode": {
     "position": "absolute",
+    "border-radius": "4px",
     "opacity": 0,
     "top": "0px"
   },
   "formNode": {
     "background-color": "#fff",
+    "border-radius": "4px",
     "box-shadow": "0px 0px 10px #999",
     "margin": "auto",
-    "border-radius" : "8px",
+    "border-radius" : "4px",
     "-webkit-user-select": "text",
     "-moz-user-select": "text"
   },
   "formTopNode": {
     "color" : "#333",
     "height" : "50px",
-    "background-color": "#fafafa",
+    //"background-color": "#fafafa",
     "line-height": "40px",
     "font-size": "14px",
     "padding-left" : "5px",
@@ -131,8 +133,8 @@
     "positon" : "static"
   },
   "formBottomNode" : {
-    "height" : "90px",
-    "background-color" : "#fff"
+    "height" : "90px"
+    //"background-color" : "#fff"
   },
   "acceptIconNode": {
     "height": "20px",
