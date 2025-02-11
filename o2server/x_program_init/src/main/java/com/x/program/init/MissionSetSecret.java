@@ -24,6 +24,9 @@ public class MissionSetSecret implements Mission {
 	private String secret;
 
 	public String getSecret() {
+		if (StringUtils.isBlank(secret)) {
+			throw new IllegalArgumentException("密码为空");
+		}
 		return secret;
 	}
 
