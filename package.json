@@ -67,6 +67,7 @@
                 "@o2oa/language-tools": "^1.0.27",
                 "@o2oa/tidy-jsdoc-o2": "^0.0.26",
                 "dateformat": "^3.0.3",
+                "del": "^8.0.0",
                 "docdash": "^1.2.0",
                 "fast-glob": "^3.2.2",
                 "gulp": "^4.0.2",
@@ -93,6 +94,7 @@
                 "request": "^2.88.2",
                 "shelljs": "^0.8.4",
                 "single-line-log": "^1.1.2",
-                "targz": "^1.0.1"
+                "targz": "^1.0.1",
+                "through2": "^4.0.2"
         }
 }
