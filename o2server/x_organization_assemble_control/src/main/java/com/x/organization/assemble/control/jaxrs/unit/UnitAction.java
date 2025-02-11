@@ -553,4 +553,20 @@ public class UnitAction extends StandardJaxrsAction {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
+
+    @JaxrsMethodDescribe(value = "获取根组织.", action = ActionGetRoot.class)
+    @GET
+    @Path("get/root")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    public void getRoot(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<ActionGetRoot.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGetRoot().execute(effectivePerson);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 }

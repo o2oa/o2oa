@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.openjpa.jdbc.identifier.DBIdentifier;
 import org.apache.openjpa.jdbc.identifier.DBIdentifier.DBIdentifierType;
 import org.apache.openjpa.jdbc.kernel.JDBCFetchConfiguration;
@@ -53,7 +52,7 @@ public class GBaseMySQLDictionary extends DBDictionary {
 	 * Whether to inline multi-table bulk-delete operations into MySQL's combined
 	 * <code>DELETE FROM foo, bar, baz</code> syntax. Defaults to false, since this
 	 * may fail in the presence of InnoDB tables with foreign keys.
-	 * 
+	 *
 	 * @link http://dev.mysql.com/doc/refman/5.0/en/delete.html
 	 */
 	public boolean optimizeMultiTableDeletes = false;
@@ -456,8 +455,8 @@ public class GBaseMySQLDictionary extends DBDictionary {
 	/**
 	 * OPENJPA-740 Special case for MySql special column types, like LONGTEXT,
 	 * LONGBLOG etc..
-	 * 
-	 * @see org.apache.openjpa.jdbc.sql.DBDictionary#getTypeName(org.apache.openjpa.jdbc.schema.Column)
+	 *
+	 * @see DBDictionary#getTypeName(Column)
 	 */
 	@Override
 	public String getTypeName(Column col) {
