@@ -8,11 +8,12 @@ export default component({
     autoUpdate: true,
     components: {indexHeader, indexMain, indexFooter},
 
-    bind(){
+    // 初始化数据
+    bind() {
         return {
             secret: {
                 passStr: '',
-                confirmPass: ''
+                confirmPass: '',
             },
             database: {
                 type: 'h2',
@@ -21,9 +22,8 @@ export default component({
                 password: '',
             },
             restore: {
-                name: ''
-            }
-        }
-
-    }
+                name: '',
+            },
+        };
+    },
 });

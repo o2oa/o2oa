@@ -184,3 +184,4 @@ o2server/test.sh
 **/dist/
 *_bak.*
 *.bak
+pnpm-lock.yaml
