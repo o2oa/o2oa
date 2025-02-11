@@ -1431,7 +1431,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return obj;
     },
     getSectionDataByUnit: function (v, obj) {
-        var key = (this.businessData.task) ? this.businessData.task.unit : "";
+        var key = (this.businessData.task) ? (this.businessData.task.unitDn || this.businessData.task.unit) : "";
         if (!obj || (typeOf(obj) !== "object")) obj = {};
         if (key) obj[key] = v;
         return obj;
@@ -1481,7 +1481,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return obj;
     },
     setSectionByUnit: function (obj, name) {
-        var key = (this.businessData.task) ? this.businessData.task.unit : "";
+        var key = (this.businessData.task) ? (this.businessData.task.unitDn || this.businessData.task.unit) : "";
         if (!obj || (typeOf(obj) !== "object")) obj = {};
         this.sectionListObj[name] = key || "";
         //if (key) obj[key] = v;

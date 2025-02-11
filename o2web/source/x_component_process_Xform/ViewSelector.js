@@ -71,6 +71,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
         }.bind(this));
 	},
     doResult: function(data){
+        debugger;
         if (this.json.result === "script"){
             this.selectedData = data;
             return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";
@@ -373,28 +374,28 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             height = size.y;
             options.style = "viewmobile";
         }
-        width = width.toInt();
-        height = height.toInt();
+        //width = width.toInt();
+        //height = height.toInt();
 
-        var size = this.form.app.content.getSize();
-        var x = (size.x-width)/2;
-        var y = (size.y-height)/2;
-        if (x<0) x = 0;
-        if (y<0) y = 0;
-        if (layout.mobile){
-            x = 20;
-            y = 0;
-        }
+        //var size = this.form.app.content.getSize();
+        //var x = (size.x-width)/2;
+        //var y = (size.y-height)/2;
+        //if (x<0) x = 0;
+        //if (y<0) y = 0;
+        //if (layout.mobile){
+        //    x = 20;
+        //    y = 0;
+        //}
 
         var _self = this;
         MWF.require("MWF.xDesktop.Dialog", function(){
-            var dlg = new MWF.xDesktop.Dialog({
+            var dlg = o2.DL.open({
                 "title": this.json.title || "select view",
                 "style": options.style || "view",
-                "top": y,
-                "left": x-20,
-                "fromTop":y,
-                "fromLeft": x-20,
+                //"top": y,
+                //"left": x-20,
+                //"fromTop":y,
+                //"fromLeft": x-20,
                 "width": width,
                 "height": height,
                 "html": "",
@@ -420,9 +421,6 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                         dlg.node.setStyle("z-index",200);
                     }
                     MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                        // this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
-                        //     "style": "select"
-                        // }, this.form.app, this.form.Macro );
                         this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
                             "style": "select",
                             "onLoadLayout": function () {
@@ -449,7 +447,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                     }.bind(this));
                 }.bind(this)
             });
-            dlg.show();
+            //dlg.show();
 
             if (layout.mobile){
                 var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
@@ -463,18 +461,11 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                     dlg.close();
                 }.bind(this));
             }
-
-            // MWF.xDesktop.requireApp("process.Xform", "widget.View", function(){
-            //     this.view = new MWF.xApplication.process.Xform.widget.View(dlg.content.getFirst(), viewJson, {"style": "select"});
-            // }.bind(this));
-            // MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-            //     this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"});
-            // }.bind(this));
         }.bind(this));
     },
     selectView: function(callback){
         if(!!this.json.viewType){
-            this.selectQueryView();
+            this.selectQueryView(callback);
         }else if (this.json.queryView){
             this.selectQueryView(callback);
         }else{

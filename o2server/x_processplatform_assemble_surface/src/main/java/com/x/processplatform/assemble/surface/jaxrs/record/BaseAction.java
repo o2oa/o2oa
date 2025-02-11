@@ -15,7 +15,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		o.setFromActivityToken(task.getActivityToken());
 		o.setFromActivityType(task.getActivityType());
 		o.setPerson(task.getPerson());
-		o.setIdentity(o.getIdentity());
+		o.setIdentity(task.getIdentity());
 		o.setUnit(task.getUnit());
 		o.getProperties().setStartTime(task.getStartTime());
 		o.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
