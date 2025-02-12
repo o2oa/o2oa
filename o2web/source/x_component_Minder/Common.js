@@ -175,7 +175,7 @@ MWF.xApplication.Minder.Tree.Node = new Class({
             })
         }
 
-        this.itemIconNode = new Element("div.treeItemIconNode", {
+        this.itemIconNode = new Element("div.ooicon-files", {
             "styles": this.css.treeItemIconNode
         }).inject(this.itemNode);
 
@@ -288,18 +288,18 @@ MWF.xApplication.Minder.Tree.Node = new Class({
     },
     expand: function(){
         if( this.options.isCurrent ){
-            this.itemExpendNode.setStyles( this.css.treeItemExpendNode_selected );
+            this.itemExpendNode.addClass('ooicon-drop_down').removeClass('ooicon-arrow_forward').setStyles( this.css.treeItemExpendNode_selected );
         }else{
-            this.itemExpendNode.setStyles( this.css.treeItemExpendNode );
+            this.itemExpendNode.addClass('ooicon-drop_down').removeClass('ooicon-arrow_forward').setStyles( this.css.treeItemExpendNode );
         }
         if( this.treeContentNode )this.treeContentNode.setStyle("display","");
         this.options.isExpanded = true;
     },
     collapse: function(){
         if( this.options.isCurrent ){
-            this.itemExpendNode.setStyles( this.css.treeItemCollapseNode_selected );
+            this.itemExpendNode.removeClass('ooicon-drop_down').addClass('ooicon-arrow_forward').setStyles( this.css.treeItemCollapseNode_selected );
         }else{
-            this.itemExpendNode.setStyles( this.css.treeItemCollapseNode );
+            this.itemExpendNode.removeClass('ooicon-drop_down').addClass('ooicon-arrow_forward').setStyles( this.css.treeItemCollapseNode );
         }
         if( this.treeContentNode )this.treeContentNode.setStyle("display","none");
         this.options.isExpanded = false;
@@ -515,7 +515,7 @@ MWF.xApplication.Minder.FolderForm = new Class({
         "hasTop": true,
         "hasIcon": false,
         "draggable": true,
-        "title" : "新建目录"
+        "title" : "新建文件夹"
     },
     _createTableContent: function () {
 
@@ -665,25 +665,25 @@ MWF.xApplication.Minder.Toolbar = new Class({
         this.lp = explorer.app.lp;
         //this.css = explorer.app.css;
 
-        this.iconPath = "../x_component_Minder/$Common/"+this.options.style+"/icon_tool/";
         this.cssPath = "../x_component_Minder/$Common/"+this.options.style+"/css.wcss";
 
         this.setOptions(options);
+        var lp = this.lp.tool;
         this.tools = {
             createMinder : {
                 action : "createMinder",
-                text : "新建脑图",
-                icon : "createminder"
+                text : lp.createMinder,
+                icon : "ooicon-add-circle"
             },
             createFolder : {
                 action : "createFolder",
-                text : "新建目录",
-                icon : "createfolder"
+                text : lp.createFolder,
+                icon : "ooicon-file"
             },
             rename : {
                 action : "rename",
-                text : "重命名",
-                icon : "rename"
+                text : lp.rename,
+                icon : "ooicon-edit"
             },
             //import : {
             //    action : "import",
@@ -697,28 +697,28 @@ MWF.xApplication.Minder.Toolbar = new Class({
             //},
             recycle : {
                 action : "recycle",
-                text : "删除",
-                icon : "recycle"
+                text : lp.recycle,
+                icon : "ooicon-delete"
             },
             destroyFromRecycle : {
                 action : "destroyFromRecycle",
-                text : "彻底删除",
-                icon : "delete"
+                text : lp.destroyFromRecycle,
+                icon : "ooicon-delete"
             },
             delete : {
                 action : "delete",
-                text : "彻底删除",
-                icon : "delete"
+                text : lp.delete,
+                icon : "ooicon-delete"
             },
             share : {
                 action : "share",
-                text : "分享",
-                icon : "share"
+                text : lp.share,
+                icon : "ooicon-share"
             },
             restore : {
                 action : "restore",
-                text : "恢复",
-                icon : "restore"
+                text : lp.restore,
+                icon : "ooicon-retract"
             }
         }
     },
@@ -748,22 +748,25 @@ MWF.xApplication.Minder.Toolbar = new Class({
                 var tool = this.tools[ t ];
                 var toolNode = new Element( "div", {
                     styles : this.css[className],
-                    text : tool.text,
                     events : {
                         click : function( ev ){ this[tool.action]( ev ) }.bind(this),
                         mouseover : function( ev ){
-                            ev.target.setStyles( this.css.toolItemNode_over );
-                            ev.target.setStyle("background-image","url("+this.iconPath+ tool.icon +"_active.png)")
+                            toolNode.setStyles( this.css.toolItemNode_over ).addClass('mainColor_color').addClass('mainColor_bg_opacity');
+                            //ev.target.setStyle("background-image","url("+this.iconPath+ tool.icon +"_active.png)")
                         }.bind(this),
                         mouseout : function( ev ){
-                            ev.target.setStyles( this.css.toolItemNode_normal );
-                            ev.target.setStyle("background-image","url("+this.iconPath+ tool.icon +".png)")
+                            toolNode.setStyles( this.css.toolItemNode_normal ).removeClass('mainColor_color').removeClass('mainColor_bg_opacity');
+                            //ev.target.setStyle("background-image","url("+this.iconPath+ tool.icon +".png)")
                         }.bind(this)
                     }
                 }).inject( toolgroupNode );
-                toolNode.setStyle("background-image", "url("+this.iconPath+ tool.icon +".png)")
-
-            }.bind(this))
+                // toolNode.setStyle("background-image", "url("+this.iconPath+ tool.icon +".png)")
+                var iconNode = new Element(`div.${tool.icon}`).inject( toolNode );
+                var textNode = new Element("div", {
+                    styles: this.css.toolItemTextNode,
+                    text : tool.text
+                }).inject( toolNode );
+            }.bind(this));
         }.bind(this));
 
         this.loadRightNode()
@@ -913,12 +916,12 @@ MWF.xApplication.Minder.Toolbar = new Class({
             "styles": this.css.searchBarInputNode
         }).inject(this.searchBarInputBoxNode);
 
-        this.searchBarResetActionNode = new Element("div", {
+        this.searchBarResetActionNode = new Element("div.ooicon-close", {
             "styles": this.css.searchBarResetActionNode
         }).inject(this.searchBarInputBoxNode);
         this.searchBarResetActionNode.setStyle("display","none");
 
-        this.searchBarActionNode = new Element("div", {
+        this.searchBarActionNode = new Element("div.ooicon-search", {
             "styles": this.css.searchBarActionNode
         }).inject(this.searchBarNode);
 
@@ -943,29 +946,31 @@ MWF.xApplication.Minder.Toolbar = new Class({
         return this.viewType || this.options.viewType
     },
     loadListType : function(){
-        this.listViewTypeNode = new Element("div", {
-            "styles": this.css[ this.options.viewType == "list" ?  "listViewTypeNode_active" : "listViewTypeNode"],
+        this.listViewTypeNode = new Element("div.ooicon-jiadian", {
+            styles: this.css.listViewTypeNode,
             events : {
                 click : function(){
                     this.viewType = "list";
-                    this.listViewTypeNode.setStyles( this.css.listViewTypeNode_active );
-                    this.tileViewTypeNode.setStyles( this.css.tileViewTypeNode );
+                    this.listViewTypeNode.addClass('mainColor_color');
+                    this.tileViewTypeNode.removeClass('mainColor_color');
                     this.explorer.loadList( this.explorer.currentView.filterData );
                 }.bind(this)
             }
         }).inject(this.toolabrRightNode);
 
-        this.tileViewTypeNode = new Element("div", {
-            "styles": this.css[ this.options.viewType != "list" ?  "tileViewTypeNode_active" : "tileViewTypeNode"],
+        this.tileViewTypeNode = new Element("div.ooicon-app-center", {
+            styles: this.css.tileViewTypeNode,
             events : {
                 click : function(){
                     this.viewType = "tile";
-                    this.listViewTypeNode.setStyles( this.css.listViewTypeNode );
-                    this.tileViewTypeNode.setStyles( this.css.tileViewTypeNode_active );
+                    this.listViewTypeNode.removeClass('mainColor_color');
+                    this.tileViewTypeNode.addClass('mainColor_color');
                     this.explorer.loadList( this.explorer.currentView.filterData );
                 }.bind(this)
             }
         }).inject(this.toolabrRightNode);
+
+        this.options.viewType === "list" ? this.listViewTypeNode.addClass('mainColor_color') : this.tileViewTypeNode.addClass('mainColor_color')
     },
     search : function(){
         var value = this.searchBarInputNode.get("value");
@@ -1061,11 +1066,11 @@ MWF.xApplication.Minder.List = new Class({
                 if( this.selectedAll ){
                     this.selectAllCheckbox_custom( false );
                     this.selectedAll = false;
-                    selectAll.setStyles( this.css.tileSelectAllNode );
+                    selectAll.removeClass('ooicon-check_outline').addClass('ooicon-radio-unchecked').removeClass('mainColor_color');
                 }else{
                     this.selectAllCheckbox_custom( true );
                     this.selectedAll = true;
-                    selectAll.setStyles( this.css.tileSelectAllNode_selected );
+                    selectAll.addClass('ooicon-check_outline').removeClass('ooicon-radio-unchecked').addClass('mainColor_color');
                 }
             }.bind(this))
         }
@@ -1155,10 +1160,12 @@ MWF.xApplication.Minder.Document = new Class({
         var select = this.node.getElement("[item=select]");
         if( !flag ){
             this.selected = false;
-            select.setStyles( this.css.tileItemSelectNode )
+            select.setStyles(this.css.tileItemSelectNode);
+            select.removeClass('ooicon-check_outline').addClass('ooicon-radio-unchecked').removeClass('mainColor_color');
         }else{
             this.selected = true;
-            select.setStyles( this.css.tileItemSelectNode_selected )
+            select.setStyles(this.css.tileItemSelectNode_selected);
+            select.addClass('ooicon-check_outline').removeClass('ooicon-radio-unchecked').addClass('mainColor_color');
         }
     },
     open: function (e) {

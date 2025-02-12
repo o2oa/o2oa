@@ -833,7 +833,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.actionForm = new MForm(this.formBottomNode, {}, {
                 isEdited: this.isEdited || this.isNew,
-                style: "meeting",
+                style: "v10",
                 itemTemplate: {
                     saveAction: {
                         type: "oo-button", className: "inputOkButton", clazz: "mainColor_bg", value: this.lp.save, event: {

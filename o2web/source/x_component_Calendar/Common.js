@@ -700,7 +700,7 @@ MWFCalendar.EventForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             var form = new MForm(this.formBottomNode, {}, {
                 isEdited: this.isEdited || this.isNew,
-                style : "meeting",
+                style : "v10",
                 hasColon : true,
                 itemTemplate: {
                     moreInfor : {
@@ -1403,7 +1403,7 @@ MWFCalendar.SaveOptionDialog = new Class({
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, {empName: "xadmin"}, {
-                style : "meeting",
+                style : "v10",
                 isEdited: this.isEdited || this.isNew,
                 itemTemplate: {
                     saveOption: {
@@ -1468,7 +1468,7 @@ MWFCalendar.DeleteOptionDialog = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, {empName: "xadmin"}, {
                 isEdited: this.isEdited || this.isNew,
-                style : "meeting",
+                style : "v10",
                 itemTemplate: {
                     saveOption: {
                         defaultValue : "single",

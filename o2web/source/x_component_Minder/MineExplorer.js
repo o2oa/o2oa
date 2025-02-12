@@ -156,11 +156,11 @@ MWF.xApplication.Minder.MineExplorer.Tree.Node = new Class({
         }
         if( this.options.minWidth ){
             this.itemTextNode.setStyle(  "min-width" , ( this.options.minWidth - this.options.level * 12 - 10 - 80 - 50  ) +"px");
-            this.itemTextNode.setStyle(  "margin-right" , "50px")
+            // this.itemTextNode.setStyle(  "margin-right" , "50px")
         }
         if( this.options.maxWidth ){
             this.itemTextNode.setStyle(  "max-width" , ( this.options.maxWidth - this.options.level * 12 - 10 - 80 - 50 ) +"px");
-            this.itemTextNode.setStyle(  "margin-right" , "50px")
+            // this.itemTextNode.setStyle(  "margin-right" , "50px")
         }
         this.explorer.resizeContent();
     },
@@ -170,9 +170,9 @@ MWF.xApplication.Minder.MineExplorer.Tree.Node = new Class({
             styles : this.explorer.css.toolbar
         }).inject( this.itemNode );
 
-        this.editAction =  new Element("div.editAction",{
+        this.editAction =  new Element("div.ooicon-edit",{
             styles : this.explorer.css.editAction,
-            "title" : "编辑"
+            "title" : MWF.xApplication.Minder.LP.edit
         }).inject(this.toolbar);
         this.editAction.addEvents({
             "click" : function(ev){
@@ -187,9 +187,9 @@ MWF.xApplication.Minder.MineExplorer.Tree.Node = new Class({
         });
 
 
-        this.deleteAction = new Element("div.cancelViewAction", {
+        this.deleteAction = new Element("div.ooicon-delete", {
             "styles": this.explorer.css.deleteAction,
-            "title" : "删除"
+            "title" : MWF.xApplication.Minder.LP.delete
         }).inject(this.toolbar);
         this.deleteAction.addEvent("click", function(e){
             this.delete(e);
