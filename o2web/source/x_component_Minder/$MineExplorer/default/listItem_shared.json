@@ -90,7 +90,7 @@
         "html": "<th styles='listViewTableTh' lable='shareTarget'></th>"
       },
       "content": {
-        "html": "<td styles='listViewTableTd'><div item='sharedIcon' styles='listSharedIcon' style='float:left;margin-top:8px;margin-right:5px;'></div><div item='shareTarget' style='float:left;'></div></td>",
+        "html": "<td styles='listViewTableTd'><div item='sharedIcon' styles='listSharedIcon' class='ooicon-share mainColor_color' style='float:left;margin-top:8px;margin-right:5px;'></div><div item='shareTarget' style='float:left;'></div></td>",
         "items": {
           "shareTarget" : {
             "value" : "function(d, ev){ return (d.sharePersonList || []).combine(d.shareUnitList || []).combine(d.shareGroupList || []).map( function(item){ return item.split('@')[0] } ).join('、'); }",

@@ -203,24 +203,24 @@
     "font-size": "14px"
   },
   "inputOkButton": {
-    "background": "#3C76B7",
-    "border-radius": "4px",
-    "width": "230px",
-    "height": "40px",
+    "background": "#2E82F7",
+    "border-radius": "2px",
+    "width": "170px",
+    "height": "36px",
     "border": "0px",
     "color": "#fff",
     "cursor": "pointer",
-    "font-size": "18px"
+    "font-size": "14px"
   },
   "inputCancelButton": {
     "background": "#f0f0f0",
-    "border-radius": "4px",
-    "width": "110px",
-    "height": "40px",
+    "border-radius": "2px",
+    "width": "120px",
+    "height": "36px",
     "color": "#666",
     "border": "0px",
     "margin-left": "20px",
-    "font-size": "18px",
+    "font-size": "14px",
     "cursor": "pointer"
   },
   "inputA": {

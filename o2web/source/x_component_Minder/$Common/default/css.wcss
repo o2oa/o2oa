@@ -5,91 +5,62 @@
 	"color" : "#666",
 	"font-family": "Microsoft YaHei",
 	"font-size": "14px",
-	"background-color": "#F8F8F8"
+	"background-color": "#fff"
   },
   "treeItemNode": {
 	"overflow" : "hidden",
 	"cursor" : "pointer",
-	"color" : "#333",
+	"color" : "#666",
 	"height" : "40px",
-	"font-weight" : "normal",
-	"line-height" : "40px",
 	"font-family": "Microsoft YaHei",
 	"font-size": "15px",
 	"position" : "relative",
-	"background-color": "#F8F8F8"
+	"display": "flex",
+	"align-items": "center",
+	"background-color": "#fff"
   },
   "treeItemNode_selected" : {
-	"color" : "#fff",
-	"background-color" : "#3C76B7"
+	"color" : "#2e82f7",
+	"background-color" : "#F5F8FC"
   },
   "treeItemNode_over" : {
-	"background-color" : "#f0f0f0",
-	"color" : "#333"
+	"background-color" : "#F5F8FC",
+	"color" : "#666"
   },
   "treeItemIconNode" : {
-	"height" : "40px",
 	"width" : "16px",
-	"float" : "left",
-	"margin-left" : "6px",
-	"background" : "url(../x_component_Minder/$Common/default/icon/folder.png) no-repeat 0px 12px"
-  },
-  "treeItemIconNode_selected" : {
-	"height" : "40px",
-	"width" : "16px",
-	"float" : "left",
-	"margin-left" : "6px",
-	"background" : "url(../x_component_Minder/$Common/default/icon/folder_selected.png) no-repeat 0px 12px"
-  },
-  "treeItemIconNode_over" : {
-	"height" : "40px",
-	"width" : "16px",
-	"float" : "left",
-	"margin-left" : "6px",
-	"background" : "url(../x_component_Minder/$Common/default/icon/folder.png) no-repeat 0px 12px"
-  },
-  "treeItemTextNode" : {
-	"float" : "left",
 	"margin-left" : "6px"
   },
-  "emptyExpendNode" : {
-	"height" : "40px",
+  "treeItemTextNode": {
+	"flex" : "1",
+	"margin-left" : "6px",
+    "white-space": "nowrap",
+     "padding-right": "5px",
+     "overflow": "hidden"
+  },
+  "emptyExpendNode": {
 	"width" : "16px",
 	"float" : "left",
 	"margin-left" : "6px"
   },
-  "treeItemExpendNode" : {
-	"height" : "40px",
+  "treeItemExpendNode": {
 	"width" : "16px",
 	"float" : "left",
-	"margin-left" : "6px",
-	"background": "url(../x_component_Minder/$Common/default/icon/arrow_down.png) no-repeat 0px 12px"
+	"margin-left" : "6px"
   },
   "treeItemExpendNode_selected" : {
-	"height" : "40px",
-	"width" : "16px",
-	"float" : "left",
-	"margin-left" : "6px",
-	"background": "url(../x_component_Minder/$Common/default/icon/arrow_down_selected.png) no-repeat 0px 12px"
+
   },
   "treeItemCollapseNode" : {
-	"height" : "40px",
 	"width" : "16px",
 	"float" : "left",
-	"margin-left" : "6px",
-	"background": "url(../x_component_Minder/$Common/default/icon/arrow_right.png) no-repeat 0px 12px"
+	"margin-left" : "6px"
   },
   "treeItemCollapseNode_selected" : {
-	"height" : "40px",
-	"width" : "16px",
-	"float" : "left",
-	"margin-left" : "6px",
-	"background": "url(../x_component_Minder/$Common/default/icon/arrow_right_selected.png) no-repeat 0px 12px"
+
   },
 
   "toolbarNode" : {
-	//	"margin-left" : "10px",
-	//	"margin-top" : "10px",
 	"overflow" : "hidden",
 	"padding" : "20px 20px 20px 20px",
 	"background-color" : "#fff",
@@ -102,17 +73,19 @@
 	"float" : "left"
   },
   "toolItemNode_single" : {
-	"padding" : "5px 10px 5px 32px",
+	"padding" : "5px 10px 5px 10px",
 	"border" : "1px solid #ccc",
 	"border-radius" : "4px",
 	"color" : "#666",
 	"background-repeat" : "no-repeat",
 	"background-position" : "8px center",
 	"float" : "left",
+	"display": "flex",
+	"align-items": "center",
 	"cursor" : "pointer"
   },
   "toolItemNode_left" : {
-	"padding" : "5px 10px 5px 32px",
+	"padding" : "5px 10px 5px 10px",
 	"border" : "1px solid #ccc",
 	"border-top-left-radius" : "4px",
 	"border-bottom-left-radius" : "4px",
@@ -120,10 +93,12 @@
 	"background-repeat" : "no-repeat",
 	"background-position" : "8px center",
 	"float" : "left",
+	"display": "flex",
+	"align-items": "center",
 	"cursor" : "pointer"
   },
   "toolItemNode_center" : {
-	"padding" : "5px 10px 5px 32px",
+	"padding" : "5px 10px 5px 10px",
 	"border-top" : "1px solid #ccc",
 	"border-right" : "1px solid #ccc",
 	"border-bottom" : "1px solid #ccc",
@@ -131,10 +106,12 @@
 	"background-repeat" : "no-repeat",
 	"background-position" : "8px center",
 	"float" : "left",
+	"display": "flex",
+	"align-items": "center",
 	"cursor" : "pointer"
   },
   "toolItemNode_right" : {
-	"padding" : "5px 10px 5px 32px",
+	"padding" : "5px 10px 5px 10px",
 	"border-top" : "1px solid #ccc",
 	"border-right" : "1px solid #ccc",
 	"border-bottom" : "1px solid #ccc",
@@ -144,29 +121,33 @@
 	"background-repeat" : "no-repeat",
 	"background-position" : "8px center",
 	"float" : "left",
+	"display": "flex",
+	"align-items": "center",
 	"cursor" : "pointer"
   },
   "toolItemNode_over" : {
-	"background-color" : "#3C76B7",
-	"border" : "1px solid #3D6899",
-	"color" : "#fff"
+	"background-color" : "#F2F7FC",
+	"border" : "1px solid #2E82F7",
+	"color" : "#2E82F7"
   },
   "toolItemNode_normal" : {
 	"background-color" : "#fff",
 	"border" : "1px solid #ccc",
 	"color" : "#666"
   },
+  "toolItemTextNode":{
+      "padding-left": "5px"
+  },
 
   "toolabrRightNode" : {
 	"float" : "right",
-	"overflow" : "hidden"
+	"overflow" : "hidden",
+	"display": "flex",
+	"align-items": "center"
   },
-
   "searchBarAreaNode": {
-	//"margin": "0px 20px 0px 20px",
 	"height": "30px",
-	"overflow": "hidden",
-	"float" : "left"
+	"overflow": "hidden"
   },
   "searchBarNode": {
 	"border-radius": "4px",
@@ -174,23 +155,22 @@
 	"height": "28px",
 	"background-color": "#FFF",
 	"border": "1px solid #ccc",
-	//"border-radius":"10px",
-	"float": "left"
+	"display": "flex",
+	"align-items": "center",
   },
   "searchBarActionNode": {
 	"width": "40px",
-	"height": "28px",
-	"background": "url(../x_component_Minder/$Common/default/icon_tool/search.png) center center no-repeat",
-	"float": "left",
+	"line-height": "28px",
+	"text-align": "center",
 	"cursor": "pointer"
   },
   "searchBarResetActionNode": {
 	"position" : "absolute",
 	"top" : "0px",
 	"right" : "0px",
-	"width": "40px",
-	"height": "28px",
-	"background": "url(../x_component_Minder/$Common/default/icon_tool/icon_off.png) center center no-repeat",
+	"width": "20px",
+	"line-height": "28px",
+	"text-align": "center",
 	"cursor": "pointer"
   },
   "searchBarInputBoxNode": {
@@ -210,32 +190,18 @@
 	"color": "#666"
   },
   "listViewTypeNode": {
+	"font-size": "16px",
 	"width": "24px",
-	"height": "30px",
-	"background": "url(../x_component_Minder/$Common/default/icon_tool/listview.png) center right no-repeat",
-	"float": "left",
-	"cursor": "pointer"
-  },
-  "listViewTypeNode_active": {
-	"width": "24px",
-	"height": "30px",
-	"background": "url(../x_component_Minder/$Common/default/icon_tool/listview_active.png) center right no-repeat",
-	"float": "left",
+	"height": "100%",
+	"text-align": "center",
 	"cursor": "pointer"
   },
   "tileViewTypeNode": {
+	"font-size": "16px",
 	"width": "24px",
-	"height": "30px",
-	"background": "url(../x_component_Minder/$Common/default/icon_tool/tileview.png) center right no-repeat",
-	"float": "left",
+	"height": "100%",
+	"text-align": "center",
 	"cursor": "pointer"
   },
-  "tileViewTypeNode_active": {
-	"width": "24px",
-	"height": "30px",
-	"background": "url(../x_component_Minder/$Common/default/icon_tool/tileview_active.png) center right no-repeat",
-	"float": "left",
-	"cursor": "pointer"
-  }
-	
+
 }

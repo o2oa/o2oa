@@ -58,14 +58,14 @@ MWF.xApplication.Minder.RecycleBinExplorer = new Class({
         this.app.removeEvent("resize", this.resizeFun);
     },
     resizeContent : function(){
-        var size = this.app.content.getSize();
-
-        this.rightNode.setStyle("width", size.x - 70 );
-
-        this.listNode.setStyle("height", size.y - 92 );
-        this.listNode.setStyle("width", size.x - 113 );
-
-        this.toolbarNode.setStyle("width", size.x - 70 );
+        // var size = this.app.content.getSize();
+        //
+        // this.rightNode.setStyle("width", size.x - 70 );
+        //
+        // this.listNode.setStyle("height", size.y - 92 );
+        // this.listNode.setStyle("width", size.x - 113 );
+        //
+        // this.toolbarNode.setStyle("width", size.x - 70 );
     },
     loadList: function( filterData ){
         if (this.currentView) this.currentView.destroy();
