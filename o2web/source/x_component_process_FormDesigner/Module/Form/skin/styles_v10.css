@@ -124,7 +124,7 @@
 .form-content-area div[data-mwf-el-type="MWFFormDesignerLog"]>div>div:nth-child(2){
     overflow: hidden;
     margin-right: 0 !important;
-    height: unset !important;
+    /*height: unset !important;*/
     width: 100% !important;
 }
 
@@ -208,6 +208,14 @@ div.form-log[data-mwf-el-type="MWFFormDesignerLog"]>div>div{
     padding: 0 !important;
     border-bottom: 1px solid #DEDEDE;
     background-color: transparent !important;
+}
+div.form-log[data-mwf-el-type="MWFFormDesignerLog"]>div>div:first-child>div{
+    float: none;
+    height: unset !important;
+    line-height: unset !important;
+    font-size: 0.875em !important;
+    margin-right: 0 !important;
+    font-weight: normal;
 }
 
 div.form-log-simple{
