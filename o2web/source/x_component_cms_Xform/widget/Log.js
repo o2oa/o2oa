@@ -27,7 +27,7 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
         this.loadItemQueue = 0;
         this.count = 0;
         this.lineHeight = this.options.mode != "text" ? 32 : 25;
-        this.countPerPage = 15;
+        this.countPerPage = 20;
 
         this.container = new Element("div",{styles:this.css.container}).inject( this.node );
         this.loadTitle();
