@@ -4,7 +4,7 @@ MWF.xApplication.cms.Module = MWF.xApplication.cms.Module || {};
 MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.xDesktop.requireApp("cms.Module", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("cms.Module", "package", null, false);
-MWF.xDesktop.requireApp("process.Application", "Viewer", null, false);
+//MWF.xDesktop.requireApp("process.Application", "Viewer", null, false);
 MWF.xDesktop.requireApp("query.Query", "Viewer", null, false);
 
 MWF.xApplication.cms.Module.ViewExplorer = new Class({

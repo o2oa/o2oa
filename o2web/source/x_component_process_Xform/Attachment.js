@@ -1464,8 +1464,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
 
         if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-
-            url += "&" + o2.tokenName + "=" + layout.session.token;
+            var urlObj = new URL(url);
+            url += (urlObj.search !== '' ? '&' : '?') + o2.tokenName + "=" + layout.session.token;
             window.location = url;
         } else {
             window.open(url);
