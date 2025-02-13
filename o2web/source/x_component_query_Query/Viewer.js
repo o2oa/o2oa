@@ -559,6 +559,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     getOrderType: function (column){
         var orderType;
+        if( !this.manualOrderColumnMap )this.manualOrderColumnMap = {};
         if( this.manualOrderColumnMap.hasOwnProperty(column.column) ){
             orderType = this.manualOrderColumnMap[column.column];
         }else{
