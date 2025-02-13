@@ -161,13 +161,9 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
         var maxCount = this.options.mode == "text" ? 10 : 8;
         if( this.dataCount > maxCount ){
             var height = maxCount*lineHeight - 15;
-        }else if( this.dataCount <= 1 ){
-            var height = 1*lineHeight;
-        }else{
-            var height = this.dataCount*lineHeight;
+            if( this.options.mode != "text" )height = height + lineHeight;
+            this.contentScrollNode.setStyle("height", height+"px");
         }
-        if( this.options.mode != "text" )height = height + lineHeight;
-        this.contentScrollNode.setStyle("height", height+"px");
     },
 
     setScroll: function(){
