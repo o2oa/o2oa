@@ -18,6 +18,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +37,8 @@ public class ActionConversationCreate extends BaseAction {
                      || conversation.getType().equals(CONVERSATION_TYPE_GROUP))) {
                 throw new ExceptionConversationTypeError();
             }
-            if (conversation.getPersonList() == null || conversation.getPersonList().isEmpty()) {
-                throw new ExceptionEmptyMember();
+            if (conversation.getPersonList() == null) {
+                conversation.setPersonList(new ArrayList<>());
             }
             if (!conversation.getPersonList().contains(effectivePerson.getDistinguishedName())) {
                 List<String> list = conversation.getPersonList();
