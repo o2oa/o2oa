@@ -7,6 +7,7 @@
 		"includes": [],
 		"excludes": [],
 		"enable" : true,
-		"statEnable" : false
+		"statEnable" : false,
+		"urlTemplate": "jdbc:postgresql://{host}:{port}/{db}"
 	}
 ]

@@ -7,6 +7,7 @@
 		"excludes": [],
 		"enable": true,
 		"statEnable": false,
-		"schema": "X"
+		"schema": "X",
+		"urlTemplate": "jdbc:dm://{host}:{port}"
 	}
 ]

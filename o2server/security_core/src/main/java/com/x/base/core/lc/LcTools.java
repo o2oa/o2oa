@@ -23,8 +23,8 @@ public class LcTools {
     private static final String PATH_CONFIG_LICENSE = "config/o2.license";
     private static final String PATH_CONFIG_KEY = "config/o2license.key";
     private static LcInfo lc = null;
-    private static final List<String> DB_LIST_1 = List.of("oracle", "mysql", "postgresql", "sqlserver", "informix", "db2", "h2");
-    private static final List<String> DB_LIST_2 = List.of("oracle", "mysql", "postgresql", "sqlserver", "dm", "kingbase", "oscar", "vastbase", "gbase", "informix", "db2", "h2");
+    private static final List<String> DB_LIST_1 = List.of("oracle", "mysql", "postgresql", "sqlserver", "db2", "h2");
+    private static final List<String> DB_LIST_2 = List.of("oracle", "mysql", "postgresql", "sqlserver", "dm", "kingbase", "oscar", "vastbase", "gbase", "db2", "h2");
     private static final String TYPE_VERSION = "itai";
     private static synchronized LcInfo license() {
         if (null == LcTools.lc) {

@@ -142,6 +142,9 @@ public class ExternalDataSource extends ConfigObject {
     @FieldDescribe("执行慢sql记录阈值,毫秒数,默认3000毫秒.")
     private Integer slowSqlThreshold;
 
+    @FieldDescribe("jdbc url 配置模板.")
+    private String urlTemplate;
+
     public Boolean getLogStatEnable() {
         return BooleanUtils.isTrue(this.logStatEnable);
     }
@@ -290,4 +293,11 @@ public class ExternalDataSource extends ConfigObject {
         return StringUtils.isBlank(this.schema) ? DEFAULT_SCHEMA : this.schema;
     }
 
+    public String getUrlTemplate() {
+        return urlTemplate;
+    }
+
+    public void setUrlTemplate(String urlTemplate) {
+        this.urlTemplate = urlTemplate;
+    }
 }
