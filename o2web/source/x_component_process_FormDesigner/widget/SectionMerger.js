@@ -16,7 +16,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 		this.designer = this.property.designer;
 		this.form = this.property.form;
 		this.module = this.property.module;
-		
+
 		// this.path = "../x_component_process_FormDesigner/widget/$SectionMerger/";
 		// this.cssPath = "../x_component_process_FormDesigner/widget/$SectionMerger/"+this.options.style+"/css.wcss";
 		this.lp = this.app.lp.propertyTemplate;
@@ -26,7 +26,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 		}
 		// this._loadCss();
 	},
-	
+
 	load: function(data){
 		var _self = this;
 
@@ -83,7 +83,12 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 				itemTemplate: {
 					sectionMerge: { name: this.data.pid + "sectionMerge", type : "radio",
 						selectValue: function(){
-							return ["none", "read", "edit"];
+							switch (moduleName) {
+								case "writingBoard":
+									return ["none", "read"];
+								default:
+									return ["none", "read", "edit"];
+							}
 							// switch (moduleName) {
 							// 	case "datatable":
 							// 	case "datatemplate":
@@ -100,7 +105,12 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 							// 	default:
 							// 		return [lp.none, lp.mergeDisplay, lp.mergeEdit]
 							// }
-							return [lp.none, lp.mergeDisplay, lp.mergeEdit];
+							switch (moduleName) {
+								case "writingBoard":
+									return [lp.none, lp.mergeDisplay];
+								default:
+									return [lp.none, lp.mergeDisplay, lp.mergeEdit];
+							}
 						},
 						event: {
 							change: function (it, ev) {
@@ -447,6 +457,6 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 
 		}.bind(this));
 	}
-	
+
 });
 
