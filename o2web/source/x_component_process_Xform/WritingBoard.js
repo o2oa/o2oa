@@ -28,13 +28,29 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             this.field = true;
             this.fieldModuleLoaded = false;
         },
-        _loadUserInterface: function () {
+        _loadUserInterface: function(){
             this.field = true;
             this.node.empty();
 
-            if (!this.isReadonly()) {
+            if ( this.isSectionMergeRead() ) { //区段合并显示
+                this._loadMergeReadNode();
+            }else{
+                if( this.isSectionMergeEdit() ){
+                    this._loadMergeEditNode();
+                }else{
+                    this._loadNode();
+                }
+            }
+        },
+        _loadMergeReadContentNode: function( contentNode, data ){
+            //ontentNode.set("text", data.data)
+            this._loadNode( contentNode, data.data, true );
+        },
+        _loadNode: function (node, data, readonly) {
+            node = node || this.node;
+            if (!readonly && !this.isReadonly()) {
 
-                var actionNode = new Element("div").inject(this.node);
+                var actionNode = new Element("div").inject(node);
                 actionNode.set({
                     //"id": this.json.id,
                     "text": this.json.name || this.json.id,
@@ -54,7 +70,7 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             }
 
 
-            var data = this._getBusinessData();
+            data = data || this._getBusinessData();
             if (data) {
                 var img = new Element("img", {
                     src: MWF.xDesktop.getImageSrc(data)
@@ -67,7 +83,7 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                         "max-width": "90%"
                     })
                 }
-                img.inject(this.node);
+                img.inject(node);
             }
 
             this.fieldModuleLoaded = true;
