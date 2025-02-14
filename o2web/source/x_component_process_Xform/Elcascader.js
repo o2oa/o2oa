@@ -282,7 +282,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 var opValue = op[this.json.props.value];
                 var opLabel = op[this.json.props.label];
                 if( opValue === value ){
-                    text = opLabel;
+                   return opLabel;
                 }
             }
         }
