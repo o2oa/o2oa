@@ -376,6 +376,7 @@ o2.LP={
 		"open": "Abrir",
 		"choiceWork": "Por favor seleccione un documento para abrir",
 		"workcompleted": "El flujo de trabajo ha finalizado",
+		"noWork": "Documento no encontrado o no tienes permiso para verlo",
 		"months": [
 			"Enero",
 			"Febrero",

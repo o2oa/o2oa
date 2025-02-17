@@ -130,6 +130,7 @@ MWF.xApplication.Calendar.Main = new Class({
           }.bind(this))
     },
     createNode: function(){
+        alert(555);
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div", {
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}

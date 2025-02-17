@@ -12,7 +12,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			"Personfield", "Radio", "Select", "Textarea", "Textfield", "Address","Combox",
 			"Elcascader","Elcheckbox","Elcolorpicker", "Eldate", "Eldatetime", "Elinput",
 			"Elnumber", "Elradio", "Elrate", "Elselect", "Elslider", "Elswitch", "ElTime",
-			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup"
+			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup", "OOOrg"
 		],
 		"injectActions" : [
 			{
