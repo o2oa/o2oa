@@ -374,6 +374,7 @@ o2.LP={
 		"open": "open",
 		"choiceWork": "choice document open",
 		"workcompleted": "Process completed",
+		"noWork": "Document not found or you do not have permission to view it",
 		"months": [
 			"Jan",
 			"Feb",
