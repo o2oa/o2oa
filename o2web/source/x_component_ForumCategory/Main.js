@@ -241,9 +241,14 @@ MWF.xApplication.ForumCategory.Main = new Class({
 
 
         var noteContent = new Element("div.noteContent", {
-            "styles": this.css.noteContent,
-            "html" : this.data.forumNotice
+            "styles": this.css.noteContent
         }).inject(noteNode);
+        o2.require("o2.widget.ImageLazyLoader", function(){
+            var loadder = new o2.widget.ImageLazyLoader(noteContent, this.data.forumNotice);
+            loadder.load(function(){
+                this.loadImageViewer(noteContent);
+            }.bind(this));
+        }.bind(this));
 
         if( this.status && this.status.noteHidden ){
             noteNode.setStyle("display" , "none");

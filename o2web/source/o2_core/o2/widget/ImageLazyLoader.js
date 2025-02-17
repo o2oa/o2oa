@@ -102,6 +102,7 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         }
 
         html = this.replaceHrefJavascriptStr( html );
+        html = this.replaceIframeJavascriptStr( html );
 
         this.html_new = html;
     },
@@ -137,6 +138,23 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
                     var href =  this.getAttributeValue(a, "href");
                     if( href.indexOf('javascript:') > -1 ){
                         var a1 = this.removeAttribute(a, "href");
+                        html = html.replace(a, a1);
+                    }
+                }
+            }
+        }
+        return html;
+    },
+    replaceIframeJavascriptStr: function (html) {
+        var regexp_a_all = /(i?)(<iframe)([^>]+>)/gmi;
+        var as = html.match(regexp_a_all);
+        if (as) {
+            if (as.length) {
+                for (var i = 0; i < as.length; i++) {
+                    var a = as[i];
+                    var src = this.getAttributeValue(a, "src");
+                    if (src.toLowerCase().indexOf('javascript:') > -1) {
+                        var a1 = this.removeAttribute(a, "src");
                         html = html.replace(a, a1);
                     }
                 }
