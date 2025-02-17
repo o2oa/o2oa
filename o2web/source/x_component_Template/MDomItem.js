@@ -2955,6 +2955,7 @@ MDomItem.Rtf = new Class({
     },
     parseHtml: function (html) {
         html = this.replaceHrefJavascriptStr(html);
+        html = this.replaceIframeJavascriptStr(html);
         html = this.replaceOnAttribute(html);
         html = this.parseOnerror(html);
         return html;
@@ -2984,8 +2985,25 @@ MDomItem.Rtf = new Class({
                 for (var i = 0; i < as.length; i++) {
                     var a = as[i];
                     var href = this.getAttributeValue(a, "href");
-                    if (href.indexOf('javascript:') > -1) {
+                    if (href.toLowerCase().indexOf('javascript:') > -1) {
                         var a1 = this.removeAttribute(a, "href");
+                        html = html.replace(a, a1);
+                    }
+                }
+            }
+        }
+        return html;
+    },
+    replaceIframeJavascriptStr: function (html) {
+        var regexp_a_all = /(i?)(<iframe)([^>]+>)/gmi;
+        var as = html.match(regexp_a_all);
+        if (as) {
+            if (as.length) {
+                for (var i = 0; i < as.length; i++) {
+                    var a = as[i];
+                    var src = this.getAttributeValue(a, "src");
+                    if (src.toLowerCase().indexOf('javascript:') > -1) {
+                        var a1 = this.removeAttribute(a, "src");
                         html = html.replace(a, a1);
                     }
                 }
