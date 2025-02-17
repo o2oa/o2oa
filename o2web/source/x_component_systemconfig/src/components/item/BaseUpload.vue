@@ -20,7 +20,7 @@
 
 <script setup>
 import {lp} from '@o2oa/component';
-import {ref} from 'vue';
+import {nextTick, onUpdated, ref} from 'vue';
 
 const uploadNode = ref();
 const emit = defineEmits(['upload', 'remove']);
@@ -45,6 +45,8 @@ function clearFile(){
 }
 function uploadChange(){
   uploadFile(uploadNode.value.files);
+  // 清空文件输入
+  uploadNode.value.value = '';
 }
 function removeFile(file){
   emit('remove', file);
@@ -56,7 +58,7 @@ function uploadFile(files){
     const acceptTypes = (props.accept) ? props.accept.split(/,\s*/) : [];
     for (const file of files){
       const ext = file.name.substring(file.name.lastIndexOf('.'));
-      if (!acceptTypes.length || acceptTypes.includes(ext)){
+      if (!acceptTypes.length || acceptTypes.includes(ext) || acceptTypes.includes(file.type)){
         emit('upload', file);
       }
     }
@@ -82,6 +84,13 @@ function drop(e){
   e.preventDefault();
   e.stopPropagation();
 }
+
+onUpdated(()=>{
+  nextTick(()=>{
+    if(uploadNode && uploadNode.value)uploadNode.value.value = '';
+  });
+})
+
 
 </script>
 
