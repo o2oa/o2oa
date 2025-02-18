@@ -35,21 +35,25 @@ public class StartCommand {
 					&& (StringUtils.equalsIgnoreCase(arg, "init") || ifInitServerNecessary())) {
 				startInitServer();
 			}
-			if (StringUtils.equalsIgnoreCase(arg, "application")
-					|| StringUtils.equalsIgnoreCase(arg, "applicationSkipInit")) {
-				startApplicationServer();
-			} else if (StringUtils.equalsIgnoreCase(arg, "center")
-					|| StringUtils.equalsIgnoreCase(arg, "centerSkipInit")) {
-				startCenterServer();
-			} else if (StringUtils.equalsIgnoreCase(arg, "web") || StringUtils.equalsIgnoreCase(arg, "webSkipInit")) {
-				startWebServer();
-			} else if (StringUtils.equalsIgnoreCase(arg, "storage")
-					|| StringUtils.equalsIgnoreCase(arg, "storageSkipInit")) {
-				startStorageServer();
-			} else if (StringUtils.equalsIgnoreCase(arg, "data") || StringUtils.equalsIgnoreCase(arg, "dataSkipInit")) {
-				startDataServer();
-			} else {
-				startAll();
+			if(!ifInitServerNecessarySetPassword()) {
+				if (StringUtils.equalsIgnoreCase(arg, "application")
+						|| StringUtils.equalsIgnoreCase(arg, "applicationSkipInit")) {
+					startApplicationServer();
+				} else if (StringUtils.equalsIgnoreCase(arg, "center")
+						|| StringUtils.equalsIgnoreCase(arg, "centerSkipInit")) {
+					startCenterServer();
+				} else if (StringUtils.equalsIgnoreCase(arg, "web") || StringUtils.equalsIgnoreCase(
+						arg, "webSkipInit")) {
+					startWebServer();
+				} else if (StringUtils.equalsIgnoreCase(arg, "storage")
+						|| StringUtils.equalsIgnoreCase(arg, "storageSkipInit")) {
+					startStorageServer();
+				} else if (StringUtils.equalsIgnoreCase(arg, "data")
+						|| StringUtils.equalsIgnoreCase(arg, "dataSkipInit")) {
+					startDataServer();
+				} else {
+					startAll();
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
