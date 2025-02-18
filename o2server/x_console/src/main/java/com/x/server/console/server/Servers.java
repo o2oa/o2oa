@@ -177,7 +177,6 @@ public class Servers {
 		if (initServerIsRunning()) {
 			initServer.stop();
 			LOGGER.print("init server stoped.");
-			System.exit(0);
 		}
 	}
 
