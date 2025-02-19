@@ -1,5 +1,8 @@
 package com.x.server.console.action;
 
+import com.x.base.core.project.tools.ZipTools;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
@@ -131,6 +134,11 @@ public class DumpData {
 						pureGsonDateFormated.toJson(catalog).getBytes(StandardCharsets.UTF_8));
 				LOGGER.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.toString(),
 						count(), (System.currentTimeMillis() - start.getTime()) / 1000 / 60);
+				Path parent = dir.getParent();
+				File file = new File(parent.toFile(), dir.toFile().getName() + ".zip");
+				try (OutputStream out = new FileOutputStream(file)){
+					ZipTools.toZip(dir.toFile(), out, new ArrayList<>());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {

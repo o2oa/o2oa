@@ -26,7 +26,6 @@ class ActionSetTitle extends BaseAction {
 			Config.collect().save();
 			Config.flush();
 			Config.resource_commandQueue().add("ctl -flushConfig");
-			Thread.sleep(500);
 		}
 		Wo wo = new Wo();
 		wo.setValue(true);

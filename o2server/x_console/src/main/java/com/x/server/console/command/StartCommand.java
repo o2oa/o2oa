@@ -61,8 +61,7 @@ public class StartCommand {
 	};
 
 	private static boolean ifInitServerNecessary() {
-		// 密码为空且数据库文件不存在
-		return ifInitServerNecessarySetPassword() && (!ifInitServerNecessaryLocalRepositoryDataH2Exists());
+		return ifInitServerNecessarySetPassword();
 	}
 
 	private static boolean ifInitServerNecessaryLocalRepositoryDataH2Exists() {
