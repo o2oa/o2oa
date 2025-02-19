@@ -1,27 +1,5 @@
-@media (height >= 1920px) {
-    :root {
-        font-size: 20px;
-    }
-}
-@media (1920px > height >= 1600px) {
-    :root {
-        font-size: 18px;
-    }
-}
-@media (1600px > height >= 1080px) {
-    :root {
-        font-size: 16px;
-    }
-}
-@media (900px <= height < 1080px) {
-    :root {
-        font-size: 14px;
-    }
-}
-@media (height < 900px) {
-    :root {
-        font-size: 12px;
-    }
+:root {
+    font-size: 16px;
 }
 
 * {
@@ -58,12 +36,11 @@ header {
 main {
     flex: 1;
     overflow: auto;
-    display: flex;
-    grid-template-columns: 1fr 2fr;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
 }
 
-main .info {
-    flex: 1;
+main > .info {
     background-image: url(./bg_login.png);
     background-repeat: no-repeat;
     background-size: cover;
@@ -71,7 +48,11 @@ main .info {
     position: relative;
 }
 main .content {
-    flex: 2;
+    position: relative;
+}
+main .bottom {
+    display: flex;
+    background-color: var(--oo-color-hover);
 }
 
 main .logo {
@@ -89,7 +70,14 @@ main .info-content {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 100%;
 }
+
+main .info-content-init {
+    width: min-content;
+    margin: auto;
+}
+
 main .system-name {
     font-weight: bold;
     font-size: 2.25rem;
@@ -113,215 +101,75 @@ main .info-text {
     margin-top: 1em;
 }
 
-footer {
-    height: 0;
-}
-footer > div {
-    width: 80%;
-    max-width: 75rem;
-    min-width: 50rem;
-    display: grid;
-    padding: 1rem 3rem;
-    grid-template-columns: 32% 36% 32%;
-    grid-gap: 1em;
-    margin: auto;
-}
-
-footer a {
-    color: inherit;
-    text-decoration: none;
-}
-footer a:visited {
-    color: inherit;
-    text-decoration: none;
-}
-
-.link,
-.code,
-.source {
-    background-color: #154276;
-    border-radius: 0.5em;
-    padding: 0.8em;
-    opacity: 0.9;
-}
-
-footer .link {
-    height: 8rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-}
-footer .code {
-    height: 8rem;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-footer .source {
-    height: 8rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.code_item {
-    text-align: center;
-}
-.code_item img {
-    height: 5rem;
-    width: 5rem;
-}
-
-.source_code {
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    align-items: center;
-}
-.source_text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.source_item {
-    text-align: center;
-    cursor: pointer;
-}
-.icon_github {
-    filter: grayscale(1) invert(1);
-}
-.source_item img {
-    /*height: 5.625rem;*/
-    /*width: 5.625rem;*/
-}
-
-.link ul {
-    padding: 0;
-    margin: 0;
-    display: flex;
-}
-.link ul li {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    margin-right: 1.5em;
-}
-.link a {
-    color: inherit;
-    text-decoration: none;
-}
-.link a:hover {
-    color: inherit;
-    text-decoration: underline;
-}
-.link a:visited {
-    color: inherit;
-    text-decoration: none;
-}
-
-.title {
-    position: absolute;
-    text-align: center;
-    transition: top 1s, opacity 1s;
-    opacity: 0;
-    top: 2rem;
-}
-.title1 {
-    color: #4a90e2;
-    font-size: 2rem;
-    height: 4rem;
-    font-weight: bold;
-}
-.title2 {
-    height: 3rem;
-    font-size: 1.2rem;
-}
 main .pane {
-    height: 38rem;
-    width: 65rem;
-    background-color: #ffffff;
-    border-radius: 1rem;
+    height: 100%;
     transition: opacity 1s;
     opacity: 0;
     display: flex;
     position: relative;
+    flex: 1;
+    align-items: center;
 }
 
-.explain {
-    width: 35%;
-    background-color: var(--oo-color-main);
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
-    color: #ffffff;
-    /*border-top-right-radius: 1rem;*/
-}
-.explain_content {
-    padding: 3rem;
-}
-.explain_title {
-    font-size: 1.4rem;
-    padding: 1em 0;
-}
-.explain_title:before {
-    margin-right: 0.3em;
-}
-
-.explain_text {
-    font-size: 0.9rem;
-    text-indent: 2em;
-    line-height: 1.8em;
-}
-.explain_text > p {
-    margin-top: 1em;
-    word-break: break-all;
-}
-
-.pane_layout {
-    width: calc(100% - 35%);
+main .pane_layout {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: space-between;
     position: relative;
+    margin: 3rem 3rem 5rem 3rem;
+    padding: 1em;
 }
-.pane_content {
-    padding: 3rem;
+main oo-input {
+    width: 100%;
 }
 
-.input_title {
+main .logo60 {
+    background-image: url(./logo_60.png);
+    background-position: center;
+    background-size: 3.75rem;
+    height: 3.75rem;
+    width: 3.75rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 0 auto;
+    margin-bottom: 2em;
+}
+main .input_title {
     font-size: 1.2rem;
-    padding: 1rem 0;
-    color: #666666;
-    margin-top: 0.5em;
-}
-oo-input {
-    width: 80%;
+    padding: 1.5rem 0 1rem 0;
 }
 
-.actions {
-    padding: 2rem 3rem;
+main .pane_content {
+    max-width: 43.5em;
+    width: 90%;
+}
+
+main .actions {
+    /* padding: 2rem 3rem; */
     display: flex;
     justify-content: flex-end;
+    padding: 3rem 0 0 0;
+    max-width: 43.5em;
+    width: 90%;
+    gap: 3rem;
 }
-oo-button {
-    width: 10rem;
+main .actions oo-button {
+    /* width: 10rem;*/
     height: 2.2rem;
-    margin-left: 1rem;
+    width: 100%;
 }
 
-.bottom {
-    display: flex;
-    padding-top: 1rem;
-    transition: opacity 1s;
-    opacity: 0;
-    position: relative;
-}
-.bottom .step {
+main .bottom .step {
     width: 5rem;
     height: 0.5rem;
-    background: #ffffff;
+    background: #d3d3d3;
     margin: 0 0.5rem;
     border-radius: 0.5rem;
 }
 
-.bottom .current {
+main .bottom .current {
     background: var(--oo-color-main);
     width: 5rem;
     height: 0.5rem;
@@ -333,11 +181,247 @@ oo-button {
     left: 0;
 }
 
+.explain ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+.explain_content {
+    padding: 17%;
+    word-break: break-all;
+    text-align: justify;
+}
+.explain_content a {
+    text-decoration: none;
+    color: #2d2d33;
+}
+.explain_content a:hover {
+    text-decoration: underline;
+    color: var(--oo-color-main);
+}
+.explain_content a:visited {
+    text-decoration: none;
+}
+.explain_title {
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: #2d2d33;
+    text-align: left;
+    font-style: normal;
+    white-space: nowrap;
+    display: flex;
+    gap: 0.3em;
+    align-items: center;
+    margin-bottom: 1em;
+}
+.explain_title > span {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.explain_text {
+    font-size: 1.125rem;
+    text-indent: 0em;
+    line-height: 1.5em;
+    list-style: inside;
+}
+.explain_text > p {
+    margin-top: 1em;
+    word-break: break-all;
+}
+
+oo-input[valid='true'] {
+    border-color: #9e035d;
+}
+
+.database-type-item {
+    padding: 1.7em;
+    border-radius: var(--oo-border-radius);
+    background-color: var(--oo-color-hover);
+    margin-bottom: 1em;
+    color: var(--oo-color-text);
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.database-type-item > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.database-type-item li {
+    margin-top: 0.3em;
+    font-size: 1rem;
+    color: var(--oo-color-text3);
+}
+.database-type-item:hover {
+    background-color: var(--oo-color-over);
+    color: var(--oo-color-text);
+}
+.database-type-item > * {
+    font-size: 1.125rem;
+}
+.database-type-item .ooicon-icon_ok_round {
+    color: var(--oo-color-main);
+}
+
 @keyframes circle {
     0% {
         transform: rotate(0);
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+/*------------------------------------*/
+
+@media (max-width: 1600px) {
+    :root {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 1440px) {
+    :root {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1280px) {
+    :root {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 1152px) {
+    :root {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 936px) {
+    :root {
+        font-size: 8px;
+    }
+}
+
+/* 手机浏览器 */
+/* 竖屏手机浏览器 */
+@media only screen and (max-width: 767px) and (orientation: portrait) {
+    :root {
+        font-size: 12px;
+    }
+    main .logo {
+        display: none;
+    }
+    main {
+        grid-template-rows: 2fr 5fr;
+        grid-template-columns: auto;
+    }
+    main .system-name {
+        font-size: 1.5rem;
+    }
+    main .info-content-init {
+        width: 60%;
+        margin: auto;
+    }
+    main .welcome {
+        font-size: 1.3rem;
+        color: #2d2d33;
+        text-align: left;
+        font-style: normal;
+        margin-bottom: 0.2em;
+    }
+    main .info-text {
+        font-size: 1.25rem;
+        color: #2d2d33;
+        text-align: left;
+        font-style: normal;
+        margin-top: 0.2em;
+    }
+    main .info-content {
+        position: static;
+        top: 50%;
+        left: 50%;
+        transform: translate(0, 0);
+        width: 100%;
+    }
+    main .pane {
+        height: 100%;
+        transition: opacity 1s;
+        opacity: 0;
+        display: flex;
+        position: relative;
+        flex: 1;
+        align-items: flex-start;
+    }
+    .explain_content {
+        padding: 1em 2em;
+    }
+    .explain ul {
+        margin-top: 0.5rem;
+        gap: 0.3rem;
+    }
+    .explain_title {
+        margin-bottom: 0.5em;
+    }
+    .explain_text {
+        font-size: 1.125rem;
+        padding: 0;
+        margin: 0;
+        text-indent: 0em;
+        line-height: unset;
+        list-style: outside;
+    }
+    main .pane_layout {
+        margin: 1rem 1rem 3rem 1rem;
+    }
+    .pane_content {
+        max-width: unset !important;
+        min-height: unset !important;
+    }
+    .database-type-item {
+        padding: 0.8em;
+    }
+    .database-type-item ul {
+        padding: 1em;
+        margin: 0;
+    }
+    database .input_title,
+    restore .input_title,
+    init-info .input_title {
+        display: none;
+    }
+
+    .upload_area {
+        margin-top: 0 !important;
+        height: 14rem !important;
+    }
+
+    main .actions {
+        gap: 1rem;
+    }
+    execute > .pane_content {
+        padding: 0 !important;
+    }
+}
+
+/* 横屏手机浏览器 */
+@media only screen and (max-width: 767px) and (orientation: landscape) {
+    :root {
+        font-size: 11px;
+    }
+}
+
+/* 平板 */
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+    /* 样式适用于屏幕宽度在 768px 到 1023px 之间的设备 */
+    :root {
+        font-size: 12px;
     }
 }

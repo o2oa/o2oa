@@ -1,57 +1,8 @@
 import {component} from '@o2oa/oovm';
 import {dom, cloneObject} from '@o2oa/util';
 import {listDatabase, testDatabase, h2Check, h2Upgrade, h2Cancel, setDatabase, checkDatabase} from '../../common/action.js';
+import template from './database.html?raw';
 
-const template = `
-<div class="pane_content" style="padding: 2rem 2rem">
-    <div class="input_title" style="padding: 0.5rem 0; margin-top: 0">选择数据库</div>
-    <div oo-if="$.databaseConfigured!==true && $.databaseConfigured!==false" style="padding: 3rem 2rem; text-align: center">
-        <div class="icon loading" style="display: block; height: 40px; width: 40px; margin: auto"></div>
-    </div>
-    
-    <div oo-else-if="$.databaseConfigured===true" style="padding: 3rem 2rem; text-align: center">
-        <div class="icon ooicon-check"></div>
-        <div style="padding: 1rem 0; color: var(--oo-color-text2)">您已初始化了数据库设置！请直接点击“下一步”</div>
-        <div style="padding: 1rem 0; font-size: 0.875rem; color: var(--oo-color-text3)">如需修改，请启动服务器后，进入“系统配置”-“服务器配置”-“数据库配置”中修改</div>
-    </div>
-    
-    <div  oo-else style="color:#777777; font-size: 0.875rem">
-        <div style="padding: 0.5em 0.3em; margin-top: 0.5rem; border: 1px solid #cccccc; border-radius: 0.5rem">
-            <oo-radio-group name="database_type" col="4" oo-model="database.type" @change="changeDb" oo-element="databaseTypeNode">
-                <oo-radio value="h2" name="database_type" style="margin: 0.3em 0em 0.3em 0">H2(内置数据库)</oo-radio>
-                <oo-radio oo-each="$.databaseList" oo-item="db"  value="{{db.value.type}}" text="{{$.databaseName[db.value.type] || db.value.type}}" style="margin: 0.3em 0em 0.3em 0"></oo-radio>
-            </oo-radio-group>
-        </div>
-    </div>
-    <div oo-if="$.database.type!=='h2' && $.database.type!=='$configured'">
-        <div class="input_title" style="padding: 0.5rem 0; margin-top: 1rem">数据库配置</div>
-        <div style="color:#777777; font-size: 0.875rem">
-            <div style="padding: 0.5em 0.3em; margin-top: 0.5rem; border: 1px solid #cccccc; border-radius: 0.5rem">
-                <oo-textarea label="数据库连接：" style="margin-top:0.5rem; width: 98%" oo-model="externalDataSources.url" spellcheck="false"></oo-textarea>
-                <div style="margin-top:1rem; margin-bottom:1rem; width: 98%; display: flex; justify-content: space-between;">
-                    <oo-input label="用户名：　　" style="width: 48%" oo-model="externalDataSources.username"></oo-input>
-                    <oo-input label="密码：" style="width: 48%" oo-model="externalDataSources.password"></oo-input>
-                    <oo-input label="schema：" style="width: 48%" oo-model="externalDataSources.schema"></oo-input>
-                </div>
-                
-                <div style="width: 98%; display: flex; justify-content: space-between;">
-                    <div style="font-size: 0.725rem; width: calc(100% - 8.5rem); padding-left: 0.5rem; display: flex; align-items: center;">
-                        <div class="loading" oo-element="testLoading"></div>
-                        <div oo-if="$.testDbMessage==='success'" style="color: green">连接成功！</div>
-                        <div oo-if="$.testDbMessage && $.testDbMessage!=='success'"  style="color: red">连接失败:{{$.testDbMessage}}</div>
-                    </div>
-                    <oo-button @click="test" style="width: 8.5rem;">测试数据库连接</oo-button>
-                </div>
-               
-            </div>
-        </div>
-    </div>
-</div>
-<div class="actions">
-    <oo-button type="cancel" @click="stepPrev">上一步</oo-button>
-    <oo-button @click="nextStep">下一步</oo-button>
-</div>
-`;
 const style = `
 .loading {
   position: relative;
@@ -76,13 +27,42 @@ const style = `
 }
 `;
 
+const parseJdbcUrl = (url, type) => {
+    const result = {
+        type: '',
+        host: '',
+        port: '',
+        database: '',
+        params: {},
+    };
+
+    const urlPatterns = {
+        sqlserver: /jdbc:([\w-]+):\/\/([^:]+):(\d+);databaseName=([^;]+);?(.*)?/i,
+        gbase: /jdbc:([\w-]+):\/\/([^:\/]+)(?::(\d+))?(?:\/([^?^:]+))?(?::(.*))?/i,
+        default: /jdbc:([\w-]+):(?:thin:@)?\/\/([^:\/]+)(?::(\d+))?(?:\/([^?]+))?(?:\?)?(.*)?/,
+    };
+    const urlPattern = urlPatterns[type] || urlPatterns.default;
+
+    const match = url.match(urlPattern);
+
+    if (match) {
+        result.type = match[1];
+        result.host = match[2];
+        result.port = match[3] || '';
+        result.database = match[4] || '';
+        result.params = match[5] || '';
+    }
+
+    return result;
+};
+
 export default component({
     template,
     style,
     autoUpdate: true,
 
     bind() {
-        listDatabase().then((list)=>{
+        listDatabase().then((list) => {
             this.bind.databaseList = list;
         });
         this.databaseCheck();
@@ -102,68 +82,126 @@ export default component({
                 informix: 'Informix',
                 gbase: '南大通用',
                 // gbasemysql: '南大通用(MySql)',
-                db2: 'DB2'
+                db2: 'DB2',
             },
             externalDataSources: {},
             testDbMessage: '',
 
             databaseConfigured: null,
-            h2:{},
-            h2_upgrade: 'no'
+            h2: {},
+            h2_upgrade: 'no',
+            databaseType: 'h2',
+            databaseList: [],
+        };
+    },
+    selectDatabaseType(type, e) {
+        if (this.bind.databaseType !== type) {
+            this.bind.databaseType = type;
+            if (type === 'h2') this.bind.database.type = 'h2';
+            e.currentTarget.querySelector('oo-radio').setAttribute('checked', true);
         }
     },
     async databaseCheck() {
         const flag = await checkDatabase();
         this.bind.databaseConfigured = flag;
+
+        if (this.bind.database.type === 'h2') {
+            this.bind.databaseType = 'h2';
+        } else {
+            this.bind.databaseType = 'other';
+        }
     },
-    changeDb(e){
+    getDatabaseUrl() {
+        const {host, port, database, params, dbType} = this.bind.externalDataSources;
+        let url = '';
+        switch (this.bind.database.type) {
+            case 'sqlserver':
+                url = `jdbc:sqlserver://${host}:${port};DatabaseName=${database}${params ? ';' + params : ''}`;
+                break;
+            case 'gbase':
+                url = `jdbc:gbasedbt-sqli://${host}:${port}/${database}${params ? ':' + params : ''}`;
+                break;
+            case 'oracle':
+                url = `jdbc:oracle:thin:@//${host}:${port}/${database}${params ? '?' + params : ''}`;
+                break;
+            default:
+                url = `jdbc:${dbType}://${host}:${port}/${database}${params ? '?' + params : ''}`;
+        }
+        this.bind.externalDataSources.url = url;
+        return url;
+    },
+    changeDb(e) {
         this.bind.testDbMessage = '';
-        if (this.bind.database.type!=='h2'){
-            const o = this.bind.databaseList.find((db)=>{
+        if (this.bind.database.type !== 'h2') {
+            const o = this.bind.databaseList.find((db) => {
                 return db.type === this.bind.database.type;
             });
-            if (o) this.bind.externalDataSources = cloneObject(o.externalDataSources[0]);
+            if (o) {
+                const dbInfo = parseJdbcUrl(o.externalDataSources[0].url, o.type);
+                const db = cloneObject(o.externalDataSources[0]);
+                db.host = dbInfo.host;
+                db.port = dbInfo.port;
+                db.database = dbInfo.database;
+                db.params = dbInfo.params;
+                db.dbType = dbInfo.type;
+                this.bind.externalDataSources = db;
+            }
         }
         this.bind.testDbMessage = '';
     },
-    async test(e) {
+    async test() {
         this.bind.testDbMessage = '';
         dom.setStyle(this.testLoading, 'display', 'block');
-        e.target.setAttribute('disabled', true)
+        this.testDatabaseButton.setAttribute('disabled', true);
         const json = await testDatabase(this.bind.externalDataSources);
-        if (json[0].success){
+        if (json[0].success) {
             this.bind.testDbMessage = 'success';
-        }else{
+        } else {
             this.bind.testDbMessage = json[0].failureMessage;
         }
         dom.setStyle(this.testLoading, 'display', 'none');
-        e.target.setAttribute('disabled', false);
+        this.testDatabaseButton.setAttribute('disabled', false);
+
+        return this.bind.testDbMessage === 'success';
     },
-    stepPrev(){
+    stepPrev() {
         const step = this.$p.bind.step - 1;
-        this.$p.bind.step = (step<0) ? 0 : step;
+        this.$p.bind.step = step < 0 ? 0 : step;
+    },
+
+    validityDatabaseType(e) {
+        debugger;
+        if (this.bind.databaseType !== 'h2' && this.bind.database.type === 'h2') {
+            e.target.setCustomValidity('请选择外置数据库类型。');
+        } else {
+            e.target.setCustomValidity('');
+        }
     },
     async nextStep() {
-        if (this.bind.databaseConfigured){
+        if (this.databaseTypeNode && !this.databaseTypeNode.checkValidity()) {
+            return false;
+        }
+        if (this.bind.databaseConfigured) {
             this.bind.database.type = '$configured';
-        }else{
+        } else {
             if (this.bind.database.type !== 'h2') {
+                this.nextButton.setAttribute('disabled', true);
+                if (!(await this.test())) {
+                    this.nextButton.setAttribute('disabled', false);
+                    return false;
+                }
+                $OOUI.mask(this.dom.parentElement);
                 await setDatabase(this.bind.externalDataSources);
+                $OOUI.unmask(this.dom.parentElement);
+                this.nextButton.setAttribute('disabled', false);
                 this.bind.database.type = this.bind.database.type;
                 this.bind.database.url = this.bind.externalDataSources.url;
             } else {
-                // if (this.bind.h2_upgrade === 'yes') {
-                //     await h2Upgrade();
-                // } else {
-                //     await h2Cancel();
-                // }
-
                 this.bind.database.type = this.bind.database.type;
             }
         }
 
         const step = this.$p.bind.step + 1;
-        this.$p.bind.step = (step < 5) ? step : 0;
-    }
-
+        this.$p.bind.step = step < 5 ? step : 0;
+    },
 });

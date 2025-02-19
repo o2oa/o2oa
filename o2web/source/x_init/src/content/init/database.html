@@ -1,0 +1,178 @@
+<div class="pane_content" style="max-width: 60em; min-height: 40rem">
+    <div class="input_title" style="padding: 0.5rem 0; margin-top: 0">选择数据库</div>
+    <div oo-if="$.databaseConfigured!==true && $.databaseConfigured!==false" style="padding: 3rem 2rem; text-align: center">
+        <div class="icon loading" style="display: block; height: 40px; width: 40px; margin: auto"></div>
+    </div>
+
+    <div oo-else-if="$.databaseConfigured===true" style="padding: 3rem 2rem; text-align: center">
+        <div class="icon ooicon-check"></div>
+        <div style="padding: 1rem 0; color: var(--oo-color-text2)">您已初始化了数据库设置！请直接点击“下一步”</div>
+        <div style="padding: 1rem 0; font-size: 0.875rem; color: var(--oo-color-text3)">
+            如需修改，请启动服务器后，进入“系统配置”-“服务器配置”-“数据库配置”中修改
+        </div>
+    </div>
+
+    <div oo-else style="color: #777777">
+        <div
+            class="database-type-item"
+            style="background-color: {{$.databaseType==='h2' ? 'var(--oo-color-hover2)' : ''}};"
+            @click="$m.selectDatabaseType('h2', $event)"
+        >
+            <div>
+                <oo-radio value="h2" name="select_database_type" checked="true">内置H2数据库</oo-radio>
+                <div oo-if="$.databaseType==='h2'" class="ooicon-icon_ok_round"></div>
+            </div>
+            <ul oo-if="$.databaseType==='h2' && !!$.databaseList.length">
+                <li>O2OA（翱途）平台内置H2数据库，适合用于体验环境、开发环境、功能演示环境等非生产环境。</li>
+                <li style="color: var(--oo-color-highlight)">如果您正在部署生产环境，请选择“连接外置数据库”，连接到可靠的商用数据库。</li>
+                <li>您也可以在系统初始化后，在“系统设置”中迁移数据库</li>
+            </ul>
+        </div>
+        <div oo-if="!$.databaseList || !$.databaseList.length" style="padding: 0.5rem; display: flex; gap: 0.3em; align-items: baseline">
+            <div class="ooicon-help" style="color: var(--oo-color-main)"></div>
+            <div>获取更多数据库支持，请移步至官网（<a href="https://www.o2oa.net" target="_blank">www.o2oa.net</a>）。</div>
+        </div>
+        <div
+            class="database-type-item"
+            style="background-color: {{$.databaseType==='other' ? 'var(--oo-color-hover2)' : ''}};"
+            oo-if="!!$.databaseList.length"
+            @click="$m.selectDatabaseType('other', $event)"
+        >
+            <div>
+                <oo-radio value="other" name="select_database_type">连接外置数据库</oo-radio>
+                <div oo-if="$.databaseType==='other'" class="ooicon-icon_ok_round"></div>
+            </div>
+            <ul oo-if="$.databaseType==='other'">
+                <li>O2OA（翱途）平台支持多种类型的数据库。在部署生产环境时，强烈建议您使用现有的稳定可靠的商用数据库。</li>
+                <li>如果您未准配好生产环境数据库，可以先选择“内置H2数据库，稍后在系统设置中迁移数据库”。</li>
+                <li>如果用于部署体验环境或演示环境等非生产环境，可以选择“内置H2数据库”，以便更快速部署系统。</li>
+            </ul>
+        </div>
+
+        <div
+            oo-if="$.databaseType==='other'"
+            style="margin-top: 0.5rem; /* border: 1px solid #cccccc;
+                border-radius: 0.5rem; */"
+        >
+            <oo-radio-group
+                required="true"
+                col="0"
+                name="database_type"
+                oo-model="database.type"
+                @change="changeDb"
+                @validity="validityDatabaseType"
+                oo-element="databaseTypeNode"
+            >
+                <!-- <oo-radio value="h2" name="database_type" style="margin: 0.3em 1em 0.3em 0; width: 12em">H2(内置数据库)</oo-radio> -->
+                <oo-radio
+                    oo-each="$.databaseList"
+                    oo-item="db"
+                    value="{{db.value.type}}"
+                    text="{{db.value.name || $.databaseName[db.value.type] || db.value.type}}"
+                    style="margin: 0.3em 1em 0.3em 0; min-width: 10em"
+                ></oo-radio>
+            </oo-radio-group>
+        </div>
+    </div>
+    <div oo-if="$.databaseType==='other' && $.database.type!=='h2' && $.database.type!=='$configured'">
+        <div class="input_title" style="padding: 0.5rem 0; margin-top: 1rem">数据库配置</div>
+        <div style="color: #777777; font-size: 0.875rem">
+            <div
+                style="padding: 0.5em 0.3em; margin-top: 0.5rem; /* border: 1px solid #cccccc;
+                    border-radius: 0.5rem; */"
+            >
+                <!--  value="{{$m.getDatabaseUrl($.externalDataSources)}}"-->
+                <oo-textarea
+                    auto-size="true"
+                    label="数据库连接："
+                    style="margin-top: 0.5rem; width: 98%"
+                    value="{{$m.getDatabaseUrl($.externalDataSources)}}"
+                    spellcheck="false"
+                    input-style="word-break: break-all; color: var(--oo-color-text3)"
+                    label-style="width: 6.5em"
+                    readonly="true"
+                ></oo-textarea>
+                <div
+                    style="
+                        margin-top: 1rem;
+                        margin-bottom: 1rem;
+                        width: 98%;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 1em;
+                        justify-content: space-between;
+                    "
+                >
+                    <oo-input
+                        style="flex: 1 1 48%"
+                        label="服务器地址"
+                        oo-model="externalDataSources.host"
+                        label-style="width: 6.5em"
+                        required="true"
+                        validity-blur="true"
+                    ></oo-input>
+                    <oo-input
+                        style="flex: 1 1 48%"
+                        label="服务器端口："
+                        oo-model="externalDataSources.port"
+                        label-style="width: 6.5em"
+                        required="true"
+                        validity-blur="true"
+                    ></oo-input>
+                    <oo-input
+                        style="flex: 1 1 48%"
+                        label="数据库名称"
+                        oo-model="externalDataSources.database"
+                        label-style="width: 6.5em"
+                    ></oo-input>
+                    <oo-input
+                        style="flex: 1 1 48%"
+                        label="schema："
+                        oo-model="externalDataSources.schema"
+                        label-style="width: 6.5em"
+                    ></oo-input>
+
+                    <oo-textarea
+                        style="flex: 1 1 100%"
+                        label="数据库参数"
+                        oo-model="externalDataSources.params"
+                        label-style="width: 6.5em"
+                    ></oo-textarea>
+
+                    <oo-input
+                        style="flex: 1 1 48%"
+                        label="用户名：　　"
+                        style="width: 48%"
+                        oo-model="externalDataSources.username"
+                        label-style="width: 6.5em"
+                        required="true"
+                        validity-blur="true"
+                    ></oo-input>
+                    <oo-input
+                        style="flex: 1 1 48%"
+                        label="密码："
+                        type="password"
+                        style="width: 48%"
+                        oo-model="externalDataSources.password"
+                        label-style="width: 6.5em"
+                        required="true"
+                        validity-blur="true"
+                    ></oo-input>
+                </div>
+
+                <div style="width: 98%; display: flex; justify-content: space-between">
+                    <div style="font-size: 0.875rem; width: calc(100% - 8.5rem); padding-left: 0.5rem; display: flex; align-items: center">
+                        <div class="loading" oo-element="testLoading"></div>
+                        <div oo-if="$.testDbMessage==='success'" style="color: green">连接成功！</div>
+                        <div oo-if="$.testDbMessage && $.testDbMessage!=='success'" style="color: red">连接失败:{{$.testDbMessage}}</div>
+                    </div>
+                    <oo-button @click="test" style="width: 8.5rem" oo-element="testDatabaseButton">测试数据库连接</oo-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="actions">
+    <oo-button type="cancel" @click="stepPrev" style="flex: 2">上一步</oo-button>
+    <oo-button @click="nextStep" style="flex: 3" oo-element="nextButton">下一步</oo-button>
+</div>

@@ -1,4 +1,4 @@
-import {Notice} from "@o2oa/ui";
+// import {Notice} from "@o2oa/ui";
 
 /**消息提醒框
  * @Object notice
@@ -11,12 +11,20 @@ const notice = {
      * @param {Object} options  消息框显示参数
      * @param {boolean} normal 是否使用默认样式
      */
-    error: (title, text, options= {}, normal)=>{
-        const normalStyle =  {skin: 'default', location: 'topRight', marginTop: 10, duration: 5000};
+    error: (title, text, options = {}, normal) => {
+        const normalStyle = {skin: 'default', location: 'topRight', marginTop: 10, duration: 5000};
         if (normal) options = Object.assign(options, normalStyle);
-        const opts = Object.assign({
-            title, text, duration: 0, skin: 'banner', marginTop: 0, type: 'error'
-        }, options);
+        const opts = Object.assign(
+            {
+                title,
+                text,
+                duration: 0,
+                skin: 'banner',
+                marginTop: 0,
+                type: 'error',
+            },
+            options,
+        );
         new Notice(opts);
 
         const e = Error(text, {cause: opts.err});
@@ -31,8 +39,11 @@ const notice = {
      * @param {String} type  消息类型 error success info warn
      * @param {Object} options 消息框显示参数
      */
-    msg: (title, text, type, options = {})=>{
-        const opts = Object.assign({  title, text, duration: 5000, type, location: 'topRight', marginTop: 10}, options);
+    msg: (title, text, type, options = {}) => {
+        const opts = Object.assign(
+            {title, text, duration: 5000, type, location: 'topRight', marginTop: 10},
+            options,
+        );
         new Notice(opts);
     },
 
@@ -42,7 +53,7 @@ const notice = {
      * @param {String} text  消息描述
      * @param {Object} options 消息框显示参数
      */
-    success:  (title, text, options= {} )=>{
+    success: (title, text, options = {}) => {
         notice.msg(title, text, 'success', options);
     },
 
@@ -52,7 +63,7 @@ const notice = {
      * @param {String} text  消息描述
      * @param {Object} options 消息框显示参数
      */
-    info:  (title, text, options = {})=>{
+    info: (title, text, options = {}) => {
         notice.msg(title, text, 'info', options);
     },
 
@@ -62,8 +73,8 @@ const notice = {
      * @param {String} text  消息描述
      * @param {Object} options 消息框显示参数
      */
-    warn:  (title, text, options = {})=>{
+    warn: (title, text, options = {}) => {
         notice.msg(title, text, 'warn', options);
-    }
-}
+    },
+};
 export {notice};

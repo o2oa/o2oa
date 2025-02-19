@@ -3,16 +3,16 @@ import {serverStatus, echoServer} from '../../common/action.js';
 
 const template = `
 <div class="pane_content" style="padding: 2rem 2rem">
-    <div class="input_title">执行服务器初始化</div>
+    <!--<div class="input_title">执行服务器初始化</div>-->
     
     <div class="infoArea">
         <div oo-if="$.status==='waiting' || $.status==='running' || $.status==='starting'" class="loading" oo-element="testLoading"></div>
         <div oo-if="$.status==='success' || $.status==='started'" class="icon ooicon-check"></div>
-        <div oo-if="$.status==='unknown'" class="icon ooicon-error" style="color:#ffc42bde"></div>
+        <div oo-if="$.status==='unknown' || $.status==='stop'" class="icon ooicon-error" style="color:var(--oo-color-error)"></div>
         
         <div oo-if="$.status==='waiting'" class="info">等待服务器执行初始化 ... </div>
         <div oo-if="$.status==='running'" class="info">服务器初始化正在执行中 ... </div>
-        <div oo-if="$.status==='starting'" class="info">正在启动O2OA(翱途)服务器 ... </div>
+        <div oo-if="$.status==='starting'" class="info">正在检测O2OA(翱途)服务器 ... </div>
         
         <div oo-if="$.status==='success'" class="info">服务器初始化执行成功，即将启动O2OA(翱途)服务器！</div>
         <div oo-if="$.status==='started'" class="info">服务器初始化执行成功，O2OA(翱途)服务器已启动！</div>
@@ -68,7 +68,6 @@ const style = `
     flex-direction: column;
     height: 25rem;
     justify-content: center;
-    padding-left: 2rem;
     align-items: center;
 }
 .loading {
@@ -89,38 +88,36 @@ export default component({
     style,
     autoUpdate: true,
 
-    bind(){
+    bind() {
         return {
-            status: 'success',
+            status: 'waiting',
             messages: [],
             failureMessage: '',
-            checkCount: 0
-        }
+            checkCount: 0,
+        };
     },
 
     async afterRender() {
-       if (this.$p.bind.serverStop){
-           this.bind.status = 'stop';
-       }else{
-           this.checkCount = 0;
-           this.timeoutCheck();
-       }
+        if (this.$p.bind.serverStop) {
+            this.bind.status = 'stop';
+        } else {
+            this.checkCount = 0;
+            this.timeoutCheck();
+        }
     },
     async timeoutCheck() {
-        if (this.bind.status==='starting'){
+        if (this.bind.status === 'starting') {
             await this.checkServer();
-        }else{
+        } else {
             await this.check();
         }
 
-        if (this.checkCount>150){
+        if (this.checkCount > 150) {
             this.bind.status = 'unknown';
-        }else{
-            if (this.bind.status==='started'){
-
-            }else if (this.bind.status==='failure'){
-
-            }else{
+        } else {
+            if (this.bind.status === 'started') {
+            } else if (this.bind.status === 'failure') {
+            } else {
                 window.setTimeout(() => {
                     this.timeoutCheck();
                 }, 2000);
@@ -141,7 +138,7 @@ export default component({
         this.bind.messages = json.messages || [];
         this.checkCount++;
     },
-    gotoIndex(){
-        window.location=`/?${(new Date()).getTime()}`;
-    }
+    gotoIndex() {
+        window.location = `/?${new Date().getTime()}`;
+    },
 });

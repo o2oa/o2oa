@@ -9,7 +9,7 @@ export default component({
     components: {indexHeader, indexMain, indexFooter},
 
     // 初始化数据
-    bind() {
+    async bind() {
         return {
             secret: {
                 passStr: '',
@@ -23,6 +23,9 @@ export default component({
             },
             restore: {
                 name: '',
+            },
+            title: {
+                text: '',
             },
         };
     },

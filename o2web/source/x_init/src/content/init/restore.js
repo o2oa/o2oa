@@ -3,7 +3,7 @@ import {dom} from '@o2oa/util';
 import {uploadRestore, cancelRestore} from '../../common/action.js';
 
 const template = `
-<div class="pane_content" style="padding: 2rem 2rem">
+<div class="pane_content" style="max-width: 60rem; min-height: 40rem">
     <div class="input_title">初始化数据</div>
     <div class="upload_area" @dragover="dragover" @drop="drop" @dragout="dragout">
         <div>将zip文件拖动到此处</div>
@@ -19,8 +19,8 @@ const template = `
     </div>
 </div>
 <div class="actions">
-    <oo-button type="cancel" @click="stepPrev">上一步</oo-button>
-    <oo-button @click="nextStep">下一步</oo-button>
+    <oo-button type="cancel" @click="stepPrev" style="flex: 2">上一步</oo-button>
+    <oo-button @click="nextStep" style="flex: 3">下一步</oo-button>
 </div>
 <input type="file" @change="uploadFile" oo-element="uploadFileNode" style="display: none"/>
 <div class="maskNode" oo-if="$.status==='uploading'">
@@ -32,14 +32,12 @@ const style = `
 .upload_area {
     border: 0.12rem dashed #cccccc;
     border-radius: 1rem;
-    width: 90%;
-    height: 12rem;
+    height: 22rem;
     margin-top: 3rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
 }
 .upload_area.over{
     background-color: #f1f1f1;
@@ -80,8 +78,6 @@ const style = `
     display: flex;
     justify-content: center;
     align-items: center;
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
 }
 `;
 export default component({
@@ -89,17 +85,17 @@ export default component({
     style,
     autoUpdate: true,
 
-    bind(){
+    bind() {
         return {
-            status: ''
-        }
+            status: '',
+        };
     },
 
-    dragover(e){
+    dragover(e) {
         e.preventDefault();
         dom.addClass(e.target, 'over');
     },
-    dragout(e){
+    dragout(e) {
         e.preventDefault();
         dom.removeClass(e.target, 'over');
     },
@@ -133,8 +129,8 @@ export default component({
             this.bind.status = '';
         }
     },
-    selectFile(){
-        if (this.uploadFileNode){
+    selectFile() {
+        if (this.uploadFileNode) {
             this.uploadFileNode.click();
         }
     },
@@ -142,14 +138,13 @@ export default component({
         await cancelRestore();
         this.bind.restore.name = '';
     },
-    stepPrev(){
+    stepPrev() {
         const step = this.$p.bind.step - 1;
-        this.$p.bind.step = (step<0) ? 0 : step;
+        this.$p.bind.step = step < 0 ? 0 : step;
     },
 
-    nextStep(){
+    nextStep() {
         const step = this.$p.bind.step + 1;
-        this.$p.bind.step = (step<5) ? step : 0;
-    }
-
+        this.$p.bind.step = step < 5 ? step : 0;
+    },
 });

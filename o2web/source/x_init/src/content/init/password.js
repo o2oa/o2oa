@@ -4,42 +4,75 @@ import {notice} from '../../common/notice.js';
 
 const template = `
 <div class="pane_content">
+    <div class="logo60"></div>
     <div class="input_title">设置密码</div>
-    <oo-input oo-model="secret.passStr" type="password" left-icon="password" placeholder="请设置管理员密码" skin="icon-right:var(--oo-color-main)" right-icon="{{($.secret.passStr && $m.checkPassword($.secret.passStr)) ? 'check' : ''}}"></oo-input>
-    <div style="color: red; padding-left: 1em; font-size:0.875rem; height: 1rem;"><span oo-if="!$m.checkPassword($.secret.passStr)">密码必须6位以上，包含字母和数字</span></div>
+    <oo-input oo-element="passwordFiled"
+        oo-model="secret.passStr" 
+        type="password" 
+        required="true"
+        pattern="^(?=.*[a-zA-Z])(?=.*\\d).{6,}$"
+        validity-blur="true" 
+        validity="密码长度至少6位，同时包含数字和字母。"
+        left-icon="password" 
+        placeholder="请设置管理员密码" 
+        skin="icon-right:var(--oo-color-main)" 
+        right-icon="{{($.secret.passStr && $m.checkPassword($.secret.passStr)) ? 'icon_ok_round' : ''}}">
+    </oo-input>
+    
     
     <div class="input_title">确认密码</div>
-    <oo-input oo-model="secret.confirmPass" type="password" left-icon="password" placeholder="请再次输入密码" skin="icon-right:var(--oo-color-main)" right-icon="{{($.secret.passStr && $.secret.confirmPass && $m.checkConfirm($.secret.passStr, $.secret.confirmPass)) ? 'check' : ''}}"></oo-input>
-    <div style="color: red; padding-left: 1em; font-size:0.875rem; height: 1rem;"><span oo-if="!$m.checkConfirm($.secret.passStr, $.secret.confirmPass)">确认密码和设置密码不一致</span></div>
+    <oo-input oo-element="confirmFiled"
+        @validity="validityConfirmFiled"
+        oo-model="secret.confirmPass" 
+        type="password" 
+        required="true"
+        pattern="^(?=.*[a-zA-Z])(?=.*\\d).{6,}$"
+        validity-blur="true" 
+        validity="密码长度至少6位，同时包含数字和字母。"
+        left-icon="password" 
+        placeholder="请再次输入密码" 
+        skin="icon-right:var(--oo-color-main)" 
+        right-icon="{{($.secret.passStr && $.secret.confirmPass && $m.checkConfirm($.secret.passStr, $.secret.confirmPass)) ? 'icon_ok_round' : ''}}">
+    </oo-input>
+    
 </div>
 <div class="actions">
-    <oo-button @click="setPassword">下一步</oo-button>
+    <oo-button type="cancel" @click="stepPrev" style="flex: 2">上一步</oo-button>
+    <oo-button @click="setPassword" style="flex: 3">下一步</oo-button>
 </div>
 `;
 export default component({
     template,
     autoUpdate: true,
 
-    checkConfirm(passStr, confirmPass){
-        return !passStr || !confirmPass || passStr===confirmPass;
+    checkConfirm(passStr, confirmPass) {
+        return !passStr || !confirmPass || (this.checkPassword(confirmPass) && passStr === confirmPass);
     },
-    checkPassword(str){
-        const regex = /^(?=.*[a-z])(?=.*\d).{6,30}$/;
+    checkPassword(str) {
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/;
         return !str || regex.test(str);
     },
-    async setPassword() {
-        if (!this.bind.secret.passStr || !this.bind.secret.confirmPass || !this.checkConfirm(this.bind.secret.passStr, this.bind.secret.confirmPass) || !this.checkPassword(this.bind.secret.passStr)) {
-            notice.msg('设置管理员密码', '您必须为管理员（xadmin）设置密码！', 'error', {
-                container: this.$p.paneNode,
-                location: 'topRight'
-            })
-            return false;
+    validityConfirmFiled(e) {
+        if (this.bind.secret.passStr !== this.bind.secret.confirmPass) {
+            e.target.setCustomValidity('两次输入的密码不一致。');
+        } else {
+            e.target.setCustomValidity('');
         }
-        await setPassword(this.bind.secret.passStr);
-        this.bind.secret.passStr = this.bind.secret.passStr;
+    },
+    stepPrev() {
+        const step = this.$p.bind.step - 1;
+        this.$p.bind.step = step < 0 ? 0 : step;
+    },
+    async setPassword() {
+        if (this.passwordFiled.checkValidity() && this.confirmFiled.checkValidity()) {
+            $OOUI.mask(this.dom.parentElement);
+            await setPassword(this.bind.secret.passStr);
+            $OOUI.unmask(this.dom.parentElement);
 
-        const step = this.$p.bind.step + 1;
-        this.$p.bind.step = (step < 5) ? step : 0;
-    }
+            this.bind.secret.passStr = this.bind.secret.passStr;
 
+            const step = this.$p.bind.step + 1;
+            this.$p.bind.step = step < 5 ? step : 0;
+        }
+    },
 });
