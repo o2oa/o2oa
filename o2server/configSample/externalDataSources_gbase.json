@@ -10,6 +10,7 @@
 		"enable": true,
 		"testConnectionOnCheckin": false,
 		"testConnectionOnCheckout": false,
-		"statEnable" :false
+		"statEnable" :false,
+		"urlTemplate": "jdbc:gbasedbt-sqli://{host}:{port}/{db}:GBASEDBTSERVER=gbaseserver"
 	}
 ]

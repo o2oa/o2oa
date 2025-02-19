@@ -5,6 +5,7 @@
 		"password" :"krms",
 		"includes": [],
 		"excludes": [],
-		"enable" : true
+		"enable" : true,
+		"urlTemplate": "jdbc:kingbase://{host}:{port}/{db}"
 	}
 ]

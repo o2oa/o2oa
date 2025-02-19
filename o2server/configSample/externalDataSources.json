@@ -46,6 +46,7 @@
     "###logStatInterval": "统计日志输出间隔,单位分钟,默认180.###",
     "###slowSqlEnable": "是否启用执行慢sql记录.###",
     "###slowSqlThreshold": "执行慢sql记录阈值,毫秒数,默认3000毫秒.###",
+    "###urlTemplate": "jdbc url 配置模板.###",
     "###extension": "扩展设置.###"
   }
 ]

@@ -42,7 +42,7 @@ public class MissionSetSecret implements Mission {
 			Config.resource_commandQueue().add("ctl -initResourceFactory");
 			Config.regenerate();
 			// 命令队列是用多线程运行的,后续如果有ctl -initResourceFactory对目录有操作,可能导致重复删除目录冲突.
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 			messages.msg("success");
 		} catch (InterruptedException ie) {
 			Thread.currentThread().interrupt();

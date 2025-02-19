@@ -6,6 +6,7 @@
 		"schema" : "X",
 		"includes": [],
 		"excludes": [],
-		"enable" : true
+		"enable" : true,
+		"urlTemplate": "jdbc:oracle:thin:@//{host}:{port}/{db}"
 	}
 ]
