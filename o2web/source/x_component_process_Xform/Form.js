@@ -780,7 +780,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
             this.mobileTools = tools;
             if (tools.length <= 0) {
-                if (node) node.hide();
+                if (node) {
+                    node.hide();
+                    const prevNode = node.previousElementSibling;
+                    if (prevNode) {
+                        prevNode.style.bottom = '0px';
+                    }
+                }
             } else {
                 // app上用原来的按钮样式
                 if (window.o2android || window.flutter_inappwebview || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog)) {
