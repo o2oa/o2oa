@@ -34,7 +34,7 @@ o2.addReady(function () {
                                 "name": "userdetail", "async": true, "parameter": { "code":  code}, "success":  function(json) {
                                 // 完成认证 关闭页面
                                 if (redirect) {
-                                    history.replaceState(null, "", redirect);
+                                    history.replaceState(null, "page", redirect);
                                     window.location.replace(redirect);
                                     if (redirect.includes("#/")) {
                                         window.location.reload();
@@ -55,7 +55,7 @@ o2.addReady(function () {
                                     console.log("认证成功")
                                     if (redirect) {
                                         console.log("---------------------准备跳转 redirect 地址")
-                                        history.replaceState(null, "", redirect);
+                                        history.replaceState(null, "page", redirect);
                                         window.location.replace(redirect);
                                         if (redirect.includes("#/")) {
                                             window.location.reload();

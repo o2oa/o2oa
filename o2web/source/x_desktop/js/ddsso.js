@@ -117,7 +117,7 @@ o2.addReady(function () {
                                                                 uri = redirect.replace("workmobilewithaction.html", "work.html");
                                                                 uri = uri.replace("cmsdocMobile.html", "cmsdoc.html");
                                                             }
-                                                            history.replaceState(null, "", uri);
+                                                            history.replaceState(null, "page", uri);
                                                             window.location.replace(uri);
                                                             if (uri.includes("#/")) {
                                                                 window.location.reload();
