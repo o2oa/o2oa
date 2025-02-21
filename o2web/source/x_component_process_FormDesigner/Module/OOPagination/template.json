@@ -14,7 +14,7 @@
     },
     "label": "",
     "showIcon": "no",
-    "compute": "create", //create, show, save
+    "compute": "create",
     "section": "no",
     "sectionBy": "person",
     "sectionByScript": {

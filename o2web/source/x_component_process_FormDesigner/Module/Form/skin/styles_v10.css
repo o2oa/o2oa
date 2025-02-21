@@ -322,14 +322,7 @@ div.form-log-simple {
     border-bottom: 1px solid #dfdfdf !important;
     transition: background-color 0.3s;
 }
-.page-content-section div[mwftype='statement'] table tr:nth-child(odd) td {
-    /* background-color: unset; */
-    /* border: 0 !important; */
-}
-.page-content-section div[mwftype='statement'] table tr:nth-child(even) td {
-    /* background-color: unset; */
-    /* border: 0 !important; */
-}
+
 .page-content-section div[mwftype='statement'] table tr:nth-child(1) td {
     background-color: #f7f7f7 !important;
     white-space: nowrap;
@@ -384,14 +377,7 @@ tr.viewTitleLine > td {
     border-bottom: 1px solid #dfdfdf !important;
     transition: background-color 0.3s;
 }
-.page-content-section div[mwftype='view'] table tr:nth-child(odd) td {
-    /* background-color: unset; */
-    /* border: 0 !important; */
-}
-.page-content-section div[mwftype='view'] table tr:nth-child(even) td {
-    /* background-color: unset; */
-    /* border: 0 !important; */
-}
+
 .page-content-section div[mwftype='view'] table tr:nth-child(1) td {
     background-color: #f7f7f7 !important;
     white-space: nowrap;
@@ -495,7 +481,6 @@ tr.viewTitleLine > td {
 .pagingBarWraper .prePage,
 .pagingBarWraper .nextPage {
     font-family: 'ooicon' !important;
-    speak: never;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;

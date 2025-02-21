@@ -7,9 +7,17 @@
       "default",
       {
         "ignore": [
-          "user-select"
+          "user-select",
+          "speak"
         ]
       }
-    ]
+    ],
+    "axe/forms": [
+      "default",
+      {
+        "label": "off"
+      }
+    ],
+    "no-inline-styles": "off"
   }
 }
