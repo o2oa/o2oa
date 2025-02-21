@@ -118,7 +118,10 @@ o2.addReady(function () {
                                                                 uri = uri.replace("cmsdocMobile.html", "cmsdoc.html");
                                                             }
                                                             history.replaceState(null, "page", uri);
-                                                            uri.toURI().go();
+                                                            window.location.replace(uri);
+                                                            if (uri.includes("#/")) {
+                                                                window.location.reload();
+                                                            }
                                                         } else {
                                                             var uri = "../x_desktop/appMobile.html?app=process.TaskCenter";
                                                             if (dd.pc) { // 判断是否是PC端，目前测试这个参数可用
