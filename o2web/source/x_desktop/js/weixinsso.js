@@ -6,7 +6,6 @@ if (href.indexOf("debugger") != -1) layout.debugger = true;
 layout.desktop = layout;
 layout.session = layout.session || {};
 o2.addReady(function () {
-    // o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
 
         MWF.loadLP("zh-cn");
 
@@ -20,6 +19,8 @@ o2.addReady(function () {
                     var mode = uri.getData("mode");
                     var code = uri.getData("code");
                     var redirect = uri.getData("redirect");
+                    console.log("code = "+ code)
+                    console.log("redirect = "+ redirect)
                     MWF.require("MWF.xDesktop.Actions.RestActions", function () {
                         var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
                         action.getActions = function (actionCallback) {
@@ -27,7 +28,8 @@ o2.addReady(function () {
                                             "userdetail" : {"uri": "/jaxrs/qiyeweixin/update/person/detail/{code}", "method": "GET" } };
                             if (actionCallback) actionCallback();
                         };
-                        if (mode && mode === "snsapi_privateinfo") { // 获取用户详细信息，更新到Person 
+                        if (mode && mode === "snsapi_privateinfo") { // 获取用户详细信息，更新到Person
+                            console.log("获取用户详细信息，更新到Person")
                             action.invoke({
                                 "name": "userdetail", "async": true, "parameter": { "code":  code}, "success":  function(json) {
                                 // 完成认证 关闭页面
@@ -39,26 +41,26 @@ o2.addReady(function () {
                                     document.id("layout").set("html", "<div>更新成功，可以关闭页面了！</div>");
                                 }
                             }.bind(this), "failure": function (xhr, text, error) {
-                                document.id("layout").set("html", "<div>企业微信单点异常！</div>")
-                            }.bind(this)
+                                    console.log("企业微信单点异常 11111")
+                                    document.id("layout").set("html", "<div>企业微信单点异常！</div>")
+                                }.bind(this)
                             });
                         } else { // 默认的单点登录
+                            console.log("默认的单点登录")
                             action.invoke({
                                 "name": "sso", "async": true, "parameter": { "code":  code}, "success": function (json) {
+                                    console.log("认证成功")
                                     if (redirect) {
+                                        console.log("---------------------准备跳转 redirect 地址")
                                         history.replaceState(null, "page", redirect);
                                         redirect.toURI().go();
                                     } else {
                                         history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                         "appMobile.html?app=process.TaskCenter".toURI().go();
                                     }
-
-                                    //"appMobile.html?app=process.TaskCenter".toURI().go();
-                                    //window.loaction = "app.html?app=process.TaskCenter";
                                 }.bind(this), "failure": function (xhr, text, error) {
+                                    console.log("企业微信单点异常 222222")
                                     document.id("layout").set("html", "<div>企业微信单点异常！</div>")
-                                    //"appMobile.html?app=process.TaskCenter".toURI().go();
-                                    //window.loaction = "app.html?app=process.TaskCenter";
                                 }.bind(this)
                             });
                         }
@@ -66,31 +68,6 @@ o2.addReady(function () {
                     
                 };
 
-                
-
-                // layout.notice = function (content, type, target, where, offset) {
-                //     if (!where) where = { "x": "right", "y": "top" };
-                //     if (!target) target = this.content;
-                //     if (!type) type = "ok";
-                //     var noticeTarget = target || $(document.body);
-                //     var off = offset;
-                //     if (!off) {
-                //         off = {
-                //             x: 10,
-                //             y: where.y.toString().toLowerCase() == "bottom" ? 10 : 10
-                //         };
-                //     }
-
-                //     new mBox.Notice({
-                //         type: type,
-                //         position: where,
-                //         move: false,
-                //         target: noticeTarget,
-                //         delayClose: (type == "error") ? 10000 : 5000,
-                //         offset: off,
-                //         content: content
-                //     });
-                // };
 
                 MWF.getJSON("res/config/config.json", function (config) {
                     if (config.proxyCenterEnable){
@@ -108,13 +85,10 @@ o2.addReady(function () {
                         layout.centerServer = center;
                         layout.load();
                     }.bind(this));
-                    //layout.getServiceAddress(function(){
-                    //    layout.load();
-                    //});
+
                 });
 
             })();
 
         });
-    // });
 });
