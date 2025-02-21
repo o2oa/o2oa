@@ -34,8 +34,11 @@ o2.addReady(function () {
                                 "name": "userdetail", "async": true, "parameter": { "code":  code}, "success":  function(json) {
                                 // 完成认证 关闭页面
                                 if (redirect) {
-                                    history.replaceState(null, "page", redirect);
-                                    redirect.toURI().go();
+                                    history.replaceState(null, "", redirect);
+                                    window.location.replace(redirect);
+                                    if (redirect.includes("#/")) {
+                                        window.location.reload();
+                                    }
                                 } else {
                                     console.error("没有引入企业微信js！！！");
                                     document.id("layout").set("html", "<div>更新成功，可以关闭页面了！</div>");
@@ -52,8 +55,11 @@ o2.addReady(function () {
                                     console.log("认证成功")
                                     if (redirect) {
                                         console.log("---------------------准备跳转 redirect 地址")
-                                        history.replaceState(null, "page", redirect);
-                                        redirect.toURI().go();
+                                        history.replaceState(null, "", redirect);
+                                        window.location.replace(redirect);
+                                        if (redirect.includes("#/")) {
+                                            window.location.reload();
+                                        }
                                     } else {
                                         history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                         "appMobile.html?app=process.TaskCenter".toURI().go();
