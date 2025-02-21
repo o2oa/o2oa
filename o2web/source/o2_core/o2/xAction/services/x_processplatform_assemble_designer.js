@@ -7,15 +7,11 @@
     getUUID: function(success, async){
         var sync = (async !== false);
         var id = "";
-        this.action.invoke({"name": "getId","async": sync, "parameter": {"count": "1"}, "success": function(ids){
+        var query = new o2.widget.UUID().toString();
+        this.action.invoke({"name": "getId","async": sync, "parameter": {"count": "1", "query": query}, "success": function(ids){
             id = ids.data[0].id;
             if (success) success(id);
         },	"failure": null});
-
-        //this.action.invoke({"name": "getId","async": false, "parameter": {"count": "1"},	"success": function(ids){
-        //	id = ids.data[0].id;
-        //   if (success) success(id);
-        //},	"failure": null, "withCredentials": false});
         return id;
     },
 

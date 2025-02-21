@@ -460,8 +460,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     // var cssClass = "";
                     // if (this.json.css && this.json.css.code) cssClass = this.loadCss();
                     var cssClass = this.loadCss();
-                    if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
-                    if (this.json.cssLink) this.container.loadCss(this.json.cssLink);
 
                     //this.container.setStyle("opacity", 0);
 
@@ -478,13 +476,43 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     // this.loadDictionaryList(function () {
 
                     this.fireEvent("queryLoad");
-                    if (this.event_resolve) {
-                        this.event_resolve(function () {
-                            this.loadForm(callback)
-                        }.bind(this));
-                    } else {
-                        this.loadForm(callback);
+
+                    debugger;
+                    var cssPromise = [];
+                    if (this.json.cssUrl){
+                        cssPromise.push(new Promise(function(resolve){
+                            this.container.loadCss(this.json.cssUrl, null, function(){resolve()});
+                        }.bind(this)));
                     }
+                    if (this.json.cssLink){
+                        cssPromise.push(new Promise(function(resolve){
+                            this.container.loadCss(this.json.cssLink, null, function(){resolve()});
+                        }.bind(this)));
+                    }
+                    if (cssPromise.length){
+                        Promise.all(cssPromise).then(function(){
+                            if (this.event_resolve) {
+                                this.event_resolve(function () {
+                                    this.loadForm(callback);
+                                }.bind(this));
+                            } else {
+                                this.loadForm(callback);
+                            }
+                        }.bind(this));
+                    }else{
+                        if (this.event_resolve) {
+                            this.event_resolve(function () {
+                                this.loadForm(callback);
+                            }.bind(this));
+                        } else {
+                            this.loadForm(callback);
+                        }
+                    }
+
+                    // if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
+                    // if (this.json.cssLink) this.container.loadCss(this.json.cssLink, null, function(){
+                    //
+                    // }.bind(this));
 
                 }.bind(this));
 

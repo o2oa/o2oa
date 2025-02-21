@@ -64,6 +64,7 @@
         "-moz-user-select": "none",
         "cursor": "nw-resize",
 //        "background": "url("+"../x_component_Note/$Main/default/icon/resize.png) no-repeat center center",
-        "margin": "0px 2px 2px 0px"
+        "margin": "0px 3px 2px 0px"
+        "font-size": "10px"
     }
 }

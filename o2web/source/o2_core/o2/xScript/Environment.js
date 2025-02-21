@@ -3198,6 +3198,24 @@ MWF.xScript.Environment = function(ev){
             }
         },
 
+         /**对当前表单打开的流程实例进行流转。如果传入option参数，则与process方法完全相同，无option参数，使用新的继续流转界面。<b>（仅流程表单中可用）</b><br/>
+         * 可以通过this.workContext.getControl().allowProcessing来判断当前用户是否有权限进行流转。<br/>
+         * this.form.process()会触发 beforeSave、afterSave、beforeProcess、afterProcess事件，因此在上述事件中不允许使用本方法。
+         * @method process
+         * @static
+         * @param {Object} [option] - 流程的相关数据，如果不带此参数，则弹出路由选择和意见填写框<br/>
+         */
+        "flowWork": function(option){
+            var op = _form.getOpinion();
+            var mds = op.medias;
+            if (option){
+                _form.submitWork(option.routeName, option.opinion, mds, option.callback,
+                    option.processor, null, option.appendTaskIdentityList, option.processorOrgList, option.callbackBeforeSave );
+            }else{
+                _form.flowWork();
+            }
+        },
+
         /**对当前文档的待办重新设定处理人。<b>（仅流程表单中可用）</b><br/>
          * 可以通过this.workContext.getControl().allowReset来判断当前用户是否有权限重置处理人。<br/>
          * @method reset

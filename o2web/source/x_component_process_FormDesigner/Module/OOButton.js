@@ -25,7 +25,7 @@ MWF.xApplication.process.FormDesigner.Module.OOButton = MWF.FCOOButton = new Cla
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-button", {
-			"MWFType": "OOInput",
+			"MWFType": "OOButton",
 			"id": this.json.id,
 			"styles": this.css.moduleNodeMove,
 			"events": {
