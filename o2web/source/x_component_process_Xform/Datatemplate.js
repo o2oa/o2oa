@@ -529,7 +529,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				flag = true;
 				bData = {};
 			}
-			if( !bData[this.sectionBy] ){
+			if( this.sectionBy && !bData[this.sectionBy] ){
 				flag = true;
 				this.isNew = true;
 				bData[this.sectionBy] = this.getValue();
@@ -589,6 +589,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 		},
 		getDefaultValue: function(){
+			if( this.json.section==="yes" && !this.sectionBy )return [];
 			var value;
 			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
 			if (value && !value.then) if (o2.typeOf(value)==="object") value = [value];
@@ -1567,7 +1568,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					case "person":
 						return layout.desktop.session.user.id;
 					case "unit":
-						return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+						return (this.form.businessData.task) ? (this.form.businessData.task.unitDn || this.form.businessData.task.unit) : "";
 					case "activity":
 						return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
 					case "splitValue":

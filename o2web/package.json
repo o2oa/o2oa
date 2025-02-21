@@ -29,6 +29,7 @@
   "devDependencies": {
     "@o2oa/language-tools": "^1.0.15",
     "@o2oa/tidy-jsdoc-o2": "latest",
+    "del": "^8.0.0",
     "glob": "^10.3.10",
     "gulp": "^4.0.0",
     "gulp-changed": "^3.2.0",
@@ -43,11 +44,13 @@
     "gulp-sftp-up4": "^0.1.8",
     "gulp-shell": "^0.8.0",
     "gulp-sourcemaps": "^3.0.0",
-    "gulp-tm-uglify": "3.0.1",
     "gulp-terser": "^2.1.0",
+    "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
+    "gulp-util": "^3.0.8",
     "jasmine-core": "^3.6.0",
     "jsdoc": "^3.6.6",
+    "jsftp": "^2.1.3",
     "karma": "^5.2.3",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.3",
@@ -55,6 +58,7 @@
     "karma-jasmine": "^4.0.1",
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "through2": "^4.0.2"
   }
 }

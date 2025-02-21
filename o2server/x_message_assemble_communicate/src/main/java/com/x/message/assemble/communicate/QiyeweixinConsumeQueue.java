@@ -155,35 +155,35 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 	 */
 	private String getQywxOpenWorkUrl(String messageBody) {
 		try {
+			String openPage = DingdingConsumeQueue.OuterMessageHelper.getOpenPageUrl(messageBody);
 			String work = DingdingConsumeQueue.OuterMessageHelper.getWorkIdFromBody(messageBody);
 			String o2oaUrl = Config.qiyeweixin().getWorkUrl();
 			String corpId = Config.qiyeweixin().getCorpId();
 			String agentId = Config.qiyeweixin().getAgentId();
-			if (StringUtils.isEmpty(work) || StringUtils.isEmpty(o2oaUrl) || StringUtils.isEmpty(corpId)
-					|| StringUtils.isEmpty(agentId)) {
+			if (StringUtils.isEmpty(o2oaUrl) || StringUtils.isEmpty(corpId) || StringUtils.isEmpty(agentId)) {
+				LOGGER.warn("workurl corpid agentid 可能为空！");
 				return null;
 			}
-			String openPage = DingdingConsumeQueue.OuterMessageHelper.getOpenPageUrl(messageBody);
 			if (StringUtils.isNotEmpty(openPage)) {
-				o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + openPage;
-			} else {
+				o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" +  URLEncoder.encode(openPage, DefaultCharset.name);
+			} else if (StringUtils.isNotEmpty(work) ) {
 				String workUrl = "workmobilewithaction.html?workid=" + work;
 				String messageRedirectPortal = Config.qiyeweixin().getMessageRedirectPortal();
-				if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
-					String portal = "portalmobile.html?id=" + messageRedirectPortal;
+				if (messageRedirectPortal != null && !messageRedirectPortal.trim().isEmpty()) {
+					String portal = "portalmobile.html?id=" + messageRedirectPortal.trim();
 					portal = URLEncoder.encode(portal, DefaultCharset.name);
 					workUrl += "&redirectlink=" + portal;
 				}
 				workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
 				o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + workUrl;
+			} else {
+				LOGGER.warn("没有 work 或者 openPageUrl 无法生成地址！");
+				return null;
 			}
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("o2oa 地址：{}", o2oaUrl);
 			}
 			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("encode url : {}" , o2oaUrl);
-			}
 			String oauthUrl = Config.qiyeweixin().getOauth2Address();
 			String url = oauthUrl + "/connect/oauth2/authorize?appid=" + corpId
 					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl

@@ -46,6 +46,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "role" : "角色",
     "group" : "群组",
     "unit" : "组织",
+    "unitDuty" : "组织职务",
     "systemList" : "系统列表",
 
     "quantifier": {

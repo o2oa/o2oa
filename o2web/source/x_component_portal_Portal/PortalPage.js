@@ -51,6 +51,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
     toPortal: function(portal, page, par){
         this.options.portalId = portal;
         this.options.pageId = page;
+        this.options.parameters = par;
 
         if (this.appForm) this.appForm.fireEvent("beforeClose");
         Object.keys(this.$events).each(function(k){
@@ -69,6 +70,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
                 var page = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
                 if (page){
                     this.options.pageId = json.data.id;
+                    this.options.parameters = par;
 
                     if (this.appForm) this.appForm.fireEvent("beforeClose");
                     Object.keys(this.$events).each(function(k){
@@ -89,6 +91,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     var page = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
                     if (page){
                         this.options.pageId = json.data.id;
+                        this.options.parameters = par;
 
                         if (this.appForm) this.appForm.fireEvent("beforeClose");
                         Object.keys(this.$events).each(function(k){

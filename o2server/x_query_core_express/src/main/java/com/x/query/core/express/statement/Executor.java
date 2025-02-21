@@ -86,9 +86,12 @@ public class Executor {
                 }else{
                     List<LinkedHashMap<String, Object>> list = query.getResultList();
                     for (LinkedHashMap<String, Object> map : list) {
-                        for (Map.Entry<String, Object> entry : map.entrySet()) {
-                            if (entry.getValue() instanceof Clob) {
-                                map.put(entry.getKey(), convertClobToString((Clob) entry.getValue()));
+                        if (map != null) {
+                            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                                if (entry.getValue() instanceof Clob) {
+                                    map.put(entry.getKey(),
+                                            convertClobToString((Clob) entry.getValue()));
+                                }
                             }
                         }
                     }

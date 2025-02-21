@@ -113,7 +113,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         if (this.json.filterMethod && this.json.filterMethod.code){
             var fn = this.form.Macro.exec(this.json.filterMethod.code, this);
             methods.$filterMethod = function(){
-                fn.apply(this, arguments);
+                return fn.apply(this, arguments);
             }.bind(this);
         }
         if (this.json.lazyLoadScript && this.json.lazyLoadScript.code){
@@ -282,7 +282,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 var opValue = op[this.json.props.value];
                 var opLabel = op[this.json.props.label];
                 if( opValue === value ){
-                    text = opLabel;
+                   return opLabel;
                 }
             }
         }

@@ -310,7 +310,7 @@ public class UnitFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.equal(root.get(Unit_.level), 0);
+		Predicate p = cb.equal(root.get(Unit_.level), 1);
 		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		os = os.stream().sorted(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)))
 				.collect(Collectors.toList());

@@ -164,14 +164,14 @@ MWFCalendarDayView.Calendar = new Class({
 
     },
     setTitleNode: function(){
-        this.prevDayNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevDayNode}).inject(this.titleNode);
+        this.prevDayNode =  new Element("div.ooicon-arrow_back", {"styles": this.css.calendarPrevDayNode}).inject(this.titleNode);
 
         var text = this.date.format(this.lp.dateFormatDay) + "，" + this.lp.weeks.arr[ this.date.getDay() ];
 
 
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextDayNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextDayNode}).inject(this.titleNode);
+        this.nextDayNode =  new Element("div.ooicon-arrow_forward", {"styles": this.css.calendarNextDayNode}).inject(this.titleNode);
 
         this.prevDayNode.addEvents({
             "mouseover": function(){

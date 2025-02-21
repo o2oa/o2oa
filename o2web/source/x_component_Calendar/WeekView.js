@@ -238,7 +238,7 @@ MWFCalendarWeekView.Calendar = new Class({
         return date.decrement("day", decrementDay);
     },
     setTitleNode: function(){
-        this.prevWeekNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
+        this.prevWeekNode =  new Element("div.ooicon-arrow_back", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
 
         // var text = this.baseDate.format(this.app.lp.dateFormatMonth)
         //     + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
@@ -250,7 +250,7 @@ MWFCalendarWeekView.Calendar = new Class({
 
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextWeekNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
+        this.nextWeekNode =  new Element("div.ooicon-arrow_forward", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
 
         this.prevWeekNode.addEvents({
             "mouseover": function(){

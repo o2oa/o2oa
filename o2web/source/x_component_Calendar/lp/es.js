@@ -21,6 +21,7 @@ MWF.xApplication.Calendar.LP={
 	"enable": "Habilitado",
 	"disable": "Deshabilitado",
 	"modifyConfirm": "Confirmar modificación",
+	"deleteConfirm": "Confirmar eliminación",
 	"cancel": "Cancelar",
 	"close": "Cerrar",
 	"save": "Guardar",
@@ -68,16 +69,16 @@ MWF.xApplication.Calendar.LP={
 	"saveOptionDialogTitle": "Modificar",
 	"selectModifyCalendarTypeNotice": "Seleccione el tipo de cambio de evento que desea realizar",
 	"calendarModifyTypeArr": [
-		"Solo modificar este evento",
-		"Modificar este evento y eventos repetidos futuros",
-		"Modificar todos los eventos repetidos"
+		"Este evento",
+		"Este evento y eventos repetidos futuros",
+		"Todos los eventos repetidos"
 	],
 	"deleteOptionDialogTitle": "Eliminar",
 	"selectDeleteCalendarTypeNotice": "Seleccione el tipo de eliminación de evento que desea realizar",
 	"calendarDeleteTypeArr": [
-		"Solo eliminar este evento",
-		"Eliminar este evento y eventos repetidos futuros",
-		"Eliminar todos los eventos repetidos"
+		"Este evento",
+		"Este evento y eventos repetidos futuros",
+		"Todos los eventos repetidos"
 	],
 	"countEvents": "Eventos",
 	"noEventWeek": "No hay eventos esta semana",

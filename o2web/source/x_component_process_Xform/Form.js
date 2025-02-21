@@ -808,7 +808,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
             this.mobileTools = tools;
             if (tools.length <= 0) {
-                if (node) node.hide();
+                if (node) {
+                    node.hide();
+                    const prevNode = node.previousElementSibling;
+                    if (prevNode) {
+                        prevNode.style.bottom = '0px';
+                    }
+                }
             } else {
                 // app上用原来的按钮样式
                 if (window.o2android || window.flutter_inappwebview || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog)) {
@@ -1459,7 +1465,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return obj;
     },
     getSectionDataByUnit: function (v, obj) {
-        var key = (this.businessData.task) ? this.businessData.task.unit : "";
+        var key = (this.businessData.task) ? (this.businessData.task.unitDn || this.businessData.task.unit) : "";
         if (!obj || (typeOf(obj) !== "object")) obj = {};
         if (key) obj[key] = v;
         return obj;
@@ -1509,7 +1515,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return obj;
     },
     setSectionByUnit: function (obj, name) {
-        var key = (this.businessData.task) ? this.businessData.task.unit : "";
+        var key = (this.businessData.task) ? (this.businessData.task.unitDn || this.businessData.task.unit) : "";
         if (!obj || (typeOf(obj) !== "object")) obj = {};
         this.sectionListObj[name] = key || "";
         //if (key) obj[key] = v;
@@ -2614,6 +2620,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var flowNode = new Element("div", { "styles": this.app.css.flowNode_Area }).inject(this.node);
         flowNode.setStyle("opacity", 0);
+
+        debugger;
 
         var setSize = function (notRecenter) {
 

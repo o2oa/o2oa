@@ -1,5 +1,6 @@
 package com.x.program.center.qiyeweixin;
 
+import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.tools.StringTools;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -157,11 +158,12 @@ public class SyncOrganization {
 		Unit unit = this.checkUnit(business, result, sup, org);
 		units.add(unit);
 		for (User o : factory.listUser(org)) {
-			Person person = this.checkPerson(business, result, accessToken, o);
+            Pair<Person, Boolean> pair = this.checkPerson(business, result, accessToken, o);
+            Person person = pair.first();
 			/* 如果人员没有手机号,那么就先跳过这个人 */
 			if (null != person) {
 				people.add(person);
-				Identity identity = this.checkIdentity(business, result, person, unit, o, org.getId().equals(o.getMain_department()));
+				Identity identity = this.checkIdentity(business, result, person, unit, o, org.getId().equals(o.getMain_department()), BooleanUtils.isTrue(pair.second()));
 				identities.add(identity);
 				if ((null != o.getExtattr()) && (ListTools.isNotEmpty(o.getExtattr().getAttrs()))) {
 					for (Attr attr : o.getExtattr().getAttrs()) {
@@ -288,20 +290,23 @@ public class SyncOrganization {
 
 	}
 
-	private Person checkPerson(Business business, PullResult result, String accessToken, User user) throws Exception {
-		Person person = business.person().getWithQiyeweixinIdObject(user.getUserid());
-		if (null == person) {
+	private Pair<Person, Boolean> checkPerson(Business business, PullResult result, String accessToken, User user) throws Exception {
+        Person person = business.person().getWithQiyeweixinIdObject(user.getUserid());
+		boolean isUpdate = false;
+        if (null == person) {
 			if ((StringUtils.isNotEmpty(user.getMobile())) && StringUtils.isNotEmpty(user.getName())) {
 				person = this.createOrLinkPerson(business, result, user);
+                isUpdate = true;
 			}
 		} else {
-			if ((StringUtils.isNotEmpty(user.getMobile())) && StringUtils.isNotEmpty(user.getName())) {
-				if (!StringUtils.equals(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)), person.getQiyeweixinHash())) {
-					person = this.updatePerson(business, result, person, user);
+			if ((StringUtils.isNotEmpty(user.getMobile())) && StringUtils.isNotEmpty(user.getName())
+                && !StringUtils.equals(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)), person.getQiyeweixinHash())) {
+					this.updatePerson(business, result, person, user);
+                    isUpdate = true;
 				}
-			}
-		}
-		return person;
+
+        }
+		return Pair.of(person, isUpdate);
 	}
 
 	private Person checkBindPerson(Business business, PullResult result, User user) throws Exception {
@@ -463,7 +468,7 @@ public class SyncOrganization {
 		result.getRemovePersonList().add(person.getDistinguishedName());
 	}
 
-	private Identity checkIdentity(Business business, PullResult result, Person person, Unit unit, User user, boolean isMajor)
+	private Identity checkIdentity(Business business, PullResult result, Person person, Unit unit, User user, boolean isMajor, boolean isUpdate)
 			throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		EntityManager em = emc.get(Identity.class);
@@ -478,11 +483,13 @@ public class SyncOrganization {
 		if (ListTools.isNotEmpty(user.getOrder())) {
 			order = user.getOrder().get(user.getDepartment().indexOf(Long.parseLong(unit.getQiyeweixinId(), 10)));
 		}
-		if (os.size() == 0) {
+		if (os.isEmpty()) {
 			identity = this.createIdentity(business, result, person, unit, user, order, isMajor);
-		} else {
+		} else  {
 			identity = os.get(0);
-			identity = this.updateIdentity(business, result, unit, identity, user, order, isMajor);
+            if (isUpdate) {
+                this.updateIdentity(business, result, unit, identity, user, order, isMajor);
+            }
 		}
 		return identity;
 	}

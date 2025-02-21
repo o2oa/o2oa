@@ -21,9 +21,11 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
                             if (callback) callback();
                         }.bind(this));
                     }else{
+                        this.subformData = null;
                         if (callback) callback();
                     }
                 }else{
+                    this.subformData = null;
                     if (callback) callback();
                 }
             }
@@ -46,6 +48,7 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
                     }.bind(this));
                 }
             }else{
+                this.subformData = null;
                 if (callback) callback();
             }
         }

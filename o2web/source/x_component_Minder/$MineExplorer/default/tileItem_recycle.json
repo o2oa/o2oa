@@ -3,7 +3,7 @@
     "html": "<div styles='tileListNode'></div>"
   },
   "headSetting": {
-    "html": "<div styles='tileToolbar'><div styles='tileSelectAllNode' item='selectAll'>全选</div></div>"
+    "html": "<div styles='tileToolbar'><div styles='tileSelectAllNode' class='ooicon-radio-unchecked' item='selectAll'>全选</div></div>"
   },
   "documentSetting": {
     "html": "<div styles='tileNode'></div>",
@@ -15,11 +15,11 @@
     {
       "name": "work",
       "content": {
-        "html": "<div styles='tileItemNode'>"  +
-        "    <div styles='tileItemSelectNode' item='select'></div>"+
+        "html": "<div styles='tileItemNode'>" +
+        "    <div styles='tileItemSelectNode' item='select' class='ooicon-radio-unchecked'></div>"+
         "    <div styles='tileItemIconNode'><img src='' item='thumbnail' style='max-width:156px;max-height:156px;'/></div>" +
         "    <div item='name' styles='tileItemTitleNode'></div>"+
-        "   <div item='sharedIcon' styles='tileSharedIcon' style=''></div>"+
+        "   <div item='sharedIcon' styles='tileSharedIcon' class='ooicon-share mainColor_color' style=''></div>"+
         "</div>",
         "items": {
           "name": {

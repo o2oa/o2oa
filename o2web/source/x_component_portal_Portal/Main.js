@@ -70,6 +70,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
     toPortal: function(portal, page, par, nohis){
         this.options.portalId = portal;
         this.options.pageId = page;
+        this.options.parameters = par;
         if (!nohis) this.doHistory(page,this.options.portalId, par);
 
         if (this.appForm) this.appForm.fireEvent("beforeClose");
@@ -122,6 +123,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
 
                     if (page){
                         this.options.pageId = (pageJson.data && pageJson.data.page) ? pageJson.data.page.id : "";
+                        this.options.parameters = par;
 
                         if (this.appForm) this.appForm.fireEvent("beforeClose");
                         Object.keys(this.$events).each(function(k){

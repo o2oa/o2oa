@@ -22,7 +22,8 @@
     "font-weight": "normal"
   },
   "contentScrollNode" : {
-    "overflow" : "hidden"
+    "overflow-x" : "hidden",
+    "overflow-y" : "auto"
   },
   "contentWrapNode" : {
 
@@ -54,8 +55,8 @@
   },
   "logTable" : {
     //"width" : "980px",
-    "margin-left" : "10px",
-    "margin-right" : "10px"
+    //"margin-left" : "10px",
+    //"margin-right" : "10px"
     //"border-left": "1px solid #CCC",
     //"border-top": "1px solid #CCC"
   },

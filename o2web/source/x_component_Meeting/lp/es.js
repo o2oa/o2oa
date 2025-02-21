@@ -189,6 +189,7 @@ MWF.xApplication.Meeting.LP={
 	"delete_building_hasRoom": "No se puede eliminar \"{name}\" ya que todavía tiene salas de reuniones asociadas.",
 	"delete_building": "¿Estás seguro de que deseas eliminar \"{name}\"?",
 	"delete_room": "¿Estás seguro de que deseas eliminar la sala de reuniones \"{name}\"?",
+	"add": "agregar",
 	"roomForm": {
 		"name": "Nombre",
 		"building": "Ubicación",

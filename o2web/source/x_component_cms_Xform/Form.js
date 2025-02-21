@@ -262,7 +262,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
                     this.loadContent(callback);
                 }
-        
+
             }.bind(this));
         },
         loadLanguage: function(callback){

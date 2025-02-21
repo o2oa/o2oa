@@ -559,6 +559,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     getOrderType: function (column){
         var orderType;
+        if( !this.manualOrderColumnMap )this.manualOrderColumnMap = {};
         if( this.manualOrderColumnMap.hasOwnProperty(column.column) ){
             orderType = this.manualOrderColumnMap[column.column];
         }else{
@@ -1446,9 +1447,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
     loadFilterSearch: function(){
-        this.viewSearchCustomActionNode = new Element("div", {"styles": this.css.viewFilterSearchCustomActionNode, "text": this.lp.customSearch}).inject(this.searchAreaNode);
+        if( !layout.mobile ){
+            this.viewSearchCustomActionNode = new Element("div", {"styles": this.css.viewFilterSearchCustomActionNode, "text": this.lp.customSearch}).inject(this.searchAreaNode);
+        }
         this.viewSearchInputAreaNode = new Element("div", {"styles": this.css.viewFilterSearchInputAreaNode}).inject(this.searchAreaNode);
-
+        if( layout.mobile )this.viewSearchInputAreaNode.setStyle('margin-right', '15px');
         this.viewSearchIconNode = new Element("div", {"styles": this.css.viewFilterSearchIconNode}).inject(this.viewSearchInputAreaNode);
         this.viewSearchInputBoxNode = new Element("div", {"styles": this.css.viewFilterSearchInputBoxNode}).inject(this.viewSearchInputAreaNode);
         this.viewSearchInputNode = new Element("input", {"styles": this.css.viewFilterSearchInputNode, "value": this.lp.searchKeywork}).inject(this.viewSearchInputBoxNode);
@@ -1465,9 +1468,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.viewSearchIconNode.addEvents({
             "click": function(){this.searchView();}.bind(this)
         });
-        this.viewSearchCustomActionNode.addEvents({
-            "click": function(){this.loadCustomSearch();}.bind(this)
-        });
+        if(this.viewSearchCustomActionNode){
+            this.viewSearchCustomActionNode.addEvents({
+                "click": function(){this.loadCustomSearch();}.bind(this)
+            });
+        }
     },
     searchView: function(){
         debugger;

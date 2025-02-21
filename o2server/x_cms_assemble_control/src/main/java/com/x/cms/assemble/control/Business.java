@@ -1,21 +1,7 @@
 package com.x.cms.assemble.control;
 
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.EffectivePerson;
@@ -24,6 +10,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.cms.assemble.control.factory.AppDictFactory;
 import com.x.cms.assemble.control.factory.AppDictItemFactory;
 import com.x.cms.assemble.control.factory.AppInfoConfigFactory;
@@ -59,6 +46,17 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeCmsWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 通用业务类
@@ -326,16 +324,7 @@ public class Business {
 		if (StringUtils.isEmpty(roleName)) {
 			throw new Exception("roleName is null!");
 		}
-		List<String> roleList = null;
-		roleList = organization().role().listWithPerson(personName);
-		if (roleList != null && !roleList.isEmpty()) {
-			if (roleList.stream().filter(r -> roleName.equalsIgnoreCase(r)).count() > 0) {
-				return true;
-			}
-		} else {
-			return false;
-		}
-		return false;
+		return organization().person().hasRole(personName, roleName);
 	}
 
 	/**

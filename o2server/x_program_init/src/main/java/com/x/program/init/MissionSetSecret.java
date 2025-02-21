@@ -35,6 +35,9 @@ public class MissionSetSecret implements Mission {
 	public void execute(Missions.Messages messages) {
 		messages.head(MissionSetSecret.class.getSimpleName());
 		try {
+			if (StringUtils.isBlank(getSecret())) {
+				throw new IllegalArgumentException("密码为空");
+			}
 			messages.msg("executing");
 			this.changeInternalDataServerPassword(Config.token().getPassword(), getSecret());
 			this.changeTokenPassword(getSecret());

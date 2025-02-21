@@ -126,7 +126,7 @@ async function editComponent(cmpt, index) {
         if (currentComponent.value.name && currentComponent.value.title && currentComponent.value.path){
           if (currentComponent.value.componentFile && currentComponent.value.componentFile.length){
             await dispatchComponentFile(currentComponent.value.componentFile[0]);
-            currentComponent.value.componentFile = null;
+            currentComponent.value.componentFile = [];
           }
           const d = await saveComponent(currentComponent.value);
           if (d.id) currentComponent.value.id = d.id;

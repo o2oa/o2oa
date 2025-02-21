@@ -1,12 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
@@ -20,6 +13,11 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
 import com.x.organization.core.entity.PersistenceProperties;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 组织人员角色相关信息的服务类
@@ -354,31 +352,15 @@ public class UserManagerService {
 		if (StringUtils.isEmpty(roleName)) {
 			throw new Exception("roleName is null!");
 		}
-		List<String> roleList = null;
-		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
-			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@").length == 2) {
-					personName = business.organization().person().get(personName.split("@")[0]);
-				}else{
-					personName = business.organization().person().get(personName);
-				}
+			Business business = new Business(emc);
+			if (personName.endsWith("@P") && personName.split("@").length == 2) {
+				personName = business.organization().person().get(personName.split("@")[0]);
+			}else{
+				personName = business.organization().person().get(personName);
 			}
-			roleList = business.organization().role().listWithPerson(personName);
-			if (roleList != null && !roleList.isEmpty()) {
-				if (roleList.stream().filter(r -> roleName.equalsIgnoreCase(r)).count() > 0) {
-					return true;
-				}
-			} else {
-				return false;
-			}
-		} catch (NullPointerException e) {
-			return false;
-		} catch (Exception e) {
-			throw e;
+			return business.organization().person().hasRole(personName, roleName);
 		}
-		return false;
 	}
 
 	/**

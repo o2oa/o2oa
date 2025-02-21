@@ -16,6 +16,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 	},
 	loadApplication: function(callback){
+
 		var url = this.path+this.options.style+"/view/view.html";
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.setLayout();
@@ -57,6 +58,26 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			};
 			MWF.defineProperties(this.countData, o);
 		}
+	},
+	selectAll: function(e) {
+
+		var iconNode = e.currentTarget.getElement(".selectFlagIcon");
+		var isSelected = iconNode.hasClass("mainColor_color");
+		if (isSelected) {
+			iconNode.removeClass("o2icon-xuanzhong selectFlagIcon_select mainColor_color");
+		} else {
+			iconNode.addClass("o2icon-xuanzhong selectFlagIcon_select mainColor_color");
+		}
+		var flag = !isSelected;
+		this.currentList.node.getElements(".selectFlagArea").each(function(item) {
+			var itemIconNode = item.getElement(".selectFlagIcon");
+			if (flag && !itemIconNode.hasClass("mainColor_color")) {
+				item.click();
+			}
+			else if (!flag && itemIconNode.hasClass("mainColor_color")) {
+				item.click();
+			}
+		});
 	},
 	loadCount: function(){
 		this.createCountData();
@@ -111,6 +132,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		list.init();
 		list.load(callback);
 		this.currentList = list;
+		if(type === "read"){
+			this.selectAllNode.show();
+		}else {
+			this.selectAllNode.hide();
+		}
 	},
 	setMenuItemStyleDefault: function(node){
 		node.removeClass("mainColor_bg_opacity");
@@ -311,15 +337,15 @@ MWF.xApplication.process.workcenter.Main = new Class({
 
 			var map = {}, mapById = {};
 			data[0].each(function (d) {
-                if (d.processList && d.processList.length){
-                    var type = d.applicationCategory || "未分类";
-                    if( !map[type] )map[type] = [];
-                    map[type].push(d);
+				if (d.processList && d.processList.length){
+					var type = d.applicationCategory || "未分类";
+					if( !map[type] )map[type] = [];
+					map[type].push(d);
 
 					d.processList.each(function (process) {
 						mapById[ process.id ] = process;
 					});
-                }
+				}
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
@@ -623,7 +649,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
-                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
+				if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
@@ -909,7 +935,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
-            "taskId": data.id,
+			"taskId": data.id,
 			"onPostClose": function(){
 				if (this.refresh) this.refresh();
 			}.bind(this)
@@ -1216,7 +1242,6 @@ MWF.xApplication.process.workcenter.List = new Class({
 			// }
 		}
 	},
-
 	selectTask: function(e, data){
 		if (e.currentTarget.get("disabled").toString()!="true"){
 			var itemNode = e.currentTarget.getParent(".listItem");

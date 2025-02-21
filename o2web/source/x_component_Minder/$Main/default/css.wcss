@@ -1,32 +1,47 @@
 {
-  "naviNode":{
-	"width" : "70px",
-	"background-color" : "#000",
-	"float" : "left"
+   "node": {
+    "width": "100%",
+    "height": "100%",
+     "overflow": "hidden",
+     "display": "flex",
+     "flex-direction": "column"
   },
-  "naviTopNode" : {
-	"width" : "70px",
-	"height" : "70px",
-	"background" : "url(../x_component_Minder/$Main/default/icon/navi_top.png) no-repeat center center",
-	"background-color" : "#000"
+  "naviNode":{
+	"width" : "100%",
+	"background-color" : "#fff",
+	"display" : "flex",
+	"padding-left": "10px"
   },
   "naviItemNode" : {
-	"width" : "70px",
-	"height" : "28px",
-	"padding-top" : "42px",
-	"font-size" : "12px",
-	"text-align" : "center",
-	"color" : "#3C76B7",
-	"background-repeat" : "no-repeat",
-	"background-position" : "center 8px",
-	"background-color" : "#000",
-	"cursor" : "pointer"
+    "color" : "#333",
+	"height": "50px",
+    "font-size" : "16px",
+    "line-height": "50px",
+    "cursor": "pointer",
+    "padding-left" : "15px",
+    "padding-right" : "15px",
+    "overflow" : "hidden"
   },
   "naviItemNode_selected" : {
-  	"background-color" : "#F8F8F8"
+  	"color" : "#2E82F7"
+  },
+  "naviItemIconNode": {
+    "color" : "#999",
+      "line-height": "50px",
+      "height": "50px",
+      "width": "20px",
+      "float": "left"
+  },
+  "naviItemTextNode": {
+      "line-height": "50px",
+      "height": "50px",
+      "float": "left"
   },
   "contentNode" : {
-	"float" : "left"
+    "margin-top": "10px",
+    "display": "flex",
+    "flex": "1",
+    "height": "calc( 100% - 60px )"
   },
 
   "historyNode" : {
@@ -66,5 +81,5 @@
 	"background" : "#fff",
 	"border" : "1px solid #ccc"
   }
-	
+
 }

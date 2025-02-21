@@ -11,6 +11,7 @@ MWF.xApplication.Minder.LP={
 	"searchKey": "Ingrese la palabra clave para buscar",
 	"ok": "Aceptar",
 	"cancel": "Cancelar",
+	"edit": "Editar",
 	"folderNameNotEmpty": "El nombre de la carpeta no puede estar vacío",
 	"nameNotEmpty": "El nombre de la carpeta o archivo no puede estar vacío",
 	"download": "Descargar",
@@ -37,10 +38,21 @@ MWF.xApplication.Minder.LP={
 	"editorFiles": "Archivos recibidos",
 	"myFiles": "Mis archivos",
 	"shareFiles": "Archivos compartidos",
+	"trashBin": "Papelera",
 	"filename": "Nombre",
 	"thumbnail": "Miniatura",
 	"createTime": "Hora de creación",
 	"updateTime": "Hora de modificación",
-	"fileVersion": "Versión"
+	"fileVersion": "Versión",
+	"tool": {
+		"createMinder": "Crear un nuevo mapa mental",
+		"createFolder": "Crear un nuevo directorio",
+		"rename": "Cambiar nombre",
+		"recycle": "eliminar",
+		"destroyFromRecycle": "Eliminar completamente",
+		"delete": "Eliminar completamente",
+		"share": "Compartir",
+		"restore": "Restaurar"
+	}
 }
 MWF.xApplication.Minder["lp."+o2.language] = MWF.xApplication.Minder.LP

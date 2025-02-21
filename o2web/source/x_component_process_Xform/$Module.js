@@ -301,7 +301,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             case "person":
                 return layout.desktop.session.user.id;
             case "unit":
-                return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+                return (this.form.businessData.task) ? (this.form.businessData.task.unitDn || this.form.businessData.task.unit) : "";
             case "activity":
                 return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
             case "splitValue":
@@ -649,7 +649,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         // var dataObj = this.form.businessData.data[this.json.id];
         var dataObj = this.getBusinessDataById(null, id);
         if (!dataObj) return "";
-        var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+        var key = (this.form.businessData.task) ? (this.form.businessData.task.unitDn || this.form.businessData.task.unit) : "";
         if (key) this.form.sectionListObj[id||this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
@@ -698,7 +698,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this._setEnvironmentSectionDataByKey(key, v);
                 break;
             case "unit":
-                var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+                var key = (this.form.businessData.task) ? (this.form.businessData.task.unitDn || this.form.businessData.task.unit) : "";
                 this._setEnvironmentSectionDataByKey(key, v);
                 break;
             case "activity":
@@ -818,7 +818,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         this._setBusinessSectionDataByKey(key, v, id);
     },
     _setBusinessSectionDataByUnit: function(v, id){
-        var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+        var key = (this.form.businessData.task) ? (this.form.businessData.task.unitDn || this.form.businessData.task.unit) : "";
         this._setBusinessSectionDataByKey(key, v, id);
     },
     _setBusinessSectionDataByActivity: function(v, id){

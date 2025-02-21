@@ -1160,6 +1160,10 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             this.designNode.setStyle("height", ""+y+"px");
         }
 
+        if(this.designMobileNode){
+            this.designMobileNode.setStyle("height", ""+Math.min(y, 680)+"px");
+        }
+
 
         var titleSize = this.toolbarTitleNode.getSize();
         var titleMarginTop = this.toolbarTitleNode.getStyle("margin-top").toFloat();
@@ -1222,6 +1226,10 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             //y = designerHeight - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom - designMarginTop - designMarginBottom;
             y = y - designMarginTop - designMarginBottom;
             this.designNode.setStyle("height", ""+y+"px");
+        }
+
+        if(this.designMobileNode){
+            this.designMobileNode.setStyle("height", ""+Math.min(y, 680)+"px");
         }
 
         var titleSize = this.toolbarTitleNode.getSize();

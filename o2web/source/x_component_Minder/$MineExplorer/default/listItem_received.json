@@ -45,7 +45,7 @@
         "width": "3%"
       },
       "content": {
-        "html": "<td styles='listViewTableImgTd' valign='middle' align='center'><div item='sharedIcon' styles='listSharedIcon'></div></td>",
+        "html": "<td styles='listViewTableImgTd' valign='middle' align='center'><div item='sharedIcon' styles='listSharedIcon' class='ooicon-share mainColor_color'></div></td>",
         "items": {
           "sharedIcon" : {
             "attr" : "title^^已分享",

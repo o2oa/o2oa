@@ -89,26 +89,6 @@
     "margin" : "0px 15px",
     "overflow": "hidden"
   },
-  "leftNode" : {
-    "cursor" : "pointer",
-    "float" : "left",
-    "width" : "50px",
-    "height" : "50px",
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/left_gray.png) no-repeat center center"
-  },
-  "leftNode_over" : {
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/left.png) no-repeat center center"
-  },
-  "rightNode" : {
-    "cursor" : "pointer",
-    "float" : "left",
-    "width" : "50px",
-    "height" : "50px",
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/right_gray.png) no-repeat center center"
-  },
-  "rightNode_over" : {
-    "background" : "url(../x_component_Meeting/$DayView/default/icon/right.png) no-repeat center center"
-  },
   "dayNode" : {
     "width" : "300px",
     //"height" : "800px",

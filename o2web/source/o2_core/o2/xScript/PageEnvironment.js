@@ -2191,11 +2191,13 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                             }
                         }
                     }else{
+                        _form.notice(o2.LP.widget.noWork, 'warn');
                         runCallback(new Error("Can't open this Job", {
                             cause: workData
                         }));
                     }
                 }else{
+                    _form.notice(o2.LP.widget.noWork, 'warn');
                     runCallback(new Error("Can't open this Job", {
                         cause: workData
                     }));

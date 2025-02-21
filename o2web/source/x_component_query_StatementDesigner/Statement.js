@@ -665,6 +665,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 this.jpqlEditor.load(function () {
                     this.jpqlEditor.editor.setValue(this.json.data);
                     this.jpqlEditor.addEditorEvent("change", function () {
+                        debugger;
                         this.data.data = this.jpqlEditor.getValue();
                         // this.checkStatementType();
                     }.bind(this));
@@ -690,19 +691,21 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }
     },
     _loadJpqlCountEditor : function(){
-        o2.require("o2.widget.JavascriptEditor", function () {
-            this.jpqlCountEditor = new o2.widget.JavascriptEditor(this.jpqlCountEditorNode, {
-                "title": "JPQL",
-                "option": {"mode": "sql"}
-            });
-            this.jpqlCountEditor.load(function () {
-                this.jpqlCountEditor.editor.setValue(this.json.countData);
+        if( !this.jpqlCountEditor ){
+            o2.require("o2.widget.JavascriptEditor", function () {
+                this.jpqlCountEditor = new o2.widget.JavascriptEditor(this.jpqlCountEditorNode, {
+                    "title": "JPQL",
+                    "option": {"mode": "sql"}
+                });
+                this.jpqlCountEditor.load(function () {
+                    this.jpqlCountEditor.editor.setValue(this.json.countData);
 
-                this.jpqlCountEditor.addEditorEvent("change", function () {
-                    this.data.countData = this.jpqlCountEditor.getValue();
+                    this.jpqlCountEditor.addEditorEvent("change", function () {
+                        this.data.countData = this.jpqlCountEditor.getValue();
+                    }.bind(this));
                 }.bind(this));
-            }.bind(this));
-        }.bind(this), false);
+            }.bind(this), false);
+        }
     },
 
     loadSqlEditor: function () {
@@ -790,7 +793,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
     loadJpqlScriptEditor: function () {
         if (!this.jpqlScriptEditor) {
-            debugger;
             o2.require("o2.widget.ScriptArea", function () {
                 this.jpqlScriptEditor = new o2.widget.ScriptArea(this.jpqlScriptArea, {
                     "isbind": false,
@@ -936,6 +938,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
     },
     loadStatementRunner: function () {
+        if(this.jsonEditor)return;
         o2.require("o2.widget.JavascriptEditor", function () {
             this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {
                 "title": "parameter",

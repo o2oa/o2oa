@@ -1,10 +1,13 @@
 {
   "contentNode" : {
-	"float" : "left"
+
   },
   "rightNode" : {
+    "margin-left": "10px",
 	"overflow" : "hidde",
-	"float" : "left"
+	"flex" : "1",
+	"display": "flex",
+	"flex-direction": "column"
   },
   "treeNode": {
 	"position": "relative",
@@ -13,15 +16,14 @@
 	"min-width" : "260px",
 	"max-width" : "350px",
 	"box-shadow": "0 1px 3px 0 rgba(0,0,0,0.25)",
-	"float" : "left",
 	"background-color" : "#F8F8F8"
   },
   "listNode" : {
-	//"margin-left" : "10px",
 	"padding" : "0px 20px 20px 20px",
 	"background-color" : "#fff",
 	"overflow": "hidden",
-	"min-width" : "260px"
+	"min-width" : "260px",
+	"flex": "1"
   },
   "listViewTable": {
 	"width": "100%"
@@ -30,7 +32,7 @@
 	"height": "40px",
 	"line-height": "40px",
 	"font-size": "14px",
-	"background-color": "#F0F0F0",
+	"background-color": "#f3f3f3",
 	"text-align": "left",
 	"padding": "0px 10px",
 	"font-weight" : "normal",
@@ -40,7 +42,7 @@
 	"height": "40px",
 	"line-height": "40px",
 	"font-size": "14px",
-	"background-color": "#F0F0F0",
+	"background-color": "#f3f3f3",
 	"text-align": "center",
 	"padding": "0px 10px",
 	"font-weight" : "normal",
@@ -49,7 +51,6 @@
   "sortIconNode" : {
 	"height": "21px",
 	"width": "16px",
-	//"float": "left",
 	"display":"inline-block",
 	"margin-left": "5px",
 	"background-position" : "center center",
@@ -59,7 +60,6 @@
   "sortIconNode_asc" : {
 	"height": "21px",
 	"width": "16px",
-	//"float": "left",
 	"display":"inline-block",
 	"margin-left": "5px",
 	"background-position" : "center center",
@@ -69,7 +69,6 @@
   "sortIconNode_desc" : {
 	"height": "21px",
 	"width": "16px",
-	//"float": "left",
 	"display":"inline-block",
 	"margin-left": "5px",
 	"background-position" : "center center",
@@ -79,7 +78,7 @@
   "listViewTableTd_noclick": {
 	"min-height": "50px",
 	"line-height": "30px",
-	"border-bottom": "1px solid #CCC",
+	"border-bottom": "1px solid #dfdfdf",
 	"color": "#666",
 	"padding": "0px 10px",
 	"font-size": "14px"
@@ -87,7 +86,7 @@
   "listViewTableTd": {
 	"min-height": "50px",
 	"line-height": "30px",
-	"border-bottom": "1px solid #CCC",
+	"border-bottom": "1px solid #dfdfdf",
 	"color": "#666",
 	"padding": "0px 10px",
 	"font-size": "14px",
@@ -96,7 +95,7 @@
   "listViewTableTd_action": {
 	"min-height": "50px",
 	"line-height": "30px",
-	"border-bottom": "1px solid #CCC",
+	"border-bottom": "1px solid #dfdfdf",
 	"color" : "#3c76b6",
 	"text-decoration" : "none",
 	"padding": "0px 10px",
@@ -109,7 +108,7 @@
   },
   "listViewTableImgTd" : {
 	"min-height": "50px",
-	"border-bottom": "1px solid #CCC",
+	"border-bottom": "1px solid #dfdfdf",
 	"color": "#666",
 	"padding": "5px 10px",
 	"font-size": "14px",
@@ -120,7 +119,7 @@
   },
   "listViewTableImgTd_noclick" : {
 	"min-height": "50px",
-	"border-bottom": "1px solid #CCC",
+	"border-bottom": "1px solid #dfdfdf",
 	"color": "#666",
 	"padding": "5px 10px",
 	"font-size": "14px",
@@ -133,14 +132,13 @@
 	"height" : "16px",
 	"cursor" : "pointer",
 	"background-position" : "center center",
-	"background-repeat" : "no-repeat",
-	"background-image" : "url(../x_component_Minder/$Main/default/icon/shared_blue.png)"
+	"background-repeat" : "no-repeat"
   },
   "listViewTableTr" : {
 	"background-color": "#FFF"
   },
   "listViewTableTr_over": {
-	"background-color": "#fbfbfb"
+	"background-color": "#f3f8fd"
   },
 
   "tileListNode" : {
@@ -153,18 +151,14 @@
   "tileSelectAllNode" : {
 	"cursor" : "pointer",
 	"font-size" : "14px",
-	"color" : "#333",
-	"margin-left" : "30px",
+	"color" : "#999",
 	"padding-left" : "25px",
-	"width" : "40px",
+	"width" : "80px",
 	"height" : "40px",
 	"line-height" : "40px",
-	"background-position" : "left center",
-	"background-repeat" : "no-repeat",
-	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle.png)"
-  },
-  "tileSelectAllNode_selected" : {
-	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle_selected.png)"
+	"display": "flex",
+    "align-items": "center",
+    "gap": "5px"
   },
   "tileNode" : {
 	"padding" : "10px",
@@ -181,7 +175,7 @@
   },
 
   "tileNode_over" : {
-	"background-color" : "#F8F8F8"
+	"background-color" : "#f3f8fd"
   },
   "tileItemNode":{
 	"position" : "relative"
@@ -194,20 +188,17 @@
 	"overflow" : "hidden"
   },
   "tileItemSelectNode" : {
+    "color": "#999",
 	"cursor" : "pointer",
 	"position" : "absolute",
 	"top" : "0px",
 	"left" : "0px",
 	"width" : "16px",
 	"height" : "16px",
-	"display" : "none",
-	"background-position" : "center center",
-	"background-repeat" : "no-repeat",
-	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle.png)"
+	"display" : "none"
   },
   "tileItemSelectNode_selected" : {
-	"display" : "",
-	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle_selected.png)"
+  	"display" : "block"
   },
   "tileItemIconNode" : {
   },
@@ -217,73 +208,30 @@
 	"width" : "16px",
 	"height" : "16px",
 	"cursor" : "pointer",
-	"position" : "absolute",
-	"background-position" : "center center",
-	"background-repeat" : "no-repeat",
-	"background-image" : "url(../x_component_Minder/$Main/default/icon/shared_blue.png)"
+	"position" : "absolute"
   },
 
   "toolbar" : {
 	"overflow" : "hidden",
-	"position" : "absolute",
-	"right" : "10px",
-	"top" : "12px"
+	"margin-right": "5px"
   },
-//  "cancelAction" : {
-//	"width": "16px",
-//	"height": "16px",
-//	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/remove.png) no-repeat left",
-//	"margin-left": "2px",
-//	"margin-right": "2px",
-//	"float": "left",
-//	"cursor": "pointer"
-//  },
-//  "cancelAction_over" : {
-//	"width": "16px",
-//	"height": "16px",
-//	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/remove_over.png) no-repeat left",
-//	"margin-left": "2px",
-//	"margin-right": "2px",
-//	"float": "left",
-//	"cursor": "pointer"
-//  },
-
   "deleteAction" : {
+    "color": "#999",
 	"width": "16px",
 	"height": "16px",
-	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/delete_white.png) no-repeat left",
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",
 	"cursor": "pointer"
   },
-  "deleteAction_over" : {
-	"width": "16px",
-	"height": "16px",
-	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/delete_gray.png) no-repeat left",
-	"margin-left": "2px",
-	"margin-right": "2px",
-	"float": "left",
-	"cursor": "pointer"
-  },
-
   "editAction" : {
+    "color": "#999",
 	"width": "16px",
 	"height": "16px",
-	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/edit_white.png) no-repeat left",
-	"margin-left": "2px",
-	"margin-right": "2px",
-	"float": "left",
-	"cursor": "pointer"
-  },
-  "editAction_over" : {
-	"width": "16px",
-	"height": "16px",
-	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/edit_gray.png) no-repeat left",
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",
 	"cursor": "pointer"
   }
-	
+
 }

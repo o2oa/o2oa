@@ -41,4 +41,5 @@ if [ -d ${current_dir}/local/update ]; then
 		exit 1
 	fi
 fi
+export MALLOC_ARENA_MAX=1
 setsid ${current_dir}/jvm/linux_java11/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Xmx4g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar ${current_dir}/console.jar

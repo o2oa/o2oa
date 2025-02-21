@@ -1,7 +1,7 @@
 MWF.xApplication.Minder.LP = {
 	"title": "脑图",
 	"dropUpload": "将文件拖至此处上传",
-	
+
 	"upload": "上传",
 	"createFolder": "创建文件夹",
 	"operation": "操作",
@@ -9,23 +9,24 @@ MWF.xApplication.Minder.LP = {
 	"inputName": "请输入文件夹或文件名称",
 
 	"searchKey" : "输入关键字搜索",
-	
+
 	"ok": "确定",
 	"cancel": "取消",
-	
+
+	"edit": "编辑",
 	"folderNameNotEmpty": "文件夹名称不能为空",
 	"nameNotEmpty": "文件夹或文件名称不能为空",
-	
+
 	"download": "下载",
 	"delete": "删除",
 	"rename": "重新命名",
 	"share": "分享...",
 	"move": "移动到...",
 	"uploadTo": "上传至",
-	
+
 	"deleteFolderTitle": "删除文件夹确认",
 	"deleteFileTitle": "删除文件确认",
-	
+
 	"deleteFolder": "您确定要删除选中的文件夹“{name}”吗？",
 	"deleteFile": "您确定要删除选中的文件吗？",
 	"deleteFolderDisable_hasSubFolder" : "该文件夹下还有子文件夹，请先删除子文件夹和文件后再删除！",
@@ -46,11 +47,22 @@ MWF.xApplication.Minder.LP = {
     "editorFiles": "收到文件",
 	"myFiles": "我的文件",
 	"shareFiles": "分享文件",
+	"trashBin": "回收站",
 
 	"filename" : "名称",
 	"thumbnail" : "缩略图",
 	"createTime" : "创建时间",
 	"updateTime" : "修改时间",
-	"fileVersion" : "版本"
-	
+	"fileVersion" : "版本",
+
+	"tool": {
+		"createMinder": "新建脑图",
+		"createFolder": "新建文件夹",
+		"rename": "重命名",
+		"recycle": "删除",
+		"destroyFromRecycle": "彻底删除",
+		"delete": "彻底删除",
+		"share": "分享",
+		"restore": "恢复"
+	}
 };

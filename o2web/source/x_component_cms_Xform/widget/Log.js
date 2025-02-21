@@ -32,8 +32,9 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
         this.container = new Element("div",{styles:this.css.container}).inject( this.node );
         this.loadTitle();
         this.loadContent();
-        this.loadElementList();
-        this.loadBottom();
+        this.loadElementList(this.countPerPage, function (){
+            this.loadBottom();
+        }.bind(this));
     },
     loadTitle : function(){
         this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.lp.readedLogTitle}).inject(this.container);
@@ -56,8 +57,8 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
         //this.contentContainerNode = new Element("div", {"styles": this.css.contentContainerNode }).inject(this.container);
         this.contentScrollNode = new Element("div", {"styles": this.css.contentScrollNode }).inject(this.container);
         this.contentScrollNode.setStyles({
-            "width" : this.node.getSize().x-10,
-            "margin-right" : "10px"
+            "width" : "100%" //this.node.getSize().x
+            // "margin-right" : "10px"
         });
         this.contentWrapNode = new Element("div", {"styles": this.css.contentWrapNode }).inject(this.contentScrollNode);
         this.setScroll();
@@ -87,12 +88,12 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
                 this.contentScrollNode.fireEvent("resize");
             }.bind(this),
             "onComplete": function(){
-                this.scrollBar.checkScroll();
+                // this.scrollBar.checkScroll();
                 this.loadElementList();
             }.bind(this)
         });
     },
-    loadElementList : function( count ){
+    loadElementList : function( count, callback ){
         if (!this.isItemsLoaded) {
             if (!this.isItemLoadding) {
                 this.isItemLoadding = true;
@@ -121,6 +122,7 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
                         this.loadItemQueue--;
                         this.loadElementList();
                     }
+                    if(callback)callback();
                 }.bind(this), count);
             } else {
                 this.loadItemQueue++;
@@ -159,34 +161,39 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
         var maxCount = this.options.mode == "text" ? 10 : 8;
         if( this.dataCount > maxCount ){
             var height = maxCount*lineHeight - 15;
-        }else if( this.dataCount <= 1 ){
-            var height = 1*lineHeight;
-        }else{
-            var height = this.dataCount*lineHeight;
+            if( this.options.mode != "text" )height = height + lineHeight;
+            this.contentScrollNode.setStyle("height", height+"px");
         }
-        if( this.options.mode != "text" )height = height + lineHeight;
-        this.contentScrollNode.setStyle("height", height+"px");
     },
 
     setScroll: function(){
-        MWF.require("MWF.widget.ScrollBar", function () {
-            this.scrollBar = new MWF.widget.ScrollBar(this.contentScrollNode, {
-                "indent": false,
-                "style": "default",
-                "where": "before",
-                "distance": 60,
-                "friction": 4,
-                "axis": {"x": false, "y": true},
-                "onScroll": function (y) {
-                    var scrollSize = this.contentScrollNode.getScrollSize();
-                    var clientSize = this.contentScrollNode.getSize();
-                    var scrollHeight = scrollSize.y - clientSize.y;
-                    if (y + 30 > scrollHeight ) {
-                        if (! this.isItemsLoaded) this.loadElementList();
-                    }
-                }.bind(this)
-            });
-        }.bind(this));
+        this.scrollContainerFun = function(){
+            var scrollSize = this.contentScrollNode.getScrollSize();
+            var clientSize = this.contentScrollNode.getSize();
+            var scrollHeight = scrollSize.y - clientSize.y;
+            if (this.contentScrollNode.scrollTop + 100 > scrollHeight ) {
+                if (! this.isItemsLoaded) this.loadElementList();
+            }
+        }.bind(this);
+        this.contentScrollNode.addEvent("scroll", this.scrollContainerFun );
+        // MWF.require("MWF.widget.ScrollBar", function () {
+        //     this.scrollBar = new MWF.widget.ScrollBar(this.contentScrollNode, {
+        //         "indent": false,
+        //         "style": "default",
+        //         "where": "before",
+        //         "distance": 60,
+        //         "friction": 4,
+        //         "axis": {"x": false, "y": true},
+        //         "onScroll": function (y) {
+        //             var scrollSize = this.contentScrollNode.getScrollSize();
+        //             var clientSize = this.contentScrollNode.getSize();
+        //             var scrollHeight = scrollSize.y - clientSize.y;
+        //             if (y + 30 > scrollHeight ) {
+        //                 if (! this.isItemsLoaded) this.loadElementList();
+        //             }
+        //         }.bind(this)
+        //     });
+        // }.bind(this));
     },
     _createDocument: function( data ){
         var itemNode;
@@ -206,19 +213,19 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
     },
     loadItemTitleTable: function(){
 
-        var xSize = this.contentScrollNode.getSize().x;
+        //var xSize = this.contentScrollNode.getSize().x;
         this.table = new Element("table", {
             "styles": this.css.logTable,
             "border": "0",
             "cellSpacing": "0",
             "cellpadding": "3px",
-            "width": xSize - 10
+            "style": "width: calc( 100% - 2px )" //xSize - 10
         }).inject( this.contentWrapNode );
         this.tbody = new Element("tbody").inject( this.table );
 
-        this.table.setStyles({
-            "margin-left" : "8px"
-        });
+        // this.table.setStyles({
+        //     "margin-left" : "8px"
+        // });
         var tr = new Element("tr").inject( this.tbody );
         tr.setStyles(this.css.logTableTitleTr);
 

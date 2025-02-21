@@ -119,7 +119,7 @@
     "overflow" : "hidden"
   },
   "calendarTableTh": {
-    "background-color" : "#f0f0f0",
+    "background-color" : "#f3f3f3",
     "color": "#333",
     "font-size": "18px",
     "font-weight" : "normal",

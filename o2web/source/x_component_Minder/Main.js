@@ -16,7 +16,7 @@ MWF.xApplication.Minder.Main = new Class({
         "defaultAction" : "openMineExplorer"
 	},
 	onQueryLoad: function(){
-		this.lp = MWF.xApplication.Minder.LP; 
+		this.lp = MWF.xApplication.Minder.LP;
         this.restActions = MWF.Actions.get("x_mind_assemble_control"); //new MWF.xApplication.Minder.Actions.RestActions();
 	},
 	loadApplication: function(callback){
@@ -27,16 +27,16 @@ MWF.xApplication.Minder.Main = new Class({
 	createNode: function(){
 		this.content.setStyle("overflow", "hidden");
 		this.node = new Element("div", {
-			"styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+			"styles": this.css.node
 		}).inject(this.content);
 	},
 	loadApplicationContent: function() {
         this.naviNode = new Element("div.naviNode",{
             "styles" : this.css.naviNode
         }).inject(this.node);
-        new Element("div.naviTopNode",{
-            "styles" : this.css.naviTopNode
-        }).inject(this.naviNode);
+        // new Element("div.naviTopNode",{
+        //     "styles" : this.css.naviTopNode
+        // }).inject(this.naviNode);
 
         this.contentNode = new Element("div.contentNode",{
             "styles" : this.css.contentNode
@@ -53,30 +53,25 @@ MWF.xApplication.Minder.Main = new Class({
     loadNavi : function(){
         var naviJson = [
             {
-                "title": "我的文件",
+                "title": this.lp.myFiles,
                 "action": "openMineExplorer",
-                "icon": "navi_mine"
+                "icon": "ooicon-personnel"
             },
             {
-                "title": "分享文件",
+                "title": this.lp.shareFiles,
                 "action": "openSharedExplorer",
-                "icon": "navi_share"
+                "icon": "ooicon-fawen"
             },
             {
-                "title": "收到文件",
+                "title": this.lp.editorFiles,
                 "action": "openReceivedExplorer",
-                "icon": "navi_receive"
+                "icon": "ooicon-shouwen"
             },
             {
-                "title": "回收站",
+                "title": this.lp.trashBin,
                 "action": "openRecycleExplorer",
-                "icon": "navi_recycle"
+                "icon": "ooicon-maintain"
             }
-            // {
-            //     "title": "来自应用",
-            //     "action": "personConfig",
-            //     "icon": "navi_fromapp"
-            // }
         ];
         naviJson.each( function( d ){
             this.createNaviNode( d );
@@ -121,20 +116,38 @@ MWF.xApplication.Minder.Main = new Class({
     createNaviNode : function( d ){
         var _self = this;
         var node = new Element("div",{
-            text : d.title,
             styles : this.css.naviItemNode,
             events : {
                 click : function( ev ){
                     if( _self.currentAction == d.action )return;
-                    ev.target.setStyles( _self.css.naviItemNode_selected );
-                    if(_self.currentNaviItemNode)_self.currentNaviItemNode.setStyles( _self.css.naviItemNode );
-                    _self.currentNaviItemNode = ev.target;
+                    node.setStyles( _self.css.naviItemNode_selected );
+                    if(_self.currentNaviItemNode)_self.currentNaviItemNode.setStyles( _self.css.naviItemNode ).removeClass( 'mainColor_color' );
+                    if(_self.currentNaviItemIconNode)_self.currentNaviItemIconNode.removeClass( 'mainColor_color' );
+                    _self.currentNaviItemNode = node;
+                    _self.currentNaviItemIconNode = iconNode;
                     _self.currentAction = d.action;
                     _self[ d.action ]();
+
+                    node.addClass('mainColor_color');
+                    iconNode.addClass('mainColor_color');
+                },
+                mouseenter: function (){
+                    if( _self.currentNaviItemNode !== node )node.addClass('mainColor_color');
+                    if( _self.currentNaviItemNode !== node )iconNode.addClass('mainColor_color');
+                },
+                mouseleave: function (){
+                    if( _self.currentNaviItemNode !== node )node.removeClass('mainColor_color');
+                    if( _self.currentNaviItemNode !== node )iconNode.removeClass('mainColor_color');
                 }
             }
         }).inject( this.naviNode );
-        node.setStyle("background-image", "url("+this.path + this.options.style + "/icon/" + d.icon + ".png)" );
+        var iconNode = new Element(`div.${d.icon}`, {
+            styles : this.css.naviItemIconNode
+        }).inject(node);
+        new Element(`div`, {
+            text : d.title,
+            styles : this.css.naviItemTextNode
+        }).inject(node);
         if( this.status && this.status.action && this.status.action == d.action ){
             node.click();
         }else if( this.options.defaultAction == d.action  ){
@@ -148,8 +161,8 @@ MWF.xApplication.Minder.Main = new Class({
         }
     },
     resizeContent : function(){
-        var size = this.content.getSize();
-        this.naviNode.setStyle("height", size.y);
+        // var size = this.content.getSize();
+        // this.naviNode.setStyle("height", size.y);
     },
     getDateDiff : function (publishTime) {
         if(!publishTime)return "";
