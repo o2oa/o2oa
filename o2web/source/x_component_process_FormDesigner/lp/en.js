@@ -367,7 +367,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_calendar": "calendar",
 		"oo_datetime": "Date box",
 		"oo_org": "personnel",
-		"codeedit": "Script editor "
+		"codeedit": "Script editor ",
+		"oo_pagination": "Page number"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1505,7 +1506,15 @@ MWF.xApplication.process.FormDesigner.LP={
 		"scriptEditor": "Script editor ",
 		"lineNumber": "set number ",
 		"isReader": "As a content management reader",
-		"isAuther": "As a content management editor"
+		"isAuther": "As a content management editor",
+		"firstPageText": "Homepage Text",
+		"firstPage": "first page",
+		"lastPageText": "Last page text",
+		"lastPage": "last page",
+		"jumperToText": "Jump Text",
+		"jumperText": "Go to page {n}",
+		"allowJumper": "Allow page redirection",
+		"pages": "Display page count"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

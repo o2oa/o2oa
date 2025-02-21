@@ -1,106 +1,61 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
-MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Element", null, false);
+MWF.xDesktop.requireApp('process.FormDesigner', 'Module.$Element', null, false);
 MWF.xApplication.process.FormDesigner.Module.OOPagination = MWF.FCOOPagination = new Class({
-	Extends: MWF.FC$Element,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
-		"type": "OOPagination",
-		"path": "../x_component_process_FormDesigner/Module/OOPagination/",
-		"propertyPath": "../x_component_process_FormDesigner/Module/OOPagination/OOPagination.html"
-	},
-	initialize: function(form, options){
-		this.setOptions(options);
+    Extends: MWF.FC$Element,
+    Implements: [Options, Events],
+    options: {
+        style: 'default',
+        type: 'OOPagination',
+        path: '../x_component_process_FormDesigner/Module/OOPagination/',
+        propertyPath: '../x_component_process_FormDesigner/Module/OOPagination/OOPagination.html',
+    },
+    initialize: function (form, options) {
+        this.setOptions(options);
 
-		this.path = this.options.path;
-		this.cssPath = this.path+this.options.style+"/css.wcss";
+        this.path = this.options.path;
+        this.cssPath = this.path + this.options.style + '/css.wcss';
 
-		this._loadCss();
-		this.moduleType = "element";
-		this.moduleName = this.options.type;
+        this._loadCss();
+        this.moduleType = 'element';
+        this.moduleName = this.options.type;
 
-		this.form = form;
-		this.container = null;
-		this.containerNode = null;
-	},
-	_createMoveNode: function(){
-		this.moveNode = new Element("oo-pagination", {
-			"MWFType": "OOPagination",
-			"id": this.json.id,
-			"styles": this.css.moduleNodeMove,
-			"events": {
-				"selectstart": function(){
-					return false;
-				}
-			}
-		}).inject(this.form.container);
-		this.moveNode.setAttribute("text", this.json.name || this.json.id);
-	},
-	_loadNodeStyles: function(){
-		// this.node.setAttribute('readonly', true);
-	},
-	_setEditStyle_custom: function(name){
-		if (name==="name"){
-			if (this.json.name){
-				this.node.setAttribute('text', this.json.name);
-			}else{
-				this.node.setAttribute('text', this.json.id);
-			}
-		}
-		if (name==="id"){
-			if (!this.json.name){
-				this.node.setAttribute('text', this.json.id);
-			}
-		}
-		if (name==="appearance"){
-			this.node.setAttribute('type', this.json.appearance || "default");
-		}
-		if (name==="leftIcon"){
-			this.node.setAttribute('left-icon', this.json.leftIcon);
-		}
-		if (name==="rightIcon"){
-			this.node.setAttribute('right-icon', this.json.rightIcon);
-		}
-		if (name==="disabled"){
-			this.node.setAttribute('disabled', this.json.disabled);
-		}
-
-	},
-
-	setPropertiesOrStyles: function(name){
-		if (name=="styles"){
-			try{
-				this.setCustomStyles();
-			}catch(e){}
-		}
-		if (name=="inputStyles"){
-			try{
-				this.setCustomInputStyles();
-			}catch(e){}
-		}
-		if (name=="properties"){
-			this.node.setProperties(this.json.properties);
-		}
-	},
-
-	setCustomStyles: function(){
-		var border = this.node.getStyle("border");
-		this._recoveryModuleData();
-
-		this.node.clearStyles();
-		this.node.setStyles(this.css.moduleNode);
-
-		if (this.initialStyles) this.node.setStyles(this.initialStyles);
-
-		this.node.setStyle("border", border);
-
-		this.node.setStyles(this.json.styles);
-	},
-	_preprocessingModuleData: function(){
-		this.node.clearStyles();
-		this.json.recoveryStyles = Object.clone(this.json.styles);
-		this.node.setStyles(this.json.recoveryStyles);
-		this.json.styles = {};
-		this.json.preprocessing = "y";
-	},
+        this.form = form;
+        this.container = null;
+        this.containerNode = null;
+    },
+    _createMoveNode: function () {
+        this.moveNode = new Element('oo-pagination', {
+            MWFType: 'OOPagination',
+            id: this.json.id,
+            total: '300',
+            jumper: this.json.jumper,
+            first: this.json.first,
+            last: this.json.last,
+            'jumper-text': this.json.jumperText,
+            styles: this.css.moduleNodeMove,
+            events: {
+                selectstart: function () {
+                    return false;
+                },
+            },
+        }).inject(this.form.container);
+        this.moveNode.setAttribute('text', this.json.name || this.json.id);
+    },
+    _setEditStyle_custom: function (name) {
+        if (name === 'first') {
+            this.node.setAttribute('first', this.json.first);
+        }
+        if (name === 'last') {
+            this.node.setAttribute('last', this.json.last);
+        }
+        if (name === 'jumper') {
+            this.node.setAttribute('jumper', this.json.jumper);
+        }
+        if (name === 'jumperText') {
+            this.node.setAttribute('jumper-text', this.json.jumperText);
+        }
+        if (name === 'pages') {
+            this.node.setAttribute('pages', this.json.pages);
+        }
+    },
 });

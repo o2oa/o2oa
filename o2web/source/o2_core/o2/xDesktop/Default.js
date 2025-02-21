@@ -134,6 +134,7 @@ o2.xDesktop.Default = new Class({
         var options = (optionsStr) ? JSON.decode(optionsStr) : null;
 
         if (appNames){
+            if (!this.status) this.status = {};
             this.status.apps = {};
             this.status.apps[appNames] = options || {};
             this.status.apps[appNames].name = appNames;

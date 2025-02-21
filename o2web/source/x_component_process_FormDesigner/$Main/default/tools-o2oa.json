@@ -39,6 +39,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
+  "OOPagination":{
+    "icon": "pagination.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_pagination,
+    "className": "OOPagination"
+  },
   "Log": {
     "icon": "log.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.log,

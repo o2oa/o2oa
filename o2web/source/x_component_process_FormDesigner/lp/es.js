@@ -367,7 +367,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_calendar": "Calendario",
 		"oo_datetime": "Marco de fecha",
 		"oo_org": "Personal",
-		"codeedit": "Editor de guiones"
+		"codeedit": "Editor de guiones",
+		"oo_pagination": "Número de página"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1504,7 +1505,15 @@ MWF.xApplication.process.FormDesigner.LP={
 		"scriptEditor": "Editor de guiones",
 		"lineNumber": "Mostrar el número de línea",
 		"isReader": "Como lector de gestión de contenidos",
-		"isAuther": "Como editor de gestión de contenidos"
+		"isAuther": "Como editor de gestión de contenidos",
+		"firstPageText": "Texto de la página de inicio",
+		"firstPage": "Página 1",
+		"lastPageText": "Texto de la página final",
+		"lastPage": "La última página",
+		"jumperToText": "Saltar texto",
+		"jumperText": "A la página (...).",
+		"allowJumper": "Permitir saltar páginas",
+		"pages": "Mostrar el número de páginas"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
