@@ -133,7 +133,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
             names.each(function(name){
                 var data = (typeOf(name)==="string") ? {"name": name.split('@')[0], "id": name, "distinguishedName":name}: name;
                 var distinguishedName = (typeOf(name)==="string") ? name : data.distinguishedName;
-                var flag = distinguishedName.split("@").getLast();
+                var flag = distinguishedName?distinguishedName.split("@").getLast():"o";
                 var widget;
                 switch (flag.toLowerCase()){
                     case "i":
