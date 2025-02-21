@@ -63,6 +63,11 @@ public class PersonFactory {
 		return ActionGetNickName.execute(context, value);
 	}
 
+	/** 获取个人及关联身份,身份所属组织,身份所属职务,个人和身份所在群组,个人拥有角色的dn列表 */
+	public List<String> getAuthInfo(String value) throws Exception {
+		return ActionGetAuthInfo.execute(context, value);
+	}
+
 	/** 批量获取个人的distinguishedName */
 	public List<String> list(List<String> values) throws Exception {
 		return ActionList.execute(context, values, false);
@@ -279,7 +284,7 @@ public class PersonFactory {
 
 	/**
 	 * 获取扩充的个人对象,返回个人身份,身份所在组织等信息
-	 * 
+	 *
 	 * @param value
 	 * @return
 	 * @throws Exception
@@ -290,7 +295,7 @@ public class PersonFactory {
 
 	/**
 	 * 获取个人身份,组织,组织职务,群组,角色,个人属性
-	 * 
+	 *
 	 * @param value                 个人标识
 	 * @param fectchIdentity        是否获取身份
 	 * @param fectchUnit            是否获取组织

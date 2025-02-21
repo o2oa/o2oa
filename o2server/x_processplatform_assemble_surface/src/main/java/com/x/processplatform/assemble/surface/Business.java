@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface;
 
+import com.x.base.core.project.tools.ListTools;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -597,7 +598,9 @@ public class Business {
         if ((null == app) && (null == pro)) {
             return false;
         }
-        return ((null != pro) && effectivePerson.isPerson(pro.getControllerList()))
+        return ((null != pro) && ListTools.isNotEmpty(pro.getControllerList())
+                && (effectivePerson.isPerson(pro.getControllerList()) || ListTools.containsAny(
+                this.organization().person().getAuthInfo(effectivePerson.getDistinguishedName()), pro.getControllerList())))
                 || ((null != app) && (effectivePerson.isPerson(app.getControllerList())
                 || effectivePerson.isPerson(app.getMaintainerList())));
     }
@@ -612,7 +615,9 @@ public class Business {
         if ((null == app) && (null == pro)) {
             return false;
         }
-        return ((null != pro) && pro.getControllerList().contains(person))
+        return ((null != pro) && ListTools.isNotEmpty(pro.getControllerList())
+                && (pro.getControllerList().contains(person) || ListTools.containsAny(
+                this.organization().person().getAuthInfo(person),pro.getControllerList())))
                 || ((null != app) && (app.getControllerList().contains(person)
                 || app.getMaintainerList().contains(person)));
     }
