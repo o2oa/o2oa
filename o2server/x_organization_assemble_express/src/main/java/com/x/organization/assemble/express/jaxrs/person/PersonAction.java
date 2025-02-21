@@ -53,6 +53,24 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取个人及关联身份,身份所属组织,身份所属职务,个人和身份所在群组,个人拥有角色的dn列表.", action = ActionGetAuthInfo.class)
+	@GET
+	@Path("auth/info/{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getAuthInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+		ActionResult<ActionGetAuthInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetAuthInfo().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取个人昵称.", action = ActionGetNickName.class)
 	@GET
 	@Path("nick/name/{flag}")
