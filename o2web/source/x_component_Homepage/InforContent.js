@@ -291,7 +291,7 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
         o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(this.page, this.pageSize, {
             "orderField": "publishTime",
             "orderType": "DESC",
-            "readFlag": "UNREAD"
+            // "readFlag": "UNREAD"
         }, function(json){
             this.itemCount = json.count;
             if (json.data && json.data.length){
@@ -582,7 +582,7 @@ MWF.xApplication.Homepage.InforContent.Infor  = new Class({
         o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(this.page, this.pageSize, {
             "orderField": "publishTime",
             "orderType": "DESC",
-            "readFlag": "UNREAD",
+            // "readFlag": "UNREAD",
             "appIdList": [this.id]
         }, function(json){
             this.itemCount = json.count;

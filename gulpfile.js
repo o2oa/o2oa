@@ -714,12 +714,13 @@ function build_concat_basework_action(){
         .pipe(gulp.dest('o2web/source/x_desktop/'));
 }
 
-function build_concat_basework_clean(cb) {
+async function build_concat_basework_clean(cb) {
     var dest = [
         'o2web/source/x_desktop/js/base_work_actions_temp.js',
         'o2web/source/x_desktop/js/base_work_style_temp.js'
     ];
-    return del(dest, cb);
+    await del(dest, { force: true });
+    cb();
 }
 
 
@@ -854,12 +855,13 @@ function build_concat_baseportal_action(){
         .pipe(gulp.dest('o2web/source/x_desktop/'));
 }
 
-function build_concat_baseportal_clean(cb) {
+async function build_concat_baseportal_clean(cb) {
     var dest = [
         'o2web/source/x_desktop/js/base_portal_actions_temp.js',
         'o2web/source/x_desktop/js/base_portal_style_temp.js'
     ];
-    return del(dest, cb);
+    await del(dest, { force: true });
+    cb();
 }
 
 function build_concat_baseportal_body() {
@@ -956,12 +958,14 @@ function build_concat_basedocument_action(){
         .pipe(gulp.dest('o2web/source/x_desktop/'));
 }
 
-function build_concat_basedocument_clean(cb) {
+async function build_concat_basedocument_clean(cb) {
     var dest = [
         'o2web/source/x_desktop/js/base_document_actions_temp.js',
         'o2web/source/x_desktop/js/base_document_style_temp.js'
     ];
-    return del(dest, cb);
+    // return del(dest, { force: true }, cb);
+    await del(dest, { force: true });
+    cb();
 }
 
 function build_concat_basedocument_body() {

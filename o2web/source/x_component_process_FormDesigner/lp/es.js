@@ -1513,7 +1513,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"jumperToText": "Saltar texto",
 		"jumperText": "A la página (...).",
 		"allowJumper": "Permitir saltar páginas",
-		"pages": "Mostrar el número de páginas"
+		"pages": "Mostrar el número de páginas",
+		"pageSize": "Número de entradas por página"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

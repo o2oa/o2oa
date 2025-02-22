@@ -1239,6 +1239,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			var match;
 			var id = this.json.id.replace(/\-/g, "");
 			var prefix = ".css" + id + " ";
+			var className = "css" + id;
 
 			while ((match = rex.exec(cssText)) !== null) {
 				var rulesStr = match[0];
@@ -1284,6 +1285,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 				var cssTextNode = document.createTextNode(cssText);
 				styleNode.appendChild(cssTextNode);
 			}
+
+			this.container.addClass(className);
 		}
 		if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
 	},

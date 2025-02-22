@@ -477,7 +477,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                     this.fireEvent("queryLoad");
 
-                    debugger;
+                    if (!this.json) return;
                     var cssPromise = [];
                     if (this.json.cssUrl){
                         cssPromise.push(new Promise(function(resolve){

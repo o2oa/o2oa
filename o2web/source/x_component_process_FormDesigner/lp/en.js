@@ -1514,7 +1514,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"jumperToText": "Jump Text",
 		"jumperText": "Go to page {n}",
 		"allowJumper": "Allow page redirection",
-		"pages": "Display page count"
+		"pages": "Display page count",
+		"pageSize": "Number of articles per page"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
