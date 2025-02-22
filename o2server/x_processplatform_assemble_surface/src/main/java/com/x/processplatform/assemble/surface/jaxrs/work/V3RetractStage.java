@@ -69,7 +69,6 @@ class V3RetractStage extends BaseAction {
 			if (taskCompleteds.isEmpty()) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
-			wo.setTaskCompletedList(WoTaskCompleted.copier.copy(taskCompleteds));
 			for (WorkLog o : down) {
 				Work w = emc.find(o.getWork(), Work.class);
 				if (null != w) {
@@ -91,23 +90,12 @@ class V3RetractStage extends BaseAction {
 		@FieldDescribe("工作标识列表")
 		private List<WoWork> workList = new ArrayList<>();
 
-		@FieldDescribe("已办标识列表")
-		private List<WoTaskCompleted> taskCompletedList = new ArrayList<>();
-
 		public List<WoWork> getWorkList() {
 			return workList;
 		}
 
 		public void setWorkList(List<WoWork> workList) {
 			this.workList = workList;
-		}
-
-		public List<WoTaskCompleted> getTaskCompletedList() {
-			return taskCompletedList;
-		}
-
-		public void setTaskCompletedList(List<WoTaskCompleted> taskCompletedList) {
-			this.taskCompletedList = taskCompletedList;
 		}
 
 	}
@@ -215,46 +203,6 @@ class V3RetractStage extends BaseAction {
 
 		public void setPerson(String person) {
 			this.person = person;
-		}
-
-	}
-
-	public static class WoTaskCompleted extends GsonPropertyObject {
-
-		private static final long serialVersionUID = 7487991083391164788L;
-
-		private String id;
-		private String person;
-		private String activityName;
-
-		private static final List<String> FIELDS = List.of(JpaObject.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
-				TaskCompleted.activityName_FIELDNAME);
-
-		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
-				WoTaskCompleted.class, FIELDS, JpaObject.FieldsInvisible);
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getPerson() {
-			return person;
-		}
-
-		public void setPerson(String person) {
-			this.person = person;
-		}
-
-		public String getActivityName() {
-			return activityName;
-		}
-
-		public void setActivityName(String activityName) {
-			this.activityName = activityName;
 		}
 
 	}

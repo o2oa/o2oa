@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -40,6 +42,34 @@ class V3Retract extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
+			List<String> jobs = new ArrayList<>();
+
+			for (String id : wi.getRetractTaskList()) {
+				Task task = emc.find(id, Task.class);
+				if (null == task) {
+					throw new ExceptionEntityNotExist(id, Task.class);
+				}
+				jobs.add(task.getJob());
+			}
+
+			if (jobs.stream().distinct().count() != 1) {
+				throw new ExceptionEntityNotExist(Task.class);
+			}
+
+			List<TaskCompleted> taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class,
+					TaskCompleted.job_FIELDNAME, jobs.get(0), TaskCompleted.person_FIELDNAME,
+					effectivePerson.getDistinguishedName(), TaskCompleted.joinInquire_FIELDNAME, true);
+
+			
+			
+			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, jobs.get(0));
+
+			List<WorkLog> 
+			
+		}
 
 		ActionResult<V3RetractStage.Wo> stageResult = new V3RetractStage().execute(effectivePerson, wi.getWork());
 
@@ -114,41 +144,8 @@ class V3Retract extends BaseAction {
 
 		private static final long serialVersionUID = 6034396222207463624L;
 
-		@FieldDescribe("工作标识")
-		private String work;
-
-		@FieldDescribe("已办标识")
-		private String taskCompleted;
-
-		@FieldDescribe("撤回工作标识")
-		private List<String> retractWorkList;
-
 		@FieldDescribe("撤回待办标识")
 		private List<String> retractTaskList;
-
-		public String getTaskCompleted() {
-			return taskCompleted;
-		}
-
-		public void setTaskCompleted(String taskCompleted) {
-			this.taskCompleted = taskCompleted;
-		}
-
-		public String getWork() {
-			return work;
-		}
-
-		public void setWork(String work) {
-			this.work = work;
-		}
-
-		public List<String> getRetractWorkList() {
-			return retractWorkList;
-		}
-
-		public void setRetractWorkList(List<String> retractWorkList) {
-			this.retractWorkList = retractWorkList;
-		}
 
 		public List<String> getRetractTaskList() {
 			return retractTaskList;
