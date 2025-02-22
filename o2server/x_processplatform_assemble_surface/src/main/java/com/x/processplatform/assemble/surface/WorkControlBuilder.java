@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -68,6 +66,8 @@ public class WorkControlBuilder {
 	private boolean ifAllowAddSplit = false;
 	// 是否可以召回
 	private boolean ifAllowRetract = false;
+	// 是否可以召回V3
+	private boolean ifAllowV3Retract = false;
 	// 是否可以回滚
 	private boolean ifAllowRollback = false;
 	// 是否可以提醒
@@ -136,6 +136,11 @@ public class WorkControlBuilder {
 		return this;
 	}
 
+	public WorkControlBuilder enableAllowV3Retract() {
+		this.ifAllowV3Retract = true;
+		return this;
+	}
+
 	public WorkControlBuilder enableAllowRollback() {
 		this.ifAllowRollback = true;
 		return this;
@@ -178,6 +183,7 @@ public class WorkControlBuilder {
 		enableAllowDelete();
 		enableAllowAddSplit();
 		enableAllowRetract();
+		enableAllowV3Retract();
 		enableAllowRollback();
 		enableAllowPress();
 		enableAllowPause();
@@ -319,6 +325,7 @@ public class WorkControlBuilder {
 				Pair.of(ifAllowAddTask, this::computeAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
 				Pair.of(ifAllowDelete, this::computeAllowDelete), Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
+				Pair.of(ifAllowV3Retract, this::computeAllowV3Retract),
 				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
 				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
 				Pair.of(ifAllowGoBack, this::computeAllowGoBack),
@@ -500,6 +507,25 @@ public class WorkControlBuilder {
 						}
 					}
 				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowV3Retract(Control control) {
+		try {
+			control.setAllowV3Retract(false);
+			if (BooleanUtils
+					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
+				List<WorkLog> up = WorkLog.upOrDownTo(
+						workLogTree.nodes().stream().map(Node::getWorkLog).collect(Collectors.toList()),
+						List.of(workLogTree.location(work).getWorkLog()), true, ActivityType.manual);
+
+				control.setAllowV3Retract(business.entityManagerContainer().countEqualAndEqualAndIn(TaskCompleted.class,
+						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+						TaskCompleted.joinInquire_FIELDNAME, Boolean.TRUE, TaskCompleted.activityToken_FIELDNAME,
+						up.stream().map(WorkLog::getFromActivityToken).collect(Collectors.toList())) > 0);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);

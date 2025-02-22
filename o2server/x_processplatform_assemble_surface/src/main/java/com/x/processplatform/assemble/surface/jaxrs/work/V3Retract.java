@@ -1,18 +1,19 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -20,19 +21,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
-import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
-import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.entity.element.util.WorkLogTree;
-import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
-import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2RetractWo;
 
@@ -40,20 +33,52 @@ class V3Retract extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V3Retract.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
 
 		ActionResult<Wo> result = new ActionResult<>();
 
-		Param param = init(effectivePerson, id);
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		this.retract(param);
+		ActionResult<V3RetractStage.Wo> stageResult = new V3RetractStage().execute(effectivePerson, wi.getWork());
 
-		this.processing(param);
+		List<String> workIds = stageResult.getData().getWorkList().stream().map(V3RetractStage.WoWork::getId)
+				.collect(Collectors.toList());
+		List<String> taskIds = stageResult.getData().getWorkList().stream()
+				.flatMap(o -> o.getTaskList().stream().map(V3RetractStage.WoTask::getId)).collect(Collectors.toList());
+		List<String> taskCompletedIds = stageResult.getData().getTaskCompletedList().stream()
+				.map(V3RetractStage.WoTaskCompleted::getId).collect(Collectors.toList());
+		if ((!workIds.containsAll(wi.getRetractWorkList())) || (!taskIds.containsAll(wi.getRetractTaskList()))
+				|| (!taskCompletedIds.contains(wi.getTaskCompleted()))) {
+			throw new ExceptionRetract(wi.getWork());
+		}
 
-		Record rec = this.recordWorkProcessing(Record.TYPE_RETRACT, "", "", param.work.getJob(), param.workLog.getId(),
-				param.taskCompleted.getIdentity(), param.series);
+		WorkLog workLog = null;
+		TaskCompleted taskCompleted = null;
+		Work work = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			work = emc.find(wi.getWork(), Work.class);
+			if (null == work) {
+				throw new ExceptionEntityNotExist(wi.getWork(), Work.class);
+			}
+			taskCompleted = emc.find(wi.getTaskCompleted(), TaskCompleted.class);
+			if (null == taskCompleted) {
+				throw new ExceptionEntityNotExist(wi.getTaskCompleted(), TaskCompleted.class);
+			}
+			workLog = emc.firstEqual(WorkLog.class, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
+					taskCompleted.getActivityToken());
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(WorkLog.class);
+			}
+		}
+
+		String series = StringTools.uniqueToken();
+		this.retract(wi, work.getJob());
+		this.processing(wi, work.getJob(), series);
+
+		Record rec = this.recordWorkProcessing(Record.TYPE_RETRACT, "", "", work.getJob(), workLog.getId(),
+				taskCompleted.getIdentity(), series);
 
 		result.setData(Wo.copier.copy(rec));
 
@@ -61,153 +86,76 @@ class V3Retract extends BaseAction {
 
 	}
 
-	private Param init(EffectivePerson effectivePerson, String id) throws Exception {
-		Param param = new Param();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(id, Work.class);
-			}
-			param.work = work;
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
-					.enableAllowRetract().build();
-			if (BooleanUtils.isFalse(control.getAllowManage()) && BooleanUtils.isFalse(control.getAllowRetract())) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-			}
-			Activity activity = business.getActivity(work);
-			if (null == activity) {
-				throw new ExceptionEntityNotExist(work.getActivity());
-			}
-			WorkLog workLog = findWorkLog(effectivePerson, business, work);
-			if (null == workLog) {
-				throw new ExceptionRetractNoWorkLog(work.getId());
-			}
-			param.workLog = workLog;
-			if (emc.countEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
-					TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME,
-					false) > 0) {
-				throw new ExceptionRetractNoneTaskCompleted(work.getTitle(), work.getId());
-			}
-			TaskCompleted taskCompleted = findLastTaskCompleted(effectivePerson, business, workLog);
-			if (null == taskCompleted) {
-				throw new ExceptionNoTaskCompletedToRetract(param.workLog.getId(),
-						effectivePerson.getDistinguishedName());
-			}
-			param.taskCompleted = taskCompleted;
-			Activity destinationActivity = business.getActivity(taskCompleted.getActivity(),
-					taskCompleted.getActivityType());
-			if (null == destinationActivity) {
-				throw new ExceptionEntityNotExist(taskCompleted.getActivity());
-			}
-
-		}
-		return param;
-	}
-
-	private class Param {
-		private WorkLog workLog;
-		private TaskCompleted taskCompleted;
-		private Work work;
-		private String series = StringTools.uniqueToken();
-	}
-
-	private WorkLog findWorkLog(EffectivePerson effectivePerson, Business business, Work work) throws Exception {
-		WorkLogTree workLogTree = new WorkLogTree(
-				business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
-		// 是否可以召回
-		WorkLog workLog = null;
-		Node node = workLogTree.location(work);
-		if (null != node) {
-			Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-					ActivityType.embed, ActivityType.invoke, ActivityType.parallel, ActivityType.split,
-					ActivityType.publish);
-			for (Node o : ups) {
-				if (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
-						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						TaskCompleted.activityToken_FIELDNAME, o.getWorkLog().getFromActivityToken()) > 0) {
-					workLog = o.getWorkLog();
-					break;
-				}
-			}
-		}
-		return workLog;
-	}
-
-	private TaskCompleted findLastTaskCompleted(EffectivePerson effectivePerson, Business business, WorkLog workLog)
-			throws Exception {
-		List<TaskCompleted> list = business.entityManagerContainer().listEqualAndEqualAndEqual(TaskCompleted.class,
-				TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.activityToken_FIELDNAME,
-				workLog.getFromActivityToken(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
-		return list.stream().sorted(Comparator.comparing(TaskCompleted::getStartTime).reversed()).findFirst()
-				.orElse(null);
-	}
-
-	private void retract(Param param) throws Exception {
-		com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWi req = new com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWi();
-		req.setTaskCompleted(param.taskCompleted.getId());
-		req.setWorkLog(param.workLog.getId());
-		com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWo resp = ThisApplication.context()
+	private void retract(Wi wi, String job) throws Exception {
+		com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWi req = new com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWi();
+		req.setTaskCompleted(wi.getTaskCompleted());
+		req.setWork(wi.getWork());
+		com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWo resp = ThisApplication.context()
 				.applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", "v2", param.work.getId(), "retract"), req,
-						param.work.getJob())
-				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWo.class);
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "v3", "retract"), req, job)
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWo.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
-			throw new ExceptionRetract(param.work.getId());
+			throw new ExceptionRetract(wi.getWork());
 		}
 	}
 
-	private void processing(Param param) throws Exception {
+	private void processing(Wi wi, String job, String series) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_RETRACT);
-		req.setSeries(param.series);
+		req.setSeries(series);
 		ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", param.work.getId(), "processing"), req, param.work.getJob())
+						Applications.joinQueryUri("work", wi.getWork(), "processing"), req, job)
 				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo.class);
 	}
 
 	public static class Wi extends GsonPropertyObject {
 
-		private String activity;
+		private static final long serialVersionUID = 6034396222207463624L;
 
-		private String person;
+		@FieldDescribe("工作标识")
+		private String work;
 
-		private List<String> workList;
+		@FieldDescribe("已办标识")
+		private String taskCompleted;
 
-		private List<String> taskList;
+		@FieldDescribe("撤回工作标识")
+		private List<String> retractWorkList;
 
-		public String getActivity() {
-			return activity;
+		@FieldDescribe("撤回待办标识")
+		private List<String> retractTaskList;
+
+		public String getTaskCompleted() {
+			return taskCompleted;
 		}
 
-		public void setActivity(String activity) {
-			this.activity = activity;
+		public void setTaskCompleted(String taskCompleted) {
+			this.taskCompleted = taskCompleted;
 		}
 
-		public String getPerson() {
-			return person;
+		public String getWork() {
+			return work;
 		}
 
-		public void setPerson(String person) {
-			this.person = person;
+		public void setWork(String work) {
+			this.work = work;
 		}
 
-		public List<String> getWorkList() {
-			return workList;
+		public List<String> getRetractWorkList() {
+			return retractWorkList;
 		}
 
-		public void setWorkList(List<String> workList) {
-			this.workList = workList;
+		public void setRetractWorkList(List<String> retractWorkList) {
+			this.retractWorkList = retractWorkList;
 		}
 
-		public List<String> getTaskList() {
-			return taskList;
+		public List<String> getRetractTaskList() {
+			return retractTaskList;
 		}
 
-		public void setTaskList(List<String> taskList) {
-			this.taskList = taskList;
+		public void setRetractTaskList(List<String> retractTaskList) {
+			this.retractTaskList = retractTaskList;
 		}
 
 	}

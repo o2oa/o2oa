@@ -682,6 +682,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private String fromDistinguishedName;
 
+	public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,降序排列,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + orderNumber_FIELDNAME)
+	private Long orderNumber;
+
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@Schema(description = "业务数据String值01.")
 	@FieldDescribe("业务数据String值01.")
@@ -936,6 +942,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
+
+	public Long getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Long orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 
 	public String getProcess() {
 		return process;

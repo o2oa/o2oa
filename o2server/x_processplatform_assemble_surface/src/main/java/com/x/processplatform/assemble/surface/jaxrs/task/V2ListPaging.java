@@ -49,7 +49,8 @@ class V2ListPaging extends V2Base {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
 		Root<Task> root = cq.from(Task.class);
-		cq.select(root).where(predicate).orderBy(cb.desc(root.get(JpaObject.sequence_FIELDNAME)));
+		cq.select(root).where(predicate).orderBy(cb.desc(root.get(Task.orderNumber_FIELDNAME)),
+				cb.desc(root.get(JpaObject.sequence_FIELDNAME)));
 		return em.createQuery(cq).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
 	}
 
@@ -76,8 +77,6 @@ class V2ListPaging extends V2Base {
 
 		static WrapCopier<Task, Wo> copier = WrapCopierFactory.wo(Task.class, Wo.class,
 				JpaObject.singularAttributeField(Task.class, true, false), JpaObject.FieldsInvisible);
-
- 
 
 	}
 }
