@@ -1,10 +1,14 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import com.x.base.core.project.config.Config;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Date;
 import java.util.Objects;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -27,9 +31,9 @@ import com.x.message.core.entity.IMMsgFile;
 public class ActionUploadFile extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUploadFile.class);
-
+	private static final int ONE_G = 1024 * 1024 * 1024;
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, String conversationId, String type,
-			String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+			String fileName, final FormDataBodyPart filePart) throws Exception {
 
 		LOGGER.debug("execute:{}, conversationId:{}, type:{}, fileName:{}.", effectivePerson::getDistinguishedName,
 				() -> conversationId, () -> type, () -> Objects.toString(fileName));
@@ -44,12 +48,8 @@ public class ActionUploadFile extends BaseAction {
 			String name = fileName;
 			/** 文件名编码转换 */
 			if (StringUtils.isEmpty(name)) {
-				try {
-					name = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
-							DefaultCharset.charset);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				name = new String(filePart.getFormDataContentDisposition().getFileName()
+						.getBytes(DefaultCharset.charset_iso_8859_1), DefaultCharset.charset);
 			}
 			name = FilenameUtils.getName(name);
 			if (StringUtils.isEmpty(name)) {
@@ -59,28 +59,32 @@ public class ActionUploadFile extends BaseAction {
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(name))) {
 				throw new ExceptionEmptyExtension(name);
 			}
-			if (bytes == null) {
+			File file = filePart.getValueAs(File.class);
+			if (file == null || !file.exists()) {
 				throw new ExceptionAttachmentNone(name);
 			}
-			IMMsgFile file = new IMMsgFile();
-			file.setName(name);
-			file.setStorage(mapping.getName());
-			file.setPerson(effectivePerson.getDistinguishedName());
-			Date now = new Date();
-			file.setCreateTime(now);
-			file.setLastUpdateTime(now);
-			file.setExtension(StringUtils.lowerCase(FilenameUtils.getExtension(name)));
-			file.setConversationId(conversationId);
-			file.setType(type);
+			if (file.length() > ONE_G) {
+				LOGGER.warn("上传超大附件：{},大小：{}", fileName, (file.length() / 1024 / 1024) + "M");
+			}
 
-			emc.check(file, CheckPersistType.all);
-			file.saveContent(mapping, bytes, name);
+			IMMsgFile imMsgFile = new IMMsgFile();
+			imMsgFile.setName(name);
+			imMsgFile.setStorage(mapping.getName());
+			imMsgFile.setPerson(effectivePerson.getDistinguishedName());
+			Date now = new Date();
+			imMsgFile.setCreateTime(now);
+			imMsgFile.setLastUpdateTime(now);
+			imMsgFile.setExtension(StringUtils.lowerCase(FilenameUtils.getExtension(name)));
+			imMsgFile.setConversationId(conversationId);
+			imMsgFile.setType(type);
+			emc.check(imMsgFile, CheckPersistType.all);
+			imMsgFile.saveContent(mapping,  new FileInputStream(file), name);
 			emc.beginTransaction(IMMsgFile.class);
-			emc.persist(file);
+			emc.persist(imMsgFile);
 			emc.commit();
 			Wo wo = new Wo();
-			wo.setId(file.getId());
-			wo.setFileExtension(file.getExtension());
+			wo.setId(imMsgFile.getId());
+			wo.setFileExtension(imMsgFile.getExtension());
 			wo.setFileName(name);
 			result.setData(wo);
 			return result;
