@@ -1661,6 +1661,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var data = null;
         if (module.json.requestBody){
             if (module.json.requestBody.code){
+                this.currentPage = 1;
                 data = macro.exec(module.json.requestBody.code, this)
             }
         }

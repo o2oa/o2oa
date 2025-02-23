@@ -5,6 +5,14 @@
 	"description": "",
     "sourceType": "o2",
     "httpMethod": "GET",
+
+	"first": "第一页",
+	"last": "最后一页",
+	"pages": 8,
+	"jumper": true,
+	"jumperText": "到第{n}页",
+	"pageSize": 10,
+
 	"defaultValue": {
 		"code": "",
 		"html": ""
