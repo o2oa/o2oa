@@ -9,17 +9,27 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.PropertyTools;
+import com.x.cms.core.entity.element.Script;
+import com.x.cms.core.entity.element.Script_;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.TaskCompleted_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
@@ -516,16 +526,21 @@ public class WorkControlBuilder {
 	private void computeAllowV3Retract(Control control) {
 		try {
 			control.setAllowV3Retract(false);
-			if (BooleanUtils
-					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
-				List<WorkLog> up = WorkLog.upOrDownTo(
-						workLogTree.nodes().stream().map(Node::getWorkLog).collect(Collectors.toList()),
-						List.of(workLogTree.location(work).getWorkLog()), true, ActivityType.manual);
-
-				control.setAllowV3Retract(business.entityManagerContainer().countEqualAndEqualAndIn(TaskCompleted.class,
-						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						TaskCompleted.joinInquire_FIELDNAME, Boolean.TRUE, TaskCompleted.activityToken_FIELDNAME,
-						up.stream().map(WorkLog::getFromActivityToken).collect(Collectors.toList())) > 0);
+			EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<TaskCompleted> cq = cb.createQuery(TaskCompleted.class);
+			Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+			Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.job), work.getJob()));
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.joinInquire), true));
+			List<TaskCompleted> list = em.createQuery(cq.where(p).orderBy(cb.desc(root.get(TaskCompleted_.createTime))))
+					.setMaxResults(1).getResultList();
+			if (!list.isEmpty()) {
+				Manual manual = (Manual) business.getActivity(list.get(0).getActivity(), ActivityType.manual);
+				if (BooleanUtils
+						.isTrue(PropertyTools.getOrElse(manual, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
+					control.setAllowV3Retract(true);
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);

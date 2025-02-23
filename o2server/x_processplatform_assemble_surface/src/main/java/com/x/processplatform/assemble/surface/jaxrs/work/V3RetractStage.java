@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -14,63 +15,55 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 
 class V3RetractStage extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V3RetractStage.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job) throws Exception {
 
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
+		result.setData(wo);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(id, Work.class);
-			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
-					.enableAllowV3Retract().build();
-			if (BooleanUtils.isFalse(control.getAllowManage()) && BooleanUtils.isFalse(control.getAllowV3Retract())) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-			}
-			Activity activity = business.getActivity(work);
-			if (null == activity) {
-				throw new ExceptionEntityNotExist(work.getActivity());
-			}
-			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
-			List<WorkLog> up = WorkLog.upOrDownTo(workLogs,
-					workLogs.stream().filter(o -> Objects.equals(o.getFromActivityToken(), work.getActivityToken()))
-							.collect(Collectors.toList()),
-					true, ActivityType.manual);
-			List<WorkLog> down = WorkLog.upOrDownTo(workLogs, up, false, ActivityType.manual).stream()
-					.filter(o -> BooleanUtils.isNotTrue(o.getConnected())).collect(Collectors.toList());
-			List<TaskCompleted> taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class,
-					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-					TaskCompleted.joinInquire_FIELDNAME, Boolean.TRUE, TaskCompleted.activityToken_FIELDNAME,
-					up.stream().map(WorkLog::getFromActivityToken).collect(Collectors.toList()));
+			List<TaskCompleted> taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class,
+					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME,
+					job, TaskCompleted.joinInquire_FIELDNAME, true);
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(taskCompleteds);
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			if (taskCompleteds.isEmpty()) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+				return result;
 			}
+
+			TaskCompleted taskCompleted = taskCompleteds.stream()
+					.sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed()).findFirst()
+					.orElseThrow(() -> new ExceptionAccessDenied(effectivePerson));
+
+			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, taskCompleted.getJob());
+
+			List<WorkLog> down = WorkLog
+					.upOrDownTo(workLogs,
+							workLogs.stream().filter(
+									o -> Objects.equals(o.getFromActivityToken(), taskCompleted.getActivityToken()))
+									.collect(Collectors.toList()),
+							false, ActivityType.manual)
+					.stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected())).collect(Collectors.toList());
+
 			for (WorkLog o : down) {
-				Work w = emc.find(o.getWork(), Work.class);
+				Work w = emc.firstEqual(Work.class, Work.activityToken_FIELDNAME, o.getFromActivityToken());
 				if (null != w) {
 					WoWork woWork = WoWork.copier.copy(w);
 					woWork.getTaskList()

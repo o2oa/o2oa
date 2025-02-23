@@ -137,7 +137,7 @@ public class ResourceFactory {
 		LinkedBlockingQueue<JsonElement> eventQueue = new LinkedBlockingQueue<>();
 		EventQueueExecutor eventQueueExecutor = new EventQueueExecutor(eventQueue);
 		eventQueueExecutor.start();
-		
+
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUE, eventQueue);
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
 		new Resource(Config.RESOURCE_NODE_APPLICATIONS, new ConcurrentHashMap<String, Object>(10));
@@ -189,17 +189,20 @@ public class ResourceFactory {
 			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
 			dataSource.setJdbcUrl(ds.getUrl());
 			dataSource.setDriverClass(ds.getDriverClassName());
-			//dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
+			// dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
 			dataSource.setUser(ds.getUsername());
 			dataSource.setPassword(ds.getPassword());
 			dataSource.setMaxPoolSize(ds.getMaxTotal());
 			dataSource.setMinPoolSize(ds.getMaxIdle());
 			// 增加校验
-			//dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
-			//dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
+			// dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
+			// dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
 			dataSource.setMaxIdleTime(ds.getMaxIdleTime());
 			dataSource.setAcquireIncrement(2);
 			DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
+			druidDataSource.setTestWhileIdle(false);
+			druidDataSource.setTestOnBorrow(false);
+			druidDataSource.setTestOnReturn(false);
 			if (BooleanUtils.isTrue(ds.getStatEnable())) {
 				dataSource.setFilters(ds.getStatFilter());
 				if (BooleanUtils.isTrue(ds.getSlowSqlEnable())) {
@@ -250,13 +253,16 @@ public class ResourceFactory {
 					+ ";CACHE_SIZE=" + (entry.getValue().getCacheSize() * 1024);
 			dataSource.setJdbcUrl(url);
 			dataSource.setDriverClass(SlicePropertiesBuilder.driver_h2);
-			//dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
+			// dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
 			dataSource.setUser(H2Tools.USER);
 			dataSource.setPassword(Config.token().getPassword());
 			dataSource.setMaxPoolSize(entry.getValue().getMaxTotal());
 			dataSource.setMinPoolSize(entry.getValue().getMaxIdle());
 			dataSource.setAcquireIncrement(2);
 			DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
+			druidDataSource.setTestWhileIdle(false);
+			druidDataSource.setTestOnBorrow(false);
+			druidDataSource.setTestOnReturn(false);
 			if (BooleanUtils.isTrue(entry.getValue().getStatEnable())) {
 				dataSource.setFilters(entry.getValue().getStatFilter());
 				if (BooleanUtils.isTrue(entry.getValue().getSlowSqlEnable())) {

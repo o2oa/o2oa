@@ -1384,15 +1384,15 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "V3_工作召回选项。", action = V3RetractStage.class)
 	@GET
-	@Path("v3/{id}/retract/stage")
+	@Path("v3/retract/stage/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void v3RetractStage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("任务标识") @PathParam("job") String job) {
 		ActionResult<V3RetractStage.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V3RetractStage().execute(effectivePerson, id);
+			result = new V3RetractStage().execute(effectivePerson, job);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

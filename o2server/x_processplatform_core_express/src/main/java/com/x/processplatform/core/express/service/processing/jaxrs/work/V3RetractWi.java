@@ -9,24 +9,18 @@ public class V3RetractWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = 5176027793859273796L;
 
-	@FieldDescribe("工作标识")
-	private String work;
-
-	@FieldDescribe("已办标识")
+	@FieldDescribe(" 已经完成工作标识")
 	private String taskCompleted;
-
-	@FieldDescribe("撤回工作标识")
-	private List<String> retractWorkList;
 
 	@FieldDescribe("撤回待办标识")
 	private List<String> retractTaskList;
 
-	public String getWork() {
-		return work;
+	public List<String> getRetractTaskList() {
+		return retractTaskList;
 	}
 
-	public void setWork(String work) {
-		this.work = work;
+	public void setRetractTaskList(List<String> retractTaskList) {
+		this.retractTaskList = retractTaskList;
 	}
 
 	public String getTaskCompleted() {
@@ -35,22 +29,6 @@ public class V3RetractWi extends GsonPropertyObject {
 
 	public void setTaskCompleted(String taskCompleted) {
 		this.taskCompleted = taskCompleted;
-	}
-
-	public List<String> getRetractWorkList() {
-		return retractWorkList;
-	}
-
-	public void setRetractWorkList(List<String> retractWorkList) {
-		this.retractWorkList = retractWorkList;
-	}
-
-	public List<String> getRetractTaskList() {
-		return retractTaskList;
-	}
-
-	public void setRetractTaskList(List<String> retractTaskList) {
-		this.retractTaskList = retractTaskList;
 	}
 
 }
