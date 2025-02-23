@@ -913,6 +913,20 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public <T extends JpaObject> Long countEqualAndEqualAndIn(Class<T> cls, String firstEuqalAttribute,
+			Object firstEqualValue, String secondEqualAttribute, Object secondEqualValue, String thridInAttribute,
+			Collection<?> thridInValues) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		cq.select(cb.count(root))
+				.where(cb.and(cb.equal(root.get(firstEuqalAttribute), firstEqualValue),
+						cb.equal(root.get(secondEqualAttribute), secondEqualValue),
+						root.get(thridInAttribute).in(thridInValues)));
+		return em.createQuery(cq).getSingleResult();
+	}
+
 	public <T extends JpaObject> Long countEqualAndEqualAndEqual(Class<T> cls, String oneEuqalAttribute,
 			Object oneEqualValue, String twoEqualAttribute, Object twoEqualValue, String threeEqualAttribute,
 			Object threeEqualValue) throws Exception {
