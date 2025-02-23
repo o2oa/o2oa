@@ -31,6 +31,10 @@
       "afterCreateRowData": {
         "code": "",
         "html": ""
+      },
+      "validImport": {
+        "code": "",
+        "html": ""
       }
 //      "saveRow": {
 //        "code": "",

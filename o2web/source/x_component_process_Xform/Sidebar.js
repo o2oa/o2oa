@@ -473,7 +473,7 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         }
 
         if( this.getVisableOrgData( routeId ).length > 0 ){
-            this.form.processWork( routeId );
+            this.form.flowWork( routeId );
         }else{
             this.form.submitWork(route, opinion.opinion, opinion.medias)
         }
@@ -499,4 +499,4 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
     printWork: function(){
         this.form.printWork();
     }
-}); 
+});

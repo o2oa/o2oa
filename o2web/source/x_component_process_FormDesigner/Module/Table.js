@@ -15,13 +15,20 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 		    	"event": "click",
 		    	"action": "mergerCell",
 		    	"title": MWF.APPFD.LP.formAction.mergerCell
-		    }
+		    },
+			{
+				"name": "moveRows",
+				"icon": "move1.png",
+				"event": "click",
+				"action": "moveRows",
+				"title": MWF.APPFD.LP.formAction.move
+			}
 		]
 	},
-	
+
 	initialize: function(form, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_FormDesigner/Module/Table/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/Table/"+this.options.style+"/css.wcss";
 
@@ -65,12 +72,12 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 		this.moveNode = new Element("div", {
 			"html": tableHTML
 		}).inject(this.form.container);
-//		this.moveNode = divNode.getFirst(); 
+//		this.moveNode = divNode.getFirst();
 //		this.moveNode.inject(divNode, "after");
 //		divNode.destroy();
-		
+
 		this.moveNode.setStyles(this.css.moduleNodeMove);
-		
+
 		this._setTableStyle();
 	},
 	_setTableStyle: function(){
@@ -108,9 +115,9 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 //		var startYList = [];
 //		var endXList = [];
 //		var endYList = [];
-		
+
 		var sx = sp.x, sy = sp.y, ex = ep.x, ey = ep.y;
-		
+
 		while (true){
 			var tmpsx = sp.x, tmpsy = sp.y, tmpex = ep.x, tmpey = ep.y;
 			tds.each(function(td){
@@ -119,16 +126,16 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 					var size = td.getSize();
 					if (!tmpsx || position.x<tmpsx) tmpsx = position.x;
 					if (!tmpsy || position.y<tmpsy) tmpsy = position.y;
-					
+
 					if (!tmpex || position.x+size.x>tmpex) tmpex = position.x+size.x;
 					if (!tmpey || position.y+size.y>tmpey) tmpey = position.y+size.y;
 				}
 			}.bind(this));
 			if (sx==tmpsx && sy==tmpsy && ex==tmpex && ey==tmpey) break;
-			
+
 			sx = tmpsx, sy = tmpsy, ex = tmpex, ey = tmpey;
 		}
-		
+
 		tds.each(function(td){
 			var module = td.retrieve("module");
 			if (td.isInPointInRect(sx, sy, ex, ey)){
@@ -137,9 +144,9 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				module.unSelectedMulti();
 			}
 		}.bind(this));
-		
+
 	},
-	
+
 	_setOtherNodeEvent: function(){
 		this.dragInfor = {};
 
@@ -157,7 +164,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				}
 
 				this.form._beginSelectMulti();
-				
+
 				var position = e.event.target.getPosition();
 				this.dragInfor.start = {"x": e.event.offsetX+position.x, "y": e.event.offsetY+position.y};
 			}.bind(this),
@@ -165,14 +172,14 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				var position = e.event.target.getPosition();
 				var p = {"x": e.event.offsetX+position.x, "y": e.event.offsetY+position.y};
 				this._checkSelectedTds(this.dragInfor.start, p);
-				
+
 				e.stopPropagation();
 			}.bind(this),
 			"onComplete": function(el, e){
 				var position = e.event.target.getPosition();
 				var p = {"x": e.event.offsetX+position.x, "y": e.event.offsetY+position.y};
 				this._checkSelectedTds(this.dragInfor.start, p);
-				
+
 				this.form._completeSelectMulti();
 				this._createMultiSelectedActions();
                 this.showMultiProperty();
@@ -181,7 +188,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 					table.set("cellspacing", this.tmpCellspacing );
 					this.tmpCellspacing = null;
 				}
-				
+
 				e.stopPropagation();
 				e.preventDefault();
 			}.bind(this)
@@ -206,7 +213,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 			if (this.form.multimoduleActionsArea){
 				this.form.multimoduleActionsArea.empty();
 				this.options.multiActions.each(function(action){
-					var actionNode = new Element("div", {
+					var actionNode = new Element("div."+action.name, {
 						"styles": this.options.actionNodeStyles,
 						"title": action.title
 					}).inject(this.form.multimoduleActionsArea);
@@ -215,11 +222,48 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 						this[action.action](e);
 					}.bind(this));
 				}.bind(this));
-				this.form.multimoduleActionsArea.setStyle("width", 18*this.options.multiActions.length);
+
+				var isShowMove = this.isSelectedCellsInWholeRow();
+				var moveRowsNode = this.form.multimoduleActionsArea.getElement('.moveRows');
+				moveRowsNode.setStyle("display", isShowMove ? "block" : "none");
+
+				this.form.multimoduleActionsArea.setStyle("width", 18* (this.options.multiActions.length - (isShowMove ? 0 : 1) ));
 			}
 		}else if(this.form.multimoduleActionsArea){
 			this.form.multimoduleActionsArea.setStyle("display", "none");
 		}
+	},
+	isSelectedCellsInWholeRow: function(){
+		//判断选中的单元格是否是整行的。
+		var trs = [], cells = [];
+
+		var selectedNodes = this.form.selectedModules.map(function (module){
+			return module.node;
+		});
+
+		selectedNodes.each(function(node){
+			var tr = node.getParent('tr');
+			if( tr && !trs.contains(tr) ){
+				trs.push(tr);
+			}
+		}.bind(this));
+
+		trs.forEach(function (tr){
+			cells = cells.concat(tr.getElements('td'));
+		});
+
+		for(var i = 0; i < selectedNodes.length; i++){
+			if( !cells.contains(selectedNodes[i]) ){
+				return false;
+			}
+		}
+
+		for(var j=0; j<cells.length; j++){
+			if( !selectedNodes.contains(cells[j]) ){
+				return false;
+			}
+		}
+		return true;
 	},
 	mergerCell: function(){
 
@@ -229,10 +273,10 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
 			var firstModuleObj = this.form._getFirstMultiSelectedModule();
 			var firstModule = firstModuleObj.module;
-			
+
 	//		var n=0;
 			var td = firstModule.node;
-			
+
 			var colspan = 0;
 			while (td && this.form.selectedModules.indexOf(td.retrieve("module"))!=-1 ){
 				var tmpColspan = td.get("colspan").toInt() || 1;
@@ -246,13 +290,13 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				var rIdx = module.node.getParent("tr").rowIndex;
 				var tmpRowspan = module.node.get("rowspan").toInt() || 1;
 				var rows = rIdx+tmpRowspan-1;
-				
+
 				maxRowIndex = Math.max(maxRowIndex, rows);
 				minRowIndex = Math.min(minRowIndex, rows);
 			}.bind(this));
-			
+
 			var rowspan = maxRowIndex-minRowIndex+1;
-			
+
 			if (colspan>1){
 				firstModule.node.set("colspan", colspan);
 				firstModule.json.properties.colspan = colspan;
@@ -269,7 +313,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				delete firstModule.node.rowspan;
 				delete firstModule.json.properties.rowspan;
 			}
-			
+
 			while (this.form.selectedModules.length){
 				var module = this.form.selectedModules[0];
 				this.form.selectedModules.erase(module);
@@ -278,7 +322,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 					modules.each(function(module){
 						module._moveTo(firstModule);
 					});
-					
+
 					this.containers.erase(module);
 					module.destroy();
 				}
@@ -292,7 +336,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
 
 	},
-	
+
 	_getContainers: function(){
 		//var tds = this.node.getElements("td");
         var tds = this._getTds();
@@ -338,12 +382,12 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
             this.elements.push(el);
         }.bind(this));
 	},
-	
+
 	_createNode: function(callback){
 		var module = this;
 		var url = this.path+"tableCreate.html";
 		MWF.require("MWF.widget.Dialog", function(){
-			var size = $(document.body).getSize();			
+			var size = $(document.body).getSize();
 			var x = size.x/2-180;
 			var y = size.y/2-130;
 
@@ -369,34 +413,34 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				    }
 				]
 			});
-			
+
 			dlg.show();
 		}.bind(this));
 	},
 	_createTableNode: function(){
 		var rows = $("MWFNewTableLine").get("value");
 		var cols = $("MWFNewTableColumn").get("value");
-		
+
 		var width = $("MWFNewTableWidth").get("value");
 		var widthUnitNode = $("MWFNewTableWidthUnit");
 		var widthUnit = widthUnitNode.options[widthUnitNode.selectedIndex].value;
-		
+
 		var border = $("MWFNewTableBorder").get("value");
 		var cellpadding = $("MWFNewTableCellpadding").get("value");
 		var cellspacing = $("MWFNewTableCellspacing").get("value");
-		
+
 		var w = "";
 		if (widthUnit=="percent"){
 			w = width+"%";
 		}else{
 			w = width+"px";
 		}
-		
+
 		this.json.properties.width = w;
 		this.json.properties.border = border;
 		this.json.properties.cellpadding = cellpadding;
 		this.json.properties.cellspacing = cellspacing;
-		
+
 		var tableHTML = "<table border=\""+border+"\" cellpadding=\""+cellpadding+"\" cellspacing=\""+cellspacing+"\" width=\""+w+"\" align=\"center\">";
 		for (var i=0; i<rows.toInt(); i++){
 			tableHTML += "<tr>";
@@ -422,12 +466,12 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
         //    this.node.setStyle("width", w);
         //}
 	},
-	
+
 	_dragComplete: function(){
 		if (!this.node){
 			this._createNode(function(){
 				this._dragMoveComplete();
-			}.bind(this)); 
+			}.bind(this));
 		}else{
 			this._dragMoveComplete();
 		}
@@ -435,14 +479,14 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	_dragMoveComplete: function(){
 		this._resetTreeNode();
 		this.node.inject(this.copyNode, "before");
-		
+
 		this._initModule();
-		
+
 		var thisDisplay = this.node.retrieve("thisDisplay");
 		if (thisDisplay){
 			this.node.setStyle("display", thisDisplay);
 		}
-		
+
 		if (this.copyNode) this.copyNode.destroy();
 		if (this.moveNode) this.moveNode.destroy();
 		this.moveNode = null;
@@ -462,7 +506,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 			this.fromLog = null;
 		}
 	},
-	
+
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
             try{
@@ -502,7 +546,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 					var id = container.json.id;
 					var newId = id.replace(reg, this.json.id);
 					container.json.id = newId;
-					
+
 					delete this.form.json.moduleList[id];
 					this.form.json.moduleList[newId] = container.json;
 					container._setEditStyle("id");
@@ -566,7 +610,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 ////			this.selectedTd(e.target);
 ////		}.bind(this));
 //	},
-//	
+//
 //	selectedTd: function(td){
 //		if (this.currentSelectedTd){
 //			if (this.currentSelectedTd==td){
@@ -574,8 +618,8 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 //			}else{
 //				this.unSelectedTd(this.currentSelectedTd);
 //			}
-//		} 
-//		
+//		}
+//
 //		var top = td.getStyle("border-top");
 //		var left = td.getStyle("border-left");
 //		var bottom = td.getStyle("border-bottom");
@@ -599,7 +643,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 //		}
 //		this.currentSelectedTd = null;
 //	},
-	
+
 	getContainerNodes: function(){
 		//return this.node.getElements("td");
         return this._getTds();
@@ -652,5 +696,5 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 			module.destroy();
 		}
 	}
-	
+
 });
