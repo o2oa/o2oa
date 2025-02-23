@@ -41,9 +41,6 @@ class V3RetractStage extends BaseAction {
 			List<TaskCompleted> taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class,
 					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME,
 					job, TaskCompleted.joinInquire_FIELDNAME, true);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(taskCompleteds);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			if (taskCompleteds.isEmpty()) {
 				return result;
 			}
