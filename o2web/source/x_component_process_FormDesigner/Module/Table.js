@@ -223,7 +223,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 					}.bind(this));
 				}.bind(this));
 
-				var isShowMove = this.isSelectedCellsInWholeRow();
+				var isShowMove = false; //this.isSelectedCellsInWholeRow();
 				var moveRowsNode = this.form.multimoduleActionsArea.getElement('.moveRows');
 				moveRowsNode.setStyle("display", isShowMove ? "block" : "none");
 
