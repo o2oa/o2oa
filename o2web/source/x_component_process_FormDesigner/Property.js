@@ -1607,22 +1607,31 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
     testSourceRestful: function(content){
-	    var service;
-        try {
-            service = JSON.parse(this.module.json.contextRoot);
-        }catch(e){
-            service = {"root": this.module.json.contextRoot, "action":"", "method": "", "url": ""};
-        }
-
-        var address = this._getO2Address(service.root);
-        var uri = this._getO2Uri(this.module, address);
-        this._invoke(this.module, uri, function(json){
+        var callback = function(json){
             content.empty();
             MWF.require("MWF.widget.JsonParse", function(){
                 var jsonParse = new MWF.widget.JsonParse(json, content, null);
                 jsonParse.load();
             }.bind(this));
-        }.bind(this));
+        }.bind(this);
+
+        if (this.module.json.sourceType === 'o2') {
+            if (this.module.json.path) {
+                var service;
+                try {
+                    service = JSON.parse(this.module.json.contextRoot);
+                }catch(e){
+                    service = {"root": this.module.json.contextRoot, "action":"", "method": "", "url": ""};
+                }
+
+                var address = this._getO2Address(service.root);
+                var uri = this._getO2Uri(this.module, address);
+                this._invoke(this.module, uri, callback);
+            }
+        } else {
+            var uriOther = this._getO2Uri(this.module, this.module.json.otherHost);
+            this._invokeOther(this.module, uriOther, callback);
+        }
     },
     _getO2Address: function(contextRoot){
         var addressObj = layout.serviceAddressList[contextRoot];
@@ -1688,6 +1697,24 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             //this.data = json;
             if (callback) callback(json);
         }.bind(this), true, true);
+    },
+    _invokeOther: function (module, uri, callback) {
+        if (module.json.otherHost) {
+            var o = {
+                method: module.json.httpMethod,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            if (module.json.httpMethod === 'POST' || module.json.httpMethod === 'PUT') {
+                o.body = JSON.stringify(uri.body);
+            }
+            fetch(uri.uri, o)
+                .then((response) => response.json())
+                .then((json) => {
+                    if (callback) callback(json);
+                });
+        }
     },
 
     loadUnitTypeSelector: function(){

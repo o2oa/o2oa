@@ -31,11 +31,30 @@ MWF.xApplication.portal.PageDesigner.Module.Source = MWF.PCSource = new Class({
             }
         }).inject(this.form.container);
     },
+	_dragIn: function(module){
+		module.onDragModule = this;
+		if (!this.Component) module.inContainer = this;
+		module.parentContainer = this;
+		module.nextModule = null;
+
+		this.node.setStyles({"border": "1px solid #ffa200"});
+
+		if (module.controlMode){
+			if (module.copyNode) module.copyNode.hide();
+		}else{
+			var copyNode = module._getCopyNode(this);
+			copyNode.show();
+			if( this.pagination ){
+				copyNode.inject(this.pagination, 'before');
+			}else{
+				copyNode.inject(this.node);
+			}
+		}
+	},
 	_resetModuleDomNode: function(){
 		this.checkPagination();
 	},
 	_setEditStyle_custom: function (name, obj, oldValue) {
-		debugger;
 		if (name==="templateType"){
 			if (this.form.templateStyles){
 				var moduleStyles = this.form.templateStyles[this.moduleName];
