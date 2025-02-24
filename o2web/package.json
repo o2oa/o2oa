@@ -58,6 +58,7 @@
         "merge-stream": "^1.0.1",
         "minimist": "^1.2.0",
         "readline-sync": "^1.4.10",
-        "through2": "^4.0.2"
+        "through2": "^4.0.2",
+        "del": "5.1.0"
     }
 }
