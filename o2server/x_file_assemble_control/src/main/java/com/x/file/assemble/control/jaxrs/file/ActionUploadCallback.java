@@ -34,6 +34,9 @@ class ActionUploadCallback extends BaseAction {
 
 	ActionResult<Wo<WoObject>> execute(EffectivePerson effectivePerson, String referenceType, String reference,
 			Integer scale, String callback, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+		if (effectivePerson.isAnonymous()) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
 				ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			ActionResult<Wo<WoObject>> result = new ActionResult<>();
