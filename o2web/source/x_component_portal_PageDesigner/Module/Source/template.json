@@ -9,7 +9,7 @@
 	"first": "第一页",
 	"last": "最后一页",
 	"pages": 8,
-	"jumper": true,
+	"jumper": false,
 	"jumperText": "到第{n}页",
 	"pageSize": 10,
 
