@@ -190,14 +190,14 @@ MWF.xDesktop.Actions.RestActions = new Class({
         }
         //@upload message
         if (messageItem && messageItem.moduleMessage){
-            if (messageItem.moduleMessage.setMessageText) messageItem.moduleMessage.setMessageText();
+            if (messageItem.moduleMessage.setMessageText) messageItem.moduleMessage.setMessageText(text);
         }
     },
     setMessageTitle: function(messageItem, text){
         if (messageItem && messageItem.message) messageItem.subjectNode.set("text", text);
         //@upload message
         if (messageItem && messageItem.moduleMessage){
-            if (messageItem.moduleMessage.setMessageTitle) messageItem.moduleMessage.setMessageTitle();
+            if (messageItem.moduleMessage.setMessageTitle) messageItem.moduleMessage.setMessageTitle(text);
         }
     },
     clearMessageProgress: function(messageItem){

@@ -8,9 +8,9 @@
         <link rel="stylesheet" type="text/css" href="css/style_all.css" charset="UTF-8" />
         <link rel="stylesheet" type="text/css" href="css/v10/root.css" charset="UTF-8" />
         <link rel="stylesheet" type="text/css" href="css/v10/style.css" id="oo-css-skin" charset="UTF-8" />
-<!--        <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />-->
-<!--        <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />-->
-        <link rel="icon" href="data:;">
+        <!--        <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />-->
+        <!--        <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />-->
+        <link rel="icon" href="data:;" />
 
         <title></title>
 
@@ -20,29 +20,32 @@
         <meta content="black" name="apple-mobile-web-app-status-bar-style" />
         <meta content="telephone=no" name="format-detection" />
     </head>
-    <body style="overflow: auto; margin:0px; height: 100%;">
-        <div id="appContent" class="appContent" style="overflow: hidden; height:100%;">
-            <div id="loaddingArea" style="overflow: hidden;width:0px; height:2px; background-color:#4e82bd; position: absolute; top: 0; z-index: 100"></div>
+    <body style="overflow: auto; margin: 0px; height: 100%">
+        <div id="appContent" class="appContent" style="overflow: hidden; height: 100%">
+            <div
+                id="loaddingArea"
+                style="overflow: hidden; width: 0px; height: 2px; background-color: #4e82bd; position: absolute; top: 0; z-index: 100"
+            ></div>
         </div>
-        <div id="appContentMask" style="overflow: hidden; height:100%; position: relative; top: -100%; background-size: cover"></div>
+        <div id="appContentMask" style="overflow: hidden; height: 100%; position: relative; top: -100%; background-size: cover"></div>
 
         <script src="../o2_core/o2.min.js"></script>
         <script src="../o2_lib/Decimal.js"></script>
         <script src="js/base_portal.min.js"></script>
         <script src="js/o2m.api.min.js"></script>
         <script src="js/portal.min.js"></script>
-        <script>layout.mobile = true;</script>
+        <!-- <script>layout.mobile = true;</script> -->
         <script text="text/javascript">
-
             // 根据ua判断当前环境 加载各种jssdk
             var u = navigator.userAgent.toLocaleLowerCase();
-            if (/uni-app/i.test(u)) { // uniapp开发的app
-                var script = document.createElement("script");
-                script.type = "text/javascript";
-                script.src = "../o2_lib/uniapp/uni.webview.1.5.2.js";
+            if (/uni-app/i.test(u)) {
+                // uniapp开发的app
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = '../o2_lib/uniapp/uni.webview.1.5.2.js';
                 document.body.appendChild(script);
-            }else if (/dingtalk/i.test(u)) { // 钉钉
-                
+            } else if (/dingtalk/i.test(u)) {
+                // 钉钉
             }
         </script>
     </body>

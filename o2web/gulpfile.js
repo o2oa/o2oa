@@ -810,7 +810,6 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
             'source/' + path + '/js/base_work_actions_temp.js',
 
             'source/' + path + '/js/base.js',
-            'source/o2_core/o2/framework.js',
             'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
@@ -1155,7 +1154,6 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
             'source/' + path + '/js/base_document_actions_temp.js',
 
             'source/' + path + '/js/base.js',
-            'source/o2_core/o2/framework.js',
             'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
