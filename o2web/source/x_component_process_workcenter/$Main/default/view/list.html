@@ -52,17 +52,13 @@
 				</div>
 			</div>
 
-            {{if $.orderNumber && $._.type==='task'}}
-            <div class="listItemTop"></div>
-            {{end if}}
-
             <div class="listItemTitle" data-o2-events="click:{{($._.type=='task' || $._.type=='draft' || $._.type=='review' || $._.type=='myCreated') ? 'openTask' : 'openWorkInfo'}}">
                 <div class="listItemTitleProcess" title="{{$.processName}}">
                     <div class="listItemTitleFlag">【</div>
                     <div class="listItemTitleProcessText">{{$.processName}}</div>
                     <div class="listItemTitleFlag">】</div>
                 </div>
-                <div class="listItemTitleSubject" title="{{$.title}}">
+                <div class="listItemTitleSubject">
                     <a>{{$.title}}</a>
                 </div>
             </div>
