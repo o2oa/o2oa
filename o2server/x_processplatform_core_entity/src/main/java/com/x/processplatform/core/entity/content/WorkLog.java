@@ -88,20 +88,24 @@ public class WorkLog extends SliceJpaObject {
 	public static List<WorkLog> upOrDownTo(List<WorkLog> workLogs, List<WorkLog> arrivedWorkLogs, boolean up,
 			ActivityType activityType) {
 		Set<WorkLog> all = new HashSet<>(workLogs); // 使用 HashSet 提高查找性能
-		Set<WorkLog> list = new HashSet<>(); // 使用 HashSet 避免重复
+		Set<WorkLog> set = new HashSet<>(); // 使用 HashSet 避免重复
 		Set<WorkLog> loop = new HashSet<>(arrivedWorkLogs); // 使用 HashSet 避免重复
 		while (!loop.isEmpty()) {
 			Set<WorkLog> next = new HashSet<>();
 			for (WorkLog o : loop) {
-				all.stream()
-						.filter(p -> up ? Objects.equals(p.getArrivedActivityToken(), o.getFromActivityToken())
-								: Objects.equals(o.getArrivedActivityToken(), p.getFromActivityToken()))
-						.forEach(p -> (Objects.equals(activityType, p.getFromActivityType()) ? list : next).add(p));
+				all.stream().filter(p -> up ? Objects.equals(p.getArrivedActivityToken(), o.getFromActivityToken())
+						: Objects.equals(o.getArrivedActivityToken(), p.getFromActivityToken())).forEach(p -> {
+							if (up) {
+								(Objects.equals(activityType, p.getFromActivityType()) ? set : next).add(p);
+							} else {
+								(Objects.equals(activityType, p.getArrivedActivityType()) ? set : next).add(p);
+							}
+						});
 			}
 			all.removeAll(next); // 更新 all
 			loop = next; // 更新 loop 为下一轮的过滤条件
 		}
-		return new ArrayList<>(list); // 返回结果列表
+		return new ArrayList<>(set); // 返回结果列表
 	}
 
 	public static WorkLog createFromWork(Work work, Activity activity, String token, Date date) throws Exception {

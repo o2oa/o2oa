@@ -16,6 +16,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -51,17 +52,15 @@ class V3RetractStage extends BaseAction {
 
 			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, taskCompleted.getJob());
 
-			List<WorkLog> down = WorkLog
-					.upOrDownTo(workLogs,
-							workLogs.stream().filter(
-									o -> Objects.equals(o.getFromActivityToken(), taskCompleted.getActivityToken()))
-									.collect(Collectors.toList()),
-							false, ActivityType.manual)
-					.stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected())).collect(Collectors.toList());
+			List<WorkLog> down = WorkLog.upOrDownTo(workLogs,
+					workLogs.stream()
+							.filter(o -> Objects.equals(o.getFromActivityToken(), taskCompleted.getActivityToken()))
+							.collect(Collectors.toList()),
+					false, ActivityType.manual);
 
 			for (WorkLog o : down) {
-				Work w = emc.firstEqual(Work.class, Work.activityToken_FIELDNAME, o.getFromActivityToken());
-				if (null != w) {
+				for (Work w : emc.listEqualAndIn(Work.class, Work.job_FIELDNAME, taskCompleted.getJob(),
+						Work.activityToken_FIELDNAME, List.of(o.getFromActivityToken(), o.getArrivedActivityToken()))) {
 					WoWork woWork = WoWork.copier.copy(w);
 					woWork.getTaskList()
 							.addAll(WoTask.copier.copy(emc.listEqual(Task.class, Task.work_FIELDNAME, w.getId())));
