@@ -12,7 +12,7 @@ import net.sourceforge.tess4j.Tesseract;
 import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.cos.COSDocument;
-import org.apache.pdfbox.io.RandomAccessReadBuffer;
+//import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -59,50 +59,50 @@ public class ExtractTextTools {
 	public static final List<String> SUPPORT_IMAGE_TYPES = UnmodifiableList
 			.unmodifiableList(ListTools.toList(".bmp", ".jpg", ".png", ".gif", ".jpeg", "jpe"));
 
-	public static String extract(byte[] bytes, String name, boolean word, boolean excel, boolean pdf, boolean txt,
-			boolean image) throws Exception {
-		if ((null != bytes) && bytes.length > 0 && bytes.length < 1024 * 1024 * 10) {
-			if (word && (StringUtils.endsWithIgnoreCase(name, ".doc")
-					|| StringUtils.endsWithIgnoreCase(name, ".docx"))) {
-				return word(bytes);
-			}
-			if (excel && (StringUtils.endsWithIgnoreCase(name, ".xls")
-					|| StringUtils.endsWithIgnoreCase(name, ".xlsx"))) {
-				return excel(bytes);
-			}
-			if (pdf && StringUtils.endsWithIgnoreCase(name, ".pdf")) {
-				return pdf(bytes);
-			}
-			if (txt && StringUtils.endsWithIgnoreCase(name, ".txt")) {
-				return text(bytes);
-			}
-			if (image && (StringUtils.endsWithIgnoreCase(name, ".jpg") || StringUtils.endsWithIgnoreCase(name, ".png")
-					|| StringUtils.endsWithIgnoreCase(name, ".gif") || StringUtils.endsWithIgnoreCase(name, ".bmp")
-					|| StringUtils.endsWithIgnoreCase(name, ".jpeg") || StringUtils.endsWithIgnoreCase(name, ".jpe"))) {
-				return image(bytes);
-			}
-		}
-		return null;
-	}
+//	public static String extract(byte[] bytes, String name, boolean word, boolean excel, boolean pdf, boolean txt,
+//			boolean image) throws Exception {
+//		if ((null != bytes) && bytes.length > 0 && bytes.length < 1024 * 1024 * 10) {
+//			if (word && (StringUtils.endsWithIgnoreCase(name, ".doc")
+//					|| StringUtils.endsWithIgnoreCase(name, ".docx"))) {
+//				return word(bytes);
+//			}
+//			if (excel && (StringUtils.endsWithIgnoreCase(name, ".xls")
+//					|| StringUtils.endsWithIgnoreCase(name, ".xlsx"))) {
+//				return excel(bytes);
+//			}
+//			if (pdf && StringUtils.endsWithIgnoreCase(name, ".pdf")) {
+//				return pdf(bytes);
+//			}
+//			if (txt && StringUtils.endsWithIgnoreCase(name, ".txt")) {
+//				return text(bytes);
+//			}
+//			if (image && (StringUtils.endsWithIgnoreCase(name, ".jpg") || StringUtils.endsWithIgnoreCase(name, ".png")
+//					|| StringUtils.endsWithIgnoreCase(name, ".gif") || StringUtils.endsWithIgnoreCase(name, ".bmp")
+//					|| StringUtils.endsWithIgnoreCase(name, ".jpeg") || StringUtils.endsWithIgnoreCase(name, ".jpe"))) {
+//				return image(bytes);
+//			}
+//		}
+//		return null;
+//	}
 
-	public static String extract(byte[] bytes, String name) throws Exception {
-		return extract(bytes, name, true, false, true, true, false);
-	}
+//	public static String extract(byte[] bytes, String name) throws Exception {
+//		return extract(bytes, name, true, false, true, true, false);
+//	}
 
-	public static String pdf(byte[] bytes) {
-		try {
-			PDFParser parser = new PDFParser(new RandomAccessReadBuffer(bytes));
-			try (COSDocument cos = parser.parse().getDocument(); PDDocument pd = new PDDocument(cos)) {
-				PDFTextStripper stripper = new PDFTextStripper();
-				stripper.setStartPage(1);
-				stripper.setEndPage(pd.getNumberOfPages());
-				return stripper.getText(pd);
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return null;
-	}
+//	public static String pdf(byte[] bytes) {
+//		try {
+//			PDFParser parser = new PDFParser(new RandomAccessReadBuffer(bytes));
+//			try (COSDocument cos = parser.parse().getDocument(); PDDocument pd = new PDDocument(cos)) {
+//				PDFTextStripper stripper = new PDFTextStripper();
+//				stripper.setStartPage(1);
+//				stripper.setEndPage(pd.getNumberOfPages());
+//				return stripper.getText(pd);
+//			}
+//		} catch (Exception e) {
+//			logger.error(e);
+//		}
+//		return null;
+//	}
 
 	public static String word(byte[] bytes) throws Exception {
 		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {

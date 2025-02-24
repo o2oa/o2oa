@@ -86,6 +86,7 @@
 
         <div id="text{$.pid}requestBodyArea" style="display: text{($.httpMethod=='PUT' || $.httpMethod=='POST' || $.httpMethod=='PATCH')?'block':'none'}">
             <div class="MWFFormulaArea" name="requestBody" title="{{$.lp.requestBody}}"></div>
+            <div style="color:#999;">{{$.lp.requestBodyNote}}</div>
         </div>
 
         <div class="MWFSourceTestRestful">
@@ -94,6 +95,66 @@
         </div>
 
 
+    </div>
+    <div title="分页"  class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.usePagination}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="usePagination" value="true" text{($.usePagination)?'checked':''}
+                        onclick="if (this.checked){ $('text{$.pid}paganationArea').setStyle('display', 'block');}"
+                    />{{$.lp.yes}}
+                    <input type="radio" name="usePagination" value="false" text{(!$.usePagination)?'checked':''}
+                        onclick="if (this.checked){ $('text{$.pid}paganationArea').setStyle('display', 'none');}"
+                    />{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}paganationArea" style="display: text{($.usePagination)?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.firstPageText}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="first" value="text{$.first}" class="editTableInput" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.lastPageText}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="last" value="text{$.last}" class="editTableInput" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.pages}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="pages" value="text{$.pages}" class="editTableInput" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.allowJumper}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="jumper" value="true" text{($.jumper)?'checked':''}/>{{$.lp.yes}} <input type="radio"
+                                                                                                                          name="jumper" value="false" text{(!$.jumper)?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.jumperToText}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="jumperText" value="text{$.jumperText}" class="editTableInput" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.pageSize}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="pageSize" value="text{$.pageSize}" class="editTableInput" />
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFFormulaArea" name="countScript" title="{{$.lp.itemCount}}"></div>
+            <div style="color:#999;">{{$.lp.itemCountNote}}<div>
+            <div class="MWFMaplist" name="pagnationStyles" title="{{$.lp.style}}"></div>
+            <div class="MWFMaplist" name="pagnationProperties" title="{{$.lp.attribute}}"></div>
+        </div>
     </div>
     <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>

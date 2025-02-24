@@ -35,6 +35,8 @@
 		<project.reporting.outputEncoding>UTF-8
 		</project.reporting.outputEncoding>
 		<graalvm.version>22.3.4</graalvm.version>
+		<tika.version>2.9.2</tika.version>
+		<pdfbox.version>2.0.31</pdfbox.version>
 	</properties>
 	<modules>
 		<module>x_base_core_project</module>
@@ -91,7 +93,7 @@
 		<module>x_program_center</module>
 		<module>x_program_init</module>
 		<module>x_console</module>
-  </modules>
+	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
@@ -234,6 +236,14 @@
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-parsers-standard-package</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox-tools</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -842,12 +852,12 @@
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-core</artifactId>
-				<version>2.9.2</version>
+				<version>${tika.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers-standard-package</artifactId>
-				<version>2.9.2</version>
+				<version>2.9.3</version>
 				<exclusions>
 					<exclusion>
 						<groupId>xerces</groupId><!--排除xml-apis-->
@@ -856,9 +866,25 @@
 				</exclusions>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>pdfbox</artifactId>
+				<version>${pdfbox.version}</version> <!-- 强制使用pdfbox2-->
+			</dependency>
+			<dependency>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>pdfbox-tools</artifactId>
+				<version>${pdfbox.version}</version> <!-- 强制使用pdfbox2 -->
+			</dependency>
+			<dependency>
 				<groupId>net.sourceforge.tess4j</groupId>
 				<artifactId>tess4j</artifactId>
 				<version>5.13.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>*</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>io.github.classgraph</groupId>

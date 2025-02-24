@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,19 +8,28 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.PropertyTools;
+import com.x.cms.core.entity.element.Script;
+import com.x.cms.core.entity.element.Script_;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.TaskCompleted_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
@@ -68,6 +76,8 @@ public class WorkControlBuilder {
 	private boolean ifAllowAddSplit = false;
 	// 是否可以召回
 	private boolean ifAllowRetract = false;
+	// 是否可以召回V3
+	private boolean ifAllowV3Retract = false;
 	// 是否可以回滚
 	private boolean ifAllowRollback = false;
 	// 是否可以提醒
@@ -136,6 +146,11 @@ public class WorkControlBuilder {
 		return this;
 	}
 
+	public WorkControlBuilder enableAllowV3Retract() {
+		this.ifAllowV3Retract = true;
+		return this;
+	}
+
 	public WorkControlBuilder enableAllowRollback() {
 		this.ifAllowRollback = true;
 		return this;
@@ -178,6 +193,7 @@ public class WorkControlBuilder {
 		enableAllowDelete();
 		enableAllowAddSplit();
 		enableAllowRetract();
+		enableAllowV3Retract();
 		enableAllowRollback();
 		enableAllowPress();
 		enableAllowPause();
@@ -319,6 +335,7 @@ public class WorkControlBuilder {
 				Pair.of(ifAllowAddTask, this::computeAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
 				Pair.of(ifAllowDelete, this::computeAllowDelete), Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
+				Pair.of(ifAllowV3Retract, this::computeAllowV3Retract),
 				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
 				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
 				Pair.of(ifAllowGoBack, this::computeAllowGoBack),
@@ -499,6 +516,30 @@ public class WorkControlBuilder {
 							break;
 						}
 					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowV3Retract(Control control) {
+		try {
+			control.setAllowV3Retract(false);
+			EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<TaskCompleted> cq = cb.createQuery(TaskCompleted.class);
+			Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+			Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.job), work.getJob()));
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.joinInquire), true));
+			List<TaskCompleted> list = em.createQuery(cq.where(p).orderBy(cb.desc(root.get(TaskCompleted_.createTime))))
+					.setMaxResults(1).getResultList();
+			if (!list.isEmpty()) {
+				Manual manual = (Manual) business.getActivity(list.get(0).getActivity(), ActivityType.manual);
+				if (BooleanUtils
+						.isTrue(PropertyTools.getOrElse(manual, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
+					control.setAllowV3Retract(true);
 				}
 			}
 		} catch (Exception e) {

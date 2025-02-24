@@ -431,6 +431,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         jumperText: '到第{n}页',
         allowJumper: '允许跳页',
 
+        usePagination: '使用分页',
+        itemCount: '总条数',
+        itemCountNote: '通过this.target.data可以获得数据',
+        requestBodyNote: '通过this.target.currentPage获取当前页',
         hideSystemTools: '系统操作',
         show: '显示',
         hide: '隐藏',
@@ -1602,7 +1606,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         scriptMode: '脚本类型',
         scriptEditor: '脚本编辑器',
-        lineNumber: '显示行号',
+        lineNumber: '显示行号'
     },
     smartbi: {
         nosetup: '请先安装SmartBI应用',

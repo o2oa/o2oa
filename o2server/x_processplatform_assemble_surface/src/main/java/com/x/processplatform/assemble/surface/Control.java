@@ -28,6 +28,8 @@ public class Control extends GsonPropertyObject {
 	private Boolean allowAddSplit;
 	// 是否可以召回
 	private Boolean allowRetract;
+	// 是否可以召回V3
+	private Boolean allowV3Retract;
 	// 是否可以回滚
 	private Boolean allowRollback;
 	// 是否可以提醒
@@ -134,6 +136,14 @@ public class Control extends GsonPropertyObject {
 
 	public void setAllowRetract(Boolean allowRetract) {
 		this.allowRetract = allowRetract;
+	}
+
+	public Boolean getAllowV3Retract() {
+		return allowV3Retract;
+	}
+
+	public void setAllowV3Retract(Boolean allowV3Retract) {
+		this.allowV3Retract = allowV3Retract;
 	}
 
 	public Boolean getAllowRollback() {

@@ -16,7 +16,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 	},
 	loadApplication: function(callback){
-
 		var url = this.path+this.options.style+"/view/view.html";
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.setLayout();
