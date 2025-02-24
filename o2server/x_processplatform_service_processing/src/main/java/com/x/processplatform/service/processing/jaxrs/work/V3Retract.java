@@ -79,12 +79,13 @@ class V3Retract extends BaseAction {
 						.findFirst().orElseThrow(() -> new ExceptionEntityNotExist(WorkLog.class));
 
 				List<WorkLog> currentTaskWorkLogs = WorkLog
-						.upOrDownTo(workLogs, List.of(workLog), false, ActivityType.manual).stream()
-						.filter(o -> BooleanUtils.isNotTrue(o.getConnected())).collect(Collectors.toList());
+						.upOrDownTo(workLogs, List.of(workLog), false, ActivityType.manual);
 
 				List<Task> existsTasks = emc.listEqualAndIn(Task.class, Task.job_FIELDNAME, taskCompleted.getJob(),
 						Task.activityToken_FIELDNAME,
-						currentTaskWorkLogs.stream().map(WorkLog::getFromActivityToken).collect(Collectors.toList()));
+						currentTaskWorkLogs.stream()
+								.flatMap(o -> Stream.of(o.getFromActivityToken(), o.getArrivedActivityToken()))
+								.distinct().collect(Collectors.toList()));
 
 				List<Work> works = emc
 						.listEqualAndIn(Work.class, Work.job_FIELDNAME, taskCompleted.getJob(), JpaObject.id_FIELDNAME,

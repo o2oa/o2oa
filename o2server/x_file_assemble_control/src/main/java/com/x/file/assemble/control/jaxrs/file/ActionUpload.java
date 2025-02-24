@@ -34,6 +34,9 @@ class ActionUpload extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String referenceType, String reference, Integer scale,
 			byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+		if (effectivePerson.isAnonymous()) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		String fileName = "";
 		StorageMapping mapping = ThisApplication.context().storageMappings().random(File.class);
 		File file = null;

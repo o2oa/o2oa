@@ -1402,7 +1402,7 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "V3_工作召回。", action = V3Retract.class)
 	@POST
-	@Path("v3/{id}/retract")
+	@Path("v3/retract")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void v3Retract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

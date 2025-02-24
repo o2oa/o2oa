@@ -40,6 +40,9 @@ public class ActionUploadWithUrl extends BaseAction {
 	protected ActionResult<Wo> execute(EffectivePerson effectivePerson,
 										JsonElement jsonElement) throws Exception {
 		logger.debug("ActionFileUploadWithUrl receive:{}.", jsonElement.toString());
+		if (effectivePerson.isAnonymous()) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		ActionResult<Wo> result = new ActionResult<>();
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);

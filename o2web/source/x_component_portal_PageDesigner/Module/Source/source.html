@@ -71,7 +71,10 @@
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">{{$.lp.path}}:</td>
-                <td class="editTableValue"><input type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
+                <td class="editTableValue">
+                    <input type="text" name="path" value="text{$.path}" class="editTableInput"/>
+                    <div style="color:#999;padding: 5px;">如:/jaxrs/invoke/product/execute<div>
+                </td>
             </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
@@ -133,8 +136,8 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.allowJumper}}:</td>
                     <td class="editTableValue">
-                        <input type="radio" name="jumper" value="true" text{($.jumper)?'checked':''}/>{{$.lp.yes}} <input type="radio"
-                                                                                                                          name="jumper" value="false" text{(!$.jumper)?'checked':''}/>{{$.lp.no}}
+                        <input type="radio" name="jumper" value="true" text{($.jumper)?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="jumper" value="false" text{(!$.jumper)?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
                 <tr>
@@ -151,7 +154,7 @@
                 </tr>
             </table>
             <div class="MWFFormulaArea" name="countScript" title="{{$.lp.itemCount}}"></div>
-            <div style="color:#999;">{{$.lp.itemCountNote}}<div>
+            <div style="color:#999;padding: 5px;">{{$.lp.itemCountNote}}<div>
             <div class="MWFMaplist" name="pagnationStyles" title="{{$.lp.style}}"></div>
             <div class="MWFMaplist" name="pagnationProperties" title="{{$.lp.attribute}}"></div>
         </div>

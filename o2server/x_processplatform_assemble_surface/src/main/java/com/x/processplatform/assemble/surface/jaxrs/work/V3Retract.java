@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2RetractWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWo;
 
 class V3Retract extends BaseAction {
 
@@ -94,10 +95,10 @@ class V3Retract extends BaseAction {
 
 			workLog = fromWorkLogs.get(0);
 
-			List<WorkLog> currentTaskWorkLogs = WorkLog.upOrDownTo(workLogs, fromWorkLogs, false, ActivityType.manual)
-					.stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected())).collect(Collectors.toList());
+			List<WorkLog> currentTaskWorkLogs = WorkLog.upOrDownTo(workLogs, fromWorkLogs, false, ActivityType.manual);
 
-			List<String> actvityTokens = currentTaskWorkLogs.stream().map(WorkLog::getFromActivityToken).distinct()
+			List<String> actvityTokens = currentTaskWorkLogs.stream()
+					.flatMap(o -> Stream.of(o.getFromActivityToken(), o.getArrivedActivityToken())).distinct()
 					.collect(Collectors.toList());
 
 			for (Task o : tasks) {
@@ -161,7 +162,7 @@ class V3Retract extends BaseAction {
 
 	}
 
-	public static class Wo extends V2RetractWo {
+	public static class Wo extends V3RetractWo {
 
 		private static final long serialVersionUID = -5007785846454720742L;
 

@@ -32,11 +32,11 @@ class V3Pin extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			emc.beginTransaction(Task.class);
-			if (Objects.isNull(task.getOrderNumber())) {
+			if (Objects.isNull(task.getOrderNumber()) || (task.getOrderNumber() < 1L)) {
 				task.setOrderNumber((new Date()).getTime());
 				wo.setValue(true);
 			} else {
-				task.setOrderNumber(null);
+				task.setOrderNumber(Task.DEFAULT_ORDERNUMBER);
 				wo.setValue(false);
 			}
 			emc.persist(task, CheckPersistType.all);
