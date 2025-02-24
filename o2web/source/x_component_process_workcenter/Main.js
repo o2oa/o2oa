@@ -20,6 +20,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			MWF.require("MWF.framework", function () {
 				this._loadApplication(callback);
 			}.bind(this));
+		}else{
+			this._loadApplication(callback);
 		}
 	},
 	_loadApplication: function(callback){
