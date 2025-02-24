@@ -560,7 +560,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 	public static class WoWork extends Work {
 
-		private static final long serialVersionUID = 5244996549744746585L;
+		private static final long serialVersionUID = 9101508284122695477L;
 
 		static WrapCopier<Work, WoWork> copier = WrapCopierFactory.wo(Work.class, WoWork.class, null,
 				JpaObject.FieldsInvisibleIncludeProperites);
