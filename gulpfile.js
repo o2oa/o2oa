@@ -813,6 +813,7 @@ function build_concat_basework_body() {
         'o2web/source/x_desktop/js/base_work_actions_temp.js',
 
         'o2web/source/x_desktop/js/base.js',
+        'o2web/source/o2_core/o2/framework.js',
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
@@ -920,6 +921,7 @@ function build_concat_baseportal_body() {
         'o2web/source/x_desktop/js/base_portal_actions_temp.js',
 
         'o2web/source/x_desktop/js/base.js',
+        'o2web/source/o2_core/o2/framework.js',
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
@@ -1014,6 +1016,7 @@ function build_concat_basedocument_body() {
         'o2web/source/x_desktop/js/base_document_actions_temp.js',
 
         'o2web/source/x_desktop/js/base.js',
+        'o2web/source/o2_core/o2/framework.js',
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
