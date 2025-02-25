@@ -1,0 +1,350 @@
+/* 聊天消息样式 */
+.none {
+    display: none;
+}
+.block {
+    display: block;
+}
+/* Starter.js 中的 loading 样式 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    color: #fff;
+    gap: 10px;
+}
+.loading-spinner {
+    border: 5px solid rgba(255, 255, 255, 0.5);
+    border-top: 5px solid #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.quote-message-close {
+    background-image: url(../o2_core/o2/xDesktop/$Default/blue/icons/icon_off_round_grey.png) !important;
+    width: 28px;
+    height: 28px;
+    margin-left: 5px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+/* starter */
+.person-outer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.person-mask {
+    opacity: 0.6;
+    position: absolute;
+    background-color: #CCC;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.person-box {
+    background-color: rgb(255, 255, 255);
+    color: rgb(102, 102, 102);
+    z-index: 30000;
+    box-shadow: rgb(102 102 102) 3px 3px 15px;
+    border-radius: 6px;
+    width: 50%;
+    height: 50%;
+    min-width: 400px;
+    min-height: 300px;
+    max-width: 1000px;
+    max-height: 560px;
+    opacity: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.person-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #dededd;
+}
+
+.person-box-header-title {
+    color: #000;
+    font-size: 18px;
+    text-align: left;
+}
+
+.person-box-header-close {
+    color: #000;
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    margin: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.person-box-body {
+    flex: 1;
+    overflow: auto;
+}
+
+.person-box-body-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.person-tag {
+    font-size: 14px;
+    color: #000;
+    padding: 10px;
+    background: #fff;
+    box-shadow: #dedede 3px 3px 15px;
+    border-radius: 6px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.person-tag-active {
+    background: #4A90E2;
+    color: #fff;
+}
+
+.person-box-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.person-box-footer-btn {
+    width: 100%;
+    text-align: center;
+    margin: 30px 20px 0 20px;
+    height: 30px;
+    line-height: 30px;
+    background: #4A90E2;
+    border-radius: 15px;
+    color: #FFFFFF;
+    cursor: pointer;
+    max-width: 200px;
+}
+
+.conversation-outer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.conversation-mask {
+    opacity: 0.6;
+    position: absolute;
+    background-color: #CCC;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.conversation-box {
+    background-color: rgb(255, 255, 255);
+    color: rgb(102, 102, 102);
+    z-index: 30000;
+    box-shadow: rgb(102 102 102) 3px 3px 15px;
+    border-radius: 6px;
+    width: 50%;
+    height: 50%;
+    min-width: 400px;
+    min-height: 300px;
+    max-width: 1000px;
+    max-height: 560px;
+    opacity: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.conversation-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #dededd;
+}
+
+.conversation-box-header-title {
+    color: #000;
+    font-size: 18px;
+    text-align: left;
+}
+
+.conversation-box-header-close {
+    color: #000;
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    margin: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.conversation-box-body {
+    flex: 1;
+    overflow: auto;
+}
+.conversation-box-desc {
+    color: #000;
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 24px;
+}
+.conversation-box-body-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.conversation-item {
+    font-size: 14px;
+    color: #000;
+    padding: 10px;
+    background: #fff;
+    box-shadow: #dedede 3px 3px 15px;
+    border-radius: 6px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+
+.conversation-box-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.conversation-box-footer-btn {
+    width: 100%;
+    text-align: center;
+    margin: 30px 20px 0 20px;
+    height: 30px;
+    line-height: 30px;
+    background: #4A90E2;
+    border-radius: 15px;
+    color: #FFFFFF;
+    cursor: pointer;
+    max-width: 200px;
+}
+
+/*分享的会话列表*/
+.share-conversation-out-box {
+    background-color: #ebebeb;
+    color: rgb(102, 102, 102);
+    z-index: 30000;
+    box-shadow: rgb(102 102 102) 3px 3px 15px;
+    border-radius: 6px;
+    width: 300px;
+    height: 50%;
+    min-height: 300px;
+    max-height: 560px;
+    opacity: 1;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+}
+.share-search-box {
+    height: 28px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    padding: 0 10px;
+}
+.share-search-box-input {
+    height: 26px;
+    width: calc(100% - 20px);
+    line-height: 26px;
+    border: 0;
+    border-radius: 20px;
+    padding: 0 10px;
+}
+
+.share-conversation-list {
+    width: 257px;
+    display: flex;
+    flex-direction: column;
+}
+
+.share-conversation-list > .item {
+    overflow: hidden;
+    height: 60px;
+    margin: 0px;
+}
+.share-conversation-list > .item > .base {
+    height: 59px;
+    width: 100%;
+    cursor: pointer;
+    margin-left: 16px;
+    border-bottom: 1px solid rgb(221, 221, 221);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.share-conversation-list > .item > .base > .avatar {
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 48px;
+    width: 48px;
+    border-radius: 24px;
+    background-color: rgb(255, 255, 255);
+}
+.share-conversation-list > .item > .base > .avatar > .img {
+    width: 48px;
+    height: 48px;
+    border: 0px;
+    border-radius: 24px;
+}
+.share-conversation-list > .item > .base > .body {
+    height: 30px;
+    line-height: 30px;
+    margin-left: 16px;
+    word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
