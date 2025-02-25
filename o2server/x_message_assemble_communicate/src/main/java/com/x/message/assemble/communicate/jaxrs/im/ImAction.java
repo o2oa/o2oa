@@ -490,12 +490,11 @@ public class ImAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("会话id") @PathParam("conversationId") String conversationId,
 			@JaxrsParameterDescribe("文件类型") @PathParam("type") String type,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
-			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) InputStream inputStream,
-			@JaxrsParameterDescribe("附件信息") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) FormDataBodyPart part) {
 		ActionResult<ActionUploadFile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUploadFile().execute(effectivePerson, conversationId, type, fileName, inputStream, disposition);
+			result = new ActionUploadFile().execute(effectivePerson, conversationId, type, fileName, part);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
