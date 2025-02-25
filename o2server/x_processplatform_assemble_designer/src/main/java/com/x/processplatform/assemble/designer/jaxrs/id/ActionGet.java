@@ -9,10 +9,10 @@ import com.x.base.core.project.jaxrs.WoId;
 
 class ActionGet extends BaseAction {
 
-	ActionResult<List<Wo>> execute(Integer count) throws Exception {
+	ActionResult<List<Wo>> execute(Integer count) {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
-		if (count > 0 && count < 200) {
+		if (count > 0) {
 			for (int i = 0; i < count; i++) {
 				Wo wo = new Wo();
 				wo.setId(JpaObject.createId());
@@ -24,6 +24,8 @@ class ActionGet extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -5006996152673096281L;
 
 	}
 

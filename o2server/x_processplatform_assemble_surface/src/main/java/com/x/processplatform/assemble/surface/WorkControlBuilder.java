@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,6 +17,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.bean.tuple.Pair;
@@ -386,7 +386,8 @@ public class WorkControlBuilder {
 
 	private void computeAllowReset(Control control) {
 		try {
-			control.setAllowReset(PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
+			control.setAllowReset(Objects.nonNull(activity())
+					&& PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
 					&& hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -395,9 +396,9 @@ public class WorkControlBuilder {
 
 	private void computeAllowAddTask(Control control) {
 		try {
-			control.setAllowAddTask(
-					PropertyTools.getOrElse(activity(), Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
-							&& hasTaskWithWork().isPresent());
+			control.setAllowAddTask(Objects.nonNull(activity())
+					&& PropertyTools.getOrElse(activity(), Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
+					&& hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -405,7 +406,7 @@ public class WorkControlBuilder {
 
 	private void computeAllowReroute(Control control) {
 		try {
-			control.setAllowReroute(canManage()
+			control.setAllowReroute(canManage() && Objects.nonNull(activity())
 					&& PropertyTools.getOrElse(activity(), Activity.allowReroute_FIELDNAME, Boolean.class, false));
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -419,8 +420,8 @@ public class WorkControlBuilder {
 	 */
 	private void computeAllowDelete(Control control) {
 		try {
-			control.setAllowDelete(
-					(PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
+			control.setAllowDelete(Objects.nonNull(activity())
+					&& (PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
 							&& (canManage() || hasTaskWithWork().isPresent())));
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -430,8 +431,9 @@ public class WorkControlBuilder {
 	private void computeAllowAddSplit(Control control) {
 		try {
 			control.setAllowAddSplit(false);
-			if (BooleanUtils
-					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowAddSplit_FIELDNAME, Boolean.class, false))
+			if (Objects.nonNull(activity())
+					&& BooleanUtils.isTrue(
+							PropertyTools.getOrElse(activity(), Manual.allowAddSplit_FIELDNAME, Boolean.class, false))
 					&& BooleanUtils.isTrue(work.getSplitting())) {
 				Node node = this.workLogTree().location(work);
 				if (null != node) {
@@ -498,8 +500,9 @@ public class WorkControlBuilder {
 	private void computeAllowRetract(Control control) {
 		try {
 			control.setAllowRetract(false);
-			if (BooleanUtils
-					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))
+			if (Objects.nonNull(activity())
+					&& BooleanUtils.isTrue(
+							PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))
 					&& (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
 							TaskCompleted.job_FIELDNAME, work.getJob(), TaskCompleted.activityToken_FIELDNAME,
 							work.getActivityToken()) == 0)) {
@@ -538,13 +541,13 @@ public class WorkControlBuilder {
 				TaskCompleted taskCompleted = list.get(0);
 				List<WorkLog> workLogs = business.entityManagerContainer().listEqual(WorkLog.class,
 						WorkLog.JOB_FIELDNAME, taskCompleted.getJob());
-				List<WorkLog> down = WorkLog.upOrDownTo(workLogs,
+				List<WorkLog> down = WorkLog.downTo(workLogs,
 						workLogs.stream()
 								.filter(o -> Objects.equals(o.getFromActivityToken(), taskCompleted.getActivityToken()))
 								.collect(Collectors.toList()),
-						false, ActivityType.manual);
-				List<String> activityTokens = down.stream()
-						.flatMap(o -> Stream.of(o.getFromActivityToken(), o.getArrivedActivityToken())).distinct()
+						ActivityType.manual);
+				List<String> activityTokens = down.stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected()))
+						.map(WorkLog::getFromActivityToken).filter(StringUtils::isNotBlank).distinct()
 						.collect(Collectors.toList());
 				if (business.entityManagerContainer().countEqualAndIn(Work.class, Work.job_FIELDNAME,
 						taskCompleted.getJob(), Work.activityToken_FIELDNAME, activityTokens) > 0) {
@@ -558,7 +561,7 @@ public class WorkControlBuilder {
 
 	private void computeAllowRollback(Control control) {
 		try {
-			control.setAllowRollback(canManage()
+			control.setAllowRollback(canManage() && Objects.nonNull(activity())
 					&& PropertyTools.getOrElse(activity(), Manual.allowRollback_FIELDNAME, Boolean.class, false));
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -572,7 +575,8 @@ public class WorkControlBuilder {
 	 */
 	private void computeAllowPress(Control control) {
 		try {
-			boolean tag = PropertyTools.getOrElse(activity(), Manual.allowPress_FIELDNAME, Boolean.class, false)
+			boolean tag = Objects.nonNull(activity())
+					&& PropertyTools.getOrElse(activity(), Manual.allowPress_FIELDNAME, Boolean.class, false)
 					&& hasTaskCompletedWithJob() && (!((taskCountWithWork() == 1) && hasTaskWithWork().isPresent()));
 			control.setAllowPress(tag);
 		} catch (Exception e) {
@@ -583,8 +587,10 @@ public class WorkControlBuilder {
 	private void computeAllowPause(Control control) {
 		try {
 			control.setAllowPause(false);
-			if (PropertyTools.getOrElse(activity(), Manual.allowPause_FIELDNAME, Boolean.class, false)
-					&& control.getAllowSave()) {
+			if (Objects.nonNull(activity())
+					&& BooleanUtils.isTrue(
+							PropertyTools.getOrElse(activity(), Manual.allowPause_FIELDNAME, Boolean.class, false))
+					&& BooleanUtils.isTrue(control.getAllowSave())) {
 				// 如果已经处于挂起状态,那么允许恢复
 				control.setAllowPause(!hasPauseTaskWithWork());
 			}
@@ -596,7 +602,8 @@ public class WorkControlBuilder {
 	private void computeAllowResume(Control control) {
 		try {
 			control.setAllowResume(false);
-			if (PropertyTools.getOrElse(activity(), Manual.allowPause_FIELDNAME, Boolean.class, false)
+			if (Objects.nonNull(activity())
+					&& PropertyTools.getOrElse(activity(), Manual.allowPause_FIELDNAME, Boolean.class, false)
 					&& control.getAllowSave()) {
 				// 如果已经处于挂起状态,那么允许恢复
 				control.setAllowResume(hasPauseTaskWithWork());
@@ -609,7 +616,7 @@ public class WorkControlBuilder {
 	private void computeAllowGoBack(Control control) {
 		try {
 			control.setAllowGoBack(false);
-			if (activity().getClass().isAssignableFrom(Manual.class)) {
+			if (Objects.nonNull(activity()) && activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
 				if (hasTaskWithWork().isPresent() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
 					Optional<Ticket> opt = work.getTickets().findTicketWithLabel(hasTaskWithWork.get().getLabel());
@@ -629,7 +636,7 @@ public class WorkControlBuilder {
 	private void computeAllowTerminate(Control control) {
 		try {
 			control.setAllowTerminate(false);
-			if (activity().getClass().isAssignableFrom(Manual.class)) {
+			if (Objects.nonNull(activity()) && activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
 				if (BooleanUtils.isTrue(manual.getAllowTerminate()) && (canManage() || hasTaskWithWork().isPresent())) {
 					control.setAllowTerminate(true);
