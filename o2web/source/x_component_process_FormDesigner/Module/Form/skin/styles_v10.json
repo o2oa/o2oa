@@ -1,418 +1,417 @@
 {
-  "name": "空样式",
-  "form": {
-    "styles":{
-      "background-color": "#f7f7f7",
-      "height": "100%"
+    "name": "空样式",
+    "form": {
+        "styles": {
+            "background-color": "#f7f7f7",
+            "height": "100%"
+        },
+        "properties": {
+            "class": "form-layout"
+        },
+        "cssLink": "/x_component_process_FormDesigner/Module/Form/skin/styles_v10.css"
     },
-    "properties": {
-      "class": "form-layout"
-    },
-    "cssLink": "/x_component_process_FormDesigner/Module/Form/skin/styles_v10.css"
-  },
-  "label": {
-    "title": {
-      "name": "表单标题",
-      "styles": {
-        "font-weight": "normal",
-        "color": "var(--oo-color-main-deep)",
-        "text-align": "center",
-        "font-size": "2.25em",
-        "padding": "0.3em"
-      }
+    "label": {
+        "title": {
+            "name": "表单标题",
+            "styles": {
+                "font-weight": "normal",
+                "color": "var(--oo-color-main-deep)",
+                "text-align": "center",
+                "font-size": "2.25em",
+                "padding": "0.3em"
+            }
+        },
+
+        "section": {
+            "name": "区段标题",
+            "styles": {
+                "padding": "0.8em 1em",
+                "font-size": "1.142857rem",
+                "background-color": "#ffffff",
+                "font-weight": "bold",
+                "box-shadow": "inset 0 -1px 0 0 #dedede",
+                "border-left": "4px solid var(--oo-color-main)"
+            },
+            "properties": {
+                "class": "form-content-section"
+            }
+        }
     },
 
-    "section": {
-      "name": "区段标题",
-      "styles": {
-        "padding": "0.8em 1em",
-        "font-size": "1.142857rem",
-        "background-color":"#ffffff",
-        "font-weight": "bold",
-        "box-shadow": "inset 0 -1px 0 0 #dedede",
-        "border-left": "4px solid var(--oo-color-main)"
-      },
-      "properties": {
-        "class": "form-content-section"
-      }
-    }
-  },
-
-  "div": {
-    "layout": {
-      "name": "表单主体",
-      "styles": {
-        "overflow": "auto",
-        "position": "relative",
-        "padding": "2em 0 3em 0"
-      },
-      "properties": {
-        "class": "form-content"
-      }
-    },
-    "formArea": {
-      "name": "表单内容",
-      "styles": {
-        "width": "80%",
-        "margin": "auto",
-        "min-width": "42em",
-        "display": "flex",
-        "flex-direction": "column",
-        "gap": "2em"
-      }
-    },
-    "section": {
-      "name": "内容区段",
-      "styles": {
-        "padding": "2em 3em",
-        "display": "flex",
-        "background-color":"#ffffff",
-        "gap": "1em 2em",
-        "flex-wrap": "wrap",
-        "position": "relative"
-      },
-      "properties": {
-        "class": "form-content-area"
-      }
-    }
-  },
-
-  "tab": {
-    "styles": {},
-    "tabAreaStyles": {
-      "height": "40px",
-      "border-bottom": "2px solid #3c76b7"
-    },
-    "contentAreaStyles": {
-      "line-height": "normal",
-      "clear": "both",
-      "overflow": "hidden"
-    },
-    "tabStyles": {
-      "position": "relative",
-      "margin-left": "4px",
-      "margin-top": "0px",
-      "margin-right": "0px",
-      "float": "left",
-      "height": "40px",
-      "cursor": "pointer",
-      "min-width": "100px",
-      "background": "transparent ",
-      "border-top-left-radius": "5px",
-      "border-top-right-radius": "5px",
-      "border": "0px solid #f0f0f0",
-      "border-bottom": "1px solid #3c76b7"
-    },
-    "tabTextStyles": {
-      "color": "#666",
-      "font-weight": "bold",
-      "line-height": "40px",
-      "text-align": "center",
-      "margin-right": "8px",
-      "margin-top": "0px",
-      "margin-left": "8px"
-    },
-    "tabCurrentStyles": {
-      "position": "relative",
-      "margin-top": "0px",
-      "margin-left": "2px",
-      "margin-right": "0px",
-      "float": "left",
-      "height": "40px",
-      "min-width": "100px",
-      "background": "#3c76b7",
-      "border-top-left-radius": "5px",
-      "border-top-right-radius": "5px",
-      "border-top": "0px solid #f0f0f0",
-      "border-left": "0px solid #f0f0f0",
-      "border-right": "0px solid #f0f0f0",
-      "border-bottom": "1px solid #3c76b7"
-    },
-    "tabCurrentTextStyles": {
-      "color": "#FFF",
-      "font-weight": "bold",
-      "line-height": "40px",
-      "text-align": "center",
-      "margin-right": "8px",
-      "margin-left": "8px",
-      "margin-top": "0px"
-    }
-  },
-  "tab$Content": {
-    "styles": {
-      "padding": "20px 0px"
-    }
-  },
-  "table": {
-    "styles": {},
-    "titleStyles":{},
-    "contentStyles": {},
-    "layoutStyles": {},
-    "properties": {}
-  },
-  "log" : {
-    "standard": {
-      "name": "标准样式",
-      "styles": {
-        "flex": "1 1 100%"
-      },
-      "properties": {
-        "class": "form-log"
-      },
-      "textStyle": "<div class=\"logItem\"><div style=\"flex: 0 0 4em\"><div class=\"logItemIcon\" style=\"background-image: url('/x_organization_assemble_control/jaxrs/person/{person}/icon');\"></div></div><div style=\"flex: 1;     display: flex; justify-content: space-between; align-items: center;\"><div><div><font style='color:#ff5400;'>{person}</font>（{department}）选择<font style='color: var(--oo-color-main)'>【{route}】</font></div><div>处理意见：<font>{opinion}</font></div></div><div><b>{activity}</b></div></div><div style=\"flex: 0 0 11.85em; display: block\">{img}</div><div>{time}</div></div>",
-      "textTaskStyle": "<div class=\"logItem\"><div style=\"flex: 0 0 4em\"><div class=\"logItemIcon\" style=\"background-image: url('/x_organization_assemble_control/jaxrs/person/{person}/icon');\"></div></div><div style=\"flex: 1;     display: flex; justify-content: space-between; align-items: center;\"><div><div><font style='color:#ff5400;'>{person}</font>（{department}）<font style='color: var(--oo-color-main)'>{route}</font></div><div></div></div><div><b>{activity}</b></div></div><div style=\"flex: 0 0 11.85em; display: block\">{img}</div><div>{time}</div></div>",
-      "mode": "default"
+    "div": {
+        "layout": {
+            "name": "表单主体",
+            "styles": {
+                "overflow": "auto",
+                "position": "relative",
+                "padding": "2em 0 3em 0"
+            },
+            "properties": {
+                "class": "form-content"
+            }
+        },
+        "formArea": {
+            "name": "表单内容",
+            "styles": {
+                "width": "80%",
+                "margin": "auto",
+                "min-width": "42em",
+                "max-width": "86em",
+                "display": "flex",
+                "flex-direction": "column",
+                "gap": "2em"
+            }
+        },
+        "section": {
+            "name": "内容区段",
+            "styles": {
+                "padding": "2em 3em",
+                "display": "flex",
+                "background-color": "#ffffff",
+                "gap": "1em 2em",
+                "flex-wrap": "wrap",
+                "position": "relative"
+            },
+            "properties": {
+                "class": "form-content-area"
+            }
+        }
     },
 
-    "simple": {
-      "name": "简单样式",
-      "styles": {
-        "flex": "1 1 100%"
-      },
-      "properties": {
-        "class": "form-log-simple"
-      },
-      "textStyle": "<div style=\"padding: 0.5em 2em 0.5em 1em;\"><div><div>{opinion}</div><div style=\"display: none\">{img}</div></div><div style=\"text-align: right; font-size: 0.875em; color: #666666\"><span>{person}</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>{time}</span></div></div>",
-      "textTaskStyle": "<div style=\"padding: 0.5em 2em 0.5em 1em;\"><div>{person} <font style='color: var(--oo-color-main)'>{route}</font></div></div>",
-      "mode": "text"
-    }
-  },
-  "datagrid": {
-    "styles": {},
-    "tableStyles": {},
-    "titleStyles": {},
-    "contentStyles": {},
-    "actionStyles": {},
-    "editStyles": {},
-    "amountStyles": {},
-    "itemTitleStyles": {},
-    "importActionStyles" : {},
-    "exportActionStyles" : {},
-    "properties": {}
-  },
-  "datagrid$Title": {
-    "styles": {}
-  },
-  "datatable": {
-    "styles": {
-      "border": "1px solid #DEDEDE",
-      "border-radius": "4px",
-      "padding-bottom": "1em"
+    "tab": {
+        "styles": {},
+        "tabAreaStyles": {
+            "height": "40px",
+            "border-bottom": "2px solid #3c76b7"
+        },
+        "contentAreaStyles": {
+            "line-height": "normal",
+            "clear": "both",
+            "overflow": "hidden"
+        },
+        "tabStyles": {
+            "position": "relative",
+            "margin-left": "4px",
+            "margin-top": "0px",
+            "margin-right": "0px",
+            "float": "left",
+            "height": "40px",
+            "cursor": "pointer",
+            "min-width": "100px",
+            "background": "transparent ",
+            "border-top-left-radius": "5px",
+            "border-top-right-radius": "5px",
+            "border": "0px solid #f0f0f0",
+            "border-bottom": "1px solid #3c76b7"
+        },
+        "tabTextStyles": {
+            "color": "#666",
+            "font-weight": "bold",
+            "line-height": "40px",
+            "text-align": "center",
+            "margin-right": "8px",
+            "margin-top": "0px",
+            "margin-left": "8px"
+        },
+        "tabCurrentStyles": {
+            "position": "relative",
+            "margin-top": "0px",
+            "margin-left": "2px",
+            "margin-right": "0px",
+            "float": "left",
+            "height": "40px",
+            "min-width": "100px",
+            "background": "#3c76b7",
+            "border-top-left-radius": "5px",
+            "border-top-right-radius": "5px",
+            "border-top": "0px solid #f0f0f0",
+            "border-left": "0px solid #f0f0f0",
+            "border-right": "0px solid #f0f0f0",
+            "border-bottom": "1px solid #3c76b7"
+        },
+        "tabCurrentTextStyles": {
+            "color": "#FFF",
+            "font-weight": "bold",
+            "line-height": "40px",
+            "text-align": "center",
+            "margin-right": "8px",
+            "margin-left": "8px",
+            "margin-top": "0px"
+        }
     },
-    "tableStyles": {},
-    "titleStyles": {
-      "border-bottom": "1px solid #DEDEDE",
-      "color": "var(--oo-color-text2)",
-      "height": "2.4em",
-      "text-align": "center",
-      "background-color": "#F7F7F7",
-      "white-space": "nowrap"
+    "tab$Content": {
+        "styles": {
+            "padding": "20px 0px"
+        }
     },
-    "contentStyles": {
-      "padding": "0.5em 0.142857em",
-      "border-bottom": "1px solid #dedede"
+    "table": {
+        "styles": {},
+        "titleStyles": {},
+        "contentStyles": {},
+        "layoutStyles": {},
+        "properties": {}
     },
-    "actionStyles": {
-      "text-align": "center"
-    },
-    "editStyles": {},
-    "amountStyles": {
-      "padding": "0.5em 0.7em",
-      "background-color": "#f7f7f7"
-    },
-    "sectionAmountStyles": {},
-    "itemTitleStyles": {},
-    "importActionStyles" : {},
-    "exportActionStyles" : {},
-    "sectionKeyStyles": {},
-    "properties": {
-      "class": "form-datatable"
-    }
-  },
-  "datatable$Title": {
-    "styles": {
-      "text-align": "left",
-      "padding": "0 0.7em"
-    }
-  },
-  "address": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "combox": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "textfield": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "calendar": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "number": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "currency": {
-    "styles": {},
-    "inputStyles": {},
-    "symbolStyles": {}
-  },
-  "personfield": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "orgfield": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "org": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "select": {
-    "styles": {}
-  },
-  "textarea": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "opinion": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "actionbar": {
-    "iconType": "font",
-    "style": "v10",
-    "styles": {
-      "background-color": "#ffffff"
-    },
-    "customIconStyle" : ""
-  },
-  "attachment" : {
-    "style" : "v10"
-  },
-  "writingBoard": {
-    "styles": {
-      "overflow": "hidden"
-    },
-    "actionStyles": {
-      "float": "right",
-      "border": "1px solid #6681a5",
-      "border-radius": "3px",
-      "cursor": "pointer",
-      "height": "25px",
-      "line-height": "25px",
-      "min-width": "30px",
-      "padding-left": "24px",
-      "padding-right": "5px",
-      "margin-left": "5px",
-      "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
-    },
-    "imageStyles": {
+    "log": {
+        "standard": {
+            "name": "标准样式",
+            "styles": {
+                "flex": "1 1 100%"
+            },
+            "properties": {
+                "class": "form-log"
+            },
+            "textStyle": "<div class=\"logItem\"><div style=\"flex: 0 0 4em\"><div class=\"logItemIcon\" style=\"background-image: url('/x_organization_assemble_control/jaxrs/person/{person}/icon');\"></div></div><div style=\"flex: 1;     display: flex; justify-content: space-between; align-items: center;\"><div><div><font style='color:#ff5400;'>{person}</font>（{department}）选择<font style='color: var(--oo-color-main)'>【{route}】</font></div><div>处理意见：<font>{opinion}</font></div></div><div><b>{activity}</b></div></div><div style=\"flex: 0 0 11.85em; display: block\">{img}</div><div>{time}</div></div>",
+            "textTaskStyle": "<div class=\"logItem\"><div style=\"flex: 0 0 4em\"><div class=\"logItemIcon\" style=\"background-image: url('/x_organization_assemble_control/jaxrs/person/{person}/icon');\"></div></div><div style=\"flex: 1;     display: flex; justify-content: space-between; align-items: center;\"><div><div><font style='color:#ff5400;'>{person}</font>（{department}）<font style='color: var(--oo-color-main)'>{route}</font></div><div></div></div><div><b>{activity}</b></div></div><div style=\"flex: 0 0 11.85em; display: block\">{img}</div><div>{time}</div></div>",
+            "mode": "default"
+        },
 
-    }
-  },
-  "relatedlink": {
-    "buttonStyles": {
-      "border-radius": "10px",
-      "height": "30px",
-      "line-height": "30px",
-      "padding-left": "34px",
-      "padding-right": "5px",
-      "cursor": "pointer",
-      "border": "1px solid #6681a5",
-      "margin": "10px auto",
-      "background": "url(../x_component_process_FormDesigner/Module/Relatedlink/default/icon/down_blue.png) no-repeat 15px center",
-      "width": "70px"
+        "simple": {
+            "name": "简单样式",
+            "styles": {
+                "flex": "1 1 100%"
+            },
+            "properties": {
+                "class": "form-log-simple"
+            },
+            "textStyle": "<div style=\"padding: 0.5em 2em 0.5em 1em;\"><div><div>{opinion}</div><div style=\"display: none\">{img}</div></div><div style=\"text-align: right; font-size: 0.875em; color: #666666\"><span>{person}</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>{time}</span></div></div>",
+            "textTaskStyle": "<div style=\"padding: 0.5em 2em 0.5em 1em;\"><div>{person} <font style='color: var(--oo-color-main)'>{route}</font></div></div>",
+            "mode": "text"
+        }
     },
-    "tableStyles": {
-      "border-top": "1px solid #CCC",
-      "font-size": "12px"
+    "datagrid": {
+        "styles": {},
+        "tableStyles": {},
+        "titleStyles": {},
+        "contentStyles": {},
+        "actionStyles": {},
+        "editStyles": {},
+        "amountStyles": {},
+        "itemTitleStyles": {},
+        "importActionStyles": {},
+        "exportActionStyles": {},
+        "properties": {}
     },
-    "tableTitleCellStyles": {
-      "text-align": "center",
-      "font-weight": "bold",
-      "line-height": "28px",
-      "border-bottom": "1px solid #CCC",
-      "background": "#f7f7f7"
+    "datagrid$Title": {
+        "styles": {}
     },
-    "tableContentLineStyles": {
-      "background": "#ffffff"
+    "datatable": {
+        "styles": {
+            "border": "1px solid #DEDEDE",
+            "border-radius": "4px",
+            "padding-bottom": "1em"
+        },
+        "tableStyles": {},
+        "titleStyles": {
+            "border-bottom": "1px solid #DEDEDE",
+            "color": "var(--oo-color-text2)",
+            "height": "2.4em",
+            "text-align": "center",
+            "background-color": "#F7F7F7",
+            "white-space": "nowrap"
+        },
+        "contentStyles": {
+            "padding": "0.5em 0.142857em",
+            "border-bottom": "1px solid #dedede"
+        },
+        "actionStyles": {
+            "text-align": "center"
+        },
+        "editStyles": {},
+        "amountStyles": {
+            "padding": "0.5em 0.7em",
+            "background-color": "#f7f7f7"
+        },
+        "sectionAmountStyles": {},
+        "itemTitleStyles": {},
+        "importActionStyles": {},
+        "exportActionStyles": {},
+        "sectionKeyStyles": {},
+        "properties": {
+            "class": "form-datatable"
+        }
     },
-    "tableContentLineStyles_over": {
-      "background": "#f6f6f6"
+    "datatable$Title": {
+        "styles": {
+            "text-align": "left",
+            "padding": "0 0.7em"
+        }
     },
-    "tableContentCellStyles": {
-      "line-height": "28px",
-      "border-bottom": "1px solid #CCC"
+    "address": {
+        "styles": {},
+        "inputStyles": {}
     },
-    "tableContentCellStyles_title": {
-      "font-size": "14px"
+    "combox": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "textfield": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "calendar": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "number": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "currency": {
+        "styles": {},
+        "inputStyles": {},
+        "symbolStyles": {}
+    },
+    "personfield": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "orgfield": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "org": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "select": {
+        "styles": {}
+    },
+    "textarea": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "opinion": {
+        "styles": {},
+        "inputStyles": {}
+    },
+    "actionbar": {
+        "iconType": "font",
+        "style": "v10",
+        "styles": {
+            "background-color": "#ffffff"
+        },
+        "customIconStyle": ""
+    },
+    "attachment": {
+        "style": "v10"
+    },
+    "writingBoard": {
+        "styles": {
+            "overflow": "hidden"
+        },
+        "actionStyles": {
+            "float": "right",
+            "border": "1px solid #6681a5",
+            "border-radius": "3px",
+            "cursor": "pointer",
+            "height": "25px",
+            "line-height": "25px",
+            "min-width": "30px",
+            "padding-left": "24px",
+            "padding-right": "5px",
+            "margin-left": "5px",
+            "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        },
+        "imageStyles": {}
+    },
+    "relatedlink": {
+        "buttonStyles": {
+            "border-radius": "10px",
+            "height": "30px",
+            "line-height": "30px",
+            "padding-left": "34px",
+            "padding-right": "5px",
+            "cursor": "pointer",
+            "border": "1px solid #6681a5",
+            "margin": "10px auto",
+            "background": "url(../x_component_process_FormDesigner/Module/Relatedlink/default/icon/down_blue.png) no-repeat 15px center",
+            "width": "70px"
+        },
+        "tableStyles": {
+            "border-top": "1px solid #CCC",
+            "font-size": "12px"
+        },
+        "tableTitleCellStyles": {
+            "text-align": "center",
+            "font-weight": "bold",
+            "line-height": "28px",
+            "border-bottom": "1px solid #CCC",
+            "background": "#f7f7f7"
+        },
+        "tableContentLineStyles": {
+            "background": "#ffffff"
+        },
+        "tableContentLineStyles_over": {
+            "background": "#f6f6f6"
+        },
+        "tableContentCellStyles": {
+            "line-height": "28px",
+            "border-bottom": "1px solid #CCC"
+        },
+        "tableContentCellStyles_title": {
+            "font-size": "14px"
+        }
+    },
+    "OOInput": {
+        "styles": {},
+        "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+        }
+    },
+    "OODatetime": {
+        "styles": {},
+        "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+        }
+    },
+    "OOOrg": {
+        "styles": {},
+        "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+        }
+    },
+    "OORadioGroup": {
+        "styles": {},
+        "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+        }
+    },
+    "OOCheckGroup": {
+        "styles": {},
+        "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+        }
+    },
+    "OOSelect": {
+        "styles": {},
+        "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+        }
+    },
+    "OOTextarea": {
+        "styles": {},
+        "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+        }
+    },
+    "statement": {
+        "styles": {},
+        "properties": {
+            "class": "form-content-view"
+        }
     }
-  },
-  "OOInput": {
-    "styles": {},
-    "properties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
-      "label-Align": "right",
-      "view-style": "background-color:#f7f7f7"
-    }
-  },
-  "OODatetime": {
-    "styles": {},
-    "properties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
-      "label-Align": "right",
-      "view-style": "background-color:#f7f7f7"
-    }
-  },
-  "OOOrg": {
-    "styles": {},
-    "properties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
-      "label-Align": "right",
-      "view-style": "background-color:#f7f7f7"
-    }
-  },
-  "OORadioGroup": {
-    "styles": {},
-    "properties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
-      "label-Align": "right",
-      "view-style": "background-color:#f7f7f7"
-    }
-  },
-  "OOCheckGroup": {
-    "styles": {},
-    "properties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
-      "label-Align": "right",
-      "view-style": "background-color:#f7f7f7"
-    }
-  },
-  "OOSelect": {
-    "styles": {},
-    "properties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
-      "label-Align": "right",
-      "view-style": "background-color:#f7f7f7"
-    }
-  },
-  "OOTextarea": {
-    "styles": {},
-    "properties": {
-      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
-      "label-Align": "right",
-      "view-style": "background-color:#f7f7f7"
-    }
-  },
-  "statement": {
-    "styles": {},
-    "properties": {
-      "class": "form-content-view"
-    }
-  }
 }

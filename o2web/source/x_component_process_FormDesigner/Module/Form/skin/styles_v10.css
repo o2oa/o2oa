@@ -26,6 +26,7 @@
     width: 80% !important;
     margin: auto !important;
     min-width: 42em;
+    max-width: 86em;
 }
 .form-content {
     box-sizing: border-box !important;
@@ -88,7 +89,7 @@
 }
 
 /** 内容管理阅读记录***************************/
-.form-content-area div[data-mwf-el-type='MWFFormDesignerLog'] {
+/* .form-content-area div[data-mwf-el-type='MWFFormDesignerLog'] {
     margin-top: 0 !important;
 }
 .form-content-area div[data-mwf-el-type='MWFFormDesignerLog'] > div {
@@ -122,7 +123,6 @@
 .form-content-area div[data-mwf-el-type='MWFFormDesignerLog'] > div > div:nth-child(2) {
     overflow: hidden;
     margin-right: 0 !important;
-    /*height: unset !important;*/
     width: 100% !important;
 }
 
@@ -143,7 +143,7 @@
     padding: 0.6em;
     text-align: center;
     border-bottom: 1px solid #dfdfdf !important;
-}
+} */
 
 /* 数据表格 **/
 .mwf_addlineaction .addLineAction {
@@ -199,12 +199,12 @@ div.form-log[mwftype='log'] .logItemIcon {
     background-repeat: no-repeat;
 }
 
-div.form-log[data-mwf-el-type='MWFFormDesignerLog'] > div > div {
+div.form-log > div > div {
     padding: 0 !important;
     border-bottom: 1px solid #dedede;
     background-color: transparent !important;
 }
-div.form-log[data-mwf-el-type='MWFFormDesignerLog'] > div > div:first-child > div {
+div.form-log > div > div:first-child > div {
     float: none;
     height: unset !important;
     line-height: unset !important;
@@ -644,6 +644,10 @@ tr.viewTitleLine > td {
         width: 99%;
         min-width: 99%;
         margin: auto;
+    }
+    .form-content > div {
+        width: unset !important;
+        min-width: unset !important;
     }
     .form-content-area oo-input {
         flex: 1 1 100%;

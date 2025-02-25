@@ -40,7 +40,7 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource = new Class(
             this._loadModuleEvents();
             this._queryLoaded();
             this._loadUserInterface();
-            this._loadStyles();
+            // this._loadStyles();
             //this._loadEvents();
             // this._loadDomEvents();
 

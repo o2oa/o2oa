@@ -243,6 +243,8 @@ MWF.xDesktop.MessageV2.Tooltip = new Class({
                 position: "rightTop",
                 edge: "rightTop"
             });
+			MWF.xDesktop.MessageV2.tooltipNode.setStyle("right", 0);
+			MWF.xDesktop.MessageV2.tooltipNode.setStyle("left", 'unset');
         }
 
         this.node.inject(MWF.xDesktop.MessageV2.tooltipNode);
@@ -253,7 +255,7 @@ MWF.xDesktop.MessageV2.Tooltip = new Class({
             this.close(function(){
                 MWF.xDesktop.MessageV2.Item.tooltips.erase(this);
             }.bind(this));
-        }.bind(this), 10000);
+        }.bind(this), 5000);
 
         // this.closeNode.addEvents({
         //     "click": function(){

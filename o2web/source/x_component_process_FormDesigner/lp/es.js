@@ -1514,7 +1514,11 @@ MWF.xApplication.process.FormDesigner.LP={
 		"jumperText": "A la página (...).",
 		"allowJumper": "Permitir saltar páginas",
 		"pages": "Mostrar el número de páginas",
-		"pageSize": "Número de entradas por página"
+		"pageSize": "Número de entradas por página",
+		"usePagination": "Usar la página",
+		"itemCount": "Número total de artículos",
+		"itemCountNote": "Los datos se pueden obtener a través de esto.target.data",
+		"requestBodyNote": "Obtener la página actual a través de este.target.currentpage"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
