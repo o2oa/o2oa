@@ -90,7 +90,7 @@ var apps = [
     { "folder": "x_component_Template", "tasks": ["move", "min"] },
     { "folder": "x_component_ThreeMember", "tasks": ["move", "min"] },
     { "folder": "x_desktop", "tasks": ["move", "min"] },
-    { "folder": "x_component_IMV2", "tasks": ["move", "min"] },
+    { "folder": "x_component_IMV2", "tasks": [] },
     { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_Demo", "tasks": ["move", "min"] },
     { "folder": "x_component_appstore", "tasks": [] },
