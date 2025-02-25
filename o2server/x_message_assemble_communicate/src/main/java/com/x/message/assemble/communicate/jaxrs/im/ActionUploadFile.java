@@ -13,11 +13,15 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.FileTools;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.IMMsgFile;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 /**
@@ -27,28 +31,26 @@ public class ActionUploadFile extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUploadFile.class);
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, String conversationId, String type,
-			String fileName, InputStream inputStream, FormDataContentDisposition disposition) throws Exception {
+			String fileName,  FormDataBodyPart filePart) throws Exception {
 
 		LOGGER.debug("execute:{}, conversationId:{}, type:{}, fileName:{}.", effectivePerson::getDistinguishedName,
 				() -> conversationId, () -> type, () -> Objects.toString(fileName));
-
+		ActionResult<Wo> result = new ActionResult<>();
+		StorageMapping mapping = ThisApplication.context().storageMappings().random(IMMsgFile.class);
+		if (null == mapping) {
+			throw new ExceptionAllocateStorageMaaping();
+		}
+		final File file = filePart.getValueAs(File.class);
+		final Wo wo = new Wo();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			StorageMapping mapping = ThisApplication.context().storageMappings().random(IMMsgFile.class);
-			if (null == mapping) {
-				throw new ExceptionAllocateStorageMaaping();
-			}
-
 			String name = fileName;
 			if (StringUtils.isEmpty(name)) {
-				name = this.fileName(disposition);
+				name = this.fileName(filePart.getFormDataContentDisposition());
 			}
 			name = FilenameUtils.getName(name);
 			if (StringUtils.isEmpty(name)) {
 				throw new ExceptionFileNameEmpty();
 			}
-			LOGGER.info("消息模块上传附件：{},大小：{}", name, (disposition.getSize() / 1024) + "K");
-			/** 禁止不带扩展名的文件上传 */
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(name))) {
 				throw new ExceptionEmptyExtension(name);
 			}
@@ -65,17 +67,31 @@ public class ActionUploadFile extends BaseAction {
 			imMsgFile.setConversationId(conversationId);
 			imMsgFile.setType(type);
 			emc.check(imMsgFile, CheckPersistType.all);
-			imMsgFile.saveContent(mapping, inputStream, name);
+
 			emc.beginTransaction(IMMsgFile.class);
 			emc.persist(imMsgFile);
 			emc.commit();
-			Wo wo = new Wo();
+
 			wo.setId(imMsgFile.getId());
 			wo.setFileExtension(imMsgFile.getExtension());
 			wo.setFileName(name);
 			result.setData(wo);
-			return result;
+
 		}
+		LOGGER.info("消息模块异步上传附件：{}, 大小：{}", wo.getFileName(), (file.length() / 1024)+"k");
+		CompletableFuture.runAsync(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				IMMsgFile imMsgFile = emc.find(wo.getId(), IMMsgFile.class);
+				imMsgFile.saveContent(mapping, new FileInputStream(file), imMsgFile.getName());
+				emc.beginTransaction(IMMsgFile.class);
+				emc.commit();
+			} catch (Exception e) {
+				LOGGER.warn("im附件上传异常：");
+				LOGGER.error(e);
+			}
+		});
+
+		return result;
 	}
 
 	public static class Wo extends WoId {
