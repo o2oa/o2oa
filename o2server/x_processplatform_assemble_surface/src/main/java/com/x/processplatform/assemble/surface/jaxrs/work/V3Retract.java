@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -95,11 +94,11 @@ class V3Retract extends BaseAction {
 
 			workLog = fromWorkLogs.get(0);
 
-			List<WorkLog> currentTaskWorkLogs = WorkLog.upOrDownTo(workLogs, fromWorkLogs, false, ActivityType.manual);
+			List<WorkLog> currentTaskWorkLogs = WorkLog.downTo(workLogs, fromWorkLogs, ActivityType.manual);
 
 			List<String> actvityTokens = currentTaskWorkLogs.stream()
-					.flatMap(o -> Stream.of(o.getFromActivityToken(), o.getArrivedActivityToken())).distinct()
-					.collect(Collectors.toList());
+					.filter(o -> BooleanUtils.isNotTrue(o.getConnected())).map(WorkLog::getFromActivityToken)
+					.filter(StringUtils::isNotBlank).distinct().collect(Collectors.toList());
 
 			for (Task o : tasks) {
 				if (!actvityTokens.contains(o.getActivityToken())) {
