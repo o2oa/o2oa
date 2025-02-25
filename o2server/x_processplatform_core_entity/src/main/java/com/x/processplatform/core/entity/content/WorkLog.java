@@ -85,7 +85,7 @@ public class WorkLog extends SliceJpaObject {
 		}
 	}
 
-	public static List<WorkLog> upOrDownTo(List<WorkLog> workLogs, List<WorkLog> arrivedWorkLogs, boolean up,
+	public static List<WorkLog> downTo(List<WorkLog> workLogs, List<WorkLog> arrivedWorkLogs,
 			ActivityType activityType) {
 		Set<WorkLog> all = new HashSet<>(workLogs); // 使用 HashSet 提高查找性能
 		Set<WorkLog> set = new HashSet<>(); // 使用 HashSet 避免重复
@@ -93,12 +93,12 @@ public class WorkLog extends SliceJpaObject {
 		while (!loop.isEmpty()) {
 			Set<WorkLog> next = new HashSet<>();
 			for (WorkLog o : loop) {
-				all.stream().filter(p -> up ? Objects.equals(p.getArrivedActivityToken(), o.getFromActivityToken())
-						: Objects.equals(o.getArrivedActivityToken(), p.getFromActivityToken())).forEach(p -> {
-							if (up) {
-								(Objects.equals(activityType, p.getFromActivityType()) ? set : next).add(p);
+				all.stream().filter(p -> Objects.equals(o.getArrivedActivityToken(), p.getFromActivityToken()))
+						.forEach(p -> {
+							if (Objects.equals(activityType, p.getFromActivityType())) {
+								set.add(p);
 							} else {
-								(Objects.equals(activityType, p.getArrivedActivityType()) ? set : next).add(p);
+								next.add(p);
 							}
 						});
 			}

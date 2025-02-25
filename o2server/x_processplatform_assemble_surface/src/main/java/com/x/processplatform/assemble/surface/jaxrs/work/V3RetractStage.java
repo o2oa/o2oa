@@ -1,12 +1,14 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -52,16 +54,20 @@ class V3RetractStage extends BaseAction {
 
 			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, taskCompleted.getJob());
 
-			List<WorkLog> down = WorkLog.upOrDownTo(workLogs,
+			List<WorkLog> down = WorkLog.downTo(workLogs,
 					workLogs.stream()
 							.filter(o -> Objects.equals(o.getFromActivityToken(), taskCompleted.getActivityToken()))
 							.collect(Collectors.toList()),
-					false, ActivityType.manual);
+					ActivityType.manual);
 
-			for (WorkLog o : down) {
-				for (Work w : emc.listEqualAndIn(Work.class, Work.job_FIELDNAME, taskCompleted.getJob(),
-						Work.activityToken_FIELDNAME, List.of(o.getFromActivityToken(), o.getArrivedActivityToken()))) {
+			for (WorkLog o : down.stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected()))
+					.collect(Collectors.toList())) {
+				for (Work w : emc
+						.listEqualAndEqual(Work.class, Work.job_FIELDNAME, taskCompleted.getJob(),
+								Work.activityToken_FIELDNAME, o.getFromActivityToken())
+						.stream().collect(Collectors.toList())) {
 					WoWork woWork = WoWork.copier.copy(w);
+					woWork.setSplitValue(w.getSplitValue());
 					woWork.getTaskList()
 							.addAll(WoTask.copier.copy(emc.listEqual(Task.class, Task.work_FIELDNAME, w.getId())));
 					wo.getWorkList().add(woWork);

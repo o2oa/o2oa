@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +35,7 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V3Retrac
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.processor.merge.MergeProcessor;
 
 class V3Retract extends BaseAction {
 
@@ -73,48 +75,51 @@ class V3Retract extends BaseAction {
 				Business business = new Business(emc);
 				TaskCompleted taskCompleted = emc.find(wi.getTaskCompleted(), TaskCompleted.class);
 				List<Task> retractTasks = emc.list(Task.class, wi.getRetractTaskList());
+				List<Work> retractWorks = emc.listEqualAndIn(Work.class, Work.job_FIELDNAME, taskCompleted.getJob(),
+						JpaObject.id_FIELDNAME,
+						retractTasks.stream().map(Task::getWork).distinct().collect(Collectors.toList()));
 				List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, taskCompleted.getJob());
 				WorkLog workLog = workLogs.stream()
 						.filter(o -> Objects.equals(taskCompleted.getActivityToken(), o.getFromActivityToken()))
 						.findFirst().orElseThrow(() -> new ExceptionEntityNotExist(WorkLog.class));
 
-				List<WorkLog> currentTaskWorkLogs = WorkLog
-						.upOrDownTo(workLogs, List.of(workLog), false, ActivityType.manual);
+				List<WorkLog> currentTaskWorkLogs = WorkLog.downTo(workLogs, List.of(workLog), ActivityType.manual);
 
 				List<Task> existsTasks = emc.listEqualAndIn(Task.class, Task.job_FIELDNAME, taskCompleted.getJob(),
 						Task.activityToken_FIELDNAME,
-						currentTaskWorkLogs.stream()
-								.flatMap(o -> Stream.of(o.getFromActivityToken(), o.getArrivedActivityToken()))
-								.distinct().collect(Collectors.toList()));
+						currentTaskWorkLogs.stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected()))
+								.map(WorkLog::getFromActivityToken).filter(StringUtils::isNotBlank).distinct()
+								.collect(Collectors.toList()));
 
-				List<Work> works = emc
-						.listEqualAndIn(Work.class, Work.job_FIELDNAME, taskCompleted.getJob(), JpaObject.id_FIELDNAME,
-								existsTasks.stream().map(Task::getWork).collect(Collectors.toList()))
-						.stream().sorted(Comparator.comparing(Work::getCreateTime).reversed())
-						.collect(Collectors.toList());
-
-				Work work = works.stream().sorted(Comparator.comparing(Work::getCreateTime)).findFirst()
-						.orElseThrow(() -> new ExceptionEntityNotExist(Work.class));
-
-				AeiObjects aeiObjects = new AeiObjects(business, work,
-						business.element().get(work.getActivity(), Manual.class), new ProcessingAttributes());
+				List<Work> existsWorks = emc.listEqualAndIn(Work.class, Work.job_FIELDNAME, taskCompleted.getJob(),
+						JpaObject.id_FIELDNAME,
+						existsTasks.stream().map(Task::getWork).distinct().collect(Collectors.toList()));
 
 				if (existsTasks.containsAll(retractTasks) && retractTasks.containsAll(existsTasks)) {
 					// 全部待办被清空,导致工作整体撤回
-					retractDelete(aeiObjects, works, work);
+					Work work = existsWorks.stream().sorted(Comparator.comparing(Work::getCreateTime)).findFirst()
+							.orElseThrow(() -> new ExceptionEntityNotExist(Work.class));
+					AeiObjects aeiObjects = new AeiObjects(business, work,
+							business.element().get(work.getActivity(), Manual.class), new ProcessingAttributes());
+					retractDelete(aeiObjects, existsWorks, work);
 					update(business, aeiObjects, work, taskCompleted, workLog);
 					wo.setWork(work.getId());
+					aeiObjects.commit();
 				} else {
+					Work work = ListUtils.subtract(existsWorks, retractWorks).get(0);
+					AeiObjects aeiObjects = new AeiObjects(business, work,
+							business.element().get(work.getActivity(), Manual.class), new ProcessingAttributes());
 					// 不重新路由,仅仅删除work与task
-					for (Work w : works) {
+					for (Work w : retractWorks) {
 						this.deleteWorkTask(aeiObjects, w,
 								existsTasks.stream().filter(o -> Objects.equals(o.getWork(), w.getId()))
 										.collect(Collectors.toList()),
 								retractTasks.stream().filter(o -> Objects.equals(o.getWork(), w.getId()))
 										.collect(Collectors.toList()));
 					}
+					wo.setWork(work.getId());
+					aeiObjects.commit();
 				}
-				aeiObjects.commit();
 			}
 			result.setData(wo);
 			return result;
@@ -123,57 +128,54 @@ class V3Retract extends BaseAction {
 		private void retractDelete(AeiObjects aeiObjects, List<Work> works, Work work) throws Exception {
 			List<String> deleteActivityTokens = works.stream().map(Work::getActivityToken).collect(Collectors.toList());
 			aeiObjects.getTasks().stream().filter(o -> deleteActivityTokens.contains(o.getActivityToken()))
-					.forEach(o -> {
-						aeiObjects.getDeleteTasks().add(o);
-					});
+					.forEach(o -> aeiObjects.getDeleteTasks().add(o));
 			aeiObjects.getTaskCompleteds().stream().filter(o -> deleteActivityTokens.contains(o.getActivityToken()))
 					.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
-
 			aeiObjects.getReads().stream().filter(o -> deleteActivityTokens.contains(o.getActivityToken()))
 					.forEach(aeiObjects.getDeleteReads()::add);
-
 			aeiObjects.getReadCompleteds().stream().filter(o -> deleteActivityTokens.contains(o.getActivityToken()))
 					.forEach(aeiObjects.getDeleteReadCompleteds()::add);
-
 			aeiObjects.getRecords().stream().filter(o -> deleteActivityTokens.contains(o.getFromActivityToken()))
 					.forEach(aeiObjects.getDeleteRecords()::add);
-
 			aeiObjects.getWorkLogs().stream().filter(o -> deleteActivityTokens.contains(o.getFromActivityToken()))
 					.forEach(aeiObjects.getDeleteWorkLogs()::add);
-			works.stream().filter(o -> !Objects.equals(o.getId(), work.getId()))
-					.forEach(aeiObjects.getDeleteWorks()::add);
+
+			works.stream().filter(o -> !Objects.equals(o.getId(), work.getId())).forEach(o -> {
+				MergeProcessor.mergeTaskCompleted(aeiObjects, o, work);
+				MergeProcessor.mergeRead(aeiObjects, o, work);
+				MergeProcessor.mergeReadCompleted(aeiObjects, o, work);
+				MergeProcessor.mergeReview(aeiObjects, o, work);
+				MergeProcessor.mergeAttachment(aeiObjects, o, work);
+				MergeProcessor.mergeWorkLog(aeiObjects, o, work);
+				aeiObjects.getDeleteWorks().add(o);
+			});
 		}
 
-		private void deleteWorkTask(AeiObjects aeiObjects, Work work, List<Task> existsTasks, List<Task> retractTasks)
-				throws Exception {
-			if (existsTasks.containsAll(retractTasks) && retractTasks.containsAll(existsTasks)) {
+		private void deleteWorkTask(AeiObjects aeiObjects, Work work, List<Task> partExistsTasks,
+				List<Task> partRetractTasks) throws Exception {
+			if (partExistsTasks.containsAll(partRetractTasks) && partRetractTasks.containsAll(partExistsTasks)) {
 				aeiObjects.getTasks().stream()
-						.filter(o -> Objects.equals(work.getActivityToken(), o.getActivityToken())).forEach(o -> {
-							aeiObjects.getDeleteTasks().add(o);
-						});
+						.filter(o -> Objects.equals(work.getActivityToken(), o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteTasks()::add);
 				aeiObjects.getTaskCompleteds().stream()
 						.filter(o -> Objects.equals(work.getActivityToken(), o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
-
 				aeiObjects.getReads().stream()
 						.filter(o -> Objects.equals(work.getActivityToken(), o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteReads()::add);
-
 				aeiObjects.getReadCompleteds().stream()
 						.filter(o -> Objects.equals(work.getActivityToken(), o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteReadCompleteds()::add);
-
 				aeiObjects.getRecords().stream()
 						.filter(o -> Objects.equals(work.getActivityToken(), o.getFromActivityToken()))
 						.forEach(aeiObjects.getDeleteRecords()::add);
-
 				aeiObjects.getWorkLogs().stream()
 						.filter(o -> Objects.equals(work.getActivityToken(), o.getFromActivityToken()))
 						.forEach(aeiObjects.getDeleteWorkLogs()::add);
 				aeiObjects.getDeleteWorks().add(work);
-			} else if (existsTasks.containsAll(retractTasks)) {
+			} else if (partExistsTasks.containsAll(partRetractTasks)) {
 				Tickets tickets = work.getTickets();
-				for (Task o : retractTasks) {
+				for (Task o : partRetractTasks) {
 					tickets.disableDistinguishedName(o.getDistinguishedName());
 					aeiObjects.getDeleteTasks().add(o);
 				}

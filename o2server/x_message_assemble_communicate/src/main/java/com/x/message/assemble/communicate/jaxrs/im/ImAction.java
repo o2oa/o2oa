@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -489,7 +490,7 @@ public class ImAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("会话id") @PathParam("conversationId") String conversationId,
 			@JaxrsParameterDescribe("文件类型") @PathParam("type") String type,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
-			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataBodyPart part) {
+			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) FormDataBodyPart part) {
 		ActionResult<ActionUploadFile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
