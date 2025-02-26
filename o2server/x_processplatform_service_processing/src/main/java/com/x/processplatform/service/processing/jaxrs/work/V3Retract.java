@@ -106,7 +106,8 @@ class V3Retract extends BaseAction {
 					wo.setWork(work.getId());
 					aeiObjects.commit();
 				} else {
-					Work work = ListUtils.subtract(existsWorks, retractWorks).get(0);
+					Work work = existsWorks.stream().sorted(Comparator.comparing(JpaObject::getCreateTime)).findFirst()
+							.orElseThrow(() -> new ExceptionEntityNotExist(Work.class));
 					AeiObjects aeiObjects = new AeiObjects(business, work,
 							business.element().get(work.getActivity(), Manual.class), new ProcessingAttributes());
 					// 不重新路由,仅仅删除work与task
