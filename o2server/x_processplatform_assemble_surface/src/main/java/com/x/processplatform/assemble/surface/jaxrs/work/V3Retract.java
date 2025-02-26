@@ -107,20 +107,24 @@ class V3Retract extends BaseAction {
 			}
 		}
 
+		Wo wo = new Wo();
+
 		String series = StringTools.uniqueToken();
 
-		this.retract(effectivePerson.getDistinguishedName(), taskCompleted.getId(), wi.getRetractTaskList(), series);
+		this.retract(effectivePerson.getDistinguishedName(), taskCompleted.getId(), wi.getRetractTaskList(), series,
+				wo);
 
-		Record rec = this.recordWorkProcessing(Record.TYPE_RETRACT, "", "", job, workLog.getId(),
-				taskCompleted.getIdentity(), series);
+		result.setData(wo);
 
-		result.setData(Wo.copier.copy(rec));
+		this.recordWorkProcessing(Record.TYPE_RETRACT, "", "", job, workLog.getId(), taskCompleted.getIdentity(),
+				series);
 
 		return result;
 
 	}
 
-	private void retract(String job, String taskCompletedId, List<String> taskIds, String series) throws Exception {
+	private void retract(String job, String taskCompletedId, List<String> taskIds, String series, Wo wo)
+			throws Exception {
 		com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWi req = new com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWi();
 		req.setTaskCompleted(taskCompletedId);
 		req.setRetractTaskList(taskIds);
@@ -129,7 +133,8 @@ class V3Retract extends BaseAction {
 				.postQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", "v3", "retract"), req, job)
 				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.V3RetractWo.class);
-		if (StringUtils.isNotBlank(resp.getWork())) {
+		wo.setWork(resp.getWork());
+		if (BooleanUtils.isTrue(resp.getNeedToProcessing())) {
 			processing(job, resp.getWork(), series);
 		}
 	}
