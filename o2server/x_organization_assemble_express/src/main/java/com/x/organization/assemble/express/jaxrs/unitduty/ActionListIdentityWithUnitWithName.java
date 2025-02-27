@@ -1,9 +1,14 @@
 package com.x.organization.assemble.express.jaxrs.unitduty;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.organization.core.entity.Identity;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -31,158 +36,162 @@ import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
 class ActionListIdentityWithUnitWithName extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionListIdentityWithUnitWithName.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+    private static Logger logger = LoggerFactory.getLogger(
+            ActionListIdentityWithUnitWithName.class);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
+            throws Exception {
 
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			List<String> names = new ArrayList<>();
-			List<String> units = new ArrayList<>();
-			if (StringUtils.isNotEmpty(wi.getName())) {
-				names.add(wi.getName());
-			}
-			if (ListTools.isNotEmpty(wi.getNameList())) {
-				names.addAll(wi.getNameList());
-			}
-			if (StringUtils.isNotEmpty(wi.getUnit())) {
-				units.add(wi.getUnit());
-			}
-			if (ListTools.isNotEmpty(wi.getUnitList())) {
-				units.addAll(wi.getUnitList());
-			}
-			names = ListTools.trim(names, true, true);
-			units = ListTools.trim(units, true, true);
-			CacheKey cacheKey = new CacheKey(this.getClass(), names, units, wi.getRecursiveUnit());
-			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-			if (optional.isPresent()) {
-				result.setData((Wo) optional.get());
-			} else {
-				Wo wo = this.list(business, names, units, wi.getRecursiveUnit());
-				CacheManager.put(cacheCategory, cacheKey, wo);
-				result.setData(wo);
-			}
-			return result;
-		}
-	}
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-	public static class Wi extends GsonPropertyObject {
+            ActionResult<Wo> result = new ActionResult<>();
+            Business business = new Business(emc);
+            List<String> names = new ArrayList<>();
+            List<String> units = new ArrayList<>();
+            if (StringUtils.isNotEmpty(wi.getName())) {
+                names.add(wi.getName());
+            }
+            if (ListTools.isNotEmpty(wi.getNameList())) {
+                names.addAll(wi.getNameList());
+            }
+            if (StringUtils.isNotEmpty(wi.getUnit())) {
+                units.add(wi.getUnit());
+            }
+            if (ListTools.isNotEmpty(wi.getUnitList())) {
+                units.addAll(wi.getUnitList());
+            }
+            names = ListTools.trim(names, true, true);
+            units = ListTools.trim(units, true, true);
+            CacheKey cacheKey = new CacheKey(this.getClass(), names, units, wi.getRecursiveUnit());
+            Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+            if (optional.isPresent()) {
+                result.setData((Wo) optional.get());
+            } else {
+                Wo wo = this.list(business, names, units, wi.getRecursiveUnit());
+                CacheManager.put(cacheCategory, cacheKey, wo);
+                result.setData(wo);
+            }
+            return result;
+        }
+    }
 
-		@FieldDescribe("组织职务名称")
-		private String name;
+    public static class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("组织")
-		private String unit;
+        @FieldDescribe("组织职务名称")
+        private String name;
 
-		@FieldDescribe("组织职务名称(多值)")
-		private List<String> nameList;
+        @FieldDescribe("组织")
+        private String unit;
 
-		@FieldDescribe("组织(多值)")
-		private List<String> unitList;
+        @FieldDescribe("组织职务名称(多值)")
+        private List<String> nameList;
 
-		@FieldDescribe("是否递归下级组织（默认false）")
-		private Boolean recursiveUnit;
+        @FieldDescribe("组织(多值)")
+        private List<String> unitList;
 
-		public String getName() {
-			return name;
-		}
+        @FieldDescribe("是否递归下级组织（默认false）")
+        private Boolean recursiveUnit;
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        public String getName() {
+            return name;
+        }
 
-		public String getUnit() {
-			return unit;
-		}
+        public void setName(String name) {
+            this.name = name;
+        }
 
-		public void setUnit(String unit) {
-			this.unit = unit;
-		}
+        public String getUnit() {
+            return unit;
+        }
 
-		public List<String> getNameList() {
-			return nameList;
-		}
+        public void setUnit(String unit) {
+            this.unit = unit;
+        }
 
-		public void setNameList(List<String> nameList) {
-			this.nameList = nameList;
-		}
+        public List<String> getNameList() {
+            return nameList;
+        }
 
-		public List<String> getUnitList() {
-			return unitList;
-		}
+        public void setNameList(List<String> nameList) {
+            this.nameList = nameList;
+        }
 
-		public void setUnitList(List<String> unitList) {
-			this.unitList = unitList;
-		}
+        public List<String> getUnitList() {
+            return unitList;
+        }
 
-		public Boolean getRecursiveUnit() {
-			return recursiveUnit;
-		}
+        public void setUnitList(List<String> unitList) {
+            this.unitList = unitList;
+        }
 
-		public void setRecursiveUnit(Boolean recursiveUnit) {
-			this.recursiveUnit = recursiveUnit;
-		}
-	}
+        public Boolean getRecursiveUnit() {
+            return recursiveUnit;
+        }
 
-	public static class Wo extends GsonPropertyObject {
+        public void setRecursiveUnit(Boolean recursiveUnit) {
+            this.recursiveUnit = recursiveUnit;
+        }
+    }
 
-		@FieldDescribe("身份")
-		List<String> identityList = new ArrayList<>();
+    public static class Wo extends GsonPropertyObject {
 
-		public List<String> getIdentityList() {
-			return identityList;
-		}
+        @FieldDescribe("身份")
+        List<String> identityList = new ArrayList<>();
 
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
-		}
+        public List<String> getIdentityList() {
+            return identityList;
+        }
 
-	}
+        public void setIdentityList(List<String> identityList) {
+            this.identityList = identityList;
+        }
 
-	private Wo list(Business business, List<String> names, List<String> units, Boolean recursiveUnit) throws Exception {
-		Wo wo = new Wo();
-		List<UnitDuty> os = new ArrayList<>();
-		if (units.isEmpty()) {
-			EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
-			Root<UnitDuty> root = cq.from(UnitDuty.class);
-			Predicate p = root.get(UnitDuty_.name).in(names);
-			os = em.createQuery(cq.select(root).where(p)).getResultList();
-		} else {
-			List<Unit> unitList = business.unit().pick(units);
-			if (!unitList.isEmpty()) {
-				units.clear();
-				for (Unit unit : unitList) {
-					units.add(unit.getId());
-					if (BooleanUtils.isTrue(recursiveUnit)) {
-						units.addAll(business.unit().listSubNested(unit.getId()));
-					}
-				}
-				units = ListTools.trim(units, true, true);
-				EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
-				Root<UnitDuty> root = cq.from(UnitDuty.class);
-				Predicate p = root.get(UnitDuty_.name).in(names);
-				p = cb.and(p, root.get(UnitDuty_.unit).in(units));
-				os = em.createQuery(cq.select(root).where(p)).getResultList();
-			}
-		}
+    }
 
-		List<String> identityIds = new ArrayList<>();
-		if (!os.isEmpty()) {
-			for (UnitDuty o : os) {
-				identityIds.addAll(o.getIdentityList());
-			}
-			identityIds = ListTools.trim(identityIds, true, true);
-		}
-		List<String> list = business.identity().listIdentityDistinguishedNameSorted(identityIds);
-		wo.getIdentityList().addAll(list);
-		return wo;
-	}
+    private Wo list(Business business, List<String> names, List<String> units,
+            Boolean recursiveUnit) throws Exception {
+        Wo wo = new Wo();
+        List<UnitDuty> os = new ArrayList<>();
+        if (units.isEmpty()) {
+            EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
+            Root<UnitDuty> root = cq.from(UnitDuty.class);
+            Predicate p = root.get(UnitDuty_.name).in(names);
+            os = em.createQuery(cq.select(root).where(p)).getResultList();
+        } else {
+            List<Unit> unitList = business.unit().pick(units);
+            if (!unitList.isEmpty()) {
+                units.clear();
+                for (Unit unit : unitList) {
+                    units.add(unit.getId());
+                    if (BooleanUtils.isTrue(recursiveUnit)) {
+                        units.addAll(business.unit().listSubNested(unit.getId()));
+                    }
+                }
+                units = ListTools.trim(units, true, true);
+                EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
+                CriteriaBuilder cb = em.getCriteriaBuilder();
+                CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
+                Root<UnitDuty> root = cq.from(UnitDuty.class);
+                Predicate p = root.get(UnitDuty_.name).in(names);
+                p = cb.and(p, root.get(UnitDuty_.unit).in(units));
+                os = em.createQuery(cq.select(root).where(p)).getResultList();
+            }
+        }
+
+        List<String> identityIds = os.stream().map(UnitDuty::getIdentityList).flatMap(List::stream)
+                .distinct().collect(Collectors.toList());
+        Map<String, String> identityMap = business.entityManagerContainer()
+                .fetch(identityIds, Identity.class, ListTools.toList(
+                        JpaObject.id_FIELDNAME, Identity.distinguishedName_FIELDNAME)).stream().collect(Collectors.toMap(
+                        Identity::getId, Identity::getDistinguishedName, (o1, o2) -> o1));
+        List<String> list = identityIds.stream().filter(identityMap::containsKey).map(identityMap::get).collect(
+                Collectors.toList());
+        wo.getIdentityList().addAll(list);
+        return wo;
+    }
 
 }
