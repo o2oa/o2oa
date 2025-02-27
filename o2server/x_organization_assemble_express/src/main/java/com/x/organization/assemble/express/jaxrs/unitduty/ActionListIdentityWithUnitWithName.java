@@ -1,21 +1,9 @@
 package com.x.organization.assemble.express.jaxrs.unitduty;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -26,15 +14,28 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionListIdentityWithUnitWithName extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionListIdentityWithUnitWithName.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionListIdentityWithUnitWithName.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-
+		logger.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
@@ -173,14 +174,14 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 			}
 		}
 
-		List<String> identityIds = new ArrayList<>();
-		if (!os.isEmpty()) {
-			for (UnitDuty o : os) {
-				identityIds.addAll(o.getIdentityList());
-			}
-			identityIds = ListTools.trim(identityIds, true, true);
-		}
-		List<String> list = business.identity().listIdentityDistinguishedNameSorted(identityIds);
+		List<String> identityIds = os.stream().map(UnitDuty::getIdentityList).flatMap(List::stream)
+				.distinct().collect(Collectors.toList());
+		Map<String, String> identityMap = business.entityManagerContainer()
+				.fetch(identityIds, Identity.class, ListTools.toList(
+						JpaObject.id_FIELDNAME, Identity.distinguishedName_FIELDNAME)).stream().collect(Collectors.toMap(
+						Identity::getId, Identity::getDistinguishedName, (o1, o2) -> o1));
+		List<String> list = identityIds.stream().filter(identityMap::containsKey).map(identityMap::get).collect(
+				Collectors.toList());
 		wo.getIdentityList().addAll(list);
 		return wo;
 	}
