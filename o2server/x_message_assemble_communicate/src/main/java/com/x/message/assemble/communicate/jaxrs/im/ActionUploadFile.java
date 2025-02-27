@@ -54,7 +54,7 @@ public class ActionUploadFile extends BaseAction {
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(name))) {
 				throw new ExceptionEmptyExtension(name);
 			}
-			FileTools.verifyConstraint(1, fileName, null);
+			FileTools.verifyConstraint(1, name, null);
 
 			IMMsgFile imMsgFile = new IMMsgFile();
 			imMsgFile.setName(name);

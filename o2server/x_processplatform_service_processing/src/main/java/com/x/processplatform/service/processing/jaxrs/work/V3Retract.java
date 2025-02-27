@@ -95,31 +95,29 @@ class V3Retract extends BaseAction {
 						JpaObject.id_FIELDNAME,
 						existsTasks.stream().map(Task::getWork).distinct().collect(Collectors.toList()));
 
+				Work work = existsWorks.stream().sorted(Comparator.comparing(Work::getCreateTime)).findFirst()
+						.orElseThrow(() -> new ExceptionEntityNotExist(Work.class));
+				AeiObjects aeiObjects = new AeiObjects(business, work,
+						business.element().get(work.getActivity(), Manual.class), new ProcessingAttributes());
+				wo.setWork(work.getId());
 				if (existsTasks.containsAll(retractTasks) && retractTasks.containsAll(existsTasks)) {
 					// 全部待办被清空,导致工作整体撤回
-					Work work = existsWorks.stream().sorted(Comparator.comparing(Work::getCreateTime)).findFirst()
-							.orElseThrow(() -> new ExceptionEntityNotExist(Work.class));
-					AeiObjects aeiObjects = new AeiObjects(business, work,
-							business.element().get(work.getActivity(), Manual.class), new ProcessingAttributes());
 					retractDelete(aeiObjects, existsWorks, work);
 					update(business, aeiObjects, work, taskCompleted, workLog);
-					wo.setWork(work.getId());
-					aeiObjects.commit();
+					wo.setNeedToProcessing(true);
 				} else {
-					Work work = ListUtils.subtract(existsWorks, retractWorks).get(0);
-					AeiObjects aeiObjects = new AeiObjects(business, work,
-							business.element().get(work.getActivity(), Manual.class), new ProcessingAttributes());
 					// 不重新路由,仅仅删除work与task
 					for (Work w : retractWorks) {
 						this.deleteWorkTask(aeiObjects, w,
 								existsTasks.stream().filter(o -> Objects.equals(o.getWork(), w.getId()))
 										.collect(Collectors.toList()),
 								retractTasks.stream().filter(o -> Objects.equals(o.getWork(), w.getId()))
-										.collect(Collectors.toList()));
+										.collect(Collectors.toList()),
+								work);
 					}
-					wo.setWork(work.getId());
-					aeiObjects.commit();
+					wo.setNeedToProcessing(false);
 				}
+				aeiObjects.commit();
 			}
 			result.setData(wo);
 			return result;
@@ -152,7 +150,7 @@ class V3Retract extends BaseAction {
 		}
 
 		private void deleteWorkTask(AeiObjects aeiObjects, Work work, List<Task> partExistsTasks,
-				List<Task> partRetractTasks) throws Exception {
+				List<Task> partRetractTasks, Work oldestWork) throws Exception {
 			if (partExistsTasks.containsAll(partRetractTasks) && partRetractTasks.containsAll(partExistsTasks)) {
 				aeiObjects.getTasks().stream()
 						.filter(o -> Objects.equals(work.getActivityToken(), o.getActivityToken()))
@@ -172,6 +170,12 @@ class V3Retract extends BaseAction {
 				aeiObjects.getWorkLogs().stream()
 						.filter(o -> Objects.equals(work.getActivityToken(), o.getFromActivityToken()))
 						.forEach(aeiObjects.getDeleteWorkLogs()::add);
+				MergeProcessor.mergeTaskCompleted(aeiObjects, work, oldestWork);
+				MergeProcessor.mergeRead(aeiObjects, work, oldestWork);
+				MergeProcessor.mergeReadCompleted(aeiObjects, work, oldestWork);
+				MergeProcessor.mergeReview(aeiObjects, work, oldestWork);
+				MergeProcessor.mergeAttachment(aeiObjects, work, oldestWork);
+				MergeProcessor.mergeWorkLog(aeiObjects, work, oldestWork);
 				aeiObjects.getDeleteWorks().add(work);
 			} else if (partExistsTasks.containsAll(partRetractTasks)) {
 				Tickets tickets = work.getTickets();
