@@ -995,7 +995,8 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().remove(deleteTaskCompleted, CheckRemoveType.all);
 					// 要删除此已经办前此人其他的已办lastest标记为true
 					this.getTaskCompleteds().stream()
-							.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
+							.filter(p -> !this.getDeleteTaskCompleteds().contains(p)
+									&&StringUtils.equals(o.getPerson(), p.getPerson())
 									&& (!StringUtils.equals(o.getId(), p.getId())))
 							.sorted(Comparator
 									.comparing(TaskCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo))
@@ -1324,7 +1325,7 @@ public class AeiObjects extends GsonPropertyObject {
 
 	/**
 	 * 更新data对象,这个方法会在流程executingCommitted之后再次调用,实现可以在after事件中修改数据.
-	 * 
+	 *
 	 * @return 是否有Item发生了更新
 	 * @throws Exception
 	 */
