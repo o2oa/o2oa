@@ -349,7 +349,7 @@ o2.xDesktop.Default = new Class({
             //var options = {"portalId": layout.config.indexPage.portal, "pageId": layout.config.indexPage.page, "appId": appId};
 
             app = {
-                "options": {"name": "portal.Portal", "portalId": layout.config.indexPage.portal, "pageId": layout.config.indexPage.page, "appId": appId},
+                "options": {"name": "portal.Portal", "portalId": layout.config.indexPage.portal, "pageId": layout.config.indexPage.page, "appId": appId, isHomepage: true},
                 "close": function(){
                     this.taskitem.destroy();
                 },
@@ -360,7 +360,7 @@ o2.xDesktop.Default = new Class({
             //layout.openApplication(null, "portal.Portal", options);
         }else{
             app = {
-                "options": {"name": "Homepage", "appId": "Homepage", "title": o2.LP.desktop.homepage},
+                "options": {"name": "Homepage", "appId": "Homepage", "title": o2.LP.desktop.homepage, isHomepage: true},
                 "close": function(){
                     this.taskitem.destroy();
                 },
@@ -895,6 +895,7 @@ o2.xDesktop.Default = new Class({
                 "style": app.options.style,
                 "appId": app.appId
             };
+            if (app.options.isHomepage) appStatus.isHomepage = true;
             var status = (app.recordStatus) ? app.recordStatus() : null;
 
             app.close(true);

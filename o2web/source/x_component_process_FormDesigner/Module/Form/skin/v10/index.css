@@ -1,0 +1,490 @@
+/* 所有表单和页面的主容器 */
+.form-layout {
+    height: 100%;
+    overflow: auto;
+    grid-template-rows: 3.8em 1fr;
+    background-color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box !important;
+    font-size: 1rem !important;
+    color: var(--oo-color-text);
+}
+.form-layout * {
+    box-sizing: border-box !important;
+}
+
+.form-layout .index-content {
+    height: 100%;
+    width: 100%;
+    display: grid !important;
+    grid-template-rows: 4.375rem calc(100% - 4.375rem);
+}
+
+.form-layout .index-content-top {
+    display: grid !important;
+    grid-template-columns: 14rem 1fr;
+}
+
+.form-layout .index-content-bottom {
+    display: grid !important;
+    grid-template-columns: 14rem 1fr;
+    transition: grid-template-columns 0.2s;
+}
+
+.form-layout .index-content-bottom.min-navi {
+    display: grid !important;
+    grid-template-columns: 0rem 1fr;
+}
+
+.form-layout .index-top {
+    background-color: var(--oo-color-main);
+}
+
+.form-layout .index-logo {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.form-layout .index-logo-menu {
+    cursor: pointer;
+    height: 1.25rem;
+}
+
+.form-layout .index-logo-img {
+    cursor: pointer;
+    height: 2.8rem;
+}
+
+.form-layout .index-top-content {
+    display: flex !important;
+    align-items: center;
+}
+
+.form-layout .index-top-tasks {
+    flex: 2;
+    height: 100%;
+    display: flex !important;
+    align-items: center;
+}
+
+.form-layout .index-top-search {
+    flex: 1;
+}
+
+.form-layout .index-top-actions {
+    height: 1.05rem;
+    color: #ffffff;
+    display: flex !important;
+    align-items: center;
+    padding: 0 0.5rem;
+}
+
+.form-layout .index-top-user {
+    width: 7rem;
+    height: 2rem;
+    display: flex !important;
+    align-items: center;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.form-layout .index-top-user-icon {
+    background-position: center;
+    background-size: cover;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+}
+
+.form-layout .index-top-action-icon {
+    margin: 0 0.5rem;
+    cursor: pointer;
+    font-size: 1.05rem;
+    width: 1.05rem;
+}
+
+.form-layout .index-top-action-search {
+    transition: width 0.3s, background-color 0.3s, color 0.3s;
+}
+
+.form-layout .index-top-action-search>div[mwftype='Textfield'] {
+    display: none;
+}
+
+.form-layout .index-top-action-search>.ooicon-close {
+    display: none;
+}
+
+.form-layout .index-top-action-search.open {
+    background-color: #ffffff;
+    color: var(--oo-color-main);
+    width: 200px;
+    height: 1rem;
+    display: flex !important;
+    align-items: center;
+    padding: 0.25rem;
+    border-radius: 0.2rem;
+}
+
+.form-layout .index-top-action-search.open>div[mwftype='Textfield'] {
+    display: block;
+}
+
+.form-layout .index-navi {
+    background-color: #ffffff;
+    display: grid !important;
+    grid-template-rows: 3.85rem 1px 1fr 1px 3.85rem;
+    overflow: hidden;
+    border-right: 0.0625rem solid #dddddd;
+}
+
+.form-layout .index-navi-index {
+    margin: 0.625rem;
+    border-radius: 0.2rem;
+    background-color: var(--oo-color-light);
+    height: 2.6rem;
+    font-size: 1.125rem;
+    color: var(--oo-color-main);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.form-layout .index-navi-index:hover {
+    background-color: var(--oo-color-main);
+    color: var(--oo-color-text-white);
+}
+
+.form-layout .index-navi-content {
+    overflow: auto;
+}
+
+.form-layout .index-navi-system {
+    margin: 0.625rem;
+    padding-left: 0.5em;
+    border-radius: 0.2rem;
+    height: 2.6rem;
+    font-size: 1.125rem;
+    display: flex !important;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.form-layout .index-navi-system:hover {
+    background-color: var(--oo-color-light);
+}
+
+.form-layout .index-navi-content-menus {
+    padding: 0.625em 0;
+}
+
+.form-layout .index-menu-category {
+    padding: 0 1.25em;
+    display: flex !important;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0.3rem 0;
+    cursor: pointer;
+    font-size: 1.0714em;
+    color: var(--oo-color-text2);
+    transition: background-color 0.3s, color 0.3s;
+    white-space: nowrap;
+}
+
+.form-layout .index-menu-category>div {
+    height: 2.5em;
+    display: flex !important;
+    align-items: center;
+}
+
+.form-layout .index-menu-category:hover {
+    background-color: var(--oo-color-hover);
+}
+
+.form-layout .index-menu-item {
+    padding: 0 1.85em;
+    padding-left: 2.2em;
+    display: flex !important;
+    align-items: baseline;
+    justify-content: flex-start;
+    cursor: pointer;
+    color: var(--oo-color-text2);
+    transition: background-color 0.3s, color 0.3s;
+    white-space: nowrap;
+}
+
+.form-layout .index-menu-item>div {
+    height: 2.5em;
+    display: flex !important;
+    align-items: center;
+}
+
+.form-layout .index-menu-item:hover {
+    background-color: var(--oo-color-hover);
+}
+
+.form-layout .index-menu-item.current {
+    background-color: var(--oo-color-over);
+}
+
+.form-layout .index-navi-children {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.2s;
+    display: none;
+}
+
+.form-layout .index-menu-category>.ooicon-arrow_forward.expand {
+    transform: rotate(90deg);
+}
+
+.form-layout .index-top-task-actions {
+    height: 100%;
+    width: 1em;
+    padding: 0 0.3em;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.form-layout .index-top-task-actions>div {
+    cursor: pointer;
+    margin: 0.2em 0;
+    display: none;
+}
+
+.form-layout .index-top-task-actions>div:first-child {
+    transform: rotate(180deg);
+    transform-origin: center;
+}
+
+.form-layout .index-app-content {
+    height: 100%;
+}
+
+.form-layout .layout_content_taskbar_item {
+    background-color: var(--oo-color-main);
+    color: var(--oo-color-text-white);
+    border-radius: 4px;
+    padding: 0 8px 0 4px;
+    background-image: none;
+}
+
+.form-layout .layout_content_taskbar_item .icon_close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    background-image: none !important;
+    font-family: 'ooicon' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    color: var(--oo-color-text-white);
+}
+
+.form-layout .layout_content_taskbar_item .icon_close::before {
+    content: "\e69c";
+}
+
+.form-layout .whiteColor_bg {
+    background-color: #ffffff;
+    color: var(--oo-color-text);
+    border-radius: 4px;
+    padding: 0 8px 0 4px;
+}
+
+.form-layout .whiteColor_bg .icon_close_focus {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    background-image: none;
+    font-family: 'ooicon' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    color: var(--oo-color-text);
+}
+
+.form-layout .whiteColor_bg .icon_close_focus::before {
+    content: "\e69c";
+}
+
+.form-layout .whiteColor_bg .icon_taskitem_down {
+    display: flex !important;
+    justify-content: center;
+    font-size: 8px;
+    height: 28px;
+    align-items: center;
+    margin: 0 5px 0 3px;
+    background-image: none;
+    font-family: 'ooicon' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+}
+
+.form-layout .whiteColor_bg .icon_taskitem_down::before {
+    content: "\e68a";
+}
+
+.form-layout .index-start {
+    position: absolute;
+    width: 46rem;
+    height: calc(100% - 4.375rem);
+    background-color: var(--oo-color-deep);
+    top: 4.375rem;
+    left: 12rem;
+    z-index: 20000;
+    opacity: 0.95;
+    transition: height 0.3s, scale 0.2s;
+    transform-origin: left top;
+    overflow: auto;
+    display: grid !important;
+    grid-template-rows: 1px 1fr;
+}
+
+.form-layout .index-start-content {
+    display: grid !important;
+    grid-template-columns: 1fr 1px 2fr;
+}
+
+.form-layout .index-start-line {
+    background-color: #e6e6e6;
+    opacity: 0.2;
+}
+
+.form-layout .index-start-app {
+    padding: 1.25rem 0rem 1.25rem 2rem;
+    color: #ffffff;
+}
+
+.form-layout .index-start-title {
+    font-size: 1.25rem;
+}
+
+.form-layout .index-start-app-list {
+    padding: 1rem 0;
+    overflow: hidden;
+}
+
+.form-layout .index-start-app-category {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.form-layout .index-start-app-children {
+    padding: 1rem 0;
+    width: 80%;
+}
+
+.form-layout .index-start-item {
+    display: flex !important;
+    padding: 0.15em 1em;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.25em;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.form-layout .index-start-item:hover {
+    background-color: var(--oo-color-main-light);
+}
+
+.form-layout .index-start-item>div:first-child {
+    display: flex !important;
+    padding: 0.3em 0;
+    align-items: center;
+}
+
+.form-layout .index-start-app-list-source>div {
+    display: flex !important;
+    flex-wrap: wrap;
+}
+
+.form-layout .index-start-app-group {
+    flex: 1 1 50%;
+}
+
+.form-layout .index-start-item>.ooicon-pentagram {
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.form-layout .index-start-item:hover>.ooicon-pentagram {
+    opacity: 1;
+}
+
+.form-layout .index-start-item:hover>.ooicon-pentagram:hover {
+    color: #EC7211;
+}
+
+.form-layout .index-start-item>.ooicon-pentagram_fill {
+    color: #EC7211;
+    opacity: 1;
+}
+
+/* 手机 */
+@media only screen and (max-width: 767px) {
+    .form-layout .index-content-bottom {
+        grid-template-columns: 0 1fr;
+        transition: grid-template-columns 0.2s;
+    }
+
+    .form-layout .index-content-top {
+        grid-template-columns: 0 1fr;
+    }
+    .form-layout .index-logo {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-around;
+        grid-column: 1 / -1;
+    }
+
+    .form-layout .index-logo-menu {
+        cursor: pointer;
+        height: 1.25rem;
+        margin-left: 2.8em;
+    }
+
+    .form-layout .index-top-content {
+        display: none !important;
+    }
+
+    .form-layout .index-logo-menu {
+        opacity: 0;
+        pointer-events: none;
+        display: none !important;
+    }
+
+    .form-layout .index-content-bottom.max-navi {
+        display: grid !important;
+        grid-template-columns: 1fr 0;
+    }
+}
+
+/* 平板电脑 */
+@media only screen and (min-width: 768px) and (max-width: 1279px) {
+    .form-layout .index-content-bottom {
+        grid-template-columns: 0 1fr;
+        transition: grid-template-columns 0.2s;
+    }
+}
+
+/* 桌面电脑 */
+@media only screen and (min-width: 1280px) {}

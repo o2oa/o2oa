@@ -292,6 +292,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
     },
     recordStatus: function(){
         return {"portalId": this.options.portalId, "pageId": this.options.pageId, "parameters" : this.options.parameters};
+        // return Object.clone(this.options);
     },
     onPostClose: function(){
         if (this.appForm){

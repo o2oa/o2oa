@@ -1,0 +1,249 @@
+/*** 页面布局 *******************************/
+/** 主页 **/
+.form-layout .page-app {
+    padding: 1em;
+    overflow: auto !important;
+    height: 100%;
+    box-sizing: border-box !important;
+}
+
+.form-layout .page-app * {
+    box-sizing: border-box !important;
+}
+
+.form-layout .page-index-content {
+    display: flex !important;
+    gap: 1em;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
+
+.form-layout .page-index-content > div {
+    /*aspect-ratio: 1 / 1;*/
+    min-width: 40em;
+    flex: 1;
+    min-height: 25em;
+    /* background-color: #2e9ad0; */
+}
+
+.form-layout .page-widget {
+    padding: 0.5em;
+    overflow: hidden;
+    /*display: grid !important;*/
+    /*grid-template-rows: 3.57em 1px auto 1em;*/
+    height: 100%;
+    box-sizing: border-box !important;
+    background-color: #ffffff;
+
+    display: flex !important;
+    flex-direction: column;
+}
+
+.form-layout .page-widget * {
+    box-sizing: border-box !important;
+}
+
+.form-layout .page-widget-title {
+    font-size: 1.1em;
+    flex: 0 0 3em;
+    user-select: none;
+}
+
+.form-layout .page-widget-line {
+    flex: 0 0 1px;
+    height: 1px !important;
+    min-height: 1px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    background-color: #dedede !important;
+}
+
+.form-layout .page-widget-content {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column;
+}
+
+.form-layout .page-widget-bottom {
+    flex: 0 0 2em;
+    display: flex !important;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.form-layout .page-widget-text-item {
+    display: flex !important;
+    align-items: center;
+    height: 2.8em;
+    gap: 1em;
+    cursor: pointer;
+}
+
+.form-layout .page-widget-text-item:hover {
+    background-color: var(--oo-color-hover);
+    color: var(--oo-color-main);
+}
+
+.form-layout .page-widget-text-item-number {
+    height: 1.5em;
+    width: 1.5em;
+    flex: 0 0 1.5em;
+    border-radius: 2px;
+    background-color: var(--oo-color-gray1);
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.5em;
+}
+
+.form-layout .page-widget-text-item:hover .page-widget-text-item-number {
+    background-color: var(--oo-color-main);
+}
+
+.form-layout .page-widget-content div[mwftype='subSourceItem'] {
+    display: contents !important;
+}
+
+.form-layout .flex-text {
+    height: 100%;
+    display: flex !important;
+    align-items: center;
+}
+
+.form-layout .line-text {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.form-layout .page-widget-tab {
+    height: 100%;
+    display: flex !important;
+    align-items: center;
+    /*border-bottom: 3px solid transparent;*/
+    transition: color 0.2s, border-bottom-color 0.2s;
+}
+
+.form-layout .page-widget-tab > div:last-child {
+    padding-left: 0.2em;
+}
+
+.form-layout .page-widget-tab.current {
+    color: var(--oo-color-main);
+    /*border-bottom: 3px solid var(--oo-color-main);*/
+}
+
+.form-layout .page-widget-tab-line {
+    height: 0.214em;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--oo-color-main);
+    transition: left 0.2s, width 0.2s;
+    width: 0;
+}
+
+/* 手机 */
+@media (max-width: 767px) {
+    .form-layout .index-content-bottom {
+        grid-template-columns: 0 1fr;
+        transition: grid-template-columns 0.2s;
+    }
+
+    .form-layout .index-content-top {
+        grid-template-columns: 0 1fr;
+    }
+
+    .form-layout .poc_layout {
+        padding: 0.5em 0.3em 0 0.3em !important;
+    }
+
+    .form-layout .index-logo {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-around;
+        grid-column: 1 / -1;
+    }
+
+    .form-layout .index-logo-menu {
+        cursor: pointer;
+        height: 1.25rem;
+        margin-left: 2.8em;
+    }
+
+    .form-layout .index-top-content {
+        display: none !important;
+    }
+
+    .form-layout .index-logo-menu {
+        opacity: 0;
+        pointer-events: none;
+        display: none !important;
+    }
+
+    .form-layout .index-content-bottom.max-navi {
+        display: grid !important;
+        grid-template-columns: 1fr 0;
+    }
+
+    .form-layout .bam_content {
+        margin: 1em !important;
+        padding: 0 !important;
+        gap: 0.5em !important;
+    }
+
+    .form-layout .bam_content > div {
+        padding: 1em 0.3em !important;
+    }
+
+    .form-layout .user_content {
+        margin: 1em !important;
+    }
+
+    .form-layout .page-widget-text-item {
+        gap: 0.5em !important;
+    }
+
+    .form-layout .page-widget-text-item > .line-text.processName,
+    .form-layout .page-widget-text-item > .line-text.activityName,
+    .form-layout .page-widget-text-item .line-text.orderNumber {
+        display: none;
+    }
+
+    .form-layout div[mwftype='widget'] {
+        min-width: 100% !important;
+    }
+
+    .form-layout .page-app {
+        padding: 0;
+    }
+}
+
+/* 手机 */
+@media only screen and (max-width: 767px) {
+    /* 样式适用于屏幕宽度小于等于 1023px 的设备 */
+    .form-layout {
+        /* width: 99%; */
+        /* min-width: 99%; */
+        margin: auto;
+    }
+    .form-content > div {
+        width: unset !important;
+        min-width: unset !important;
+    }
+    .form-content-area oo-input {
+        flex: 1 1 100%;
+    }
+    .page-widget-title > div:first-child > oo-button {
+        display: none;
+    }
+}
+
+/* 平板电脑 */
+@media only screen and (min-width: 768px) and (max-width: 1279px) {
+}
+
+/* 桌面电脑 */
+@media only screen and (min-width: 1280px) {
+}

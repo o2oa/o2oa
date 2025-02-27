@@ -1,0 +1,107 @@
+/*** 二级页面布局 *******************************/
+/** 左导航-右列表 **/
+.form-layout .page-nav-content * {
+    box-sizing: border-box !important;
+}
+.form-layout .page-nav-content {
+    display: grid !important;
+    height: 100%;
+    grid-template-columns: 14rem auto;
+}
+.form-layout .page-nav {
+    background-color: #ffffff;
+    box-shadow: #00000040 0 5px 5px 0;
+    position: relative;
+    overflow: auto;
+    display: flex !important;
+    flex-direction: column;
+}
+.form-layout .page-content {
+    padding: 1em;
+    overflow: hidden;
+    display: grid !important;
+}
+.form-layout .page-content-area {
+    display: flex !important;
+    flex-direction: column;
+    position: relative !important;
+    overflow: hidden;
+    gap: 1em;
+}
+.form-layout .page-content-area > div,
+.form-layout .page-content-section {
+    background-color: #ffffff;
+    border-radius: var(--oo-default-radius);
+    padding: 1em;
+    display: flex !important;
+    gap: 0.5em 1em;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+.form-layout .page-nav-title {
+    margin: 0.625em;
+    border-radius: 0.2em;
+    background-color: var(--oo-color-light);
+    height: 2.6em;
+    font-size: 1.125em;
+    color: var(--oo-color-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+.form-layout .page-nav-title-icon {
+    padding-right: 0.3rem;
+    font-size: 1.3rem;
+}
+.form-layout .page-nav-title-text {
+    padding: 0 1em 0 0.3em;
+}
+
+.form-layout .page-content-section oo-input,
+.form-layout .page-content-section oo-selector,
+.form-layout .page-content-section oo-textarea,
+.form-layout .page-content-section oo-radio-group,
+.form-layout .page-content-section oo-checkbox-group,
+.form-layout .page-content-section oo-select,
+.form-layout .page-content-section oo-datetime,
+.form-layout .page-content-section div[mwftype='OOCheckGroup'],
+.form-layout .page-content-section div[mwftype='OORadioGroup'] {
+    flex: 0 0 25%;
+}
+
+.form-layout .pagingBarWraper .currentPage {
+    background-color: var(--oo-color-main) !important;
+}
+.form-layout .pagingBarWraper .pageItem:hover,
+.form-layout .pagingBarWraper .firstPage:hover,
+.form-layout .pagingBarWraper .lastPage:hover,
+.form-layout .pagingBarWraper .prePage:hover,
+.form-layout .pagingBarWraper .nextPage:hover {
+    color: var(--oo-color-main) !important;
+    background-color: var(--oo-color-hover) !important;
+}
+
+.form-layout .pagingBarWraper .pageJumper:focus {
+    border: 1px solid var(--oo-color-main) !important;
+}
+
+.form-layout .pagingBarWraper .prePage,
+.form-layout .pagingBarWraper .nextPage {
+    font-family: 'ooicon' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    background: none !important;
+}
+.form-layout .pagingBarWraper .prePage:before {
+    content: '\e651';
+}
+.form-layout .pagingBarWraper .nextPage:before {
+    content: '\e64c';
+}
