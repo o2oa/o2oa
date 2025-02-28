@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -42,6 +43,7 @@ public class Invoice extends StorageObject {
 	private static final String TABLE = PersistenceProperties.Invoice.table;
 	private static final String BASE_DIR = "invoice";
 	public static final String EXT_PDF = "pdf";
+	public static final String APPLY_STATUS_0 = "未报销";
 
 	public String getId() {
 		return id;
@@ -60,6 +62,9 @@ public class Invoice extends StorageObject {
 
 	public void onPersist() throws Exception {
 		this.lastUpdateTime = new Date();
+		if(StringUtils.isBlank(this.applyStatus)){
+			this.applyStatus = APPLY_STATUS_0;
+		}
 		if (this.properties == null) {
 			this.properties = new InvoiceProperties();
 		}
@@ -313,6 +318,12 @@ public class Invoice extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private String detail;
 
+	public static final String applyStatus_FIELDNAME = "applyStatus";
+	@FieldDescribe("报销状态.")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + applyStatus_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String applyStatus;
+
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent(fetch = FetchType.EAGER)
@@ -320,6 +331,10 @@ public class Invoice extends StorageObject {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private InvoiceProperties properties;
+
+	@FieldDescribe("明细记录.")
+	@Transient
+	private List<InvoiceDetail> detailList;
 
 	public InvoiceProperties getProperties() {
 		if (null == this.properties) {
@@ -332,12 +347,16 @@ public class Invoice extends StorageObject {
 		this.properties = properties;
 	}
 
-	public void setContent(String content) {
-		this.getProperties().setContent(content);
+	public List<InvoiceDetail> getDetailList() {
+		return detailList;
 	}
 
 	public void setDetailList(List<InvoiceDetail> detailList) {
 		this.getProperties().setDetailList(detailList);
+	}
+
+	public void setContent(String content) {
+		this.getProperties().setContent(content);
 	}
 
 	public String getPerson() {
