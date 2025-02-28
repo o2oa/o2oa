@@ -804,17 +804,16 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.executorList+":"}).inject(this.propertyContentArea);
         this.propertyExecutorListNode = new Element("div", {"styles": this.css.propertyOrgNode}).inject(this.propertyContentArea);
-        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
-            this.executorListSelector = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(this.propertyExecutorListNode, this, {
-                "types": ['person', 'unit', 'group', 'role'],
-                "names": [],
-                "onChange": function (ids) {
-                    if(this.invokeTab)this.invokeTab.showPage.invoke.data.executorList = ids.map(function(id){
-                        return id.data.distinguishedName;
-                    });
-                }.bind(this)
-            });
-        }.bind(this));
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", null, false);
+        this.executorListSelector = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(this.propertyExecutorListNode, this, {
+            "types": ['person', 'unit', 'group', 'role'],
+            "names": [],
+            "onChange": function (ids) {
+                if(this.invokeTab)this.invokeTab.showPage.invoke.data.executorList = ids.map(function(id){
+                    return id.data.distinguishedName;
+                });
+            }.bind(this)
+        });
 
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.isEnable+":"}).inject(this.propertyContentArea);
         this.propertyEnableNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
@@ -972,7 +971,8 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                     onFailure: function(xhr){
                         var result;
                         try{
-                            result = JSON.stringify(xhr.responseText, null, 4);
+                            var json = JSON.parse(xhr.responseText);
+                            result = JSON.stringify(json, null, 4);
                         }catch (e) {
                             result = xhr.responseText;
                         }

@@ -35,7 +35,7 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource = new Class(
             this.currentPage = 1;
             this.data = null;
             if (this.json.path) {
-                this.loadPagination();
+                // this.loadPagination();
                 if (this.json.sourceType == 'o2') {
                     if (this.json.path) this._getO2Source();
                 } else {
@@ -137,7 +137,7 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource = new Class(
                 this._invoke(
                     function () {
                         this._loadSub(this.node);
-                        this._setPaginationCount();
+                        // this._setPaginationCount();
                         this.fireEvent('loadData');
                     }.bind(this),
                 );
@@ -164,54 +164,54 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource = new Class(
                         this.data = json;
                         this.fireEvent('postLoadData');
                         this._loadSub(this.node);
-                        this._setPaginationCount();
+                        // this._setPaginationCount();
                         this.fireEvent('loadData');
                     });
             }
         },
 
-        _setPaginationCount: function (){
-            if (this.json.countScript && this.json.countScript.code && this.pagination) {
-                if (this.json.countScript.code) {
-                    var count = this.form.Macro.exec(this.json.countScript.code, this);
-                    this.pagination.setAttribute('total', count);
-                }
-            }
-        },
-        loadPagination: function (){
-            var node = this.node.getElement('oo-pagination');
-            if(node){
-                node.destroy();
-            }
-            if( this.json.usePagination ){
-                this.pagination = new Element('oo-pagination', {
-                    total: '300',
-                    pages: this.json.pages,
-                    size: this.json.size,
-                    'page-size': this.json.pageSize,
-                    jumper: this.json.jumper,
-                    first: this.json.first,
-                    last: this.json.last,
-                    'jumper-text': this.json.jumperText,
-                    // styles: this.css.moduleNodeMove,
-                    events: {
-                        selectstart: function () {
-                            return false;
-                        },
-                    },
-                }).inject(this.node);
-                this.pagination.addEventListener('page', (e)=>{
-                    this.currentPage = e.detail;
-                    this.reload();
-                });
-                if (this.json.pagnationProperties) {
-                    this.pagination.set(this.json.pagnationProperties);
-                }
-                if (this.json.pagnationStyles) {
-                    this.pagination.setStyles(this.json.pagnationStyles);
-                }
-            }
-        },
+        // _setPaginationCount: function (){
+        //     if (this.json.countScript && this.json.countScript.code && this.pagination) {
+        //         if (this.json.countScript.code) {
+        //             var count = this.form.Macro.exec(this.json.countScript.code, this);
+        //             this.pagination.setAttribute('total', count);
+        //         }
+        //     }
+        // },
+        // loadPagination: function (){
+        //     var node = this.node.getElement('oo-pagination');
+        //     if(node){
+        //         node.destroy();
+        //     }
+        //     if( this.json.usePagination ){
+        //         this.pagination = new Element('oo-pagination', {
+        //             total: '300',
+        //             pages: this.json.pages,
+        //             size: this.json.size,
+        //             'page-size': this.json.pageSize,
+        //             jumper: this.json.jumper,
+        //             first: this.json.first,
+        //             last: this.json.last,
+        //             'jumper-text': this.json.jumperText,
+        //             // styles: this.css.moduleNodeMove,
+        //             events: {
+        //                 selectstart: function () {
+        //                     return false;
+        //                 },
+        //             },
+        //         }).inject(this.node);
+        //         this.pagination.addEventListener('page', (e)=>{
+        //             this.currentPage = e.detail;
+        //             this.reload();
+        //         });
+        //         if (this.json.pagnationProperties) {
+        //             this.pagination.set(this.json.pagnationProperties);
+        //         }
+        //         if (this.json.pagnationStyles) {
+        //             this.pagination.setStyles(this.json.pagnationStyles);
+        //         }
+        //     }
+        // },
 
         active: function () {
             this._getO2Uri();
@@ -223,7 +223,6 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource = new Class(
             );
         },
         _invoke: function (callback) {
-            debugger;
             MWF.restful(
                 this.json.httpMethod,
                 this.uri,
