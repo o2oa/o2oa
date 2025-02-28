@@ -184,8 +184,6 @@ MWF.xDesktop.WebSocket = new Class({
                                 this.receivBBSReplyCreateMessage(data);
                                 break;
                             default:
-                                debugger;
-                                console.log('data', data)
                                 this.receiveDefaultMessage(data);
                                 break;
                         }
