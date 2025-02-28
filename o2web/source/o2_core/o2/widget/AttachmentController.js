@@ -1417,7 +1417,8 @@ o2.widget.AttachmentController.Attachment = new Class({
         }
 
 	    if (this.message){
-            this.node = new Element("div").inject(this.message.node, "after");
+            // this.node = new Element("div").inject(this.message.node, "after");
+            this.node = new Element("div").inject(this.content);
             this.message.node.destroy();
             delete this.controller.messageItemList[this.message.data.id];
         }else{
@@ -1950,7 +1951,8 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         }
 
         if (this.message){
-            this.node = new Element("div").inject(this.message.node, "after");
+            // this.node = new Element("div").inject(this.message.node, "after");
+            this.node = new Element("div").inject(this.content);
             this.message.node.destroy();
             delete this.controller.messageItemList[this.message.data.id];
         }else{
@@ -2401,6 +2403,7 @@ o2.widget.AttachmentController.AttachmentMessage = new Class({
         this.messageText.set("text", ""+p+"%")
     },
     transferComplete: function(){
+        debugger;
         this.messageText.set("text", "loading...")
     }
 });
