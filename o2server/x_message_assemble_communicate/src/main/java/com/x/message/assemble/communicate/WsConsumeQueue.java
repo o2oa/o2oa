@@ -1,5 +1,7 @@
 package com.x.message.assemble.communicate;
 
+import java.util.Optional;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,6 +10,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.x_message_assemble_communicate;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
@@ -33,6 +36,10 @@ public class WsConsumeQueue extends AbstractQueue<Message> {
 		ws.setTitle(message.getTitle());
 		JsonElement jsonElement = XGsonBuilder.instance().fromJson(message.getBody(), JsonElement.class);
 		ws.setBody(jsonElement);
+		 Optional<com.x.base.core.project.config.Message> opt = Config.messages().getMessage(message.getType());
+		if (opt.isPresent()) {
+			ws.setDescription(opt.get().getDescription());
+		}
 		boolean result = false;
 		/* 跳过第一条待办的提醒 */
 		if (StringUtils.equalsIgnoreCase(ws.getType(), MessageConnector.TYPE_TASK_CREATE)
