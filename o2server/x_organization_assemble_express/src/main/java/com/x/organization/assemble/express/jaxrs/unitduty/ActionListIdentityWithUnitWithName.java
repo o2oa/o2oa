@@ -1,9 +1,13 @@
 package com.x.organization.assemble.express.jaxrs.unitduty;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.organization.core.entity.Identity;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -173,14 +177,14 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 			}
 		}
 
-		List<String> identityIds = new ArrayList<>();
-		if (!os.isEmpty()) {
-			for (UnitDuty o : os) {
-				identityIds.addAll(o.getIdentityList());
-			}
-			identityIds = ListTools.trim(identityIds, true, true);
-		}
-		List<String> list = business.identity().listIdentityDistinguishedNameSorted(identityIds);
+		List<String> identityIds = os.stream().map(UnitDuty::getIdentityList).flatMap(List::stream)
+				.distinct().collect(Collectors.toList());
+		Map<String, String> identityMap = business.entityManagerContainer()
+				.fetch(identityIds, Identity.class, ListTools.toList(
+						JpaObject.id_FIELDNAME, Identity.distinguishedName_FIELDNAME)).stream().collect(Collectors.toMap(
+						Identity::getId, Identity::getDistinguishedName, (o1, o2) -> o1));
+		List<String> list = identityIds.stream().filter(identityMap::containsKey).map(identityMap::get).collect(
+				Collectors.toList());
 		wo.getIdentityList().addAll(list);
 		return wo;
 	}
