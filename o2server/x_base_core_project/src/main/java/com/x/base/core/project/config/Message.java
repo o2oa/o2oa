@@ -81,11 +81,16 @@ public class Message extends GsonPropertyObject {
 		public Consumer(String type) {
 			this();
 			this.type = type;
+		}
 
+		public void setDescription(String description) {
+			this.description = description;
 		}
 
 		@FieldDescribe("消费者名称")
 		private String type;
+		@FieldDescribe("说明")
+		private String description;
 		@FieldDescribe("是否启用")
 		private Boolean enable;
 		@FieldDescribe("装载脚本")

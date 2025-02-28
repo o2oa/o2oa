@@ -11,6 +11,9 @@ public class WsMessage extends GsonPropertyObject {
 	@FieldDescribe("Ws消息类别.")
 	private String type;
 
+	@FieldDescribe("Ws消息说明.")
+	private String description;
+
 	@FieldDescribe("Ws消息接收人.")
 	private String person;
 
@@ -19,6 +22,14 @@ public class WsMessage extends GsonPropertyObject {
 
 	@FieldDescribe("Ws消息内容.")
 	private JsonElement body;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public String getPerson() {
 		return person;
