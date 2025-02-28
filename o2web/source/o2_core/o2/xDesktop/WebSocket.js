@@ -184,6 +184,10 @@ MWF.xDesktop.WebSocket = new Class({
                                 this.receivBBSReplyCreateMessage(data);
                                 break;
                             default:
+                                debugger;
+                                console.log('data', data)
+                                this.receiveDefaultMessage(data);
+                                break;
                         }
                 }
             }catch(e){}
@@ -346,6 +350,27 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.hide();
             this.openWork(read.work || read.workCompleted,e);
         }.bind(this));
+    },
+    receiveDefaultMessage: function(data){
+        var text =  o2.typeOf(data.body) === "string" ? data.body : data.title;
+        var title;
+        if( data.description ){
+            var str = data.description;
+            if( str[str.length - 1] === '.' ){
+                str = str.substring(0, str.length - 1);
+            }
+            title = str;
+        }else if( text.contains(':') ){
+            title = text.split(':')[0];
+        }else{
+            title = MWF.LP.desktop.messsage.customMessageTitle;
+        }
+        var msg = {
+            "subject": o2.txt(title),
+            "content": o2.txt(text)
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
     },
     receiveCustomMessage: function(data){
         var text =  o2.typeOf(data.body) === "string" ? data.body : data.title;
