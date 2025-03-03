@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -58,8 +59,7 @@ public class Invoice extends StorageObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
-
+	@Override
 	public void onPersist() throws Exception {
 		this.lastUpdateTime = new Date();
 		if(StringUtils.isBlank(this.applyStatus)){
@@ -72,6 +72,9 @@ public class Invoice extends StorageObject {
 
 	public Invoice() {
 		this.properties = new InvoiceProperties();
+		Date now = new Date();
+		this.setCreateTime(now);
+		this.lastUpdateTime = now;
 	}
 
 	public Invoice(String storage, String name, String person, String extension){
@@ -82,6 +85,13 @@ public class Invoice extends StorageObject {
 		this.name = name;
 		this.person = person;
 		this.extension = extension;
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			this.detailList = this.getProperties().getDetailList();
+		}
 	}
 
 	@Override
