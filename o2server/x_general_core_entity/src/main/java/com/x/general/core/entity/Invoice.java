@@ -318,6 +318,12 @@ public class Invoice extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private String detail;
 
+	public static final String remark_FIELDNAME = "remark";
+	@FieldDescribe("备注.")
+	@Column(length = 500, name = ColumnNamePrefix + remark_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String remark;
+
 	public static final String applyStatus_FIELDNAME = "applyStatus";
 	@FieldDescribe("报销状态.")
 	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + applyStatus_FIELDNAME)
@@ -525,5 +531,21 @@ public class Invoice extends StorageObject {
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getApplyStatus() {
+		return applyStatus;
+	}
+
+	public void setApplyStatus(String applyStatus) {
+		this.applyStatus = applyStatus;
 	}
 }

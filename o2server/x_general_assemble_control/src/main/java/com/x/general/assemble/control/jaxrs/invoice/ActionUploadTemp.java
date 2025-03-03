@@ -39,7 +39,7 @@ class ActionUploadTemp extends BaseAction {
                     effectivePerson.getDistinguishedName());
             emc.check(generalFile, CheckPersistType.all);
             generalFile.saveContent(mapping, bytes, fileName);
-            emc.beginTransaction(Invoice.class);
+            emc.beginTransaction(GeneralFile.class);
             emc.persist(generalFile);
             emc.commit();
             wo.setId(generalFile.getId());
