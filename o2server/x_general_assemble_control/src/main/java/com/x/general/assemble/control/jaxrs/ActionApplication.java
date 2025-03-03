@@ -1,5 +1,6 @@
 package com.x.general.assemble.control.jaxrs;
 
+import com.x.general.assemble.control.jaxrs.invoice.InvoiceAction;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -29,6 +30,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(QrCodeAction.class);
 		classes.add(SecurityClearanceAction.class);
 		classes.add(ExcelAction.class);
+		classes.add(InvoiceAction.class);
 		return classes;
 	}
 
