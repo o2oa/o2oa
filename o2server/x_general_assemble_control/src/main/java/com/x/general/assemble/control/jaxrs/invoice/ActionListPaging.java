@@ -7,16 +7,11 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.TernaryManagement;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.general.assemble.control.Business;
 import com.x.general.core.entity.Invoice;
@@ -35,9 +30,6 @@ class ActionListPaging extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement) throws Exception {
 		logger.debug("execute, person:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> page, () -> size);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			if(!effectivePerson.isManager() && !effectivePerson.isTernaryManager()){
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);

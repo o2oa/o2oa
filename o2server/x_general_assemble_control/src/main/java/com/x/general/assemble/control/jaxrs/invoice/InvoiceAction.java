@@ -11,6 +11,8 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.general.assemble.control.jaxrs.invoice.ActionListPaging.Wo;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -68,7 +70,7 @@ public class InvoiceAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "上传电子发票文件.", action = ActionUpload.class)
+	@JaxrsMethodDescribe(value = "上传电子发票文件，pdf格式.", action = ActionUpload.class)
 	@POST
 	@Path("upload")
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
@@ -87,7 +89,7 @@ public class InvoiceAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据url上传电子发票.", action = ActionUploadWithUrl.class)
+	@JaxrsMethodDescribe(value = "根据url上传电子发票，pdf格式.", action = ActionUploadWithUrl.class)
 	@POST
 	@Path("upload/with/url")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -105,7 +107,26 @@ public class InvoiceAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "手工上传电子发票.", action = ActionCreate.class)
+	@JaxrsMethodDescribe(value = "手工上传电子发票.", action = ActionUploadTemp.class)
+	@POST
+	@Path("upload/for/create")
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void uploadForCreate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<ActionUploadTemp.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUploadTemp().execute(effectivePerson, bytes, disposition);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "手工填写电子发票.", action = ActionCreate.class)
 	@POST
 	@Path("create")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -156,6 +177,25 @@ public class InvoiceAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "分页查询.", action = ActionListPaging.class)
+	@POST
+	@Path("list/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 }
