@@ -281,41 +281,58 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
         debugger;
-        this.attachmentController.doUploadAttachment({ "site": this.json.id }, this.form.documentAction.action, "uploadAttachment", { "id": this.form.businessData.document.id }, null, function (o) {
-            if (o.id) {
-                this.form.documentAction.getAttachment(o.id, this.form.businessData.document.id, function (json) {
-                    if (json.data) {
-                        if (!json.data.control) json.data.control = {};
-                        this.attachmentController.addAttachment(json.data, o.messageId);
-                        this.form.businessData.attachmentList.push(json.data);
-                    }
-                    this.attachmentController.checkActions();
+        this.attachmentController.doUploadAttachment(
+            { "site": this.json.id },
+            this.form.documentAction.action,
+            "uploadAttachment",
+            { "id": this.form.businessData.document.id },
+            function (){
+                o2.Actions.load('x_cms_assemble_control').FileInfoAction.listFileInfoByDocumentId(this.form.businessData.document.id, function (json){
+                    this.attachmentController.orderAttachments(json.data);
+                }.bind(this));
+            }.bind(this),
+            function (o) {
+                if (o.id) {
+                    this.form.documentAction.getAttachment(o.id, this.form.businessData.document.id, function (json) {
+                        if (json.data) {
+                            if (!json.data.control) json.data.control = {};
+                            this.attachmentController.addAttachment(json.data, o.messageId);
+                            this.form.businessData.attachmentList.push(json.data);
+                        }
+                        this.attachmentController.checkActions();
 
-                    this.setAttachmentBusinessData();
-                    this.fireEvent("upload", [json.data]);
-                    this.fireEvent("change");
+                        this.setAttachmentBusinessData();
+                        this.fireEvent("upload", [json.data]);
+                        this.fireEvent("change");
 
-                    this.save();
-                }.bind(this))
-            }
-            this.attachmentController.checkActions();
-        }.bind(this), function (files) {
-            if (files.length) {
-                if ((files.length + this.attachmentController.attachments.length > this.attachmentController.options.attachmentCount) && this.attachmentController.options.attachmentCount > 0) {
-                    var content = MWF.xApplication.cms.Xform.LP.uploadMore;
-                    content = content.replace("{n}", this.attachmentController.options.attachmentCount);
-                    this.form.notice(content, "error");
-                    return false;
+                        this.save();
+                    }.bind(this))
                 }
-            }
-            this.fireEvent("beforeUpload", [files]);
-            return true;
-        }.bind(this), true, accept, size, function (o) { //错误的回调
-            if (o.messageId && this.attachmentController.messageItemList) {
-                var message = this.attachmentController.messageItemList[o.messageId];
-                if( message && message.node )message.node.destroy();
-            }
-        }.bind(this), files);
+                this.attachmentController.checkActions();
+            }.bind(this),
+            function (files) {
+                if (files.length) {
+                    if ((files.length + this.attachmentController.attachments.length > this.attachmentController.options.attachmentCount) && this.attachmentController.options.attachmentCount > 0) {
+                        var content = MWF.xApplication.cms.Xform.LP.uploadMore;
+                        content = content.replace("{n}", this.attachmentController.options.attachmentCount);
+                        this.form.notice(content, "error");
+                        return false;
+                    }
+                }
+                this.fireEvent("beforeUpload", [files]);
+                return true;
+            }.bind(this),
+            true,
+            accept,
+            size,
+            function (o) { //错误的回调
+                if (o.messageId && this.attachmentController.messageItemList) {
+                    var message = this.attachmentController.messageItemList[o.messageId];
+                    if( message && message.node )message.node.destroy();
+                }
+            }.bind(this),
+            files
+        );
 
         // this.uploadFileAreaNode = new Element("div");
         // var html = "<input name=\"file\" type=\"file\" multiple/>";
@@ -453,8 +470,17 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
-        this.attachmentController.doUploadAttachment({ "site": (this.json.site || this.json.id) }, this.form.documentAction.action, "replaceAttachment",
-            { "id": attachment.data.id, "documentid": this.form.businessData.document.id }, null, function (o) {
+        this.attachmentController.doUploadAttachment(
+            { "site": (this.json.site || this.json.id) },
+            this.form.documentAction.action,
+            "replaceAttachment",
+            { "id": attachment.data.id, "documentid": this.form.businessData.document.id },
+            function (){ //finish
+                o2.Actions.load('x_cms_assemble_control').FileInfoAction.listFileInfoByDocumentId(this.form.businessData.document.id, function (json){
+                    this.attachmentController.orderAttachments(json.data);
+                }.bind(this))
+            }.bind(this),
+            function (o) { //every
                 this.form.documentAction.getAttachment(attachment.data.id, this.form.businessData.document.id, function (json) {
                     if (!json.data.control) json.data.control = {};
                     attachment.data = json.data;
