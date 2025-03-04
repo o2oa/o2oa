@@ -167,6 +167,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         html += " :text-color=\"textColor\"";
         html += " :fill=\"fillColor\"";
         html += " :size=\"size\"";
+        html += " :disabled=\"disabled\"";
         html += " @change=\"change\"";
 
 

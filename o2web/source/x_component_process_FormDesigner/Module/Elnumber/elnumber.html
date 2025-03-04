@@ -20,6 +20,13 @@
 					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.el_disabled}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
 		</table>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -86,7 +93,7 @@
 
 		<div class="MWFValidation" name="validationConfig"></div>
 		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
-		
+
 	</div>
 	<div title="Vue"  class="MWFTab">
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')!='none') ? 'none': 'block'))" style="cursor: pointer; height:24px; padding-left: 5px; line-height: 24px; background-color: #EEE; border-bottom: 1px solid #999;font-weight:bold;">Vue Data</div>
