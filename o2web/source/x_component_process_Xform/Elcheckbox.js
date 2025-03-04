@@ -180,6 +180,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         html += " :text-color=\"textColor\"";
         html += " :fill=\"fillColor\"";
         html += " :size=\"size\"";
+        html += " :disabled=\"disabled\"";
         html += " @change=\"change\"";
 
 

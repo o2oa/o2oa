@@ -1160,6 +1160,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"layoutTemplate": "Layout Template",
 		"elGroupStyles": "Group Styles",
 		"elGroupProperties": "Group Properties",
+		"elOptionStyle": "option styles",
+		"elOptionProperties": "option properties",
 		"el_border": "Show Border",
 		"el_radioColor": "Font Color",
 		"el_radioFillColor": "Fill Color",
