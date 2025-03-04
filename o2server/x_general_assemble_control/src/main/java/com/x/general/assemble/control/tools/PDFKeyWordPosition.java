@@ -18,7 +18,7 @@ public class PDFKeyWordPosition extends PDFTextStripper {
     private List<String> keywordList;
     private Map<String, List<Position>> positionListMap;
 
-    public PDFKeyWordPosition() {
+    public PDFKeyWordPosition() throws IOException {
         super();
     }
 

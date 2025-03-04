@@ -21,12 +21,11 @@ public class PdfRegularInvoiceTools {
 
     /**
      * 带密码区发票解析
-     * @param allText
-     * @param pageWidth
-     * @param doc
-     * @param firstPage
-     * @param invoice
-     * @throws IOException
+     * @param allText 发票内容
+     * @param pageWidth 发票页宽
+     * @param doc 发票pdf文档
+     * @param firstPage 发票第一页
+     * @param invoice 发票对象
      */
     public static void getRegularInvoice(String allText, int pageWidth, PDDocument doc,
             PDPage firstPage, Invoice invoice) throws IOException {

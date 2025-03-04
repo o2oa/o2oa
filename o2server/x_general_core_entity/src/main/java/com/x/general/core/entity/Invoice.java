@@ -316,6 +316,24 @@ public class Invoice extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private String drawer;
 
+	public static final String rider_FIELDNAME = "rider";
+	@FieldDescribe("乘车人.")
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + rider_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String rider;
+
+	public static final String startStation_FIELDNAME = "startStation";
+	@FieldDescribe("起点站.")
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + startStation_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String startStation;
+
+	public static final String endStation_FIELDNAME = "endStation";
+	@FieldDescribe("终点站.")
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + endStation_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String endStation;
+
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("发票类型.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + type_FIELDNAME)
@@ -368,6 +386,7 @@ public class Invoice extends StorageObject {
 	}
 
 	public void setDetailList(List<InvoiceDetail> detailList) {
+		this.detailList = detailList;
 		this.getProperties().setDetailList(detailList);
 	}
 
@@ -557,5 +576,29 @@ public class Invoice extends StorageObject {
 
 	public void setApplyStatus(String applyStatus) {
 		this.applyStatus = applyStatus;
+	}
+
+	public String getRider() {
+		return rider;
+	}
+
+	public void setRider(String rider) {
+		this.rider = rider;
+	}
+
+	public String getStartStation() {
+		return startStation;
+	}
+
+	public void setStartStation(String startStation) {
+		this.startStation = startStation;
+	}
+
+	public String getEndStation() {
+		return endStation;
+	}
+
+	public void setEndStation(String endStation) {
+		this.endStation = endStation;
 	}
 }
