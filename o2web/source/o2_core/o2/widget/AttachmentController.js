@@ -868,6 +868,19 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
         }
     },
+    orderAttachments: function (attDataList){
+        var preNode;
+        attDataList.each( function( att ){
+            var matchAttachments = this.attachments.filter( function( attachment ){
+                return attachment.data.id === att.id || (attachment.data.businessId && attachment.data.businessId === att.businessId);
+            });
+            if( matchAttachments.length ){
+                var node = matchAttachments[0].node;
+                preNode ? node.inject( preNode, "after" ) : node.inject( this.content, "top" );
+                preNode = node;
+            }
+        }.bind(this))
+    },
     addUploadMessage: function(fileName){
         var contentHTML = "";
         contentHTML = "<div style=\"overflow: hidden\"><div style=\"height: 2px; border:0px solid #999; margin: 3px 0px\">" +
@@ -1417,8 +1430,8 @@ o2.widget.AttachmentController.Attachment = new Class({
         }
 
 	    if (this.message){
-            // this.node = new Element("div").inject(this.message.node, "after");
-            this.node = new Element("div").inject(this.content);
+            this.node = new Element("div").inject(this.message.node, "after");
+            //this.node = new Element("div").inject(this.content);
             this.message.node.destroy();
             delete this.controller.messageItemList[this.message.data.id];
         }else{
@@ -1951,8 +1964,8 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         }
 
         if (this.message){
-            // this.node = new Element("div").inject(this.message.node, "after");
-            this.node = new Element("div").inject(this.content);
+            this.node = new Element("div").inject(this.message.node, "after");
+            // this.node = new Element("div").inject(this.content);
             this.message.node.destroy();
             delete this.controller.messageItemList[this.message.data.id];
         }else{
