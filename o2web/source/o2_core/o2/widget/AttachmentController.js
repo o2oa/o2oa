@@ -14,7 +14,6 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "isReplace": true,
         "isDownload": true,
         "isPreviewAtt": true,
-        "isPreviewAtt": true,
         "isSizeChange": true,
         "isConfig": true,
         "isOrder": true,
@@ -870,16 +869,23 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
     orderAttachments: function (attDataList){
         var preNode;
+        var attachments = [];
+        var index = 0;
         attDataList.each( function( att ){
             var matchAttachments = this.attachments.filter( function( attachment ){
                 return attachment.data.id === att.id || (attachment.data.businessId && attachment.data.businessId === att.businessId);
             });
             if( matchAttachments.length ){
+                index++;
+                attachments.push(matchAttachments[0]);
+                var content = this.options.size === 'min' ? this.minContent : this.content;
                 var node = matchAttachments[0].node;
-                preNode ? node.inject( preNode, "after" ) : node.inject( this.content, "top" );
+                preNode ? node.inject( preNode, "after" ) : node.inject( content, "top" );
                 preNode = node;
+                matchAttachments[0].setSequence(index);
             }
-        }.bind(this))
+        }.bind(this));
+        this.attachments = attachments;
     },
     addUploadMessage: function(fileName){
         var contentHTML = "";
@@ -1414,6 +1420,12 @@ o2.widget.AttachmentController.Attachment = new Class({
 
         this.load();
 	},
+    setSequence: function (seq){
+        this.seq = seq;
+        if( this.controller.options.listStyle === 'sequence' && this.sequenceNode ){
+            this.sequenceNode.set('text', seq);
+        }
+    },
     _getLnkPar: function(url){
         return {
             "icon": this.getIcon(),
