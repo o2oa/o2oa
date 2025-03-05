@@ -3,8 +3,9 @@ import {ref, onMounted, inject} from 'vue'
 import {lp} from '@o2oa/component'
 import {imAction} from "../utils/actions.js";
 import {EventName} from "../utils/eventBus.js";
-import {imConfig} from '../store.js';
+import {imConfig, windowState} from '../store.js';
 
+const windowStateInstance = windowState();
 const imConfigInstance = imConfig();
 // eventBus
 const eventBus = inject('eventBus')
@@ -99,7 +100,7 @@ const saveConfig = async (config) => {
 </script>
 
 <template>
-  <div class="im-config-dialog">
+  <div class="im-config-dialog" :class="{  w100:  windowStateInstance.isMobile }">
     <div class="im-config-form-line">
       <div class="left">{{ lp.settingsClearMsg }}</div>
 <!--      <div class="im-chat-msg-select right" @click="clickEnableClearMsg">-->

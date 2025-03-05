@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, onUnmounted, createApp, nextTick, provide, inject} from 'vue'
+import {ref, onMounted, onUnmounted, createApp, nextTick, provide, inject, render, h, getCurrentInstance} from 'vue'
 import {o2, lp} from "@o2oa/component";
 import IMAside from "./components/IMAside.vue";
 import IMMain from "./components/IMMain.vue";
@@ -9,8 +9,12 @@ import ImConfigPage from "./pages/ImConfigPage.vue";
 import MyCollectionPage from "./pages/MyCollectionPage.vue";
 import {EventName} from "./utils/eventBus.js";
 import {getBaiduMapUrl, getImFileDownloadUrl, imAction} from "./utils/actions.js";
-import {imConfig, imGlobalOptions} from './store.js';
+import {imConfig, imGlobalOptions, windowState} from './store.js';
 
+// 获取主应用实例（确保在主应用挂载后调用）
+const appInstance = getCurrentInstance()?.appContext;
+
+const windowStateInstance = windowState();
 const imConfigInstance = imConfig();
 const imGlobalOptionsInstance = imGlobalOptions();
 // eventBus
@@ -21,7 +25,11 @@ const { options } = defineProps(['options'])
 
 let openChooseConversationEventName = null
 
+const resizeListener = ()=> windowStateInstance.updateWindowWidth()
+
 onMounted(() => {
+  window.addEventListener("resize", resizeListener)
+  resizeListener() // 初始化值
   // 根据 options 处理一些特殊情况 比如打开某一个会话
   console.debug('APP =====>  onMounted  options', options)
   // 默认打开的会话 openConversation 是一个 conversation 对象
@@ -70,6 +78,7 @@ onMounted(() => {
   }
 })
 onUnmounted(() => {
+  window.removeEventListener("resize", resizeListener)
   // eventBus.unsubscribe(EventName.openConversation)
   eventBus.unsubscribe(EventName.openChooseConversation)
   eventBus.unsubscribe(EventName.openMsg)
@@ -193,32 +202,63 @@ const openMsg = (msg) => {
 }
 // 打开聊天记录类型的消息
 const openMsgHistory = async (msg) => {
-    const container = document.querySelector('.im-container')
-    const fragment = document.createDocumentFragment()
-    const msgHistoryPageComponent = createApp(MsgHistoryPage, {
-      msg: msg
-    }).mount(fragment)
-    $OOUI.dialog(lp.msgHistory, msgHistoryPageComponent.$el, container, {buttons: ''})
+  const container = document.querySelector('.im-container')
+    // const fragment = document.createDocumentFragment()
+    // const msgHistoryPageComponent = createApp(MsgHistoryPage, {
+    //   msg: msg
+    // }).mount(fragment)
+  // 创建一个容器元素
+  const el = document.createElement('div');
+  // 通过主应用的 context 创建 vnode
+  const vnode = h(MsgHistoryPage);
+  vnode.props = {
+    msg: msg
+  }
+  // ** 关键代码，继承主应用的 appContext **
+  if (appInstance) {
+    vnode.appContext = appInstance;
+  }
+  // 将 vnode 渲染到 el
+  render(vnode, el);
+  $OOUI.dialog(lp.msgHistory, el, container, {buttons: '', canMove: false})
 }
 // 打开设置页面
 const openImConfigPage = () => {
   const container = document.querySelector('.im-container')
-  const fragment = document.createDocumentFragment()
-  const imConfigPage = createApp(ImConfigPage, {}).mount(fragment)
-  $OOUI.dialog(lp.setting, imConfigPage.$el, container, {buttons: ''})
+  // const fragment = document.createDocumentFragment()
+  // const imConfigPage = createApp(ImConfigPage, {}).mount(fragment)
+  // 创建一个容器元素
+  const el = document.createElement('div');
+  // 通过主应用的 context 创建 vnode
+  const vnode = h(ImConfigPage);
+  // ** 关键代码，继承主应用的 appContext **
+  if (appInstance) {
+    vnode.appContext = appInstance;
+  }
+  // 将 vnode 渲染到 el
+  render(vnode, el);
+  $OOUI.dialog(lp.setting, el, container, {buttons: '', canMove: false})
 }
 // 打开我的收藏页码
 const openMyCollectionPage = () => {
   const container = document.querySelector('.im-container')
-  const fragment = document.createDocumentFragment()
-  const myCollectionPage = createApp(MyCollectionPage, {}).mount(fragment)
-  $OOUI.dialog(lp.msgCollectionTitle, myCollectionPage.$el, container, {buttons: ''})
+  // 创建一个容器元素
+  const el = document.createElement('div');
+  // 通过主应用的 context 创建 vnode
+  const vnode = h(MyCollectionPage);
+  // ** 关键代码，继承主应用的 appContext **
+  if (appInstance) {
+    vnode.appContext = appInstance;
+  }
+  // 将 vnode 渲染到 el
+  render(vnode, el);
+  $OOUI.dialog(lp.msgCollectionTitle, el, container, {buttons: '', canMove: false})
 }
 </script>
 
 <template>
   <div class="im-app im-container">
-    <div class="im-aside" v-if="!hideSide">
+    <div class="im-aside" :class="{ hidden: windowStateInstance.isMobile && currentConversation, w100:  windowStateInstance.isMobile}" v-if="!hideSide" >
       <IMAside @clickImConfig="openImConfigPage" @clickMyCollectionPage="openMyCollectionPage"/>
     </div>
     <div class="im-main">

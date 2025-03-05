@@ -4,7 +4,9 @@ import {EventName} from "../utils/eventBus.js";
 import ChatMsg from "../components/ChatMsg.vue";
 import {imAction} from "../utils/actions.js";
 import {lp} from "@o2oa/component";
+import {windowState} from "../store.js";
 
+const windowStateInstance = windowState();
 // eventBus
 const eventBus = inject('eventBus')
 onMounted(()=> {
@@ -113,7 +115,7 @@ const  deleteCollectionList = async () => {
 </script>
 
 <template>
-    <div class="im-dialog-message-history">
+    <div class="im-dialog-message-history"   :class="{  w100:  windowStateInstance.isMobile }">
       <div class="im-dialog-header" style="justify-content: right;" v-if="collectionMsgList.length > 0">
         <oo-button  v-if="!chooseMode"  type="simple" style="color: var(--oo-color-main);border: 1px solid var(--oo-color-main); width: 4.28rem;" @click="chooseMode = true">{{lp.choose}}</oo-button>
 <!--        <oo-button  v-if="chooseMode"  style=" margin-left: 0.7rem;" @click="clickDeleteSelected">{{lp.delete}}</oo-button>-->
