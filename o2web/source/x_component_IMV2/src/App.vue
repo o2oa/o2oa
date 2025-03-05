@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, onUnmounted, createApp, nextTick, provide, inject, render, h, getCurrentInstance} from 'vue'
+import {ref, onMounted, onUnmounted, nextTick, provide, inject, render, h, getCurrentInstance} from 'vue'
 import {o2, lp} from "@o2oa/component";
 import IMAside from "./components/IMAside.vue";
 import IMMain from "./components/IMMain.vue";

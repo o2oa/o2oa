@@ -96,11 +96,16 @@ const saveConfig = async (config) => {
     $OOUI.notice.success(lp.alert, lp.msgSettingsSaveSuccess)
   }
 }
-
+const styleCalc = () => {
+  if (windowStateInstance.isMobile) {
+    return 'width: calc( '+windowStateInstance.windowWidth+'px - 3em )!important;'
+  }
+  return undefined
+}
 </script>
 
 <template>
-  <div class="im-config-dialog" :class="{  w100:  windowStateInstance.isMobile }">
+  <div class="im-config-dialog" :style=" styleCalc() " >
     <div class="im-config-form-line">
       <div class="left">{{ lp.settingsClearMsg }}</div>
 <!--      <div class="im-chat-msg-select right" @click="clickEnableClearMsg">-->

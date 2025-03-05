@@ -112,10 +112,17 @@ const  deleteCollectionList = async () => {
 
   clickCancelChooseMode()
 }
+
+const styleCalc = () => {
+  if (windowStateInstance.isMobile) {
+    return 'width: calc( '+windowStateInstance.windowWidth+'px - 3em )!important;'
+  }
+  return undefined
+}
 </script>
 
 <template>
-    <div class="im-dialog-message-history"   :class="{  w100:  windowStateInstance.isMobile }">
+    <div class="im-dialog-message-history"  :style=" styleCalc() " >
       <div class="im-dialog-header" style="justify-content: right;" v-if="collectionMsgList.length > 0">
         <oo-button  v-if="!chooseMode"  type="simple" style="color: var(--oo-color-main);border: 1px solid var(--oo-color-main); width: 4.28rem;" @click="chooseMode = true">{{lp.choose}}</oo-button>
 <!--        <oo-button  v-if="chooseMode"  style=" margin-left: 0.7rem;" @click="clickDeleteSelected">{{lp.delete}}</oo-button>-->
