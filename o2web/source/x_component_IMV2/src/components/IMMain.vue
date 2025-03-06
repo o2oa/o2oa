@@ -1,21 +1,24 @@
 <script setup>
 import {ref, watch, nextTick, useTemplateRef, onMounted, onUnmounted, inject} from 'vue';
 import {lp} from '@o2oa/component';
-import {canUseWebP, chooseSingleFile, conversationPicker, createContextMenu, formatPersonName, toDate, ymdhms} from '../utils/common.js';
-import {imAction, imUploadFile} from '../utils/actions.js';
+import {chooseSingleFile, conversationPicker, createContextMenu, formatPersonName, toDate, ymdhms} from '../utils/common.js';
+import {imAction} from '../utils/actions.js';
 import ChatMsg from './ChatMsg.vue';
 import ChatInfo from './ChatInfo.vue';
 import EmojiPicker from './EmojiPicker.vue';
 import {contentEscapeBackToSymbol} from '../utils/escapeSymbol.js';
 import {uuid} from '@o2oa/util';
 import {EventName} from '../utils/eventBus.js';
-import {imConfig, imGlobalOptions, uploadFileList} from '../store.js';
+import {imConfig, imGlobalOptions, uploadFileList, windowState} from '../store.js';
 
 const imConfigInstance = imConfig();
 const uploadFileListInstance = uploadFileList();
 const imGlobalOptionsInstance = imGlobalOptions();
+const windowStateInstance = windowState();
 // eventBus
 const eventBus = inject('eventBus');
+
+const {openConversation} = inject('im-app')
 
 const {conv} = defineProps(['conv']);
 
@@ -191,7 +194,10 @@ const pasteFileSendMsg = (e) => {
         }
     }
 };
-
+// 关闭当前页面
+const closeMainPage = () => {
+  openConversation(null)
+}
 // 初始化数据
 const initMainPage = async () => {
     console.debug('imGlobalOptions', imGlobalOptionsInstance.hideSide);
@@ -679,11 +685,23 @@ const msgListScrollEvent = () => {
         }
     }
 };
+
+const showImChat = () => {
+  if (windowStateInstance.isMobile) {
+    if (conversation.value && conversation.value.id ) {
+      return !showChatInfo.value
+    } else {
+      return false
+    }
+  } else {
+    return (conversation.value && conversation.value.id )
+  }
+}
 </script>
 
 <template>
     <div class="im-chat-row">
-        <div class="im-chat" v-if="conversation && conversation.id">
+        <div class="im-chat" v-if=" showImChat() ">
             <!-- 进度条 -->
             <div class="im-chat-progress" v-if="uploadFileListInstance.uploadFileList.length > 0">
               <div v-for="file in uploadFileListInstance.uploadFileList" :key="file.id"  class="im-chat-progress-bar-container">
@@ -692,7 +710,11 @@ const msgListScrollEvent = () => {
               </div>
             </div>
             <div class="im-chat-header" v-if="!hideSide">
-                <div class="im-chat-header-left"></div>
+                <div class="im-chat-header-left">
+                  <div class="im-chat-header-menu" v-if="windowStateInstance.isMobile" @click="closeMainPage">
+                    <i class="ooicon-process-goback icon"></i>
+                  </div>
+                </div>
                 <div class="im-chat-header-center">
                     {{ conversationName(conversation) }}
                 </div>

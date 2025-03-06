@@ -153,6 +153,15 @@ button:focus-visible {
 .flex-1 {
     flex: 1;
 }
+/* 小屏幕时隐藏侧边栏 */
+.hidden {
+    display: none;
+}
+.w100 {
+    width: 100%!important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}
 
 .im-app {
     background-color: var(--oo-im-color-bg-app);
@@ -396,6 +405,7 @@ button:focus-visible {
     flex: 1;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     min-width: 0;
 }
 

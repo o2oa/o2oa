@@ -178,7 +178,6 @@ o2server/test.sh
 /api/
 /dist/
 
-o2.config.json
 /src/locales/language.js
 /.idea/.gitignore
 /.idea/dbnavigator.xml
