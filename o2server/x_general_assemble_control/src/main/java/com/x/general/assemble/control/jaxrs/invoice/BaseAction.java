@@ -1,5 +1,6 @@
 package com.x.general.assemble.control.jaxrs.invoice;
 
+import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -19,6 +20,13 @@ import org.apache.pdfbox.text.PDFTextStripper;
 abstract class BaseAction extends StandardJaxrsAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
+
+    protected boolean exists(EntityManagerContainer emc, String number) throws Exception {
+        if(StringUtils.isNotBlank(number)){
+            return emc.countEqual(Invoice.class, Invoice.number_FIELDNAME, number) > 0;
+        }
+        return false;
+    }
 
     protected void extractInvoice(Invoice invoice, byte[] bytes) throws Exception {
         try {

@@ -24,6 +24,9 @@ class ActionDelete extends BaseAction {
 			if (!StringUtils.equals(effectivePerson.getDistinguishedName(), invoice.getPerson()) && effectivePerson.isNotManager()) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
+			if(Invoice.APPLY_STATUS_1.equals(invoice.getApplyStatus())){
+				throw new ExceptionErrorStatus();
+			}
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Invoice.class,
 					invoice.getStorage());
 			invoice.deleteContent(mapping);

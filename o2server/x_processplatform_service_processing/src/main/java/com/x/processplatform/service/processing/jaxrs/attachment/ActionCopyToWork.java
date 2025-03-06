@@ -92,7 +92,7 @@ class ActionCopyToWork extends BaseAction {
 						attachment
 								.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
 						attachment.setLength(o.getLength());
-						attachment.setStorage(mapping.getName());
+						attachment.setStorage(o.getStorage());
 						attachment.setLastUpdateTime(new Date());
 						attachment.setFromJob(o.getJob());
 						attachment.setFromId(o.getId());

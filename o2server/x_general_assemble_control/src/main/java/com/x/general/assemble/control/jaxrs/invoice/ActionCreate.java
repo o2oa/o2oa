@@ -41,6 +41,9 @@ class ActionCreate extends BaseAction {
             if(gf == null){
                 throw new ExceptionEntityNotExist(wi.getFileId());
             }
+            if(exists(emc, wi.getNumber())){
+                throw new ExceptionInvoiceExists(wi.getNumber());
+            }
             StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
                     gf.getStorage());
             StorageMapping mapping = ThisApplication.context().storageMappings().random(Invoice.class);

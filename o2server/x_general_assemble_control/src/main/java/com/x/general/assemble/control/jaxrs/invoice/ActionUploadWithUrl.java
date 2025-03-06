@@ -61,6 +61,9 @@ public class ActionUploadWithUrl extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			file = new Invoice(mapping.getName(), fileName, effectivePerson.getDistinguishedName(), extension);
 			extractInvoice(file, bytes);
+			if(exists(emc, file.getNumber())){
+				throw new ExceptionInvoiceExists(file.getNumber());
+			}
 			emc.check(file, CheckPersistType.all);
 			file.saveContent(mapping, bytes, fileName);
 			emc.beginTransaction(Invoice.class);

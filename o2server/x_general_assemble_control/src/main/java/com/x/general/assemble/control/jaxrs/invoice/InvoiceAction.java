@@ -162,6 +162,24 @@ public class InvoiceAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新发票的报销状态为已报销.", action = ActionUpdateApplyStatus.class)
+	@POST
+	@Path("update/apply/status/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateApplyStatus(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionUpdateApplyStatus.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateApplyStatus().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除指定发票.", action = ActionDelete.class)
 	@GET
 	@Path("delete/{id}")
