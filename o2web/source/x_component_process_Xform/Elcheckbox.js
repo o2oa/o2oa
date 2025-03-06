@@ -172,6 +172,8 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     },
 
     _createElementHtml: function(radioValues){
+        if (!this.json.disabled) this.json.disabled = false;
+
         var id = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
         id = (id.indexOf("@")!==-1) ? id.replace(/@/g, "_") : id;
         this.json["$id"] = (id.indexOf("-")!==-1) ? id.replace(/-/g, "_") : id;
@@ -180,6 +182,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         html += " :text-color=\"textColor\"";
         html += " :fill=\"fillColor\"";
         html += " :size=\"size\"";
+        html += " :disabled=\"disabled\"";
         html += " @change=\"change\"";
 
 

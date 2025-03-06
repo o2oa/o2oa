@@ -20,6 +20,13 @@
                     <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.el_disabled}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
 		  <tr>
 		    <td class="editTableTitle">{{$.lp.options}}:</td>
 		    <td class="editTableValue">
@@ -241,11 +248,10 @@
 		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>
 
 
-
-        <div class="MWFMaplist" name="elStyles" title="{{$.lp.style}}"></div>
-        <div class="MWFMaplist" name="elProperties" title="{{$.lp.attribute}}"></div>
         <div class="MWFMaplist" name="elGroupStyles" title="{{$.lp.elGroupStyles}}"></div>
         <div class="MWFMaplist" name="elGroupProperties" title="{{$.lp.elGroupProperties}}"></div>
+        <div class="MWFMaplist" name="elStyles" title="{{$.lp.elOptionStyle}}"></div>
+        <div class="MWFMaplist" name="elProperties" title="{{$.lp.elOptionProperties}}"></div>
 
 
         <div class="MWFValidation" name="validationConfig"></div>

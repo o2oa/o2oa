@@ -29,7 +29,7 @@ MWF.xApplication.cms.Document.Main = new Class({
     onQueryLoad: function(){
         if (!this.options.title && !layout.mobile) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
         this.lp = MWF.xApplication.cms.Document.LP;
-        if (this.status){
+        if (this.status && Object.keys(this.status).length > 0){
             this.options.documentId = this.status.documentId;
             this.options.readonly = (this.status.readonly==="true" || this.status.readonly===true) ? true : false;
             this.options.autoSave = (this.status.autoSave==="true" || this.status.autoSave===true) ? true : false;

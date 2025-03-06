@@ -1840,54 +1840,71 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
-        this.attachmentController.doUploadAttachment({ "site": (this.json.site || this.json.id) }, this.form.workAction.action, "uploadAttachment", { "id": this.form.businessData.work.id }, null, function (o) {
-            if (o.id) {
-                this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function (json) {
-                    if (json.data) {
-                        if (!json.data.control) json.data.control = {};
+        this.attachmentController.doUploadAttachment(
+            { "site": (this.json.site || this.json.id) },
+            this.form.workAction.action,
+            "uploadAttachment",
+            { "id": this.form.businessData.work.id },
+            function(){
+                this.form.workAction.listAttachments(this.form.businessData.work.id, function (json) {
+                    this.attachmentController.orderAttachments(json.data);
+                }.bind(this));
+            }.bind(this),
+            function (o) {
+                if (o.id) {
+                    this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function (json) {
+                        if (json.data) {
+                            if (!json.data.control) json.data.control = {};
 
-                        this.form.businessData.attachmentList.push(json.data);
+                            this.form.businessData.attachmentList.push(json.data);
 
-                        this.attachmentController.addAttachment(json.data, o.messageId);
+                            this.attachmentController.addAttachment(json.data, o.messageId);
+                        }
+                        this.attachmentController.checkActions();
+
+                        this.setAttachmentBusinessData();
+                        this.fireEvent("upload", [json.data]);
+                        this.fireEvent("change");
+
+                        this.save();
+                    }.bind(this))
+                }
+                this.attachmentController.checkActions();
+            }.bind(this),
+            function (files) {
+                if (files.length) {
+                    if ((files.length + this.attachmentController.attachments.length > this.attachmentController.options.attachmentCount) && this.attachmentController.options.attachmentCount > 0) {
+                        var content = MWF.xApplication.process.Xform.LP.uploadMore;
+                        content = content.replace("{n}", this.attachmentController.options.attachmentCount);
+                        this.form.notice(content, "error");
+                        return false;
                     }
-                    this.attachmentController.checkActions();
-
-                    this.setAttachmentBusinessData();
-                    this.fireEvent("upload", [json.data]);
-                    this.fireEvent("change");
-
-                    this.save();
-                }.bind(this))
-            }
-            this.attachmentController.checkActions();
-        }.bind(this), function (files) {
-            if (files.length) {
-                if ((files.length + this.attachmentController.attachments.length > this.attachmentController.options.attachmentCount) && this.attachmentController.options.attachmentCount > 0) {
-                    var content = MWF.xApplication.process.Xform.LP.uploadMore;
-                    content = content.replace("{n}", this.attachmentController.options.attachmentCount);
-                    this.form.notice(content, "error");
-                    return false;
                 }
-            }
 
-            this.uploadingFiles = files;
-            if (this.json.uploadValidation && this.json.uploadValidation.code) {
-                var flag = this.form.Macro.exec(this.json.uploadValidation.code, this);
-                if (!flag) flag = MWF.xApplication.process.Xform.LP.notAttachmentValidation;
-                if (flag.toString()!="true"){
-                    this.form.notice(flag, "error");
-                    return false;
+                this.uploadingFiles = files;
+                if (this.json.uploadValidation && this.json.uploadValidation.code) {
+                    var flag = this.form.Macro.exec(this.json.uploadValidation.code, this);
+                    if (!flag) flag = MWF.xApplication.process.Xform.LP.notAttachmentValidation;
+                    if (flag.toString()!="true"){
+                        this.form.notice(flag, "error");
+                        return false;
+                    }
                 }
-            }
 
-            this.fireEvent("beforeUpload", [files]);
-            return true;
-        }.bind(this), true, accept, size, function (o) { //错误的回调
-            if (o.messageId && this.attachmentController.messageItemList) {
-                var message = this.attachmentController.messageItemList[o.messageId];
-                if( message && message.node )message.node.destroy();
-            }
-        }.bind(this), files);
+                this.fireEvent("beforeUpload", [files]);
+                return true;
+            }.bind(this),
+            true,
+            accept,
+            size,
+            function (o) { //错误的回调
+                if (o.messageId && this.attachmentController.messageItemList) {
+                    var message = this.attachmentController.messageItemList[o.messageId];
+                    if( message && message.node )message.node.destroy();
+                }
+            }.bind(this),
+            files
+        );
     },
     uploadAttachment: function (e, node, files) {
         if (window.o2android && window.o2android.postMessage) {
@@ -2163,8 +2180,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
-        this.attachmentController.doUploadAttachment({ "site": (this.json.site || this.json.id) }, this.form.workAction.action, "replaceAttachment",
-            { "id": attachment.data.id, "workid": this.form.businessData.work.id }, null, function (o) {
+        this.attachmentController.doUploadAttachment(
+            { "site": (this.json.site || this.json.id) },
+            this.form.workAction.action,
+            "replaceAttachment",
+            { "id": attachment.data.id, "workid": this.form.businessData.work.id },
+            function(){ //finish
+                this.form.workAction.listAttachments(this.form.businessData.work.id, function (json) {
+                    this.attachmentController.orderAttachments(json.data);
+                }.bind(this));
+            }.bind(this),
+            function (o) { //every
                 this.form.workAction.getAttachment(attachment.data.id, this.form.businessData.work.id, function (json) {
                     attachment.data = json.data;
                     attachment.reload();
@@ -2180,12 +2206,18 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
                     this.save();
                 }.bind(this))
-            }.bind(this), null, true, accept, size, function (o) { //错误的回调
+            }.bind(this),
+            null,
+            true,
+            accept,
+            size,
+            function (o) { //错误的回调
                 if (o.messageId && this.attachmentController.messageItemList) {
                     var message = this.attachmentController.messageItemList[o.messageId];
                     if( message && message.node )message.node.destroy();
                 }
-            }.bind(this));
+            }.bind(this)
+        );
 
         // this.replaceFileAreaNode = new Element("div");
         // var html = "<input name=\"file\" type=\"file\" multiple/>";

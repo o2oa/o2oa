@@ -21,6 +21,13 @@
 				</td>
 			</tr>
 			<tr>
+				<td class="editTableTitle">{{$.lp.el_disabled}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="disabled" value="true" text{($.disabled)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="disabled" value="false" text{(!$.disabled)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
 				<td class="editTableTitle">{{$.lp.options}}:</td>
 				<td class="editTableValue">
 					<input class="editTableRadio" onclick="if (this.checked){

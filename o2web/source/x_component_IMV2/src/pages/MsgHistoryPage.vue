@@ -3,10 +3,12 @@ import {ref, onMounted, onUnmounted, inject} from 'vue'
 import {EventName} from "../utils/eventBus.js";
 import ChatMsg from "../components/ChatMsg.vue";
 import {imAction} from "../utils/actions.js";
+import {windowState} from "../store.js";
 
 const {msg} = defineProps(['msg'])
 // eventBus
 const eventBus = inject('eventBus')
+const windowStateInstance = windowState();
 
 onMounted(() => {
   console.debug('onMounted ====>  MsgHistory 消息', msg)
@@ -32,10 +34,18 @@ const clickOpenMsg = (msg) => {
   // 打开消息
   eventBus.publish(EventName.openMsg, msg)
 }
+
+const styleCalc = () => {
+  if (windowStateInstance.isMobile) {
+    return 'width: calc( '+windowStateInstance.windowWidth+'px - 3em )!important;'
+  }
+  return undefined
+}
+
 </script>
 
 <template>
-  <div class="im-dialog-message-history" :id="`historyMsgWin_${msg.id}`">
+  <div class="im-dialog-message-history"  :style=" styleCalc() "  :id="`historyMsgWin_${msg.id}`">
     <div class="im-dialog-body">
       <div v-for="msg in msgList" :key="msg.id">
         <div class="im-chat-msg-body">

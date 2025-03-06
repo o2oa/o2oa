@@ -17,6 +17,11 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	}
 
+	public static class Invoice {
+		public static final String table = "GEN_INVOICE";
+
+	}
+
 	public static class ApplicationDict {
 		public static final String table = "GEN_DICT";
 	}

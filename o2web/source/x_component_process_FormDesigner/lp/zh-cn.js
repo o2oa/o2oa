@@ -1294,6 +1294,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         elGroupStyles: '组样式',
         elGroupProperties: '组属性',
+        elOptionStyle: '选项样式',
+        elOptionProperties: '选项属性',
 
         el_border: '显示边框',
         el_radioColor: '字体颜色',

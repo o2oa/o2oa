@@ -4,6 +4,20 @@ import {canUseWebP, ymdhms} from "./utils/common.js";
 import {lp} from "@o2oa/component";
 import {uuid} from "@o2oa/util";
 
+export const windowState = defineStore('windowState', {
+    state: () => ({
+        windowWidth: window.innerWidth, // 窗口宽度
+        isMobile: false
+    }),
+    actions: {
+        updateWindowWidth() {
+            this.windowWidth = window.innerWidth;
+            this.isMobile = this.windowWidth < 768
+            console.debug('=====> update ' + this.isMobile + ' windowWidth' + this.windowWidth);
+        }
+    }
+})
+
 export const useLoadingStore = defineStore('loading', {
     state: () => ({
         isLoading: false,

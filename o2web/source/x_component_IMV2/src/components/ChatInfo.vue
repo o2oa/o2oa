@@ -3,9 +3,10 @@ import {ref, onMounted, onUnmounted, watch, inject} from 'vue'
 import {lp, o2} from "@o2oa/component";
 import {getAvatarUrl, imAction, conversationIconUrl} from "../utils/actions.js";
 import {formatPersonName} from "../utils/common.js";
-import {imConfig} from '../store.js';
+import {imConfig, windowState} from '../store.js';
 
 const imConfigInstance = imConfig();
+const windowStateInstance = windowState();
 
 const {conversation} = defineProps(['conversation'])
 
@@ -227,7 +228,7 @@ const quiteChat = async () => {
 </script>
 
 <template>
-  <div class="im-chat-info">
+  <div class="im-chat-info" :class="{   w100:  windowStateInstance.isMobile}">
     <div class="im-chat-info-header">
       <div class="title">{{lp.chatInfo}}</div>
       <div class="im-icon-btn pointer"  @click="clickClose" >

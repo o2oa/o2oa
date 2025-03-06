@@ -63,6 +63,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
         if (!this.json.description) this.json.description = "";
+        if (!this.json.disabled) this.json.disabled = false;
     },
     resetOption: function(){
         this.reload();
@@ -178,6 +179,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         html += " :placeholder=\"description\"";
         html += " :fetch-suggestions=\"$fetchSuggestions\"";
         html += " :hide-loading=\"false\"";
+        html += " :disabled=\"disabled\"";
         html += " :popper-append-to-body=\"false\"";
 
         this.options.elEvents.forEach(function(k){
