@@ -685,11 +685,23 @@ const msgListScrollEvent = () => {
         }
     }
 };
+
+const showImChat = () => {
+  if (windowStateInstance.isMobile) {
+    if (conversation.value && conversation.value.id ) {
+      return !showChatInfo.value
+    } else {
+      return false
+    }
+  } else {
+    return (conversation.value && conversation.value.id )
+  }
+}
 </script>
 
 <template>
     <div class="im-chat-row">
-        <div class="im-chat" v-if="conversation && conversation.id">
+        <div class="im-chat" v-if=" showImChat() ">
             <!-- 进度条 -->
             <div class="im-chat-progress" v-if="uploadFileListInstance.uploadFileList.length > 0">
               <div v-for="file in uploadFileListInstance.uploadFileList" :key="file.id"  class="im-chat-progress-bar-container">

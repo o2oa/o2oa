@@ -160,6 +160,7 @@ button:focus-visible {
 .w100 {
     width: 100%!important;
     margin-right: 0 !important;
+    margin-left: 0 !important;
 }
 
 .im-app {
