@@ -67,7 +67,6 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
         this.designPage = this.designTab.addTab(this.designTabPageAreaNode, this.designer.lp.design);
         this.scriptPage = this.designTab.addTab(this.designTabScriptAreaNode, "JSON");
         this.designPage.showTabIm = function(callback){
-            debugger;
             if( _self.scriptEditor && _self.isChanged){
                 if( _self.getEditorValidData() !== false ){
                     if (!this.isShow){
@@ -159,6 +158,9 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
                 if (!this.isChanged){
                     this.isChanged = true;
                 }
+            }.bind(this));
+            this.scriptEditor.addEvent("save", function(){
+                this.save();
             }.bind(this));
         }.bind(this));
     },

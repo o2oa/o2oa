@@ -125,7 +125,7 @@
 /*    }*/
 /*}*/
 /* 分辨率大于1366x768并且小于或等于1366x992 */
-@media only screen and (min-width: 1024px) and (max-width: 1367px) {
+@media only screen and (min-width: 1024px) and (max-width: 1368px) {
     :root {
         font-size: 12px;
     }

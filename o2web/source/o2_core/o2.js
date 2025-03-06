@@ -3563,6 +3563,53 @@ if (!window.o2) {
             }
             o2.session.isMobile = (["mac", "win", "linux"].indexOf(Browser.Platform.name) === -1);
         }
+
+
+        /**
+         * 如果需要根据一个迭代器，渲染浏览器界面，推荐调用此方法。为防止卡顿，将渲染动作放入 requestAnimationFrame 回调种植进行。
+         * 需要提供一个回调函数，执行渲染。在下一次重绘之前，调用用户提供的回调函数。
+         *
+         * @param iterator {Iterator} 一个迭代器，对于dom对象的操作，是根据这个迭代器中的数据的。
+         * @param callback {Function} 回调函数，它接收两个参数：value，index，分别为当前迭代的值和索引（0 开始），每次迭代都会调用此函数，一般来说在此函数中进行dom修改。
+         * @param firstFrameSize {Number} 第一次调用时的迭代次数。默认100.
+         * @param time {Number} 一个数值表示没帧运行的毫秒数，操作这个数字，就不再迭代了，等待下一个 requestAnimationFrame 回调。默认 13
+         *
+         * @return {Promise} 执行完成后兑现
+         */
+        o2.nextFrame = function(iterator, callback, firstFrameSize = 500, time = 15) {
+            if (typeof iterator[Symbol.iterator] === 'function') {
+                iterator = iterator[Symbol.iterator]();
+            }
+            return new Promise((resolve) => {
+                if (!callback.requestFrameId) {
+                    let i = 0;
+                    let firstFrameCount = 0;
+                    const frame = (timestamp) => {
+                        let isDone = true;
+                        do {
+                            const {value, done} = iterator.next();
+                            isDone = done;
+                            if (!done) {
+                                callback(value, i);
+                            }
+                            i++;
+                        } while ((performance.now() - timestamp < time || ++firstFrameCount < firstFrameSize) && !isDone);
+
+                        if (!isDone) {
+                            callback.requestFrameId = requestAnimationFrame(frame);
+                        } else {
+                            resolve();
+                            callback.requestFrameId = 0;
+                        }
+                    };
+                    callback.requestFrameId = requestAnimationFrame(frame);
+                }
+            });
+        }
+
+
+        
+
     })();
     o2.more = true;
 

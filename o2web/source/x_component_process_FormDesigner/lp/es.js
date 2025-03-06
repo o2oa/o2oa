@@ -1518,7 +1518,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"usePagination": "Usar la página",
 		"itemCount": "Número total de artículos",
 		"itemCountNote": "Los datos se pueden obtener a través de esto.target.data",
-		"requestBodyNote": "Obtener la página actual a través de este.target.currentpage"
+		"requestBodyNote": "Obtener la página actual a través de este.target.currentpage",
+		"defaultParameter": "Parámetros predeterminados",
+		"defaultParameters": "Parámetros predeterminados"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

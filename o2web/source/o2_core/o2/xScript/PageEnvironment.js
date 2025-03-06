@@ -2542,11 +2542,11 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * var par = this.page.getWidgetPrameters();
              * //par的内容：{"type": "my type"}
              */
-            "getWidgetPrameters": function () {
+            "getWidgetPrameters": function (target) {
                 if (!this.target) return null;
                 if (!this.target.widget) return null;
                 if (!this.widgetParameters) return null;
-                var pageId = this.target.widget.json.id;
+                var pageId = (target || this.target).widget.json.id;
                 return this.widgetParameters[pageId];
             }.bind(this)
             //"app": _form.app

@@ -14,6 +14,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  */
 MWF.xApplication.process.Xform.SourceText = MWF.APPSourceText =  new Class({
     Extends: MWF.APP$Module,
+    options: {
+        "moduleEvents": ["loadText", "load", "queryLoad", "postLoad"]
+    },
 
 	_loadUserInterface: function(){
         /**
@@ -48,6 +51,7 @@ MWF.xApplication.process.Xform.SourceText = MWF.APPSourceText =  new Class({
                     }else{
                         this.node.set("text", this.text);
                     }
+                    this.fireEvent("loadText");
 
                 }.bind(this));
             }

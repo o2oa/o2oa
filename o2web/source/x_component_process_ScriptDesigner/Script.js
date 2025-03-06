@@ -63,7 +63,6 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
     //},
 
     load : function(){
-        debugger;
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
 

@@ -1,3 +1,23 @@
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: var(--oo-color-gray-d);
+}
+
+*::-webkit-scrollbar-thumb {
+    width: 8px;
+    border-radius: 8px;
+    background-color: var(--oo-color-gray-b);
+    cursor: pointer;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    width: 8px;
+    border-radius: 8px;
+    background-color: var(--oo-color-text2);
+    cursor: pointer;
+}
 @font-face {
     font-family: 'ooicon';
     src:
@@ -76,7 +96,6 @@ oo-pagination {
 
 oo-menu,
 oo-dialog {
-    font-size: 0.875rem;
     position: absolute;
     z-index: 10000;
     border-radius: var(--oo-menu-radius);
@@ -123,8 +142,8 @@ oo-card {
 }
 
 oo-calendar {
-    width: 25em;
-    height: 20em;
+    width: 30em;
+    height: 24em;
     display: block;
     border-radius: 0.25rem;
     box-shadow: 0 0 0 1px var(--oo-color-gray-d);
@@ -133,19 +152,19 @@ oo-calendar {
 oo-calendar[year-only='true'],
 oo-calendar[date-only='true'],
 oo-calendar[month-only='true'] {
-    width: 18em;
+    width: 20em;
 }
 
 oo-calendar[week-only='true'] {
-    width: 19em;
+    width: 21em;
 }
 
 oo-calendar[time-only='true'] {
-    width: 10em;
+    width: 12em;
 }
 
 oo-calendar[time-only='true'][second-enable='false'] {
-    width: 6rem;
+    width: 8rem;
 }
 
 

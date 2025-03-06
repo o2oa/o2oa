@@ -1606,7 +1606,9 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         scriptMode: '脚本类型',
         scriptEditor: '脚本编辑器',
-        lineNumber: '显示行号'
+        lineNumber: '显示行号',
+
+        defaultParameters: '默认参数'
     },
     smartbi: {
         nosetup: '请先安装SmartBI应用',

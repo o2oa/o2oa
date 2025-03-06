@@ -1,5 +1,5 @@
 import {
-    dom, exec, hyphenate, typeOf,
+    dom, exec, hyphenate, typeOf, defer,
     cloneDate, lastTimeOfDate, lastDayOfMonth, clearTime, formatDate, weekNumberOfDate, increment
 } from '@o2oa/util';
 import html from './template/calendar.html?raw';
@@ -56,7 +56,7 @@ export default class OOCalendar extends OOComponent {
 
         secondEnable: true,
 
-        cleanEnable: true,
+        cleanEnable: false,
         todayEnable: true,
 
         datetimeRange: '',
@@ -94,15 +94,15 @@ export default class OOCalendar extends OOComponent {
     }
 
     //防抖 fun:方法，wait时间
-    static antiShake(fun, wait) {
-        let time = null;
-        return args => {
-            if (time) {
-                clearTimeout(time);
-            }
-            time = setTimeout(fun, wait);
-        };
-    }
+    // static antiShake(fun, wait) {
+    //     let time = null;
+    //     return args => {
+    //         if (time) {
+    //             clearTimeout(time);
+    //         }
+    //         time = setTimeout(fun, wait);
+    //     };
+    // }
 
     _elements = {
         content: null,
@@ -617,7 +617,7 @@ export default class OOCalendar extends OOComponent {
         dom.checkClass(this._elements.time, 'timeWithClean', this._props.cleanEnable && this._props.timeOnly);
         dom.checkClass(this._elements.secondContent, 'hide', !this._props.secondEnable);
         dom.checkClass(this._elements.line, 'hide', this._props.yearOnly || this._props.monthOnly || this._props.dateOnly || this._props.weekOnly || this._props.timeOnly);
-        dom.checkClass(this._elements.clean, 'hide', !this._props.cleanEnable);
+        dom.checkClass(this._elements.bottom, 'hide', !this._props.cleanEnable);
         dom.checkClass(this._elements.cleanTime, 'hide', !this._props.cleanEnable || !this._props.timeOnly);
         dom.checkClass(this._elements.today, 'hide', !this._props.todayEnable || !this.#isEnableDate(new Date()));
     }
@@ -931,18 +931,24 @@ export default class OOCalendar extends OOComponent {
             dom.checkClass(li, 'selected', this.#selectedHour === i);
             if (this.#selectedHour === i) setTimeout(() => {
                 if (i !== 0) this.#notFixHour = true;
-                li.scrollIntoView({block: 'start'});
+                // li.scrollIntoView({block: 'start'});
+                li.scrollIntoView({block: 'nearest'});
             }, 100);
         });
     }
 
     setHourEvent() {
         if (this.#hourEventSetted) return;
-        const hourScroll = OOCalendar.antiShake(() => {
+        // const hourScroll = OOCalendar.antiShake(() => {
+        //     if (!this.#notFixHour) this.#fixTimeNode(this._elements.hourContent);
+        //     this.#notFixHour = false;
+        // }, 100);
+        const hourScroll = () => {
             if (!this.#notFixHour) this.#fixTimeNode(this._elements.hourContent);
             this.#notFixHour = false;
-        }, 100);
-        this._elements.hourContent.addEventListener('scroll', () => { hourScroll(); });
+        };
+
+        this._elements.hourContent.addEventListener('scroll', () => { defer(hourScroll, 100, this); });
         this._elements.hourContent.querySelectorAll('li').forEach((li, i) => {
             const hourString = i.toString().padStart(2, '0');
             li.dataset.hour = hourString;
@@ -975,18 +981,23 @@ export default class OOCalendar extends OOComponent {
             dom.checkClass(li, 'selected', this.#selectedMinute === i);
             if (this.#selectedMinute === i) setTimeout(() => {
                 if (i !== 0) this.#notFixMinute = true;
-                li.scrollIntoView({block: 'start'});
+                // li.scrollIntoView({block: 'start'});
+                li.scrollIntoView({block: 'nearest'});
             }, 100);
         });
     }
 
     setMinuteEvent() {
         if (this.#minuteEventSetted) return;
-        const minuteScroll = OOCalendar.antiShake(() => {
+        // const minuteScroll = OOCalendar.antiShake(() => {
+        //     if (!this.#notFixMinute) this.#fixTimeNode(this._elements.minuteContent);
+        //     this.#notFixMinute = false;
+        // }, 100);
+        const minuteScroll = () => {
             if (!this.#notFixMinute) this.#fixTimeNode(this._elements.minuteContent);
             this.#notFixMinute = false;
-        }, 100);
-        this._elements.minuteContent.addEventListener('scroll', () => { minuteScroll(); });
+        };
+        this._elements.minuteContent.addEventListener('scroll', () => { defer(minuteScroll, 100, this); });
         this._elements.minuteContent.querySelectorAll('li').forEach((li, i) => {
             const minuteString = i.toString().padStart(2, '0');
             li.dataset.minute = minuteString;
@@ -1021,18 +1032,25 @@ export default class OOCalendar extends OOComponent {
             dom.checkClass(li, 'selected', this.#selectedSecond === i);
             if (this.#selectedSecond === i) setTimeout(() => {
                 if (i !== 0) this.#notFixSecond = true;
-                li.scrollIntoView({block: 'start'});
+                // li.scrollIntoView({block: 'start'});
+                li.scrollIntoView({block: 'nearest'});
             }, 100);
         });
     }
 
     setSecondEvent() {
         if (this.#secondEventSetted) return;
-        const secondScroll = OOCalendar.antiShake(() => {
+        // const secondScroll = OOCalendar.antiShake(() => {
+        //     if (!this.#notFixSecond) this.#fixTimeNode(this._elements.secondContent);
+        //     this.#notFixSecond = false;
+        // }, 100);
+
+        const secondScroll = () => {
             if (!this.#notFixSecond) this.#fixTimeNode(this._elements.secondContent);
             this.#notFixSecond = false;
-        }, 100);
-        this._elements.secondContent.addEventListener('scroll', () => { secondScroll(); });
+        };
+
+        this._elements.secondContent.addEventListener('scroll', () => { defer(secondScroll, 100, this); });
         this._elements.secondContent.querySelectorAll('li').forEach((li, i) => {
             const secondString = i.toString().padStart(2, '0');
             li.dataset.second = secondString;

@@ -999,15 +999,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     rowspanObj = rowspan[nextIdx];
                 }
 
-                // if (cspan && parseInt(cspan)>1){
-                //     if (rowspan[tdIdx]){
-                //         rowspan[tdIdx].count = (rowspan[tdIdx].count)*parseInt(cspan);
-                //         for (var n=1; n<parseInt(cspan); n++){
-                //             rowspan[tdIdx+n] = rowspan[tdIdx];
-                //         }
-                //     }
-                // }
-
                 tdIdx = nextIdx-1;
                 tdIdx++;
             }
@@ -1019,10 +1010,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             for (var x1=0; x1<x; x1++){
                 var flag = 0;
                 for (var y1=0; y1<y; y1++){
-                    if (tableMatrix[y1][x1].type!==0){
-                        flag=1;
-                        break;
+                    if (!tableMatrix[y1][x1]){
+                        tableMatrix[y1].push({"td": tableMatrix[y1][x1-1].td, type: 0});
+                        var cspan = tableMatrix[y1][x1-1].td.get("colspan");
+                        var colspan = !!cspan ? 2 : parseInt(cspan)+1;
+                        tableMatrix[y1][x1-1].td.set("colspan", colspan);
+                    }else{
+                        if (tableMatrix[y1][x1].type!==0){
+                            flag=1;
+                            break;
+                        }
                     }
+                    
                 }
                 if (flag===0){
                     for (var y1=0; y1<y; y1++){

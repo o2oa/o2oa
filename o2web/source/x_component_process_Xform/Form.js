@@ -330,8 +330,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //if (styleNode) styleNode.destroy();
         if (!styleNode && cssText) {
 
+            debugger;
             //删除注释
-            cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+            // cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\/|(?<!:)\/\/.*/g, '').replace(/\\n/, '');
 
             cssText = this.parseCSS(cssText);
 
