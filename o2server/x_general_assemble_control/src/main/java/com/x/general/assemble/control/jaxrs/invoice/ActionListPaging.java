@@ -50,6 +50,9 @@ class ActionListPaging extends BaseAction {
 		if (StringUtils.isNoneBlank(wi.getNumber())) {
 			p = cb.and(p, cb.equal(root.get(Invoice_.number), wi.getNumber()));
 		}
+		if (StringUtils.isNoneBlank(wi.getApplyStatus())) {
+			p = cb.and(p, cb.equal(root.get(Invoice_.applyStatus), wi.getApplyStatus()));
+		}
 		if (StringUtils.isNoneBlank(wi.getName())) {
 			String key = StringTools.escapeSqlLikeKey(wi.getName());
 			p = cb.and(p, cb.like(root.get(Invoice_.name), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
@@ -61,6 +64,9 @@ class ActionListPaging extends BaseAction {
 
 		@FieldDescribe("发票号码")
 		private String number;
+
+		@FieldDescribe("申请状态")
+		private String applyStatus;
 
 		@FieldDescribe("文件名称")
 		private String name;
@@ -79,6 +85,14 @@ class ActionListPaging extends BaseAction {
 
 		public void setNumber(String number) {
 			this.number = number;
+		}
+
+		public String getApplyStatus() {
+			return applyStatus;
+		}
+
+		public void setApplyStatus(String applyStatus) {
+			this.applyStatus = applyStatus;
 		}
 	}
 

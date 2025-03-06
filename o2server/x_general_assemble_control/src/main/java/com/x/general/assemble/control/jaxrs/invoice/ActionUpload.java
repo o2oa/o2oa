@@ -37,6 +37,9 @@ class ActionUpload extends BaseAction {
             Invoice file = new Invoice(mapping.getName(), fileName,
                     effectivePerson.getDistinguishedName(), extension);
             extractInvoice(file, bytes);
+            if(exists(emc, file.getNumber())){
+                throw new ExceptionInvoiceExists(file.getNumber());
+            }
             emc.check(file, CheckPersistType.all);
             file.saveContent(mapping, bytes, fileName);
             emc.beginTransaction(Invoice.class);

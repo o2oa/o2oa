@@ -6,6 +6,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.http.ActionResult;
@@ -14,6 +15,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.general.core.entity.Invoice;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionUpdate extends BaseAction {
 
@@ -31,6 +33,9 @@ class ActionUpdate extends BaseAction {
             Invoice invoice = emc.find(id, Invoice.class);
             if(invoice == null){
                 throw new ExceptionEntityNotExist(id);
+            }
+            if (effectivePerson.isNotPerson(invoice.getPerson()) && effectivePerson.isNotManager()) {
+                throw new ExceptionAccessDenied(effectivePerson);
             }
             emc.beginTransaction(Invoice.class);
             Wi.copier.copy(wi, invoice);
