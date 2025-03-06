@@ -64,28 +64,37 @@ o2.widget.Upload = new Class({
                 if (current == count) this.fireEvent("completed", [json]);
             }.bind(this);
 
+            var uploadSingle = function(file){
+                this.fireEvent("beforeUploadEntry", [file, this]);
+
+                var formData = new FormData();
+                Object.each(this.options.data, function(v, k){
+                    formData.append(k, v)
+                });
+                formData.append('file', file);
+                this.action.invoke({
+                    "name": this.options.method,
+                    "async": true,
+                    "data": formData,
+                    "file": file,
+                    "parameter": this.options.parameter,
+                    "success": function(json){
+                        current++;
+                        this.fireEvent("every", [json, current, count, file]);
+                        uploadBack(json);
+                    }.bind(this),
+                    "failure": function (xhr){
+                        current++;
+                        this.fireEvent("failure", [xhr, current, count, file]);
+                        uploadBack();
+                    }.bind(this)
+                });
+            }.bind(this);
+
             if (this.isContinue){
                 for (var i = 0; i < files.length; i++) {
                     var file = files.item(i);
-                    this.fireEvent("beforeUploadEntry", [file, this]);
-
-                    var formData = new FormData();
-                    Object.each(this.options.data, function(v, k){
-                        formData.append(k, v)
-                    });
-                    formData.append('file', file);
-                    this.action.invoke({
-                        "name": this.options.method,
-                        "async": true,
-                        "data": formData,
-                        "file": file,
-                        "parameter": this.options.parameter,
-                        "success": function(json){
-                            current++;
-                            this.fireEvent("every", [json, current, count, file]);
-                            uploadBack(json);
-                        }.bind(this)
-                    });
+                    uploadSingle(file);
                 }
             }
             this.uploadFileAreaNode.destroy();
@@ -216,6 +225,7 @@ o2.widget.Upload = new Class({
             this.fireEvent("every", [json]);
             this.fireEvent("completed", [json]);
         }else{
+            this.fireEvent("failure", [json]);
             this.setMessageTitle(this.messageItem, o2.LP.desktop.action.sendError);
             this.setMessageText(this.messageItem, o2.LP.desktop.action.sendError+": "+json.message);
             o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message);

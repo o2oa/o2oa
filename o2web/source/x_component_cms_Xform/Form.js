@@ -1501,7 +1501,6 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     "clientY": p.y - 200
                 }
             };
-            debugger;
             this.app.confirm("infor", event, MWF.xApplication.cms.Xform.LP.deleteDocumentTitle, MWF.xApplication.cms.Xform.LP.deleteDocumentText, 380, 120, function () {
                 if (layout.mobile) {
                     _self.deleteDocumentForMobile();
@@ -1517,14 +1516,17 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
 
                     _self.documentAction.removeDocument(_self.businessData.document.id, function (json) {
-                        debugger;
                         _self.fireEvent("afterDelete");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                         _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + o2.txt(_self.businessData.document.title) + "”", "success");
                         _self.options.autoSave = false;
                         _self.options.saveOnClose = false;
                         _self.fireEvent("postDelete");
-                        _self.app.close();
+                        if( _self.app.embeded && typeOf(_self.app.refresh) === 'function' ){
+                            _self.app.refresh();
+                        }else{
+                            _self.app.close();
+                        }
                         this.close();
                     }.bind(this));
                 }
@@ -1543,7 +1545,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
          */
         editDocument: function () {
             this.fireEvent("editDocument");
-            if (this.app.inBrowser) {
+            if (this.app.inBrowser || this.app.embeded) {
                 this.modules.each(function (module) {
                     MWF.release(module);
                 });
