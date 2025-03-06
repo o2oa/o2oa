@@ -184,12 +184,8 @@ MWF.xDesktop.WebSocket = new Class({
                                 this.receivBBSReplyCreateMessage(data);
                                 break;
                             default:
-<<<<<<< HEAD
-                                this.receiveCustomMessage(data);
-=======
                                 this.receiveDefaultMessage(data);
                                 break;
->>>>>>> 2a5891145cf197250d0eae9a08c5c49abdbdbe0f
                         }
                 }
             }catch(e){}
