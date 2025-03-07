@@ -1,23 +1,17 @@
 package com.x.processplatform.service.processing;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReentrantLock;
+import org.apache.commons.lang3.StringUtils;
 
 public class ProcessPlatformKeyClassifyExecutorFactory {
 
@@ -35,12 +29,10 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 
 	private static final ReentrantLock LOCK = new ReentrantLock();
 
-	private static List<ThreadPoolExecutor> coreThreadPoolExecutors;
 
 	public static void init(int coreSize) {
 		loop = 0;
 		disjointInterval = coreSize * 2;
-		coreThreadPoolExecutors = initCoreThreadPoolExecutors(coreSize);
 	}
 
 	public static void shutdown() {
@@ -49,8 +41,6 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 		try {
 			pool.values().stream().filter(o -> !o.isShutdown()).forEach(ThreadPoolExecutor::shutdown);
 			pool.clear();
-			coreThreadPoolExecutors.stream().forEach(ThreadPoolExecutor::shutdown);
-			coreThreadPoolExecutors.clear();
 		} finally {
 			lock.unlock();
 		}
@@ -62,7 +52,7 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 		try {
 			loop = (++loop) % disjointInterval;
 			key = createUniqueKeyIfBlank(key);
-			return (loop == 0) ? disjoint(key)
+			return  (loop == 0) ? disjoint(key)
 					: pool.computeIfAbsent(key, ProcessPlatformKeyClassifyExecutorFactory::createThreadPoolExecutor);
 		} finally {
 			lock.unlock();
@@ -79,10 +69,8 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 				LOGGER.info("disjoint found existing ThreadPoolExecutor: {}, queue size:{}, active count;{}.", key,
 						executor.getQueue().size(), executor.getActiveCount());
 			} else if (idle(entry.getValue())) {
+				entry.getValue().shutdown();
 				iterator.remove();
-				if (!coreThreadPoolExecutors.contains(entry.getValue())) {
-					entry.getValue().shutdown();
-				}
 				LOGGER.info("disjoint remove ThreadPoolExecutor: {}.", entry.getKey());
 			}
 		}
@@ -95,11 +83,6 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 	}
 
 	private static ThreadPoolExecutor createThreadPoolExecutor(String key) {
-		Optional<ThreadPoolExecutor> opt = coreThreadPoolExecutors.stream()
-				.filter(ProcessPlatformKeyClassifyExecutorFactory::idle).findFirst();
-		if (opt.isPresent()) {
-			return opt.get();
-		}
 		ThreadFactory threadFactory = new ThreadFactoryBuilder()
 				.setNameFormat(ProcessPlatformKeyClassifyExecutorFactory.class.getName() + "-auxiliary-" + key + "-%d")
 				.build();
@@ -112,15 +95,6 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 		} else {
 			return StringTools.uniqueToken();
 		}
-	}
-
-	private static List<ThreadPoolExecutor> initCoreThreadPoolExecutors(int coreSize) {
-		return IntStream.range(0, coreSize).mapToObj(i -> {
-			ThreadFactory threadFactory = new ThreadFactoryBuilder()
-					.setNameFormat(ProcessPlatformKeyClassifyExecutorFactory.class.getName() + "-core-" + i + "-%d")
-					.build();
-			return (ThreadPoolExecutor) Executors.newFixedThreadPool(1, threadFactory);
-		}).collect(Collectors.toList());
 	}
 
 	private static boolean idle(ThreadPoolExecutor threadPoolExecutor) {
