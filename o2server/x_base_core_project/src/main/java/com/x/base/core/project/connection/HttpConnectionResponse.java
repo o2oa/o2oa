@@ -5,16 +5,18 @@ import java.util.Map;
 
 /**
  * HttpConnection对象
- * 
+ *
  * @author ray
  *
  */
 
 public class HttpConnectionResponse {
 
-	private Integer responseCode;
+	private Integer responseCode = -1;
 
 	private String body;
+
+	private String message;
 
 	private Map<String, String> headers = new LinkedHashMap<>();
 
@@ -52,4 +54,11 @@ public class HttpConnectionResponse {
 		this.bytes = bytes;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 }

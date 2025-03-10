@@ -61,6 +61,28 @@ public class HttpConnection {
 		return null;
 	}
 
+	public static HttpConnectionResponse get(String address, List<NameValuePair> heads) {
+		HttpURLConnection connection = null;
+		HttpConnectionResponse response = new HttpConnectionResponse();
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_GET);
+			connection.setDoOutput(false);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(DEFAULT_CONNECTTIMEOUT);
+			connection.setReadTimeout(DEFAULT_READTIMEOUT);
+			readResultString(connection, response);
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return response;
+	}
+
 	public static String getAsString(String address, List<NameValuePair> heads) throws Exception {
 		return getAsString(address, heads, DEFAULT_CONNECTTIMEOUT, DEFAULT_READTIMEOUT);
 	}
@@ -120,6 +142,30 @@ public class HttpConnection {
 			}
 		}
 		return null;
+	}
+
+	public static HttpConnectionResponse post(String address, List<NameValuePair> heads, String body) {
+		HttpURLConnection connection = null;
+		HttpConnectionResponse response = new HttpConnectionResponse();
+		try {
+			connection = prepare(address, heads);
+			connection.setRequestMethod(ConnectionAction.METHOD_POST);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setConnectTimeout(DEFAULT_CONNECTTIMEOUT);
+			connection.setReadTimeout(DEFAULT_READTIMEOUT);
+			connection.connect();
+			doOutput(connection, body);
+			readResultString(connection, response);
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			LOGGER.error(e);
+		} finally {
+			if (null != connection) {
+				connection.disconnect();
+			}
+		}
+		return response;
 	}
 
 	public static String postAsString(String address, List<NameValuePair> heads, String body) throws Exception {
@@ -317,6 +363,24 @@ public class HttpConnection {
 			}
 		}
 		return httpUrlConnection;
+	}
+
+	public static void readResultString(HttpURLConnection connection, HttpConnectionResponse response) throws Exception {
+		int code = connection.getResponseCode();
+		response.setResponseCode(code);
+		if (code == HttpURLConnection.HTTP_OK) {
+			try (InputStream input = connection.getInputStream()) {
+				response.setBody(IOUtils.toString(input, StandardCharsets.UTF_8));
+			}
+		} else {
+			try (InputStream input = connection.getErrorStream()) {
+				response.setBody(IOUtils.toString(input, StandardCharsets.UTF_8));
+			} catch (Exception e) {
+				response.setMessage(e.getMessage());
+			}
+			LOGGER.warn("connection{url:" + connection.getURL() + "}, response error{responseCode:"
+					+ code + "}, response:" + XGsonBuilder.toJson(response) + ".");
+		}
 	}
 
 	public static String readResultString(HttpURLConnection connection) throws Exception {
