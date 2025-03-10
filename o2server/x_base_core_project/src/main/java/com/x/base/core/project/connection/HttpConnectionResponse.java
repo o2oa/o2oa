@@ -1,5 +1,6 @@
 package com.x.base.core.project.connection;
 
+import com.x.base.core.project.gson.GsonPropertyObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import java.util.Map;
  *
  */
 
-public class HttpConnectionResponse {
+public class HttpConnectionResponse extends GsonPropertyObject {
 
 	private Integer responseCode = -1;
 
