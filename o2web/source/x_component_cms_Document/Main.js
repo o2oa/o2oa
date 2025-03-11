@@ -30,7 +30,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         if (!this.options.title && !layout.mobile) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
         this.lp = MWF.xApplication.cms.Document.LP;
         if (this.status && Object.keys(this.status).length > 0){
-            this.options.documentId = this.status.documentId;
+            this.options.documentId = this.status.documentId || this.options.documentId;
             this.options.readonly = (this.status.readonly==="true" || this.status.readonly===true) ? true : false;
             this.options.autoSave = (this.status.autoSave==="true" || this.status.autoSave===true) ? true : false;
             this.options.saveOnClose = (this.status.saveOnClose==="true" || this.status.saveOnClose===true) ? true : false;
