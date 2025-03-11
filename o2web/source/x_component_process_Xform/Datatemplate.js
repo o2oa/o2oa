@@ -948,7 +948,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return newLine;
 		},
 		_deleteSelectedLine: function(ev){
-			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
+			var selectedLine = this.lineList.filter(function (line) {
+				return line.selected && ( line.options.isEdited || line.options.isNew );
+			});
 			if( selectedLine.length === 0 ){
 				this.form.notice( MWF.xApplication.process.Xform.LP.selectItemNotice,"info");
 				return false;
@@ -1069,11 +1071,15 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.selected = selected;
 			if( this.isShowAllSection && this.sectionLineEdited){
 				this.sectionLineEdited.lineList.each(function (line) {
-					this.selected ? line.select() : line.unselect();
+					if( line.options.isEdited || line.options.isNew ){
+						this.selected ? line.select() : line.unselect();
+					}
 				}.bind(this))
 			}else{
 				this.lineList.each(function (line) {
-					this.selected ? line.select() : line.unselect();
+					if( line.options.isEdited || line.options.isNew ) {
+						this.selected ? line.select() : line.unselect();
+					}
 				}.bind(this))
 			}
 		},
@@ -2306,7 +2312,13 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 			if( !this.template.editable )module.node.hide();
 			if( !this.options.isDeleteable )module.node.hide();
-			this.unselect();
+
+			if( this.options.isEdited || this.options.isNew ){
+				this.unselect();
+			}else{
+				this.selected = false;
+			}
+
 		}
 
 		//???
