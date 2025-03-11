@@ -62,7 +62,7 @@ public class PdfElectronicInvoiceTools {
     }
 
     private static void extractInvoiceTitle(Invoice invoice, String allText) {
-        String reg = "发票号码:(?<number>\\d{20})|:(?<date>\\d{4}年\\d{2}月\\d{2}日)|[购买]名称:(?<buyerName>[a-zA-Z0-9()\\u4e00-\\u9fa5]+公司)|[销售]名称:(?<sellerName>[a-zA-Z0-9()\\u4e00-\\u9fa5]+公司)";
+        String reg = "发票号码:(?<number>\\d{20})|:(?<date>\\d{4}年\\d{2}月\\d{2}日)|[购买]名称:(?<buyerName>(?:[a-zA-Z0-9()\\u4e00-\\u9fa5]+)?(公司|所|中心|厂|店|个人))|[销售]名称:(?<sellerName>(?:[a-zA-Z0-9()\\u4e00-\\u9fa5]+)?(公司|所|中心|厂|店|个人))";
         Pattern pattern = Pattern.compile(reg);
         Matcher matcher = pattern.matcher(allText);
         while (matcher.find()) {
@@ -90,6 +90,10 @@ public class PdfElectronicInvoiceTools {
             } else {
                 invoice.setSellerCode(matcher.group(1));
             }
+        }
+        if(StringUtils.isEmpty(invoice.getSellerCode())){
+            invoice.setSellerCode(invoice.getBuyerCode());
+            invoice.setBuyerCode("");
         }
     }
 

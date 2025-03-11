@@ -118,18 +118,19 @@ public class PdfRegularInvoiceTools {
         Pattern type00Pattern = Pattern.compile("(?<p>\\S*)通发票");
         Matcher m00 = type00Pattern.matcher(allText);
         if (m00.find()) {
-            invoice.setTitle(m00.group("p").replaceAll("(?:国|统|一|发|票|监|制)", "") + "通发票");
+            String title = m00.group("p").replaceAll("(?:国|统|一|发|票|监|制)", "") + "通发票";
+            invoice.setTitle(title.contains("增值税") ? title : "增值税普通发票");
             if (invoice.getType() == null) {
-                invoice.setType("普通发票");
+                invoice.setType("增值税普通发票");
             }
         } else {
             Pattern type01Pattern = Pattern.compile("(?<p>\\S*)用发票");
             Matcher m01 = type01Pattern.matcher(allText);
             if (m01.find()) {
-                invoice.setTitle(
-                        m01.group("p").replaceAll("(?:国|统|一|发|票|监|制)", "") + "用发票");
+                String title = m01.group("p").replaceAll("(?:国|统|一|发|票|监|制)", "") + "用发票";
+                invoice.setTitle(title.contains("增值税") ? title : "增值税专用发票");
                 if (invoice.getType() == null) {
-                    invoice.setType("专用发票");
+                    invoice.setType("增值税专用发票");
                 }
             }
         }
