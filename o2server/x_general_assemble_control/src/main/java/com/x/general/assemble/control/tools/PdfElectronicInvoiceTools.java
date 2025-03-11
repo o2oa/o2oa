@@ -55,7 +55,7 @@ public class PdfElectronicInvoiceTools {
             stripper.extractRegions(firstPage);
             detailStripper.extractRegions(firstPage);
 
-            extractDetails(invoice, detailStripper.getTextForRegion("detail"));
+            extractDetails(invoice, detailStripper.getTextForRegion("detail"), !positionListMap.get("规格型号").isEmpty());
         }
 
         return invoice;
@@ -178,7 +178,7 @@ public class PdfElectronicInvoiceTools {
         stripper.addRegion("detailPrice", new Rectangle(x, y, pageWidth, h));
     }
 
-    private static void extractDetails(Invoice invoice, String detailText) {
+    private static void extractDetails(Invoice invoice, String detailText, boolean hasModel) {
         List<String> skipList = new ArrayList<>();
         List<InvoiceDetail> detailList = new ArrayList<>();
         String[] detailPriceStringArray = detailText.replace("　", " ").replace(" ", " ")
@@ -222,10 +222,18 @@ public class PdfElectronicInvoiceTools {
                         if (itemArray.length > 4) {
                             for (int j = 1; j < itemArray.length - 3; j++) {
                                 if (itemArray[j].matches("^(-?\\d+)(\\.\\d+)?$")) {
-                                    if (detail.getCount() == null) {
-                                        detail.setCount(Double.valueOf(itemArray[j]));
-                                    } else {
-                                        detail.setPrice(Double.valueOf(itemArray[j]));
+                                    if(hasModel) {
+                                        if (detail.getCount() == null) {
+                                            detail.setCount(Double.valueOf(itemArray[j]));
+                                        } else {
+                                            detail.setPrice(Double.valueOf(itemArray[j]));
+                                        }
+                                    }else{
+                                        if (detail.getPrice() == null) {
+                                            detail.setPrice(Double.valueOf(itemArray[j]));
+                                        } else {
+                                            detail.setCount(Double.valueOf(itemArray[j]));
+                                        }
                                     }
                                 } else {
                                     if (itemArray.length >= j + 1 && !itemArray[j + 1].matches(
