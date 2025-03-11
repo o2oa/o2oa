@@ -1085,7 +1085,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.selected = false;
 			if( this.selectAllSelector.getOptionsObj ){
 				var options = this.selectAllSelector.getOptionsObj();
-				var value = "";
+				var value;
 				var arr = options.valueList || [];
 				for( var i=0; i<arr.length; i++ ){
 					var v = arr[i];
@@ -1094,9 +1094,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						break;
 					}
 				}
-				this.selectAllSelector.setData(value);
+				this.selectAllSelector.setData( typeOf(value) !== 'null' ? [value] : []);
 			}else{
-				this.selectAllSelector.setData("")
+				this.selectAllSelector.setData([]);
 			}
 		},
 
@@ -2356,7 +2356,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		this.selected = false;
 		if( this.selector.getOptionsObj ){
 			var options = this.selector.getOptionsObj();
-			var value = "";
+			var value;
 			var arr = options.valueList || [];
 			for( var i=0; i<arr.length; i++ ){
 				var v = arr[i];
@@ -2365,9 +2365,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					break;
 				}
 			}
-			this.selector.setData(value);
+			this.selector.setData(typeOf(value) !== 'null' ? [value] : []);
 		}else{
-			this.selector.setData("")
+			this.selector.setData([]);
 		}
 	},
 	reload: function(){
