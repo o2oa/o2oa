@@ -145,6 +145,7 @@ oo-calendar {
     width: 30em;
     height: 24em;
     display: block;
+    padding: 0.5em;
     border-radius: 0.25rem;
     box-shadow: 0 0 0 1px var(--oo-color-gray-d);
 }

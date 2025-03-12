@@ -2692,8 +2692,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _splitFiletextNodeOneWord:function(lnode, nextPageNode){
         var text = lnode.textContent;
         var len = text.length;
-        var left = text.substring(0, len-1);
-        var right = text.substring(len-1, len);
+        var left = text.substring(0, len-2);
+        var right = text.substring(len-2, len);
         lnode.textContent = left;
         nextPageNode.textContent = right+nextPageNode.textContent;
         //nextPageNode.appendText(right, "top");
@@ -2759,7 +2759,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var idx = this.pages.indexOf(pageNode);
             if (this.pages.length<=idx+1) this._createNewPage();
             var nextPage = this.pages[idx+1];
-            if (blockNode.hasClass("doc_layout_filetext")){
+            if (blockNode.hasClass("doc_layout_filetext") || blockNode.hasClass("doc_block_page") ){
 
                 var filetextNode = nextPage.getElement(".doc_layout_filetext");
                 if (!filetextNode){

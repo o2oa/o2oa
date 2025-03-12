@@ -87,11 +87,9 @@ MWF.xDesktop.WebSocket = new Class({
             try{
                 if (e.data===this.heartMsg){
                     this.heartbeat();
-                    //console.log("get heartbeat...");
                     return true;
                 }
                 var data = JSON.decode(e.data);
-                debugger;
                 switch (data.category){
                     case "dialog":
                         switch (data.type){
