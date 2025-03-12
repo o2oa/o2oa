@@ -55,14 +55,14 @@ public class PdfElectronicInvoiceTools {
             stripper.extractRegions(firstPage);
             detailStripper.extractRegions(firstPage);
 
-            extractDetails(invoice, detailStripper.getTextForRegion("detail"));
+            extractDetails(invoice, detailStripper.getTextForRegion("detail"), !positionListMap.get("规格型号").isEmpty());
         }
 
         return invoice;
     }
 
     private static void extractInvoiceTitle(Invoice invoice, String allText) {
-        String reg = "发票号码:(?<number>\\d{20})|:(?<date>\\d{4}年\\d{2}月\\d{2}日)|[购买]名称:(?<buyerName>[a-zA-Z0-9()\\u4e00-\\u9fa5]+公司)|[销售]名称:(?<sellerName>[a-zA-Z0-9()\\u4e00-\\u9fa5]+公司)";
+        String reg = "发票号码:(?<number>\\d{20})|:(?<date>\\d{4}年\\d{2}月\\d{2}日)|[购买]名称:(?<buyerName>(?:[a-zA-Z0-9()\\u4e00-\\u9fa5]+)?(公司|所|中心|厂|店|个人))|[销售]名称:(?<sellerName>(?:[a-zA-Z0-9()\\u4e00-\\u9fa5]+)?(公司|所|中心|厂|店|个人))";
         Pattern pattern = Pattern.compile(reg);
         Matcher matcher = pattern.matcher(allText);
         while (matcher.find()) {
@@ -90,6 +90,10 @@ public class PdfElectronicInvoiceTools {
             } else {
                 invoice.setSellerCode(matcher.group(1));
             }
+        }
+        if(StringUtils.isEmpty(invoice.getSellerCode())){
+            invoice.setSellerCode(invoice.getBuyerCode());
+            invoice.setBuyerCode("");
         }
     }
 
@@ -174,7 +178,7 @@ public class PdfElectronicInvoiceTools {
         stripper.addRegion("detailPrice", new Rectangle(x, y, pageWidth, h));
     }
 
-    private static void extractDetails(Invoice invoice, String detailText) {
+    private static void extractDetails(Invoice invoice, String detailText, boolean hasModel) {
         List<String> skipList = new ArrayList<>();
         List<InvoiceDetail> detailList = new ArrayList<>();
         String[] detailPriceStringArray = detailText.replace("　", " ").replace(" ", " ")
@@ -218,10 +222,18 @@ public class PdfElectronicInvoiceTools {
                         if (itemArray.length > 4) {
                             for (int j = 1; j < itemArray.length - 3; j++) {
                                 if (itemArray[j].matches("^(-?\\d+)(\\.\\d+)?$")) {
-                                    if (detail.getCount() == null) {
-                                        detail.setCount(Double.valueOf(itemArray[j]));
-                                    } else {
-                                        detail.setPrice(Double.valueOf(itemArray[j]));
+                                    if(hasModel) {
+                                        if (detail.getCount() == null) {
+                                            detail.setCount(Double.valueOf(itemArray[j]));
+                                        } else {
+                                            detail.setPrice(Double.valueOf(itemArray[j]));
+                                        }
+                                    }else{
+                                        if (detail.getPrice() == null) {
+                                            detail.setPrice(Double.valueOf(itemArray[j]));
+                                        } else {
+                                            detail.setCount(Double.valueOf(itemArray[j]));
+                                        }
                                     }
                                 } else {
                                     if (itemArray.length >= j + 1 && !itemArray[j + 1].matches(

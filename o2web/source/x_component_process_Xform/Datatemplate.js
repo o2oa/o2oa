@@ -948,7 +948,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return newLine;
 		},
 		_deleteSelectedLine: function(ev){
-			var selectedLine = this.lineList.filter(function (line) { return line.selected; });
+			var selectedLine = this.lineList.filter(function (line) {
+				return line.selected && ( line.options.isEdited || line.options.isNew );
+			});
 			if( selectedLine.length === 0 ){
 				this.form.notice( MWF.xApplication.process.Xform.LP.selectItemNotice,"info");
 				return false;
@@ -1069,11 +1071,15 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.selected = selected;
 			if( this.isShowAllSection && this.sectionLineEdited){
 				this.sectionLineEdited.lineList.each(function (line) {
-					this.selected ? line.select() : line.unselect();
+					if( line.options.isEdited || line.options.isNew ){
+						this.selected ? line.select() : line.unselect();
+					}
 				}.bind(this))
 			}else{
 				this.lineList.each(function (line) {
-					this.selected ? line.select() : line.unselect();
+					if( line.options.isEdited || line.options.isNew ) {
+						this.selected ? line.select() : line.unselect();
+					}
 				}.bind(this))
 			}
 		},
@@ -1085,7 +1091,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.selected = false;
 			if( this.selectAllSelector.getOptionsObj ){
 				var options = this.selectAllSelector.getOptionsObj();
-				var value = "";
+				var value;
 				var arr = options.valueList || [];
 				for( var i=0; i<arr.length; i++ ){
 					var v = arr[i];
@@ -1094,9 +1100,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						break;
 					}
 				}
-				this.selectAllSelector.setData(value);
+				this.selectAllSelector.setData( typeOf(value) !== 'null' ? [value] : []);
 			}else{
-				this.selectAllSelector.setData("")
+				this.selectAllSelector.setData([]);
 			}
 		},
 
@@ -2306,7 +2312,13 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 			if( !this.template.editable )module.node.hide();
 			if( !this.options.isDeleteable )module.node.hide();
-			this.unselect();
+
+			if( this.options.isEdited || this.options.isNew ){
+				this.unselect();
+			}else{
+				this.selected = false;
+			}
+
 		}
 
 		//???
@@ -2356,7 +2368,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		this.selected = false;
 		if( this.selector.getOptionsObj ){
 			var options = this.selector.getOptionsObj();
-			var value = "";
+			var value;
 			var arr = options.valueList || [];
 			for( var i=0; i<arr.length; i++ ){
 				var v = arr[i];
@@ -2365,9 +2377,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					break;
 				}
 			}
-			this.selector.setData(value);
+			this.selector.setData(typeOf(value) !== 'null' ? [value] : []);
 		}else{
-			this.selector.setData("")
+			this.selector.setData([]);
 		}
 	},
 	reload: function(){

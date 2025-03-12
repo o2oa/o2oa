@@ -137,7 +137,7 @@ class ActionAssignCreate extends BaseAction {
 			toAttachment.setDeepPath(toMapping.getDeepPath());
 			toAttachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
 			toAttachment.setLength(formAttachment.getLength());
-			toAttachment.setStorage(toMapping.getName());
+			toAttachment.setStorage(formAttachment.getStorage());
 			toAttachment.setLastUpdateTime(new Date());
 			toAttachment.setFromJob(formAttachment.getJob());
 			toAttachment.setFromId(formAttachment.getId());

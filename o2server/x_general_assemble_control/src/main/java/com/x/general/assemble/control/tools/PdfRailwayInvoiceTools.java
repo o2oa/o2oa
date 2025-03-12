@@ -14,7 +14,7 @@ public class PdfRailwayInvoiceTools {
     private PdfRailwayInvoiceTools(){}
 
     public static void getInvoice(String allText, Invoice invoice) {
-        String reg = "发票号码:(?<number>\\d{20})|开票日期:(?<date>\\d{4}年\\d{2}月\\d{2}日)|票价:¥(?<totalAmount>\\d+(\\.\\d*)?)|购买方名称:(?<buyerName>[a-zA-Z0-9()\\u4e00-\\u9fa5]+公司)|统一社会信用代码:(?<buyerCode>[\\dA-Z]{18})|电子客票号:(?<code>\\d*)|\\*\\d{4}(?<rider>.+)";
+        String reg = "发票号码:(?<number>\\d{20})|开票日期:(?<date>\\d{4}年\\d{2}月\\d{2}日)|票价:¥(?<totalAmount>\\d+(\\.\\d*)?)|购买方名称:(?<buyerName>(?:[a-zA-Z0-9()\\u4e00-\\u9fa5]+)?(公司|所|中心|厂|店|个人))|统一社会信用代码:(?<buyerCode>[\\dA-Z]{18})|电子客票号:(?<code>\\d*)|\\*\\d{3}[0-9Xx](?<rider>.+)";
         Pattern pattern = Pattern.compile(reg);
         Matcher matcher = pattern.matcher(allText);
         while (matcher.find()) {

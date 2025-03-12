@@ -1250,8 +1250,9 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     }
                     this.options.saveOnClose = false;
 
-                    debugger;
-                    if( layout.inBrowser ){
+                    if( this.app.embeded ){
+
+                    }else if( layout.inBrowser ){
                         try{
                             if( window.opener && window.opener.o2RefreshCMSView ){
                                 window.opener.o2RefreshCMSView();
@@ -1347,8 +1348,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                         }
                         this.options.saveOnClose = false;
 
-                        debugger;
-                        if( layout.inBrowser ){
+                        //如果是嵌入，不关闭
+                        if( this.app.embeded ){
+
+                        }else if( layout.inBrowser ){
                             try{
                                 if( window.opener && window.opener.o2RefreshCMSView ){
                                     window.opener.o2RefreshCMSView();
