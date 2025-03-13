@@ -726,7 +726,7 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void executeProjection() throws Exception {
+	public void executeProjection() throws Exception {
 		if (ListTools.isNotEmpty(this.getProjections())) {
 			executeProjectionFullyNotIncludeNormal();
 			executeProjectionWork();
