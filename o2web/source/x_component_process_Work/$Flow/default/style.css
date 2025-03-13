@@ -260,6 +260,7 @@
 .o2flow-opinion-textareawrap {
     float: left;
     width: calc(50% - 10px);
+    padding-top: 5px;
     padding-right: 10px;
     height: 180px;
     position: relative;
@@ -306,13 +307,19 @@
     padding-left: 10px;
     margin-left: 10px;
     border-left: 1px solid #DEDEDE;
-    height: 180px;
+    height: 190px;
 }
 .o2flow-opinion-select-item {
     height: 22px;
     line-height: 22px;
     cursor: pointer;
     overflow: hidden;
+}
+.o2flow-opinion-empty{
+    margin-top: 70px;
+    text-align: center;
+    color: #bbb;
+    cursor: pointer;
 }
 .o2flow-handwriting-mask {
     background-color: #eee;

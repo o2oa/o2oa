@@ -2747,7 +2747,9 @@ MWF.ProcessFlow.widget.Opinion = new Class({
             MWF.UD.getDataJson("idea", function (json) {
                 if (json) {
                     if (json.ideas) {
-                        this.opinionList = json.ideas;
+                        this.opinionList = json.ideas.filter(function (idea){
+                            return !!idea;
+                        });
                         if(callback)callback();
                     }else{
                         this.opinionList = [];
@@ -2756,7 +2758,9 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 } else {
                     MWF.UD.getPublicData("idea", function (pjson) {
                         if (pjson && pjson.ideas) {
-                            this.opinionList = pjson.ideas;
+                            this.opinionList = pjson.ideas.filter(function (idea){
+                                return !!idea;
+                            });
                             if(callback)callback();
                         }else{
                             this.opinionList = [];
@@ -2819,7 +2823,9 @@ MWF.ProcessFlow.widget.Opinion = new Class({
             ev.target.removeClass("mainColor_bg_opacity");
         }
     },
-
+    openOpinionSetting: function (){
+        layout.openApplication(null, 'Profile', {tab: 1});
+    },
     handwriting: function () {
         if( !this.tablet )this.createHandwriting();
         this.handwritingMask.show();

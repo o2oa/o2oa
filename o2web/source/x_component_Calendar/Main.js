@@ -725,19 +725,21 @@ MWF.xApplication.Calendar.Navi = new Class({
             this.loadNode();
         }.bind(this));
 
-        o2.require("MWF.widget.ScrollBar", function(){
-            this.scrollBar = new MWF.widget.ScrollBar(this.naviContainer, {
-                "indent": false,
-                "style": "default",
-                "where": "before",
-                "distance": 60,
-                "friction": 4,
-                "axis": {"x": false, "y": true},
-                "onScroll": function (y) {
+        this.naviContainer.setStyle('overflow-y', 'auto');
 
-                }.bind(this)
-            });
-        }.bind(this));
+        // o2.require("MWF.widget.ScrollBar", function(){
+        //     this.scrollBar = new MWF.widget.ScrollBar(this.naviContainer, {
+        //         "indent": false,
+        //         "style": "default",
+        //         "where": "before",
+        //         "distance": 60,
+        //         "friction": 4,
+        //         "axis": {"x": false, "y": true},
+        //         "onScroll": function (y) {
+        //
+        //         }.bind(this)
+        //     });
+        // }.bind(this));
     },
     loadNode: function(){
         this.loadMyCalendar();
@@ -749,6 +751,7 @@ MWF.xApplication.Calendar.Navi = new Class({
     reload : function(){
         this.node.empty();
         this.load();
+        this.resizeNode();
     },
     loadMoreCalendarNode : function(){
         this.seeMore = new Element("div.seeMore", {
@@ -911,7 +914,6 @@ MWF.xApplication.Calendar.Navi = new Class({
         }else{
             var size = this.app.node.getSize();
         }
-        //var titleSize = this.app.leftTitleNode ? this.app.leftTitleNode.getSize() : {x:0,y:0};
         this.node.setStyle("height",size.y - 80 );
         this.naviContainer.setStyle("height",size.y - 122 );
     }

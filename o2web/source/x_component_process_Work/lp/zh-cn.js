@@ -36,6 +36,8 @@ MWF.xApplication.process.Work.LP = {
     "handwriting": "手写",
     "audioRecord": "录音",
 
+    "noOpinionNote": "您还没有设置常用意见，点击设置。",
+
     "noAppendTaskIdentityConfig" : "没有配置转交人，请联系管理员",
     "selectAppendTaskIdentityNotice" : "请选择转交人",
     "routeValidFailure" : "路由校验失败",
