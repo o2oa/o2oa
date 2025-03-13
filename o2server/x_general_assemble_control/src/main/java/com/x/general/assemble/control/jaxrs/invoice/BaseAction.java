@@ -65,7 +65,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             if (CollectionUtils.isNotEmpty(invoice.getProperties().getDetailList())) {
                 invoice.setDetail(
                         invoice.getProperties().getDetailList().stream().map(InvoiceDetail::getName)
-                                .collect(Collectors.joining(",")));
+                                .distinct().collect(Collectors.joining(",")));
             }
         } catch (Exception e) {
             LOGGER.error(e);

@@ -12,12 +12,13 @@ import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.ThisApplication;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.openjpa.lib.util.StringUtil;
 
 class ActionDownloadTransfer extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownloadTransfer.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, boolean stream) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, boolean stream, String fileName) throws Exception {
 
 		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
 
@@ -27,10 +28,13 @@ class ActionDownloadTransfer extends BaseAction {
 
 			GeneralFile generalFile = emc.find(flag, GeneralFile.class);
 			if (generalFile != null) {
+				if(StringUtil.isEmpty(fileName)){
+					fileName = generalFile.getName();
+				}
 				StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
 						generalFile.getStorage());
-				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(stream, generalFile.getName()),
-						this.contentDisposition(stream, generalFile.getName()));
+				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(stream, fileName),
+						this.contentDisposition(stream, fileName));
 			}
 			result.setData(wo);
 			return result;
