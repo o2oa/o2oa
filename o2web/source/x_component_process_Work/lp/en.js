@@ -31,6 +31,7 @@ MWF.xApplication.process.Work.LP={
 	"flowWork": "Process Work",
 	"handwriting": "Write",
 	"audioRecord": "Record",
+	"noOpinionNote": "You have not set common opinions yet, click to set them.",
 	"noAppendTaskIdentityConfig": "No transferor is configured, please contact the administrator",
 	"selectAppendTaskIdentityNotice": "Please select the transferor",
 	"routeValidFailure": "Route verification failed",
