@@ -27,6 +27,9 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     _init: function () {
         this.selectType = "identity";
         this.className = "IdentityWidthDutyCategoryByUnit";
+        if( !this.options.expandSubEnable ){
+            this.options.forceSearchInItem = true;
+        }
     },
     getUnitUniqueFormDn : function(dn){
         if(!dn)return "";
