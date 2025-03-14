@@ -56,6 +56,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             /**
              * 表单的所有组件加载后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
              * 如果包含异步加载的组件，如异步加载的下拉框选项等，会在这些组件加载完成后执行。
+             * 一些组件比如视图、数据源的加载完成需要在组件本身事件中处理。
              * @event MWF.xApplication.process.Xform.Form#afterModulesLoad
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */

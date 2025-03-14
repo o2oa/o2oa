@@ -24,6 +24,9 @@ MWF.xApplication.Selector.Identity = new Class({
     _init : function(){
         this.selectType = "identity";
         this.className = "Identity";
+        if( !this.options.expandSubEnable ){
+            this.options.forceSearchInItem = true;
+        }
     },
     loadSelectItems : function(){
         this.itemsMap = {};

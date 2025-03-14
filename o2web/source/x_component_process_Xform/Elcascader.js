@@ -116,12 +116,19 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 return fn.apply(this, arguments);
             }.bind(this);
         }
+
+        this.loadedOptionsMap = {};
         if (this.json.lazyLoadScript && this.json.lazyLoadScript.code){
             var fn = this.form.Macro.exec(this.json.lazyLoadScript.code, this);
-            this.json.props.lazyLoad = function(){
-                fn.apply(this, arguments);
+            this.json.props.lazyLoad = function(node, resolve){
+                fn.apply(this, [node, function (json){
+                    var key = node.path.join(this.json.separator);
+                    this.loadedOptionsMap[key] = json;
+                    resolve(json);
+                }.bind(this)]);
             }.bind(this);
         }
+
         if (this.json.beforeFilter && this.json.beforeFilter.code){
             var fn = this.form.Macro.exec(this.json.beforeFilter.code, this);
             methods.$beforeFilter = function(){
@@ -259,8 +266,11 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             var opLabel = (prefixLabel) ? prefixLabel + separator + op[this.json.props.label] : op[this.json.props.label];
             if (opValue == v) {
                 text.push(opLabel);
-            }else if (v.startsWith(opValue) && op[this.json.props.children] && op[this.json.props.children].length){
-                text = text.concat(this.__getOptionsTextValue(op[this.json.props.children], values, opValue, opLabel));
+            }else if (v.startsWith(opValue)){
+                var children = op[this.json.props.children] || this.loadedOptionsMap[opValue];
+                if( children && children.length ){
+                    text = text.concat(this.__getOptionsTextValue(children, values, opValue, opLabel));
+                }
             }
         }.bind(this));
         if (!this.json.showAllLevels){
@@ -271,12 +281,14 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             return text;
         }
     },
-    __getLastOptionsTextValue: function (options, value) {
+    __getLastOptionsTextValue: function (options, value, key) {
         var text;
         for( var i=0; i<options.length; i++ ){
             var op = options[i];
-            if( op[this.json.props.children] && op[this.json.props.children].length ){
-                text = this.__getLastOptionsTextValue( op[this.json.props.children], value );
+            var k = (key ? key + '/' : '') + op[this.json.props.value];
+            var children = op[this.json.props.children] || this.loadedOptionsMap[k];
+            if( children && children.length ){
+                text = this.__getLastOptionsTextValue( children, value, k);
                 if( text )return text;
             }else{
                 var opValue = op[this.json.props.value];
