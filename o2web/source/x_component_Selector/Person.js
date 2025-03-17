@@ -1527,7 +1527,7 @@ MWF.xApplication.Selector.Person = new Class({
         pinyin = pinyin+node.get("text");
         this.searchInput.set("value", pinyin);
 
-        if (!this.options.groups.length && !this.options.roles.length){
+        if (!this.options.groups.length && !this.options.roles.length && !this.options.forceSearchInItem){
             if (pinyin){
                 this._listItemByPinyin(function(json){
                     this.initSearchArea(true);
