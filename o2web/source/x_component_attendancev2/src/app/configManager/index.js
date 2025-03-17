@@ -26,6 +26,8 @@ export default content({
         appealMaxTimes: 0,
         detailStatisticCronString: "0 0 3 * * ?", //默认凌晨 3 点
         closeOldAttendance: true, // 是否关闭旧考勤
+        aliFaceControlEnable: false, // 阿里云人脸扩展是否启用
+        faceDetectionEnable: false, // 打卡前是否启用人脸比对
       },
       holidayList: [],
       workDayList: [],
@@ -271,4 +273,7 @@ export default content({
         );
     });
   },
+  clickFaceDetectionEnable() {
+    this.bind.form.faceDetectionEnable = !this.bind.form.faceDetectionEnable;
+  }
 });

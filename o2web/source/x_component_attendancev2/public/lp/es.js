@@ -313,7 +313,9 @@ MWF.xApplication.attendancev2.LP={
 		"exceptionAlertEnableTime2": " del día siguiente)",
 		"detailStatisticCron": "Cronómetro estadístico",
 		"closeOldAttendance": "Asistencia antigua",
-		"closeOldAttendanceLabel": "¿ apagar la versión anterior de la función de punzonado de asistencia (para evitar errores en los puntos finales de la aplicación)"
+		"closeOldAttendanceLabel": "¿ apagar la versión anterior de la función de punzonado de asistencia (para evitar errores en los puntos finales de la aplicación)",
+		"faceDetectionLabel": "El hombre que se despierta",
+		"faceDetectionEnableLabel": "Si se debe habilitar la comparación de caras antes de ingresar",
 	},
 	"leaveManagerTitle": "Registro de ausencias y permisos",
 	"leave": {
