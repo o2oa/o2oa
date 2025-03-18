@@ -184,6 +184,40 @@ MWF.xApplication.Selector.Unit = new Class({
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Unit.SearchItem(data, selector, container, level);
     },
+
+    initExclude: function (){
+        if(this.selectType !== "unit" || this.options.exclude.length < 0 || this.excludList )return;
+
+        var unitList=[];
+        this.options.exclude.each(function (item) {
+            var a = typeOf( item ) === 'object' ? item.distinguishedName : item;
+            var flag = a.substr(a.length - 2, 2);
+            switch (flag.toLowerCase()) {
+                case "@i": break;
+                case "@p": break;
+                case "@g": break;
+                case "@u": unitList.push(a); break;
+                default:
+                    unitList.push(a);
+                    break;
+            }
+        }.bind(this));
+
+        var ps = [];
+        var action = o2.Actions.load("x_organization_assemble_express").UnitAction;
+        if( unitList.length )ps.push( action.listWithUnitSubNestedObject({unitList: unitList}) );
+        if( ps.length ){
+            return Promise.all(ps).then(function (arr){
+                arr.each(function(a){
+                    unitList =  unitList.concat( a.data );
+                });
+                this.excludList = unitList;
+            }.bind(this));
+        }else{
+            this.excludList = unitList;
+        }
+    },
+
     loadCount: function( unitList ){
 
         var check = function () {
