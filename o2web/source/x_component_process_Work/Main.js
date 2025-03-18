@@ -482,14 +482,14 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.relatedFormMap = formData.relatedFormMap;
                 this.relatedScriptMap = formData.relatedScriptMap;
                 this.relatedLanguage = formData.relatedLanguage;
-                delete formData.form.data;
+                //delete formData.form.data;
                 this.formInfor = formData.form;
             }else{
                 this.formDataText = (formData.data) ? MWF.decodeJsonString(formData.data) : "";
                 this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
 
                 //this.form = (formData.data) ? MWF.decodeJsonString(formData.data): null;
-                delete formData.data;
+                //delete formData.data;
                 this.formInfor = formData;
             }
         }
