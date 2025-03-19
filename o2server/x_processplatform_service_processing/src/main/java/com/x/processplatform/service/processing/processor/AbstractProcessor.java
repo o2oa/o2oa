@@ -94,6 +94,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			this.arriveCommitted(aeiObjects);
 			// 运行AfterArriveScript事件
 			if (this.callAfterArriveScript(aeiObjects) && aeiObjects.commitData()) {
+				aeiObjects.executeProjection();// 将可能修改的数据进行映射
 				// 执行AfterArriveScript中的代码可能修改了data数据.
 				aeiObjects.entityManagerContainer().commit();
 			}
@@ -224,6 +225,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			// 发送在队列中的待办消息, 待办消息必须在数据提交后发送,否则会不到待办
 			this.executeCommitted(aeiObjects, works);
 			if (ListTools.isNotEmpty(works) && callAfterExecuteScript(aeiObjects) && aeiObjects.commitData()) {
+				aeiObjects.executeProjection();// 将可能修改的数据进行映射
 				// 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码可能修改了data数据.
 				aeiObjects.entityManagerContainer().commit();
 			}
@@ -327,6 +329,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			this.inquireCommitted(aeiObjects);
 			// 运行 AfterInquireScript事件
 			if (this.callAfterInquireScript(aeiObjects) && aeiObjects.commitData()) {
+				aeiObjects.executeProjection();// 将可能修改的数据进行映射
 				// 执行AfterInquireScript中的代码可能修改了data数据.
 				aeiObjects.entityManagerContainer().commit();
 			}

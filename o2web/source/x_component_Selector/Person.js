@@ -1144,13 +1144,16 @@ MWF.xApplication.Selector.Person = new Class({
             var key = this.searchInput.get("value");
             if (key){
                 this._listItemByKey(function(json){
-                    this.initSearchArea(true);
-                    json.data.each(function(data){
-                        if( !this.isExcluded( data ) ) {
-                            var itemSearch = this._newItemSearch(data, this, this.itemSearchAreaNode);
-                            this.searchItems.push( itemSearch );
-                        }
-                        //this._newItem(data, this, this.itemSearchAreaNode);
+                    var p = this.initExclude();
+                    Promise.resolve(p).then(function(){
+                        this.initSearchArea(true);
+                        json.data.each(function(data){
+                            if( !this.isExcludedSearchItem( data ) ) {
+                                var itemSearch = this._newItemSearch(data, this, this.itemSearchAreaNode);
+                                this.searchItems.push( itemSearch );
+                            }
+                            //this._newItem(data, this, this.itemSearchAreaNode);
+                        }.bind(this));
                     }.bind(this));
                 }.bind(this), null, key);
             }else{
@@ -1527,27 +1530,17 @@ MWF.xApplication.Selector.Person = new Class({
         pinyin = pinyin+node.get("text");
         this.searchInput.set("value", pinyin);
 
-        if (!this.options.groups.length && !this.options.roles.length){
+        if (!this.options.groups.length && !this.options.roles.length && !this.options.forceSearchInItem){
             if (pinyin){
                 this._listItemByPinyin(function(json){
-                    this.initSearchArea(true);
-                    json.data.each(function(data){
-                        // var flag = true;
-                        // if (this.options.departments){
-                        //     if (this.options.departments.length){
-                        //         if (this.options.departments.indexOf(data.departmentName)==-1) flag = false;
-                        //     }
-                        // }
-                        // if (this.options.companys){
-                        //     if (this.options.companys.length){
-                        //         if (this.options.companys.indexOf(data.company)==-1) flag = false;
-                        //     }
-                        // }
-                        if( !this.isExcluded( data ) ) {
-                            this._newItemSearch(data, this, this.itemSearchAreaNode);
-                        }
-                        //this._newItem(data, this, this.itemSearchAreaNode);
-                        //this._newItem(data, this, this.itemSearchAreaNode);
+                    var p = this.initExclude();
+                    Promise.resolve(p).then(function(){
+                        this.initSearchArea(true);
+                        json.data.each(function(data){
+                            if( !this.isExcludedSearchItem( data ) ) {
+                                this._newItemSearch(data, this, this.itemSearchAreaNode);
+                            }
+                        }.bind(this));
                     }.bind(this));
                 }.bind(this), null, pinyin.toLowerCase());
             }
@@ -1734,6 +1727,27 @@ MWF.xApplication.Selector.Person = new Class({
             ( d.employee && map[ d.employee ] ) ||
             ( d.levelName && map[ d.levelName ] ) ||
             ( d.id && map[ d.id ] );
+    },
+    initExclude: function (){
+    },
+    isExcludedSearchItem: function( d ){
+        if( this.excludList && this.excludList.length ){
+            if( !this.excludeSearchItemFlagMap ){
+                this.excludeSearchItemFlagMap = {};
+                this.excludList.each( function( e ){
+                    if( !e )return;
+                    this.excludeSearchItemFlagMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.unique || e.employee || e.levelName || e.id ) ] = true;
+                }.bind(this));
+            }
+            var map = this.excludeSearchItemFlagMap;
+            return ( d.distinguishedName && map[ d.distinguishedName ] ) ||
+                ( d.id && map[ d.id ] ) ||
+                ( d.unique && map[ d.unique ] ) ||
+                ( d.employee && map[ d.employee ] ) ||
+                ( d.levelName && map[ d.levelName ] );
+        }else{
+            return this.isExcluded(d);
+        }
     },
     isExcluded : function( d ){
         if( this.options.exclude.length === 0 )return false;

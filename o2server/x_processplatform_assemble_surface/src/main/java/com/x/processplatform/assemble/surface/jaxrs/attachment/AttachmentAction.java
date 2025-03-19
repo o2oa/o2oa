@@ -1486,11 +1486,12 @@ public class AttachmentAction extends StandardJaxrsAction {
     @Consumes(MediaType.APPLICATION_JSON)
     public void downloadTransfer(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
             @JaxrsParameterDescribe("*转换后附件id") @PathParam("flag") String flag,
-            @JaxrsParameterDescribe("是否直接下载(true|false)") @QueryParam("stream") Boolean stream) {
+            @JaxrsParameterDescribe("是否直接下载(true|false)") @QueryParam("stream") Boolean stream,
+            @JaxrsParameterDescribe("文件名称") @QueryParam("fileName") String fileName) {
         ActionResult<ActionDownloadTransfer.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionDownloadTransfer().execute(effectivePerson, flag, BooleanUtils.isTrue(stream));
+            result = new ActionDownloadTransfer().execute(effectivePerson, flag, BooleanUtils.isTrue(stream), fileName);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, null);
             result.error(e);

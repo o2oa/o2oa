@@ -24,7 +24,10 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
     },
     _init : function(){
         this.selectType = "identity";
-        this.className = "IdentityWidthDuty"
+        this.className = "IdentityWidthDuty";
+        if( !this.options.expandSubEnable ){
+            this.options.forceSearchInItem = true;
+        }
     },
     loadSelectItems: function(addToNext){
         this.loadingCountDuty = "wait";
@@ -154,22 +157,34 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
 
     search: function(){
         var key = this.searchInput.get("value");
-        if (key){
-            this.initSearchArea(true);
-            var createdId = this.searchInItems(key) || [];
-            if( this.options.include && this.options.include.length ){
-                this.includeObject.listByFilter( "key", key, function( array ){
-                    array.each( function(d){
-                        if( !createdId.contains( d.distinguishedName ) ){
-                            if( !this.isExcluded( d ) ) {
-                                this._newItem( d, this, this.itemSearchAreaNode);
-                            }
-                        }
-                    }.bind(this))
-                }.bind(this))
+        if( this.options.forceSearchInItem ){
+            if (key){
+                this.initSearchArea(true);
+                this.searchInItems(key);
+            }else{
+                this.initSearchArea(false);
             }
         }else{
-            this.initSearchArea(false);
+            if (key){
+                this.initSearchArea(true);
+                var createdId = this.searchInItems(key) || [];
+                if( this.options.include && this.options.include.length ){
+                    var p = this.initExclude();
+                    Promise.resolve(p).then(function(){
+                        this.includeObject.listByFilter( "key", key, function( array ){
+                            array.each( function(d){
+                                if( !createdId.contains( d.distinguishedName ) ){
+                                    if( !this.isExcludedSearchItem( d ) ) {
+                                        this._newItem( d, this, this.itemSearchAreaNode);
+                                    }
+                                }
+                            }.bind(this));
+                        }.bind(this));
+                    }.bind(this));
+                }
+            }else{
+                this.initSearchArea(false);
+            }
         }
     },
     listPersonByPinyin: function(node){

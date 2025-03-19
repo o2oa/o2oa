@@ -31,6 +31,7 @@ MWF.xApplication.process.Work.LP={
 	"flowWork": "manejar trabajo",
 	"handwriting": "Escribir",
 	"audioRecord": "Grabación de audio",
+	"noOpinionNote": "Aún no has establecido opiniones comunes, haz clic para establecerlas.",
 	"noAppendTaskIdentityConfig": "No se ha configurado un responsable para la transferencia, por favor contacte al administrador",
 	"selectAppendTaskIdentityNotice": "Por favor seleccione un responsable para la transferencia",
 	"routeValidFailure": "Fallo en la validación de la ruta",
