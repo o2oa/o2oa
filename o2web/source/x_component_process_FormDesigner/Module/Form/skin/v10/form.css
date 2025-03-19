@@ -22,6 +22,11 @@
 .form-layout .form-content {
     box-sizing: border-box !important;
 }
+.form-layout .form-content>div {
+    min-width: 42em;
+    max-width: 86em;
+}
+
 .form-layout .form-content * {
     box-sizing: border-box !important;
 }

@@ -42,5 +42,16 @@ MWF.xApplication.process.Xform.Common = MWF.APPCommon =  new Class({
             // }
         }
         this.node.setProperties(this.json.properties);
-    }
+    },
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    this.node.addEventListener(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
 });

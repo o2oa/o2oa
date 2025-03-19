@@ -178,6 +178,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 if (json_work && json_control && json_form && json_log){
                     this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_work.data.recordList, json_work.data.attachmentList).then(function(){
                         if (this.mask) this.mask.hide();
+                
                         //if (layout.mobile) this.loadMobileActions();
                         if (layout.session && layout.session.user){
                             this.openWork();
@@ -482,14 +483,14 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.relatedFormMap = formData.relatedFormMap;
                 this.relatedScriptMap = formData.relatedScriptMap;
                 this.relatedLanguage = formData.relatedLanguage;
-                delete formData.form.data;
+                // delete formData.form.data;
                 this.formInfor = formData.form;
             }else{
                 this.formDataText = (formData.data) ? MWF.decodeJsonString(formData.data) : "";
                 this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
 
                 //this.form = (formData.data) ? MWF.decodeJsonString(formData.data): null;
-                delete formData.data;
+                // delete formData.data;
                 this.formInfor = formData;
             }
         }

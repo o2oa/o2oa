@@ -2729,7 +2729,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         }
                         //var subnode = lnode.getLast();
                         this._splitFiletext(lnode, nextPageNode, nextFiletextNode, pageNode);
-                        if (!lnode.firstChild) if (lnode.parentNode) lnode.parentNode.removeChild(lnode);
+                        // if (!lnode.firstChild) if (lnode.parentNode) lnode.parentNode.removeChild(lnode);
                         nextPageNode = nextPageNode.getParent();
                     }
                 } else if (nodeType == Node.TEXT_NODE) {

@@ -583,7 +583,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     getPPrs: function(dom){
         var pPrs = {};
 
-        var align = dom.getStyle("text-align");
+        var styles = window.getComputedStyle(dom);
+
+        var align = styles.textAlign;
+        // var align = dom.getStyle("text-align");
         if (align){
             var jc = "start"
             switch (align){
@@ -594,7 +597,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
             pPrs.jc = {"val": jc};
         }
-        var left = dom.getStyle("margin-left");
+
+        var left = styles.marginLeft;
+        // var left = dom.getStyle("margin-left");
         if (left && left.toFloat()){
             var left = this.pxToPt(left)*20;
             if (left) {
@@ -603,7 +608,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
         }
 
-        var right = dom.getStyle("margin-left");
+        var right = styles.marginRight;
+        // var right = dom.getStyle("margin-left");
         if (right && right.toFloat()){
             var right = this.pxToPt(right)*20;
             if (right) {
@@ -612,7 +618,8 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
         }
 
-        var indent = dom.getStyle("text-indent");
+        var indent = styles.textIndent;
+        // var indent = dom.getStyle("text-indent");
         if (indent && indent.toFloat()){
             var indent = this.pxToPt(indent)*20;
             if (indent) {

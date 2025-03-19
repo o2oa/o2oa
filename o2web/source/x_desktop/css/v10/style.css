@@ -1,4 +1,4 @@
-*::-webkit-scrollbar {
+/* *::-webkit-scrollbar {
     width: 8px;
     height: 8px;
     border-radius: 8px;
@@ -17,7 +17,7 @@
     border-radius: 8px;
     background-color: var(--oo-color-text2);
     cursor: pointer;
-}
+} */
 @font-face {
     font-family: 'ooicon';
     src:
@@ -27,6 +27,11 @@
     font-weight: normal;
     font-style: normal;
     font-display: block;
+}
+@font-face {
+    font-family: "D-DIN-PRO";
+    src: url("/x_desktop/css/v10/D-DIN PRO.woff2") format('woff2');
+    font-display: swap;
 }
 
 oo-button,

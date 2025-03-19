@@ -195,7 +195,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		}
 	},
 	showFilter: function(e){
-		//console.log(this.filterDlg);
 		if (this.filterDlg) return;
 		var node = e.target;
 		var p = node.getPosition(this.content);

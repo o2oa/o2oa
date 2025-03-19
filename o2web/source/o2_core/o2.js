@@ -622,7 +622,6 @@ if (!window.o2) {
                     }
                 };
                 var _checkScriptErrorLoaded = function (e, err) {
-                    console.log("Error: load javascript module: " + module);
                     _checkScriptLoaded(e, true, "error");
                 };
 
@@ -2071,7 +2070,7 @@ if (!window.o2) {
                 var resPromise = _resGetQueue[address];
                 var p = new Promise(function(resolve, reject){
                     resPromise.then(function(){
-                        resolve(resPromise.json);
+                        resolve(Object.clone(resPromise.json));
                     }, function(){
                         reject(resPromise.err);
                     });

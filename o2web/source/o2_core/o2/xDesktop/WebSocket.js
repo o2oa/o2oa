@@ -100,6 +100,7 @@ MWF.xDesktop.WebSocket = new Class({
                         }
                         break;
                     default:
+                        layout.desktop.fireEvent("message", [data]);
                         switch (data.type){
                             case "task":
                             case "task_create":
