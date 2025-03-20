@@ -141,7 +141,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
         }).inject(app.content);
     },
     createAreaNode: function(){
-        this.areaNode = new Element("div#area", {
+        this.areaNode = new Element("div#area.start-process-area", {
             "styles": this.css.areaNode
         });
     },

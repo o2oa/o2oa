@@ -178,7 +178,6 @@
     z-index: 10001;
 }
 
-
 /* 手机 */
 @media (max-width: 767px) {
     .form-layout .index-content-bottom {

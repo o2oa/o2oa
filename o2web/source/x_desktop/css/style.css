@@ -41,6 +41,12 @@ body {
 .o2_vue *{
 	box-sizing: border-box!important;
 }
+.start-process-area{
+	box-sizing: content-box!important;
+}
+.start-process-area *{
+	box-sizing: content-box!important;
+}
 *::-webkit-scrollbar {
 	width: 0.4rem;
 	height: 0.4rem;
