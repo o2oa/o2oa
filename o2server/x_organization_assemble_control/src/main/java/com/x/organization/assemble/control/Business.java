@@ -190,6 +190,29 @@ public class Business {
         return false;
     }
 
+    public boolean isPersonManager(EffectivePerson effectivePerson) throws Exception {
+        if (effectivePerson.isSecurityManager()) {
+            return true;
+        }
+        if (this.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+                OrganizationDefinition.PersonManager,
+                OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOrgManager(EffectivePerson effectivePerson) throws Exception {
+        if (effectivePerson.isSecurityManager()) {
+            return true;
+        }
+        if (this.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+                OrganizationDefinition.SystemManager, OrganizationDefinition.SecurityManager)) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean editable(EffectivePerson effectivePerson, Group group) throws Exception {
         if (effectivePerson.isSecurityManager()) {
             return true;
@@ -236,6 +259,20 @@ public class Business {
                 OrganizationDefinition.PersonManager, OrganizationDefinition.SystemManager,
                 OrganizationDefinition.SecurityManager)) {
             return true;
+        }
+        List<Unit> unitList = this.unit().listUnitWithPerson(person.getId());
+        if(ListTools.isNotEmpty(unitList)) {
+            Person curPerson = this.person().pick(effectivePerson.getDistinguishedName());
+            for (Unit unit : unitList) {
+                if (ListTools.contains(unit.getControllerList(), curPerson.getId())) {
+                        return true;
+                }
+                for (Unit u : unit().listSupNestedObject(unit)) {
+                    if (ListTools.contains(u.getControllerList(), curPerson.getId())) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }

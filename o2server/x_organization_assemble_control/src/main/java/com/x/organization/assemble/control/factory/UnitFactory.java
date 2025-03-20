@@ -1,23 +1,5 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -26,9 +8,27 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.organization.assemble.control.AbstractFactory;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class UnitFactory extends AbstractFactory {
 
@@ -310,7 +310,7 @@ public class UnitFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.equal(root.get(Unit_.level), 1);
+		Predicate p = cb.equal(root.get(Unit_.level), Unit.TOP_LEVEL);
 		List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		os = os.stream().sorted(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)))
 				.collect(Collectors.toList());
@@ -343,6 +343,34 @@ public class UnitFactory extends AbstractFactory {
 		} else {
 			return os.get(0);
 		}
+	}
+
+	public List<Unit> listUnitWithPerson(String personId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Unit.class);
+		EntityManager subEm = this.entityManagerContainer().get(Identity.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaBuilder subCb = subEm.getCriteriaBuilder();
+		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
+		Root<Unit> root = cq.from(Unit.class);
+
+		Subquery<Identity> subQuery = cq.subquery(Identity.class);
+		Root<Identity> subRoot = subQuery.from(subEm.getMetamodel().entity(Identity.class));
+		subQuery.select(subRoot);
+		Predicate subP = subCb.equal(subRoot.get(Identity_.unit), root.get(Unit_.id));
+		subP = subCb.and(subP, subCb.equal(subRoot.get(Identity_.person), personId));
+		subQuery.where(subP);
+		Predicate p = cb.exists(subQuery);
+		cq.where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<Unit> listControlUnitWithPerson(String personId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Unit.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
+		Root<Unit> root = cq.from(Unit.class);
+		Predicate p = cb.isMember(personId, root.get(Unit_.controllerList));
+		return em.createQuery(cq.select(root).where(p)).getResultList();
 	}
 
 }
