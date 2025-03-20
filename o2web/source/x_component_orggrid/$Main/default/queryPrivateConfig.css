@@ -1,0 +1,107 @@
+.queryPrivateConfigAreaNode {
+    padding: 20px;
+    margin: 20px 40px;
+}
+.tabletitle {
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 24px;
+    color: #666666;
+    text-align: center;
+}
+.queryPrivateConfigTable{
+    width: 80%;
+    height:500px;
+    padding: inherit;
+}
+.inforTitle {
+    height: 30px;
+    line-height: 30px;
+    width: 10%;
+    color: rgb(136, 136, 136);
+    font-size: 16px;
+    text-align: right;
+}
+.inforContent{
+    height: 30px;
+    line-height: 30px;
+    width: 80%;
+    max-width: 300px;
+    border-bottom: 1px solid #999999;
+    overflow: hidden;
+    color: rgb(51, 51, 51);
+    padding: 0px 10px;
+    font-size: 16px;
+}
+.inputNode: {
+    width: 100%;
+    border: 1px solid #999999;
+    border-radius: 3px;
+    background: transparent;
+    font-size: 14px;
+    line-height: 24px;
+    height: 22px;
+    text-align: left;
+    color: #333333;
+}
+.inputPersonNode{
+    width: 100%;
+    border: 1px solid #999999;
+    border-radius: 3px;
+    background: url("../x_component_orggrid/$Explorer/default/icon/selectperson.png") 98% center no-repeat;
+    font-size: 14px;
+    line-height: 24px;
+    height: 24px;
+    text-align: left;
+    color: #333333;
+}
+
+.queryPrivateConfigBtnAreaNode{
+    height:10px;
+}
+.queryPrivateConfigBtnNode{
+    width: 300px;
+    margin: 20px auto;
+}
+.queryPrivateConfigBtnEditNode{
+    width: 300px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    color: rgb(102, 102, 102);
+    cursor: pointer;
+    font-size: 14px;
+    border: 1px solid rgb(204, 204, 204);
+    background-color: rgb(243, 243, 243);
+    border-radius: 3px;
+    display: block;
+}
+.queryPrivateConfigBtnSaveNode{
+    width: 180px;
+    float: left;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    font-size: 14px;
+    border: 1px solid rgb(102, 102, 102);
+    background-color: rgb(43, 122, 196);
+    border-radius: 3px;
+    display: none;
+}
+.queryPrivateConfigBtnCancelNode{
+    width: 100px;
+    float: right;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    color: rgb(102, 102, 102);
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid rgb(102, 102, 102);
+    background-color: rgb(243, 243, 243);
+    border-radius: 3px;
+    display: none;
+}

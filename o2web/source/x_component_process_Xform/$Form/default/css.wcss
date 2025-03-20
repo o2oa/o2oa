@@ -144,6 +144,12 @@
 		//"background-color": "#f3f1ad"
 		"background-color": "#e4f6e9"
 	},
+	"logActivityNode_read":{
+	    "overflow": "hidden",
+        "margin": "0px",
+        "padding": "10px 0",
+        "background-color": "#FFF"
+	},
 	"logActivityNode": {
 	    "overflow": "hidden",
 	    "margin": "0px",
