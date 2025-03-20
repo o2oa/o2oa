@@ -1,5 +1,6 @@
 package com.x.program.center.schedule;
 
+import com.x.base.core.project.cache.CacheManager;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -69,6 +70,7 @@ public class Area extends BaseAction {
 				this.saveProvince(business, wrapProvince, sha);
 			}
 		}
+		CacheManager.notify(District.class);
 	}
 
 	private void saveProvince(Business business, WrapProvince wrapProvince, String sha) throws Exception {
