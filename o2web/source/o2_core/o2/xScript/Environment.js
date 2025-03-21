@@ -3675,7 +3675,7 @@ MWF.xScript.Environment = function(ev){
          *   "isMove" : true, //（boolean）可选，弹出框是否可移动。默认值：true。
          *   "offset" : {"x":-200, "y": -100}, //（object）可选，弹出框相对容器(container)的x轴y轴位置偏移量，空则居中。
          *   "mask" : true, //（boolean）可选，是否需要遮罩层。默认值：true。
-         *   "duration" : true, //（number）可选，动画显示弹出框效果时间。默认值：200。
+         *   "duration" : 200, //（number）可选，动画显示弹出框效果时间。默认值：200。
          *   "zindex": 100, //（number）可选，弹出框的z轴优先级，默认为100（日期控件的zindex为300，选人控件为1000，最好不要高于300）。
          *   "buttonList" : [
          *       {
