@@ -39,20 +39,12 @@ MWF.xApplication.orggrid.PersonExplorer = new Class({
         //         callback.apply(this, [json]);
         //     }
         // }.bind(this));
-        if (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager()){
-            o2.Actions.load("x_organization_assemble_control").PersonAction.listFilterPaging(page, count, this.filterData || {}, function(json){
-                if (callback) {
-                    callback.apply(this, [json]);
-                }
-            }.bind(this));
-        }else{
-            if(this.filterData)this.filterData.controller = true;
-            o2.Actions.load("x_organization_assemble_control").PersonAction.listFilterPaging(page, count, this.filterData || {controller: true}, function(json){
-                if (callback) {
-                    callback.apply(this, [json]);
-                }
-            }.bind(this));
-        }
+        if(this.filterData)this.filterData.controller = true;
+        o2.Actions.load("x_organization_assemble_control").PersonAction.listFilterPaging(page, count, this.filterData || {controller: true}, function(json){
+            if (callback) {
+                callback.apply(this, [json]);
+            }
+        }.bind(this));
     },
     _newElement: function(data, explorer, i){
         return new MWF.xApplication.orggrid.PersonExplorer.Person(data, explorer, this.isEditor, i);
@@ -65,7 +57,8 @@ MWF.xApplication.orggrid.PersonExplorer = new Class({
         //     }
         // }.bind(this), failure, key);
         o2.Actions.load("x_organization_assemble_control").PersonAction.listFilterPaging(1, 10000, {
-            key: key
+            key: key,
+            controller: true
         }, function(json){
             if (callback) {
                 callback.apply(this, [json]);
@@ -109,7 +102,29 @@ MWF.xApplication.orggrid.PersonExplorer = new Class({
 
 MWF.xApplication.orggrid.PersonExplorer.Person = new Class({
     Extends: MWF.xApplication.orggrid.$Explorer.Item,
+    addActions: function(){
+        if (this.data.id){
+            if (this.data.control.allowDelete){
+                if (!this.deleteNode){
+                    this.deleteNode = new Element("div.o2icon-delete", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                    this.deleteNode.addEvent("click", function(e){
+                        if (!this.notDelete){
+                            if (!this.deleteSelected){
+                                this.setDelete();
+                            }else{
+                                this.setUndelete();
+                            }
+                        }
+                        e.stopPropagation();
+                    }.bind(this));
 
+                    if (this.explorer.currentItem===this){
+                        if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
+                    }
+                }
+            }
+        }
+    },
     showItemProperty: function(){
         this.content = new MWF.xApplication.orggrid.PersonExplorer.PersonContent(this);
     },
@@ -636,7 +651,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.TitleInfor = new Class({
         if(MWF.AC.isSystemManager())return false;
         if(MWF.AC.isOrganizationManager())return true;
         if(MWF.AC.isPersonManager())return true;
-        return false;
+        return this.data.control.allowEdit;
     },
     loadAction: function(){
         //this.explorer.app.lp.edit

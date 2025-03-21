@@ -11,7 +11,7 @@
 		"id": "1.1",
 		"action": "groupConfig",
 		"icon": "group",
-		"display": true
+		"display": !o2.AC.isSystemManager() && (o2.AC.isOrganizationManager() || o2.AC.isGroupManager() || o2.AC.isSecurityManager())
 	},
 	{
 		"title": MWF.xApplication.orggrid.LP.roleList,

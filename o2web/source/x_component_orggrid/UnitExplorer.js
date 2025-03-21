@@ -76,9 +76,23 @@ MWF.xApplication.orggrid.UnitExplorer = new Class({
         return new MWF.xApplication.orggrid.UnitExplorer.Unit(data, explorer, this.isEditor, 0);
     },
     _listElementByKey: function(callback, failure, key){
-        this.actions.listUnitByKey(function(json){
-            if (callback) callback.apply(this, [json]);
-        }.bind(this), failure, key);
+        var data = {key: key};
+        if( MWF.AC.isOrganizationManager() || MWF.AC.isUnitManager()){
+            this.actions.listUnitByKey(function(json){
+                if (callback) callback.apply(this, [json]);
+            }.bind(this), failure, data);
+        }else{
+            o2.Actions.load('x_organization_assemble_control').UnitAction.listControlTop(function(topJson){
+                data.unitList = topJson.data.map(function(d, i){
+                    return d.distinguishedName;
+                });
+                if( data.unitList ){
+                    this.actions.listUnitByKey(function(json){
+                        if (callback) callback.apply(this, [json]);
+                    }.bind(this), failure, data);
+                }
+            }.bind(this));
+        }
     },
     _getAddElementData: function(){
         return {
@@ -1079,7 +1093,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
 
     addPersonMember: function(){
         this.checkSaveBaseInfor(function(){
-            var type = (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager()) ? "Person" : "PersonWithController";
+            var type = (MWF.AC.isOrganizationManager() || MWF.AC.isUnitManager() || MWF.AC.isSecurityManager()) ? "Person" : "PersonWithController";
             MWF.xDesktop.requireApp("Selector", type, function(){
                 var selector = new MWF.xApplication.Selector[type](this.explorer.app.content,{
                     "values": [],
