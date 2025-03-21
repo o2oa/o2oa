@@ -652,10 +652,24 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         }.bind(this));
     },
     editDutyIdentity: function(dutyData, contentNode){
+        debugger;
+        if (MWF.AC.isOrganizationManager() || MWF.AC.isUnitManager() || MWF.AC.isSecurityManager()){
+            this._editDutyIdentity(dutyData, contentNode, [])
+        }else{
+            o2.Actions.load('x_organization_assemble_control').UnitAction.listControlTop(function(json){
+                var unitList = json.data.map(function (d){
+                    return d.distinguishedName
+                });
+                this._editDutyIdentity(dutyData, contentNode, unitList);
+            }.bind(this));
+        }
+    },
+    _editDutyIdentity: function(dutyData, contentNode, unitList){
         var _self = this;
         MWF.xDesktop.requireApp("Selector", "Identity", function(){
             var selector = new MWF.xApplication.Selector.Identity(this.explorer.app.content,{
                 "values": dutyData.identityList,
+                "units": unitList || [],
                 "onComplete": function(items){
                     var woIdentityList = [];
                     var identityList = [];
@@ -1341,13 +1355,13 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
                 };
                 var selector;
                 if (MWF.AC.isOrganizationManager() || MWF.AC.isSecurityManager()){
+                    selector = new MWF.O2Selector(this.explorer.app.content, options);
+                }else{
                     o2.Actions.load('x_organization_assemble_control').UnitAction.listControlTop(function (json){
                         options.units = json.data;
                         options.firstLevelSelectable = true;
                         selector = new MWF.O2Selector(this.explorer.app.content, options);
                     }.bind(this))
-                }else{
-                    selector = new MWF.O2Selector(this.explorer.app.content, options);
                 }
             }.bind(this));
         }.bind(this));
@@ -1358,9 +1372,10 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
             }.bind(this));
         }
         this.controllerListInputNode.addEvent("click", function(){
+            var type = (MWF.AC.isOrganizationManager() || MWF.AC.isUnitManager() || MWF.AC.isSecurityManager()) ? "person" : "personWithController";
             MWF.xDesktop.requireApp("Selector", "package", function(){
                 var options = {
-                    "type": "person",
+                    "type": type,
                     "values": this.data.controllerList || [],
                     "count": 0,
                     "onComplete": function(items){

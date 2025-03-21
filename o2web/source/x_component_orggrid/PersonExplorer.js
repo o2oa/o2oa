@@ -1092,9 +1092,10 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         //this.superiorInputNode.set("value", (this.data.superior));
         if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, this.superiorInputNode, {"style": "xform"});
         this.superiorInputNode.addEvent("click", function(){
+            var type = (MWF.AC.isOrganizationManager() || MWF.AC.isPersonManager() || MWF.AC.isSecurityManager()) ? "person" : "personWithController";
             MWF.xDesktop.requireApp("Selector", "package", function(){
                 var options = {
-                    "type": "person",
+                    "type": type,
                     "values": (this.data.superior) ? [this.data.superior] : [],
                     "count": 1,
                     "onComplete": function(items){
