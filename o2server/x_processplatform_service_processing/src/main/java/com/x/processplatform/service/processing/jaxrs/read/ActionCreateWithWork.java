@@ -88,11 +88,13 @@ class ActionCreateWithWork extends BaseAction {
 							o.setIdentity(identity);
 							o.setPerson(person);
 							o.setUnit(unit);
+							o.setSender(effectivePerson.getDistinguishedName());
 							updates.add(o);
 							/* 同步映射字段 */
 							o.copyProjectionFields(work);
 						} else {
 							Read read = new Read(work, identity, unit, person);
+							read.setSender(effectivePerson.getDistinguishedName());
 							adds.add(read);
 						}
 						if (count(business, work, person) < 1) {

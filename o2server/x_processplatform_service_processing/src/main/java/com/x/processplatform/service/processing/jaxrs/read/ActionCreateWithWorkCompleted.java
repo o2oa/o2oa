@@ -99,6 +99,7 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 							o.setPerson(person);
 							o.setUnit(unit);
 							o.copyProjectionFields(workCompleted);
+							o.setSender(effectivePerson.getDistinguishedName());
 							updates.add(o);
 						} else {
 							Read read = new Read(workCompleted, identity, unit, person);
@@ -107,6 +108,7 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 							read.setActivityType(workLog.getArrivedActivityType());
 							read.setActivityAlias(workLog.getArrivedActivityAlias());
 							read.setActivityToken(workLog.getArrivedActivityToken());
+							read.setSender(effectivePerson.getDistinguishedName());
 							adds.add(read);
 						}
 						if (count(business, workCompleted, person) < 1) {

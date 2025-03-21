@@ -26,6 +26,7 @@ import com.x.processplatform.core.entity.content.WorkProperties.GoBackStore;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.ManualProperties;
+import com.x.processplatform.core.entity.ticket.Tickets;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWo;
 import com.x.processplatform.service.processing.Business;
@@ -141,6 +142,10 @@ class V2GoBack extends BaseAction {
 				}
 				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
 					work.setTickets(manual.identitiesToTickets(param.distinguishedNameList));
+					/*
+					 * 增加退回时 act=goBack标记
+					 */
+					work.getTickets().bubble().forEach(o -> o.act(Tickets.ACT_GOBACK));
 				}
 				removeTask(business, work);
 				emc.check(work, CheckPersistType.all);
