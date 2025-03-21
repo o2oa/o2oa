@@ -13,12 +13,21 @@ public class ActionCreateWithWorkCompletedWi extends GsonPropertyObject {
 	private static final long serialVersionUID = 7061824634357637666L;
 
 	@FieldDescribe("身份标识.")
-	@Schema(description = "身份标识.")
 	private List<String> identityList = new ArrayList<>();
 
 	@FieldDescribe("发送待阅通知.")
-	@Schema(description = "发送待阅通知.")
 	private Boolean notify = false;
+
+	@FieldDescribe("发送人")
+	private String sender = "";
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
 
 	public List<String> getIdentityList() {
 		return identityList;
