@@ -911,6 +911,8 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.style = this.item.style.person;
         this.attributes = [];
         this.mode = "read";
+        this.simple = false;
+        this.simpleTdClasses = ['infor_name','infor_employee', 'infor_mobile', 'infor_unique','infor_gender'];
         this.load();
     },
     load: function(){
@@ -973,7 +975,12 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
 
         this.loadAction();
     },
-
+    switchSimpleMode: function ( isSimple ){
+        this.simpleTdClasses.each(function(field){
+            var td = this.editContentNode.getElement("."+field);
+            var tr = td.getParent("tr");
+        });
+    },
     getSecurityLabelText(){
         return this.getSecurityLabelList().then(function(labelList){
 
@@ -1006,23 +1013,23 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         }.bind(this));
 
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent infor_gender'>"+this.getGenderType()+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personSuperior+":</td><td class='inforContent'>"+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent infor_mail'>"+(this.data.mail || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent infor_weixin'>"+(this.data.weixin || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent infor_qq'>"+(this.data.qq || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_name'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
+            "<td class='inforTitle title_unique'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_mobile'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
+            "<td class='inforTitle title_employee'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_gender'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent infor_gender'>"+this.getGenderType()+"</td>" +
+            "<td class='inforTitle title_superior'>"+this.explorer.app.lp.personSuperior+":</td><td class='inforContent infor_superior'>"+"</td></tr>";
+        html += "<tr><td class='inforTitle title_mail'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent infor_mail'>"+(this.data.mail || "")+"</td>" +
+            "<td class='inforTitle title_weixin'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent infor_weixin'>"+(this.data.weixin || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_qq'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent infor_qq'>"+(this.data.qq || "")+"</td>" +
+            "<td class='inforTitle title_officePhone'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_boardDate'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
+            "<td class='inforTitle title_birthday'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_ipAddress'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
+            "<td class='inforTitle title_description'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
 
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.securityLabel+":</td><td class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.status+":</td><td class='inforContent infor_status'>"+(statusText || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_securityLabel'>"+this.explorer.app.lp.securityLabel+":</td><td class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
+            "<td class='inforTitle title_status'>"+this.explorer.app.lp.status+":</td><td class='inforContent infor_status'>"+(statusText || "")+"</td></tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
