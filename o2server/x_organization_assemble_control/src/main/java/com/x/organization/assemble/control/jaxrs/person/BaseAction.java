@@ -81,20 +81,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected boolean editable(Business business, EffectivePerson effectivePerson, Person person) throws Exception {
-		if (business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
-			return true;
-		}
-		if (null == person) {
-			return false;
-		}
-		if (business.hasAnyRole(effectivePerson, OrganizationDefinition.PersonManager)) {
-			List<String> ids = ListTools.extractProperty(
-					business.listTopUnitWithPerson(effectivePerson.getDistinguishedName()), Unit.id_FIELDNAME,
-					String.class, true, true);
-			return ids.isEmpty() || ListTools.containsAny(ids, person.getTopUnitList());
-		}
-		return false;
+		return business.editable(effectivePerson, person);
 	}
 
 	protected static List<String> person_fieldsInvisible = ListTools.toList(JpaObject.FieldsInvisible,
@@ -182,39 +169,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends WoPersonAbstract> void updateControl(EffectivePerson effectivePerson, Business business, T t)
 			throws Exception {
-		if (effectivePerson.isManager() || business.hasAnyRole(effectivePerson,
-				OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
+		if(business.editable(effectivePerson, t)){
 			t.getControl().setAllowDelete(true);
 			t.getControl().setAllowEdit(true);
-		} else {
-			boolean allowEdit = false;
-			boolean allowDelete = false;
-			Person person = business.person().pick(effectivePerson.getDistinguishedName());
-			if (null != person && t.getControllerList().contains(person.getId())) {
-				List<Identity> identities = this.listIdentity(business, t);
-				List<Unit> units = this.listUnit(business, identities);
-				List<Unit> supUnits = new ArrayList<>();
-				supUnits.addAll(units);
-				for (Unit u : units) {
-					supUnits.addAll(business.unit().listSupNestedObject(u));
-				}
-				if (ListTools.isNotEmpty(supUnits)) {
-					allowEdit = false;
-					allowDelete = true;
-					for (Unit o : supUnits) {
-						if (o.getControllerList().contains(person.getId())) {
-							allowEdit = true;
-						} else {
-							allowDelete = false;
-						}
-					}
-				} else {
-					allowEdit = true;
-					allowDelete = true;
-				}
-			}
-			t.getControl().setAllowEdit(allowEdit);
-			t.getControl().setAllowDelete(allowDelete);
 		}
 	}
 
