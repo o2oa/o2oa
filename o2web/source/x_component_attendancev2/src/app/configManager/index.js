@@ -211,6 +211,9 @@ export default content({
       this.bind.workDayList.splice(i, 1);
     }
   },
+  clickToAliface() {
+    layout.openApplication(null, 'aliface')
+  },
   // 是否启用补卡申请
   clickEnableAppeal() {
     this.bind.form.appealEnable = !this.bind.form.appealEnable;
