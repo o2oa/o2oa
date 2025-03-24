@@ -1,6 +1,6 @@
 MWF.xApplication = MWF.xApplication || {};
-MWF.xApplication.orggrid = MWF.xApplication.orggrid || {};
-MWF.xApplication.orggrid.LP={
+MWF.xApplication.orgregion = MWF.xApplication.orgregion || {};
+MWF.xApplication.orgregion.LP={
 	"title": "Gestión de organización",
 	"manage": "Gestionar",
 	"identity": "Identidad",
@@ -271,4 +271,4 @@ MWF.xApplication.orggrid.LP={
 		}
 	]
 }
-MWF.xApplication.orggrid["lp."+o2.language] = MWF.xApplication.orggrid.LP
+MWF.xApplication.orgregion["lp."+o2.language] = MWF.xApplication.orgregion.LP

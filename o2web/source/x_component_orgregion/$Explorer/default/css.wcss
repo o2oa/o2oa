@@ -59,7 +59,7 @@
     "overflow": "hidden"
   },
   "addTopGroupNode": {
-    "background": "url(../x_component_orggrid/$Explorer/default/icon/add.png) center center no-repeat",
+    "background": "url(../x_component_orgregion/$Explorer/default/icon/add.png) center center no-repeat",
     "width": "40px",
     "height": "40px",
     "cursor": "pointer",
@@ -67,7 +67,7 @@
   },
   "filterNode": {
     "position": "absolute",
-    "background": "url(../x_component_orggrid/$Explorer/default/icon/filter.png) right center no-repeat",
+    "background": "url(../x_component_orgregion/$Explorer/default/icon/filter.png) right center no-repeat",
     "background-size": "12px",
     "width": "20px",
     "height": "40px",
@@ -96,7 +96,7 @@
     "float": "left",
     "width": "40px",
     "height": "40px",
-    "background": "url(../x_component_orggrid/$Explorer/default/icon/search.png) no-repeat center center",
+    "background": "url(../x_component_orgregion/$Explorer/default/icon/search.png) no-repeat center center",
     "cursor": "pointer"
   },
   "searchInputAreaNode": {
@@ -119,7 +119,7 @@
   "pingyinAction": {
     "height": "40px",
     "width": "40px",
-    "background": "url(../x_component_orggrid/$Explorer/default/icon/pingyin.png) center center no-repeat",
+    "background": "url(../x_component_orgregion/$Explorer/default/icon/pingyin.png) center center no-repeat",
     "cursor": "pointer"
   },
   "pingyinNode": {
@@ -402,14 +402,14 @@
       "titleCloseNode": {
         "height": "32px",
         "width": "32px",
-        "background": "url(../x_component_orggrid/$Explorer/default/icon/close.png) center center no-repeat",
+        "background": "url(../x_component_orgregion/$Explorer/default/icon/close.png) center center no-repeat",
         "position": "relative",
         "top": "-65px",
         "left": "20px",
         "cursor": "pointer"
       },
       "titleCloseNode_down": {
-        "background": "url(../x_component_orggrid/$Explorer/default/icon/close_down.png) center center no-repeat"
+        "background": "url(../x_component_orgregion/$Explorer/default/icon/close_down.png) center center no-repeat"
       },
       "statusNode":{
           "position": "absolute",
@@ -470,7 +470,12 @@
         "border-radius": "3px",
         "display": "none"
       },
-
+       "moreNode":{
+            "width": "80px",
+            "height": "30px",
+            "line-height": "30px",
+            "cursor": "pointer"
+       },
       "baseContentNode": {
         "overflow": "hidden"
       },
@@ -522,8 +527,10 @@
         "height": "10px"
       },
       "baseInforEditActionAreaNode": {
-        "width": "300px",
-        "margin": "20px auto"
+        "display": "flex",
+        "gap": "10px",
+        "justify-content": "center",
+        "margin": "15px auto"
       },
       "inputNode": {
         "width": "100%",
@@ -540,7 +547,7 @@
         "width": "100%",
         "border": "1px solid #999999",
         "border-radius": "3px",
-        "background": "url(../x_component_orggrid/$Explorer/default/icon/calendar.png) 98% center no-repeat",
+        "background": "url(../x_component_orgregion/$Explorer/default/icon/calendar.png) 98% center no-repeat",
         "font-size": "14px",
         "line-height": "24px",
         "height": "22px",
@@ -551,7 +558,7 @@
         "width": "100%",
         "border": "1px solid #999999",
         "border-radius": "3px",
-        "background": "url(../x_component_orggrid/$Explorer/default/icon/selectperson.png) 98% center no-repeat",
+        "background": "url(../x_component_orgregion/$Explorer/default/icon/selectperson.png) 98% center no-repeat",
         "font-size": "14px",
         "line-height": "24px",
         "height": "24px",
@@ -562,7 +569,7 @@
         "width": "100%",
         "border": "1px solid #999999",
         "border-radius": "3px",
-        "background": "url(../x_component_orggrid/$Explorer/default/icon/drop.png) 98% center no-repeat",
+        "background": "url(../x_component_orgregion/$Explorer/default/icon/drop.png) 98% center no-repeat",
         "font-size": "14px",
         "line-height": "24px",
         "height": "22px",
@@ -598,7 +605,7 @@
       "typeSelectItemIconNode": {
         "height": "30px",
         "width": "30px",
-        "background": "url(../x_component_orggrid/$Explorer/default/icon/type.png) center center no-repeat",
+        "background": "url(../x_component_orgregion/$Explorer/default/icon/type.png) center center no-repeat",
         "float": "left"
       },
       "typeSelectItemTextNode": {
@@ -746,7 +753,7 @@
       "width": "30px",
       "height": "30px",
       "float": "right",
-      "background": "url(../x_component_orggrid/$Explorer/default/icon/add.png) center center no-repeat",
+      "background": "url(../x_component_orgregion/$Explorer/default/icon/add.png) center center no-repeat",
       "cursor": "pointer"
 
     },
@@ -764,7 +771,7 @@
     },
     "selectNode":{
       "cursor": "pointer",
-      "background": "url(../x_component_orggrid/$Explorer/default/icon/select.png) center center no-repeat",
+      "background": "url(../x_component_orgregion/$Explorer/default/icon/select.png) center center no-repeat",
       "border-bottom": "1px solid #cccccc"
     },
     "nameNode": {

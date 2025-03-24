@@ -1,4 +1,4 @@
-MWF.xApplication.orggrid.List = new Class({
+MWF.xApplication.orgregion.List = new Class({
     Extends: MWF.widget.Common,
 	Implements: [Options, Events],
 	options: {
@@ -12,12 +12,12 @@ MWF.xApplication.orggrid.List = new Class({
         "attr": [],
         "saveAction": "savePersonAttribute",
         "deleteAction": "removePersonAttribute",
-        "deleteItemTitle": MWF.xApplication.orggrid.LP.deleteAttributeTitle,
-        "deleteItemText": MWF.xApplication.orggrid.LP.deleteAttribute
+        "deleteItemTitle": MWF.xApplication.orgregion.LP.deleteAttributeTitle,
+        "deleteItemText": MWF.xApplication.orgregion.LP.deleteAttribute
 	},
     _loadPath: function(){
-        this.path = "../x_component_orggrid/$List/";
-        this.cssPath = "../x_component_orggrid/$List/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_orgregion/$List/";
+        this.cssPath = "../x_component_orgregion/$List/"+this.options.style+"/css.wcss";
     },
     initialize: function(node, content, options){
         this.setOptions(options);
@@ -78,7 +78,7 @@ MWF.xApplication.orggrid.List = new Class({
     },
     addItem: function(){
         var data = Object.clone(this.options.data);
-        var tr = new MWF.xApplication.orggrid.List.Item(data, this.options.attr, this);
+        var tr = new MWF.xApplication.orgregion.List.Item(data, this.options.attr, this);
         this.items.push(tr);
         tr.edit(tr.tr.tds[1]);
     },
@@ -129,7 +129,7 @@ MWF.xApplication.orggrid.List = new Class({
         // tr.tds.each(function(td){td.setStyles(this.css.contentTdNode);}.bind(this));
         // tr.tds[0].setStyles(this.css.selectTdNode);
 
-        var i = this.items.push(new MWF.xApplication.orggrid.List.Item(data, this.options.attr, this));
+        var i = this.items.push(new MWF.xApplication.orgregion.List.Item(data, this.options.attr, this));
         return this.items[i-1];
     },
     setAction: function(){
@@ -150,7 +150,7 @@ MWF.xApplication.orggrid.List = new Class({
     }
 
 });
-MWF.xApplication.orggrid.List.Item = new Class({
+MWF.xApplication.orgregion.List.Item = new Class({
     initialize: function(data, attr, list){
         this.data = data;
         this.attr = attr;

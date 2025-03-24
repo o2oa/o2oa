@@ -1,11 +1,11 @@
 // MWF.xDesktop.requireApp("Organization", "GroupExplorer", null, false);
 // MWF.xDesktop.requireApp("Organization", "OrgExplorer", null, false);
-MWF.xDesktop.requireApp("orggrid", "$Explorer", null, false);
+MWF.xDesktop.requireApp("orgregion", "$Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
-MWF.xApplication.orggrid.PersonExplorer = new Class({
-	Extends: MWF.xApplication.orggrid.$Explorer,
+MWF.xApplication.orgregion.PersonExplorer = new Class({
+	Extends: MWF.xApplication.orgregion.$Explorer,
 	Implements: [Options, Events],
 	options: {
 		"style": "default"
@@ -25,7 +25,7 @@ MWF.xApplication.orggrid.PersonExplorer = new Class({
         this.loadPingyinArea();
     },
     loadFilterTooltip: function(){
-        this.filterTooltip = new MWF.xApplication.orggrid.PersonExplorer.FilterTooltip(this.app.content, this.filterNode, null, {}, {
+        this.filterTooltip = new MWF.xApplication.orgregion.PersonExplorer.FilterTooltip(this.app.content, this.filterNode, null, {}, {
             event : "click"
         });
         this.filterTooltip.explorer = this;
@@ -47,7 +47,7 @@ MWF.xApplication.orggrid.PersonExplorer = new Class({
         }.bind(this));
     },
     _newElement: function(data, explorer, i){
-        return new MWF.xApplication.orggrid.PersonExplorer.Person(data, explorer, this.isEditor, i);
+        return new MWF.xApplication.orgregion.PersonExplorer.Person(data, explorer, this.isEditor, i);
     },
     _listElementByKey: function(callback, failure, key){
 
@@ -100,8 +100,8 @@ MWF.xApplication.orggrid.PersonExplorer = new Class({
 
 });
 
-MWF.xApplication.orggrid.PersonExplorer.Person = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.Item,
+MWF.xApplication.orgregion.PersonExplorer.Person = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.Item,
     addActions: function(){
         if (this.data.id){
             if (this.data.control.allowDelete){
@@ -126,7 +126,7 @@ MWF.xApplication.orggrid.PersonExplorer.Person = new Class({
         }
     },
     showItemProperty: function(){
-        this.content = new MWF.xApplication.orggrid.PersonExplorer.PersonContent(this);
+        this.content = new MWF.xApplication.orgregion.PersonExplorer.PersonContent(this);
     },
     _loadTextNode: function(){
         var html = "<div style='float:left; height:50px; overflow:hidden'>"+this.data.name+"</div>";
@@ -146,23 +146,23 @@ MWF.xApplication.orggrid.PersonExplorer.Person = new Class({
         });
     },
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orggrid/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orgregion/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
-        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orggrid/$Explorer/default/icon/man.png";
+        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orgregion/$Explorer/default/icon/man.png";
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "../x_component_orggrid/$Explorer/default/icon/female24.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/female24.png"
         //     }else{
-        //         src = "../x_component_orggrid/$Explorer/default/icon/man24.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/man24.png"
         //     }
         // }
         // return src;
     }
 });
 
-MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent,
+MWF.xApplication.orgregion.PersonExplorer.PersonContent = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent,
 
     _getData: function(callback){
         if (this.item.data.id){
@@ -181,11 +181,11 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
     },
 
     _showItemPropertyTitle: function(){
-        this.titleInfor = new MWF.xApplication.orggrid.PersonExplorer.PersonContent.TitleInfor(this);
-        //this.baseInfor = new MWF.xApplication.orggrid.BaseInfor(this);
+        this.titleInfor = new MWF.xApplication.orgregion.PersonExplorer.PersonContent.TitleInfor(this);
+        //this.baseInfor = new MWF.xApplication.orgregion.BaseInfor(this);
     },
     _showItemPropertyBottom: function(){
-        this.bottomInfor = new MWF.xApplication.orggrid.PersonExplorer.PersonContent.BottomInfor(this);
+        this.bottomInfor = new MWF.xApplication.orgregion.PersonExplorer.PersonContent.BottomInfor(this);
     },
     loadItemPropertyTab: function(callback){
         this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
@@ -280,10 +280,10 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
     },
 
     _listBaseInfor: function(){
-        this.baseInfor = new MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor(this);
+        this.baseInfor = new MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInfor(this);
     },
     _listAttribute: function(){
-        this.attributeList = new MWF.xApplication.orggrid.List(this.attributeContentNode, this, {
+        this.attributeList = new MWF.xApplication.orgregion.List(this.attributeContentNode, this, {
             "action": this.data.control.allowEdit,
             "data": {
                 "person": this.data.id,
@@ -336,7 +336,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
         //         }
         //
         //         json.data.each(function(item){
-        //             //this.attributes.push(new MWF.xApplication.orggrid.PersonExplorer.PersonAttribute(this.attributeTabContentNode.getElement("table").getFirst(), item, this, this.explorer.css.list));
+        //             //this.attributes.push(new MWF.xApplication.orgregion.PersonExplorer.PersonAttribute(this.attributeTabContentNode.getElement("table").getFirst(), item, this, this.explorer.css.list));
         //             this.attributeList.push(item);
         //         }.bind(this));
         //     }.bind(this), null, this.data.id);
@@ -350,7 +350,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
     },
     _listIdentity: function(){
         var _self = this;
-        this.identityList = new MWF.xApplication.orggrid.List(this.identityContentNode, this, {
+        this.identityList = new MWF.xApplication.orgregion.List(this.identityContentNode, this, {
             "action": false,
             "canEdit": false,
             "saveAction": "saveIdentity",
@@ -386,7 +386,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
                         }
                         if( _self.getDutyActionPermission() ){
                             var editDutyIcon = new Element("i.o2icon-edit2", {
-                                "title": MWF.xApplication.orggrid.LP.editDuty
+                                "title": MWF.xApplication.orgregion.LP.editDuty
                             }).inject(contentNode);
                             editDutyIcon.addClass("edit-duty-icon");
                             editDutyIcon.addEvent("click", function () {
@@ -427,7 +427,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
 
                                         Promise.all( psRemove.concat(psAdd) ).then(function( list ){
 
-                                            _self.explorer.app.notice(MWF.xApplication.orggrid.LP.modifySuccess);
+                                            _self.explorer.app.notice(MWF.xApplication.orgregion.LP.modifySuccess);
 
                                             this.data.woUnitDutyList = selectedList;
                                             dutyNode.empty();
@@ -435,7 +435,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
                                                 new MWF.widget.O2Duty(duty, dutyNode, {"style": "xform", "showUnit": true});
                                             }.bind(this));
                                         }.bind(this), function () {
-                                            _self.explorer.app.notice(MWF.xApplication.orggrid.LP.modifyFail, "error");
+                                            _self.explorer.app.notice(MWF.xApplication.orgregion.LP.modifyFail, "error");
                                         });
                                     }.bind(this)
                                 })
@@ -446,10 +446,10 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
             }, {
                 "getHtml": function(){
                     if (this.major){
-                        return "<div style='width:24px; height:24px; background:url(../x_component_orggrid/$Explorer/"+
+                        return "<div style='width:24px; height:24px; background:url(../x_component_orgregion/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/mainid.png) center center no-repeat'></div>";
                     }else{
-                        return "<div title='"+_self.explorer.app.lp.setIdentityMain+"' style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orggrid/$Explorer/"+
+                        return "<div title='"+_self.explorer.app.lp.setIdentityMain+"' style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orgregion/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/select.png) center center no-repeat'></div>";
                     }
                 },
@@ -463,7 +463,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
             },{
                 "getHtml": function(){
                     if (_self.data.control.allowEdit){
-                        return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orggrid/$Explorer/"+
+                        return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orgregion/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/edit.png) center center no-repeat'></div>";
                     }
                     return "";
@@ -587,7 +587,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
     },
     _listRole: function(){
         var _self = this;
-        this.roleList = new MWF.xApplication.orggrid.List(this.roleContentNode, this, {
+        this.roleList = new MWF.xApplication.orgregion.List(this.roleContentNode, this, {
             "action": false,
             "canEdit": false,
             "data": {
@@ -603,7 +603,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
                 "description",{
                     "getHtml": function(){
                         if (_self.data.control.allowEdit){
-                            return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orggrid/$Explorer/"+
+                            return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orgregion/$Explorer/"+
                                 _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                         }
                         return "";
@@ -643,8 +643,8 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
         // }.bind(this));
     }
 });
-MWF.xApplication.orggrid.PersonExplorer.PersonContent.TitleInfor = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor,
+MWF.xApplication.orgregion.PersonExplorer.PersonContent.TitleInfor = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent.TitleInfor,
     getActionPermission: function(){
         if(MWF.AC.isManager())return true;
         if(MWF.AC.isSecurityManager())return true;
@@ -687,7 +687,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.TitleInfor = new Class({
         }
     },
     banPerson: function (){
-        var form = new MWF.xApplication.orggrid.PersonExplorer.BanPersonForm(this.explorer, {}, {
+        var form = new MWF.xApplication.orgregion.PersonExplorer.BanPersonForm(this.explorer, {}, {
             name :  this.data.name || "",
             onPostOk : function( reason ){
                 o2.Actions.load("x_organization_assemble_control").PersonAction.banPerson(this.data.id, {
@@ -746,7 +746,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.TitleInfor = new Class({
         }.bind(this));
     },
     lockPerson: function (e){
-        var form = new MWF.xApplication.orggrid.PersonExplorer.LockPersonForm(this.explorer, {}, {
+        var form = new MWF.xApplication.orgregion.PersonExplorer.LockPersonForm(this.explorer, {}, {
             name :  this.data.name || "",
             onPostOk : function( lockExpiredTime, reason ){
                 o2.Actions.load("x_organization_assemble_control").PersonAction.lockPerson(this.data.id, {
@@ -788,7 +788,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.TitleInfor = new Class({
         }.bind(this));
     },
     setPasswordExpiredTime: function(){
-        var form = new MWF.xApplication.orggrid.PersonExplorer.PasswordExpiredTimeForm(this.explorer, {}, {
+        var form = new MWF.xApplication.orgregion.PersonExplorer.PasswordExpiredTimeForm(this.explorer, {}, {
             expiredTime :  this.data.expiredTime || "",
             onPostOk : function( expiredTime ){
                 o2.Actions.load("x_organization_assemble_control").PersonAction.setPasswordExpiredTime(this.data.id, expiredTime, function(){
@@ -875,8 +875,8 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.TitleInfor = new Class({
         }
     }
 });
-MWF.xApplication.orggrid.PersonExplorer.PersonContent.BottomInfor = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent.BottomInfor,
+MWF.xApplication.orgregion.PersonExplorer.PersonContent.BottomInfor = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent.BottomInfor,
     addInforList: function(){
         var text = this.explorer.app.lp.personReadDn.replace(/{dn}/g, (this.data.distinguishedName || " "));
         this.addInfor(text);
@@ -901,7 +901,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BottomInfor = new Class({
     }
 });
 
-MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
+MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInfor = new Class({
     initialize: function(content){
         this.content = content;
         this.item = content.item;
@@ -968,8 +968,9 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
 
-        var tdContents = this.editContentNode.getElements("td.inforContent");
-        if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, tdContents[5], {"style": "xform"});
+        // var tdContents = this.editContentNode.getElements("td.inforContent");
+        var tdContent = this.editContentNode.getElement(".infor_superior");
+        if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, tdContent, {"style": "xform"});
 
         this.loadAction();
 
@@ -1016,23 +1017,39 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         }.bind(this));
 
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle title_name'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
-            "<td class='inforTitle title_unique'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle title_mobile'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
-            "<td class='inforTitle title_employee'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle title_gender'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent infor_gender'>"+this.getGenderType()+"</td>" +
-            "<td class='inforTitle title_superior extend'>"+this.explorer.app.lp.personSuperior+":</td><td class='inforContent infor_superior extend'>"+"</td></tr>";
-        html += "<tr class='extend'><td class='inforTitle title_mail'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent infor_mail'>"+(this.data.mail || "")+"</td>" +
-            "<td class='inforTitle title_weixin'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent infor_weixin'>"+(this.data.weixin || "")+"</td></tr>";
-        html += "<tr class='extend'><td class='inforTitle title_qq'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent infor_qq'>"+(this.data.qq || "")+"</td>" +
-            "<td class='inforTitle title_officePhone'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td></tr>";
-        html += "<tr class='extend'><td class='inforTitle title_boardDate'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
-            "<td class='inforTitle title_birthday'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
-        html += "<tr class='extend'><td class='inforTitle title_ipAddress'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
-            "<td class='inforTitle title_description'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
+        html += "<tr>" +
+            "<td class='inforTitle title_name'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
+            "<td class='inforTitle title_gender'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent infor_gender'>"+this.getGenderType()+"</td>" +
+            "</tr>";
+        html += "<tr>" +
+            "<td class='inforTitle title_mobile'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
+            "<td class='inforTitle title_employee'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td>" +
+            "</tr>";
+        html += "<tr>" +
+            "<td class='inforTitle title_unique'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td>" +
+            "<td class='inforTitle title_superior extend'>"+this.explorer.app.lp.personSuperior+":</td><td class='inforContent infor_superior extend'>"+"</td>" +
+            "</tr>";
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle title_mail'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent infor_mail'>"+(this.data.mail || "")+"</td>" +
+            "<td class='inforTitle title_weixin'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent infor_weixin'>"+(this.data.weixin || "")+"</td>" +
+            "</tr>";
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle title_qq'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent infor_qq'>"+(this.data.qq || "")+"</td>" +
+            "<td class='inforTitle title_officePhone'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td>" +
+            "</tr>";
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle title_boardDate'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
+            "<td class='inforTitle title_birthday'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td>" +
+            "</tr>";
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle title_ipAddress'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
+            "<td class='inforTitle title_description'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td>" +
+            "</tr>";
 
-        html += "<tr class='extend'><td class='inforTitle title_securityLabel'>"+this.explorer.app.lp.securityLabel+":</td><td class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
-            "<td class='inforTitle title_status'>"+this.explorer.app.lp.status+":</td><td class='inforContent infor_status'>"+(statusText || "")+"</td></tr>";
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle title_securityLabel'>"+this.explorer.app.lp.securityLabel+":</td><td class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
+            "<td class='inforTitle title_status'>"+this.explorer.app.lp.status+":</td><td class='inforContent infor_status'>"+(statusText || "")+"</td>" +
+            "</tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -1055,7 +1072,9 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
             this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
 
             if(this.simpleMode){
-                this.switchSimpleNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.savePerson}).inject(this.baseInforEditActionAreaNode);
+                this.switchSimpleNode = new Element("div", {"styles": this.style.moreNode, "text": this.explorer.app.lp.more}).inject(this.baseInforEditActionAreaNode);
+                this.switchSimpleNode.addClass("mainColor_color");
+                this.switchSimpleNode.setStyle("display", "block");
             }
 
             this.editNode.setStyle("display", "block");
@@ -1067,17 +1086,19 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         }
     },
     edit: function(){
-        debugger;
         var tdContents = this.editContentNode.getElements("td.inforContent");
-        tdContents[0].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[0]);
+
+        var tdContent = this.editContentNode.getElement(".infor_name");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.nameInputNode.set("value", (this.data.name));
 
-        tdContents[1].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
+        tdContent = this.editContentNode.getElement(".infor_unique");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.uniqueInputNode.set("value", (this.data.unique));
         if( this.data.id ){
-            this.tooltip = new MWF.xApplication.orggrid.PersonExplorer.PersonContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+            this.tooltip = new MWF.xApplication.orgregion.PersonExplorer.PersonContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
                 axis : "y",
                 position : {
                     x : "right"
@@ -1087,22 +1108,26 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
             });
         }
 
-        tdContents[2].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.mobileInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[2]);
+        tdContent = this.editContentNode.getElement(".infor_mobile");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.mobileInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.mobileInputNode.set("value", (this.data.mobile));
 
-        tdContents[3].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.employeeInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[3]);
+        tdContent = this.editContentNode.getElement(".infor_employee");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.employeeInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.employeeInputNode.set("value", (this.data.employee));
 
-        tdContents[4].setStyles(this.style.baseInforContentNode_edit).empty();
+        tdContent = this.editContentNode.getElement(".infor_gender");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
         var html = "<input name=\"personGenderRadioNode\" value=\"m\" type=\"radio\" "+((this.data.genderType==="m") ? "checked" : "")+"/>"+this.explorer.app.lp.man;
         html += "<input name=\"personGenderRadioNode\" value=\"f\" type=\"radio\" "+((this.data.genderType==="f") ? "checked" : "")+"/>"+this.explorer.app.lp.female;
         html += "<input name=\"personGenderRadioNode\" value=\"d\" type=\"radio\" "+((this.data.genderType==="d") ? "checked" : "")+"/>"+this.explorer.app.lp.other;
-        tdContents[4].set("html", html);
+        tdContent.set("html", html);
 
-        tdContents[5].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.superiorInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContents[5]);
+        tdContent = this.editContentNode.getElement(".infor_superior");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.superiorInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContent);
         //this.superiorInputNode.set("value", (this.data.superior));
         if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, this.superiorInputNode, {"style": "xform"});
         this.superiorInputNode.addEvent("click", function(){
@@ -1126,24 +1151,29 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
             }.bind(this));
         }.bind(this));
 
-        tdContents[6].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.mailInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[6]);
+        tdContent = this.editContentNode.getElement(".infor_mail");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.mailInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.mailInputNode.set("value", (this.data.mail));
 
-        tdContents[7].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.weixinInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[7]);
+        tdContent = this.editContentNode.getElement(".infor_weixin");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.weixinInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.weixinInputNode.set("value", (this.data.weixin));
 
-        tdContents[8].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.qqInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[8]);
+        tdContent = this.editContentNode.getElement(".infor_qq");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.qqInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.qqInputNode.set("value", (this.data.qq));
 
-        tdContents[9].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.officePhoneInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[9]);
+        tdContent = this.editContentNode.getElement(".infor_officePhone");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.officePhoneInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.officePhoneInputNode.set("value", (this.data.officePhone));
 
-        tdContents[10].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.boardDateInputNode = new Element("input", {"styles": this.style.inputNode_calendar, "readonly": true}).inject(tdContents[10]);
+        tdContent = this.editContentNode.getElement(".infor_boardDate");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.boardDateInputNode = new Element("input", {"styles": this.style.inputNode_calendar, "readonly": true}).inject(tdContent);
         this.boardDateInputNode.set("value", (this.data.boardDate));
 
         MWF.require("MWF.widget.Calendar", function(){
@@ -1155,8 +1185,9 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
             });
         }.bind(this));
 
-        tdContents[11].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.birthdayInputNode = new Element("input", {"styles": this.style.inputNode_calendar, "readonly": true}).inject(tdContents[11]);
+        tdContent = this.editContentNode.getElement(".infor_birthday");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.birthdayInputNode = new Element("input", {"styles": this.style.inputNode_calendar, "readonly": true}).inject(tdContent);
         this.birthdayInputNode.set("value", (this.data.birthday));
 
         MWF.require("MWF.widget.Calendar", function(){
@@ -1168,23 +1199,25 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
             });
         }.bind(this));
 
-        tdContents[12].setStyles(this.style.baseInforContentNode_edit).empty();
+        tdContent = this.editContentNode.getElement(".infor_ipAddress");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
         this.ipAddressInputNode = new Element("input", {
             "styles": this.style.inputNode,
             "placeHolder": this.explorer.app.lp.ipAddressPlaceHolder,
             "autocomplete": "off",
             "title": this.explorer.app.lp.ipAddressPlaceHolder
-        }).inject(tdContents[12]);
+        }).inject(tdContent);
         this.ipAddressInputNode.set("value", (this.data.ipAddress));
 
-
-        tdContents[13].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[13]);
+        tdContent = this.editContentNode.getElement(".infor_description");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.descriptionInputNode.set("value", (this.data.description));
 
-        tdContents[14].setStyles(this.style.baseInforContentNode_edit).empty();
+        tdContent = this.editContentNode.getElement(".infor_securityLabel");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
         var securityLabel = this.data.subjectSecurityClearance;
-        this.securityLabelSelectNode = new Element("select", {"styles": this.style.selectNode}).inject(tdContents[14]);
+        this.securityLabelSelectNode = new Element("select", {"styles": this.style.selectNode}).inject(tdContent);
         new Element("option", {value: "", text: ""}).inject(this.securityLabelSelectNode);
 
         this.getSecurityLabelList().then(function(securityLabelList){
@@ -1213,8 +1246,10 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
     },
     save: function(){
         var tdContents = this.editContentNode.getElements("td.inforContent");
+
+        var tdContent = this.editContentNode.getElement(".infor_gender");
         var gender = "";
-        var radios = tdContents[4].getElements("input");
+        var radios = tdContent.getElements("input");
         for (var i=0; i<radios.length; i++){
             if (radios[i].checked){
                 gender = radios[i].value;
@@ -1284,8 +1319,9 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         var securityLabel = this.securityLabelSelectNode.options[this.securityLabelSelectNode.selectedIndex].value;
         data.subjectSecurityClearance = (securityLabel) ? parseInt(securityLabel) : null;
 
-        var tdContents = this.editContentNode.getElements("td.inforContent");
-        var radios = tdContents[4].getElements("input");
+        //var tdContents = this.editContentNode.getElements("td.inforContent");
+        var tdContent = this.editContentNode.getElement(".infor_gender");
+        var radios = tdContent.getElements("input");
         for (var i=0; i<radios.length; i++){
             if (radios[i].checked){
                 data.genderType = radios[i].value;
@@ -1317,28 +1353,55 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         }.bind(this));
     },
     cancel: function(){
-        debugger;
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
-            tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
-            tdContents[2].setStyles(this.style.baseInforContentNode).set("text", this.data.mobile || "");
-            tdContents[3].setStyles(this.style.baseInforContentNode).set("text", this.data.employee || "");
-            tdContents[4].setStyles(this.style.baseInforContentNode).set("text", this.getGenderType());
-            tdContents[5].setStyles(this.style.baseInforContentNode).set("text", "");
-            if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, tdContents[5], {"style": "xform"});
 
-            tdContents[6].setStyles(this.style.baseInforContentNode).set("text", this.data.mail || "");
-            tdContents[7].setStyles(this.style.baseInforContentNode).set("text", this.data.weixin || "");
-            tdContents[8].setStyles(this.style.baseInforContentNode).set("text", this.data.qq || "");
-            tdContents[9].setStyles(this.style.baseInforContentNode).set("text", this.data.officePhone || "");
-            tdContents[10].setStyles(this.style.baseInforContentNode).set("text", this.data.boardDate || "");
-            tdContents[11].setStyles(this.style.baseInforContentNode).set("text", this.data.birthday || "");
-            tdContents[12].setStyles(this.style.baseInforContentNode).set("text", this.data.ipAddress || "");
-            tdContents[13].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
+            var tdContent = this.editContentNode.getElement(".infor_name");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
+
+            tdContent = this.editContentNode.getElement(".infor_unique");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
+
+            tdContent = this.editContentNode.getElement(".infor_mobile");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.mobile || "");
+
+            tdContent = this.editContentNode.getElement(".infor_employee");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.employee || "");
+
+            tdContent = this.editContentNode.getElement(".infor_gender");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.getGenderType());
+
+            tdContent = this.editContentNode.getElement(".infor_superior");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", "");
+            if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, tdContent, {"style": "xform"});
+
+            tdContent = this.editContentNode.getElement(".infor_mail");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.mail || "");
+
+            tdContent = this.editContentNode.getElement(".infor_weixin");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.weixin || "");
+
+            tdContent = this.editContentNode.getElement(".infor_qq");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.qq || "");
+
+            tdContent = this.editContentNode.getElement(".infor_officePhone");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.officePhone || "");
+
+            tdContent = this.editContentNode.getElement(".infor_boardDate");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.boardDate || "");
+
+            tdContent = this.editContentNode.getElement(".infor_birthday");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.birthday || "");
+
+            tdContent = this.editContentNode.getElement(".infor_ipAddress");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.ipAddress || "");
+
+            tdContent = this.editContentNode.getElement(".infor_description");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
 
             this.getSecurityLabelText().then(function(securityLabel){
-                tdContents[14].setStyles(this.style.baseInforContentNode).set("text", securityLabel || "");
+                var tdContent = this.editContentNode.getElement(".infor_securityLabel");
+                tdContent.setStyles(this.style.baseInforContentNode).set("text", securityLabel || "");
             }.bind(this));
 
 
@@ -1383,27 +1446,27 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         MWF.release(this);
     },
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orggrid/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orgregion/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
-        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orggrid/$Explorer/default/icon/man.png";
+        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orgregion/$Explorer/default/icon/man.png";
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "../x_component_orggrid/$Explorer/default/icon/female.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/female.png"
         //     }else{
-        //         src = "../x_component_orggrid/$Explorer/default/icon/man.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/man.png"
         //     }
         // }
         // return src;
     }
 });
 
-MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInforDialog = new Class({
-    Extends: MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor,
+MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInforDialog = new Class({
+    Extends: MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInfor,
     Implements: [Options, Events],
     initialize: function(app, container, data, unitDn, options){
         this.setOptions(options);
-        this.explorer = new MWF.xApplication.orggrid.PersonExplorer();
+        this.explorer = new MWF.xApplication.orgregion.PersonExplorer();
         this.explorer.app = app;
         this.actions = app.restActions;
         this.style = this.explorer.css.item.person;
@@ -1431,7 +1494,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInforDialog = new Clas
             "zindex": 1,
             "title": title,
             "width": "1000",
-            "height": "460",
+            "height": this.simpleMode ? "280" : "460",
             "maxHeightPercent": "'90%",
             "maxWidthPercent": "'90%",
             "container": _self.container,
@@ -1476,7 +1539,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInforDialog = new Clas
     }
 });
 
-MWF.xApplication.orggrid.PersonExplorer.PersonContent.UniqueTooltip = new Class({
+MWF.xApplication.orgregion.PersonExplorer.PersonContent.UniqueTooltip = new Class({
     Extends: MTooltips,
     _getHtml : function(){
         var html =
@@ -1486,7 +1549,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.UniqueTooltip = new Class(
 });
 
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
-MWF.xApplication.orggrid.PersonExplorer.PasswordExpiredTimeForm = new Class({
+MWF.xApplication.orgregion.PersonExplorer.PasswordExpiredTimeForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
@@ -1498,7 +1561,7 @@ MWF.xApplication.orggrid.PersonExplorer.PasswordExpiredTimeForm = new Class({
         "hasTopIcon" : false,
         "hasTopContent" : true,
         "hasBottom": true,
-        "title": MWF.xApplication.orggrid.LP.expiredTimeTitle,
+        "title": MWF.xApplication.orgregion.LP.expiredTimeTitle,
         "draggable": true,
         "closeAction": true,
         "publishTime": ""
@@ -1581,7 +1644,7 @@ MWF.xApplication.orggrid.PersonExplorer.PasswordExpiredTimeForm = new Class({
     }
 });
 
-MWF.xApplication.orggrid.PersonExplorer.LockPersonForm = new Class({
+MWF.xApplication.orgregion.PersonExplorer.LockPersonForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
@@ -1593,7 +1656,7 @@ MWF.xApplication.orggrid.PersonExplorer.LockPersonForm = new Class({
         "hasTopIcon" : false,
         "hasTopContent" : true,
         "hasBottom": true,
-        "title": MWF.xApplication.orggrid.LP.lockPerson,
+        "title": MWF.xApplication.orgregion.LP.lockPerson,
         "draggable": true,
         "closeAction": true,
         "lockExpiredTime": ""
@@ -1609,7 +1672,7 @@ MWF.xApplication.orggrid.PersonExplorer.LockPersonForm = new Class({
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr>" +
             "   <td styles='formTableValue' style='width:70px;'></td>" +
-            "   <td styles='formTableValue'>"+MWF.xApplication.orggrid.LP.lockPersonInfo+"</td>" +
+            "   <td styles='formTableValue'>"+MWF.xApplication.orgregion.LP.lockPersonInfo+"</td>" +
             "</tr>"+
             "<tr>" +
             "   <td styles='formTableValue' style='width:70px;' lable='lockExpiredTime'></td>" +
@@ -1628,7 +1691,7 @@ MWF.xApplication.orggrid.PersonExplorer.LockPersonForm = new Class({
                 isEdited: true,
                 itemTemplate: {
                     lockExpiredTime: {
-                        text: MWF.xApplication.orggrid.LP.lockLimitTime,
+                        text: MWF.xApplication.orgregion.LP.lockLimitTime,
                         tType: "date",
                         notEmpty: true,
                         value: this.options.lockExpiredTime || "",
@@ -1644,7 +1707,7 @@ MWF.xApplication.orggrid.PersonExplorer.LockPersonForm = new Class({
                         }
                     },
                     reason: {
-                        text: MWF.xApplication.orggrid.LP.lockPersonReason,
+                        text: MWF.xApplication.orgregion.LP.lockPersonReason,
                         type: "textarea",
                         notEmpty: true,
                         value: this.options.reason || ""
@@ -1692,7 +1755,7 @@ MWF.xApplication.orggrid.PersonExplorer.LockPersonForm = new Class({
     }
 });
 
-MWF.xApplication.orggrid.PersonExplorer.BanPersonForm = new Class({
+MWF.xApplication.orgregion.PersonExplorer.BanPersonForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
@@ -1704,7 +1767,7 @@ MWF.xApplication.orggrid.PersonExplorer.BanPersonForm = new Class({
         "hasTopIcon" : false,
         "hasTopContent" : true,
         "hasBottom": true,
-        "title": MWF.xApplication.orggrid.LP.banPerson,
+        "title": MWF.xApplication.orgregion.LP.banPerson,
         "draggable": true,
         "closeAction": true,
         "publishTime": ""
@@ -1720,7 +1783,7 @@ MWF.xApplication.orggrid.PersonExplorer.BanPersonForm = new Class({
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr>" +
             "   <td styles='formTableValue' style='width:70px;'></td>" +
-            "   <td styles='formTableValue'>"+MWF.xApplication.orggrid.LP.banPersonText.replace("{name}", this.options.name)+"</td>" +
+            "   <td styles='formTableValue'>"+MWF.xApplication.orgregion.LP.banPersonText.replace("{name}", this.options.name)+"</td>" +
             "</tr>"+
             "<tr>" +
             "   <td styles='formTableValue' style='width:70px;' lable='reason'></td>" +
@@ -1735,7 +1798,7 @@ MWF.xApplication.orggrid.PersonExplorer.BanPersonForm = new Class({
                 isEdited: true,
                 itemTemplate: {
                     reason: {
-                        text: MWF.xApplication.orggrid.LP.reason,
+                        text: MWF.xApplication.orgregion.LP.reason,
                         type: "textarea",
                         notEmpty: true,
                         value: this.options.reason || ""
@@ -1783,7 +1846,7 @@ MWF.xApplication.orggrid.PersonExplorer.BanPersonForm = new Class({
     }
 });
 
-MWF.xApplication.orggrid.PersonExplorer.FilterTooltip = new Class({
+MWF.xApplication.orgregion.PersonExplorer.FilterTooltip = new Class({
     Extends: MTooltips,
     _customNode : function(node, contentNode){
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0'>" +
@@ -1797,7 +1860,7 @@ MWF.xApplication.orggrid.PersonExplorer.FilterTooltip = new Class({
             "</tr>"+
             "<tr>" +
             "   <td styles='formTableValue'></td>" +
-            "   <td styles='formTableValue'><div class='mainColor_bg' item='searchAction'>"+MWF.xApplication.orggrid.LP.search+"</div></td>" +
+            "   <td styles='formTableValue'><div class='mainColor_bg' item='searchAction'>"+MWF.xApplication.orgregion.LP.search+"</div></td>" +
             "</tr>"+
             "</table>";
         this.contentNode.set("html", html);
@@ -1808,18 +1871,18 @@ MWF.xApplication.orggrid.PersonExplorer.FilterTooltip = new Class({
                 isEdited: true,
                 itemTemplate: {
                     key: {
-                        text: MWF.xApplication.orggrid.LP.search,
+                        text: MWF.xApplication.orgregion.LP.search,
                         attr:{
-                            placeholder: MWF.xApplication.orggrid.LP.searchText
+                            placeholder: MWF.xApplication.orgregion.LP.searchText
                         }
                     },
                     status: {
-                        text: MWF.xApplication.orggrid.LP.status,
+                        text: MWF.xApplication.orgregion.LP.status,
                         type: "select",
-                        selectValue: MWF.xApplication.orggrid.LP.statusOption.map(function (opt){
+                        selectValue: MWF.xApplication.orgregion.LP.statusOption.map(function (opt){
                             return opt.value;
                         }),
-                        selectText: MWF.xApplication.orggrid.LP.statusOption.map(function (opt){
+                        selectText: MWF.xApplication.orgregion.LP.statusOption.map(function (opt){
                             return opt.text;
                         })
                     }

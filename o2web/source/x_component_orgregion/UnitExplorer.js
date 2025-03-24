@@ -1,8 +1,8 @@
 MWF.require("MWF.widget.O2Identity", null, false);
-MWF.xDesktop.requireApp("orggrid", "$Explorer", null, false);
+MWF.xDesktop.requireApp("orgregion", "$Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
-MWF.xApplication.orggrid.UnitExplorer = new Class({
-	Extends: MWF.xApplication.orggrid.$Explorer,
+MWF.xApplication.orgregion.UnitExplorer = new Class({
+	Extends: MWF.xApplication.orgregion.$Explorer,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
@@ -73,7 +73,7 @@ MWF.xApplication.orggrid.UnitExplorer = new Class({
         }
     },
     _newElement: function(data, explorer){
-        return new MWF.xApplication.orggrid.UnitExplorer.Unit(data, explorer, this.isEditor, 0);
+        return new MWF.xApplication.orgregion.UnitExplorer.Unit(data, explorer, this.isEditor, 0);
     },
     _listElementByKey: function(callback, failure, key){
         var data = {key: key};
@@ -160,8 +160,8 @@ MWF.xApplication.orggrid.UnitExplorer = new Class({
     }
 });
 
-MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.Item,
+MWF.xApplication.orgregion.UnitExplorer.Unit = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.Item,
     initialize: function(data, explorer, isEditor, i, listNode, parent){
         this.i = i;
         this.level = i;
@@ -273,7 +273,7 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
             if (isNewElement){
                 var newElementData = this.explorer._getAddElementData();
                 newElementData.superior = this.data.id;
-                var item = new MWF.xApplication.orggrid.UnitExplorer.Unit(newElementData, this.explorer, this.isEditor, this.level+1, this.childNode, this);
+                var item = new MWF.xApplication.orgregion.UnitExplorer.Unit(newElementData, this.explorer, this.isEditor, this.level+1, this.childNode, this);
                 item.load();
                 item.selected();
                 item.editBaseInfor();
@@ -346,9 +346,9 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
             var toggle_on = (this.explorer.currentItem===this) ? "toggle_current_on" : "toggle_on";
             var toggle_off = (this.explorer.currentItem===this) ? "toggle_current_off" : "toggle_off";
             if (this.isExpand){
-                this.toggleIconNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_on+".png)");
+                this.toggleIconNode.setStyle("background-image", "url(../x_component_orgregion/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_on+".png)");
             }else{
-                this.toggleIconNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_off+".png)");
+                this.toggleIconNode.setStyle("background-image", "url(../x_component_orgregion/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_off+".png)");
             }
         }else{
             this.toggleIconNode.setStyle("background-image", "");
@@ -374,7 +374,7 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
         this.explorer.actions.listSubUnitDirect(function(json){
             if (json.data.length){
                 json.data.each(function(itemData){
-                    var item = new MWF.xApplication.orggrid.UnitExplorer.Unit(itemData, this.explorer, this.isEditor, this.level+1, this.childNode, this);
+                    var item = new MWF.xApplication.orgregion.UnitExplorer.Unit(itemData, this.explorer, this.isEditor, this.level+1, this.childNode, this);
                     this.explorer.elements.push(item);
                     item.load();
                     this.subUnits.push(item);
@@ -435,7 +435,7 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
     },
 
     showItemProperty: function(){
-        this.content = new MWF.xApplication.orggrid.UnitExplorer.UnitContent(this);
+        this.content = new MWF.xApplication.orgregion.UnitExplorer.UnitContent(this);
     },
     "delete": function(success, failure){
         this.explorer.actions.deleteUnit(this.data.id, function(){
@@ -450,14 +450,14 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
         });
     },
     _getIcon: function(){
-        return (this.explorer.currentItem===this) ? "../x_component_orggrid/$Explorer/default/icon/unit_current.png" : "../x_component_orggrid/$Explorer/default/icon/unit.png";
+        return (this.explorer.currentItem===this) ? "../x_component_orgregion/$Explorer/default/icon/unit_current.png" : "../x_component_orgregion/$Explorer/default/icon/unit.png";
     },
     _isActionManager: function(){
         return (MWF.AC.isOrganizationManager() || MWF.AC.isUnitManager());
     }
 });
-MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent,
+MWF.xApplication.orgregion.UnitExplorer.UnitContent = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent,
     _getData: function(callback){
         if (this.item.data.id){
             this.explorer.actions.getUnit(function(json){
@@ -471,10 +471,10 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         }
     },
     _showItemPropertyTitle: function(){
-        this.titleInfor = new MWF.xApplication.orggrid.UnitExplorer.UnitContent.TitleInfor(this);
+        this.titleInfor = new MWF.xApplication.orgregion.UnitExplorer.UnitContent.TitleInfor(this);
     },
     _showItemPropertyBottom: function(){
-        this.bottomInfor = new MWF.xApplication.orggrid.UnitExplorer.UnitContent.BottomInfor(this);
+        this.bottomInfor = new MWF.xApplication.orgregion.UnitExplorer.UnitContent.BottomInfor(this);
     },
     loadItemPropertyTab: function(callback){
         this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
@@ -566,7 +566,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
 
     },
     _listBaseInfor: function(){
-        this.baseInfor = new MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor(this);
+        this.baseInfor = new MWF.xApplication.orgregion.UnitExplorer.UnitContent.BaseInfor(this);
     },
     getDutyActionPermission: function(){
         if( MWF.AC.isManager() )return true;
@@ -576,7 +576,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
     },
     _listDutys: function(){
         var _self = this;
-        this.dutyList = new MWF.xApplication.orggrid.List(this.dutyContentNode, this, {
+        this.dutyList = new MWF.xApplication.orgregion.List(this.dutyContentNode, this, {
             "action": _self.getDutyActionPermission(),
             "saveAction": "saveUnitduty",
             "deleteAction": "deleteUnitduty",
@@ -647,7 +647,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         ]);
 
         this.data.woUnitDutyList.each(function(item){
-            //this.attributes.push(new MWF.xApplication.orggrid.PersonExplorer.PersonAttribute(this.attributeTabContentNode.getElement("table").getFirst(), item, this, this.explorer.css.list));
+            //this.attributes.push(new MWF.xApplication.orgregion.PersonExplorer.PersonAttribute(this.attributeTabContentNode.getElement("table").getFirst(), item, this, this.explorer.css.list));
             this.dutyList.push(item);
         }.bind(this));
     },
@@ -737,7 +737,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         }.bind(this));
     },
     _listAttributes: function(){
-        this.attributeList = new MWF.xApplication.orggrid.List(this.attributeContentNode, this, {
+        this.attributeList = new MWF.xApplication.orgregion.List(this.attributeContentNode, this, {
             "action": this.data.control.allowEdit,
             "saveAction": "saveUnitattribute",
             "deleteAction": "deleteUnitattribute",
@@ -774,7 +774,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         ]);
 
         this.data.woUnitAttributeList.each(function(item){
-            //this.attributes.push(new MWF.xApplication.orggrid.PersonExplorer.PersonAttribute(this.attributeTabContentNode.getElement("table").getFirst(), item, this, this.explorer.css.list));
+            //this.attributes.push(new MWF.xApplication.orgregion.PersonExplorer.PersonAttribute(this.attributeTabContentNode.getElement("table").getFirst(), item, this, this.explorer.css.list));
             this.attributeList.push(item);
         }.bind(this));
     },
@@ -798,7 +798,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         }
         this.personMemberContentNode.empty();
 
-        this.identityMemberList = new MWF.xApplication.orggrid.List(this.personMemberContentNode, this, {
+        this.identityMemberList = new MWF.xApplication.orgregion.List(this.personMemberContentNode, this, {
             "action": _self.getIdentityActionPermission(),
             "canEdit": false,
             "deleteAction": "deleteIdentity",
@@ -821,7 +821,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
                 "get": function(){return this.woPerson.mail}
             }, {
                 "getHtml": function(){
-                    return "<div style='float:right;width:24px; height:24px; background:url(../x_component_orggrid/$Explorer/"+
+                    return "<div style='float:right;width:24px; height:24px; background:url(../x_component_orgregion/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
                 "events": {
@@ -832,7 +832,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
             }, {
                 "getHtml": function(){
                     if(_self.getIdentityActionPermission()){
-                        return "<div style='-webkit-user-select: none; -moz-user-select: none; width:24px; height:24px; cursor: move; background:url(../x_component_orggrid/$Explorer/"+
+                        return "<div style='-webkit-user-select: none; -moz-user-select: none; width:24px; height:24px; cursor: move; background:url(../x_component_orgregion/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/move.png) center center no-repeat'></div>";
                     }else{
                         return  "<div></div>"
@@ -853,7 +853,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
             "onPostLoadAction": function () {
                 if(this.addAction){
                     this.addAction.set('text', this.content.explorer.app.lp.select);
-                    this.addAction.setStyle("background-image", "url('../x_component_orggrid/$List/default/icon/selectitem.png')");
+                    this.addAction.setStyle("background-image", "url('../x_component_orgregion/$List/default/icon/selectitem.png')");
                 }
                 if( _self.getIdentityActionPermission() ){
                     this.createAction = new Element("div", {"styles": this.css.addActionNode, "text": this.content.explorer.app.lp.create}).inject(this.actionNode);
@@ -891,8 +891,8 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
     },
     createPerson: function (){
         var _self = this;
-        MWF.xDesktop.requireApp('orggrid', 'PersonExplorer', null, false);
-        var baseInfo = new MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInforDialog(
+        MWF.xDesktop.requireApp('orgregion', 'PersonExplorer', null, false);
+        var baseInfo = new MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInforDialog(
             this.explorer.app,
             this.explorer.app.content,
             null,
@@ -913,7 +913,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         this.identityMemberList = null;
         this.personMemberContentNode.empty();
 
-        this.identitySortList = new MWF.xApplication.orggrid.List(this.personMemberContentNode, this, {
+        this.identitySortList = new MWF.xApplication.orgregion.List(this.personMemberContentNode, this, {
             "action": false,
             "canEdit": false,
             "attr": [{
@@ -1153,18 +1153,18 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
         }
     }
 });
-MWF.xApplication.orggrid.UnitExplorer.UnitContent.TitleInfor = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor,
+MWF.xApplication.orgregion.UnitExplorer.UnitContent.TitleInfor = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent.TitleInfor,
     _getStyle: function(){
         var css = Object.clone(this.item.style.person);
         return Object.merge(css, this.item.style.role);
     },
     _getIcon: function(){
-        return "../x_component_orggrid/$Explorer/default/icon/unit70.png";
+        return "../x_component_orgregion/$Explorer/default/icon/unit70.png";
     },
     setBackground: function(){
-        this.titleBgNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg_bg.png)");
-        this.titleNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg.png)");
+        this.titleBgNode.setStyle("background-image", "url(../x_component_orgregion/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg_bg.png)");
+        this.titleNode.setStyle("background-image", "url(../x_component_orgregion/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg.png)");
     },
     loadRightInfor: function(){
         //var text = this.data.name+((this.data.unique) ? "（"+this.data.unique+"）" : "");
@@ -1175,8 +1175,8 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.TitleInfor = new Class({
         this.signatureNode.set("text", (this.data.levelName || "" ));
     }
 });
-MWF.xApplication.orggrid.UnitExplorer.UnitContent.BottomInfor = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent.BottomInfor,
+MWF.xApplication.orgregion.UnitExplorer.UnitContent.BottomInfor = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent.BottomInfor,
     addInforList: function(){
         var text = this.explorer.app.lp.unitReadDn.replace(/{dn}/g, (this.data.distinguishedName || " "));
         this.addInfor(text);
@@ -1191,7 +1191,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BottomInfor = new Class({
     }
 });
 
-MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
+MWF.xApplication.orgregion.UnitExplorer.UnitContent.BaseInfor = new Class({
     initialize: function(content){
         this.content = content;
         this.item = content.item;
@@ -1234,12 +1234,16 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
 
         var tdContents = this.editContentNode.getElements("td.inforContent");
         if (this.data.control.allowEdit || o2.AC.isSecurityManager() ){
+            var tdContent;
             if (this.data.controllerList){
+                tdContent = this.editContentNode.getElement(".infor_controller");
                 this.data.controllerList.each(function(id){
-                    new MWF.widget.O2Person({"name": id}, tdContents[5], {"style": "xform"});
+                    new MWF.widget.O2Person({"name": id}, tdContent, {"style": "xform"});
                 }.bind(this));
             }
-            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContents[6], {"style": "xform"});
+
+            tdContent = this.editContentNode.getElement(".infor_superunit");
+            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContent, {"style": "xform"});
         }
 
 
@@ -1247,22 +1251,37 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
     },
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent infor_name'></td>";
-        if (this.data.control.allowEdit || o2.AC.isSecurityManager()) html += "<td class='inforTitle'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique'></td>";
-        html += "</tr><tr><td class='inforTitle'>"+this.explorer.app.lp.unitTypeList+":</td><td class='inforContent infor_type'></td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.unitShortName+":</td><td class='inforContent infor_shortName'></td></tr>";
-        // html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitLevel+":</td><td class='inforContent'>"+this.data.level+"</td>" +
-        //     "<td class='inforTitle'>"+this.explorer.app.lp.unitLevelName+":</td><td class='inforContent'>"+(this.data.levelName || "")+"</td></tr>";
 
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent infor_name'></td>";
+
+        if (this.data.control.allowEdit || o2.AC.isSecurityManager()) {
+            html += "<td class='inforTitle extend'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique extend'></td>";
+        }
+        html += "</tr>";
+
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.unitTypeList+":</td><td class='inforContent infor_type'></td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.unitShortName+":</td><td class='inforContent infor_shortName'></td>" +
+            "</tr>";
+
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td>" +
+            "<td colspan='3' class='inforContent infor_description'></td>"+
+            "</tr>";
+
         if (this.data.control.allowEdit || o2.AC.isSecurityManager()){
-            html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitControllerList+":</td><td class='inforContent'></td>" +
-                "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent'></td></tr>";
-            html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td><td colspan='3' class='inforContent infor_orderNumber'></td></tr>";
+            html += "<tr class='extend'>" +
+                "<td class='inforTitle'>"+this.explorer.app.lp.unitControllerList+":</td><td class='inforContent infor_controller'></td>" +
+                "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent infor_superunit'></td>" +
+                "</tr>";
+
+            html += "<tr class='extend'>" +
+                "<td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td>" +
+                "<td colspan='3' class='inforContent infor_orderNumber'></td>" +
+                "</tr>";
         }
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
-        //this.baseInforRightNode.set("html", html);
 
         return html;
     },
@@ -1292,15 +1311,18 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
     },
     edit: function(){
         var tdContents = this.editContentNode.getElements("td.inforContent");
-        tdContents[0].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[0]);
+
+        var tdContent = this.editContentNode.getElement(".infor_name");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.nameInputNode.set("value", (this.data.name));
 
-        tdContents[1].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
+        tdContent = this.editContentNode.getElement(".infor_unique");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.uniqueInputNode.set("value", (this.data.unique));
         if( this.data.id ){
-            this.tooltip = new MWF.xApplication.orggrid.UnitExplorer.UnitContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+            this.tooltip = new MWF.xApplication.orgregion.UnitExplorer.UnitContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
                 axis : "y",
                 position : {
                     x : "right"
@@ -1310,28 +1332,33 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
             });
         }
 
-        tdContents[2].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.typeListInputNode = new Element("input", {"styles": this.style.inputNode_type}).inject(tdContents[2]);
+        tdContent = this.editContentNode.getElement(".infor_type");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.typeListInputNode = new Element("input", {"styles": this.style.inputNode_type}).inject(tdContent);
         this.typeListInputNode.set("value", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
         this.loadUnitTypeSelect();
 
-        tdContents[3].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.shortNameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[3]);
+        tdContent = this.editContentNode.getElement(".infor_shortName");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.shortNameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.shortNameInputNode.set("value", (this.data.shortName || ""));
 
-
-        tdContents[4].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[4]);
+        tdContent = this.editContentNode.getElement(".infor_description");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.descriptionInputNode.set("value", (this.data.description || ""));
 
-        tdContents[5].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.controllerListInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContents[5]);
+        tdContent = this.editContentNode.getElement(".infor_controller");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.controllerListInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContent);
 
-        tdContents[6].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.superUnitInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContents[6]);
+        tdContent = this.editContentNode.getElement(".infor_superunit");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.superUnitInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContent);
 
-        tdContents[7].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.orderNumberInputNode = new Element("input", {"styles": this.style.inputNode, "type":"number"}).inject(tdContents[7]);
+        tdContent = this.editContentNode.getElement(".infor_orderNumber");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.orderNumberInputNode = new Element("input", {"styles": this.style.inputNode, "type":"number"}).inject(tdContent);
         this.orderNumberInputNode.set("value", (o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber ));
         //this.controllerListInputNode.set("value", ((this.data.controllerList) ? this.data.controllerList.join(", ") : ""));
 
@@ -1520,15 +1547,31 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
     cancel: function( ev, flag ){
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
-            tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
-            tdContents[2].setStyles(this.style.baseInforContentNode).set("text", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
-            tdContents[3].setStyles(this.style.baseInforContentNode).set("text", this.data.shortName || "");
-            tdContents[4].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
+
+            var tdContent = this.editContentNode.getElement(".infor_name");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
+
+            tdContent = this.editContentNode.getElement(".infor_unique");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
+
+            tdContent = this.editContentNode.getElement(".infor_type");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
+
+            tdContent = this.editContentNode.getElement(".infor_shortName");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.shortName || "");
+
+            tdContent = this.editContentNode.getElement(".infor_description");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
             //tdContents[5].setStyles(this.style.baseInforContentNode).set("text", ((this.data.controllerList.length) ? this.data.controllerList.join(", "): ""));
-            tdContents[5].setStyles(this.style.baseInforContentNode).empty();
-            tdContents[6].setStyles(this.style.baseInforContentNode).empty();
-            tdContents[7].setStyles(this.style.baseInforContentNode).set("text", o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber );
+
+            tdContent = this.editContentNode.getElement(".infor_controller");
+            tdContent.setStyles(this.style.baseInforContentNode).empty();
+
+            tdContent = this.editContentNode.getElement(".infor_superunit");
+            tdContent.setStyles(this.style.baseInforContentNode).empty();
+
+            tdContent = this.editContentNode.getElement(".infor_orderNumber");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber );
 
             if( !flag ){
                 if (this.data.oldSuperior) this.data.superior = this.data.oldSuperior;
@@ -1537,10 +1580,13 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
             delete this.data.oldSuperior;
             delete this.data.oldControllerList;
 
-            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContents[6], {"style": "xform"});
+            tdContent = this.editContentNode.getElement(".infor_superunit");
+            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContent, {"style": "xform"});
+
+            tdContent = this.editContentNode.getElement(".infor_controller");
             if (this.data.controllerList){
                 this.data.controllerList.each(function(id){
-                    new MWF.widget.O2Person({"name": id}, tdContents[5], {"style": "xform"});
+                    new MWF.widget.O2Person({"name": id}, tdContent, {"style": "xform"});
                 }.bind(this));
             }
 
@@ -1568,7 +1614,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
     }
 });
 
-MWF.xApplication.orggrid.UnitExplorer.UnitContent.UniqueTooltip = new Class({
+MWF.xApplication.orgregion.UnitExplorer.UnitContent.UniqueTooltip = new Class({
     Extends: MTooltips,
     _getHtml : function(){
         var html =

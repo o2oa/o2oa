@@ -23,13 +23,13 @@
     },
     "selectTdNode":{
         "cursor": "pointer",
-        "background": "url(../x_component_orggrid/$List/default/icon/select.png) center center no-repeat",
+        "background": "url(../x_component_orgregion/$List/default/icon/select.png) center center no-repeat",
         "border-bottom": "1px solid #cccccc"
     },
     "selectTdNode_selected":{
         "border-bottom": "1px solid #CCC",
         "cursor": "pointer",
-        "background": "url(../x_component_orggrid/$List/default/icon/selected.png) center center no-repeat",
+        "background": "url(../x_component_orgregion/$List/default/icon/selected.png) center center no-repeat",
     },
     "blankTdNode": {
         "border-bottom": "1px solid #cccccc"
@@ -46,7 +46,7 @@
         "margin-right": "10px"
     },
     "addActionNode": {
-        "background": "url(../x_component_orggrid/$List/default/icon/additem.png) 3px center no-repeat",
+        "background": "url(../x_component_orgregion/$List/default/icon/additem.png) 3px center no-repeat",
         "float": "right",
         "cursor": "pointer",
         "margin-top": "0px",
@@ -62,7 +62,7 @@
         "border-radius":"3px"
     },
     "deleteActionNode_disabled": {
-        "background": "url(../x_component_orggrid/$List/default/icon/deleteitem_disable.png) 3px center no-repeat",
+        "background": "url(../x_component_orgregion/$List/default/icon/deleteitem_disable.png) 3px center no-repeat",
         "float": "right",
         "cursor": "pointer",
         "margin-top": "0px",
@@ -78,7 +78,7 @@
         "border-radius":"3px"
     },
     "deleteActionNode": {
-        "background": "url(../x_component_orggrid/$List/default/icon/deleteitem.png) 3px center no-repeat",
+        "background": "url(../x_component_orgregion/$List/default/icon/deleteitem.png) 3px center no-repeat",
         "float": "right",
         "cursor": "pointer",
         "margin-top": "0px",
@@ -105,7 +105,7 @@
         "color": "#333333"
     },
     "sortActionNode": {
-        "background": "url(../x_component_orggrid/$List/default/icon/order.png) 3px center no-repeat",
+        "background": "url(../x_component_orgregion/$List/default/icon/order.png) 3px center no-repeat",
         "float": "right",
         "cursor": "pointer",
         "margin-top": "0px",
@@ -121,7 +121,7 @@
         "border-radius":"3px"
     },
     "okActionNode": {
-        "background": "url(../x_component_orggrid/$Explorer/default/icon/mainid.png) 5px center no-repeat",
+        "background": "url(../x_component_orgregion/$Explorer/default/icon/mainid.png) 5px center no-repeat",
         "background-size": "12px",
         "float": "right",
         "cursor": "pointer",

@@ -1,5 +1,5 @@
 MWF.require("MWF.widget.O2Identity", null, false);
-MWF.xApplication.orggrid.PrivateConfig = new Class({
+MWF.xApplication.orgregion.PrivateConfig = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {
@@ -30,7 +30,7 @@ MWF.xApplication.orggrid.PrivateConfig = new Class({
         }
     },
     _loadConfig:function(){
-        this.ConfigContent = new MWF.xApplication.orggrid.PrivateConfig.ConfigContent(this);
+        this.ConfigContent = new MWF.xApplication.orgregion.PrivateConfig.ConfigContent(this);
         this.ConfigContent.load();
     },
     load: function(){
@@ -40,7 +40,7 @@ MWF.xApplication.orggrid.PrivateConfig = new Class({
 
 });
 
-MWF.xApplication.orggrid.PrivateConfig.ConfigContent = new Class({
+MWF.xApplication.orgregion.PrivateConfig.ConfigContent = new Class({
     initialize: function(content){
         debugger;
         this.content = content;
