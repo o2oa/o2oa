@@ -55,6 +55,11 @@ MWF.xApplication.cms.ColumnManager.LP={
 		"aliasLabel": "Alias",
 		"sendNotify": "¿Enviar notificación al publicar?",
 		"sendNotifyInfo": "La estrategia específica de notificación se configura en el formulario.",
+
+		"indexAbleInfo": "Si el tipo de documento es datos, esta configuración no es válida.",
+
+		"setSendNotifySuccess": "La estrategia el formulario.",
+		"indexAble" : "Can Index",
 		"blankToAllNotify": "¿Notificar a todos cuando el alcance de publicación esté vacío?",
 		"descriptionLabel": "Descripción",
 		"sortLabel": "Orden",
