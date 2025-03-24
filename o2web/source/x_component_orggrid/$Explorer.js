@@ -945,6 +945,14 @@ MWF.xApplication.orggrid.$Explorer.ItemContent = new Class({
         this.contentNode.empty();
         MWF.release(this);
     },
+    reload: function (){
+        if (this.setContentSizeFun) this.explorer.app.removeEvent("resize", this.setContentSizeFun);
+        if (this.titleInfor) this.titleInfor.destroy();
+        if (this.bottomInfor) this.bottomInfor.destroy();
+        if (this.baseInfor) this.baseInfor.destroy();
+        this.contentNode.empty();
+        this.load();
+    },
 
     _showItemPropertyTitle: function(){
         this.titleInfor = new MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor(this);

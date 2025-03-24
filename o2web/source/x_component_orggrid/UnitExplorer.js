@@ -180,6 +180,10 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
 
         this.subUnits = [];
     },
+    reload: function (){
+        this.node.destroy();
+        this.load();
+    },
     refresh: function(){
         this._loadTextNode();
         if (this.content){
@@ -1201,6 +1205,7 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
         this.style = this.item.style.person;
         this.attributes = [];
         this.mode = "read";
+        this.simpleMode = true;
         this.load();
     },
     load: function(){
@@ -1232,37 +1237,71 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
 
-        var tdContents = this.editContentNode.getElements("td.inforContent");
+        //var tdContents = this.editContentNode.getElements("td.inforContent");
+
         if (this.data.control.allowEdit || o2.AC.isSecurityManager() ){
+            var tdContent;
             if (this.data.controllerList){
+                tdContent = this.editContentNode.getElement(".infor_controller");
                 this.data.controllerList.each(function(id){
-                    new MWF.widget.O2Person({"name": id}, tdContents[5], {"style": "xform"});
+                    new MWF.widget.O2Person({"name": id}, tdContent, {"style": "xform"});
                 }.bind(this));
             }
-            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContents[6], {"style": "xform"});
+
+            tdContent = this.editContentNode.getElement(".infor_superunit");
+            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContent, {"style": "xform"});
         }
 
 
         this.loadAction();
+
+        if( this.simpleMode ){
+            this.switchSimpleMode(true);
+        }
+    },
+    switchSimpleMode: function ( isSimple ){
+        var tdContent = this.editContentNode.getElement('.infor_name')
+        if( isSimple ){
+            tdContent.setStyle('width', '80%');
+            this.editContentNode.getElements(".extend").setStyle("display", "none");
+        }else{
+            tdContent.setStyle('width', '50%');
+            this.editContentNode.getElements(".extend").setStyle("display", "");
+        }
     },
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent infor_name'></td>";
-        if (this.data.control.allowEdit || o2.AC.isSecurityManager()) html += "<td class='inforTitle'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique'></td>";
-        html += "</tr><tr><td class='inforTitle'>"+this.explorer.app.lp.unitTypeList+":</td><td class='inforContent infor_type'></td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.unitShortName+":</td><td class='inforContent infor_shortName'></td></tr>";
-        // html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitLevel+":</td><td class='inforContent'>"+this.data.level+"</td>" +
-        //     "<td class='inforTitle'>"+this.explorer.app.lp.unitLevelName+":</td><td class='inforContent'>"+(this.data.levelName || "")+"</td></tr>";
 
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent infor_name'></td>";
+
+        if (this.data.control.allowEdit || o2.AC.isSecurityManager()) {
+            html += "<td class='inforTitle extend'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique extend'></td>";
+        }
+        html += "</tr>";
+
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.unitTypeList+":</td><td class='inforContent infor_type'></td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.unitShortName+":</td><td class='inforContent infor_shortName'></td>" +
+            "</tr>";
+
+        html += "<tr class='extend'>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td>" +
+            "<td colspan='3' class='inforContent infor_description'></td>"+
+            "</tr>";
+
         if (this.data.control.allowEdit || o2.AC.isSecurityManager()){
-            html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitControllerList+":</td><td class='inforContent'></td>" +
-                "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent'></td></tr>";
-            html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td><td colspan='3' class='inforContent infor_orderNumber'></td></tr>";
+            html += "<tr class='extend'>" +
+                "<td class='inforTitle'>"+this.explorer.app.lp.unitControllerList+":</td><td class='inforContent infor_controller'></td>" +
+                "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent infor_superunit'></td>" +
+                "</tr>";
+
+            html += "<tr class='extend'>" +
+                "<td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td>" +
+                "<td colspan='3' class='inforContent infor_orderNumber'></td>" +
+                "</tr>";
         }
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
-        //this.baseInforRightNode.set("html", html);
 
         return html;
     },
@@ -1292,15 +1331,24 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
     },
     edit: function(){
         var tdContents = this.editContentNode.getElements("td.inforContent");
-        tdContents[0].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[0]);
+
+        var tdContent = this.editContentNode.getElement(".infor_name");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.nameInputNode.set("value", (this.data.name));
 
-        tdContents[1].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
-        this.uniqueInputNode.set("value", (this.data.unique));
+        tdContent = this.editContentNode.getElement(".infor_unique");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
+        if( this.data.unique ){
+            this.uniqueInputNode.set("value", (this.data.unique));
+        }else{
+            MWF.require("MWF.widget.UUID", null, false);
+            this.data.unique = (new MWF.widget.UUID).id;
+            this.uniqueInputNode.set("value", (this.data.unique));
+        }
         if( this.data.id ){
-            this.tooltip = new MWF.xApplication.orggrid.UnitExplorer.UnitContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+            this.tooltip = new MWF.xApplication.orggrid.UnitExplorer.UnitContent.UniqueTooltip(this.explorer.app.content, tdContent, this.explorer.app, {}, {
                 axis : "y",
                 position : {
                     x : "right"
@@ -1310,28 +1358,33 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
             });
         }
 
-        tdContents[2].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.typeListInputNode = new Element("input", {"styles": this.style.inputNode_type}).inject(tdContents[2]);
+        tdContent = this.editContentNode.getElement(".infor_type");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.typeListInputNode = new Element("input", {"styles": this.style.inputNode_type}).inject(tdContent);
         this.typeListInputNode.set("value", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
         this.loadUnitTypeSelect();
 
-        tdContents[3].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.shortNameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[3]);
+        tdContent = this.editContentNode.getElement(".infor_shortName");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.shortNameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.shortNameInputNode.set("value", (this.data.shortName || ""));
 
-
-        tdContents[4].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[4]);
+        tdContent = this.editContentNode.getElement(".infor_description");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.descriptionInputNode.set("value", (this.data.description || ""));
 
-        tdContents[5].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.controllerListInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContents[5]);
+        tdContent = this.editContentNode.getElement(".infor_controller");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.controllerListInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContent);
 
-        tdContents[6].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.superUnitInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContents[6]);
+        tdContent = this.editContentNode.getElement(".infor_superunit");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.superUnitInputNode = new Element("div", {"styles": this.style.inputNode_person}).inject(tdContent);
 
-        tdContents[7].setStyles(this.style.baseInforContentNode_edit).empty();
-        this.orderNumberInputNode = new Element("input", {"styles": this.style.inputNode, "type":"number"}).inject(tdContents[7]);
+        tdContent = this.editContentNode.getElement(".infor_orderNumber");
+        tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
+        this.orderNumberInputNode = new Element("input", {"styles": this.style.inputNode, "type":"number"}).inject(tdContent);
         this.orderNumberInputNode.set("value", (o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber ));
         //this.controllerListInputNode.set("value", ((this.data.controllerList) ? this.data.controllerList.join(", ") : ""));
 
@@ -1505,30 +1558,131 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
                 this.item.refresh();
                 if (callback) callback();
             }else{
-                this.explorer.actions.getUnit(function(json){
-                    this.data = Object.merge(this.data, json.data);
-                    this.item.data = this.data;
-                    this.item.refresh();
-                    if (this.item.parent) this.item.parent.subUnits.push(this.item);
-                    if (callback) callback();
-                }.bind(this), null, json.data.id);
+                var unitList = [].concat( o2.api.org.listSupUnit( json.data.id, true),  o2.api.org.getUnit( json.data.id ));
+                if( unitList.length && unitList[0].distinguishedName.contains('申报单位') && unitList.length > 1 ){
+                    this.createIdentity( function (){
+                        this.afterCreate(json, function (){
+                            this.content.reload();
+                        }.bind(this));
+                    }.bind(this), json.data.id, unitList );
+                }else{
+                    this.afterCreate(json, callback);
+                }
             }
         }.bind(this), function(xhr, text, error){
             if (cancel) cancel(xhr, text, error);
         }.bind(this));
     },
+    afterCreate: function (json, callback){
+        this.explorer.actions.getUnit(function(json){
+            this.data = Object.merge(this.data, json.data);
+            this.item.data = this.data;
+            this.item.refresh();
+            if (this.item.parent) this.item.parent.subUnits.push(this.item);
+            if (callback) callback();
+        }.bind(this), null, json.data.id);
+    },
+    createIdentity: function (callback, unitString, unitList, count){
+        if( !count )count = 0;
+        if( count > 10 )return;
+
+        var name = '';
+        unitList.each( function (unit, i){
+            if( i > 0 )name = name + unit.name;
+        });
+        MWF.require("MWF.widget.UUID", null, false);
+        o2.Actions.load('x_organization_assemble_control').PersonAction.create({
+            unit: unitString,
+            name: name,
+            genderType: 'd',
+            mobile: this.generateChinesePhoneNumber(),
+            unique: (new MWF.widget.UUID).id
+        }, function (json){
+            var identityList = o2.api.org.listIdentityWithPerson(json.data.id);
+            o2.Actions.load('x_organization_assemble_control').UnitDutyAction.create({
+                'name': '部门正职',
+                'unit': unitString,
+                'identityList': identityList.map(function (d){
+                    return d.distinguishedName
+                })
+            }, function (){
+                if(callback)callback();
+            })
+        }.bind(this), function (){
+            this.createIdentity(callback, unitString, unitList, count);
+        }.bind(this));
+    },
+    generateChinesePhoneNumber: function() {
+        // 中国手机号码有效号段（前三到四位）
+        const prefixes = [
+            // 中国移动
+            '1340', '1341', '1342', '1343', '1344', '1345', '1346', '1347', '1348',
+            '135', '136', '137', '138', '139',
+            '1440', '147', '148',
+            '150', '151', '152', '157', '158', '159',
+            '172', '178',
+            '182', '183', '184', '187', '188',
+            '195', '197', '198',
+            // 中国联通
+            '130', '131', '132',
+            '145', '146',
+            '155', '156',
+            '166', '167',
+            '171', '175', '176',
+            '185', '186',
+            '196',
+            // 中国电信
+            '133', '1349', '149',
+            '153', '162',
+            '173', '177',
+            '180', '181', '189',
+            '190', '191', '193', '199',
+            // 虚拟运营商
+            '165', '170', '1700', '1701', '1702', '1703', '1705', '1706', '1707', '1708', '1709',
+            '1718', '1719', '167',
+            // 中国广电
+            '192'
+        ];
+
+        // 随机选择一个号段
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+
+        // 生成剩余部分（总长度补足到11位）
+        const remainLength = 11 - prefix.length;
+        const suffix = Array.from({length: remainLength}, () =>
+            Math.floor(Math.random() * 10).toString()
+        ).join('');
+
+        return prefix + suffix;
+    },
     cancel: function( ev, flag ){
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
-            tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
-            tdContents[2].setStyles(this.style.baseInforContentNode).set("text", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
-            tdContents[3].setStyles(this.style.baseInforContentNode).set("text", this.data.shortName || "");
-            tdContents[4].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
+
+            var tdContent = this.editContentNode.getElement(".infor_name");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
+
+            tdContent = this.editContentNode.getElement(".infor_unique");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
+
+            tdContent = this.editContentNode.getElement(".infor_type");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
+
+            tdContent = this.editContentNode.getElement(".infor_shortName");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.shortName || "");
+
+            tdContent = this.editContentNode.getElement(".infor_description");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
             //tdContents[5].setStyles(this.style.baseInforContentNode).set("text", ((this.data.controllerList.length) ? this.data.controllerList.join(", "): ""));
-            tdContents[5].setStyles(this.style.baseInforContentNode).empty();
-            tdContents[6].setStyles(this.style.baseInforContentNode).empty();
-            tdContents[7].setStyles(this.style.baseInforContentNode).set("text", o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber );
+
+            tdContent = this.editContentNode.getElement(".infor_controller");
+            tdContent.setStyles(this.style.baseInforContentNode).empty();
+
+            tdContent = this.editContentNode.getElement(".infor_superunit");
+            tdContent.setStyles(this.style.baseInforContentNode).empty();
+
+            tdContent = this.editContentNode.getElement(".infor_orderNumber");
+            tdContent.setStyles(this.style.baseInforContentNode).set("text", o2.typeOf(this.data.orderNumber) === 'null' ? "" : this.data.orderNumber );
 
             if( !flag ){
                 if (this.data.oldSuperior) this.data.superior = this.data.oldSuperior;
@@ -1537,10 +1691,13 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
             delete this.data.oldSuperior;
             delete this.data.oldControllerList;
 
-            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContents[6], {"style": "xform"});
+            tdContent = this.editContentNode.getElement(".infor_superunit");
+            if (this.data.superior) new MWF.widget.O2Unit({"name": this.data.superior}, tdContent, {"style": "xform"});
+
+            tdContent = this.editContentNode.getElement(".infor_controller");
             if (this.data.controllerList){
                 this.data.controllerList.each(function(id){
-                    new MWF.widget.O2Person({"name": id}, tdContents[5], {"style": "xform"});
+                    new MWF.widget.O2Person({"name": id}, tdContent, {"style": "xform"});
                 }.bind(this));
             }
 
@@ -1549,6 +1706,9 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent.BaseInfor = new Class({
             this.editNode.setStyle("display", "block");
             this.saveNode.setStyle("display", "none");
             this.cancelNode.setStyle("display", "none");
+            if( this.simpleMode ){
+                this.switchSimpleMode(true);
+            }
         }else{
             this.item.destroy();
         }

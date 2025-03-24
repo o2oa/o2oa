@@ -175,6 +175,7 @@ MWF.xApplication.orggrid.LP={
 	"editPerson": "Editar información de la persona",
 	"resetPassword": "Restablecer contraseña",
 	"savePerson": "Guardar información de la persona",
+	"more": "más",
 	"personReadDn": "El nombre completo del usuario es: {dn}.",
 	"personReadLogin": "El usuario inició sesión por última vez el {date} desde la dirección IP {ip} en un cliente {client}.",
 	"personReadCreate": "El usuario fue creado en {date} y modificado por última vez en {date2}.",
