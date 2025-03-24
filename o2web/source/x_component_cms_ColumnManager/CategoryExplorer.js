@@ -782,6 +782,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
             this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setSendNotifySuccess );
         }.bind(this))
     },
+    setIndexAble: function( isSend ){
+        var d = this.data;
+        d.indexAble = isSend;
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setIndexAbleSuccess );
+        }.bind(this))
+    },
     setBlankToAllNotify: function( value ){
         var d = this.data;
         d.blankToAllNotify = value;
@@ -2733,6 +2740,10 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         html += "<tr><td class='formTitle'>"+this.app.lp.category.sendNotify +"</td><td id='formCategorySendNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
         html += "<tr><td class='formTitle'></td><td style='color:#999;padding-left: 20px;font-size: 12px;'>"+this.app.lp.category.sendNotifyInfo+"</td></tr>";
         // html += "<tr><td class='formTitle'>"+this.app.lp.category.blankToAllNotify +"</td><td id='formCategoryBlankToAllNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
+
+        html += "<tr><td class='formTitle'>"+this.app.lp.category.indexAble +"</td><td id='indexAble' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
+        html += "<tr><td class='formTitle'></td><td style='color:#999;padding-left: 20px;font-size: 12px;'>"+this.app.lp.category.indexAbleInfo+"</td></tr>";
+
         html += "</table>";
         this.propertyContentNode.set("html", html);
         this.propertyContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyBaseContentTdTitle);
@@ -2774,6 +2785,22 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
             }
         });
         this.sendNotify.load();
+
+        var indexAbleValue = o2.typeOf(this.category.data.indexAble) === "boolean" ? this.category.data.indexAble : true;
+        this.indexAble = new MDomItem( this.propertyContentNode.getElement("#indexAble"), {
+            type : "select",
+            style: this.app.css.processSelect,
+            value : indexAbleValue.toString(),
+            selectValue : lp.sendNotifySelectValue,
+            selectText: lp.sendNotifySelectText,
+            event : {
+                change : function( item ){
+                    this.category.setIndexAble( item.getValue() !== "false" );
+                }.bind(this)
+            }
+        });
+        this.indexAble.load();
+
 
         // var blankToAllNotifyValue = o2.typeOf(this.category.data.blankToAllNotify) === "boolean" ? this.category.data.blankToAllNotify : true;
         // this.blankToAllNotify = new MDomItem( this.propertyContentNode.getElement("#formCategoryBlankToAllNotify"), {
