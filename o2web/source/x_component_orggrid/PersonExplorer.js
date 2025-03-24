@@ -972,8 +972,18 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, tdContents[5], {"style": "xform"});
 
         this.loadAction();
-    },
 
+        if( this.simpleMode ){
+           this.switchSimpleMode(true);
+        }
+    },
+    switchSimpleMode: function ( isSimple ){
+        if( isSimple ){
+            this.editContentNode.getElements(".extend").setStyle("display", "none");
+        }else{
+            this.editContentNode.getElements(".extend").setStyle("display", "");
+        }
+    },
     getSecurityLabelText(){
         return this.getSecurityLabelList().then(function(labelList){
 
@@ -1006,23 +1016,23 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
         }.bind(this));
 
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent infor_gender'>"+this.getGenderType()+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personSuperior+":</td><td class='inforContent'>"+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent infor_mail'>"+(this.data.mail || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent infor_weixin'>"+(this.data.weixin || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent infor_qq'>"+(this.data.qq || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_name'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
+            "<td class='inforTitle title_unique'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_mobile'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
+            "<td class='inforTitle title_employee'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle title_gender'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent infor_gender'>"+this.getGenderType()+"</td>" +
+            "<td class='inforTitle title_superior extend'>"+this.explorer.app.lp.personSuperior+":</td><td class='inforContent infor_superior extend'>"+"</td></tr>";
+        html += "<tr class='extend'><td class='inforTitle title_mail'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent infor_mail'>"+(this.data.mail || "")+"</td>" +
+            "<td class='inforTitle title_weixin'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent infor_weixin'>"+(this.data.weixin || "")+"</td></tr>";
+        html += "<tr class='extend'><td class='inforTitle title_qq'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent infor_qq'>"+(this.data.qq || "")+"</td>" +
+            "<td class='inforTitle title_officePhone'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td></tr>";
+        html += "<tr class='extend'><td class='inforTitle title_boardDate'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
+            "<td class='inforTitle title_birthday'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
+        html += "<tr class='extend'><td class='inforTitle title_ipAddress'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
+            "<td class='inforTitle title_description'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
 
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.securityLabel+":</td><td class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.status+":</td><td class='inforContent infor_status'>"+(statusText || "")+"</td></tr>";
+        html += "<tr class='extend'><td class='inforTitle title_securityLabel'>"+this.explorer.app.lp.securityLabel+":</td><td class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
+            "<td class='inforTitle title_status'>"+this.explorer.app.lp.status+":</td><td class='inforContent infor_status'>"+(statusText || "")+"</td></tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -1043,6 +1053,10 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
             this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.savePerson}).inject(this.baseInforEditActionAreaNode);
             this.saveNode.addClass("mainColor_bg");
             this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
+
+            if(this.simpleMode){
+                this.switchSimpleNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.savePerson}).inject(this.baseInforEditActionAreaNode);
+            }
 
             this.editNode.setStyle("display", "block");
             this.editNode.addEvent("click", this.edit.bind(this));
@@ -1401,6 +1415,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInforDialog = new Clas
             this.data = this.explorer._getAddElementData();
             if(unitDn)this.data.unit = unitDn;
         }
+        this.simpleMode = true;
     },
     openDialog: function ( mode ){
         MWF.require("MWF.xDesktop.Dialog", null, false);
