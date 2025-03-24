@@ -500,10 +500,12 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
 
         this.dutyContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.dutyPage = this.propertyTab.addTab(this.dutyContentNode, this.explorer.app.lp.unitDutys);
+        this.dutyPage.tabNode.hide();
 
         if (this.data.control.allowEdit){
             this.attributeContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
             this.attributePage = this.propertyTab.addTab(this.attributeContentNode, this.explorer.app.lp.unitAttribute);
+            this.attributePage.tabNode.hide();
         }
     },
     _loadContent: function(){

@@ -163,7 +163,35 @@ MWF.xApplication.orggrid.PersonExplorer.Person = new Class({
 
 MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
     Extends: MWF.xApplication.orggrid.$Explorer.ItemContent,
+    load: function(){
 
+        this.titleContentNode = new Element("div").inject(this.contentNode);
+        this.propertyContentScrollNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentNode);
+        this.propertyContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyContentScrollNode);
+        this.bottomContentNode = new Element("div").inject(this.contentNode);
+
+        this._getData(function(){
+            this.explorer.propertyTitleNode.set("text", this.data.name);
+            this._showItemPropertyTitle();
+            this.loadItemPropertyTab(function(){
+                this._loadTabs();
+                this._loadContent();
+                if (this.propertyTab.pages.length) this.propertyTab.pages[0].showTabIm();
+                this.basePage.tabNode.hide();
+            }.bind(this));
+            this._showItemPropertyBottom();
+
+            this.setContentSizeFun = this.setContentSize.bind(this);
+            this.setContentSize();
+            this.explorer.app.addEvent("resize", this.setContentSizeFun);
+
+            new MWF.widget.ScrollBar(this.propertyContentScrollNode, {
+                "style":"xApp_Organization_Explorer", "where": "before", "distance": 100, "friction": 4,	"axis": {"x": false, "y": true}
+            });
+        }.bind(this));
+
+        //this.showItemPropertyTitle();
+    },
     _getData: function(callback){
         if (this.item.data.id){
             this.explorer.actions.getPerson(function(json){
@@ -205,12 +233,15 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent = new Class({
 
         this.attributeContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.attributePage = this.propertyTab.addTab(this.attributeContentNode, this.explorer.app.lp.personAttributeText);
+        this.attributePage.tabNode.hide();
 
         this.identityContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.identityPage = this.propertyTab.addTab(this.identityContentNode, this.explorer.app.lp.personIdentityText);
+        this.identityPage.tabNode.hide();
 
         this.roleContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.rolePage = this.propertyTab.addTab(this.roleContentNode, this.explorer.app.lp.personRoleText);
+        this.rolePage.tabNode.hide();
 
         // this.managerContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         // this.managerPage = this.propertyTab.addTab(this.managerContentNode, this.explorer.app.lp.controllerListText);
