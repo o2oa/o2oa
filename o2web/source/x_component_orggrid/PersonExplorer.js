@@ -1055,7 +1055,7 @@ MWF.xApplication.orggrid.PersonExplorer.PersonContent.BaseInfor = new Class({
             "</tr>";
         html += "<tr>" +
             "<td class='inforTitle title_mobile'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
-            "<td class='inforTitle title_employee'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td>" +
+            "<td class='inforTitle title_employee extend'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee extend'>"+(this.data.employee || "")+"</td>" +
             "</tr>";
         html += "<tr class='extend'>" +
             "<td class='inforTitle title_unique'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td>" +
