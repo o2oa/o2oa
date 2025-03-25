@@ -266,6 +266,8 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
                     if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
                     if (this.addNode) this.addNode.setStyles(this.style.actionAddNode_selected);
                 }
+                // this.deleteNode.hide();
+                // this.addNode.hide();
             }
        // }
     },
@@ -857,16 +859,21 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
                 }
             }.bind(this),
             "onPostLoadAction": function () {
+                if(this.deleteAction){
+                    this.deleteAction.hide();
+                }
                 if(this.addAction){
                     this.addAction.set('text', this.content.explorer.app.lp.select);
                     this.addAction.setStyle("background-image", "url('../x_component_orggrid/$List/default/icon/selectitem.png')");
+                    this.addAction.hide();
                 }
                 if( _self.getIdentityActionPermission() ){
                     this.createAction = new Element("div", {"styles": this.css.addActionNode, "text": this.content.explorer.app.lp.create}).inject(this.actionNode);
 
                     this.createAction.addEvent("click", function(e){
                         _self.createPerson(e);
-                    })
+                    });
+                    this.createAction.hide();
                 }
                 if( _self.getIdentitySortActionPermission() ){
                     this.sortAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByPinYin}).inject(this.actionNode);
@@ -877,7 +884,8 @@ MWF.xApplication.orggrid.UnitExplorer.UnitContent = new Class({
                     this.sortByManualAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByManual}).inject(this.actionNode);
                     this.sortByManualAction.addEvent("click", function (e) {
                         _self.sortByManual(e)
-                    })
+                    });
+                    this.sortByManualAction.hide();
                 }
             }
         });
