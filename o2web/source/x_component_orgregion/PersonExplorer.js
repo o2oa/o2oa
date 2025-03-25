@@ -985,7 +985,7 @@ MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInfor = new Class({
             this.editContentNode.getElements(".extend").setStyle("display", "");
         }
     },
-    getSecurityLabelText(){
+    getSecurityLabelText: function (){
         return this.getSecurityLabelList().then(function(labelList){
 
             var securityLabel = "";
@@ -1073,6 +1073,13 @@ MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInfor = new Class({
 
             if(this.simpleMode){
                 this.switchSimpleNode = new Element("div", {"styles": this.style.moreNode, "text": this.explorer.app.lp.more}).inject(this.baseInforEditActionAreaNode);
+                this.switchSimpleNode.addEvent('click', function (){
+                    this.switchSimpleMode(false);
+                    this.switchSimpleNode.hide();
+                    if( this.inDialog ){
+                        this.resizeDialog();
+                    }
+                }.bind(this))
                 this.switchSimpleNode.addClass("mainColor_color");
                 this.switchSimpleNode.setStyle("display", "block");
             }
@@ -1097,8 +1104,18 @@ MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInfor = new Class({
         tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
         this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.uniqueInputNode.set("value", (this.data.unique));
+        if( !this.data.unique ){
+            this.uniqueInputNode.setStyle("width", 'calc( 100% - 48px )');
+            this.uniqueButton = new Element("div", {'text': this.explorer.app.lp.general, 'styles': this.style.generalButton}).inject(tdContent);
+            this.uniqueButton.addEvent("click", function (){
+                MWF.require("MWF.widget.UUID", null, false);
+                this.data.unique = (new MWF.widget.UUID).id;
+                this.uniqueInputNode.set("value", (this.data.unique));
+            }.bind(this));
+        }
+
         if( this.data.id ){
-            this.tooltip = new MWF.xApplication.orgregion.PersonExplorer.PersonContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+            this.tooltip = new MWF.xApplication.orgregion.PersonExplorer.PersonContent.UniqueTooltip(this.explorer.app.content, tdContent, this.explorer.app, {}, {
                 axis : "y",
                 position : {
                     x : "right"
@@ -1465,6 +1482,7 @@ MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInforDialog = new Cl
     Extends: MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInfor,
     Implements: [Options, Events],
     initialize: function(app, container, data, unitDn, options){
+        this.inDialog = true;
         this.setOptions(options);
         this.explorer = new MWF.xApplication.orgregion.PersonExplorer();
         this.explorer.app = app;
@@ -1480,6 +1498,23 @@ MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInforDialog = new Cl
         }
         this.simpleMode = true;
     },
+    resizeDialog: function (dialog, notRecenter) {
+
+        var dlg = this.dialog || dialog;
+        if (!dlg || !dlg.node) return;
+        dlg.node.setStyle("display", "block");
+
+        var maxHeight = dlg.getContentMaxHeight();
+        var s = this.editContentNode.getSize();
+
+        dlg.content.setStyles({
+            "height": Math.min(s.y + 30, maxHeight)
+        });
+
+        dlg.setContentSize();
+
+        if (!notRecenter) dlg.reCenter();
+    },
     openDialog: function ( mode ){
         MWF.require("MWF.xDesktop.Dialog", null, false);
         var _self = this;
@@ -1494,9 +1529,12 @@ MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInforDialog = new Cl
             "zindex": 1,
             "title": title,
             "width": "1000",
-            "height": this.simpleMode ? "280" : "460",
-            "maxHeightPercent": "'90%",
-            "maxWidthPercent": "'90%",
+            // "height": this.simpleMode ? "280" : "460",
+            "positionHeight": 460,
+            "maxHeight": 900,
+            "maxHeightPercent": "98%",
+            "minTop": 5,
+            "height": "auto",
             "container": _self.container,
             "onQueryClose": function (){
                 if( _self.tooltip ){
@@ -1511,6 +1549,7 @@ MWF.xApplication.orgregion.PersonExplorer.PersonContent.BaseInforDialog = new Cl
                 if( _self.mode === 'edit' ){
                     _self.edit();
                 }
+                _self.resizeDialog(this);
             }
         });
     },

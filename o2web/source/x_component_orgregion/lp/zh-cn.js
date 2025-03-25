@@ -6,6 +6,7 @@ MWF.xApplication.orgregion.LP = {
     "role" : "角色",
     "group" : "群组",
     "org": "组织",
+    "general": "生成",
 
     "unitList": "组织架构",
     "groupList": "群组管理",

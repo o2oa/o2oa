@@ -8,6 +8,7 @@ MWF.xApplication.orgregion.LP={
 	"role": "Rol",
 	"group": "Grupo",
 	"org": "Organización",
+	"general": "Generate",
 	"unitList": "Estructura de la organización",
 	"groupList": "Gestionar grupos",
 	"roleList": "Gestionar roles",

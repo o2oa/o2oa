@@ -1321,6 +1321,15 @@ MWF.xApplication.orgregion.UnitExplorer.UnitContent.BaseInfor = new Class({
         tdContent.setStyles(this.style.baseInforContentNode_edit).empty();
         this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContent);
         this.uniqueInputNode.set("value", (this.data.unique));
+        if( !this.data.unique ){
+            this.uniqueInputNode.setStyle("width", 'calc( 100% - 48px )');
+            this.uniqueButton = new Element("div", {'text': this.explorer.app.lp.general, 'styles': this.style.generalButton}).inject(tdContent);
+            this.uniqueButton.addEvent("click", function (){
+                MWF.require("MWF.widget.UUID", null, false);
+                this.data.unique = (new MWF.widget.UUID).id;
+                this.uniqueInputNode.set("value", (this.data.unique));
+            }.bind(this));
+        }
         if( this.data.id ){
             this.tooltip = new MWF.xApplication.orgregion.UnitExplorer.UnitContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
                 axis : "y",

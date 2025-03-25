@@ -441,6 +441,19 @@
         "border-radius": "3px",
         "display": "none"
       },
+      "generalButton":{
+        "width": "41px",
+          "float": "right",
+          "text-align": "center",
+          "height": "24px",
+          "line-height": "24px",
+          "color": "#666666",
+          "font-size": "14px",
+          "cursor": "pointer",
+          "border": "1px solid #666",
+          "background-color": "#f3f3f3",
+          "border-radius": "3px",
+      },
       "actionCancelNode": {
         "width": "100px",
         "float": "right",
