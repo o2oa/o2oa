@@ -1,14 +1,14 @@
 MWF.require("MWF.widget.Tab", null, false);
-MWF.xDesktop.requireApp("orggrid", "List", null, false);
-MWF.xApplication.orggrid.$Explorer = new Class({
+MWF.xDesktop.requireApp("orgregion", "List", null, false);
+MWF.xApplication.orgregion.$Explorer = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {
         "style": "default"
     },
     _loadPath: function(){
-        this.path = "../x_component_orggrid/$Explorer/";
-        this.cssPath = "../x_component_orggrid/$Explorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_orgregion/$Explorer/";
+        this.cssPath = "../x_component_orgregion/$Explorer/"+this.options.style+"/css.wcss";
     },
     initialize: function(node, actions, options){
         this.setOptions(options);
@@ -535,7 +535,7 @@ MWF.xApplication.orggrid.$Explorer = new Class({
         }.bind(this));
     },
     _newElement: function(data, explorer, i){
-        return new MWF.xApplication.orggrid.PersonExplorer.Person(data, explorer, this.isEditor, i);
+        return new MWF.xApplication.orgregion.PersonExplorer.Person(data, explorer, this.isEditor, i);
     },
     _listElementByKey: function(callback, failure, key){
         this.actions.listPersonByKey(function(json){
@@ -582,7 +582,7 @@ MWF.xApplication.orggrid.$Explorer = new Class({
         this.openContent("RoleExplorer", "RoleContent", data, node);
     },
     openContent: function(explorerClazz, contentClazz, data, node){
-        MWF.xDesktop.requireApp("orggrid", explorerClazz, function(){
+        MWF.xDesktop.requireApp("orgregion", explorerClazz, function(){
             var contentNode = new Element("div", {"styles": this.css.popContentNode}).inject(this.propertyContentNode, "top");
             var to = this.getContentStyle(contentNode, node);
 
@@ -604,7 +604,7 @@ MWF.xApplication.orggrid.$Explorer = new Class({
                 "refresh": function(){},
                 "propertyContentNode": contentNode
             };
-            var content = new MWF.xApplication.orggrid[explorerClazz][contentClazz](item, true);
+            var content = new MWF.xApplication.orgregion[explorerClazz][contentClazz](item, true);
             var timeoutResize = function(){
                 content.setContentSize();
                 if (resize)window.setTimeout(function(){timeoutResize();}, 30);
@@ -614,7 +614,7 @@ MWF.xApplication.orggrid.$Explorer = new Class({
     }
 });
 
-MWF.xApplication.orggrid.$Explorer.Item = new Class({
+MWF.xApplication.orgregion.$Explorer.Item = new Class({
     //Extends: MWF.xApplication.Organization.GroupExplorer.Group,
 
     initialize: function(data, explorer, isEditor, i){
@@ -827,7 +827,7 @@ MWF.xApplication.orggrid.$Explorer.Item = new Class({
         this.content.edit();
     },
     showItemProperty: function(){
-        this.content = new MWF.xApplication.orggrid.PersonExplorer.PersonContent(this);
+        this.content = new MWF.xApplication.orgregion.PersonExplorer.PersonContent(this);
     },
 
     destroy: function(){
@@ -855,16 +855,16 @@ MWF.xApplication.orggrid.$Explorer.Item = new Class({
     },
 
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orggrid/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orgregion/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
 
-        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orggrid/$Explorer/default/icon/man.png";
+        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orgregion/$Explorer/default/icon/man.png";
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "../x_component_orggrid/$Explorer/default/icon/female24.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/female24.png"
         //     }else{
-        //         src = "../x_component_orggrid/$Explorer/default/icon/man24.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/man24.png"
         //     }
         // }
         // return src;
@@ -872,7 +872,7 @@ MWF.xApplication.orggrid.$Explorer.Item = new Class({
 
 });
 
-MWF.xApplication.orggrid.$Explorer.ItemContent = new Class({
+MWF.xApplication.orgregion.$Explorer.ItemContent = new Class({
     initialize: function (item, isClose) {
         this.item = item;
         this.isClose = isClose;
@@ -947,16 +947,16 @@ MWF.xApplication.orggrid.$Explorer.ItemContent = new Class({
     },
 
     _showItemPropertyTitle: function(){
-        this.titleInfor = new MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor(this);
+        this.titleInfor = new MWF.xApplication.orgregion.$Explorer.ItemContent.TitleInfor(this);
     },
     _showItemPropertyBottom: function(){
-        this.bottomInfor = new MWF.xApplication.orggrid.$Explorer.ItemContent.BottmInfor(this);
+        this.bottomInfor = new MWF.xApplication.orgregion.$Explorer.ItemContent.BottmInfor(this);
     },
     _loadTabs: function(){},
     _loadContent: function(){}
 });
 
-MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor = new Class({
+MWF.xApplication.orgregion.$Explorer.ItemContent.TitleInfor = new Class({
     initialize: function (content) {
         this.content = content;
         this.item = content.item;
@@ -995,8 +995,8 @@ MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor = new Class({
         });
     },
     setBackground: function(){
-        this.titleBgNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg_bg.png)");
-        this.titleNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg.png)");
+        this.titleBgNode.setStyle("background-image", "url(../x_component_orgregion/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg_bg.png)");
+        this.titleNode.setStyle("background-image", "url(../x_component_orgregion/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg.png)");
     },
     loadLeftInfor: function(){
         if (!this.iconAreaNode) this.iconAreaNode = new Element("div", {"styles": this.style.titleInforIconAreaNode}).inject(this.titleInforLeftNode);
@@ -1004,14 +1004,14 @@ MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor = new Class({
         this.iconNode.set("src", this._getIcon());
     },
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orggrid/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_orgregion/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "../x_component_orggrid/$Explorer/default/icon/female.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/female.png"
         //     }else{
-        //         src = "../x_component_orggrid/$Explorer/default/icon/man.png"
+        //         src = "../x_component_orgregion/$Explorer/default/icon/man.png"
         //     }
         // }
         // return src;
@@ -1033,7 +1033,7 @@ MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor = new Class({
         MWF.release(this);
     }
 });
-MWF.xApplication.orggrid.$Explorer.ItemContent.BottomInfor = new Class({
+MWF.xApplication.orgregion.$Explorer.ItemContent.BottomInfor = new Class({
     initialize: function (content) {
         this.content = content;
         this.item = content.item;

@@ -1,27 +1,27 @@
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
-MWF.xDesktop.requireApp("orggrid", "$Explorer", null, false);
-MWF.xApplication.orggrid.RoleExplorer = new Class({
-	Extends: MWF.xApplication.orggrid.$Explorer,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
+MWF.xDesktop.requireApp("orgregion", "RoleExplorer", null, false);
+MWF.xApplication.orgregion.GroupExplorer = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
         "lp": {
 
         },
         "creator": false
-	},
+    },
     _loadLp: function(){
         this.options.lp = {
-            "elementLoaded": this.app.lp.roleLoaded,
+            "elementLoaded": this.app.lp.groupLoaded,
             "search": this.app.lp.search,
             "searchText": this.app.lp.searchText,
-            "elementSave": this.app.lp.roleSave,
-            "deleteElements": this.app.lp.deleteRoles,
+            "elementSave": this.app.lp.groupSave,
+            "deleteElements": this.app.lp.deleteGroups,
             "deleteElementsCancel": this.app.lp.deleteElementsCancel,
-            "deleteElementsTitle": this.app.lp.deleteRolesTitle,
-            "deleteElementsConfirm": this.app.lp.deletePersonsConfirm,
-            "elementBaseText": this.app.lp.roleBaseText,
-            "elementName": this.app.lp.roleName,
+            "deleteElementsTitle": this.app.lp.deleteGroupsTitle,
+            "deleteElementsConfirm": this.app.lp.deleteGroupsConfirm,
+            "elementBaseText": this.app.lp.groupBaseText,
+            "elementName": this.app.lp.groupName,
             "noSignature": this.app.lp.noSignature,
             "edit": this.app.lp.edit,
             "cancel": this.app.lp.cancel,
@@ -31,15 +31,15 @@ MWF.xApplication.orggrid.RoleExplorer = new Class({
     },
 
     _listElementNext: function(lastid, count, callback){
-        this.actions.listRoleNext(lastid || "(0)", count, function(json){
+        this.actions.listGroupNext(lastid || "(0)", count, function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this));
     },
     _newElement: function(data, explorer){
-        return new MWF.xApplication.orggrid.RoleExplorer.Role(data, explorer, this.isEditor);
+        return new MWF.xApplication.orgregion.GroupExplorer.Group(data, explorer, this.isEditor);
     },
     _listElementByKey: function(callback, failure, key){
-        this.actions.listRoleByKey(function(json){
+        this.actions.listGroupByKey(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
@@ -47,6 +47,8 @@ MWF.xApplication.orggrid.RoleExplorer = new Class({
         return {
             "personList": [],
             "groupList": [],
+            "identityList" : [],
+            "unitList": [],
             "description": "",
             "unique": "",
             "orderNumber": "",
@@ -58,32 +60,17 @@ MWF.xApplication.orggrid.RoleExplorer = new Class({
             }
         };
     },
-    loadToolbar: function(){
-        if (this._isActionManager()){
-            this.isEditor = true;
-            this.addTopElementNode = new Element("div", {"styles": this.css.addTopGroupNode}).inject(this.toolbarNode);
-            this.addTopElementNode.addEvent("click", function(){
-                this.addTopElement();
-            }.bind(this));
-        }
-        this.createSearchNode();
-        this.loadPingyinArea();
-    },
-    _isActionManager: function(){
-	    debugger;
-        return (MWF.AC.isOrganizationManager() || MWF.AC.isRoleManager() || MWF.AC.isSecurityManager());
+    _isActionManager: function() {
+        return (MWF.AC.isOrganizationManager() || MWF.AC.isGroupManager() && !MWF.AC.isSecurityManager());
     }
 });
 
-MWF.xApplication.orggrid.RoleExplorer.Role = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.Item,
-    showItemProperty: function(){
-        this.content = new MWF.xApplication.orggrid.RoleExplorer.RoleContent(this);
-    },
+MWF.xApplication.orgregion.GroupExplorer.Group = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.Item,
     addActions: function(){
         if (this.isEditor){
-            if (this.data.id && !this.data.isSystemRole){
-                if (this.data.control.allowDelete){
+            if (this.data.id){
+                if (this.data.control.allowDelete || MWF.AC.isSecurityManager()){
                     if (!this.deleteNode){
                         this.deleteNode = new Element("div.o2icon-delete", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
                         this.deleteNode.addEvent("click", function(e){
@@ -105,8 +92,11 @@ MWF.xApplication.orggrid.RoleExplorer.Role = new Class({
             }
         }
     },
+    showItemProperty: function(){
+        this.content = new MWF.xApplication.orgregion.GroupExplorer.GroupContent(this);
+    },
     "delete": function(success, failure){
-        this.explorer.actions.deleteRole(this.data.id, function(){
+        this.explorer.actions.deleteGroup(this.data.id, function(){
             this.destroy();
             if (success) success();
         }.bind(this), function(xhr, text, error){
@@ -118,14 +108,14 @@ MWF.xApplication.orggrid.RoleExplorer.Role = new Class({
         });
     },
     _getIcon: function(){
-        return "../x_component_orggrid/$Explorer/default/icon/role.png";
+        return "../x_component_orgregion/$Explorer/default/icon/group.png";
     }
 });
-MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent,
+MWF.xApplication.orgregion.GroupExplorer.GroupContent = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent,
     _getData: function(callback){
         if (this.item.data.id){
-            this.explorer.actions.getRole(function(json){
+            this.explorer.actions.getGroup(function(json){
                 this.data = json.data;
                 this.item.data = json.data;
                 if (callback) callback();
@@ -136,24 +126,43 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
         }
     },
     _showItemPropertyTitle: function(){
-        this.titleInfor = new MWF.xApplication.orggrid.RoleExplorer.RoleContent.TitleInfor(this);
-        //this.baseInfor = new MWF.xApplication.orggrid.BaseInfor(this);
+        this.titleInfor = new MWF.xApplication.orgregion.GroupExplorer.GroupContent.TitleInfor(this);
     },
     _showItemPropertyBottom: function(){
-        this.bottomInfor = new MWF.xApplication.orggrid.RoleExplorer.RoleContent.BottomInfor(this);
+        this.bottomInfor = new MWF.xApplication.orgregion.GroupExplorer.GroupContent.BottomInfor(this);
     },
+    loadItemPropertyTab: function(callback){
+        this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
+
+        MWF.require("MWF.widget.Tab", function(){
+            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "unit", "useMainColor":true});
+            this.propertyTab.load();
+
+            this.propertyTab.tabNodeContainer.inject(this.propertyTabContainerNode);
+            this.propertyTab.tabNodeContainer.setStyle("width","600px");
+            if (callback) callback();
+        }.bind(this));
+    },
+
     _loadTabs: function(){
         this.baseContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
-        this.basePage = this.propertyTab.addTab(this.baseContentNode, this.explorer.app.lp.roleBaseText);
+        this.basePage = this.propertyTab.addTab(this.baseContentNode, this.explorer.app.lp.groupBaseText);
 
         this.personMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
-        this.personMemberPage = this.propertyTab.addTab(this.personMemberContentNode, this.explorer.app.lp.rolePersonMembers);
+        this.personMemberPage = this.propertyTab.addTab(this.personMemberContentNode, this.explorer.app.lp.groupMemberPersonText);
+
+        this.identityMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
+        this.identityMemberPage = this.propertyTab.addTab(this.identityMemberContentNode, this.explorer.app.lp.groupMemberIdentityText);
 
         this.groupMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
-        this.groupMemberPage = this.propertyTab.addTab(this.groupMemberContentNode, this.explorer.app.lp.roleGroupMembers);
+        this.groupMemberPage = this.propertyTab.addTab(this.groupMemberContentNode, this.explorer.app.lp.groupMemberGroupText);
+
+        this.unitMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
+        this.unitMemberPage = this.propertyTab.addTab(this.unitMemberContentNode, this.explorer.app.lp.unitMemberGroupText);
 
     },
     _loadContent: function(){
+        debugger;
         this._listBaseInfor();
         this.loadListCount();
         var _self = this;
@@ -165,7 +174,7 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
             "set": function(){}
         }, "name", "employee", "mobile", "mail", {
             "getHtml": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orggrid/$Explorer/"+
+                return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orgregion/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
             "events": {
@@ -180,25 +189,67 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
             {"style": "", "text": this.explorer.app.lp.personMobile},
             {"style": "", "text": this.explorer.app.lp.personMail},
             {"style": "width: 30px", "text": ""}
-
         ], this.addPersonMember.bind(this), "personCountNode", this.explorer.app.lp.deletePersonMemeberTitle, this.explorer.app.lp.deletePersonMemeber);
 
-        this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName", "description", {
+        this.identityMemberList = this._listMembers("identityList", "woIdentityList", this.identityMemberContentNode, [{
             "getHtml": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orggrid/$Explorer/"+
+                var src = _self.explorer.actions.getPersonIcon(this.person);
+                return "<div style='width:24px; height:24px;''><img style='width:24px; height:24px; border-radius:12px; border: 0' src='"+src+"'/></div>";
+            },
+            "set": function(){}
+        }, "name", "unitLevelName", {
+            "getHtml": function(){
+                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_orgregion/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
             "events": {
                 "click": function(){
-                    _self.explorer.openGroup(this.data, this.td);
                 }
             }
         }], [
+            {"style": "width: 30px", "text": ""},
+            {"style": "width: 20%", "text": this.explorer.app.lp.personName},
+            {"style": "", "text": this.explorer.app.lp.unitLevelName},
+            {"style": "width: 30px", "text": ""}
+        ], this.addIdentityMember.bind(this), "identityCountNode", this.explorer.app.lp.deleteIdentityMemeberTitle, this.explorer.app.lp.deleteIdentityMemeber);
+
+
+        this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName",  //"description",
+            {
+                "getHtml": function(){
+                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orgregion/$Explorer/"+
+                        _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
+                },
+                "events": {
+                    "click": function(){
+                        _self.explorer.openGroup(this.data, this.td);
+                    }
+                }
+            }
+        ], [
             {"style": "width: 20%", "text": this.explorer.app.lp.groupName},
             {"style": "width: 40%", "text": this.explorer.app.lp.groupDn},
-            {"style": "", "text": this.explorer.app.lp.groupDescription},
+            //{"style": "", "text": this.explorer.app.lp.groupDescription},
             {"style": "width: 30px", "text": ""}
         ], this.addGroupMember.bind(this), "groupCountNode", this.explorer.app.lp.deleteGroupMemeberTitle, this.explorer.app.lp.deleteGroupMemeber);
+
+        this.unitMemberList = this._listMembers("unitList", "woUnitList", this.unitMemberContentNode, ["name", "levelName", //"typeList",
+            {
+                "getHtml": function(){
+                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_orgregion/$Explorer/"+
+                        _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
+                },
+                "events": {
+                    "click": function(){
+                        _self.explorer.openUnit(this.data, this.td);
+                    }
+                }
+            }], [
+            {"style": "width: 20%", "text": this.explorer.app.lp.unitName},
+            {"style": "width: 40%", "text": this.explorer.app.lp.unitLevelName},
+            //{"style": "", "text": this.explorer.app.lp.unitTypeList},
+            {"style": "width: 30px", "text": ""}
+        ], this.addUnitMember.bind(this), "unitCountNode", this.explorer.app.lp.deleteUnitMemeberTitle, this.explorer.app.lp.deleteUnitMemeber);
     },
     loadListCount: function(){
         var personCount = this.data.personList.length;
@@ -211,6 +262,18 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
         }else{
             if (this.personCountNode) this.personCountNode.destroy();
         }
+
+        var identityCount = this.data.identityList.length;
+        if (identityCount){
+            if (this.identityCountNode){
+                this.identityCountNode.set("text", identityCount);
+            }else{
+                this.identityCountNode = new Element("div", {"styles": this.item.style.tabCountNode, "text": identityCount}).inject(this.identityMemberPage.tabNode);
+            }
+        }else{
+            if (this.identityCountNode) this.identityCountNode.destroy();
+        }
+
         var groupCount = this.data.groupList.length;
         if (groupCount){
             if (this.groupCountNode){
@@ -221,13 +284,25 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
         }else{
             if (this.groupCountNode) this.groupCountNode.destroy();
         }
+        var unitCount = this.data.unitList.length;
+        if (unitCount){
+            if (this.unitCountNode){
+                this.unitCountNode.set("text", unitCount);
+            }else{
+                this.unitCountNode = new Element("div", {"styles": this.item.style.tabCountNode, "text": unitCount}).inject(this.unitMemberPage.tabNode);
+            }
+        }else{
+            if (this.unitCountNode) this.unitCountNode.destroy();
+        }
+
+
     },
     _listBaseInfor: function(){
-        this.baseInfor = new MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor(this);
+        this.baseInfor = new MWF.xApplication.orgregion.GroupExplorer.GroupContent.BaseInfor(this);
     },
     _listMembers: function(list, woList, node, attr, titles, addItemFun, countNode, deleteTitle, deleteText){
-        var memberList = new MWF.xApplication.orggrid.List(node, this, {
-            "action": this.data.control.allowEdit,
+        var memberList = new MWF.xApplication.orgregion.List(node, this, {
+            "action": this.data.control.allowEdit && !MWF.AC.isSystemManager(),
             "canEdit": false,
             "deleteItemTitle": deleteTitle,
             "deleteItemText": deleteText,
@@ -243,7 +318,7 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
                 this.saveCloneData = Object.clone(this.data);
             }.bind(this),
             "onDelete": function(continueDelete){
-                this.explorer.actions.saveRole(this.saveCloneData, function(json){
+                this.explorer.actions.saveGroup(this.saveCloneData, function(json){
                     this.data[list] = this.saveCloneData[list];
                     this.data[woList] = this.saveCloneData[woList];
                     this.data.id = json.data.id;
@@ -263,19 +338,17 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
         });
         memberList.addItem = addItemFun;
         memberList.load(titles);
-
+        var _self = this;
         if (this.data[woList] && this.data[woList].length){
             this.data[woList].each(function(d){
-                this.addListItem(memberList, d, list, woList);
-                // var item = memberList.push(d);
-                // item["delete"] = function(callback){
-                //     debugger;
-                //     _self.saveCloneData[list].erase(this.data.id);
-                //     _self.saveCloneData[woList] = _self.saveCloneData[woList].filter(function(a){
-                //         return (this.data.id !== a.id);
-                //     }.bind(this));
-                //     if (callback) callback();
-                // };
+                var item = memberList.push(d);
+                item["delete"] = function(callback){
+                    _self.saveCloneData[list].erase(this.data.id);
+                    _self.saveCloneData[woList] = _self.saveCloneData[woList].filter(function(a){
+                        return (this.data.id !== a.id);
+                    }.bind(this));
+                    if (callback) callback();
+                };
             }.bind(this));
         }
         return memberList;
@@ -322,7 +395,34 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
                             this.data.woPersonList.each(function(d){
                                 this.addListItem(this.personMemberList, d, "personList", "woPersonList");
                             }.bind(this));
-                            this.loadListCount();
+                        }.bind(this));
+                    }.bind(this)
+                });
+                selector.load();
+            }.bind(this));
+        }.bind(this));
+    },
+
+    addIdentityMember: function(){
+        this.checkSaveBaseInfor(function(){
+            MWF.xDesktop.requireApp("Selector", "Identity", function(){
+                var selector = new MWF.xApplication.Selector.Identity(this.explorer.app.content,{
+                    "values": this.data.woIdentityList,
+                    "onComplete": function(items){
+                        var ids = [];
+                        var identitys = [];
+                        items.each(function(item){
+                            ids.push(item.data.id);
+                            identitys.push(item.data);
+                        });
+                        this.data.identityList = ids;
+                        this.data.woIdentityList = identitys;
+
+                        this._saveElement(this.data, function(){
+                            this.identityMemberList.clear();
+                            this.data.woIdentityList.each(function(d){
+                                this.addListItem(this.identityMemberList, d, "identityList", "woIdentityList");
+                            }.bind(this));
                         }.bind(this));
                     }.bind(this)
                 });
@@ -350,7 +450,33 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
                             this.data.woGroupList.each(function(d){
                                 this.addListItem(this.groupMemberList, d, "groupList", "woGroupList");
                             }.bind(this));
-                            this.loadListCount();
+                        }.bind(this));
+                    }.bind(this)
+                });
+                selector.load();
+            }.bind(this));
+        }.bind(this));
+    },
+    addUnitMember: function(){
+        this.checkSaveBaseInfor(function(){
+            MWF.xDesktop.requireApp("Selector", "Unit", function(){
+                var selector = new MWF.xApplication.Selector.Unit(this.explorer.app.content,{
+                    "values": this.data.woUnitList,
+                    "onComplete": function(items){
+                        var ids = [];
+                        var groups = [];
+                        items.each(function(item){
+                            ids.push(item.data.id);
+                            groups.push(item.data);
+                        });
+                        this.data.unitList = ids;
+                        this.data.woUnitList = groups;
+
+                        this._saveElement(this.data, function(){
+                            this.unitMemberList.clear();
+                            this.data.woUnitList.each(function(d){
+                                this.addListItem(this.unitMemberList, d, "unitList", "woUnitList");
+                            }.bind(this));
                         }.bind(this));
                     }.bind(this)
                 });
@@ -360,14 +486,14 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
     },
 
     _saveElement: function(data, success, failure){
-        this.explorer.actions.saveRole(data, function(json){
+        this.explorer.actions.saveGroup(data, function(json){
             Object.merge(this.data, data);
             if (this.data.id){
                 this.data.id = json.data.id;
                 this.item.refresh();
                 if (success) success();
             }else{
-                this.explorer.actions.getRole(function(json){
+                this.explorer.actions.getGroup(function(json){
                     this.data = json.data;
                     this.item.refresh();
                     if (success) success();
@@ -378,70 +504,33 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent = new Class({
         }.bind(this));
     }
 });
-MWF.xApplication.orggrid.RoleExplorer.RoleContent.TitleInfor = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent.TitleInfor,
-    _getStyle: function(){
-        var css = Object.clone(this.item.style.person);
-        return Object.merge(css, this.item.style.role);
-    },
+
+MWF.xApplication.orgregion.GroupExplorer.GroupContent.TitleInfor = new Class({
+    Extends: MWF.xApplication.orgregion.RoleExplorer.RoleContent.TitleInfor,
     _getIcon: function(){
-        return "../x_component_orggrid/$Explorer/default/icon/role70.png";
-    },
-    setBackground: function(){
-        this.titleBgNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/group_bg_bg.png)");
-        this.titleNode.setStyle("background-image", "url(../x_component_orggrid/$Explorer/"+this.explorer.app.options.style+"/icon/group_bg.png)");
-    },
-    loadRightInfor: function(){
-        //var text = this.data.name+((this.data.unique) ? "（"+this.data.unique+"）" : "");
-        var text = this.data.name;
-        if (!this.nameNode) this.nameNode = new Element("div", {"styles": this.style.titleInforNameNode}).inject(this.titleInforRightNode);
-        if (!this.signatureNode) this.signatureNode = new Element("div", {"styles": this.style.titleInforSignatureNode}).inject(this.titleInforRightNode);
-        this.nameNode.set("text", text);
-        this.signatureNode.set("text", (this.data.distinguishedName || "" ));
+        return "../x_component_orgregion/$Explorer/default/icon/group70.png";
     }
 });
 
-MWF.xApplication.orggrid.RoleExplorer.RoleContent.BottomInfor = new Class({
-    Extends: MWF.xApplication.orggrid.$Explorer.ItemContent.BottomInfor,
+MWF.xApplication.orgregion.GroupExplorer.GroupContent.BottomInfor = new Class({
+    Extends: MWF.xApplication.orgregion.$Explorer.ItemContent.BottomInfor,
     addInforList: function(){
-        var text = this.explorer.app.lp.roleReadDn.replace(/{dn}/g, (this.data.distinguishedName || " "));
+        var text = this.explorer.app.lp.groupReadDn.replace(/{dn}/g, (this.data.distinguishedName || " "));
         this.addInfor(text);
 
-        text = this.explorer.app.lp.roleReadCreate.replace(/{date}/g, (this.data.createTime || " "));
+        text = this.explorer.app.lp.groupReadCreate.replace(/{date}/g, (this.data.createTime || " "));
         text = text.replace(/{date2}/g, (this.data.updateTime || " "));
         this.addInfor(text);
     }
 });
-MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor = new Class({
-    initialize: function(content){
-        this.content = content;
-        this.item = content.item;
-        this.data = this.content.data;
-        this.explorer = this.item.explorer;
-        this.contentNode = this.content.baseContentNode;
-        this.style = this.item.style.person;
-        this.mode = "read";
-        this.load();
-    },
-    load: function(){
-        this.node = new Element("div", {"styles": this.style.baseContentNode}).inject(this.contentNode);
-        this.editContentNode = new Element("div", {"styles": this.style.baseEditNode}).inject(this.node);
+MWF.xApplication.orgregion.GroupExplorer.GroupContent.BaseInfor = new Class({
+    Extends: MWF.xApplication.orgregion.RoleExplorer.RoleContent.BaseInfor,
 
-        this.editContentNode.set("html", this.getContentHtml());
-        this.editContentNode.getElement(".infor_name").set("text", this.data.name || "");
-        this.editContentNode.getElement(".infor_unique").set("text", this.data.unique || "");
-        this.editContentNode.getElement(".infor_description").set("text", this.data.description || "");
-
-        this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
-        this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
-        this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
-        this.loadAction();
-    },
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.roleName+":</td><td class='inforContent infor_name'></td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.roleUnique+":</td><td class='inforContent infor_unique'></td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.roleDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.groupName+":</td><td class='inforContent infor_name'></td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.groupUnique+":</td><td class='inforContent infor_unique'></td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.groupDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
         return html;
@@ -451,24 +540,18 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor = new Class({
         var actionAreas = this.editContentNode.getElements("td");
         var actionArea = actionAreas[actionAreas.length-1];
 
-        if (this.data.control.allowEdit){
+        if (this.data.control.allowEdit && !MWF.AC.isSecurityManager()){
             this.baseInforEditActionAreaNode = new Element("div", {"styles": this.style.baseInforEditActionAreaNode}).inject(actionArea);
 
-            if( this.data.isSystemRole ) {
-                this.editNode = new Element("div");
-                this.saveNode = new Element("div");
-                this.cancelNode = new Element("div");
-            }else{
-                this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editRole}).inject(this.baseInforEditActionAreaNode);
-                this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.saveRole}).inject(this.baseInforEditActionAreaNode);
-                this.saveNode.addClass("mainColor_bg");
-                this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
+            this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editGroup}).inject(this.baseInforEditActionAreaNode);
+            this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.saveGroup}).inject(this.baseInforEditActionAreaNode);
+            this.saveNode.addClass("mainColor_bg");
+            this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
 
-                this.editNode.setStyle("display", "block");
-                this.editNode.addEvent("click", this.edit.bind(this));
-                this.saveNode.addEvent("click", function(){this.save();}.bind(this));
-                this.cancelNode.addEvent("click", this.cancel.bind(this));
-            }
+            this.editNode.setStyle("display", "block");
+            this.editNode.addEvent("click", this.edit.bind(this));
+            this.saveNode.addEvent("click", this.save.bind(this));
+            this.cancelNode.addEvent("click", this.cancel.bind(this));
         }else{
 
         }
@@ -483,7 +566,7 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor = new Class({
         this.uniqueInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[1]);
         this.uniqueInputNode.set("value", (this.data.unique));
         if( this.data.id ){
-            this.tooltip = new MWF.xApplication.orggrid.RoleExplorer.RoleContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
+            this.tooltip = new MWF.xApplication.orgregion.GroupExplorer.GroupContent.UniqueTooltip(this.explorer.app.content, tdContents[1], this.explorer.app, {}, {
                 axis : "y",
                 position : {
                     x : "right"
@@ -509,9 +592,9 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor = new Class({
         this.saveNode.setStyle("display", "block");
         this.cancelNode.setStyle("display", "block");
     },
-    save: function(callback){
+    save: function(){
         if (!this.nameInputNode.get("value")){
-            this.explorer.app.notice(this.explorer.app.lp.inputRoleInfor, "error", this.explorer.propertyContentNode);
+            this.explorer.app.notice(this.explorer.app.lp.inputGroupInfor, "error", this.explorer.propertyContentNode);
             return false;
         }
         //this.data.genderType = gender;
@@ -523,29 +606,28 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor = new Class({
             }
         });
 
-        this.saveRole(function(){
+        this.saveGroup(function(){
             this.cancel();
             this.content.propertyContentScrollNode.unmask();
-            if (callback) callback();
         }.bind(this), function(xhr, text, error){
             this.explorer.app.notice((JSON.decode(xhr.responseText).message.trim() || "request json error"), "error");
             this.content.propertyContentScrollNode.unmask();
         }.bind(this));
     },
-    saveRole: function(callback, cancel){
+    saveGroup: function(callback, cancel){
         var data = Object.clone(this.data);
         data.name = this.nameInputNode.get("value");
         data.unique = this.uniqueInputNode.get("value");
         data.description = this.descriptionInputNode.get("value");
 
-        this.explorer.actions.saveRole(data, function(json){
+        this.explorer.actions.saveGroup(data, function(json){
             Object.merge(this.data, data);
             if (this.data.id){
                 this.data.id = json.data.id;
                 this.item.refresh();
                 if (callback) callback();
             }else{
-                this.explorer.actions.getRole(function(json){
+                this.explorer.actions.getGroup(function(json){
                     this.data = Object.merge(this.data, json.data);
                     this.item.data = this.data;
                     this.item.refresh();
@@ -556,43 +638,6 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor = new Class({
             if (cancel) cancel(xhr, text, error);
         }.bind(this));
     },
-    cancel: function(){
-        if (this.data.id){
-            var tdContents = this.editContentNode.getElements("td.inforContent");
-            tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
-            tdContents[2].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
-
-            this.mode = "read";
-
-            this.editNode.setStyle("display", "block");
-            this.saveNode.setStyle("display", "none");
-            this.cancelNode.setStyle("display", "none");
-        }else{
-            this.item.destroy();
-        }
-        if( this.tooltip ){
-            this.tooltip.destroy();
-            this.tooltip = null;
-        }
-    },
-
-    // getGenderType: function(){
-    //     var text = "";
-    //     if (this.data.genderType){
-    //         switch (this.data.genderType) {
-    //             case "m":
-    //                 text = this.explorer.app.lp.man;
-    //                 break;
-    //             case "f":
-    //                 text = this.explorer.app.lp.female;
-    //                 break;
-    //             default:
-    //                 text = this.explorer.app.lp.other;
-    //         }
-    //     }
-    //     return text;
-    // },
     destroy: function(){
         if( this.tooltip ){
             this.tooltip.destroy();
@@ -602,24 +647,13 @@ MWF.xApplication.orggrid.RoleExplorer.RoleContent.BaseInfor = new Class({
         this.node.destroy();
         MWF.release(this);
     }
-    // _getIcon: function(){
-    //     var src = "data:image/png;base64,"+this.data.icon;
-    //     if (!this.data.icon){
-    //         if (this.data.genderType==="f"){
-    //             src = "../x_component_orggrid/$Explorer/default/icon/female.png"
-    //         }else{
-    //             src = "../x_component_orggrid/$Explorer/default/icon/man.png"
-    //         }
-    //     }
-    //     return src;
-    // }
 });
 
-MWF.xApplication.orggrid.RoleExplorer.RoleContent.UniqueTooltip = new Class({
+MWF.xApplication.orgregion.GroupExplorer.GroupContent.UniqueTooltip = new Class({
     Extends: MTooltips,
     _getHtml : function(){
         var html =
-            "<div item='containr' style='line-height:24px;'><div style='font-size: 14px;color:red;float:left; '>"+ this.lp.roleUniqueModifyNote +"</div></div>";
+            "<div item='containr' style='line-height:24px;'><div style='font-size: 14px;color:red;float:left; '>"+ this.lp.groupUniqueModifyNote +"</div></div>";
         return html;
     }
 });

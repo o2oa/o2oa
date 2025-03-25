@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'org';
   src:
-    url('../x_component_orggrid/$Main/default/fonts/org.ttf?chq7w8') format('truetype'),
-    url('../x_component_orggrid/$Main/default/fonts/org.woff?chq7w8') format('woff'),
-    url('../x_component_orggrid/$Main/default/fonts/org.svg?chq7w8#org') format('svg');
+    url('../x_component_orgregion/$Main/default/fonts/org.ttf?chq7w8') format('truetype'),
+    url('../x_component_orgregion/$Main/default/fonts/org.woff?chq7w8') format('woff'),
+    url('../x_component_orgregion/$Main/default/fonts/org.svg?chq7w8#org') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;

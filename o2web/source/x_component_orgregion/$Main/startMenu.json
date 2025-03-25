@@ -1,34 +1,34 @@
 [
 	{
-		"title": MWF.xApplication.orggrid.LP.unitList,
+		"title": MWF.xApplication.orgregion.LP.unitList,
 		"id": "1.1",
 		"action": "orgConfig",
 		"icon": "org",
 		"display": true
 	},
 	{
-		"title": MWF.xApplication.orggrid.LP.groupList,
+		"title": MWF.xApplication.orgregion.LP.groupList,
 		"id": "1.1",
 		"action": "groupConfig",
 		"icon": "group",
 		"display": !o2.AC.isSystemManager() && (o2.AC.isOrganizationManager() || o2.AC.isGroupManager() || o2.AC.isSecurityManager())
 	},
 	{
-		"title": MWF.xApplication.orggrid.LP.roleList,
+		"title": MWF.xApplication.orgregion.LP.roleList,
 		"id": "1.1",
 		"action": "roleConfig",
 		"icon": "role",
 		"display": !o2.AC.isSystemManager() && (o2.AC.isOrganizationManager() || o2.AC.isRoleManager() || o2.AC.isSecurityManager())
 	},
 	{
-		"title": MWF.xApplication.orggrid.LP.personList,
+		"title": MWF.xApplication.orgregion.LP.personList,
 		"id": "1.1",
 		"action": "personConfig",
 		"icon": "person",
 		"display": true
 	},
 	{
-		"title": MWF.xApplication.orggrid.LP.personImport,
+		"title": MWF.xApplication.orgregion.LP.personImport,
 		"id": "1.1",
 		"action": "personImport",
 		"icon": "xls",

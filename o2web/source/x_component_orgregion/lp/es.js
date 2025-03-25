@@ -1,6 +1,6 @@
 MWF.xApplication = MWF.xApplication || {};
-MWF.xApplication.orggrid = MWF.xApplication.orggrid || {};
-MWF.xApplication.orggrid.LP={
+MWF.xApplication.orgregion = MWF.xApplication.orgregion || {};
+MWF.xApplication.orgregion.LP={
 	"title": "Gestión de organización",
 	"manage": "Gestionar",
 	"identity": "Identidad",
@@ -8,6 +8,7 @@ MWF.xApplication.orggrid.LP={
 	"role": "Rol",
 	"group": "Grupo",
 	"org": "Organización",
+	"general": "Generate",
 	"unitList": "Estructura de la organización",
 	"groupList": "Gestionar grupos",
 	"roleList": "Gestionar roles",
@@ -175,6 +176,7 @@ MWF.xApplication.orggrid.LP={
 	"editPerson": "Editar información de la persona",
 	"resetPassword": "Restablecer contraseña",
 	"savePerson": "Guardar información de la persona",
+	"more": "más",
 	"personReadDn": "El nombre completo del usuario es: {dn}.",
 	"personReadLogin": "El usuario inició sesión por última vez el {date} desde la dirección IP {ip} en un cliente {client}.",
 	"personReadCreate": "El usuario fue creado en {date} y modificado por última vez en {date2}.",
@@ -270,4 +272,4 @@ MWF.xApplication.orggrid.LP={
 		}
 	]
 }
-MWF.xApplication.orggrid["lp."+o2.language] = MWF.xApplication.orggrid.LP
+MWF.xApplication.orgregion["lp."+o2.language] = MWF.xApplication.orgregion.LP

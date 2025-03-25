@@ -1,22 +1,22 @@
 //MWF.xDesktop.requireApp("Organization", "Selector.package", null, false);
-MWF.xApplication.orggrid.Main = new Class({
+MWF.xApplication.orgregion.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
 
 	options: {
 		"style": "default",
-		"name": "orggrid",
+		"name": "orgregion",
 		"icon": "icon.png",
 		"width": (layout.desktop.size) ? layout.desktop.size.x*0.7 : 1000,
 		"height": (layout.desktop.size) ? layout.desktop.size.y*0.8: 800,
-		"title": MWF.xApplication.orggrid.LP.title
+		"title": MWF.xApplication.orgregion.LP.title
 	},
 	onQueryLoad: function(){
-		this.lp = MWF.xApplication.orggrid.LP;
+		this.lp = MWF.xApplication.orgregion.LP;
 		this.restActions = MWF.Actions.get("x_organization_assemble_control");
 	},
 	loadApplication: function(callback){
-		this.content.loadCss("../x_component_orggrid/$Main/"+this.options.style+"/style.css");
+		this.content.loadCss("../x_component_orgregion/$Main/"+this.options.style+"/style.css");
 		this.createNode();
 		this.loadApplicationContent();
 		if (callback) callback();
@@ -36,7 +36,7 @@ MWF.xApplication.orggrid.Main = new Class({
 			"styles": this.css.startMenuNode
 		}).inject(this.node);
 
-		this.menu = new MWF.xApplication.orggrid.Menu(this, this.startMenuNode, {
+		this.menu = new MWF.xApplication.orgregion.Menu(this, this.startMenuNode, {
 			"onPostLoad": function(){
 
 				if (this.status){
@@ -101,10 +101,10 @@ MWF.xApplication.orggrid.Main = new Class({
 		this.loadOrgConfig();
 	},
 	loadOrgConfig: function(){
-        MWF.xDesktop.requireApp("orggrid", "UnitExplorer", function(){
-            //MWF.xDesktop.requireApp("orggrid", "Actions.RestActions", function(){
-			//	if (!this.restActions) this.restActions = new MWF.xApplication.orggrid.Actions.RestActions();
-				this.orgConfigurator = new MWF.xApplication.orggrid.UnitExplorer(this.orgConfiguratorContentNode, this.restActions);
+        MWF.xDesktop.requireApp("orgregion", "UnitExplorer", function(){
+            //MWF.xDesktop.requireApp("orgregion", "Actions.RestActions", function(){
+			//	if (!this.restActions) this.restActions = new MWF.xApplication.orgregion.Actions.RestActions();
+				this.orgConfigurator = new MWF.xApplication.orgregion.UnitExplorer(this.orgConfiguratorContentNode, this.restActions);
 				this.orgConfigurator.app = this;
 				this.orgConfigurator.load();
 			//}.bind(this));
@@ -118,10 +118,10 @@ MWF.xApplication.orggrid.Main = new Class({
 		this.loadGroupConfig();
 	},
 	loadGroupConfig: function(){
-        MWF.xDesktop.requireApp("orggrid", "GroupExplorer", function(){
-            //MWF.xDesktop.requireApp("orggrid", "Actions.RestActions", function(){
-			//	if (!this.restActions) this.restActions = new MWF.xApplication.orggrid.Actions.RestActions();
-				this.groupConfigurator = new MWF.xApplication.orggrid.GroupExplorer(this.groupConfiguratorContentNode, this.restActions);
+        MWF.xDesktop.requireApp("orgregion", "GroupExplorer", function(){
+            //MWF.xDesktop.requireApp("orgregion", "Actions.RestActions", function(){
+			//	if (!this.restActions) this.restActions = new MWF.xApplication.orgregion.Actions.RestActions();
+				this.groupConfigurator = new MWF.xApplication.orgregion.GroupExplorer(this.groupConfiguratorContentNode, this.restActions);
 				this.groupConfigurator.app = this;
 				this.groupConfigurator.load();
 			//}.bind(this));
@@ -135,10 +135,10 @@ MWF.xApplication.orggrid.Main = new Class({
 		this.loadRoleConfig();
 	},
 	loadRoleConfig: function(){
-        MWF.xDesktop.requireApp("orggrid", "RoleExplorer", function(){
-            //MWF.xDesktop.requireApp("orggrid", "Actions.RestActions", function(){
-			//	if (!this.restActions) this.restActions = new MWF.xApplication.orggrid.Actions.RestActions();
-				this.roleConfigurator = new MWF.xApplication.orggrid.RoleExplorer(this.roleConfiguratorContentNode, this.restActions);
+        MWF.xDesktop.requireApp("orgregion", "RoleExplorer", function(){
+            //MWF.xDesktop.requireApp("orgregion", "Actions.RestActions", function(){
+			//	if (!this.restActions) this.restActions = new MWF.xApplication.orgregion.Actions.RestActions();
+				this.roleConfigurator = new MWF.xApplication.orgregion.RoleExplorer(this.roleConfiguratorContentNode, this.restActions);
 				this.roleConfigurator.app = this;
 				this.roleConfigurator.load();
 			//}.bind(this));
@@ -153,10 +153,10 @@ MWF.xApplication.orggrid.Main = new Class({
         this.loadPersonConfig();
 	},
 	loadPersonConfig: function(){
-        MWF.xDesktop.requireApp("orggrid", "PersonExplorer", function(){
-            //MWF.xDesktop.requireApp("orggrid", "Actions.RestActions", function(){
-			//	if (!this.restActions) this.restActions = new MWF.xApplication.orggrid.Actions.RestActions();
-				this.personConfigurator = new MWF.xApplication.orggrid.PersonExplorer(this.personConfiguratorContentNode, this.restActions);
+        MWF.xDesktop.requireApp("orgregion", "PersonExplorer", function(){
+            //MWF.xDesktop.requireApp("orgregion", "Actions.RestActions", function(){
+			//	if (!this.restActions) this.restActions = new MWF.xApplication.orgregion.Actions.RestActions();
+				this.personConfigurator = new MWF.xApplication.orgregion.PersonExplorer(this.personConfiguratorContentNode, this.restActions);
 				this.personConfigurator.app = this;
 				this.personConfigurator.load();
 			//}.bind(this));
@@ -239,8 +239,8 @@ MWF.xApplication.orggrid.Main = new Class({
         }.bind(this)}).load(this.path+this.options.style+"/queryPrivateConfigView.html");
 	},
     loadprivateNamesQueryPower: function(){
-		MWF.xDesktop.requireApp("orggrid", "PrivateConfig", function(){
-				this.privateConfigurator = new MWF.xApplication.orggrid.PrivateConfig(this.privateNamesQueryPowerContentNode);
+		MWF.xDesktop.requireApp("orgregion", "PrivateConfig", function(){
+				this.privateConfigurator = new MWF.xApplication.orgregion.PrivateConfig(this.privateNamesQueryPowerContentNode);
 				this.privateConfigurator.app = this;
 				this.privateConfigurator.load();
 		}.bind(this));
@@ -262,7 +262,7 @@ MWF.xApplication.orggrid.Main = new Class({
 });
 
 
-MWF.xApplication.orggrid.Menu = new Class({
+MWF.xApplication.orgregion.Menu = new Class({
 	Implements: [Options, Events],
 
 	initialize: function(app, node, options){

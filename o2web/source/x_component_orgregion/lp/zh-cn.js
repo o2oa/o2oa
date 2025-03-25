@@ -1,4 +1,4 @@
-MWF.xApplication.orggrid.LP = {
+MWF.xApplication.orgregion.LP = {
     "title": "组织管理",
     "manage": "管理",
     "identity" : "身份",
@@ -6,6 +6,7 @@ MWF.xApplication.orggrid.LP = {
     "role" : "角色",
     "group" : "群组",
     "org": "组织",
+    "general": "生成",
 
     "unitList": "组织架构",
     "groupList": "群组管理",
@@ -221,6 +222,7 @@ MWF.xApplication.orggrid.LP = {
     "editPerson": "编辑人员信息",
     "resetPassword": "重置密码",
     "savePerson": "保存人员信息",
+    "more": "更多信息",
     "personReadDn": "用户的全称为：{dn}",
     "personReadLogin": "用户于{date}最后一次登录，地址为：{ip}，客户端：{client}",
     "personReadCreate": "用户创建于{date}，最后修改于：{date2}",
