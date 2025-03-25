@@ -191,6 +191,9 @@ MWF.xApplication.Selector.Unit = new Class({
         var unitList=[];
         this.options.exclude.each(function (item) {
             var a = typeOf( item ) === 'object' ? item.distinguishedName : item;
+            if( !a ){
+                return;
+            }
             var flag = a.substr(a.length - 2, 2);
             switch (flag.toLowerCase()) {
                 case "@i": break;
