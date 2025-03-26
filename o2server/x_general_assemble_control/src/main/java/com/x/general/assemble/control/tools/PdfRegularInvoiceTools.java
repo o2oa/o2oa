@@ -1,5 +1,6 @@
 package com.x.general.assemble.control.tools;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.general.core.entity.Invoice;
 import com.x.general.core.entity.InvoiceDetail;
 import java.awt.Rectangle;
@@ -272,12 +273,32 @@ public class PdfRegularInvoiceTools {
             InvoiceDetail detail = new InvoiceDetail();
             detail.setName("");
             String[] itemArray = StringUtils.split(detailString, " ");
-            if (2 == itemArray.length) {
-                detail.setAmount(Double.valueOf(itemArray[0]));
-                detail.setTaxAmount(Double.valueOf(itemArray[1]));
-                detailList.add(detail);
+            if (1 == itemArray.length) {
+                if(!detailList.isEmpty()){
+                    detail = detailList.get(detailList.size()-1);
+                    detail.setName(detail.getName() + detailString);
+                }
+            }else if (2 == itemArray.length) {
+                try {
+                    detail.setAmount(Double.valueOf(itemArray[0]));
+                    detail.setTaxAmount(Double.valueOf(itemArray[1]));
+                    detailList.add(detail);
+                } catch (NumberFormatException e) {
+                    if(!detailList.isEmpty()){
+                        detail = detailList.get(detailList.size()-1);
+                        detail.setName(detail.getName() + detailString);
+                    }
+                }
             } else if (2 < itemArray.length) {
-                detail.setAmount(Double.valueOf(itemArray[itemArray.length - 3]));
+                try {
+                    detail.setAmount(Double.valueOf(itemArray[itemArray.length - 3]));
+                } catch (NumberFormatException e) {
+                    if(!detailList.isEmpty()){
+                        detail = detailList.get(detailList.size()-1);
+                        detail.setName(detail.getName() + detailString);
+                    }
+                    continue;
+                }
                 String taxRate = itemArray[itemArray.length - 2];
                 if (taxRate.indexOf("免税") > 0 || taxRate.indexOf("不征税") > 0
                         || taxRate.indexOf("出口零税率") > 0

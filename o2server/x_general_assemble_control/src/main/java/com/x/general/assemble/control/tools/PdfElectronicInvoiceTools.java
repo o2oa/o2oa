@@ -191,7 +191,12 @@ public class PdfElectronicInvoiceTools {
             InvoiceDetail detail = new InvoiceDetail();
             detail.setName("");
             String[] itemArray = StringUtils.split(detailString, " ");
-            if (itemArray.length == 2) {
+            if (1 == itemArray.length) {
+                if(!detailList.isEmpty()){
+                    detail = detailList.get(detailList.size()-1);
+                    detail.setName(detail.getName() + detailString);
+                }
+            }else if (itemArray.length == 2) {
                 if (invoice.getAmount() == null) {
                     try {
                         if (itemArray[0].contains("¥")) {
