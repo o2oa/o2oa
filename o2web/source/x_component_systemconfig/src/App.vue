@@ -190,14 +190,14 @@ const contentComponent = computed(() => {
   height: 30px;
 }
 
-.systemconfig button{
+.systemconfig button:not([class^="el-"]) {
   border-radius: 100px;
   border: 0;
   padding: 6px 20px;
   cursor: pointer;
   margin-left: 10px;
 }
-.systemconfig button:disabled{
+.systemconfig button:not([class^="el-"]):disabled{
     opacity: 0.6;
     background-color: #cccccc!important;
     color: #333333!important;
