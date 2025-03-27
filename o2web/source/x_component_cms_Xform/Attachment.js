@@ -110,7 +110,7 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
     downloadBatchAttachment : function () {
 
         var docId = this.module.form.businessData.document.id;
-        var site = this.module.json.id;
+        var site = this.module.json.site || this.module.json.id;
         var url = `/x_cms_assemble_control/jaxrs/fileinfo/batch/download/doc/${docId}/site/${site}`;
         url = o2.filterUrl(o2.Actions.getHost("x_cms_assemble_control") + url);
 
