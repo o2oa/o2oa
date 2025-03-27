@@ -106,7 +106,22 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
 
         this.reloadAttachments();
         this.fireEvent("order");
-    }
+    },
+    downloadBatchAttachment : function () {
+
+        var docId = this.module.form.businessData.document.id;
+        var site = this.module.json.id;
+        var url = `/x_cms_assemble_control/jaxrs/fileinfo/batch/download/doc/${docId}/site/${site}`;
+        url = o2.filterUrl(o2.Actions.getHost("x_cms_assemble_control") + url);
+
+        if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
+            var urlObj = new URL(url);
+            url += (urlObj.search !== '' ? '&' : '?') + o2.tokenName + "=" + layout.session.token;
+            window.location = url;
+        } else {
+            window.open(url);
+        }
+    },
 });
 MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     Extends: MWF.APPAttachment,
@@ -130,6 +145,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
