@@ -3967,7 +3967,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.getRollbackLogs(rollbackItemNode);
         node.inject(this.app.content);
 
-        var dlg = o2.DL.open({
+        var options = {
             "title": this.app.lp.rollback,
             "style": this.json.dialogStyle || "user",
             "isResize": false,
@@ -3987,7 +3987,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     "action": function () { dlg.close(); }
                 }
             ]
-        });
+        };
+        if( layout.mobile ){
+            options.height = '100%';
+            options.container = $(document.body);
+        }
+
+        var dlg = o2.DL.open(options);
     },
     doRollback: function (node, e, dlg) {
         var rollbackItemNode = node.getLast();
@@ -5960,18 +5966,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var p = MWF.getCenterPosition(this.app.content, width, height);
 
             var _self = this;
-            var dlg = new MWF.xDesktop.Dialog({
+            var dlg = o2.DL.open({
                 "title": MWF.xApplication.process.Xform.LP.sendRead,
                 "style": this.json.dialogStyle || "user", //|| "work",
-                "top": p.y - 100,
-                "left": p.x,
-                "fromTop": p.y - 100,
-                "fromLeft": p.x,
-                "width": width,
-                "height": height,
-                "url": this.app.path + "sendRead.html",
+                "top": (layout.mobile) ? 0 : (p.y - 100),
+                "left": (layout.mobile) ? 0 : p.x,
+                "fromTop": (layout.mobile) ? 0 : (p.y - 100),
+                "fromLeft": (layout.mobile) ? 0 : p.x,
+                "width": (layout.mobile) ? "100%" : width,
+                "height": (layout.mobile) ? "100%" :height,
+                "url": this.app.path + ( (layout.mobile) ? "sendReadMobile" : "sendRead") +".html",
                 "lp": MWF.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
+                "container": (layout.mobile) ? document.body : this.app.content,
                 "isClose": true,
                 "buttonList": [
                     {
@@ -6003,7 +6009,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 }
             });
-            dlg.show();
+            // dlg.show();
         }.bind(this));
     },
     selectReadPeople: function (dlg, opt ) {
@@ -6082,18 +6088,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var p = MWF.getCenterPosition(this.app.content, width, height);
 
             var _self = this;
-            var dlg = new MWF.xDesktop.Dialog({
+            var dlg = o2.DL.open({
                 "title": MWF.xApplication.process.Xform.LP.sendReview,
                 "style": this.json.dialogStyle || "user", //|| "work",
-                "top": p.y - 100,
-                "left": p.x,
-                "fromTop": p.y - 100,
-                "fromLeft": p.x,
-                "width": width,
-                "height": height,
-                "url": this.app.path + "sendReview.html",
+                "top": (layout.mobile) ? 0 : (p.y - 100),
+                "left": (layout.mobile) ? 0 : p.x,
+                "fromTop": (layout.mobile) ? 0 : (p.y - 100),
+                "fromLeft": (layout.mobile) ? 0 : p.x,
+                "width": (layout.mobile) ? "100%" : width,
+                "height": (layout.mobile) ? "100%" : height,
+                "url": this.app.path + ( (layout.mobile) ? "sendReviewMobile" : "sendReview") + ".html",
                 "lp": MWF.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
+                "container": (layout.mobile) ? document.body : this.app.content,
                 "isClose": true,
                 "buttonList": [
                     {
@@ -6123,7 +6129,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 }
             });
-            dlg.show();
+            //dlg.show();
         }.bind(this));
     },
     selectReviewPeople: function (dlg, opt ) {
