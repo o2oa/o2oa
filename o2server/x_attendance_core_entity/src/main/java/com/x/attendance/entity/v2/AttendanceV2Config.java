@@ -123,11 +123,19 @@ public class AttendanceV2Config extends SliceJpaObject {
     private Boolean closeOldAttendance = false;
 
 
+    public static final String faceDetectionEnable_FIELDNAME = "faceDetectionEnable";
+    @FieldDescribe("是否启用人脸比对.")
+    @Column(name = ColumnNamePrefix + faceDetectionEnable_FIELDNAME)
+    private Boolean faceDetectionEnable = false;
 
 
-    
+    public Boolean getFaceDetectionEnable() {
+        return faceDetectionEnable;
+    }
 
-
+    public void setFaceDetectionEnable(Boolean faceDetectionEnable) {
+        this.faceDetectionEnable = faceDetectionEnable;
+    }
 
     public String getDetailStatisticCronString() {
       return detailStatisticCronString;

@@ -313,7 +313,9 @@ MWF.xApplication.attendancev2.LP={
 		"exceptionAlertEnableTime2": ")",
 		"detailStatisticCron": "Statistical Timer",
 		"closeOldAttendance": "Old attendance",
-		"closeOldAttendanceLabel": "Do you want to disable the old version of attendance clock in function (to prevent app endpoint errors)"
+		"closeOldAttendanceLabel": "Do you want to disable the old version of attendance clock in function (to prevent app endpoint errors)",
+		"faceDetectionLabel": "Facial comparison",
+		"faceDetectionEnableLabel": "Is facial comparison enabled before clocking in",
 	},
 	"leaveManagerTitle": "Record of out and leave",
 	"leave": {

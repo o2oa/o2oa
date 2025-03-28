@@ -89,6 +89,22 @@
             </div>
         </div>
 
+        <!-- 人脸比对功能 -->
+        <div class="margin-top" oo-if="$.form.aliFaceControlEnable">
+            <div class="form-item-label">
+                {{$.lp.config.faceDetectionLabel}}
+                <label style="margin-left: 10px;color: var(--oo-color-main);font-size: 14px;text-decoration: underline;cursor: pointer;" @click="clickToAliface" >人脸模块配置</label>
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                <div class="margin-top margin-left flex" @click="clickFaceDetectionEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.faceDetectionEnable ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.faceDetectionEnableLabel}}</label>
+                </div>
+            </div>
+        </div>
+
         <div style="margin-top: 32px;">
             <button style="width: 320px;" class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
         </div>

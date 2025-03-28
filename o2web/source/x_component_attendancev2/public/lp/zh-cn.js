@@ -329,6 +329,8 @@ MWF.xApplication.attendancev2.LP = {
     detailStatisticCron: "统计定时器",
     closeOldAttendance: "旧考勤",
     closeOldAttendanceLabel: "是否关闭旧版考勤打卡功能（防止app端点错）",
+    faceDetectionLabel: "人脸比对",
+    faceDetectionEnableLabel: "打卡前是否启用人脸比对",
   },
   // 请假外出记录
   leaveManagerTitle: "外出请假记录",
