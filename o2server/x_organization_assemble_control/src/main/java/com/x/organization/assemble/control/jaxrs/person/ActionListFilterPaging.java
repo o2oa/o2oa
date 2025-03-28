@@ -98,10 +98,8 @@ class ActionListFilterPaging extends BaseAction {
 		int startPosition = (page - 1) * max;
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		EntityManager subEm = business.entityManagerContainer().get(Identity.class);
-		EntityManager subEm2 = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaBuilder subCb = subEm.getCriteriaBuilder();
-		CriteriaBuilder subCb2 = subEm2.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate predicate = cb.conjunction();
@@ -130,12 +128,7 @@ class ActionListFilterPaging extends BaseAction {
 		subP = subCb.and(subP, subRoot.get(Identity_.unit).in(conUnitList));
 		subQuery.where(subP);
 
-		Subquery<Identity> subQuery2 = cq.subquery(Identity.class);
-		Root<Identity> subRoot2 = subQuery2.from(subEm.getMetamodel().entity(Identity.class));
-		subQuery2.select(subRoot2);
-		Predicate subP2 = subCb2.equal(subRoot2.get(Identity_.person), root.get(Person_.id));
-		subQuery2.where(subP2);
-		predicate = cb.and(predicate, cb.or(cb.exists(subQuery), cb.not(cb.exists(subQuery2))));
+		predicate = cb.and(predicate, cb.exists(subQuery));
 
 		List<String> fields = Wo.copier.getCopyFields();
 		List<Selection<?>> selections = new ArrayList<>();
@@ -189,12 +182,7 @@ class ActionListFilterPaging extends BaseAction {
 		subP = subCb.and(subP, subRoot.get(Identity_.unit).in(conUnitList));
 		subQuery.where(subP);
 
-		Subquery<Identity> subQuery2 = cq.subquery(Identity.class);
-		Root<Identity> subRoot2 = subQuery2.from(subEm.getMetamodel().entity(Identity.class));
-		subQuery2.select(subRoot2);
-		Predicate subP2 = subCb.equal(subRoot2.get(Identity_.person), root.get(Person_.id));
-		subQuery2.where(subP2);
-		predicate = cb.and(predicate, cb.or(cb.exists(subQuery), cb.not(cb.exists(subQuery2))));
+		predicate = cb.and(predicate, cb.exists(subQuery));
 
 		cq.select(cb.count(root)).where(predicate);
 		return em.createQuery(cq).getSingleResult();
