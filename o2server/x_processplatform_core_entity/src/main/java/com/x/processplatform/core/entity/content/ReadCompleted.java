@@ -162,6 +162,7 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 		this.startTimeMonth = read.getStartTimeMonth();
 		this.completedTime = completedTime;
 		this.duration = duration;
+		this.sender = read.getSender();
 		// 必须使用setOpinion赋值
 		this.setOpinion(read.getOpinion());
 		this.copyProjectionFields(read);
@@ -409,6 +410,12 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private String currentActivityName;
 
+	public static final String SENDER_FIELDNAME = "sender";
+	@FieldDescribe("发送人")
+	@Column(length = length_255B, name = ColumnNamePrefix + SENDER_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String sender;
+
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent(fetch = FetchType.EAGER)
@@ -640,6 +647,14 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + timeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
 
 	public String getJob() {
 		return job;
