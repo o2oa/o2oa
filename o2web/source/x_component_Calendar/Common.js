@@ -365,12 +365,12 @@ MWFCalendar.EventForm = new Class({
                             }.bind(this)
                         }
                     },
-                    startDateInput: { type : "oo-datetime", dataType: 'date-only', format: 'YYYY-MM-DD', text : this.lp.beginTime , defaultValue: defaultStartDate , notEmpty : true },
-                    startTimeInput: { type : "oo-datetime", dataType: 'time-only', format: 'HH:mm',
-                        defaultValue: defaultStartTime, disable : ()=>{ debugger; return data.isAllDayEvent; }
+                    startDateInput: { type : "oo-datetime", mode: 'date', format: 'YYYY-MM-DD', text : this.lp.beginTime , defaultValue: defaultStartDate , notEmpty : true },
+                    startTimeInput: { type : "oo-datetime", mode: 'time', format: 'HH:mm',
+                        defaultValue: defaultStartTime, disable : ()=>{ return data.isAllDayEvent; }
                     },
-                    endDateInput: { type : "oo-datetime", dataType: 'date-only', format: 'YYYY-MM-DD', text : this.lp.endTime, defaultValue: defaultEndDate, notEmpty : true  },
-                    endTimeInput: { type : "oo-datetime", dataType: 'time-only', format: 'HH:mm',
+                    endDateInput: { type : "oo-datetime", mode: 'date', format: 'YYYY-MM-DD', text : this.lp.endTime, defaultValue: defaultEndDate, notEmpty : true  },
+                    endTimeInput: { type : "oo-datetime", mode: 'time', format: 'HH:mm',
                         defaultValue: defaultEndTime, disable : data.isAllDayEvent
                     },
                     remind : { text : this.lp.remind, type : "oo-select", selectText : this.lp.remindIntervalArr,
@@ -413,7 +413,7 @@ MWFCalendar.EventForm = new Class({
                         selectValue : ["NONE", "AVAILABLE"],
                         defaultValue : "NONE"
                     },
-                    repeatUntilDate : { type : "oo-datetime", dataType: 'date-only', format: 'YYYY-MM-DD', event : {
+                    repeatUntilDate : { type : "oo-datetime", mode: 'date', format: 'YYYY-MM-DD', event : {
                         click : function(){ this.form.getItem("repeatUntilAvailable").setValue("AVAILABLE") }.bind(this)
                     }},
                     comment : { text : this.lp.content, type : "rtf", RTFConfig : {
