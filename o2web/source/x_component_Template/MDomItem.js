@@ -3628,6 +3628,9 @@ MDomItem.OODatetime = new Class({
         if (options.mode && options.mode !== "datetime") {
             input.setAttribute('mode', options.mode);
         }
+        if(options.view){
+            input.setAttribute('view', options.view);
+        }
         if (options.secondEnable === "yes") {
             input.setAttribute("second-enable", true);
         } else {
