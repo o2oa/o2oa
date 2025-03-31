@@ -683,7 +683,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     beginTimeInput: {
                         required: true,
                         type: "oo-datetime", isEdited : isEditing, label: lp.time,
-                        defaultValue: defaultBeginTime, attr : {'time-only': true},
+                        defaultValue: defaultBeginTime, attr : {'mode': 'time'},
                         event : {
                             change : function( item, ev ){
                                 this.clearRoom();
@@ -693,7 +693,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     endTimeInput: {
                         required: true,
                         type: "oo-datetime",  isEdited : isEditing, label: lp.to,
-                        defaultValue: defaultEndTime, attr : {'time-only': true},
+                        defaultValue: defaultEndTime, attr : {'mode': 'time'},
                         event : {
                             change : function( item, ev ){
                                 this.clearRoom();

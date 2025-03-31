@@ -3622,15 +3622,11 @@ MDomItem.OODatetime = new Class({
     Extends: MDomItem.OOInput,
     createInput: function () {
         var input = new Element("oo-datetime");
-        input.setAttribute("year-only", false);
-        input.setAttribute("month-only", false);
-        input.setAttribute("date-only", false);
-        input.setAttribute("week-only", false);
-        input.setAttribute("time-only", false);
+        input.setAttribute('mode', 'dateTime');
 
         var options = this.options;
-        if (options.dataType && options.dataType !== "dateTime") {
-            input.setAttribute(options.dataType, true);
+        if (options.mode && options.mode !== "dateTime") {
+            input.setAttribute('mode', options.mode);
         }
         if (options.secondEnable === "yes") {
             input.setAttribute("second-enable", true);
