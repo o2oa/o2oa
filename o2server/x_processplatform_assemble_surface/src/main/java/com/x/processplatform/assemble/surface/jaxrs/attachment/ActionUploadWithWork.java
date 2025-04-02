@@ -59,6 +59,7 @@ class ActionUploadWithWork extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
+			fileName = fileName.replace("\r", " ").replace("\n", " ");
 			/* 调整可能的附件名称 */
 			fileName = this.adjustFileName(business, work.getJob(), fileName);
 
