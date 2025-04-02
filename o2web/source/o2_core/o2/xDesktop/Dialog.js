@@ -120,17 +120,34 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         if (this.backAction)this.backAction.addEvent("click", this.close.bind(this))
 	},
     getButton: function(){
-        for (i in this.options.buttons){
+        Object.each(this.options.buttons, function (fun, i){
             var button = new Element("input", {
                 "type": "button",
                 "value": i,
                 "styles": this.css.button,
                 "class": "mainColor_bg",
                 "events": {
-                    "click": this.options.buttons[i].bind(this)
+                    "click": function (e){
+						button.disabled = true;
+						setTimeout( function(){
+							try{ button.disabled = false;  }catch(e){}
+						}.bind(this), 2000);
+						fun.call(this, this, e);
+					}.bind(this)
                 }
             }).inject(this.button);
-        }
+        }.bind(this));
+        // for (i in this.options.buttons){
+        //     var button = new Element("input", {
+        //         "type": "button",
+        //         "value": i,
+        //         "styles": this.css.button,
+        //         "class": "mainColor_bg",
+        //         "events": {
+        //             "click": this.options.buttons[i].bind(this)
+        //         }
+        //     }).inject(this.button);
+        // }
         if (this.options.buttonList){
             this.options.buttonList.each(function(bt){
                 var styles = this.css.button;
@@ -161,7 +178,13 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                         "styles": styles,
                         "class": (bt.type!=="cancel") ? "mainColor_bg" : "",
                         "events": {
-                            "click": function(e){bt.action.call(this, this, e)}.bind(this)
+                            "click": function(e){
+                                button.disabled = true;
+                                setTimeout( function(){
+                                    try{ button.disabled = false;  }catch(e){}
+                                }.bind(this), 2000);
+                                bt.action.call(this, this, e);
+                            }.bind(this)
                         }
                     })
                 }else{
