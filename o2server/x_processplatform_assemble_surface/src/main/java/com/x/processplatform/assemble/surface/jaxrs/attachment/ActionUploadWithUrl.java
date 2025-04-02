@@ -107,6 +107,7 @@ class ActionUploadWithUrl extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				throw new IllegalStateException("fileName can not empty.");
 			}
+			fileName = fileName.replace("\r", " ").replace("\n", " ");
 			fileName = this.adjustFileName(business, attachment.getJob(), fileName);
 			this.verifyConstraint(bytes.length, fileName, null);
 
