@@ -252,7 +252,7 @@ MWF.xApplication.orggrid.UnitExplorer.Unit = new Class({
                     }
                 }
                 if (this.data.control.allowEdit){
-                    if (!this.addNode){
+                    if (!this.addNode && this.data.level < 3){
                         this.addNode = new Element("div.o2icon-add", {"styles": this.style.actionAddNode}).inject(this.actionNode);
                         this.addNode.addEvent("click", function(e){
                             if (!this.notDelete){
