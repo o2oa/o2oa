@@ -233,7 +233,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                     for( var i=0; i<titleLength; i++){
                         if( typeOf(array[i]) === "null" )array[i] = "";
                     }
-                })
+                });
 
                 this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this, {
                     "onPostShow": function(){
@@ -241,9 +241,13 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
                         debugger;
 
+                        var level = this.getTitleLevel();
+                        if( importedData.length >= level ){
+                            importedData.splice(0, level);
                         this.importedData = importedData;
-
-                        if( this.importedData.length > 0 )this.importedData.shift();
+                        }else{
+                            this.importedData = [];
+                        }
 
                         this.fireEvent("beforeImport", [this.importedData]);
                         Promise.resolve( this.importedData.promise ).then(function () {
@@ -370,6 +374,21 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                 "onPostShow": function () {
                     var htmlArray = ["<table "+ this.objectToString( this.css.properties ) +" style='"+this.objectToString( this.css.tableStyles, "style" )+"'>"];
 
+                    htmlArray.push( this._getErrorHeadHtml() );
+
+                    htmlArray.push( this._getErrorContentHtml() )
+
+                    htmlArray.push( "</table>" );
+                    div.set("html" , htmlArray.join(""));
+                }.bind(this),
+                "onPostClose": function(){
+                    dlg = null;
+                }.bind(this)
+            });
+
+        },
+        _getErrorHeadHtml: function () {
+             var htmlArray = [];
                     var titleStyle = this.objectToString( this.css.titleStyles, "style" );
                     var vaildTitleStyles = this.objectToString( this.css.vaildTitleStyles, "style" );
                     htmlArray.push( "<tr>" );
@@ -378,7 +397,10 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                     });
                     htmlArray.push( "<th style='"+vaildTitleStyles+"'> "+this.lp.validationInfor +"</th>" );
                     htmlArray.push( "</tr>" );
-
+            return htmlArray.join("");
+        },
+        _getErrorContentHtml: function (){
+            var htmlArray = [];
                     var contentStyles = Object.clone( this.css.contentStyles );
                     if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
                     var contentStyle = this.objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
@@ -399,14 +421,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                         htmlArray.push( "</tr>" );
 
                     }.bind(this));
-                    htmlArray.push( "</table>" );
-                    div.set("html" , htmlArray.join(""));
-                }.bind(this),
-                "onPostClose": function(){
-                    dlg = null;
-                }.bind(this)
-            });
-
+            return htmlArray.join("");
         },
         //必须校验的数据
         checkNecessaryImportedData: function(){
@@ -630,76 +645,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                 return;
             }.bind(this))
         },
-        // listOrgDataFromDb : function (importedOrgData, callback ) {
-        //
-        //     var identityList = importedOrgData.identityList;
-        //     var personList = importedOrgData.personList;
-        //     var unitList = importedOrgData.unitList;
-        //     var groupList = importedOrgData.groupList;
-        //
-        //     var identityLoaded, personLoaded, unitLoaded, groupLoaded;
-        //     var check = function () {
-        //         if( identityLoaded && personLoaded && unitLoaded && groupLoaded ){
-        //             if(callback)callback();
-        //         }
-        //     };
-        //
-        //     if( identityList && identityList.length ){
-        //         identityList = identityList.unique();
-        //         o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
-        //             json.data.each( function (d) { if(d)this.identityMapImported[ d.matchKey ] = d; }.bind(this));
-        //             identityLoaded = true;
-        //             check();
-        //         }.bind(this))
-        //     }else{
-        //         identityLoaded = true;
-        //         check();
-        //     }
-        //
-        //     if( personList && personList.length ){
-        //         personList = personList.unique();
-        //         o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
-        //             json.data.each( function (d) { if(d)this.personMapImported[ d.matchKey ] = d; }.bind(this));
-        //             personLoaded = true;
-        //             check();
-        //         }.bind(this))
-        //     }else{
-        //         personLoaded = true;
-        //         check();
-        //     }
-        //
-        //     if( unitList && unitList.length ){
-        //         unitList = unitList.unique();
-        //         o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
-        //             json.data.each( function (d) { if(d)this.unitMapImported[ d.matchKey ] = d; }.bind(this));
-        //             unitLoaded = true;
-        //             check();
-        //         }.bind(this))
-        //     }else{
-        //         unitLoaded = true;
-        //         check();
-        //     }
-        //
-        //     if( groupList && groupList.length ){
-        //         groupList = groupList.unique();
-        //         o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
-        //             json.data.each( function (d) { if(d)this.groupMapImported[ d.matchKey ] = d; }.bind(this));
-        //             groupLoaded = true;
-        //             check();
-        //         }.bind(this))
-        //     }else{
-        //         groupLoaded = true;
-        //         check();
-        //     }
-        // },
-
-        // showImportingStatus: function( improtedData, date ){
-        //     this.progressBar.showImporting( this.recordId, function( data ){
-        //         data.data = improtedData;
-        //         data.rowList = this.rowList;
-        //         this.fireEvent("afterImport", data)
-        //     }.bind(this), date);
-        // },
 
         exportWithImportDataToExcel : function ( importData ) {
 
@@ -822,6 +767,24 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             }
             title = titleA.join(".");
             return title;
+        },
+        getTitleData: function (){
+            var titleDataParsed = [];
+            this.getTitleArray().each(function (title, i){
+                var text = o2.typeOf(title) === 'object' ? title.text : title;
+                var texts = ( text || " " ).split('\\');
+                titleDataParsed.push( texts );
+            });
+            return titleDataParsed;
+        },
+        getTitleLevel: function (){
+            var maxTitleLevel = 1;
+            this.getTitleArray().each(function (title, i){
+                var text = o2.typeOf(title) === 'object' ? title.text : title;
+                var texts = ( text || " " ).split('\\');
+                maxTitleLevel = Math.max( maxTitleLevel, texts.length );
+            });
+            return maxTitleLevel;
         },
         getTitleArray: function(){
             return this.json.data.columnList.map( function (columnJson, i) {

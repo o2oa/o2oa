@@ -128,7 +128,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             COMMON.AjaxModule.load(uri, function(){
                 COMMON.AjaxModule.load(uri2, function(){
                     callback();
-                }.bind(this))
+                }.bind(this));
             }.bind(this))
         }else{
             callback();
@@ -269,11 +269,29 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             var startColName, starRowIndex, endColName, endRowIndex;
 
             titleDataParsed.each( function(titles, i){
-                if( !titles[level] )return;
+
+                var value = titles[level];
+                if( !value ){
+                    if( lastValue && lastTitles && lastCell ){
+                        startColName = this.index2ColName(lastIndex+offsetColumnIndex);
+                        starRowIndex = level+1+offsetRowIndex;
+                        endColName = this.index2ColName(i-1+offsetColumnIndex);
+                        endRowIndex = (lastTitles[level+1] ? level+1 : maxTitleLevel)+offsetRowIndex;
+                        if( (startColName !== endColName || starRowIndex !== endRowIndex) && (i===0 || titleDataParsed[i-1][level]) ){
+                            sheet.mergeCells(startColName+starRowIndex+':'+endColName+endRowIndex);
+                        }
+
+                        lastValue = value;
+                        lastCell = null;
+                        lastIndex = i;
+                        lastTitles = titles;
+                    }
+                    return;
+                }
                 lastAvailableIndex = i;
-                if( lastValue !== titles[level] ){
+                if( lastValue !== value ){
                     var cell = titleRow.getCell(i+1+offsetColumnIndex);
-                    cell.value = titles[level];
+                    cell.value = value;
                     setTitleCellStyle(cell);
 
                     if(lastTitles && lastCell ){
@@ -287,7 +305,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                         }
                     }
 
-                    lastValue = titles[level];
+                    lastValue = value;
                     lastCell = cell;
                     lastIndex = i;
                     lastTitles = titles;
