@@ -128,10 +128,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                 "class": "mainColor_bg",
                 "events": {
                     "click": function (e){
-						button.disabled = true;
-						setTimeout( function(){
-							try{ button.disabled = false;  }catch(e){}
-						}.bind(this), 2000);
+                        this.deounceButton(button);
 						fun.call(this, this, e);
 					}.bind(this)
                 }
@@ -179,10 +176,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                         "class": (bt.type!=="cancel") ? "mainColor_bg" : "",
                         "events": {
                             "click": function(e){
-                                button.disabled = true;
-                                setTimeout( function(){
-                                    try{ button.disabled = false;  }catch(e){}
-                                }.bind(this), 2000);
+                                this.deounceButton(button);
                                 bt.action.call(this, this, e);
                             }.bind(this)
                         }

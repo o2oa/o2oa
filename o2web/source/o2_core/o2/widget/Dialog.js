@@ -34,6 +34,8 @@ o2.widget.Dialog = o2.DL = new Class({
 		"transition": null,
 		"duration": 200,
 
+		"debounceDelay": 1500,
+
         "container": null
 	},
 	initialize: function(options){
@@ -234,10 +236,7 @@ o2.widget.Dialog = o2.DL = new Class({
 				"styles": this.css.button,
 				"events": {
 					"click": function (e){
-						button.disabled = true;
-						setTimeout( function(){
-							try{ button.disabled = false;  }catch(e){}
-						}.bind(this), 2000);
+						this.deounceButton(button);
 						fun.call(this, this, e);
 					}.bind(this)
 				}
@@ -271,16 +270,25 @@ o2.widget.Dialog = o2.DL = new Class({
 					"styles": styles,
 					"events": {
 						"click": function(e){
-							button.disabled = true;
-							setTimeout( function(){
-								try{ button.disabled = false;  }catch(e){}
-							}.bind(this), 2000);
+							this.deounceButton(button);
 							bt.action.call(this, this, e);
 						}.bind(this)
 					}
 				}).inject(this.button);
 			}.bind(this));
 		}
+	},
+	deounceButton: function (button){
+		// var opacity = button.getStyle('opacity') || 1;
+		// var op = parseInt(opacity, 10) / 2;
+		button.disabled = true;
+		//button.setStyle('opacity', op);
+		setTimeout( function(){
+			try{
+				button.disabled = false;
+				//button.setStyle('opacity', opacity);
+			}catch(e){}
+		}.bind(this), this.options.debounceDelay);
 	},
 	getContentSize: function(height, width){
         var nodeHeight, nodeWidth;
