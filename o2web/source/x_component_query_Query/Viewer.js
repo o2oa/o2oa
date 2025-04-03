@@ -1295,9 +1295,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.node.setStyle("display", "block");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
 
-        this.filterItems.each(function(filter){
-            filter.destroy();
-        }.bind(this));
+        // this.filterItems.each(function(filter){
+        //     filter.destroy();
+        // }.bind(this));
         this.filterItems = [];
         this.manualOrderColumnMap = {};
         if (this.viewSearchInputNode) this.viewSearchInputNode.set("text", this.lp.searchKeywork);
