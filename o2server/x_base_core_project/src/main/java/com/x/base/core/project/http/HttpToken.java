@@ -58,7 +58,8 @@ public class HttpToken {
 		return effectivePerson;
 	}
 
-	public EffectivePerson whoNotRefreshToken(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
+	public EffectivePerson whoNotRefreshToken(HttpServletRequest request, HttpServletResponse response, String key)
+			throws Exception {
 		String token = this.getToken(request);
 		EffectivePerson effectivePerson = this.who(token, key, remoteAddress(request));
 		effectivePerson.setRemoteAddress(HttpToken.remoteAddress(request));
@@ -82,14 +83,14 @@ public class HttpToken {
 			try {
 				plain = Crypto.decrypt(token, key, Config.person().getEncryptType());
 			} catch (Exception e) {
-			    LOGGER.warn("can not decrypt token:{}, {}, remote address:{}.", token, e.getMessage(), address);
+				LOGGER.warn("can not decrypt token:{}, {}, remote address:{}.", token, e.getMessage(), address);
 				return EffectivePerson.anonymous();
 			}
 			Pattern pattern = Pattern.compile(REGULAREXPRESSION_TOKEN, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(plain);
 			if (!matcher.find()) {
 				// 不报错,跳过错误,将用户设置为anonymous
-			    LOGGER.warn("token format error:{}, remote address:{}.", plain, address);
+				LOGGER.warn("token format error:{}, remote address:{}.", plain, address);
 				return EffectivePerson.anonymous();
 			}
 			Date date = DateUtils.parseDate(matcher.group(2), DateTools.formatCompact_yyyyMMddHHmmss);
@@ -106,15 +107,16 @@ public class HttpToken {
 					String user = URLDecoder.decode(userName, StandardCharsets.UTF_8.name());
 					Date threshold = Config.resource_node_tokenThresholds().get(user);
 					if ((null != threshold) && threshold.after(date)) {
-					    LOGGER.warn("token expired by safe logout, user:{}, token:{}, remote address:{}.", user, plain,
+						LOGGER.warn("token expired by safe logout, user:{}, token:{}, remote address:{}.", user, plain,
 								address);
 						return EffectivePerson.anonymous();
 					}
 				}
-				int expiredMinutes = CLIENT_APP.equals(client) ? Config.person().getAppTokenExpiredMinutes() : Config.person().getTokenExpiredMinutes();
+				int expiredMinutes = CLIENT_APP.equals(client) ? Config.person().getAppTokenExpiredMinutes()
+						: Config.person().getTokenExpiredMinutes();
 				if (diff > (60000L * expiredMinutes)) {
 					// 不报错,跳过错误,将用户设置为anonymous
-				    LOGGER.warn("token expired, user:{}, token:{}, remote address:{}.",
+					LOGGER.warn("token expired, user:{}, token:{}, remote address:{}.",
 							URLDecoder.decode(userName, StandardCharsets.UTF_8.name()), plain, address);
 					return EffectivePerson.anonymous();
 				}
@@ -184,6 +186,8 @@ public class HttpToken {
 					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? COOKIE_PART_HTTPONLY : "");
 			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(Config.person().getTokenName(), effectivePerson.getToken());
+			response.setHeader(Config.person().getTokenName() + "-Expires",
+					DateTools.format(DateUtils.addMinutes(new Date(), Config.person().getTokenExpiredMinutes())));
 		}
 	}
 
@@ -195,6 +199,8 @@ public class HttpToken {
 					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? COOKIE_PART_HTTPONLY : "");
 			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(tokenName, token);
+			response.setHeader(Config.person().getTokenName() + "-Expires",
+					DateTools.format(DateUtils.addMinutes(new Date(), Config.person().getTokenExpiredMinutes())));
 		}
 	}
 
@@ -259,7 +265,7 @@ public class HttpToken {
 	}
 
 	public static String getClient(HttpServletRequest request) {
-		if(request == null){
+		if (request == null) {
 			return CLIENT_H5;
 		}
 		String xClient = request.getHeader(X_CLIENT);

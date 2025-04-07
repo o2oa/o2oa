@@ -26,13 +26,15 @@ o2.widget.Dialog = o2.DL = new Class({
 		"isResize": true,
 		"isMove": true,
         "isTitle": true,
-		
+
 		"buttons": null,
 		"buttonList": null,
         "maskNode" : null,
 
 		"transition": null,
 		"duration": 200,
+
+		"debounceDelay": 1500,
 
         "container": null
 	},
@@ -44,7 +46,7 @@ o2.widget.Dialog = o2.DL = new Class({
 		this.cssPath = o2.session.path+"/widget/$Dialog/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
-		
+
 		this.reStyle();
 //		this.css.to.height = this.options.height;
 //		this.css.to.width = this.options.width;
@@ -53,7 +55,7 @@ o2.widget.Dialog = o2.DL = new Class({
 //		this.css.to.top = this.options.top;
 //		this.css.from.top = this.options.fromTop;
 //		this.css.from.left = this.options.fromLeft;
-		
+
 		this.fireEvent("queryLoad");
 
 		this.getContentUrl();
@@ -110,7 +112,7 @@ o2.widget.Dialog = o2.DL = new Class({
 			}
 			var tag = e.target.tagName.toString().toLowerCase();
 			if (select!="text" && select!="auto" && ["input", "textarea"].indexOf(tag)==-1) e.preventDefault();
-			
+
         }.bind(this));
 
 		this.title = this.node.getElement(".MWF_dialod_title");
@@ -226,17 +228,33 @@ o2.widget.Dialog = o2.DL = new Class({
 		}
 	},
 	getButton: function(){
-		for (i in this.options.buttons){
+		Object.each(this.options.buttons, function (fun, i){
 			var button = new Element("input", {
 				"type": "button",
 				"value": i,
 				"class": "mainColor_bg",
 				"styles": this.css.button,
 				"events": {
-					"click": this.options.buttons[i].bind(this)
+					"click": function (e){
+						this.deounceButton(button);
+						fun.call(this, this, e);
+					}.bind(this)
 				}
 			}).inject(this.button);
-		}
+		}.bind(this));
+		// for (var i in this.options.buttons){
+		// 	var button = new Element("input", {
+		// 		"type": "button",
+		// 		"value": i,
+		// 		"class": "mainColor_bg",
+		// 		"styles": this.css.button,
+		// 		"events": {
+		// 			"click": function (){
+		// 				this.options.buttons[i].bind(this)
+		// 			}.bind(this)
+		// 		}
+		// 	}).inject(this.button);
+		// }
 
 		if (this.options.buttonList){
 			this.options.buttonList.each(function(bt){
@@ -251,11 +269,26 @@ o2.widget.Dialog = o2.DL = new Class({
 					"class": (bt.type!=="cancel") ? "mainColor_bg" : "",
 					"styles": styles,
 					"events": {
-						"click": function(e){bt.action.call(this, this, e)}.bind(this)
+						"click": function(e){
+							this.deounceButton(button);
+							bt.action.call(this, this, e);
+						}.bind(this)
 					}
 				}).inject(this.button);
 			}.bind(this));
 		}
+	},
+	deounceButton: function (button){
+		// var opacity = button.getStyle('opacity') || 1;
+		// var op = parseInt(opacity, 10) / 2;
+		button.disabled = true;
+		//button.setStyle('opacity', op);
+		setTimeout( function(){
+			try{
+				button.disabled = false;
+				//button.setStyle('opacity', opacity);
+			}catch(e){}
+		}.bind(this), this.options.debounceDelay);
 	},
 	getContentSize: function(height, width){
         var nodeHeight, nodeWidth;
@@ -302,7 +335,7 @@ o2.widget.Dialog = o2.DL = new Class({
 
             offsetHeight += h3 + ptop3 + pbottom3 + mtop3 + mbottom3;
 		}
-				
+
 		var ptop4 = this.content.getStyle("padding-top").toFloat();
 		var pbottom4 = this.content.getStyle("padding-bottom").toFloat();
 		var mtop4 = this.content.getStyle("margin-top").toFloat();
@@ -321,7 +354,7 @@ o2.widget.Dialog = o2.DL = new Class({
         }
 
         //if (this.content.getParent().getStyle("overflow-x")!="hidden" ) height = height-18;
-		
+
 		var pleft = this.content.getStyle("padding-left").toFloat();
 		var pright = this.content.getStyle("padding-right").toFloat();
 		var mleft = this.content.getStyle("margin-left").toFloat();
@@ -369,7 +402,7 @@ o2.widget.Dialog = o2.DL = new Class({
 //		var ptop5 = this.node.getStyle("padding-top").toFloat();
 //		var pbottom5 = this.node.getStyle("padding-bottom").toFloat();
 //		height = height - ptop5 - pbottom5;
-		
+
 		return {"height": height+"px", "width": width+"px"};
 	},
 	setContentSize: function(height, width){
@@ -513,7 +546,7 @@ o2.widget.Dialog = o2.DL = new Class({
 		if (this.fireEvent("queryHide")){
 			if (this.titleText) this.titleText.set("text", "");
 			if (this.button) this.button.set("html", "");
-			
+
 			this.morph.start(this.css.from).chain(function(){
 				this._markHide();
 				this.node.setStyle("display", "none");
@@ -525,7 +558,7 @@ o2.widget.Dialog = o2.DL = new Class({
 		if (!this.morph){
 			this.morph = new Fx.Morph(this.node, {duration: this.options.duration, "transition": this.options.transition});
 		}
-		
+
 		if (this.fireEvent("queryClose")){
 			this.morph.start(this.css.from).chain(function(){
 				this._markHide();
@@ -551,7 +584,7 @@ o2.widget.Dialog = o2.DL = new Class({
 			this.markNode.setStyle("display", "block");
 		}
 	},
-	
+
 	_markHide: function(){
 		if (this.markNode){
 			this.markNode.setStyle("display", "none");

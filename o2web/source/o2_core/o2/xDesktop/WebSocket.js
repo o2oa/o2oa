@@ -405,9 +405,9 @@ MWF.xDesktop.WebSocket = new Class({
             return;
         }
         // im_create 暂时不变
-        if (data.type == "im_create") {
+        if (data.type === "im_create") {
             // 系统消息提示
-            if (layout.desktop.message && data.person !== layout.session.user.distinguishedName) {
+            if (layout.desktop.message) {
                 var jsonBody = imBody.body;
                 var conversationId = imBody.conversationId;
                 var body = JSON.parse(jsonBody);

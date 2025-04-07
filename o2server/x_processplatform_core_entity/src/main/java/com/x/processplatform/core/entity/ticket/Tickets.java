@@ -30,6 +30,7 @@ public class Tickets implements Serializable {
 	public static final String ACT_RESET = "reset";
 	public static final String ACT_ADD = "add";
 	public static final String ACT_CREATE = "create";
+	public static final String ACT_GOBACK = "goBack";
 
 	private Map<String, Ticket> context = new LinkedHashMap<>();
 

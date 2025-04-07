@@ -26,6 +26,8 @@ export default content({
         appealMaxTimes: 0,
         detailStatisticCronString: "0 0 3 * * ?", //默认凌晨 3 点
         closeOldAttendance: true, // 是否关闭旧考勤
+        aliFaceControlEnable: false, // 阿里云人脸扩展是否启用
+        faceDetectionEnable: false, // 打卡前是否启用人脸比对
       },
       holidayList: [],
       workDayList: [],
@@ -209,6 +211,9 @@ export default content({
       this.bind.workDayList.splice(i, 1);
     }
   },
+  clickToAliface() {
+    layout.openApplication(null, 'aliface')
+  },
   // 是否启用补卡申请
   clickEnableAppeal() {
     this.bind.form.appealEnable = !this.bind.form.appealEnable;
@@ -271,4 +276,7 @@ export default content({
         );
     });
   },
+  clickFaceDetectionEnable() {
+    this.bind.form.faceDetectionEnable = !this.bind.form.faceDetectionEnable;
+  }
 });

@@ -1677,7 +1677,11 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (this.property) this.property.hide();
     },
     _setEditStyle: function(name, input, oldValue){
-        if (name=="displayName") this.resetTextNode();
+        if (name=="displayName") {
+            this.resetTextNode();
+            this.view.setViewWidth();
+            this.node.scrollIntoView({ behavior: "instant", block: "end", inline: "start" });
+        }
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
         if (name=="path") this.resetTextNode();

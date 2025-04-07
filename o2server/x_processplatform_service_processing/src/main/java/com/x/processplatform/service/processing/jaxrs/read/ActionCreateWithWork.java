@@ -7,14 +7,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -25,6 +24,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionCreateWithWorkWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
@@ -65,6 +65,8 @@ class ActionCreateWithWork extends BaseAction {
 					List<Read> adds = new ArrayList<>();
 					List<Read> updates = new ArrayList<>();
 					List<Review> addReviews = new ArrayList<>();
+					String sender = StringUtils.isBlank(wi.getSender()) ? effectivePerson.getDistinguishedName()
+							: wi.getSender();
 					for (String identity : business.organization().identity()
 							.list(ListTools.trim(wi.getIdentityList(), true, true))) {
 						String person = business.organization().person().getWithIdentity(identity);
@@ -88,11 +90,13 @@ class ActionCreateWithWork extends BaseAction {
 							o.setIdentity(identity);
 							o.setPerson(person);
 							o.setUnit(unit);
+							o.setSender(sender);
 							updates.add(o);
 							/* 同步映射字段 */
 							o.copyProjectionFields(work);
 						} else {
 							Read read = new Read(work, identity, unit, person);
+							read.setSender(sender);
 							adds.add(read);
 						}
 						if (count(business, work, person) < 1) {
@@ -141,31 +145,9 @@ class ActionCreateWithWork extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	public static class Wi extends ActionCreateWithWorkWi {
 
-		private static final long serialVersionUID = -3057273207744336553L;
-
-		@FieldDescribe("待阅标识")
-		private List<String> identityList = new ArrayList<>();
-
-		@FieldDescribe("发送待阅通知")
-		private Boolean notify = false;
-
-		public List<String> getIdentityList() {
-			return identityList;
-		}
-
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
-		}
-
-		public Boolean getNotify() {
-			return notify;
-		}
-
-		public void setNotify(Boolean notify) {
-			this.notify = notify;
-		}
+		private static final long serialVersionUID = 2640796554191281598L;
 
 	}
 

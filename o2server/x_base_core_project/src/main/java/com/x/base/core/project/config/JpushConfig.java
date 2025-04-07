@@ -2,6 +2,8 @@ package com.x.base.core.project.config;
 
 import com.google.gson.JsonObject;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
+import java.util.HashMap;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Map;
@@ -24,6 +26,7 @@ public class JpushConfig extends ConfigObject {
         this.enable = true;
         this.appKey = O2_app_key_default;
         this.masterSecret = O2_master_secret_default;
+        this.thirdPartyChannel = o2oaOfficialPushChannel();
     }
 
 
@@ -39,6 +42,18 @@ public class JpushConfig extends ConfigObject {
 
 
 
+    // o2oa 官方 app 小米和华为通道
+    Map<String, JsonObject> o2oaOfficialPushChannel() {
+        Map<String, JsonObject> map = new HashMap<>();
+        Map<String, String> xiaomi = new HashMap<>();
+        xiaomi.put("channel_id", "113850");
+        map.put("xiaomi",  XGsonBuilder.instance().toJsonTree(xiaomi).getAsJsonObject());
+        Map<String, String> huawei = new HashMap<>();
+        huawei.put("importance", "NORMAL");
+        huawei.put("category", "WORK");
+        map.put("huawei",  XGsonBuilder.instance().toJsonTree(huawei).getAsJsonObject());
+        return map;
+    }
 
 
     /**

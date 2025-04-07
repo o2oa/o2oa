@@ -1459,7 +1459,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     downloadBatchAttachment : function () {
         var job = this.module.form.businessData.work.job;
-        var site = this.module.json.id;
+        var site = this.module.json.site || this.module.json.id;
         var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/job/" + job + "/site/" + site;
         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
 

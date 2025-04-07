@@ -16,6 +16,9 @@ public class ActionCreateWithWorkWi extends GsonPropertyObject {
 	@FieldDescribe("发送待阅通知.")
 	private Boolean notify = false;
 
+	@FieldDescribe("发送人")
+	private String sender = "";
+
 	public List<String> getIdentityList() {
 		return identityList;
 	}
@@ -31,5 +34,15 @@ public class ActionCreateWithWorkWi extends GsonPropertyObject {
 	public void setNotify(Boolean notify) {
 		this.notify = notify;
 	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+	
+	
 
 }

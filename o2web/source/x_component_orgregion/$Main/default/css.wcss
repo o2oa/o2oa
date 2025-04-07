@@ -1,0 +1,101 @@
+{
+	"rightContentNode": {
+		"height": "100%",
+		"margin-left": "40px",
+		"overflow": "hidden",
+		"opacity": 1
+	},
+
+
+	"startMenuNode": {
+		"overflow": "hidden",
+		"position": "absolute",
+		"height": "160px",
+		"margin": "auto"
+	},
+
+
+	"startMenuNaviNode": {
+		"width": "120px",
+		"height": "120px",
+		"float": "left",
+		"margin": "20px",
+		"cursor": "pointer",
+		"box-shadow": "0px 0px 0px",
+		"background-color": "#FFFFFF"
+	},
+	"startMenuNaviNode_over": {
+        "width": "140px",
+		"height": "140px",
+		"margin": "10px",
+		"box-shadow": "3px 3px 8px #cccccc",
+	},
+	"startMenuNaviNode_current": {
+
+	},
+	"startMenuNaviNode_down": {
+        "box-shadow": "2px 2px 8px #cccccc inset"
+	},
+	"startMenuIconNode": {
+		"width": "120px",
+		"height": "70px",
+		"margin-top": "10px",
+		"background-repeat": "no-repeat",
+		"background-position": "center center"
+	},
+	"startMenuIconNode_over": {
+	    "width": "140px",
+    	"height": "70px",
+    	"margin-top": "20px",
+	},
+	"startMenuTextNode": {
+		"text-align": "center",
+		"font-family": "Microsoft YaHei",
+		"font-size": "16px"
+	},
+
+	"startMenuNaviLeftNode": {
+	    "width": "40px",
+        "height": "40px",
+        "float": "none",
+        "margin": "0px",
+        "cursor": "pointer",
+        "box-shadow": "0px 0px 0px",
+        "background-color": "#333333"
+	},
+	"startMenuNaviLeftNode_current": {
+        "background-color": "#f8f8f8"
+    },
+    "startMenuIconLeftNode": {
+		"width": "40px",
+		"height": "40px",
+		"margin-top": "00px",
+		"background-repeat": "no-repeat",
+		"background-position": "center center"
+	},
+	"startMenuNaviLeftPingyinNode": {
+        "width": "40px",
+		"height": "40px",
+	},
+	"startMenuTextLeftNode": {
+	    "display": "none"
+	},
+
+	"normalStartMenuNode": {
+		"width": "40px",
+		"height": "100%",
+		"padding-top": "0px",
+		"top": "0",
+		"left": "0",
+		"overflow": "hidden",
+		"border-left": "0px",
+		"border-top": "0px",
+		"border-right": "0px solid #999",
+		"border-bottom": "0px",
+		"border-radius": "0px",
+		"float": "left",
+		"display": "block",
+		"background-color": "#333333",
+		"overflow": "hidden"
+	}
+}

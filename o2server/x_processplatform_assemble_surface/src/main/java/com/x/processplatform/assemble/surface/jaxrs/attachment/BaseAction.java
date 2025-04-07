@@ -321,6 +321,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 	 * @throws Exception
 	 */
 	protected void verifyConstraint(long size, String fileName, String callback) throws Exception {
+		if(StringUtils.isBlank(fileName)){
+			throw new ExceptionFileNameInvalid(fileName);
+		}
+		fileName = fileName.replace("\r", " ").replace("\n", " ");
 		if (!StringTools.isFileName(fileName)) {
 			throw new ExceptionFileNameInvalid(fileName);
 		}

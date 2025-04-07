@@ -692,15 +692,15 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				item.removeClass("current_"+this.options.style);
 			}
 
-			if( this.options.enableDate ){
-				if( !this.isEnableDate(y+"-01-01") && !this.isEnableDate(y+"-12-12") ){
-					// item.addClass("disable_"+this.options.style);
-					item.setStyles(this.css["disable_"+this.options.style]);
-				}else{
-					// item.removeClass("disable_"+this.options.style);
-					item.setStyles(this.css["notdisable_"+this.options.style]);
-				}
-			}
+			// if( this.options.enableDate ){
+			// 	if( !this.isEnableDate(y+"-01-01") && !this.isEnableDate(y+"-12-12") ){
+			// 		// item.addClass("disable_"+this.options.style);
+			// 		item.setStyles(this.css["disable_"+this.options.style]);
+			// 	}else{
+			// 		// item.removeClass("disable_"+this.options.style);
+			// 		item.setStyles(this.css["notdisable_"+this.options.style]);
+			// 	}
+			// }
 		}.bind(this));
 	},
 	showMonth: function(year, month){
@@ -745,22 +745,22 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				item.removeClass("current_"+this.options.style);
 			}
 
-			if( this.options.enableDate ){
-				var flag = false;
-				var m = this.addZero(idx + 1, 2 );
-				if (this.isEnableDate(thisYear+"-"+m+"-01")){
-					flag = true;
-				}else if(this.isEnableDate(thisYear+"-"+m+"-"+new Date(thisYear+"-"+m+"-01").get('lastdayofmonth'))){
-					flag = true;
-				}
-				if( !flag ){
-					// item.addClass("disable_"+this.options.style);
-					item.setStyles(this.css["disable_"+this.options.style]);
-				}else{
-					// item.removeClass("disable_"+this.options.style);
-					item.setStyles(this.css["notdisable_"+this.options.style]);
-				}
-			}
+			// if( this.options.enableDate ){
+			// 	var flag = false;
+			// 	var m = this.addZero(idx + 1, 2 );
+			// 	if (this.isEnableDate(thisYear+"-"+m+"-01")){
+			// 		flag = true;
+			// 	}else if(this.isEnableDate(thisYear+"-"+m+"-"+new Date(thisYear+"-"+m+"-01").get('lastdayofmonth'))){
+			// 		flag = true;
+			// 	}
+			// 	if( !flag ){
+			// 		// item.addClass("disable_"+this.options.style);
+			// 		item.setStyles(this.css["disable_"+this.options.style]);
+			// 	}else{
+			// 		// item.removeClass("disable_"+this.options.style);
+			// 		item.setStyles(this.css["notdisable_"+this.options.style]);
+			// 	}
+			// }
 		}.bind(this));
 	},
 
@@ -810,19 +810,20 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var day = (7 + firstDate.getDay() - this.options.weekBegin) % 7;
 
 		var tmpDate = firstDate.clone();
+
 		for (var i=day-1; i>=0; i--){
 
+			tmpDate.increment("day", -1);
+
 			if( this.options.enableDate ){
-				if( !this.isEnableDate(firstDate) ){
-					tds[i].addClass("disable_"+this.options.style);
+				if( !this.isEnableDate(tmpDate) ){
+					//tds[i].addClass("disable_"+this.options.style);
 					tds[i].setStyles(this.css["disable_"+this.options.style]);
 				}else{
-					tds[i].removeClass("disable_"+this.options.style);
+					//tds[i].removeClass("disable_"+this.options.style);
 					tds[i].setStyles(this.css["notdisable_"+this.options.style]);
 				}
 			}
-
-			tmpDate.increment("day", -1);
 			tds[i].set("text", tmpDate.getDate());
 			tds[i].addClass("gray_"+this.options.style);
 			tds[i].setStyles(this.css["gray_"+this.options.style]);
@@ -1621,24 +1622,24 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		return cells;
 	},
 	setTitleStyle: function(){
-		if( this.options.enableDate ){
-			if( this.currentView === "time" ){
-				var date = this.currentTextNode.retrieve("date");
-				if( this.isEnableDate(date.clone().decrement()) ){
-					this.prevNode.setStyles(this.css["notdisable_"+this.options.style]);
-				}else{
-					this.prevNode.setStyles(this.css["disable_"+this.options.style]);
-				}
-				if( this.isEnableDate(date.clone().increment()) ){
-					this.nextNode.setStyles(this.css["notdisable_"+this.options.style]);
-				}else{
-					this.nextNode.setStyles(this.css["disable_"+this.options.style]);
-				}
-			}else{
-				this.prevNode.setStyles(this.css["notdisable_"+this.options.style]);
-				this.nextNode.setStyles(this.css["notdisable_"+this.options.style]);
-			}
-		}
+		// if( this.options.enableDate ){
+		// 	if( this.currentView === "time" ){
+		// 		var date = this.currentTextNode.retrieve("date");
+		// 		if( this.isEnableDate(date.clone().decrement()) ){
+		// 			this.prevNode.setStyles(this.css["notdisable_"+this.options.style]);
+		// 		}else{
+		// 			this.prevNode.setStyles(this.css["disable_"+this.options.style]);
+		// 		}
+		// 		if( this.isEnableDate(date.clone().increment()) ){
+		// 			this.nextNode.setStyles(this.css["notdisable_"+this.options.style]);
+		// 		}else{
+		// 			this.nextNode.setStyles(this.css["disable_"+this.options.style]);
+		// 		}
+		// 	}else{
+		// 		this.prevNode.setStyles(this.css["notdisable_"+this.options.style]);
+		// 		this.nextNode.setStyles(this.css["notdisable_"+this.options.style]);
+		// 	}
+		// }
 	},
 
 	createContainer: function(){

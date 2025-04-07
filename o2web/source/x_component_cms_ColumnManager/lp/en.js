@@ -55,6 +55,9 @@ MWF.xApplication.cms.ColumnManager.LP={
 		"aliasLabel": "Category Alias",
 		"sendNotify": "Send Message",
 		"sendNotifyInfo": "The specific message policy is configured in the form",
+		"indexAbleInfo": "If the document type is data, this configuration is invalid.",
+
+		"indexAble" : "Can Index",
 		"blankToAllNotify": "Notify all when the release range is empty",
 		"descriptionLabel": "Category description",
 		"sortLabel": "Queue Number",
@@ -225,6 +228,7 @@ MWF.xApplication.cms.ColumnManager.LP={
 	"setCategoryAliasSuccess": "Set category alias successfully",
 	"setDocumentTypeSuccess": "Set the document type successfully",
 	"setSendNotifySuccess": "Set Send Messsage successfully",
+	"setSendNotifySuccess": "Set  successfully",
 	"setBlankToAllNotifySuccess": "Whether the message is sent successfully when the release range is empty",
 	"setEditFormSuccess": "Set Edit Form Success",
 	"setReadFormSuccess": "Set Read Form Success",

@@ -62,7 +62,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
 
 		"noCategoryNoticeText": "此栏目现在还没有分类，您可以点击此处创建一个新分类",
 		"loaded": "分类加载完毕",
-		
+
 		"deleteCategoryTitle": "删除分类确认",
 		"deleteCategoryConfirm": "是否确定要删除当前分类？",
         "deleteFailAsHasDocument" : "删除分类“{title}”失败，请先删除该分类下的文档。",
@@ -72,6 +72,9 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "aliasLabel" : "分类别名",
         "sendNotify" : "发布时是否发送消息",
         "sendNotifyInfo": "具体消息策略在表单中配置",
+        "indexAbleInfo": "如果文档类型是数据，该配置无效",
+
+        "indexAble" : "是否索引",
         "blankToAllNotify": "发布范围为空时是否全员通知",
         "descriptionLabel" : "分类描述",
         "sortLabel" : "分类排序",
@@ -130,7 +133,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
 
         "deleteFormTemplateTitle": "删除表单模板确认",
         "deleteFormTemplate": "是否确定要删除当前表单模板吗？"
-		
+
 	},
     "view": {
         "create": "新建列表",
@@ -255,6 +258,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "setCategoryAliasSuccess": "设置分类别名成功",
     "setDocumentTypeSuccess": "设置文档类型成功",
     "setSendNotifySuccess": "设置是否发送消息成功",
+    "setIndexAbleSuccess": "设置是否索引成功",
     "setBlankToAllNotifySuccess": "设置发布范围为空是否发送消息成功",
     "setEditFormSuccess": "设置编辑表单成功",
     "setReadFormSuccess": "设置阅读表单成功",

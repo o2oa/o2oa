@@ -47,6 +47,7 @@ var apps = [
     { "folder": "x_component_Note", "tasks": ["move", "min"] },
     { "folder": "x_component_OKR", "tasks": ["move", "min"] },
     { "folder": "x_component_Org", "tasks": ["move", "min"] },
+    { "folder": "x_component_orgregion", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_PageDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_Portal", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_DictionaryDesigner", "tasks": ["move", "min"] },

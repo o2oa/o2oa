@@ -286,6 +286,12 @@ public class CategoryInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean anonymousAble = true;
 
+	public static final String indexAble_FIELDNAME = "indexAble";
+	@FieldDescribe("是否允许全文检索.")
+	@Column(name = ColumnNamePrefix + indexAble_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean indexAble = true;
+
 	public static final String sendNotify_FIELDNAME = "sendNotify";
 	@FieldDescribe("发布文档后是否通知阅读者：true | false")
 	@Column(name = ColumnNamePrefix + sendNotify_FIELDNAME)
@@ -1016,5 +1022,13 @@ public class CategoryInfo extends SliceJpaObject {
 
 	public void setProjection(String projection) {
 		this.projection = projection;
+	}
+
+	public Boolean getIndexAble() {
+		return indexAble;
+	}
+
+	public void setIndexAble(Boolean indexAble) {
+		this.indexAble = indexAble;
 	}
 }

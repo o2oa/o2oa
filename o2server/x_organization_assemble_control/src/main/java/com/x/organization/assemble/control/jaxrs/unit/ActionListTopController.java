@@ -23,7 +23,7 @@ class ActionListTopController extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass());
+			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName());
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());

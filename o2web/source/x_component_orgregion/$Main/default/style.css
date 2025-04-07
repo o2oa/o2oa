@@ -1,0 +1,103 @@
+@font-face {
+  font-family: 'org';
+  src:
+    url('../x_component_orgregion/$Main/default/fonts/org.ttf?chq7w8') format('truetype'),
+    url('../x_component_orgregion/$Main/default/fonts/org.woff?chq7w8') format('woff'),
+    url('../x_component_orgregion/$Main/default/fonts/org.svg?chq7w8#org') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'org' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-editperson:before {
+  content: "\e900";
+}
+.o2icon-role:before {
+  content: "\e901";
+}
+.o2icon-add:before {
+  content: "\e902";
+}
+.o2icon-company:before {
+  content: "\e98f";
+}
+.o2icon-accept:before {
+  content: "\e90e";
+}
+.o2icon-reject:before {
+  content: "\e90f";
+}
+.o2icon-people:before {
+  content: "\e920";
+}
+.o2icon-department:before {
+  content: "\e94e";
+}
+.o2icon-group:before {
+  content: "\e990";
+}
+.o2icon-department2:before {
+  content: "\e98e";
+}
+.o2icon-addperson:before {
+  content: "\e97b";
+}
+.o2icon-reset-person:before {
+  content: "\e985";
+}
+.o2icon-search1:before {
+  content: "\e994";
+}
+.o2icon-edit2:before {
+  content: "\e99d";
+}
+.o2icon-create:before {
+  content: "\e9af";
+}
+.o2icon-delete:before {
+  content: "\e9b0";
+}
+.o2icon-triangle_left:before {
+  content: "\e9b1";
+}
+.o2icon-triangle_right:before {
+  content: "\e9b3";
+}
+.o2icon-triangle_down:before {
+  content: "\e9b2";
+}
+.o2icon-triangle_up:before {
+  content: "\e9b4";
+}
+.o2icon-off:before {
+  content: "\e9bb";
+}
+.duty-wrap{
+  display: flex;
+  align-items: center;
+}
+.duty-area{
+  overflow: hidden;
+}
+.edit-duty-icon{
+  height: 16px;
+  width: 30px;
+  display: block;
+  cursor: pointer;
+  padding: 8px 0px 5px 0px;
+}
