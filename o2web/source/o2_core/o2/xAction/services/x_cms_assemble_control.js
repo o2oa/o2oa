@@ -429,9 +429,9 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
     },
     getAttachment: function(id, documentid, success, failure){
         if( layout.user.tokenType === "anonymous" ){
-            this.action.invoke({"name": "getAttachmentByAnonymous", "parameter": {"id": id, "documentid": documentid},"success": success,"failure": failure});
+            return this.action.invoke({"name": "getAttachmentByAnonymous", "parameter": {"id": id, "documentid": documentid},"success": success,"failure": failure});
         }else{
-            this.action.invoke({"name": "getAttachment", "parameter": {"id": id, "documentid": documentid}, "success": success,"failure": failure});
+            return this.action.invoke({"name": "getAttachment", "parameter": {"id": id, "documentid": documentid}, "success": success,"failure": failure});
         }
     },
     convertLocalImageToBase64: function(size, success, failure, formData, file){

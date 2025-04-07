@@ -1557,11 +1557,18 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "beforeUpload",
 
             /**
-             * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
+             * 每个附件上传后触发。本事件中可以通过this.event获取上传附件的数据
              * @event MWF.xApplication.process.Xform.Attachment#upload
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
             "upload",
+
+            /**
+             * 多选的附件上传完成后触发。this.event为本次上传的所有附件
+             * @event MWF.xApplication.process.Xform.Attachment#afterUpload
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterUpload",
 
             /**
              * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
@@ -1800,7 +1807,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         var accept = "*";
         if (!this.json.attachmentExtType || (this.json.attachmentExtType.indexOf("other") != -1 && !this.json.attachmentExtOtherType)) {
         } else {
-            accepts = [];
+            var accepts = [];
             var otherType = this.json.attachmentExtOtherType;
             this.json.attachmentExtType.each(function (v) {
                 switch (v) {
@@ -1840,19 +1847,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
+        var promises = [];
         this.attachmentController.doUploadAttachment(
             { "site": (this.json.site || this.json.id) },
             this.form.workAction.action,
             "uploadAttachment",
             { "id": this.form.businessData.work.id },
             function(){
-                this.form.workAction.listAttachments(this.form.businessData.work.id, function (json) {
-                    this.attachmentController.orderAttachments(json.data);
+                Promise.all( promises ).then( function( arg ){
+                    var attDatas = arg.map( function (a){ return a.json ? a.json.data : {}; } );
+                    this.form.workAction.listAttachments(this.form.businessData.work.id, function (json) {
+                        this.attachmentController.orderAttachments(json.data);
+                        this.fireEvent("afterUpload", [attDatas]);
+                    }.bind(this));
                 }.bind(this));
             }.bind(this),
             function (o) {
                 if (o.id) {
-                    this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function (json) {
+                    var p = this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function (json) {
                         if (json.data) {
                             if (!json.data.control) json.data.control = {};
 
@@ -1867,7 +1879,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         this.fireEvent("change");
 
                         this.save();
-                    }.bind(this))
+                    }.bind(this));
+                    promises.push(p.res);
                 }
                 this.attachmentController.checkActions();
             }.bind(this),
