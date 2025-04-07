@@ -130,10 +130,6 @@ o2.widget.JavascriptEditor = new Class({
                     this.format();
                 }.bind(this));
 
-                // this.editor.onKeyDown(function(e){
-                //     debugger;
-                //     e.preventDefault();
-                // });
 
                 if( this.fontSize ){
                     this.editor.updateOptions( {"fontSize": this.fontSize} );
@@ -266,7 +262,6 @@ o2.widget.JavascriptEditor = new Class({
         var macro = o2.widget.JavascriptEditor.runtimeEnvironment[runtime];
         var o = null;
         if (macro){
-            debugger;
             textPrefix = this.filterRangeScript(textPrefix, "(", ")");
             textPrefix = this.filterRangeScript(textPrefix, "{", "}");
             textPrefix = this.filterRangeScript(textPrefix, "[", "]");
@@ -325,7 +320,6 @@ o2.widget.JavascriptEditor = new Class({
                     /./
                 ],
                 getCompletions: function(editor, session, pos, prefix, callback){
-                    debugger;
                     var x = prefix.substr(0, prefix.lastIndexOf("."));
                     var o = this.getCompletionObject(x, editor.o2Editor.options.runtime);
 

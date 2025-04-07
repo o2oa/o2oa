@@ -739,7 +739,6 @@ console.log("wps:" + this.mode);
         }.bind(this));
     },
     showDocumentMap : function (callback){
-        // debugger
         //连页模式
         // var promise =  async () =>{
         //     await this.wpsOffice.ready();

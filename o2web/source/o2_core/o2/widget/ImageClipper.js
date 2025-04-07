@@ -919,9 +919,6 @@ o2.widget.HTML5ImageClipper = new Class({
 				height : this.options.editorSize
 			}
 		}
-		//if( isNaN(size.width) || isNaN(size.height) ){
-		//	debugger;
-		//}
 		this.offset = size;
 		this.imageNode.setStyles( size );
 	},

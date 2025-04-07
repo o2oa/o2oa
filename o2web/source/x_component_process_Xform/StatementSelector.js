@@ -117,9 +117,6 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
         return {appName: appName, statementName: statementName, statementId: statementId};
     },
     selectView: function(callback){
-        // var viewData = this.json.queryStatement;
-
-        debugger;
 
         var viewObj = this.getViewName();
         var appName = viewObj.appName, statementName = viewObj.statementName, statementId = viewObj.statementId;

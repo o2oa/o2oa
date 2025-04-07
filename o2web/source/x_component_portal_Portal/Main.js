@@ -187,12 +187,12 @@ MWF.xApplication.portal.Portal.Main = new Class({
             this.page = (this.pageDataText) ? JSON.decode(this.pageDataText): null;
             this.relatedFormMap = pageJson.data.relatedWidgetMap;
             this.relatedScriptMap = pageJson.data.relatedScriptMap;
-            delete pageJson.data.page.data;
+            // delete pageJson.data.page.data;
             this.pageInfor = pageJson.data.page;
         }else{
             this.pageDataText = (pageJson.data.data) ? MWF.decodeJsonString(pageJson.data.data): "";
             this.page = (this.pageDataText) ? JSON.decode(this.pageDataText): null;
-            delete pageJson.data.data;
+            // delete pageJson.data.data;
             this.pageInfor = pageJson.data;
         }
         this.openPortal(par, callback);
@@ -258,7 +258,6 @@ MWF.xApplication.portal.Portal.Main = new Class({
     },
 
     openPortal: function(par, callback){
-        debugger;
         if (this.page){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.page, {
@@ -281,7 +280,6 @@ MWF.xApplication.portal.Portal.Main = new Class({
                 this.appForm.load();
 
                 this.addEvent('resize', function(){
-                    debugger;
                     this.appForm.fireEvent('resize');
                 }.bind(this));
 

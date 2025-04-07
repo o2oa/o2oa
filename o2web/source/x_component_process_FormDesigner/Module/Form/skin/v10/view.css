@@ -6,7 +6,7 @@
 .form-layout .page-nav-content {
     display: grid !important;
     height: 100%;
-    grid-template-columns: 14rem auto;
+    grid-template-columns: 16rem auto;
 }
 .form-layout .page-nav {
     background-color: #ffffff;
@@ -104,4 +104,11 @@
 }
 .form-layout .pagingBarWraper .nextPage:before {
     content: '\e64c';
+}
+
+.form-layout .process-start-area {
+    box-sizing: content-box !important;
+}
+.form-layout .process-start-area * {
+    box-sizing: content-box !important;
 }

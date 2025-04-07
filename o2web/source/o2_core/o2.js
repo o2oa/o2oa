@@ -1155,12 +1155,8 @@ if (!window.o2) {
                     // }
                 }
             });
-            // try {
-                node.dispatchEvent(o2.customEventLoad);
-            // }catch(e){
-            //     debugger;
-            //     console.error(e)
-            // }
+
+            node.dispatchEvent(o2.customEventLoad);
 
         }
         var _bindToModule = function (m, node, name) {

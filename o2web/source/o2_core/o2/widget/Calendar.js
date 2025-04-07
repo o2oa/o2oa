@@ -1669,7 +1669,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.titleNode.setStyles(this.css.dateTitle);
 		this.prevNode.setStyles(this.css.datePrev);
 		this.currentNode.setStyles(this.css.dateCurrent);
-		debugger;
+
 		this.currentTextNode.setStyles(this.css.dateCurrentText);
 		this.nextNode.setStyles(this.css.dateNext);
 		this.contentNode.setStyles(this.css.calendarContent);

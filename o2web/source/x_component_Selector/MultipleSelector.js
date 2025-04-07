@@ -235,11 +235,13 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             if( this.options.width || this.options.height ){
                 this.setSize()
             }
-            this.node.position({
-                relativeTo: this.container,
-                position: "center",
-                edge: "center"
-            });
+            if (this.options.style !== "v10"){
+                this.node.position({
+                    relativeTo: this.container,
+                    position: "center",
+                    edge: "center"
+                });
+            }
 
             size = this.container.getSize();
             var nodeSize = this.node.getSize();
@@ -453,11 +455,13 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         this.loadContent();
 
-        this.node.position({
-            relativeTo: this.container,
-            position: "center",
-            edge: "center"
-        });
+        if (this.options.style !== "v10"){
+            this.node.position({
+                relativeTo: this.container,
+                position: "center",
+                edge: "center"
+            });
+        }
 
         var size = this.container.getSize();
         var nodeSize = this.node.getSize();

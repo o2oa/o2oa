@@ -22,7 +22,7 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         this.fireEvent("init");
     },
     load: function(callback){
-        debugger;
+
         if( Browser.name === 'ie' && !this.isIE11 ){
             this.parseOnerror();
             this.node.set("html", this.html_new);

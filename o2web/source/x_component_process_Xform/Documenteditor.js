@@ -1321,7 +1321,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             //var pNode = this.toolNode.getOffsetParent();
 
-            debugger;
             var paddingTop = (this.isFullScreen) ? 0 : (node || this.form.node).getStyle("padding-top");
             var pTop = window.getComputedStyle(node || this.scrollNode).paddingTop;
             try {

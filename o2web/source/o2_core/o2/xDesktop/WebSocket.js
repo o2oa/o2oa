@@ -926,7 +926,6 @@ MWF.xDesktop.WebSocket = new Class({
         });
     },
     receivBBSReplyCreateMessage: function (data) {
-        debugger;
         var content = MWF.LP.desktop.messsage.bbsReplyCreate;
         content = content.replace(/{title}/g, (data.body.createPerson||"").split("@")[0] + o2.txt(data.title));
 

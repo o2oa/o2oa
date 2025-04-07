@@ -180,7 +180,6 @@ layout.addReady(function(){
     _worker.runtimeEnvironment = {};
 
     _worker.createEnvironment = function(runtime, url){
-        debugger;
         if (!_worker.runtimeEnvironment[runtime]){
             return new Promise(function(s, f){
                 o2.xhr_get(url, function (xhr) {

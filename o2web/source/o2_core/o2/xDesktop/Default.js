@@ -1904,7 +1904,6 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.makeLnk();
     },
     addLnk: function(dragTargetLnk, dragPosition){
-        debugger;
 
         lnkdata = {
             "name": this.data.path,
@@ -2959,7 +2958,6 @@ o2.xDesktop.Default.Lnk = new Class({
         this.load(targetLnk, position);
     },
     load: function(targetLnk, position){
-        debugger;
         this.node = new Element("div.layout_menu_lnk_item");
         if (targetLnk){
             if (!position) position = "before";

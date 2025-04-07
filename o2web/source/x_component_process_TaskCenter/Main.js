@@ -1465,7 +1465,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         this.app.addEvent("resize", this.setResizeStartProcessAreaHeight.bind(this));
     },
     createStartProcessAreaNode: function () {
-        this.startProcessAreaNode = new Element("div", {"styles": this.css.startProcessAreaNode}).inject(this.content);
+        this.startProcessAreaNode = new Element("div.process-start-area", {"styles": this.css.startProcessAreaNode}).inject(this.content);
     },
     createStartProcessScrollNode: function () {
         this.startProcessApplicationListNode = new Element("div", {"styles": this.css.startProcessApplicationListNode}).inject(this.startProcessAreaNode);

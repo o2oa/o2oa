@@ -257,7 +257,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     loadPc: function(){
         if( this.options.embedded ){
-            this.node = new Element("div", {
+            this.node = new Element("div.selector-area", {
                 "styles": this.css.containerNode_embedded, //(this.options.count.toInt()===1) ? this.css.containerNodeSingle_embedded : this.css.containerNode_embedded,
                 "events": {
                     "click": function(e){e.stopPropagation();},
@@ -312,7 +312,7 @@ MWF.xApplication.Selector.Person = new Class({
             this.setMaskResize();
 
             //  this.container.setStyle("z-index", this.options.zIndex);
-            this.node = new Element("div", {
+            this.node = new Element("div.selector-area", {
                 "styles": this.options.noSelectedContainer ? this.css.containerNodeSingle : this.css.containerNode, //(this.options.count.toInt()===1)
                 "events": {
                     "click": function(e){e.stopPropagation();},
@@ -349,11 +349,13 @@ MWF.xApplication.Selector.Person = new Class({
 
             this.node.inject(this.container);
 
-            this.node.position({
-                relativeTo: this.container,
-                position: "center",
-                edge: "center"
-            });
+            if (this.options.style !== "v10"){
+                this.node.position({
+                    relativeTo: this.container,
+                    position: "center",
+                    edge: "center"
+                });
+            }
 
             var size = this.container.getSize();
             var nodeSize = this.node.getSize();
@@ -530,11 +532,14 @@ MWF.xApplication.Selector.Person = new Class({
                 if( this.options.width || this.options.height ){
                     this.setSize()
                 }
-                this.node.position({
-                    relativeTo: this.container,
-                    position: "center",
-                    edge: "center"
-                });
+
+                if (this.options.style !== "v10"){
+                    this.node.position({
+                        relativeTo: this.container,
+                        position: "center",
+                        edge: "center"
+                    });
+                }
 
                 var size = this.container.getSize();
                 var nodeSize = this.node.getSize();

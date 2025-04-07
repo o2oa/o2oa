@@ -331,7 +331,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //if (styleNode) styleNode.destroy();
         if (!styleNode && cssText) {
 
-            debugger;
+
             //删除注释
             // cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
 
@@ -2624,8 +2624,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var flowNode = new Element("div", { "styles": this.app.css.flowNode_Area }).inject(this.node);
         flowNode.setStyle("opacity", 0);
-
-        debugger;
 
         var setSize = function (notRecenter) {
 

@@ -60,7 +60,6 @@ MWF.xDesktop.getUserLayout = function(callback){
     MWF.UD.getPublicData("forceLayout", function(json) {
         var forceStatus = null;
         if (json) forceStatus = json;
-        debugger;
         MWF.UD.getDataJson("layout", function(json) {
             if (json) {
                 layout.userLayout = json;

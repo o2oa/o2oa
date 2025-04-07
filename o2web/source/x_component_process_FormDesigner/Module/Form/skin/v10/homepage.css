@@ -6,15 +6,12 @@
     position: relative;
     /* height: 100%; */
     box-sizing: border-box !important;
-    display: grid!important;
+    display: grid !important;
     /* align-items: start; */
     gap: 1em;
     padding: 1em;
     grid-template-columns: 4fr 1fr;
-    
-
 }
-
 
 .form-layout .page-app * {
     box-sizing: border-box !important;
@@ -74,11 +71,12 @@
     flex: 1;
     display: flex !important;
     flex-direction: column;
+    position: relative;
 }
 
 .form-layout .page-widget-bottom {
     flex: 0 0 2em;
-    display: flex !important;
+    display: flex;
     align-items: flex-end;
     justify-content: space-between;
 }
@@ -89,6 +87,9 @@
     height: 2.8em;
     gap: 1em;
     cursor: pointer;
+}
+.form-layout .task-item3 {
+    height: 4em;
 }
 
 .form-layout .page-widget-text-item:hover {
@@ -153,33 +154,174 @@
     transition: left 0.2s, width 0.2s;
     width: 0;
 }
-.form-layout div[mwftype="widget"]{
-   transition: opacity 0.3s;
+.form-layout div[mwftype='widget'] {
+    transition: opacity 0.3s;
 }
 
-.form-layout div[mwftype="widget"].dragging {
+.form-layout div[mwftype='widget'].dragging {
     opacity: 0.4;
-    box-shadow: 0 0 0 2px var(--oo-color-main)
+    box-shadow: 0 0 0 2px var(--oo-color-main);
 }
-.form-layout .dragging-node{
+.form-layout .dragging-node {
     opacity: 0.9;
     position: absolute;
     z-index: 1000;
     box-shadow: 0 0 0 2px var(--oo-color-main);
     pointer-events: none;
 }
-.form-layout .dragging-node.closed{
+.form-layout .dragging-node.closed {
     transition: top 0.2s, left 0.2s, width 0.2s, height 0.2s, opacity 0.2s;
 }
 
-.form-layout .page-widget-drag-node.dragging{
+.form-layout .page-widget-drag-node.dragging {
     opacity: 0;
     position: absolute;
     z-index: 10001;
 }
 
+.index-process-starter {
+    display: flex !important;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    font-size: 1rem;
+}
+
+.index-starter-navi {
+    flex: 1;
+    min-width: 16em;
+    max-width: 20em;
+    overflow: auto;
+    border-right: 1px solid #d3d3d3;
+}
+
+.index-starter-area {
+    flex: 4;
+    display: flex;
+    flex-direction: column;
+}
+
+.index-starter-search {
+    padding: 1em;
+}
+.index-starter-content {
+    flex: 1;
+    padding: 0 1em 1em 1em;
+    overflow: auto;
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.index-starter-process-application {
+}
+.index-starter-process-application-title {
+    font-size: 1.125em;
+    font-weight: bold;
+    padding: 0.5em 0;
+    margin-top: 0.5em;
+}
+.index-starter-process-area {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.index-starter-process-area dl {
+    padding: 1em;
+    border-radius: var(--oo-default-radius);
+    background-color: #f3f3f3;
+    width: 16em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    margin: 0;
+}
+.index-starter-process-area dt {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    max-height: 3em;
+    overflow: hidden;
+    flex: 0 0 auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.index-starter-process-area dt > div:first-child {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.index-starter-process-area dt > div:last-child {
+    font-size: 0.875em;
+    color: var(--oo-color-text3);
+}
+.index-starter-process-area dd {
+    padding: 0;
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--oo-color-text3);
+    max-height: 2.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.index-starter-process-area dl:hover {
+    background-color: var(--oo-color-hover2);
+    box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.03);
+}
+
+.page-widget-content-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 1px;
+    color: var(--oo-color-gray1);
+}
+.page-widget-content-empty > div:first-child {
+    font-family: 'ooempty' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    font-size: 6em;
+    line-height: 1;
+    color: var(--oo-color-gray-e);
+}
+
+
 /* 手机 */
-@media (max-width: 767px) {
+@media only screen and (max-width: 767px) {
+    /* 样式适用于屏幕宽度小于等于 1023px 的设备 */
+    .form-layout {
+        /* width: 99%; */
+        /* min-width: 99%; */
+        margin: auto;
+    }
+    .form-layout .page-app {
+        display: flex !important;
+        flex-direction: column;
+        padding: 0em;
+    }
+    .form-content > div {
+        width: unset !important;
+        min-width: unset !important;
+    }
+    .form-content-area oo-input {
+        flex: 1 1 100%;
+    }
+    .page-widget-title > div:first-child > div {
+        display: none;
+    }
+    .page-index-content {
+        min-width: 100% !important;
+    }
     .form-layout .index-content-bottom {
         grid-template-columns: 0 1fr;
         transition: grid-template-columns 0.2s;
@@ -251,34 +393,7 @@
 
     .form-layout .page-index-content {
         padding: 0;
-    }
-}
-
-/* 手机 */
-@media only screen and (max-width: 767px) {
-    /* 样式适用于屏幕宽度小于等于 1023px 的设备 */
-    .form-layout {
-        /* width: 99%; */
-        /* min-width: 99%; */
-        margin: auto;
-    }
-    .form-layout .page-app {
-        display: flex !important;
-        flex-direction: column;
-        padding: 0em;
-    }
-    .form-content > div {
-        width: unset !important;
-        min-width: unset !important;
-    }
-    .form-content-area oo-input {
-        flex: 1 1 100%;
-    }
-    .page-widget-title > div:first-child > div {
-        display: none;
-    }
-    .page-index-content{
-        min-width: 100% !important;
+        background-color: transparent;
     }
 }
 

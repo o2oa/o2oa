@@ -288,7 +288,6 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
     },
     loadContent : function( ){
-        debugger;
         var _self = this;
 
         this.canvasWrap = new Element("div.canvasWrap", { styles :  this.css.canvasWrap}).inject(this.contentNode);

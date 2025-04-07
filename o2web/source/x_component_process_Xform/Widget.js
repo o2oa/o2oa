@@ -338,7 +338,6 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                 params = this.form.Macro.exec(code, this);
             }
         }
-        debugger;
         return (this.widgetData.json.defaultParameters) ? Object.assign({}, this.widgetData.json.defaultParameters, params) : params;
         // return params;
     }

@@ -81,7 +81,6 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
             };
 
             this.action.CustomAction.createForO2(data, function( json ){
-                    debugger
                     this.documentId = json.data.fileId;
                     this.setData();
                     if (callback) callback();
@@ -100,7 +99,6 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
         };
         this.action.CustomAction.createForO2(data,
             function( json ){
-                debugger
                 this.documentId = json.data.fileId;
                 this.setData();
                 if (callback) callback();

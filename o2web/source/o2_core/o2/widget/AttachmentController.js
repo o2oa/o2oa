@@ -852,7 +852,6 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
 
     uploadAttachment: function(e, node, files){
-        debugger;
         if (this.module) this.module.uploadAttachment(e, node, files);
     },
     doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files){
@@ -1338,7 +1337,6 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
     },
     changeControllerSizeToMax: function(){
-        debugger;
         if (this.options.size!="max") {
             // if (this.minActionAreaNode) this.minActionAreaNode.setStyle("display", "none");
             // if (this.minContent) this.minContent.setStyle("display", "none");
@@ -2247,8 +2245,6 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         delete this.node;
         this.node = node;
 
-        debugger;
-
         switch (this.listStyle){
             case "list":
                 this.loadList();
@@ -2428,7 +2424,6 @@ o2.widget.AttachmentController.AttachmentMessage = new Class({
         this.messageText.set("text", ""+p+"%")
     },
     transferComplete: function(){
-        debugger;
         this.messageText.set("text", "loading...")
     }
 });

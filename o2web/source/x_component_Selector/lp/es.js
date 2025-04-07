@@ -42,7 +42,7 @@ MWF.xApplication.Selector.LP={
 	"role": "Rol",
 	"group": "Grupo",
 	"unit": "Organización",
-	"unitDuty" : "Deberes de unidad",
+	"unitDuty": "Deberes de unidad",
 	"systemList": "Lista de sistemas",
 	"quantifier": {
 		"person": "persona",

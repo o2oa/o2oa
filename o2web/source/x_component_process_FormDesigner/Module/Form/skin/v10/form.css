@@ -157,6 +157,10 @@
 
 /* 意见区域 */
 /* 流程意见默认样式 */
+.form-layout div.form-log[mwftype='log'] {
+
+}
+
 .form-layout div.form-log[mwftype='log'] > div {
     border-radius: var(--oo-default-radius);
     border: 0 !important;
@@ -267,6 +271,7 @@
 }
 
 .form-layout .item-label {
+    width: 6.2vw;
     min-width: 4.3em;
     max-width: 9em;
     padding: 0.5em 0.35em;
@@ -305,10 +310,13 @@
 .form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(3) > div {
     overflow: auto !important;
     padding: 1em;
+    font-size: 1rem !important;
+
 }
 
 .form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(4) > div {
     height: 3em !important;
+    margin-top: 0.5em !important;
 }
 .form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(4) > div > div {
     margin-top: 0.5em !important;
@@ -317,6 +325,8 @@
     color: var(--oo-color-text2);
     border-bottom: 1px solid #dfdfdf !important;
     transition: background-color 0.3s;
+    height: 2.142857em !important;
+    line-height: 2.142857em !important;
 }
 
 .form-layout .page-content-section div[mwftype='statement'] table tr:nth-child(1) td {
@@ -383,6 +393,15 @@
 .form-layout .page-content-section div[mwftype='view'] tr:hover > td {
     background-color: var(--oo-color-hover) !important;
 }
+
+.form-layout .selector-area{
+    box-sizing: content-box !important;
+}
+
+.form-layout .selector-area *{
+    box-sizing: content-box !important;
+}
+
 
 /* 手机 */
 @media only screen and (max-width: 767px) {

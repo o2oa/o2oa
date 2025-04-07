@@ -9,7 +9,6 @@ MWF.xApplication.process.Xform.OOButton = MWF.APPOOButton =  new Class({
         // button.inject(this.node, "after");
         // this.node.destroy();
         // this.node = button;
-        debugger;
 
         this.node.set({
             "id": this.json.id,

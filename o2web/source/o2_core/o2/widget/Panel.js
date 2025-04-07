@@ -326,7 +326,6 @@ o2.widget.Panel = new Class({
 	},
 	
 	collapse: function(){
-		debugger;
 		this.returnTopSize = this.titleNode.getComputedSize();
 		this.returnBottomSize = this.bottomNode.getComputedSize();
 		this.returnContainerSize = this.container.getComputedSize();

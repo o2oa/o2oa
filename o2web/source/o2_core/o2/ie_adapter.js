@@ -130,14 +130,3 @@
     }
 
 })();
-//debugger;
-
-// (function(){
-//
-// })();
-//
-//
-//
-// if (Browser.iecomp){
-//
-// }

@@ -467,7 +467,6 @@ o2.widget.O2Process = new Class({
         });
     },
     open : function (e) {
-        debugger;
         if( this.data.id && this.data.application ){
             var appId = "process.ProcessManager" + this.data.application;
             if (layout.desktop.apps[appId]){
@@ -508,7 +507,6 @@ o2.widget.O2CMSCategory = new Class({
         });
     },
     open : function (e) {
-        debugger;
         if( this.data.id && this.data.appId ){
             // var appId = "cms.ColumnManager" + this.data.id;
             // if (layout.desktop.apps[appId]){
@@ -1003,17 +1001,3 @@ o2.widget.O2Org = function(value, container, options){
     }
     return null;
 };
-
-// o2.widget.O2Identity.iditems = o2.widget.O2Identity.iditems || [];
-// o2.widget.O2Identity.intervalId = window.setInterval(function(){
-//     if (o2.widget.O2Identity.iditems && o2.widget.O2Identity.iditems.length){
-//         o2.widget.O2Identity.iditems.each(function(item){
-//             if (item.tooltip){
-//                 debugger;
-//                 if (item.tooltip.options.attach){
-//
-//                 }
-//             }
-//         });
-//     }
-// }, 10000);
