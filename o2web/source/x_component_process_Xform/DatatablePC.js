@@ -2725,6 +2725,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			}
 
             if( json.type==="Attachment" || json.type==="AttachmentDg" ){
+				json.originialSite = json.site || json.originialId;
                 json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
             }
 
@@ -2795,6 +2796,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 					json.type = "AttachmentDg";
 					json.ignoreSite = true;
+					json.originialSite = json.site || json.originialId;
 					json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
 				}
 

@@ -808,6 +808,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                         "name": d.data.name,
                         "id": d.data.id,
                         "businessId": d.data.businessId,
+                        "originialSite": d.data.originialSite || this.json.originialSite || this.json.originialId || this.json.site,
                         "person": d.data.person,
                         "creatorUid": d.data.creatorUid,
                         "seqNumber": d.data.seqNumber,
@@ -816,7 +817,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                         "lastUpdateTime": d.data.lastUpdateTime,
                         "activityName": d.data.activityName
                     };
-                });
+                }.bind(this));
                 this._setBusinessData(values);
             } else {
                 this._setBusinessData([]);
