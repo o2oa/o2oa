@@ -3146,12 +3146,14 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
     setAttachmentBusinessData: function(){
         if (this.attachmentController) {
             if (this.attachmentController.attachments.length) {
+                debugger;
                 var values = this.attachmentController.attachments.map(function (d) {
                     return {
                         "control": d.data.control,
                         "name": d.data.name,
                         "id": d.data.id,
                         "businessId": d.data.businessId,
+                        "originialSite": d.data.originialSite || this.json.originialSite || this.json.originialId || this.json.site,
                         "person": d.data.person,
                         "creatorUid": d.data.creatorUid,
                         "orderNumber": d.data.orderNumber,
@@ -3160,7 +3162,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
                         "lastUpdateTime": d.data.lastUpdateTime,
                         "activityName": d.data.activityName
                     };
-                });
+                }.bind(this));
                 this._setBusinessData(values);
             } else {
                 this._setBusinessData([]);
