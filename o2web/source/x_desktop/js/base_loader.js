@@ -350,9 +350,10 @@ if (!layout.isReady) {
 
         //每分钟检测token过期时间
         window.setInterval(function () {
-            if (layout.session && layout.session.tokenExpiresTime) {
+            var tokenExpiresTime = localStorage.getItem("o2LayoutSessionTokenExpires");
+            if (tokenExpiresTime) {
                 var now = new Date().getTime();
-                var n = layout.session.tokenExpiresTime - now;
+                var n = tokenExpiresTime - now;
                 if (n>0 && n <= 1000 * 60 * 3.2) {
                     //过期时间小于1分钟，重新获取token
                     MWF.xDesktop.notice("notice", {x: "right", y:"top"}, o2.LP.desktop.login.tokenWillExpire, null, null, {delayClose: 40000});

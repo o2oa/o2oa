@@ -2128,7 +2128,11 @@ if (!window.o2) {
                             var xToken = this.getHeader(o2.tokenName);
                             var xTokenExpires = this.getHeader(o2.tokenName+'-Expires');
                             var expiresTime = xTokenExpires ? new Date(xTokenExpires) : null;
-                            layout.session.tokenExpiresTime = expiresTime;
+                            if (expiresTime){
+                                // sessionStorage.setItem("o2LayoutSessionTokenExpires", expiresTime.getTime());
+                                localStorage.setItem("o2LayoutSessionTokenExpires", expiresTime ? expiresTime.getTime() : null);
+                            }
+                            
                             if (xToken) {
                                 if (window.layout) {
                                     if (!layout.session) layout.session = {};
@@ -2149,12 +2153,94 @@ if (!window.o2) {
                         onFailure: function (xhr) {
                             _resGetQueue[_addr] = null;
                             delete _resGetQueue[_addr];
-                            if (!loadAsync){
-                                var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
-                                reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
+
+                            if (xhr && xhr.status === 401){
+                                if (!layout.loginDlg) {
+                                    var json = JSON.decode(xhr.responseText);
+                                    
+                                    const node = new Element("div", {styles: {height: "100%"}});
+                                    const iframe = new Element("iframe", {
+                                        "src": '/x_desktop/index.html?redirect=/x_desktop/close.html&username='+layout.session.user.name,
+                                        "width": "100%",
+                                        "height": "100%",
+                                        "frameborder": "0",
+                                        "allowtransparency": "true",
+                                        "scrolling": "no"
+                                    }).inject(node);
+            
+                                    layout.loginDlg = $OOUI.dialog(json.message.trim()+o2.LP.desktop.login.loginAgain, node, null, {
+                                        buttons: '', width: '80vw', height: '80vh', zIndex: 200000,
+                                        'events': {
+                                            'close': ()=>{
+                                                if (!layout.loginDlg.isOk){
+                                                    if (!loadAsync){
+                                                        var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                                                        reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
+                                                    }else{
+                                                        reject({"xhr": xhr, "text": "", "error": "error"});
+                                                    }
+                                                    if (layout.holdRequests){
+                                                        while (layout.holdRequests.length){
+                                                            var f = layout.holdRequests.shift();
+                                                            if (f) f?.reject();
+                                                        }
+                                                    }
+                                                }
+                                                layout.loginDlg = null;
+                                            }
+                                        }
+                                    });
+                                    layout.loginDlg.dlg.closeDlg = ()=>{
+                                        layout.loginDlg.isOk = true;
+                                        layout.loginDlg.dlg.close();
+                                        layout.loginDlg = null;
+
+                                        _restful(method, address, data, callback, async, withCredentials, cache);
+                                        if (layout.holdRequests){
+                                            while (layout.holdRequests.length){
+                                                var f = layout.holdRequests.shift();
+                                                if (f) f?.retry();
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (!layout.holdRequests) layout.holdRequests = [];
+                                    
+                                    const m = method;
+                                    const a = address;
+                                    const d = data;
+                                    const c = callback;
+                                    const as = async;
+                                    const wc = withCredentials;
+                                    const ca = cache;
+                                    const x = xhr;
+                                    const la = loadAsync;
+
+                                    console.log(d)
+
+                                    layout.holdRequests.push({
+                                        reject: ()=>{
+                                            if (!la){
+                                                var r = o2.runCallback(c, "failure", [x, "", ""], null);
+                                                reject((r) ? r : {"xhr": x, "text": "", "error": "error"});
+                                            }else{
+                                                reject({"xhr": x, "text": "", "error": "error"});
+                                            }
+                                        },
+                                        retry: ()=>{
+                                            _restful(m, a, d, c, as, wc, ca);
+                                        }
+                                    });
+                                }
                             }else{
-                                reject({"xhr": xhr, "text": "", "error": "error"});
+                                if (!loadAsync){
+                                    var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
+                                    reject((r) ? r : {"xhr": xhr, "text": "", "error": "error"});
+                                }else{
+                                    reject({"xhr": xhr, "text": "", "error": "error"});
+                                }
                             }
+                            
                         }.bind(this),
                         onError: function (text, error) {
                             _resGetQueue[_addr] = null;

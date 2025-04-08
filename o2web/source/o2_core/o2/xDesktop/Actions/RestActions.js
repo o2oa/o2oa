@@ -665,35 +665,33 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
             if (xhr.status!=0){
                 var errorText = error;
                 if (xhr && xhr.status === 401){
-                    if (!layout.loginDlg) {
-                        var json = JSON.decode(xhr.responseText);
+                    // if (!layout.loginDlg) {
+                    //     var json = JSON.decode(xhr.responseText);
                         
-                        const node = new Element("div", {styles: {height: "100%"}});
-                        const iframe = new Element("iframe", {
-                            "src": '/x_desktop/index.html?redirect=/x_desktop/close.html&username='+layout.session.user.name,
-                            "width": "100%",
-                            "height": "100%",
-                            "frameborder": "0",
-                            "allowtransparency": "true",
-                            "scrolling": "no"
-                        }).inject(node);
+                    //     const node = new Element("div", {styles: {height: "100%"}});
+                    //     const iframe = new Element("iframe", {
+                    //         "src": '/x_desktop/index.html?redirect=/x_desktop/close.html&username='+layout.session.user.name,
+                    //         "width": "100%",
+                    //         "height": "100%",
+                    //         "frameborder": "0",
+                    //         "allowtransparency": "true",
+                    //         "scrolling": "no"
+                    //     }).inject(node);
 
-                        layout.loginDlg = $OOUI.dialog(json.message.trim()+o2.LP.desktop.login.loginAgain, node, null, {buttons: '', width: '80vw', height: '80vh', zIndex: 200000});
-                        layout.loginDlg.dlg.closeDlg = ()=>{
-                            layout.loginDlg.dlg.close();
-                            layout.loginDlg = null;
-                        }
-                    }
-                    // o2.DL.open({
-                    //     title: json.message.trim(),
-                    //     content: node,
-                    //     "width": "1000",
-		            //     "height": "800",
-                    //     // onPostShow: ()=>{
-                    //     //     const authentication = new o2.xDesktop.Authentication({"style": "flat"});
-                    //     //     authentication.loadLogin(node);
-                    //     // }
-                    // });
+                    //     layout.loginDlg = $OOUI.dialog(json.message.trim()+o2.LP.desktop.login.loginAgain, node, null, {
+                    //         buttons: '', width: '80vw', height: '80vh', zIndex: 200000,
+                    //         'events': {
+                    //             'close': ()=>{
+                    //                 console.log("close iframe")
+                    //                 layout.loginDlg = null;
+                    //             }
+                    //         }
+                    //     });
+                    //     layout.loginDlg.dlg.closeDlg = ()=>{
+                    //         layout.loginDlg.dlg.close();
+                    //         layout.loginDlg = null;
+                    //     }
+                    // }
 
                 }else{
                     var json = JSON.decode(xhr.responseText);
