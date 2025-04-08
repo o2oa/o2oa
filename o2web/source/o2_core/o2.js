@@ -2126,6 +2126,9 @@ if (!window.o2) {
                             delete _resGetQueue[_addr];
 
                             var xToken = this.getHeader(o2.tokenName);
+                            var xTokenExpires = this.getHeader(o2.tokenName+'-Expires');
+                            var expiresTime = xTokenExpires ? new Date(xTokenExpires) : null;
+                            layout.session.tokenExpiresTime = expiresTime;
                             if (xToken) {
                                 if (window.layout) {
                                     if (!layout.session) layout.session = {};
@@ -2197,23 +2200,6 @@ if (!window.o2) {
                 }.bind(this)).catch(function (err) {
                     throw err;
                 });
-                //     .then(function (responseJSON) {
-                //
-                //     _resGetQueue[address].events.each(function(e){
-                //         var r = o2.runCallback(e.callback, "success", [responseJSON], null);
-                //         if (e.promise){
-                //             e.promise
-                //         }
-                //     });
-                //
-                //     return responseJSON;
-                // }, function(err){
-                //     var r = o2.runCallback(callback, "failure", [xhr, "", ""], null);
-                //     return r || err;
-                // }).catch(function (err) {
-                //     throw err;
-                //     //return Promise.reject(err);
-                // });
                 var oReturn = p;
                 //oReturn.res = res;
                 var resPromise = Promise.resolve(oReturn).then(function(json){

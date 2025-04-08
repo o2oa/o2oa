@@ -252,7 +252,9 @@ o2.LP={
 			"camera_loginSuccess": "¡Hola {name}, iniciando sesión para usted...!",
 			"camera_loginError": "No se pudo verificar su identidad. Inicie sesión de otra manera ...",
 			"camera_loginError2": "Fallo al iniciar sesión, inicie sesión de otra manera ...",
-			"camera_loginError_camera": "No se puede abrir la cámara, es posible que ya esté en uso..."
+			"camera_loginError_camera": "No se puede abrir la cámara, es posible que ya esté en uso...",
+			"loginAgain": "Por favor, vuelva a iniciar sesión",
+			"tokenWillExpire": "Su estado de inicio de sesión está a punto de expirar, por favor guarde la información lo antes posible..."
 		},
 		"action": {
 			"uploadTitle": "Subiendo",

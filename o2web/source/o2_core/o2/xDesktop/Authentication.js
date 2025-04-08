@@ -78,11 +78,20 @@ MWF.xDesktop.Authentication = new Class({
                     var roleLCList = (user.roleList || []).map(function (role) {
                         return role.toLowerCase();
                     }.bind(this));
-                    if (roleLCList.isIntersect(["systemmanager", "securitymanager", "auditmanager"])) {
-                        window.location = "../x_desktop/app.html?app=ThreeMember";
-                    } else {
-                        window.location.reload();
+
+                    var uri = new URI(window.location.toString());
+                    var redirect = uri.getData("redirect");
+
+                    if (redirect){
+                        window.location = redirect;
+                    }else{
+                        if (roleLCList.isIntersect(["systemmanager", "securitymanager", "auditmanager"])) {
+                            window.location = "../x_desktop/app.html?app=ThreeMember";
+                        } else {
+                            window.location.reload();
+                        }
                     }
+                    
                 }.bind(this);
                 this.openLoginForm(this.popupOptions);
                 this.fireEvent("openLogin");
@@ -626,13 +635,19 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.oauthArea = this.formTableArea.getElement("[item=oauthArea]");
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
+
+            var uri = new URI(window.location.toString());
+            var userName = uri.getData("username");
+
             this.form = new MForm(this.formTableArea, this.data, {
                 style: this.options.popupStyle,
                 verifyType: "single",	//batch一起校验，或alert弹出
                 isEdited: this.isEdited || this.isNew,
                 itemTemplate: {
                     credential: {
-                        text: this.lp.userName,
+                        attr: {readonly: (!!userName)},
+                        text: userName || this.lp.userName,
+                        value: userName || '',
                         defaultValue: this.lp.userName,
                         className: "inputUser",
                         notEmpty: true,
@@ -1234,6 +1249,8 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.errorArea.empty();
         var captchaItem = null;
         var codeItem = null;
+
+        debugger;
         if (this.loginType === "captcha") {
             this.form.getItem("password").options.notEmpty = true;
 

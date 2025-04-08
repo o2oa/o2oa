@@ -274,6 +274,8 @@ o2.LP.desktop = {
         "title": "用户登录",
         "loginButton": "登　录",
 
+        "loginAgain": "请重新登录",
+
         "mobileDownload": "手机扫描二维码安装",
 
         "inputUsernamePassword": "请输入用户名和密码...",
@@ -289,7 +291,9 @@ o2.LP.desktop = {
         "camera_loginSuccess": "{name}您好，正在为您登录 ...",
         "camera_loginError": "无法验证您的身份，请通过其他方式登录 ...",
         "camera_loginError2": "登录失败，请通过其他方式登录 ...",
-        "camera_loginError_camera": "无法打开摄像头，可能已经在使用中 ..."
+        "camera_loginError_camera": "无法打开摄像头，可能已经在使用中 ...",
+
+        "tokenWillExpire": "您的登录状态即将过期，请尽快保存信息 ...",
     },
 
     "action": {

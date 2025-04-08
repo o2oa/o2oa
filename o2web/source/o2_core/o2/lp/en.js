@@ -251,7 +251,9 @@ o2.LP={
 			"camera_loginSuccess": "{name} Hello, is to sign you in ...",
 			"camera_loginError": "Unable to verify your identity, please log in through other means ...",
 			"camera_loginError2": "Login failed, please log in through other means ...",
-			"camera_loginError_camera": "Unable to open the camera, probably already in use ..."
+			"camera_loginError_camera": "Unable to open the camera, probably already in use ...",
+			"loginAgain": "Please log in again",
+			"tokenWillExpire": "Your login status is about to expire, please save your information as soon as possible"
 		},
 		"action": {
 			"uploadTitle": "Uploading",
