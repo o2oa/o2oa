@@ -256,7 +256,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         var accept = "*";
         if (!this.json.attachmentExtType || (this.json.attachmentExtType.indexOf("other") != -1 && !this.json.attachmentExtOtherType)) {
         } else {
-            accepts = [];
+            var accepts = [];
             var otherType = this.json.attachmentExtOtherType;
             this.json.attachmentExtType.each(function (v) {
                 switch (v) {
@@ -296,20 +296,24 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }
         var size = 0;
         if (this.json.attachmentSize) size = this.json.attachmentSize.toFloat();
-        debugger;
+        var promises = [];
         this.attachmentController.doUploadAttachment(
             { "site": this.json.id },
             this.form.documentAction.action,
             "uploadAttachment",
             { "id": this.form.businessData.document.id },
             function (){
-                o2.Actions.load('x_cms_assemble_control').FileInfoAction.listFileInfoByDocumentId(this.form.businessData.document.id, function (json){
-                    this.attachmentController.orderAttachments(json.data);
+                Promise.all( promises ).then( function( arg ){
+                    var attDatas = arg.map( function (a){ return a.json ? a.json.data : {}; } );
+                    o2.Actions.load('x_cms_assemble_control').FileInfoAction.listFileInfoByDocumentId(this.form.businessData.document.id, function (json){
+                        this.attachmentController.orderAttachments(json.data);
+                        this.fireEvent("afterUpload", [attDatas]);
+                    }.bind(this));
                 }.bind(this));
             }.bind(this),
             function (o) {
                 if (o.id) {
-                    this.form.documentAction.getAttachment(o.id, this.form.businessData.document.id, function (json) {
+                    var p = this.form.documentAction.getAttachment(o.id, this.form.businessData.document.id, function (json) {
                         if (json.data) {
                             if (!json.data.control) json.data.control = {};
                             this.attachmentController.addAttachment(json.data, o.messageId);
@@ -322,7 +326,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                         this.fireEvent("change");
 
                         this.save();
-                    }.bind(this))
+                    }.bind(this));
+                    debugger;
+                    promises.push(p.res);
                 }
                 this.attachmentController.checkActions();
             }.bind(this),
