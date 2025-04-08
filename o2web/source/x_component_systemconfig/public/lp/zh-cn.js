@@ -822,10 +822,10 @@ o2.xApplication.systemconfig.LP = {
         "webSocketEnableInfo": "WebSocket用于服务器给WEB用户的消息提醒和聊天等功能，如果启用了WebSocket，请正确配置nginx、WAF等网络系统，以确保允许WebSocket协议通讯。<span style='color: red;'>（需要重启服务器）</span>",
 
         "deployWarEnable": "是否允许前端部署自定义应用",
-        "deployWarEnableInfo": "此配置控制自定义应用（war）是否允许在WEB端上传部署<span style='color: red;'>（需要重启服务器）</span>",
+        "deployWarEnableInfo": "此配置控制自定义应用（war）是否允许在WEB端上传部署。",
 
         "deployResourceEnable": "是否允许前端部署Web资源",
-        "deployResourceEnableInfo": "此配置控制前端组件和静态资源，是否允许在WEB端上传部署<span style='color: red;'>（需要重启服务器）</span>",
+        "deployResourceEnableInfo": "此配置控制前端组件和静态资源，是否允许在WEB端上传部署。",
 
         "statEnable": "启用Druid统计",
         "statExclusions": "统计忽略路径",
