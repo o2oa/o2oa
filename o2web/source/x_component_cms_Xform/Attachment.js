@@ -157,6 +157,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "onOrder": function () {
                 this.fireEvent("change");
                 this.save();
@@ -761,6 +762,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "ignoreSite": this.json.ignoreSite,
             "onOrder": function () {
                 this.fireEvent("change");
@@ -808,6 +810,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                         "name": d.data.name,
                         "id": d.data.id,
                         "businessId": d.data.businessId,
+                        "originialSite": d.data.originialSite || this.json.originialSite || this.json.originialId || this.json.site,
                         "person": d.data.person,
                         "creatorUid": d.data.creatorUid,
                         "seqNumber": d.data.seqNumber,
@@ -816,7 +819,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
                         "lastUpdateTime": d.data.lastUpdateTime,
                         "activityName": d.data.activityName
                     };
-                });
+                }.bind(this));
                 this._setBusinessData(values);
             } else {
                 this._setBusinessData([]);

@@ -819,6 +819,13 @@ MWF.xApplication.process.FormDesigner.LP = {
         hideLayoutButton: '隐藏布局操作组',
         hideSettingButton: '隐藏设置操作组',
         hideModeButton: '隐藏模式操作',
+        singleActionbar: '单个附件操作',
+        singleActionbarNote: '精简模式下的序列和列表两种样式有单个附件操作',
+        hideOpen: '隐藏打开操作',
+        hideEdit: '隐藏编辑操作',
+        hideDownload: "隐藏下载操作",
+        hideDelete: '隐藏删除操作',
+        hideSetting: '隐藏设置权限操作',
         showInDatagrid: '数据网格中的展现（过时）',
         attachmentValidation: '上传时校验',
         attachmentValidationNote:

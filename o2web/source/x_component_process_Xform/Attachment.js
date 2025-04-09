@@ -1695,6 +1695,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "onOrder": function () {
                 this.fireEvent("change");
                 this.save();
@@ -1705,6 +1706,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             options = Object.merge(options, this.form.json.attachmentStyle);
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
+
+        debugger;
 
         this.fireEvent("queryLoadController", [options]);
 
@@ -2992,7 +2995,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         var context = srv.context || '';
 
         var url = protocol + "//" + hostname + (appPort && appPort.toString() !== defaultPort ? ":" + appPort : "") + context + "/jaxrs/office/doc/to/pdf/" + module + "/" + this.att.data.id;
-
+        url = o2.filterUrl(url);
         window.open("../o2_lib/pdfjs/web/viewer.html?file=" + encodeURIComponent(url));
     },
     previewOfd : function(){
@@ -3105,6 +3108,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "ignoreSite": this.json.ignoreSite,
             "onOrder": function () {
                 this.fireEvent("change");
@@ -3146,12 +3150,14 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
     setAttachmentBusinessData: function(){
         if (this.attachmentController) {
             if (this.attachmentController.attachments.length) {
+                debugger;
                 var values = this.attachmentController.attachments.map(function (d) {
                     return {
                         "control": d.data.control,
                         "name": d.data.name,
                         "id": d.data.id,
                         "businessId": d.data.businessId,
+                        "originialSite": d.data.originialSite || this.json.originialSite || this.json.originialId || this.json.site,
                         "person": d.data.person,
                         "creatorUid": d.data.creatorUid,
                         "orderNumber": d.data.orderNumber,
@@ -3160,7 +3166,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
                         "lastUpdateTime": d.data.lastUpdateTime,
                         "activityName": d.data.activityName
                     };
-                });
+                }.bind(this));
                 this._setBusinessData(values);
             } else {
                 this._setBusinessData([]);

@@ -251,8 +251,19 @@
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('view')!=-1)?'checked':''} type="checkbox" value="view"/>{{$.lp.hideModeButton}}<br/>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.singleActionbar}}:</td>
+                <td class="editTableValue">
+                    <div style="color: #999;padding:5px;">{{$.lp.singleActionbarNote}}</div>
+                    <input class="editTableRadio" name="singleToolbarHidden" text{(($.singleToolbarHidden || []).indexOf('open')!=-1)?'checked':''} type="checkbox" value="open"/>{{$.lp.hideOpen}}<br/>
+                    <input class="editTableRadio" name="singleToolbarHidden" text{(($.singleToolbarHidden || []).indexOf('download')!=-1)?'checked':''} type="checkbox" value="download"/>{{$.lp.hideDownload}}<br/>
+                    <input class="editTableRadio" name="singleToolbarHidden" text{(($.singleToolbarHidden || []).indexOf('edit')!=-1)?'checked':''} type="checkbox" value="edit"/>{{$.lp.hideEdit}}<br/>
+                    <input class="editTableRadio" name="singleToolbarHidden" text{(($.singleToolbarHidden || []).indexOf('delete')!=-1)?'checked':''} type="checkbox" value="delete"/>{{$.lp.hideDelete}}<br/>
+                    <input class="editTableRadio" name="singleToolbarHidden" text{(($.singleToolbarHidden || []).indexOf('config')!=-1)?'checked':''} type="checkbox" value="config"/>{{$.lp.hideSetting}}<br/>
+                </td>
+            </tr>
         </table>
-               <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.showInDatagrid}}</div>
+       <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.showInDatagrid}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">{{$.lp.showType}}:</td>
