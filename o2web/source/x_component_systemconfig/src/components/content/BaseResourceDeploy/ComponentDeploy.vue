@@ -216,11 +216,11 @@ button{
   margin: auto 2px;
   width: 28px;
   height: 20px;
-  border-radius: 20px;
-  border: 1px solid #cccccc;
+  border-radius: 20px !important;
+  border: 1px solid #cccccc !important;
   font-size: 12px;
-  cursor: pointer;
-  padding: 2px 5px;
+  cursor: pointer !important;
+  padding: 2px 5px !important;
 }
 .componentItemDeploy{
   height: 90px;
