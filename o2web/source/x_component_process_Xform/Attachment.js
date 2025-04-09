@@ -2992,7 +2992,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         var context = srv.context || '';
 
         var url = protocol + "//" + hostname + (appPort && appPort.toString() !== defaultPort ? ":" + appPort : "") + context + "/jaxrs/office/doc/to/pdf/" + module + "/" + this.att.data.id;
-
+        url = o2.filterUrl(url);
         window.open("../o2_lib/pdfjs/web/viewer.html?file=" + encodeURIComponent(url));
     },
     previewOfd : function(){
