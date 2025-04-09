@@ -302,7 +302,7 @@ if (!layout.isReady) {
             loadAllModules(loadO2Modules);
         };
 
-        o2.load('/o2_lib/ooui/ooui.iife.js', {}, ()=>{
+        o2.load('../o2_lib/ooui/ooui.iife.js', {}, ()=>{
             $OOUI.defineComponent();
         });
         o2.getJSON("../x_desktop/res/config/config.json", function (config) {

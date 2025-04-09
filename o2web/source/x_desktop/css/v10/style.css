@@ -21,16 +21,16 @@
 @font-face {
     font-family: 'ooicon';
     src:
-            url('/x_desktop/css/v10/ooicon.ttf') format('truetype'),
-            url('/x_desktop/css/v10/ooicon.woff') format('woff'),
-            url('/x_desktop/css/v10/ooicon.svg') format('svg');
+            url('./ooicon.ttf') format('truetype'),
+            url('.ooicon.woff') format('woff'),
+            url('.ooicon.svg') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
 }
 @font-face {
     font-family: "D-DIN-PRO";
-    src: url("/x_desktop/css/v10/D-DIN PRO.woff2") format('woff2');
+    src: url("./D-DIN PRO.woff2") format('woff2');
     font-display: swap;
 }
 

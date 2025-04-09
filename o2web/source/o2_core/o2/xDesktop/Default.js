@@ -268,7 +268,7 @@ o2.xDesktop.Default = new Class({
         var skinCss = this.path+this.options.style+ "/style-skin.css";
         var html = this.path+this.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-pc.html" : "/layout-pc.html");
 
-        var cssv10 = "/x_desktop/css/v10/"+this.options.style+ "/style-skin.css";
+        var cssv10 = "../x_desktop/css/v10/"+this.options.style+ "/style-skin.css";
         this.node.loadCss(cssv10);
 
 

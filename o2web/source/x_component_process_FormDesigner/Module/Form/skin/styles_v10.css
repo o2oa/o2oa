@@ -1,8 +1,8 @@
 /* 首页框架样式 */
-@import url('/x_component_process_FormDesigner/Module/Form/skin/v10/index.css');
+@import url('../x_component_process_FormDesigner/Module/Form/skin/v10/index.css');
 /* 门户页面样式 */
-@import url('/x_component_process_FormDesigner/Module/Form/skin/v10/homepage.css');
+@import url('../x_component_process_FormDesigner/Module/Form/skin/v10/homepage.css');
 /* 表单样式 */
-@import url('/x_component_process_FormDesigner/Module/Form/skin/v10/form.css');
+@import url('../x_component_process_FormDesigner/Module/Form/skin/v10/form.css');
 /* 二级页面样式 */
-@import url('/x_component_process_FormDesigner/Module/Form/skin/v10/view.css');
+@import url('../x_component_process_FormDesigner/Module/Form/skin/v10/view.css');

@@ -8,7 +8,7 @@
         "properties": {
             "class": "form-layout"
         },
-        "cssLink": "/x_component_process_FormDesigner/Module/Form/skin/styles_v10.css"
+        "cssLink": "../x_component_process_FormDesigner/Module/Form/skin/styles_v10.css"
     },
     "label": {
         "title": {

@@ -469,6 +469,9 @@ if (!window.o2) {
         var _xhr_get = function (url, success, failure, completed, sync) {
             var xhr = new _request();
             url = _filterUrl(url);
+            if (url.startsWith("/x_") || url.startsWith("/o2_")) {
+                url = '..'+url;
+            }
             xhr.open("GET", url, !sync);
 
             var _checkCssLoaded = function (_, err) {
@@ -1905,6 +1908,9 @@ if (!window.o2) {
             }
 
             url = (url.indexOf("?") !== -1) ? url + "&v=" + o2.version.v : url + "?v=" + o2.version.v;
+            if (url.startsWith("/x_") || url.startsWith("/o2_")) {
+                url = '..'+url;
+            }
 
             var json = null;
             var res = new Request.JSON({
