@@ -1695,6 +1695,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "onOrder": function () {
                 this.fireEvent("change");
                 this.save();
@@ -1705,6 +1706,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             options = Object.merge(options, this.form.json.attachmentStyle);
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
+
+        debugger;
 
         this.fireEvent("queryLoadController", [options]);
 
@@ -3105,6 +3108,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "ignoreSite": this.json.ignoreSite,
             "onOrder": function () {
                 this.fireEvent("change");

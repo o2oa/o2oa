@@ -157,6 +157,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "onOrder": function () {
                 this.fireEvent("change");
                 this.save();
@@ -761,6 +762,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
+            "singleToolbarHidden" : this.json.singleToolbarHidden || [], //delete edit config open edit
             "ignoreSite": this.json.ignoreSite,
             "onOrder": function () {
                 this.fireEvent("change");
