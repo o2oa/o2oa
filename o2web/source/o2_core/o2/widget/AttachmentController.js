@@ -20,6 +20,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "readonly": false,
         "availableListStyles" : ["list","seq","icon","preview"],
         "toolbarGroupHidden" : [], //edit read list view
+        "singleToolbarHidden" : [], //delete edit config open edit
         "images": ["bmp", "gif", "png", "jpeg", "jpg", "jpe", "ico"],
         "audios": ["mp3", "wav", "wma", "wmv"],
         "videos": ["avi", "mkv", "mov", "ogg", "mp4", "mpa", "mpe", "mpeg", "mpg", "rmvb"],
@@ -2034,26 +2035,27 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
 
         this.actionAreaNode = new Element("div", {"styles": this.css.minAttachmentActionAreaNode}).inject(this.node);
 
-        if( this.controller.isAttDblclickAvailable(this) ){
+        var hiddenList = this.controller.options.singleToolbarHidden;
+        if( this.controller.isAttDblclickAvailable(this) && !hiddenList.contains('open') ){
             this.openAction = this.createAction(this.actionAreaNode, "open_single", "open_single_over", o2.LP.widget.open, function (e, node) {
                 this.controller.dblclickAttachment(e, node, [this]);
             }.bind(this));
         }
 
-        if ( this.controller.isAttDownloadAvailable(this) ) {
+        if ( this.controller.isAttDownloadAvailable(this) && !hiddenList.contains('download') ) {
             this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
                 this.controller.downloadAttachment(e, node);
             }.bind(this));
         }
         //this.actions.push( this.downloadAction );
 
-        if ( this.controller.isAttDeleteAvailable(this) ) {
+        if ( this.controller.isAttDeleteAvailable(this) && !hiddenList.contains('delete')) {
             this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function (e, node) {
                 this.controller.deleteAttachment(e, node);
             }.bind(this));
         }
 
-        if ( this.controller.isAttEditAvailable(this) ) {
+        if ( this.controller.isAttEditAvailable(this) && !hiddenList.contains('edit')) {
             this.editAction = this.createAction(this.actionAreaNode, "edit_single", "edit_single_over", o2.LP.widget["editAtt"], function (e, node) {
                 this.controller.editAttachment(e, node);
             }.bind(this));
@@ -2062,7 +2064,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         //this.actions.push( this.deleteAction );
 
         if (this.controller.configAttachment) {
-            if ( this.controller.isAttConfigAvailable(this) ) {
+            if ( this.controller.isAttConfigAvailable(this) && !hiddenList.contains('config')) {
                 this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", o2.LP.widget.configAttachment, function (e, node) {
                     this.controller.configAttachment(e, node);
                 }.bind(this), o2.LP.widget.configAttachmentText );
@@ -2108,26 +2110,30 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
 
         this.actionAreaNode = new Element("div", {"styles":this.css.minAttachmentActionAreaNode}).inject(this.node);
 
-        if( this.controller.isAttDblclickAvailable(this) ){
+        debugger;
+
+        var hiddenList = this.controller.options.singleToolbarHidden;
+
+        if( this.controller.isAttDblclickAvailable(this) && !hiddenList.contains('open') ){
             this.openAction = this.createAction(this.actionAreaNode, "open_single", "open_single_over", o2.LP.widget.open, function (e, node) {
                 this.controller.dblclickAttachment(e, node, [this]);
             }.bind(this));
         }
 
-        if ( this.controller.isAttDownloadAvailable(this) ) {
+        if ( this.controller.isAttDownloadAvailable(this) && !hiddenList.contains('download') ) {
             this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
                 this.controller.downloadAttachment(e, node);
             }.bind(this));
         }
         //this.actions.push( this.downloadAction );
 
-        if ( this.controller.isAttDeleteAvailable(this) ) {
+        if ( this.controller.isAttDeleteAvailable(this) && !hiddenList.contains('delete') ) {
             this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function (e, node) {
                 this.controller.deleteAttachment(e, node);
             }.bind(this));
         }
 
-        if ( this.controller.isAttEditAvailable(this) ) {
+        if ( this.controller.isAttEditAvailable(this) && !hiddenList.contains('edit') ) {
             this.editAction = this.createAction(this.actionAreaNode, "edit_single", "edit_single_over", o2.LP.widget["editAtt"], function (e, node) {
                 this.controller.editAttachment(e, node);
             }.bind(this));
@@ -2137,7 +2143,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
 
 
         if (this.controller.configAttachment) {
-            if ( this.controller.isAttConfigAvailable(this) ) {
+            if ( this.controller.isAttConfigAvailable(this) && !hiddenList.contains('config') ) {
                 this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", MWF.LP.widget.configAttachment, function (e, node) {
                     this.controller.configAttachment(e, node);
                 }.bind(this));
