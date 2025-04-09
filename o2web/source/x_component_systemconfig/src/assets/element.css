@@ -6675,7 +6675,8 @@
     background: 0 0;
     cursor: pointer;
     outline: 0;
-    margin-top: 8px
+    margin-top: 8px;
+    padding: 0;
 }
 
 .systemconfig .el-picker-panel__icon-btn:hover {
