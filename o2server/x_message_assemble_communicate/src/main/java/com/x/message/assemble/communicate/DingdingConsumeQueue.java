@@ -341,7 +341,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 		 * @param messageBody
 		 * @return
 		 */
-		private static String getCmsDocumentId(String messageBody) {
+		public static String getCmsDocumentId(String messageBody) {
 			try {
 				JsonObject object = gson.fromJson(messageBody, JsonObject.class);
 				if (object.get("id") != null) {

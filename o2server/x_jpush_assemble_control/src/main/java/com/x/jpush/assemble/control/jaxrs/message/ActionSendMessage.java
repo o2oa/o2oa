@@ -32,10 +32,12 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ActionSendMessage extends StandardJaxrsAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionSendMessage.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionSendMessage.class);
 
     protected ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
-        logger.info("execute action 'ActionSendMessage' .");
+        if (logger.isDebugEnabled()) {
+            logger.debug("execute action 'ActionSendMessage' .");
+        }
         ActionResult<Wo> result = new ActionResult<>();
         Wo wraps = new Wo();
         if (jsonElement == null) {
@@ -45,6 +47,9 @@ public class ActionSendMessage extends StandardJaxrsAction {
         if (StringUtils.isEmpty(wi.getPerson()) || StringUtils.isEmpty(wi.getMessage())) {
             throw new ExceptionSendMessageEmpty();
         }
+        if (logger.isDebugEnabled()) {
+            logger.debug("极光推送 消息：{}", wi.toString());
+        }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             logger.info("极光推送通道启用中，消息发送到极光推送，人员：{}", wi.getPerson());
@@ -52,7 +57,7 @@ public class ActionSendMessage extends StandardJaxrsAction {
             if (pushDeviceList != null && !pushDeviceList.isEmpty()) {
                 send2Jpush(pushDeviceList, wi, business.pushDeviceFactory().jpushClient());
             } else {
-                logger.info("极光推送设备为空，{}", wi.getPerson());
+                logger.warn("极光推送设备为空，{}", wi.getPerson());
             }
             wraps.setValue(true);
             result.setData(wraps);
@@ -60,7 +65,9 @@ public class ActionSendMessage extends StandardJaxrsAction {
             logger.error(e);
             throw new ExceptionSendMessage(e, "系统发送推送消息时异常!");
         }
-        logger.info("action 'ActionSendMessage' execute completed!");
+        if (logger.isDebugEnabled()) {
+            logger.debug("action 'ActionSendMessage' execute completed!");
+        }
         return result;
     }
 
