@@ -1431,7 +1431,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             var n1 = (s==="'" || s==="\"") ? 2 : 1;
             pic = pic.substring(n0, pic.length-n1);
 
-            if ((pic.indexOf("x_processplatform_assemble_surface")!=-1 || pic.indexOf("x_portal_assemble_surface")!=-1)){
+            if ((pic.indexOf("x_processplatform_assemble_surface")!=-1 || pic.indexOf("x_portal_assemble_surface")!=-1) && !pic.startsWith("..")){
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
                 if (pic.indexOf("/x_processplatform_assemble_surface")!==-1){

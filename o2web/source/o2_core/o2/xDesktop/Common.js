@@ -331,21 +331,21 @@ MWF.xDesktop.getPortalFileUr = function(id, app){
     var url = MWF.Actions.getHost(root)+"/"+root+MWF.Actions.get(root).action.actions.readFile.uri;
     url = url.replace("{flag}", id);
     url = url.replace("{applicationFlag}", app);
-    return url
+    return o2.filterUrl(url);
 };
 MWF.xDesktop.getProcessFileUr = function(id, app){
     var root = "x_processplatform_assemble_surface";
     var url = MWF.Actions.getHost(root)+"/"+root+MWF.Actions.get(root).action.actions.readFile.uri;
     url = url.replace("{flag}", id);
     url = url.replace("{applicationFlag}", app);
-    return url
+    return o2.filterUrl(url);
 };
 MWF.xDesktop.getCMSFileUr = function(id, app){
     var root = "x_cms_assemble_control";
     var url = MWF.Actions.getHost(root)+"/"+root+MWF.Actions.get(root).action.actions.readFile.uri;
     url = url.replace("{flag}", id);
     url = url.replace("{applicationFlag}", app);
-    return url
+    return o2.filterUrl(url);
 };
 
 MWF.xDesktop.getServiceAddress = function(config, callback){

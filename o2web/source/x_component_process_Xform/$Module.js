@@ -532,7 +532,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var s = {};
         Object.each(styles || {}, function(v, key){
             var value = v.toString();
-            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1) && !value.includes("../")){
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
                 var host3 = MWF.Actions.getHost("x_cms_assemble_control");

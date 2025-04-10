@@ -730,9 +730,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"hideSettingButton": "Ocultar grupo de configuración",
 		"hideModeButton": "Ocultar modo de operación",
 		"attachmentToolbar": "Operación de adjuntar una sola vez (los estilos de secuencia y lista en modo compacto tienen una operación de adjuntar una sola vez)",
-		downloadHidden: 'Ocultar operación de descarga',
-		deleteHidden: 'Ocultar la operación de eliminación',
-		configHidden: "Ocultar operaciones de permisos de configuración",
+		"downloadHidden": "Ocultar operación de descarga",
+		"deleteHidden": "Ocultar la operación de eliminación",
+		"configHidden": "Ocultar operaciones de permisos de configuración",
 		"showInDatagrid": "Mostrar en la cuadrícula de datos (obsoleto)",
 		"attachmentValidation": "Validación durante la carga",
 		"attachmentValidationNote": "Puede utilizar 'this.target.uploadingFiles' para obtener los adjuntos cargándose actualmente. Devuelva 'true' para aprobar la validación y un texto para interrumpir la carga con una notificación del sistema.",
@@ -1526,7 +1526,14 @@ MWF.xApplication.process.FormDesigner.LP={
 		"itemCountNote": "Los datos se pueden obtener a través de esto.target.data",
 		"requestBodyNote": "Obtener la página actual a través de este.target.currentpage",
 		"defaultParameter": "Parámetros predeterminados",
-		"defaultParameters": "Parámetros predeterminados"
+		"defaultParameters": "Parámetros predeterminados",
+		"singleActionbar": "Operación de un solo accesorio",
+		"singleActionbarNote": "Los dos estilos de secuencia y lista en modo racionalizado tienen una sola operación de adjunto.",
+		"hideOpen": "Ocultar la operación de apertura",
+		"hideEdit": "Ocultar la operación de edición",
+		"hideDownload": "Ocultar la operación de descarga",
+		"hideDelete": "Ocultar la operación de eliminación",
+		"hideSetting": "Ocultar la operación de permisos de configuración"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

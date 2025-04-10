@@ -731,8 +731,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"hideSettingButton": "Hide Setting Buttons",
 		"hideModeButton": "Hide Mode Button",
 		"attachmentToolbar": "Single attachment operation (sequence and list styles in compact mode have single attachment operation)",
-		"downloadHidden": 'Hide download operation',
-		"deleteHidden": 'Hide delete operation',
+		"downloadHidden": "Hide download operation",
+		"deleteHidden": "Hide delete operation",
 		"configHidden": "Hide configuration permission operation",
 		"showInDatagrid": "Show In Datagrid(Deprecated)",
 		"attachmentValidation": "Validate when uploading",
@@ -1527,7 +1527,14 @@ MWF.xApplication.process.FormDesigner.LP={
 		"itemCountNote": "Data can be obtained through this.target. data",
 		"requestBodyNote": "Retrieve the current page through this.target. CurrentPage",
 		"defaultParameter": "Default parameters",
-		"defaultParameters": "Default parameters"
+		"defaultParameters": "Default parameters",
+		"singleActionbar": "Single attachment operation",
+		"singleActionbarNote": "The two styles of sequence and list in simplified mode have a single attachment operation",
+		"hideOpen": "Hide Open Operation",
+		"hideEdit": "Hide editing operations",
+		"hideDownload": "Hide download operation",
+		"hideDelete": "Hide delete operation",
+		"hideSetting": "Hide permission settings operation"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

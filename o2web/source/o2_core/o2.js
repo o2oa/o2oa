@@ -2166,7 +2166,7 @@ if (!window.o2) {
                                     
                                     const node = new Element("div", {styles: {height: "100%"}});
                                     const iframe = new Element("iframe", {
-                                        "src": '/x_desktop/index.html?redirect=/x_desktop/close.html&username='+layout.session.user.name,
+                                        "src": '../x_desktop/index.html?redirect=../x_desktop/close.html&username='+layout.session.user.name,
                                         "width": "100%",
                                         "height": "100%",
                                         "frameborder": "0",
