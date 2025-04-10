@@ -36,6 +36,8 @@ MWF.xApplication.Selector.Person = new Class({
         "selectSingleItem" : false, //当只有一个候选项的时候，是否默认选中
         "hiddenEmptyCategory" : false,
 
+        "useBreadcrumbs": false, //分类使用面包屑导航，仅移动端有效
+
         "flatCategory" : false, //扁平化展现分类,
         "selectType" : "person",
 
@@ -451,6 +453,8 @@ MWF.xApplication.Selector.Person = new Class({
         }
 
         this.letterAreaNode = this.node.getElement(".MWF_selector_letterAreaNode");
+
+        this.breadcrumbsNode = this.node.getElement(".MWF_selector_BreadcrumbsNode");
 
         this.itemAreaScrollNode = this.node.getElement(".MWF_selector_itemAreaScrollNode");
         this.itemAreaNode = this.node.getElement(".MWF_selector_itemAreaNode");
