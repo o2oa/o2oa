@@ -174,7 +174,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 }.bind(this));
             }
 
-            if (this.json.isAudio !== "no") {
+            if (this.json.isAudio === "yes") {
                 if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia) {
                     /**
                      * @summary 音频按钮.在浏览器支持HTML5的getUserMedia才可用。

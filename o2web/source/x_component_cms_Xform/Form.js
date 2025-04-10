@@ -1193,7 +1193,6 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
             MWF.xDesktop.requireApp("cms.Document", "DelayPublishForm", null, false);
 
-            debugger;
             var form = new MWF.xApplication.cms.Document.DelayPublishForm(this, {}, {
                 publishTime :  this.businessData.document.publishTime || "",
                 onPostOk : function( publishTime ){
@@ -1316,6 +1315,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             documentData.pictureList = specialData.pictures;
             documentData.summary = specialData.summary;
             documentData.cloudPictures = specialData.cloudPictures;
+            documentData.publishTime = new Date().format('db');
             documentData.docData = data;
             delete documentData.attachmentList;
             //this.documentAction.saveDocument(documentData, function(){
