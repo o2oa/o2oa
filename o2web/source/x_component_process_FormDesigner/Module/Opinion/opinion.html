@@ -57,8 +57,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.recording}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="isAudio" value="yes" text{($.isAudio!='no')?'checked':''}/>{{$.lp.yes}}
-                    <input type="radio" name="isAudio" value="no" text{($.isAudio=='no')?'checked':''}/>{{$.lp.no}}
+                    <input type="radio" name="isAudio" value="yes" text{($.isAudio==='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isAudio" value="no" text{($.isAudio!=='yes')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
             <tr>
@@ -76,7 +76,7 @@
 <!--                </td>-->
 <!--            </tr>-->
         </table>
-		
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <div class="MWFMaplist" name="inputStyles" title="{{$.lp.inputStyle}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
