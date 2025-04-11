@@ -40,7 +40,7 @@ public class MobileAction extends StandardJaxrsAction {
         ActionResult<ActionPreCheck.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionPreCheck().execute(effectivePerson);
+            result = new ActionPreCheck().execute(effectivePerson.getDistinguishedName());
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
@@ -68,4 +68,21 @@ public class MobileAction extends StandardJaxrsAction {
     }
 
 
+    @JaxrsMethodDescribe(value = "来自外部的打卡，比如门禁系统。系统调用的接口", action = ActionCheckInRecordFromOut.class)
+    @POST
+    @Path("check/ from/out")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void checkInRecordFromOut(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                     JsonElement jsonElement) {
+        ActionResult<ActionCheckInRecordFromOut.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionCheckInRecordFromOut().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 }
