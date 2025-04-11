@@ -60,6 +60,8 @@ public class ThisApplication {
     
     // 同步执行器  这里还有集群服务器的问题
     public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    // 打卡
+    public static final ThreadPoolExecutor checkInExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
     public static void init() throws Exception {
         try {
@@ -128,6 +130,7 @@ public class ThisApplication {
             DataProcessThreadFactory.getInstance().showdown();
             MonitorFileDataOpt.stop();
             executor.shutdown();
+            checkInExecutor.shutdown();
         } catch (Exception e) {
             LOGGER.error(e);
         }

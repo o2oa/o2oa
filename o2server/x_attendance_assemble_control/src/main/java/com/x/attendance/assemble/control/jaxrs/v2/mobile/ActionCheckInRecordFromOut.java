@@ -20,6 +20,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.DateTools;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
@@ -52,7 +54,7 @@ public class ActionCheckInRecordFromOut extends BaseAction {
             }
             Date checkInDate = null;
             try {
-                checkInDate = new Date(wi.getCheckInTime());
+                checkInDate = new Date(wi.getCheckInTime()*1000);
             } catch (Exception ignore) {
             }
             if (checkInDate == null) {
@@ -61,8 +63,8 @@ public class ActionCheckInRecordFromOut extends BaseAction {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("打卡日期：" + checkInDate);
             }
-            if (checkInDate.after(new Date())) {
-                throw new ExceptionWithMessage("不能导入未来的数据！");
+            if (!isToday(checkInDate)) {
+                throw new ExceptionWithMessage("打卡日期"+DateTools.format(checkInDate)+"不是今天！");
             }
             WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory()
                     .getGroupShiftByPersonDate(p.getDistinguishedName(),
@@ -84,19 +86,31 @@ public class ActionCheckInRecordFromOut extends BaseAction {
             if (record == null) {
                 record = recordList.get(recordList.size() - 1);
             }
-            checkIn(emc, business, checkInDate, record, null, null, wi);
-            if (BooleanUtils.isTrue(wi.getGenerateErrorInfo())) {
-                // 异常数据
-                generateAppealInfo(record, woGroupShift.getGroup().getFieldWorkMarkError(), emc,
-                        business);
-            }
 
             Wo wo = new Wo();
-            wo.setValue(true);
             ActionResult<Wo> result = new ActionResult<>();
+            if (record != null) {
+//                checkIn(emc, business, checkInDate, rInstance, null, null, wi);
+                AttendanceV2CheckInRecord back = ThisApplication.checkInExecutor.submit(new CheckInCallableImpl(checkInDate, record.getId(), CheckInWi.fromOutside(wi))).get();
+                if (BooleanUtils.isTrue(wi.getGenerateErrorInfo())) {
+                    // 异常数据
+                    generateAppealInfo(back, woGroupShift.getGroup().getFieldWorkMarkError(), emc,
+                            business);
+                }
+                wo.setValue(true);
+            } else {
+                LOGGER.warn("没有找到打卡记录！");
+                wo.setValue(false);
+            }
             result.setData(wo);
             return result;
         }
+    }
+
+    private boolean isToday(Date date) {
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate today = LocalDate.now();
+        return localDate.equals(today);
     }
 
     public static class Wo extends WrapBoolean {
@@ -110,7 +124,7 @@ public class ActionCheckInRecordFromOut extends BaseAction {
         private static final long serialVersionUID = 3470655254449767419L;
         @FieldDescribe("用户唯一标识")
         private String person;
-        @FieldDescribe("打卡时间(时间戳)")
+        @FieldDescribe("打卡时间(Unix 时间戳)")
         private Long checkInTime;
         @FieldDescribe("来源， 比如门禁系统")
         private String source;

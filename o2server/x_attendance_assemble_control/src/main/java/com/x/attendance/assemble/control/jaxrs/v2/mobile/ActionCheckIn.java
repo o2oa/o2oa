@@ -2,12 +2,12 @@ package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
-import com.x.attendance.entity.v2.AttendanceV2WorkPlace;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -55,10 +55,7 @@ public class ActionCheckIn extends BaseAction {
             if (groups == null || groups.isEmpty()) {
                 throw new ExceptionNotExistObject("考勤组信息");
             }
-            AttendanceV2WorkPlace workPlace = null;
-            if (StringUtils.isNotEmpty(wi.getWorkPlaceId())) {
-                workPlace = emc.find(wi.getWorkPlaceId(), AttendanceV2WorkPlace.class);
-            }
+
             AttendanceV2CheckInRecord record = emc.find(wi.getRecordId(), AttendanceV2CheckInRecord.class);
             if (record == null) {
                 throw new ExceptionNotExistObject("打卡记录");
@@ -70,16 +67,18 @@ public class ActionCheckIn extends BaseAction {
             if (AttendanceV2CheckInRecord.SOURCE_TYPE_FAST_CHECK.equals(wi.getSourceType()) && !AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn.equals(record.getCheckInResult())) {
                 throw new ExceptionCannotFastCheckIn();
             }
-            // 查询打卡记录
+            // 打卡时间
             Date nowDate = new Date();
-            checkIn(emc, business, nowDate, record, workPlace, wi, null);
-            // 异常数据
-            generateAppealInfo(record, groups.get(0).getFieldWorkMarkError(), emc, business);
-            Wo wo = new Wo();
-            wo.setCheckInResult(record.getCheckInResult());
-            wo.setRecordDate(nowDate);
-            wo.setCheckInRecordId(record.getId());
-            result.setData(wo);
+            AttendanceV2CheckInRecord back = ThisApplication.checkInExecutor.submit(new CheckInCallableImpl(nowDate, record.getId(), CheckInWi.fromApp(wi))).get();
+            if (back != null) {
+                // 异常数据
+                generateAppealInfo(back, groups.get(0).getFieldWorkMarkError(), emc, business);
+                Wo wo = new Wo();
+                wo.setCheckInResult(back.getCheckInResult());
+                wo.setRecordDate(nowDate);
+                wo.setCheckInRecordId(back.getId());
+                result.setData(wo);
+            }
         }
         if (result.getData() == null) {
             throw new ExceptionNoCheckInResult();
