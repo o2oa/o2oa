@@ -32,6 +32,8 @@ MWF.xApplication.Selector.Person = new Class({
         "hasSelectedSearchbar" : false, //已选是不是有搜索框
         "noSelectedContainer" : false, //是否隐藏右侧已选区域
         "contentUrl" : "", //和默认的页面布局不一样的话，可以传入页面布局HTML URL
+        "categoryUrl" : "", //分类URL
+        "itemUrl" : "", //itemURL
         "injectToBody" : false, //当传入HTML URL的时候是否插入到document.body, false的时候插入到this.container
         "selectSingleItem" : false, //当只有一个候选项的时候，是否默认选中
         "hiddenEmptyCategory" : false,
@@ -72,6 +74,10 @@ MWF.xApplication.Selector.Person = new Class({
             this.options.indent = 20;
         }
 
+        if(this.options.useBreadcrumbs){
+            this.options.indent = 0;
+        }
+
         Object.defineProperties(this, {
             "orgAction": {"get": function(){return o2.Actions.get("x_organization_assemble_control");}},
             "processAction": {"get": function(){return o2.Actions.get("x_processplatform_assemble_surface");}},
@@ -95,6 +101,8 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.lastPeople = "";
         this.pageCount = "13";
+
+        this.breadcrumbItems = [];
 
         this.selectedItems = []; //所有已选项
 
@@ -122,15 +130,25 @@ MWF.xApplication.Selector.Person = new Class({
     },
     load: function(){
         this.fireEvent("queryLoad",[this]);
+        this.loadItemHtml();
         if( this.options.contentUrl ){
-            this.loadWithUrl()
+            this.loadWithUrl();
         }else{
             if (layout.mobile){
                 this.loadMobile();
             }else{
                 this.loadPc();
             }
+            this.loadBreadcrumbs();
             this.fireEvent("load");
+        }
+    },
+    loadBreadcrumbs: function(){
+        if( this.breadcrumbsNode && this.options.useBreadcrumbs ){
+            this.breadcrumbs = new MWF.xApplication.Selector.Person.Breadcrumbs(this, this.breadcrumbsNode);
+            this.addEvent('expand', function (category) {
+                this.breadcrumbs.addItem(category);
+            }.bind(this));
         }
     },
     loadMobile: function(){
@@ -379,16 +397,16 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     loadWithUrl : function(){
-        if( this.options.style === "flow" ){
-            debugger;
+        if( ["flow", "v10_mobile"].contains(this.options.style) ){
             var node = new Element("div");
             node.loadHtml( this.options.contentUrl, {
                 "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options },
                 "module": this
             },function () {
                 this.node = node.getFirst();
-                this.node.loadCss("../x_component_Selector/$Selector/flow/style.css");
+                this.node.loadCss("../x_component_Selector/$Selector/"+this.options.style+"/style.css");
                 this.loadContentWithHTML();
+                this.loadBreadcrumbs();
                 this.fireEvent("load");
             }.bind(this));
         }else{
@@ -399,6 +417,7 @@ MWF.xApplication.Selector.Person = new Class({
                 onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
                     this.node = responseTree[0];
                     this.loadContentWithHTML();
+                    this.loadBreadcrumbs();
                     this.fireEvent("load");
                 }.bind(this),
                 onFailure: function(xhr){
@@ -497,6 +516,8 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
         if (this.itemAreaNode) this.itemAreaNode.setStyles(this.css.itemAreaNode);
 
+        if(this.breadcrumbsNode)this.breadcrumbsNode.setStyles(this.css.breadcrumbsNode);
+
         if (this.itemSearchAreaScrollNode) this.itemSearchAreaScrollNode.setStyles(this.css.itemSearchAreaScrollNode);
         if (this.itemSearchAreaNode) this.itemSearchAreaNode.setStyles(this.css.itemAreaNode);
 
@@ -582,6 +603,10 @@ MWF.xApplication.Selector.Person = new Class({
 
         if( this.searchInput ){
             height = height - this.getOffsetY( this.searchInputDiv ) - ( this.searchInputDiv.getStyle("height").toInt() || 0 )
+        }
+
+        if( this.breadcrumbsNode ){
+            height = height - this.getOffsetY( this.breadcrumbsNode ) - ( this.breadcrumbsNode.getSize().y || 0 )
         }
 
         if( !showing ){
@@ -751,6 +776,10 @@ MWF.xApplication.Selector.Person = new Class({
                 height = height - this.getOffsetY( this.actionNode ) - ( this.actionNode.getStyle("height").toInt() || 0 )
             }
 
+            if( this.breadcrumbsNode ){
+                height = height - this.getOffsetY( this.breadcrumbsNode ) - ( this.breadcrumbsNode.getSize().y || 0 )
+            }
+
             this.contentNode.setStyle("height", ""+height+"px");
         }
 
@@ -843,6 +872,9 @@ MWF.xApplication.Selector.Person = new Class({
             }
             if( this.actionNode ){
                 height = height - this.getOffsetY( this.actionNode ) - ( this.actionNode.getStyle("height").toInt() || 0 )
+            }
+            if( this.breadcrumbsNode ){
+                height = height - this.getOffsetY( this.breadcrumbsNode ) - ( this.breadcrumbsNode.getSize().y || 0 );
             }
 
             this.contentNode.setStyle("height", ""+height+"px");
@@ -943,6 +975,7 @@ MWF.xApplication.Selector.Person = new Class({
             if (this.searchInputDiv) y = y + this.searchInputDiv.getSize().y + this.getOffsetY(this.searchInputDiv);
             if (this.letterAreaNode) y = y + this.letterAreaNode.getSize().y + this.getOffsetY(this.letterAreaNode);
             if (this.selectedCountNode) y = y + this.selectedCountNode.getSize().y + this.getOffsetY(this.selectedCountNode);
+            if (this.breadcrumbsNode) y = y + this.breadcrumbsNode.getSize().y + this.getOffsetY(this.breadcrumbsNode);
 
             height = height - y;
 
@@ -1227,7 +1260,6 @@ MWF.xApplication.Selector.Person = new Class({
         }
     },
 
-
     initSelectedSearchInput: function(){
         this.selectedSearchInput.addEvents({
             "keyup": function(e){
@@ -1475,7 +1507,11 @@ MWF.xApplication.Selector.Person = new Class({
 
         var letterNodeCss = this.css.letterNode;
         var letterNodeCss_over = this.css.letterNode_over;
-        if (layout.mobile){
+        if( this.options.style === "v10_mobile" ){
+            // var width = ( this.letterAreaNode.getSize().x - this.getOffsetX(this.letterAreaNode) - 10 ) / 13;
+            // letterNodeCss.width = ""+width+"px";
+            // letterNodeCss_over.width = ""+width+"px";
+        }else if (layout.mobile){
             letterNodeCss = this.css.letterNode_mobile || letterNodeCss;
             letterNodeCss_over = this.css.letterNode_mobile_over || letterNodeCss_over;
             var size = this.container.getSize();
@@ -1568,37 +1604,6 @@ MWF.xApplication.Selector.Person = new Class({
         this.loadItemsQueue = 0;
         this.initSearchArea(false);
     },
-    //loadSelectItems: function(addToNext){
-    //    if (!this.isItemLoaded){
-    //        if (!this.loaddingItems){
-    //            this.loaddingItems = true;
-    //            var count = 20;
-    //            this._listItemNext(this.getLastLoadedItemId(), count, function(json){
-    //                if (json.data.length){
-    //                    json.data.each(function(data){
-    //                        var item = this._newItem(data, this, this.itemAreaNode);
-    //                        this.items.push(item);
-    //                    }.bind(this));
-    //                    this.loaddingItems = false;
-    //
-    //                    if (json.data.length<count){
-    //                        this.isItemLoaded = true;
-    //                    }else{
-    //                        if (this.loadItemsQueue>0){
-    //                            this.loadItemsQueue--;
-    //                            this.loadSelectItems();
-    //                        }
-    //                    }
-    //                }else{
-    //                    this.isItemLoaded = true;
-    //                    this.loaddingItems = false;
-    //                }
-    //            }.bind(this));
-    //        }else{
-    //            if (addToNext) this.loadItemsQueue++;
-    //        }
-    //    }
-    //},
     loadSelectItems: function(addToNext, lastExcludeCount ){
         //lastExcludeCount 参数：表示本次加载是为了补足上次load的时候被排除的数量
         if (!this.isItemLoaded){
@@ -1651,39 +1656,28 @@ MWF.xApplication.Selector.Person = new Class({
         if( this.tailExcludeItemId )return this.tailExcludeItemId;
         return (this.items.length) ? this.items[this.items.length-1].data.distinguishedName : "(0)";
     },
+    loadItemHtml: function (){
+        if( this.options.categoryUrl ){
+            var request = new Request.HTML({
+                url: this.options.categoryUrl,
+                method: "GET",
+                async: true,
+                onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                    this.node = responseTree[0];
+                    this.loadContentWithHTML();
+                    this.loadBreadcrumbs();
+                    this.fireEvent("load");
+                }.bind(this),
+                onFailure: function(xhr){
+                    alert(xhr);
+                }
+            });
+            request.send();
+        }
+        if( this.options.itemUrl ){
 
-    //loadSelectItemsByCondition: function(){
-    //    this.options.groups.each(function(group){
-    //
-    //        this.orgAction.listGroupByKey(function(json){
-    //            if (json.data.length){
-    //                var groupData = json.data[0];
-    //                var category = this._newItemCategory("ItemGroupCategory", groupData, this, this.itemAreaNode);
-    //                this._getChildrenItemIds(groupData).each(function(id){
-    //                    this._getItem(function(json){
-    //                        var item = this._newItem(json.data, this, category.children);
-    //                        this.items.push(item);
-    //                    }.bind(this), null, id);
-    //                }.bind(this));
-    //            }
-    //        }.bind(this), null, group);
-    //    }.bind(this));
-    //
-    //    this.options.roles.each(function(role){
-    //        this.orgAction.listRoleByKey(function(json){
-    //            if (json.data.length){
-    //                var roleData = json.data[0];
-    //                var category = this._newItemCategory("ItemRoleCategory", roleData, this, this.itemAreaNode);
-    //                this._getChildrenItemIds(roleData).each(function(id){
-    //                    this._getItem(function(json){
-    //                        var item = this._newItem(json.data, this, category.children);
-    //                        this.items.push(item);
-    //                    }.bind(this), null, id)
-    //                }.bind(this));
-    //            }
-    //        }.bind(this), null, role);
-    //    }.bind(this));
-    //},
+        }
+    },
     loadSelectItemsByCondition: function(){
         this.options.groups.each(function(group){
             this.orgAction.listGroupByKey(function(json){
@@ -2184,59 +2178,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     addSelectedCount: function( itemOrItemSelected, count ){
 
-    }
-    //checkClickFlatCategoryItem : function(categoryItemNode, itemNodeContainer){
-    //    if( !this.flatCategorySeqObj_current ){
-    //        this.flatCategorySeqObj_current = categoryItemNode.retrieve("seq");
-    //        //console.log(this.flatCategorySeqObj_current)
-    //        return true;
-    //    }
-    //    var seq_cur = this.flatCategorySeqObj_current;
-    //    var seq = categoryItemNode ? categoryItemNode.retrieve("seq") : [];
-    //    for( var i=0; i<seq.length; i++ ){
-    //        if( seq_cur[i] && seq[i] < seq_cur[i] ){
-    //            //console.log(seq)
-    //            this.flatCategorySeqObj_current = seq;
-    //            return true;
-    //        }else if( !seq_cur[i] || seq[i] > seq_cur[i] ){
-    //            return false;
-    //        }
-    //    }
-    //    return false;
-    //},
-    //setFlatCategorySequence: function(categoryItemNode, itemNodeContainer, subCategoryListNode){
-    //    if( !this.flatCategorySeqObj )this.flatCategorySeqObj = {};
-    //    var parentSeq = itemNodeContainer ? itemNodeContainer.retrieve("seq") : [];
-    //    var seq = Array.clone( parentSeq );
-    //    if( this.flatCategorySeqObj[ parentSeq.length ] ){
-    //        seq.push( this.flatCategorySeqObj[ parentSeq.length ] + 1 );
-    //        this.flatCategorySeqObj[parentSeq.length] = this.flatCategorySeqObj[parentSeq.length]+1;
-    //
-    //        categoryItemNode.store( "seq", seq );
-    //        categoryItemNode.set( "seq", seq );
-    //
-    //        if(subCategoryListNode){
-    //            seq = Array.clone( seq );
-    //            seq[ seq.length - 1 ] = seq[ seq.length - 1 ]+1;
-    //            this.flatCategorySeqObj[parentSeq.length] = this.flatCategorySeqObj[parentSeq.length]+1;
-    //            subCategoryListNode.store("seq", seq );
-    //            subCategoryListNode.set( "seq", seq );
-    //        }
-    //    }else{
-    //        seq.push( 1 );
-    //        this.flatCategorySeqObj[ parentSeq.length ] = 1;
-    //        categoryItemNode.store( "seq", seq );
-    //        categoryItemNode.set( "seq", seq );
-    //
-    //        if(subCategoryListNode) {
-    //            seq = Array.clone(seq);
-    //            seq[seq.length - 1] = seq[seq.length - 1]+1;
-    //            this.flatCategorySeqObj[parentSeq.length] = this.flatCategorySeqObj[parentSeq.length]+1;
-    //            subCategoryListNode.store("seq", seq);
-    //            subCategoryListNode.set("seq", seq);
-    //        }
-    //    }
-    //}
+    },
 });
 
 MWF.xApplication.Selector.Person.Item = new Class({
@@ -2858,6 +2800,91 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     }
 });
 
+MWF.xApplication.Selector.Person.Breadcrumbs = new Class({
+    Implements: [Events, Options],
+    initialize: function(selector, node){
+        this.selector = selector;
+        this.css = selector.css;
+        this.node = node;
+        this.items = [];
+        this.addItem(selector);
+    },
+    addItem: function(category){
+        var item = new MWF.xApplication.Selector.Person.BreadcrumbsItem(this, category);
+        item.load();
+        this.items.push(item);
+        this.setCurrentItem(item);
+    },
+    removeItem: function(item){
+        this.items.erase(item);
+        item.destroy();
+    },
+    toItem: function (item){
+        var index = this.items.indexOf(item);
+        if( index > -1 ){
+            while( this.items.length > index+1 ){
+                this.removeItem(this.items[this.items.length-1]);
+            }
+        }
+        this.setCurrentItem(item);
+    },
+    setCurrentItem: function (item) {
+        if( this.currentItem )this.currentItem.cancelCurrent();
+        item.setCurrent();
+        this.currentItem = item;
+    }
+});
+
+MWF.xApplication.Selector.Person.BreadcrumbsItem = new Class({
+    Implements: [Events, Options],
+    initialize: function(breadcrumbs, category){
+        this.breadcrumbs = breadcrumbs;
+        this.selector = breadcrumbs.selector;
+        this.css = this.selector.css;
+        this.category = category;
+        this.isRoot = this.selector === category;
+    },
+    load: function (){
+        if( !this.isRoot ){
+            this.separator = new Element('div', {
+                text: '>'
+            }).inject(this.breadcrumbs.node);
+        }
+        this.node = new Element('div', {
+            text: this.isRoot ?  '顶层' : this.category._getShowName(),
+            styles: this.css.breadcrumbsItem
+        }).inject(this.breadcrumbs.node);
+        this.node.addEvent('click', function (ev){
+            this.breadcrumbs.toItem(this);
+        }.bind(this));
+    },
+    setCurrent: function (){
+        this.node.setStyles(this.css.breadcrumbsItem_current).addClass('mainColor_color');
+        this.switchCategory(true);
+    },
+    cancelCurrent: function (){
+        this.node.setStyles(this.css.breadcrumbsItem).removeClass('mainColor_color');
+        this.switchCategory(false);
+    },
+    destroy: function () {
+        if(this.separator)this.separator.destroy();
+        this.node.destroy();
+        this.switchCategory(false);
+    },
+    switchCategory: function ( isShow ){
+        if( this.isRoot ){
+            this.category.subCategorys.each(function (category){
+                !!isShow ? category.node.show() : category.node.hide();
+            })
+            this.category.subItems.each(function (item){
+                !!isShow ? item.node.show() : item.node.hide();
+            })
+        }else{
+            !!isShow ? this.category.children.show() : this.category.children.hide();
+        }
+    }
+});
+
 MWF.xApplication.Selector.Person.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
     initialize: function(data, selector, container, level, parentCategory, delay, notActive){
@@ -2879,12 +2906,17 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             this.loadForFlat();
         }else if( !this.notActive ){
             this.loadForNormal();
+        }else if( !this.notActive ){
+            this.loadForNormal();
         }else{
             this.createNode();
             // this.node.hide();
             this.children = new Element("div.children", {
                 "styles": this.selector.css.selectorItemCategoryChildrenNode
-            }).inject(this.node, "after");
+            }).inject(
+                this.selector.options.useBreadcrumbs ? this.selector.itemAreaNode : this.node,
+                this.selector.options.useBreadcrumbs ? "bottom" : "after"
+            );
             // this.children.hide();
         }
     },
@@ -2894,7 +2926,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.children.show();
         this.loadForNormal();
     },
-    loadForFlat : function(){
+    loadForFlat: function(){
         this.selector.fireEvent("queryLoadCategory",[this]);
 
         //this.createNode();
@@ -2996,7 +3028,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         //this.afterLoad();
         this.selector.fireEvent("postLoadCategory",[this]);
     },
-    loadForNormal : function(){
+    loadForNormal: function(){
         this.selector.fireEvent("queryLoadCategory",[this]);
         if(!this.node)this.createNode();
         this.levelNode = new Element("div", {
@@ -3077,9 +3109,14 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             this.selectedCountNode = new Element("span").inject(this.textNode);
         }
 
-        if(!this.children)this.children = new Element("div.children", {
-            "styles": this.selector.css.selectorItemCategoryChildrenNode
-        }).inject(this.node, "after");
+        if(!this.children){
+            this.children = new Element("div.children", {
+                "styles": this.selector.css.selectorItemCategoryChildrenNode
+            }).inject(
+                this.selector.options.useBreadcrumbs ? this.selector.itemAreaNode : this.node,
+                this.selector.options.useBreadcrumbs ? "bottom" : "after"
+            );
+        }
         if (!this.selector.options.expand) this.children.setStyle("display", "none");
 
         if( this.selector.options.expandEmptyCategory && !this._hasChildItem() ){ //点击允许展开空分类
@@ -3104,7 +3141,134 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
 
             if ( !this._hasChild()){
                 if( this.selector.options.hiddenEmptyCategory ){
-                    this.node.hide()
+                    this.node.hide();
+                }else{
+                    if( this.selector.options.style === "flow" ){
+                        this.node.setStyles({
+                            "opacity": "0.5",
+                            "cursor": "default"
+                        });
+                    }else{
+                        this.actionNode.setStyle("background", "transparent");
+                        this.textNode.setStyle("color", "#777");
+                    }
+                }
+            }
+
+            if( this.selectAllNode ){
+                if( this.selector.options.selectAllRange === "direct" && !this._hasChildItem() ){
+                    this.selectAllNode.setStyle("display", "none");
+                }
+            }
+        }
+
+        this.setEvent();
+
+        this.check();
+
+        this.afterLoad();
+        this.selector.fireEvent("postLoadCategory",[this]);
+    },
+    loadForHtml: function (){
+        this.selector.fireEvent("queryLoadCategory",[this]);
+        if(!this.node)this.createNode();
+
+
+
+
+        this._setIcon();
+
+
+        if( this.selector.options.selectAllEnable && this.selector.options.count.toInt()!==1 ){
+            var selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll;
+            if( this.isSelectedAll ){
+                if( this.selector.isFlatCategory ){
+                    selectAllNodeStyles = this.selector.css.flatCategory_selectAll_selected;
+                }else if( this.selector.css.selectorItemCategoryActionNode_selectAll_selected ){
+                    selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
+                }
+            }
+            this.selectAllNode = new Element("div", {
+                "styles": selectAllNodeStyles,
+                "title" : MWF.SelectorLP.selectChildren
+            }).inject(this.node);
+            this.selectAllNode.addEvent( "click", function(ev){
+                if( this.isSelectedAll ){
+                    // this.unselectAll(ev);
+                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true ) : this.unselectAll(ev, null, true);
+                    this.selector.fireEvent("unselectCatgory",[this]);
+                    this.selector.fireEvent("unselectCategory",[this]);
+                }else{
+                    // this.selectAll(ev);
+                    if( this.selector.options.selectAllRange === "all" ){
+                        var node = new Element("div.categorySelectedNode").inject( this.selector.selectedNode );
+                        this.selectAllNested(ev, true, node );
+                    }else{
+                        this.selectAll(ev, true)
+                    }
+                    this.selector.fireEvent("selectCatgory",[this]);
+                    this.selector.fireEvent("selectCategory",[this]);
+                }
+                ev.stopPropagation();
+            }.bind(this));
+            if( this.selector.css.selectorItemCategoryActionNode_selectAll_over ){
+                this.selectAllNode.addEvents( {
+                    "mouseover" : function(ev){
+                        if( !this.isSelectedAll && !this.isSelectedSome )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_over );
+                        //ev.stopPropagation();
+                    }.bind(this),
+                    "mouseout" : function(ev){
+                        if( !this.isSelectedAll && !this.isSelectedSome )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+                        //ev.stopPropagation();
+                    }.bind(this)
+                })
+            }
+        }
+
+        this.textNode = new Element("div", {
+            "styles": this.selector.css.selectorItemCategoryTextNode,
+            "text": this._getShowName()
+        }).inject(this.node);
+        var m = this.textNode.getStyle("margin-left").toFloat()+indent;
+        this.textNode.setStyle("margin-left", ""+m+"px");
+
+        if( this.selector.options.showSelectedCount && this.selector.availableStatusTypes.contains(this.selector.selectType) ){
+            this.selectedCountNode = new Element("span").inject(this.textNode);
+        }
+
+        if(!this.children){
+            this.children = new Element("div.children", {
+                "styles": this.selector.css.selectorItemCategoryChildrenNode
+            }).inject(
+                this.selector.options.useBreadcrumbs ? this.selector.itemAreaNode : this.node,
+                this.selector.options.useBreadcrumbs ? "bottom" : "after"
+            );
+        }
+        if (!this.selector.options.expand) this.children.setStyle("display", "none");
+
+        if( this.selector.options.expandEmptyCategory && !this._hasChildItem() ){ //点击允许展开空分类
+            this.children.hide();
+            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+            this.isExpand = false;
+        }else{
+            var subIdList = this.selector._getChildrenItemIds(this.data);
+            if (subIdList){
+                var count = subIdList.length;
+                this.childrenHeight = count*this.selector.options.itemHeight;
+                this.children.setStyle("height", ""+this.childrenHeight+"px");
+            }
+
+            if(this.selector.options.identityItemWidth && this.selector.selectType === "identity"){
+                var indent = this.level === 0 ? this.selector.options.level1Indent : this.selector.options.indent;
+                this.children.setStyles({
+                    "padding-left": "" + indent + "px",
+                    "overflow" : "hidden"
+                });
+            }
+
+            if ( !this._hasChild()){
+                if( this.selector.options.hiddenEmptyCategory ){
+                    this.node.hide();
                 }else{
                     if( this.selector.options.style === "flow" ){
                         this.node.setStyles({

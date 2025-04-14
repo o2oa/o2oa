@@ -1,7 +1,7 @@
 <div>
     <div class="MWF_selector_titleNode">
         <div class="MWF_selector_titleCancelActionNode"></div>
-        <div class="MWF_selector_titleTextNode">选择审批人</div>
+        <div class="MWF_selector_titleTextNode">{{$.lp.title}}</div>
     </div>
     <div class="MWF_selector_tabContainer" style="display: none;"></div>
     <div class="MWF_selector_contentNode">
@@ -10,8 +10,12 @@
         </div>
         <div class="MWF_selector_selectNode">
             <div class="MWF_selector_searchInputDiv">
-                <input class="MWF_selector_searchInput" type="text" placeholder="搜索">
+                <i class="MWF_selector_searchIcon ooicon-search {{if $.options.mainColorEnable}}mainColor_color{{end if}}"></i>
+                <input class="MWF_selector_searchInput" type="text" placeholder="{{$.lp.searchDescription}}">
+                <div class="MWF_selector_searchCancelAction ooicon-close"></div>
+                <i class="MWF_selector_letterActionNode ooicon-alphabet"></i>
             </div>
+            <div class="MWF_selector_letterAreaNode" style="display: none;"></div>
             <div class="MWF_selector_BreadcrumbsNode"></div>
             <div class="MWF_selector_itemAreaScrollNode">
                 <div class="MWF_selector_itemAreaNode"></div>
@@ -21,8 +25,8 @@
             </div>
         </div>
     </div>
-    <div class="MWF_selector_actionNode">
-        <div class="MWF_selector_cancelActionNode">取消</div>
-        <div class="MWF_selector_okActionNode">确定</div>
-    </div>
+<!--    <div class="MWF_selector_actionNode">-->
+<!--        <div class="MWF_selector_cancelActionNode">取消</div>-->
+<!--        <div class="MWF_selector_okActionNode">确定</div>-->
+<!--    </div>-->
 </div>

@@ -1150,7 +1150,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         return (this.data.subDirectIdentityCount) ? this.data.subDirectIdentityCount : 0;
     },
     afterLoad: function(){
-        if (this.level===1) this.clickItem();
+        if (this.level===1 && !this.selector.options.useBreadcrumbs ) this.clickItem();
         if( this.selector.isCheckStatusOrCount() ) {
             if (this.selector.loadingCount === "done"){
                 this.checkCountAndStatus();
