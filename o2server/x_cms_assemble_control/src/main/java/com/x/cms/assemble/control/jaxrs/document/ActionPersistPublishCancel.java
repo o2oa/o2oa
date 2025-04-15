@@ -45,7 +45,7 @@ public class ActionPersistPublishCancel extends BaseAction {
 			try {
 				modifyDocStatus(id, "draft", effectivePerson.getDistinguishedName());
 				document.setDocStatus("draft");
-				document.setPublishTime(new Date());
+				document.setPublishTime(null);
 				document = documentPersistService.refreshDocInfoData( document );
 
 				CacheManager.notify(Document.class);
@@ -53,7 +53,7 @@ public class ActionPersistPublishCancel extends BaseAction {
 				Wo wo = new Wo();
 				wo.setId( document.getId() );
 				result.setData( wo );
-				
+
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统将文档状态修改为发布状态时发生异常。Id:" + id);
 				result.error(exception);
