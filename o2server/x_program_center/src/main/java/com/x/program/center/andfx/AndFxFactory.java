@@ -46,7 +46,7 @@ public class AndFxFactory {
 			}
 		}
 		orgs = ListTools.trim(orgs, true, true);
-		users = ListTools.trim(users, true, true);
+		users = ListTools.trim(users, true, false);
 		logger.info("and fx sync org num:{}, user num:{}", orgs.size(), users.size());
 	}
 
