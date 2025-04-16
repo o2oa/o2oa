@@ -35,11 +35,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	initialize: function(designer, container, options){
 		this.setOptions(options);
 
-		// 用 axios 发起 GET 请求
-
-		this.
-
-
 		this.path = "../x_component_process_FormDesigner/Module/Form/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/Form/"+this.options.style+"/css.wcss";
 
