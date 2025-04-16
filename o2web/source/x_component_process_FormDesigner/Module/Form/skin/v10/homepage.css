@@ -135,6 +135,9 @@
     /*border-bottom: 3px solid transparent;*/
     transition: color 0.2s, border-bottom-color 0.2s;
 }
+.form-layout .page-widget-tab.hide {
+    display: none !important;
+}
 
 .form-layout .page-widget-tab > div:last-child {
     padding-left: 0.2em;

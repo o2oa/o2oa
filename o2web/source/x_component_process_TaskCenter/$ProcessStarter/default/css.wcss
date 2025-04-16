@@ -8,6 +8,7 @@
     },
     "areaNode": {
         "position": "absolute",
+        "z-index": "100000",
         "opacity": 0,
         "top": "0px"
     },
