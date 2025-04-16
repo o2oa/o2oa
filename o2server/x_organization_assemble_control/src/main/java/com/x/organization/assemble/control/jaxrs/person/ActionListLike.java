@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import com.x.organization.core.entity.enums.PersonStatusEnum;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -142,6 +143,8 @@ class ActionListLike extends BaseAction {
         }
         if (!BooleanUtils.isTrue(wi.getMultipleOrgTop())) {
             p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron, false));
+        } else{
+            p = cb.and(p, cb.or(cb.isNull(root.get(Person_.status)), cb.notEqual(root.get(Person_.status), PersonStatusEnum.BAN.getValue())));
         }
         List<String> ids = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList()
                 .stream().distinct()
