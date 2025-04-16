@@ -140,6 +140,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              */
             "afterRetract",
             /**
+             * 添加拆分分支前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeAddSplit
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeAddSplit",
+            /**
+             * 添加拆分分支后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterAddSplit
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterAddSplit",
+            /**
              * 调度前触发。
              * @event MWF.xApplication.process.Xform.Form#beforeReroute
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -3756,8 +3768,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
 
-            this.fireEvent("beforeAddSplit");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddSplit");
+            var d = {splitValue:splitValue, trimExist:trimExist, opinion:opinion};
+            this.fireEvent("beforeAddSplit", [d]);
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddSplit", [d]);
 
             this.addSplitWork(splitValue, trimExist, function (json) {
                 this.fireEvent("afterAddSplit");

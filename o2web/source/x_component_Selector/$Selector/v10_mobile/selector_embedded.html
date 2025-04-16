@@ -1,20 +1,23 @@
 <div>
-    <div class="MWF_selector_contentNode">
-        <div class="MWF_selector_selectedScrollNode">
-            <div class="MWF_selector_selectedNode"></div>
+    <div data-o2-element="contentNode" class="MWF_selector_contentNode">
+        <div data-o2-element="selectedScrollNode" class="MWF_selector_selectedScrollNode">
+            <div data-o2-element="selectedNode" class="MWF_selector_selectedNode"></div>
         </div>
-        <div class="MWF_selector_selectNode">
-            <div class="MWF_selector_searchInputDiv">
-                <input class="MWF_selector_searchInput" type="text" placeholder="搜索">
+        <div data-o2-element="selectNode" class="MWF_selector_selectNode">
+            <div data-o2-element="searchInputDiv" class="MWF_selector_searchInputDiv">
+                <i class="MWF_selector_searchIcon ooicon-search {{if $.options.mainColorEnable}}mainColor_color{{end if}}"></i>
+                <input data-o2-element="searchInput" class="MWF_selector_searchInput" type="text" placeholder="{{$.lp.searchDescription}}">
+                <div data-o2-element="searchCancelAction" class="MWF_selector_searchCancelAction ooicon-close"></div>
+                <i data-o2-element="letterActionNode" class="MWF_selector_letterActionNode ooicon-alphabet"></i>
+
             </div>
-            <div class="MWF_selector_flatCategoryScrollNode" style="display: none;">
-                <div class="MWF_selector_flatCategoryNode"></div>
+            <div data-o2-element="letterAreaNode" class="MWF_selector_letterAreaNode" style="display: none;"></div>
+            <div data-o2-element="breadcrumbsNode" class="MWF_selector_BreadcrumbsNode"></div>
+            <div data-o2-element="itemAreaScrollNode" class="MWF_selector_itemAreaScrollNode">
+                <div data-o2-element="itemAreaNode" class="MWF_selector_itemAreaNode"></div>
             </div>
-            <div class="MWF_selector_itemAreaScrollNode">
-                <div class="MWF_selector_itemAreaNode"></div>
-            </div>
-            <div class="MWF_selector_itemSearchAreaScrollNode">
-                <div class="MWF_selector_itemSearchAreaNode"></div>
+            <div data-o2-element="itemSearchAreaScrollNode" class="MWF_selector_itemSearchAreaScrollNode">
+                <div data-o2-element="itemSearchAreaNode" class="MWF_selector_itemSearchAreaNode"></div>
             </div>
         </div>
     </div>

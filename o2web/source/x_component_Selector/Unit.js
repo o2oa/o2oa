@@ -15,6 +15,28 @@ MWF.xApplication.Selector.Unit = new Class({
         "selectAllEnable" : true, //分类是否允许全选下一层
         "selectType" : "unit"
     },
+    loadCategoryHtml: function (){
+        return '';
+    },
+    loadItemHtml: function (){
+        return new Promise(function (resolve, reject) {
+            if( this.options.categoryItemUrl ){
+                var request = new Request.HTML({
+                    url: this.options.categoryItemUrl,
+                    method: "GET",
+                    async: true,
+                    onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                        this.itemHtml = responseHTML;
+                        if(resolve)resolve();
+                    }.bind(this),
+                    onFailure: function(xhr){ reject(xhr); }
+                });
+                request.send();
+            }else{
+                if(resolve)resolve();
+            }
+        }.bind(this))
+    },
     setInitTitle: function(){
         this.setOptions({"title": MWF.xApplication.Selector.LP.selectUnit});
     },
@@ -393,6 +415,38 @@ MWF.xApplication.Selector.Unit.Item = new Class({
     loadForNormal : function( isNotLoadSubItem, container ){
         this.selector.fireEvent("queryLoadItem",[this]);
 
+        this.selector.itemHtml ? this.loadElementWithHtml(container) : this.loadElement(container);
+
+        if(this.postLoad)this.postLoad();
+
+        if(!isNotLoadSubItem)this.loadSubItem();
+
+        this.setEvent();
+
+        this.check();
+
+        if(this.afterLoad)this.afterLoad();
+
+        this.selector.fireEvent("postLoadItem",[this]);
+    },
+    loadElementWithHtml: function (container){
+        var node = new Element("div");
+        node.loadHtmlText(this.selector.itemHtml, {
+            "module": this,
+            "bind": {
+                lp: MWF.SelectorLP,
+                data: this.data,
+                _text: this.data.name,
+                _description: this._getDescription(),
+                _title: this._getTtiteText(),
+                _icon: this._getIcon()
+            }
+        });
+        this.node = node.getFirst();
+        this.node.inject(container || this.container);
+        node.destroy();
+    },
+    loadElement: function (container) {
         if( !this.node )this.node = new Element("div", {
             "styles": this.selector.css.selectorItem
         }).inject(container || this.container);
@@ -432,18 +486,6 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.textNode.store("indent", indent);
         var m = this.textNode.getStyle("margin-left").toFloat()+indent;
         this.textNode.setStyle("margin-left", ""+m+"px");
-
-        if(this.postLoad)this.postLoad();
-
-        if(!isNotLoadSubItem)this.loadSubItem();
-
-        this.setEvent();
-
-        this.check();
-
-        if(this.afterLoad)this.afterLoad();
-
-        this.selector.fireEvent("postLoadItem",[this]);
     },
     _getShowName: function(){
         return (this.isShowLevelName && this.data.levelName) ? this.data.levelName : this.data.name;

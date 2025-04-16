@@ -744,6 +744,9 @@ MWF.xApplication.Selector.Identity.Item = new Class({
     _getShowName: function(){
         return this.data.name;
     },
+    _getDescription: function (){
+        return '';
+    },
     _getTtiteText: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
     },
@@ -835,10 +838,14 @@ MWF.xApplication.Selector.Identity.Item = new Class({
         }
     }
 });
+
 MWF.xApplication.Selector.Identity.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Identity.Item,
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function (){
+        return this.data.unitLevelName || '';
     }
 });
 
@@ -898,6 +905,9 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
     },
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function (){
+        return this.data.unitLevelName || '';
     },
     _getTtiteText: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");

@@ -1,3 +1,50 @@
+/*第一层*/
+.MWF_selector_titleNode {
+  height: 2.75rem;
+  font-size: 1.125rem;
+  background-color: #2E82F7;
+  position: relative;
+  text-align: center;
+  padding: 0 1rem;
+}
+.MWF_selector_contentNode{
+  flex: 1;
+  height: calc( 100% - 5.875rem );
+}
+.MWF_selector_bottomNode{
+  height: 3.125rem;
+  overflow: hidden;
+  padding: 0 0.625rem;
+  display: flex;
+  align-items: center;
+  background: #F7F7F7;
+  gap: 0.5rem;
+}
+
+
+.MWF_selector_titleCancelActionNode {
+  top: 0.5rem;
+  left: 0;
+  position: absolute;
+  height: 1.875rem;
+  width: 2.5rem;
+  color: #FFF;
+  background: url(../x_component_Selector/$Selector/v10_mobile/icon/arrow_back@2x.png) 1rem center no-repeat;
+  background-size: 0.6875rem 1.0625rem;
+}
+
+.MWF_selector_selectNode{
+   margin: 0;
+   border-radius:0;
+   display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.MWF_selector_titleTextNode {
+  line-height: 2.75rem;
+  height: 2.75rem;
+  color: #FFF;
+}
 .MWF_selector_searchInputDiv{
   position: relative;
   height: 3.4375rem;
@@ -71,3 +118,199 @@
   justify-items: center;
   font-size: 0.875rem;
 }
+.MWF_selector_itemAreaScrollNode{
+  flex: 1;
+  overflow: auto;
+}
+.MWF_selector_itemSearchAreaScrollNode{
+    flex: 1;
+    overflow: auto;
+}
+
+.MWF_selector_selectedMaskNode{
+  display: none;
+  position: absolute;
+  bottom: 3.125rem;
+  left: 0;
+  width: 100%;
+  height: calc( 100% - 3.125rem );
+  opacity: 0.4;
+  z-index: 1002;
+  background-color: #999;
+}
+.MWF_selector_selectedWrapNode{
+  display: none;
+  position: absolute;
+  bottom: 3.125rem;
+  left: 0;
+  width: 100%;
+  height: calc( 80% - 3.125rem );
+  border-radius: 1rem 1rem 0 0;
+  background: #FFF;
+  z-index: 1003;
+}
+.MWF_selector_selectedTitleNode {
+  text-align: center;
+  font-size: 1rem;
+  border-radius: 1rem 1rem 0 0;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+.MWF_selector_selectedTitleLabelNode{
+
+}
+.MWF_selector_selectedTitleCountNode{
+
+}
+.MWF_selector_selectedScrollNode{
+    flex: 1;
+    overflow: auto;
+}
+.MWF_selector_selectedNode{
+  padding-top: 0.25rem;
+}
+
+.MWF_selector_itemNode, .MWF_selector_categoryNode{
+  height: 3.125rem;
+  margin: 0 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666666;
+  background: #fff;
+  box-shadow: inset 0 -1px 0 0 #DAE1EC;
+  gap: 0.625rem;
+}
+.MWF_selector_category_childrenNode{
+
+}
+.MWF_selector_category_selectAllNode{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 3.125rem;
+  margin: 0 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666666;
+  background: #fff;
+  box-shadow: inset 0 -1px 0 0 #DAE1EC;
+  gap: 0.625rem;
+}
+.MWF_selector_category_selectAllNode i{
+  color: #999
+}
+.empty_category{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.MWF_selector_item_levelNode, .MWF_selector_category_levelNode{
+  display: none;
+}
+.MWF_selector_category_textNode{
+  color: #333;
+  flex: 1;
+}
+.MWF_selector_item_contentNode{
+  color: #333;
+  flex: 1;
+}
+.MWF_selector_item_descriptionNode{
+  color: #666;
+  font-size: 0.875rem;
+}
+.MWF_selector_item_actionNode, .MWF_selector_category_actionNode{
+  color: #999;
+}
+.empty_category .MWF_selector_category_actionNode{
+  display: none;
+}
+.selected_item .MWF_selector_item_actionNode{
+  display: none;
+}
+.MWF_selector_item_removeNode{
+    display: none;
+}
+.selected_item .MWF_selector_item_removeNode{
+  display: block;
+  padding: 0.35rem 0.5rem;
+  background: #F0F0F0;
+  border-radius: 0.375rem;
+  font-size: 0.825rem;
+}
+.MWF_selector_category_iconNode{
+  width: 2rem;
+  height: 2rem;
+  background: #E6F0FF;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+.MWF_selector_item_iconNode{
+  display: flex;
+}
+.MWF_selector_item_iconNode img{
+  width: 2rem;
+  border-radius: 0.375rem;
+}
+.selected .ooicon-checkbox-unchecked{
+  display: none;
+}
+.ooicon-checkbox-checked{
+  display: none;
+}
+.selected .ooicon-checkbox-checked{
+  display: block;
+}
+
+.MWF_selector_selectedCountNode{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  flex: 1;
+}
+.MWF_selector_selectedCountTextNode{
+  flex:1;
+}
+
+.MWF_selector_actionNode{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.MWF_selector_cancelActionNode{
+  height: 2rem;
+  line-height: 2rem;
+  border-radius: 0.375rem;
+  padding: 0 1rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #666;
+}
+.MWF_selector_okActionNode{
+  height: 2rem;
+  line-height: 2rem;
+  background: #2E82F7;
+  border-radius: 0.375rem;
+  color: #fff;
+  padding: 0 1rem;
+  border: 1px solid #2E82F7;
+}
+
+.popup .MWF_selector_selectedShowIcon{
+    display: none;
+}
+.MWF_selector_selectedHideIcon{
+    display: none;
+}
+.popup .MWF_selector_selectedHideIcon{
+    display: block;
+}
+
+

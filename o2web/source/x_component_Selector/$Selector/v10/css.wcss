@@ -27,7 +27,9 @@
 		"border-radius": "var( --oo-area-radius)",
 		"box-shadow": "var(--oo-dialog-shadow)",
         "position": "absolute",
-        "z-index":1001
+        "z-index":1001,
+        "top": "calc(50% - 37.142857rem / 2 - 2rem)",
+        "left": "calc(50% - 51.42857rem / 2)"
     },
     "containerNodeSingle": {
         "height": "37.142857rem",

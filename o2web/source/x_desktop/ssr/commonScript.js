@@ -762,6 +762,23 @@ Object.assign(org,  {
         return this.getObject(this.oGroup, this.oGroup.listWithPerson(_getNameFlag(name)));
     },
 
+    /**
+     * 根据人员身份取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该人员和身份，那么该群组也被返回。
+     * @method listGroupWithIdentity
+     * @o2membercategory group
+     * @methodOf module:server.org
+     * @static
+     * @param {PersonFlag|PersonFlag[]} name - 身份的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @return {GroupData[]} 返回群组对象数组。
+     * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
+     * @o2syntax
+     * //返回群组数组。
+     * const groupList = this.org.listGroupWithIdentity( name );
+     */
+    listGroupWithIdentity:function(name){
+        return this.getObject(this.oGroup, this.oGroup.listWithIdentity(_getNameFlag(name)));
+    },
+
     //群组是否拥有角色--返回true, false
     /**
      * 群组是否拥有角色。

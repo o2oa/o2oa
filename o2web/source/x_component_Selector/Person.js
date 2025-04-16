@@ -130,18 +130,20 @@ MWF.xApplication.Selector.Person = new Class({
     },
     load: function(){
         this.fireEvent("queryLoad",[this]);
-        this.loadItemHtml();
-        if( this.options.contentUrl ){
-            this.loadWithUrl();
-        }else{
-            if (layout.mobile){
-                this.loadMobile();
+        var ps = [
+            this.loadItemHtml(),
+            this.loadCategoryHtml()
+        ];
+        !!this.options.contentUrl && ps.push( this.loadWithUrl());
+        Promise.all(ps).then(function(){
+            if( this.options.contentUrl ){
+                this.loadContentWithHTML()
             }else{
-                this.loadPc();
+                layout.mobile ? this.loadMobile() : this.loadPc()
             }
             this.loadBreadcrumbs();
             this.fireEvent("load");
-        }
+        }.bind(this))
     },
     loadBreadcrumbs: function(){
         if( this.breadcrumbsNode && this.options.useBreadcrumbs ){
@@ -231,6 +233,21 @@ MWF.xApplication.Selector.Person = new Class({
                 this.selectedTitleCountNode.set("text", "("+ quantifier + ":" + this.selectedItems.length +")");
             }
         }
+    },
+    showSelectedWrapNode: function (){
+        this.selectedShowing = true;
+        this.selectedCountNode.addClass("popup");
+        if(this.selectedMaskNode)this.selectedMaskNode.show();
+        if(this.selectedWrapNode)this.selectedWrapNode.show();
+    },
+    hideSelectedWrapNode: function (){
+        this.selectedShowing = false;
+        this.selectedCountNode.removeClass("popup");
+        if(this.selectedMaskNode)this.selectedMaskNode.hide();
+        if(this.selectedWrapNode)this.selectedWrapNode.hide();
+    },
+    switchSelectedWrapNode: function (){
+         !!this.selectedShowing ? this.hideSelectedWrapNode() : this.showSelectedWrapNode();
     },
     loadSelectedCountNode: function(){
         if( this.inMulitple )return;
@@ -397,56 +414,36 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     loadWithUrl : function(){
-        if( ["flow", "v10_mobile"].contains(this.options.style) ){
-            var node = new Element("div");
-            node.loadHtml( this.options.contentUrl, {
-                "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options },
-                "module": this
-            },function () {
-                this.node = node.getFirst();
-                this.node.loadCss("../x_component_Selector/$Selector/"+this.options.style+"/style.css");
-                this.loadContentWithHTML();
-                this.loadBreadcrumbs();
-                this.fireEvent("load");
-            }.bind(this));
-        }else{
-            var request = new Request.HTML({
-                url: this.options.contentUrl,
-                method: "GET",
-                async: false,
-                onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                    this.node = responseTree[0];
-                    this.loadContentWithHTML();
-                    this.loadBreadcrumbs();
-                    this.fireEvent("load");
-                }.bind(this),
-                onFailure: function(xhr){
-                    alert(xhr);
-                }
-            });
-            request.send();
-        }
+        this.overrideSelectedItems();
+        return new Promise(function(resolve, reject){
+            if( ["flow", "v10_mobile"].contains(this.options.style) || this.options.useO2Load ){
+                var node = new Element("div");
+                node.loadHtml( this.options.contentUrl, {
+                    "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options, "_selectType": this.selectType },
+                    "module": this
+                },function () {
+                    this.node = node.getFirst();
+                    this.node.loadCss("../x_component_Selector/$Selector/"+this.options.style+"/style.css");
+                    if(resolve)resolve();
+                }.bind(this));
+            }else{
+                var request = new Request.HTML({
+                    url: this.options.contentUrl,
+                    method: "GET",
+                    async: false,
+                    onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                        this.node = responseTree[0];
+                        if(resolve)resolve();
+                    }.bind(this),
+                    onFailure: function(xhr){
+                        alert(xhr);
+                    }
+                });
+                request.send();
+            }
+        }.bind(this));
     },
-    loadContentWithHTML : function(){
-        debugger;
-        var container = this.options.injectToBody ? $(document.body) : this.container;
-        if( !this.options.embedded ){
-            this.maskRelativeNode = container;
-            this.css.maskNode["z-index"] = this.options.zIndex;
-            this.maskRelativeNode.mask({
-                "destroyOnHide": true,
-                "style": this.css.maskNode
-            });
-        }
-
-        if( !this.options.embedded ) {
-            this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
-            this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
-        }
-        if( layout.mobile ){
-            this.node.setStyle("height", ( container.getSize().y ) + "px");
-        }
-
+    _queryElements: function (){
         this.titleNode = this.node.getElement(".MWF_selector_titleNode");
         this.titleTextNode = this.node.getElement(".MWF_selector_titleTextNode");
         this.titleCancelActionNode = this.node.getElement(".MWF_selector_titleCancelActionNode");
@@ -538,6 +535,29 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.cancelActionNode) {
             this.cancelActionNode.setStyles(this.css.cancelActionNode);
             this.cancelActionNode.set("text", MWF.SelectorLP.cancel);
+        }
+    },
+    loadContentWithHTML : function(){
+        var container = this.options.injectToBody ? $(document.body) : this.container;
+        if( !this.options.embedded ){
+            this.maskRelativeNode = container;
+            this.css.maskNode["z-index"] = this.options.zIndex;
+            this.maskRelativeNode.mask({
+                "destroyOnHide": true,
+                "style": this.css.maskNode
+            });
+        }
+
+        if( !this.options.embedded ) {
+            this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
+            this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
+        }
+        if( layout.mobile ){
+            this.node.setStyle("height", ( container.getSize().y ) + "px");
+        }
+
+        if( !this.options.useO2Load ){
+            this._queryElements();
         }
 
         this.node.inject( container );
@@ -843,17 +863,11 @@ MWF.xApplication.Selector.Person = new Class({
             }
         }else{
             var container = this.options.injectToBody ? $(document.body) : this.container;
-            //var containerSize = this.container.getSize();
-            //var bodySize = $(document.body).getSize();
             size = container.getSize();
             if(size.y === 0){
                 size.y = $(document.body).getSize().y
             }
 
-            //size = {
-            //    "x" : Math.min( containerSize.x, bodySize.x ),
-            //    "y" : Math.min( containerSize.y, bodySize.y )
-            //};
             if(this.node){
                 var zoom = this.node.getStyle("zoom").toInt();
                 zoom = zoom ? (zoom * 100) : 0;
@@ -877,13 +891,17 @@ MWF.xApplication.Selector.Person = new Class({
                 height = height - this.getOffsetY( this.breadcrumbsNode ) - ( this.breadcrumbsNode.getSize().y || 0 );
             }
 
-            this.contentNode.setStyle("height", ""+height+"px");
+            if( !this.options.useO2Load ) {
+                this.contentNode.setStyle("height", "" + height + "px");
+            }
         }
 
 
         var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
 
-        this.selectNode.setStyle("height", ""+height+"px");
+        if( !this.options.useO2Load ) {
+            this.selectNode.setStyle("height", "" + height + "px");
+        }
 
 
         if( this.searchInput ){
@@ -898,17 +916,20 @@ MWF.xApplication.Selector.Person = new Class({
             height = height - this.getOffsetY( this.letterAreaNode ) - ( this.letterAreaNode.getStyle("height").toInt() || 0 )
         }
 
-        this.itemAreaScrollNode.setStyle("height", ""+height+"px");
-        this.itemAreaScrollNode.setStyle("overflow", "auto");
+        if( !this.options.useO2Load ){
+            this.itemAreaScrollNode.setStyle("height", ""+height+"px");
+            this.itemAreaScrollNode.setStyle("overflow", "auto");
 
-        if(this.itemSearchAreaScrollNode){
-            this.itemSearchAreaScrollNode.setStyles({
-                "display": "none",
-                "height": ""+height+"px",
-                "overflow" : "auto"
-            });
+            if( this.itemSearchAreaScrollNode){
+                this.itemSearchAreaScrollNode.setStyles({
+                    "display": "none",
+                    "height": ""+height+"px",
+                    "overflow" : "auto"
+                });
+            }
+            this.itemSearchAreaNode.setStyle("display", "none");
         }
-        this.itemSearchAreaNode.setStyle("display", "none");
+
 
         this.initLoadSelectItems();
         this.checkLoadSelectItems();
@@ -948,6 +969,7 @@ MWF.xApplication.Selector.Person = new Class({
         }).inject(this.selectNode);
         this.searchInput = new Element("input.searchInput", {
             "styles": (this.options.count.toInt()===1 || this.options.noSelectedContainer) ? this.css.searchInputSingle : this.css.searchInput,
+            "placeholder" : MWF.SelectorLP['searchDescription'+this.className] || MWF.SelectorLP.searchDescription,
             "type": "text"
         }).inject(this.searchInputDiv);
         var width = size.x-20-18;
@@ -1002,7 +1024,7 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.setSelectedItem();
 
-        if(this.selectedScrollNode)this.selectedScrollNode.setStyle("display", "none");
+        if(!this.selectedWrapNode && this.selectedScrollNode)this.selectedScrollNode.setStyle("display", "none");
     },
 
     checkLoadSelectItems: function(){
@@ -1421,7 +1443,6 @@ MWF.xApplication.Selector.Person = new Class({
             });
         }.bind(this));
     },
-
     loadSelectedNodeMobile: function(){
         if( this.inMulitple )return;
         this.css.selectedWrapNodeMobile["z-index"] = this.options.zIndex + 2;
@@ -1656,27 +1677,43 @@ MWF.xApplication.Selector.Person = new Class({
         if( this.tailExcludeItemId )return this.tailExcludeItemId;
         return (this.items.length) ? this.items[this.items.length-1].data.distinguishedName : "(0)";
     },
+    loadCategoryHtml: function (){
+        return new Promise(function (resolve, reject) {
+            if( this.options.categoryUrl ){
+                var request = new Request.HTML({
+                    url: this.options.categoryUrl,
+                    method: "GET",
+                    async: true,
+                    onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                        this.categoryHtml = responseHTML;
+                        if(resolve)resolve();
+                    }.bind(this),
+                    onFailure: function(xhr){ reject(xhr); }
+                });
+                request.send();
+            }else{
+                if(resolve)resolve();
+            }
+        }.bind(this))
+    },
     loadItemHtml: function (){
-        if( this.options.categoryUrl ){
-            var request = new Request.HTML({
-                url: this.options.categoryUrl,
-                method: "GET",
-                async: true,
-                onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                    this.node = responseTree[0];
-                    this.loadContentWithHTML();
-                    this.loadBreadcrumbs();
-                    this.fireEvent("load");
-                }.bind(this),
-                onFailure: function(xhr){
-                    alert(xhr);
-                }
-            });
-            request.send();
-        }
-        if( this.options.itemUrl ){
-
-        }
+        return new Promise(function (resolve, reject) {
+            if( this.options.itemUrl ){
+                var request = new Request.HTML({
+                    url: this.options.itemUrl,
+                    method: "GET",
+                    async: true,
+                    onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                        this.itemHtml = responseHTML;
+                        if(resolve)resolve();
+                    }.bind(this),
+                    onFailure: function(xhr){ reject(xhr); }
+                });
+                request.send();
+            }else{
+                if(resolve)resolve();
+            }
+        }.bind(this))
     },
     loadSelectItemsByCondition: function(){
         this.options.groups.each(function(group){
@@ -2207,6 +2244,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
     _getTtiteText: function(){
         return this.data.name + ( this.data.employee ? ("("+this.data.employee+")") : "" );
     },
+    _getDescription: function (){
+        return '';
+    },
     _setIcon: function(){
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
@@ -2218,6 +2258,45 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selector.fireEvent("queryLoadItemSelected",[this]);
         }
 
+        this.selector.itemHtml ? this.loadElementWithHtml() : this.loadElement();
+
+        if(this.postLoad)this.postLoad();
+
+        this.loadSubItem();
+
+        this.setEvent();
+
+        this.check();
+
+        if( this.clazz === "Item" ) {
+            this.selector.fireEvent("postLoadItem", [this]);
+        }else if( this.clazz === "ItemSelected" ){
+            this.selector.fireEvent("postLoadItemSelected",[this]);
+        }
+    },
+    loadElementWithHtml: function (){
+        var node = new Element("div");
+        node.loadHtmlText(this.selector.itemHtml, {
+            "module": this,
+            "bind": {
+                lp: MWF.SelectorLP,
+                data: this.data,
+                options: this.selector.options,
+                _text: this.data.name,
+                _description: this._getDescription(),
+                _title: this._getTtiteText(),
+                _icon: this._getIcon()
+            }
+        });
+        this.node = node.getFirst();
+        this.node.inject(this.container);
+        node.destroy();
+    },
+    _getIcon: function (){
+        const {person, id, unique, employee, distinguishedName} = this.data;
+        return this.selector.orgAction.getPersonIcon( person || id || unique || employee || distinguishedName )
+    },
+    loadElement: function (){
         if( !this.node ){
             this.node = new Element("div", {
                 "styles": this.selector.css.selectorItem
@@ -2268,20 +2347,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 "min-width" : this.selector.options.identityItemWidth + "px"
             })
         }
-
-        if(this.postLoad)this.postLoad();
-
-        this.loadSubItem();
-
-        this.setEvent();
-
-        this.check();
-
-        if( this.clazz === "Item" ) {
-            this.selector.fireEvent("postLoadItem", [this]);
-        }else if( this.clazz === "ItemSelected" ){
-            this.selector.fireEvent("postLoadItemSelected",[this]);
-        }
     },
     loadSubItem: function(){},
     disable : function(){
@@ -2329,6 +2394,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
     setSelected: function(){
         this.isSelected = true;
         if(this.node) {
+            this.node.addClass('selected');
             this.node.setStyles(this.selector.css.selectorItem_selected);
 
             this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
@@ -2420,6 +2486,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.selector.currentItem = this;
                 this.isSelected = true;
 
+                this.node.addClass('selected');
+
                 this.selector.selectedItems.push(this);
                 if(this.selector.addToSelectedItemsMap)this.selector.addToSelectedItemsMap(this.data, this);
 
@@ -2456,6 +2524,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if(this.selector.deleteFromSelectedItemsMap)this.selector.deleteFromSelectedItemsMap(this.data);
         this.node.setStyles(this.selector.css.selectorItem);
 
+        this.node.removeClass('selected');
+
         this.textNode.setStyles(this.selector.css.selectorItemTextNode);
         this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
 
@@ -2476,6 +2546,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if ((count===0) || (this.selector.selectedItems.length+1)<=count) {
             this.isSelected = true;
             if( this.node ){
+                this.node.addClass('selected');
+
                 this.node.setStyles(this.selector.css.selectorItem_selected);
 
                 this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
@@ -2511,6 +2583,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.isSelected = false;
         if( this.node ){
             this.node.setStyles(this.selector.css.selectorItem);
+
+            this.node.removeClass('selected');
 
             this.textNode.setStyles(this.selector.css.selectorItemTextNode);
             this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
@@ -2610,7 +2684,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
         if(callback)callback();
     },
-    postLoad : function(){},
+    postLoad : function(){
+        this.node.addClass('item');
+    },
     getParentCategoryByLevel : function( level ){
         var category = this.category;
         do{
@@ -2628,6 +2704,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     initialize: function(data, selector, item, selectedNode, delay){
         this.data = data;
         this.selector = selector;
+        debugger;
         this.container = selectedNode || this.selector.selectedNode;
         this.isSelected = false;
         this.clazz = "ItemSelected";
@@ -2658,21 +2735,25 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         }.bind(this));
     },
     postLoad : function(){
-        if( this.selector.css.selectorSelectedItemTextNode ){
-            this.textNode.setStyles(this.selector.css.selectorSelectedItemTextNode);
-        }
-        if( layout.mobile && !this.selector.contentUrl ){
-            this.actionNode.set("text", MWF.SelectorLP.remove );
-            if( this.selector.css.selectedItemActionNodeMobile ){
-                this.actionNode.setStyles( this.selector.css.selectedItemActionNodeMobile );
+        if( this.selector.options.useO2Load ){
+            this.node.addClass('selected_item');
+        }else{
+            if( this.selector.css.selectorSelectedItemTextNode ){
+                this.textNode.setStyles(this.selector.css.selectorSelectedItemTextNode);
             }
-            if( this.selector.css.selectorItemMobile ){
-                this.node.setStyles( this.selector.css.selectorItemMobile );
-            }
-        }else if( this.selector.css.selectorSelectedItemActionNode ){
-            this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode );
-            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorSelectedItemActionNode_single  ){
-                this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode_single );
+            if( layout.mobile && !this.selector.contentUrl ){
+                this.actionNode.set("text", MWF.SelectorLP.remove );
+                if( this.selector.css.selectedItemActionNodeMobile ){
+                    this.actionNode.setStyles( this.selector.css.selectedItemActionNodeMobile );
+                }
+                if( this.selector.css.selectorItemMobile ){
+                    this.node.setStyles( this.selector.css.selectorItemMobile );
+                }
+            }else if( this.selector.css.selectorSelectedItemActionNode ){
+                this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode );
+                if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorSelectedItemActionNode_single  ){
+                    this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode_single );
+                }
             }
         }
     },
@@ -2800,91 +2881,6 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     }
 });
 
-MWF.xApplication.Selector.Person.Breadcrumbs = new Class({
-    Implements: [Events, Options],
-    initialize: function(selector, node){
-        this.selector = selector;
-        this.css = selector.css;
-        this.node = node;
-        this.items = [];
-        this.addItem(selector);
-    },
-    addItem: function(category){
-        var item = new MWF.xApplication.Selector.Person.BreadcrumbsItem(this, category);
-        item.load();
-        this.items.push(item);
-        this.setCurrentItem(item);
-    },
-    removeItem: function(item){
-        this.items.erase(item);
-        item.destroy();
-    },
-    toItem: function (item){
-        var index = this.items.indexOf(item);
-        if( index > -1 ){
-            while( this.items.length > index+1 ){
-                this.removeItem(this.items[this.items.length-1]);
-            }
-        }
-        this.setCurrentItem(item);
-    },
-    setCurrentItem: function (item) {
-        if( this.currentItem )this.currentItem.cancelCurrent();
-        item.setCurrent();
-        this.currentItem = item;
-    }
-});
-
-MWF.xApplication.Selector.Person.BreadcrumbsItem = new Class({
-    Implements: [Events, Options],
-    initialize: function(breadcrumbs, category){
-        this.breadcrumbs = breadcrumbs;
-        this.selector = breadcrumbs.selector;
-        this.css = this.selector.css;
-        this.category = category;
-        this.isRoot = this.selector === category;
-    },
-    load: function (){
-        if( !this.isRoot ){
-            this.separator = new Element('div', {
-                text: '>'
-            }).inject(this.breadcrumbs.node);
-        }
-        this.node = new Element('div', {
-            text: this.isRoot ?  '顶层' : this.category._getShowName(),
-            styles: this.css.breadcrumbsItem
-        }).inject(this.breadcrumbs.node);
-        this.node.addEvent('click', function (ev){
-            this.breadcrumbs.toItem(this);
-        }.bind(this));
-    },
-    setCurrent: function (){
-        this.node.setStyles(this.css.breadcrumbsItem_current).addClass('mainColor_color');
-        this.switchCategory(true);
-    },
-    cancelCurrent: function (){
-        this.node.setStyles(this.css.breadcrumbsItem).removeClass('mainColor_color');
-        this.switchCategory(false);
-    },
-    destroy: function () {
-        if(this.separator)this.separator.destroy();
-        this.node.destroy();
-        this.switchCategory(false);
-    },
-    switchCategory: function ( isShow ){
-        if( this.isRoot ){
-            this.category.subCategorys.each(function (category){
-                !!isShow ? category.node.show() : category.node.hide();
-            })
-            this.category.subItems.each(function (item){
-                !!isShow ? item.node.show() : item.node.hide();
-            })
-        }else{
-            !!isShow ? this.category.children.show() : this.category.children.hide();
-        }
-    }
-});
-
 MWF.xApplication.Selector.Person.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
     initialize: function(data, selector, container, level, parentCategory, delay, notActive){
@@ -2905,9 +2901,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         if( this.selector.isFlatCategory ){
             this.loadForFlat();
         }else if( !this.notActive ){
-            this.loadForNormal();
-        }else if( !this.notActive ){
-            this.loadForNormal();
+           this.selector.categoryHtml ? this.loadForHtml() : this.loadForNormal();
         }else{
             this.createNode();
             // this.node.hide();
@@ -3066,23 +3060,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 "title" : MWF.SelectorLP.selectChildren
             }).inject(this.node);
             this.selectAllNode.addEvent( "click", function(ev){
-                if( this.isSelectedAll ){
-                    // this.unselectAll(ev);
-                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true ) : this.unselectAll(ev, null, true);
-                    this.selector.fireEvent("unselectCatgory",[this]);
-                    this.selector.fireEvent("unselectCategory",[this]);
-                }else{
-                    // this.selectAll(ev);
-                    if( this.selector.options.selectAllRange === "all" ){
-                        var node = new Element("div.categorySelectedNode").inject( this.selector.selectedNode );
-                        this.selectAllNested(ev, true, node );
-                    }else{
-                        this.selectAll(ev, true)
-                    }
-                    this.selector.fireEvent("selectCatgory",[this]);
-                    this.selector.fireEvent("selectCategory",[this]);
-                }
-                ev.stopPropagation();
+                this.handleSelectAllClick(ev);
             }.bind(this));
             if( this.selector.css.selectorItemCategoryActionNode_selectAll_over ){
                 this.selectAllNode.addEvents( {
@@ -3171,114 +3149,71 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
     },
     loadForHtml: function (){
         this.selector.fireEvent("queryLoadCategory",[this]);
-        if(!this.node)this.createNode();
-
-
-
-
-        this._setIcon();
-
-
-        if( this.selector.options.selectAllEnable && this.selector.options.count.toInt()!==1 ){
-            var selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll;
-            if( this.isSelectedAll ){
-                if( this.selector.isFlatCategory ){
-                    selectAllNodeStyles = this.selector.css.flatCategory_selectAll_selected;
-                }else if( this.selector.css.selectorItemCategoryActionNode_selectAll_selected ){
-                    selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll_selected;
-                }
+        var node = new Element("div");
+        node.loadHtmlText(this.selector.categoryHtml, {
+            "module": this,
+            "bind": {
+                lp: MWF.SelectorLP,
+                data: this.data,
+                options: this.selector.options,
+                _text: this._getShowName(),
+                _title: this._getTtiteText()
             }
-            this.selectAllNode = new Element("div", {
-                "styles": selectAllNodeStyles,
-                "title" : MWF.SelectorLP.selectChildren
-            }).inject(this.node);
-            this.selectAllNode.addEvent( "click", function(ev){
-                if( this.isSelectedAll ){
-                    // this.unselectAll(ev);
-                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true ) : this.unselectAll(ev, null, true);
-                    this.selector.fireEvent("unselectCatgory",[this]);
-                    this.selector.fireEvent("unselectCategory",[this]);
-                }else{
-                    // this.selectAll(ev);
-                    if( this.selector.options.selectAllRange === "all" ){
-                        var node = new Element("div.categorySelectedNode").inject( this.selector.selectedNode );
-                        this.selectAllNested(ev, true, node );
-                    }else{
-                        this.selectAll(ev, true)
-                    }
-                    this.selector.fireEvent("selectCatgory",[this]);
-                    this.selector.fireEvent("selectCategory",[this]);
-                }
-                ev.stopPropagation();
-            }.bind(this));
-            if( this.selector.css.selectorItemCategoryActionNode_selectAll_over ){
-                this.selectAllNode.addEvents( {
-                    "mouseover" : function(ev){
-                        if( !this.isSelectedAll && !this.isSelectedSome )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_over );
-                        //ev.stopPropagation();
-                    }.bind(this),
-                    "mouseout" : function(ev){
-                        if( !this.isSelectedAll && !this.isSelectedSome )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
-                        //ev.stopPropagation();
-                    }.bind(this)
-                })
-            }
-        }
+        });
+        if(!this.node)this.node = node.getFirst();
+        this.node.inject(this.container);
+        node.destroy();
 
-        this.textNode = new Element("div", {
-            "styles": this.selector.css.selectorItemCategoryTextNode,
-            "text": this._getShowName()
-        }).inject(this.node);
-        var m = this.textNode.getStyle("margin-left").toFloat()+indent;
-        this.textNode.setStyle("margin-left", ""+m+"px");
+        // this._setIcon();
 
-        if( this.selector.options.showSelectedCount && this.selector.availableStatusTypes.contains(this.selector.selectType) ){
-            this.selectedCountNode = new Element("span").inject(this.textNode);
-        }
+        // this.textNode = new Element("div", {
+        //     "styles": this.selector.css.selectorItemCategoryTextNode,
+        //     "text": this._getShowName()
+        // }).inject(this.node);
+        // var m = this.textNode.getStyle("margin-left").toFloat()+indent;
+        // this.textNode.setStyle("margin-left", ""+m+"px");
+        //
+        // if( this.selector.options.showSelectedCount && this.selector.availableStatusTypes.contains(this.selector.selectType) ){
+        //     this.selectedCountNode = new Element("span").inject(this.textNode);
+        // }
 
         if(!this.children){
             this.children = new Element("div.children", {
                 "styles": this.selector.css.selectorItemCategoryChildrenNode
-            }).inject(
-                this.selector.options.useBreadcrumbs ? this.selector.itemAreaNode : this.node,
-                this.selector.options.useBreadcrumbs ? "bottom" : "after"
-            );
+            })
         }
+        this.children.inject(
+            this.selector.options.useBreadcrumbs ? this.selector.itemAreaNode : this.node,
+            this.selector.options.useBreadcrumbs ? "bottom" : "after"
+        );
+
         if (!this.selector.options.expand) this.children.setStyle("display", "none");
 
         if( this.selector.options.expandEmptyCategory && !this._hasChildItem() ){ //点击允许展开空分类
             this.children.hide();
-            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+            // this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
             this.isExpand = false;
         }else{
-            var subIdList = this.selector._getChildrenItemIds(this.data);
-            if (subIdList){
-                var count = subIdList.length;
-                this.childrenHeight = count*this.selector.options.itemHeight;
-                this.children.setStyle("height", ""+this.childrenHeight+"px");
-            }
-
-            if(this.selector.options.identityItemWidth && this.selector.selectType === "identity"){
-                var indent = this.level === 0 ? this.selector.options.level1Indent : this.selector.options.indent;
-                this.children.setStyles({
-                    "padding-left": "" + indent + "px",
-                    "overflow" : "hidden"
-                });
-            }
+            // var subIdList = this.selector._getChildrenItemIds(this.data);
+            // if (subIdList){
+            //     var count = subIdList.length;
+            //     this.childrenHeight = count*this.selector.options.itemHeight;
+            //     this.children.setStyle("height", ""+this.childrenHeight+"px");
+            // }
+            //
+            // if(this.selector.options.identityItemWidth && this.selector.selectType === "identity"){
+            //     var indent = this.level === 0 ? this.selector.options.level1Indent : this.selector.options.indent;
+            //     this.children.setStyles({
+            //         "padding-left": "" + indent + "px",
+            //         "overflow" : "hidden"
+            //     });
+            // }
 
             if ( !this._hasChild()){
                 if( this.selector.options.hiddenEmptyCategory ){
                     this.node.hide();
                 }else{
-                    if( this.selector.options.style === "flow" ){
-                        this.node.setStyles({
-                            "opacity": "0.5",
-                            "cursor": "default"
-                        });
-                    }else{
-                        this.actionNode.setStyle("background", "transparent");
-                        this.textNode.setStyle("color", "#777");
-                    }
+                    this.node.addClass('empty_category');
                 }
             }
 
@@ -3295,6 +3230,26 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
 
         this.afterLoad();
         this.selector.fireEvent("postLoadCategory",[this]);
+    },
+    handleSelectAllClick: function (ev){
+        if( this.isSelectedAll ){
+            // this.unselectAll(ev);
+            this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true ) : this.unselectAll(ev, null, true);
+            this.selector.fireEvent("unselectCatgory",[this]);
+            this.selector.fireEvent("unselectCategory",[this]);
+        }else{
+            // this.selectAll(ev);
+            this.selectAllNode.addClass('selected');
+            if( this.selector.options.selectAllRange === "all" ){
+                var node = new Element("div.categorySelectedNode").inject( this.selector.selectedNode );
+                this.selectAllNested(ev, true, node );
+            }else{
+                this.selectAll(ev, true)
+            }
+            this.selector.fireEvent("selectCatgory",[this]);
+            this.selector.fireEvent("selectCategory",[this]);
+        }
+        ev.stopPropagation();
     },
     createNode: function(){
         this.node = new Element("div", {
@@ -3333,6 +3288,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 }
             }
             this.isSelectedAll = false;
+            if( this.selectAllNode )this.selectAllNode.removeClass('selected');
         }.bind(this);
 
         if( this.loaded ){
@@ -3417,6 +3373,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                     }
                 }
                 this.isSelectedAll = true;
+                if( this.selectAllNode )this.selectAllNode.addClass('selected');
             }.bind(this);
 
             if( this._beforeSelectAll ){
@@ -3447,6 +3404,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
             }
             this.isSelectedAll = true;
+            if( this.selectAllNode )this.selectAllNode.addClass('selected');
         }
     },
     checkUnselectAll : function(){
@@ -3467,6 +3425,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
             }
             this.isSelectedAll = false;
+            if( this.selectAllNode )this.selectAllNode.removeClass('selected');
         }
     },
     afterLoad: function(){
@@ -3674,6 +3633,91 @@ MWF.xApplication.Selector.Person.ItemRoleCategory = new Class({
     _setIcon: function(){
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/roleicon.png)");
+    }
+});
+
+MWF.xApplication.Selector.Person.Breadcrumbs = new Class({
+    Implements: [Events, Options],
+    initialize: function(selector, node){
+        this.selector = selector;
+        this.css = selector.css;
+        this.node = node;
+        this.items = [];
+        this.addItem(selector);
+    },
+    addItem: function(category){
+        var item = new MWF.xApplication.Selector.Person.BreadcrumbsItem(this, category);
+        item.load();
+        this.items.push(item);
+        this.setCurrentItem(item);
+    },
+    removeItem: function(item){
+        this.items.erase(item);
+        item.destroy();
+    },
+    toItem: function (item){
+        var index = this.items.indexOf(item);
+        if( index > -1 ){
+            while( this.items.length > index+1 ){
+                this.removeItem(this.items[this.items.length-1]);
+            }
+        }
+        this.setCurrentItem(item);
+    },
+    setCurrentItem: function (item) {
+        if( this.currentItem )this.currentItem.cancelCurrent();
+        item.setCurrent();
+        this.currentItem = item;
+    }
+});
+
+MWF.xApplication.Selector.Person.BreadcrumbsItem = new Class({
+    Implements: [Events, Options],
+    initialize: function(breadcrumbs, category){
+        this.breadcrumbs = breadcrumbs;
+        this.selector = breadcrumbs.selector;
+        this.css = this.selector.css;
+        this.category = category;
+        this.isRoot = this.selector === category;
+    },
+    load: function (){
+        if( !this.isRoot ){
+            this.separator = new Element('div', {
+                text: '>'
+            }).inject(this.breadcrumbs.node);
+        }
+        this.node = new Element('div', {
+            text: this.isRoot ?  '顶层' : this.category._getShowName(),
+            styles: this.css.breadcrumbsItem
+        }).inject(this.breadcrumbs.node);
+        this.node.addEvent('click', function (ev){
+            this.breadcrumbs.toItem(this);
+        }.bind(this));
+    },
+    setCurrent: function (){
+        this.node.setStyles(this.css.breadcrumbsItem_current).addClass('mainColor_color');
+        this.switchCategory(true);
+    },
+    cancelCurrent: function (){
+        this.node.setStyles(this.css.breadcrumbsItem).removeClass('mainColor_color');
+        this.switchCategory(false);
+    },
+    destroy: function () {
+        if(this.separator)this.separator.destroy();
+        this.node.destroy();
+        this.switchCategory(false);
+    },
+    switchCategory: function ( isShow ){
+        if( this.isRoot ){
+            this.category.subCategorys.each(function (category){
+                !!isShow ? category.node.show() : category.node.hide();
+            })
+            this.category.subItems.each(function (item){
+                !!isShow ? item.node.show() : item.node.hide();
+            })
+        }else{
+            !!isShow ? this.category.children.show() : this.category.children.hide();
+        }
     }
 });
 
