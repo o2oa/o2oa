@@ -30,6 +30,7 @@ MWF.xApplication.Selector.LP={
 	"empty": "Vaciar",
 	"remove": "Eliminar",
 	"selected2": "Seleccionado",
+	"searchResult": "Resultado de búsqueda",
 	"identity": "Identidad",
 	"person": "Persona",
 	"duty": "Trabajo",

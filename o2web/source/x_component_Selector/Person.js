@@ -234,20 +234,15 @@ MWF.xApplication.Selector.Person = new Class({
             }
         }
     },
-    showSelectedWrapNode: function (){
-        this.selectedShowing = true;
-        this.selectedCountNode.addClass("popup");
-        if(this.selectedMaskNode)this.selectedMaskNode.show();
-        if(this.selectedWrapNode)this.selectedWrapNode.show();
+    switchSelectedMode: function (){
+        var node = this.wrapNode || this.contentNode;
+        !!this.selectedMode ? node.removeClass('selected_mode') : node.addClass('selected_mode');
+        this.selectedMode = !this.selectedMode;
     },
-    hideSelectedWrapNode: function (){
-        this.selectedShowing = false;
-        this.selectedCountNode.removeClass("popup");
-        if(this.selectedMaskNode)this.selectedMaskNode.hide();
-        if(this.selectedWrapNode)this.selectedWrapNode.hide();
-    },
-    switchSelectedWrapNode: function (){
-         !!this.selectedShowing ? this.hideSelectedWrapNode() : this.showSelectedWrapNode();
+    changeSearchMode: function (flag){
+        var node = this.wrapNode || this.contentNode;
+        !flag ? node.removeClass('search_mode') : node.addClass('search_mode');
+        this.searchMode = flag;
     },
     loadSelectedCountNode: function(){
         if( this.inMulitple )return;
@@ -1174,6 +1169,7 @@ MWF.xApplication.Selector.Person = new Class({
                 this.searchInput.focus();
                 this.initSearchArea(false);
                 this.searchCancelAction.hide();
+                this.changeSearchMode(false);
             }.bind(this))
         }
 
@@ -1220,16 +1216,20 @@ MWF.xApplication.Selector.Person = new Class({
                         }.bind(this));
                     }.bind(this));
                 }.bind(this), null, key);
+                this.changeSearchMode(true);
             }else{
                 this.initSearchArea(false);
+                this.changeSearchMode(false);
             }
         }else{
             var key = this.searchInput.get("value");
             if (key){
                 this.initSearchArea(true);
                 this.searchInItems(key);
+                this.changeSearchMode(true);
             }else{
                 this.initSearchArea(false);
+                this.changeSearchMode(false);
             }
         }
     },
@@ -1609,13 +1609,18 @@ MWF.xApplication.Selector.Person = new Class({
                         }.bind(this));
                     }.bind(this));
                 }.bind(this), null, pinyin.toLowerCase());
+                this.changeSearchMode(true);
+            }else{
+                this.changeSearchMode(false);
             }
         }else{
             if (pinyin){
                 this.initSearchArea(true);
                 this.searchInItems(pinyin);
+                this.changeSearchMode(true);
             }else{
                 this.initSearchArea(false);
+                this.changeSearchMode(false);
             }
         }
     },
@@ -2231,6 +2236,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.subCategorys = [];
         this.subCategoryMap = {};
         this.subCategoryMapWithDuty = {};
+        this._init();
         // if(!delay)this.load();
         if(delay){
             this.placeholderNode = new Element("div").inject(this.container);
@@ -2238,6 +2244,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.load();
         }
     },
+    _init: function (){},
     _getShowName: function(){
         return this.data.name + ( this.data.employee ? ("("+this.data.employee+")") : "" );
     },
@@ -2282,6 +2289,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 lp: MWF.SelectorLP,
                 data: this.data,
                 options: this.selector.options,
+                _clazz: this.clazz,
                 _text: this.data.name,
                 _description: this._getDescription(),
                 _title: this._getTtiteText(),
@@ -2575,7 +2583,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
             if(callback)callback();
         }else{
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.selectItemMaxText.replace("{count}", count) , this.node);
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.selectItemMaxText.replace("{count}", count) , this.selector.node);
         }
     },
     unSelected: function( checkValid, callback ){
@@ -2704,7 +2712,6 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     initialize: function(data, selector, item, selectedNode, delay){
         this.data = data;
         this.selector = selector;
-        debugger;
         this.container = selectedNode || this.selector.selectedNode;
         this.isSelected = false;
         this.clazz = "ItemSelected";
@@ -3239,7 +3246,6 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             this.selector.fireEvent("unselectCategory",[this]);
         }else{
             // this.selectAll(ev);
-            this.selectAllNode.addClass('selected');
             if( this.selector.options.selectAllRange === "all" ){
                 var node = new Element("div.categorySelectedNode").inject( this.selector.selectedNode );
                 this.selectAllNested(ev, true, node );
@@ -3383,7 +3389,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }
 
         }else{
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.selectItemMaxText.replace("{count}", count), this.node);
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, MWF.SelectorLP.selectItemMaxText.replace("{count}", count), this.selector.node);
         }
     },
     checkSelectAll : function(){
@@ -3429,7 +3435,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     afterLoad: function(){
-        if (this.level===1) this.clickItem();
+        if (this.level===1 && !this.selector.options.useBreadcrumbs) this.clickItem();
     },
     clickFlatCategoryItem : function( callback, hidden ){
         if (this._hasChildItem()){

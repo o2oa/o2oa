@@ -841,6 +841,9 @@ MWF.xApplication.Selector.Identity.Item = new Class({
 
 MWF.xApplication.Selector.Identity.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Identity.Item,
+    _init: function (){
+        this.clazz = "SearchItem";
+    },
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
     },

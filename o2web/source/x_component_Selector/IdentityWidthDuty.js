@@ -161,8 +161,10 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             if (key){
                 this.initSearchArea(true);
                 this.searchInItems(key);
+                this.changeSearchMode(true);
             }else{
                 this.initSearchArea(false);
+                this.changeSearchMode(false);
             }
         }else{
             if (key){
@@ -182,8 +184,10 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                         }.bind(this));
                     }.bind(this));
                 }
+                this.changeSearchMode(true);
             }else{
                 this.initSearchArea(false);
+                this.changeSearchMode(false);
             }
         }
     },
@@ -328,8 +332,14 @@ MWF.xApplication.Selector.IdentityWidthDuty.Item = new Class({
 });
 MWF.xApplication.Selector.IdentityWidthDuty.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Identity.Item,
+    _init: function (){
+        this.clazz = "SearchItem";
+    },
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function () {
+        return this.data.unitLevelName || '';
     }
 });
 
@@ -337,6 +347,9 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected = new Class({
     Extends: MWF.xApplication.Selector.Identity.ItemSelected,
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function () {
+        return this.data.unitLevelName || '';
     },
     _getTtiteText: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
