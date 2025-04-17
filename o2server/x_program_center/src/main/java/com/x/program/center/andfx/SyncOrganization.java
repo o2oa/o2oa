@@ -282,29 +282,17 @@ public class SyncOrganization {
 	private Person createOrLinkPerson(Business business, PullResult result, User user) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(Person.class);
-		Person person = emc.flag(user.getMobile(), Person.class);
-		if (null != person) {
-			person.setAndFxId(user.getUid());
-			person.setAndFxHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)));
-			person.setName(user.getName());
-			person.setMobile(user.getMobile());
-			person.setUnique(user.getUid());
-			person.setGenderType(GenderType.d);
-			emc.check(person, CheckPersistType.all);
-			result.getUpdatePersonList().add(person.getDistinguishedName());
-		} else {
-			person = new Person();
-			person.setAndFxId(user.getUid());
-			person.setAndFxHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)));
-			person.setName(user.getName());
-			person.setMobile(user.getMobile());
-			person.setUnique(user.getUid());
-			person.setGenderType(GenderType.d);
-			/* 新增人员需要增加密码 */
-			business.person().setPassword(person, this.initPassword(business, person));
-			emc.persist(person, CheckPersistType.all);
-			result.getCreatePersonList().add(person.getDistinguishedName());
-		}
+		Person person = new Person();
+		person.setAndFxId(user.getUid());
+		person.setAndFxHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)));
+		person.setName(user.getName());
+		person.setMobile(user.getMobile());
+		person.setUnique(user.getUid());
+		person.setGenderType(GenderType.d);
+		/* 新增人员需要增加密码 */
+		business.person().setPassword(person, this.initPassword(business, person));
+		emc.persist(person);
+		result.getCreatePersonList().add(person.getDistinguishedName());
 		emc.commit();
 		return person;
 	}
