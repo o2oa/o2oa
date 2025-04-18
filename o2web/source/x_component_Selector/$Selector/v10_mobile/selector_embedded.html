@@ -1,8 +1,6 @@
 <div>
     <div data-o2-element="contentNode" class="MWF_selector_contentNode">
-        <div data-o2-element="selectedScrollNode" class="MWF_selector_selectedScrollNode">
-            <div data-o2-element="selectedNode" class="MWF_selector_selectedNode"></div>
-        </div>
+
         <div data-o2-element="selectNode" class="MWF_selector_selectNode">
             <div data-o2-element="searchInputDiv" class="MWF_selector_searchInputDiv">
                 <i class="MWF_selector_searchIcon ooicon-search {{if $.options.mainColorEnable}}mainColor_color{{end if}}"></i>
@@ -13,12 +11,24 @@
             </div>
             <div data-o2-element="letterAreaNode" class="MWF_selector_letterAreaNode" style="display: none;"></div>
             <div data-o2-element="breadcrumbsNode" class="MWF_selector_BreadcrumbsNode"></div>
+            <div class="MWF_selector_searchLabel">{{$.lp.searchResult}}：</div>
             <div data-o2-element="itemAreaScrollNode" class="MWF_selector_itemAreaScrollNode">
                 <div data-o2-element="itemAreaNode" class="MWF_selector_itemAreaNode"></div>
             </div>
             <div data-o2-element="itemSearchAreaScrollNode" class="MWF_selector_itemSearchAreaScrollNode">
                 <div data-o2-element="itemSearchAreaNode" class="MWF_selector_itemSearchAreaNode"></div>
             </div>
+        </div>
+    </div>
+
+    <div data-o2-element="selectedMaskNode"
+         class="MWF_selector_selectedMaskNode"
+         style="z-index: {{$.options.zIndex.toInt()+1}}"
+         data-o2-events="click:switchSelectedMode"
+    ></div>
+    <div data-o2-element="selectedWrapNode" class="MWF_selector_selectedWrapNode" style="z-index: {{$.options.zIndex.toInt()+1}}">
+        <div data-o2-element="selectedScrollNode" class="MWF_selector_selectedScrollNode">
+            <div data-o2-element="selectedNode" class="MWF_selector_selectedNode"></div>
         </div>
     </div>
 </div>

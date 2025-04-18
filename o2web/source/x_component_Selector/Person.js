@@ -72,6 +72,8 @@ MWF.xApplication.Selector.Person = new Class({
             this.options.contentUrl = this.path + this.options.style + "/"+( this.options.embedded ? "selector_embedded":"selector" )+".html";
             this.options.level1Indent = 10;
             this.options.indent = 20;
+        }else if(this.options.useO2Load && this.options.embedded ){
+            this.options.contentUrl = this.options.contentUrl.replace('selector.html', 'selector_embedded.html');
         }
 
         if(this.options.useBreadcrumbs){
@@ -143,6 +145,20 @@ MWF.xApplication.Selector.Person = new Class({
             }
             this.loadBreadcrumbs();
             this.fireEvent("load");
+        }.bind(this))
+    },
+    o2loadInMultiple: function ( contentNode, contentHtml, callback ){
+        var ps = [
+            this.loadItemHtml(),
+            this.loadCategoryHtml()
+        ];
+        Promise.all(ps).then(function(){
+            contentNode.loadHtmlText( contentHtml, {
+                "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options, "_selectType": this.selectType },
+                "module": this
+            });
+            this.loadBreadcrumbs();
+            callback();
         }.bind(this))
     },
     loadBreadcrumbs: function(){
@@ -411,34 +427,100 @@ MWF.xApplication.Selector.Person = new Class({
     loadWithUrl : function(){
         this.overrideSelectedItems();
         return new Promise(function(resolve, reject){
-            if( ["flow", "v10_mobile"].contains(this.options.style) || this.options.useO2Load ){
-                var node = new Element("div");
-                node.loadHtml( this.options.contentUrl, {
-                    "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options, "_selectType": this.selectType },
-                    "module": this
-                },function () {
-                    this.node = node.getFirst();
-                    this.node.loadCss("../x_component_Selector/$Selector/"+this.options.style+"/style.css");
-                    if(resolve)resolve();
-                }.bind(this));
-            }else{
-                var request = new Request.HTML({
-                    url: this.options.contentUrl,
-                    method: "GET",
-                    async: false,
-                    onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+            var request = new Request.HTML({
+                url: this.options.contentUrl,
+                method: "GET",
+                async: false,
+                onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                    if( ["flow"].contains(this.options.style) || this.options.useO2Load ){
+                        this.nodeHTML = responseHTML;
+                        var node = new Element("div");
+                        node.loadHtmlText( responseHTML, {
+                            "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options, "_selectType": this.selectType },
+                            "module": this
+                        });
+                        this.node = node.getFirst();
+                        this.node.loadCss("../x_component_Selector/$Selector/"+this.options.style+"/style.css");
+                    }else{
                         this.node = responseTree[0];
-                        if(resolve)resolve();
-                    }.bind(this),
-                    onFailure: function(xhr){
-                        alert(xhr);
                     }
-                });
-                request.send();
-            }
+                    if(resolve)resolve();
+                }.bind(this),
+                onFailure: function(xhr){
+                    alert(xhr);
+                }
+            });
+            request.send();
         }.bind(this));
     },
-    _queryElements: function (){
+    loadContentWithHTML : function(){
+        var container = this.options.injectToBody ? $(document.body) : this.container;
+        if( !this.options.embedded ){
+            this.maskRelativeNode = container;
+            this.css.maskNode["z-index"] = this.options.zIndex;
+            this.maskRelativeNode.mask({
+                "destroyOnHide": true,
+                "style": this.css.maskNode
+            });
+        }
+
+        if( !this.options.embedded ) {
+            this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
+            this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
+        }
+        if( layout.mobile ){
+            this.node.setStyle("height", ( container.getSize().y ) + "px");
+        }
+
+        if( !this.options.useO2Load ){
+            this._setElements();
+        }
+
+        this.node.inject( container );
+
+        this.loadContent();
+        if( this.actionNode ){
+            this.loadAction();
+        }
+
+        if( !this.options.embedded ){
+            if( layout.mobile ){
+                this.node.setStyles({
+                    "top": "0px",
+                    "left": "0px"
+                });
+            }else{
+                if( this.options.width || this.options.height ){
+                    this.setSize()
+                }
+
+                if (this.options.style !== "v10"){
+                    this.node.position({
+                        relativeTo: this.container,
+                        position: "center",
+                        edge: "center"
+                    });
+                }
+
+                var size = this.container.getSize();
+                var nodeSize = this.node.getSize();
+                this.node.makeDraggable({
+                    "handle": this.titleNode,
+                    "limit": {
+                        "x": [0, size.x - nodeSize.x],
+                        "y": [0, size.y - nodeSize.y]
+                    }
+                });
+            }
+        }else{
+            if( this.options.width || this.options.height ){
+                this.setSize()
+            }
+        }
+
+        this.setEvent();
+    },
+    _setElements: function (){
         this.titleNode = this.node.getElement(".MWF_selector_titleNode");
         this.titleTextNode = this.node.getElement(".MWF_selector_titleTextNode");
         this.titleCancelActionNode = this.node.getElement(".MWF_selector_titleCancelActionNode");
@@ -531,73 +613,6 @@ MWF.xApplication.Selector.Person = new Class({
             this.cancelActionNode.setStyles(this.css.cancelActionNode);
             this.cancelActionNode.set("text", MWF.SelectorLP.cancel);
         }
-    },
-    loadContentWithHTML : function(){
-        var container = this.options.injectToBody ? $(document.body) : this.container;
-        if( !this.options.embedded ){
-            this.maskRelativeNode = container;
-            this.css.maskNode["z-index"] = this.options.zIndex;
-            this.maskRelativeNode.mask({
-                "destroyOnHide": true,
-                "style": this.css.maskNode
-            });
-        }
-
-        if( !this.options.embedded ) {
-            this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
-            this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
-        }
-        if( layout.mobile ){
-            this.node.setStyle("height", ( container.getSize().y ) + "px");
-        }
-
-        if( !this.options.useO2Load ){
-            this._queryElements();
-        }
-
-        this.node.inject( container );
-
-        this.loadContent();
-        if( this.actionNode ){
-            this.loadAction();
-        }
-
-        if( !this.options.embedded ){
-            if( layout.mobile ){
-                this.node.setStyles({
-                    "top": "0px",
-                    "left": "0px"
-                });
-            }else{
-                if( this.options.width || this.options.height ){
-                    this.setSize()
-                }
-
-                if (this.options.style !== "v10"){
-                    this.node.position({
-                        relativeTo: this.container,
-                        position: "center",
-                        edge: "center"
-                    });
-                }
-
-                var size = this.container.getSize();
-                var nodeSize = this.node.getSize();
-                this.node.makeDraggable({
-                    "handle": this.titleNode,
-                    "limit": {
-                        "x": [0, size.x - nodeSize.x],
-                        "y": [0, size.y - nodeSize.y]
-                    }
-                });
-            }
-        }else{
-            if( this.options.width || this.options.height ){
-                this.setSize()
-            }
-        }
-
-        this.setEvent();
     },
     switchLetterArea: function(){
         var showing = this.letterAreaNode.offsetParent;
@@ -848,6 +863,25 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     loadSelectNodeHTMLMobile: function(contentNode){
+        if( this.options.useO2Load ){
+            this._loadSelectNodeHTMLMobileWithoutHeight(contentNode)
+        }else{
+            this._loadSelectNodeHTMLMobile(contentNode);
+        }
+    },
+    _loadSelectNodeHTMLMobileWithoutHeight: function (){
+        if( this.searchInput ){
+            this.initSearchInput();
+        }
+
+        if( this.options.hasLetter && this.letterAreaNode ){
+            this.loadLetters();
+        }
+
+        this.initLoadSelectItems();
+        this.checkLoadSelectItems();
+    },
+    _loadSelectNodeHTMLMobile: function (contentNode) {
         var size;
         var height;
         if( contentNode ){
@@ -886,18 +920,10 @@ MWF.xApplication.Selector.Person = new Class({
                 height = height - this.getOffsetY( this.breadcrumbsNode ) - ( this.breadcrumbsNode.getSize().y || 0 );
             }
 
-            if( !this.options.useO2Load ) {
-                this.contentNode.setStyle("height", "" + height + "px");
-            }
+            this.contentNode.setStyle("height", "" + height + "px");
         }
 
-
-        var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
-
-        if( !this.options.useO2Load ) {
-            this.selectNode.setStyle("height", "" + height + "px");
-        }
-
+        this.selectNode.setStyle("height", "" + height + "px");
 
         if( this.searchInput ){
             this.initSearchInput();
@@ -911,20 +937,17 @@ MWF.xApplication.Selector.Person = new Class({
             height = height - this.getOffsetY( this.letterAreaNode ) - ( this.letterAreaNode.getStyle("height").toInt() || 0 )
         }
 
-        if( !this.options.useO2Load ){
-            this.itemAreaScrollNode.setStyle("height", ""+height+"px");
-            this.itemAreaScrollNode.setStyle("overflow", "auto");
+        this.itemAreaScrollNode.setStyle("height", ""+height+"px");
+        this.itemAreaScrollNode.setStyle("overflow", "auto");
 
-            if( this.itemSearchAreaScrollNode){
-                this.itemSearchAreaScrollNode.setStyles({
-                    "display": "none",
-                    "height": ""+height+"px",
-                    "overflow" : "auto"
-                });
-            }
-            this.itemSearchAreaNode.setStyle("display", "none");
+        if( this.itemSearchAreaScrollNode){
+            this.itemSearchAreaScrollNode.setStyles({
+                "display": "none",
+                "height": ""+height+"px",
+                "overflow" : "auto"
+            });
         }
-
+        this.itemSearchAreaNode.setStyle("display", "none");
 
         this.initLoadSelectItems();
         this.checkLoadSelectItems();
@@ -2293,16 +2316,19 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 _text: this.data.name,
                 _description: this._getDescription(),
                 _title: this._getTtiteText(),
-                _icon: this._getIcon()
+                _selectType: this.selector.selectType,
+                _hasAvatar: ["identity","person"].contains(this.selector.selectType)
             }
         });
         this.node = node.getFirst();
         this.node.inject(this.container);
         node.destroy();
     },
-    _getIcon: function (){
-        const {person, id, unique, employee, distinguishedName} = this.data;
-        return this.selector.orgAction.getPersonIcon( person || id || unique || employee || distinguishedName )
+    _setAvatar: function (e){
+        if( this.selector.selectType === "identity" || this.selector.selectType === "person" ) {
+            const {person, id, unique, employee, distinguishedName} = this.data;
+            e.target.set('src', this.selector.orgAction.getPersonIcon(person || id || unique || employee || distinguishedName))
+        }
     },
     loadElement: function (){
         if( !this.node ){
@@ -3163,8 +3189,11 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 lp: MWF.SelectorLP,
                 data: this.data,
                 options: this.selector.options,
+                _clazz: this.clazz,
                 _text: this._getShowName(),
-                _title: this._getTtiteText()
+                _hasChild: this._hasChild(),
+                _title: this._getTtiteText(),
+                _selectType: this.selector.selectType
             }
         });
         if(!this.node)this.node = node.getFirst();

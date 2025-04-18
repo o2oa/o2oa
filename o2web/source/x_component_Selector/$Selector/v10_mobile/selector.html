@@ -4,23 +4,8 @@
             <div data-o2-element="titleCancelActionNode" class="MWF_selector_titleCancelActionNode"></div>
             <div data-o2-element="titleTextNode" class="MWF_selector_titleTextNode">{{$.lp.title}}</div>
         </div>
-        <div class="MWF_selector_tabContainer" style="display: none;"></div>
+        <div data-o2-element="tabContainer" class="MWF_selector_tabContainer"></div>
         <div data-o2-element="contentNode" class="MWF_selector_contentNode">
-
-            <div data-o2-element="selectedMaskNode"
-                 class="MWF_selector_selectedMaskNode"
-                 style="z-index: {{$.options.zIndex.toInt()+1}}"
-                 data-o2-events="click:switchSelectedMode"
-            ></div>
-            <div data-o2-element="selectedWrapNode" class="MWF_selector_selectedWrapNode" style="z-index: {{$.options.zIndex.toInt()+1}}">
-                <!--            <div data-o2-element="selectedTitleNode" class="MWF_selector_selectedTitleNode">-->
-                <!--                <div data-o2-element="selectedTitleLabelNode" class="MWF_selector_selectedTitleLabelNode">{{$.lp.selected2}}:</div>-->
-                <!--                <div data-o2-element="selectedTitleCountNode" class="MWF_selector_selectedTitleCountNode">(0)</div>-->
-                <!--            </div>-->
-                <div data-o2-element="selectedScrollNode" class="MWF_selector_selectedScrollNode">
-                    <div data-o2-element="selectedNode" class="MWF_selector_selectedNode"></div>
-                </div>
-            </div>
 
             <div data-o2-element="selectNode" class="MWF_selector_selectNode">
                 <div data-o2-element="searchInputDiv" class="MWF_selector_searchInputDiv">
@@ -40,6 +25,21 @@
                 </div>
             </div>
 
+        </div>
+
+        <div data-o2-element="selectedMaskNode"
+             class="MWF_selector_selectedMaskNode"
+             style="z-index: {{$.options.zIndex.toInt()+1}}"
+             data-o2-events="click:switchSelectedMode"
+        ></div>
+        <div data-o2-element="selectedWrapNode" class="MWF_selector_selectedWrapNode" style="z-index: {{$.options.zIndex.toInt()+1}}">
+            <!--            <div data-o2-element="selectedTitleNode" class="MWF_selector_selectedTitleNode">-->
+            <!--                <div data-o2-element="selectedTitleLabelNode" class="MWF_selector_selectedTitleLabelNode">{{$.lp.selected2}}:</div>-->
+            <!--                <div data-o2-element="selectedTitleCountNode" class="MWF_selector_selectedTitleCountNode">(0)</div>-->
+            <!--            </div>-->
+            <div data-o2-element="selectedScrollNode" class="MWF_selector_selectedScrollNode">
+                <div data-o2-element="selectedNode" class="MWF_selector_selectedNode"></div>
+            </div>
         </div>
 
         <div data-o2-element="bottomNode" class="MWF_selector_bottomNode">

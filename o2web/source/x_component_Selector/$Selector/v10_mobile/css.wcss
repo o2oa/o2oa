@@ -7,7 +7,7 @@
 	"containerNodeMobile": {
         "height": "100%",
         "width": "100%",
-        "background-color": "#FFF",
+        "background-color": "#F7F7F7",
         "overflow": "hidden",
         "position": "absolute",
         "z-index":1001,
@@ -15,8 +15,8 @@
         "flex-direction": "column"
 	},
   	"tabContainer": {
-		"height": "3.125rem",
-	  	"margin-bottom": "0.5rem"
+//		"height": "3.125rem",
+//	  	"margin-bottom": "0.5rem"
 	},
 
 	"contentNode": {

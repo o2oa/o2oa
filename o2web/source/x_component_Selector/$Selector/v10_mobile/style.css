@@ -10,6 +10,20 @@
 .MWF_selector_contentNode{
   flex: 1;
   height: calc( 100% - 5.875rem );
+  background-color: #FFFFFF;
+}
+.multiple_mode .MWF_selector_contentNode{
+  /*3rem是tab高度， 0.625rem是tab的margin-bottom*/
+  height: calc( 100% - 5.875rem - 3rem - 0.625rem );
+}
+.multiple_mode .MWF_selector_contentNode > div{
+  height: 100%
+}
+.multiple_mode .MWF_selector_contentNode > div > div{
+  height: 100%
+}
+.multiple_mode .MWF_selector_contentNode > div > div > div{
+  height: 100%
 }
 .MWF_selector_bottomNode{
   height: 3.125rem;
@@ -44,6 +58,15 @@
   line-height: 2.75rem;
   height: 2.75rem;
   color: #FFF;
+}
+.MWF_selector_tabContainer{
+  display: none;
+}
+.multiple_mode .MWF_selector_tabContainer{
+  display: block;
+  height: 3rem;
+  margin-bottom: 0.625rem;
+  background: #FFFFFF;
 }
 .MWF_selector_searchInputDiv{
   position: relative;
@@ -267,7 +290,7 @@
   border-radius: 0.375rem;
   font-size: 0.825rem;
 }
-.MWF_selector_category_iconNode, .MWF_selector_categoryitem_iconNode{
+.MWF_selector_item_iconNode, .MWF_selector_category_iconNode, .MWF_selector_categoryitem_iconNode{
   width: 2rem;
   height: 2rem;
   background: #E6F0FF;
@@ -276,10 +299,10 @@
   align-items: center;
   justify-content: center
 }
-.MWF_selector_item_iconNode{
+.MWF_selector_item_avatarNode{
   display: flex;
 }
-.MWF_selector_item_iconNode img{
+.MWF_selector_item_avatarNode img{
   width: 2rem;
   border-radius: 0.375rem;
 }

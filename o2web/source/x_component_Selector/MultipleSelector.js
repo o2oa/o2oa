@@ -1,4 +1,5 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
+MWF.require("MWF.widget.Tab", null, false);
 //MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
 if(!MWF.O2Selector)MWF.O2Selector = {};
@@ -40,6 +41,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.options.level1Indent = 10;
             this.options.indent = 20;
             this.options.tabStyle = "blue_flat";
+        }else if(this.options.useO2Load && this.options.embedded ){
+            this.options.contentUrl = this.options.contentUrl.replace('selector.html', 'selector_embedded.html');
         }
 
         this.lp = MWF.xApplication.Selector.LP;
@@ -52,47 +55,50 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.selectors = {};
     },
     load: function(){
-        if( this.options.contentUrl ){
-            this.loadWithUrl();
-        }else {
-            if (layout.mobile) {
-                this.loadMobile();
-            } else {
-                this.loadPc();
+        var ps = [
+            this.loadItemHtml(),
+            this.loadCategoryHtml()
+        ];
+        !!this.options.contentUrl && ps.push( this.loadWithUrl());
+        Promise.all(ps).then(function(){
+            if( this.options.contentUrl ){
+                this.loadContentWithHTML();
+            }else{
+                layout.mobile ? this.loadMobile() : this.loadPc();
             }
             this.fireEvent("load");
-        }
+        }.bind(this));
     },
     loadWithUrl : function(){
-        if( this.options.style === "flow" ){
-            var node = new Element("div");
-            node.loadHtml( this.options.contentUrl, {
-                "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options },
-                "module": this
-            },function () {
-                this.node = node.getFirst();
-                this.node.loadCss("../x_component_Selector/$Selector/flow/style.css");
-                this.loadContentWithHTML();
-                this.fireEvent("load");
-            }.bind(this));
-        }else{
+        return new Promise(function(resolve, reject){
             var request = new Request.HTML({
                 url: this.options.contentUrl,
                 method: "GET",
                 async: false,
                 onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                    this.node = responseTree[0];
-                    this.loadContentWithHTML();
-                    this.fireEvent("load");
+                    if( ["flow"].contains(this.options.style) || this.options.useO2Load ){
+                        this.nodeHTML = responseHTML;
+                        var node = new Element("div");
+                        node.loadHtmlText( responseHTML, {
+                            "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options, "_selectType": this.selectType },
+                            "module": this
+                        });
+                        this.node = node.getFirst();
+                        this.node.loadCss("../x_component_Selector/$Selector/"+this.options.style+"/style.css");
+                    }else{
+                        this.node = responseTree[0];
+                    }
+                    if(resolve)resolve();
                 }.bind(this),
                 onFailure: function(xhr){
                     alert(xhr);
                 }
             });
             request.send();
-         }
+        }.bind(this));
     },
     loadContentWithHTML : function(){
+        (this.wrapNode || this.content).addClass('multiple_mode');
         var container = this.options.injectToBody ? $(document.body) : this.container;
         if( !this.options.embedded ){
             this.css.maskNode["z-index"] = this.options.zIndex;
@@ -111,6 +117,105 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.node.setStyle("height", ( container.getSize().y ) + "px");
         }
 
+        if( !this.options.useO2Load ){
+            this._setElements();
+        }
+
+        this.node.inject( container );
+
+        var size;
+        if( this.options.injectToBody ){
+            size = $(document.body).getSize();
+        }else if( layout.mobile ){
+            var containerSize = this.container.getSize();
+            var bodySize = $(document.body).getSize();
+            if(containerSize.y === 0){
+                containerSize.y = bodySize.y
+            }
+
+            size = {
+                "x" : Math.min( containerSize.x, bodySize.x ),
+                "y" : Math.min( containerSize.y, bodySize.y )
+            };
+
+            var zoom = this.node.getStyle("zoom").toInt();
+            zoom = zoom ? (zoom * 100) : 0;
+            if( zoom ){
+                size.x = size.x * 100 / zoom;
+                size.y = size.y * 100 / zoom;
+            }
+            this.node.setStyles({
+                "width" : size.x+"px",
+                "height" : size.y+"px"
+            });
+        }else{
+            debugger;
+            if( this.options.width || this.options.height ){
+                this.setSize()
+            }
+            if (this.options.style !== "v10"){
+                this.node.position({
+                    relativeTo: this.container,
+                    position: "center",
+                    edge: "center"
+                });
+            }
+
+            size = this.container.getSize();
+            var nodeSize = this.node.getSize();
+            this.node.makeDraggable({
+                "handle": this.titleNode,
+                "limit": {
+                    "x": [0, size.x - nodeSize.x],
+                    "y": [0, size.y - nodeSize.y]
+                }
+            });
+        }
+
+        if( !this.options.useO2Load ){
+            var height = this.node.getSize().y-this.getOffsetY( this.contentNode );
+            if( this.tabContainer ){
+                height = height - this.getOffsetY( this.tabContainer ) - ( this.tabContainer.getStyle("height").toInt() || 0 )
+            }
+            if( this.titleNode ){
+                height = height - this.getOffsetY( this.titleNode ) - ( this.titleNode.getStyle("height").toInt() || 0 )
+            }
+            if( this.actionNode ){
+                height = height - this.getOffsetY( this.actionNode ) - ( this.actionNode.getStyle("height").toInt() || 0 )
+            }
+            this.contentNode.setStyle("height", ""+height+"px");
+
+            this.selectNode.setStyle("height", ""+height+"px");
+
+            this.contentHeight = height;
+        }
+
+        this.contentHTML = this.options.useO2Load ? this.getContentHtml() : this.contentNode.get("html");
+
+        this.contentNode.empty();
+
+
+        this.loadContent();
+        if( this.actionNode ){
+            this.loadAction();
+        }
+
+        if( !this.options.embedded && layout.mobile ){
+            this.node.setStyles({
+                "top": "0px",
+                "left": "0px"
+            });
+        }
+
+        this.setEvent();
+    },
+    getContentHtml: function() {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(this.nodeHTML, 'text/html');
+        var node = doc.querySelector('[data-o2-element="contentNode"]');
+        return node.innerHTML;
+    },
+    _setElements: function (){
         this.titleNode = this.node.getElement(".MWF_selector_titleNode");
         this.titleTextNode = this.node.getElement(".MWF_selector_titleTextNode");
         this.titleCancelActionNode = this.node.getElement(".MWF_selector_titleCancelActionNode");
@@ -201,93 +306,6 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.cancelActionNode.setStyles(this.css.cancelActionNode);
             this.cancelActionNode.set("text", MWF.SelectorLP.cancel);
         }
-
-
-        this.node.inject( container );
-
-        var size;
-        if( this.options.injectToBody ){
-            size = $(document.body).getSize();
-        }else if( layout.mobile ){
-            var containerSize = this.container.getSize();
-            var bodySize = $(document.body).getSize();
-            if(containerSize.y === 0){
-                containerSize.y = bodySize.y
-            }
-
-            size = {
-                "x" : Math.min( containerSize.x, bodySize.x ),
-                "y" : Math.min( containerSize.y, bodySize.y )
-            };
-
-            var zoom = this.node.getStyle("zoom").toInt();
-            zoom = zoom ? (zoom * 100) : 0;
-            if( zoom ){
-                size.x = size.x * 100 / zoom;
-                size.y = size.y * 100 / zoom;
-            }
-            this.node.setStyles({
-                "width" : size.x+"px",
-                "height" : size.y+"px"
-            });
-        }else{
-            debugger;
-            if( this.options.width || this.options.height ){
-                this.setSize()
-            }
-            if (this.options.style !== "v10"){
-                this.node.position({
-                    relativeTo: this.container,
-                    position: "center",
-                    edge: "center"
-                });
-            }
-
-            size = this.container.getSize();
-            var nodeSize = this.node.getSize();
-            this.node.makeDraggable({
-                "handle": this.titleNode,
-                "limit": {
-                    "x": [0, size.x - nodeSize.x],
-                    "y": [0, size.y - nodeSize.y]
-                }
-            });
-        }
-
-        var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
-
-        var height = this.node.getSize().y-this.getOffsetY( this.contentNode );
-        if( this.tabContainer ){
-            height = height - this.getOffsetY( this.tabContainer ) - ( this.tabContainer.getStyle("height").toInt() || 0 )
-        }
-        if( this.titleNode ){
-            height = height - this.getOffsetY( this.titleNode ) - ( this.titleNode.getStyle("height").toInt() || 0 )
-        }
-        if( this.actionNode ){
-            height = height - this.getOffsetY( this.actionNode ) - ( this.actionNode.getStyle("height").toInt() || 0 )
-        }
-        this.contentNode.setStyle("height", ""+height+"px");
-
-        this.selectNode.setStyle("height", ""+height+"px");
-
-        this.contentHeight = height;
-        this.contentHTML = this.contentNode.get("html");
-        this.contentNode.empty();
-
-
-        this.loadContent();
-        if( this.actionNode ){
-            this.loadAction();
-        }
-
-        if( !this.options.embedded && layout.mobile ){
-            this.node.setStyles({
-                "top": "0px",
-                "left": "0px"
-            });
-        }
-
-        this.setEvent();
     },
     loadMobile: function(){
         this.maskRelativeNode = $(document.body);
@@ -438,7 +456,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         }).inject(this.titleNode);
 
         this.contentNode = new Element("div", {
-            "styles": this.css.contentNode
+            "styles": this.css.contentNode_multiple || this.css.contentNode
         }).inject(this.node);
 
         this.actionNode = new Element("div", {
@@ -450,7 +468,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.node.inject(this.container);
 
         if( this.options.width || this.options.height ){
-            this.setSize()
+            this.setSize();
         }
 
         this.loadContent();
@@ -547,74 +565,114 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         }.bind(this));
         this.cancelActionNode.addEvent("click", function(){this.fireEvent("cancel", this); this.close();}.bind(this));
     },
-    loadContent: function(){
-        if( this.options.contentUrl ){
-            MWF.require("MWF.widget.Tab", function(){
+    _setContentElement: function(selector, pageNode){
+        pageNode.set("html", this.contentHTML);
+        pageNode.setStyle("height", this.contentHeight);
+        selector.selectNode = pageNode.getElement(".MWF_selector_selectNode");
+        selector.selectTopNode = pageNode.getElement(".MWF_selector_selectTopNode");
+        selector.selectTopTextNode = pageNode.getElement(".MWF_selector_selectTopTextNode");
+        selector.searchInputDiv = pageNode.getElement(".MWF_selector_searchInputDiv");
+        selector.searchInput = pageNode.getElement(".MWF_selector_searchInput");
+        selector.searchCancelAction = pageNode.getElement(".MWF_selector_searchCancelAction");
+        selector.letterActionNode = pageNode.getElement(".MWF_selector_letterActionNode");
 
-                this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": this.options.tabStyle || "default" });
-
-                var width;
-                if( layout.mobile ){
-                    if( this.tabContainer ){
-                        var borderWidth = 0;
-                        if( this.tab.css.tabNode ){
-                            if( this.tab.css.tabNode["border-left"] )borderWidth += this.tab.css.tabNode["border-left"].toInt();
-                            if( this.tab.css.tabNode["border-right"] )borderWidth += this.tab.css.tabNode["border-right"].toInt();
-                        }
-
-                        var tabWidth = "calc("+( 100 / this.options.types.length ) +"% - " + (borderWidth+"px")+")";
-
-                        if( this.tab.css.tabNode ){
-                            this.tab.css.tabNode["width"] = tabWidth;
-                        }
-                        if( this.tab.css.tabNodeCurrent ){
-                            this.tab.css.tabNodeCurrent["width"] = tabWidth;
-                        }
-                    }else{
-                        width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
-                        var w = width / this.options.types.length - 2;
-                        var tabWidth = w < 60 ? w : 60;
-                        if( this.tab.css.tabNode ){
-                            this.tab.css.tabNode["min-width"] = tabWidth+"px";
-                        }
-                        if( this.tab.css.tabNodeCurrent ){
-                            this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
-                        }
-                    }
-                }else{
-                    this.tab = new MWF.widget.Tab(this.tabContainer, {"style": this.options.tabStyle || "default" });
-                    this.tab.load();
-                }
-                this.tab.load();
-                this.tab.contentNodeContainer.inject(this.contentNode);
-            }.bind(this), false);
-        }else if (layout.mobile){
-            MWF.require("MWF.widget.Tab", function(){
-
-                this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": "orgMobile" });
-
-                var width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
-                var w = width / this.options.types.length - 2;
-                var tabWidth = w < 60 ? w : 60;
-
-                if( this.tab.css.tabNode ){
-                    this.tab.css.tabNode["min-width"] = tabWidth+"px";
-                }
-                if( this.tab.css.tabNodeCurrent ){
-                    this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
-                }
-
-                this.tab.load();
-                this.tab.contentNodeContainer.inject(this.contentNode);
-            }.bind(this), false);
-        }else{
-            MWF.require("MWF.widget.Tab", function(){
-                this.tab = new MWF.widget.Tab(this.contentNode, {"style": this.options.tabStyle || "default" });
-                this.tab.load();
-            }.bind(this), false);
+        selector.flatCategoryScrollNode = pageNode.getElement(".MWF_selector_flatCategoryScrollNode");
+        selector.flatCategoryNode = pageNode.getElement(".MWF_selector_flatCategoryNode");
+        if( this.options.flatCategory && selector.flatCategoryScrollNode ){
+            selector.isFlatCategory = true;
+            selector.flatSubCategoryNodeList = [];
         }
 
-        var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
+        selector.letterAreaNode = pageNode.getElement(".MWF_selector_letterAreaNode");
+
+        selector.itemAreaScrollNode = pageNode.getElement(".MWF_selector_itemAreaScrollNode");
+        selector.itemAreaNode = pageNode.getElement(".MWF_selector_itemAreaNode");
+
+        selector.itemSearchAreaScrollNode = pageNode.getElement(".MWF_selector_itemSearchAreaScrollNode");
+        selector.itemSearchAreaNode = pageNode.getElement(".MWF_selector_itemSearchAreaNode");
+
+        selector.selectedContainerNode = pageNode.getElement(".MWF_selector_selectedContainerNode");
+
+        selector.selectedTopNode = pageNode.getElement(".MWF_selector_selectedTopNode");
+        selector.selectedTopTextNode = pageNode.getElement(".MWF_selector_selectedTopTextNode");
+        selector.emptySelectedNode = pageNode.getElement(".MWF_selector_emptySelectedNode");
+
+        selector.selectedScrollNode = pageNode.getElement(".MWF_selector_selectedScrollNode");
+        selector.selectedNode = pageNode.getElement(".MWF_selector_selectedNode");
+        selector.selectedItemSearchAreaNode = pageNode.getElement(".MWF_selector_selectedItemSearchAreaNode");
+    },
+    _setTabWcssWidth: function(){
+        var width, tabWidth;
+        if( this.tabContainer ){
+            var borderWidth = 0;
+            if( this.tab.css.tabNode ){
+                if( this.tab.css.tabNode["border-left"] )borderWidth += this.tab.css.tabNode["border-left"].toInt();
+                if( this.tab.css.tabNode["border-right"] )borderWidth += this.tab.css.tabNode["border-right"].toInt();
+            }
+
+            tabWidth = "calc("+( 100 / this.options.types.length ) +"% - " + (borderWidth+"px")+")";
+
+            if( this.tab.css.tabNode ){
+                this.tab.css.tabNode["width"] = tabWidth;
+            }
+            if( this.tab.css.tabNodeCurrent ){
+                this.tab.css.tabNodeCurrent["width"] = tabWidth;
+            }
+        }else{
+            width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
+            var w = width / this.options.types.length - 2;
+            tabWidth = w < 60 ? w : 60;
+            if( this.tab.css.tabNode ){
+                this.tab.css.tabNode["min-width"] = tabWidth+"px";
+            }
+            if( this.tab.css.tabNodeCurrent ){
+                this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
+            }
+        }
+    },
+    _setTouchEvents: function (type, selector) {
+        if( !layout.mobile )return;
+        if( ["person", "group"].contains(type.toLowerCase()) ){
+            var startY=0, y=0;
+            var itemAreaScrollNode = selector.itemAreaScrollNode;
+            itemAreaScrollNode.addEvents({
+                'touchstart' : function( ev ){
+                    var touch = ev.touches[0]; //获取第一个触点
+                    startY = Number(touch.pageY); //页面触点Y坐标
+                }.bind(this),
+                'touchmove' : function(ev){
+                    var touch = ev.touches[0]; //获取第一个触点
+                    y = Number(touch.pageY); //页面触点Y坐标
+                }.bind(this),
+                'touchend' : function( ev ){
+                    if (startY - y > 10) { //向上滑动超过10像素
+                        if(selector._scrollEvent){
+                            selector._scrollEvent( itemAreaScrollNode.scrollTop + 100 );
+                        }
+                    }
+                    startY = 0;
+                    y = 0;
+                }.bind(this)
+            })
+        }
+    },
+    loadContent: function(){
+        if( this.options.contentUrl ){
+            this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": this.options.tabStyle || "default" });
+            if( layout.mobile && !this.options.useO2Load ){
+                this._setTabWcssWidth();
+            }
+            this.tab.load();
+            this.tab.contentNodeContainer.inject(this.contentNode);
+        }else if (layout.mobile){
+            this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": "orgMobile" });
+            this._setTabWcssWidth();
+            this.tab.load();
+            this.tab.contentNodeContainer.inject(this.contentNode);
+        }else{
+            this.tab = new MWF.widget.Tab(this.contentNode, {"style": this.options.tabStyle || "default" });
+            this.tab.load();
+        }
 
         if( !MWF.O2Selector.selectedIndex )MWF.O2Selector.selectedIndex = 1;
         var selectedIndexMap = {};
@@ -628,7 +686,10 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             selectedIndexMap[key] = MWF.O2Selector.selectedIndex++;
         });
 
+        var lastSelectedNode, lastselectedCountTextNode;
         this.options.types.each( function( type, index ){
+
+            var t = type.capitalize(), lt = type.toLowerCase();
 
             var options = Object.clone( this.options );
 
@@ -638,7 +699,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 }
             }
 
-            if( type.toLowerCase()==="identity" ){
+            if( lt ==="identity" ){
                 options.expand = false;
             }
 
@@ -646,12 +707,27 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 options = Object.merge( options, this.options[ type + "Options" ] );
             }
 
+
+            if ( lt==="unit" && options.unitType ){
+                t = "UnitWithType";
+            }
+            if ( lt==="identity" && options.dutys && options.dutys.length ){
+                t = options.categoryType.toLowerCase()==="duty" ? "IdentityWidthDuty" : "IdentityWidthDutyCategoryByUnit";
+            }
+
+            options.values = this.getValueByType(
+                options.values,
+                (lt === "identity" && options.resultType === "person") ? [ type, "person" ] : type
+            );
+
             var pageNode = new Element( "div" ).inject( this.contentNode );
+            if( this.options.style === 'v10' ){
+                pageNode.setStyles(this.css.contentNode);
+            }
 
             var tab = this.tab.addTab( pageNode, this.lp[type], false );
 
             if( index === 0 && this.contentHeight ){
-                //this.contentHeight = this.contentHeight - this.getOffsetY( tab.tabContainer ) - tab.tabContainer.getStyle("height").toInt();
                 if( !this.tabContainer ){
                     this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
                 }
@@ -660,111 +736,47 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 }
             }
 
-            var t = type.capitalize();
-            if ((type.toLowerCase()==="unit") && ( options.unitType)){
-                t = "UnitWithType";
-            }
-            if ((type.toLowerCase()==="identity") && (( options.dutys) && options.dutys.length)){
-                if( options.categoryType.toLowerCase()==="duty" ){
-                    t = "IdentityWidthDuty";
-                }else{
-                    t = "IdentityWidthDutyCategoryByUnit"
-                }
-            }
-
             MWF.xDesktop.requireApp("Selector", t, function(){
-                if( type.toLowerCase()==="identity" && options.resultType && options.resultType === "person" ){
-                    options.values = this.getValueByType( options.values, [ type, "person" ] );
-                }else{
-                    options.values = this.getValueByType( options.values, type );
-                }
-
-                //options.values = [];
-                //if( options.multipleValues[type] ){
-                //    options.values = options.multipleValues[type];
-                //}
-                //if( options[type+"Values"] && options[type+"Values"].length ){
-                //    options.values = options.values.concat( options[type+"Values"] )
-                //}
-                //
-                //options.names = [];
-                //if( options.multipleNames[type] ){
-                //    options.names = options.multipleNames[type];
-                //}
-                //if( options[type+"Names"] && options[type+"Names"].length ){
-                //    options.names = options.names.concat( options[type+"Names"] )
-                //}
-
-                debugger;
-
                 this.selectors[t] = new MWF.xApplication.Selector[t](this.container, options );
                 var selector = this.selectors[t];
                 selector.selectedIndexMap = selectedIndexMap;
                 selector.inMulitple = true;
 
-                var itemAreaScrollNode;
-
                 if( this.options.contentUrl ){
-                    pageNode.set("html", this.contentHTML);
-                    pageNode.setStyle("height", this.contentHeight);
-                    selector.selectNode = pageNode.getElement(".MWF_selector_selectNode");
-                    selector.selectTopNode = pageNode.getElement(".MWF_selector_selectTopNode");
-                    selector.selectTopTextNode = pageNode.getElement(".MWF_selector_selectTopTextNode");
-                    selector.searchInputDiv = pageNode.getElement(".MWF_selector_searchInputDiv");
-                    selector.searchInput = pageNode.getElement(".MWF_selector_searchInput");
-                    selector.searchCancelAction = pageNode.getElement(".MWF_selector_searchCancelAction");
-                    selector.letterActionNode = pageNode.getElement(".MWF_selector_letterActionNode");
+                    if( this.options.useO2Load ){
+                        if(layout.mobile)selector.overrideSelectedItems();
+                        selector.contentNode = pageNode;
+                        selector.o2loadInMultiple(pageNode, this.contentHTML, function (){
 
-                    selector.flatCategoryScrollNode = pageNode.getElement(".MWF_selector_flatCategoryScrollNode");
-                    selector.flatCategoryNode = pageNode.getElement(".MWF_selector_flatCategoryNode");
-                    if( this.options.flatCategory && selector.flatCategoryScrollNode ){
-                        selector.isFlatCategory = true;
-                        selector.flatSubCategoryNodeList = [];
+                            //如果已选在content节点中，说明每种类型都有自己的已选节点
+                            var selectedNode = this.contentNode.querySelector('[data-o2-element="selectedNode"]');
+                            if( !selectedNode && this.selectedNode){
+                                //否则在当前节点中获取
+                                selector.selectedNode = this.selectedNode.clone().inject(lastSelectedNode || this.selectedNode, 'after');
+                                lastSelectedNode = selector.selectedNode;
+                            }
+
+                            //如果有已选数量在content节点中，说明每种类型都有自己的已选节点
+                            var selectedCountTextNode = this.contentNode.querySelector('[data-o2-element="selectedCountTextNode"]');
+                            if( !selectedCountTextNode && this.selectedCountTextNode){
+                                //否则在当前节点中获取
+                                this.selectedCountTextNode.hide();
+                                selector.selectedCountTextNode = this.selectedCountTextNode.clone().show().
+                                    inject(lastselectedCountTextNode || this.selectedCountTextNode, 'after');
+                                selector.selectedCountTextNode.textContent = (MWF.SelectorLP.quantifier[ selector.selectType ] || "") + ":0";
+                                lastselectedCountTextNode = selector.selectedCountTextNode;
+                            }
+
+                            selector.loadContent( pageNode, true );
+                            this._setTouchEvents(type, selector);
+                        }.bind(this));
+                    }else{
+                        this._setContentElement(selector, pageNode);
+                        selector.loadContent( pageNode, true );
+                        this._setTouchEvents(type, selector);
                     }
 
-                    selector.letterAreaNode = pageNode.getElement(".MWF_selector_letterAreaNode");
 
-                    selector.itemAreaScrollNode = pageNode.getElement(".MWF_selector_itemAreaScrollNode");
-                    selector.itemAreaNode = pageNode.getElement(".MWF_selector_itemAreaNode");
-
-                    selector.itemSearchAreaScrollNode = pageNode.getElement(".MWF_selector_itemSearchAreaScrollNode");
-                    selector.itemSearchAreaNode = pageNode.getElement(".MWF_selector_itemSearchAreaNode");
-
-                    selector.selectedContainerNode = pageNode.getElement(".MWF_selector_selectedContainerNode");
-
-                    selector.selectedTopNode = pageNode.getElement(".MWF_selector_selectedTopNode");
-                    selector.selectedTopTextNode = pageNode.getElement(".MWF_selector_selectedTopTextNode");
-                    selector.emptySelectedNode = pageNode.getElement(".MWF_selector_emptySelectedNode");
-
-                    selector.selectedScrollNode = pageNode.getElement(".MWF_selector_selectedScrollNode");
-                    selector.selectedNode = pageNode.getElement(".MWF_selector_selectedNode");
-                    selector.selectedItemSearchAreaNode = pageNode.getElement(".MWF_selector_selectedItemSearchAreaNode");
-
-
-                    selector.loadContent( pageNode, true );
-
-                    if( t.toLowerCase() == "person" || t.toLowerCase() == "group" ){
-                        var startY=0, y=0;
-                        itemAreaScrollNode = selector.itemAreaScrollNode;
-                        itemAreaScrollNode.addEvents({
-                            'touchstart' : function( ev ){
-                                var touch = ev.touches[0]; //获取第一个触点
-                                startY = Number(touch.pageY); //页面触点Y坐标
-                            }.bind(this),
-                            'touchmove' : function(ev){
-                                var touch = ev.touches[0]; //获取第一个触点
-                                y = Number(touch.pageY); //页面触点Y坐标
-                            }.bind(this),
-                            'touchend' : function( ev ){
-                                if (startY - y > 10) { //向上滑动超过10像素
-                                    var obj = this.selectors.Person;
-                                    if(obj._scrollEvent)obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
-                                }
-                                startY = 0;
-                                y = 0;
-                            }.bind(this)
-                        })
-                    }
                 }else{
                     // if( this.contentWidth )options.width = this.contentWidth;
                     // if( this.contentHeight )options.height = this.contentHeight;
@@ -812,28 +824,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                             this.setSelectNodeSizeMobile(t, index, tab);
                         }.bind(this))
 
-                        itemAreaScrollNode = selector.itemAreaScrollNode;
-                        if( t.toLowerCase() == "person" || t.toLowerCase() == "group" ){
-                            var startY=0, y=0;
-                            itemAreaScrollNode.addEvents({
-                                'touchstart' : function( ev ){
-                                    var touch = ev.touches[0]; //获取第一个触点
-                                    startY = Number(touch.pageY); //页面触点Y坐标
-                                }.bind(this),
-                                'touchmove' : function(ev){
-                                    var touch = ev.touches[0]; //获取第一个触点
-                                    y = Number(touch.pageY); //页面触点Y坐标
-                                }.bind(this),
-                                'touchend' : function( ev ){
-                                    if (startY - y > 10) { //向上滑动超过10像素
-                                        var obj = this.selectors.Person;
-                                        if(obj._scrollEvent)obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
-                                    }
-                                    startY = 0;
-                                    y = 0;
-                                }.bind(this)
-                            })
-                        }
+                        this._setTouchEvents(type, selector);
                     }else{
                         //if( !this.isSingle() && Number.convert( options.count ) === 1 ){
                         //    this.selectors[t].selectNode.setStyles({
@@ -900,7 +891,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         // }
         //height = height - 5;
 
-        itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
+        var itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
         if( itemAreaScrollNode ){
             itemAreaScrollNode.setStyle("height", ""+this.itemAreaHeight+"px");
         }
@@ -944,6 +935,44 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             }
         });
         return result;
+    },
+    loadCategoryHtml: function (){
+        return new Promise(function (resolve, reject) {
+            if( this.options.categoryUrl ){
+                var request = new Request.HTML({
+                    url: this.options.categoryUrl,
+                    method: "GET",
+                    async: true,
+                    onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                        this.categoryHtml = responseHTML;
+                        if(resolve)resolve();
+                    }.bind(this),
+                    onFailure: function(xhr){ reject(xhr); }
+                });
+                request.send();
+            }else{
+                if(resolve)resolve();
+            }
+        }.bind(this))
+    },
+    loadItemHtml: function (){
+        return new Promise(function (resolve, reject) {
+            if( this.options.itemUrl ){
+                var request = new Request.HTML({
+                    url: this.options.itemUrl,
+                    method: "GET",
+                    async: true,
+                    onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                        this.itemHtml = responseHTML;
+                        if(resolve)resolve();
+                    }.bind(this),
+                    onFailure: function(xhr){ reject(xhr); }
+                });
+                request.send();
+            }else{
+                if(resolve)resolve();
+            }
+        }.bind(this))
     },
     emptySelectedItems : function(){
         for( var key in this.selectors ){

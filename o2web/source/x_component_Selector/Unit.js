@@ -442,7 +442,8 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 _hasChild: this._hasChild(),
                 _description: this._getDescription(),
                 _title: this._getTtiteText(),
-                _icon: this._getIcon()
+                _selectType: this.selector.selectType,
+                _hasAvatar: false
             }
         });
         this.node = node.getFirst();
