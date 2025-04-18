@@ -464,12 +464,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.entries[column.column] = column;
                 if (!column.hideColumn){
                     var viewCell = new Element("td", {
-                        "styles": viewTitleCellNode
-                    }).inject(this.viewTitleLine);
-                    var textNode = new Element("div", {
-                        "styles": this.css.viewTitleTextNode,
+                        "styles": viewTitleCellNode,
                         "text": column.displayName
-                    }).inject(viewCell);
+                    }).inject(this.viewTitleLine);
+                    // var textNode = new Element("div", {
+                    //     "styles": this.css.viewTitleTextNode,
+                    //     "text": column.displayName
+                    // }).inject(viewCell);
                     var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
                     if( column.isSwitchOrder ){
                         size.x += 24;
@@ -488,14 +489,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     }
 
                     if( column.isSwitchOrder || this.isSortedType(column.orderType) ){
-                        var sortNode = new Element("div", {
+                        var sortNode = new Element("i", {
                             styles: this.css.viewTitleOrderNode
-                        }).inject(textNode);
+                        }).inject(viewCell);
                         new Element("div.o2-up.ooicon-icon_arrow_up").inject(sortNode);
                         new Element("div.o2-down.ooicon-drop_down").inject(sortNode);
                         var _self = this;
                         if( column.isSwitchOrder ){
-                            textNode.addEvent('click', function(){
+                            viewCell.addEvent('click', function(){
                                 _self.switchOrder(this.sortNode, this.column, this.index);
                             }.bind({ sortNode: sortNode, column: column, index: index }));
                         }else{
