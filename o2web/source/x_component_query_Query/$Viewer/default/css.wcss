@@ -387,8 +387,11 @@
    "viewTitleOrderNode": {
      "font-size": "14px",
      "padding-left": "10px",
-     "color": "#bbb"
-  },
+     "color": "#bbb",
+    "display": "inline-flex",
+    "flex-direction": "column",
+    "vertical-align": "middle"
+   },
     "viewContentTrNode": {
         //"background": "transparent"
         "background": "#ffffff"

@@ -1700,13 +1700,19 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         this.textNode.set("text", this.json.displayName);
 
         if( this.json.isSwitchOrder || this.isSortedType(this.json.orderType) ){
-            this.textNode.setStyles({
-                "display": "flex",
-                "align-items": "center",
-                "cursor": "pointer"
-            })
+            // this.textNode.setStyles({
+            //     "display": "flex",
+            //     "align-items": "center",
+            //     "cursor": "pointer"
+            // })
             this.sortNode = new Element("div", {
-                styles: { "padding-left": "10px", 'font-size': "12px" }
+                styles: {
+                    "padding-left": "10px",
+                    'font-size': "12px",
+                    "display": "inline-flex",
+                    "flex-direction": "column",
+                    "vertical-align": "middle"
+                }
             }).inject(this.textNode);
             new Element("div.o2-up.ooicon-icon_arrow_up").inject(this.sortNode);
             new Element("div.o2-down.ooicon-drop_down").inject(this.sortNode);
