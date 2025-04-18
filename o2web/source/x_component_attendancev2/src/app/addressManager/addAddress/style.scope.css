@@ -23,6 +23,7 @@
   cursor: pointer;
 }
 .bd-map {
+  position: relative;
   height: 100%;
   border-radius: var(--att-default-radius);
   border: 1px solid #E6E6E6;
