@@ -184,7 +184,14 @@ MWF.ExcelUtilsV2 = {
 MWF.ExcelImporter = new Class({
     Implements: [Options, Events],
     options:{
-        sheet2JsonOptions: {},
+        sheet2JsonOptions: {
+            //见https://docs.sheetjs.com/docs/api/utilities/array/#array-output
+            // header: 1,          // 第一行是表头
+            // range: 2,           // 跳过前 2 行
+            // defval: null,       // 空单元格填充 null
+            // rawNumbers: true,   // 避免科学计数法
+            // dateNF: "yyyy-mm-dd" // 日期格式化
+        },
         dateColIndexs: []
     },
     initialize: function( options ){
