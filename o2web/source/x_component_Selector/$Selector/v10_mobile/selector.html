@@ -15,7 +15,9 @@
                     <i data-o2-element="letterActionNode" class="MWF_selector_letterActionNode ooicon-alphabet"></i>
                 </div>
                 <div data-o2-element="letterAreaNode" class="MWF_selector_letterAreaNode" style="display: none;"></div>
-                <div data-o2-element="breadcrumbsNode" class="MWF_selector_BreadcrumbsNode"></div>
+                <div data-o2-element="breadcrumbsNode" class="MWF_selector_BreadcrumbsNode"
+                    style="{{['group','person'].contains($._selectType) ? 'display: none;' : ''}}"
+                ></div>
                 <div class="MWF_selector_searchLabel">{{$.lp.searchResult}}：</div>
                 <div data-o2-element="itemAreaScrollNode" class="MWF_selector_itemAreaScrollNode">
                     <div data-o2-element="itemAreaNode" class="MWF_selector_itemAreaNode"></div>
@@ -33,10 +35,6 @@
              data-o2-events="click:switchSelectedMode"
         ></div>
         <div data-o2-element="selectedWrapNode" class="MWF_selector_selectedWrapNode" style="z-index: {{$.options.zIndex.toInt()+1}}">
-            <!--            <div data-o2-element="selectedTitleNode" class="MWF_selector_selectedTitleNode">-->
-            <!--                <div data-o2-element="selectedTitleLabelNode" class="MWF_selector_selectedTitleLabelNode">{{$.lp.selected2}}:</div>-->
-            <!--                <div data-o2-element="selectedTitleCountNode" class="MWF_selector_selectedTitleCountNode">(0)</div>-->
-            <!--            </div>-->
             <div data-o2-element="selectedScrollNode" class="MWF_selector_selectedScrollNode">
                 <div data-o2-element="selectedNode" class="MWF_selector_selectedNode"></div>
             </div>

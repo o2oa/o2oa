@@ -546,6 +546,11 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             }
         }
     },
+    switchSelectedMode: function (){
+        var node = this.wrapNode || this.contentNode;
+        !!this.selectedMode ? node.removeClass('selected_mode') : node.addClass('selected_mode');
+        this.selectedMode = !this.selectedMode;
+    },
     loadAction: function(){
         if( !this.okActionNode ) {
             this.okActionNode = new Element("button", {
