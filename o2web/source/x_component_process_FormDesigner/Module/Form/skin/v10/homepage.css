@@ -23,7 +23,7 @@
     flex-wrap: wrap;
     align-content: stretch;
     justify-content: flex-start;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
 }
 
 .form-layout .page-index-content > div {
@@ -158,7 +158,17 @@
     width: 0;
 }
 .form-layout div[mwftype='widget'] {
-    transition: opacity 0.3s;
+    opacity: 1;
+    transition: opacity 0.3s, box-shadow 0.3s;
+}
+
+.form-layout div[mwftype='widget'].long-transition {
+    transition: opacity 2s, box-shadow 2s, background-color 2s;
+}
+
+.form-layout div[mwftype='widget'].add-widget {
+    opacity: 0.3;
+    box-shadow: 0 0 0 2px var(--oo-color-main);
 }
 
 .form-layout div[mwftype='widget'].dragging {

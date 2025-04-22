@@ -241,7 +241,7 @@
     top: 40%;
 }
 .form-layout .form-side-bookmark-content {
-    width: 6em;
+    /* width: 6em; */
     min-height: 2em;
     background-color: #ffffff;
     box-shadow: 0 0 0.3em 0 #dedede;
@@ -260,7 +260,7 @@
 
 .form-layout .form-side-top {
     margin-top: 0.5em;
-    width: 6em;
+    /* width: 6em; */
     background: #2e82f7;
     box-shadow: 0 0 0.3em 0 #dedede;
     border-radius: 0.42857em;

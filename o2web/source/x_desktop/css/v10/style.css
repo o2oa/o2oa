@@ -113,10 +113,11 @@ oo-dialog {
     flex-direction: column;
     flex-wrap: nowrap;
     user-select: none;
-    overflow: hidden;
+    overflow: visible;
     visibility: hidden;
     transform-origin: 0 0;
     opacity: 0;
+
 }
 
 oo-dialog {
