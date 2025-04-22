@@ -215,8 +215,14 @@ MWF.xApplication.Selector.IdentityWithType.Item = new Class({
 });
 MWF.xApplication.Selector.IdentityWithType.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.IdentityWithType.Item,
+    _init: function (){
+        this.clazz = "SearchItem";
+    },
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function () {
+        return this.data.unitLevelName || '';
     }
 });
 
@@ -224,6 +230,9 @@ MWF.xApplication.Selector.IdentityWithType.ItemSelected = new Class({
     Extends: MWF.xApplication.Selector.Identity.ItemSelected,
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function () {
+        return this.data.unitLevelName || '';
     },
     _getTtiteText: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");

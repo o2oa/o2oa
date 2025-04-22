@@ -1,0 +1,29 @@
+<div data-o2-element="node" class="MWF_selector_categoryitemNode">
+    <div data-o2-element="actionNode" class="MWF_selector_categoryitem_actionNode">
+        <i class="ooicon-checkbox-unchecked"></i>
+        <i class="ooicon-checkbox-checked mainColor_color"></i>
+    </div>
+    <div data-o2-element="iconNode" class="MWF_selector_categoryitem_iconNode ooicon-a-treeorg mainColor_color"></div>
+    <div class="MWF_selector_categoryitem_contentNode" title="{{$._title}}">
+        <div data-o2-element="textNode" class="MWF_selector_categoryitem_textNode">{{$._text}}</div>
+        <div data-o2-element="descriptionNode" class="MWF_selector_categoryitem_descriptionNode">{{$._description}}</div>
+    </div>
+    {{if $._hasChild && ($._clazz !== 'SearchItem')}}
+    <div data-o2-element="expandNode"
+         class="MWF_selector_categoryitem_expandNode
+          ooicon-arrow_forward"
+         data-o2-events="click:handelExpandNodeClick">
+    </div>
+    {{end if}}
+    <div data-o2-element="levelNode" style="display: none;"></div>
+    <div data-o2-element="removeNode" class="MWF_selector_categoryitem_removeNode">{{$.lp.remove}}</div>
+</div>
+<div data-o2-element="children" class="MWF_selector_categoryitem_childrenNode">
+    {{if parseInt($.options.count) !== 1}}
+    <div data-o2-element="selectAllNode" class="MWF_selector_categoryitem_selectAllNode" data-o2-events="click:handleSelectAllClick">
+        <i class="ooicon-checkbox-unchecked"></i>
+        <i class="ooicon-checkbox-checked mainColor_color"></i>
+        <div>{{$.lp.selectAll}}</div>
+    </div>
+    {{end if}}
+</div>

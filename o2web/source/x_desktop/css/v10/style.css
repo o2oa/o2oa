@@ -156,21 +156,21 @@ oo-calendar {
     box-shadow: 0 0 0 1px var(--oo-color-gray-d);
 }
 
-oo-calendar[year-only='true'],
-oo-calendar[date-only='true'],
-oo-calendar[month-only='true'] {
+oo-calendar[mode='year'],
+oo-calendar[mode='date'],
+oo-calendar[mode='month'] {
     width: 20em;
 }
 
-oo-calendar[week-only='true'] {
+oo-calendar[mode='week'] {
     width: 21em;
 }
 
-oo-calendar[time-only='true'] {
+oo-calendar[mode='time'] {
     width: 12em;
 }
 
-oo-calendar[time-only='true'][second-enable='false'] {
+oo-calendar[mode='time'][second-enable='false'] {
     width: 8rem;
 }
 

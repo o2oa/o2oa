@@ -1,0 +1,17 @@
+<div data-o2-element="node" class="MWF_selector_categoryNode">
+    <div data-o2-element="levelNode" class="MWF_selector_category_levelNode"></div>
+    <div data-o2-element="iconNode" class="MWF_selector_category_iconNode ooicon-a-treeorg mainColor_color"></div>
+    <div data-o2-element="textNode" class="MWF_selector_category_textNode" title="{{$._title}}">
+        {{$._text}}
+    </div>
+    <div data-o2-element="actionNode" class="MWF_selector_category_actionNode ooicon-arrow_forward"></div>
+</div>
+<div data-o2-element="children" class="MWF_selector_category_childrenNode">
+    {{if parseInt($.options.count) !== 1}}
+    <div data-o2-element="selectAllNode" class="MWF_selector_category_selectAllNode" data-o2-events="click:handleSelectAllClick">
+        <i class="ooicon-checkbox-unchecked"></i>
+        <i class="ooicon-checkbox-checked mainColor_color"></i>
+        <div>{{$.lp.selectAll}}</div>
+    </div>
+    {{end if}}
+</div>

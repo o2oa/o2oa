@@ -1,0 +1,67 @@
+<div>
+    <div data-o2-element="wrapNode" style="display: contents;">
+        <div data-o2-element="titleNode" class="MWF_selector_titleNode">
+            <div data-o2-element="titleCancelActionNode" class="MWF_selector_titleCancelActionNode"></div>
+            <div data-o2-element="titleTextNode" class="MWF_selector_titleTextNode">{{$.lp.title}}</div>
+        </div>
+        <div data-o2-element="tabContainer" class="MWF_selector_tabContainer"></div>
+        <div data-o2-element="contentNode" class="MWF_selector_contentNode">
+
+            <div data-o2-element="selectNode" class="MWF_selector_selectNode">
+                <div data-o2-element="searchInputDiv" class="MWF_selector_searchInputDiv">
+                    <i class="MWF_selector_searchIcon ooicon-search {{if $.options.mainColorEnable}}mainColor_color{{end if}}"></i>
+                    <input data-o2-element="searchInput" class="MWF_selector_searchInput" type="text" placeholder="{{$.lp.searchDescription}}"/>
+                    <div data-o2-element="searchCancelAction" class="MWF_selector_searchCancelAction ooicon-close"></div>
+<!--                    <i data-o2-element="letterActionNode" class="MWF_selector_letterActionNode ooicon-alphabet"></i>-->
+                </div>
+                <div data-o2-element="letterAreaNode" class="MWF_selector_letterAreaNode" style="display: none;"></div>
+                <div data-o2-element="breadcrumbsNode" class="MWF_selector_BreadcrumbsNode"
+                    style="{{['group','person'].contains($._selectType) ? 'display: none;' : ''}}"
+                ></div>
+                <div class="MWF_selector_searchLabel">{{$.lp.searchResult}}：</div>
+                <div data-o2-element="itemAreaScrollNode" class="MWF_selector_itemAreaScrollNode">
+                    <div data-o2-element="itemAreaNode" class="MWF_selector_itemAreaNode">
+                        <div data-o2-element="selectAllNode" class="MWF_selector_selectAllNode" data-o2-events="click:handleSelectAllClick"
+                             style="{{ (parseInt($.options.count) === 1 || ['group','person'].contains($._selectType)) ? 'display: none;' : ''}}">
+                            <i class="ooicon-checkbox-unchecked"></i>
+                            <i class="ooicon-checkbox-checked mainColor_color"></i>
+                            <div>{{$.lp.selectAll}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div data-o2-element="itemSearchAreaScrollNode" class="MWF_selector_itemSearchAreaScrollNode">
+                    <div data-o2-element="itemSearchAreaNode" class="MWF_selector_itemSearchAreaNode">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div data-o2-element="selectedMaskNode"
+             class="MWF_selector_selectedMaskNode"
+             style="z-index: {{$.options.zIndex.toInt()+1}}"
+             data-o2-events="click:switchSelectedMode"
+        ></div>
+        <div data-o2-element="selectedWrapNode" class="MWF_selector_selectedWrapNode" style="z-index: {{$.options.zIndex.toInt()+1}}">
+            <div data-o2-element="selectedScrollNode" class="MWF_selector_selectedScrollNode">
+                <div data-o2-element="selectedNode" class="MWF_selector_selectedNode"></div>
+            </div>
+        </div>
+
+        <div data-o2-element="bottomNode" class="MWF_selector_bottomNode">
+            <div data-o2-element="selectedCountNode" class="MWF_selector_selectedCountNode" data-o2-events="click:switchSelectedMode">
+                <div data-o2-element="selectedCountLabelNode" class="MWF_selector_selectedCountLabelNode">{{$.lp.selected2}}:</div>
+                <div class="MWF_selector_selectedCountArea">
+                    <div data-o2-element="selectedCountTextNode" class="MWF_selector_selectedCountTextNode"></div>
+                </div>
+                <i class="MWF_selector_selectedShowIcon ooicon-icon_arrow_up mainColor_color"></i>
+                <i class="MWF_selector_selectedHideIcon ooicon-drop_down mainColor_color"></i>
+            </div>
+
+            <div data-o2-element="actionNode" class="MWF_selector_actionNode">
+                <button data-o2-element="cancelActionNode" class="MWF_selector_cancelActionNode">{{$.lp.cancel}}</button>
+                <button data-o2-element="okActionNode" class="MWF_selector_okActionNode mainColor_bg">{{$.lp.ok}}</button>
+            </div>
+        </div>
+    </div>
+</div>
