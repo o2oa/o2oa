@@ -33,7 +33,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 			"x_component_ForumPerson", "x_component_ForumSearch", "x_component_ForumSection", "x_component_ftsearch",
 			"x_component_Homepage", "x_component_HotArticle", "x_component_IMV2", "x_component_LogViewer",
 			"x_component_Meeting", "x_component_Minder", "x_component_MinderEditor", "x_component_Note",
-			"x_component_OKR", "x_component_Org", "x_component_orggrid", "x_component_portal_DictionaryDesigner",
+			"x_component_OKR", "x_component_Org", "x_component_orgregion", "x_component_portal_DictionaryDesigner",
 			"x_component_portal_PageDesigner", "x_component_portal_Portal", "x_component_portal_PortalExplorer",
 			"x_component_portal_PortalManager", "x_component_portal_ScriptDesigner",
 			"x_component_portal_WidgetDesigner", "x_component_process_Application",
