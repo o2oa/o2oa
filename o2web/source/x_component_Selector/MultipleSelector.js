@@ -751,27 +751,27 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     if( this.options.useO2Load ){
                         if(layout.mobile)selector.overrideSelectedItems();
                         selector.contentNode = pageNode;
+
+                        //如果已选在content节点中，说明每种类型都有自己的已选节点
+                        var selectedNode = this.contentNode.querySelector('[data-o2-element="selectedNode"]');
+                        if( !selectedNode && this.selectedNode){
+                            //否则在当前节点中获取
+                            selector.selectedNode = this.selectedNode.clone().inject(lastSelectedNode || this.selectedNode, 'after');
+                            lastSelectedNode = selector.selectedNode;
+                        }
+
+                        //如果有已选数量在content节点中，说明每种类型都有自己的已选节点
+                        var selectedCountTextNode = this.contentNode.querySelector('[data-o2-element="selectedCountTextNode"]');
+                        if( !selectedCountTextNode && this.selectedCountTextNode){
+                            //否则在当前节点中获取
+                            this.selectedCountTextNode.hide();
+                            selector.selectedCountTextNode = this.selectedCountTextNode.clone().show().
+                            inject(lastselectedCountTextNode || this.selectedCountTextNode, 'after');
+                            // selector.selectedCountTextNode.textContent = (MWF.SelectorLP.quantifier[ selector.selectType ] || "") + ":0";
+                            lastselectedCountTextNode = selector.selectedCountTextNode;
+                        }
+
                         selector.o2loadInMultiple(pageNode, this.contentHTML, function (){
-
-                            //如果已选在content节点中，说明每种类型都有自己的已选节点
-                            var selectedNode = this.contentNode.querySelector('[data-o2-element="selectedNode"]');
-                            if( !selectedNode && this.selectedNode){
-                                //否则在当前节点中获取
-                                selector.selectedNode = this.selectedNode.clone().inject(lastSelectedNode || this.selectedNode, 'after');
-                                lastSelectedNode = selector.selectedNode;
-                            }
-
-                            //如果有已选数量在content节点中，说明每种类型都有自己的已选节点
-                            var selectedCountTextNode = this.contentNode.querySelector('[data-o2-element="selectedCountTextNode"]');
-                            if( !selectedCountTextNode && this.selectedCountTextNode){
-                                //否则在当前节点中获取
-                                this.selectedCountTextNode.hide();
-                                selector.selectedCountTextNode = this.selectedCountTextNode.clone().show().
-                                    inject(lastselectedCountTextNode || this.selectedCountTextNode, 'after');
-                                selector.selectedCountTextNode.textContent = (MWF.SelectorLP.quantifier[ selector.selectType ] || "") + ":0";
-                                lastselectedCountTextNode = selector.selectedCountTextNode;
-                            }
-
                             selector.loadContent( pageNode, true );
                             this._setTouchEvents(type, selector);
                         }.bind(this));

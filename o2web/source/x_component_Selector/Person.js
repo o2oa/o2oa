@@ -241,7 +241,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     setSelectedCount: function(){
         var quantifier = MWF.SelectorLP.quantifier[ this.selectType ] || "";
-        if(this.selectedCountTextNode)this.selectedCountTextNode.set("text", quantifier + ":"+ this.selectedItems.length );
+        if(this.selectedCountTextNode)this.selectedCountTextNode.set("text", this.selectedItems.length ? "("+this.selectedItems.length+")"+quantifier : '' );
         if(this.selectedTitleCountNode){
             if( this.inMulitple ){
                 this.selectedTitleCountNode.set("text", quantifier + ":" + this.selectedItems.length );
@@ -251,13 +251,11 @@ MWF.xApplication.Selector.Person = new Class({
         }
     },
     switchSelectedMode: function (){
-        var node = this.wrapNode || this.contentNode;
-        !!this.selectedMode ? node.removeClass('selected_mode') : node.addClass('selected_mode');
+        !!this.selectedMode ? this.removeMode('selected_mode') : this.addMode('selected_mode');
         this.selectedMode = !this.selectedMode;
     },
     changeSearchMode: function (flag){
-        var node = this.wrapNode || this.contentNode;
-        !flag ? node.removeClass('search_mode') : node.addClass('search_mode');
+        !flag ? this.removeMode('search_mode') : this.addMode('search_mode');
         this.searchMode = flag;
     },
     loadSelectedCountNode: function(){
@@ -440,6 +438,9 @@ MWF.xApplication.Selector.Person = new Class({
                             "module": this
                         });
                         this.node = node.getFirst();
+                        if( navigator.userAgent.indexOf("O2OA") > -1 ){
+                            this.addMode('app_mode');
+                        }
                         this.node.loadCss("../x_component_Selector/$Selector/"+this.options.style+"/style.css");
                     }else{
                         this.node = responseTree[0];
@@ -519,6 +520,14 @@ MWF.xApplication.Selector.Person = new Class({
         }
 
         this.setEvent();
+    },
+    addMode: function (modeName){
+        var target = this.wrapNode || this.contentNode;
+        if(target)target.addClass( modeName )
+    },
+    removeMode: function (modeName){
+        var target = this.wrapNode || this.contentNode;
+        if(target)target.removeClass( modeName )
     },
     _setElements: function (){
         this.titleNode = this.node.getElement(".MWF_selector_titleNode");
@@ -1200,25 +1209,29 @@ MWF.xApplication.Selector.Person = new Class({
 
     initSearchArea: function(flag){
         this.searchItems = [];
-        if (flag){
-            this.itemSearchAreaNode.empty();
-            this.itemAreaNode.setStyle("display", "none");
-            if( this.itemSearchAreaNode.getParent() !== this.itemAreaScrollNode ){
-                this.itemAreaScrollNode.setStyle("display", "none");
+        if( !this.options.useO2Load ){
+            if (flag){
+                this.itemSearchAreaNode.empty();
+                this.itemAreaNode.setStyle("display", "none");
+                if( this.itemSearchAreaNode.getParent() !== this.itemAreaScrollNode ){
+                    this.itemAreaScrollNode.setStyle("display", "none");
+                }
+                if(this.flatCategoryScrollNode){
+                    this.flatCategoryScrollNode.setStyle("display", "none");
+                }
+                if( this.itemSearchAreaScrollNode )this.itemSearchAreaScrollNode.setStyle("display", "block");
+                this.itemSearchAreaNode.setStyle("display", "block");
+            }else{
+                this.itemAreaScrollNode.setStyle("display", "block");
+                this.itemAreaNode.setStyle("display", "block");
+                if(this.flatCategoryScrollNode && this.flatSubCategoryNodeList && this.flatSubCategoryNodeList.length > 1 ){
+                    this.flatCategoryScrollNode.setStyle("display", "block");
+                }
+                if( this.itemSearchAreaScrollNode )this.itemSearchAreaScrollNode.setStyle("display", "none");
+                this.itemSearchAreaNode.setStyle("display", "none");
             }
-            if(this.flatCategoryScrollNode){
-                this.flatCategoryScrollNode.setStyle("display", "none");
-            }
-            if( this.itemSearchAreaScrollNode )this.itemSearchAreaScrollNode.setStyle("display", "block");
-            this.itemSearchAreaNode.setStyle("display", "block");
         }else{
-            this.itemAreaScrollNode.setStyle("display", "block");
-            this.itemAreaNode.setStyle("display", "block");
-            if(this.flatCategoryScrollNode && this.flatSubCategoryNodeList && this.flatSubCategoryNodeList.length > 1 ){
-                this.flatCategoryScrollNode.setStyle("display", "block");
-            }
-            if( this.itemSearchAreaScrollNode )this.itemSearchAreaScrollNode.setStyle("display", "none");
-            this.itemSearchAreaNode.setStyle("display", "none");
+            if(flag)this.itemSearchAreaNode.empty();
         }
     },
 
@@ -1888,6 +1901,10 @@ MWF.xApplication.Selector.Person = new Class({
             }).inject( this.itemAreaNode );
         }
 
+        if( !this.subItems.length && !['group', 'person'].contains(this.selectType) ){
+            this.addMode('no_subitem')
+        }
+
         if( this.options.selectSingleItem ){
             this.selectSingleItem()
         }
@@ -2244,6 +2261,25 @@ MWF.xApplication.Selector.Person = new Class({
     addSelectedCount: function( itemOrItemSelected, count ){
 
     },
+    handleSelectAllClick: function (ev){
+        var checkedCount = 0, checkValid = true;
+        this.subItems.each(function(item){
+            if( this.isSelectedAll ){
+                ev.currentTarget.removeClass('selected');
+                item.unSelected();
+            }else{
+                ev.currentTarget.addClass('selected');
+                if(!item.isSelected && !item.disabled )item.selected( false, function () {
+                    checkedCount++;
+                    if( this.subItems.length === checkedCount ){
+                        if( checkValid )this.fireEvent("valid", [this.selector, this]);
+                    }
+                }.bind(this));
+            }
+        }.bind(this));
+
+        this.isSelectedAll = !this.isSelectedAll;
+    }
 });
 
 MWF.xApplication.Selector.Person.Item = new Class({
@@ -3703,6 +3739,7 @@ MWF.xApplication.Selector.Person.Breadcrumbs = new Class({
         if( this.currentItem )this.currentItem.cancelCurrent();
         item.setCurrent();
         this.currentItem = item;
+        this.selector[ item.isRoot ? 'removeMode' : 'addMode']('expanded');
     }
 });
 
