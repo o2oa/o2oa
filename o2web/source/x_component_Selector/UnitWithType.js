@@ -303,12 +303,18 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
 MWF.xApplication.Selector.UnitWithType.SearchItem = new Class({
     //Extends: MWF.xApplication.Selector.Unit.Item,
     Extends: MWF.xApplication.Selector.UnitWithType.Item,
+    _init: function (){
+        this.clazz = "SearchItem";
+    },
     load : function(){
         this.loadForNormal(true);
     },
     _getShowName: function(){
         // return this.data.levelName || this.data.name;
         return this.data.name+((this.data.levelName) ? "("+this.data.levelName+")" : "");
+    },
+    _getDescription: function () {
+        return this.data.levelName || '';
     },
     loadSubItems: function( callback ){
     }
@@ -321,6 +327,9 @@ MWF.xApplication.Selector.UnitWithType.ItemSelected = new Class({
     // },
     _getTtiteText: function(){
         return this.data.levelName || this.data.name;
+    },
+    _getDescription: function () {
+        return this.data.levelName || '';
     },
     _getShowName: function(){
         return this.data.name+((this.data.levelName) ? "("+this.data.levelName+")" : "");

@@ -1,0 +1,53 @@
+{
+	"maskNode": {
+		"background-color": "#666",
+		"opacity": 0.6,
+		"z-index":1000
+	},
+	"containerNodeMobile": {
+        "height": "100%",
+        "width": "100%",
+        "background-color": "#F7F7F7",
+        "overflow": "hidden",
+        "position": "absolute",
+        "z-index":1001,
+        "display": "flex",
+        "flex-direction": "column"
+	},
+  	"tabContainer": {
+//		"height": "3.125rem",
+//	  	"margin-bottom": "0.5rem"
+	},
+
+	"contentNode": {
+		"overflow": "hidden"
+	},
+	"noSelectableItemText": {
+		"display": "none"
+	},
+  "contentNode_embedded": {
+	"overflow": "hidden",
+	"padding": "5px 0px 0px 0px"
+  },
+
+	"letterNode": {
+
+    },
+    "letterNode_over": {
+
+    },
+	"dutyInputDialog":{
+	    "height": "56px",
+        "clear": "both"
+	},
+	"dutyInputNode": {
+	    "border": "1px solid #eee",
+	    "background": "#FFF",
+	    "height": "32px"
+	},
+	"filePreviewNode": {
+	    "overflow": "hidden",
+	    "max-width": "300px",
+	    "max-height": "200px"
+	},
+}

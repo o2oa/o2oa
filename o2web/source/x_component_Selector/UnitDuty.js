@@ -137,8 +137,14 @@ MWF.xApplication.Selector.UnitDuty.Item = new Class({
 });
 MWF.xApplication.Selector.UnitDuty.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.UnitDuty.Item,
+    _init: function (){
+        this.clazz = "SearchItem";
+    },
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function () {
+        return this.data.unitLevelName || '';
     }
 });
 
@@ -164,6 +170,9 @@ MWF.xApplication.Selector.UnitDuty.ItemSelected = new Class({
     },
     _getShowName: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
+    },
+    _getDescription: function () {
+        return this.data.unitLevelName || '';
     },
     _getTtiteText: function(){
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
