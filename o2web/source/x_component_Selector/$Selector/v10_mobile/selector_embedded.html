@@ -4,16 +4,25 @@
         <div data-o2-element="selectNode" class="MWF_selector_selectNode">
             <div data-o2-element="searchInputDiv" class="MWF_selector_searchInputDiv">
                 <i class="MWF_selector_searchIcon ooicon-search {{if $.options.mainColorEnable}}mainColor_color{{end if}}"></i>
-                <input data-o2-element="searchInput" class="MWF_selector_searchInput" type="text" placeholder="{{$.lp.searchDescription}}">
+                    <input data-o2-element="searchInput" class="MWF_selector_searchInput" type="text" placeholder="{{$.lp.searchDescription}}"/>
                 <div data-o2-element="searchCancelAction" class="MWF_selector_searchCancelAction ooicon-close"></div>
 <!--                <i data-o2-element="letterActionNode" class="MWF_selector_letterActionNode ooicon-alphabet"></i>-->
 
             </div>
             <div data-o2-element="letterAreaNode" class="MWF_selector_letterAreaNode" style="display: none;"></div>
-            <div data-o2-element="breadcrumbsNode" class="MWF_selector_BreadcrumbsNode"></div>
+                <div data-o2-element="breadcrumbsNode" class="MWF_selector_BreadcrumbsNode"
+                    style="{{['group','person'].contains($._selectType) ? 'display: none;' : ''}}"
+                ></div>
             <div class="MWF_selector_searchLabel">{{$.lp.searchResult}}：</div>
             <div data-o2-element="itemAreaScrollNode" class="MWF_selector_itemAreaScrollNode">
-                <div data-o2-element="itemAreaNode" class="MWF_selector_itemAreaNode"></div>
+                    <div data-o2-element="itemAreaNode" class="MWF_selector_itemAreaNode">
+                        <div data-o2-element="selectAllNode" class="MWF_selector_selectAllNode" data-o2-events="click:handleSelectAllClick"
+                             style="{{ (parseInt($.options.count) === 1 || ['group','person'].contains($._selectType)) ? 'display: none;' : ''}}">
+                            <i class="ooicon-checkbox-unchecked"></i>
+                            <i class="ooicon-checkbox-checked mainColor_color"></i>
+                            <div>{{$.lp.selectAll}}</div>
+                        </div>
+                    </div>
             </div>
             <div data-o2-element="itemSearchAreaScrollNode" class="MWF_selector_itemSearchAreaScrollNode">
                 <div data-o2-element="itemSearchAreaNode" class="MWF_selector_itemSearchAreaNode"></div>
