@@ -6,7 +6,7 @@ const template = `
 <div class="pane_content">
     <div class="input_title">设置密码</div>
     <oo-input oo-model="secret.passStr" type="password" left-icon="password" placeholder="请设置管理员密码" skin="icon-right:var(--oo-color-main)" right-icon="{{($.secret.passStr && $m.checkPassword($.secret.passStr)) ? 'check' : ''}}"></oo-input>
-    <div style="color: red; padding-left: 1em; font-size:0.875rem; height: 1rem;"><span oo-if="!$m.checkPassword($.secret.passStr)">密码必须6位以上，包含字母和数字</span></div>
+    <div style="color: red; padding-left: 1em; font-size:0.875rem; height: 1rem;"><span oo-if="!$m.checkPassword($.secret.passStr)">密码必须8位以上，包含字母、数字和特殊字符(#?!@$%^&*-)</span></div>
     
     <div class="input_title">确认密码</div>
     <oo-input oo-model="secret.confirmPass" type="password" left-icon="password" placeholder="请再次输入密码" skin="icon-right:var(--oo-color-main)" right-icon="{{($.secret.passStr && $.secret.confirmPass && $m.checkConfirm($.secret.passStr, $.secret.confirmPass)) ? 'check' : ''}}"></oo-input>
@@ -24,8 +24,13 @@ export default component({
         return !passStr || !confirmPass || passStr===confirmPass;
     },
     checkPassword(str){
-        const regex = /^(?=.*[a-z])(?=.*\d).{6,30}$/;
-        return !str || regex.test(str);
+        // const regex = /^(?=.*[a-z])(?=.*\d).{6,30}$/;
+        // return !str || regex.test(str);
+        if (!str || str.length < 8) return false;
+        const hasLetter = /[a-zA-Z]/.test(str);
+        const hasNumber = /\d/.test(str);
+        const hasSpecialChar = /[#?!@$%^&*-]/.test(str);
+        return hasLetter && hasNumber && hasSpecialChar;
     },
     async setPassword() {
         if (!this.bind.secret.passStr || !this.bind.secret.confirmPass || !this.checkConfirm(this.bind.secret.passStr, this.bind.secret.confirmPass) || !this.checkPassword(this.bind.secret.passStr)) {
