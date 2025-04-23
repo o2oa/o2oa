@@ -1180,6 +1180,9 @@ o2.xApplication.systemconfig.LP = {
         "getQrcode": "生成连接测试二维码",
 
 
+        "mobileHomePageLayout": "主页布局",
+        "mobileHomePageLayoutInfo": "主页是否开启高级布局",
+
         "mobileIndex": "移动端首页配置",
         "mobileIndexInfo": "您可以配置移动端的首页为默认APP样式，或指定一个门户页面",
 
