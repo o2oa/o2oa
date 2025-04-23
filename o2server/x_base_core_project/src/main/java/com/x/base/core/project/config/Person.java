@@ -37,7 +37,7 @@ public class Person extends ConfigObject {
 
 	public static final String REGULAREXPRESSION_SCRIPT = "^\\((.+?)\\)$";
 
-	public static final String DEFAULT_PASSWORD = "(var v = person.getMobile();\\nreturn v.substring(v.length - 6);)";
+	public static final String DEFAULT_PASSWORD = "(this.$pwd=function(){function n(n,r){for(var t=\"\",o=0;o<n;o++){t+=r[Math.floor(Math.random()*r.length)]}return t}return n(8,\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\")+n(4,\"(#?!@$%^&*-)\")};; return this.$pwd(); )";
 	public static final Integer DEFAULT_PASSWORDPERIOD = 0;
 	public static final Integer DEFAULT_FAILUREINTERVAL = 10;
 	public static final Integer DEFAULT_FAILURECOUNT = 5;
@@ -46,8 +46,8 @@ public class Person extends ConfigObject {
 	public static final Boolean DEFAULT_TOKENCOOKIESECURE = false;
 	public static final Boolean DEFAULT_FIRSTLOGINMODIFYPWD = false;
 
-	public static final String DEFAULT_PASSWORDREGEX = "((?=.*\\d)(?=.*\\D)|(?=.*[a-zA-Z])(?=.*[^a-zA-Z]))^.{6,}$";
-	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
+	public static final String DEFAULT_PASSWORDREGEX = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+	public static final String DEFAULT_PASSWORDREGEXHINT = "8位以上,包含数字、字母和特殊字符.";
 	public static final String DEFAULT_LANGUAGE = "zh-CN";
 	public static final String DEFAULT_CAPTCHAFONT = "";
 	public static final String DEFAULT_TOKENNAME = "x-token";
