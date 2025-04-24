@@ -44,7 +44,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 			this.options.title = this.options.title + "-"+MWF.CMSDD.LP.newDictionary;
 		}
 		this.actions =  MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-		
+
 		this.lp = MWF.xApplication.cms.DictionaryDesigner.LP;
 //		this.cmsData = this.options.processData;
         this.actions.application = this.application;
@@ -55,7 +55,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
             }
         }.bind(this));
 	},
-	
+
 	loadApplication: function(callback){
 		this.createNode();
 		if (!this.options.isRefresh){
@@ -70,6 +70,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 		if (callback) callback();
 	},
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
         this.addEvent("copy", function(){
             this.copyModule();
         }.bind(this));
@@ -579,7 +580,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 			"styles": this.css.contentToolbarNode
 		}).inject(this.contentNode);
 		if (!this.options.readMode) this.loadContentToolbar();
-		
+
 		this.editContentNode = new Element("div", {
 			"styles": this.css.editContentNode
 		}).inject(this.contentNode);
@@ -671,36 +672,36 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
         //        new MWF.widget.ScrollBar(this.designNode, {"distance": 100});
         //    }.bind(this));
 	},
-	
+
 	//loadProperty------------------------
 	loadProperty: function(){
 		this.propertyTitleNode = new Element("div", {
 			"styles": this.css.propertyTitleNode,
 			"text": MWF.CMSDD.LP.property
 		}).inject(this.propertyNode);
-		
+
 		this.propertyResizeBar = new Element("div", {
 			"styles": this.css.propertyResizeBar
 		}).inject(this.propertyNode);
 		this.loadPropertyResize();
-		
+
 		this.propertyContentNode = new Element("div", {
 			"styles": this.css.propertyContentNode
 		}).inject(this.propertyNode);
-		
+
 		this.propertyDomArea = new Element("div", {
 			"styles": this.css.propertyDomArea
 		}).inject(this.propertyContentNode);
-		
+
 		this.propertyDomPercent = 0.3;
 		this.propertyContentResizeNode = new Element("div", {
 			"styles": this.css.propertyContentResizeNode
 		}).inject(this.propertyContentNode);
-		
+
 		this.propertyContentArea = new Element("div", {
 			"styles": this.css.propertyContentArea
 		}).inject(this.propertyContentNode);
-		
+
 		this.loadPropertyContentResize();
 
         this.setPropertyContent();
@@ -759,7 +760,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
 				el.store("position", {"x": x, "y": y});
-				
+
 				var size = this.propertyNode.getSize();
 				el.store("initialWidth", size.x);
 			}.bind(this),
@@ -770,7 +771,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 				var position = el.retrieve("position");
 				var initialWidth = el.retrieve("initialWidth").toFloat();
 				var dx = position.x.toFloat()-x.toFloat();
-				
+
 				var width = initialWidth+dx;
 				if (width> bodySize.x/2) width =  bodySize.x/2;
 				if (width<40) width = 40;
@@ -786,13 +787,13 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
 				el.store("position", {"x": x, "y": y});
-				
+
 				var size = this.propertyDomArea.getSize();
 				el.store("initialHeight", size.y);
 			}.bind(this),
 			"onDrag": function(el, e){
 				var size = this.propertyContentNode.getSize();
-				
+
 	//			var x = e.event.x;
 				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
 				var position = el.retrieve("position");
@@ -802,11 +803,11 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 				var height = initialHeight+dy;
 				if (height<40) height = 40;
 				if (height> size.y-40) height = size.y-40;
-				
+
 				this.propertyDomPercent = height/size.y;
-				
+
 				this.setPropertyContentResize();
-				
+
 			}.bind(this)
 		});
 	},
@@ -814,67 +815,67 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 		var size = this.propertyContentNode.getSize();
 		var resizeNodeSize = this.propertyContentResizeNode.getSize();
 		var height = size.y-resizeNodeSize.y;
-		
+
 		var domHeight = this.propertyDomPercent*height;
 		var contentHeight = height-domHeight;
-		
+
 		this.propertyDomArea.setStyle("height", ""+domHeight+"px");
 		this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
-		
+
 		if (this.form){
 			if (this.form.currentSelectedModule){
 				if (this.form.currentSelectedModule.property){
 					var tab = this.form.currentSelectedModule.property.propertyTab;
 					if (tab){
 						var tabTitleSize = tab.tabNodeContainer.getSize();
-						
+
 						tab.pages.each(function(page){
 							var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
 							var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-							
+
 							var tabContentNodeAreaHeight = contentHeight - topMargin - bottomMargin - tabTitleSize.y.toFloat()-15;
 							page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
 						}.bind(this));
-						
+
 					}
 				}
 			}
 		}
 	},
-	
 
-	
+
+
 	//resizeNode------------------------------------------------
 	resizeNode: function(){
 		var nodeSize = this.node.getSize();
 		this.contentNode.setStyle("height", ""+nodeSize.y+"px");
 		this.propertyNode.setStyle("height", ""+nodeSize.y+"px");
-		
+
 		var contentToolbarMarginTop = this.contentToolbarNode.getStyle("margin-top").toFloat();
 		var contentToolbarMarginBottom = this.contentToolbarNode.getStyle("margin-bottom").toFloat();
 		var allContentToolberSize = this.contentToolbarNode.getComputedSize();
 		var y = nodeSize.y - allContentToolberSize.totalHeight - contentToolbarMarginTop - contentToolbarMarginBottom;
 		this.editContentNode.setStyle("height", ""+y+"px");
-		
+
 		if (this.designNode){
 			var designMarginTop = this.designNode.getStyle("margin-top").toFloat();
 			var designMarginBottom = this.designNode.getStyle("margin-bottom").toFloat();
 			y = nodeSize.y - allContentToolberSize.totalHeight - contentToolbarMarginTop - contentToolbarMarginBottom - designMarginTop - designMarginBottom;
 			this.designNode.setStyle("height", ""+y+"px");
 		}
-		
-		
+
+
 		titleSize = this.propertyTitleNode.getSize();
 		titleMarginTop = this.propertyTitleNode.getStyle("margin-top").toFloat();
 		titleMarginBottom = this.propertyTitleNode.getStyle("margin-bottom").toFloat();
 		titlePaddingTop = this.propertyTitleNode.getStyle("padding-top").toFloat();
 		titlePaddingBottom = this.propertyTitleNode.getStyle("padding-bottom").toFloat();
-		
+
 		y = titleSize.y+titleMarginTop+titleMarginBottom+titlePaddingTop+titlePaddingBottom;
 		y = nodeSize.y-y;
 		this.propertyContentNode.setStyle("height", ""+y+"px");
 		this.propertyResizeBar.setStyle("height", ""+y+"px");
-		
+
 		this.setPropertyContentResize();
 
         titleSize = this.dictionaryListTitleNode.getSize();
@@ -893,7 +894,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
         this.dictionaryListAreaSccrollNode.setStyle("height", ""+(y-leftToolbarSize.y)+"px");
         this.dictionaryListResizeNode.setStyle("height", ""+y+"px");
 	},
-	
+
 	//loadForm------------------------------------------
     loadDictionary: function(){
         //debugger;

@@ -90,6 +90,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
         if (!this.options.readMode) this.addKeyboardEvents();
 	},
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
         this.addEvent("copy", function(){
             this.copyModule();
         }.bind(this));
@@ -131,7 +132,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
         }
     },
 
-    copyModule: function(){
+    copyModule: function( keepName ){
         if (this.shortcut) {
             //if (this.tab.showPage) {
                 //var view = this.tab.showPage.view;
@@ -140,7 +141,8 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
                         var item = this.view.currentSelectedModule;
                         MWF.clipboard.data = {
                             "type": "view",
-                            "data": item.json
+                            "data": item.json,
+                            "keepName": keepName
                         };
                     }
                 //}
@@ -153,7 +155,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
                 //var view = this.tab.showPage.view;
                 //if (view) {
                     if (this.view.currentSelectedModule) {
-                        this.copyModule();
+                        this.copyModule(true);
                         var item = this.view.currentSelectedModule;
                         item.destroy();
                     }
@@ -172,7 +174,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
                                 var item = this.view.currentSelectedModule;
                                 var data = MWF.clipboard.data.data;
 
-                                item.addColumn(null, data);
+                                item.addColumn(null, data, MWF.clipboard.data.keepName);
                             }
                         //}
                     //}

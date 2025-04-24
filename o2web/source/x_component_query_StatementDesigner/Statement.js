@@ -1491,6 +1491,33 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }.bind(this))
     },
 
+    checkColumnRepeat: function (){
+        if( !this.view )return true;
+        var columnNames = [];
+        var repeatColumns = [];
+        this.view.json.data.selectList.each(function ( column, i ) {
+            if(column.column){
+                if( columnNames.contains(column.column) ){
+                    repeatColumns.push( column );
+                }else{
+                    columnNames.push( column.column );
+                }
+            }
+        });
+        if( repeatColumns.length ){
+            this.designer.notice( this.designer.lp.notice.columnNameRepeat.replace('{column}', repeatColumns.map(function (c){
+                var displayName = this.view.json.data.selectList.filter(function (item){
+                    return item.column === c.column;
+                }).map(function (item){
+                    return item.displayName;
+                }).join('、');
+                return c.column + "("+displayName+")";
+            }.bind(this)).join("；")), "error", this.node, {"x": "left", "y": "bottom"});
+            return false;
+        }
+        return true;
+    },
+
     save: function (callback) {
         if (!this.data.name) {
             this.designer.notice(this.designer.lp.inputStatementName, "error");
@@ -1498,6 +1525,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }
 
         if( !this.checkViewFilter() ){
+            return false;
+        }
+
+        if( !this.checkColumnRepeat() ){
             return false;
         }
 
@@ -2500,13 +2531,15 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
             this.view.autoAddColumnsNode.show();
         }
     },
-    addColumn: function(e, data){
+    addColumn: function(e, data, keepName){
         MWF.require("MWF.widget.UUID", function(){
             var json;
             if (data){
                 json = Object.clone(data);
-                json.id = (new MWF.widget.UUID).id;
-                json.column = (new MWF.widget.UUID).id;
+                if( !keepName ){
+                    json.id = (new MWF.widget.UUID).id;
+                    json.column = (new MWF.widget.UUID).id;
+                }
             }else{
                 var id = (new MWF.widget.UUID).id;
                 json = {

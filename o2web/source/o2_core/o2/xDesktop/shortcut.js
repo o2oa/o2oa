@@ -2,23 +2,23 @@ MWF.clipboard = {"data": null};
 
 MWF.shortcut = {
     copy: function(e){
-        var app = layout.desktop.currentApp;
+        var app = layout.inBrowser ? layout.desktop.app : layout.desktop.currentApp;
         if (app) app.fireEvent("copy", [e]);
     },
     cut: function(e){
-        var app = layout.desktop.currentApp;
+        var app = layout.inBrowser ? layout.desktop.app : layout.desktop.currentApp;
         if (app) app.fireEvent("cut", [e]);
     },
     paste: function(e){
-        var app = layout.desktop.currentApp;
+        var app = layout.inBrowser ? layout.desktop.app : layout.desktop.currentApp;
         if (app) app.fireEvent("paste", [e]);
     },
     save: function(e){
-        var app = layout.desktop.currentApp;
+        var app = layout.inBrowser ? layout.desktop.app : layout.desktop.currentApp;
         if (app) app.fireEvent("keySave", [e]);
     },
     keyDelete: function(e){
-        var app = layout.desktop.currentApp;
+        var app = layout.inBrowser ? layout.desktop.app : layout.desktop.currentApp;
         if (app) app.fireEvent("keyDelete", [e]);
     },
     openApplication: function(app){
