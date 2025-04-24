@@ -50,7 +50,9 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"deleteEvent": "Are you sure you want to delete the current event?",
 		"selectProcess": "Please select an application or process",
 		"selectCMS": "Please select content management column or category",
-		"selectDateRange": "The period type is a range, please select the start date and end date"
+		"selectDateRange": "The period type is a range, please select the start date and end date",
+		"columnNameExist": "Column name exist",
+		"columnNameRepeat": "Column name repeat: {column}"
 	},
 	"actionbar": {
 		"readhide": "Set whether to display when reading",

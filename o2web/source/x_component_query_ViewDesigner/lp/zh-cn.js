@@ -69,7 +69,9 @@ MWF.xApplication.query.ViewDesigner.LP = {
 
         "selectProcess": "请选择应用或者流程",
         "selectCMS": "请选择内容管理栏目或者分类",
-        "selectDateRange": "时段类型为范围，请选择开始日期和结束日期"
+        "selectDateRange": "时段类型为范围，请选择开始日期和结束日期",
+        "columnNameExist": "列名已存在",
+        "columnNameRepeat": "列名不能重复:{column}。"
     },
     "actionbar": {
         "readhide": "设置阅读时是否显示",
