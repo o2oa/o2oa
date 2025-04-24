@@ -736,6 +736,31 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             if (callback) callback();
         }.bind(this));
     },
+    checkColumnRepeat: function(){
+        var columnNames = [];
+        var repeatColumns = [];
+        this.json.data.selectList.each(function ( column, i ) {
+            if(column.column){
+                if( columnNames.contains(column.column) ){
+                    repeatColumns.push( column );
+                }else{
+                    columnNames.push( column.column );
+                }
+            }
+        });
+        if( repeatColumns.length ){
+            this.designer.notice( this.designer.lp.notice.columnNameRepeat.replace('{column}', repeatColumns.map(function (c){
+                var displayName = this.json.data.selectList.filter(function (item){
+                    return item.column === c.column;
+                }).map(function (item){
+                    return item.displayName;
+                }).join('、');
+                return c.column + "("+displayName+")";
+            }.bind(this)).join("；")), "error" , this.node, {"x": "left", "y": "bottom"});
+            return false;
+        }
+        return true;
+    },
     save: function(callback){
         //if (this.designer.tab.showPage==this.page){
             if (!this.data.name){
@@ -777,30 +802,11 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             }
         }
 
-        var columnNames = [];
-        var repeatColumns = [];
-        this.json.data.selectList.each(function ( column, i ) {
-            if(column.column){
-                if( columnNames.contains(column.column) ){
-                    repeatColumns.push( column );
-                }else{
-                    columnNames.push( column.column );
-                }
-            }
-        });
-        if( repeatColumns.length ){
-            this.designer.notice( this.designer.lp.notice.columnNameRepeat.replace('{column}', repeatColumns.map(function (c){
-                var displayName = this.json.data.selectList.filter(function (item){
-                    return item.column === c.column;
-                }).map(function (item){
-                    return item.displayName;
-                }).join('、');
-                return c.column + "("+displayName+")";
-            }.bind(this)).join("；")), "error" );
+        if( !this.checkColumnRepeat() ){
             return false;
         }
 
-        debugger;
+
             // var list;
             // if( this.data.data && this.data.data.where ){
             //     if( this.data.data.where.creatorIdentityList ){
