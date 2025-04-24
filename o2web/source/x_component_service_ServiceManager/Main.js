@@ -171,6 +171,7 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
         return {"navi": idx};
     },
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
         this.addEvent("copy", function(){
             this.keyCopyItems();
         }.bind(this));

@@ -53,6 +53,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		if (callback) callback();
 	},
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
         this.addEvent("copy", function(){
             this.copyModule();
         }.bind(this));

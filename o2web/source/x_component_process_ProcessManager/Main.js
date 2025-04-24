@@ -68,6 +68,7 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
         }.bind(this));
     },
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
         this.addEvent("copy", function(){
             this.keyCopyItems();
         }.bind(this));

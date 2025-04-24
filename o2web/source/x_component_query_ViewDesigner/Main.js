@@ -90,6 +90,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
         if (!this.options.readMode) this.addKeyboardEvents();
 	},
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
         this.addEvent("copy", function(){
             this.copyModule();
         }.bind(this));

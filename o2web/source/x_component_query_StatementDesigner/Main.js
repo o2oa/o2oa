@@ -74,6 +74,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         }).inject(this.content);
     },
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
         this.addEvent("copy", function(){
             this.copyModule();
         }.bind(this));
