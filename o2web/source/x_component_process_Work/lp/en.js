@@ -102,6 +102,8 @@ MWF.xApplication.process.Work.LP={
 	"submitQuickText": "Select [{route}], opinion: {opinion}{org}.",
 	"addTaskQuickText": "Select [{route}{mode}], opinion: {opinion}, signer: {org}.",
 	"resetQuickText": "Opinion: {opinion}, reset to: {org}.",
+	"deleteQuickItemTitle": "Delete quick selection",
+	"deleteQuickItemContent": "Are you sure you want to delete the quick selection?",
 	"users": "handler",
 	"goBackActivity": "Return to activity",
 	"goBackActivityWay": "Processing after return:",

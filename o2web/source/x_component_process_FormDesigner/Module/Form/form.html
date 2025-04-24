@@ -140,6 +140,13 @@
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.SubmitUI}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
+                <td class="editTableTitle">{{$.lp.useQuickSelect}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="isQuickSelect" value="yes" text{($.isQuickSelect!=='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isQuickSelect" value="no" text{($.isQuickSelect==='no')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableValue" colspan="2">
                     <input type="radio" onclick="if (this.checked) {
                         $('text{$.pid}selectSubmitForm').setStyle('display', 'none');

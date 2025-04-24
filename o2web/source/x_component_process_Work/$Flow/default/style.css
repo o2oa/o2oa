@@ -207,6 +207,8 @@
     line-height: 30px;
     overflow: hidden;
     padding: 0 10px 0 10px;
+    display: flex;
+    align-items: center;
 }
 .o2flow-quick-select-item-active{
     background-color: #4A90E2;
@@ -218,13 +220,25 @@
 }
 
 .o2flow-quick-select-itemtitle {
-    float: left;
+
 }
 
 .o2flow-quick-select-itemtext {
+    flex: 1;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.o2flow-quick-select-item-action {
+    display: none;
+    width: 30px;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
+}
+.o2flow-quick-select-item:hover .o2flow-quick-select-item-action {
+    display: flex;
 }
 
 .o2flow-section-title {
