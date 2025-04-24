@@ -2531,13 +2531,15 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
             this.view.autoAddColumnsNode.show();
         }
     },
-    addColumn: function(e, data){
+    addColumn: function(e, data, keepName){
         MWF.require("MWF.widget.UUID", function(){
             var json;
             if (data){
                 json = Object.clone(data);
-                json.id = (new MWF.widget.UUID).id;
-                json.column = (new MWF.widget.UUID).id;
+                if( !keepName ){
+                    json.id = (new MWF.widget.UUID).id;
+                    json.column = (new MWF.widget.UUID).id;
+                }
             }else{
                 var id = (new MWF.widget.UUID).id;
                 json = {

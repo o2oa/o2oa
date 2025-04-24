@@ -166,7 +166,10 @@
         "cursor": "pointer",
         "border-bottom": "1px dotted #999",
         "background-color": "#FFF",
-        "color": "#333"
+        "color": "#333",
+        "overflow": "hidden",
+        "white-space": "nowrap",
+        "text-overflow": "ellipsis"
     },
     "cloumnListNode_selected": {
         "background-color": "#cce2ff"
