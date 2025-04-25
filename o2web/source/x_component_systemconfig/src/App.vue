@@ -187,7 +187,7 @@ const contentComponent = computed(() => {
   color: rgb(153, 153, 153);
   clear: both;
   display: inline-flex;
-  height: 30px;
+  min-height: 30px;
 }
 
 .systemconfig button{
