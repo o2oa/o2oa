@@ -15,13 +15,21 @@
             if (!appStyle.extendParam) {
               appStyle.extendParam = {};
             }
-            appStyle.extendParam.homePageList = defaultAppHomePageList;
+            appStyle.extendParam.homePageList = s.defaultAppHomePageList;
           }
           saveAppStyle(appStyle);
         }
       "></BaseBoolean>
       <!-- 新版主页布局配置 -->
-        <AppLayout v-if="enableHomePageLayout" v-model:value="appStyle.extendParam.homePageList" :images="appStyle.images"></AppLayout>
+        <AppLayout v-if="enableHomePageLayout" v-model:value="appStyle.extendParam.homePageList" :images="appStyle.images" @saveLayout="
+        (list) => {
+          if (!appStyle.extendParam) {
+              appStyle.extendParam = {};
+            }
+            appStyle.extendParam.homePageList = list;
+            saveAppStyle(appStyle);
+        }
+        "></AppLayout>
       <!-- 老版首页配置 -->
       <div v-if="!enableHomePageLayout">
         <BaseItem :title="lp._appConfig.mobileIndex" :info="lp._appConfig.mobileIndexInfo" :config="mobileIndex"
@@ -148,9 +156,10 @@ import {
 } from "@/util/acrions";
 import BaseItem from "@/components/item/BaseItem.vue";
 import BaseBoolean from "@/components/item/BaseBoolean";
-import { defaultAppHomePageList } from "@/util/data"
+import staticData from "@/util/data"
 import AppLayout from "./AppLayout.vue"
 
+const s = staticData()
 const enableHomePageLayout = ref(false); // 移动端主页布局是否开启
 const appStyle = ref();
 const portalList = ref({});

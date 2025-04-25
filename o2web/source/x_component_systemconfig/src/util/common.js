@@ -40,7 +40,8 @@ const downloadFile = (url, fileName = '') => {
     document.body.removeChild(eleLink);
   };
   
-  export default downloadFile;
-   
+const copyObject = (obj) => {
+    return JSON.parse(JSON.stringify(obj));
+}
 
-export {isOverlap, downloadFile};
+export {isOverlap, downloadFile, copyObject};
