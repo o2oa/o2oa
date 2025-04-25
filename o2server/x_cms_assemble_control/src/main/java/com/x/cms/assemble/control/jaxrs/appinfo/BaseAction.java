@@ -72,6 +72,7 @@ public class BaseAction extends StandardJaxrsAction {
             Boolean manager, Integer maxCount) throws Exception {
         List<String> unitNames = null;
         List<String> groupNames = null;
+        List<String> roleNames = null;
         List<String> viewableAppInfoIds = new ArrayList<>();
         List<String> viewableCategoryIds = new ArrayList<>();
         if (manager) {
@@ -80,9 +81,6 @@ public class BaseAction extends StandardJaxrsAction {
             } else {
                 // 管理员应该能看所有的栏目
                 viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType);
-//				if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
-//					viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType)
-//				}
                 if (ListTools.isEmpty(viewableAppInfoIds)) {
                     if (viewableAppInfoIds == null) {
                         viewableAppInfoIds = new ArrayList<>();
@@ -96,17 +94,18 @@ public class BaseAction extends StandardJaxrsAction {
             if (!isAnonymous) {
                 unitNames = userManagerService.listUnitNamesWithPerson(personName);
                 groupNames = userManagerService.listGroupNamesByPerson(personName);
+                roleNames = userManagerService.listRoleNamesByPerson(personName);
             }
             // 查询用户可以访问到的栏目
             viewableAppInfoIds = permissionQueryService.listViewableAppIdByPerson(personName, isAnonymous, unitNames,
-                    groupNames, inAppInfoIds, null, documentType, appType, maxCount);
+                    groupNames, roleNames, inAppInfoIds, null, documentType, appType, maxCount);
             if (ListTools.isEmpty(viewableAppInfoIds)) {
                 viewableAppInfoIds.add("NO_APPINFO");
             }
 
             // 根据人员的发布权限获取可以发布文档的分类信息ID列表
             viewableCategoryIds = permissionQueryService.listViewableCategoryIdByPerson(personName, isAnonymous,
-                    unitNames, groupNames, viewableAppInfoIds,
+                    unitNames, groupNames, roleNames, viewableAppInfoIds,
                     null, null, documentType, appType, maxCount, false);
         }
         return composeCategoriesIntoAppInfo(viewableAppInfoIds, viewableCategoryIds, appType);
@@ -134,6 +133,7 @@ public class BaseAction extends StandardJaxrsAction {
             throws Exception {
         List<String> unitNames = null;
         List<String> groupNames = null;
+        List<String> roleNames = null;
         List<String> publishableCategoryIds = new ArrayList<>();
         if (manager) {
             // 管理员，可以在所有的栏目和分类中进行发布，只需要过滤指定的栏目ID和信息类别即可
@@ -144,11 +144,12 @@ public class BaseAction extends StandardJaxrsAction {
             if (!isAnonymous) {
                 unitNames = userManagerService.listUnitNamesWithPerson(personName);
                 groupNames = userManagerService.listGroupNamesByPerson(personName);
+                roleNames = userManagerService.listRoleNamesByPerson(personName);
             }
             // 2、根据人员的发布权限获取可以发布文档的分类信息ID列表
             publishableCategoryIds = permissionQueryService.listPublishableCategoryIdByPerson(
-                    personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, documentType, appType,
-                    maxCount, false);
+                    personName, isAnonymous, unitNames, groupNames, roleNames, inAppInfoIds, null, null,
+                    documentType, appType, maxCount, false);
         }
         return composeCategoriesIntoAppInfo(inAppInfoIds, publishableCategoryIds, appType);
     }

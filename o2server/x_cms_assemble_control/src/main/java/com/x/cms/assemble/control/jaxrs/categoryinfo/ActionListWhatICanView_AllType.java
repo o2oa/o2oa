@@ -41,7 +41,8 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 		String personName = effectivePerson.getDistinguishedName();
 		List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 		List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
-		
+		List<String> roleNames = userManagerService.listRoleNamesByPerson(personName);
+
 		if ( StringUtils.isEmpty(appId)) {
 			check = false;
 			Exception exception = new ExceptionAppIdEmpty();
@@ -56,10 +57,10 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		
+
 		if (check) {// 判断用户是否该栏目的管理者
 			try {
-				if ( appInfoServiceAdv.isAppInfoManager( appId, personName, unitNames, groupNames )) {
+				if ( appInfoServiceAdv.isAppInfoManager( appId, personName, unitNames, groupNames, roleNames )) {
 					appManager = true;
 				}
 			} catch (Exception e) {
@@ -72,7 +73,7 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 
 		if (check) {// 判断用户是否该栏目的发布者
 			try {
-				if (appInfoServiceAdv.isAppInfoPublisher( appId, personName, unitNames, groupNames )) {
+				if (appInfoServiceAdv.isAppInfoPublisher( appId, personName, unitNames, groupNames, roleNames )) {
 					appPublisher = true;
 				}
 			} catch (Exception e) {
@@ -116,9 +117,9 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 					if (check) {
 						try {
 							List<String> inAppInfoIds = new ArrayList<>();
-							inAppInfoIds.add( appId );			
+							inAppInfoIds.add( appId );
 							ids = permissionQueryService.listViewableCategoryIdByPerson(
-									personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, "全部", null,1000, isXAdmin );
+									personName, isAnonymous, unitNames, groupNames, roleNames, inAppInfoIds, null, null, "全部", null,1000, isXAdmin );
 						} catch (Exception e) {
 							check = false;
 							Exception exception = new ExceptionCategoryInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
@@ -163,15 +164,15 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends CategoryInfo {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
 
 		static WrapCopier<CategoryInfo, Wo> copier = WrapCopierFactory.wo( CategoryInfo.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
-		
+
 		@FieldDescribe("扩展信息JSON内容")
 		private String extContent = null;
 

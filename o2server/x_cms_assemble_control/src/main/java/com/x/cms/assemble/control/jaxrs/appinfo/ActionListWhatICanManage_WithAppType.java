@@ -32,7 +32,7 @@ public class ActionListWhatICanManage_WithAppType extends BaseAction {
 		Boolean isXAdmin = false;
 		Boolean check = true;
 		String personName = effectivePerson.getDistinguishedName();
-		
+
 		try {
 			isXAdmin = userManagerService.isManager( effectivePerson );
 		} catch (Exception e) {
@@ -62,7 +62,8 @@ public class ActionListWhatICanManage_WithAppType extends BaseAction {
 					try {
 						List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 						List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
-						app_ids = permissionQueryService.listManageableAppIdsByPerson( personName, unitNames, groupNames, null, null, appType, "全部", 1000 );
+						List<String> roleNames = userManagerService.listRoleNamesByPerson( personName );
+						app_ids = permissionQueryService.listManageableAppIdsByPerson( personName, unitNames, groupNames, roleNames, null, null, appType, "全部", 1000 );
 						if (app_ids != null && !app_ids.isEmpty()) {
 							try {
 								appInfoList = appInfoServiceAdv.list( app_ids );
@@ -111,7 +112,7 @@ public class ActionListWhatICanManage_WithAppType extends BaseAction {
 							logger.error(e, effectivePerson, request, null);
 						}
 
-						query_categoryList = new ArrayList<>();				
+						query_categoryList = new ArrayList<>();
 						if( ListTools.isNotEmpty( wo.getCategoryList() )) {
 							for( String categoryId : wo.getCategoryList() ) {
 								if( categoryId != null && !"null".equalsIgnoreCase( categoryId.trim() ) ) {

@@ -192,7 +192,7 @@ public class AppInfo extends SliceJpaObject {
 
 	public static final String allowWaitPublish_FIELDNAME = "allowWaitPublish";
 	@FieldDescribe("栏目是否允许定时发布：true | false(默认)")
-	@Column(name = ColumnNamePrefix + showAllDocuments_FIELDNAME)
+	@Column(name = ColumnNamePrefix + allowWaitPublish_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean allowWaitPublish = false;
 
@@ -296,6 +296,19 @@ public class AppInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> publishableGroupList;
 
+	public static final String publishableRoleList_FIELDNAME = "publishableRoleList";
+	@FieldDescribe("可发布角色")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ publishableRoleList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ publishableRoleList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ publishableRoleList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + publishableRoleList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> publishableRoleList;
+
 	public static final String manageablePersonList_FIELDNAME = "manageablePersonList";
 	@FieldDescribe("栏目可管理人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -334,6 +347,19 @@ public class AppInfo extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + manageableGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manageableGroupList;
+
+	public static final String manageableRoleList_FIELDNAME = "manageableRoleList";
+	@FieldDescribe("栏目可管理角色")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ manageableRoleList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ manageableRoleList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ manageableRoleList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + manageableRoleList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> manageableRoleList;
 
 	public String getAppType() {
 		return appType;
@@ -539,6 +565,10 @@ public class AppInfo extends SliceJpaObject {
 		return publishableGroupList == null ? new ArrayList<>() : publishableGroupList;
 	}
 
+	public List<String> getPublishableRoleList() {
+		return publishableRoleList == null ? new ArrayList<>() : publishableRoleList;
+	}
+
 	public List<String> getManageablePersonList() {
 		return manageablePersonList == null ? new ArrayList<>() : manageablePersonList;
 	}
@@ -549,6 +579,10 @@ public class AppInfo extends SliceJpaObject {
 
 	public List<String> getManageableGroupList() {
 		return manageableGroupList == null ? new ArrayList<>() : manageableGroupList;
+	}
+
+	public List<String> getManageableRoleList() {
+		return manageableRoleList == null ? new ArrayList<>() : manageableRoleList;
 	}
 
 	public void setViewablePersonList(List<String> viewablePersonList) {
@@ -584,7 +618,7 @@ public class AppInfo extends SliceJpaObject {
 	public void setPublishablePersonList(List<String> publishablePersonList) {
 		this.publishablePersonList = publishablePersonList;
 		if (ListTools.isEmpty(this.publishablePersonList) && ListTools.isEmpty(this.publishableUnitList)
-				&& ListTools.isEmpty(this.publishableGroupList)) {
+				&& ListTools.isEmpty(this.publishableGroupList) && ListTools.isEmpty(this.publishableRoleList)) {
 			allPeoplePublish = true;
 		} else {
 			allPeoplePublish = false;
@@ -594,7 +628,7 @@ public class AppInfo extends SliceJpaObject {
 	public void setPublishableUnitList(List<String> publishableUnitList) {
 		this.publishableUnitList = publishableUnitList;
 		if (ListTools.isEmpty(this.publishablePersonList) && ListTools.isEmpty(this.publishableUnitList)
-				&& ListTools.isEmpty(this.publishableGroupList)) {
+				&& ListTools.isEmpty(this.publishableGroupList) && ListTools.isEmpty(this.publishableRoleList)) {
 			allPeoplePublish = true;
 		} else {
 			allPeoplePublish = false;
@@ -604,7 +638,17 @@ public class AppInfo extends SliceJpaObject {
 	public void setPublishableGroupList(List<String> publishableGroupList) {
 		this.publishableGroupList = publishableGroupList;
 		if (ListTools.isEmpty(this.publishablePersonList) && ListTools.isEmpty(this.publishableUnitList)
-				&& ListTools.isEmpty(this.publishableGroupList)) {
+				&& ListTools.isEmpty(this.publishableGroupList) && ListTools.isEmpty(this.publishableRoleList)) {
+			allPeoplePublish = true;
+		} else {
+			allPeoplePublish = false;
+		}
+	}
+
+	public void setPublishableRoleList(List<String> publishableRoleList) {
+		this.publishableRoleList = publishableRoleList;
+		if (ListTools.isEmpty(this.publishablePersonList) && ListTools.isEmpty(this.publishableUnitList)
+				&& ListTools.isEmpty(this.publishableGroupList) && ListTools.isEmpty(this.publishableRoleList)) {
 			allPeoplePublish = true;
 		} else {
 			allPeoplePublish = false;
@@ -621,6 +665,10 @@ public class AppInfo extends SliceJpaObject {
 
 	public void setManageableGroupList(List<String> manageableGroupList) {
 		this.manageableGroupList = manageableGroupList;
+	}
+
+	public void setManageableRoleList(List<String> manageableRoleList) {
+		this.manageableRoleList = manageableRoleList;
 	}
 
 	public void addViewablePerson(String personName) {
@@ -647,6 +695,10 @@ public class AppInfo extends SliceJpaObject {
 		addStringToList(this.publishableGroupList, groupName);
 	}
 
+	public void addPublishableRole(String roleName) {
+		addStringToList(this.publishableRoleList, roleName);
+	}
+
 	public void addManageablePerson(String personName) {
 		addStringToList(this.manageablePersonList, personName);
 	}
@@ -657,6 +709,10 @@ public class AppInfo extends SliceJpaObject {
 
 	public void addManageableGroup(String groupName) {
 		addStringToList(this.manageableGroupList, groupName);
+	}
+
+	public void addManageableRole(String roleName) {
+		addStringToList(this.manageableRoleList, roleName);
 	}
 
 	public void removeViewablePerson(String personName) {
@@ -683,6 +739,10 @@ public class AppInfo extends SliceJpaObject {
 		removeStringFromList(this.publishableGroupList, groupName);
 	}
 
+	public void removePublishableRole(String roleName) {
+		removeStringFromList(this.publishableRoleList, roleName);
+	}
+
 	public void removeManageablePerson(String personName) {
 		removeStringFromList(this.manageablePersonList, personName);
 	}
@@ -693,6 +753,10 @@ public class AppInfo extends SliceJpaObject {
 
 	public void removeManageableGroup(String groupName) {
 		removeStringFromList(this.manageableGroupList, groupName);
+	}
+
+	public void removeManageableRole(String roleName) {
+		removeStringFromList(this.manageableRoleList, roleName);
 	}
 
 	public Boolean getAnonymousAble() {
@@ -717,7 +781,7 @@ public class AppInfo extends SliceJpaObject {
 			this.allPeopleView = false;
 		}
 		if (ListTools.isEmpty(this.publishablePersonList) && ListTools.isEmpty(this.publishableUnitList)
-				&& ListTools.isEmpty(this.publishableGroupList)) {
+				&& ListTools.isEmpty(this.publishableGroupList) && ListTools.isEmpty(this.publishableRoleList)) {
 			allPeoplePublish = true;
 		} else {
 			allPeoplePublish = false;
@@ -739,7 +803,7 @@ public class AppInfo extends SliceJpaObject {
 			this.allPeopleView = false;
 		}
 		if (ListTools.isEmpty(this.publishablePersonList) && ListTools.isEmpty(this.publishableUnitList)
-				&& ListTools.isEmpty(this.publishableGroupList)) {
+				&& ListTools.isEmpty(this.publishableGroupList) && ListTools.isEmpty(this.publishableRoleList)) {
 			allPeoplePublish = true;
 		} else {
 			allPeoplePublish = false;
@@ -759,7 +823,7 @@ public class AppInfo extends SliceJpaObject {
 
 	public Boolean getAllPeoplePublish() {
 		if (ListTools.isEmpty(this.publishablePersonList) && ListTools.isEmpty(this.publishableUnitList)
-				&& ListTools.isEmpty(this.publishableGroupList)) {
+				&& ListTools.isEmpty(this.publishableGroupList) && ListTools.isEmpty(this.publishableRoleList)) {
 			allPeoplePublish = true;
 		} else {
 			allPeoplePublish = false;

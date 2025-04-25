@@ -78,6 +78,7 @@ public class ActionQueryGetControl extends BaseAction {
 		//不管是从缓存还是数据库查出来，都要重新进行处理权限判断
 		List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 		List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
+		List<String> roleNames = userManagerService.listRoleNamesByPerson(personName);
 
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo = null;
@@ -133,7 +134,7 @@ public class ActionQueryGetControl extends BaseAction {
 		//判断用户是否是栏目的管理者，栏目管理者是有权限编辑文档的
 		if (check) {
 			try {
-				if ( appInfoServiceAdv.isAppInfoManager( appInfo, personName, unitNames, groupNames )) {
+				if ( appInfoServiceAdv.isAppInfoManager( appInfo, personName, unitNames, groupNames, roleNames )) {
 					isAppAdmin = true;
 					woControl.setAllowEdit(true);
 					woControl.setAllowDelete(true);

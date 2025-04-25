@@ -1,18 +1,17 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.express.permission.CmsPermissionService;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PermissionQueryService {
-	
+
 	private CmsPermissionService cmsPermissionService = new CmsPermissionService();
 	/**
 	 * 查询指定用户，组织，群组可以访问到的所有栏目ID列表(包含全员可以访问的栏目)
@@ -21,15 +20,17 @@ public class PermissionQueryService {
 	 * @param unitNames
 	 * @param groupNames
 	 * @param inAppInfoIds
-	 * @param excludAppInfoIds
+	 * @param excludeAppInfoIds
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String>listViewableAppIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
-			List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds, String documentType, String appType, Integer maxCount ) throws Exception{
+	public List<String> listViewableAppIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
+			List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds, List<String> excludeAppInfoIds,
+			String documentType, String appType, Integer maxCount ) throws Exception{
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<String> list = cmsPermissionService.listViewableAppIdByPerson(
-					emc, personName, isAnonymous, unitNames, groupNames, inAppInfoIds, excludAppInfoIds, documentType, appType, maxCount);
+					emc, personName, isAnonymous, unitNames, groupNames, roleNames, inAppInfoIds,
+					excludeAppInfoIds, documentType, appType, maxCount);
 			List<String> result =  new ArrayList<>();
 			if( ListTools.isNotEmpty( list )) {
 				for( String id : list ) {
@@ -56,12 +57,12 @@ public class PermissionQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String>listPublishableAppIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
-			List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds, String documentType,
+	public List<String> listPublishableAppIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
+			List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds, List<String> excludAppInfoIds, String documentType,
 			String appType, Integer maxCount) throws Exception{
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return cmsPermissionService.listPublishableAppIdByPerson(
-					emc, personName, isAnonymous, unitNames, groupNames, inAppInfoIds, excludAppInfoIds, documentType, appType, maxCount);
+					emc, personName, isAnonymous, unitNames, groupNames, roleNames, inAppInfoIds, excludAppInfoIds, documentType, appType, maxCount);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -78,11 +79,11 @@ public class PermissionQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listManageableAppIdsByPerson( String personName, List<String> unitNames, List<String> groupNames, 
-			List<String> inAppInfoIds, List<String> excludAppInfoIds, String appType,	String documentType, Integer maxCount) throws Exception {
+	public List<String> listManageableAppIdsByPerson( String personName, List<String> unitNames, List<String> groupNames, List<String> roleNames,
+			List<String> inAppInfoIds, List<String> excludAppInfoIds, String appType, String documentType, Integer maxCount) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return cmsPermissionService.listManageableAppIdsByPerson(
-					emc, personName, unitNames, groupNames, inAppInfoIds, excludAppInfoIds, appType, documentType, maxCount);
+					emc, personName, unitNames, groupNames, roleNames, inAppInfoIds, excludAppInfoIds, appType, documentType, maxCount);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -105,12 +106,12 @@ public class PermissionQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String>listViewableCategoryIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
-			List<String> groupNames, List<String> inAppInfoIds, List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, 
+	public List<String> listViewableCategoryIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
+			List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds, List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds,
 			String documentType, String appType, Integer maxCount, Boolean manager) throws Exception{
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return cmsPermissionService.listViewableCategoryIdByPerson(
-					emc, personName, isAnonymous, unitNames, groupNames, inAppInfoIds, inCategoryInfoIds, excludCategoryInfoIds, documentType, appType, maxCount, manager);
+					emc, personName, isAnonymous, unitNames, groupNames, roleNames, inAppInfoIds, inCategoryInfoIds, excludCategoryInfoIds, documentType, appType, maxCount, manager);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -132,12 +133,12 @@ public class PermissionQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String>listPublishableCategoryIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
-			List<String> groupNames, List<String> inAppInfoIds, List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, 
+	public List<String> listPublishableCategoryIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
+			List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds, List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds,
 			String documentType, String appType, Integer maxCount, Boolean manager) throws Exception{
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return cmsPermissionService.listPublishableCategoryIdByPerson(
-					emc, personName, isAnonymous, unitNames, groupNames, inAppInfoIds, inCategoryInfoIds, excludCategoryInfoIds, documentType, appType, maxCount, manager);
+					emc, personName, isAnonymous, unitNames, groupNames, roleNames, inAppInfoIds, inCategoryInfoIds, excludCategoryInfoIds, documentType, appType, maxCount, manager);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -199,7 +200,7 @@ public class PermissionQueryService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 对比两个分类的可见范围是否有变更
 	 * @param old_categoryInfo

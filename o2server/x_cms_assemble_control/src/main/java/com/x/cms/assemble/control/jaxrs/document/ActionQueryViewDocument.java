@@ -119,6 +119,7 @@ public class ActionQueryViewDocument extends BaseAction {
 		Boolean check = true;
 		List<String> unitNames = null;
 		List<String> groupNames = null;
+		List<String> roleNames = null;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
 
@@ -126,6 +127,7 @@ public class ActionQueryViewDocument extends BaseAction {
 			try {
 				unitNames = userManagerService.listUnitNamesWithPerson( personName );
 				groupNames = userManagerService.listGroupNamesByPerson( personName );
+				roleNames = userManagerService.listRoleNamesByPerson( personName );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "查询用户所有的组织和群组信息时发生异常！user:" + personName);
@@ -282,7 +284,7 @@ public class ActionQueryViewDocument extends BaseAction {
 		//判断用户是否是栏目的管理者，栏目管理者是有权限编辑文档的
 		if (check) {
 			try {
-				if (appInfoServiceAdv.isAppInfoManager( appInfo, personName, unitNames, groupNames )) {
+				if (appInfoServiceAdv.isAppInfoManager( appInfo, personName, unitNames, groupNames, roleNames )) {
 					isAppAdmin = true;
 				}
 			} catch (Exception e) {

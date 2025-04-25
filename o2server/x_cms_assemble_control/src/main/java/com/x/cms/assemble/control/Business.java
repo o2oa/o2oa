@@ -53,6 +53,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang3.BooleanUtils;
@@ -381,22 +382,20 @@ public class Business {
 		}
 		if (appInfo != null) {
 			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
-				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
-					return true;
-				}
+				return appInfo.getManageablePersonList().contains(person.getDistinguishedName());
 			}
 			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
 				List<String> unitNames = this.organization().unit()
 						.listWithPersonSupNested(person.getDistinguishedName());
-				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
-					return true;
-				}
+				return ListTools.containsAny(unitNames, appInfo.getManageableUnitList());
 			}
 			if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
 				List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
-				if (ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
-					return true;
-				}
+				return ListTools.containsAny(groupNames, appInfo.getManageableGroupList());
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableRoleList())) {
+				List<String> roleNames = this.organization().role().listWithPerson(person.getDistinguishedName());
+                return ListTools.containsAny(roleNames, appInfo.getManageableRoleList());
 			}
 		}
 		return false;
@@ -412,32 +411,11 @@ public class Business {
 	 */
 	public boolean isAppCreatorManager(EffectivePerson person, AppInfo appInfo) throws Exception {
 		if (appInfo != null) {
-			if (isManager(person)) {
-				return true;
-			}
-			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
-				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
-					return true;
-				}
-			}
-			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
-				List<String> unitNames = this.organization().unit()
-						.listWithPersonSupNested(person.getDistinguishedName());
-				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
-					return true;
-				}
-			}
-			if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
-				List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
-				if (ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
-					return true;
-				}
-			}
-		} else if (isCreatorManager(person)) {
-			return true;
+			return isAppInfoManager(person, appInfo);
+		} else {
+			return isCreatorManager(person);
 		}
-		return false;
-	}
+    }
 
 	/**
 	 * 是否是文档的编辑者 文档不存在判断是否是分类或应用的发布者
@@ -516,22 +494,27 @@ public class Business {
 			Set<String> appPersonList = new HashSet<>(appInfo.getManageablePersonList());
 			Set<String> appUnitList = new HashSet<>(appInfo.getManageableUnitList());
 			Set<String> appGroupList = new HashSet<>(appInfo.getManageableGroupList());
+			Set<String> appRoleList = new HashSet<>(appInfo.getManageableRoleList());
 			if (document == null) {
 				appPersonList.addAll(appInfo.getPublishablePersonList());
 				appUnitList.addAll(appInfo.getPublishableUnitList());
 				appGroupList.addAll(appInfo.getPublishableGroupList());
+				appRoleList.addAll(appInfo.getPublishableRoleList());
 				if (!appInfo.getPublishablePersonList().isEmpty() || !appInfo.getPublishableUnitList().isEmpty()
-						|| !appInfo.getPublishableGroupList().isEmpty()) {
+						|| !appInfo.getPublishableGroupList().isEmpty() || !appInfo.getPublishableRoleList().isEmpty()) {
 					publishFlag = false;
 				}
 			}
-			if (appPersonList.size() > 0 && appPersonList.contains(person.getDistinguishedName())) {
+			if (!appPersonList.isEmpty() && appPersonList.contains(person.getDistinguishedName())) {
 				return true;
 			}
-			if (appUnitList.size() > 0 && ListTools.containsAny(unitNames, new ArrayList<>(appUnitList))) {
+			if (!appUnitList.isEmpty() && ListTools.containsAny(unitNames, new ArrayList<>(appUnitList))) {
 				return true;
 			}
-			if (appGroupList.size() > 0 && ListTools.containsAny(groupNames, new ArrayList<>(appGroupList))) {
+			if (!appGroupList.isEmpty() && ListTools.containsAny(groupNames, new ArrayList<>(appGroupList))) {
+				return true;
+			}
+			if (!appRoleList.isEmpty() && ListTools.containsAny(groupNames, new ArrayList<>(appRoleList))) {
 				return true;
 			}
 		}
@@ -653,30 +636,29 @@ public class Business {
 		// 判断effectivePerson是不是该栏目的管理者：涉及 个人，组织和群组
 		List<String> unitNameList = this.organization().unit()
 				.listWithPersonSupNested(effectivePerson.getDistinguishedName());
-		List<String> groupNameList = new ArrayList<String>();
 		List<String> groupList = this.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
-		if (groupList != null && groupList.size() > 0) {
-			groupList.stream().filter(g -> !groupNameList.contains(g)).distinct().forEach(g -> groupNameList.add(g));
-		}
+		groupList = groupList.stream().distinct().collect(Collectors.toList());
+		List<String> groupNameList = new ArrayList<>(groupList);
 
 		if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
-			if (appInfo.getManageablePersonList().contains(effectivePerson.getDistinguishedName())) {
-				return true;
-			}
+			return appInfo.getManageablePersonList().contains(effectivePerson.getDistinguishedName());
 		}
 
 		if (ListTools.isNotEmpty(appInfo.getManageableGroupList()) && ListTools.isNotEmpty(groupNameList)) {
 			groupNameList.retainAll(appInfo.getManageableGroupList());
-			if (ListTools.isNotEmpty(groupNameList)) {
-				return true;
-			}
+			return ListTools.isNotEmpty(groupNameList);
 		}
 
 		if (ListTools.isNotEmpty(appInfo.getManageableUnitList()) && ListTools.isNotEmpty(unitNameList)) {
 			unitNameList.retainAll(appInfo.getManageableUnitList());
-			if (ListTools.isNotEmpty(unitNameList)) {
-				return true;
-			}
+            return ListTools.isNotEmpty(unitNameList);
+		}
+
+		List<String> roleList = this.organization().role().listWithPerson(effectivePerson.getDistinguishedName());
+		List<String> roleNameList = new ArrayList<>(roleList);
+		if (ListTools.isNotEmpty(appInfo.getManageableRoleList()) && ListTools.isNotEmpty(roleNameList)) {
+			roleNameList.retainAll(appInfo.getManageableRoleList());
+			return ListTools.isNotEmpty(roleNameList);
 		}
 		return false;
 	}
