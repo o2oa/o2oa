@@ -67,7 +67,9 @@
         <label class="item_label">{{lp._loginConfig.loginPagePortal}}</label>
 
         <div class="item_input_area">
-          <el-select v-model="loginPortal" size="default" :placeholder="lp._loginConfig.selectPortal" @change="saveConfig('portal', 'loginPage.portal', loginPortal)" popper-class="systemconfig">
+          <el-select v-model="loginPortal" size="default" :placeholder="lp._loginConfig.selectPortal"
+                     :popper-options="{ placement: 'top'}"
+                     @change="saveConfig('portal', 'loginPage.portal', loginPortal)" popper-class="systemconfig">
             <el-option value="default" :label="lp.default"></el-option>
             <el-option v-for="portal in portalList" :key="portal.id" :value="portal.id" :label="portal.name"></el-option>
           </el-select>
@@ -89,7 +91,9 @@
         <label class="item_label">{{lp._loginConfig.indexPagePortal}}</label>
 
         <div class="item_input_area">
-          <el-select v-model="indexPortal" size="default" :placeholder="lp._loginConfig.selectPortal" @change="saveConfig('portal', 'indexPage.portal', indexPortal)" popper-class="systemconfig">
+          <el-select v-model="indexPortal" size="default" :placeholder="lp._loginConfig.selectPortal"
+                     :popper-options="{ placement: 'top'}"
+                     @change="saveConfig('portal', 'indexPage.portal', indexPortal)" popper-class="systemconfig">
             <el-option value="default" :label="lp.default"></el-option>
             <el-option v-for="portal in portalList" :key="portal.id" :value="portal.id" :label="portal.name"></el-option>
           </el-select>
