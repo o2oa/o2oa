@@ -2654,7 +2654,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
     deleteItem: function (e, item){
         this.flow.form.confirm("warn", e, this.flow.lp.deleteQuickItemTitle, this.flow.lp.deleteQuickItemContent, 300, 120, function(){
             var d = item.retrieve("data");
-            var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.deleteMode( d.id );
+            var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.deleteMode( d.data.id );
             p.then( function (){ item.destroy(); } );
             this.close();
         }, function(){

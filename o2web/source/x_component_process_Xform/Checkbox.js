@@ -153,7 +153,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         isNumber : function( d ){
             return parseInt(d).toString() !== "NaN";
         },
-        _setOptions: function(optionItems){
+        _setOptions: function(optionItems, callback){
             var p = o2.promiseAll(optionItems).then(function(radioValues){
                 this.moduleSelectAG = null;
                 if (!radioValues) radioValues = [];
@@ -223,6 +223,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                         }.bind(this));
 
                     }.bind(this));
+                    if(callback)callback();
                 }
             }.bind(this), function(){});
             this.moduleSelectAG = p;

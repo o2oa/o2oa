@@ -67,6 +67,9 @@ MWF.xApplication.cms.ColumnManager.ColumnViewerSetting = new Class({
                 case "g":
                     var widget = new MWF.widget.O2Group(data, node, options);
                     break;
+                case "r":
+                    var widget = new MWF.widget.O2Role(data, node, options);
+                    break;
                 default:
                     var widget = new MWF.widget.O2Other( data, node, options);
             }
@@ -81,7 +84,7 @@ MWF.xApplication.cms.ColumnManager.ColumnViewerSetting = new Class({
             "types" : this.options.orgTypes,
             "title": this.lp.set,
             "count" : 0,
-            "values":  ( this.data.personList || [] ).combine( this.data.unitList || []).combine( this.data.groupList || [] ),
+            "values":  ( this.data.personList || [] ).combine( this.data.unitList || []).combine( this.data.groupList || [] ).combine( this.data.roleList || [] ),
             "expand": false,
             "onComplete": function( array ){
                 var data = {
