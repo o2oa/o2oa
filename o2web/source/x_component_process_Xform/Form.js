@@ -3472,7 +3472,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ],
                 "onPostLoad": function (){
-                    if( typeOf(callback) === 'function' )callback(this);
+                    switch (typeOf(callback)){
+                        case 'function': callback(this); break;
+                        case 'object':
+                            if( callback.postLoad )callback.postLoad(this);
+                            break;
+                    }
+                },
+                "onPostShow": function (){
+                    if( typeOf(callback) === 'object' ){
+                        if( callback.postShow )callback.postShow(this);
+                    }
                 }
             };
 

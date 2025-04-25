@@ -230,14 +230,14 @@
     text-overflow: ellipsis;
 }
 
-.o2flow-quick-select-item-action {
+.o2flow-quick-select-itemaction {
     display: none;
     width: 30px;
     height: 100%;
     align-items: center;
     justify-content: flex-end;
 }
-.o2flow-quick-select-item:hover .o2flow-quick-select-item-action {
+.o2flow-quick-select-item:hover .o2flow-quick-select-itemaction {
     display: flex;
 }
 

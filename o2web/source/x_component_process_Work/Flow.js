@@ -2644,7 +2644,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             var content = new Element("div.o2flow-quick-select-itemtext", {
                 text: "："+ d.text
             }).inject( item );
-            var closeNode = new Element("div.o2flow-quick-select-item-action.ooicon-close", {
+            new Element("div.o2flow-quick-select-itemaction.ooicon-close", {
                 events: {
                     click: function (e) { _self.deleteItem(e, item); }
                 }
@@ -2659,7 +2659,16 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             this.close();
         }, function(){
             this.close();
-        }, null, null, this.flow.form.json.confirmStyle, 20005);
+        }, {
+            postShow: function (dlg){
+                dlg.node.addEvent('click', function (e){ e.stopPropagation(); });
+                dlg.markNode_up.addEvent('click', function (e){ e.stopPropagation(); });
+                dlg.node.addEvent('mousedown', function (e){ e.stopPropagation(); });
+                dlg.markNode_up.addEvent('mousedown', function (e){ e.stopPropagation(); });
+                dlg.node.addEvent('touchstart', function (e){ e.stopPropagation(); });
+                dlg.markNode_up.addEvent('touchstart', function (e){ e.stopPropagation(); });
+            }
+        }, null, this.flow.form.json.confirmStyle, 20005);
         e.stopPropagation();
     },
     filterData: function( data ){

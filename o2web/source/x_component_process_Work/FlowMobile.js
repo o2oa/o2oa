@@ -1396,13 +1396,18 @@ MWF.ProcessFlow.widget.QuickSelectMobile = new Class({
             }).inject( this.quickNode );
             item.store( "data", d );
             var title = new Element("div.o2flow-quick-select-itemtitle", {
-                text: this.flow.lp.flowActions[d.type]
+                text: this.flow.lp.flowActions[d.type] + "："
             }).inject( item );
             title.addClass( "o2flow-"+d.type+"-color" );
             var content = new Element("div.o2flow-quick-select-itemtext", {
-                text: "："+ d.text
-            }).inject( item )
-        }.bind(this))
+                text: d.text
+            }).inject( item );
+            new Element("div.o2flow-quick-select-itemaction.ooicon-close", {
+                events: {
+                    click: function (e) { _self.deleteItem(e, item); }
+                }
+            }).inject( item );
+        }.bind(this));
     }
 });
 
