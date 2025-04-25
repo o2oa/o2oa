@@ -3,7 +3,10 @@
         <div class="app-layout">
             <div class="app-layout-preview">
                 <div class="top-bar mainColor_bg" v-if="!hiddenAppBar">{{ currentItem?.name || '' }}</div>
-                <div class="content" id="app_content"></div>
+                <div class="content" >
+                    <div class="content-container" id="app_content"></div>
+                    <div class="content-mask"></div>
+                </div>
                 <div class="bar">
                     <div class="item" v-for="(item, index) in ev" @click="clickItem(item)" :draggable="true"
                         @dragstart="onDragStart($event, index)" @dragover="onDragOver($event)"
@@ -270,9 +273,25 @@ const save = () => {
 .app-layout-preview .content {
     flex: 1;
     height: calc(100% - 99px);
+    position: relative;
+}
+.app-layout-preview .content .content-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.app-layout-preview .content .content-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #0000003e;
 }
 
-.app-layout-preview .content img {
+.app-layout-preview .content .content-container img {
     width: 100%;
     height: 100%;
 }

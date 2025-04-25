@@ -24,7 +24,6 @@
                         } else {
                             portal.portalId = p;
                             const pObj = portalList.find((r) => r.id === p)
-                            console.debug('选择了 ', pObj)
                             if (pObj) {
                                 pageItem.name = pObj.name
                             }
@@ -71,7 +70,6 @@ import { lp, component } from '@o2oa/component';
 import { ref, watch, onMounted } from 'vue';
 import staticData from '../../../util/data'
 import { loadPortals } from '../../../util/acrions'
-import BaseItem from "@/components/item/BaseItem.vue";
 
 
 const s = staticData()
