@@ -2443,8 +2443,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				var array = module._getBusinessData();
 				(array || []).each(function(d){
 					saveFlag = true;
-					this.form.workAction.deleteAttachment(d.id, this.form.businessData.work.id);
-				}.bind(this))
+					var id = ( this.form.businessData.work || this.form.businessData.document ).id;
+					( this.form.workAction || this.form.documentAction ).deleteAttachment(d.id, id);
+				}.bind(this));
 			}
 		}
 		return saveFlag;
