@@ -22,7 +22,7 @@ import com.x.cms.core.express.tools.filter.QueryFilter;
 
 /**
  * 对CMS栏目、分类、文档进行权限过滤查询，在CMS应用中会直接引用
- * 
+ *
  * @author O2LEE
  *
  */
@@ -63,19 +63,23 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询指定用户，组织，群组可以访问到的所有栏目ID列表(包含全员可以访问的栏目)
-	 * 
+	 * @param emc
 	 * @param personName
 	 * @param isAnonymous
 	 * @param unitNames
 	 * @param groupNames
+	 * @param roleNames
 	 * @param inAppInfoIds
-	 * @param excludAppInfoIds
+	 * @param excludeAppInfoIds
+	 * @param documentType
+	 * @param appType
+	 * @param maxCount
 	 * @return
 	 * @throws Exception
 	 */
 	public List<String> listViewableAppIdByPerson(EntityManagerContainer emc, String personName, Boolean isAnonymous,
-			List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds,
-			String documentType, String appType, Integer maxCount) throws Exception {
+			List<String> unitNames, List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds,
+			List<String> excludeAppInfoIds, String documentType, String appType, Integer maxCount) throws Exception {
 
 		List<String> viewableAppInfoIds = new ArrayList<>();
 
@@ -87,7 +91,7 @@ public class CmsPermissionService {
 		if (!isAnonymous) {
 			// 2、将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
 			viewableAppInfoIds = addResultToSourceList(this.listManageableAppIdsByPerson(emc, personName, unitNames,
-					groupNames, null, null, null, documentType, maxCount), viewableAppInfoIds);
+					groupNames, roleNames, null, null, null, documentType, maxCount), viewableAppInfoIds);
 
 			// 3、将用户自己以及用户所在的组织、群组，有权限访问的所有栏目ID列表添加到viewAbleAppInfoIds中
 			addResultToSourceList(
@@ -99,14 +103,14 @@ public class CmsPermissionService {
 			viewableAppInfoIds.retainAll(inAppInfoIds);
 		}
 
-		viewableAppInfoIds = excludListContent(viewableAppInfoIds, excludAppInfoIds);
+		viewableAppInfoIds = excludListContent(viewableAppInfoIds, excludeAppInfoIds);
 
 		return viewableAppInfoIds;
 	}
 
 	/**
 	 * 查询指定用户，组织，群组可以发布文档的所有栏目ID列表
-	 * 
+	 *
 	 * @param personName
 	 * @param isAnonymous
 	 * @param unitNames
@@ -117,7 +121,7 @@ public class CmsPermissionService {
 	 * @throws Exception
 	 */
 	public List<String> listPublishableAppIdByPerson(EntityManagerContainer emc, String personName, Boolean isAnonymous,
-			List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds,
+			List<String> unitNames, List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds, List<String> excludAppInfoIds,
 			String documentType, String appType, Integer maxCount) throws Exception {
 		List<String> publishableAppInfoIds = new ArrayList<>();
 
@@ -127,27 +131,27 @@ public class CmsPermissionService {
 		if (!isAnonymous) {
 			// 2、用户可管理的栏目， 将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
 			publishableAppInfoIds = addResultToSourceList(this.listManageableAppIdsByPerson(emc, personName, unitNames,
-					groupNames, null, null, null, documentType, maxCount), publishableAppInfoIds);
+					groupNames, roleNames, null, null, null, documentType, maxCount), publishableAppInfoIds);
 
 			// 3、用户有发布权限设置的栏目， 将用户自己以及用户所在的组织、群组，有权限访问的所有栏目ID列表添加到viewAbleAppInfoIds中
-			addResultToSourceList(this.listPublishableAppIdsInPermission(emc, personName, unitNames, groupNames,
+			addResultToSourceList(this.listPublishableAppIdsInPermission(emc, personName, unitNames, groupNames, roleNames,
 					documentType, maxCount), publishableAppInfoIds);
 		}
 
 		if (ListTools.isNotEmpty(inAppInfoIds)) {
 			publishableAppInfoIds.retainAll(inAppInfoIds);
 		}
-		
+
 		if (ListTools.isNotEmpty(excludAppInfoIds)) {
 			publishableAppInfoIds = excludListContent(publishableAppInfoIds, excludAppInfoIds);
 		}
-		
+
 		return publishableAppInfoIds;
 	}
 
 	/**
 	 * 根据excludAppInfoIds排除不需要的数据
-	 * 
+	 *
 	 * @param sourceList
 	 * @param excludAppInfoIds
 	 * @return
@@ -169,7 +173,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询指定用户可以管理的所有栏目ID列表( with List copy )
-	 * 
+	 *
 	 * @param emc
 	 * @param personName
 	 * @param unitNames
@@ -181,7 +185,7 @@ public class CmsPermissionService {
 	 * @throws Exception
 	 */
 	public List<String> listManageableAppIdsByPerson(EntityManagerContainer emc, String personName,
-			List<String> unitNames, List<String> groupNames, 
+			List<String> unitNames, List<String> groupNames, List<String> roleNames,
 			List<String> inAppInfoIds, List<String> excludAppInfoIds,
 			String appType, String documentType, Integer maxCount)
 			throws Exception {
@@ -223,6 +227,10 @@ public class CmsPermissionService {
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					cb.or(p_permission, root.get(AppInfo.manageableGroupList_FIELDNAME).in(groupNames)));
 		}
+		if (ListTools.isNotEmpty(roleNames)) {
+			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+					cb.or(p_permission, root.get(AppInfo.manageableRoleList_FIELDNAME).in(roleNames)));
+		}
 		p = CriteriaBuilderTools.predicate_and(cb, p, p_permission);
 
 		cq.select(root.get(AppInfo.id_FIELDNAME));
@@ -231,15 +239,15 @@ public class CmsPermissionService {
 			appInfoIds = new ArrayList<>();
 		}
 		appInfoIds_out.addAll(appInfoIds);
-		
+
 		if (ListTools.isNotEmpty(inAppInfoIds)) {
 			appInfoIds_out.retainAll(inAppInfoIds);
 		}
-		
+
 		if (ListTools.isNotEmpty(excludAppInfoIds)) {
 			appInfoIds_out = excludListContent(appInfoIds_out, excludAppInfoIds);
 		}
-		
+
 		return appInfoIds_out;
 	}
 
@@ -261,7 +269,7 @@ public class CmsPermissionService {
 	 * @throws Exception
 	 */
 	public List<String> listViewableCategoryIdByPerson(EntityManagerContainer emc, String personName,
-			Boolean isAnonymous, List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds,
+			Boolean isAnonymous, List<String> unitNames, List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds,
 			List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, String documentType, String appType, Integer maxCount,
 			Boolean manager) throws Exception {
 		List<String> viewableCategoryInfoIds = new ArrayList<>();
@@ -270,7 +278,7 @@ public class CmsPermissionService {
 		if (manager) {
 			allViewableAppIds = this.listAllAppIds(emc, inAppInfoIds, null, documentType, maxCount);
 		} else {
-			allViewableAppIds = this.listViewableAppIdByPerson(emc, personName, isAnonymous, unitNames, groupNames,
+			allViewableAppIds = this.listViewableAppIdByPerson(emc, personName, isAnonymous, unitNames, groupNames, roleNames,
 					inAppInfoIds, null, documentType, appType, maxCount);
 			if (ListTools.isNotEmpty(inAppInfoIds) && ListTools.isEmpty(allViewableAppIds)) {
 				allViewableAppIds = new ArrayList<>();
@@ -316,7 +324,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询指定用户，组织，群组可以发布文档的所有分类ID列表（包含全员可以发布文档的分类） 所获得到的分类列表可能会大于可访问的栏目列表
-	 * 
+	 *
 	 * @param personName
 	 * @param isAnonymous
 	 * @param unitNames
@@ -328,14 +336,14 @@ public class CmsPermissionService {
 	 * @throws Exception
 	 */
 	public List<String> listPublishableCategoryIdByPerson(EntityManagerContainer emc, String personName,
-			Boolean isAnonymous, List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds,
+			Boolean isAnonymous, List<String> unitNames, List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds,
 			List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, String documentType, String appType,
 			Integer maxCount, Boolean manager) throws Exception {
 		List<String> publishableCategoryInfoIds = new ArrayList<>();
 		List<String> allPublishableAppIds = null;
 
 		// 查询我可以发布文档的所有栏目ID列表（单从栏目信息层面判断，不涉及分类，未设置发布者，或者有发布者权限）
-		allPublishableAppIds = this.listPublishableAppIdByPerson(emc, personName, isAnonymous, unitNames, groupNames,
+		allPublishableAppIds = this.listPublishableAppIdByPerson(emc, personName, isAnonymous, unitNames, groupNames, roleNames,
 				inAppInfoIds, null, documentType, appType, maxCount);
 		if (ListTools.isEmpty(allPublishableAppIds)) {
 			allPublishableAppIds.add("无可发布栏目ID");
@@ -368,7 +376,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询指定用户可以管理的所有分类ID列表( with List copy )
-	 * 
+	 *
 	 * @param emc
 	 * @param personName
 	 * @return
@@ -425,7 +433,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询用户有权限访问的所有分类ID列表（ 不检测allPeopleView和allPeoplePublish, with List copy ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -495,7 +503,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询用户有权限访问的所有分类ID列表（ 不检测allPeopleView和allPeoplePublish, with List copy ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -577,7 +585,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询用户有权限访问的所有栏目ID列表（ 不检测allPeopleView, with List copy ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -592,7 +600,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询用户有权限访问的所有栏目ID列表（ 不检测allPeopleView, with List copy ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -707,7 +715,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询用户有权限发布文档的所有栏目ID列表（ 不检测allPeoplePublish, with List copy ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -715,14 +723,14 @@ public class CmsPermissionService {
 	 * @throws Exception
 	 */
 	private List<String> listPublishableAppIdsInPermission(EntityManagerContainer emc, String personName,
-			List<String> unitNames, List<String> groupNames, String documentType, Integer maxCount) throws Exception {
-		return listPublishableAppIdsInPermission(emc, personName, unitNames, groupNames, null, null, documentType,
+			List<String> unitNames, List<String> groupNames, List<String> roleNames, String documentType, Integer maxCount) throws Exception {
+		return listPublishableAppIdsInPermission(emc, personName, unitNames, groupNames, roleNames, null, null, documentType,
 				maxCount);
 	}
 
 	/**
 	 * 查询用户有权限发布文档的所有栏目ID列表（ 不检测allPeopleView, with List copy ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -732,7 +740,7 @@ public class CmsPermissionService {
 	 * @throws Exception
 	 */
 	private List<String> listPublishableAppIdsInPermission(EntityManagerContainer emc, String personName,
-			List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds,
+			List<String> unitNames, List<String> groupNames, List<String> roleNames, List<String> inAppInfoIds, List<String> excludAppInfoIds,
 			String documentType, Integer maxCount) throws Exception {
 		List<String> appInfoIds = null;
 		List<String> appInfoIds_out = new ArrayList<>();
@@ -769,6 +777,9 @@ public class CmsPermissionService {
 		if (ListTools.isNotEmpty(groupNames)) {
 			p_permission = cb.or(p_permission, root.get(AppInfo.publishableGroupList_FIELDNAME).in(groupNames));
 		}
+		if (ListTools.isNotEmpty(roleNames)) {
+			p_permission = cb.or(p_permission, root.get(AppInfo.publishableRoleList_FIELDNAME).in(roleNames));
+		}
 
 		p = CriteriaBuilderTools.predicate_and(cb, p, p_permission);
 		cq.select(root.get(AppInfo.id_FIELDNAME));
@@ -783,7 +794,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 将一个List追加到SourceList里
-	 * 
+	 *
 	 * @param result
 	 * @param sourceList
 	 */
@@ -801,7 +812,7 @@ public class CmsPermissionService {
 	/**
 	 * 查询所有未设置可见权限的AppInfo的ID列表( with List copy ) 全员可发布的栏目也包含在内：判断allPeopleView or
 	 * allPeoplePublish
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -831,7 +842,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询所有未设置发布权限的AppInfo的ID列表( with List copy ) 判断 allPeoplePublish
-	 * 
+	 *
 	 * @param emc
 	 * @return
 	 * @throws Exception
@@ -861,7 +872,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询所有用户都可以访问的分类ID列表(检测allPeopleView和allPeoplePublish)
-	 * 
+	 *
 	 * @param inAppInfoIds      - 过滤栏目ID列表
 	 * @param inCategoryIds     - 过滤分类ID列表
 	 * @param excludCategoryIds - 排队分类ID列表
@@ -912,7 +923,7 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询所有用户都可以发布的分类ID列表(检测allPeoplePublish)
-	 * 
+	 *
 	 * @param inAppInfoIds      - 过滤栏目ID列表
 	 * @param inCategoryIds     - 过滤分类ID列表
 	 * @param excludCategoryIds - 排队分类ID列表

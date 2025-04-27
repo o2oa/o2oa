@@ -59,8 +59,9 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 				try {
 					List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 					List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
+					List<String> roleNames = userManagerService.listRoleNamesByPerson(personName);
 					app_ids = permissionQueryService.listViewableAppIdByPerson(
-							personName, isAnonymous, unitNames, groupNames, null, null, documentType, null,1000 );
+							personName, isAnonymous, unitNames, groupNames, roleNames, null, null, documentType, null,1000 );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionSearchProcess( e,

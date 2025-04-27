@@ -55,7 +55,8 @@ public class ActionListWhatICanManage extends BaseAction {
 					try {
 						List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 						List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
-						app_ids = permissionQueryService.listManageableAppIdsByPerson( personName, unitNames, groupNames, null, null, null, "全部", 1000 );
+						List<String> roleNames = userManagerService.listRoleNamesByPerson( personName );
+						app_ids = permissionQueryService.listManageableAppIdsByPerson( personName, unitNames, groupNames, roleNames, null, null, null, "全部", 1000 );
 						if (app_ids != null && !app_ids.isEmpty()) {
 							try {
 								appInfoList = appInfoServiceAdv.list( app_ids );

@@ -27,7 +27,7 @@ public class ActionAppInfoManagerSave extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = null;
 		AppInfo appInfo = null;
-		Boolean check = true;		
+		Boolean check = true;
 
 		if( check ){
 			try {
@@ -39,7 +39,7 @@ public class ActionAppInfoManagerSave extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			try {
 				appInfo = appInfoServiceAdv.get( appId );
@@ -55,10 +55,10 @@ public class ActionAppInfoManagerSave extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ){
 			try {
-				appInfoServiceAdv.updateManagerPermission( appId, wi.getPersonList(), wi.getUnitList(), wi.getGroupList() );
+				appInfoServiceAdv.updateManagerPermission( appId, wi.getPersonList(), wi.getUnitList(), wi.getGroupList(), wi.getRoleList() );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionAppInfoPermissionSave( e, appId );
@@ -66,7 +66,7 @@ public class ActionAppInfoManagerSave extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		//更新完成
 		if( check ){
 			String description = "栏目："+appId+"权限变更";
@@ -76,11 +76,11 @@ public class ActionAppInfoManagerSave extends BaseAction {
 			wo.setId( appId );
 			result.setData( wo );
 		}
-		
+
 		if( check ) {
 			try {
-				new CmsBatchOperationPersistService().addOperation( 
-						CmsBatchOperationProcessService.OPT_OBJ_APPINFO, 
+				new CmsBatchOperationPersistService().addOperation(
+						CmsBatchOperationProcessService.OPT_OBJ_APPINFO,
 						CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  appId,  appId, "栏目管理权限变更：ID=" +  appId );
 			}catch( Exception e ) {
 				e.printStackTrace();
@@ -88,17 +88,20 @@ public class ActionAppInfoManagerSave extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wi{
-		
+
 		@FieldDescribe("人员列表")
 		private List<String> personList;
-		
+
 		@FieldDescribe("组织列表")
 		private List<String> unitList;
-		
+
 		@FieldDescribe("群组列表")
 		private List<String> groupList;
+
+		@FieldDescribe("角色列表")
+		private List<String> roleList;
 
 		public List<String> getPersonList() {
 			return personList;
@@ -122,6 +125,14 @@ public class ActionAppInfoManagerSave extends BaseAction {
 
 		public void setGroupList(List<String> groupList) {
 			this.groupList = groupList;
+		}
+
+		public List<String> getRoleList() {
+			return roleList;
+		}
+
+		public void setRoleList(List<String> roleList) {
+			this.roleList = roleList;
 		}
 	}
 

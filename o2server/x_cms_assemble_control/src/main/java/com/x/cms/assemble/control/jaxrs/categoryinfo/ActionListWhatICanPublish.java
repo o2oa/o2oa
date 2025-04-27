@@ -33,22 +33,26 @@ public class ActionListWhatICanPublish extends BaseAction {
 		List<Wo> wos = new ArrayList<>();
 		List<String> ids = null;
 		List<CategoryInfo> categoryInfoList = null;
-		Boolean check = true;
-		Boolean manager = false;
-		Boolean appManager = false;
-		Boolean appPublisher = false;
-		Boolean isAnonymous = effectivePerson.isAnonymous();
+		boolean check = true;
+		boolean manager = false;
+		boolean appManager = false;
+		boolean appPublisher = false;
+		boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
-
 
 		List<String> unitNames = null;
 		List<String> groupNames = null;
+		List<String> roleNames = null;
+		Business business = new Business(null);
+		manager = business.isManager( effectivePerson );
 
-		if( !isAnonymous  ) {
-			Business business = new Business(null);
-			manager = business.isManager( effectivePerson );
-			appManager = appInfoServiceAdv.isAppInfoManager( appId, personName, unitNames, groupNames );
-			appPublisher = appInfoServiceAdv.isAppInfoPublisher( appId, personName, unitNames, groupNames );
+		if( !isAnonymous && !manager  ) {
+			unitNames = userManagerService.listUnitNamesWithPerson( personName );
+			groupNames = userManagerService.listGroupNamesByPerson( personName );
+			roleNames = userManagerService.listRoleNamesByPerson(personName);
+
+			appManager = appInfoServiceAdv.isAppInfoManager(appId, personName, unitNames, groupNames, roleNames);
+			appPublisher = appInfoServiceAdv.isAppInfoPublisher(appId, personName, unitNames, groupNames, roleNames);
 		}
 
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, appId, isAnonymous, manager, appManager, appPublisher );
@@ -71,13 +75,9 @@ public class ActionListWhatICanPublish extends BaseAction {
 					if (check) {
 						List<String> inAppInfoIds = new ArrayList<>();
 						inAppInfoIds.add( appId );
-						if(!isAnonymous){
-							unitNames = userManagerService.listUnitNamesWithPerson( personName );
-							groupNames = userManagerService.listGroupNamesByPerson( personName );
-						}
 						try {
 							ids = permissionQueryService.listPublishableCategoryIdByPerson(
-									personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null,
+									personName, isAnonymous, unitNames, groupNames, roleNames, inAppInfoIds, null,
 									null, "全部", "all", 1000, false );
 						} catch (Exception e) {
 							check = false;

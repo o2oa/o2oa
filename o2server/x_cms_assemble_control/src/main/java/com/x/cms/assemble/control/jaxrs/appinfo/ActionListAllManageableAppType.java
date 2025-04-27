@@ -64,7 +64,8 @@ public class ActionListAllManageableAppType extends BaseAction {
 							if( !isManager && ListTools.isNotEmpty( appIdsForType ) ){
 								List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 								List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
-								appIdsForType = permissionQueryService.listManageableAppIdsByPerson(personName, unitNames, groupNames, null, null, appType, null, 99 );
+								List<String> roleNames = userManagerService.listRoleNamesByPerson( personName );
+								appIdsForType = permissionQueryService.listManageableAppIdsByPerson(personName, unitNames, groupNames, roleNames, null, null, appType, null, 99 );
 							}
 							if( appIdsForType == null ){
 								appIdsForType = new ArrayList<>();
@@ -80,13 +81,14 @@ public class ActionListAllManageableAppType extends BaseAction {
 				if( !isManager && ListTools.isNotEmpty( appIdsForType ) ){
 					List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 					List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
-					appIdsForType = permissionQueryService.listManageableAppIdsByPerson(personName, unitNames, groupNames, appIdsForType, null, null, null, 99 );
+					List<String> roleNames = userManagerService.listRoleNamesByPerson( personName );
+					appIdsForType = permissionQueryService.listManageableAppIdsByPerson(personName, unitNames, groupNames, roleNames, appIdsForType, null, null, null, 99 );
 				}
 
 				if( appIdsForType == null ){
 					appIdsForType = new ArrayList<>();
 				}
-				
+
 				if( appIdsForType.size() > 0 ) {
 					wos.add( new Wo( "未分类", Long.parseLong( appIdsForType.size() + "") ));
 				}
@@ -97,19 +99,19 @@ public class ActionListAllManageableAppType extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends GsonPropertyObject {
 		@FieldDescribe("栏目类别名称")
 		private String appType;
-		
+
 		@FieldDescribe("栏目数量")
 		private Long count;
-		
+
 		public Wo( String _appType, Long _count ) {
 			this.appType = _appType;
 			this.count = _count;
 		}
-		
+
 		public String getAppType() {
 			return appType;
 		}
@@ -123,5 +125,5 @@ public class ActionListAllManageableAppType extends BaseAction {
 			this.count = count;
 		}
 	}
-	
+
 }
