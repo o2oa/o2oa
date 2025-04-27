@@ -115,6 +115,8 @@ MWF.xApplication.process.Work.LP = {
     "submitQuickText": "选择[{route}]，意见：{opinion}{org}。",
     "addTaskQuickText": "选择[{route}{mode}]，意见：{opinion}，加签人：{org}。",
     "resetQuickText": "意见：{opinion}，重置给：{org}。",
+    "deleteQuickItemTitle": "删除快速选择记录",
+    "deleteQuickItemContent": "确定删除这条快速选择记录?",
 
     "users": "处理人",
     "goBackActivity": "退回到活动",

@@ -13,6 +13,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         goBackEnable: true,
         processOptions: {},
         mainColorEnable: true,
+        isQuickSelect : true,
         zIndex: 20001 //比正文编辑器痕迹窗口多1
     },
     initialize: function (container, task, options, form) {
@@ -53,7 +54,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
             this.changeAction( this.navi[0].key );
             if( this.navi.length < 2 )this.naviNode.hide();
-            if( this.processEnable || this.resetEnable || this.addTaskEnable ){
+            if( this.options.isQuickSelect && (this.processEnable || this.resetEnable || this.addTaskEnable) ){
                 this.loadQuickSelect();
             }else{
                 this.quickSelectNode.hide();
@@ -194,7 +195,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.goBack.load();
     },
     loadQuickSelect: function(){
-        if( !this.addTaskEnable && !this.resetEnable && !this.processEnable ){
+        if( !this.options.isQuickSelect || (!this.addTaskEnable && !this.resetEnable && !this.processEnable) ){
             if(this.quickSelector)this.quickSelector.hide();
             return;
         }
@@ -582,7 +583,7 @@ MWF.ProcessFlow.Reset = new Class({
         var n = nameText.length > 3 ? (nameText[0]+"、"+nameText[1]+"、"+nameText[2]+"...") : nameText.join(", ");
         var routeName = leftText+":"+n;
 
-        this.flow.quickSelector.saveData();
+        if(this.flow.quickSelector)this.flow.quickSelector.saveData();
         this.fireEvent("submit", [names, opinion, routeName, this.opinion.getValue()]);
     },
     getQuickData: function(){
@@ -674,7 +675,7 @@ MWF.ProcessFlow.AddTask = new Class({
         var n = nameText.length > 3 ? (nameText[0]+"、"+nameText[1]+"、"+nameText[2]+"...") : nameText.join(", ");
         var routeName = leftText+":"+n;
 
-        this.flow.quickSelector.saveData();
+        if(this.flow.quickSelector)this.flow.quickSelector.saveData();
         this.fireEvent("submit", [names, opinion, mode, before, routeName, this.opinion.getValue()]);
     },
     setQuickData: function( data ){
@@ -1217,7 +1218,7 @@ MWF.ProcessFlow.Processor = new Class({
                 if (appendTaskOrgItem) appendTaskOrgItem.setData([]);
             }];
 
-            this.flow.quickSelector.saveData();
+            if(this.flow.quickSelector)this.flow.quickSelector.saveData();
             this.fireEvent("submit", array);
         }.bind(this));
     },
@@ -2586,7 +2587,6 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
         // }
         var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.listMode( d );
         Promise.resolve(p).then(function (json) {
-            debugger;
              var list = this.filterData(json.data);
              var data = list.map(function (d) {
                  return {
@@ -2643,8 +2643,33 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             title.addClass( "o2flow-"+d.type+"-color" );
             var content = new Element("div.o2flow-quick-select-itemtext", {
                 text: "："+ d.text
-            }).inject( item )
-        }.bind(this))
+            }).inject( item );
+            new Element("div.o2flow-quick-select-itemaction.ooicon-close", {
+                events: {
+                    click: function (e) { _self.deleteItem(e, item); }
+                }
+            }).inject( item );
+        }.bind(this));
+    },
+    deleteItem: function (e, item){
+        this.flow.form.confirm("warn", e, this.flow.lp.deleteQuickItemTitle, this.flow.lp.deleteQuickItemContent, 300, 120, function(){
+            var d = item.retrieve("data");
+            var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.deleteMode( d.data.id );
+            p.then( function (){ item.destroy(); } );
+            this.close();
+        }, function(){
+            this.close();
+        }, {
+            postShow: function (dlg){
+                dlg.node.addEvent('click', function (e){ e.stopPropagation(); });
+                dlg.markNode_up.addEvent('click', function (e){ e.stopPropagation(); });
+                dlg.node.addEvent('mousedown', function (e){ e.stopPropagation(); });
+                dlg.markNode_up.addEvent('mousedown', function (e){ e.stopPropagation(); });
+                dlg.node.addEvent('touchstart', function (e){ e.stopPropagation(); });
+                dlg.markNode_up.addEvent('touchstart', function (e){ e.stopPropagation(); });
+            }
+        }, null, this.flow.form.json.confirmStyle, 20005);
+        e.stopPropagation();
     },
     filterData: function( data ){
         //var onekeyList = listData();

@@ -1224,7 +1224,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
             value = o2.filterUrl(value);
             this.node.setStyle(key, value);
-            
+
         }.bind(this));
         //this.node.setStyles(this.json.styles);
     },
@@ -2766,6 +2766,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var options = {
             "style": style || "default",
+            "isQuickSelect": this.json.isQuickSelect !== 'no',
             "onResize": function () {
                 if (resizeFun) resizeFun();
             },
@@ -3393,7 +3394,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
 
-    confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
+    confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style, zindex) {
         MWF.require("MWF.xDesktop.Dialog", function () {
             var size = this.container.getSize();
             var x = 0;
@@ -3449,6 +3450,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var opt = {
                 "title": title,
                 "style": style || "o2",
+                "zindex": zindex,
                 "top": y,
                 "left": x,
                 "fromTop": e.event.y,
@@ -3468,7 +3470,20 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "text": MWF.LP.process.button.cancel,
                         "action": cancel
                     }
-                ]
+                ],
+                "onPostLoad": function (){
+                    switch (typeOf(callback)){
+                        case 'function': callback(this); break;
+                        case 'object':
+                            if( callback.postLoad )callback.postLoad(this);
+                            break;
+                    }
+                },
+                "onPostShow": function (){
+                    if( typeOf(callback) === 'object' ){
+                        if( callback.postShow )callback.postShow(this);
+                    }
+                }
             };
 
 

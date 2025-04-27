@@ -190,9 +190,11 @@
     cursor: pointer;
     line-height: 24px;
     overflow: hidden;
-    padding: 10px 0px;
-    margin: 0px 10px;
+    padding: 10px 10px;
     border-bottom: 1px solid #dddddd;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 .o2flow-quick-select-item-active{
     background-color: #FB4747;
@@ -204,13 +206,23 @@
 }
 
 .o2flow-quick-select-itemtitle {
-    float: left;
+    width: 44px;
 }
 
 .o2flow-quick-select-itemtext {
+    flex: 1;
     overflow: hidden;
     /*white-space: nowrap;*/
     /*text-overflow: ellipsis;*/
+}
+
+
+.o2flow-quick-select-itemaction {
+    display: flex;
+    width: 20px;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .o2flow-section{
