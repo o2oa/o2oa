@@ -2,10 +2,15 @@
     <div class="systemconfig_area">
         <div class="app-layout">
             <div class="app-layout-preview">
-                <div class="top-bar mainColor_bg" v-if="!hiddenAppBar">{{ currentItem?.name || '' }}</div>
-                <div class="content" >
+                <div class="top-bar mainColor_bg" v-if="!hiddenAppBar && currentItem?.isNative !== true">{{
+                    currentItem?.name || '' }}</div>
+                <div class="content">
                     <div class="content-container" id="app_content"></div>
                     <div class="content-mask"></div>
+                    <div class="content-operation-button">
+                        <button class="mainColor_bg" v-if="currentItem" @click="updatePageItem">修改</button>
+                        <button class="mainColor_bg" v-if="currentItem" @click="deletePageItem">删除</button>
+                    </div>
                 </div>
                 <div class="bar">
                     <div class="item" v-for="(item, index) in ev" @click="clickItem(item)" :draggable="true"
@@ -26,12 +31,10 @@
                 </div>
             </div>
             <div class="app-layout-form">
-                <button class="mainColor_bg" v-if="currentItem" @click="updatePageItem">修改</button>
-                <button class="mainColor_bg" v-if="currentItem" @click="deletePageItem">删除</button>
-                <button class="mainColor_bg" v-if="ev.length < 5" @click="newPageItem">新增</button>
+                <button class="mainColor_bg" style="margin-left: 100px;" v-if="ev.length < 5" @click="newPageItem">新增</button>
             </div>
         </div>
-        <el-dialog v-model="dialogVisible" :title="dialogTitle" :close-on-click-modal="false"  @closed="closedDialog">
+        <el-dialog v-model="dialogVisible" :title="dialogTitle" :close-on-click-modal="false" @closed="closedDialog">
             <AppLayoutForm v-if="dialogVisible" :item="dialogPageItem" @savePageItem="(item) => {
                 console.debug('保存数据', item)
                 const index = ev.findIndex((p) => p.id === item.id)
@@ -45,7 +48,7 @@
                 }
                 save()
                 clickItem(item)
-                nextTick(()=>  dialogVisible = false)
+                nextTick(() => dialogVisible = false)
             }"></AppLayoutForm>
         </el-dialog>
 
@@ -55,7 +58,7 @@
 import { lp } from '@o2oa/component';
 import { ref, watch, onMounted, nextTick } from 'vue';
 import staticData from '../../../util/data'
-import {copyObject} from '../../../util/common'
+import { copyObject } from '../../../util/common'
 import AppLayoutForm from './AppLayoutForm.vue';
 
 const s = staticData()
@@ -74,7 +77,7 @@ const updatePageItem = () => {
     if (!currentItem.value) {
         return
     }
-    console.debug('=====> updatePageItem')
+    console.debug('=====> 打开更新页面')
     dialogPageItem.value = copyObject(currentItem.value);
     dialogTitle.value = '修改页面';
     dialogVisible.value = true;
@@ -105,10 +108,9 @@ const deletePageItem = () => {
 // 修改 isMain 参数
 const updateMainItem = (mainItem) => {
     ev.value = ev.value.map(item => ({
-    ...item,
-    isMain: item.id === mainItem.id
-  }));
-  console.debug(ev.value)
+        ...item,
+        isMain: item.id === mainItem.id
+    }));
 }
 
 const emit = defineEmits(['update:value', 'saveLayout']);
@@ -255,8 +257,8 @@ const save = () => {
 
 .app-layout-preview {
     position: relative;
-    width: 317px;
-    height: 580px;
+    width: 298px;
+    height: 648px;
     border: 1px solid #e7e7eb;
     display: flex;
     flex-direction: column;
@@ -275,6 +277,7 @@ const save = () => {
     height: calc(100% - 99px);
     position: relative;
 }
+
 .app-layout-preview .content .content-container {
     position: absolute;
     top: 0;
@@ -282,13 +285,30 @@ const save = () => {
     bottom: 0;
     right: 0;
 }
+
 .app-layout-preview .content .content-mask {
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
-    background-color: #0000003e;
+    background-color: #00000000;
+}
+
+.app-layout-preview .content .content-operation-button {
+    position: absolute;
+    top: 0;
+    left: 298px;
+    right: -80px;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+.app-layout-preview .content .content-operation-button button {
+    border-radius: 0px 100px 100px 0px!important;
+    margin-left: 0px!important;
 }
 
 .app-layout-preview .content .content-container img {

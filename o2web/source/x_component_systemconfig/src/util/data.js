@@ -41,11 +41,11 @@
                 "iconClass": "ooicon-config"
             }
         ],
-        homePageUrl: new URL("../assets/app_home.png", import.meta.url).href,
-        imPageUrl: new URL("../assets/app_im.png", import.meta.url).href,
-        contactPageUrl: new URL("../assets/app_contact.png", import.meta.url).href,
-        appPageUrl: new URL("../assets/app_application.png", import.meta.url).href,
-        settingPageUrl: new URL("../assets/app_setting.png", import.meta.url).href,
+        homePageUrl: new URL("../assets/app_home.jpg", import.meta.url).href,
+        imPageUrl: new URL("../assets/app_im.jpg", import.meta.url).href,
+        contactPageUrl: new URL("../assets/app_contact.jpg", import.meta.url).href,
+        appPageUrl: new URL("../assets/app_application.jpg", import.meta.url).href,
+        settingPageUrl: new URL("../assets/app_setting.jpg", import.meta.url).href,
     };
 
 } 
