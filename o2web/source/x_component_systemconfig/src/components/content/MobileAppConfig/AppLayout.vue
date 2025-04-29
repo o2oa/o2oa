@@ -9,7 +9,7 @@
                     <div class="content-mask"></div>
                     <div class="content-operation-button">
                         <button class="mainColor_bg" v-if="currentItem" @click="updatePageItem">修改</button>
-                        <button class="mainColor_bg" v-if="currentItem" @click="deletePageItem">删除</button>
+                        <button class="mainColor_bg" v-if="currentItem" @click="deletePageItem($event)">删除</button>
                     </div>
                 </div>
                 <div class="bar">
@@ -31,7 +31,8 @@
                 </div>
             </div>
             <div class="app-layout-form">
-                <button class="mainColor_bg" style="margin-left: 100px;" v-if="ev.length < 5" @click="newPageItem">新增</button>
+                <button class="mainColor_bg" style="margin-left: 100px;" v-if="ev.length < 5"
+                    @click="newPageItem">新增</button>
             </div>
         </div>
         <el-dialog v-model="dialogVisible" :title="dialogTitle" :close-on-click-modal="false" @closed="closedDialog">
@@ -55,7 +56,7 @@
     </div>
 </template>
 <script setup>
-import { lp } from '@o2oa/component';
+import { lp, component } from '@o2oa/component';
 import { ref, watch, onMounted, nextTick } from 'vue';
 import staticData from '../../../util/data'
 import { copyObject } from '../../../util/common'
@@ -88,10 +89,17 @@ const closedDialog = () => {
     dialogTitle.value = '';
 }
 // 删除页面
-const deletePageItem = () => {
+const deletePageItem = (e) => {
     if (!currentItem.value) {
         return
     }
+    component.confirm("warn", e, "删除页面", "确定要删除这个页面吗？", 380, 120, (dlg) => {
+        _realDeletePage();
+        dlg.close();
+    }, dlg => dlg.close());
+
+}
+const _realDeletePage = () => {
     const index = ev.value.findIndex((p) => p.id === currentItem.value.id)
     console.debug('删除', index)
     if (index > -1) {
@@ -142,7 +150,6 @@ watch(
     }
 );
 onMounted(() => {
-    console.debug(s)
     const c = ev.value.filter((e) => e.isMain === true)
     if (c && c.length > 0) {
         clickItem(c[0])
@@ -304,11 +311,12 @@ const save = () => {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    
+
 }
+
 .app-layout-preview .content .content-operation-button button {
-    border-radius: 0px 100px 100px 0px!important;
-    margin-left: 0px!important;
+    border-radius: 0px 100px 100px 0px !important;
+    margin-left: 0px !important;
 }
 
 .app-layout-preview .content .content-container img {

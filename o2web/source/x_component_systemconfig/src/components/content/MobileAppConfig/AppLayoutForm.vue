@@ -49,7 +49,7 @@
                 </div>
             </el-form-item>
             <el-form-item label="页面图标">
-                <div class="icon-btn">
+                <div class="icon-btn" @click="chooseIcon($event)">
                     <i :class="pageItem.iconClass + ' icon'"></i>
                 </div>
             </el-form-item>
@@ -62,6 +62,15 @@
                 <button class="mainColor_bg" @click.prevent="onSubmit()">保存</button>
             </el-form-item>
         </el-form>
+        <div class="icon-pick-container" v-if="showIconPicker">
+            <AppLayoutIconPicker :current="pageItem.iconClass" @picked="(icon) => {
+                console.debug('icon 选中 ', icon)
+                if (icon) {
+                    pageItem.iconClass = icon
+                }
+                showIconPicker = false
+            }"></AppLayoutIconPicker>
+        </div>
     </div>
 </template>
 
@@ -70,6 +79,7 @@ import { lp, component } from '@o2oa/component';
 import { ref, watch, onMounted } from 'vue';
 import staticData from '../../../util/data'
 import { loadPortals } from '../../../util/acrions'
+import AppLayoutIconPicker from './AppLayoutIconPicker.vue';
 
 
 const s = staticData()
@@ -107,6 +117,12 @@ const chooseNative = (item) => {
     pageItem.value = item
 }
 
+const showIconPicker = ref(false)
+const chooseIcon = (e) => {
+    console.debug(e)
+    showIconPicker.value = true
+}
+
 const onSubmit = () => {
     if (!pageItem.value.name) {
         component.notice("页面名称不能为空！", "error");
@@ -139,8 +155,18 @@ const save = () => {
     border-image: initial;
     border-radius: 3px;
     transition: 0.2s;
+    position: relative;
 }
-
+.icon-pick-container {
+    position: absolute;
+    left: 80px;
+    top: 60px;
+    width: 520px;
+    height: 200px;
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+}
 .app-layout-form .item_input {
     /* width: 450px; */
     margin-right: 30px;
@@ -155,6 +181,7 @@ const save = () => {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .al-checkbox-group {}
