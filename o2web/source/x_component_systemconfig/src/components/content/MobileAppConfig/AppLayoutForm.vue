@@ -49,9 +49,22 @@
                 </div>
             </el-form-item>
             <el-form-item label="页面图标">
-                <div class="icon-btn" @click="chooseIcon($event)">
-                    <i :class="pageItem.iconClass + ' icon'"></i>
+                <div class="icon-container">
+                    <div class="icon-btn"  @click="chooseIcon($event)">
+                        <i :class="pageItem.iconClass + ' icon'"></i>
+                    </div>
+                    <div class="icon-pick-container" v-if="showIconPicker">
+                        <AppLayoutIconPicker :current="pageItem.iconClass" @picked="(icon) => {
+                            console.debug('icon 选中 ', icon)
+                            if (icon) {
+                                pageItem.iconClass = icon
+                            }
+                            showIconPicker = false
+                        }"></AppLayoutIconPicker>
+                    </div>
                 </div>
+               
+               
             </el-form-item>
             <el-form-item label="是否主页">
                 <el-switch v-model="pageItem.isMain">
@@ -62,15 +75,7 @@
                 <button class="mainColor_bg" @click.prevent="onSubmit()">保存</button>
             </el-form-item>
         </el-form>
-        <div class="icon-pick-container" v-if="showIconPicker">
-            <AppLayoutIconPicker :current="pageItem.iconClass" @picked="(icon) => {
-                console.debug('icon 选中 ', icon)
-                if (icon) {
-                    pageItem.iconClass = icon
-                }
-                showIconPicker = false
-            }"></AppLayoutIconPicker>
-        </div>
+        
     </div>
 </template>
 
@@ -119,8 +124,7 @@ const chooseNative = (item) => {
 
 const showIconPicker = ref(false)
 const chooseIcon = (e) => {
-    console.debug(e)
-    showIconPicker.value = true
+   showIconPicker.value = true
 }
 
 const onSubmit = () => {
@@ -157,23 +161,19 @@ const save = () => {
     transition: 0.2s;
     position: relative;
 }
-.icon-pick-container {
-    position: absolute;
-    left: 80px;
-    top: 60px;
-    width: 520px;
-    height: 200px;
-    background-color: white;
-    border: 1px solid #dddddd;
-    border-radius: 3px;
-}
+
 .app-layout-form .item_input {
     /* width: 450px; */
     margin-right: 30px;
 }
 
-.app-layout-form .icon-btn {
+.app-layout-form .icon-container {
     margin-left: 10px;
+    width: 36px;
+    height: 36px;
+    position: relative;
+}
+.app-layout-form .icon-container .icon-btn {
     width: 36px;
     height: 36px;
     border: solid 1px #ebebeb;
@@ -182,6 +182,16 @@ const save = () => {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+}
+.app-layout-form .icon-container .icon-pick-container {
+    position: absolute;
+    width: 520px;
+    height: 200px;
+    bottom: 36px;
+    left: 36px;
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
 }
 
 .al-checkbox-group {}

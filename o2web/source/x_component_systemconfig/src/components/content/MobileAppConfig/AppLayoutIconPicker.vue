@@ -8,7 +8,7 @@
         <div class="app-layout-icon-container">
             <div class="app-layout-icon-list">
                 <div class="app-layout-icon-item" v-for="icon in iconList" :key="icon">
-                    <div :class="icon === currentIcon ? 'btn active' : 'btn'" @click="choose(icon)">
+                    <div :class="icon === currentIcon ? 'btn mainColor_bg' : 'btn'" @click="choose(icon)">
                         <i :class="`${icon} icon`"></i>
                     </div>
                 </div>
@@ -23,7 +23,6 @@ import { ref } from 'vue';
 import staticData from '../../../util/data'
 
 const emit = defineEmits(['picked']);
-
 
 const s = staticData()
 const props = defineProps({
@@ -42,14 +41,12 @@ const choose = (icon) => {
 const close = () => {
     emit('picked', null)
 }
-
-
-
 </script>
 <style scoped>
 .app-layout-icon-container {
     padding: 1rem;
     overflow: auto;
+    border-top: 1px solid #eee;
 }
 
 .app-layout-icon-header {
@@ -82,6 +79,7 @@ const close = () => {
 .app-layout-icon-item .btn {
     width: 100%;
     height: 100%;
+    border-radius: 3px;
 }
 
 .app-layout-icon-item .btn i {
