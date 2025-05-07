@@ -1,15 +1,5 @@
 package com.x.cms.core.entity.content;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.map.ListOrderedMap;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -17,6 +7,15 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.map.ListOrderedMap;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class Data extends ListOrderedMap<String, Object> {
 
@@ -78,17 +77,44 @@ public class Data extends ListOrderedMap<String, Object> {
 	}
 
 	public Object find(String path) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		return PropertyUtils.getProperty(this, path);
+		return this.find(StringUtils.split(path, "."));
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T find(String path, Class<T> cls, T defaultValue)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		Object o = PropertyUtils.getProperty(this, path);
+		Object o = this.find(StringUtils.split(path, "."));
 		if (null == o) {
 			return defaultValue;
 		}
 		return (T) o;
+	}
+
+	public Object find(String[] paths) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Object o = this;
+		for (String path : paths) {
+			if (StringUtils.isEmpty(path) || (null == o)) {
+				o = null;
+				break;
+			}
+			if (StringUtils.isNumeric(path)) {
+				if (o instanceof List) {
+					int idx = NumberUtils.toInt(path);
+					List<?> c = (List<?>) o;
+					if ((idx >= c.size()) || (idx < 0)) {
+						o = null;
+						break;
+					}
+					o = c.get(idx);
+				} else {
+					o = null;
+					break;
+				}
+			} else {
+				o = PropertyUtils.getProperty(o, path);
+			}
+		}
+		return o;
 	}
 
 	public static class DataDocument extends GsonPropertyObject {
