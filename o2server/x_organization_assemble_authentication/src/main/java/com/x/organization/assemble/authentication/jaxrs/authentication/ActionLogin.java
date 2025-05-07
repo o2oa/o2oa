@@ -24,69 +24,72 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionLogin extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLogin.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionLogin.class);
 
-	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
-			JsonElement jsonElement) throws Exception {
+    ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response,
+            EffectivePerson effectivePerson,
+            JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			if(BooleanUtils.isTrue(Config.person().getTwoFactorLogin())){
-				throw new ExceptionLoginDisable();
-			}
-			Wo wo = new Wo();
-			check(wi);
-			String password = this.password(wi.getPassword());
-			if (Config.token().isInitialManager(wi.getCredential())) {
-				if (!Config.token().verifyPassword(wi.getCredential(), password)) {
-					throw new ExceptionPersonNotExistOrInvalidPassword();
-				}
-				wo = this.manager(request, response, wi.getCredential(), Wo.class);
-			} else {
-				// 普通用户登录,也有可能拥有管理员角色.增加相同标识(name允许重复)的认证
-				List<String> people = this.listWithCredential(business, wi.getCredential());
-				Person person = null;
-				if (people.isEmpty()) {
-					throw new ExceptionPersonNotExistOrInvalidPassword();
-				} else if (people.size() == 1) {
-					person = this.personLogin(business, people.get(0), password, wi.getCredential());
-				} else {
-					person = this.peopleLogin(business, people, password, wi.getCredential());
-				}
-				if (null == person) {
-					throw new ExceptionPersonNotExistOrInvalidPassword();
-				} else {
-					wo = this.user(request, response, business, person, Wo.class);
-				}
-			}
-			result.setData(wo);
-			return result;
-		}
-	}
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Business business = new Business(emc);
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            if (BooleanUtils.isTrue(Config.person().getTwoFactorLogin()) || BooleanUtils.isFalse(
+                    Config.person().getUserPwdLogin())) {
+                throw new ExceptionLoginDisable();
+            }
+            Wo wo = new Wo();
+            check(wi);
+            String password = this.password(wi.getPassword());
+            if (Config.token().isInitialManager(wi.getCredential())) {
+                if (!Config.token().verifyPassword(wi.getCredential(), password)) {
+                    throw new ExceptionPersonNotExistOrInvalidPassword();
+                }
+                wo = this.manager(request, response, wi.getCredential(), Wo.class);
+            } else {
+                // 普通用户登录,也有可能拥有管理员角色.增加相同标识(name允许重复)的认证
+                List<String> people = this.listWithCredential(business, wi.getCredential());
+                Person person = null;
+                if (people.isEmpty()) {
+                    throw new ExceptionPersonNotExistOrInvalidPassword();
+                } else if (people.size() == 1) {
+                    person = this.personLogin(business, people.get(0), password,
+                            wi.getCredential());
+                } else {
+                    person = this.peopleLogin(business, people, password, wi.getCredential());
+                }
+                if (null == person) {
+                    throw new ExceptionPersonNotExistOrInvalidPassword();
+                } else {
+                    wo = this.user(request, response, business, person, Wo.class);
+                }
+            }
+            result.setData(wo);
+            return result;
+        }
+    }
 
-	private void check(Wi wi) throws ExceptionCredentialEmpty, ExceptionPasswordEmpty {
-		if (StringUtils.isEmpty(wi.getCredential())) {
-			throw new ExceptionCredentialEmpty();
-		}
-		if (StringUtils.isEmpty(wi.getPassword())) {
-			throw new ExceptionPasswordEmpty();
-		}
-	}
+    private void check(Wi wi) throws ExceptionCredentialEmpty, ExceptionPasswordEmpty {
+        if (StringUtils.isEmpty(wi.getCredential())) {
+            throw new ExceptionCredentialEmpty();
+        }
+        if (StringUtils.isEmpty(wi.getPassword())) {
+            throw new ExceptionPasswordEmpty();
+        }
+    }
 
-	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionLogin$Wi")
-	public static class Wi extends ActionLoginWi {
+    @Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionLogin$Wi")
+    public static class Wi extends ActionLoginWi {
 
-		private static final long serialVersionUID = -3566349910283010822L;
+        private static final long serialVersionUID = -3566349910283010822L;
 
-	}
+    }
 
-	public static class Wo extends AbstractWoAuthentication {
+    public static class Wo extends AbstractWoAuthentication {
 
-		private static final long serialVersionUID = -5397186305200946501L;
+        private static final long serialVersionUID = -5397186305200946501L;
 
-	}
+    }
 }

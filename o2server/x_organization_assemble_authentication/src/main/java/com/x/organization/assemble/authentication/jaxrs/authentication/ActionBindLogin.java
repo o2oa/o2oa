@@ -3,6 +3,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -31,6 +32,9 @@ class ActionBindLogin extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
+			if (BooleanUtils.isFalse(Config.person().getBindLogin())) {
+				throw new ExceptionLoginDisable();
+			}
 			Wo wo = new Wo();
 			wo.setTokenType(TokenType.anonymous);
 			wo.setName(EffectivePerson.ANONYMOUS);

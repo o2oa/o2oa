@@ -22,7 +22,7 @@ public class Person extends ConfigObject {
 	public static final Boolean DEFAULT_CAPTCHALOGIN = false;
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
-	public static final Boolean DEFAULT_FACELOGIN = true;
+	public static final Boolean DEFAULT_FACELOGIN = false;
 	public static final Boolean DEFAULT_SUPERPERMISSION = true;
 	public static final Boolean DEFAULT_PERSONUNITORDERBYASC = true;
 
@@ -57,6 +57,7 @@ public class Person extends ConfigObject {
 	public static final String DEFAULT_ENCRYPTTYPE = "";
 
 	public Person() {
+		this.userPwdLogin = true;
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
 		this.codeLogin = DEFAULT_CODELOGIN;
 		this.bindLogin = DEFAULT_BINDLOGIN;
@@ -84,6 +85,9 @@ public class Person extends ConfigObject {
 	}
 
 	public static final Integer MAX_PASSWORDPERIOD = 365 * 10;
+
+	@FieldDescribe("是否启用用户名密码登录,默认值:true.")
+	private Boolean userPwdLogin;
 
 	@FieldDescribe("是否启用图片验证码登录,默认值:false.")
 	private Boolean captchaLogin;
@@ -225,6 +229,10 @@ public class Person extends ConfigObject {
 		}
 	}
 
+	public Boolean getUserPwdLogin() {
+		return BooleanUtils.isNotFalse(this.userPwdLogin);
+	}
+
 	public Boolean getCaptchaLogin() {
 		return BooleanUtils.isTrue(this.captchaLogin);
 	}
@@ -257,6 +265,10 @@ public class Person extends ConfigObject {
 		File file = new File(Config.base(), Config.PATH_CONFIG_PERSON);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
 		BaseTools.executeSyncFile(Config.PATH_CONFIG_PERSON);
+	}
+
+	public void setUserPwdLogin(Boolean userPwdLogin) {
+		this.userPwdLogin = userPwdLogin;
 	}
 
 	public void setCodeLogin(Boolean codeLogin) {
