@@ -115,6 +115,7 @@ public class JobControlBuilder {
 		Control o = builder.build();
 		Control control = new Control();
 		control.setWorkTitle(workCompleted.getTitle());
+		control.setCreatorPerson(workCompleted.getCreatorPerson());
 		control.setWorkJob(workCompleted.getJob());
 		if (ifAllowManage) {
 			control.setAllowManage(o.getAllowManage());

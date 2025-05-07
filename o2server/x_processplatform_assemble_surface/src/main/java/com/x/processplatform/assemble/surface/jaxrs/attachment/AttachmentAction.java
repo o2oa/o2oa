@@ -1656,4 +1656,44 @@ public class AttachmentAction extends StandardJaxrsAction {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
+
+    @JaxrsMethodDescribe(value = "获取工单内的发票信息.", action = ActionGetInvoiceInfo.class)
+    @GET
+    @Path("invoice/{id}/jobOrWorkOrWorkCompleted/{jobOrWorkOrWorkCompleted}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void getInvoiceInfo(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("工作或已完成工作标识或job") @PathParam("jobOrWorkOrWorkCompleted") String jobOrWorkOrWorkCompleted,
+            @JaxrsParameterDescribe("发票文件标识") @PathParam("id") String id) {
+        ActionResult<ActionGetInvoiceInfo.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGetInvoiceInfo().execute(effectivePerson, id, jobOrWorkOrWorkCompleted);
+        } catch (Exception e) {
+            LOGGER.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "下载工单内的指定发票.", action = ActionDownloadInvoice.class)
+    @GET
+    @Path("download/invoice/{id}/jobOrWorkOrWorkCompleted/{jobOrWorkOrWorkCompleted}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void downloadInvoice(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("*发票文件标识") @PathParam("id") String id,
+            @JaxrsParameterDescribe("*工作或已完成工作标识或job") @PathParam("jobOrWorkOrWorkCompleted") String jobOrWorkOrWorkCompleted,
+            @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+        ActionResult<ActionDownloadInvoice.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDownloadInvoice().execute(effectivePerson, id, jobOrWorkOrWorkCompleted, fileName);
+        } catch (Exception e) {
+            LOGGER.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 }
