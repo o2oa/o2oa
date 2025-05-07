@@ -1,13 +1,5 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,14 +8,15 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.LdapTools;
-import com.x.base.core.project.tools.MD5Tool;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.express.assemble.authentication.jaxrs.authentication.ActionCaptchaLoginWi;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCaptchaLogin extends BaseAction {
 
@@ -35,7 +28,9 @@ class ActionCaptchaLogin extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		this.validate(wi);
-		if(BooleanUtils.isTrue(Config.person().getTwoFactorLogin())){
+		if(BooleanUtils.isTrue(Config.person().getTwoFactorLogin()) || (BooleanUtils.isFalse(
+				Config.person().getCaptchaLogin()) && BooleanUtils.isFalse(
+				Config.person().getUserPwdLogin()))){
 			throw new ExceptionLoginDisable();
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
