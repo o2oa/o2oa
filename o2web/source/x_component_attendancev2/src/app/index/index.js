@@ -45,7 +45,7 @@ export default content({
     this.eventBus = new EventBus();
   },
   _initOONav() {
-    const ooNav = document.querySelector('oo-nav')
+    const ooNav = document.querySelector('#app-attendance-v2-menu')
     ooNav.addEventListener('select', (e) => {
       this.bind.menu.currentMenu = e.detail.data
     })
