@@ -9,6 +9,10 @@ public class ActionModeWo extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -7141628080400713769L;
 
+	@FieldDescribe("启用用户名密码登陆.")
+	@Schema(description = "启用用户名密码登陆.")
+	private Boolean userPwdLogin = true;
+
 	@FieldDescribe("启用图片验证码登陆.")
 	@Schema(description = "启用图片验证码登陆.")
 	private Boolean captchaLogin = true;
@@ -67,5 +71,13 @@ public class ActionModeWo extends GsonPropertyObject {
 
 	public void setTwoFactorLogin(Boolean twoFactorLogin) {
 		this.twoFactorLogin = twoFactorLogin;
+	}
+
+	public Boolean getUserPwdLogin() {
+		return userPwdLogin;
+	}
+
+	public void setUserPwdLogin(Boolean userPwdLogin) {
+		this.userPwdLogin = userPwdLogin;
 	}
 }

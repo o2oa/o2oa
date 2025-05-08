@@ -7,11 +7,13 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
@@ -61,6 +63,7 @@ class ActionListFilterPaging extends BaseAction {
 			if(ListTools.isEmpty(conUnitList)){
 				Predicate p = toFilterPredicate(business, wi, effectivePerson);
 				wos.addAll(emc.fetchDescPaging(Person.class, Wo.copier, p, page, size, JpaObject.sequence_FIELDNAME));
+
 				this.updateControl(effectivePerson, business, wos);
 				count = emc.count(Person.class, p);
 			}else{
@@ -71,6 +74,14 @@ class ActionListFilterPaging extends BaseAction {
 				});
 				count = countWithUnit(business, wi, conUnitList);
 			}
+			wos.forEach(wo -> {
+				if (wo.getName().startsWith(Person.ENCRYPT)) {
+					wo.setName(Crypto.base64Decode(wo.getName().substring(Person.ENCRYPT.length())));
+				}
+				if (wo.getMobile().startsWith(Person.ENCRYPT)) {
+					wo.setMobile(Crypto.base64Decode(wo.getMobile().substring(Person.ENCRYPT.length())));
+				}
+			});
 
 			result.setData(wos);
 			result.setCount(count);
@@ -105,12 +116,18 @@ class ActionListFilterPaging extends BaseAction {
 		Predicate predicate = cb.conjunction();
 		if (StringUtils.isNotBlank(wi.getKey())) {
 			String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
+
 			Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.equal(root.get(Person_.distinguishedName), wi.getKey()));
+			if(BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())){
+				String enStr = Crypto.base64Encode(wi.getKey());
+				p = cb.or(p, cb.like(root.get(Person_.name), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+				p = cb.or(p, cb.like(root.get(Person_.mobile), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+			}
 			predicate = cb.and(predicate, p);
 		}
 		if(StringUtils.isNotBlank(wi.getStatus())){
@@ -164,6 +181,11 @@ class ActionListFilterPaging extends BaseAction {
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+			if(BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())){
+				String enStr = Crypto.base64Encode(wi.getKey());
+				p = cb.or(p, cb.like(root.get(Person_.name), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+				p = cb.or(p, cb.like(root.get(Person_.mobile), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+			}
 			p = cb.or(p, cb.equal(root.get(Person_.distinguishedName), wi.getKey()));
 			predicate = cb.and(predicate, p);
 		}
@@ -201,6 +223,11 @@ class ActionListFilterPaging extends BaseAction {
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 			p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+			if(BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())){
+				String enStr = Crypto.base64Encode(wi.getKey());
+				p = cb.or(p, cb.like(root.get(Person_.name), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+				p = cb.or(p, cb.like(root.get(Person_.mobile), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+			}
 			p = cb.or(p, cb.equal(root.get(Person_.distinguishedName), wi.getKey()));
 			predicate = cb.and(predicate, p);
 		}

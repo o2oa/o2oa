@@ -63,7 +63,7 @@ public class CaptchaGenerator {
 
         // 5. 绘制验证码文本
         // 设置字体 (可以随机选择字体增加难度)
-        g2d.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, height - 15)); // 字体大小根据图片高度调整
+        g2d.setFont(new Font(null, Font.BOLD | Font.ITALIC, height - 15)); // 字体大小根据图片高度调整
 
         // 设置文字颜色 (深色)
         g2d.setColor(getRandomColor(20, 130));

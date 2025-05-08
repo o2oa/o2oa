@@ -1,5 +1,7 @@
 package com.x.organization.core.entity;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.tools.Crypto;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,12 +17,14 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.x.organization.core.entity.enums.PersonStatusEnum;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -63,6 +67,8 @@ public class Person extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Person.table;
 
+	public static final String ENCRYPT = "$$";
+
 	@Override
 	public String getId() {
 		return id;
@@ -95,8 +101,11 @@ public class Person extends SliceJpaObject {
 
 	@Override
 	public void onPersist() throws Exception {
-		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
-		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
+		if(StringUtils.isEmpty(this.pinyin) || !this.name.startsWith(ENCRYPT)) {
+			this.pinyin = StringUtils.lowerCase(
+					PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
+			this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
+		}
 		if (null != this.birthday) {
 			this.age = DateUtils.toCalendar(new Date()).get(Calendar.YEAR)
 					- DateUtils.toCalendar(this.birthday).get(Calendar.YEAR);
@@ -106,14 +115,36 @@ public class Person extends SliceJpaObject {
 		if (StringUtils.isEmpty(this.unique)) {
 			this.unique = StringTools.uniqueToken();
 		}
-		this.distinguishedName = this.name + PersistenceProperties.distinguishNameSplit + this.unique
-				+ PersistenceProperties.distinguishNameSplit + PersistenceProperties.Person.distinguishNameCharacter;
+		if(StringUtils.isEmpty(this.distinguishedName) || !this.name.startsWith(ENCRYPT)) {
+			this.distinguishedName =
+					this.name + PersistenceProperties.distinguishNameSplit + this.unique
+							+ PersistenceProperties.distinguishNameSplit
+							+ PersistenceProperties.Person.distinguishNameCharacter;
+		}
 		/** 生成默认排序号 */
 		if (null == this.orderNumber) {
 			this.orderNumber = DateTools.timeOrderNumber();
 		}
 		if(StringUtils.isBlank(status)){
 			this.status = PersonStatusEnum.NORMAL.getValue();
+		}
+		if(BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())){
+			if(!this.name.startsWith(ENCRYPT)) {
+				this.name = ENCRYPT + Crypto.base64Encode(this.name);
+			}
+			if(!this.mobile.startsWith(ENCRYPT)) {
+				this.mobile = ENCRYPT + Crypto.base64Encode(this.mobile);
+			}
+		}
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if (this.getName().startsWith(ENCRYPT)) {
+			this.setName(Crypto.base64Decode(this.getName().substring(ENCRYPT.length())));
+		}
+		if (this.getMobile().startsWith(ENCRYPT)) {
+			this.setMobile(Crypto.base64Decode(this.getMobile().substring(ENCRYPT.length())));
 		}
 	}
 
@@ -312,7 +343,7 @@ public class Person extends SliceJpaObject {
 	public static final String mobile_FIELDNAME = "mobile";
 	@Flag
 	@FieldDescribe("必填,手机号.")
-	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + mobile_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + mobile_FIELDNAME)
 	/** 其他地区手机号不一致,所以这里使用外部校验,不使用mobileString */
 	@Index(name = TABLE + IndexNameMiddle + mobile_FIELDNAME)
 	@CheckPersist(allowEmpty = false, citationNotExists = @CitationNotExist(fields = mobile_FIELDNAME, type = Person.class))

@@ -78,6 +78,7 @@ public class Person extends ConfigObject {
 		this.enableSafeLogout = DEFAULT_ENABLESAFELOGOUT;
 		this.encryptType = DEFAULT_ENCRYPTTYPE;
 		this.xadminEnable = true;
+		this.personEncryptEnable = false;
 	}
 
 	public static Person defaultInstance() {
@@ -163,6 +164,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("是否启用超级管理员（xadmin）账户.")
 	private Boolean xadminEnable;
+
+	@FieldDescribe("是否启用用户信息中用户名称和手机号加密存储.")
+	private Boolean personEncryptEnable;
 
 	public String getEncryptType() {
 		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
@@ -394,5 +398,13 @@ public class Person extends ConfigObject {
 
 	public void setXadminEnable(Boolean xadminEnable) {
 		this.xadminEnable = xadminEnable;
+	}
+
+	public Boolean getPersonEncryptEnable() {
+		return BooleanUtils.isTrue(personEncryptEnable);
+	}
+
+	public void setPersonEncryptEnable(Boolean personEncryptEnable) {
+		this.personEncryptEnable = personEncryptEnable;
 	}
 }

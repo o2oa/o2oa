@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import com.x.base.core.project.tools.Crypto;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +63,14 @@ class ActionListNext extends BaseAction {
 					result.setData(wos);
 					result.setCount((long) wos.size());
 				}
-
+				result.getData().forEach(wo -> {
+					if (wo.getName().startsWith(Person.ENCRYPT)) {
+						wo.setName(Crypto.base64Decode(wo.getName().substring(Person.ENCRYPT.length())));
+					}
+					if (wo.getMobile().startsWith(Person.ENCRYPT)) {
+						wo.setMobile(Crypto.base64Decode(wo.getMobile().substring(Person.ENCRYPT.length())));
+					}
+				});
 				Co co = new Co(result.getData(), result.getCount());
 				CacheManager.put(business.cache(), cacheKey, co);
 			}
