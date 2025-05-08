@@ -1,8 +1,5 @@
 package com.x.query.assemble.surface.jaxrs.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -13,11 +10,14 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.jaxrs.WrapInteger;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionRowInsert extends BaseAction {
 
@@ -49,19 +49,25 @@ class ActionRowInsert extends BaseAction {
 			} else if (jsonElement.isJsonObject()) {
 				os.add(gson.fromJson(jsonElement, cls));
 			}
-			emc.beginTransaction(cls);
-			for (Object o : os) {
-				emc.persist((JpaObject) o, CheckPersistType.all);
+			int size = 0;
+			for(List<Object> subOs : ListTools.batch(os, 200)) {
+				emc.beginTransaction(cls);
+				for (Object o : subOs) {
+					emc.persist((JpaObject) o, CheckPersistType.all);
+				}
+				emc.commit();
+				size = size + subOs.size();
+				LOGGER.info("has insert {}/{} rows into table:{}.", size, os.size(), table.getName());
 			}
-			emc.commit();
+			os.clear();
 			Wo wo = new Wo();
-			wo.setValue(!os.isEmpty());
+			wo.setValue(size);
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends WrapInteger {
 
 		private static final long serialVersionUID = 314827464173768623L;
 

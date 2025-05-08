@@ -206,7 +206,7 @@ public class WorkControlBuilder {
 
 	/**
 	 * 判断是否可以对应用或者流程管理,额外判断是否review有permissionWrite标志
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -325,6 +325,7 @@ public class WorkControlBuilder {
 			return control;
 		}
 		control.setWorkTitle(work.getTitle());
+		control.setCreatorPerson(work.getCreatorPerson());
 		control.setWorkJob(work.getJob());
 		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
 				Pair.of(ifAllowVisit, this::computeAllowVisit),

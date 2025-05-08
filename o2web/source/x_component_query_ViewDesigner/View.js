@@ -736,6 +736,31 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             if (callback) callback();
         }.bind(this));
     },
+    checkColumnRepeat: function(){
+        var columnNames = [];
+        var repeatColumns = [];
+        this.json.data.selectList.each(function ( column, i ) {
+            if(column.column){
+                if( columnNames.contains(column.column) ){
+                    repeatColumns.push( column );
+                }else{
+                    columnNames.push( column.column );
+                }
+            }
+        });
+        if( repeatColumns.length ){
+            this.designer.notice( this.designer.lp.notice.columnNameRepeat.replace('{column}', repeatColumns.map(function (c){
+                var displayName = this.json.data.selectList.filter(function (item){
+                    return item.column === c.column;
+                }).map(function (item){
+                    return item.displayName;
+                }).join('、');
+                return c.column + "("+displayName+")";
+            }.bind(this)).join("；")), "error" , this.node, {"x": "left", "y": "bottom"});
+            return false;
+        }
+        return true;
+    },
     save: function(callback){
         //if (this.designer.tab.showPage==this.page){
             if (!this.data.name){
@@ -777,7 +802,11 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             }
         }
 
-        debugger;
+        if( !this.checkColumnRepeat() ){
+            return false;
+        }
+
+
             // var list;
             // if( this.data.data && this.data.data.where ){
             //     if( this.data.data.where.creatorIdentityList ){
@@ -1687,10 +1716,21 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (name=="path") this.resetTextNode();
         if( name==="isSwitchOrder" || name==="orderType" )this.resetTextNode();
         if (name=="column"){
-            this.view.json.data.orderList.each(function(order){
-                if (order.column==oldValue) order.column = this.json.column
+            var flag = true;
+            this.view.json.data.selectList.each(function(column){
+                if( column !== this.json && column.column === this.json.column){
+                    flag = false;
+                }
             }.bind(this));
-            if (this.view.json.data.group.column == oldValue) this.view.json.data.group.column = this.json.column;
+            if( flag ){
+                this.view.json.data.orderList.each(function(order){
+                    if (order.column==oldValue) order.column = this.json.column
+                }.bind(this));
+                if (this.view.json.data.group.column == oldValue) this.view.json.data.group.column = this.json.column;
+            }else{
+                this.view.designer.notice(MWF.APPDVD.LP.notice.columnNameExist, "error", this.node, {"x": "left", "y": "bottom"});
+                //this.json.column = oldValue;
+            }
         }
     },
     resetTextNode: function(){
@@ -1838,13 +1878,15 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         delete this;
     },
     _destroy: function(){},
-    addColumn: function(e, data){
+    addColumn: function(e, data, keepName){
         MWF.require("MWF.widget.UUID", function(){
             var json;
             if (data){
                 json = Object.clone(data);
-                json.id = (new MWF.widget.UUID).id;
-                json.column = (new MWF.widget.UUID).id;
+                if( !keepName ){
+                    json.id = (new MWF.widget.UUID).id;
+                    json.column = (new MWF.widget.UUID).id;
+                }
             }else{
                 var id = (new MWF.widget.UUID).id;
                 json = {

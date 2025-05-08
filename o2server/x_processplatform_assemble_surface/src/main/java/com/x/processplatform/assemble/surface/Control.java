@@ -47,6 +47,7 @@ public class Control extends GsonPropertyObject {
 	 * 权限必须要查的，下面两个字段不用二次查询 工作标题
 	 */
 	private String workTitle;
+	private String creatorPerson;
 	// 工作的job
 	private String workJob;
 
@@ -208,5 +209,13 @@ public class Control extends GsonPropertyObject {
 
 	public void setWorkJob(String workJob) {
 		this.workJob = workJob;
+	}
+
+	public String getCreatorPerson() {
+		return creatorPerson;
+	}
+
+	public void setCreatorPerson(String creatorPerson) {
+		this.creatorPerson = creatorPerson;
 	}
 }

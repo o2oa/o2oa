@@ -50,7 +50,9 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"deleteEvent": "¿Está seguro de que desea eliminar el evento actual?",
 		"selectProcess": "Seleccione una aplicación o flujo de trabajo",
 		"selectCMS": "Seleccione una categoría o clasificación de gestión de contenido",
-		"selectDateRange": "El tipo de período es un rango. Seleccione una fecha de inicio y una fecha de finalización."
+		"selectDateRange": "El tipo de período es un rango. Seleccione una fecha de inicio y una fecha de finalización.",
+		"columnNameExist": "El nombre de la columna ya existe",
+		"columnNameRepeat": "El nombre de la columna no puede repetirse: {column}"
 	},
 	"actionbar": {
 		"readhide": "Establecer si se muestra al leer",

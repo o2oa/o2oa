@@ -3,6 +3,7 @@ MWF.require("MWF.widget.O2Identity", null, false);
 MWF.xApplication.cms.ColumnManager.ColumnViewerSetting = new Class({
     Implements: [Options],
     options : {
+        orgTypes: ["person","unit","group"],
         objectId : "" //对象或分类的ID
         //objectType : "APPINFO", //CATEGORY
         //permission : "VIEW" //PUBLISH
@@ -44,6 +45,7 @@ MWF.xApplication.cms.ColumnManager.ColumnViewerSetting = new Class({
         this.loadOrgWidget( this.data.personList );
         this.loadOrgWidget( this.data.unitList );
         this.loadOrgWidget( this.data.groupList );
+        this.loadOrgWidget( this.data.roleList );
     },
     loadOrgWidget: function(value ){
         this.OrgWidgetList = this.OrgWidgetList || [];
@@ -65,6 +67,9 @@ MWF.xApplication.cms.ColumnManager.ColumnViewerSetting = new Class({
                 case "g":
                     var widget = new MWF.widget.O2Group(data, node, options);
                     break;
+                case "r":
+                    var widget = new MWF.widget.O2Role(data, node, options);
+                    break;
                 default:
                     var widget = new MWF.widget.O2Other( data, node, options);
             }
@@ -76,16 +81,17 @@ MWF.xApplication.cms.ColumnManager.ColumnViewerSetting = new Class({
 
         var opt  = {
             "type" : "",
-            "types" : ["person","unit","group"],
+            "types" : this.options.orgTypes,
             "title": this.lp.set,
             "count" : 0,
-            "values":  ( this.data.personList || [] ).combine( this.data.unitList || []).combine( this.data.groupList || [] ),
+            "values":  ( this.data.personList || [] ).combine( this.data.unitList || []).combine( this.data.groupList || [] ).combine( this.data.roleList || [] ),
             "expand": false,
             "onComplete": function( array ){
                 var data = {
                     personList : [],
                     unitList : [],
-                    groupList : []
+                    groupList : [],
+                    roleList: []
                 };
                 array.each( function( a ){
                     var dn = a.data.distinguishedName;
@@ -99,6 +105,9 @@ MWF.xApplication.cms.ColumnManager.ColumnViewerSetting = new Class({
                             break;
                         case "g":
                             data.groupList.push( dn );
+                            break;
+                        case "r":
+                            data.roleList.push( dn );
                             break;
                     }
                 });

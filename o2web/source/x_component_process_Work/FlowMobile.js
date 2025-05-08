@@ -45,7 +45,7 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
             }
             this.node.getParent().setStyle("height", "100%");
             this.changeAction( this.navi[0].key );
-            if( this.processEnable || this.resetEnable || this.addTaskEnable ){
+            if( this.options.isQuickSelect && (this.processEnable || this.resetEnable || this.addTaskEnable) ){
                 this.loadQuickSelect();
             }else{
                 this.quickSelectNode.hide();
@@ -179,6 +179,10 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
         this.goBack.load();
     },
     loadQuickSelect: function(){
+        if( !this.options.isQuickSelect || (!this.addTaskEnable && !this.resetEnable && !this.processEnable) ){
+            if(this.quickSelector)this.quickSelector.hide();
+            return;
+        }
         this.quickSelector = new MWF.ProcessFlow.widget.QuickSelectMobile(
             $(document.body), //this.form.app ? this.form.app.content :
             null, this.form.app, {}, {
@@ -1341,7 +1345,6 @@ MWF.ProcessFlow.widget.QuickSelectMobile = new Class({
         // }
         var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.listMode( d );
         Promise.resolve(p).then(function (json) {
-            debugger;
             var list = this.filterData(json.data);
             var data = list.map(function (d) {
                 return {
@@ -1393,13 +1396,18 @@ MWF.ProcessFlow.widget.QuickSelectMobile = new Class({
             }).inject( this.quickNode );
             item.store( "data", d );
             var title = new Element("div.o2flow-quick-select-itemtitle", {
-                text: this.flow.lp.flowActions[d.type]
+                text: this.flow.lp.flowActions[d.type] + "："
             }).inject( item );
             title.addClass( "o2flow-"+d.type+"-color" );
             var content = new Element("div.o2flow-quick-select-itemtext", {
-                text: "："+ d.text
-            }).inject( item )
-        }.bind(this))
+                text: d.text
+            }).inject( item );
+            new Element("div.o2flow-quick-select-itemaction.ooicon-close", {
+                events: {
+                    click: function (e) { _self.deleteItem(e, item); }
+                }
+            }).inject( item );
+        }.bind(this));
     }
 });
 

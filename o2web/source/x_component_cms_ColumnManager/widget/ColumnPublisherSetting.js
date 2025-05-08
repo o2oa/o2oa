@@ -1,6 +1,9 @@
 MWF.xDesktop.requireApp("cms.ColumnManager", "widget.ColumnViewerSetting", null, false);
 MWF.xApplication.cms.ColumnManager.ColumnPublisherSetting = new Class({
     Extends: MWF.xApplication.cms.ColumnManager.ColumnViewerSetting,
+    options: {
+        orgTypes: ["person","unit","group","role"]
+    },
     listData: function( callback ){
         this.app.restActions.listAppInfoPublishers(this.options.objectId, function(json){
             this.data = json.data;

@@ -56,7 +56,8 @@ public class ActionListManage extends BaseAction {
 				}else{
 					List<String> unitList = business.organization().unit().listWithPersonSupNested(effectivePerson.getDistinguishedName());
 					List<String> groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
-					if(appInfoServiceAdv.isAppInfoManager(appInfo, effectivePerson.getDistinguishedName(), unitList, groupList)){
+					List<String> roleList = business.organization().role().listWithPerson(effectivePerson.getDistinguishedName());
+					if(appInfoServiceAdv.isAppInfoManager(appInfo, effectivePerson.getDistinguishedName(), unitList, groupList, roleList)){
 						categoryInfoList = emc.listEqual(CategoryInfo.class, CategoryInfo.appId_FIELDNAME, appId);
 					}else{
 						EntityManager em = emc.get(CategoryInfo.class);

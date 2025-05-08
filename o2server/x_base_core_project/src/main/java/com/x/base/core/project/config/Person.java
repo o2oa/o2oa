@@ -22,7 +22,7 @@ public class Person extends ConfigObject {
 	public static final Boolean DEFAULT_CAPTCHALOGIN = false;
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
-	public static final Boolean DEFAULT_FACELOGIN = true;
+	public static final Boolean DEFAULT_FACELOGIN = false;
 	public static final Boolean DEFAULT_SUPERPERMISSION = true;
 	public static final Boolean DEFAULT_PERSONUNITORDERBYASC = true;
 
@@ -37,7 +37,7 @@ public class Person extends ConfigObject {
 
 	public static final String REGULAREXPRESSION_SCRIPT = "^\\((.+?)\\)$";
 
-	public static final String DEFAULT_PASSWORD = "(var v = person.getMobile();\\nreturn v.substring(v.length - 6);)";
+	public static final String DEFAULT_PASSWORD = "(this.$pwd=function(){function n(n,r){for(var t=\"\",o=0;o<n;o++){t+=r[Math.floor(Math.random()*r.length)]}return t}return n(8,\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\")+n(4,\"(#?!@$%^&*-)\")};; return this.$pwd(); )";
 	public static final Integer DEFAULT_PASSWORDPERIOD = 0;
 	public static final Integer DEFAULT_FAILUREINTERVAL = 10;
 	public static final Integer DEFAULT_FAILURECOUNT = 5;
@@ -46,8 +46,8 @@ public class Person extends ConfigObject {
 	public static final Boolean DEFAULT_TOKENCOOKIESECURE = false;
 	public static final Boolean DEFAULT_FIRSTLOGINMODIFYPWD = false;
 
-	public static final String DEFAULT_PASSWORDREGEX = "((?=.*\\d)(?=.*\\D)|(?=.*[a-zA-Z])(?=.*[^a-zA-Z]))^.{6,}$";
-	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
+	public static final String DEFAULT_PASSWORDREGEX = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+	public static final String DEFAULT_PASSWORDREGEXHINT = "8位以上,包含数字、字母和特殊字符.";
 	public static final String DEFAULT_LANGUAGE = "zh-CN";
 	public static final String DEFAULT_CAPTCHAFONT = "";
 	public static final String DEFAULT_TOKENNAME = "x-token";
@@ -57,6 +57,7 @@ public class Person extends ConfigObject {
 	public static final String DEFAULT_ENCRYPTTYPE = "";
 
 	public Person() {
+		this.userPwdLogin = true;
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
 		this.codeLogin = DEFAULT_CODELOGIN;
 		this.bindLogin = DEFAULT_BINDLOGIN;
@@ -84,6 +85,9 @@ public class Person extends ConfigObject {
 	}
 
 	public static final Integer MAX_PASSWORDPERIOD = 365 * 10;
+
+	@FieldDescribe("是否启用用户名密码登录,默认值:true.")
+	private Boolean userPwdLogin;
 
 	@FieldDescribe("是否启用图片验证码登录,默认值:false.")
 	private Boolean captchaLogin;
@@ -225,6 +229,10 @@ public class Person extends ConfigObject {
 		}
 	}
 
+	public Boolean getUserPwdLogin() {
+		return BooleanUtils.isNotFalse(this.userPwdLogin);
+	}
+
 	public Boolean getCaptchaLogin() {
 		return BooleanUtils.isTrue(this.captchaLogin);
 	}
@@ -257,6 +265,10 @@ public class Person extends ConfigObject {
 		File file = new File(Config.base(), Config.PATH_CONFIG_PERSON);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
 		BaseTools.executeSyncFile(Config.PATH_CONFIG_PERSON);
+	}
+
+	public void setUserPwdLogin(Boolean userPwdLogin) {
+		this.userPwdLogin = userPwdLogin;
 	}
 
 	public void setCodeLogin(Boolean codeLogin) {

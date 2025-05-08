@@ -1617,7 +1617,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         scriptEditor: '脚本编辑器',
         lineNumber: '显示行号',
 
-        defaultParameters: '默认参数'
+        defaultParameters: '默认参数',
+        useQuickSelect: '使用快速选择'
     },
     smartbi: {
         nosetup: '请先安装SmartBI应用',

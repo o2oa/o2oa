@@ -107,6 +107,7 @@ public class WorkCompletedControlBuilder {
 			return control;
 		}
 		control.setWorkTitle(workCompleted.getTitle());
+		control.setCreatorPerson(workCompleted.getCreatorPerson());
 		control.setWorkJob(workCompleted.getJob());
 		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
 				Pair.of(ifAllowVisit, this::computeAllowVisit),

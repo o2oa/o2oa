@@ -38,6 +38,9 @@ class ActionTwoFactoryLogin extends BaseAction {
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
         Wo wo = new Wo();
         wo.setValue(true);
+        if (BooleanUtils.isFalse(Config.person().getTwoFactorLogin())) {
+            throw new ExceptionLoginDisable();
+        }
         this.validate(wi);
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);

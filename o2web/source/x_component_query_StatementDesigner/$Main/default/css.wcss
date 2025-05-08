@@ -22,7 +22,7 @@
 		"border-left": "1px solid #505050",
 		"background-color": "#FFF",
 		"-webkit-user-select": "none",
-		"-moz-user-select": "none" 
+		"-moz-user-select": "none"
 	},
     "statementListTitleNode": {
         "height": "26px",

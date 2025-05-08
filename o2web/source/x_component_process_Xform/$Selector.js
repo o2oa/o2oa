@@ -35,7 +35,28 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     resetOption: function () {
         this.node.empty();
         this.setOptions();
-        this.fireEvent("resetOption");
+        if( this.moduleSelectAG && this.moduleSelectAG.then ){
+            this.moduleSelectAG.then(function(){
+                if( this.json.type === 'Select' )this._checkData();
+                this.fireEvent("resetOption");
+            }.bind(this));
+        }else{
+            if( this.json.type === 'Select' )this._checkData();
+            this.fireEvent("resetOption");
+        }
+    },
+    _checkData: function (){
+        var d1 = this.getData(), d2 = this._getBusinessData();
+        switch (o2.typeOf(d1)) {
+            case "string":
+                if( d1 !== d2 )this._setBusinessData(d1);
+                break;
+            case 'array':
+                if (d1.join(",") !== d2.join(",")) {
+                    this._setBusinessData(d1);
+                }
+                break;
+        }
     },
     /**
      * @summary 获取选择项。

@@ -16,7 +16,7 @@ import com.x.cms.core.entity.AppInfoConfig;
 /**
  * 对栏目信息进行管理的服务类（高级）
  * 高级服务器可以利用Service完成事务控制
- * 
+ *
  * @author O2LEE
  */
 public class AppInfoServiceAdv {
@@ -55,7 +55,7 @@ public class AppInfoServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	public AppInfo getWithFlag( String flag ) throws Exception {
 		if ( StringUtils.isEmpty( flag )) {
 			throw new Exception("id is null.");
@@ -187,7 +187,7 @@ public class AppInfoServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	public List<String> getWithAlias(String appAlias) throws Exception {
 		if ( StringUtils.isEmpty(appAlias )) {
 			return null;
@@ -198,7 +198,7 @@ public class AppInfoServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	public void saveAppInfoIcon( String appId, String base64, String iconMainColor ) throws Exception {
 		if ( StringUtils.isEmpty(appId )) {
 			throw new Exception("appId is null");
@@ -231,9 +231,9 @@ public class AppInfoServiceAdv {
 	 * @param personList
 	 * @param unitList
 	 * @param groupList
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public void updateManagerPermission(String appId, List<String> personList, List<String> unitList, List<String> groupList) throws Exception {
+	public void updateManagerPermission(String appId, List<String> personList, List<String> unitList, List<String> groupList, List<String> roleList) throws Exception {
 		if ( StringUtils.isEmpty( appId )) {
 			throw new Exception("appId is empty.");
 		}
@@ -243,22 +243,23 @@ public class AppInfoServiceAdv {
 			appInfo.setManageablePersonList(personList);
 			appInfo.setManageableUnitList(unitList);
 			appInfo.setManageableGroupList(groupList);
+			appInfo.setManageableRoleList(roleList);
 			emc.check(appInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 更新栏目发布权限信息
 	 * @param appId
 	 * @param personList
 	 * @param unitList
 	 * @param groupList
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public void updatePublisherPermission(String appId, List<String> personList, List<String> unitList, List<String> groupList) throws Exception {
+	public void updatePublisherPermission(String appId, List<String> personList, List<String> unitList, List<String> groupList, List<String> roleList) throws Exception {
 		if ( StringUtils.isEmpty( appId )) {
 			throw new Exception("appId is empty.");
 		}
@@ -268,20 +269,21 @@ public class AppInfoServiceAdv {
 			appInfo.setPublishablePersonList(personList);
 			appInfo.setPublishableUnitList(unitList);
 			appInfo.setPublishableGroupList(groupList);
+			appInfo.setPublishableRoleList(roleList);
 			emc.check(appInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 更新栏目可见权限信息
 	 * @param appId
 	 * @param personList
 	 * @param unitList
 	 * @param groupList
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void updateViewerPermission(String appId, List<String> personList, List<String> unitList, List<String> groupList) throws Exception {
 		if ( StringUtils.isEmpty( appId )) {
@@ -330,15 +332,15 @@ public class AppInfoServiceAdv {
 	 * 判断用户是否为指定栏目的管理员
 	 * @param appId
 	 * @param distinguishedName
-	 * @param groupNames 
-	 * @param unitNames 
+	 * @param groupNames
+	 * @param unitNames
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public Boolean isAppInfoManager(String appId, String distinguishedName, List<String> unitNames, List<String> groupNames) throws Exception {
+	public Boolean isAppInfoManager(String appId, String distinguishedName, List<String> unitNames, List<String> groupNames, List<String> roleNames) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( appId, AppInfo.class );
-			return isAppInfoManager(appInfo, distinguishedName, unitNames, groupNames);
+			return isAppInfoManager(appInfo, distinguishedName, unitNames, groupNames, roleNames);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -354,10 +356,10 @@ public class AppInfoServiceAdv {
 	 * @return
 	 * @throws Exception
 	 */
-	public Boolean isAppInfoPublisher(String appId, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
+	public Boolean isAppInfoPublisher(String appId, String personName, List<String> unitNames, List<String> groupNames, List<String> roleNames ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( appId, AppInfo.class );
-			return isAppInfoPublisher(appInfo, personName, unitNames, groupNames);
+			return isAppInfoPublisher(appInfo, personName, unitNames, groupNames, roleNames);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -380,17 +382,17 @@ public class AppInfoServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 判断用户是否为指定栏目的管理员
 	 * @param appInfo
 	 * @param distinguishedName
-	 * @param groupNames 
-	 * @param unitNames 
+	 * @param groupNames
+	 * @param unitNames
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public Boolean isAppInfoManager( AppInfo appInfo, String distinguishedName, List<String> unitNames, List<String> groupNames) throws Exception {
+	public Boolean isAppInfoManager( AppInfo appInfo, String distinguishedName, List<String> unitNames, List<String> groupNames, List<String> roleNames) throws Exception {
 		if( appInfo != null ) {
 			if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )){
 				if( appInfo.getManageablePersonList().contains( distinguishedName )) {
@@ -400,10 +402,15 @@ public class AppInfoServiceAdv {
 			if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )){
 				if( ListTools.containsAny( unitNames, appInfo.getManageableUnitList()) ) {
 					return true;
-				}	
+				}
 			}
 			if( ListTools.isNotEmpty( appInfo.getManageableGroupList() )){
 				if( ListTools.containsAny( groupNames, appInfo.getManageableGroupList()) ) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( appInfo.getManageableRoleList() )){
+				if( ListTools.containsAny( roleNames, appInfo.getManageableRoleList()) ) {
 					return true;
 				}
 			}
@@ -420,9 +427,9 @@ public class AppInfoServiceAdv {
 	 * @return
 	 * @throws Exception
 	 */
-	public Boolean isAppInfoPublisher( AppInfo appInfo, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
+	public Boolean isAppInfoPublisher( AppInfo appInfo, String personName, List<String> unitNames, List<String> groupNames, List<String> roleNames ) throws Exception {
 		if( appInfo != null )  {
-			if( appInfo != null ) {				
+			if( appInfo != null ) {
 				if( ListTools.isNotEmpty( appInfo.getPublishablePersonList() )){
 					if( appInfo.getPublishablePersonList().contains( personName )) {
 						return true;
@@ -431,14 +438,19 @@ public class AppInfoServiceAdv {
 				if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )){
 					if( ListTools.containsAny( unitNames, appInfo.getPublishableUnitList()) ) {
 						return true;
-					}	
+					}
 				}
 				if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )){
 					if( ListTools.containsAny( groupNames, appInfo.getPublishableGroupList()) ) {
 						return true;
 					}
 				}
-				
+				if( ListTools.isNotEmpty( appInfo.getPublishableRoleList() )){
+					if( ListTools.containsAny( roleNames, appInfo.getPublishableRoleList()) ) {
+						return true;
+					}
+				}
+
 				if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )){
 					if( appInfo.getManageablePersonList().contains( personName )) {
 						return true;
@@ -447,13 +459,18 @@ public class AppInfoServiceAdv {
 				if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )){
 					if( ListTools.containsAny( unitNames, appInfo.getManageableUnitList()) ) {
 						return true;
-					}	
+					}
 				}
 				if( ListTools.isNotEmpty( appInfo.getManageableGroupList() )){
 					if( ListTools.containsAny( groupNames, appInfo.getManageableGroupList()) ) {
 						return true;
 					}
-				}				
+				}
+				if( ListTools.isNotEmpty( appInfo.getManageableRoleList() )){
+					if( ListTools.containsAny( roleNames, appInfo.getManageableRoleList()) ) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -478,14 +495,14 @@ public class AppInfoServiceAdv {
 			if( ListTools.isNotEmpty( appInfo.getViewableUnitList() )){
 				if( ListTools.containsAny( unitNames, appInfo.getViewableUnitList()) ) {
 					return true;
-				}	
+				}
 			}
 			if( ListTools.isNotEmpty( appInfo.getViewableGroupList() )){
 				if( ListTools.containsAny( groupNames, appInfo.getViewableGroupList()) ) {
 					return true;
 				}
 			}
-			
+
 			if( ListTools.isNotEmpty( appInfo.getPublishablePersonList() )){
 				if( appInfo.getPublishablePersonList().contains( personName )) {
 					return true;
@@ -494,14 +511,14 @@ public class AppInfoServiceAdv {
 			if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )){
 				if( ListTools.containsAny( unitNames, appInfo.getPublishableUnitList()) ) {
 					return true;
-				}	
+				}
 			}
 			if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )){
 				if( ListTools.containsAny( groupNames, appInfo.getPublishableGroupList()) ) {
 					return true;
 				}
 			}
-			
+
 			if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )){
 				if( appInfo.getManageablePersonList().contains( personName )) {
 					return true;
@@ -510,7 +527,7 @@ public class AppInfoServiceAdv {
 			if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )){
 				if( ListTools.containsAny( unitNames, appInfo.getManageableUnitList()) ) {
 					return true;
-				}	
+				}
 			}
 			if( ListTools.isNotEmpty( appInfo.getManageableGroupList() )){
 				if( ListTools.containsAny( groupNames, appInfo.getManageableGroupList()) ) {
@@ -538,7 +555,7 @@ public class AppInfoServiceAdv {
 	/**
 	 * 获取系统内已经存在的所有的栏目类别
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listAllAppType() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

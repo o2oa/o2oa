@@ -124,12 +124,12 @@ const personData = ref();
 const passwordScript = ref('');
 const passwordText = ref('');
 const passwordPeriod = ref(0);
-const passwordLength = ref([6,30]);
+const passwordLength = ref([8,30]);
 const passwordRuleValues = ref({
   useLowercase: true,
   useNumber: true,
   useUppercase: false,
-  useSpecial: false
+  useSpecial: true
 });
 const rsaEnable = ref(false);
 const firstLoginModifyPwd = ref(false);

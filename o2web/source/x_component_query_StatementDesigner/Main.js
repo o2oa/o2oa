@@ -74,8 +74,21 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         }).inject(this.content);
     },
     addKeyboardEvents: function(){
+        if( !MWF.shortcut )MWF.require("MWF.xDesktop.shortcut");
+        this.addEvent("copy", function(){
+            this.copyModule();
+        }.bind(this));
+        this.addEvent("paste", function(){
+            this.pasteModule();
+        }.bind(this));
+        this.addEvent("cut", function(){
+            this.cutModule();
+        }.bind(this));
         this.addEvent("keySave", function(e){
             this.keySave(e);
+        }.bind(this));
+        this.addEvent("keyDelete", function(e){
+            this.keyDelete(e);
         }.bind(this));
     },
     keySave: function(e){
@@ -84,6 +97,51 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             e.preventDefault();
         }
     },
+    keyDelete: function(){
+        if (this.shortcut) {
+            if (this.view.currentSelectedModule) {
+                var item = this.view.currentSelectedModule;
+                item["delete"]();
+            }
+        }
+    },
+
+    copyModule: function( keepName ){
+        if (this.shortcut) {
+            if ( this.statement.currentSelectedModule) {
+                var item = this.statement.currentSelectedModule;
+                MWF.clipboard.data = {
+                    "type": "statement",
+                    "data": item.json,
+                    "keepName": keepName
+                };
+            }
+        }
+    },
+    cutModule: function(){
+        if (this.shortcut) {
+            if (this.statement.currentSelectedModule) {
+                this.copyModule( true );
+                var item = this.statement.currentSelectedModule;
+                item.destroy();
+            }
+        }
+    },
+    pasteModule: function(){
+        if (this.shortcut) {
+            if (MWF.clipboard.data) {
+                if (MWF.clipboard.data.type === "statement") {
+                    if (this.statement.currentSelectedModule) {
+                        var item = this.statement.currentSelectedModule;
+                        var data = MWF.clipboard.data.data;
+
+                        item.addColumn(null, data, MWF.clipboard.data.keepName);
+                    }
+                }
+            }
+        }
+    },
+
     getApplication:function(callback){
         if (!this.application){
             this.actions.getApplication(this.options.application, function(json){
@@ -594,7 +652,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     setDesignerStatementResize: function(){
         var size = this.designerContentNode.getSize();
         var contentHeight;
-        debugger;
+
         if( this.statement && this.statement.selectMode && this.statement.selectMode.contains("view") ){
             this.designerContentResizeNode.show();
             this.designerStatementArea.show();
@@ -687,7 +745,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         this.statementListResizeNode.setStyle("height", ""+y+"px");
     },
 
-	
+
 	//loadStatement------------------------------------------
     loadStatement: function(callback){
 	    debugger;

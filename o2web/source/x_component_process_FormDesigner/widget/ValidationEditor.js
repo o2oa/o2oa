@@ -11,11 +11,11 @@ MWF.xApplication.process.FormDesigner.widget.ValidationEditor = new Class({
 		this.setOptions(options);
 		this.node = $(node);
         this.designer = designer;
-		
+
 		this.path = "../x_component_process_FormDesigner/widget/$ValidationEditor/";
 		this.cssPath = "../x_component_process_FormDesigner/widget/$ValidationEditor/"+this.options.style+"/css.wcss";
 		this._loadCss();
-		
+
 		this.items = [];
 	},
     load: function(data){
@@ -256,6 +256,14 @@ MWF.xApplication.process.FormDesigner.widget.ValidationEditor = new Class({
                 break;
             }
         }
+
+        var v = this.operateorSelectNode.options[this.operateorSelectNode.selectedIndex].value;
+        if (v && (v!="isnull") && (v!="notnull")){
+            this.valueInputNode.setStyle("display", "inline");
+        }else{
+            this.valueInputNode.setStyle("display", "none");
+        }
+
         if (data.value) this.valueInputNode.set("value", data.value);
         if (data.prompt) this.promptInputNode.set("value", data.prompt);
     },
