@@ -6,6 +6,209 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "44232612",
+      "name": "renwu",
+      "font_class": "renwu",
+      "unicode": "e760",
+      "unicode_decimal": 59232
+    },
+    {
+      "icon_id": "44180158",
+      "name": "zaotui",
+      "font_class": "zaotui",
+      "unicode": "e759",
+      "unicode_decimal": 59225
+    },
+    {
+      "icon_id": "44180159",
+      "name": "waiqin",
+      "font_class": "waiqin",
+      "unicode": "e75a",
+      "unicode_decimal": 59226
+    },
+    {
+      "icon_id": "44180157",
+      "name": "calendar备份 4",
+      "font_class": "a-calendarbeifen4",
+      "unicode": "e75b",
+      "unicode_decimal": 59227
+    },
+    {
+      "icon_id": "44180156",
+      "name": "kuanggong",
+      "font_class": "kuanggong",
+      "unicode": "e75c",
+      "unicode_decimal": 59228
+    },
+    {
+      "icon_id": "44180155",
+      "name": "qingjia",
+      "font_class": "qingjia",
+      "unicode": "e75d",
+      "unicode_decimal": 59229
+    },
+    {
+      "icon_id": "44180153",
+      "name": "chidao",
+      "font_class": "chidao",
+      "unicode": "e75e",
+      "unicode_decimal": 59230
+    },
+    {
+      "icon_id": "44180154",
+      "name": "working_hours",
+      "font_class": "working_hours",
+      "unicode": "e75f",
+      "unicode_decimal": 59231
+    },
+    {
+      "icon_id": "44124250",
+      "name": "canyue",
+      "font_class": "canyue",
+      "unicode": "e758",
+      "unicode_decimal": 59224
+    },
+    {
+      "icon_id": "44118322",
+      "name": "stop",
+      "font_class": "stop1",
+      "unicode": "e757",
+      "unicode_decimal": 59223
+    },
+    {
+      "icon_id": "44092171",
+      "name": "person2",
+      "font_class": "person2",
+      "unicode": "e756",
+      "unicode_decimal": 59222
+    },
+    {
+      "icon_id": "44091857",
+      "name": "more_3",
+      "font_class": "more_3",
+      "unicode": "e754",
+      "unicode_decimal": 59220
+    },
+    {
+      "icon_id": "44091703",
+      "name": "m",
+      "font_class": "m1",
+      "unicode": "e755",
+      "unicode_decimal": 59221
+    },
+    {
+      "icon_id": "44091688",
+      "name": "new talk",
+      "font_class": "a-newtalk",
+      "unicode": "e752",
+      "unicode_decimal": 59218
+    },
+    {
+      "icon_id": "44091687",
+      "name": "networking_click",
+      "font_class": "networking_click",
+      "unicode": "e753",
+      "unicode_decimal": 59219
+    },
+    {
+      "icon_id": "43825232",
+      "name": "lifa",
+      "font_class": "lifa",
+      "unicode": "e74f",
+      "unicode_decimal": 59215
+    },
+    {
+      "icon_id": "43825231",
+      "name": "haocai",
+      "font_class": "haocai",
+      "unicode": "e750",
+      "unicode_decimal": 59216
+    },
+    {
+      "icon_id": "43825230",
+      "name": "xiyi",
+      "font_class": "xiyi",
+      "unicode": "e751",
+      "unicode_decimal": 59217
+    },
+    {
+      "icon_id": "43552073",
+      "name": "zhibiao",
+      "font_class": "zhibiao",
+      "unicode": "e74e",
+      "unicode_decimal": 59214
+    },
+    {
+      "icon_id": "43409488",
+      "name": "not_great",
+      "font_class": "not_great",
+      "unicode": "e74c",
+      "unicode_decimal": 59212
+    },
+    {
+      "icon_id": "43409487",
+      "name": "like",
+      "font_class": "like",
+      "unicode": "e74d",
+      "unicode_decimal": 59213
+    },
+    {
+      "icon_id": "43382312",
+      "name": "database",
+      "font_class": "database",
+      "unicode": "e749",
+      "unicode_decimal": 59209
+    },
+    {
+      "icon_id": "43372484",
+      "name": "process-cancel2",
+      "font_class": "process-cancel21",
+      "unicode": "e74b",
+      "unicode_decimal": 59211
+    },
+    {
+      "icon_id": "43372485",
+      "name": "process-cancel",
+      "font_class": "process-cancel2",
+      "unicode": "e74a",
+      "unicode_decimal": 59210
+    },
+    {
+      "icon_id": "43372368",
+      "name": "error",
+      "font_class": "error1",
+      "unicode": "e748",
+      "unicode_decimal": 59208
+    },
+    {
+      "icon_id": "43321433",
+      "name": "logo",
+      "font_class": "logo",
+      "unicode": "e747",
+      "unicode_decimal": 59207
+    },
+    {
+      "icon_id": "42179749",
+      "name": "phone",
+      "font_class": "phone1",
+      "unicode": "e744",
+      "unicode_decimal": 59204
+    },
+    {
+      "icon_id": "42179792",
+      "name": "send",
+      "font_class": "send1",
+      "unicode": "e745",
+      "unicode_decimal": 59205
+    },
+    {
+      "icon_id": "42180051",
+      "name": "icon_gongsinews",
+      "font_class": "icon_gongsinews",
+      "unicode": "e746",
+      "unicode_decimal": 59206
+    },
+    {
       "icon_id": "42968749",
       "name": "daiban",
       "font_class": "daiban",
@@ -1008,7 +1211,7 @@
     },
     {
       "icon_id": "42287229",
-      "name": "create",
+      "name": "create；加号",
       "font_class": "create",
       "unicode": "e6a8",
       "unicode_decimal": 59048

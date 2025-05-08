@@ -10,7 +10,6 @@
     /* align-items: start; */
     gap: 1em;
     padding: 1em;
-    grid-template-columns: 4fr 1fr;
 }
 
 .form-layout .page-app * {
@@ -174,6 +173,10 @@
 .form-layout div[mwftype='widget'].dragging {
     opacity: 0.4;
     box-shadow: 0 0 0 2px var(--oo-color-main);
+}
+.form-layout div[mwftype='widget'].deleting {
+    opacity: 0.4;
+    box-shadow: 0 0 0 2px var(--oo-color-highlight);
 }
 .form-layout .dragging-node {
     opacity: 0.9;

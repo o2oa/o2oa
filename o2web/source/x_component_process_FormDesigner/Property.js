@@ -2935,7 +2935,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this));
     },
     loadActionArea: function(){
-        debugger;
 	    var multiActionArea = this.propertyContent.getElements(".MWFMultiActionArea");
         multiActionArea.each(function(node){
             var name = node.get("name");

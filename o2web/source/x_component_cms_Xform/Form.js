@@ -1269,7 +1269,6 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         },
         publishDocument: function (callback, slience) {
             this.fireEvent("beforePublish");
-            debugger;
             if (layout.mobile) {
                 document.body.mask({
                     "inject": {"where": "bottom", "target": document.body},

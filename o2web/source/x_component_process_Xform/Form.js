@@ -448,6 +448,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
+        
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;

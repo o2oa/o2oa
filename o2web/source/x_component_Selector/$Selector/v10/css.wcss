@@ -559,7 +559,7 @@
 
 	"selectorItemCategoryChildrenNode": {
 	    "overflow": "hidden",
-	    "margin-left": "0"
+	    "margin-left": "1em"
 	},
 
 	"dutyInputDialog":{

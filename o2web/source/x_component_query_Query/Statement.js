@@ -1475,6 +1475,18 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
     },
     setOpenWork: function (td, column) {
         td.setStyle("cursor", "pointer");
+        td.addEvents({
+            "mouseover": function(){
+                td.setStyles({
+                    "color": "var(--oo-color-main)"
+                });
+            }.bind(this),
+            "mouseout": function(){
+                td.setStyles({
+                    "color": "unset"
+                });
+            }.bind(this)
+        })
         if (column.clickCode) {
             if (!this.view.Macro) {
                 MWF.require("MWF.xScript.Macro", function () {

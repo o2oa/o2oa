@@ -39,10 +39,11 @@
       "overflow": "hidden"
 	},
 	"topNode": {
-      "height": "2.857em",
+      "padding": "0.2em 0",
       "background-color": "#F7f7f7",
       "overflow": "hidden",
       "display": "flex",
+      "flex-wrap": "wrap",
       "align-items": "center",
       "border-top-left-radius": "4px",
       "border-top-right-radius": "4px"

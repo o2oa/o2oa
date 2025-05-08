@@ -20,8 +20,14 @@ MWF.xApplication.Selector.Process = new Class({
     },
     loadSelectItems: function(addToNext){
         this.processAction.listApplicationStartable(function(json){
-            if (json.data.length){
-                json.data.each(function(data){
+            var applications = json.data;
+            if (this.options.application){
+                applications = applications.filter(function(app){
+                    return app.name === this.options.application;
+                }.bind(this));
+            }
+            if (applications.length){
+                applications.each(function(data){
                     if (data.processList && data.processList.length){
                         var category = this._newItemCategory(data, this, this.itemAreaNode);
                         data.processList.each(function(d){
