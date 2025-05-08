@@ -1,67 +1,72 @@
 <template>
   <div class="systemconfig_area">
     <div v-if="appStyle">
-      <BaseItem
-        :title="lp._appConfig.mobileIndex"
-        :info="lp._appConfig.mobileIndexInfo"
-        :config="mobileIndex"
-        :allowEditor="true"
-        type="select"
-        :options="portalList"
-        @changeConfig="saveMobileIndex"
-      ></BaseItem>
+      <!-- 主页布局 -->
+      <div class="item_title">{{ lp._appConfig.mobileHomePageLayout }}</div>
+      <div class="item_info" v-html="lp._appConfig.mobileHomePageLayoutInfo"></div>
+      <BaseBoolean v-model:value="enableHomePageLayout" @change="
+        (value) => {
+          enableHomePageLayout = value;
+          if (!value) {
+            if (appStyle.extendParam) {
+              delete appStyle.extendParam.homePageList ;
+            }
+          } else {
+            if (!appStyle.extendParam) {
+              appStyle.extendParam = {};
+            }
+            appStyle.extendParam.homePageList = s.defaultAppHomePageList;
+          }
+          saveAppStyle(appStyle);
+        }
+      "></BaseBoolean>
+      <!-- 新版主页布局配置 -->
+        <AppLayout v-if="enableHomePageLayout" v-model:value="appStyle.extendParam.homePageList" :images="appStyle.images" @saveLayout="
+        (list) => {
+          if (!appStyle.extendParam) {
+              appStyle.extendParam = {};
+            }
+            appStyle.extendParam.homePageList = list;
+            saveAppStyle(appStyle);
+        }
+        "></AppLayout>
+      <!-- 老版首页配置 -->
+      <div v-if="!enableHomePageLayout">
+        <BaseItem :title="lp._appConfig.mobileIndex" :info="lp._appConfig.mobileIndexInfo" :config="mobileIndex"
+          :allowEditor="true" type="select" :options="portalList" @changeConfig="saveMobileIndex"></BaseItem>
 
-      <div class="item_title">{{ lp._appConfig.appIndexCenteredTitle }}</div>
-      <div class="item_info" v-html="lp._appConfig.appIndexCenteredInfo"></div>
-      <BaseBoolean
-        v-model:value="appStyle.indexCentered"
-        @change="
+        <div class="item_title">{{ lp._appConfig.appIndexCenteredTitle }}</div>
+        <div class="item_info" v-html="lp._appConfig.appIndexCenteredInfo"></div>
+        <BaseBoolean v-model:value="appStyle.indexCentered" @change="
           (value) => {
             appStyle.indexCentered = value;
             saveAppStyle(appStyle);
           }
-        "
-      ></BaseBoolean>
+        "></BaseBoolean>
 
-      <div class="item_title" v-if="appStyle.indexCentered == false">
-        {{ lp._appConfig.appIndexPage }}
-      </div>
-      <div
-        class="item_info"
-        v-if="appStyle.indexCentered == false"
-        v-html="lp._appConfig.appIndexPageInfo"
-      ></div>
-      <div class="item_input_area" v-if="appStyle.indexCentered == false">
-        <el-checkbox v-model="appIndexPagesCheckValues.home" disabled>{{
-          lp._appConfig.appIndexPageHome
-        }}</el-checkbox
-        ><br />
-        <el-checkbox
-          @change="saveAppIndexPagesCheckValues"
-          v-model="appIndexPagesCheckValues.im"
-          >{{ lp._appConfig.appIndexPageIM }}</el-checkbox
-        ><br />
-        <el-checkbox
-          @change="saveAppIndexPagesCheckValues"
-          v-model="appIndexPagesCheckValues.contact"
-          >{{ lp._appConfig.appIndexPageContact }}</el-checkbox
-        ><br />
-        <el-checkbox
-          @change="saveAppIndexPagesCheckValues"
-          v-model="appIndexPagesCheckValues.app"
-          >{{ lp._appConfig.appIndexPageApp }}</el-checkbox
-        ><br />
-        <el-checkbox v-model="appIndexPagesCheckValues.settings" disabled>{{
-          lp._appConfig.appIndexPageSettings
-        }}</el-checkbox>
+        <div class="item_title" v-if="appStyle.indexCentered == false">
+          {{ lp._appConfig.appIndexPage }}
+        </div>
+        <div class="item_info" v-if="appStyle.indexCentered == false" v-html="lp._appConfig.appIndexPageInfo"></div>
+        <div class="item_input_area" v-if="appStyle.indexCentered == false">
+          <el-checkbox v-model="appIndexPagesCheckValues.home" disabled>{{
+            lp._appConfig.appIndexPageHome
+            }}</el-checkbox><br />
+          <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.im">{{
+            lp._appConfig.appIndexPageIM }}</el-checkbox><br />
+          <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.contact">{{
+            lp._appConfig.appIndexPageContact }}</el-checkbox><br />
+          <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.app">{{
+            lp._appConfig.appIndexPageApp }}</el-checkbox><br />
+          <el-checkbox v-model="appIndexPagesCheckValues.settings" disabled>{{
+            lp._appConfig.appIndexPageSettings
+            }}</el-checkbox>
+        </div>
       </div>
 
       <!-- 首页列表过滤 -->
       <div class="item_title">{{ lp._appConfig.appIndexCmsFilterTitle }}</div>
-      <div
-        class="item_info"
-        v-html="lp._appConfig.appIndexCmsFilterCategoryInfo"
-      ></div>
+      <div class="item_info" v-html="lp._appConfig.appIndexCmsFilterCategoryInfo"></div>
       <div class="item_info">
         <div class="item_value mainColor_color" style="height: auto">
           {{ categroyListText }}
@@ -72,10 +77,7 @@
       </div>
 
       <div class="item_title">{{ lp._appConfig.appIndexTaskFilterTitle }}</div>
-      <div
-        class="item_info"
-        v-html="lp._appConfig.appIndexTaskFilterProcessInfo"
-      ></div>
+      <div class="item_info" v-html="lp._appConfig.appIndexTaskFilterProcessInfo"></div>
       <div class="item_info">
         <div class="item_value mainColor_color" style="height: auto">
           {{ processListText }}
@@ -86,33 +88,21 @@
       </div>
 
       <div class="item_title">{{ lp._appConfig.systemMessageSwitch }}</div>
-      <div
-        class="item_info"
-        v-html="lp._appConfig.systemMessageSwitchInfo"
-      ></div>
-      <BaseBoolean
-        v-model:value="appStyle.systemMessageSwitch"
-        @change="
+      <div class="item_info" v-html="lp._appConfig.systemMessageSwitchInfo"></div>
+      <BaseBoolean v-model:value="appStyle.systemMessageSwitch" @change="
+        (value) => {
+          appStyle.systemMessageSwitch = value;
+          saveAppStyle(appStyle);
+        }
+      "></BaseBoolean>
+      <div v-if="appStyle.systemMessageSwitch == true">
+        <div class="item_info" v-html="lp._appConfig.systemMessageCanClickInfo"></div>
+        <BaseBoolean v-model:value="appStyle.systemMessageCanClick" @change="
           (value) => {
-            appStyle.systemMessageSwitch = value;
+            appStyle.systemMessageCanClick = value;
             saveAppStyle(appStyle);
           }
-        "
-      ></BaseBoolean>
-      <div v-if="appStyle.systemMessageSwitch == true">
-        <div
-          class="item_info"
-          v-html="lp._appConfig.systemMessageCanClickInfo"
-        ></div>
-        <BaseBoolean
-          v-model:value="appStyle.systemMessageCanClick"
-          @change="
-            (value) => {
-              appStyle.systemMessageCanClick = value;
-              saveAppStyle(appStyle);
-            }
-          "
-        ></BaseBoolean>
+        "></BaseBoolean>
       </div>
 
       <!-- <BaseItem
@@ -135,28 +125,19 @@
       <div class="item_info" v-html="lp._appConfig.nativeAppListInfo"></div>
       <div v-for="m in appStyle.nativeAppList">
         <div class="native_app">
-          <BaseBoolean
-            :label="m.name"
-            v-model:value="m.enable"
-            @change="
-              (value) => {
-                m.enable = value;
-                saveAppStyle(appStyle);
-              }
-            "
-            :label-style="{ fontWeight: 'bold' }"
-          ></BaseBoolean>
+          <BaseBoolean :label="m.name" v-model:value="m.enable" @change="
+            (value) => {
+              m.enable = value;
+              saveAppStyle(appStyle);
+            }
+          " :label-style="{ fontWeight: 'bold' }"></BaseBoolean>
 
-          <BaseItem
-                :config="m.displayName"
-                :allowEditor="true"
-                @changeConfig="
-                  (value) => {
-                    m.displayName = value;
-                    saveAppStyle(appStyle);
-                  }
-                "
-              />
+          <BaseItem :config="m.displayName" :allowEditor="true" @changeConfig="
+            (value) => {
+              m.displayName = value;
+              saveAppStyle(appStyle);
+            }
+          " />
         </div>
       </div>
     </div>
@@ -175,7 +156,11 @@ import {
 } from "@/util/acrions";
 import BaseItem from "@/components/item/BaseItem.vue";
 import BaseBoolean from "@/components/item/BaseBoolean";
+import staticData from "@/util/data"
+import AppLayout from "./AppLayout.vue"
 
+const s = staticData()
+const enableHomePageLayout = ref(false); // 移动端主页布局是否开启
 const appStyle = ref();
 const portalList = ref({});
 const mobileIndex = computed(() => {
@@ -328,25 +313,15 @@ const loadCategoryList = () => {
 const load = () => {
   getAppStyle().then((data) => {
     appStyle.value = data;
-    //     {
-    //   indexPortal: data.indexPortal,
-    //   indexType: data.indexType,
-    //   nativeAppList: data.nativeAppList,
-    //   simpleMode: data.simpleMode,
-    //   systemMessageSwitch: data.systemMessageSwitch,
-    //   indexCentered: data.indexCentered,
-    //   systemMessageCanClick: data.systemMessageCanClick,
-    //   appExitAlert: data.appExitAlert,
-    //   contactPermissionView: data.contactPermissionView,
-    //   processFilterList: data.processFilterList,
-    //   cmsCategoryFilterList: data.cmsCategoryFilterList,
-    // };
     if (data.appIndexPages && data.appIndexPages.length > 0) {
       appIndexPagesCheckValues.value.im = data.appIndexPages.indexOf("im") > -1;
       appIndexPagesCheckValues.value.contact =
         data.appIndexPages.indexOf("contact") > -1;
       appIndexPagesCheckValues.value.app =
         data.appIndexPages.indexOf("app") > -1;
+    }
+    if (data.extendParam && data.extendParam.homePageList) { // 是否有app主页布局数据
+      enableHomePageLayout.value = true;
     }
     loadProcessList();
     loadCategoryList();
@@ -369,6 +344,7 @@ load();
   margin-right: 20px;
   margin-left: 80px;
 }
+
 .native_app {
   display: flex;
   flex-direction: row;
