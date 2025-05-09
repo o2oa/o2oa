@@ -395,6 +395,10 @@ MWF.xApplication.Selector.Person = new Class({
 
             this.node.inject(this.container);
 
+            if( this.options.width || this.options.height ){
+                this.setSize()
+            }
+
             if (this.options.style !== "v10"){
                 this.node.position({
                     relativeTo: this.container,
@@ -412,10 +416,6 @@ MWF.xApplication.Selector.Person = new Class({
                     "y": [0, size.y - nodeSize.y]
                 }
             });
-
-            if( this.options.width || this.options.height ){
-                this.setSize()
-            }
 
             this.setEvent();
 
