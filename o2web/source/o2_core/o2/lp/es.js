@@ -478,6 +478,7 @@ o2.LP={
 		"loginAction": "Iniciar sesión",
 		"autoLogin": "Iniciar automáticamente la próxima vez",
 		"signUp": "Registrarse",
+		"disableAllLoginNote": "El inicio de sesión ha sido deshabilitado",
 		"forgetPassword": "¿Olvidó su contraseña?",
 		"inputYourUserName": "Ingrese su nombre de usuario",
 		"inputYourPassword": "Ingrese su contraseña",

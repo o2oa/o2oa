@@ -164,6 +164,13 @@
 	"background-color" : "#fff",
 	"overflow" : "hidden"
   },
+"disableLoginArea": {
+	"font-size": "18px",
+	"display": "flex",
+	"height": "200px",
+	"align-items": "center",
+	"justify-content": "center"
+},
   "inputUser": {
 	"input::-ms-clear" : "display:none",
 	"color" : "#666",
@@ -274,7 +281,7 @@
   "inputVerificationCode" : {
 	"color" : "#666",
 	"font-size" : "16px",
-	"width": "108px",
+	"width": "72px",
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
@@ -293,7 +300,7 @@
   "inputVerificationCode2" : {
 	"color" : "#666",
 	"font-size" : "16px",
-	"width": "172px",
+	"width": "170px",
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",
@@ -332,7 +339,7 @@
 	"margin-left" : "20px",
 	"color" : "#fff",
 	"font-size" : "14px",
-	"width": "80px",
+	"width": "100px",
 	"height": "42px",
 	"line-height": "42px",
 	"background-color":"#3c75b7",
