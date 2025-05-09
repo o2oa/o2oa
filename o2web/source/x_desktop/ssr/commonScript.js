@@ -153,10 +153,10 @@ const fetch = function(url, options = {}) {
             // 获取响应码
             const responseCode = httpURLConnection.getResponseCode();
 
-            const getResponseBody = function(inputStream){
+            const getResponseBody = function(inputStream, encode){
                 const JavaInputStreamReader = Java.type('java.io.InputStreamReader');
                 const JavaBufferedReader = Java.type('java.io.BufferedReader');
-                const reader = new JavaBufferedReader(new JavaInputStreamReader(inputStream));
+                const reader = new JavaBufferedReader(new JavaInputStreamReader(inputStream, encode));
                 let inputLine;
                 const responseData = [];
                 while ((inputLine = reader.readLine()) !== null) {
@@ -179,8 +179,8 @@ const fetch = function(url, options = {}) {
                 headers: httpURLConnection.getHeaderFields(),
                 error: httpURLConnection.getErrorStream(),
 
-                text: async () => getResponseBody(inputStream),
-                json: async () => JSON.parse(getResponseBody(inputStream)),
+                text: async (encode = 'utf-8') => getResponseBody(inputStream, encode),
+                json: async (encode = 'utf-8') => JSON.parse(getResponseBody(inputStream, encode)),
 
                 blob: async () => {
                     const byteArray = inputStream.readAllBytes();
