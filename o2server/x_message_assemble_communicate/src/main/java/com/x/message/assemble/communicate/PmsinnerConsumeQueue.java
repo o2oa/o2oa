@@ -8,6 +8,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,9 +32,9 @@ public class PmsinnerConsumeQueue extends AbstractQueue<Message> {
 			PmsInnerMessage innerMessage = new PmsInnerMessage();
 			innerMessage.setPerson(message.getPerson());
 			innerMessage.setMessage(message.getTitle());
-			JsonObject e = extra(message);
+			Object e = extra(message);
 			if (e != null) {
-				Map<String, JsonObject> jsonExtras = new HashMap<>();
+				Map<String, Object> jsonExtras = new HashMap<>();
 				jsonExtras.put("business", e);
 				innerMessage.setJsonExtras(jsonExtras);
 			}
@@ -59,7 +60,7 @@ public class PmsinnerConsumeQueue extends AbstractQueue<Message> {
 		}
 	}
 
-	private JsonObject extra(Message message) {
+	private BaseMessageExtra extra(Message message) {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Message 消息：{}",   message.toString());
 		}
@@ -73,32 +74,29 @@ public class PmsinnerConsumeQueue extends AbstractQueue<Message> {
 			case MessageConnector.TYPE_REVIEW_CREATE:
 				String work = DingdingConsumeQueue.OuterMessageHelper.getWorkIdFromBody(message.getBody());
 				if (StringUtils.isNotEmpty(work)) {
-					WorkExtra workExtra = new WorkExtra(work);
-					return XGsonBuilder.instance().toJsonTree(workExtra).getAsJsonObject();
+                    return new WorkExtra(work);
 				}
 				break;
 			case MessageConnector.TYPE_MEETING_INVITE:
-				return XGsonBuilder.instance().toJsonTree(BaseMessageExtra.meetingExtra()).getAsJsonObject();
+				return BaseMessageExtra.meetingExtra();
 			case MessageConnector.TYPE_CMS_PUBLISH:
 			case MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR:
 				String docId = DingdingConsumeQueue.OuterMessageHelper.getCmsDocumentId(message.getBody());
 				if (StringUtils.isNotEmpty(docId)) {
-					DocExtra docExtra = new DocExtra(docId);
-					return XGsonBuilder.instance().toJsonTree(docExtra).getAsJsonObject();
+                    return new DocExtra(docId);
 				}
 				break;
 			case MessageConnector.TYPE_IM_CREATE:
 				String conversationId = getStringValue(message.getBody(), "conversationId");
 				if (StringUtils.isNotEmpty(conversationId)) {
-					ChatExtra chatExtra = new ChatExtra(conversationId);
-					return XGsonBuilder.instance().toJsonTree(chatExtra).getAsJsonObject();
+					return new ChatExtra(conversationId);
 				}
 				break;
 			case MessageConnector.TYPE_ATTENDANCE_CHECK_IN_ALERT:
 			case MessageConnector.TYPE_ATTENDANCE_CHECK_IN_EXCEPTION:
-				return XGsonBuilder.instance().toJsonTree(BaseMessageExtra.attendanceExtra()).getAsJsonObject();
+				return BaseMessageExtra.attendanceExtra();
 			case MessageConnector.TYPE_CALENDAR_ALARM:
-				return XGsonBuilder.instance().toJsonTree(BaseMessageExtra.calendarExtra()).getAsJsonObject();
+				return BaseMessageExtra.calendarExtra();
 
 		}
 
