@@ -7,7 +7,7 @@ MWF.xDesktop.Authentication = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {
-        "style": "default",
+        "style": "flat",
         // "width": "650",
         // "height": "480"
         "width": "420",
@@ -91,7 +91,7 @@ MWF.xDesktop.Authentication = new Class({
                             window.location.reload();
                         }
                     }
-                    
+
                 }.bind(this);
                 this.openLoginForm(this.popupOptions);
                 this.fireEvent("openLogin");
@@ -519,18 +519,18 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         str = str.replace(/\//g, "_");
         return str;
     },
-
-    _createTableContent: function () {
-        if( this.formTopTextNode && this.formTopCloseActionNode ){
-            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
-        }
+    _createTableContent: function (){
+        this.disableAllLogin = false;
 
         this.loginType = "captcha";
+        this.userPwdLogin = true;
         this.codeLogin = false;
         this.bindLogin = false;
         this.captchaLogin = true;
         this.twoFactorLogin = false;
-        this.actions.getLoginMode(function (json) {
+
+        var p1 = this.actions.getLoginMode(function (json) {
+            this.userPwdLogin = json.data.userPwdLogin;
             this.codeLogin = json.data.codeLogin;
             this.bindLogin = json.data.bindLogin;
             this.captchaLogin = json.data.captchaLogin;
@@ -538,86 +538,49 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             if( this.codeLogin && this.twoFactorLogin ){ //如果两个都是true，以短信登录为准
                 this.twoFactorLogin = false;
             }
-        }.bind(this), null, false);
+        }.bind(this));
 
-        MWF.Actions.get("x_organization_assemble_personal").getRegisterMode(function (json) {
+        this.oauthList = [];
+        var p2 = this.actions.listOauthServer(function (json) {
+            this.oauthList = json.data || [];
+        }.bind(this));
+
+        var p3 = MWF.Actions.get("x_organization_assemble_personal").getRegisterMode(function (json) {
             this.signUpMode = json.data.value;
-        }.bind(this), null, false);
+        }.bind(this));
 
-        if (this.bindLogin) {
-            this.bindLoginTipPic = new Element("div.bindLoginTipPic", { styles: this.css.bindLoginTipPic }).inject(this.formContentNode, "top");
-            this.bindLoginAction = new Element("div.bindLoginAction", { styles: this.css.bindLoginAction }).inject(this.formContentNode, "top");
-            this.bindLoginAction.addEvent("click", function () {
-                this.showBindCodeLogin();
-            }.bind(this));
-
-            this.backtoPasswordLoginTipPic = new Element("div.backtoPasswordLoginTipPic", { styles: this.css.backtoPasswordLoginTipPic }).inject(this.formContentNode, "top");
-            this.backtoPasswordLoginAction = new Element("div.backtoPasswordLoginAction", { styles: this.css.backtoPasswordLoginAction }).inject(this.formContentNode, "top");
-            this.backtoPasswordLoginAction.addEvent("click", function () {
-                this.backtoPasswordLogin();
-            }.bind(this));
+        Promise.all([p1, p2, p3]).then(function (){
+            this.noOauth = this.oauthList.length < 1;
+            this.disableAllLogin = !(this.userPwdLogin || this.codeLogin || this.bindLogin || this.captchaLogin || this.twoFactorLogin);
+            this.disableUserLogin = !(this.userPwdLogin || this.codeLogin || this.captchaLogin || this.twoFactorLogin) && this.noOauth;
+            this._loadLoginContent();
+        }.bind(this));
+    },
+    _loadLoginContent: function () {
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
         }
 
-        var html =
-            "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
-            "<tr><div><div item='passwordAction'>";
-        if (this.codeLogin) {
-            html += "</div><div styles='titleSep'></div><div item='codeAction'></div></tr>";
-        }
-        html += "</table>";
+        if( this.bindLogin ){
+            if( this.disableUserLogin ){
+            }else{
+                this.bindLoginTipPic = new Element("div.bindLoginTipPic", { styles: this.css.bindLoginTipPic }).inject(this.formContentNode, "top");
+                this.bindLoginAction = new Element("div.bindLoginAction", { styles: this.css.bindLoginAction }).inject(this.formContentNode, "top");
+                this.bindLoginAction.addEvent("click", function () {
+                    this.showBindCodeLogin();
+                }.bind(this));
 
-        html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
-            "<tr item='credentialTr'>" +
-            "   <td styles='formTableValueTop20'>" +
-            "       <div style='position: relative;'><div item='credential'></div><div class='inputUserIcon'></div></div>" +
-            "   </td>" +
-            "</tr>" +
-            "<tr item='passwordTr'>" +
-            "   <td styles='formTableValueTop20'>" +
-            "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
-            "   </td>" +
-            "</tr>";
-        if (this.captchaLogin) {
-            html += "<tr item='captchaTr'><td styles='formTableValueTop20'>" +
-                "<div style='float:left;'>" +
-                "       <div style='position: relative;'><div item='captchaAnswer'></div><div class='inputVerificationCodeIcon'></div></div>" +
-                "</div>" +
-                "<div item='captchaPic' style='float:left;padding-left:5px'></div>" +
-                "<div item='changeCaptchaAction' style='float:left;'></div>" +
-                "</td></tr>";
+                this.backtoPasswordLoginTipPic = new Element("div.backtoPasswordLoginTipPic", { styles: this.css.backtoPasswordLoginTipPic }).inject(this.formContentNode, "top");
+                this.backtoPasswordLoginAction = new Element("div.backtoPasswordLoginAction", { styles: this.css.backtoPasswordLoginAction }).inject(this.formContentNode, "top");
+                this.backtoPasswordLoginAction.addEvent("click", function () {
+                    this.backtoPasswordLogin();
+                }.bind(this));
+            }
         }
-        if (this.codeLogin) {
-            html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop20'>" +
-                "   <div style='float:left;'>" +
-                "       <div style='position: relative;'><div item='codeAnswer'></div><div class='inputVerificationCode2Icon'></div></div>" +
-                "   </div>" +
-                "   <div item='verificationAction' style='float:left;'></div>" +
-                "   <div item='resendVerificationAction' style='float:left;display:none;'></div>" +
-                "</td></tr>";
-        }else if(this.twoFactorLogin){
-            html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop60'>" +
-                "   <div style='float:left;'>"+
-                "       <div style='position: relative;'><div item='codeAnswerWithTwoFactorlogin'></div><div class='inputVerificationCode3Icon'></div></div>" +
-                "   </div>" +
-                "</td></tr>";
-            html += "<tr item='twoFactorloginStep2Tr' style='display: none'><td styles='formTableValueTop20' item='twoFactorloginStep2Action'></td></tr>";
-        }
-        html += "<tr item='loginActionTr'><td styles='formTableValueTop20' item='loginAction'></td></tr>" +
-            "</table>" +
-            "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
-        if (this.signUpMode && this.signUpMode !== "disable") {
-            html += "<tr item='forgetPasswordTr'><td><div item='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
-        } else {
-            html += "<tr item='forgetPasswordTr'><td><div styles='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
-        }
-        if(this.twoFactorLogin){
-            html += "<tr item='hideTwoFactorySendMsgTr' style='display: none'><td><div styles='signUpAction'></div><div item='hideTwoFactorySendMsgAction'></div></td></tr>";
-        }
-        html += "<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
-            "<tr><td  styles='formTableValue' item='oauthArea'></td></tr>" +
-            "</table>";
 
+        var html = this._getContentHtml();
         this.formTableArea.set("html", html);
+
         new Element("div", {
             "styles": this.css.formFooter,
             // "styles": {
@@ -880,6 +843,11 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 }
             }, this.app, this.css);
             this.form.load();
+
+            if( !this.userPwdLogin && this.codeLogin ){
+                this.showCodeLogin();
+            }
+
         }.bind(this), true);
 
         if (this.bindLogin) {
@@ -937,11 +905,132 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                     }
                 }, this.app, this.css);
                 this.bindform.load();
+
+                //如果只有二维码登录
+                if(this.disableUserLogin){
+                    this.showBindCodeLogin();
+                }
             }.bind(this), true);
         }
 
-        this.loadOauthContent()
+        debugger;
+        this.loadOauthContent();
 
+    },
+    _getContentHtml: function () {
+        if( this.noOauth && this.disableAllLogin ){
+            return this._getDisableLoginHtml();
+        }else if( this.disableAllLogin ){
+            return this._getOauthLoginHtml();
+        }else{
+            return this._getLoginHtml();
+        }
+    },
+    _getDisableLoginHtml: function (){
+        return "<div styles='disableLoginArea'>"+this.lp.disableAllLoginNote+"</div>";
+    },
+    _getOauthLoginHtml: function (){
+        return  "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>"+
+            "<tr><td styles='formTableValue' item='errorArea'></td></tr>" +
+            "<tr><td styles='formTableValue' item='oauthArea'></td></tr>" +
+            "</table>";
+    },
+    _getLoginHtml: function () {
+        var html = "";
+        if( this.userPwdLogin || this.codeLogin ) {
+            html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
+            html += " <tr>";
+            this.userPwdLogin && (html += "<div item='passwordAction'></div>");
+            (this.userPwdLogin && this.codeLogin) && (html += "<div styles='titleSep'></div>");
+            this.codeLogin && (html += "<div item='codeAction'></div>");
+            html += " </tr>";
+            html += "</table>";
+        }
+
+        html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
+        if( this.userPwdLogin || this.codeLogin ) {
+            html += "<tr item='credentialTr'>" +
+                "   <td styles='formTableValueTop20'>" +
+                "       <div style='position: relative;'><div item='credential'></div><div class='inputUserIcon'></div></div>" +
+                "   </td>" +
+                "</tr>";
+        }
+        if( this.userPwdLogin ){
+            html += "<tr item='passwordTr'>" +
+                "   <td styles='formTableValueTop20'>" +
+                "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
+                "   </td>" +
+                "</tr>";
+
+            if (this.captchaLogin) {
+                html += "<tr item='captchaTr'><td styles='formTableValueTop20'>" +
+                    "<div style='float:left;'>" +
+                    "       <div style='position: relative;'><div item='captchaAnswer'></div><div class='inputVerificationCodeIcon'></div></div>" +
+                    "</div>" +
+                    "<div item='captchaPic' style='float:left;padding-left:5px'></div>" +
+                    "<div item='changeCaptchaAction' style='float:left;'></div>" +
+                    "</td></tr>";
+            }
+        }
+        if (this.codeLogin) {
+            html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop20'>" +
+                "   <div style='float:left;'>" +
+                "       <div style='position: relative;'>" +
+                "           <div item='codeAnswer'></div>" +
+                "           <div class='inputVerificationCode2Icon'></div>" +
+                "       </div>" +
+                "   </div>" +
+                "   <div item='verificationAction' style='float:left;'></div>" +
+                "   <div item='resendVerificationAction' style='float:left;display:none;'></div>" +
+                "</td></tr>";
+        }else if(this.twoFactorLogin){
+            html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop60'>" +
+                "   <div style='float:left;'>"+
+                "       <div style='position: relative;'>" +
+                "           <div item='codeAnswerWithTwoFactorlogin'></div>" +
+                "           <div class='inputVerificationCode3Icon'></div>" +
+                "       </div>" +
+                "   </div>" +
+                "</td></tr>";
+            html += "<tr item='twoFactorloginStep2Tr' style='display: none'>" +
+                "   <td styles='formTableValueTop20' item='twoFactorloginStep2Action'></td>" +
+                "</tr>";
+        }
+        if( this.userPwdLogin || this.codeLogin || this.captchaLogin || this.twoFactorLogin ){
+            html += "<tr item='loginActionTr'><td styles='formTableValueTop20' item='loginAction'></td></tr>";
+        }
+        html +=  "</table>";
+        html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
+        if( this.userPwdLogin ){
+            if (this.signUpMode && this.signUpMode !== "disable") {
+                html += "<tr item='forgetPasswordTr'><td>" +
+                    "   <div item='signUpAction'></div>" +
+                    "   <div item='forgetPassword'></div>" +
+                    "</td></tr>";
+            } else {
+                html += "<tr item='forgetPasswordTr'><td>" +
+                    "   <div styles='signUpAction'></div>" +
+                    "   <div item='forgetPassword'></div>" +
+                    "</td></tr>";
+            }
+        }else{
+            if (this.signUpMode && this.signUpMode !== "disable") {
+                html += "<tr item='forgetPasswordTr'><td>" +
+                    "   <div item='signUpAction'></div>" +
+                    "   <div styles='forgetPassword'></div>" +
+                    "</td></tr>";
+            }
+        }
+        if(this.twoFactorLogin){
+            html += "<tr item='hideTwoFactorySendMsgTr' style='display: none'><td>" +
+                "   <div styles='signUpAction'></div>" +
+                "   <div item='hideTwoFactorySendMsgAction'></div>" +
+                "</td></tr>";
+        }
+        html += "<tr><td styles='formTableValue' item='errorArea'></td></tr>" +
+            "<tr><td styles='formTableValue' item='oauthArea'></td></tr>" +
+            "</table>";
+        return html;
     },
     _beforeFormNodeSize: function () {
         if (!this.isPlusOauthSize && this.oauthListNode) {
@@ -956,22 +1045,19 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         }
     },
     loadOauthContent: function () {
-        this.actions.listOauthServer(function (json) {
-            this.oauthList = json.data || [];
-            if (this.oauthList.length > 0) {
-                if (!this.oauthArea.getChildren().length) {
-                    this.oauthListNode = new Element("div", { styles: this.css.oauthListNode }).inject(this.oauthArea);
-                }
-                this.oauthList.each(function (d) {
-                    if (d.displayName === "@O2企业微信") {
-                        d.qywx = true;
-                    } else if (d.displayName === "@O2钉钉") {
-                        d.dingding = true;
-                    }
-                    this.loadOauthItem(d);
-                }.bind(this));
+        if (this.oauthList.length > 0) {
+            if (!this.oauthArea.getChildren().length) {
+                this.oauthListNode = new Element("div", { styles: this.css.oauthListNode }).inject(this.oauthArea);
             }
-        }.bind(this), null, false);
+            this.oauthList.each(function (d) {
+                if (d.displayName === "@O2企业微信") {
+                    d.qywx = true;
+                } else if (d.displayName === "@O2钉钉") {
+                    d.dingding = true;
+                }
+                this.loadOauthItem(d);
+            }.bind(this));
+        }
 
     },
     loadOauthItem: function (data) {
@@ -1092,11 +1178,19 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     showCodeLogin: function () {
         this.errorArea.empty();
         this.loginType = "code";
-        this.form.getItem("passwordAction").setStyles(this.css.titleNode_normal);
-        this.form.getItem("codeAction").setStyles(this.css.titleNode_active);
-        this.formTableArea.getElement("[item='passwordTr']").setStyle("display", "none");
+
+        var passwordAction = this.form.getItem("passwordAction");
+        if(passwordAction)passwordAction.setStyles(this.css.titleNode_normal);
+
+        var codeAction = this.form.getItem("codeAction");
+        if(codeAction)codeAction.setStyles(this.css.titleNode_active);
+
+        var passwordTr = this.formTableArea.getElement("[item='passwordTr']");
+        if(passwordTr)passwordTr.setStyle("display", "none");
+
         var captchaTr = this.formTableArea.getElement("[item='captchaTr']");
         if (captchaTr) captchaTr.setStyle("display", "none");
+
         this.formTableArea.getElement("[item='codeTr']").setStyle("display", "");
 
     },
@@ -1104,10 +1198,10 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.errorArea.empty();
         this.formTableContainer.setStyle("display", "none");
         this.bindLoginContainer.setStyle("display", "");
-        this.bindLoginTipPic.setStyle("display", "none");
-        this.bindLoginAction.setStyle("display", "none");
-        this.backtoPasswordLoginTipPic.setStyle("display", "");
-        this.backtoPasswordLoginAction.setStyle("display", "");
+        if(this.bindLoginTipPic)this.bindLoginTipPic.setStyle("display", "none");
+        if(this.bindLoginAction)this.bindLoginAction.setStyle("display", "none");
+        if(this.backtoPasswordLoginTipPic)this.backtoPasswordLoginTipPic.setStyle("display", "");
+        if(this.backtoPasswordLoginAction)this.backtoPasswordLoginAction.setStyle("display", "");
         this.checkBindStatus();
     },
     backtoPasswordLogin: function () {
@@ -1133,7 +1227,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         if (!this.captchaLogin) return;
         var captchaPic = this.formTableArea.getElement("[item='captchaPic']");
         captchaPic.empty();
-        this.actions.getLoginCaptcha(120, 50, function (json) {
+        this.actions.getLoginCaptcha(160, 40, function (json) {
             this.captcha = json.data.id;
             new Element("img", {
                 src: "data:image/png;base64," + json.data.image,
@@ -1252,7 +1346,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
         debugger;
         if (this.loginType === "captcha") {
-            this.form.getItem("password").options.notEmpty = true;
+            if( this.userPwdLogin ){
+                this.form.getItem("password").options.notEmpty = true;
+            }
 
             if (this.captchaLogin) {
                 captchaItem = this.form.getItem("captchaAnswer");
@@ -1262,7 +1358,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             codeItem = this.form.getItem("codeAnswer");
             if (codeItem) codeItem.options.notEmpty = false;
         } else if (this.loginType === "code") {
-            this.form.getItem("password").options.notEmpty = false;
+            if( this.userPwdLogin ){
+                this.form.getItem("password").options.notEmpty = false;
+            }
             if (this.captchaLogin) {
                 captchaItem = this.form.getItem("captchaAnswer");
                 if (captchaItem) captchaItem.options.notEmpty = false;
@@ -1734,7 +1832,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
     setCaptchaPic: function () {
         var captchaPic = this.formTableArea.getElement("[item='captchaPic']");
         captchaPic.empty();
-        this.actions.getRegisterCaptcha(120, 50, function (json) {
+        this.actions.getRegisterCaptcha(160, 40, function (json) {
             this.captcha = json.data.id;
             new Element("img", {
                 src: "data:image/png;base64," + json.data.image,

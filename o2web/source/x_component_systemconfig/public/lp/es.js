@@ -318,6 +318,8 @@ MWF.xApplication.systemconfig.LP={
 		"baseConfig": "Configuración básica",
 		"moreConfig": "Más configuraciones",
 		"ldapConfig": "Autenticación LDAP",
+		"userPwdLogin": "Habilitar inicio de sesión con nombre de usuario y contraseña",
+		"userPwdLoginInfo": "Habilitar la opción de inicio de sesión con nombre de usuario y contraseña",
 		"captchaLogin": "Habilitar inicio de sesión con código CAPTCHA",
 		"codeLogin": "Habilitar inicio de sesión con código SMS",
 		"bindLogin": "Habilitar inicio de sesión escaneando un código QR",

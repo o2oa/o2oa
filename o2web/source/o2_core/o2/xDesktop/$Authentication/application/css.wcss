@@ -275,7 +275,7 @@
   "inputVerificationCode" : {
 	"color" : "#666",
 	"font-size" : "16px",
-	"width": "108px",
+	"width": "72px",
 	"border":"1px solid #d9d9d9",
 	"height": "40px",
 	"line-height": "40px",

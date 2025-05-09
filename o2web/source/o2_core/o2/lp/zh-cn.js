@@ -468,6 +468,7 @@ o2.LP.authentication = {
     "loginAction": "登录",
     "autoLogin": "下次自动登陆",
     "signUp": "注册",
+    "disableAllLoginNote": "登录已禁用",
     "forgetPassword": "忘记密码？",
     "inputYourUserName": "请输入用户名",
     "inputYourPassword": "请输入密码",
