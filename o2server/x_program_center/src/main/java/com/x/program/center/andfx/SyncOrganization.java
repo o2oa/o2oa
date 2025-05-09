@@ -439,7 +439,7 @@ public class SyncOrganization {
 		emc.beginTransaction(Identity.class);
 		Identity identity = new Identity();
 		identity.setUnique(unit.getUnique() + "_" + person.getUnique());
-		identity.setName(person.getName());
+		identity.setName(user.getName());
 		identity.setPerson(person.getId());
 		identity.setUnit(unit.getId());
 		identity.setUnitLevel(unit.getLevel());
