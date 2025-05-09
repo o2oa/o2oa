@@ -6,33 +6,25 @@ import cn.jiguang.sdk.bean.push.audience.Audience;
 import cn.jiguang.sdk.bean.push.message.notification.NotificationMessage;
 import cn.jiguang.sdk.bean.push.options.Options;
 import cn.jiguang.sdk.enums.platform.Platform;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonObject;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.jpush.assemble.control.JpushConst;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.jpush.assemble.control.Business;
+import com.x.jpush.assemble.control.JpushConst;
 import com.x.jpush.assemble.control.jaxrs.device.ActionListAll;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 
