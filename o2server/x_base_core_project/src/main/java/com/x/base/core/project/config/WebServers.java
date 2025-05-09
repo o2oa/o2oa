@@ -104,7 +104,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		// 写入systemName
 		map.put("footer", Config.collect().getFooter());
 		map.put("title", Config.collect().getTitle());
-		map.put("version", Config.version());
+		map.put("version", "智慧流程V2.0");
 		map.put("appUrl", Config.collect().getAppUrl());
 		map.put("app_protocol", "auto");
 
