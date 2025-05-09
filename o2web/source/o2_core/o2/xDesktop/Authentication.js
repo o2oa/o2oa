@@ -913,7 +913,6 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             }.bind(this), true);
         }
 
-        debugger;
         this.loadOauthContent();
 
     },
@@ -1344,7 +1343,6 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         var captchaItem = null;
         var codeItem = null;
 
-        debugger;
         if (this.loginType === "captcha") {
             if( this.userPwdLogin ){
                 this.form.getItem("password").options.notEmpty = true;
