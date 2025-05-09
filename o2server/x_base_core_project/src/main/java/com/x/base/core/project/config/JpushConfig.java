@@ -1,12 +1,11 @@
 package com.x.base.core.project.config;
 
-import com.google.gson.JsonObject;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.BooleanUtils;
 
-import java.util.Map;
 
 public class JpushConfig extends ConfigObject {
 
@@ -38,20 +37,28 @@ public class JpushConfig extends ConfigObject {
     private String masterSecret;
     // "thirdPartyChannel": { "xiaomi": {"channel_id": ""}, "huawei": { "importance": "NORMAL", "category": "WORK" } }
     @FieldDescribe("第三方通道参数配置")
-    private Map<String, JsonObject> thirdPartyChannel;
+    private ThirdPartyChannel thirdPartyChannel;
 
 
 
     // o2oa 官方 app 小米和华为通道
-    Map<String, JsonObject> o2oaOfficialPushChannel() {
-        Map<String, JsonObject> map = new HashMap<>();
-        Map<String, String> xiaomi = new HashMap<>();
-        xiaomi.put("channel_id", "113850");
-        map.put("xiaomi",  XGsonBuilder.instance().toJsonTree(xiaomi).getAsJsonObject());
-        Map<String, String> huawei = new HashMap<>();
-        huawei.put("importance", "NORMAL");
-        huawei.put("category", "WORK");
-        map.put("huawei",  XGsonBuilder.instance().toJsonTree(huawei).getAsJsonObject());
+    ThirdPartyChannel o2oaOfficialPushChannel() {
+        ThirdPartyChannel map = new ThirdPartyChannel();
+        Xiaomi xiaomi = new Xiaomi();
+        xiaomi.setChannel_id("113850");
+        map.setXiaomi(xiaomi);
+        Huawei huawei = new Huawei();
+        huawei.setImportance("NORMAL");
+        huawei.setCategory("WORK");
+        map.setHuawei(huawei);
+        Oppo oppo = new Oppo();
+        oppo.setChannel_id("o2oa_work");
+        oppo.setCategory("TODO");
+        oppo.setNotify_level(16);
+        map.setOppo(oppo);
+        Vivo vivo = new Vivo();
+        vivo.setCategory("TODO");
+        map.setVivo(vivo);
         return map;
     }
 
@@ -93,11 +100,197 @@ public class JpushConfig extends ConfigObject {
         this.masterSecret = masterSecret;
     }
 
-    public Map<String, JsonObject> getThirdPartyChannel() {
+
+    public ThirdPartyChannel getThirdPartyChannel() {
         return thirdPartyChannel;
     }
 
-    public void setThirdPartyChannel(Map<String, JsonObject> thirdPartyChannel) {
+    public void setThirdPartyChannel(
+            ThirdPartyChannel thirdPartyChannel) {
         this.thirdPartyChannel = thirdPartyChannel;
+    }
+
+    public Map<String, Object> getThirdPartyChannelMap() {
+        if (this.thirdPartyChannel != null) {
+            Map<String, Object> map = new HashMap<>();
+            if (this.thirdPartyChannel.getXiaomi() != null) {
+                map.put("xiaomi",  this.thirdPartyChannel.getXiaomi());
+            }
+            if (this.thirdPartyChannel.getHuawei() != null) {
+                map.put("huawei",  this.thirdPartyChannel.getHuawei());
+            }
+            if (this.thirdPartyChannel.getOppo() != null) {
+                map.put("oppo",  this.thirdPartyChannel.getOppo());
+            }
+            if (this.thirdPartyChannel.getVivo() != null) {
+                map.put("vivo",  this.thirdPartyChannel.getVivo());
+            }
+            if (this.thirdPartyChannel.getHonor() != null) {
+                map.put("honor",  this.thirdPartyChannel.getHonor());
+            }
+            return map;
+        }
+        return null;
+    }
+
+    public static class ThirdPartyChannel extends GsonPropertyObject {
+
+        @FieldDescribe("小米推送通道参数")
+        private Xiaomi xiaomi;
+        @FieldDescribe("华为推送通道参数")
+        private Huawei huawei;
+        @FieldDescribe("OPPO推送通道参数")
+        private Oppo oppo;
+        @FieldDescribe("荣耀推送通道参数")
+        private Honor honor;
+        @FieldDescribe("VIVO推送通道参数")
+        private Vivo vivo;
+
+        public Vivo getVivo() {
+            return vivo;
+        }
+
+        public void setVivo(Vivo vivo) {
+            this.vivo = vivo;
+        }
+
+        public Honor getHonor() {
+            return honor;
+        }
+
+        public void setHonor(Honor honor) {
+            this.honor = honor;
+        }
+
+        public Oppo getOppo() {
+            return oppo;
+        }
+
+        public void setOppo(Oppo oppo) {
+            this.oppo = oppo;
+        }
+
+        public Xiaomi getXiaomi() {
+            return xiaomi;
+        }
+
+        public void setXiaomi(Xiaomi xiaomi) {
+            this.xiaomi = xiaomi;
+        }
+
+        public Huawei getHuawei() {
+            return huawei;
+        }
+
+        public void setHuawei(Huawei huawei) {
+            this.huawei = huawei;
+        }
+    }
+
+
+    public static class Vivo extends GsonPropertyObject {
+
+        private static final long serialVersionUID = 4441517807393020333L;
+        @FieldDescribe("vivo厂商消息场景标识")
+        private String category;
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+    }
+
+    public static class Oppo  extends GsonPropertyObject {
+
+        private static final long serialVersionUID = 2691848272185396738L;
+        @FieldDescribe("android 通知 channel_id")
+        private String channel_id;
+        @FieldDescribe("OPPO 厂商消息场景标识")
+        private String category;
+        @FieldDescribe("OPPO通知栏消息提醒等级")
+        private Integer notify_level;
+
+        public String getChannel_id() {
+            return channel_id;
+        }
+
+        public void setChannel_id(String channel_id) {
+            this.channel_id = channel_id;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public Integer getNotify_level() {
+            return notify_level;
+        }
+
+        public void setNotify_level(Integer notify_level) {
+            this.notify_level = notify_level;
+        }
+    }
+
+    public static class Xiaomi extends GsonPropertyObject {
+
+        private static final long serialVersionUID = -372457646001459805L;
+        @FieldDescribe("小米推送的channel_id")
+        private String channel_id;
+
+        public String getChannel_id() {
+            return channel_id;
+        }
+
+        public void setChannel_id(String channel_id) {
+            this.channel_id = channel_id;
+        }
+    }
+
+    public static class Huawei extends GsonPropertyObject {
+
+        private static final long serialVersionUID = 7441536586208244234L;
+        @FieldDescribe("华为通知栏消息智能分类")
+        private String importance;
+        @FieldDescribe("华为厂商消息场景标识")
+        private String category;
+
+        public String getImportance() {
+            return importance;
+        }
+
+        public void setImportance(String importance) {
+            this.importance = importance;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+    }
+
+    public static class Honor extends GsonPropertyObject {
+
+
+        private static final long serialVersionUID = -6989617318639425429L;
+        @FieldDescribe("荣耀通知栏消息智能分类")
+        private String importance;
+
+        public String getImportance() {
+            return importance;
+        }
+
+        public void setImportance(String importance) {
+            this.importance = importance;
+        }
     }
 }
