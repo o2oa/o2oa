@@ -120,7 +120,7 @@
 import {ref} from 'vue';
 import {lp} from '@o2oa/component';
 import BaseItem from '@/components/item/BaseItem.vue';
-import {getConfigData, loadPortals, saveConfig} from '@/util/acrions';
+import {getConfigData, loadPortals, saveConfig, saveConfigValues} from '@/util/acrions';
 const userPwdLogin = ref(true);
 const captchaLogin = ref(false);
 const codeLogin = ref(true);
@@ -140,32 +140,47 @@ const captchaLoginDisabled = ref(false);
 const changeUserPwdLogin = async ()=>{
   captchaLoginDisabled.value = !(userPwdLogin.value);
   twoFactorLoginDisabled.value = !(userPwdLogin.value);
+  const pathList = [], valueList = [];
   if( !(userPwdLogin.value) ){
+
     captchaLogin.value = false;
-    await saveConfig('person', 'captchaLogin', captchaLogin.value);
+    pathList.push( 'captchaLogin' );
+    valueList.push( captchaLogin.value );
 
     twoFactorLogin.value = false;
-    await saveConfig('person', 'twoFactorLogin', twoFactorLogin.value);
+    pathList.push( 'twoFactorLogin' );
+    valueList.push( twoFactorLogin.value );
   }
-  await saveConfig('person', 'userPwdLogin', userPwdLogin.value);
+
+  pathList.push( 'userPwdLogin' );
+  valueList.push( userPwdLogin.value );
+  await saveConfigValues('person', pathList, valueList);
 }
 
 const changeCodeLogin = async () => {
   twoFactorLoginDisabled.value = !!(codeLogin.value);
+  const pathList = [], valueList = [];
   if( !!(codeLogin.value) ){
     twoFactorLogin.value = false;
-    await saveConfig('person', 'twoFactorLogin', twoFactorLogin.value)
+    pathList.push( 'twoFactorLogin' );
+    valueList.push( twoFactorLogin.value );
   }
-  await saveConfig('person', 'codeLogin', codeLogin.value)
+  pathList.push( 'codeLogin' );
+  valueList.push( codeLogin.value );
+  await saveConfigValues('person', pathList, valueList);
 }
 
 const changeTwoFactorLogin = async () => {
   codeLoginDisabled.value = !!(twoFactorLogin.value);
+  const pathList = [], valueList = [];
   if( !!(twoFactorLogin.value) ){
     codeLogin.value = false;
-    await saveConfig('person', 'codeLogin', codeLogin.value)
+    pathList.push( 'codeLogin' );
+    valueList.push( codeLogin.value );
   }
-  await saveConfig('person', 'twoFactorLogin', twoFactorLogin.value)
+  pathList.push( 'twoFactorLogin' );
+  valueList.push( twoFactorLogin.value );
+  await saveConfigValues('person', pathList, valueList)
 }
 
 const load = async () => {
