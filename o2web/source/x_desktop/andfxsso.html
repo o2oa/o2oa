@@ -16,11 +16,13 @@
                 var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
                 if( root === "x_program_center" ){
                     addressObj = layout.centerServer;
-                    var appPort = addressObj.port || window.location.port;
+                    //var appPort = addressObj.port || window.location.port;
+                    var appPort = window.location.port;
                     address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+ "/x_program_center";
                 }else{
                     addressObj = layout.serviceAddressList[root];
-                    var appPort = addressObj.port || window.location.port;
+                    // var appPort = addressObj.port || window.location.port;
+                    var appPort = window.location.port;
                     address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
                 }
 
