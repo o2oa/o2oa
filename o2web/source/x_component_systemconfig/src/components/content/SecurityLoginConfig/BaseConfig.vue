@@ -1,24 +1,12 @@
 <template>
   <div>
-    <div class="item_title">{{lp._loginConfig.userPwdLogin}}</div>
-    <div class="item_info">{{lp._loginConfig.userPwdLoginInfo}}</div>
-    <div class="item_info">
-      <el-switch
-          @change="changeUserPwdLogin();"
-          v-model="userPwdLogin"
-          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable">
-      </el-switch>
-    </div>
-
     <div class="item_title">{{lp._loginConfig.captchaLogin}}</div>
     <div class="item_info">{{lp._loginConfig.captchaLoginInfo}}</div>
     <div class="item_info">
       <el-switch
           @change="saveConfig('person', 'captchaLogin', captchaLogin)"
           v-model="captchaLogin"
-          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable"
-          :disabled="captchaLoginDisabled"
-      >
+          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable">
       </el-switch>
     </div>
 
@@ -121,7 +109,6 @@ import {ref} from 'vue';
 import {lp} from '@o2oa/component';
 import BaseItem from '@/components/item/BaseItem.vue';
 import {getConfigData, loadPortals, saveConfig, saveConfigValues} from '@/util/acrions';
-const userPwdLogin = ref(true);
 const captchaLogin = ref(false);
 const codeLogin = ref(true);
 const bindLogin = ref(true);
@@ -135,27 +122,6 @@ const indexPortal = ref('');
 const portalList = ref([]);
 const codeLoginDisabled = ref(false);
 const twoFactorLoginDisabled = ref(false);
-const captchaLoginDisabled = ref(false);
-
-const changeUserPwdLogin = async ()=>{
-  captchaLoginDisabled.value = !(userPwdLogin.value);
-  twoFactorLoginDisabled.value = !(userPwdLogin.value);
-  const pathList = [], valueList = [];
-  if( !(userPwdLogin.value) ){
-
-    captchaLogin.value = false;
-    pathList.push( 'captchaLogin' );
-    valueList.push( captchaLogin.value );
-
-    twoFactorLogin.value = false;
-    pathList.push( 'twoFactorLogin' );
-    valueList.push( twoFactorLogin.value );
-  }
-
-  pathList.push( 'userPwdLogin' );
-  valueList.push( userPwdLogin.value );
-  await saveConfigValues('person', pathList, valueList);
-}
 
 const changeCodeLogin = async () => {
   twoFactorLoginDisabled.value = !!(codeLogin.value);
@@ -185,17 +151,14 @@ const changeTwoFactorLogin = async () => {
 
 const load = async () => {
   const personP = getConfigData('person').then((data)=>{
-    console.log(data);
-    userPwdLogin.value = data.userPwdLogin !== false;
-    captchaLogin.value = userPwdLogin.value && !!data.captchaLogin;
+    captchaLogin.value = !!data.captchaLogin;
     codeLogin.value = !!data.codeLogin;
     bindLogin.value = !!data.bindLogin;
     faceLogin.value = !!data.faceLogin;
-    twoFactorLogin.value = userPwdLogin.value && !!data.twoFactorLogin;
+    twoFactorLogin.value = !!data.twoFactorLogin;
 
-    twoFactorLoginDisabled.value = codeLogin.value || !(userPwdLogin.value);
+    twoFactorLoginDisabled.value = codeLogin.value;
     codeLoginDisabled.value = twoFactorLogin.value;
-    captchaLoginDisabled.value = !(userPwdLogin.value);
 
     if (data.register) register.value = data.register;
     if (data.loginPage && data.loginPage.enable){
