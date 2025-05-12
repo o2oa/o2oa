@@ -318,8 +318,6 @@ MWF.xApplication.systemconfig.LP={
 		"baseConfig": "Basic Config",
 		"moreConfig": "More Config",
 		"ldapConfig": "Ldap Config",
-		"userPwdLogin": "Enable username and password login",
-		"userPwdLoginInfo": "Enable allowing login using username and password",
 		"captchaLogin": "Enable picture captcha login",
 		"codeLogin": "Enable SMS verification code login",
 		"bindLogin": "Enable scan QR code login",

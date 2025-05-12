@@ -367,8 +367,6 @@ o2.xApplication.systemconfig.LP = {
         "baseConfig": "基本配置",
         "moreConfig": "更多配置",
         "ldapConfig": "Ldap认证配置",
-        "userPwdLogin": "启用用户名密码登录",
-        "userPwdLoginInfo": "启用允许使用用户名密码登录",
         "captchaLogin": "启用图片验证码登录",
         "codeLogin": "启用短信验证码登录",
         "bindLogin": "启用扫描二维码登录",
