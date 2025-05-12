@@ -530,7 +530,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.twoFactorLogin = false;
 
         var p1 = this.actions.getLoginMode(function (json) {
-            this.userPwdLogin = json.data.userPwdLogin;
+            // this.userPwdLogin = json.data.userPwdLogin === false;
             this.codeLogin = json.data.codeLogin;
             this.bindLogin = json.data.bindLogin;
             this.captchaLogin = json.data.captchaLogin;
