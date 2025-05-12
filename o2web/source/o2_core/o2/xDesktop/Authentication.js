@@ -520,7 +520,6 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         return str;
     },
     _createTableContent: function (){
-        this.disableAllLogin = false;
 
         this.loginType = "captcha";
         this.userPwdLogin = true;
@@ -530,7 +529,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.twoFactorLogin = false;
 
         var p1 = this.actions.getLoginMode(function (json) {
-            this.userPwdLogin = json.data.userPwdLogin;
+            // this.userPwdLogin = json.data.userPwdLogin !== false;
             this.codeLogin = json.data.codeLogin;
             this.bindLogin = json.data.bindLogin;
             this.captchaLogin = json.data.captchaLogin;
@@ -551,8 +550,6 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
         Promise.all([p1, p2, p3]).then(function (){
             this.noOauth = this.oauthList.length < 1;
-            this.disableAllLogin = !(this.userPwdLogin || this.codeLogin || this.bindLogin || this.captchaLogin || this.twoFactorLogin);
-            this.disableUserLogin = !(this.userPwdLogin || this.codeLogin || this.captchaLogin || this.twoFactorLogin) && this.noOauth;
             this._loadLoginContent();
         }.bind(this));
     },
@@ -562,20 +559,17 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         }
 
         if( this.bindLogin ){
-            if( this.disableUserLogin ){
-            }else{
-                this.bindLoginTipPic = new Element("div.bindLoginTipPic", { styles: this.css.bindLoginTipPic }).inject(this.formContentNode, "top");
-                this.bindLoginAction = new Element("div.bindLoginAction", { styles: this.css.bindLoginAction }).inject(this.formContentNode, "top");
-                this.bindLoginAction.addEvent("click", function () {
-                    this.showBindCodeLogin();
-                }.bind(this));
+            this.bindLoginTipPic = new Element("div.bindLoginTipPic", { styles: this.css.bindLoginTipPic }).inject(this.formContentNode, "top");
+            this.bindLoginAction = new Element("div.bindLoginAction", { styles: this.css.bindLoginAction }).inject(this.formContentNode, "top");
+            this.bindLoginAction.addEvent("click", function () {
+                this.showBindCodeLogin();
+            }.bind(this));
 
-                this.backtoPasswordLoginTipPic = new Element("div.backtoPasswordLoginTipPic", { styles: this.css.backtoPasswordLoginTipPic }).inject(this.formContentNode, "top");
-                this.backtoPasswordLoginAction = new Element("div.backtoPasswordLoginAction", { styles: this.css.backtoPasswordLoginAction }).inject(this.formContentNode, "top");
-                this.backtoPasswordLoginAction.addEvent("click", function () {
-                    this.backtoPasswordLogin();
-                }.bind(this));
-            }
+            this.backtoPasswordLoginTipPic = new Element("div.backtoPasswordLoginTipPic", { styles: this.css.backtoPasswordLoginTipPic }).inject(this.formContentNode, "top");
+            this.backtoPasswordLoginAction = new Element("div.backtoPasswordLoginAction", { styles: this.css.backtoPasswordLoginAction }).inject(this.formContentNode, "top");
+            this.backtoPasswordLoginAction.addEvent("click", function () {
+                this.backtoPasswordLogin();
+            }.bind(this));
         }
 
         var html = this._getContentHtml();
@@ -844,9 +838,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             }, this.app, this.css);
             this.form.load();
 
-            if( !this.userPwdLogin && this.codeLogin ){
-                this.showCodeLogin();
-            }
+            // if( !this.userPwdLogin && this.codeLogin ){
+            //     this.showCodeLogin();
+            // }
 
         }.bind(this), true);
 
@@ -907,9 +901,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 this.bindform.load();
 
                 //如果只有二维码登录
-                if(this.disableUserLogin){
-                    this.showBindCodeLogin();
-                }
+                // if(this.disableUserLogin){
+                //     this.showBindCodeLogin();
+                // }
             }.bind(this), true);
         }
 
@@ -917,60 +911,40 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
     },
     _getContentHtml: function () {
-        if( this.noOauth && this.disableAllLogin ){
-            return this._getDisableLoginHtml();
-        }else if( this.disableAllLogin ){
-            return this._getOauthLoginHtml();
-        }else{
-            return this._getLoginHtml();
-        }
-    },
-    _getDisableLoginHtml: function (){
-        return "<div styles='disableLoginArea'>"+this.lp.disableAllLoginNote+"</div>";
-    },
-    _getOauthLoginHtml: function (){
-        return  "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>"+
-            "<tr><td styles='formTableValue' item='errorArea'></td></tr>" +
-            "<tr><td styles='formTableValue' item='oauthArea'></td></tr>" +
-            "</table>";
-    },
-    _getLoginHtml: function () {
         var html = "";
-        if( this.userPwdLogin || this.codeLogin ) {
-            html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
-            html += " <tr>";
-            this.userPwdLogin && (html += "<div item='passwordAction'></div>");
-            (this.userPwdLogin && this.codeLogin) && (html += "<div styles='titleSep'></div>");
-            this.codeLogin && (html += "<div item='codeAction'></div>");
-            html += " </tr>";
-            html += "</table>";
-        }
 
         html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
-        if( this.userPwdLogin || this.codeLogin ) {
-            html += "<tr item='credentialTr'>" +
-                "   <td styles='formTableValueTop20'>" +
-                "       <div style='position: relative;'><div item='credential'></div><div class='inputUserIcon'></div></div>" +
-                "   </td>" +
-                "</tr>";
-        }
-        if( this.userPwdLogin ){
-            html += "<tr item='passwordTr'>" +
-                "   <td styles='formTableValueTop20'>" +
-                "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
-                "   </td>" +
-                "</tr>";
+        html += " <tr>";
+        html += "<div item='passwordAction'></div>";
+        this.codeLogin && (html += "<div styles='titleSep'></div>");
+        this.codeLogin && (html += "<div item='codeAction'></div>");
+        html += " </tr>";
+        html += "</table>";
 
-            if (this.captchaLogin) {
-                html += "<tr item='captchaTr'><td styles='formTableValueTop20'>" +
-                    "<div style='float:left;'>" +
-                    "       <div style='position: relative;'><div item='captchaAnswer'></div><div class='inputVerificationCodeIcon'></div></div>" +
-                    "</div>" +
-                    "<div item='captchaPic' style='float:left;padding-left:5px'></div>" +
-                    "<div item='changeCaptchaAction' style='float:left;'></div>" +
-                    "</td></tr>";
-            }
+        html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
+
+        html += "<tr item='credentialTr'>" +
+            "   <td styles='formTableValueTop20'>" +
+            "       <div style='position: relative;'><div item='credential'></div><div class='inputUserIcon'></div></div>" +
+            "   </td>" +
+            "</tr>";
+
+        html += "<tr item='passwordTr'>" +
+            "   <td styles='formTableValueTop20'>" +
+            "       <div style='position: relative;'><div item='password'></div><div class='inputPasswordIcon'></div></div>" +
+            "   </td>" +
+            "</tr>";
+
+        if (this.captchaLogin) {
+            html += "<tr item='captchaTr'><td styles='formTableValueTop20'>" +
+                "<div style='float:left;'>" +
+                "       <div style='position: relative;'><div item='captchaAnswer'></div><div class='inputVerificationCodeIcon'></div></div>" +
+                "</div>" +
+                "<div item='captchaPic' style='float:left;padding-left:5px'></div>" +
+                "<div item='changeCaptchaAction' style='float:left;'></div>" +
+                "</td></tr>";
         }
+
         if (this.codeLogin) {
             html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop20'>" +
                 "   <div style='float:left;'>" +
@@ -995,30 +969,19 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 "   <td styles='formTableValueTop20' item='twoFactorloginStep2Action'></td>" +
                 "</tr>";
         }
-        if( this.userPwdLogin || this.codeLogin || this.captchaLogin || this.twoFactorLogin ){
-            html += "<tr item='loginActionTr'><td styles='formTableValueTop20' item='loginAction'></td></tr>";
-        }
+        html += "<tr item='loginActionTr'><td styles='formTableValueTop20' item='loginAction'></td></tr>";
         html +=  "</table>";
         html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
-        if( this.userPwdLogin ){
-            if (this.signUpMode && this.signUpMode !== "disable") {
-                html += "<tr item='forgetPasswordTr'><td>" +
-                    "   <div item='signUpAction'></div>" +
-                    "   <div item='forgetPassword'></div>" +
-                    "</td></tr>";
-            } else {
-                html += "<tr item='forgetPasswordTr'><td>" +
-                    "   <div styles='signUpAction'></div>" +
-                    "   <div item='forgetPassword'></div>" +
-                    "</td></tr>";
-            }
-        }else{
-            if (this.signUpMode && this.signUpMode !== "disable") {
-                html += "<tr item='forgetPasswordTr'><td>" +
-                    "   <div item='signUpAction'></div>" +
-                    "   <div styles='forgetPassword'></div>" +
-                    "</td></tr>";
-            }
+        if (this.signUpMode && this.signUpMode !== "disable") {
+            html += "<tr item='forgetPasswordTr'><td>" +
+                "   <div item='signUpAction'></div>" +
+                "   <div item='forgetPassword'></div>" +
+                "</td></tr>";
+        } else {
+            html += "<tr item='forgetPasswordTr'><td>" +
+                "   <div styles='signUpAction'></div>" +
+                "   <div item='forgetPassword'></div>" +
+                "</td></tr>";
         }
         if(this.twoFactorLogin){
             html += "<tr item='hideTwoFactorySendMsgTr' style='display: none'><td>" +

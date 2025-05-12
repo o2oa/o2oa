@@ -478,7 +478,6 @@ o2.LP={
 		"loginAction": "Login",
 		"autoLogin": "The next automatic landing",
 		"signUp": "Registration",
-		"disableAllLoginNote": "Login is disabled",
 		"forgetPassword": "Forgot Password？",
 		"inputYourUserName": "Enter your username",
 		"inputYourPassword": " Enter your password",
