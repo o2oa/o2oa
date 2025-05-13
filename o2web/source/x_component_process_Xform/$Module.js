@@ -887,14 +887,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var evdata = this.form.Macro.environment.data;
         var data = this.form.businessData.data;
         var thisId = id || this.json.id;
-
-        var textTypes = ["OOSelect","Select","Radio","OORadioGroup","OOCheckGroup","Checkbox"];
-
         if(thisId.indexOf("..") < 1){
             data[thisId] = v;
-            if(textTypes.contains(this.json.type)){
-                data[thisId+"$text"] = this.getText();
-            }
             this._checkEvdata(evdata, thisId, v);
             //this.form.businessData.data[this.json.id] = v;
         }else{
@@ -910,9 +904,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
                 if( i === lastIndex ){
                     data[id] = v;
-                    if(textTypes.contains(this.json.type)){
-                        data[id + "$text"] = this.getText();
-                    }
                     //evdata.check(id, v);
                     this._checkEvdata(evdata, id, v);
                 }else{

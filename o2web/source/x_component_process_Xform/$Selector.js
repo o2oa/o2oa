@@ -58,6 +58,65 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
         }
     },
+    setBusinessDataById: function(v, id ){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        var evdata = this.form.Macro.environment.data;
+        var data = this.form.businessData.data;
+        var thisId = id || this.json.id;
+        var text = this.getText();
+
+        if(thisId.indexOf("..") < 1){
+            data[thisId] = v;
+            data[thisId+"$text"] = text;
+            this._checkEvdata(evdata, thisId, v);
+            this._checkEvdata(evdata, thisId+"$text", text);
+
+            //console.log(thisId)
+            //this.form.businessData.data[this.json.id] = v;
+        }else{
+
+            var idList = thisId.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            //var data = this.form.businessData.data;
+            var lastIndex = idList.length - 1;
+
+            for(var i=0; i<=lastIndex; i++){
+
+                var id = idList[i];
+                if( !id && id !== 0 )return;
+
+                if( i === lastIndex ){
+                    data[id] = v;
+                    data[id + "$text"] = text;
+                    //evdata.check(id, v);
+                    this._checkEvdata(evdata, id, v);
+                    this._checkEvdata(evdata, id + "$text", text);
+                }else{
+                    var nexId = idList[i+1];
+                    if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
+                        if( !data[id] && o2.typeOf(data[id]) !== "array" ){
+                            data[id] = [];
+                            //evdata.check(id, []);
+                            this._checkEvdata(evdata, id, []);
+                        }
+                        if( nexId > data[id].length ){ //超过了最大下标，丢弃
+                            return;
+                        }
+                    }else{ //下一个ID是字符串
+                        if( !data[id] || o2.typeOf(data[id]) !== "object"){
+                            data[id] = {};
+                            //evdata.check(id, {});
+                            this._checkEvdata(evdata, id, {});
+                        }
+                    }
+                    data = data[id];
+                    evdata = evdata[id];
+                }
+            }
+        }
+        return evdata;
+    },
     /**
      * @summary 获取选择项。
      * @return {Array | Promise} 返回选择项数组或Promise，如：<pre><code class='language-js'>[
