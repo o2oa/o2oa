@@ -882,64 +882,64 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 evdata.check(id, v);
         }
     },
-        setBusinessDataById: function(v, id ){
-            //对id类似于 xx..0..xx 的字段进行拆分
-            var evdata = this.form.Macro.environment.data;
-            var data = this.form.businessData.data;
-            var thisId = id || this.json.id;
+    setBusinessDataById: function(v, id ){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        var evdata = this.form.Macro.environment.data;
+        var data = this.form.businessData.data;
+        var thisId = id || this.json.id;
 
-            var textTypes = ["OOSelect","Select","Radio","OORadio","OOCheckGroup","Checkbox"];
+        var textTypes = ["OOSelect","Select","Radio","OORadio","OOCheckGroup","Checkbox"];
 
-            if(thisId.indexOf("..") < 1){
-                data[thisId] = v;
-                if(textTypes.contains(this.json.type)){
-                    data[thisId+"$text"] = this.getText();
-                }
-                this._checkEvdata(evdata, thisId, v);
-                //this.form.businessData.data[this.json.id] = v;
-            }else{
-                var idList = thisId.split("..");
-                idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+        if(thisId.indexOf("..") < 1){
+            data[thisId] = v;
+            if(textTypes.contains(this.json.type)){
+                data[thisId+"$text"] = this.getText();
+            }
+            this._checkEvdata(evdata, thisId, v);
+            //this.form.businessData.data[this.json.id] = v;
+        }else{
+            var idList = thisId.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
-                //var data = this.form.businessData.data;
-                var lastIndex = idList.length - 1;
+            //var data = this.form.businessData.data;
+            var lastIndex = idList.length - 1;
 
-                for(var i=0; i<=lastIndex; i++){
-                    var id = idList[i];
-                    if( !id && id !== 0 )return;
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return;
 
-                    if( i === lastIndex ){
-                        data[id] = v;
-                        if(textTypes.contains(this.json.type)){
-                            data[id + "$text"] = this.getText();
-                        }
-                        //evdata.check(id, v);
-                        this._checkEvdata(evdata, id, v);
-                    }else{
-                        var nexId = idList[i+1];
-                        if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
-                            if( !data[id] && o2.typeOf(data[id]) !== "array" ){
-                                data[id] = [];
-                                //evdata.check(id, []);
-                                this._checkEvdata(evdata, id, []);
-                            }
-                            if( nexId > data[id].length ){ //超过了最大下标，丢弃
-                                return;
-                            }
-                        }else{ //下一个ID是字符串
-                            if( !data[id] || o2.typeOf(data[id]) !== "object"){
-                                data[id] = {};
-                                //evdata.check(id, {});
-                                this._checkEvdata(evdata, id, {});
-                            }
-                        }
-                        data = data[id];
-                        evdata = evdata[id];
+                if( i === lastIndex ){
+                    data[id] = v;
+                    if(textTypes.contains(this.json.type)){
+                        data[id + "$text"] = this.getText();
                     }
+                    //evdata.check(id, v);
+                    this._checkEvdata(evdata, id, v);
+                }else{
+                    var nexId = idList[i+1];
+                    if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
+                        if( !data[id] && o2.typeOf(data[id]) !== "array" ){
+                            data[id] = [];
+                            //evdata.check(id, []);
+                            this._checkEvdata(evdata, id, []);
+                        }
+                        if( nexId > data[id].length ){ //超过了最大下标，丢弃
+                            return;
+                        }
+                    }else{ //下一个ID是字符串
+                        if( !data[id] || o2.typeOf(data[id]) !== "object"){
+                            data[id] = {};
+                            //evdata.check(id, {});
+                            this._checkEvdata(evdata, id, {});
+                        }
+                    }
+                    data = data[id];
+                    evdata = evdata[id];
                 }
             }
-            return evdata;
-        },
+        }
+        return evdata;
+    },
 
     _queryLoaded: function(){},
     _afterLoaded: function(){},
