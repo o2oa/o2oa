@@ -882,13 +882,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 evdata.check(id, v);
         }
     },
-    setBusinessDataById: function(v, id ){
+    setBusinessDataById: function(v, id){
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
         var data = this.form.businessData.data;
         var thisId = id || this.json.id;
 
-        var textTypes = ["OOSelect","Select","Radio","OORadio","OOCheckGroup","Checkbox"];
+        var textTypes = ["OOSelect","Select","Radio","OORadioGroup","OOCheckGroup","Checkbox"];
 
         if(thisId.indexOf("..") < 1){
             data[thisId] = v;
