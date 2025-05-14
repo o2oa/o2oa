@@ -73,6 +73,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
     },
     /**
      * @summary 重新加载视图
+     * @param callback {Function} 刷新后的回调.
      * @example
      * this.form.get("fieldId").reload()
      */
