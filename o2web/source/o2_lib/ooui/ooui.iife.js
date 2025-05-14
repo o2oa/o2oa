@@ -874,6 +874,7 @@ br{\r
     align-items: center;\r
     color: var(--oo-color-text2);\r
     height: 100%;\r
+    min-height: 2.27em;\r
 }\r
 \r
 .labelText {\r
@@ -882,6 +883,7 @@ br{\r
     display: flex;\r
     align-items: center;\r
     height: 100%;\r
+    min-height: 2.27em;\r
 }\r
 .flex-end {\r
     justify-content: flex-end;\r
@@ -976,7 +978,7 @@ input {\r
 			<slot name="label"></slot>\r
 		</div>\r
 		<div style="width: 100%;">\r
-			<div style="display: flex; align-items: center;height: 100%;">\r
+			<div style="display: flex; align-items: center;">\r
 				<div class="box">\r
 					<slot name="before-inner-before"></slot>\r
 					<div class="prefix"></div>\r
@@ -1027,6 +1029,7 @@ input {\r
 }\r
 .labelArea {\r
     display: flex;\r
+    align-items: center;\r
     position: relative;\r
     height: 100%;\r
 }\r
@@ -1085,6 +1088,7 @@ input {\r
 }\r
 .input[type='color'] {\r
     padding: 0.2em;\r
+    height: revert;\r
 }\r
 \r
 input[type='date']::-webkit-calendar-picker-indicator {\r
@@ -1259,20 +1263,9 @@ div.invalidHint.show::before {\r
     padding: 0.5em 0.6em;\r
     display: none;\r
 }\r
-.view[type='color'] .viewText::before{\r
-    font-family: 'ooicon' !important;\r
-    font-style: normal;\r
-    font-weight: normal;\r
-    font-variant: normal;\r
-    text-transform: none;\r
-    line-height: 1;\r
-    content: "\\e757";\r
-    margin-right: 0.3em;\r
-}\r
 \r
 .readmode .viewText {\r
-    display: flex;\r
-    align-items: center;\r
+    display: block;\r
 }\r
 .requiredFlag {\r
     color: var(--oo-color-highlight);\r

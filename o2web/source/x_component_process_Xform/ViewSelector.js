@@ -63,6 +63,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
         if( this.json.properties ){
             this.node.set(this.json.properties );
         }
+
         this.node.addEvent("click", function(){
             this.selectedData = null;
             this.selectView(function(data){
@@ -122,6 +123,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             var options = {};
             var width = options.width || "800";
             var height = options.height || "450";
+            options.style = this.json.viewStyle || "v10_view";
 
             var size;
             if (layout.mobile){
@@ -147,7 +149,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             MWF.require("MWF.xDesktop.Dialog", function(){
                 var dlg = new MWF.xDesktop.Dialog({
                     "title": this.json.title || "select view",
-                    "style": options.style || "view",
+                    "style": options.style || "v10_view",
                     "top": y,
                     "left": x-20,
                     "fromTop":y,
@@ -255,7 +257,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             MWF.require("MWF.xDesktop.Dialog", function(){
                 var dlg = new MWF.xDesktop.Dialog({
                     "title": this.json.title || "select view",
-                    "style": options.style || "view",
+                    "style": options.style || "v10_view",
                     "top": y,
                     "left": x-20,
                     "fromTop":y,
@@ -366,6 +368,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
         // var height = options.height || "700";
         var width = this.json.DialogWidth || "850";
         var height = this.json.DialogHeight || "700";
+        options.style = this.json.viewStyle || "v10_view";
 
         if (layout.mobile){
             var size = document.body.getSize();
@@ -390,7 +393,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
         MWF.require("MWF.xDesktop.Dialog", function(){
             var dlg = o2.DL.open({
                 "title": this.json.title || "select view",
-                "style": options.style || "view",
+                "style": options.style || "v10_view",
                 //"top": y,
                 //"left": x-20,
                 //"fromTop":y,

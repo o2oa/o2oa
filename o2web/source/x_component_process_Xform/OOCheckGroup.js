@@ -143,7 +143,7 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
             if (i.checked) items.push(i);
         }
         return items;
-    },
+    }
     // __setData: function(data, fireChange){
     //     this.moduleValueAG = null;
     //     this._setBusinessData(data);

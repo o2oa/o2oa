@@ -444,6 +444,17 @@
     opacity: 1;
 }
 
+.filetype-icon{
+    width: 2em;
+	height: 2em;
+	background-color: var(--oo-color-main);
+	border-radius: 4px;
+	color: #ffffff;
+	font-size: 1.5em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
 /* 手机 */
 @media only screen and (max-width: 767px) {

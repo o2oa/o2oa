@@ -26,6 +26,7 @@ MWF.xApplication.process.Xform.Codeeditor = MWF.APPCodeeditor =  new Class({
 
 
     _loadUserInterface: function(){
+        debugger;
         this.node.empty();
         if (this.isReadonly()){
             var value = this._getBusinessData();

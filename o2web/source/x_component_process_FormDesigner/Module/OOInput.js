@@ -11,6 +11,9 @@ MWF.xApplication.process.FormDesigner.Module.OOInput = MWF.FCOOInput = new Class
 	},
 	_loadNodeStyles: function(){
 		this.node.setAttribute('readonly', true);
+		if (this.json.innerHTML){
+			this.node.set("html", this.json.innerHTML);
+		}
 	},
 	_setEditStyle_custom: function(name){
 		if (name==="id") this.node.set("placeholder", this.json.id);
@@ -49,6 +52,9 @@ MWF.xApplication.process.FormDesigner.Module.OOInput = MWF.FCOOInput = new Class
 				this.node.removeAttribute("required");
 			}
 		}
+		if (name==="innerHTML"){
+			this.node.set("html", this.json.innerHTML);
+		}
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-input", {
@@ -65,6 +71,13 @@ MWF.xApplication.process.FormDesigner.Module.OOInput = MWF.FCOOInput = new Class
 			}
 		}).inject(this.form.container);
 	},
+	_resetModuleDomNode: function(){
+        if (this.json.preprocessing){
+            this.node.empty();
+			if (this.json.innerHTML) this.node.set("html", this.json.innerHTML);
+        }
+    },
+
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
 			try{
@@ -95,4 +108,47 @@ MWF.xApplication.process.FormDesigner.Module.OOInput = MWF.FCOOInput = new Class
 		}
 		this.json.preprocessing = "y";
 	},
+	setCustomInputStyles: function(){
+        this._recoveryModuleData();
+
+        // var inputNode = this.node.node;
+        // if (inputNode){
+        //     // inputNode.clearStyles();
+        //     // inputNode.setStyles(this.css.moduleText);
+
+        //     if (this.json.inputStyles) Object.each(this.json.inputStyles, function(value, key){
+        //         if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+        //             var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+        //             var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+        //             if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+        //                 value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+        //             }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+        //                 value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+        //             }
+        //             if (value.indexOf("/x_portal_assemble_surface")!==-1){
+        //                 value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+        //             }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+        //                 value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+        //             }
+        //             value = o2.filterUrl(value);
+        //         }
+
+        //         var reg = /^border\w*/ig;
+        //         if (!key.test(reg)){
+        //             if (key){
+        //                 if (key.toString().toLowerCase()==="display"){
+        //                     if (value.toString().toLowerCase()==="none"){
+        //                         inputNode.setStyle("opacity", 0.3);
+        //                     }else{
+        //                         inputNode.setStyle("opacity", 1);
+        //                         inputNode.setStyle(key, value);
+        //                     }
+        //                 }else{
+        //                     inputNode.setStyle(key, value);
+        //                 }
+        //             }
+        //         }
+        //     }.bind(this));
+        // }
+    }
 });

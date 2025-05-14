@@ -2864,6 +2864,32 @@ if (!window.o2) {
 
         };
 
+        //去除html文本中的script标签和事件处理函数
+        o2.sanitizeHTML = function (html) {
+            const template = document.createElement('template');
+            template.innerHTML = html;
+        
+            const sanitizeNode = (node) => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Remove script and event handler attributes
+                    if (node.tagName === 'SCRIPT') {
+                        node.remove();
+                        return;
+                    }
+                    [...node.attributes].forEach(attr => {
+                        if (attr.name.startsWith('on')) {
+                            node.removeAttribute(attr.name);
+                        }
+                    });
+                }
+                // Recursively sanitize child nodes
+                [...node.childNodes].forEach(sanitizeNode);
+            };
+        
+            sanitizeNode(template.content);
+            return template.innerHTML;
+        }
+
         if (String.implement) String.implement({
             "getAllIndexOf": function (str) {
                 var idxs = [];

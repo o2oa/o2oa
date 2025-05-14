@@ -93,6 +93,9 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
         if (this.json.dataType){
             this.node.setAttribute("type", this.json.dataType);
         }
+        if (this.json.innerHTML){
+			this.node.set("html", this.json.innerHTML);
+		}
 
         this.node.addEvent('change', function () {
             var v = this.getInputData('change');

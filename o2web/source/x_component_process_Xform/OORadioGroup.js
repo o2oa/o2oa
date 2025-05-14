@@ -134,9 +134,12 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
                         "type": "radio",
                         "name": (this.json.properties && this.json.properties.name) ? this.json.properties.name : flag + this.json.id,
                         "value": value,
-                        "text": text,
+                        // "text": text,
                         "styles": this.json.buttonStyles
                     }).inject(this.node);
+                    radio.setAttribute('text', text);
+
+
 
                 }.bind(this));
             }

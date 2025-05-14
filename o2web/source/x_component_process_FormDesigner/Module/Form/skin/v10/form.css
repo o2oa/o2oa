@@ -414,6 +414,28 @@
     border-radius: var(--oo-default-radius) !important;
 }
 
+/* 视图选择按钮 */
+.form-layout .form-content-view-selector, .form-layout .form-content-button {
+    color: #ffffff !important;
+    border-radius: var(--oo-default-radius) !important;
+    border: 0 !important;
+    cursor: pointer !important;
+    padding: 0.375em 0.6em !important;
+    background-color: var(--oo-color-main) !important;
+    transition: background 0.1s, color 0.1s !important;
+    text-align: center !important;
+    height: unset !important;
+    line-height: unset !important;
+}
+.form-layout .form-content-view-selector:hover, .form-layout .form-content-button:hover {
+    background-color: var(--oo-color-main-light) !important;
+}
+.form-layout .form-content-view-selector:focus, .form-layout .form-content-button:focus {
+    background-color: var(--oo-color-main-light) !important;
+}
+.form-layout .form-content-view-selector:active, .form-layout .form-content-button:active {
+    background-color: var(--oo-color-main-deep) !important;
+}
 
 
 /* 手机 */

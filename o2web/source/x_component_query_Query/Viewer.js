@@ -263,7 +263,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          *  //可以在视图的组件中获取视图的Dom(在视图的操作条组件中，分页事件中)
          * var node = this.target.view.node;
          */
-        this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
+        this.node = new Element("div.form-content-view", {"styles": this.css.node, mwftype: "view"}).inject(this.container);
         /**
          * @summary 操作组件容器
          * @member {Element}
@@ -1103,6 +1103,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             if (this.selectTitleCell && !this.selectTitleCell.retrieve("selectAllLoaded") ){
                 if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
                     this.selectAllNode = this.selectTitleCell;
+
+                    if (this.viewJson.viewStyles["checkboxNode"].className){
+                        this.selectAllNode.addClass( this.viewJson.viewStyles["checkboxNode"].className );
+                    }
                     this.selectAllNode.setStyles( this.viewJson.viewStyles["checkboxNode"] );
                     // this.selectAllNode = new Element("div", {
                     //     styles : this.viewJson.viewStyles["checkboxNode"]
@@ -2014,6 +2018,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     setUnSelectAllStyle : function () {
         if(!this.selectAllNode)return;
         if( this.viewJson.viewStyles && this.viewJson.viewStyles["checkboxNode"] ){
+            if (this.viewJson.viewStyles["checkboxNode"].className){
+                this.selectAllNode.addClass(this.viewJson.viewStyles["checkboxNode"].className);
+            }
             this.selectAllNode.setStyles( this.viewJson.viewStyles["checkboxNode"] );
         }else {
             this.selectAllNode.getElement("img").set("src",
@@ -2754,8 +2761,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             var viewStyles = this.view.viewJson.viewStyles;
             if (viewStyles) {
                 if (selectFlag === "single") {
+                    if (viewStyles["radioNode"] && viewStyles["radioNode"].className){
+                        this.selectTd.addClass(viewStyles["radioNode"].className);    
+                    }
                     this.selectTd.setStyles(viewStyles["radioNode"]);
                 } else {
+                    if (viewStyles["checkboxNode"] && viewStyles["checkboxNode"].className){
+                        this.selectTd.addClass(viewStyles["checkboxNode"].className);    
+                    }
                     this.selectTd.setStyles(viewStyles["checkboxNode"]);
                 }
             } else {
@@ -3084,8 +3097,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                         var viewStyles = this.view.viewJson.viewStyles;
                         if( viewStyles ){
                             if( flag === "single" ){
+                                if (viewStyles["radioNode"] && viewStyles["radioNode"].className){
+                                    this.selectTd.addClass(viewStyles["radioNode"].className);    
+                                }
                                 this.selectTd.setStyles( viewStyles["radioNode"] );
                             }else{
+                                if (viewStyles["checkboxNode"] && viewStyles["checkboxNode"].className){
+                                    this.selectTd.addClass(viewStyles["checkboxNode"].className);    
+                                }
                                 this.selectTd.setStyles( viewStyles["checkboxNode"] );
                             }
                         }else{
@@ -3173,9 +3192,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }
         var viewStyles = this.view.viewJson.viewStyles;
         if( this.view.viewJson.selectBoxShow !=="always" ){
-            this.selectTd.setStyles({"background": "transparent"});
+            this.selectTd.setStyles({"background": "transparent", opacity: 0});
         }else{
+            this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
+                if (viewStyles["checkboxNode"].className){
+                    this.selectTd.addClass(viewStyles["checkboxNode"].className);    
+                }
                 this.selectTd.setStyles(viewStyles["checkboxNode"]);
             }else{
                 this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/checkbox.png) center center no-repeat"});
@@ -3210,6 +3233,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         this.view.selectedItems = [this];
         this.view.currentSelectedItem = this;
         var viewStyles = this.view.viewJson.viewStyles;
+        this.selectTd.setStyles({opacity: 1});
         if( viewStyles ){
             this.selectTd.setStyles( viewStyles["checkedRadioNode"] );
             this.node.setStyles( viewStyles["contentSelectedTr"] );
@@ -3237,8 +3261,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         this.view.currentSelectedItem = null;
         var viewStyles = this.view.viewJson.viewStyles;
         if( this.view.viewJson.selectBoxShow !=="always" ){
-            this.selectTd.setStyles({"background": "transparent"});
+            this.selectTd.setStyles({"background": "transparent", opacity: 0});
         }else{
+            this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
                 this.selectTd.setStyles(viewStyles["radioNode"]);
             }else{

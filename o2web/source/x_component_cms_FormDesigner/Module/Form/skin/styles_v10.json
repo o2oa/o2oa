@@ -408,5 +408,24 @@
       "label-Align": "right",
       "view-style": "background-color:#f7f7f7"
     }
+  },
+  "statement": {
+      "styles": {},
+      "properties": {
+          "class": "form-content-view"
+      }
+  },
+  "viewSelector": {
+      "styles": {},
+      "properties": {
+          "class": "form-content-view-selector"
+      },
+      "viewStyle": "v10"
+  },
+  "button": {
+      "styles": {},
+      "properties": {
+          "class": "form-content-button"
+      }
   }
 }

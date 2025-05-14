@@ -26,7 +26,8 @@
 		"overflow": "hidden",
 		"font-size": "12px",
 		"cursor": "default",
-		"padding": "3px 3px"
+		"padding": "3px 3px",
+		"flex": "1"
 	},
 	"referenceNode": {
 	    "float": "left",

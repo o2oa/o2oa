@@ -413,5 +413,18 @@
         "properties": {
             "class": "form-content-view"
         }
+    },
+    "viewSelector": {
+        "styles": {},
+        "properties": {
+            "class": "form-content-view-selector"
+        },
+        "viewStyle": "v10"
+    },
+    "button": {
+        "styles": {},
+        "properties": {
+            "class": "form-content-button"
+        }
     }
 }
