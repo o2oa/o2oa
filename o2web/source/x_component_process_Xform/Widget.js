@@ -57,14 +57,15 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
     },
     /**
      * @summary 重新加载部件
+     * @param callback {Function} 刷新后的回调.
      * @example
      * this.form.get("fieldId").reload()
      */
-    reload: function(){
+    reload: function( callback ){
         this.clean();
 
         this.getWidget(function(){
-            this.loadWidget();
+            this.loadWidget( callback );
         }.bind(this));
     },
     clean: function(){
@@ -177,7 +178,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
         }
         return parentpageIdList;
     },
-    loadWidget: function(){
+    loadWidget: function( callback ){
         if (this.widgetData ){
             if( this.checkWidgetNested( this.widgetData.json.id ) ){
                 //this.form.addEvent("postLoad", function(){
@@ -236,6 +237,8 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                 }.bind(this));
 
                 this.fireEvent("afterModulesLoad");
+
+                if(callback)callback();
 
                 //}.bind(this));
             }else{

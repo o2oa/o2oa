@@ -90,7 +90,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
     },
     /**
      * @summary 重新加载子表单
-     * @param {Function} callback
+     * @param {Function} callback 刷新后的回调
      * @example
      * this.form.get("fieldId").reload(function(){
      *     //do someting

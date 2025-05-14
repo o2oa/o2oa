@@ -1640,12 +1640,13 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     /** @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
      * @memberof MWF.xApplication.process.Xform.Attachment
      * @param refresh {Boolean} 是否重新从后台获取附件列表.
+     * @param callback {Function} 刷新后的回调.
      * @example
      *  this.form.get("fieldId").reload(); //重新加载
      * @example
      *  this.form.get("fieldId").reload( true ); //重新从后台获取附件并重新加载
      */
-    reload: function( refresh ){
+    reload: function( refresh, callback ){
         this.node.empty();
         if (this.form.businessData.work.startTime){
             if( refresh ){
@@ -1654,11 +1655,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     listWithJob(job, function(json){
                         this.form.businessData.attachmentList = json.data;
                         this.loadAttachmentController();
+                        if(callback)callback();
                 }.bind(this));
             }else{
                 this.loadAttachmentController();
+                if(callback)callback();
             }
         }
+        if(callback)callback();
     },
     getFlagDefaultFalse: function( key ){
         if( this.json[key] === "y" || this.json[key] === "true" )return true;
