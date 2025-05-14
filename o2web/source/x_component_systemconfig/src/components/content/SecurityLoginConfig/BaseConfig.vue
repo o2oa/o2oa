@@ -108,8 +108,7 @@
 import {ref} from 'vue';
 import {lp} from '@o2oa/component';
 import BaseItem from '@/components/item/BaseItem.vue';
-import {getConfigData, loadPortals, saveConfig} from '@/util/acrions';
-
+import {getConfigData, loadPortals, saveConfig, saveConfigValues} from '@/util/acrions';
 const captchaLogin = ref(false);
 const codeLogin = ref(true);
 const bindLogin = ref(true);
@@ -126,20 +125,28 @@ const twoFactorLoginDisabled = ref(false);
 
 const changeCodeLogin = async () => {
   twoFactorLoginDisabled.value = !!(codeLogin.value);
+  const pathList = [], valueList = [];
   if( !!(codeLogin.value) ){
     twoFactorLogin.value = false;
-    await saveConfig('person', 'twoFactorLogin', twoFactorLogin.value)
+    pathList.push( 'twoFactorLogin' );
+    valueList.push( twoFactorLogin.value );
   }
-  await saveConfig('person', 'codeLogin', codeLogin.value)
+  pathList.push( 'codeLogin' );
+  valueList.push( codeLogin.value );
+  await saveConfigValues('person', pathList, valueList);
 }
 
 const changeTwoFactorLogin = async () => {
   codeLoginDisabled.value = !!(twoFactorLogin.value);
+  const pathList = [], valueList = [];
   if( !!(twoFactorLogin.value) ){
     codeLogin.value = false;
-    await saveConfig('person', 'codeLogin', codeLogin.value)
+    pathList.push( 'codeLogin' );
+    valueList.push( codeLogin.value );
   }
-  await saveConfig('person', 'twoFactorLogin', twoFactorLogin.value)
+  pathList.push( 'twoFactorLogin' );
+  valueList.push( twoFactorLogin.value );
+  await saveConfigValues('person', pathList, valueList)
 }
 
 const load = async () => {

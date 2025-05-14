@@ -1,5 +1,7 @@
 package com.x.organization.assemble.express.jaxrs.person;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.tools.Crypto;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -26,98 +29,125 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 
 class ActionListFilterPaging extends BaseAction {
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Predicate p = this.toFilterPredicate(business, wi);
-			List<Wo> wos = emc.fetchAscPaging(Person.class, Wo.copier, p, page, size, Person.pinyin_FIELDNAME);
-			this.hide(effectivePerson, business, wos);
-			result.setData(wos);
-			result.setCount(emc.count(Person.class, p));
-			return result;
-		}
-	}
 
-	private Predicate toFilterPredicate(Business business,  Wi wi) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.conjunction();
-		if (StringUtils.isNotBlank(wi.getEmployee())) {
-			p = cb.and(p, cb.equal(root.get(Person_.employee), wi.getEmployee()));
-		}
-		if (StringUtils.isNotBlank(wi.getMobile())) {
-			p = cb.and(p, cb.equal(root.get(Person_.mobile), wi.getMobile()));
-		}
-		if (StringUtils.isNotBlank(wi.getUnique())) {
-			p = cb.and(p, cb.equal(root.get(Person_.unique), wi.getUnique()));
-		}
-		if (StringUtils.isNoneBlank(wi.getName())) {
-			String key = StringTools.escapeSqlLikeKey(wi.getName());
-			p = cb.and(p, cb.like(root.get(Person_.name), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size,
+            JsonElement jsonElement) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            ActionResult<List<Wo>> result = new ActionResult<>();
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            Predicate p = this.toFilterPredicate(business, wi);
+            List<Wo> wos = emc.fetchAscPaging(Person.class, Wo.copier, p, page, size,
+                    Person.pinyin_FIELDNAME);
+            wos.forEach(wo -> {
+                if (wo.getName().startsWith(Person.ENCRYPT)) {
+                    wo.setName(Crypto.base64Decode(wo.getName().substring(Person.ENCRYPT.length())));
+                }
+                if (wo.getMobile().startsWith(Person.ENCRYPT)) {
+                    wo.setMobile(Crypto.base64Decode(wo.getMobile().substring(Person.ENCRYPT.length())));
+                }
+            });
+            this.hide(effectivePerson, business, wos);
+            result.setData(wos);
+            result.setCount(emc.count(Person.class, p));
+            return result;
+        }
+    }
 
-		return p;
-	}
+    private Predicate toFilterPredicate(Business business, Wi wi) throws Exception {
+        EntityManager em = business.entityManagerContainer().get(Person.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+        Root<Person> root = cq.from(Person.class);
+        Predicate p = cb.conjunction();
+        if (StringUtils.isNotBlank(wi.getEmployee())) {
+            p = cb.and(p, cb.equal(root.get(Person_.employee), wi.getEmployee()));
+        }
+        if (StringUtils.isNotBlank(wi.getMobile())) {
+            if (BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())) {
+                String enStr = Person.ENCRYPT + Crypto.base64Encode(wi.getMobile());
+                p = cb.and(p, cb.or(cb.equal(root.get(Person_.mobile), wi.getMobile()),
+                        cb.equal(root.get(Person_.mobile), enStr)));
+            } else {
+                p = cb.and(p, cb.equal(root.get(Person_.mobile), wi.getMobile()));
+            }
+        }
+        if (StringUtils.isNotBlank(wi.getUnique())) {
+            p = cb.and(p, cb.equal(root.get(Person_.unique), wi.getUnique()));
+        }
+        if (StringUtils.isNoneBlank(wi.getName())) {
+            String key = StringTools.escapeSqlLikeKey(wi.getName());
+            if (BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())) {
+                String enStr = Crypto.base64Encode(wi.getName());
+                p = cb.and(p, cb.or(cb.like(root.get(Person_.name), "%" + key + "%",
+                                StringTools.SQL_ESCAPE_CHAR),
+                        cb.like(root.get(Person_.name), "%" + enStr + "%",
+                                StringTools.SQL_ESCAPE_CHAR)));
+            } else {
+                p = cb.and(p,
+                        cb.like(root.get(Person_.name), "%" + key + "%",
+                                StringTools.SQL_ESCAPE_CHAR));
+            }
+        }
 
-	public class Wi extends GsonPropertyObject {
+        return p;
+    }
 
-		private static final long serialVersionUID = -2991229948693512630L;
+    public class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("名称")
-		private String name;
+        private static final long serialVersionUID = -2991229948693512630L;
 
-		@FieldDescribe("工号")
-		private String employee;
+        @FieldDescribe("名称")
+        private String name;
 
-		@FieldDescribe("唯一标识")
-		private String unique;
+        @FieldDescribe("工号")
+        private String employee;
 
-		@FieldDescribe("手机号.")
-		private String mobile;
+        @FieldDescribe("唯一标识")
+        private String unique;
 
-		public String getName() {
-			return name;
-		}
+        @FieldDescribe("手机号.")
+        private String mobile;
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        public String getName() {
+            return name;
+        }
 
-		public String getEmployee() {
-			return employee;
-		}
+        public void setName(String name) {
+            this.name = name;
+        }
 
-		public void setEmployee(String employee) {
-			this.employee = employee;
-		}
+        public String getEmployee() {
+            return employee;
+        }
 
-		public String getUnique() {
-			return unique;
-		}
+        public void setEmployee(String employee) {
+            this.employee = employee;
+        }
 
-		public void setUnique(String unique) {
-			this.unique = unique;
-		}
+        public String getUnique() {
+            return unique;
+        }
 
-		public String getMobile() {
-			return mobile;
-		}
+        public void setUnique(String unique) {
+            this.unique = unique;
+        }
 
-		public void setMobile(String mobile) {
-			this.mobile = mobile;
-		}
-	}
+        public String getMobile() {
+            return mobile;
+        }
 
-	public static class Wo extends Person {
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
+        }
+    }
 
-		private static final long serialVersionUID = 1847108296662273067L;
+    public static class Wo extends Person {
 
-		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class,
-				JpaObject.singularAttributeField(Person.class, true, true), null);
+        private static final long serialVersionUID = 1847108296662273067L;
 
-	}
+        static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class,
+                JpaObject.singularAttributeField(Person.class, true, true), null);
+
+    }
 }

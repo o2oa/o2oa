@@ -153,10 +153,10 @@ const fetch = function(url, options = {}) {
             // 获取响应码
             const responseCode = httpURLConnection.getResponseCode();
 
-            const getResponseBody = function(inputStream){
+            const getResponseBody = function(inputStream, encode){
                 const JavaInputStreamReader = Java.type('java.io.InputStreamReader');
                 const JavaBufferedReader = Java.type('java.io.BufferedReader');
-                const reader = new JavaBufferedReader(new JavaInputStreamReader(inputStream));
+                const reader = new JavaBufferedReader(new JavaInputStreamReader(inputStream, encode));
                 let inputLine;
                 const responseData = [];
                 while ((inputLine = reader.readLine()) !== null) {
@@ -179,8 +179,8 @@ const fetch = function(url, options = {}) {
                 headers: httpURLConnection.getHeaderFields(),
                 error: httpURLConnection.getErrorStream(),
 
-                text: async () => getResponseBody(inputStream),
-                json: async () => JSON.parse(getResponseBody(inputStream)),
+                text: async (encode = 'utf-8') => getResponseBody(inputStream, encode),
+                json: async (encode = 'utf-8') => JSON.parse(getResponseBody(inputStream, encode)),
 
                 blob: async () => {
                     const byteArray = inputStream.readAllBytes();
@@ -2094,7 +2094,9 @@ const include = function( optionsOrName , callback ){
 
     const arg1 = (type==='portal') ? application : name;
     const arg2 = (type==='portal') ? name : application;
-    const json = (type==='service') ? actionsMap[type].getScript(name) : actionsMap[type].getScript(arg1, arg2, {"importedList":includedScripts[application]});
+    const json = (type==='service') ?
+        actionsMap[type].getScript(encodeURIComponent(name)) :
+        actionsMap[type].getScript(encodeURIComponent(arg1), encodeURIComponent(arg2), {"importedList":includedScripts[application]});
     includedScripts[application] = includedScripts[application].concat(json.data.importedList);
     includedScripts[application].push(name);
     if (json.data && json.data.text){
@@ -2124,7 +2126,9 @@ const _includeSource = function (optionsOrName, callback, fileType) {
 
     const arg1 = (type==='portal') ? application : name;
     const arg2 = (type==='portal') ? name : application;
-    const json = (type==='service') ? actionsMap[type].getScript(name) : actionsMap[type].getScript(arg1, arg2, {"importedList":includedScripts[application]});
+    const json = (type==='service') ?
+        actionsMap[type].getScript(encodeURIComponent(name)) :
+        actionsMap[type].getScript(encodeURIComponent(arg1), encodeURIComponent(arg2), {"importedList":includedScripts[application]});
 
     let result;
     if (json.data && json.data.text){
@@ -2294,7 +2298,7 @@ const Dict = function(optionsOrName){
         const failureFun = json=>{if (failure) failure(json.data);}
 
         const par = [encodeURIComponent(this.name)];
-        if (type !== "service") par.push(applicationId);
+        if (type !== "service") par.push(encodeURIComponent(applicationId));
         if (path) par.push(encodePath(path));
 
         const json = action[methodName](...par, successFun, failureFun);
@@ -2432,7 +2436,7 @@ const Dict = function(optionsOrName){
         const failureFun = json=>{if (failure) failure(json.data);}
 
         const par = [encodeURIComponent(this.name)];
-        if (type !== "service") par.push(applicationId);
+        if (type !== "service") par.push(encodeURIComponent(applicationId));
 
         const json = action.setDictData(...par, encodePath(path), value, successFun, failureFun);
         return json.data;
@@ -2572,7 +2576,7 @@ const Dict = function(optionsOrName){
         const failureFun = json=>{if (failure) failure(json.data);}
 
         const par = [encodeURIComponent(this.name)];
-        if (type !== "service") par.push(applicationId);
+        if (type !== "service") par.push(encodeURIComponent(applicationId));
 
         const json = action.addDictData(...par, encodePath(path), value, successFun, failureFun);
         return json.data;
@@ -2688,7 +2692,7 @@ const Dict = function(optionsOrName){
         const failureFun = json=>{if (failure) failure(json.data);}
 
         const par = [encodeURIComponent(this.name)];
-        if (type !== "service") par.push(applicationId);
+        if (type !== "service") par.push(encodeURIComponent(applicationId));
 
         const json = action.deleteDictData(...par, encodePath(path), successFun, failureFun);
         return json.data;

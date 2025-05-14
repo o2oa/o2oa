@@ -55,6 +55,26 @@ async function saveConfig(name, path, value) {
         fileContent: JSON.stringify(config, null, "\t")
     });
 }
+
+async function saveConfigValues(name, pathList, valueList) {
+    const config = (configs[name]) ? configs[name] : (await loadConfig(name));
+    let configData = config;
+    pathList.forEach((path, i)=>{
+        const value = valueList[i];
+        const paths = path.split('.');
+        const key = paths.pop();
+        paths.forEach((p)=>{
+            // if (!config[p]) config[p] = {};
+            configData = configData[p] || (configData[p] = {});
+        });
+        configData[key] = value;
+    });
+    o2.Actions.load('x_program_center').ConfigAction.save({
+        fileName: `${name}.json`,
+        fileContent: JSON.stringify(config, null, "\t")
+    });
+}
+
 async function delConfig(name, path) {
     const config = (configs[name]) ? configs[name] : (await loadConfig(name));
     let configData = config;
@@ -290,6 +310,7 @@ export {
     getConfig,
     getConfigData,
     saveConfig,
+    saveConfigValues,
     delConfig,
     saveConfigData,
     loadComponents,

@@ -317,14 +317,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if ((pic.indexOf("x_processplatform_assemble_surface") != -1 || pic.indexOf("x_portal_assemble_surface") != -1)  && !pic.startsWith("..")) {
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
-                if (pic.indexOf("/x_processplatform_assemble_surface") !== -1) {
+                if (pic.indexOf("/x_processplatform_assemble_surface") !== -1 && pic.indexOf(host1) === -1) {
                     pic = pic.replace("/x_processplatform_assemble_surface", host1 + "/x_processplatform_assemble_surface");
-                } else if (pic.indexOf("x_processplatform_assemble_surface") !== -1) {
+                } else if (pic.indexOf("x_processplatform_assemble_surface") !== -1 && pic.indexOf(host1) === -1) {
                     pic = pic.replace("x_processplatform_assemble_surface", host1 + "/x_processplatform_assemble_surface");
                 }
-                if (pic.indexOf("/x_portal_assemble_surface") !== -1) {
+                if (pic.indexOf("/x_portal_assemble_surface") !== -1 && pic.indexOf(host2) === -1) {
                     pic = pic.replace("/x_portal_assemble_surface", host2 + "/x_portal_assemble_surface");
-                } else if (pic.indexOf("x_portal_assemble_surface") !== -1) {
+                } else if (pic.indexOf("x_portal_assemble_surface") !== -1 && pic.indexOf(host2) === -1) {
                     pic = pic.replace("x_portal_assemble_surface", host2 + "/x_portal_assemble_surface");
                 }
                 pic = o2.filterUrl(pic);
@@ -448,7 +448,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
-        
+
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
@@ -1212,14 +1212,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if ((value.indexOf("x_processplatform_assemble_surface") != -1 || value.indexOf("x_portal_assemble_surface") != -1) && !value.includes("../")) {
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
-                if (value.indexOf("/x_processplatform_assemble_surface") !== -1) {
+                if (value.indexOf("/x_processplatform_assemble_surface") !== -1 && value.indexOf(host1) === -1) {
                     value = value.replace("/x_processplatform_assemble_surface", host1 + "/x_processplatform_assemble_surface");
-                } else if (value.indexOf("x_processplatform_assemble_surface") !== -1) {
+                } else if (value.indexOf("x_processplatform_assemble_surface") !== -1 && value.indexOf(host1) === -1) {
                     value = value.replace("x_processplatform_assemble_surface", host1 + "/x_processplatform_assemble_surface");
                 }
-                if (value.indexOf("/x_portal_assemble_surface") !== -1) {
+                if (value.indexOf("/x_portal_assemble_surface") !== -1 && value.indexOf(host2) === -1) {
                     value = value.replace("/x_portal_assemble_surface", host2 + "/x_portal_assemble_surface");
-                } else if (value.indexOf("x_portal_assemble_surface") !== -1) {
+                } else if (value.indexOf("x_portal_assemble_surface") !== -1 && value.indexOf(host2) === -1) {
                     value = value.replace("x_portal_assemble_surface", host2 + "/x_portal_assemble_surface");
                 }
             }

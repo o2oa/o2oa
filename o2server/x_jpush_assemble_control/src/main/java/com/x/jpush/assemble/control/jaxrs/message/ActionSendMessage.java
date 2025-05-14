@@ -1,36 +1,35 @@
 package com.x.jpush.assemble.control.jaxrs.message;
 
-import cn.jpush.api.JPushClient;
-import cn.jpush.api.push.PushResult;
-import cn.jpush.api.push.model.Options;
-import cn.jpush.api.push.model.Platform;
-import cn.jpush.api.push.model.PushPayload;
-import cn.jpush.api.push.model.audience.Audience;
-import cn.jpush.api.push.model.notification.AndroidNotification;
-import cn.jpush.api.push.model.notification.IosNotification;
-import cn.jpush.api.push.model.notification.Notification;
+
+import cn.jiguang.sdk.api.PushApi;
+import cn.jiguang.sdk.bean.push.PushSendParam;
+import cn.jiguang.sdk.bean.push.PushSendResult;
+import cn.jiguang.sdk.bean.push.audience.Audience;
+import cn.jiguang.sdk.bean.push.message.notification.NotificationMessage;
+import cn.jiguang.sdk.bean.push.options.Options;
+import cn.jiguang.sdk.enums.platform.Platform;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.jpush.assemble.control.Business;
 import com.x.jpush.assemble.control.JpushConst;
 import com.x.jpush.core.entity.PushDevice;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class ActionSendMessage extends StandardJaxrsAction {
+public class ActionSendMessage extends BaseAction {
 
     private static final Logger logger = LoggerFactory.getLogger(ActionSendMessage.class);
 
@@ -79,58 +78,59 @@ public class ActionSendMessage extends StandardJaxrsAction {
      * @param client
      * @throws Exception
      */
-    private void send2Jpush(List<PushDevice> pushDeviceList, Wi wi, JPushClient client) throws Exception {
+    private void send2Jpush(List<PushDevice> pushDeviceList, Wi wi, PushApi client) throws Exception {
         List<String> jiguangDeviceList = pushDeviceList.stream().map(PushDevice::getDeviceId)
                 .collect(Collectors.toList());
-        var iosBuilder = IosNotification
-                .newBuilder()
-                .setSound("") // 默认铃声
-                .setBadge(1)
-                .setAlert(wi.getMessage());
-        var androidBuilder = AndroidNotification
-                .newBuilder()
-                .setPriority(0)
-                .setBadgeClass(JpushConst.launchActivity)
-                .setBadgeAddNum(1)
-                .setAlert(wi.getMessage());
+        PushSendParam param = new PushSendParam();
+        NotificationMessage.Android android = new NotificationMessage.Android();
+        android.setAlert(wi.getMessage());
+        android.setPriority(0);
+        android.setBadgeClass(JpushConst.launchActivity);
+        android.setBadgeAddNumber(1);
+        android.setChannelId(androidChannelId);
+        NotificationMessage.IOS iOS = new NotificationMessage.IOS();
+        iOS.setAlert(wi.getMessage());
+        iOS.setBadge("+1");
+        Map<String, Object> extras = new HashMap<>();
         if (wi.getStringExtras() != null) {
-            wi.getStringExtras()
-                    .forEach(iosBuilder::addExtra);
-            wi.getStringExtras().forEach(androidBuilder::addExtra);
+            extras.putAll(wi.getStringExtras());
         }
         if (wi.getNumberExtras() != null) {
-            wi.getNumberExtras()
-                    .forEach(iosBuilder::addExtra);
-            wi.getNumberExtras().forEach(androidBuilder::addExtra);
+            extras.putAll(wi.getNumberExtras());
         }
         if (wi.getBooleanExtras() != null) {
-            wi.getBooleanExtras()
-                    .forEach(iosBuilder::addExtra);
-            wi.getBooleanExtras().forEach(androidBuilder::addExtra);
+            extras.putAll(wi.getBooleanExtras());
         }
         if (wi.getJsonExtras() != null) {
-            wi.getJsonExtras()
-                    .forEach(iosBuilder::addExtra);
-            wi.getJsonExtras().forEach(androidBuilder::addExtra);
+            extras.putAll(wi.getJsonExtras());
         }
-        Notification n = Notification.newBuilder()
-                // ios 消息
-                .addPlatformNotification(iosBuilder.build())
-                // android 消息
-                .addPlatformNotification(androidBuilder.build())
-                .build();
-        PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
-                .setAudience(Audience.registrationId(jiguangDeviceList))
-                .setNotification(n)
-				.setOptions(
-                        Options
-                                .newBuilder()
-                                .setApnsProduction(!BooleanUtils.isFalse(wi.getApnsProduction()))
-                                .setThirdPartyChannelV2(Config.pushConfig().getThirdPartyChannel()) // 第三方通道的特殊参数
-                                .build()) // ios 发布证书
-				.build();
-        logger.info("极光推送 body: {}", pushPayload.toString());
-        PushResult pushResult = client.sendPush(pushPayload);
+        if (!extras.isEmpty()) {
+            android.setExtras(extras);
+            iOS.setExtras(extras);
+        }
+        NotificationMessage notificationMessage = new NotificationMessage();
+        notificationMessage.setAlert(wi.getMessage());
+        notificationMessage.setAndroid(android);
+        notificationMessage.setIos(iOS);
+        param.setNotification(notificationMessage);
+        // 设置推送的目标设备
+        Audience audience = new Audience();
+        audience.setRegistrationIdList(jiguangDeviceList);
+        param.setAudience(audience);
+        param.setPlatform(Arrays.asList(Platform.android, Platform.ios));
+        // 设置推送其他参数
+        Options options = new Options();
+        options.setApnsProduction(!BooleanUtils.isFalse(wi.getApnsProduction()));
+        options.setClassification(1); // 系统消息 1 运营消息 0
+        Map<String, Object> thirdMap =  Config.pushConfig().getThirdPartyChannelMap() ;
+        if (thirdMap != null && !thirdMap.isEmpty()) {
+            options.setThirdPartyChannel(thirdMap);
+        }
+
+        param.setOptions(options);
+        logger.info("极光推送 body: {}", param.toString());
+        // 发送
+        PushSendResult pushResult = client.send(param);
         logger.info("极光推送 发送结果:{}.", pushResult);
     }
 
@@ -149,7 +149,7 @@ public class ActionSendMessage extends StandardJaxrsAction {
         @FieldDescribe("布尔串扩展")
         private Map<String, Boolean> booleanExtras;
         @FieldDescribe("对象扩展")
-        private Map<String, JsonObject> jsonExtras;
+        private Map<String, Object> jsonExtras;
 
         private Boolean apnsProduction;
 
@@ -185,11 +185,11 @@ public class ActionSendMessage extends StandardJaxrsAction {
             this.booleanExtras = booleanExtras;
         }
 
-        public Map<String, JsonObject> getJsonExtras() {
+        public Map<String, Object> getJsonExtras() {
             return jsonExtras;
         }
 
-        public void setJsonExtras(Map<String, JsonObject> jsonExtras) {
+        public void setJsonExtras(Map<String, Object> jsonExtras) {
             this.jsonExtras = jsonExtras;
         }
 

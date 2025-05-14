@@ -1,22 +1,5 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -27,7 +10,20 @@ import com.x.organization.assemble.control.AbstractFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.Person_;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class PersonFactory extends AbstractFactory {
 
@@ -59,27 +55,16 @@ public class PersonFactory extends AbstractFactory {
 		if (o != null) {
 			this.entityManagerContainer().get(Person.class).detach(o);
 		} else {
-			String name = flag;
 			Matcher matcher = PersistenceProperties.Person.distinguishedName_pattern.matcher(flag);
 			if (matcher.find()) {
-				name = matcher.group(1);
 				String unique = matcher.group(2);
 				o = this.entityManagerContainer().flag(unique, Person.class);
 				if (null != o) {
 					this.entityManagerContainer().get(Person.class).detach(o);
 				}
-			}
-			if (null == o) {
-				EntityManager em = this.entityManagerContainer().get(Person.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-				Root<Person> root = cq.from(Person.class);
-				Predicate p = cb.equal(root.get(Person_.name), name);
-				List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
-				if (os.size() == 1) {
-					o = os.get(0);
-					em.detach(o);
-				}
+			}else if (BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())) {
+				String enStr = Person.ENCRYPT + Crypto.base64Encode(flag);
+				o = this.entityManagerContainer().firstEqual(Person.class, Person.mobile_FIELDNAME, enStr);
 			}
 		}
 		return o;

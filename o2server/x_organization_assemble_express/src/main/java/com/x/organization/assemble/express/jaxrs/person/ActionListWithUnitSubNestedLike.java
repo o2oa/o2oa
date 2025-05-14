@@ -1,5 +1,7 @@
 package com.x.organization.assemble.express.jaxrs.person;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.tools.Crypto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -94,6 +97,11 @@ class ActionListWithUnitSubNestedLike extends BaseAction {
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		if(BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())){
+			String enStr = Crypto.base64Encode(wi.getKey());
+			p = cb.or(p, cb.like(root.get(Person_.name), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.or(p, cb.like(root.get(Person_.mobile), "%" + enStr + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
 		p = cb.and(p, cb.isMember(root.get(Person_.id), cb.literal(ids)));
 		List<String> list = em.createQuery(cq.select(root.get(Person_.id)).where(p))
 				.getResultList().stream().distinct().collect(Collectors.toList());

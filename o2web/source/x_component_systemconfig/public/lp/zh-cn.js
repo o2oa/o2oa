@@ -372,7 +372,7 @@ o2.xApplication.systemconfig.LP = {
         "bindLogin": "启用扫描二维码登录",
         "faceLogin": "启用人脸识别登录",
         "twoFactorLogin": "启用双因素认证登录",
-        "captchaLoginInfo": "启用后登陆时必须正确输入图片验证码。",
+        "captchaLoginInfo": "启用后登录时必须正确输入图片验证码。",
         "codeLoginInfo": "启用后允许通过短信验证码登录。",
         "bindLoginInfo": "启用后允许扫描二维码登录。",
         "faceLoginInfo": "启用后允许人脸识别登录，用户可到个人设置中设置人脸特征。启用后您必须创建一个SSO配置，名称为face，密钥为xplatform（这是一个试验性功能，您必须启用https）。",
@@ -700,7 +700,7 @@ o2.xApplication.systemconfig.LP = {
         "connected": "您已经可以连接到O2云了！",
         "disconnect": "您的服务器无法连接到O2云！",
         "notValidated": "您还未登录到O2云！",
-        "validated": "您已经登陆到O2云了！",
+        "validated": "您已经登录到O2云了！",
 
         "loginInfo": "如果您已有O2云账号，请点击此处登录：",
         "loginButtonText": "登录到O2云",
