@@ -3309,11 +3309,15 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         }).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
+        
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
         if( this.data.$selectedEnable && this.view.getSelectFlag() === "multi" && this.view.viewJson.allowSelectAll ){
             this.selectAllNode = this.selectTd;
             if( viewStyles && viewStyles["checkboxNode"] ){
+                if (viewStyles["checkboxNode"].className){
+                    this.selectAllNode.addClass( viewStyles["checkboxNode"].className );
+                }
                 this.selectAllNode.setStyles( viewStyles["checkboxNode"] )
                 // this.selectAllNode = new Element("span", {
                 //     styles : viewStyles["checkboxNode"]
