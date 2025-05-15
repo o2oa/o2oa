@@ -1,8 +1,11 @@
 package com.x.processplatform.assemble.surface.jaxrs.review;
 
+import com.x.processplatform.core.entity.element.Process;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -27,15 +30,16 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Review_;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 可用于选择的过滤值
- * 
+ *
  * @author zhour
  *
  */
 class ActionFilterAttribute extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionFilterAttribute.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -152,13 +156,22 @@ class ActionFilterAttribute extends BaseAction {
 		cq.multiselect(pathProcess, pathProcessName, cb.count(root)).where(predicate).groupBy(pathProcess);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> list = new ArrayList<>();
-		NameValueCountPair pair = null;
+		Set<String> set = new HashSet<>();
 		for (Tuple o : os) {
-			pair = new NameValueCountPair();
-			pair.setName(o.get(pathProcessName));
-			pair.setValue(o.get(pathProcess));
-			pair.setCount(o.get(2, Long.class));
-			list.add(pair);
+			String processId = o.get(pathProcess);
+			Process process = business.process().pick(processId);
+			if(process != null) {
+				String key = StringUtils.isBlank(process.getEdition()) ? processId
+						: process.getEdition();
+				if (!set.contains(key)) {
+					NameValueCountPair pair = new NameValueCountPair();
+					pair.setName(o.get(pathProcessName));
+					pair.setValue(processId);
+					pair.setCount(o.get(2, Long.class));
+					list.add(pair);
+					set.add(key);
+				}
+			}
 		}
 		list = list.stream().sorted((o1, o2) -> Objects.toString(o1.getName()).compareTo(o2.getName().toString()))
 				.collect(Collectors.toList());
