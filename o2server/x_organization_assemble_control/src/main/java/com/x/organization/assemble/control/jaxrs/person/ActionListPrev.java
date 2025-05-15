@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import com.x.base.core.project.tools.Crypto;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +62,14 @@ class ActionListPrev extends BaseAction {
 					result.setData(wos);
 					result.setCount((long) wos.size());
 				}
+				result.getData().forEach(wo  -> {
+					if(StringUtils.isNotBlank(wo.getMobile())){
+						wo.setMobile(Crypto.base64Encode(Crypto.base64Encode(wo.getMobile())));
+					}
+					if(StringUtils.isNotBlank(wo.getMail())){
+						wo.setMail(Crypto.base64Encode(Crypto.base64Encode(wo.getMail())));
+					}
+				});
 
 				Co co = new Co(result.getData(), result.getCount());
 				CacheManager.put(business.cache(), cacheKey, co);

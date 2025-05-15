@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import com.x.base.core.project.tools.Crypto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +149,14 @@ class ActionListLike extends BaseAction {
                 .collect(Collectors.toList());
         List<Person> os = business.entityManagerContainer().list(Person.class, ids);
         wos = Wo.copier.copy(os);
+        wos.forEach(wo  -> {
+            if(StringUtils.isNotBlank(wo.getMobile())){
+                wo.setMobile(Crypto.base64Encode(Crypto.base64Encode(wo.getMobile())));
+            }
+            if(StringUtils.isNotBlank(wo.getMail())){
+                wo.setMail(Crypto.base64Encode(Crypto.base64Encode(wo.getMail())));
+            }
+        });
         wos = business.person().sort(wos);
         return wos;
     }

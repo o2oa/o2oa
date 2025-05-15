@@ -10,6 +10,7 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
@@ -34,6 +35,14 @@ class ActionListFilterPaging extends BaseAction {
 			Predicate p = toFilterPredicate(business, wi, effectivePerson);
 			List<Wo> wos = emc.fetchDescPaging(Person.class, Wo.copier, p, page, size, JpaObject.sequence_FIELDNAME);
 			this.updateControl(effectivePerson, business, wos);
+			wos.forEach(wo  -> {
+				if(StringUtils.isNotBlank(wo.getMobile())){
+					wo.setMobile(Crypto.base64Encode(Crypto.base64Encode(wo.getMobile())));
+				}
+				if(StringUtils.isNotBlank(wo.getMail())){
+					wo.setMail(Crypto.base64Encode(Crypto.base64Encode(wo.getMail())));
+				}
+			});
 			result.setData(wos);
 			result.setCount(emc.count(Person.class, p));
 			return result;
