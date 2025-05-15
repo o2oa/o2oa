@@ -259,6 +259,7 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"stratIdentity": "Autor del inicio",
 		"startUnit": "Organización de inicio",
 		"starGroup": "Grupo de inicio",
+		"starRole": "Rol de inicio",
 		"manager": "Mantenedor de instancia de proceso",
 		"maintenanceIdentity": "¿A quién se transferirá cuando no se pueda encontrar un procesador?",
 		"defaultIdentity": "Manejador predeterminado",

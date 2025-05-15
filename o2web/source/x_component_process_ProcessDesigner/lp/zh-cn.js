@@ -255,6 +255,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"stratIdentity": "启动人",
 		"startUnit": "启动组织",
 		"starGroup": "启动群组",
+		"starRole": "启动角色",
 		"manager": "流程实例维护人",
 		"maintenanceIdentity": "找不到处理人时流转给谁",
 		"managerScript": "流程实例维护人脚本",
