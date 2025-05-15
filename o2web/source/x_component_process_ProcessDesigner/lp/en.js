@@ -258,6 +258,7 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"stratIdentity": "Strat Person",
 		"startUnit": "Start Unit",
 		"starGroup": "Start Group",
+		"starRole": "Start Role",
 		"manager": "Process instance maintainer",
 		"maintenanceIdentity": "To whom should the transfer be made when the person handling the transaction cannot be found?",
 		"defaultIdentity": "Default handler",

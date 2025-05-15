@@ -84,7 +84,7 @@ MWF.xApplication.Selector.UnitDuty = new Class({
     },
 
     _getItem: function(callback, failure, id, async){
-        this.orgAction.getIdentity(function(json){
+        this.orgAction.getUnitduty(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },

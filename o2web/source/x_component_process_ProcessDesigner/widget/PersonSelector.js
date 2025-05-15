@@ -85,6 +85,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(data, this.node));
                             if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(data, this.node));
                             if (type==="group") this.identitys.push(new MWF.widget.O2Group(data, this.node));
+                            if (type==="role") this.identitys.push(new MWF.widget.O2Role(data, this.node));
                             if (type==="person") this.identitys.push(new MWF.widget.O2Person(data, this.node));
 
                             if (type==="application") this.identitys.push(new MWF.widget.O2Application(data, this.node));
@@ -148,6 +149,9 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     case "g":
                         widget = new MWF.widget.O2Group(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
+                    case "r":
+                        widget = new MWF.widget.O2Role(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        break;
                     default:
                         widget = new MWF.widget.O2Other(data, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                 }
@@ -207,6 +211,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                                 if (type==="person") this.identitys.push(new MWF.widget.O2Person(item.data, this.node));
                                 if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(item.data, this.node));
                                 if (type==="group") this.identitys.push(new MWF.widget.O2Group(item.data, this.node));
+                                if (type==="role") this.identitys.push(new MWF.widget.O2Role(item.data, this.node));
 
                                 if (type==="application") this.identitys.push(new MWF.widget.O2Application(item.data, this.node));
                                 if (type==="process") this.identitys.push(new MWF.widget.O2Process(item.data, this.node));
