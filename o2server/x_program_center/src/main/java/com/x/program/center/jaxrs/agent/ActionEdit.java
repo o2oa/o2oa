@@ -59,7 +59,7 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = -6314932919066148113L;
 
 		static WrapCopier<Wi, Agent> copier = WrapCopierFactory.wi(Wi.class, Agent.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify));
+				ListTools.toList(JpaObject.FieldsUnmodify, Agent.lastStartTime_FIELDNAME, Agent.lastEndTime_FIELDNAME));
 	}
 
 	public static class Wo extends WoId {
