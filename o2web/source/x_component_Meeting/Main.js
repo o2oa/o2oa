@@ -31,6 +31,9 @@ MWF.xApplication.Meeting.Main = new Class({
         //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
     },
     loadApplication: function(callback) {
+
+        this.content.loadCssText('*{ box-sizing: content-box !important; }');
+
         MWF.UD.getDataJson("meetingConfig", function(json){
             this.meetingConfig = json || {};
 
