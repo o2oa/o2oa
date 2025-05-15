@@ -1,7 +1,11 @@
 package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -98,22 +102,25 @@ class ActionFilterAttribute extends BaseAction {
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), effectivePerson.getDistinguishedName());
 		cq.select(root.get(ReadCompleted_.process)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-		List<NameValueCountPair> wos = new ArrayList<>();
-		for (String str : os) {
-			if (StringUtils.isNotEmpty(str)) {
-				NameValueCountPair o = new NameValueCountPair();
-				Process process = business.process().pick(str);
+		List<NameValueCountPair> wos;
+		final Map<String, NameValueCountPair> map = new HashMap<>();
+		os.stream().filter(StringUtils::isNotEmpty).forEach(o -> {
+			try {
+				Process process = business.process().pick(o);
 				if (null != process) {
-					o.setValue(process.getId());
-					o.setName(process.getName());
-				} else {
-					o.setValue(str);
-					o.setName(str);
+					String key = StringUtils.isBlank(process.getEdition()) ? process.getId() : process.getEdition();
+					if (!map.containsKey(key)) {
+						NameValueCountPair pair = new NameValueCountPair();
+						pair.setValue(process.getId());
+						pair.setName(process.getName());
+						map.put(key, pair);
+					}
 				}
-				wos.add(o);
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
-		}
-		SortTools.asc(wos, "name");
+		});
+		wos = map.values().stream().sorted(Comparator.comparing(o -> Objects.toString(o.getName()))).collect(Collectors.toList());
 		return wos;
 	}
 

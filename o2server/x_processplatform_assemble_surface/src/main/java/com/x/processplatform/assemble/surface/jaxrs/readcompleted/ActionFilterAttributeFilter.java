@@ -1,20 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -31,8 +16,21 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.readcompleted.ActionFilterAttributeFilterWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.readcompleted.ActionFilterAttributeFilterWo;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionFilterAttributeFilter extends BaseAction {
 
@@ -146,24 +144,25 @@ class ActionFilterAttributeFilter extends BaseAction {
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		cq.select(root.get(ReadCompleted_.process)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-		List<NameValueCountPair> wos = new ArrayList<>();
-		for (String str : os) {
-			if (StringUtils.isNotEmpty(str)) {
-				NameValueCountPair o = new NameValueCountPair();
-				Process process = business.process().pick(str);
+		List<NameValueCountPair> wos;
+		final Map<String, NameValueCountPair> map = new HashMap<>();
+		os.stream().filter(StringUtils::isNotEmpty).forEach(o -> {
+			try {
+				Process process = business.process().pick(o);
 				if (null != process) {
-					o.setValue(process.getId());
-					o.setName(process.getName());
-				} else {
-					o.setValue(str);
-					o.setName(str);
+					String key = StringUtils.isBlank(process.getEdition()) ? process.getId() : process.getEdition();
+					if (!map.containsKey(key)) {
+						NameValueCountPair pair = new NameValueCountPair();
+						pair.setValue(process.getId());
+						pair.setName(process.getName());
+						map.put(key, pair);
+					}
 				}
-				wos.add(o);
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
-		}
-		wos = wos.stream().sorted(Comparator.comparing(NameValueCountPair::getName, (s1, s2) -> {
-			return Objects.toString(s1, "").compareTo(Objects.toString(s2, ""));
-		})).collect(Collectors.toList());
+		});
+		wos = map.values().stream().sorted(Comparator.comparing(o -> Objects.toString(o.getName()))).collect(Collectors.toList());
 		return wos;
 	}
 
