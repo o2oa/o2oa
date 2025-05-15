@@ -14,6 +14,7 @@ import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.*;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
@@ -65,8 +66,9 @@ class ActionMoaLogin extends BaseAction {
 			Person person = emc.find(personId, Person.class);
 			Wo wo = Wo.copier.copy(person);
 			List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
+			TokenType tokenType = getTokenType(roles);
 			wo.setRoleList(roles);
-			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), TokenType.user,
+			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), tokenType,
 					Config.token().getCipher(), Config.person().getEncryptType());
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
@@ -75,6 +77,20 @@ class ActionMoaLogin extends BaseAction {
 			result.setData(wo);
 		}
 		return result;
+	}
+
+	private TokenType getTokenType(List<String> roles) {
+		TokenType tokenType = TokenType.user;
+		if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager))) {
+			tokenType = TokenType.manager;
+		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SystemManager))) {
+			tokenType = TokenType.systemManager;
+		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager))) {
+			tokenType = TokenType.securityManager;
+		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
+			tokenType = TokenType.auditManager;
+		}
+		return tokenType;
 	}
 
 	private Req joinRes(Map<String, Object> map, String sign){
