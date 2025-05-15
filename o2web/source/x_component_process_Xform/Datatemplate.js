@@ -326,6 +326,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.lineList = [];
 			this.sectionlineList = [];
 
+			if( this.form.isLoaded ){ //如果表单还没加载完成
+				this._setOuterActionEvents(true);
+			}
+
 			this.fireEvent("load");
 			this._loadDataTemplate(function(){
 				// this._loadImportExportAction();
@@ -372,14 +376,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 			return list;
 		},
-		_setOuterActionEvents: function(){
+		_setOuterActionEvents: function( reload ){
 			this.addActionList = this._getOuterActionModules( [].concat(this.addActionIdList, this.outerAddActionIdList) );
 			this.addActionList.each( function (module) {
 				var addEvent = function (){
-					module.node.addEvents({"click": function(e){
-							this._addLine(e);
+					!module._isDtEventAdded && module.node.addEvents({"click": function(e){
+						this._addLine(e);
 					}.bind(this)});
-					if( !this.editable )module.node.hide();
+					module._isDtEventAdded = true;
+					!this.editable ? module.node.hide() : module.node.show();
+					module.removeEvent("load", addEvent);
 				}.bind(this);
 
 				if( module.json.type.substr(0, 2) === "El" ){
@@ -393,10 +399,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.deleteActionList = this._getOuterActionModules( [].concat( this.outerDeleteActionIdList ) );
 			this.deleteActionList.each( function (module) {
 				var addEvent = function (){
-					module.node.addEvents({"click": function(e){
+					!module._isDtEventAdded && module.node.addEvents({"click": function(e){
 						this._deleteSelectedLine(e);
 					}.bind(this)});
-					if( !this.editable )module.node.hide();
+					module._isDtEventAdded = true;
+					!this.editable ? module.node.hide() : module.node.show();
+					module.removeEvent("load", addEvent);
 				}.bind(this);
 
 				if( module.json.type.substr(0, 2) === "El" ){
@@ -410,11 +418,15 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.selectAllList.each( function (module) {
 				// module.setData(""); //默认不选中
 				var addEvent = function (){
-					module.node.addEvents({"click": function(e){
+					!module._isDtEventAdded && module.node.addEvents({"click": function(e){
 						this._checkSelectAll(e);
 					}.bind(this)});
-					if( !this.editable )module.node.hide();
+					module._isDtEventAdded = true;
+					!this.editable ? module.node.hide() : module.node.show();
+					module.removeEvent("load", addEvent);
 				}.bind(this);
+
+				( !!reload && module.reload ) && module.reload();
 
 				if( module.json.type.substr(0, 2) === "El" ){
 					module.vm ? addEvent() : module.addEvent("load", addEvent);
@@ -430,10 +442,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.importActionList = this._getOuterActionModules( this.importActionIdList );
 			this.importActionList.each( function (module) {
 				var addEvent = function (){
-					module.node.addEvents({"click": function(e){
+					!module._isDtEventAdded && module.node.addEvents({"click": function(e){
 						this.importFromExcel();
 					}.bind(this)});
-					if( !this.editable )module.node.hide();
+					module._isDtEventAdded = true;
+					!this.editable ? module.node.hide() : module.node.show();
+					module.removeEvent("load", addEvent);
 				}.bind(this);
 
 				if( module.json.type.substr(0, 2) === "El" ){
@@ -446,9 +460,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.exportActionList = this._getOuterActionModules( this.exportActionIdList );
 			this.exportActionList.each( function (module) {
 				var addEvent = function (){
-					module.node.addEvents({"click": function(e){
+					!module._isDtEventAdded && module.node.addEvents({"click": function(e){
 						this.exportToExcel();
-					}.bind(this)})
+					}.bind(this)});
+					module._isDtEventAdded = true;
+					module.removeEvent("load", addEvent);
 				}.bind(this);
 
 				if( module.json.type.substr(0, 2) === "El" ){
