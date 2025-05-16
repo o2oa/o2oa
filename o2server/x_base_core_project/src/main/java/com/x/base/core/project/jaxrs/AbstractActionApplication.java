@@ -3,7 +3,6 @@ package com.x.base.core.project.jaxrs;
 import com.x.base.core.project.jaxrs.cache.CacheAction;
 import com.x.base.core.project.jaxrs.echo.EchoAction;
 import com.x.base.core.project.jaxrs.fireschedule.FireScheduleAction;
-import com.x.base.core.project.jaxrs.sysresource.SysResourceAction;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
@@ -21,7 +20,7 @@ public abstract class AbstractActionApplication extends Application {
 		classes.add(EchoAction.class);
 		classes.add(CacheAction.class);
 		classes.add(FireScheduleAction.class);
-		classes.add(SysResourceAction.class);
+//		classes.add(SysResourceAction.class);
 //		classes.add(OpenApiAction.class);
 		// providers
 		classes.add(MessageBodyReaderImpl.class);
