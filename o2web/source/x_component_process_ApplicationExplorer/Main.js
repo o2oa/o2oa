@@ -723,7 +723,7 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 			this.loadNodes();
 			this.loadElements();
 			this.loadNewNode();
-			this.loadTooltip();
+			// this.loadTooltip();
 		}.bind(this));
 
 		this.resizeContentFun = this.resizeContent.bind(this);
