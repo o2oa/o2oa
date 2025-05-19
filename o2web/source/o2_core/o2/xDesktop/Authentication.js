@@ -1222,14 +1222,21 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             credentialItem.clearWarning("invalid");
         }
         this.actions.createCredentialCode(credential, function (json) {
-        }, function (errorObj) {
+            if( json.data.value && typeOf(json.data.value) === 'string' ){
+                var codeAnswerItem = this.form.getItem("codeAnswer");
+                if(codeAnswerItem){
+                    codeAnswerItem.clearWarning("empty");
+                }
+                this.setInfor(json.data.value);
+            }
+        }.bind(this), function (errorObj) {
             var error = JSON.parse(errorObj.responseText);
             var codeAnswerItem = this.form.getItem("codeAnswer");
             if(codeAnswerItem){
                 codeAnswerItem.clearWarning("empty");
             }
             this.setWarning(error.message);
-            flag = false
+            flag = false;
         }.bind(this));
         if (!flag) {
             return;
@@ -1372,6 +1379,13 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 this.setWarning(error.message);
             }.bind(this));
         }
+    },
+    setInfor: function (text) {
+        this.errorArea.empty();
+        new Element("div", {
+            "text": text,
+            "styles": this.css.inforMessageNode
+        }).inject(this.errorArea);
     },
     setWarning: function (text) {
         this.errorArea.empty();
