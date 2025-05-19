@@ -17,10 +17,7 @@ MWF.xApplication.AI.Main = new Class({
         this.sessionId = "";
         this.action = o2.Actions.load("x_ai_assemble_control");
         this.isComposing = false;
-
-        o2.loadCss("//at.alicdn.com/t/c/font_4633899_k8fvrqyyfqp.css")
         o2.loadCss("../x_component_AI/$Main/default/markdown.css");
-
     },
     loadApplication: async function (callback) {
 
