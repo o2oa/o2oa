@@ -1,18 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.taskcompleted;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -20,14 +7,31 @@ import com.x.base.core.project.bean.NameValueCountPair;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionFilterAttribute extends BaseAction {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionFilterAttribute.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -168,22 +172,25 @@ class ActionFilterAttribute extends BaseAction {
 				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		cq.select(root.get(TaskCompleted_.process)).where(p);
 		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-		List<NameValueCountPair> wos = new ArrayList<>();
-		for (String str : os) {
-			if (StringUtils.isNotEmpty(str)) {
-				NameValueCountPair o = new NameValueCountPair();
-				Process process = business.process().pick(str);
+		List<NameValueCountPair> wos;
+		final Map<String, NameValueCountPair> map = new HashMap<>();
+		os.stream().filter(StringUtils::isNotEmpty).forEach(o -> {
+			try {
+				Process process = business.process().pick(o);
 				if (null != process) {
-					o.setValue(process.getId());
-					o.setName(process.getName());
-				} else {
-					o.setValue(str);
-					o.setName(str);
+					String key = StringUtils.isBlank(process.getEdition()) ? process.getId() : process.getEdition();
+					if (!map.containsKey(key)) {
+						NameValueCountPair pair = new NameValueCountPair();
+						pair.setValue(process.getId());
+						pair.setName(process.getName());
+						map.put(key, pair);
+					}
 				}
-				wos.add(o);
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
-		}
-		SortTools.asc(wos, "name");
+		});
+		wos = map.values().stream().sorted(Comparator.comparing(o -> Objects.toString(o.getName()))).collect(Collectors.toList());
 		return wos;
 	}
 
