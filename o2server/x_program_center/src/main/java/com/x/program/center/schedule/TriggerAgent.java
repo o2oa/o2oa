@@ -91,11 +91,11 @@ public class TriggerAgent extends BaseAction {
 			if (StringUtils.isEmpty(pair.getCron())) {
 				return;
 			}
-			if (LOCK.contains(pair.getId())) {
-				throw new ExceptionAgentLastNotEnd(pair);
-			}
 			Date date = CronTools.next(pair.getCron(), pair.getLastStartTime());
 			if (date.before(new Date())) {
+				if (LOCK.contains(pair.getId())) {
+					throw new ExceptionAgentLastNotEnd(pair);
+				}
 				Agent agent = null;
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					agent = emc.find(pair.getId(), Agent.class);
