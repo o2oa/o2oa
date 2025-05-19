@@ -1,0 +1,352 @@
+.layout-wrap {
+    display: flex;
+    height: 100%;
+    background: var(--oo-color-bg-white);
+    overflow: hidden;
+}
+
+.layout-left {
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    background: var(--oo-color-bg-white);
+    box-shadow: 2px 0px 8px 0px rgba(202,201,201,0.5);
+    border-radius: 2px;
+}
+
+.layout-right {
+    display: flex;
+    flex:1;
+    margin-left:.3rem;
+}
+
+.title{
+    height: 7.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.125rem;
+    color: #9EA3BC;
+}
+
+.title img{
+    width: 2.8rem;
+    height: 2.8rem;
+    margin-right:1rem;
+}
+.setting{
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    gap:.5rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    cursor: pointer;
+}
+
+.new {
+    height: 3rem;
+    display: flex;
+    background: #F2F7FC;
+    border-radius: 0.125rem;
+    font-size: 1.125rem;
+    color: #2E82F7;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    cursor: pointer;
+    margin-bottom:1.25rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.search{
+    height: 2.4rem;
+    border-radius: 0.125rem;
+    border: 1px solid #2E82F7;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+.search input {
+    border: none;
+    text-align: center;
+    outline: none;
+    width: 80%;
+}
+.search input::placeholder {
+    color: #9EA3BC;
+}
+
+.history_wrap{
+    overflow: auto;
+    flex:1;
+}
+.history{
+    padding: 0 2rem;
+}
+.history-title{
+    font-size: .9rem;
+    height: 2.5rem;
+    font-weight: 600;
+    color: #555;
+    line-height: 1.5rem;
+    display: flex;
+    padding: 0 1rem;
+    align-items: center;
+}
+
+.history-item{
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    height: 3rem;
+    position: relative;
+    padding : 0 1rem;
+    justify-content: space-between;
+}
+
+.history-item-c{
+    background-color: var(--oo-color-hover);
+    color:var(--oo-color-main);
+}
+
+
+.history-item:hover{
+    background-color: var(--oo-color-hover);
+    border-radius: .5rem;
+}
+.history-item:hover .history-item-op{
+    display: block;
+    color:red;
+}
+.history-item-text{
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #2D2D33;
+}
+.history-item-op{
+    display: none;
+    margin-left:.5rem;
+    margin-right:.5rem;
+}
+
+.index{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex:1;
+}
+
+
+.chat {
+    display: flex;
+    flex: 1;
+    max-width: 50rem;
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.8rem;
+}
+
+.chat-title {
+    height: 3.2rem;
+    gap: 1.25rem;
+    display: flex;
+    font-weight: bold;
+    font-size: 1.625rem;
+    color: #2D2D33;
+    align-items: center;
+}
+
+.chat-title img {
+    width: 3rem;
+}
+
+.chat-desc {
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: #5A5A66;
+}
+
+.chat-wrap {
+    width: 100%;
+    background: #F4F5F7;
+    box-shadow: 0px 0px 2rem 0px rgba(4, 96, 163, 0.04);
+    border-radius: 1rem;
+    height: 7.5rem;
+    display: flex;
+    flex-direction: column;
+    padding: .5rem 1rem;
+}
+.chat-tools{
+    height: 2.25rem;
+    display: flex;
+    align-items: center;
+    gap:.5rem;
+    color: #9EA3BC;
+}
+.chat-tools-l{
+    display: flex;
+    flex: 1;
+    gap: .5rem;
+    align-items: center;
+}
+.chat-tools .btn{
+    border-radius: 50%;
+    background: #2E82F7;
+    color: #fff;
+    width: 2.25rem;
+    display: inline-flex;
+    height: 2.25rem;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.chat-tools-cur{
+    color: #2E82F7;
+}
+.chat-input{
+    flex:1;
+}
+.chat-input textarea {
+    border: none;
+    background: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    font-size: 1.05rem;
+    overflow: auto;
+    resize: none;
+}
+
+.chat-input textarea::placeholder {
+    color: #9EA3BC;
+}
+
+.chat-input textarea:focus {
+    outline: none;
+}
+
+
+.page{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+.chat-top{
+    background: #FFFFFF;
+    box-shadow: 0 2px .5rem 0 rgba(0,0,0,0.05);
+    height: 3.5rem;
+    font-weight: bold;
+    font-size: 1.25rem;
+    display: inline-flex;
+    color: #2D2D33;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.chat-list-wrap{
+    overflow: auto;
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.chat-list{
+    flex:1;
+    width:65rem;
+    flex-direction: column;
+    display: flex;
+    gap:1rem;
+    margin-top:3rem;
+
+}
+
+.chat-list-r,
+.chat-list-l {
+    display: flex;
+    max-width: 60rem;
+    gap: .8rem;
+}
+
+.chat-list-r {
+
+    align-self: flex-end;
+}
+
+.chat-list-l {
+
+    align-self: flex-start;
+}
+
+.chat-list-r div{
+    background: #2E82F7;
+    border-radius: 0 .8rem .8rem .8rem;
+    color:#fff;
+    padding:.5rem 1rem;
+}
+.chat-list-l div {
+    margin-right: 10px;
+}
+
+.chat-list-r .imgicon,
+.chat-list-l .imgicon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+
+
+
+/* 加载动画容器 */
+.loading-container {
+    text-align: center;
+}
+/* 自定义spinner样式 */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #007bff; /* 主颜色 */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+/* 旋转动画 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.code-block {
+    position: relative;
+}
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.copy-button:hover {
+    background-color: #0056b3;
+}

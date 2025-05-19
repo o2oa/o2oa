@@ -1,0 +1,61 @@
+<div style="display: flex;
+            min-width: 800px;
+            gap: .5em;
+            min-height: 300px;
+            flex-direction: column;">
+    <oo-input required="true"
+              label="{{$.lp.config.appName}}"
+              value="{{$.config.appName}}"
+              style="width:100%"
+              name="appName"
+              label-style="width:6.2vw;"
+              label-Align="right">
+    </oo-input>
+
+    <oo-input required="true"
+              label="{{$.lp.config.appIconUrl}}"
+              value="{{$.config.appIconUrl}}"
+              style="width:100%"
+              name="appIconUrl"
+              label-style="width:6.2vw;"
+              label-Align="right">
+    </oo-input>
+
+    <oo-input required="true"
+              label="{{$.lp.config.welcome}}"
+              value="{{$.config.title}}"
+              style="width:100%"
+              name="title"
+              label-style="width:6.2vw;"
+              label-Align="right">
+    </oo-input>
+
+    <oo-input required="true"
+              label="{{$.lp.config.aidesc}}"
+              value="{{$.config.desc}}"
+              style="width:100%"
+              name="desc"
+              label-style="width:6.2vw;"
+              label-Align="right">
+    </oo-input>
+
+    <oo-radio-group name="aiModel"
+                    label="{{$.lp.config.aiModel}}"
+                    value="{{$.config.aiModel}}"
+                    label-style="width:6.2vw;"
+                    label-Align="right"
+                    data-o2-element="modelsNode">
+    </oo-radio-group>
+
+    <oo-input data-o2-events="click:selectCMS"
+              v="{{$.config.knowledgeIndexAppValue}}"
+              required="true"
+              label="{{$.lp.config.knowledge}}"
+              readonly="true"
+              value="{{$.config.knowledgeIndexApp}}"
+              style="width:100%"
+              name="knowledgeIndexAppList"
+              label-style="width:6.2vw;"
+              label-Align="right">
+    </oo-input>
+</div>
