@@ -2,7 +2,9 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -124,22 +126,24 @@ class ActionFilterAttribute extends BaseAction {
 				Predicate p = cb.equal(root.get(Task_.person), effectivePerson.getDistinguishedName());
 				List<String> os = em.createQuery(cq.select(root.get(Task_.process)).distinct(true).where(p))
 						.getResultList();
-				list = os.stream().filter(StringUtils::isNotEmpty).map(o -> {
-					NameValueCountPair pair = new NameValueCountPair();
+				final Map<String, NameValueCountPair> map = new HashMap<>();
+				os.stream().filter(StringUtils::isNotEmpty).forEach(o -> {
 					try {
 						Process process = business.process().pick(o);
 						if (null != process) {
-							pair.setValue(process.getId());
-							pair.setName(process.getName());
-						} else {
-							pair.setValue(o);
-							pair.setName(o);
+							String key = StringUtils.isBlank(process.getEdition()) ? process.getId() : process.getEdition();
+							if (!map.containsKey(key)) {
+								NameValueCountPair pair = new NameValueCountPair();
+								pair.setValue(process.getId());
+								pair.setName(process.getName());
+								map.put(key, pair);
+							}
 						}
 					} catch (Exception e) {
 						LOGGER.error(e);
 					}
-					return pair;
-				}).sorted(Comparator.comparing(o -> Objects.toString(o.getName()))).collect(Collectors.toList());
+				});
+				list = map.values().stream().sorted(Comparator.comparing(o -> Objects.toString(o.getName()))).collect(Collectors.toList());
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
