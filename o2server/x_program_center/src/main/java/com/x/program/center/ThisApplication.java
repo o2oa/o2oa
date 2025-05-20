@@ -37,7 +37,6 @@ public class ThisApplication {
 		return FORKJOINPOOL;
 	}
 
-
 	protected static Context context;
 
 	public static Context context() {
