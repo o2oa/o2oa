@@ -39,11 +39,13 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 			List<String> dns = new ArrayList<>();
 			if ((ListTools.isEmpty(process.getStartableIdentityList()))
 					&& (ListTools.isEmpty(process.getStartableUnitList()))
-					&& (ListTools.isEmpty(process.getStartableGroupList()))) {
-				/** 没有设置可启动人员,所有人都可以启动 */
+					&& (ListTools.isEmpty(process.getStartableGroupList()))
+					&& (ListTools.isEmpty(process.getStartableRoleList()))) {
 				dns.addAll(identities);
 			} else {
-				if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")) {
+				List<String> roles = business.organization().role().listWithPerson(effectivePerson);
+				if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")
+						|| (ListTools.isNotEmpty(process.getStartableRoleList()) && ListTools.containsAny(roles, process.getStartableRoleList()))) {
 					dns.addAll(identities);
 				} else {
 					for (String str : identities) {
@@ -62,7 +64,6 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 								List<String> groups = business.organization().group().listWithIdentity(str);
 								if (ListTools.containsAny(groups, process.getStartableGroupList())) {
 									dns.add(str);
-									continue;
 								}
 							}
 						}

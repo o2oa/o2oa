@@ -432,6 +432,18 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> startableGroupList;
 
+	public static final String startableRoleList_FIELDNAME = "startableRoleList";
+	@FieldDescribe("在指定启动时候,允许新建Work的角色.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ startableRoleList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+			+ startableRoleList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableRoleList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + startableRoleList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> startableRoleList;
+
 	public static final String serialTexture_FIELDNAME = "serialTexture";
 	@FieldDescribe("编号定义.")
 	@Lob
@@ -1106,6 +1118,14 @@ public class Process extends SliceJpaObject {
 
 	public void setStartableGroupList(List<String> startableGroupList) {
 		this.startableGroupList = startableGroupList;
+	}
+
+	public List<String> getStartableRoleList() {
+		return startableRoleList;
+	}
+
+	public void setStartableRoleList(List<String> startableRoleList) {
+		this.startableRoleList = startableRoleList;
 	}
 
 	public String getCategory() {

@@ -131,8 +131,8 @@ public class ProcessFactory extends ElementFactory {
 
     /* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
     public List<String> listStartableWithApplication(EffectivePerson effectivePerson,
-            List<String> identities,
-            List<String> units, List<String> groups, Application application, String terminal)
+            List<String> identities, List<String> units, List<String> groups,
+            List<String> roles, Application application, String terminal)
             throws Exception {
         EntityManager em = this.entityManagerContainer().get(Process.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -145,7 +145,8 @@ public class ProcessFactory extends ElementFactory {
                                 null))) {
             p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
                     cb.isEmpty(root.get(Process_.startableUnitList)),
-                    cb.isEmpty(root.get(Process_.startableGroupList)));
+                    cb.isEmpty(root.get(Process_.startableGroupList)),
+                    cb.isEmpty(root.get(Process_.startableRoleList)));
             if (ListTools.isNotEmpty(identities)) {
                 p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
             }
@@ -154,6 +155,9 @@ public class ProcessFactory extends ElementFactory {
             }
             if (ListTools.isNotEmpty(groups)) {
                 p = cb.or(p, root.get(Process_.startableGroupList).in(groups));
+            }
+            if (ListTools.isNotEmpty(roles)) {
+                p = cb.or(p, root.get(Process_.startableRoleList).in(roles));
             }
         }
         p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
@@ -297,32 +301,31 @@ public class ProcessFactory extends ElementFactory {
      * @throws Exception
      */
     public boolean startable(EffectivePerson effectivePerson, List<String> identities,
-            List<String> units,
-            List<String> groups, Process process) throws Exception {
+            List<String> units, List<String> groups, List<String> roles, Process process) throws Exception {
         if (BooleanUtils.isTrue(
                 this.business().ifPersonCanManageApplicationOrProcess(effectivePerson,
                         process.getApplication(), process.getId()))) {
             return true;
         }
-        if (ListTools.isEmpty(process.getStartableIdentityList()) && ListTools.isEmpty(
-                process.getStartableUnitList())
-                && ListTools.isEmpty(process.getStartableGroupList())) {
+        if (ListTools.isEmpty(process.getStartableIdentityList())
+                && ListTools.isEmpty(process.getStartableUnitList())
+                && ListTools.isEmpty(process.getStartableGroupList())
+                && ListTools.isEmpty(process.getStartableRoleList())) {
             return true;
         }
         if (ListTools.isNotEmpty(process.getStartableIdentityList())
                 && ListTools.containsAny(identities, process.getStartableIdentityList())) {
             return true;
-        } else {
-            if (ListTools.isNotEmpty(process.getStartableUnitList())
-                    && ListTools.containsAny(units, process.getStartableUnitList())) {
-                return true;
-            } else {
-                if (ListTools.isNotEmpty(process.getStartableGroupList())
-                        && ListTools.containsAny(groups, process.getStartableGroupList())) {
-                    return true;
-                }
-            }
         }
-        return false;
+        if (ListTools.isNotEmpty(process.getStartableUnitList())
+                && ListTools.containsAny(units, process.getStartableUnitList())) {
+            return true;
+        }
+        if (ListTools.isNotEmpty(process.getStartableGroupList())
+                && ListTools.containsAny(groups, process.getStartableGroupList())) {
+            return true;
+        }
+        return ListTools.isNotEmpty(process.getStartableRoleList())
+                && ListTools.containsAny(roles, process.getStartableRoleList());
     }
 }
