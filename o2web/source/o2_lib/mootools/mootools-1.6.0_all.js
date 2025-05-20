@@ -17615,7 +17615,7 @@ Locale.define('fr-FR', 'FormValidator', {
 	dateSuchAs: 'Veuillez saisir une date correcte comme {date}',
 	dateInFormatMDY: 'Veuillez saisir une date correcte, au format JJ/MM/AAAA (ex : "31/11/1999").',
 	email: 'Veuillez saisir une adresse de courrier &eacute;lectronique. Par exemple "fred@domaine.com".',
-	url: 'Veuillez saisir une URL, comme http://www.exemple.com.',
+	url: 'Veuillez saisir une URL, comme.',
 	currencyDollar: 'Veuillez saisir une quantit&eacute; correcte. Par exemple 100,00&euro;.',
 	oneRequired: 'Veuillez s&eacute;lectionner au moins une de ces options.',
 	errorPrefix: 'Erreur : ',
