@@ -43,6 +43,7 @@ export default content({
       MWF.requireApp("Selector","package", function(){
         var options = {
             "types": ["process"],
+            "style":"v10",
             "count": 1,
             "expand": false,
             "title": this.bind.selectorTitle,
