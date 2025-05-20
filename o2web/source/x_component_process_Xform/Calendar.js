@@ -398,6 +398,9 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         }
     },
     isValidDate: function(dateString) {
+        if( !dateString ){
+            return false;
+        }
         var date = new Date(dateString);
         return !isNaN(date.getTime());
     },
