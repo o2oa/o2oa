@@ -72,6 +72,7 @@ const clickAddMember = () => {
     new o2.O2Selector(container,  {
       "type": 'identity',
       "count": 0,
+      "style": "v10",
       "title": '通讯录',
       "firstLevelSelectable": true,
       "resultType": "person",
