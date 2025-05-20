@@ -392,10 +392,17 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
     toDate: function( value ){
         if( !value )return null;
         switch (typeOf(value)) {
-            case "string": return (new Date(value) === "Invalid Date") ? null : Date.parse(value);
+            case "string": return this.isValidDate(value) ? Date.parse(value) : null;
             case "date": return value;
             default: return null;
         }
+    },
+    isValidDate: function(dateString) {
+        if( !dateString ){
+            return false;
+        }
+        var date = new Date(dateString);
+        return !isNaN(date.getTime());
     },
     getPureDate: function (date) {
         var d;

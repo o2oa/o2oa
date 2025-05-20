@@ -52,11 +52,11 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         if (this.isReadonly()){
             if( o2.typeOf(data) === "array" ){
                 var ds = data.map(function (d){
-                    return this.formatDate(new Date(d), format);
+                    return this.isValidDate(d) ? this.formatDate(new Date(d), format) : d;
                 }.bind(this));
                 this.node.set("text", this.json.rangeSeparator ? ds.join(this.json.rangeSeparator) : ds );
             }else{
-                this.node.set("text", data ? this.formatDate(new Date(data), format) : "");
+                this.node.set("text", this.isValidDate(data) ? this.formatDate(new Date(data), format) : data);
             }
 
             if( this.json.elProperties ){
@@ -75,6 +75,13 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             this.fireEvent("load");
             this.isLoaded = true;
         }
+    },
+    isValidDate: function(dateString) {
+        if( !dateString ){
+            return false;
+        }
+        var date = new Date(dateString);
+        return !isNaN(date.getTime());
     },
     _appendVueData: function(){
         if (!this.json.isReadonly && !this.form.json.isReadonly) this.json.isReadonly = false;
