@@ -65,7 +65,7 @@ class ActionManageListWithPersonComplex extends BaseAction {
                         if (null != o) {
                             Wo wo = Wo.copier.copy(o);
                             wo.setProcessList(
-                                    this.referenceProcess(business, effectivePerson, identities, units, groups, o));
+                                    this.referenceProcess(business, effectivePerson, identities, units, groups, roles, o));
                             wos.add(wo);
                         }
                     }
@@ -156,7 +156,7 @@ class ActionManageListWithPersonComplex extends BaseAction {
     }
 
     /**
-     * 
+     *
      * 从Process中获取可以启动的Process的application.
      */
     private List<String> listFromProcess(Business business, EffectivePerson effectivePerson, List<String> roles,
@@ -183,10 +183,10 @@ class ActionManageListWithPersonComplex extends BaseAction {
     }
 
     private List<WoProcess> referenceProcess(Business business, EffectivePerson effectivePerson,
-            List<String> identities, List<String> units, List<String> groups, Application application)
-            throws Exception {
-        List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units, groups,
-                application, "");
+            List<String> identities, List<String> units, List<String> groups, List<String> roles,
+            Application application) throws Exception {
+        List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
+                groups, roles, application, "");
         List<WoProcess> wos = new ArrayList<>();
         for (String id : ids) {
             WoProcess o = WoProcess.copier.copy(business.process().pick(id));

@@ -50,7 +50,8 @@ class ActionSave extends BaseAction {
                 throw new ExceptionEntityNotExist(wi.getWork().getProcess(), Process.class);
             }
             List<String> groups = business.organization().group().listWithIdentity(identities);
-            if (!business.process().startable(effectivePerson, identities, units, groups, process)) {
+            List<String> roles = business.organization().role().listWithPerson(person);
+            if (!business.process().startable(effectivePerson, identities, units, groups, roles, process)) {
                 throw new ExceptionAccessDenied(effectivePerson, process);
             }
             emc.beginTransaction(Draft.class);

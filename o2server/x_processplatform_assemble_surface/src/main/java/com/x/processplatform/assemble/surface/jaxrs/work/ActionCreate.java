@@ -49,7 +49,9 @@ class ActionCreate extends BaseCreateAction {
 			List<String> identities = List.of(identity);
 			List<String> units = business.organization().unit().listWithIdentitySupNested(identity);
 			List<String> groups = business.organization().group().listWithIdentity(identities);
-			if (!business.process().startable(effectivePerson, identities, units, groups, process)) {
+			String person = business.organization().person().getWithIdentity(identity);
+			List<String> roles = business.organization().role().listWithPerson(person);
+			if (!business.process().startable(effectivePerson, identities, units, groups, roles, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			if (BooleanUtils.isTrue(wi.getLatest())) {
