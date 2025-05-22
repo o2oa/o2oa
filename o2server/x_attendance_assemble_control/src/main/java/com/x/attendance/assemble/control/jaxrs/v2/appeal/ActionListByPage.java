@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.appeal;
 
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
@@ -22,16 +23,18 @@ public class ActionListByPage extends BaseAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionListByPage.class);
 
-    ActionResult<List<Wo>> execute(EffectivePerson person, Integer page, Integer size) throws Exception {
+    ActionResult<List<Wo>> execute(EffectivePerson person, Integer page, Integer size, JsonElement jsonElement) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<List<Wo>> result = new ActionResult<>();
             Business business = new Business(emc);
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
+            AppealInfoWi wi = this.convertToWrapIn(jsonElement, AppealInfoWi.class);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("person {}, page: {}, size: {}", person.getDistinguishedName(), adjustPage, adjustPageSize);
             }
-            List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, ListTools.toList(person.getDistinguishedName()), null, null);
+            wi.setUsers(ListTools.toList(person.getDistinguishedName()));
+            List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, wi);
             List< Wo> wos =   Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for ( Wo detail : wos) {
@@ -46,7 +49,6 @@ public class ActionListByPage extends BaseAction {
             return result;
         }
     }
-
 
 
     public static class Wo extends AttendanceV2AppealInfo {

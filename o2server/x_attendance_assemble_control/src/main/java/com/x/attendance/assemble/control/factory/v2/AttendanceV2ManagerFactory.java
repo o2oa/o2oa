@@ -4,6 +4,7 @@ import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
+import com.x.attendance.assemble.control.jaxrs.v2.appeal.AppealInfoWi;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.x_attendance_assemble_control;
@@ -504,25 +505,40 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * @throws Exception
      */
     public List<AttendanceV2AppealInfo> listAppealInfoByPage(Integer adjustPage,
-            Integer adjustPageSize, List<String> users, String startDate, String endDate) throws Exception {
+            Integer adjustPageSize, AppealInfoWi wi) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         Predicate p = null;
-        if (users != null && !users.isEmpty()) {
-            p = root.get(AttendanceV2AppealInfo_.userId).in(users);
+        if (wi.getUsers() != null && !wi.getUsers().isEmpty()) {
+            p = root.get(AttendanceV2AppealInfo_.userId).in(wi.getUsers());
             // p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
         }
-        if (StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)) {
+        if (StringUtils.isNotEmpty(wi.getStartDate()) && StringUtils.isNotEmpty(wi.getEndDate())) {
             if (p == null) {
-                p = cb.lessThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), endDate);
-                p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), startDate));
+                p = cb.lessThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), wi.getEndDate());
+                p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), wi.getStartDate()));
             } else {
-                p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), endDate));
-                p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), startDate));
+                p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), wi.getEndDate()));
+                p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), wi.getStartDate()));
             }
         }
+        if (StringUtils.isNotEmpty(wi.getRecordId())) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2AppealInfo_.recordId), wi.getRecordId());
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2AppealInfo_.recordId), wi.getRecordId()));
+            }
+        }
+        if (StringUtils.isNotEmpty(wi.getStatus()) && wi.isStatusValid()) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2AppealInfo_.status), wi.getStatus());
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2AppealInfo_.status), wi.getStatus()));
+            }
+        }
+
         if (p == null) {
             cq.select(root).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
         } else {
