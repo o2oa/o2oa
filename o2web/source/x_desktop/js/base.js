@@ -105,7 +105,8 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                 var body = {
                     type: "openO2Work",
                     data: {
-                        title : options.title || ""
+                        title : options.title || "",
+                        formid: options.formid || ""
                     }
                 };
                 if (options.workId) {
@@ -135,6 +136,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         "work": options.workId,
                         "workCompleted": "",
                         "draftId": options.draftId,
+                        "formid": options.formid || "",
                         "title": options.title || options.docTitle || ""
                     });
                 } else if (options.workCompletedId) {
@@ -142,6 +144,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         "work": "",
                         "workCompleted": options.workCompletedId,
                         "draftId": options.draftId,
+                        "formid": options.formid || "",
                         "title": options.title || options.docTitle || ""
                     });
                 }
