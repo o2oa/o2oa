@@ -85,9 +85,9 @@ abstract class BaseAction extends StandardJaxrsAction {
             }
         }
         String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-        if (recordDate != null) {
-            // 根据班次判断打卡结果
-            if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed) && shift != null) {
+        // 根据班次判断打卡结果
+        if (shift != null) {
+            if (recordDate != null) {
                 // 上班打卡
                 if (dutyType.equals(AttendanceV2CheckInRecord.OnDuty)) {
                     Date dutyTime = DateTools.parse(date + " " + preDutyTime, DateTools.format_yyyyMMddHHmm);
@@ -140,12 +140,14 @@ abstract class BaseAction extends StandardJaxrsAction {
                     }
 
                 }
+            } else { // 没有打卡
+                recordDate = DateTools.parse(date+" "+preDutyTime, DateTools.format_yyyyMMddHHmm);
+                checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned;
             }
-            
-        } else { // 没有打卡
+        } else  if (recordDate == null) {
             recordDate = DateTools.parse(date+" "+preDutyTime, DateTools.format_yyyyMMddHHmm);
-            checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned;
         }
+
         noCheckRecord.setCheckInResult(checkInResult);
         noCheckRecord.setRecordDate(recordDate);
         noCheckRecord.setRecordDateString(date);
