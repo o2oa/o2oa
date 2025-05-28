@@ -399,7 +399,7 @@ MWF.xApplication.Selector.Person = new Class({
                 this.setSize()
             }
 
-            if (!this.options.style.startWith("v10")){
+            if (!this.options.style.startsWith("v10")){
                 this.node.position({
                     relativeTo: this.container,
                     position: "center",
@@ -495,7 +495,7 @@ MWF.xApplication.Selector.Person = new Class({
                     this.setSize()
                 }
 
-                if (!this.options.style,startWith("v10")){
+                if (!this.options.style.startsWith("v10")){
                     this.node.position({
                         relativeTo: this.container,
                         position: "center",
@@ -1577,7 +1577,7 @@ MWF.xApplication.Selector.Person = new Class({
             //letterNode.setStyle("width", ""+w+"px");
             letterNodeCss.width = ""+w+"px";
             letterNodeCss_over.width = ""+w+"px";
-        }else if( this.options.style.endsWith("flow") ){
+        }else if( this.options.style === 'flow' ){
             var width = ( this.letterAreaNode.getSize().x - this.getOffsetX(this.letterAreaNode) - 10 ) / 13;
             letterNodeCss.width = ""+width+"px";
             letterNodeCss_over.width = ""+width+"px";
@@ -2471,7 +2471,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.checkTextNodeIndent(this.textNode, this.selector.css.selectorItemTextNode_selected);
 
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-            if( this.selector.options.style.endsWith("flow") ){
+            if( this.selector.options.style === 'flow' ){
                 this.actionNode.addClass("o2icon-checkbox");
                 if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
             }
@@ -2530,7 +2530,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
         if (!this.isSelected){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-            if( this.selector.options.style.endsWith("flow") ){
+            if( this.selector.options.style === 'flow' ){
                 this.actionNode.removeClass("o2icon-checkbox");
                 if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
             }
@@ -2539,7 +2539,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }
         }else if( this.selector.css.selectorItemActionNode_over_force ){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-            if( this.selector.options.style.endsWith("flow") ){
+            if( this.selector.options.style === 'flow' ){
                 this.actionNode.addClass("o2icon-checkbox");
                 if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
             }
@@ -2567,7 +2567,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-                if( this.selector.options.style.endsWith("flow") ){
+                if( this.selector.options.style === 'flow' ){
                     this.actionNode.addClass("o2icon-checkbox");
                     if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
                 }
@@ -2624,7 +2624,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-                if( this.selector.options.style.endsWith("flow") ){
+                if( this.selector.options.style === 'flow' ){
                     this.actionNode.addClass("o2icon-checkbox");
                     if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
                 }
@@ -2660,7 +2660,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
 
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-            if( this.selector.options.style.endsWith("flow") ){
+            if( this.selector.options.style === 'flow' ){
                 this.actionNode.removeClass("o2icon-checkbox");
                 if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
             }
@@ -2691,7 +2691,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.checkTextNodeIndent( itemSearch.textNode, this.selector.css.selectorItemTextNode );
 
                     itemSearch.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-                    if( this.selector.options.style.endsWith("flow") ){
+                    if( this.selector.options.style === 'flow' ){
                         this.actionNode.removeClass("o2icon-checkbox");
                         if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
                     }
@@ -2732,7 +2732,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.checkTextNodeIndent( item.textNode, this.selector.css.selectorItemTextNode );
 
                     item.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-                    if( this.selector.options.style.endsWith("flow") ){
+                    if( this.selector.options.style === 'flow' ){
                         this.actionNode.removeClass("o2icon-checkbox");
                         if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
                     }
@@ -2897,7 +2897,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (!this.isSelected){
             var styles = this.selector.css.selectorSelectedItemActionNode || this.selector.css.selectorItemActionNode;
             this.actionNode.setStyles(styles);
-            if( this.selector.options.style.endsWith("flow") ){
+            if( this.selector.options.style === 'flow' ){
                 this.actionNode.removeClass("o2icon-checkbox");
                 if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
             }
@@ -2907,7 +2907,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
             }
         }else if( this.selector.css.selectorItemActionNode_over_force ){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-            if( this.selector.options.style.endsWith("flow") ){
+            if( this.selector.options.style === 'flow' ){
                 this.actionNode.addClass("o2icon-checkbox");
                 if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
             }
@@ -3113,7 +3113,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.actionNode = new Element("div", {
             "styles": (this.selector.options.expand) ? this.selector.css.selectorItemCategoryActionNode_expand : this.selector.css.selectorItemCategoryActionNode_collapse
         }).inject(this.node);
-        if( this.selector.options.style.endsWith("flow") )this.actionNode.inject( this.iconNode, "before" );
+        if( this.selector.options.style === 'flow' )this.actionNode.inject( this.iconNode, "before" );
 
         if( this.selector.options.selectAllEnable && this.selector.options.count.toInt()!==1 ){
             var selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll;
