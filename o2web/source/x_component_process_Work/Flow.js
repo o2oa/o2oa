@@ -369,9 +369,10 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         var routeList = this.getRouteConfigList();
         for (var i = 0; i < routeList.length; i++) {
             if (routeList[i].id === routeId) {
-                return routeList[i].selectConfigList;
+                return routeList[i].selectConfigList || [];
             }
         }
+        return [];
     },
     getVisableOrgConfig: function (routeId) {
         var selectConfigList = this.getOrgConfig(routeId);
@@ -387,7 +388,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         var orgList = this.getOrgConfig( routeId );
         for (var i = 0; i < orgList.length; i++) {
             if (orgList[i].name === orgName) {
-                return orgList[i];
+                return orgList[i] || {};
             }
         }
     },
@@ -539,7 +540,7 @@ MWF.ProcessFlow.Reset = new Class({
         var defaultOpt = {
             "type": "identity",
             "mainColorEnable": this.flow.options.mainColorEnable,
-            "style": "flow",
+            "style": (this.form.json.flowStyle) ? this.form.json.flowStyle+"_flow" : "flow",
             "width": "auto",
             "height": MWF.ProcessFlow_ORG_HEIGHT,
             "count": this.businessData.activity.resetCount || 0,
@@ -2561,8 +2562,8 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             "z-index" : 20002,
             "background-color" : "#fff",
             "padding" : "10px 0px 10px 0px",
-            "border-radius" : "8px",
-            "box-shadow": "0px 0px 8px 0px rgba(0,0,0,0.25)",
+            "border-radius" : "var(--oo-default-radius)",
+            "box-shadow": "0px 0px 4px 0px rgba(0,0,0,0.25)",
             "-webkit-user-select": "text",
             "-moz-user-select": "text"
         }
@@ -2691,7 +2692,10 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             case "process":
                 Object.each( d.organizations, function (value, key) {
                     if( value && value.length ){
-                        orgtexts.push( ( this.flow.getSingleOrgConfig( d.routeId , key ) ).title + "：" + value.clean().map(function(v){ return v.split("@")[0]; }).join("、"));
+                        var orgConfig = this.flow.getSingleOrgConfig( d.routeId , key );
+                        if(orgConfig){
+                            orgtexts.push( orgConfig.title + "：" + value.clean().map(function(v){ return v.split("@")[0]; }).join("、"));
+                        }
                     }
                 }.bind(this));
                 text = lp.submitQuickText.replace("{route}", d.routeName ).replace("{opinion}", d.opinion);
