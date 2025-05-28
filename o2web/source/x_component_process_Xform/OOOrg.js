@@ -6,9 +6,6 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"]
     },
-    isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="readmode" || this.isSectionMergeRead());
-    },
     _loadNode: function () {
         this._getOrgOptions();
         this._loadNodeEdit();
@@ -233,5 +230,17 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
 
         this.__setValue(value);
         return value;
+    },
+    isReadonly : function(){
+        var readonly = !!(this.readonly || this.form.json.isReadonly || this.json.showMode==="read");
+        if( readonly )return readonly;
+        if( this.json.isReadonly === "script" ){
+            if( this.json.readonlyScript && this.json.readonlyScript.code ){
+                readonly = this.form.Macro.exec(this.json.readonlyScript.code, this);
+            }
+        }else{
+            readonly = !!this.json.isReadonly
+        }
+        return readonly || !!this.isSectionMergeRead();
     }
 });

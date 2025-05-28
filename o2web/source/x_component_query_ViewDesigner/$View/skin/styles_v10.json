@@ -1,0 +1,111 @@
+{
+  "name": "默认样式",
+  "view": {
+    "container" : {
+      "height" : "100%",
+      "overflow" : "auto",
+      "font-size": "14px"
+    },
+    "table": {
+      "margin-bottom": "20px",
+      "width": "100%"
+    },
+    "titleTr":{  //viewTitleTrNode   viewTitleLineNode
+      "line-height": "40px",
+      "height": "40px",
+      "color": "#666666",
+      "background-color": "#EEE"
+    },
+    "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
+      "font-weight": "bold",
+      "padding": "0px 10px",
+      "border-bottom": "1px solid #CCC",
+      "background" : "inherit"
+    },
+    "contentTr" : {
+      "background": "#ffffff"
+    },
+    "contentSelectedTr" : {
+      "background": "#ecf5ff"
+    },
+    "contentTd": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding": "5px 5px",
+      "border-bottom": "1px solid #CCC"
+    },
+    "zebraContentTd": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding": "5px 5px",
+      "border-bottom": "1px solid #CCC"
+    },
+    "contentGroupTd": {
+      "padding": "5px 5px",
+      "border-bottom": "1px solid #CCC",
+      "font-weight": "bold",
+      "background-color": "#F6F6F6",
+      "cursor": "pointer"
+    },
+    "groupCollapseNode": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding-left" : "20px",
+      "background-image": "url(../x_component_query_ViewDesigner/$View/default/icon/right.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "left center"
+    },
+    "groupExpandNode": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding-left" : "20px",
+      "background-image": "url(../x_component_query_ViewDesigner/$View/default/icon/down.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "left center"
+    },
+    "checkboxNode" : {
+      "className": "ooicon-checkbox-unchecked",
+      "color": "var(--oo-color-main)"
+    },
+    "checkedCheckboxNode" : {
+     "className": "ooicon-checkbox-checked",
+     "color": "var(--oo-color-main)"
+    },
+    "radioNode" : {
+      "className": "ooicon-radio-unchecked",
+      "color": "var(--oo-color-main)"
+    },
+    "checkedRadioNode" : {
+      "className": "ooicon-radio-checked",
+      "color": "var(--oo-color-main)"
+    },
+    "noDataTextNode" : {
+      "height" : "50px",
+      "font-size" : "16px",
+      "margin" : "20px auto",
+      "text-align" : "center"
+    },
+    "tableProperties": {
+      "width": "100%",
+      "border": "0",
+      "cellpadding": "0",
+      "cellspacing": "0"
+    }
+  },
+  "actionbar": {
+    "style": "xform_blue_simple",
+    "customIconStyle" : "",
+    "forceStyles" : {
+      "container" : {
+        "width" : "100%",
+        "border-top" : "0px",
+        "border-bottom" : "1px solid #4a90e2"
+      }
+    }
+  },
+  "paging" : {
+    "style" : "blue_round",
+    "style_rect" : "default",
+    "style_round" : "blue_round"
+  }
+}

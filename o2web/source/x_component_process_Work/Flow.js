@@ -1624,13 +1624,15 @@ MWF.ProcessFlow.Processor.Org = new Class({
     },
     getDefaultOptions: function(){
         return {
-            "style": "flow",
+            "style": (this.form.json.flowStyle) ? this.form.json.flowStyle+"_flow" : "flow",
             "mainColorEnable": this.processor.flow.options.mainColorEnable,
             "width": "auto",
             "height": MWF.ProcessFlow_ORG_HEIGHT,
             "embedded": true,
             "hasLetter": false, //字母
-            "hasTop": true //可选、已选的标题
+            "hasTop": true, //可选、已选的标题
+            "level1Indent" : 0, //第一级的缩进
+            "indent" : 0 //后续的缩进
         };
     },
     getOptionEvents: function(){

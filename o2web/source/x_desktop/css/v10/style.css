@@ -34,6 +34,10 @@
     font-display: swap;
 }
 
+textarea, input{
+  font-family: "Microsoft YaHei", "SimSun", "宋体", serif;
+}
+
 oo-button,
 oo-tag,
 oo-org {

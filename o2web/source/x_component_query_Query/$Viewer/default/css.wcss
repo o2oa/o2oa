@@ -404,8 +404,13 @@
         "line-height": "30px",
         "font-size": "14px",
         "padding": "5px 5px",
-        "border-bottom": "1px solid #CCC"
+        "border-bottom": "1px solid #CCC",
     },
+    "viewSelectTdNode": {
+        "width": "1.8rem",
+        "text-align": "center"
+    },
+
     "viewContentCategoryTdNode": {
         "height": "30px",
         "line-height": "30px",

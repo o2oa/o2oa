@@ -257,6 +257,7 @@ const openMyCollectionPage = () => {
 </script>
 
 <template>
+  <div>22222222222</div>
   <div class="im-app im-container">
     <div class="im-aside" :class="{ hidden: windowStateInstance.isMobile && currentConversation, w100:  windowStateInstance.isMobile}" v-if="!hideSide" >
       <IMAside @clickImConfig="openImConfigPage" @clickMyCollectionPage="openMyCollectionPage"/>

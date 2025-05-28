@@ -460,7 +460,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         }).inject(this.node);
         var indent = this.selector.options.level1Indent + (this.level-1)*this.selector.options.indent;
 
-        if(this.selector.options.style === "flow"){
+        if(this.selector.options.style.endsWith("flow")){
             if (this.level === 1) {
                 indent = 26;
             } else {
@@ -574,7 +574,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                     "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
                     "title" : MWF.SelectorLP.selectChildren
                 }).inject(
-                    this.selector.options.style === "flow" ? this.iconNode : this.textNode,
+                    this.selector.options.style.endsWith("flow") ? this.iconNode : this.textNode,
                     "before"
                 );
                 this.selectAllNode.addEvent( "click", function(ev){
@@ -609,11 +609,11 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                     })
                 }
             }
-        }else if( !this.selectAllNode && this.selector.options.count.toInt() !== 1 && this.selector.options.style === "flow" ){
+        }else if( !this.selectAllNode && this.selector.options.count.toInt() !== 1 && this.selector.options.style.endsWith("flow") ){
             new Element("div", {
                 "styles": this.selector.css.selectorItemCategoryActionNode_empty
             }).inject(
-                this.selector.options.style === "flow" ? this.iconNode : this.textNode,
+                this.selector.options.style.endsWith("flow") ? this.iconNode : this.textNode,
                 "before"
             );
         }

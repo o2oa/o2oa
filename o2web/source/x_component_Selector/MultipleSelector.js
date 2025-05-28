@@ -36,10 +36,10 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         this.container = $(container);
 
-        if( ["flow"].contains(this.options.style)  ){
+        if( this.options.style.endsWith("flow")  ){
             this.options.contentUrl = this.path + this.options.style + "/"+( this.options.embedded ? "selector_embedded":"selector" )+".html";
-            this.options.level1Indent = 10;
-            this.options.indent = 20;
+            this.options.level1Indent = 0;
+            this.options.indent = 10;
             this.options.tabStyle = "blue_flat";
         }else if(this.options.useO2Load && this.options.embedded ){
             this.options.contentUrl = this.options.contentUrl.replace('selector.html', 'selector_embedded.html');
@@ -76,7 +76,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 method: "GET",
                 async: false,
                 onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                    if( ["flow"].contains(this.options.style) || this.options.useO2Load ){
+                    if( this.options.style.endsWith("flow") || this.options.useO2Load ){
                         this.nodeHTML = responseHTML;
                         var node = new Element("div");
                         node.loadHtmlText( responseHTML, {

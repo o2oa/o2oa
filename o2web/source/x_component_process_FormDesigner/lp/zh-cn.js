@@ -1294,6 +1294,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         required: '必填',
 
         readModeEvents: '阅读模式下是否响应鼠标事件',
+        allowSelectInput: '允许输入',
 
         layout: '布局',
         layoutCode: '布局代码',
