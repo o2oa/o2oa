@@ -54,5 +54,12 @@
     "mode": [
       "pc"
     ]
+  },
+  "v10": {
+    "name": "v10",
+    "file": "styles_v10.json",
+    "mode": [
+      "pc"
+    ]
   }
 }

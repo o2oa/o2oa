@@ -904,7 +904,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
             this.data.maintainerList = this.data.maintenanceIdentity ? [this.data.maintenanceIdentity] : [];
         }
         var options = {
-            "types": ["identity",'unitDuty', 'role'],
+            "types": ["identity",'unitDuty', 'role','group'],
             "resultType": "person",
             "count": 0,
             "title": this.app.lp.application.setMaintainer,
@@ -942,6 +942,9 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
                     break;
                 case "p":
                     widget = new MWF.widget.O2Person(data, node, {"style": "application", "lazy":true});
+                    break;
+                case "g":
+                    widget = new MWF.widget.O2Group(data, node, {"style": "application", "lazy":true});
                     break;
                 case "ud":
                     widget = new MWF.widget.O2Duty(data, node, {"style": "application", "lazy":true});

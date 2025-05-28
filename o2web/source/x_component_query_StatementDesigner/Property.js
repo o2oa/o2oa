@@ -91,10 +91,12 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
             var actionContent = this.data[name];
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "iconType": this.data.iconType,
                     "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement.parentElement,
                     "scriptMaxObj": this.designer.editContentNode,
                     "systemToolsAddress": "../x_component_query_StatementDesigner/$Statement/toolbars.json",
                     "isSystemTool" : true,
+                    "target" : node.get("data-target"),
                     "noEditShow": true,
                     "noReadShow": true,
                     "onChange": function(){
@@ -154,6 +156,7 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
                     "noDelete": false,
                     "noCode": true,
                     "noReadShow": true,
+                    "target" : node.get("data-target"),
                     "noEditShow": true,
                     "onChange": function () {
                         this.data[name] = actionEditor.data;

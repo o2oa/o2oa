@@ -25,9 +25,37 @@
 		  "code": "",
 		  "html": ""
 		},
-		"load": {
+		"loadDialog": {
 		  "code": "",
 		  "html": ""
+		},
+		"showDialog": {
+			"code": "",
+			"html": ""
+		},
+		"beforeLoadView": {
+			"code": "",
+			"html": ""
+		},
+		"loadViewLayout": {
+			"code": "",
+			"html": ""
+		},
+		"loadView": {
+			"code": "",
+			"html": ""
+		},
+		"openDocument": {
+			"code": "",
+			"html": ""
+		},
+		"select": {
+			"code": "",
+			"html": ""
+		},
+		"unselect": {
+			"code": "",
+			"html": ""
 		},
 		"click": {
 			"code": "",

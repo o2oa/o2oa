@@ -2762,12 +2762,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             if (viewStyles) {
                 if (selectFlag === "single") {
                     if (viewStyles["radioNode"] && viewStyles["radioNode"].className){
-                        this.selectTd.addClass(viewStyles["radioNode"].className);    
+                        this.selectTd.addClass(viewStyles["radioNode"].className);
                     }
                     this.selectTd.setStyles(viewStyles["radioNode"]);
                 } else {
                     if (viewStyles["checkboxNode"] && viewStyles["checkboxNode"].className){
-                        this.selectTd.addClass(viewStyles["checkboxNode"].className);    
+                        this.selectTd.addClass(viewStyles["checkboxNode"].className);
                     }
                     this.selectTd.setStyles(viewStyles["checkboxNode"]);
                 }
@@ -3098,12 +3098,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                         if( viewStyles ){
                             if( flag === "single" ){
                                 if (viewStyles["radioNode"] && viewStyles["radioNode"].className){
-                                    this.selectTd.addClass(viewStyles["radioNode"].className);    
+                                    this.selectTd.addClass(viewStyles["radioNode"].className);
                                 }
                                 this.selectTd.setStyles( viewStyles["radioNode"] );
                             }else{
                                 if (viewStyles["checkboxNode"] && viewStyles["checkboxNode"].className){
-                                    this.selectTd.addClass(viewStyles["checkboxNode"].className);    
+                                    this.selectTd.addClass(viewStyles["checkboxNode"].className);
                                 }
                                 this.selectTd.setStyles( viewStyles["checkboxNode"] );
                             }
@@ -3197,7 +3197,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
                 if (viewStyles["checkboxNode"].className){
-                    this.selectTd.addClass(viewStyles["checkboxNode"].className);    
+                    this.selectTd.addClass(viewStyles["checkboxNode"].className);
                 }
                 this.selectTd.setStyles(viewStyles["checkboxNode"]);
             }else{
@@ -3309,7 +3309,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         }).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
-        
+
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
         if( this.data.$selectedEnable && this.view.getSelectFlag() === "multi" && this.view.viewJson.allowSelectAll ){
@@ -3865,7 +3865,8 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
                     var actionNode = new Element("div", {
                         "id": tool.id,
                         "MWFnodetype": tool.type,
-                        "MWFButtonImage": path+""+this.options.style+"/custom/"+iconPath+tool.img,
+                        "MWFButtonImage": this.json.iconType==="font" ? "" : (path+""+this.options.style+"/custom/"+iconPath+tool.img),
+                        "MWFButtonIcon": tool.icon,
                         "title": tool.title,
                         "MWFButtonAction": "runCustomAction",
                         "MWFButtonText": tool.text
@@ -3906,7 +3907,8 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
                 "MWFnodetype": tool.type,
                 //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
                 //"MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
-                "MWFButtonImage": path+this.options.style+"/actionbar/"+ ( this.json.iconStyle || "default" ) +"/"+tool.img,
+                "MWFButtonImage": this.json.iconType==="font" ? "" :  (path+this.options.style+"/actionbar/"+ ( this.json.iconStyle || "default" ) +"/"+tool.img),
+                "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
