@@ -289,7 +289,8 @@ o2.addReady(function () {
             var body = {
                 type: "openO2Work",
                 data: {
-                    title : options.title || ""
+                    title : options.title || "",
+                    formid: options.formid || ""
                 }
             };
             if (options.workId) {
@@ -319,6 +320,7 @@ o2.addReady(function () {
                     "work": options.workId,
                     "workCompleted": "",
                     "draftId": options.draftId,
+                    "formid": options.formid || "",
                     "title": options.title || ""
                 });
             } else if (options.workCompletedId) {
@@ -326,6 +328,7 @@ o2.addReady(function () {
                     "work": "",
                     "workCompleted": options.workCompletedId,
                     "draftId": options.draftId,
+                    "formid": options.formid || "",
                     "title": options.title || ""
                 });
             }

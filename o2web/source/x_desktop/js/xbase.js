@@ -77,7 +77,8 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             var body = {
                 type: "openO2Work",
                 data: {
-                    title : options.title || ""
+                    title : options.title || "",
+                    formid: options.formid || ""
                 }
             };
             if (options.workId) {
@@ -107,6 +108,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                     "work": options.workId,
                     "workCompleted": "",
                     "draftId": options.draftId,
+                    "formid": options.formid || "",
                     "title": options.title || ""
                 });
             } else if (options.workCompletedId) {
@@ -114,6 +116,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                     "work": "",
                     "workCompleted": options.workCompletedId,
                     "draftId": options.draftId,
+                    "formid": options.formid || "",
                     "title": options.title || ""
                 });
             }

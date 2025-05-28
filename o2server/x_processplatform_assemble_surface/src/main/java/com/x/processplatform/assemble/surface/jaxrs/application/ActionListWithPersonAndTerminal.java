@@ -60,8 +60,8 @@ class ActionListWithPersonAndTerminal extends BaseAction {
 					Application o = business.application().pick(id);
 					if (null != o) {
 						Wo wo = Wo.copier.copy(o);
-						wo.setProcessList(this.referenceProcess(business, effectivePerson, identities, units, groups, o,
-								terminal));
+						wo.setProcessList(this.referenceProcess(business, effectivePerson, identities, units, groups,
+								roles, o, terminal));
 						wos.add(wo);
 					}
 				}
@@ -118,7 +118,7 @@ class ActionListWithPersonAndTerminal extends BaseAction {
 
 	/**
 	 * 从Process中获取可以启动的Process的application.不考虑创建者.
-	 * 
+	 *
 	 * @param business
 	 * @param effectivePerson
 	 * @param roles
@@ -139,7 +139,8 @@ class ActionListWithPersonAndTerminal extends BaseAction {
 		if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
 					cb.isEmpty(root.get(Process_.startableUnitList)),
-					cb.isEmpty(root.get(Process_.startableGroupList)));
+					cb.isEmpty(root.get(Process_.startableGroupList)),
+					cb.isEmpty(root.get(Process_.startableRoleList)));
 			p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Process_.controllerList)));
 			if (ListTools.isNotEmpty(identities)) {
 				p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
@@ -149,6 +150,9 @@ class ActionListWithPersonAndTerminal extends BaseAction {
 			}
 			if (ListTools.isNotEmpty(groups)) {
 				p = cb.or(p, root.get(Process_.startableGroupList).in(groups));
+			}
+			if (ListTools.isNotEmpty(roles)) {
+				p = cb.or(p, root.get(Process_.startableRoleList).in(roles));
 			}
 			p = cb.and(p,
 					cb.and(cb.or(cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL),
@@ -160,10 +164,11 @@ class ActionListWithPersonAndTerminal extends BaseAction {
 	}
 
 	private List<WoProcess> referenceProcess(Business business, EffectivePerson effectivePerson,
-			List<String> identities, List<String> units, List<String> groups, Application application, String terminal)
+			List<String> identities, List<String> units, List<String> groups, List<String> roles,
+			Application application, String terminal)
 			throws Exception {
-		List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units, groups,
-				application, terminal);
+		List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
+				groups, roles, application, terminal);
 		List<WoProcess> wos = new ArrayList<>();
 		for (String id : ids) {
 			wos.add(WoProcess.copier.copy(business.process().pick(id)));

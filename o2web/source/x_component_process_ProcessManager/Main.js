@@ -870,9 +870,11 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
             this.data.maintainerList = this.data.maintenanceIdentity ? [this.data.maintenanceIdentity] : [];
         }
 
-        this.data.maintainerList.each(function (d){
-            new MWF.widget.O2Person({"name": d}, this.maintainerContentAreaNode, {"style": "application"});
-        }.bind(this));
+        this.loadOrgWidget(this.data.maintainerList, this.maintainerContentAreaNode);
+
+        // this.data.maintainerList.each(function (d){
+        //     new MWF.widget.O2Person({"name": d}, this.maintainerContentAreaNode, {"style": "application"});
+        // }.bind(this));
     },
 
     changeAdministrators: function(){
@@ -902,7 +904,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
             this.data.maintainerList = this.data.maintenanceIdentity ? [this.data.maintenanceIdentity] : [];
         }
         var options = {
-            "type": "identity",
+            "types": ["identity",'unitDuty', 'role'],
             "resultType": "person",
             "count": 0,
             "title": this.app.lp.application.setMaintainer,
@@ -914,9 +916,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
                         return item.data.distinguishedName;
                     });
                     this.data.maintenanceIdentity = "";
-                    items.each(function(item){
-                        new MWF.widget.O2Person(item.data, this.maintainerContentAreaNode, {"style": "application"});
-                    }.bind(this));
+                    this.loadOrgWidget(this.data.maintainerList, this.maintainerContentAreaNode);
                 }else{
                     this.data.maintenanceIdentity = "";
                     this.data.maintainerList = [];
@@ -930,6 +930,30 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         var selector = new MWF.O2Selector(this.app.content, options);
     },
 
+    loadOrgWidget: function (datas, node){
+        datas.each(function(name){
+            var data = (typeOf(name)==="string") ? {"name": name.split('@')[0], "id": name, "distinguishedName":name}: name;
+            var distinguishedName = (typeOf(name)==="string") ? name : data.distinguishedName;
+            var flag = distinguishedName?distinguishedName.split("@").getLast():"o";
+            var widget;
+            switch (flag.toLowerCase()){
+                case "i":
+                    widget = new MWF.widget.O2Identity(data, node, {"style": "application", "lazy":true});
+                    break;
+                case "p":
+                    widget = new MWF.widget.O2Person(data, node, {"style": "application", "lazy":true});
+                    break;
+                case "ud":
+                    widget = new MWF.widget.O2Duty(data, node, {"style": "application", "lazy":true});
+                    break;
+                case "r":
+                    widget = new MWF.widget.O2Role(data, node, {"style": "application", "lazy":true});
+                    break;
+                default:
+                    widget = new MWF.widget.O2Other(data, node, {"style": "application", "lazy":true});
+            }
+        }.bind(this));
+    },
 
     createAvailableNode: function(){
         //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();

@@ -43,7 +43,7 @@ class ActionListWithPersonWithApplication extends BaseAction {
             }
             List<String> groups = business.organization().group().listWithIdentity(identities);
             List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
-                    groups, application, "");
+                    groups, roles, application, "");
             for (String id : ids) {
                 wos.add(Wo.copier.copy(business.process().pick(id)));
             }

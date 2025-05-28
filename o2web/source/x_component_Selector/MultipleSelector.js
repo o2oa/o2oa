@@ -722,7 +722,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
             options.values = this.getValueByType(
                 options.values,
-                (lt === "identity" && options.resultType === "person") ? [ type, "person" ] : type
+                (lt === "identity" && options.resultType === "person") ? [ type, "person" ] : lt
             );
 
             var pageNode = new Element( "div" ).inject( this.contentNode );
@@ -913,7 +913,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 var dn = data.distinguishedName;
             }
             if (dn && type ){
-                var flag = dn.substr(dn.length-1, 1);
+                var flag = dn.split('@').getLast();
                 switch (flag.toLowerCase()){
                     case "i":
                         if( type == "identity" || types.contains( "identity" ) )result.push( data );
@@ -923,6 +923,9 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                         break;
                     case "u":
                         if( type == "unit" )result.push( data );
+                        break;
+                    case "ud":
+                        if( type == "unitduty" )result.push( data );
                         break;
                     case "g":
                         if( type == "group" )result.push( data );

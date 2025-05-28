@@ -1,5 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.appeal;
 
+import com.x.attendance.assemble.control.Business;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.ThisApplication;
@@ -31,6 +33,10 @@ public class ActionUpdateStatusByAdmin extends BaseAction {
       throw new ExceptionEmptyParameter("id");
     }
     try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+      Business business = new Business(emc);
+      if (!business.isManager(person)) {
+        throw new ExceptionAccessDenied(person);
+      }
       AttendanceV2AppealInfo info = emc.find(id, AttendanceV2AppealInfo.class);
       if (info == null) {
         throw new ExceptionNotExistObject("数据不存在，" + id);

@@ -782,6 +782,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
         var personGroupNodes = this.propertyContent.getElements(".MWFPersonGroup");
+        var personRoleNodes = this.propertyContent.getElements(".MWFPersonRole");
         var dutyNameNodes = this.propertyContent.getElements(".MWFPersonDuty");
         // var personDepartmentNodes = this.propertyContent.getElements(".MWFPersonDepartment");
         // var personCompanyNodes = this.propertyContent.getElements(".MWFPersonCompany");
@@ -828,6 +829,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             personGroupNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "group",
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+            personRoleNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                    "type": "role",
                     "names": this.data[node.get("name")],
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });

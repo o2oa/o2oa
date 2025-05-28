@@ -39,11 +39,11 @@ public class AppealInfoAction extends StandardJaxrsAction {
     @Consumes(MediaType.APPLICATION_JSON)
     public void listByPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
                              @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size) {
+                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
         ActionResult<List<ActionListByPage.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionListByPage().execute(effectivePerson, page, size);
+            result = new ActionListByPage().execute(effectivePerson, page, size, jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

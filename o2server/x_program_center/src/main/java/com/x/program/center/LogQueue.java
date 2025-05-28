@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -75,7 +78,7 @@ public class LogQueue extends AbstractQueue<NameValuePair> {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			T t = emc.find(o.getId(), cls);
 			if (null != t) {
-			    emc.beginTransaction(cls);
+				emc.beginTransaction(cls);
 				o.copyTo(t, JpaObject.FieldsUnmodify);
 				emc.commit();
 			} else {
@@ -94,8 +97,9 @@ public class LogQueue extends AbstractQueue<NameValuePair> {
 				threshold.add(Calendar.DATE, -7);
 				ids = emc.idsLessThanMax(cls, JpaObject.createTime_FIELDNAME, threshold.getTime(), 500);
 				if (!ids.isEmpty()) {
-					emc.beginTransaction(cls);
-					emc.delete(cls, ids);
+					EntityManager em = emc.beginTransaction(cls);
+					Query query = em.createQuery("DELETE FROM " + cls.getName() + " o WHERE o.id IN :ids");
+					query.setParameter("ids", ids).executeUpdate();
 					emc.commit();
 				}
 			}

@@ -1,17 +1,8 @@
 package com.x.processplatform.assemble.surface;
 
-import com.x.base.core.project.tools.ListTools;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import com.x.processplatform.assemble.surface.factory.content.*;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
@@ -19,10 +10,27 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.factory.cms.CmsFactory;
+import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
+import com.x.processplatform.assemble.surface.factory.content.DraftFactory;
+import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
+import com.x.processplatform.assemble.surface.factory.content.JobFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReadCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReadFactory;
+import com.x.processplatform.assemble.surface.factory.content.RecordFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
+import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskProcessModeFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
 import com.x.processplatform.assemble.surface.factory.element.AgentFactory;
 import com.x.processplatform.assemble.surface.factory.element.ApplicationDictFactory;
 import com.x.processplatform.assemble.surface.factory.element.ApplicationDictItemFactory;
@@ -57,6 +65,11 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Business {
 
@@ -598,11 +611,11 @@ public class Business {
         if ((null == app) && (null == pro)) {
             return false;
         }
+        List<String> authInfo = this.organization().person().getAuthInfo(effectivePerson.getDistinguishedName());
         return ((null != pro) && ListTools.isNotEmpty(pro.getControllerList())
-                && (effectivePerson.isPerson(pro.getControllerList()) || ListTools.containsAny(
-                this.organization().person().getAuthInfo(effectivePerson.getDistinguishedName()), pro.getControllerList())))
+                && (effectivePerson.isPerson(pro.getControllerList()) || ListTools.containsAny(authInfo, pro.getControllerList())))
                 || ((null != app) && (effectivePerson.isPerson(app.getControllerList())
-                || effectivePerson.isPerson(app.getMaintainerList())));
+                || (ListTools.isNotEmpty(app.getMaintainerList()) && ListTools.containsAny(authInfo, app.getMaintainerList()))));
     }
 
     public boolean ifPersonCanManageApplicationOrProcess(String person, Application app,
@@ -615,11 +628,11 @@ public class Business {
         if ((null == app) && (null == pro)) {
             return false;
         }
+        List<String> authInfo = this.organization().person().getAuthInfo(person);
         return ((null != pro) && ListTools.isNotEmpty(pro.getControllerList())
-                && (pro.getControllerList().contains(person) || ListTools.containsAny(
-                this.organization().person().getAuthInfo(person),pro.getControllerList())))
+                && (pro.getControllerList().contains(person) || ListTools.containsAny(authInfo, pro.getControllerList())))
                 || ((null != app) && (app.getControllerList().contains(person)
-                || app.getMaintainerList().contains(person)));
+                || (ListTools.isNotEmpty(app.getMaintainerList()) && ListTools.containsAny(authInfo, app.getMaintainerList()))));
     }
 
     private boolean hasTaskOrReadOrTaskCompletedOrReadCompletedOrReviewWithPersonWithJob(
