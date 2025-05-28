@@ -1,5 +1,5 @@
 {
-  "name": "默认样式",
+  "name": "v10",
   "view": {
     "container" : {
       "height" : "100%",
@@ -13,17 +13,20 @@
     "titleTr":{  //viewTitleTrNode   viewTitleLineNode
       "line-height": "40px",
       "height": "40px",
-      "color": "#666666",
-      "background-color": "#EEE"
+      "color": "var(--oo-color-text2)",
+      "background-color": "#f7f7f7"
     },
     "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
       "font-weight": "bold",
       "padding": "0px 10px",
-      "border-bottom": "1px solid #CCC",
-      "background" : "inherit"
+      "border-bottom": "1px solid #dfdfdf",
+      "background" : "inherit",
+      "white-space": "nowrap",
+      "transition": "background-color 0.3s"
     },
     "contentTr" : {
-      "background": "#ffffff"
+      "background": "#ffffff",
+      "color": "var(--oo-color-text2)"
     },
     "contentSelectedTr" : {
       "background": "#ecf5ff"
@@ -32,13 +35,15 @@
       "height": "30px",
       "line-height": "30px",
       "padding": "5px 5px",
-      "border-bottom": "1px solid #CCC"
+      "border-bottom": "1px solid #dfdfdf",
+      "transition": "background-color 0.3s"
     },
     "zebraContentTd": {
       "height": "30px",
       "line-height": "30px",
       "padding": "5px 5px",
-      "border-bottom": "1px solid #CCC"
+      "border-bottom": "1px solid #dfdfdf",
+      "transition": "background-color 0.3s"
     },
     "contentGroupTd": {
       "padding": "5px 5px",
@@ -93,19 +98,16 @@
     }
   },
   "actionbar": {
-    "style": "xform_blue_simple",
-    "customIconStyle" : "",
-    "forceStyles" : {
-      "container" : {
-        "width" : "100%",
-        "border-top" : "0px",
-        "border-bottom" : "1px solid #4a90e2"
-      }
-    }
+    "iconType": "font",
+    "style": "v10",
+    "styles": {
+      "background-color": "#ffffff"
+    },
+    "customIconStyle": ""
   },
   "paging" : {
-    "style" : "blue_round",
-    "style_rect" : "default",
-    "style_round" : "blue_round"
+    "style" : "v10",
+    "style_rect" : "v10",
+    "style_round" : "v10"
   }
 }

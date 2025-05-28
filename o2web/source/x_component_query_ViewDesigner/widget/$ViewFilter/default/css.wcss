@@ -46,6 +46,14 @@
         "background": "url(../x_component_query_ViewDesigner/widget/$ViewFilter/default/icon/delete1.png) no-repeat center center",
         "cursor": "pointer"
     },
+  "itemUpNode": {
+    "width": "20px",
+    "height": "24px",
+    "float": "right",
+    "cursor": "pointer",
+    "text-align": "center",
+    "line-height": "24px"
+  },
     "itemContentNode": {
         "padding-left": "5px",
         "padding-right": "3px",

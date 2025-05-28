@@ -38,11 +38,26 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
+         * 取消选中视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.ViewSelector#unselect
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 打开视图中的一条记录后执行。
          * @event MWF.xApplication.process.Xform.ViewSelector#openDocument
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "beforeLoadView", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
+        /**
+         * 加载对话框的时候执行，this.event可以获取到对话框对象。
+         * @event MWF.xApplication.process.Xform.ViewSelector#loadDialog
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 显示对话框的时候执行，this.event可以获取到对话框对象。
+         * @event MWF.xApplication.process.Xform.ViewSelector#showDialog
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "loadDialog", 'showDialog',"beforeLoadView", "loadView", "queryLoad", "postLoad", "select", "unselect", "openDocument"]
     },
 
 	_loadUserInterface: function(){
@@ -418,6 +433,9 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                         "action": function(){this.close();}
                     }
                 ],
+                "onPostLoad": function (){
+                    this.fireEvent("loadDialog", [dlg]);
+                }.bind(this),
                 "onPostShow": function(){
                     if(layout.mobile){
                         dlg.node.setStyle("z-index",200);
@@ -447,6 +465,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                             }.bind(this)
                         }, this.form.app, this.form.Macro);
                     }.bind(this));
+                    this.fireEvent("showDialog", [dlg]);
                 }.bind(this)
             });
             //dlg.show();

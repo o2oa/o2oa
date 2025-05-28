@@ -26,8 +26,36 @@
 		  "html": ""
 		},
 		"load": {
-		  "code": "",
-		  "html": ""
+			"code": "",
+			"html": ""
+		},
+		"loadDialog": {
+			"code": "",
+			"html": ""
+		},
+		"showDialog": {
+			"code": "",
+			"html": ""
+		},
+		"beforeLoadView": {
+			"code": "",
+			"html": ""
+		},
+		"loadView": {
+			"code": "",
+			"html": ""
+		},
+		"select": {
+			"code": "",
+			"html": ""
+		},
+		"select": {
+			"code": "",
+			"html": ""
+		},
+		"openDocument": {
+			"code": "",
+			"html": ""
 		},
 		"click": {
 			"code": "",
