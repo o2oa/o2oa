@@ -1092,6 +1092,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         if (styles.tableProperties) this.copyStyles(styles.tableProperties, "tableProperties");
     },
     switchTemplateStyles : function( oldTemplateStyles ){
+        debugger;
         if (oldTemplateStyles["view"]) this.clearTemplateStyles(oldTemplateStyles["view"]);
         if (this.templateStyles["view"]) this.setTemplateStyles(this.templateStyles["view"]);
         this.setAllStyles();
@@ -1326,6 +1327,12 @@ MWF.xApplication.query.ViewDesigner.View.$Module = MWF.QV$Module = new Class({
         this.setPropertiesOrStyles("inputStyles");
         this.setPropertiesOrStyles("properties");
         this.reloadMaplist();
+    },
+    destroyProperty: function (){
+        if( this.property && this.property.propertyContent ){
+            this.property.propertyContent.destroy();
+        }
+        this.property = null;
     },
     showProperty: function(){
         if (!this.property){
@@ -1677,7 +1684,12 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         this._hideActions();
         this.hideProperty();
     },
-
+    destroyProperty: function (){
+        if( this.property && this.property.propertyContent ){
+            this.property.propertyContent.destroy();
+        }
+        this.property = null;
+    },
     showProperty: function(){
         if (!this.property){
             this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
@@ -2080,6 +2092,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.json.customIconStyle = styles.customIconStyle;
         this.json.customIconOverStyle = styles.customIconOverStyle || "";
         this.json.forceStyles = styles.forceStyles || "";
+        this.json.iconType = styles.iconType || "";
     },
     clearTemplateStyles: function(styles){
         this.json.style = "form";
@@ -2087,10 +2100,12 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.json.iconOverStyle = "";
         this.json.customIconStyle = "";
         this.json.customIconOverStyle = "";
+        this.json.iconType = "";
         this.json.forceStyles = "";
     },
     setAllStyles: function(){
         this._resetActionbar();
+        this.destroyProperty();
     },
     setEvent: function(){
         this.node.addEvents({
@@ -2307,10 +2322,12 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         }.bind(this));
     },
     setToolbars: function(tools, node){
+        debugger;
         tools.each(function(tool){
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.imagePath_default+""+this.options.style+"/actionbar/"+( this.json.iconStyle || "default" )+"/"+tool.img,
+                "MWFButtonImage": this.json.iconType==="font" ? "" : (this.imagePath_default+""+this.options.style+"/actionbar/"+( this.json.iconStyle || "default" )+"/"+tool.img),
+                "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
@@ -2326,6 +2343,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         }.bind(this));
     },
     setCustomToolbars: function(tools, node){
+        debugger;
         //var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
         var path = "";
         if( this.json.customIconStyle ){
@@ -2335,7 +2353,8 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         tools.each(function(tool){
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.imagePath_custom+""+this.options.customImageStyle +"/custom/"+path+tool.img,
+                "MWFButtonImage": this.json.iconType==="font" ? "" : (this.imagePath_custom+""+this.options.customImageStyle +"/custom/"+path+tool.img),
+                "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text

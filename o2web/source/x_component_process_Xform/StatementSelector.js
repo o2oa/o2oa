@@ -51,7 +51,17 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
          * @event MWF.xApplication.process.Xform.StatementSelector#openDocument，可以通过this.event得到打开的文档参数
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "unselect", "openDocument"]
+        /**
+         * 加载对话框的时候执行，this.event可以获取到对话框对象。
+         * @event MWF.xApplication.process.Xform.ViewSelector#loadDialog
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 显示对话框的时候执行，this.event可以获取到对话框对象。
+         * @event MWF.xApplication.process.Xform.ViewSelector#showDialog
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "loadDialog", 'showDialog', "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "unselect", "openDocument"]
     },
     doResult: function(data){
         if (this.json.result === "script"){
@@ -216,6 +226,9 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                         "action": function(){this.close();}
                     }
                 ],
+                "onPostLoad": function (){
+                    this.fireEvent("loadDialog", [dlg]);
+                }.bind(this),
                 "onPostShow": function(){
                     if(layout.mobile){
                         dlg.node.setStyle("z-index",200);
@@ -245,6 +258,7 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                             }.bind(this)
                         }, this.form.app, this.form.Macro );
                     }.bind(this));
+                    this.fireEvent("showDialog", [dlg]);
                 }.bind(this)
             });
             //dlg.show();

@@ -46,6 +46,30 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             }.bind(this));
         }
     },
+    moveUp: function (curItem, type){
+        debugger;
+
+        var curIndex = this.items.indexOf(curItem);
+        var item, upItem, upIndex;
+        for( var i= curIndex-1; i>= 0; i-- ){
+            item = this.items[i];
+            if( item && item.data.type === type ){
+                upIndex = i;
+                upItem = item;
+                break;
+            }
+        }
+        if (upItem){
+            var data = type === 'custom' ? this.filtrData.customData : this.filtrData.filtrData;
+            data[curIndex] = upItem.data;
+            data[upIndex] = curItem.data;
+
+            curItem.node.inject(upItem.node, "before");
+
+            this.items[curIndex]=upItem;
+            this.items[upIndex]=curItem;
+        }
+    },
     createScriptArea: function(node){
         this.scriptValueArea = node;
         var title = node.get("title");
@@ -1139,6 +1163,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter.Item = new Class({
     load: function(){
         this.node = new Element("div", {"styles": this.css.itemNode}).inject(this.container);
         this.deleteNode = new Element("div", {"styles": this.css.itemDeleteNode}).inject(this.node);
+        this.upNode = new Element("div", {"styles": this.css.itemUpNode, "text":"↑"}).inject(this.node);
         this.contentNode = new Element("div", {"styles": this.css.itemContentNode}).inject(this.node);
         this.contentNode.set("text", this.getText());
 
@@ -1148,6 +1173,10 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter.Item = new Class({
 
         this.deleteNode.addEvent("click", function(e){
             this.deleteItem(e);
+        }.bind(this));
+
+        this.upNode.addEvent("click", function(e){
+            this.upItem(e);
         }.bind(this));
     },
     getText: function(){
@@ -1190,6 +1219,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter.Item = new Class({
             this.close();
         });
     },
+    upItem: function (e){
+        this.filter.moveUp(this, "restrict");
+    },
     destroy: function(){
         this.filter.deleteItem(this);
     }
@@ -1215,5 +1247,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter.ItemCustom = new Class({
     getText: function(){
         var lp = this.app.lp.filter;
         return this.data.title+"("+this.data.path+")";
+    },
+    upItem: function (e){
+        this.filter.moveUp(this, "custom");
     }
 });
