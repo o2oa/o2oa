@@ -1,0 +1,8 @@
+<div class="o2flow-radio2-area">
+    {{each $.optionList}}
+    <div class="o2flow-radio2" data-o2-events="click:toggle" data-o2-value="{{$.value}}" data-o2-text="{{$.text}}">
+        <i class="o2icon-icon_circle"></i>
+        <div class="o2flow-radio2-text">{{$.text}}</div>
+    </div>
+    {{end each}}
+</div>

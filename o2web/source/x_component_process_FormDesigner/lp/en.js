@@ -1535,7 +1535,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"hideDownload": "Hide download operation",
 		"hideDelete": "Hide delete operation",
 		"hideSetting": "Hide permission settings operation",
-		"useQuickSelect": "Use quick selection"
+		"useQuickSelect": "Use quick selection",
+		"allowSelectInput": "Allow input"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

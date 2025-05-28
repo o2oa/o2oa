@@ -111,6 +111,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._loadStyles();
 
             this._afterLoaded();
+            this.isActive = true;
         }
     },
 
@@ -1977,7 +1978,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             }
         }.bind(this));
-        if (this.json.canDoublePage==="n" || layout.mobile) this.doublePageAction.hide();
+        // if (this.json.canDoublePage==="n" || layout.mobile) this.doublePageAction.hide();
+        this.doublePageAction.hide();
 
 
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
@@ -3385,7 +3387,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * this.form.get("fieldId").reload();
      */
     reload: function(callback){
-        this.resetData(false, callback);
+        if (!this.isActive){
+            this.active();
+        }else{
+            this.resetData(false, callback);
+        }  
     },
     resetData: function(diffFiletext, callback){
         this._computeData(false);

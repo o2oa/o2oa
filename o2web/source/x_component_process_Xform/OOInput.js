@@ -44,7 +44,7 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
 
         if (this.json.label) {
             this.node.setAttribute('label', this.json.label);
-        }
+        } 
 
         if (this.json.showIcon != 'no' && !this.form.json.hideModuleIcon) {
             this.node.setAttribute('right-icon', 'edit');

@@ -145,6 +145,12 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		}else{
 			this.node.removeAttribute("required");
 		}
+debugger;
+		if (this.json.allowInput) {
+            this.node.setAttribute('allow-input', 'true');
+        }else{
+			this.node.removeAttribute('allow-input');
+		}
 
         this.node.addEvent("change", function( ev ){
 			var v = this.getInputData("change");

@@ -404,6 +404,11 @@
         "padding": "5px 5px",
         "border-bottom": "1px solid #CCC"
     },
+     "viewSelectTdNode": {
+        "width": "1.8rem",
+        "text-align": "center",
+        "color": "var(--oo-color-main)"
+    },
     "viewContentCategoryTdNode": {
         "height": "30px",
         "line-height": "30px",

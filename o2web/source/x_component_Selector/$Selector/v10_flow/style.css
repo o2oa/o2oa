@@ -1,0 +1,62 @@
+@font-face {
+  font-family: 'o2sel';
+  src:  url('../x_component_Selector/$Selector/flow/fonts/o2sel.eot?yrb45j');
+  src:  url('../x_component_Selector/$Selector/flow/fonts/o2sel.eot?yrb45j#iefix') format('embedded-opentype'),
+    url('../x_component_Selector/$Selector/flow/fonts/o2sel.ttf?yrb45j') format('truetype'),
+    url('../x_component_Selector/$Selector/flow/fonts/o2sel.woff?yrb45j') format('woff'),
+    url('../x_component_Selector/$Selector/flow/fonts/o2sel.svg?yrb45j#o2sel') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'o2sel' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-cancel-circle1:before {
+  content: "\ea0e";
+}
+.o2icon-sort-alpha-asc:before {
+  content: "\ea48";
+}
+.o2icon-search11:before {
+  content: "\e994";
+}
+.o2icon-checkbox:before {
+  content: "\e967";
+}
+
+.MWF_selector_searchIcon{
+  position: absolute;
+  left: 6px;
+  top: 5px;
+  height: 16px;
+  width: 16px;
+  color: #4A90E2;
+  font-size: 12px;
+}
+.MWF_selector_letterActionNode{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  height: 16px;
+  width: 16px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+}
+.MWF_selector_letterActionNode_active{
+  color: #4A90E2;
+}

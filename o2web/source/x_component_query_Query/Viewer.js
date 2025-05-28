@@ -2753,6 +2753,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
+        this.selectTd.setStyles(this.css.viewSelectTdNode);
+        
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
         //var selectFlag = this.view.json.select || this.view.viewJson.select ||  "none";
@@ -3114,8 +3116,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                         }
                     }
                 }.bind(this),
-                "mouseout": function(){
-                    if (!this.isSelected && this.view.viewJson.selectBoxShow !=="always") this.selectTd.setStyles({"background": "transparent"});
+                "mouseout": function(){  
+                    if (!this.isSelected && this.view.viewJson.selectBoxShow !=="always"){
+                        this.selectTd.className = '';  
+                        this.selectTd.setStyles({"background": "transparent"});
+                    } 
                 }.bind(this),
                 "click": function(){this.select();}.bind(this)
             });
@@ -3157,6 +3162,10 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         this.view.selectedItems.push(this);
         var viewStyles = this.view.viewJson.viewStyles;
         if( viewStyles ){
+            this.selectTd.removeClass( viewStyles["checkboxNode"].className );    
+            if (viewStyles["checkedCheckboxNode"].className){
+                this.selectTd.addClass( viewStyles["checkedCheckboxNode"].className );    
+            }
             this.selectTd.setStyles( viewStyles["checkedCheckboxNode"] );
             this.node.setStyles( viewStyles["contentSelectedTr"] );
         }else{
@@ -3190,12 +3199,17 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                 break;
             }
         }
+        debugger;
         var viewStyles = this.view.viewJson.viewStyles;
-        if( this.view.viewJson.selectBoxShow !=="always" ){
-            this.selectTd.setStyles({"background": "transparent", opacity: 0});
-        }else{
+        // if( this.view.viewJson.selectBoxShow !=="always" ){
+        //     this.selectTd.setStyles({"background": "transparent"});
+        // }else{
             this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
+                this.selectTd.removeClass( viewStyles["checkedCheckboxNode"].className );    
+                if (viewStyles["checkboxNode"].className){
+                    this.selectTd.addClass( viewStyles["checkboxNode"].className );    
+                }
                 if (viewStyles["checkboxNode"].className){
                     this.selectTd.addClass(viewStyles["checkboxNode"].className);
                 }
@@ -3203,7 +3217,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             }else{
                 this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/checkbox.png) center center no-repeat"});
             }
-        }
+        // }
         if( viewStyles ){
             this.node.setStyles( viewStyles["contentTr"] );
         }else{
@@ -3235,6 +3249,10 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         var viewStyles = this.view.viewJson.viewStyles;
         this.selectTd.setStyles({opacity: 1});
         if( viewStyles ){
+            this.selectTd.removeClass( viewStyles["radioNode"].className );    
+            if (viewStyles["checkedRadioNode"].className){
+                this.selectTd.addClass( viewStyles["checkedRadioNode"].className );    
+            }
             this.selectTd.setStyles( viewStyles["checkedRadioNode"] );
             this.node.setStyles( viewStyles["contentSelectedTr"] );
         }else {
@@ -3261,10 +3279,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         this.view.currentSelectedItem = null;
         var viewStyles = this.view.viewJson.viewStyles;
         if( this.view.viewJson.selectBoxShow !=="always" ){
-            this.selectTd.setStyles({"background": "transparent", opacity: 0});
+            this.selectTd.setStyles({"background": "transparent"});
         }else{
             this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
+                this.selectTd.removeClass( viewStyles["checkedRadioNode"].className ); 
+                if (viewStyles["radioNode"].className){
+                    this.selectTd.addClass( viewStyles["radioNode"].className );    
+                }
                 this.selectTd.setStyles(viewStyles["radioNode"]);
             }else{
                 this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/radiobox.png) center center no-repeat"});

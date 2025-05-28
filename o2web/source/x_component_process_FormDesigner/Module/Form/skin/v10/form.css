@@ -437,6 +437,12 @@
     background-color: var(--oo-color-main-deep) !important;
 }
 
+.form-layout .v10_dialog{
+    box-sizing: content-box !important;
+}
+.form-layout .v10_dialog *{
+    box-sizing: content-box !important;
+}
 
 /* 手机 */
 @media only screen and (max-width: 767px) {

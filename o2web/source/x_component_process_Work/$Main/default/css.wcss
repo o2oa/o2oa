@@ -21,7 +21,6 @@
 
   "flowNode_Area": {
     "background-color": "#FFF",
-    "overflow": "hidden",
     "height": "100%"
   },
   "flowNode_mobile": {

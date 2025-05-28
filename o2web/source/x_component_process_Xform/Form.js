@@ -672,10 +672,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (callback) callback();
             return;
         }
-        if (this.json["$version"] == "5.2") {
-            if (callback) callback();
-            return;
-        }
+        // if (this.json["$version"] == "5.2") {
+        //     if (callback) callback();
+        //     return;
+        // }
         var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
         MWF.getJSON(stylesUrl, {
                 "onSuccess": function (responseJSON) {
@@ -2661,7 +2661,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (!notRecenter) dlg.reCenter();
         };
 
-        this.loadFlow(flowNode, "default", function (flow) {
+        this.loadFlow(flowNode, (this.json.flowStyle || "default"), function (flow) {
             this.flowDlg = o2.DL.open({
                 "title": this.app.lp.flowWork,
                 "style": this.json.dialogStyle || "user",
@@ -2963,6 +2963,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
             }
         };
+
 
         if( this.json.mode == "Mobile" ){
             this.flow = new MWF.xApplication.process.Work.FlowMobile(innerNode || hanlderNode, this.businessData.task, options, this);

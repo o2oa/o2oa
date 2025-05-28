@@ -312,6 +312,9 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
 
         var oo_body = oo_doc.documentElement.querySelector("body");
+        var oo_p = oo_body.querySelector("p");
+        if (oo_p) oo_p.destroy();
+
         // var dom_div;
         // if (o2.typeOf(data) === "string"){
         var dom_div = new Element("div", {"styles": {
@@ -632,11 +635,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
         }
 
-        var line = (dom.currentStyle) ? dom.currentStyle["line-height"] : dom.getStyle("line-height");
-        //var line = dom.getStyle("line-height");
-
         var msoStyle = this.getMsoStyle(dom);
         var lineRule = msoStyle["mso-line-rule"] || "exact";
+
+        var line = msoStyle["mso-line-height"]  ? msoStyle["mso-line-height"]  : ((dom.currentStyle) ? dom.currentStyle["line-height"] : dom.getStyle("line-height"));
 
         if (line && parseFloat(line)){
             var line = this.pxToPt(line)*20;

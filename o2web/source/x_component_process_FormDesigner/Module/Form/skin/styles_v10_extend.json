@@ -4,6 +4,7 @@
     "textareaDisableResize" : true,
     "confirmStyle" : "v10_confirm",
     "dialogStyle" : "v10",
+    "flowStyle": "v10",
     "nodeStyleWithhideModuleIcon" : {
         "margin-right" : "0px"
     },

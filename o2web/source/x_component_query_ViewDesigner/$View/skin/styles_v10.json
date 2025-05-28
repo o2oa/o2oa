@@ -69,24 +69,20 @@
       "background-position": "left center"
     },
     "checkboxNode" : {
-      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/checkbox.png)",
-      "background-repeat" : "no-repeat",
-      "background-position": "center center"
+      "className": "ooicon-checkbox-unchecked",
+      "color": "var(--oo-color-main)"
     },
     "checkedCheckboxNode" : {
-      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/checkbox_checked.png)",
-      "background-repeat" : "no-repeat",
-      "background-position": "center center"
+     "className": "ooicon-checkbox-checked",
+     "color": "var(--oo-color-main)"
     },
     "radioNode" : {
-      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/radiobox.png)",
-      "background-repeat" : "no-repeat",
-      "background-position": "center center"
+      "className": "ooicon-radio-unchecked",
+      "color": "var(--oo-color-main)"
     },
     "checkedRadioNode" : {
-      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/radiobox_checked.png)",
-      "background-repeat" : "no-repeat",
-      "background-position": "center center"
+      "className": "ooicon-radio-checked",
+      "color": "var(--oo-color-main)"
     },
     "noDataTextNode" : {
       "height" : "50px",

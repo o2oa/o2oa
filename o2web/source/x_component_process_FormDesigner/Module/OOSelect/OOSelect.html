@@ -41,6 +41,13 @@
                     <input type="text" name="label" value="text{$.label}" class="editTableInput"/>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowSelectInput}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="allowInput" value="true" text{($.allowInput==true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="allowInput" value="false" text{($.allowInput!=true)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
 
 		  <tr>
 		    <td class="editTableTitle">{{$.lp.options}}:</td>
