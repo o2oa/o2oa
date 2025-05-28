@@ -28,7 +28,7 @@ O2OA（翱途）低代码开发平台，100%开源企业协同办公定制平台
 
 官方网站 : http://www.o2oa.net
 
-官方论坛 : https://www.o2oa.net/forum/
+官方论坛 : https://forum.o2oa.net/
 
 
 # 关于正式环境数据安全相关的建议:
