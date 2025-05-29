@@ -2136,7 +2136,7 @@ if (!window.o2) {
                             var expiresTime = xTokenExpires ? new Date(xTokenExpires) : null;
                             if (expiresTime){
                                 // sessionStorage.setItem("o2LayoutSessionTokenExpires", expiresTime.getTime());
-                                localStorage.setItem("o2LayoutSessionTokenExpires", expiresTime ? expiresTime.getTime() : null);
+                                localStorage?.setItem("o2LayoutSessionTokenExpires", expiresTime ? expiresTime.getTime() : null);
                             }
                             
                             if (xToken) {

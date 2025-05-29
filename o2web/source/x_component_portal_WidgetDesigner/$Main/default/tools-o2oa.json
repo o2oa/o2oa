@@ -1,61 +1,61 @@
 {
   "OOInput": {
-    "icon": "textfield.png",
+    "fontIcon": "ooicon-rename",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_input,
     "className": "OOInput"
   },
   "OOButton": {
-    "icon": "button.png",
+    "fontIcon": "ooicon-btn",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_button,
     "className": "OOButton"
   },
   "OORadioGroup": {
-    "icon": "radio.png",
+    "fontIcon": "ooicon-radio-checked",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_radioGroup,
     "className": "OORadioGroup"
   },
   "OOCheckGroup": {
-    "icon": "checkbox.png",
+    "fontIcon": "ooicon-gouxuan",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_checkGroup,
     "className": "OOCheckGroup"
   },
   "OOSelect": {
-    "icon": "select.png",
+    "fontIcon": "ooicon-combo_box",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_select,
     "className": "OOSelect"
   },
   "OOTextarea": {
-    "icon": "textarea.png",
+    "fontIcon": "ooicon-multiline",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_textarea,
     "className": "OOTextarea"
   },
   "OODatetime": {
-    "icon": "calendar.png",
+    "fontIcon": "ooicon-calendar",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_datetime,
     "className": "OODatetime"
   },
   "OOOrg": {
-    "icon": "personfield.png",
+    "fontIcon": "ooicon-person",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
   "OOPagination":{
-    "icon": "pagination.png",
+    "fontIcon": "ooicon-numeric_field",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_pagination,
     "className": "OOPagination"
   },
   "div": {
-    "icon": "div.png",
+    "fontIcon": "ooicon-quanping",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
     "className": "Div"
   },
   "label": {
-    "icon": "label.png",
+    "fontIcon": "ooicon-text",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.label,
     "className": "Label"
   },
   "codeedit": {
-    "icon": "codeeditor.png",
+    "fontIcon": "ooicon-process-agent",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.codeedit,
     "className": "Codeeditor"
   }

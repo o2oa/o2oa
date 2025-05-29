@@ -2184,6 +2184,7 @@ MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
                 }).inject(toolNode);
                 if (value.icon) iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+value.icon+")");
                 if (value.fontIcon){
+                    iconNode.setStyle("font-size", "1.6rem");
                     iconNode.addClass("mainColor_color");
                     iconNode.set("html", "<i class=\""+value.fontIcon+"\"></i>");
                 }
