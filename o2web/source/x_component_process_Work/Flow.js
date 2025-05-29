@@ -357,24 +357,25 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         }
         return this.routeConfigList;
     },
-    getRouteConfig: function (routeId) {
+    getRouteConfig: function (routeIdOrName) {
         var routeList = this.getRouteConfigList();
         for (var i = 0; i < routeList.length; i++) {
-            if (routeList[i].id === routeId || routeList[i].name === routeId) {
+            if (routeList[i].id === routeIdOrName || routeList[i].name === routeIdOrName) {
                 return routeList[i];
             }
         }
     },
-    getOrgConfig: function (routeId) {
+    getOrgConfig: function (routeIdOrName) {
         var routeList = this.getRouteConfigList();
         for (var i = 0; i < routeList.length; i++) {
-            if (routeList[i].id === routeId) {
-                return routeList[i].selectConfigList;
+            if (routeList[i].id === routeIdOrName || routeList[i].name === routeIdOrName) {
+                return routeList[i].selectConfigList || [];
             }
         }
+        return [];
     },
-    getVisableOrgConfig: function (routeId) {
-        var selectConfigList = this.getOrgConfig(routeId);
+    getVisableOrgConfig: function (routeIdOrName) {
+        var selectConfigList = this.getOrgConfig(routeIdOrName);
         var list = [];
         (selectConfigList || []).each(function (config) {
             if (!this.isOrgHidden(config)) {
@@ -383,8 +384,8 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         }.bind(this));
         return list;
     },
-    getSingleOrgConfig: function( routeId, orgName ){
-        var orgList = this.getOrgConfig( routeId );
+    getSingleOrgConfig: function( routeIdOrName, orgName ){
+        var orgList = this.getOrgConfig( routeIdOrName );
         for (var i = 0; i < orgList.length; i++) {
             if (orgList[i].name === orgName) {
                 return orgList[i];
@@ -539,7 +540,7 @@ MWF.ProcessFlow.Reset = new Class({
         var defaultOpt = {
             "type": "identity",
             "mainColorEnable": this.flow.options.mainColorEnable,
-            "style": "flow",
+            "style": (this.form.json.flowStyle) ? this.form.json.flowStyle+"_flow" : "flow",
             "width": "auto",
             "height": MWF.ProcessFlow_ORG_HEIGHT,
             "count": this.businessData.activity.resetCount || 0,
@@ -900,7 +901,10 @@ MWF.ProcessFlow.Processor = new Class({
     },
     load: function( quickData ){
         this.quickData = quickData;
-        if( quickData )quickData.rId = quickData.routeId;
+        if( quickData ){
+            quickData.rId = quickData.routeId;
+            quickData.rName = quickData.routeName;
+        }
         if( quickData && (quickData.routeId || quickData.routeName) ){
             this.options.defaultRoute = quickData.routeId || quickData.routeName;
             delete quickData.routeId;
@@ -922,19 +926,25 @@ MWF.ProcessFlow.Processor = new Class({
         }
     },
     setQuickData: function( quickData ){
+        debugger;
         this.quickData = quickData;
-        if(quickData)quickData.rId = quickData.routeId;
+        if(quickData){
+            quickData.rId = quickData.routeId;
+            quickData.rName = quickData.routeName;
+        }
+        var routeFlag = quickData.routeName || quickData.routeId;
         if( this.routeGroupRadio && quickData.routeGroup ){
-            if( quickData.routeId || quickData.routeName ){
-                this.options.defaultRoute = quickData.routeId || quickData.routeName;
+            if( routeFlag ){
+                this.options.defaultRoute = routeFlag;
                 delete quickData.routeId;
                 delete quickData.routeName;
             }
             this.routeGroupRadio.setValue( quickData.routeGroup );
             delete quickData.routeGroup;
         }else{
-            this.routeRadio.setValue( quickData.routeId );
+            this.routeRadio.setValueWithFlag( routeFlag );
             delete quickData.routeId;
+            delete quickData.routeName;
         }
         if(this.opinion){
             this.opinion.setValue( quickData.opinion || "" );
@@ -1096,7 +1106,8 @@ MWF.ProcessFlow.Processor = new Class({
                 orgList.load( notFireResize );
             }else{
                 orgList = new MWF.ProcessFlow.Processor.OrgList(this, {
-                    routeId: routeId
+                    routeId: routeId,
+                    routeName: routeConfig.name
                 });
                 this.routeOrgMap[routeId] = orgList;
                 orgList.load( notFireResize );
@@ -1293,7 +1304,8 @@ MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
 MWF.ProcessFlow.Processor.OrgList = new Class({
     Implements: [Options, Events],
     options: {
-        routeId: ""
+        routeId: "",
+        routeName: ""
     },
     initialize: function (processor, options) {
         this.processor = processor;
@@ -1335,7 +1347,10 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
     },
     getQuickOrgData: function( orgConfig ){
         if( !this.processor.quickData )return;
-        if( this.processor.quickData.rId !== this.options.routeId )return;
+        if( this.processor.quickData.rId !== this.options.routeId &&
+            this.processor.quickData.rName !== this.options.routeName ){
+            return;
+        }
         if( !this.processor.quickData.organizations )return;
         var d = this.processor.quickData.organizations[orgConfig.name];
         delete this.processor.quickData.organizations[orgConfig.name];
@@ -2561,8 +2576,8 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             "z-index" : 20002,
             "background-color" : "#fff",
             "padding" : "10px 0px 10px 0px",
-            "border-radius" : "8px",
-            "box-shadow": "0px 0px 8px 0px rgba(0,0,0,0.25)",
+            "border-radius" : "var(--oo-default-radius)",
+            "box-shadow": "0px 0px 4px 0px rgba(0,0,0,0.25)",
             "-webkit-user-select": "text",
             "-moz-user-select": "text"
         }
@@ -2678,7 +2693,19 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
         return data.filter(function (d) {
             var flag = (d.action === "process" && this.flow.processEnable) || (d.action === "reset" && this.flow.resetEnable) || (d.action === "addTask" && this.flow.addTaskEnable);
             if( !flag )return false;
-            if( d.action === "process" && !this.flow.getRouteConfig(d.routeName) )return false;
+            if( d.action === "process" ){
+                if( !this.flow.getRouteConfig( d.routeName )){
+                    return false;
+                }
+                if( d.organizations && Object.keys(d.organizations).length > 0 ){
+                    Object.each( d.organizations, function (value, key) {
+                        if(value && value.length && !this.flow.getSingleOrgConfig( d.routeName , key )){
+                            flag = false;
+                        }
+                    }.bind(this));
+                    if( !flag )return false;
+                }
+            }
             return true;
         }.bind(this));
     },
@@ -2691,7 +2718,10 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             case "process":
                 Object.each( d.organizations, function (value, key) {
                     if( value && value.length ){
-                        orgtexts.push( ( this.flow.getSingleOrgConfig( d.routeId , key ) ).title + "：" + value.clean().map(function(v){ return v.split("@")[0]; }).join("、"));
+                        var orgConfig = this.flow.getSingleOrgConfig( d.routeName , key );
+                        if(orgConfig){
+                            orgtexts.push( orgConfig.title + "：" + value.clean().map(function(v){ return v.split("@")[0]; }).join("、"));
+                        }
                     }
                 }.bind(this));
                 text = lp.submitQuickText.replace("{route}", d.routeName ).replace("{opinion}", d.opinion);
@@ -2958,6 +2988,18 @@ MWF.ProcessFlow.widget.Radio = new Class({
     getUrl: function(){
         return this.flow.path+this.flow.options.style+"/widget/radio.html";
     },
+    setValueWithFlag: function( flags ){
+        while( this.checkedItems.length ){
+            this.uncheck( this.checkedItems[0] );
+        }
+        if( typeOf( flags ) === "null" )return;
+        flags = typeOf( flags ) === "array" ? flags : [flags];
+        this.container.getElements(".o2flow-radio").each(function (el) {
+            if(flags.contains( el.dataset["o2Value"] ) || flags.contains( el.dataset["o2Text"] )){
+                this.check(el)
+            }
+        }.bind(this))
+    },
     setValue: function( values ){
         while( this.checkedItems.length ){
             this.uncheck( this.checkedItems[0] );
@@ -3007,7 +3049,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
         this.removeRequireStyle();
-        this.fireEvent("check", [el, el.dataset["o2Value"]])
+        this.fireEvent("check", [el, el.dataset["o2Value"], el.dataset["o2Text"]])
     },
     uncheck: function(el, isFire){
         el.removeClass("o2flow-radio-active");
@@ -3015,7 +3057,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
         el.getElement("i").removeClass("o2icon-checkbox").addClass("o2icon-icon_circle").removeClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);
-        if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
+        if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"], el.dataset["o2Text"]])
     },
     setRequireStyle: function(){
         this.container.addClass("o2flow-invalid-bg");
