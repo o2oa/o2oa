@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -324,6 +325,11 @@ public abstract class Plan extends GsonPropertyObject {
 		Matcher m = OrganizationDefinition.distinguishedName_pattern.matcher(str);
 		if (m.find()) {
 			return m.group(1);
+		}
+		if(str.startsWith("[") && str.endsWith("]")){
+			str = str.substring(1, str.length()-1);
+			String[] names = StringUtils.split(str, ",");
+			str = StringUtils.join(OrganizationDefinition.name(Arrays.asList(names)), ",");
 		}
 		return str;
 	}
