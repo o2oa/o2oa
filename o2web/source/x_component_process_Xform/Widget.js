@@ -69,11 +69,11 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
         }.bind(this));
     },
     clean: function(){
-        // (this.modules || []).each(function(module){
-        //     if (this.form.all[module.json.id]) delete this.form.all[module.json.id];
-        //     if (this.form.forms[module.json.id])delete this.form.forms[module.json.id];
-        //     this.form.modules.erase(module);
-        // }.bind(this));
+        (this.modules || []).each(function(module){
+            if( module.json && module.json.type === "Widget" ){
+                if(module.clean)module.clean();
+            }
+        }.bind(this));
 
         Object.each(this.moduleList || {}, function (module, formKey) {
             if (this.form.all[module.id]) delete this.form.all[module.id];
