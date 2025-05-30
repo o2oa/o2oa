@@ -47,7 +47,7 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
         } 
 
         if (this.json.showIcon != 'no' && !this.form.json.hideModuleIcon) {
-            this.node.setAttribute('right-icon', 'edit');
+            this.node.setAttribute('right-icon', this.json.properties["right-icon"] || 'edit');
         } else if (this.form.json.nodeStyleWithhideModuleIcon) {
             this.node.setAttribute('right-icon', '');
         }

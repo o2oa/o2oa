@@ -1,37 +1,82 @@
 {
   "OOInput": {
-    "icon": "textfield.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_input,
+    "fontIcon": "ooicon-rename",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_input,
     "className": "OOInput"
   },
   "OOButton": {
-    "icon": "button.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_button,
+    "fontIcon": "ooicon-btn",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_button,
     "className": "OOButton"
   },
   "OORadioGroup": {
-    "icon": "radio.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_radioGroup,
+    "fontIcon": "ooicon-radio-checked",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_radioGroup,
     "className": "OORadioGroup"
   },
   "OOCheckGroup": {
-    "icon": "checkbox.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.oo_checkGroup,
+    "fontIcon": "ooicon-gouxuan",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_checkGroup,
     "className": "OOCheckGroup"
   },
   "OOSelect": {
-    "icon": "select.png",
+    "fontIcon": "ooicon-combo_box",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_select,
     "className": "OOSelect"
   },
   "OOTextarea": {
-    "icon": "textarea.png",
+    "fontIcon": "ooicon-multiline",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_textarea,
     "className": "OOTextarea"
   },
   "OODatetime": {
-    "icon": "calendar.png",
+    "fontIcon": "ooicon-calendar",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_datetime,
     "className": "OODatetime"
+  },
+  "OOOrg": {
+    "fontIcon": "ooicon-person",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
+    "className": "OOOrg"
+  },
+  "OOPagination":{
+    "fontIcon": "ooicon-numeric_field",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_pagination,
+    "className": "OOPagination"
+  },
+  "Log": {
+    "fontIcon": "ooicon-log-viewer",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
+    "className": "Log"
+  },
+  "Actionbar": {
+    "fontIcon": "ooicon-operation_bar2",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Actionbar,
+    "className": "Actionbar"
+  },
+  "div": {
+    "fontIcon": "ooicon-quanping",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.div,
+    "className": "Div"
+  },
+  "label": {
+    "fontIcon": "ooicon-text",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.label,
+    "className": "Label"
+  },
+  "attachment": {
+    "fontIcon": "ooicon-fujian",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.attachment,
+    "className": "Attachment"
+  },
+  "codeedit": {
+    "fontIcon": "ooicon-process-agent",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.codeedit,
+    "className": "Codeeditor"
+  },
+  "subform": {
+    "fontIcon": "ooicon-news",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.subform,
+    "className": "Subform"
   }
 }

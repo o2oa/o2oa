@@ -76,7 +76,6 @@ MWF.xApplication.Selector.Unit = new Class({
             }
 
             o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
-                debugger;
                 if (json.data.length){
                     json.data.each( function(data){
                         var item;

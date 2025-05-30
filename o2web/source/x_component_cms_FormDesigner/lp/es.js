@@ -1528,7 +1528,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"elOptionStyle": "Estilo de opción",
 		"elOptionProperties": "Atributos de la opción",
 		"defaultParameters": "Parámetros predeterminados",
-		"useQuickSelect": "Usar selección rápida"
+		"useQuickSelect": "Usar selección rápida",
+		"allowSelectInput": "Permitir entrada"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

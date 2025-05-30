@@ -1529,7 +1529,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"elOptionStyle": "Option Style",
 		"elOptionProperties": "options property",
 		"defaultParameters": "Default parameters",
-		"useQuickSelect": "Use Quick Selection"
+		"useQuickSelect": "Use Quick Selection",
+		"allowSelectInput": "Allow input"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
