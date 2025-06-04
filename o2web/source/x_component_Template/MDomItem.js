@@ -2726,7 +2726,8 @@ MDomItem.Rtf = new Class({
             });
             item.set( attr );
             if(parent)item.inject(parent);
-            if( value )item.set("html", value);
+
+            if (value) item.set("html", this.parseHtml(value));
 
             var editorConfig = {
                 //"autoGrow_maxHeight": 400,
@@ -2844,6 +2845,30 @@ MDomItem.Rtf = new Class({
         var regexp = new RegExp( this.getAttrRegExp(attribute) , "ig");
         return str.replace( regexp, "" );
     },
+    parseHtml: function (html) {
+        html = this.replaceHrefJavascriptStr(html);
+        html = this.replaceIframeJavascriptStr(html);
+        html = this.replaceOnAttribute(html);
+        html = this.parseOnerror(html);
+        return html;
+    },
+    parseOnerror: function (html) {
+        var regexp_all = /(i?)(<img)([^>]+>)/gmi;
+        var images = html.match(regexp_all);
+        if (images) {
+            if (images.length) {
+                for (var i = 0; i < images.length; i++) {
+                    var image = images[i];
+
+                    var image1 = this.removeAttribute(image, "onerror");
+                    image1 = this.addAttribute(image1, "onerror", "MWF.xDesktop.setImageSrc()");
+
+                    html = html.replace(image, image1);
+                }
+            }
+        }
+        return html;
+    },
     replaceHrefJavascriptStr: function( html ){
         var regexp_a_all = /(i?)(<a)([^>]+>)/gmi;
         var as = html.match(regexp_a_all);
@@ -2852,7 +2877,7 @@ MDomItem.Rtf = new Class({
                 for (var i=0; i<as.length; i++){
                     var a = as[i];
                     var href =  this.getAttributeValue(a, "href");
-                    if( href.indexOf('javascript:') > -1 ){
+                    if (href.toLowerCase().indexOf('javascript:') > -1) {
                         var a1 = this.removeAttribute(a, "href");
                         html = html.replace(a, a1);
                     }
@@ -2860,6 +2885,45 @@ MDomItem.Rtf = new Class({
             }
         }
         return html;
+    },
+    replaceIframeJavascriptStr: function (html) {
+        var regexp_a_all = /(i?)(<iframe)([^>]+>)/gmi;
+        var as = html.match(regexp_a_all);
+        if (as) {
+            if (as.length) {
+                for (var i = 0; i < as.length; i++) {
+                    var a = as[i];
+                    var src = this.getAttributeValue(a, "src");
+                    if (src.toLowerCase().indexOf('javascript:') > -1) {
+                        var a1 = this.removeAttribute(a, "src");
+                        html = html.replace(a, a1);
+                    }
+                }
+            }
+        }
+        return html;
+    },
+    replaceOnAttribute: function (htmlString) {
+
+        var tempDiv = document.createElement('div');
+
+        tempDiv.innerHTML = htmlString;
+
+        var elements = tempDiv.getElementsByTagName('*');
+
+        for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+
+            var attributeNames = element.getAttributeNames();
+
+            for (var j = 0; j < attributeNames.length; j++) {
+                var attributeName = attributeNames[j];
+                if (attributeName.substr(0, 2).toLowerCase() === 'on') {
+                    element.removeAttribute(attributeName);
+                }
+            }
+        }
+        return tempDiv.innerHTML;
     },
     loadLazyImage: function(node, html, callback){
         if( this.options && this.options.imageLazyLoading) {
@@ -2869,7 +2933,7 @@ MDomItem.Rtf = new Class({
                 if (callback) callback();
             }.bind(this));
         }else{
-            node.set("html", this.replaceHrefJavascriptStr(html));
+            node.set("html", this.parseHtml(html));
             if (callback) callback();
         }
     },
