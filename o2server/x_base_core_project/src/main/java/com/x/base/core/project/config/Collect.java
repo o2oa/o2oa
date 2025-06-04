@@ -28,8 +28,8 @@ public class Collect extends ConfigObject {
 	private static String Default_appUrl = "https://app.o2oa.net/download/download.html";
 	static String Default_server = "collect.o2oa.net";
 	static String Default_appPackServerHost = "apppack.o2oa.net";
+	static String Default_appPackServer = "https://apppack.o2oa.net:40088";
 	private static Integer Default_port = 20080;
-	private static Integer Default_appPackServerPort = 30088;
 	public static String ADDRESS_COLLECT_LOGIN = "/o2_collect_assemble/jaxrs/authentication/captcha/key/o2/answer/o2";
 	public static String ADDRESS_COLLECT_ECHO = "/o2_collect_assemble/jaxrs/echo";
 	public static String ADDRESS_COLLECT_VALIDATE = "/o2_collect_assemble/jaxrs/unit/validate";
@@ -59,9 +59,7 @@ public class Collect extends ConfigObject {
 		this.server = "";
 		this.port = Default_port;
 		this.sslEnable = false;
-		this.appPackServerHost = Default_appPackServerHost;
-		this.appPackServerPort = Default_appPackServerPort;
-		this.isAppPackCoverAppUrl = false;
+		this.appPackServerUrl = Default_appPackServer;
 	}
 
 	@FieldDescribe("是否启用连接到云平台")
@@ -86,36 +84,16 @@ public class Collect extends ConfigObject {
 	private String secret;
 	@FieldDescribe("推送消息key")
 	private String key;
-	@FieldDescribe("app打包服务器域名")
-	private String appPackServerHost;
-	@FieldDescribe(("app打包服务器端口"))
-	private Integer appPackServerPort;
-	@FieldDescribe("是否用app打包的地址覆盖o2oa的appUrl")
-	private Boolean isAppPackCoverAppUrl;
+	@FieldDescribe("app打包服务器地址")
+	private String appPackServerUrl;
 
 
-	public Boolean getAppPackCoverAppUrl() {
-		return isAppPackCoverAppUrl;
+	public String getAppPackServerUrl() {
+		return appPackServerUrl;
 	}
 
-	public void setAppPackCoverAppUrl(Boolean appPackCoverAppUrl) {
-		isAppPackCoverAppUrl = appPackCoverAppUrl;
-	}
-
-	public String getAppPackServerHost() {
-		return StringUtils.isEmpty(appPackServerHost) ? Default_appPackServerHost : appPackServerHost;
-	}
-
-	public void setAppPackServerHost(String appPackServerHost) {
-		this.appPackServerHost = appPackServerHost;
-	}
-
-	public Integer getAppPackServerPort() {
-		return Objects.isNull(this.appPackServerPort) ? Default_appPackServerPort : this.appPackServerPort;
-	}
-
-	public void setAppPackServerPort(Integer appPackServerPort) {
-		this.appPackServerPort = appPackServerPort;
+	public void setAppPackServerUrl(String appPackServerUrl) {
+		this.appPackServerUrl = appPackServerUrl;
 	}
 
 	public String getSecret() {
@@ -260,10 +238,7 @@ public class Collect extends ConfigObject {
 	 * @return
 	 */
 	public String appPackServerUrl() {
-		String url = "http://";
-		url += this.getAppPackServerHost();
-		url += ":" + this.getAppPackServerPort();
-		return url;
+		return this.getAppPackServerUrl() == null ? Default_appPackServer : this.getAppPackServerUrl();
 	}
 
 	/**

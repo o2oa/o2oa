@@ -4,7 +4,7 @@
 
     <div class="systemconfig_item_info" v-html="lp._appTools.onlineBuildInfo"></div>
     <div class="systemconfig_item_info" v-html="lp._appTools.onlineBuildInfo1"></div>
-    <div class="systemconfig_item_info error_tips" v-html="errorTip" v-if="errorTip != ''"></div>
+    <div class="systemconfig_item_info error_tips" v-html="errorTip" v-if="errorTip !== ''"></div>
     <div class="item_el_info"></div>
     
     <div class="systemconfig_item_info my_row" v-if="packInfo.id">
@@ -21,7 +21,7 @@
     <!-- logo -->
     <div class="systemconfig_item_info my_row">
       <label class="item_label">{{lp._appTools.appPack.formLogo}}</label>
-      <img class="logo_img" ref="imgLogoNode" :src="formLogoUrl" alt="" v-if="formLogoUrl != ''"/>
+      <img class="logo_img" ref="imgLogoNode" :src="formLogoUrl" alt="" v-if="formLogoUrl !== ''"/>
       <button class="mainColor_bg" @click="changeImage" >{{lp._appTools.appPack.formUploadLogoBtnTitle}}</button>
       <input type="file" ref="uploadLogoNode" @change="uploadImage" style="display: none"/>
     </div>
@@ -80,12 +80,10 @@ import {doAppPackAction} from "@/util/acrions";
 import {downloadFile} from "@/util/common";
 import BaseSelect from '@/components/item/BaseSelect.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
-import BaseCron from '@/components/item/BaseCron.vue';
 import BaseBoolean from '@/components/item/BaseBoolean.vue';
 
 
 const uploadLogoNode = ref();
-const apppackConfigData = ref({});
 const packInfo = ref({});
 const isPackAppIdOuter = ref(false);
 const errorTip = ref("");
@@ -107,7 +105,6 @@ const labelStyle={
 
 const load = ()=>{
   doAppPackAction('connect').then((data)=>{
-    apppackConfigData.value = data;
     if (data.status === 1001) { // 成功 获取token
         loadAppPackInfo();
     } else if (data.status === 1) { // o2云未连接 o2云未启用
@@ -124,11 +121,10 @@ const load = ()=>{
 }
 
 const loadAppPackInfo = () => {
-  doAppPackAction('packInfo', apppackConfigData.value.token).then((data)=>{
+  doAppPackAction('packInfo').then((data)=>{
     packInfo.value = data;
     isPackAppIdOuter.value = data.isPackAppIdOuter === '2';
-    formLogoUrl.value = apppackConfigData.value.packServerUrl + data.appLogoPath 
-      + "?token=" + apppackConfigData.value.token;
+    formLogoUrl.value = o2.filterUrl(o2.Actions.getHost("x_program_center") + "/x_program_center/jaxrs/apppack/pack/info/logo");
     if (data.appFile && data.appFile.id) {
       var url = o2.Actions.getHost("x_program_center") 
         + "/x_program_center/jaxrs/apppack/pack/info/file/download/" + data.appFile.id;
@@ -253,7 +249,6 @@ const saveForm = (e) => {
     formData.append('isPackAppIdOuter', isPackAppIdOuter.value ? "2" : "1");
     formData.append('deleteHuawei', "1");
     formData.append('urlMapping', packInfo.value.urlMapping || '');
-    formData.append('token', apppackConfigData.value.token  || '');
     o2.Actions.load('x_program_center').AppPackAction['androidPackStart'](formData, "{}", ()=>{
       loadAppPackInfo();
     });
@@ -273,7 +268,6 @@ const publishApkTolocal = () => {
   if (packInfo.value.id && packInfo.value.packStatus === "2") {
     var url = o2.Actions.getHost("");
     var data = {
-        'token': apppackConfigData.value.token,
         'apkPath': packInfo.value.apkPath,
         'packInfoId': packInfo.value.id,
         'appVersionName': packInfo.value.versionName,

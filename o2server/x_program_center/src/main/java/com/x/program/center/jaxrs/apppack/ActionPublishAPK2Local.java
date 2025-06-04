@@ -40,11 +40,7 @@ public class ActionPublishAPK2Local extends BaseAction {
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
-
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-        if (StringUtils.isBlank(wi.getToken())) {
-            throw new ExceptionNoToken();
-        }
         if (StringUtils.isBlank(wi.getApkPath())) {
             throw new ExceptionEmptyProperty("apkPath");
         }
@@ -107,7 +103,7 @@ public class ActionPublishAPK2Local extends BaseAction {
                 if (null == mapping) {
                     throw new ExceptionAllocateStorageMapping();
                 }
-                String url = Config.collect().appPackServerUrl() + wi.getApkPath() + "?token=" + wi.getToken();
+                String url = Config.collect().appPackServerUrl() + wi.getApkPath() + "?token=" + getPackServerSSOToken();
                 logger.info("下载apk的url： " + url);
                 byte[] bytes = ConnectionAction.getBinary(url, null);
                 try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -244,8 +240,6 @@ public class ActionPublishAPK2Local extends BaseAction {
     }
 
     public static class Wi extends GsonPropertyObject {
-        @FieldDescribe("打包服务器的token.")
-        private String token;
         @FieldDescribe("app的下载路径.")
         private String apkPath;
         @FieldDescribe("app的打包id")
@@ -286,13 +280,6 @@ public class ActionPublishAPK2Local extends BaseAction {
             this.appVersionNo = appVersionNo;
         }
 
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
 
         public String getApkPath() {
             return apkPath;
