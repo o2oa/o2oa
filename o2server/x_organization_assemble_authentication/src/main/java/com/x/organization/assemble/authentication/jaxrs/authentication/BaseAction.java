@@ -177,7 +177,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return person;
 		}
 		if (this.failureLocked(person)) {
-			throw new ExceptionFailureLocked(person.getName(), Config.person().getFailureInterval());
+			throw new ExceptionPersonNotExistOrInvalidPassword();
+//			throw new ExceptionFailureLocked(person.getName(), Config.person().getFailureInterval());
 		}
 
 		if (validatePassword(person, password, credential)) {
