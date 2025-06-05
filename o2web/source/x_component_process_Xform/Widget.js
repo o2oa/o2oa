@@ -51,9 +51,35 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
         this.modules = [];
         this.moduleList = {};
 
-        this.getWidget(function(){
-            this.loadWidget();
-        }.bind(this));
+        if (this.json.isDelay) {
+            if (this.form.widgetLoadedCount) {
+                this.form.widgetLoadedCount++;
+            } else {
+                this.form.widgetLoadedCount = 1
+            }
+            this.form.checkSubformLoaded();
+            this.checked = true;
+        } else {
+            this.getWidget(function(){
+                this.loadWidget();
+            }.bind(this));
+        }
+    },
+    /**
+     * @summary 当部件被设置为延迟加载，通过active方法激活
+     * @param {Function} callback 激活后的回调方法，另外已经激活过该方法还会被执行。
+     * @example
+     * var widget = this.form.get("fieldId");
+     * widget.active(function(){
+     *     //do someting
+     * })
+     */
+    active: function (callback) {
+        if (!this.loaded) {
+            this.reload(callback)
+        } else {
+            if (callback) callback();
+        }
     },
     /**
      * @summary 重新加载部件

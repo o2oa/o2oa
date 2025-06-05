@@ -58,6 +58,16 @@
 		</div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr title="延时加载为是时，需要使用this.page.get(subformId).active()加载">
+				<td class="editTableTitle">{{$.lp.delayedLoading}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableTitle">{{$.lp.parameter}}:</td>
 				<td class="editTableValue">
