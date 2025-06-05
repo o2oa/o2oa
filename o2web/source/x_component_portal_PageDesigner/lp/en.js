@@ -63,6 +63,8 @@ MWF.xApplication.portal.PageDesigner.LP={
 		"makeWidget": "Set as widget",
 		"defaultWidgetName": "widget"
 	},
+	"actionScript": "Action script",
+	"condition": "Hide condition",
 	"actionbar": {
 		"readhide": "Set whether to display when reading",
 		"edithide": "Set whether to display when editing",
