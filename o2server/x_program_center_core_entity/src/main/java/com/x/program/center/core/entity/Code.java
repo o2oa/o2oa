@@ -17,7 +17,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Code", description = "服务管理短信验证码.")
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
 @Table(name = PersistenceProperties.Code.TABLE, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Code.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
