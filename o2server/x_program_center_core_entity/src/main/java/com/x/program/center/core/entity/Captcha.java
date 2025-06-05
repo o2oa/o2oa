@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "Captcha", description = "服务管理图片验证码.")
 @Entity
-@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
 @Table(name = PersistenceProperties.Captcha.TABLE, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Captcha.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
