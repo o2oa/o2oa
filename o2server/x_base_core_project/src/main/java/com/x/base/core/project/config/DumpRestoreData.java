@@ -25,7 +25,7 @@ public class DumpRestoreData extends ConfigObject {
     public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = false;
     public static final Boolean DEFAULT_ATTACHSTORAGE = true;
     public static final String DEFAULT_ITEMCATEGORY = "";
-    public static final Boolean DEFAULT_PARALLEL = true;
+    public static final Boolean DEFAULT_PARALLEL = false;
     public static final Boolean DEFAULT_REDISTRIBUTESTORAGE = false;
 
     public DumpRestoreData() {
