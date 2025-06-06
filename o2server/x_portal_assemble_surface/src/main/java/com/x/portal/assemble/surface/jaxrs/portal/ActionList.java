@@ -1,5 +1,6 @@
 package com.x.portal.assemble.surface.jaxrs.portal;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,6 +32,9 @@ class ActionList extends BaseAction {
 	 */
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if(effectivePerson.isAnonymous()){
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = new ArrayList<>();
 			Business business = new Business(emc);
