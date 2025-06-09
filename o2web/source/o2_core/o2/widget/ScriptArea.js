@@ -41,12 +41,6 @@ o2.widget.ScriptArea = new Class({
         }
     },
 
-    setData: function(data){
-        this.contentCode = {code: data.code || data};
-        if (this.jsEditor){
-            this.jsEditor.setValue(data.code || data);
-        }
-    },
     createTitleNode: function(){
         this.titleNode = new Element("div", {
             "styles": this.css.titleNode,
@@ -180,6 +174,7 @@ o2.widget.ScriptArea = new Class({
             inforNode.addEvent("click", function(){
                 this.remove();
                 _self.loadEditor(content);
+                _self.inforNode = null;
             });
             this.inforNode = inforNode;
         }
@@ -217,7 +212,20 @@ o2.widget.ScriptArea = new Class({
             });
         }
     },
-    loadEditor: function(content){
+
+    setData: function(data, isLoad){
+        this.contentCode = {code: data.code || data};
+        if (this.jsEditor){
+            this.jsEditor.setValue(data.code || data);
+        }else if( isLoad ){
+            this.loadEditor(this.contentCode, function (){
+                this.inforNode && this.inforNode.remove();
+                this.inforNode = null;
+                this.jsEditor.setValue(data.code || data);
+            }.bind(this));
+        }
+    },
+    loadEditor: function(content, callback){
         var value=(content) ? content.code : "";
         value = (value) ? value : "";
         this.jsEditor = new o2.widget.JavascriptEditor(this.contentNode,{
@@ -240,6 +248,8 @@ o2.widget.ScriptArea = new Class({
 
                 this.jsEditor.resize();
                 this.fireEvent("postLoadEditor");
+
+                if(callback)callback()
             }.bind(this),
             "onSave": function(){
                 this.fireEvent("change");

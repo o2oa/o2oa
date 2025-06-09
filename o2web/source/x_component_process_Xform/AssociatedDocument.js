@@ -71,6 +71,15 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             "MWFType": this.json.type
         });
 
+        /**
+         * @summary 当前组件关联的文档。
+         * @see https://mootools.net/core/docs/1.6.0/Element/Element
+         * @member {Object}
+         * @example
+         *  //可以在脚本中获取该组件
+         * var field = this.form.get("fieldId"); //获取组件对象
+         * field.node.setStyle("font-size","12px"); //给节点设置样式
+         */
         this.documentList = [];
 
         var button = this.node.getElement("button");
