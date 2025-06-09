@@ -264,8 +264,8 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         }
         if(this.page){
             //this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
-            if( this.designer.propertyRequireBodyScriptArea.jsEditor ){
-                this.designer.propertyRequireBodyScriptArea.jsEditor.setValue(this.page.requireBody || data.requireBodyScript || "");
+            if( this.designer.propertyRequireBodyScriptArea ){
+                this.designer.propertyRequireBodyScriptArea.setData(this.page.requireBody || data.requireBodyScript || "", true);
             }
             this.designer.propertyRunResultNode.set("text", this.page.executeResult || "");
 
