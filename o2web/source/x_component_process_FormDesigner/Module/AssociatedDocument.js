@@ -7,10 +7,10 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 		"style": "default",
 		"propertyPath": "../x_component_process_FormDesigner/Module/AssociatedDocument/associateddocument.html"
 	},
-	
+
 	initialize: function(form, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_FormDesigner/Module/AssociatedDocument/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/AssociatedDocument/"+this.options.style+"/css.wcss";
 
@@ -88,12 +88,14 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 		this.setButtonPosition();
 	},
 	clearTemplateStyles: function(styles){
+		this.json.style = "";
 		if (styles){
 			if (styles.styles) this.removeStyles(styles.styles, "styles");
 			if (styles.buttonStyles) this.removeStyles(styles.buttonStyles, "buttonStyles");
 		}
 	},
 	setTemplateStyles: function(styles){
+		this.json.style = styles.style;
 		if (styles.styles) this.copyStyles(styles.styles, "styles");
 		if (styles.buttonStyles) this.copyStyles(styles.buttonStyles, "buttonStyles");
 	},

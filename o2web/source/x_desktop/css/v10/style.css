@@ -371,6 +371,9 @@ oo-nav{
     -moz-osx-font-smoothing: grayscale;
 }
 
+.ooicon-liucheng:before {
+  content: "\e778";
+}
 
 .ooicon-question:before {
   content: "\e777";
