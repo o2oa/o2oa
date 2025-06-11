@@ -163,12 +163,14 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     }
                     this.loadAssociatedDocument(function () {
                         this.fireEvent("afterSelectResult", [this.documentList]);
+                        this.validationMode();
                     }.bind(this));
                 }.bind(this));
             }else{
                 this.status = "showResult";
                 this.loadAssociatedDocument(function () {
                     this.fireEvent("afterSelectResult", [this.documentList]);
+                    this.validationMode();
                 }.bind(this));
                 if( this.dlg )this.dlg.close();
             }

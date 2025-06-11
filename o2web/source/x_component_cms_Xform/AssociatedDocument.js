@@ -28,12 +28,14 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
                     }
                     this.loadAssociatedDocument(function () {
                         this.fireEvent("afterSelectResult", [this.documentList]);
+                        this.validationMode();
                     }.bind(this));
                 }.bind(this));
             }else{
                 this.status = "showResult";
                 this.loadAssociatedDocument(function () {
                     this.fireEvent("afterSelectResult", [this.documentList]);
+                    this.validationMode();
                 }.bind(this));
                 if( this.dlg )this.dlg.close();
             }
