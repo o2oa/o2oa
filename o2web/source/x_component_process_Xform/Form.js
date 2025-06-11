@@ -1710,11 +1710,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     saveFormDataInstance: function (callback, failure, history, data, issubmit) {
+        this.saving = true;
         if (this.officeList) {
             this.officeList.each(function (module) {
                 module.save(history);
             });
         }
+        debugger;
         var data = data || this.getData(issubmit);
 
         this.modifedData = {};
@@ -1731,6 +1733,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     this.businessData.originalData = null;
                     this.businessData.originalData = copyData;
                     if(callback)callback();
+                    this.saving = false;
                 }.bind(this), failure, this.businessData.work.id, this.modifedData);
             }.bind(this));
         }else{
@@ -1743,6 +1746,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     saveFormDataDraft: function (callback, failure, history, data, issubmit, isstart) {
+        this.saving = true;
         if (this.officeList) {
             this.officeList.each(function (module) {
                 module.save(history);
@@ -1767,6 +1771,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (layout.app && layout.app.inBrowser) {
                     if (layout.app) layout.app.$openWithSelf = true;
                     if (callback) callback();
+                    this.saving = false;
                     if (!isstart) layout.desktop.openApplication(null, "process.Work", { "draftId": this.app.options.draftId });
                 } else {
                     this.app.options.desktopReload = true;
@@ -1780,6 +1785,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     layout.desktop.apps[this.app.appId] = this.app;
 
                     if (callback) callback();
+                    this.saving = false;
 
                     if (!isstart) this.app.reload();
                 }
@@ -2593,6 +2599,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return null;
     },
 
+    /**
+     * @summary 弹出四合一的提交框.
+     * @example
+     * this.form.getApp().appForm.flowWork();
+     */
     flowWork: function ( defaultRoute ) {
         if( !this.isLoaded ){ //未加载完成需要等待加载完成再执行
             var flowWorkFun = function () {

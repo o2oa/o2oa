@@ -864,6 +864,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             "title": this.lp.requireArguments,
             //"isload" : true,
             "isbind" : false,
+            "mode": "json",
             //"forceType": "ace",
             "maxObj": this.content,
             "onChange": function(){
