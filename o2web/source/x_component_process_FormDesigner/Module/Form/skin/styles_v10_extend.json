@@ -26,10 +26,10 @@
     },
     "errorStyle" : {
       "node" : {
-        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error_v10.png) no-repeat 5px center",
+        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error_v10.png) no-repeat 0px center",
         "color" : "var(--oo-color-error)",
         "min-height" : "30px",
-        "padding-left" : "30px",
+        "padding-left" : "20px",
         "line-height" : "30px",
         "position" : "relative",
         "background-color": "initial",
