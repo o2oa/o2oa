@@ -86,7 +86,8 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
         /**
          * @summary 当前组件关联的文档。
-         * @member {Array[Object]}
+         * @member documentList {Array<Object>}
+         * @memberOf MWF.xApplication.process.Xform.AssociatedDocument
          * @example
          *  //可以在脚本中获取该组件
          * var documentList = this.form.get("fieldId").documentList; //当前组件关联的文档
