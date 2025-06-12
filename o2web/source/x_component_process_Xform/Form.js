@@ -2661,6 +2661,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var maxHeight = dlg.getContentMaxHeight();
             var s = _self.flow.getSize();
 
+            //如果出现了滚动条，希望意见框能够自适应缩小
+            if( s.y > maxHeight ){
+                // _self.flow.redeuceOpinionHeight( s.y - maxHeight );
+            }
+
             dlg.content.setStyles({
                 "height": Math.min(s.y, maxHeight),
                 "width": s.x,

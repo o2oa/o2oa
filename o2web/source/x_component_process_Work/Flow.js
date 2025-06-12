@@ -2,6 +2,7 @@ MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xDesktop.requireApp("process.Work", "lp." + MWF.language, null, false);
 MWF.ProcessFlow_ORG_HEIGHT = 275;
+MWF.ProcessFlow_MIN_OPINION_HEIGHT = 100;
 MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -77,6 +78,20 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             this.fireEvent("load");
         }
     },
+    redeuceOpinionHeight: function( decreamment ){
+        var opinion;
+        switch ( this.currentAction ) {
+            case "process":
+                opinion = this.processor.opinion; break;
+            case "addTask":
+                opinion = this.addTask.opinion; break;
+            case "reset":
+                opinion = this.reset.opinion; break;
+            case "goBack":
+                opinion = this.goBack.opinion; break;
+        }
+        opinion && opinion.redeuceHeight( decreamment );
+    },
     changeAction: function( action, quickData ){
         debugger;
         if( this.currentAction ){
@@ -93,7 +108,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
 
         switch (action) {
             case "process":
-                this.loadProcessor( quickData );
+                this.processor && this.processor.opinion
                 break;
             case "addTask":
                 this.loadAddTask( quickData );
@@ -2962,6 +2977,9 @@ MWF.ProcessFlow.widget.Opinion = new Class({
     },
     saveTablet: function () {
         if (this.tablet) this.tablet.save();
+    },
+    redeuceHeight: function( decreamment ){
+
     }
 });
 
