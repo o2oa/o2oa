@@ -1548,8 +1548,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         }
         return txt;
     },
-	saveForm: function(){
+	saveForm: function(cb){
         if (!this.isSave){
+            this.form.reloadCss();
             var txt = this.checkSubform();
             if (txt){
                 txt = this.lp.checkFormSaveError+txt;
@@ -1685,6 +1686,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 if (this.mobileForm) this.mobileForm.fireEvent("postSave");
 
                 this.isSave = false;
+
+                if (cb) cb();
 
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;

@@ -131,18 +131,18 @@ MWF.xApplication.process.FormDesigner.Module.WritingBoard = MWF.FCWritingBoard =
 	},
 	parseStyles: function (node, style, ignoreBorder) {
 		if (style) Object.each(style, function(value, key){
-			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+			if ((value.toString().indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
 				var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
 				var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
-				if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
-					value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
-				}else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
-					value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+				if (value.toString().indexOf("/x_processplatform_assemble_surface")!==-1){
+					value = value.toString().replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+				}else if (value.toString().indexOf("x_processplatform_assemble_surface")!==-1){
+					value = value.toString().replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
 				}
-				if (value.indexOf("/x_portal_assemble_surface")!==-1){
-					value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
-				}else if (value.indexOf("x_portal_assemble_surface")!==-1){
-					value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+				if (value.toString().indexOf("/x_portal_assemble_surface")!==-1){
+					value = value.toString().replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+				}else if (value.toString().indexOf("x_portal_assemble_surface")!==-1){
+					value = value.toString().replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
 				}
 				value = o2.filterUrl(value);
 			}

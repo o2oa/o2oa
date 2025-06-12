@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
     Extends: MWF.APPOrg,
     iconStyle: 'textFieldIcon',
     options: {
-        "moduleEvents": ["load", "queryLoad", "postLoad"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "change", "select", "removeItem"]
     },
     _loadNode: function () {
         this._getOrgOptions();
@@ -91,6 +91,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         }
 
         this.node.addEvent('change', function () {
+            debugger;
             var v = this.getInputData('change');
             this.validationMode();
             this.validation();
@@ -253,5 +254,16 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
             readonly = !!this.json.isReadonly
         }
         return readonly || !!this.isSectionMergeRead();
-    }
+    },
+    // addModuleEvent: function(key, fun){
+    //     if (this.options.moduleEvents.indexOf(key)!==-1){
+    //         this.addEvent(key, function(event){
+    //             return (fun) ? fun(this, event) : null;
+    //         }.bind(this));
+    //     }else{
+    //         this.node.addEvent(key, function(event){
+    //             return (fun) ? fun(this, event) : null;
+    //         }.bind(this));
+    //     }
+    // },
 });

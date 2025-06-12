@@ -131,6 +131,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.className = "Person";
     },
     load: function(){
+        debugger;
         this.fireEvent("queryLoad",[this]);
         var ps = [
             this.loadItemHtml(),
@@ -313,6 +314,9 @@ MWF.xApplication.Selector.Person = new Class({
                     "keydown": function(e){e.stopPropagation();}
                 }
             });
+            if (options.style && options.style.startsWith("v10")){
+
+            }
 
             this.contentNode = new Element("div", {
                 "styles": this.css.contentNode_embedded ? this.css.contentNode_embedded : this.css.contentNode
@@ -368,6 +372,7 @@ MWF.xApplication.Selector.Person = new Class({
                     "keydown": function(e){e.stopPropagation();}
                 }
             });
+
             this.node.setStyle("z-index", this.options.zIndex.toInt()+1);
             this.titleNode = new Element("div.titleNode", {
                 "styles": this.css.titleNode
@@ -386,6 +391,20 @@ MWF.xApplication.Selector.Person = new Class({
             }).inject(this.node);
 
             this.loadContent();
+
+            if (this.options.heightStyle){
+                this.node.style.height = this.options.heightStyle;
+                this.node.style.top = `calc(50% - ${this.options.heightStyle} / 2 - 2rem)`;
+                // this.selectedContainerNode.style.height = `calc(${this.options.heightStyle} - 7.857157rem)`; // 2rem for title, 2rem for action, 3.857157rem for padding
+                this.contentNode.style.height = `calc(${this.options.heightStyle} - 2.875rem - 3.75rem - 0.714rem - 0.714rem)`; // 2rem for title, 2rem for action, 3.857157rem for padding
+
+                // const h = this.options.heightStyle.toFloat() - 13.267857;
+                // this.itemAreaScrollNode.style.height = `${h}rem`;
+            }
+            if (this.options.widthStyle){
+                this.node.style.width = this.options.widthStyle;
+                this.node.style.left = `calc(50% - ${this.options.widthStyle} / 2)`
+            }
 
             this.actionNode = new Element("div", {
                 "styles": this.css.actionNode

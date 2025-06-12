@@ -1535,7 +1535,10 @@ MWF.xApplication.process.FormDesigner.LP={
 		"hideDelete": "Ocultar la operación de eliminación",
 		"hideSetting": "Ocultar la operación de permisos de configuración",
 		"useQuickSelect": "Usar selección rápida",
-		"allowSelectInput": "Permitir entrada"
+		"allowSelectInput": "Permitir entrada",
+		"valueLength": "Longitud",
+		"maxHeight": "Altura máxima",
+		"minWidth": "Ancho mínimo"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

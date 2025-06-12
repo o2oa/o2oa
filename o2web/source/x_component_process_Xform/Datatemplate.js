@@ -1607,24 +1607,31 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 		},
 		createErrorNode: function(text){
-			var node = new Element("div");
-			var iconNode = new Element("div", {
-				"styles": {
-					"width": "20px",
-					"height": "20px",
-					"float": "left",
-					"background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
-				}
-			}).inject(node);
-			var textNode = new Element("div", {
-				"styles": {
-					"line-height": "20px",
-					"margin-left": "20px",
+			node = new Element("div", {styles:{
+                "margin-top": "0.3em"  
+            }});
+            var iconNode = new Element("div.ooicon-error", {
+                "styles": {
+                    "width": "20px",
+                    "height": "1.2em",
+                    "float": "left",
 					"color": "red",
-					"word-break": "keep-all"
-				},
-				"text": text
-			}).inject(node);
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "center"
+                    // "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                }
+            }).inject(node);
+            var textNode = new Element("div", {
+                "styles": {
+                    "height": "auto",
+                    "line-height": "1.2em",
+                    "margin-left": "20px",
+                    "color": "red",
+                    "word-break": "keep-all"
+                },
+                "text": text
+            }).inject(node);
 			return node;
 		},
 		notValidationMode: function(text){

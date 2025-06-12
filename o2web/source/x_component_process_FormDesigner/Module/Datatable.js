@@ -548,6 +548,30 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 			setImportExportAreaNodeWidth();
 		}
 
+		if (name=="maxHeight"){
+			if (this.json.maxHeight && this.json.maxHeight!=="0" && this.json.maxHeight!=="auto"){
+				this.json.styles["max-height"] = this.json.maxHeight;
+				this.node.setStyle("max-height", this.json.maxHeight);
+			}else{
+				delete this.json.styles["max-height"];
+				this.node.style.removeProperty("max-height");
+			}
+			if (this.property.maplists["styles"]){
+				this.property.maplists["styles"].reload(this.json.styles);
+			}
+		}
+		if (name=="minWidth"){
+			if (this.json.minWidth && this.json.minWidth!=="0" && this.json.minWidth!=="auto"){
+				this.json.tableStyles["min-width"] = this.json.minWidth || "100%";
+				this.table.setStyle("min-width", this.json.minWidth || "100%");
+			}else{
+				delete this.json.tableStyles["min-width"];
+				this.table.style.removeProperty("min-width");
+			}
+			if (this.property.maplists["tableStyles"]){
+				this.property.maplists["tableStyles"].reload(this.json.tableStyles);
+			}
+		}
 
 		//if (name=="sequence") this.checkSequenceShow();
 	},

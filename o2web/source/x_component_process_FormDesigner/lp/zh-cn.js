@@ -1131,6 +1131,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         auto: '自动',
         showScript: '显示脚本',
         bindValue: '绑定值',
+        valueLength: '长度',
         bindValueScript: '绑定值脚本',
         secret: '密级',
         priority: '紧急度',
@@ -1263,6 +1264,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         datatableEditMode: '编辑方式',
         datatableEditModeValue: ['每次编辑单行', '同时编辑多行'],
         onlyPc: '仅PC端可用',
+        maxHeight: "最大高度",
+        minWidth: "最小宽度",
 
         size: '尺寸',
         color: '颜色',

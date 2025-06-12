@@ -1651,6 +1651,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
     },
 	savePage: function(){
         if (!this.isSave){
+            this.page.reloadCss();
             var pcData, mobileData;
             if (this.pcPage){
                 this.pcPage._getPageData();
@@ -1691,7 +1692,6 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
                 if (pcData) pcData.isNewPage = false;
                 if (mobileData) mobileData.isNewPage = false;
                 this.isSave = false;
-
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
 

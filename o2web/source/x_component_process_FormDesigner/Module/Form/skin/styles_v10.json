@@ -197,8 +197,7 @@
     "datatable": {
         "styles": {
             "border": "1px solid #DEDEDE",
-            "border-radius": "4px",
-            "padding-bottom": "1em"
+            "border-radius": "4px"
         },
         "tableStyles": {},
         "titleStyles": {

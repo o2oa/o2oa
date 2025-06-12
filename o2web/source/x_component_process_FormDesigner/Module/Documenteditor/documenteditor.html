@@ -361,6 +361,13 @@
 			</div>
 
 			<div id="text{$.pid}copiesValueScriptArea" style="display: text{($.copiesValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="copiesValueScript" title="{{$.lp.bindValueScript}} (S)"></div>
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.valueLength}}:</td>
+					<td class="editTableValue"><input type="number" name="copiesValueLength" value="text{$.copiesValueLength}" class="editTableInput"/></td>
+				</tr>
+			</table>
 		</div>
 
 <!-----------------------------------------------份数------------------------------------------------------------------->

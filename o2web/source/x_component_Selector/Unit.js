@@ -399,6 +399,7 @@ MWF.xApplication.Selector.Unit = new Class({
 MWF.xApplication.Selector.Unit.Item = new Class({
     Extends: MWF.xApplication.Selector.Identity.Item,
     load : function(){
+        debugger;
         if( this.selector.isFlatCategory ){
             if( !this.justItem && this.selector.options.expandSubEnable && this.data.subDirectUnitCount ){
                 this.loadCategoryForFlatCategory();

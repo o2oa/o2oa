@@ -1962,24 +1962,31 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 		},
 		createErrorNode: function(text){
-			var node = new Element("div");
-			var iconNode = new Element("div", {
-				"styles": {
-					"width": "20px",
-					"height": "20px",
-					"float": "left",
-					"background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
-				}
-			}).inject(node);
-			var textNode = new Element("div", {
-				"styles": {
-					"line-height": "20px",
-					"margin-left": "20px",
+			node = new Element("div", {styles:{
+                "margin-top": "0.3em"  
+            }});
+            var iconNode = new Element("div.ooicon-error", {
+                "styles": {
+                    "width": "20px",
+                    "height": "1.2em",
+                    "float": "left",
+                    "display": "flex",
 					"color": "red",
-					"word-break": "keep-all"
-				},
-				"text": text
-			}).inject(node);
+                    "align-items": "center",
+                    "justify-content": "center"
+                    // "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                }
+            }).inject(node);
+            var textNode = new Element("div", {
+                "styles": {
+                    "height": "auto",
+                    "line-height": "1.2em",
+                    "margin-left": "20px",
+                    "color": "red",
+                    "word-break": "keep-all"
+                },
+                "text": text
+            }).inject(node);
 			return node;
 		},
 		notValidationMode: function(text){
@@ -3232,20 +3239,25 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				tr = new Element("tr");
 				td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
 			}
-			node = new Element("div");
+			node = new Element("div", {styles:{
+				"margin-top": "0.3em"  
+			}});
 			if( td )node.inject(td);
 			var iconNode = new Element("div", {
 				"styles": {
 					"width": "20px",
-					"height": "20px",
+					"height": "1.2em",
 					"float": "left",
-					"background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+					"display": "flex",
+					"align-items": "center",
+					"justify-content": "center"
+					// "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
 				}
 			}).inject(node);
 			var textNode = new Element("div", {
 				"styles": {
 					"height": "auto",
-					"line-height": "20px",
+					"line-height": "1.2em",
 					"margin-left": "20px",
 					"color": "red",
 					"word-break": "keep-all"

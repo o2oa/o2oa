@@ -93,9 +93,20 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		});
 
 	},
+	addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+			this.node.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
+    },
     _loadNodeEdit: function(){
 		this._resetNodeEdit();
-
+		this.node.setAttribute('value', undefined);
 		this.node.removeAttribute("placeholder");
 
 		if (this.json.properties) {
@@ -145,7 +156,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		}else{
 			this.node.removeAttribute("required");
 		}
-debugger;
+
 		if (this.json.allowInput) {
             this.node.setAttribute('allow-input', 'true');
         }else{
@@ -249,6 +260,7 @@ debugger;
 	// },
 
 	__setValue: function(value){
+		debugger;
 		this._setBusinessData(value);
 		this.node.value = value;
 		this.fieldModuleLoaded = true;

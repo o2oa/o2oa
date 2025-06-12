@@ -9,6 +9,8 @@
   "impexpType": "none",
   "importActionText": "导入Excel",
   "exportActionText": "导出Excel",
+  "maxHeight": "",
+  "minWidth": "",
   "sectionByScript": {
     "code": "",
     "html": ""

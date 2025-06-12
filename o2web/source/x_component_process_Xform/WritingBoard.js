@@ -308,18 +308,25 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             }.bind(this))
         },
         createErrorNode: function (text) {
-            var node = new Element("div");
-            var iconNode = new Element("div", {
+            node = new Element("div", {styles:{
+                "margin-top": "0.3em"  
+            }});
+            var iconNode = new Element("div.ooicon-error", {
                 "styles": {
                     "width": "20px",
-                    "height": "20px",
+                    "height": "1.2em",
                     "float": "left",
-                    "background": "url(" + "../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                    "display": "flex",
+                    "color": "red",
+                    "align-items": "center",
+                    "justify-content": "center"
+                    // "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
                 }
             }).inject(node);
             var textNode = new Element("div", {
                 "styles": {
-                    "line-height": "20px",
+                    "height": "auto",
+                    "line-height": "1.2em",
                     "margin-left": "20px",
                     "color": "red",
                     "word-break": "keep-all"

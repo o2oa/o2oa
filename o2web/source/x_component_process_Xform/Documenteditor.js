@@ -3163,6 +3163,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             var flag = (v.substring(v.length-1, v.length)=="。");
                             this.data[name] = v + ((flag) ? "" : "。");
                             break;
+                        case "copies":
+                            if (this.json.copiesValueLength!==0){
+                                v = v.toString().padStart(this.json.copiesValueLength, '0');
+                            }
+                            this.data[name] = v;
+                            break;
                         default:
                             if (name==="subject") v = o2.txt(v);
                             this.data[name] = v;
@@ -3222,11 +3228,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.data[name] = signers;
                             break;
                         case "mainSend":
-                            this.data[name] = strs.length ? strs.join("，") + "：" : "";
+                            const mainSends = strs.map((s)=>{
+                                return s.split('@')[0];
+                            });
+                            this.data[name] = mainSends.length ? mainSends.join("，") + "：" : "";
                             break;
                         case "copyto":
                         case "copyto2":
-                            this.data[name] = strs.length ? strs.join("，") + "。" : "";
+                            const copytos = strs.map((s)=>{
+                                return s.split('@')[0];
+                            });
+
+                            this.data[name] = copytos.length ? copytos.join("，") + "。" : "";
                             break;
                         default:
                             this.data[name] = strs.join("，");
@@ -3234,6 +3247,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     //}
                     break;
                 default:
+                    if (name==="copies" && this.json.copiesValueLength!==0){
+                        v = v.toString().padStart(this.json.copiesValueLength, '0');
+                    }
                     this.data[name] = v.toString();
             }
         }else{
@@ -3800,18 +3816,25 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     createErrorNode: function(text){
-        var node = new Element("div");
-        var iconNode = new Element("div", {
+        node = new Element("div", {styles:{
+            "margin-top": "0.3em"  
+        }});
+        var iconNode = new Element("div.ooicon-error", {
             "styles": {
                 "width": "20px",
-                "height": "20px",
+                "height": "1.2em",
+                "color": "red",
                 "float": "left",
-                "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center"
+                // "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
             }
         }).inject(node);
         var textNode = new Element("div", {
             "styles": {
-                "line-height": "20px",
+                "height": "auto",
+                "line-height": "1.2em",
                 "margin-left": "20px",
                 "color": "red",
                 "word-break": "keep-all"
