@@ -427,5 +427,8 @@
       "properties": {
           "class": "form-content-button"
       }
+  },
+  "associatedDocument": {
+    "style": "v10"
   }
 }
