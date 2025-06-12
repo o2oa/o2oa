@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -127,7 +128,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 	/**
 	 * 通过接口标志待办待阅已读,viewTime标志为当前时间
-	 * 
+	 *
 	 * @param effectivePerson
 	 * @param work
 	 * @throws Exception
@@ -619,6 +620,12 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		private Boolean processingTaskOnceUnderSamePerson;
 
+		@FieldDescribe("默认加签方式")
+		private String defaultAddTaskType;
+
+		@FieldDescribe("默认处理方式")
+		private String defaultAddTaskMode;
+
 		public Boolean getProcessingTaskOnceUnderSamePerson() {
 			return processingTaskOnceUnderSamePerson;
 		}
@@ -711,6 +718,21 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			this.customData = customData;
 		}
 
+		public String getDefaultAddTaskType() {
+			return defaultAddTaskType;
+		}
+
+		public void setDefaultAddTaskType(String defaultAddTaskType) {
+			this.defaultAddTaskType = defaultAddTaskType;
+		}
+
+		public String getDefaultAddTaskMode() {
+			return defaultAddTaskMode;
+		}
+
+		public void setDefaultAddTaskMode(String defaultAddTaskMode) {
+			this.defaultAddTaskMode = defaultAddTaskMode;
+		}
 	}
 
 	public static class WoRoute extends Route {
