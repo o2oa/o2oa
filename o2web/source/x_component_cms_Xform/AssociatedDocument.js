@@ -63,7 +63,7 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 			o2.Actions.load("x_cms_assemble_control").CorrelationAction.deleteWithDocument(this.getBundle(), {
 				idList: ids
 			},function (json) {
-				this.documentList = [];
+                //this.documentList = [];
 				if(callback)callback();
 			}.bind(this));
 		}else{
@@ -88,11 +88,12 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 			},function (json) {
 				itemNode.destroy();
 				_self.documentList.erase(d);
+                _self.fireEvent("afterDeleteDocument", [d]);
 				this.close();
 				//this.showDocumentList();
 			}.bind(this));
 		}, function () {
 			this.close();
-		});
+		}, null, null, this.form.json.confirmStyle);
 	}
-}); 
+});

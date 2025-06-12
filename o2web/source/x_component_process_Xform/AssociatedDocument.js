@@ -249,18 +249,23 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
             var headerNode = new Element("tr").inject(this.table);
             var titles = [];
+            var titlesWidth = ['', '', '', '6rem', '6rem', '20rem', ''];
             if( hasCMS && hasProcess ){
                 titles = ['', lp.title, lp.documentType,
                     lp.processName+"/"+lp.categoryName,
                     lp.draftPerson+"/"+lp.publishPerson,
                     lp.draftTime+"/"+lp.publishTime, '' ];
             }else if(hasCMS){
-                titles = ['', lp.title, lp.documentType, lp.categoryName, lp.publishPerson, lp.publishTime, '' ];
+                titles = ['', lp.title, lp.categoryName, lp.documentType, lp.publishPerson, lp.publishTime, '' ];
             }else if( hasProcess ){
-                titles = ['', lp.title, lp.documentType, lp.processName, lp.draftPerson, lp.draftTime, ''];
+                titles = ['', lp.title, lp.processName, lp.documentType, lp.draftPerson, lp.draftTime, ''];
             }
-            titles.each(function (title){
-                new Element("th", {text: title}).inject(headerNode);
+            titles.each(function (title, i){
+                var th = new Element("th", {text: title}).inject(headerNode);
+                debugger;
+                if( titlesWidth[i] ){
+                    th.setStyle('width', titlesWidth[i]);
+                }
             })
 
             this.documentList.each(function (d) {
@@ -299,15 +304,15 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         if( d.targetType === "processPlatform" ){
              iconNode = new Element("td.process-icon.ooicon-liucheng").inject(itemNode);
              textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
-             typeNode = new Element("td", {text: lp.work}).inject(itemNode);
              categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
+             typeNode = new Element("td", {text: lp.work}).inject(itemNode);
              personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
              timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
         }else{
             iconNode = new Element("td.doc-icon.ooicon-doc-cooperation").inject(itemNode);
             textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
-            typeNode = new Element("td", {text: lp.document}).inject(itemNode);
             categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
+            typeNode = new Element("td", {text: lp.document}).inject(itemNode);
             personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
             timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
         }

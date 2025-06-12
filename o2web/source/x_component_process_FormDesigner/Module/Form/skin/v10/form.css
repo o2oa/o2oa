@@ -444,11 +444,7 @@
 }
 
 /* 关联文档 */
-
 .form-layout .MWFADContent{
-    border: 1px solid rgb(222, 222, 222);
-    border-radius: 4px;
-    padding-bottom: 1em;
 }
 .form-layout .MWFADContent .doc-icon{
     color: #4590f8;
@@ -457,6 +453,12 @@
 .form-layout .MWFADContent .process-icon{
     color: #1cc66d;
     text-align: center;
+}
+.form-layout .MWFADContent table{
+    border-top: 1px solid rgb(222, 222, 222);
+    border-left: 1px solid rgb(222, 222, 222);
+    border-right: 1px solid rgb(222, 222, 222);
+    border-radius: 4px;
 }
 .form-layout .MWFADContent table td, .form-layout .MWFADContent table th {
     color: var(--oo-color-text2);
@@ -470,11 +472,12 @@
     text-align: left;
     background-color: #f7f7f7 !important;
 }
-
 .form-layout .MWFADContent tr:hover > td {
     background-color: var(--oo-color-hover) !important;
 }
-
+.form-layout .MWFADButtonArea{
+    padding: 0.5rem 0;
+}
 
 /* 手机 */
 @media only screen and (max-width: 767px) {
