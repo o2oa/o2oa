@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.service;
 
+import com.x.cms.core.entity.element.File;
+import com.x.cms.core.entity.element.Script;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,20 +36,20 @@ public class AppInfoService {
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listAllIds(documentType);
 	}
-	
+
 	public List<AppInfo> listAll(EntityManagerContainer emc, String appType, String documentType) throws Exception {
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listAll( appType, documentType);
 	}
-	
+
 	public void delete( EntityManagerContainer emc, String id ) throws Exception {
 		List<String> ids = null;
 		List<String> feildIds = null;
 		List<String> dictIds = null;
-		List<String> viewReleIds = null;		
+		List<String> viewReleIds = null;
 		AppInfo appInfo = null;
 		Business business = new Business( emc );
-		
+
 		emc.beginTransaction( AppInfo.class );
 		emc.beginTransaction( AppInfoConfig.class );
 		emc.beginTransaction( AppDict.class );
@@ -55,7 +57,9 @@ public class AppInfoService {
 		emc.beginTransaction( View.class );
 		emc.beginTransaction( ViewCategory.class );
 		emc.beginTransaction( ViewFieldConfig.class );
-		
+		emc.beginTransaction( Script.class);
+		emc.beginTransaction( File.class);
+
 		//还有栏目下的所有列表视图，以及所有的列表视图列信息
 		ids = business.getViewFactory().listByAppId( id );
 		if( ListTools.isNotEmpty( ids ) ){
@@ -90,7 +94,7 @@ public class AppInfoService {
 				}
 			}
 		}
-		
+
 		//还有栏目下的所有数据字典以及数据字典配置的列信息
 		ids = business.getAppDictFactory().listWithAppInfo( id );
 		if( ListTools.isNotEmpty( ids ) ){
@@ -103,15 +107,27 @@ public class AppInfoService {
 					for ( String dict_id : dictIds ) {
 						appDictItem = emc.find( dict_id, AppDictItem.class );
 						if( appDictItem != null ) {
-							emc.remove( appDictItem, CheckRemoveType.all  );	
+							emc.remove( appDictItem, CheckRemoveType.all  );
 						}
 					}
 				}
 				if( appDict != null ) {
 					emc.remove(appDict, CheckRemoveType.all );
 				}
-				
+
 			}
+		}
+
+		//删除栏目脚本信息
+		List<Script> scriptList = business.getScriptFactory().listScriptWithApp( id);
+		for (Script script : scriptList){
+			emc.remove(script);
+		}
+
+		//删除栏目资源信息
+		List<File> fileList = business.fileFactory().listWithApplicationObject( id);
+		for (File file : fileList){
+			emc.remove(file);
 		}
 
 		//删除栏目配置支持信息
@@ -127,14 +143,14 @@ public class AppInfoService {
 		}
 		emc.commit();
 	}
-	
+
 	public AppInfo get(EntityManagerContainer emc, String id) throws Exception {
 		if( StringUtils.isEmpty( id )) {
 			return null;
 		}
 		return emc.find( id, AppInfo.class );
 	}
-	
+
 	public AppInfo getWithFlag(EntityManagerContainer emc, String flag) throws Exception {
 		if( StringUtils.isEmpty( flag )) {
 			return null;
@@ -287,5 +303,5 @@ public class AppInfoService {
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listAppIdsWithOutAppType();
 	}
-	
+
 }

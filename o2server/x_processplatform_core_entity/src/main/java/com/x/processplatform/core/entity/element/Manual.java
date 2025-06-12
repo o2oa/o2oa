@@ -162,6 +162,42 @@ public class Manual extends Activity {
 		this.properties.setAllowAddTask(allowAddTask);
 	}
 
+	public static final String defaultAddTaskType_FIELDNAME = "defaultAddTaskType";
+	@Transient
+	@FieldDescribe("默认加签方式")
+	private String defaultAddTaskType;
+
+	public String getDefaultAddTaskType() {
+		if (null != this.defaultAddTaskType) {
+			return this.defaultAddTaskType;
+		} else {
+			return this.getProperties().getDefaultAddTaskType();
+		}
+	}
+
+	public void setDefaultAddTaskType(String defaultAddTaskType) {
+		this.defaultAddTaskType = defaultAddTaskType;
+		this.properties.setDefaultAddTaskType(defaultAddTaskType);
+	}
+
+	public static final String defaultAddTaskMode_FIELDNAME = "defaultAddTaskMode";
+	@Transient
+	@FieldDescribe("默认处理方式")
+	private String defaultAddTaskMode;
+
+	public String getDefaultAddTaskMode() {
+		if (null != this.defaultAddTaskMode) {
+			return this.defaultAddTaskMode;
+		} else {
+			return this.getProperties().getDefaultAddTaskMode();
+		}
+	}
+
+	public void setDefaultAddTaskMode(String defaultAddTaskMode) {
+		this.defaultAddTaskMode = defaultAddTaskMode;
+		this.properties.setDefaultAddTaskMode(defaultAddTaskMode);
+	}
+
 	public static final String PROCESSINGTASKONCEUNDERSAMEPERSON_FIELDNAME = "processingTaskOnceUnderSamePerson";
 	@Deprecated(since = "如果使用tickets的distingushedName,那么这个设置将要废弃.")
 	@Transient

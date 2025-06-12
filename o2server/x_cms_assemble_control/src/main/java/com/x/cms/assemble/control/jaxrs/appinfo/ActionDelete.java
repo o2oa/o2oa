@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
+import com.x.cms.core.entity.element.File;
+import com.x.cms.core.entity.element.Script;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.annotation.AuditLog;
@@ -77,6 +79,8 @@ public class ActionDelete extends BaseAction {
 				CacheManager.notify( View.class );
 				CacheManager.notify( ViewCategory.class );
 				CacheManager.notify( ViewFieldConfig.class );
+				CacheManager.notify( Script.class );
+				CacheManager.notify( File.class );
 
 				Wo wo = new Wo();
 				wo.setId( appInfo.getId() );
