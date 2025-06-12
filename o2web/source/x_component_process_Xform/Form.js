@@ -1716,7 +1716,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 module.save(history);
             });
         }
-        debugger;
         var data = data || this.getData(issubmit);
 
         this.modifedData = {};
