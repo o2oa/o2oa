@@ -271,6 +271,7 @@
 
 .o2flow-opinion-area {
     height: 230px;
+    min-height: 130px;
 }
 .o2flow-opinion-textareawrap {
     float: left;
