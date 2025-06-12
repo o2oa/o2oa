@@ -459,9 +459,9 @@
     border-radius: var(--oo-default-radius) !important;
 }
 
-.form-layout .page-content-section div[mwftype='view'] .pagingBar .pageItem, 
+.form-layout .page-content-section div[mwftype='view'] .pagingBar .pageItem,
 .form-layout .page-content-section div[mwftype='view'] .pagingBar .currentPage,
-.form-layout .page-content-section div[mwftype='statement'] .pagingBar .pageItem, 
+.form-layout .page-content-section div[mwftype='statement'] .pagingBar .pageItem,
 .form-layout .page-content-section div[mwftype='statement'] .pagingBar .currentPage{
     border-radius: var(--oo-default-radius) !important;
 }
@@ -494,6 +494,42 @@
 }
 .form-layout .v10_dialog *{
     box-sizing: content-box !important;
+}
+
+/* 关联文档 */
+.form-layout .MWFADContent{
+}
+.form-layout .MWFADContent .doc-icon{
+    color: #4590f8;
+    text-align: center;
+}
+.form-layout .MWFADContent .process-icon{
+    color: #1cc66d;
+    text-align: center;
+}
+.form-layout .MWFADContent table{
+    border-top: 1px solid rgb(222, 222, 222);
+    border-left: 1px solid rgb(222, 222, 222);
+    border-right: 1px solid rgb(222, 222, 222);
+    border-radius: 4px;
+}
+.form-layout .MWFADContent table td, .form-layout .MWFADContent table th {
+    color: var(--oo-color-text2);
+    border-bottom: 1px solid #dfdfdf !important;
+    transition: background-color 0.3s;
+    height: 42px !important;
+    line-height: 30px !important;
+    padding: 6px 0;
+}
+.form-layout .MWFADContent table th{
+    text-align: left;
+    background-color: #f7f7f7 !important;
+}
+.form-layout .MWFADContent tr:hover > td {
+    background-color: var(--oo-color-hover) !important;
+}
+.form-layout .MWFADButtonArea{
+    padding: 0.5rem 0;
 }
 
 /* 手机 */
@@ -599,3 +635,4 @@
         display: flex !important;
     }
 }
+@media only screen and (min-width: 1280px) {}

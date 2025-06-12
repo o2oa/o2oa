@@ -862,9 +862,10 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         MWF.require("MWF.widget.ScriptArea", null, false);
         this.propertyRequireBodyScriptArea = new MWF.widget.ScriptArea(propertyRequireBodyScriptWraper, {
             "title": this.lp.requireArguments,
-            "isload" : true,
+            //"isload" : true,
             "isbind" : false,
-            "forceType": "ace",
+            "mode": "json",
+            //"forceType": "ace",
             "maxObj": this.content,
             "onChange": function(){
                 if(this.currentPage){

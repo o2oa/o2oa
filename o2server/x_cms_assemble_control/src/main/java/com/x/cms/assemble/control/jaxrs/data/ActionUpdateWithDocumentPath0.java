@@ -22,16 +22,16 @@ class ActionUpdateWithDocumentPath0 extends BaseAction {
 				throw new ExceptionDocumentNotExists(id);
 			}
 			/** 先更新title,serial,objectSecurityClearance,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-			this.updateTitleSerialObjectSecurityClearance(business, document, jsonElement);
+			if(title_path.equals(path0) || subject_path.equals(path0) || objectSecurityClearance_path.equals(path0)) {
+				this.updateTitleSerialObjectSecurityClearance(business, document, jsonElement);
+			}
 			this.updateData(business, document, jsonElement, path0);
-			/** 在方法内进行了commit不需要再次进行commit */
-			// emc.commit();
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);
 
 			CacheManager.notify( Document.class );
-			
+
 			return result;
 		}
 	}

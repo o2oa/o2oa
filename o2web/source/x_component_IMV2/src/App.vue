@@ -175,7 +175,8 @@ const openMsg = (msg) => {
   if (body.type === 'messageHistory') {
     openMsgHistory(msg)
   } else if (body.type === "image") {
-    window.open(getImFileDownloadUrl(body.fileId))
+    _openImageView(getImFileDownloadUrl(body.fileId))
+    // window.open(getImFileDownloadUrl(body.fileId))
   } else if (body.type === "process") {
     o2.api.form.openWork(body.work, "", "");
   } else if (body.type === "file") {
@@ -199,6 +200,27 @@ const openMsg = (msg) => {
     const url = getBaiduMapUrl(body.latitude, body.longitude, body.address, body.addressDetail);
     window.open(url);
   }
+}
+// 图片预览 功能
+let _imageViewer;
+const _openImageView = (imageUrl) => {
+  const imgNode = document.createElement("img");
+  imgNode.src = imageUrl;
+  document.body.appendChild(imgNode);
+  imgNode.style.display = "none";
+  o2.loadCss("../o2_lib/viewer/viewer.css", document.body, () => {
+    o2.load("../o2_lib/viewer/viewer.js", ()=> {
+      _imageViewer = new Viewer(imgNode,{
+        navbar : false,
+        toolbar : true,
+        hidden : () => {
+          imgNode.remove();
+          _imageViewer.destroy();
+        }
+      });
+      _imageViewer.show();
+    })
+  })
 }
 // 打开聊天记录类型的消息
 const openMsgHistory = async (msg) => {
@@ -257,7 +279,6 @@ const openMyCollectionPage = () => {
 </script>
 
 <template>
-  <div>22222222222</div>
   <div class="im-app im-container">
     <div class="im-aside" :class="{ hidden: windowStateInstance.isMobile && currentConversation, w100:  windowStateInstance.isMobile}" v-if="!hideSide" >
       <IMAside @clickImConfig="openImConfigPage" @clickMyCollectionPage="openMyCollectionPage"/>

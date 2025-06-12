@@ -46,4 +46,4 @@ then
 		exit 1
 	fi
 fi
-setsid ${current_dir}/jvm/linux_java11/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms1g -Xmx3g -XX:MinHeapFreeRatio=15 -XX:MaxHeapFreeRatio=30 -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar ${current_dir}/console.jar
+setsid ${current_dir}/jvm/linux_java11/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms3g -Xmx3g -XX:MinHeapFreeRatio=15 -XX:MaxHeapFreeRatio=30 -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar ${current_dir}/console.jar

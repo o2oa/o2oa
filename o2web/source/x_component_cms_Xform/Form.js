@@ -1026,6 +1026,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             return data;
         },
         saveFormData: function (callback, sync) {
+            this.saving = true;
             var data = this.getData();
             var specialData = this.getSpecialData();
             var documentData = this.getDocumentData(data);
@@ -1048,7 +1049,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
             this.documentAction.saveDocument(documentData, function () {
                 this.businessData.data.isNew = false;
-
+                this.saving = false;
                 if (callback && typeof callback === "function") callback();
             }.bind(this), null, !sync);
         },
@@ -1066,6 +1067,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 if (callback  && typeof callback === "function") callback();
                 return false;
             }
+
+            this.saving = true;
             var data = this.getData();
             var specialData = this.getSpecialData();
             var documentData = this.getDocumentData(data);
@@ -1095,6 +1098,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.fireEvent("afterSave", [this, documentData]);
                 if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterSave",[this, documentData]);
                 if (callback && typeof callback === "function") callback();
+                this.saving = false;
                 if( !this.json.notReloadWhenSave ){
                     this._reloadReadForm();
                 }
@@ -1207,6 +1211,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
         },
         _publishDocumentDelayed: function( publishTime ){
+            this.saving = true;
             var data = this.getData();
             var specialData = this.getSpecialData();
             //this.documentAction.saveData(function(json){
@@ -1237,6 +1242,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.businessData.data.isNew = false;
                 this.fireEvent("afterWaitPublish", [this, json.data]);
                 if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterWaitPublish",[this, json.data]);
+                this.saving = false;
                 // if (callback) callback(); // 传进来不是function
                 if (layout.mobile) {
                     // this.app.content.unmask();
@@ -1305,6 +1311,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 return false;
             }
 
+            this.saving = true;
+
             var data = this.getData();
             var specialData = this.getSpecialData();
             //this.documentAction.saveData(function(json){
@@ -1334,6 +1342,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     this.fireEvent("afterPublish", [this, json.data]);
                     if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish",[this, json.data]);
                     if (o2.typeOf(callback) === "function") callback(json); // 传进来不是function
+                    this.saving = false;
                     if (layout.mobile) {
                         document.body.unmask();
                         this.closeWindowOnMobile();

@@ -1055,6 +1055,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
                     var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
                     var node = this._createLineNode( beforeNode );
                     var line = this._loadLine(node, data, idx, isEdited, isNew );
+					if( !this.multiEditMode && isEdited ){
+						this.currentEditedLine = line;
+					}
                     this.lineList.push(line);
                 }
             }.bind(this));
@@ -1905,10 +1908,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * @return {DatatableData}
 		 */
 		getData: function(){
+			debugger;
 			if( this.importer ){
 				this.importer.destroySimulateModule();
 			}
 			if (this.editable!==false){
+
+				if( this.currentEditedLine ){
+					this._completeLineEdit(null, true, !!this.form.saving);
+				}
+
 				// this.lineList.each(function(line, index){
 				// 	if( !this.multiEditMode && line.options.isEdited ){
 				// 		line.data = line.getData();
@@ -2332,14 +2341,17 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 				if( !d )return;
 				var node = this._createLineNode();
 				var isEdited = false, isNew = false;
+				var dt = this.datatable;
 				if( this.options.isEdited ){
-					var dt = this.datatable;
 					isNew = dt.isNew || (o2.typeOf(dt.newLineIndex) === "number" ? idx === dt.newLineIndex : false);
 					isEdited = (!dt.multiEditMode && o2.typeOf(dt.newLineIndex) === "number") ? idx === dt.newLineIndex : dt.multiEditMode;
 					dt.isNew = false;
 					dt.newLineIndex = null;
 				}
 				var line = this._loadLine( node, d, idx, isEdited, isNew );
+				if( !dt.multiEditMode && isEdited ){
+					dt.currentEditedLine = line;
+				}
 				this.lineList.push(line);
 				this.datatable.lineList.push(line);
 			}.bind(this));

@@ -1,22 +1,11 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -30,6 +19,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
 import com.x.cms.core.entity.AppInfo;
@@ -37,7 +28,19 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeCmsWi;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionListTypeProcessPlatformWo;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
 import com.x.processplatform.core.entity.content.Attachment;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 从流程发布一个文档（流程）
@@ -280,6 +283,31 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				}
 				CacheManager.notify(FileInfo.class);
 				CacheManager.notify(Document.class);
+			}
+		}
+
+		// 复制流程工单的关联文档到cms文档
+		if (check && StringUtils.isNotBlank(wi.getWf_jobId())) {
+			List<ActionListTypeProcessPlatformWo> wos = ThisApplication.context().applications()
+					.getQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
+							Applications.joinQueryUri("correlation", "list", "type", "processplatform", "job", wi.getWf_jobId()), wi.getWf_jobId())
+					.getDataAsList(ActionListTypeProcessPlatformWo.class);
+			if (ListTools.isNotEmpty(wos)) {
+				ActionCreateTypeCmsWi req = new ActionCreateTypeCmsWi();
+				List<TargetWi> targetList = new ArrayList<>();
+				wos.forEach(wo -> {
+					TargetWi targetWi = new TargetWi();
+					targetWi.setBundle(wo.getTargetBundle());
+					targetWi.setType(wo.getTargetType());
+					targetWi.setSite(wo.getSite());
+					targetWi.setView(wo.getView());
+					targetList.add(targetWi);
+					req.setPerson(wo.getPerson());
+				});
+				req.setTargetList(targetList);
+				ThisApplication.context().applications()
+						.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
+								Applications.joinQueryUri("correlation", "type", "cms", "document", document.getId()), req, document.getId());
 			}
 		}
 

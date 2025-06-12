@@ -64,13 +64,34 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult",
             "afterSelectResult", "deleteDocument","afterDeleteDocument","openDocument"]
     },
+    initialize: function(node, json, form, options){
+        this.node = $(node);
+        this.node.store("module", this);
 
+        this.json = json;
+
+        this.form = form;
+
+        this.parentLine = null;
+        //只是为了校验
+        this.field = true;
+        this.fieldModuleLoaded = false;
+    },
 	_loadUserInterface: function(){
+
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
         });
 
+        /**
+         * @summary 当前组件关联的文档。
+         * @member documentList {Array<Object>}
+         * @memberOf MWF.xApplication.process.Xform.AssociatedDocument
+         * @example
+         *  //可以在脚本中获取该组件
+         * var documentList = this.form.get("fieldId").documentList; //当前组件关联的文档
+         */
         this.documentList = [];
 
         var button = this.node.getElement("button");
@@ -102,6 +123,10 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     this.selectDocument(d);
                 }.bind(this));
             }.bind(this));
+
+            if( this.json.style === 'v10' ){
+                this.button.addClass('form-content-button');
+            }
         }
 
 
@@ -138,12 +163,14 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     }
                     this.loadAssociatedDocument(function () {
                         this.fireEvent("afterSelectResult", [this.documentList]);
+                        this.validationMode();
                     }.bind(this));
                 }.bind(this));
             }else{
                 this.status = "showResult";
                 this.loadAssociatedDocument(function () {
                     this.fireEvent("afterSelectResult", [this.documentList]);
+                    this.validationMode();
                 }.bind(this));
                 if( this.dlg )this.dlg.close();
             }
@@ -207,28 +234,102 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }
     },
     loadDocumentListDefault: function(){
-        this.documentList.each(function (d) {
-            var itemNode = new Element("div", {
-                styles:  this.form.css.associatedDocumentItem
-            }).inject( this.documentListNode );
-            var iconNode = new Element("div", {
-                styles:  this.form.css[ d.targetType === "processPlatform" ? "associatedDocumentWorkIcon" : "associatedDocumentCmsIcon" ]
-            }).inject( itemNode );
+        if( this.json.style === 'v10' ){
+            this.table = new Element('table', {
+                "style": "width: 100%;border-collapse:collapse;",
+                "border": "0",
+                "cellPadding": "2",
+                "cellSpacing": "0"
+            }).inject(this.documentListNode);
 
-            var deleteNode;
-            if( !this.isReadonly() ){
-                deleteNode = new Element("div", {
-                    styles:  this.form.css.associatedDocumentDelete
-                }).inject( itemNode );
-                if(!layout.mobile)deleteNode.hide();
+            var lp = MWF.xApplication.process.Xform.LP;
+
+            var hasCMS = this.documentList.some(function (d) { return d.targetType !== "processPlatform"; });
+            var hasProcess = this.documentList.some(function (d) { return d.targetType === "processPlatform"; });
+
+            var headerNode = new Element("tr").inject(this.table);
+            var titles = [];
+            var titlesWidth = ['', '', '', '6rem', '6rem', '20rem', ''];
+            if( hasCMS && hasProcess ){
+                titles = ['', lp.title, lp.documentType,
+                    lp.processName+"/"+lp.categoryName,
+                    lp.draftPerson+"/"+lp.publishPerson,
+                    lp.draftTime+"/"+lp.publishTime, '' ];
+            }else if(hasCMS){
+                titles = ['', lp.title, lp.categoryName, lp.documentType, lp.publishPerson, lp.publishTime, '' ];
+            }else if( hasProcess ){
+                titles = ['', lp.title, lp.processName, lp.documentType, lp.draftPerson, lp.draftTime, ''];
             }
+            titles.each(function (title, i){
+                var th = new Element("th", {text: title}).inject(headerNode);
+                debugger;
+                if( titlesWidth[i] ){
+                    th.setStyle('width', titlesWidth[i]);
+                }
+            })
 
-            var textNode = new Element("div", {
-                styles:  this.form.css.associatedDocumentText,
-                text: d.targetTitle
-            }).inject( itemNode );
-            this._loadDocument(d, itemNode, deleteNode)
-        }.bind(this))
+            this.documentList.each(function (d) {
+                this.loadDocumentListDefault_V10(d);
+            }.bind(this));
+        }else{
+            this.documentList.each(function (d) {
+                var itemNode = new Element("div", {
+                    styles:  this.form.css.associatedDocumentItem
+                }).inject( this.documentListNode );
+                var iconNode = new Element("div", {
+                    styles:  this.form.css[ d.targetType === "processPlatform" ? "associatedDocumentWorkIcon" : "associatedDocumentCmsIcon" ]
+                }).inject( itemNode );
+
+                var deleteNode;
+                if( !this.isReadonly() ){
+                    deleteNode = new Element("div", {
+                        styles:  this.form.css.associatedDocumentDelete
+                    }).inject( itemNode );
+                    if(!layout.mobile)deleteNode.hide();
+                }
+
+                var textNode = new Element("div", {
+                    styles:  this.form.css.associatedDocumentText,
+                    text: d.targetTitle
+                }).inject( itemNode );
+                this._loadDocument(d, itemNode, deleteNode)
+            }.bind(this))
+        }
+    },
+    loadDocumentListDefault_V10: function (d){
+        var lp = MWF.xApplication.process.Xform.LP;
+        var itemNode = new Element("tr").inject( this.table );
+        var iconNode, textNode ,typeNode, categoryNode, personNode, timeNode;
+
+        if( d.targetType === "processPlatform" ){
+             iconNode = new Element("td.process-icon.ooicon-liucheng").inject(itemNode);
+             textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
+             categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
+             typeNode = new Element("td", {text: lp.work}).inject(itemNode);
+             personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
+             timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
+        }else{
+            iconNode = new Element("td.doc-icon.ooicon-doc-cooperation").inject(itemNode);
+            textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
+            categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
+            typeNode = new Element("td", {text: lp.document}).inject(itemNode);
+            personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
+            timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
+        }
+        var deleteNode = new Element("td.ooicon-delete").inject(itemNode);
+        if( !this.isReadonly() ){
+            deleteNode.addEvents({
+                "click": function (ev) {
+                    this.cancelAssociated(ev, d, itemNode);
+                    ev.stopPropagation();
+                }.bind(this)
+            });
+        }else{
+            deleteNode.hide();
+        }
+
+        itemNode.addEvent('click', function (e) { this.openDoc(e, d); }.bind(this));
+        itemNode.addEvent('mouseover', function (e) { itemNode.addClass(); }.bind(this));
     },
     loadDocumentListText: function(){
         var lp = MWF.xApplication.process.Xform.LP;
@@ -610,6 +711,185 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 return true;
             }.bind(this))
         }
-    }
+    },
+
+    setData: function(){},
+    getData: function(){
+        return this.documentList;
+    },
+    getInputData: function (){
+        return this.documentList;
+    },
+    createErrorNode: function(text){
+        var node;
+        if( this.form.json.errorStyle ){
+            if( this.form.json.errorStyle.type === "notice" ){
+                if( !this.form.errorNoticing ){ //如果是弹出
+                    this.form.errorNoticing = true;
+                    this.form.notice(text, "error", this.node, null, null, {
+                        onClose : function () {
+                            this.form.errorNoticing = false;
+                        }.bind(this)
+                    });
+                }
+            }else{
+                node = new Element("div",{
+                    "styles" : this.form.json.errorStyle.node,
+                    "text": text
+                });
+                if( this.form.json.errorStyle.close ){
+                    var closeNode = new Element("div",{
+                        "styles" : this.form.json.errorStyle.close ,
+                        "events": {
+                            "click" : function(){
+                                //this.destroy();
+                                this.validationMode();
+                            }.bind(this)
+                        }
+                    }).inject(node);
+                }
+            }
+        }else{
+            node = new Element("div");
+            var iconNode = new Element("div", {
+                "styles": {
+                    "width": "20px",
+                    "height": "20px",
+                    "float": "left",
+                    "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                }
+            }).inject(node);
+            var textNode = new Element("div", {
+                "styles": {
+                    "height": "auto",
+                    "line-height": "20px",
+                    "margin-left": "20px",
+                    "color": "red",
+                    "word-break": "keep-all"
+                },
+                "text": text
+            }).inject(node);
+        }
+        return node;
+    },
+    notValidationMode: function(text){
+        if (!this.isNotValidationMode){
+            this.isNotValidationMode = true;
+            this.node.store("borderStyle", this.node.getStyles("border-left", "border-right", "border-top", "border-bottom"));
+            this.node.setStyle("border-color", "red");
+
+            this.errNode = this.createErrorNode(text);
+            //if (this.iconNode){
+            //    this.errNode.inject(this.iconNode, "after");
+            //}else{
+            this.errNode.inject(this.node, "after");
+            //}
+            this.showNotValidationMode(this.node);
+
+            var parentNode = this.errNode;
+            while( parentNode && parentNode.offsetParent === null ){
+                parentNode = parentNode.getParent();
+            }
+
+            if ( parentNode && !parentNode.isIntoView()) parentNode.scrollIntoView(false);
+        }
+    },
+    showNotValidationMode: function(node){
+        var p = node.getParent("div");
+        if (p){
+            var mwftype = p.get("MWFtype") || p.get("mwftype");
+            if (mwftype == "tab$Content"){
+                if (p.getParent("div").getStyle("display")=="none"){
+                    var contentAreaNode = p.getParent("div").getParent("div");
+                    var tabAreaNode = contentAreaNode.getPrevious("div");
+                    var idx = contentAreaNode.getChildren().indexOf(p.getParent("div"));
+                    var tabNode = tabAreaNode.getLast().getFirst().getChildren()[idx];
+                    tabNode.click();
+                    p = tabAreaNode.getParent("div");
+                }
+            }
+            this.showNotValidationMode(p);
+        }
+    },
+    validationMode: function(){
+        if (this.isNotValidationMode){
+            this.isNotValidationMode = false;
+            this.node.setStyles(this.node.retrieve("borderStyle"));
+            if (this.errNode){
+                this.errNode.destroy();
+                this.errNode = null;
+            }
+        }
+    },
+    validationConfigItem: function(routeName, data){
+        var flag = (data.status==="all") ? true: (routeName === data.decision);
+        if (flag){
+            var n = this.getInputData();
+            var v = (data.valueType==="value") ? n : n.length;
+            switch (data.operateor){
+                case "isnull":
+                    if (!v || (o2.typeOf(v)==="array" && !v.length)){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "notnull":
+                    if (v){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "gt":
+                    if (v>data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "lt":
+                    if (v<data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "equal":
+                    if (v==data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "neq":
+                    if (v!=data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "contain":
+                    if (v.indexOf(data.value)!=-1){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "notcontain":
+                    if (v.indexOf(data.value)==-1){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+            }
+        }
+        return true;
+    },
+    validationConfig: function(routeName, opinion){
+        if (this.json.validationConfig){
+            if (this.json.validationConfig.length){
+                for (var i=0; i<this.json.validationConfig.length; i++) {
+                    var data = this.json.validationConfig[i];
+                    if (!this.validationConfigItem(routeName, data)) return false;
+                }
+            }
+            return true;
+        }
+        return true;
+    },
 
 });

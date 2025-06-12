@@ -557,24 +557,44 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     },
 
     loadActionbarScript: function(data){
-        if (data.tools){
-            data.tools.each(function(tool){
-                var item = this.addScriptItem(tool, "actionScript", data, "action.tools", tool.text);
-                this.bindActionbarToolText(tool, item);
-            }.bind(this));
+        this.loadEventsScript(data);
+        var loadToolScript = function(tool){
+            var item1, item2;
+            if( tool.system ){
+                item1 = this.addActionbarScriptItem(tool, "condition", tool.text, data);
+                this.bindActionbarToolText(tool, item1);
+            }else{
+                item1 = this.addActionbarScriptItem(tool, "condition", tool.text, data);
+                item2 = this.addActionbarScriptItem(tool, "actionScript", tool.text, data);
+                this.bindActionbarToolText(tool, item1, item2);
+            }
+        }.bind(this);
+        if( data.multiTools ){
+            data.multiTools.each(function(tool, index){
+                loadToolScript(tool, 'multiTools', index);
+            });
+        }else if( data.defaultTools ){
+            data.defaultTools.each(function(tool, index){
+                loadToolScript(tool, 'defaultTools', index);
+            });
         }
     },
-    bindActionbarToolText: function(tool, item){
-        var toolItem = item;
+    bindActionbarToolText: function(tool, item1, item2){
+        var item_1 = item1 || null;
+        var item_2 = item2 || null;
         var text = tool.text;
         Object.defineProperty(tool, "text", {
             configurable : true,
             enumerable : true,
             "get": function(){return text;},
             "set": function(v){
-                if (toolItem){
-                    toolItem.par = v;
-                    toolItem.resetText();
+                if (item_1){
+                    item_1.par = v;
+                    item_1.resetText();
+                }
+                if (item_2){
+                    item_2.par = v;
+                    item_2.resetText();
                 }
                 text = v;
 
@@ -732,6 +752,11 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
     },
     addModuleEventScriptItem: function(event, key, eventName, data, par){
         var item = new MWF.xApplication.portal.PageDesigner.Script.Item(this, event, key, data, this.designer.lp.events+"."+eventName, par);
+        this.items.push(item);
+        return item;
+    },
+    addActionbarScriptItem: function(tool, key, actionText, module){
+        var item = new MWF.xApplication.portal.PageDesigner.Script.Item(this, tool, key, module, this.designer.lp[key], actionText);
         this.items.push(item);
         return item;
     },

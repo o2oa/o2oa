@@ -87,6 +87,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         selectParent: '选择上级组件',
     },
 
+    actionScript: '操作脚本',
+    condition: '隐藏条件',
     actionbar: {
         readhide: '设置阅读时是否显示',
         edithide: '设置编辑时是否显示',

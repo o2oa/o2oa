@@ -35,14 +35,11 @@ public class ActionAndroidPack extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionAndroidPack.class);
 
-	ActionResult<Wo> execute(String token, String appName, String o2ServerProtocol, String o2ServerHost,
+	ActionResult<Wo> execute(String appName, String o2ServerProtocol, String o2ServerHost,
 			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String urlMapping,
 			String appVersionName, String appBuildNo, String deleteHuawei, String fileName, byte[] bytes,
 			FormDataContentDisposition disposition) throws Exception {
 		ActionResult<Wo> result = new ActionResult<Wo>();
-		if (StringUtils.isEmpty(token)) {
-			throw new ExceptionNoToken();
-		}
 		if (StringUtils.isEmpty(appName)) {
 			throw new ExceptionEmptyProperty("appName");
 		}
@@ -82,7 +79,7 @@ public class ActionAndroidPack extends BaseAction {
 		if (!fileName.toLowerCase().endsWith("png")) {
 			throw new ExceptionFileNotPng();
 		}
-		String s = postFormData(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext,
+		String s = postFormData(appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext,
 				isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, deleteHuawei, fileName, bytes);
 		Type type = new TypeToken<AppPackResult<IdValue>>() {
 		}.getType();
@@ -101,7 +98,6 @@ public class ActionAndroidPack extends BaseAction {
 	/**
 	 * formData 提交打包信息
 	 * 
-	 * @param token
 	 * @param appName
 	 * @param o2ServerProtocol
 	 * @param o2ServerHost
@@ -112,11 +108,11 @@ public class ActionAndroidPack extends BaseAction {
 	 * @return
 	 * @throws Exception
 	 */
-	private String postFormData(String token, String appName, String o2ServerProtocol, String o2ServerHost,
+	private String postFormData(String appName, String o2ServerProtocol, String o2ServerHost,
 			String o2ServerPort, String o2ServerContext, String isPackAppIdOuter, String urlMapping,
 			String appVersionName, String appBuildNo, String deleteHuawei, String fileName, byte[] bytes)
 			throws Exception {
-		logger.info("发起打包请求，form : " + token + " ," + appName + " ," + o2ServerProtocol + " ," + o2ServerHost + " ,"
+		logger.info("发起打包请求，form : " + appName + " ," + o2ServerProtocol + " ," + o2ServerHost + " ,"
 				+ o2ServerPort + " ," + o2ServerContext + " ," + isPackAppIdOuter + " ," + urlMapping + " ,"
 				+ appVersionName + " ," + appBuildNo + " ," + deleteHuawei + " ," + fileName);
 		String boundary = "abcdefghijk";
@@ -145,7 +141,7 @@ public class ActionAndroidPack extends BaseAction {
 			// 设置字符编码连接参数
 			map.put("Connection", "Keep-Alive");
 			map.put("Charset", "UTF-8");
-			map.put("token", token);
+			map.put("token", getPackServerSSOToken());
 
 			for (Map.Entry<String, String> en : map.entrySet()) {
 				if (StringUtils.isNotEmpty(en.getValue())) {

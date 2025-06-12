@@ -32,9 +32,9 @@ import com.x.query.core.entity.Item;
 public class BaseAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
-	private static final String title_path = "title";
-	private static final String subject_path = "subject";
-	private static final String objectSecurityClearance_path = "objectSecurityClearance";
+	protected static final String title_path = "title";
+	protected static final String subject_path = "subject";
+	protected static final String objectSecurityClearance_path = "objectSecurityClearance";
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
 	protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
@@ -91,7 +91,10 @@ public class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().persist(_o);
 			}
 			try {
-				this.projection(business, document, XGsonBuilder.convert(jsonElement, Data.class));
+				if(paths.length < 1) {
+					this.projection(business, document,
+							XGsonBuilder.convert(jsonElement, Data.class));
+				}
 			} catch (Exception e) {
 				LOGGER.warn("{}文档数据映射失败：{}", document.getId(), e.getMessage());
 			}

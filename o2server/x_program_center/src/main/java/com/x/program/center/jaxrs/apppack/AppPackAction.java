@@ -57,15 +57,31 @@ public class AppPackAction extends BaseAction  {
 
     @JaxrsMethodDescribe(value = "获取最近一次打包信息.", action = ActionPackInfo.class)
     @GET
-    @Path("pack/info/{token}")
+    @Path("pack/info")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void packInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                             @JaxrsParameterDescribe("token") @PathParam("token") String token) {
+    public void packInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
         ActionResult<ActionPackInfo.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionPackInfo().execute(token);
+            result = new ActionPackInfo().execute();
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "获取最近一次打包logo.", action = ActionPackInfoLogoDownload.class)
+    @GET
+    @Path("pack/info/logo")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void packInfoLogo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<ActionPackInfoLogoDownload.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionPackInfoLogoDownload().execute();
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
@@ -80,7 +96,6 @@ public class AppPackAction extends BaseAction  {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     public void androidPackStart(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                                 @JaxrsParameterDescribe("token") @FormDataParam("token") String token,
                                  @JaxrsParameterDescribe("appName") @FormDataParam("appName") String appName,
                                  @JaxrsParameterDescribe("o2ServerProtocol") @FormDataParam("o2ServerProtocol") String o2ServerProtocol,
                                  @JaxrsParameterDescribe("o2ServerHost") @FormDataParam("o2ServerHost") String o2ServerHost,
@@ -97,7 +112,7 @@ public class AppPackAction extends BaseAction  {
         ActionResult<ActionAndroidPack.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionAndroidPack().execute(token, appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, deleteHuawei, fileName, bytes, disposition);
+            result = new ActionAndroidPack().execute(appName, o2ServerProtocol, o2ServerHost, o2ServerPort, o2ServerContext, isPackAppIdOuter, urlMapping, appVersionName, appBuildNo, deleteHuawei, fileName, bytes, disposition);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
@@ -109,15 +124,14 @@ public class AppPackAction extends BaseAction  {
 
     @JaxrsMethodDescribe(value = "使用原来的资料重新进行 Android app 打包.", action = ActionAndroidRePack.class)
     @GET
-    @Path("pack/info/android/repack/{token}")
+    @Path("pack/info/android/repack")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void androidPackReStart(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                         @JaxrsParameterDescribe("token") @PathParam("token") String token) {
+    public void androidPackReStart(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
         ActionResult<ActionAndroidRePack.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionAndroidRePack().execute(token);
+            result = new ActionAndroidRePack().execute();
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
