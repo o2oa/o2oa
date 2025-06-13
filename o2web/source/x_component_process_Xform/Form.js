@@ -4311,6 +4311,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
             return false;
         }
+        if (!this.formValidation('','')) {
+            return false;
+        }
+
         if (!this.checkUploadAttachment()) return false;
 
         o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(this.businessData.task.work, function(json){
