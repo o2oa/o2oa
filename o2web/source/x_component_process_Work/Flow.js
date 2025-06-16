@@ -2,6 +2,7 @@ MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xDesktop.requireApp("process.Work", "lp." + MWF.language, null, false);
 MWF.ProcessFlow_ORG_HEIGHT = 275;
+MWF.ProcessFlow_MIN_OPINION_HEIGHT = 130;
 MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -77,8 +78,26 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             this.fireEvent("load");
         }
     },
+    redeuceOpinionHeight: function( decreamment ){
+        var opinionContent;
+        switch ( this.currentAction ) {
+            case "process":
+                opinionContent = this.processor.opinionContent; break;
+            case "addTask":
+                opinionContent = this.addTask.opinionContent; break;
+            case "reset":
+                opinionContent = this.reset.opinionContent; break;
+            case "goBack":
+                opinionContent = this.goBack.opinionContent; break;
+        }
+        if( opinionContent ){
+            var size = opinionContent.getSize();
+            if( size.y - decreamment > MWF.ProcessFlow_MIN_OPINION_HEIGHT ){
+                opinionContent.setStyle('height', (size.y - decreamment)+'px');
+            }
+        }
+    },
     changeAction: function( action, quickData ){
-        debugger;
         if( this.currentAction ){
             this[ this.currentAction+"ContentNode" ].hide();
             this[ this.currentAction+"TitleNode" ].removeClass("o2flow-navi-item-active");
@@ -93,7 +112,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
 
         switch (action) {
             case "process":
-                this.loadProcessor( quickData );
+                this.loadProcessor(quickData);
                 break;
             case "addTask":
                 this.loadAddTask( quickData );
@@ -622,7 +641,7 @@ MWF.ProcessFlow.AddTask = new Class({
                 text: this.lp.parallel,
                 value: "parallel"
             }],
-            value: this.quickData.mode || "single" //默认为单人
+            value: this.quickData.mode || this.businessData.activity.defaultAddTaskMode || "single" //默认为单人
         });
         this.mode.load();
 
@@ -630,7 +649,7 @@ MWF.ProcessFlow.AddTask = new Class({
         if( this.quickData.routeId ){
             position = (this.quickData.routeId === "before") ? "true" : "false";
         }else{
-            position = "false"; //默认为后加签
+            position = this.businessData.activity.defaultAddTaskType === 'before' ? 'true' : "false"; //默认为后加签
         }
         this.position = new MWF.ProcessFlow.widget.Radio(this.positionArea, this.flow, {
             optionList: [{

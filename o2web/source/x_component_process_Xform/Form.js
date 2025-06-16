@@ -1716,7 +1716,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 module.save(history);
             });
         }
-        debugger;
         var data = data || this.getData(issubmit);
 
         this.modifedData = {};
@@ -2661,6 +2660,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             //希望滚动条在flow里面
             var maxHeight = dlg.getContentMaxHeight();
             var s = _self.flow.getSize();
+
+            //如果出现了滚动条，希望意见框能够自适应缩小
+            if( s.y > maxHeight ){
+                // _self.flow.redeuceOpinionHeight( s.y - maxHeight );
+            }
 
             dlg.content.setStyles({
                 "height": Math.min(s.y, maxHeight),
@@ -4307,6 +4311,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
             return false;
         }
+        if (!this.formValidation('','')) {
+            return false;
+        }
+
         if (!this.checkUploadAttachment()) return false;
 
         o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(this.businessData.task.work, function(json){

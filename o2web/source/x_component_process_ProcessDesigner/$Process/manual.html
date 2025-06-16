@@ -358,6 +358,19 @@
                     <div class="MWFScriptText" name="resetRangeScriptText" data-type="web"></div>
                 </td>
             </tr>
+        <tr>
+            <td class="editTableValue"  colspan="2"><b>{{$.lp.defaultAddTaskType}}：</b>
+                <input class="editTableRadio" name="defaultAddTaskType" text{($.defaultAddTaskType==='before')?'checked':''} type="radio" value="before"/>{{$.lp.addTaskBefore}}
+                <input class="editTableRadio" name="defaultAddTaskType" text{(!$.defaultAddTaskType || $.defaultAddTaskType==='after')?'checked':''} type="radio" value="after"/>{{$.lp.addTaskAfter}}
+            </td>
+        </tr>
+        <tr>
+            <td class="editTableValue"  colspan="2"><b>{{$.lp.defaultAddTaskMode}}：</b>
+                <input class="editTableRadio" name="defaultAddTaskMode" text{(!$.defaultAddTaskMode || $.defaultAddTaskMode==='single')?'checked':''} type="radio" value="single"/>{{$.lp.addTasKSingle}}
+                <input class="editTableRadio" name="defaultAddTaskMode" text{($.defaultAddTaskMode==='queue')?'checked':''} type="radio" value="queue"/>{{$.lp.addTasKQueue}}
+                <input class="editTableRadio" name="defaultAddTaskMode" text{($.defaultAddTaskMode==='parallel')?'checked':''} type="radio" value="parallel"/>{{$.lp.addTasKParallel}}
+            </td>
+        </tr>
         </table>
         <hr />
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
