@@ -94,6 +94,8 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             var size = opinionContent.getSize();
             if( size.y - decreamment > MWF.ProcessFlow_MIN_OPINION_HEIGHT ){
                 opinionContent.setStyle('height', (size.y - decreamment)+'px');
+            }else{
+                opinionContent.setStyle('height', MWF.ProcessFlow_MIN_OPINION_HEIGHT+'px');
             }
         }
     },

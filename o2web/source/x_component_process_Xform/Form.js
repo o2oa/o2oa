@@ -2663,7 +2663,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             //如果出现了滚动条，希望意见框能够自适应缩小
             if( s.y > maxHeight ){
-                // _self.flow.redeuceOpinionHeight( s.y - maxHeight );
+                _self.flow.redeuceOpinionHeight( s.y - maxHeight );
             }
 
             dlg.content.setStyles({
@@ -2675,6 +2675,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             s = dlg.setContentSize();
             if (!notRecenter) dlg.reCenter();
         };
+
+        var setSizeFun = function (){
+            setSize.call(this.flowDlg);
+        }.bind(this)
 
         this.loadFlow(flowNode, (this.json.flowStyle || "default"), function (flow) {
             this.flowDlg = o2.DL.open({
@@ -2717,10 +2721,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 ],
                 "onQueryClose": function(){
                     if (this.flow) this.flow.destroy();
+                    _self.app.removeEvent('resize', setSizeFun);
                 }.bind(this),
                 "onPostLoad": function () {
                     flowNode.setStyle("opacity", 1);
-                    setSize.call(this)
+                    setSize.call(this);
+                    _self.app.addEvent('resize', setSizeFun);
                 }
             })
         }.bind(this), function () {

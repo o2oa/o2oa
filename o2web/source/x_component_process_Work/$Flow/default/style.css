@@ -253,7 +253,6 @@
 
 .o2flow-section-content {
     overflow: hidden;
-    height: calc( 100% - 40px );
 }
 
 .o2flow-section-left {
@@ -272,6 +271,9 @@
 .o2flow-opinion-area {
     height: 230px;
     min-height: 130px;
+}
+.o2flow-opinion-content{
+    height: calc( 100% - 40px );
 }
 .o2flow-opinion-textareawrap {
     float: left;
@@ -332,7 +334,10 @@
     overflow: hidden;
 }
 .o2flow-opinion-empty{
-    margin-top: 70px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: #bbb;
     cursor: pointer;
