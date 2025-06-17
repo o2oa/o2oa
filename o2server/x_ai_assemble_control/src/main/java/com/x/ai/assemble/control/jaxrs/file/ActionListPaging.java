@@ -47,15 +47,12 @@ class ActionListPaging extends BaseAction {
 			CriteriaQuery<File> cq = cb.createQuery(File.class);
 			Root<File> root = cq.from(File.class);
 			Predicate p = cb.conjunction();
-			if(StringUtils.isNotBlank(wi.getReferenceId())){
-				p = cb.and(p, cb.equal(root.get(File_.referenceId), wi.getReferenceId()));
+			if(StringUtils.isNotBlank(wi.getFileId())){
+				p = cb.and(p, cb.equal(root.get(File_.fileId), wi.getFileId()));
 			}
 			if(StringUtils.isNotBlank(wi.getFileName())){
 				String key = StringTools.escapeSqlLikeKey(wi.getFileName());
 				p = cb.and(p, cb.like(root.get(File_.name), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
-			}
-			if(StringUtils.isNotBlank(wi.getStatus())){
-				p = cb.and(p, cb.equal(root.get(File_.status), wi.getStatus()));
 			}
 			List<Wo> wos = emc.fetchDescPaging(File.class, Wo.copier, p, adjustPage, adjustPageSize, File.LASTUPDATETIME_FIELDNAME);
 
@@ -67,22 +64,11 @@ class ActionListPaging extends BaseAction {
 
 	public class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("关联文档ID")
-		private String referenceId;
+		@FieldDescribe("关联文件ID")
+		private String fileId;
 
 		@FieldDescribe("附件名称")
 		private String fileName;
-
-		@FieldDescribe("状态")
-		private String status;
-
-		public String getReferenceId() {
-			return referenceId;
-		}
-
-		public void setReferenceId(String referenceId) {
-			this.referenceId = referenceId;
-		}
 
 		public String getFileName() {
 			return fileName;
@@ -92,12 +78,12 @@ class ActionListPaging extends BaseAction {
 			this.fileName = fileName;
 		}
 
-		public String getStatus() {
-			return status;
+		public String getFileId() {
+			return fileId;
 		}
 
-		public void setStatus(String status) {
-			this.status = status;
+		public void setFileId(String fileId) {
+			this.fileId = fileId;
 		}
 	}
 

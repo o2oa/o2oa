@@ -30,7 +30,8 @@ class ActionListWithIds extends BaseAction {
 
 			List<Wo> wos = new ArrayList<>();
 			if(ListTools.isNotEmpty(wi.getIdList())){
-				wos = emc.fetch(wi.getIdList(), Wo.copier);
+				wos.addAll(emc.fetchIn(File.class, Wo.copier, File.fileId_FIELDNAME, wi.getIdList()));
+				wos.addAll(emc.fetch(wi.getIdList(), Wo.copier));
 			}
 
 			result.setData(wos);
