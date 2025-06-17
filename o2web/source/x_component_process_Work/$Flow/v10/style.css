@@ -307,11 +307,16 @@ div[data-o2-element="orgsWraper"] .o2flow-section-content .o2flow-org-line{
 
 .o2flow-opinion-area {
     height: 16rem;
+    min-height: 8.125rem;
+}
+.o2flow-opinion-content{
+    height: calc( 100% - 3.14286rem );
 }
 .o2flow-opinion-textareawrap {
     flex: 3;
-    height: 12rem;
+    /*height: 12rem;*/
     position: relative;
+    height: calc(100% - 0.625rem);
 }
 .o2flow-opinion-textarea {
     resize: none;
@@ -352,6 +357,7 @@ div[data-o2-element="orgsWraper"] .o2flow-section-content .o2flow-org-line{
 .o2flow-opinion-select {
     overflow: auto;
     flex: 2;
+    height: calc( 100% - 0.625rem );
 }
 .o2flow-opinion-select-item {
     cursor: pointer;
@@ -359,7 +365,10 @@ div[data-o2-element="orgsWraper"] .o2flow-section-content .o2flow-org-line{
     padding: 0.12rem 0;
 }
 .o2flow-opinion-empty{
-    margin-top: 70px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: #bbb;
     cursor: pointer;
@@ -495,7 +504,7 @@ div[data-o2-element="orgsWraper"] .o2flow-section-content .o2flow-org-line{
 
 
 .o2flow-org-area {
-    height: 20rem;
+    height: 275px;
 }
 .o2flow-org-area>div{
     flex: 1;

@@ -1,8 +1,8 @@
 <div>
     <div data-o2-element="wrapNode" style="display: contents;">
         <div data-o2-element="titleNode" class="MWF_selector_titleNode">
-            <div data-o2-element="titleCancelActionNode" class="MWF_selector_titleCancelActionNode"></div>
-            <div data-o2-element="titleTextNode" class="MWF_selector_titleTextNode">{{$.lp.title}}</div>
+            <div class="MWF_selector_titleCancelActionNode" data-o2-events="click:handleBreadcrumbsBack"></div>
+            <div data-o2-element="titleTextNode" class="MWF_selector_titleTextNode">{{$.options.title || $.lp.title}}</div>
         </div>
         <div data-o2-element="tabContainer" class="MWF_selector_tabContainer"></div>
         <div data-o2-element="contentNode" class="MWF_selector_contentNode">

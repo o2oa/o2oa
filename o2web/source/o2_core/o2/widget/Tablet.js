@@ -325,7 +325,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.middleAry.push(preData);
         }
 
-        this.canvas.ontouchstart = this.canvas.onmousedown = function(ev){
+        var mousedown = function(ev){
             var flag;
             if( this.currentInput ){
                 this.currentInput.readMode();
@@ -338,7 +338,12 @@ o2.widget.Tablet = o2.Tablet = new Class({
             }else{
                 this.doWritOrErase(ev)
             }
-        }.bind(this)
+        }.bind(this);
+
+        this.canvas.addEvents({
+            touchstart: mousedown,
+            mousedown: mousedown
+        });
     },
     doInput: function(event){
         var _self = this;

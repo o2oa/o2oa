@@ -58,6 +58,7 @@ MWF.xApplication.process.Xform.LP = {
     "selectRollbackActivity" : "请选择文件要回溯到的位置：",
     "tryToProcess" : "并尝试继续流转",
     "in": "在",
+    "select": "选择",
 
     "andSoForth" : "等",
 

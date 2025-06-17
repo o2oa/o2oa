@@ -51,6 +51,7 @@ MWF.xApplication.process.Xform.LP={
 	"selectRollbackActivity": "Por favor seleccione la posición en la que desea retroceder el archivo:",
 	"tryToProcess": "y tratar de continuar el proceso",
 	"in": "en",
+	"select": "Elegir ",
 	"andSoForth": "y así sucesivamente",
 	"noIdentitySelectRange": "No se puede determinar el rango de selección de identidad",
 	"noIdentityDutySelectRange": "No se puede determinar el rango de selección de posición de identidad",

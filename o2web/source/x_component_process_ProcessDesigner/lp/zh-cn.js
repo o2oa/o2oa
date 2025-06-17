@@ -462,6 +462,13 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowPress": "允许发起办理提醒",
 		"allowPause": "允许挂起",
         "allowAddTask": "允许加签",
+		"defaultAddTaskType": "默认加签位置",
+		"addTaskBefore": "前加签",
+		"addTaskAfter": "后加签",
+		"defaultAddTaskMode": "默认加签处理方式",
+		"addTasKSingle": "单人",
+		"addTasKQueue": "并行",
+		"addTasKParallel": "串行",
 
 		"backConfig": "退回配置",
 		"allowBack": "允许退回",

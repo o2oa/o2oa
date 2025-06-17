@@ -124,7 +124,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				bundle);
 		if (null != document) {
 			correlation.setTargetTitle(document.getTitle());
-			correlation.setTargetCategory(document.getAppName());
+			correlation.setTargetCategory(document.getCategoryName());
 			correlation.setTargetStartTime(document.getPublishTime());
 			correlation.setTargetCreatorPerson(document.getCreatorPerson());
 		} else {

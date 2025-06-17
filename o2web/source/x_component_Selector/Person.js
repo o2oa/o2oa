@@ -170,6 +170,20 @@ MWF.xApplication.Selector.Person = new Class({
             }.bind(this));
         }
     },
+    handleBreadcrumbsBack: function (){
+        var flag = false;
+        if( !!this.breadcrumbs ){
+            flag = this.breadcrumbs.back();
+        }
+        if(flag){
+            return true;
+        }else if( !this.inMulitple ){
+            this.close();
+            return true;
+        }else{
+            return false;
+        }
+    },
     loadMobile: function(){
         this.overrideSelectedItems();
 
@@ -3759,6 +3773,16 @@ MWF.xApplication.Selector.Person.Breadcrumbs = new Class({
         item.setCurrent();
         this.currentItem = item;
         this.selector[ item.isRoot ? 'removeMode' : 'addMode']('expanded');
+    },
+    back: function (){
+        if( this.currentItem ){
+            var index = this.items.indexOf(this.currentItem);
+            if( index > 0 ){
+                this.toItem( this.items[index-1] );
+                return true;
+            }
+        }
+        return false;
     }
 });
 

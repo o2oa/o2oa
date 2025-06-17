@@ -2661,6 +2661,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var maxHeight = dlg.getContentMaxHeight();
             var s = _self.flow.getSize();
 
+            //如果出现了滚动条，希望意见框能够自适应缩小
+            if( s.y > maxHeight ){
+                _self.flow.redeuceOpinionHeight( s.y - maxHeight );
+            }
+
             dlg.content.setStyles({
                 "height": Math.min(s.y, maxHeight),
                 "width": s.x,
@@ -2670,6 +2675,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             s = dlg.setContentSize();
             if (!notRecenter) dlg.reCenter();
         };
+
+        var setSizeFun = function (){
+            setSize.call(this.flowDlg);
+        }.bind(this)
 
         this.loadFlow(flowNode, (this.json.flowStyle || "default"), function (flow) {
             this.flowDlg = o2.DL.open({
@@ -2712,10 +2721,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 ],
                 "onQueryClose": function(){
                     if (this.flow) this.flow.destroy();
+                    _self.app.removeEvent('resize', setSizeFun);
                 }.bind(this),
                 "onPostLoad": function () {
                     flowNode.setStyle("opacity", 1);
-                    setSize.call(this)
+                    setSize.call(this);
+                    _self.app.addEvent('resize', setSizeFun);
                 }
             })
         }.bind(this), function () {
@@ -4306,6 +4317,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
             return false;
         }
+        if (!this.formValidation('','')) {
+            return false;
+        }
+
         if (!this.checkUploadAttachment()) return false;
 
         o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(this.businessData.task.work, function(json){

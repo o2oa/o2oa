@@ -129,6 +129,10 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
             setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
                 var options = this.getOptions();
                 if(options){
+                    if( !options.title && this.json.label ){
+                        var select = MWF.xApplication.process.Xform.LP.select;
+                        options.title = this.json.label.contains(select) ? this.json.label : (select+this.json.label);
+                    }
                     if( this.selector && this.selector.loading ) {
                     }else if( this.selector && this.selector.selector && this.selector.selector.active ){
                     }else{
@@ -155,10 +159,14 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
                         this.selector = new MWF.O2Selector(this.form.app.content, options);
                     }
                 }
-            }.bind(this), 100 )
+            }.bind(this), 100 );
         }else{
             var options = this.getOptions();
             if(options){
+                if( !options.title && this.json.label ){
+                    var select = MWF.xApplication.process.Xform.LP.select;
+                    options.title = this.json.label.contains(select) ? this.json.label : (select+this.json.label);
+                }
                 if( this.selector && this.selector.loading ) {
                 }else if( this.selector && this.selector.selector && this.selector.selector.active ){
                 }else {

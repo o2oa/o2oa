@@ -17,6 +17,12 @@ public class ManualProperties extends JsonProperties {
 	@FieldDescribe("是否允许加签")
 	private Boolean allowAddTask;
 
+	@FieldDescribe("默认加签方式")
+	private String defaultAddTaskType;
+
+	@FieldDescribe("默认处理方式")
+	private String defaultAddTaskMode;
+
 	@FieldDescribe("同一处理人不同身份待办合并处理一次.")
 	private Boolean processingTaskOnceUnderSamePerson;
 
@@ -38,6 +44,22 @@ public class ManualProperties extends JsonProperties {
 
 	@FieldDescribe("流程参与者作为待办人设置.")
 	private Participant taskParticipant;
+
+	public String getDefaultAddTaskType() {
+		return defaultAddTaskType;
+	}
+
+	public void setDefaultAddTaskType(String defaultAddTaskType) {
+		this.defaultAddTaskType = defaultAddTaskType;
+	}
+
+	public String getDefaultAddTaskMode() {
+		return defaultAddTaskMode;
+	}
+
+	public void setDefaultAddTaskMode(String defaultAddTaskMode) {
+		this.defaultAddTaskMode = defaultAddTaskMode;
+	}
 
 	public Boolean getAllowTerminate() {
 		return allowTerminate;

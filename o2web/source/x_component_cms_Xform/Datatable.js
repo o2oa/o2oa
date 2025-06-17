@@ -10,7 +10,14 @@ MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
     validationConfigItem: function(routeName, data){
         var flag = (data.status=="all") ? true: (routeName == "publ" || routeName == "publish");
         if (flag){
-            var n = this.getData();
+            var n = this.getInputData();
+            if( o2.typeOf(n)==="object"){
+                var arr = [];
+                Object.each( n, function (d, key) {
+                    if(o2.typeOf(d) === "array")arr = arr.concat(d);
+                });
+                n = arr;
+            }
             var v = (data.valueType=="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":

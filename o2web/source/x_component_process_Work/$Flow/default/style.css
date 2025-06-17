@@ -270,13 +270,17 @@
 
 .o2flow-opinion-area {
     height: 230px;
+    min-height: 130px;
+}
+.o2flow-opinion-content{
+    height: calc( 100% - 40px );
 }
 .o2flow-opinion-textareawrap {
     float: left;
     width: calc(50% - 10px);
     padding-top: 5px;
     padding-right: 10px;
-    height: 180px;
+    height: calc(100% - 10px);
     position: relative;
 }
 .o2flow-opinion-textarea {
@@ -321,7 +325,7 @@
     padding-left: 10px;
     margin-left: 10px;
     border-left: 1px solid #DEDEDE;
-    height: 190px;
+    height: 100%;
 }
 .o2flow-opinion-select-item {
     height: 22px;
@@ -330,7 +334,10 @@
     overflow: hidden;
 }
 .o2flow-opinion-empty{
-    margin-top: 70px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: #bbb;
     cursor: pointer;
