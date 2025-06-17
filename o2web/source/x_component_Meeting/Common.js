@@ -674,6 +674,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     dateInput: {
                         required: true,
                         type: "oo-datetime", isEdited : isEditing, defaultValue: defaultDate, label: lp.beginDate,
+                        attr : {'mode': 'date'},
                         event : {
                             change : function( item, ev ){
                                 this.clearRoom();
