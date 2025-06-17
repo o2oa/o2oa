@@ -43,6 +43,7 @@
 		<!-- 顺序 -->
 		<module>x_query_core_entity</module>
 		<module>x_attendance_core_entity</module>
+		<module>x_ai_core_entity</module>
 		<module>x_bbs_core_entity</module>
 		<module>x_calendar_core_entity</module>
 		<module>x_cms_core_entity</module>
@@ -63,6 +64,7 @@
 		<module>x_query_core_express</module>
 		<module>x_processplatform_core_express</module>
 		<module>x_correlation_core_express</module>
+		<module>x_ai_assemble_control</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
 		<module>x_cms_core_express</module>
@@ -1169,6 +1171,11 @@
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
+				<version>9.2</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_ai_core_entity</artifactId>
 				<version>9.2</version>
 			</dependency>
 			<dependency>
