@@ -12,12 +12,12 @@
 }
 .MWF_selector_contentNode{
   flex: 1;
-  height: calc( 100% - 5.875rem );
+  height: calc( 100% - 7.875rem );
   background-color: #FFFFFF;
 }
 .multiple_mode .MWF_selector_contentNode{
   /*3rem是tab高度， 0.625rem是tab的margin-bottom*/
-  height: calc( 100% - 5.875rem - 3rem - 0.625rem );
+  height: calc( 100% - 7.875rem - 3rem - 0.625rem );
 }
 .multiple_mode .MWF_selector_contentNode > div{
   height: 100%
@@ -29,10 +29,10 @@
   height: 100%
 }
 .MWF_selector_bottomNode{
-  height: 3.125rem;
+  height: 5.125rem;
   overflow: hidden;
   padding: 0 0.625rem;
-  display: flex;
+  /*display: flex;*/
   align-items: center;
   background: #F7F7F7;
   gap: 0.5rem;
@@ -177,10 +177,10 @@
 .MWF_selector_selectedMaskNode{
   display: none;
   position: absolute;
-  bottom: 3.125rem;
+  bottom: 5.125rem;
   left: 0;
   width: 100%;
-  height: calc( 100% - 3.125rem );
+  height: calc( 100% - 5.125rem );
   opacity: 0.4;
   z-index: 1002;
   background-color: #999;
@@ -188,10 +188,10 @@
 .MWF_selector_selectedWrapNode{
   display: none;
   position: absolute;
-  bottom: 3.125rem;
+  bottom: 5.125rem;
   left: 0;
   width: 100%;
-  height: calc( 80% - 3.125rem );
+  height: calc( 80% - 5.125rem );
   border-radius: 1rem 1rem 0 0;
   background: #FFF;
   z-index: 1003;
@@ -333,7 +333,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  height: 100%;
+  height: 2.5rem;
   flex: 1;
 }
 .MWF_selector_selectedCountArea{
@@ -359,6 +359,7 @@
   border: 1px solid #ccc;
   background: #fff;
   color: #666;
+  width: 40%;
 }
 .MWF_selector_okActionNode{
   height: 2rem;
@@ -368,6 +369,7 @@
   color: #fff;
   padding: 0 1rem;
   border: 1px solid #2E82F7;
+  flex: 1;
 }
 
 .selected_mode .MWF_selector_selectedShowIcon{

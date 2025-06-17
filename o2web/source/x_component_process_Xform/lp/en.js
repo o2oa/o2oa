@@ -51,6 +51,7 @@ MWF.xApplication.process.Xform.LP={
 	"selectRollbackActivity": "Select the location of the file to be rollback to:",
 	"tryToProcess": "try to continue flow",
 	"in": " in ",
+	"select": "select ",
 	"andSoForth": "...",
 	"noIdentitySelectRange": "Cannot determine the range of identity selection",
 	"noIdentityDutySelectRange": "Unable to determine the range of duty selection",
