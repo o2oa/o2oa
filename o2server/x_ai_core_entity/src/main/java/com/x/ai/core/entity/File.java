@@ -38,9 +38,6 @@ public class File extends StorageObject {
 
 	private static final String BASE_PATH = "o2_ai";
 
-	public static final String STATUS_INDEXED = "已索引";
-	public static final String STATUS_NO_INDEX = "未索引";
-
 	public String getId() {
 		return id;
 	}
@@ -55,9 +52,7 @@ public class File extends StorageObject {
 	private String id = createId();
 
 	public void onPersist() {
-		if(StringUtils.isBlank(this.referenceId)){
-			this.referenceId = this.id;
-		}
+		//
 	}
 
 	public File() {
@@ -71,7 +66,6 @@ public class File extends StorageObject {
 		this.name = name;
 		this.extension = StringUtils.lowerCase(FilenameUtils.getExtension(name));
 		this.creator = creator;
-		this.status = STATUS_NO_INDEX;
 	}
 
 	@Override
@@ -98,27 +92,13 @@ public class File extends StorageObject {
 	@CheckPersist(allowEmpty = false)
 	private String creator;
 
-	public static final String referenceId_FIELDNAME = "referenceId";
-	@FieldDescribe("关联文件ID.")
-	@Flag
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + referenceId_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + referenceId_FIELDNAME, unique = true)
-	@CheckPersist(allowEmpty = true)
-	private String referenceId;
-
 	public static final String fileId_FIELDNAME = "fileId";
-	@FieldDescribe("大模型知识库文件ID.")
+	@FieldDescribe("关联文件ID.")
 	@Flag
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fileId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + fileId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String fileId;
-
-	public static final String status_FIELDNAME = "status";
-	@FieldDescribe("文件状态.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + status_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private String status;
 
 	public static final String EXTENSION_FIELDNAME = "extension";
 	@FieldDescribe("扩展名,必须要有扩展名的文件才允许上传.")
@@ -213,14 +193,6 @@ public class File extends StorageObject {
 		this.creator = creator;
 	}
 
-	public String getReferenceId() {
-		return referenceId;
-	}
-
-	public void setReferenceId(String referenceId) {
-		this.referenceId = referenceId;
-	}
-
 	public String getFileId() {
 		return fileId;
 	}
@@ -229,11 +201,4 @@ public class File extends StorageObject {
 		this.fileId = fileId;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
 }
