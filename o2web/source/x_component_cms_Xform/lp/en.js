@@ -463,6 +463,7 @@ MWF.xApplication.cms.Xform.LP={
 		"undo": "Un Commend"
 	},
 	"requiredHint": "Please fill in the {label} field",
-	"requiredHintField": "this"
+	"requiredHintField": "this",
+	"editDatatable": "Edit data table"
 }
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP

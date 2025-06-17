@@ -104,6 +104,12 @@ MWF.xApplication.process.FormDesigner.Module.OORadioGroup = MWF.FCOORadioGroup =
 				this.node.getLast().getFirst().show();
 			}
 		}
+
+		if (this.form.options.mode == "Mobile"){
+			if (!this.node.getParent('table.form-datatable')){
+				this.node.setAttribute("skin-mode", 'mobile');
+			}
+		}
 	},
 	setCustomInputStyles: function(){
 		this._recoveryModuleData();

@@ -109,6 +109,12 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		this.node.setAttribute('value', undefined);
 		this.node.removeAttribute("placeholder");
 
+		if (o2.isMediaMobile() && !this.json.inDatatable){
+			this.node.setAttribute("skin-mode", 'mobile');
+		}else{
+            this.node.removeAttribute("skin-mode");
+        }
+
 		if (this.json.properties) {
 			this.node.set(this.json.properties);
 		}
@@ -118,6 +124,10 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		if (this.json.label) {
 			this.node.setAttribute('label', this.json.label);
 		}
+
+		if (this.json.inDatatable){
+            this.node.setAttribute('view-style', '');
+        }
 
 		this.node.setAttribute('readonly', false);
 		this.node.setAttribute('readmode', false);
@@ -260,7 +270,6 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	// },
 
 	__setValue: function(value){
-		debugger;
 		this._setBusinessData(value);
 		this.node.value = value;
 		this.fieldModuleLoaded = true;

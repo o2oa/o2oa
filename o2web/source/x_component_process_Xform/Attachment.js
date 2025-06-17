@@ -1711,8 +1711,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
-        debugger;
-
         this.fireEvent("queryLoadController", [options]);
 
         /**
@@ -3161,7 +3159,6 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
     setAttachmentBusinessData: function(){
         if (this.attachmentController) {
             if (this.attachmentController.attachments.length) {
-                debugger;
                 var values = this.attachmentController.attachments.map(function (d) {
                     return {
                         "control": d.data.control,

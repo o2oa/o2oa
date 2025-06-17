@@ -1628,6 +1628,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"copyProperty": "Atributos del componente de copia"
 	},
 	"selectCopyModule": "Por favor, elija el componente que necesita copiar el atributo",
-	"selectCopyModuleNotice": "¡¡ por favor, elija el componente primero!"
+	"selectCopyModuleNotice": "¡¡ por favor, elija el componente primero!",
+	"actionScript": "Guión de operación",
+	"condition": "Condiciones ocultas"
 }
 MWF.xApplication.process.FormDesigner["lp."+o2.language] = MWF.xApplication.process.FormDesigner.LP

@@ -49,6 +49,12 @@ MWF.xApplication.process.FormDesigner.Module.OOOrg = MWF.FCOOOrg = new Class({
 				this.node.removeAttribute("right-icon");
 			}
 		}
+
+		if (this.form.options.mode == "Mobile"){
+			if (!this.node.getParent('table.form-datatable')){
+				this.node.setAttribute("skin-mode", 'mobile');
+			}
+		}
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-selector", {

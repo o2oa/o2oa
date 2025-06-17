@@ -47,7 +47,8 @@
     "file": "styles_v10.json",
     "extendFile": "styles_v10_extend.json",
     "mode": [
-      "pc"
+      "pc",
+      "mobile"
     ]
   },
   "defaultMobile": {

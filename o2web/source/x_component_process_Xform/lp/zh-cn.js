@@ -479,7 +479,9 @@ MWF.xApplication.process.Xform.LP = {
     "associatedDocument": "关联文档",
     "docDeleted": "文档已经被删除或您没有权限打开此文档。",
 
-    "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。"
+    "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。",
+
+    "editDatatable": "编辑数据表格"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

@@ -48,6 +48,12 @@ MWF.xApplication.process.FormDesigner.Module.OODatetime = MWF.FCOODatetime = new
 				this.node.removeAttribute("required");
 			}
 		}
+
+		if (this.form.options.mode == "Mobile"){
+			if (!this.node.getParent('table.form-datatable')){
+				this.node.setAttribute("skin-mode", 'mobile');
+			}
+		}
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-datetime", {

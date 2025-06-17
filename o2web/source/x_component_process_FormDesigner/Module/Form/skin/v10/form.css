@@ -1,6 +1,6 @@
 
 /* 操作条容器 */
-.form-layout .form-toolbar-area {
+.form-toolbar-area {
     box-shadow: 0 2px 10px 0 var(--oo-color-gray-e1);
     background-color: #ffffff;
     /*flex: 0 1 3.8em;*/
@@ -152,20 +152,22 @@
 .form-layout div[mwftype='datatable']{
     padding-bottom: 0 !important;
     overflow: auto;
+    /* position: relative; */
 }
+
 .form-layout div[mwftype='datatable'] th{
     position: sticky;
     top: 0;
-    z-index: 101;
+    z-index: 11;
 }
 .form-layout div[mwftype='datatable'] th.mwf_addlineaction {
     left: 0;
-    z-index: 102;
+    z-index: 12;
 }
 .form-layout .form-datatable .mwf_editaction{
     position: sticky;
     left: 0;
-    z-index: 100;
+    z-index: 10;
     min-width: 48px;
 }
 
@@ -182,7 +184,7 @@
     border-left: 1px solid #dedede !important;
     position: sticky;
     right: 0;
-    z-index: 101;
+    z-index: 11;
 }
 
 .form-layout td[mwftype='datatable$Data'].mwf_origional>* {
@@ -290,7 +292,7 @@
     position: absolute;
     right: 0.8em;
     top: 40%;
-    z-index: 20000;
+    z-index: 200;
 }
 .form-side-bookmark-content {
     min-height: 2em;
@@ -534,52 +536,64 @@
 
 /* 手机 */
 @media only screen and (max-width: 767px) {
-    :root{
+    /* :root{
         --oo-shadow-border: inset 0 -1px 0 0px var(--oo-color-gray-d);
         --oo-shadow-border-focus: inset 0 -1px 0 0px var(--oo-color-main);
         --oo-shadow-border-error: inset 0 -1px 0 0px var(--oo-color-error);
         --oo-default-radius: 0;
+        --oo-area-radius: 0;
+    } */
+    body {
+        box-sizing: border-box !important;
+        font-size: 16px !important;
+    }
+    body *{
+        box-sizing: border-box !important;
+    }
+    oo-input, oo-select, oo-textarea, oo-datetime {
+        color: var(--oo-color-text);
     }
 
-
-    .form-layout .form-layout {
+    .form-layout {
         width: 99%;
         min-width: 99%;
         margin: auto;
     }
 
-    .form-layout .form-layout {
+    .form-layout {
         /* width: 99%; */
         /* min-width: 99%; */
         margin: auto;
     }
-    .form-layout .form-content > div {
+    .form-content > div {
         width: unset !important;
         min-width: unset !important;
+        gap: 0.625rem !important;
     }
-    .form-layout .form-content-area oo-input {
+    .form-content-area oo-input {
         flex: 1 1 100%;
     }
-    .form-layout .form-toolbar {
+    .form-toolbar {
         width: 99% !important;
         margin: auto !important;
         min-width: 99%;
         max-width: unset !important;
     }
-    .form-layout .form-content-area {
-        padding: 1em 1em;
+    .form-content-area {
+        padding: 1em 1em !important;
+        position: static !important;
     }
-    .form-layout .form-description {
+    .form-description {
         margin: 0;
     }
-    .form-layout .form-toolbar-area {
+    .form-toolbar-area {
         display: none !important;
     }
     .form-side-content{
         position:sticky;
         top: 0;
         overflow: auto;
-        box-shadow: 0 1px 10px 0px #cccccc;
+        box-shadow: 0 2px 10px 0px #dddddd;
     }
 
     .form-side-content::-webkit-scrollbar {
@@ -600,7 +614,7 @@
     .form-side-bookmark-content{
         display: flex;
         justify-content: space-around;
-        /* font-size: 1.125rem; */
+        font-size: 1.125rem;
         white-space: nowrap;
         padding: 0;
         background-color: #ffffff;
@@ -620,18 +634,184 @@
     .form-side-top{
         display: none !important;
     }
+    .form-content-section{
+        border-left: 0 !important;;
+    }
+    .form-content-section:before{
+        content: ' ';
+        display: block;
+        margin-right: 0.5em;
+        width: 0.375rem !important;
+        height: 1.25rem !important;
+        background-color: var(--oo-color-main) !important;
+        margin-top: 0.15em;
+        float: left;
+    }
+
+    .form-content > div.form-content-area{
+        gap: 1em 2em !important;
+    }
+    .form-content{
+        padding: 0 !important;
+        position: static !important;
+    }
+
+    .form-title{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        background-color: #ffffff;
+        position: sticky;
+        top: 0;
+        /* z-index: 10000; */
+    }
+    .form-title-text{
+        font-weight: bold !important;
+        color: var(--oo-color-main-deep);
+        text-align: center;
+        font-size: 1.5rem !important;
+        padding: 1rem 0 !important;
+    }
+    /* .ooui-select-visible div:has(>.appContent) {
+        position: static !important;
+    }
+    .ooui-select-visible{
+        position: absolute;
+        border: 1px solid blue;
+    }*/
+    .ooui-select-visible .o2_form_mobile_actions{
+        position: static !important;
+        display: none !important;
+    }
+    .ooui-select-visible .form-side-content{
+        /* position: static !important; */
+        pointer-events: none;
+    } 
+    
+    div[mwftype='datatable'] tr:nth-child(odd){
+        background-color: #ffffff !important;;
+    }
+    div[mwftype='datatable'] tr:nth-child(even){
+        background-color: #f7f7f7 !important;;
+    }
+
+    div[mwftype='datatable'] td{
+        padding: 0.5em 0 !important;
+        font-size: 0.875em;
+        background-color: transparent !important;
+    }
+
+    div[mwftype='datatable'] oo-input,
+    div[mwftype='datatable'] oo-selector,
+    div[mwftype='datatable'] oo-textarea,
+    div[mwftype='datatable'] oo-radio-group,
+    div[mwftype='datatable'] oo-checkbox-group,
+    div[mwftype='datatable'] oo-select,
+    div[mwftype='datatable'] oo-datetime {
+        white-space: nowrap !important;
+    }
+
+    div[mwftype='datatable'] .mwf_sequence {
+        text-align: center;
+        padding: 0 !important;
+        width: 1em !important;
+    }
+    div[mwftype='datatable'] th {
+        padding: 0 0.2em !important;
+    }
+    div[mwftype='datatable']{
+        background-color: #ffffff;
+        transition: top 0.9s, left 0.9s, width 0.9s;
+        /* transition: width 0.9s, height 0.9s, top 0.9s, left 0.9s; */
+    }
+
+    /* .datatable_edit_mode */
+    .datatable_edit_mode table, .datatable_edit_mode table tr, .datatable_edit_mode table td{
+        display: block;
+    }
+    .datatable_edit_mode table tbody{
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+    .datatable_edit_mode table tr:first-child{
+        display: none;
+    }
+    .datatable_edit_mode{
+        /* padding: 1em; */
+    }
+    .datatable_edit_mode table tr{
+        /* border: 1px solid #dedede !important; */
+        border-radius: var(--oo-default-radius);
+        overflow: hidden;
+        position: relative;
+        display: grid;
+        gap: 0.5em 0;
+        padding-bottom: 0.5em;
+        grid-template-columns: 6em 1fr;
+    }
+    .datatable_edit_mode .mwf_origional{
+        display: flex !important;
+        padding: 0 0.5em !important;
+        align-items: center;
+        font-size: 1rem;
+    }
+    .datatable_edit_mode .mwf_origional *{
+        flex: 1;
+    }
+
+    .datatable_edit_mode td.mwf_editaction{
+        background-color: var(--oo-color-main) !important;
+        color: #ffffff;
+        overflow: hidden;
+        padding: 0.7em 0.5em !important;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .datatable_edit_mode td.mwf_sequence{
+        position: absolute;
+        top: 0;
+        margin: 0.35em;
+    }
+
+    .datatable_edit_mode td.mwf_moveaction{
+        position: absolute;
+    }
+
+    div[mwftype='datatable'].datatable_edit_mode tr:nth-child(even) {
+        background-color: #ffffff !important;
+    }
+
+    .datatable_edit_mode table th{
+        background-color: #ffffff;
+        height: unset !important;
+        align-items: center;
+        background-color: transparent !important;
+    }
+
+     div[mwftype='datatable'].datatable_edit_mode oo-input,
+     div[mwftype='datatable'].datatable_edit_mode oo-selector,
+     div[mwftype='datatable'].datatable_edit_mode oo-textarea,
+     div[mwftype='datatable'].datatable_edit_mode oo-radio-group,
+     div[mwftype='datatable'].datatable_edit_mode oo-checkbox-group,
+     div[mwftype='datatable'].datatable_edit_mode oo-select,
+     div[mwftype='datatable'].datatable_edit_mode oo-datetime {
+        white-space: normal !important;
+    }
+    
 }
 
 /* 平板电脑 */
 @media only screen and (min-width: 768px) and (max-width: 1279px) {
-    .form-layout .form-toolbar-area {
+    .form-toolbar-area {
         display: flex !important;
     }
 }
 
 /* 桌面电脑 */
 @media only screen and (min-width: 1280px) {
-    .form-layout .form-toolbar-area {
+    .form-toolbar-area {
         display: flex !important;
     }
 }

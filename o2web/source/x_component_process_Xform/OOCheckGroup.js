@@ -26,6 +26,12 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
         this.node.destroy();
         this.node = node;
 
+        if (o2.isMediaMobile() && !this.json.inDatatable){
+			this.node.setAttribute("skin-mode", 'mobile');
+		}else{
+            this.node.removeAttribute("skin-mode");
+        }
+
         if (this.json.properties) {
             this.node.set(this.json.properties);
         }
@@ -43,6 +49,10 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
         }
         if (this.json.canSelectCount){
             this.node.setAttribute('count', this.json.canSelectCount);
+        }
+
+        if (this.json.inDatatable){
+            this.node.setAttribute('view-style', '');
         }
 
         if (!this.isReadonly()){

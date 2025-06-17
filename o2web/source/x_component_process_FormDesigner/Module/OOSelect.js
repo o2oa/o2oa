@@ -38,6 +38,12 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 			}
 		}
 
+		if (this.form.options.mode == "Mobile"){
+			if (!this.node.getParent('table.form-datatable')){
+				this.node.setAttribute("skin-mode", 'mobile');
+			}
+		}
+
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-select", {

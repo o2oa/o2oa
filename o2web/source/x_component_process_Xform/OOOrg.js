@@ -33,7 +33,11 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
             'validity-blur': 'true',
             // "label-style": "width:6.2vw; min-width:5em; max-width:9em"
         });
-
+        if (o2.isMediaMobile() && !this.json.inDatatable){
+			this.node.setAttribute("skin-mode", 'mobile');
+		}else{
+            this.node.removeAttribute("skin-mode");
+        }
         if (this.json.label) {
             this.node.setAttribute('label', this.json.label);
         }
@@ -49,6 +53,10 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         }
         if (this.json.styles) {
             this.node.setStyles(this.json.styles);
+        }
+
+        if (this.json.inDatatable){
+            this.node.setAttribute('view-style', '');
         }
 
         this.node.setAttribute('readonly', false);
@@ -91,7 +99,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         }
 
         this.node.addEvent('change', function () {
-            debugger;
+
             var v = this.getInputData('change');
             this.validationMode();
             this.validation();

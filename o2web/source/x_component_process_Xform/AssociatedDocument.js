@@ -262,7 +262,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }
             titles.each(function (title, i){
                 var th = new Element("th", {text: title}).inject(headerNode);
-                debugger;
                 if( titlesWidth[i] ){
                     th.setStyle('width', titlesWidth[i]);
                 }

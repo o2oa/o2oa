@@ -276,7 +276,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
-			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
+			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true)); 
 			if( this.isMergeRead )this.editable = false;
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
@@ -2824,6 +2824,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 
 				var hasData = this.data.hasOwnProperty(templateJsonId);
 
+				json.inDatatable = true;
 				var module = this.form._loadModule(json, node, function () {
 					if( _self.options.isMergeRead ){
 						this.field = false; //不希望保存数据

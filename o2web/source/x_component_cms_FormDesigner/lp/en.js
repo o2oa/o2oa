@@ -1530,7 +1530,10 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"elOptionProperties": "options property",
 		"defaultParameters": "Default parameters",
 		"useQuickSelect": "Use Quick Selection",
-		"allowSelectInput": "Allow input"
+		"allowSelectInput": "Allow input",
+		"valueLength": "length",
+		"maxHeight": "maximum height",
+		"minWidth": "Minimum width"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
@@ -1639,6 +1642,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"lightBlue": "Light blue style"
 	},
 	"selectCopyModule": "Please select the component whose properties need to be copied",
-	"selectCopyModuleNotice": "Please select the component first!"
+	"selectCopyModuleNotice": "Please select the component first!",
+	"actionScript": "Operation script",
+	"condition": "Hide conditions"
 }
 MWF.xApplication.cms.FormDesigner["lp."+o2.language] = MWF.xApplication.cms.FormDesigner.LP

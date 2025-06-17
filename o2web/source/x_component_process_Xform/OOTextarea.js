@@ -34,6 +34,11 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
             'validity-blur': 'true',
             // "label-style": "width:6.2vw; min-width:5em; max-width:9em"
         });
+        if (o2.isMediaMobile() && !this.json.inDatatable){
+			this.node.setAttribute("skin-mode", 'mobile');
+		}else{
+            this.node.removeAttribute("skin-mode");
+        }
 
         if (this.json.properties) {
             this.node.set(this.json.properties);
@@ -50,6 +55,9 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
             this.node.setAttribute('right-icon', 'edit');
         } else if (this.form.json.nodeStyleWithhideModuleIcon) {
             this.node.setAttribute('right-icon', '');
+        }
+        if (this.json.inDatatable){
+            this.node.setAttribute('view-style', '');
         }
 
         this.node.setAttribute('readonly', false);

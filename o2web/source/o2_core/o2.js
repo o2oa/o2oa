@@ -119,9 +119,9 @@ if (!window.o2) {
          * var v = o2.version.v;
          */
         this.o2.version = {
-            "v": "o2oa",
-            "build": "2022.09.13",
-            "info": "O2OA 活力办公 创意无限. Copyright © 2022, o2oa.net O2 Team All rights reserved."
+            "v": "o2oa-10",
+            "build": "2025.06.28",
+            "info": "O2OA 活力办公 创意无限. Copyright © 2025, o2oa.net O2 Team All rights reserved."
         };
 
         /**

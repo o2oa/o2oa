@@ -29,7 +29,11 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
         }).inject(this.node, 'before');
         this.node.destroy();
         this.node = node;
-
+        if (o2.isMediaMobile() && !this.json.inDatatable){
+			this.node.setAttribute("skin-mode", 'mobile');
+		}else{
+            this.node.removeAttribute("skin-mode");
+        }
         if (this.json.properties) {
             this.node.set(this.json.properties);
         }
@@ -44,6 +48,10 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
             this.node.removeAttribute('col');
         }else{
             this.node.setAttribute('col', this.json.countPerline);
+        }
+
+        if (this.json.inDatatable){
+            this.node.setAttribute('view-style', '');
         }
 
         if (!this.isReadonly()){
