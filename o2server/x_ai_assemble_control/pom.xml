@@ -39,7 +39,6 @@
 		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_ai_core_entity</artifactId>
-			<version>9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aliyun</groupId>
