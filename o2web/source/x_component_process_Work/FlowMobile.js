@@ -396,7 +396,7 @@ MWF.ProcessFlow.AddTaskMobile = new Class({
                 text: this.lp.parallel,
                 value: "parallel"
             }],
-            value: this.quickData.mode || "single" //默认单人
+            value: this.quickData.mode || this.businessData.activity.defaultAddTaskMode || "single" //默认单人
         });
         this.mode.load();
 
@@ -404,7 +404,7 @@ MWF.ProcessFlow.AddTaskMobile = new Class({
         if( this.quickData.routeId ){
             position = (this.quickData.routeId === "before") ? "true" : "false"
         }else{
-            position = "false"; //默认为后加签
+            position = this.businessData.activity.defaultAddTaskType === 'before' ? 'true' :"false"; //默认为后加签
         }
         this.position = new MWF.ProcessFlow.widget.Radio2(this.positionArea, this.flow, {
             activeIcon: "o2icon-checkbox",
