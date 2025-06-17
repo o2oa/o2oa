@@ -2,7 +2,7 @@
     <div data-o2-element="wrapNode" style="display: contents;">
         <div data-o2-element="titleNode" class="MWF_selector_titleNode">
             <div class="MWF_selector_titleCancelActionNode" data-o2-events="click:handleBreadcrumbsBack"></div>
-            <div data-o2-element="titleTextNode" class="MWF_selector_titleTextNode">{{$.lp.title}}</div>
+            <div data-o2-element="titleTextNode" class="MWF_selector_titleTextNode">{{$.options.title || $.lp.title}}</div>
         </div>
         <div data-o2-element="tabContainer" class="MWF_selector_tabContainer"></div>
         <div data-o2-element="contentNode" class="MWF_selector_contentNode">
@@ -59,8 +59,8 @@
             </div>
 
             <div data-o2-element="actionNode" class="MWF_selector_actionNode">
-                <button data-o2-element="okActionNode" class="MWF_selector_okActionNode mainColor_bg">{{$.lp.ok}}</button>
                 <button data-o2-element="cancelActionNode" class="MWF_selector_cancelActionNode">{{$.lp.cancel}}</button>
+                <button data-o2-element="okActionNode" class="MWF_selector_okActionNode mainColor_bg">{{$.lp.ok}}</button>
             </div>
         </div>
     </div>

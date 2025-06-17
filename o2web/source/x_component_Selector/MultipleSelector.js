@@ -746,6 +746,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 var selector = this.selectors[t];
                 selector.selectedIndexMap = selectedIndexMap;
                 selector.inMulitple = true;
+                tab.selector = selector;
 
                 if( this.options.contentUrl ){
                     if( this.options.useO2Load ){
@@ -840,8 +841,6 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                         //}
                     }
                 }
-
-
 
                 if( index == 0 )tab.showIm();
             }.bind(this));
@@ -1067,6 +1066,16 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             }
 
             this.contentHeight = nodeHeight;
+        }
+    },
+    handleBreadcrumbsBack: function (){
+        var flag = false;
+        var showingPages = this.tab.pages.filter(function(page){ return !!page.isShow; });
+        if(showingPages.length && showingPages[0].selector){
+            flag = showingPages[0].selector.handleBreadcrumbsBack();
+        }
+        if( !flag ){
+            this.close();
         }
     }
 });
