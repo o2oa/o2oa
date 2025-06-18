@@ -106,6 +106,10 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
             if (this.form.forms[module.id])delete this.form.forms[module.id];
             this.form.modules.erase(module);
 
+            if( module.name ){
+                delete this.form.allForName[module.name];
+            }
+
             delete this.form.json.moduleList[formKey];
         }.bind(this));
 
