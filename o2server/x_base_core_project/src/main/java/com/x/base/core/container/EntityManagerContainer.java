@@ -47,7 +47,7 @@ import com.x.base.core.project.tools.StringTools;
 public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	public static final Integer DEFAULT_PAGESIZE = 20;
-	public static final Integer MAX_PAGESIZE = 1000;
+	public static final Integer MAX_PAGESIZE = 2000;
 
 	public EntityManagerContainer(EntityManagerContainerFactory entityManagerContainerFactory) {
 		super(entityManagerContainerFactory);
@@ -191,7 +191,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	/**
 	 * 判断id在实体类中是否可用
-	 * 
+	 *
 	 * @param id
 	 * @param cls
 	 * @return
@@ -1973,7 +1973,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			List<String> fetchAttributes, Predicate predicate, Integer page, Integer pageSize, String orderAttribute)
 			throws Exception {
 		List<T> list = new ArrayList<>();
-		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int max = (pageSize == null || pageSize < 1) ? DEFAULT_PAGESIZE : pageSize;
+		max = (max > MAX_PAGESIZE) ? MAX_PAGESIZE : max;
 		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
 		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
@@ -2017,7 +2018,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			List<String> fetchAttributes, Predicate predicate, Integer page, Integer pageSize, String orderAttribute)
 			throws Exception {
 		List<T> list = new ArrayList<>();
-		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int max = (pageSize == null || pageSize < 1) ? DEFAULT_PAGESIZE : pageSize;
+		max = (max > MAX_PAGESIZE) ? MAX_PAGESIZE : max;
 		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
 		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
@@ -2061,7 +2063,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			List<String> fetchAttributes, String equalAttribute, Object equalValue, Integer page, Integer pageSize,
 			String orderAttribute) throws Exception {
 		List<T> list = new ArrayList<>();
-		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int max = (pageSize == null || pageSize < 1) ? DEFAULT_PAGESIZE : pageSize;
+		max = (max > MAX_PAGESIZE) ? MAX_PAGESIZE : max;
 		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
 		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
@@ -2105,7 +2108,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			List<String> fetchAttributes, String equalAttribute, Object equalValue, Integer page, Integer pageSize,
 			String orderAttribute) throws Exception {
 		List<T> list = new ArrayList<>();
-		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int max = (pageSize == null || pageSize < 1) ? DEFAULT_PAGESIZE : pageSize;
+		max = (max > MAX_PAGESIZE) ? MAX_PAGESIZE : max;
 		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
 		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
@@ -2150,7 +2154,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			List<String> fetchAttributes, String equalAttribute, Object equalValue, String otherEqualAttribute,
 			Object otherEqualValue, Integer page, Integer pageSize, String orderAttribute) throws Exception {
 		List<T> list = new ArrayList<>();
-		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int max = (pageSize == null || pageSize < 1) ? DEFAULT_PAGESIZE : pageSize;
+		max = (max > MAX_PAGESIZE) ? MAX_PAGESIZE : max;
 		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
 		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
@@ -2196,7 +2201,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			List<String> fetchAttributes, String equalAttribute, Object equalValue, String otherNotEqualAttribute,
 			Object otherNotEqualValue, Integer page, Integer pageSize, String orderAttribute) throws Exception {
 		List<T> list = new ArrayList<>();
-		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int max = (pageSize == null || pageSize < 1) ? DEFAULT_PAGESIZE : pageSize;
+		max = (max > MAX_PAGESIZE) ? MAX_PAGESIZE : max;
 		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
 		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
