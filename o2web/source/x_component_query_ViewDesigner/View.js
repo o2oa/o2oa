@@ -830,7 +830,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             // }
 
         this.designer.actions.saveView(this.data, function(json){
-            this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
+            this.designer.notice(this.designer.lp.notice.save_success, "success", null, {"x": "left", "y": "bottom"});
             this.isNewView = false;
             this.data.id = json.data.id;
             //this.page.textNode.set("text", this.data.name);

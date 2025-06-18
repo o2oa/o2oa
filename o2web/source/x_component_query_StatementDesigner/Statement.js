@@ -660,7 +660,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             o2.require("o2.widget.JavascriptEditor", function () {
                 this.jpqlEditor = new o2.widget.JavascriptEditor(this.jpqlEditorNode, {
                     "title": "JPQL",
-                    "option": {"mode": "sql"}
+                    "option": {"mode": "sql"},
+                    "onSave": function () {
+                        this.designer.saveStatement();
+                    }.bind(this)
                 });
                 this.jpqlEditor.load(function () {
                     this.jpqlEditor.editor.setValue(this.json.data);
@@ -695,7 +698,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             o2.require("o2.widget.JavascriptEditor", function () {
                 this.jpqlCountEditor = new o2.widget.JavascriptEditor(this.jpqlCountEditorNode, {
                     "title": "JPQL",
-                    "option": {"mode": "sql"}
+                    "option": {"mode": "sql"},
+                    "onSave": function () {
+                        this.designer.saveStatement();
+                    }.bind(this)
                 });
                 this.jpqlCountEditor.load(function () {
                     this.jpqlCountEditor.editor.setValue(this.json.countData);
@@ -743,7 +749,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             o2.require("o2.widget.JavascriptEditor", function () {
                 this.sqlEditor = new o2.widget.JavascriptEditor(this.sqlEditorNode, {
                     "title": "SQL",
-                    "option": {"mode": "sql"}
+                    "option": {"mode": "sql"},
+                    "onSave": function () {
+                        this.designer.saveStatement();
+                    }.bind(this)
                 });
                 this.sqlEditor.load(function () {
                     this.sqlEditor.editor.setValue(this.json.sql);
@@ -779,7 +788,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             o2.require("o2.widget.JavascriptEditor", function () {
                 this.sqlCountEditor = new o2.widget.JavascriptEditor(this.sqlCountEditorNode, {
                     "title": "SQL",
-                    "option": {"mode": "sql"}
+                    "option": {"mode": "sql"},
+                    "onSave": function () {
+                        this.designer.saveStatement();
+                    }.bind(this)
                 });
                 this.sqlCountEditor.load(function () {
                     this.sqlCountEditor.editor.setValue(this.json.sqlCount);
@@ -942,7 +954,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         o2.require("o2.widget.JavascriptEditor", function () {
             this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {
                 "title": "parameter",
-                "option": {"mode": "json"}
+                "option": {"mode": "json"},
+                "onSave": function () {
+                    this.designer.saveStatement();
+                }.bind(this)
             });
             this.jsonEditor.load(function () {
                 debugger;
@@ -953,7 +968,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
             this.filterListEditor = new o2.widget.JavascriptEditor(this.runFilterNode, {
                 "title": "filterList",
-                "option": {"mode": "json"}
+                "option": {"mode": "json"},
+                "onSave": function () {
+                    this.designer.saveStatement();
+                }.bind(this)
             });
             this.filterListEditor.load(function () {
                 var json = JSON.parse( this.data.testParameters || "{}" );
@@ -1546,7 +1564,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.data.testParameters = JSON.stringify(textJson);
 
         this.designer.actions.saveStatement(this.data, function (json) {
-            this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
+            this.designer.notice(this.designer.lp.save_success, "success", null, {"x": "left", "y": "bottom"});
 
             this.data.id = json.data.id;
             if (this.lisNode) {
