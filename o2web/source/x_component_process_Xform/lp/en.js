@@ -416,6 +416,7 @@ MWF.xApplication.process.Xform.LP={
 	"uploading": "Uploading attachment, please wait for the attachment upload to complete before performing this operation.",
 	"requiredHint": "Please fill in the {label} field",
 	"requiredHintField": "this",
-	"editDatatable": "Edit data table"
+	"editDatatable": "Edit data table",
+	"editOk": "Editing completed"
 }
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP

@@ -549,7 +549,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var ths = this.titleTr.getElements("th");
 			//datatable$Title Module
 			ths.each(function(th, index){
-				var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
+				var td = new Element("td", {"html": "<span>&nbsp;</span>", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
 				if (this.json.amountStyles) td.setStyles(this.json.amountStyles);
 
 				var json = this.form._getDomjson(th);

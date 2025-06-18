@@ -697,8 +697,8 @@
     }
 
     div[mwftype='datatable'] td{
-        padding: 0.5em 0 !important;
-        font-size: 0.875em;
+        padding: 0 0 !important;
+        /* font-size: 0.875em; */
         background-color: transparent !important;
     }
 
@@ -722,8 +722,7 @@
     }
     div[mwftype='datatable']{
         background-color: #ffffff;
-        transition: top 0.9s, left 0.9s, width 0.9s;
-        /* transition: width 0.9s, height 0.9s, top 0.9s, left 0.9s; */
+        transition: scale 0.3s, top 0.3s, left 0.3s;
     }
 
     /* .datatable_edit_mode */
@@ -733,13 +732,18 @@
     .datatable_edit_mode table tbody{
         display: flex;
         flex-direction: column;
-        gap: 1em;
+        gap: 1.5em;
     }
     .datatable_edit_mode table tr:first-child{
         display: none;
     }
     .datatable_edit_mode{
-        /* padding: 1em; */
+        padding: 0em !important;
+        position: absolute !important;
+        overscroll-behavior: contain;
+    }
+    .datatable_edit_mode table{
+        padding: 0.5em;
     }
     .datatable_edit_mode table tr{
         /* border: 1px solid #dedede !important; */
@@ -747,13 +751,13 @@
         overflow: hidden;
         position: relative;
         display: grid;
-        gap: 0.5em 0;
-        padding-bottom: 0.5em;
+        gap: 0;
+        /* padding-bottom: 0.5em; */
         grid-template-columns: 6em 1fr;
     }
     .datatable_edit_mode .mwf_origional{
         display: flex !important;
-        padding: 0 0.5em !important;
+        padding: 0.2em 0.5em !important;
         align-items: center;
         font-size: 1rem;
     }
@@ -762,25 +766,31 @@
     }
 
     .datatable_edit_mode td.mwf_editaction{
-        background-color: var(--oo-color-main) !important;
-        color: #ffffff;
+        background-color: #f3f3f3 !important;
         overflow: hidden;
-        padding: 0.7em 0.5em !important;
+        padding: 0.3em 0.5em !important;
         display: flex;
         justify-content: flex-end;
+        min-height: 2.2em;
     }
     .datatable_edit_mode td.mwf_sequence{
-        position: absolute;
-        top: 0;
-        margin: 0.35em;
-    }
-
-    .datatable_edit_mode td.mwf_moveaction{
-        position: absolute;
+        border-bottom: 1px solid rgb(222, 222, 222);
+        /* position: absolute; */
+        width: unset !important;
+        /* height: 100%; */
+        /* display: none; */
+        /* align-items: center; */
+        word-break: keep-all;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        padding: 0.7em 1.1em !important;
     }
 
     div[mwftype='datatable'].datatable_edit_mode tr:nth-child(even) {
-        background-color: #ffffff !important;
+        background-color: #fcfcfc !important;
+    }
+    div[mwftype='datatable'].datatable_edit_mode  tr:nth-child(odd){
+        background-color: #fcfcfc !important;;
     }
 
     .datatable_edit_mode table th{
@@ -799,7 +809,102 @@
      div[mwftype='datatable'].datatable_edit_mode oo-datetime {
         white-space: normal !important;
     }
-    
+
+    div[mwftype='datatable'] .mwf_totaltr>td {
+        padding: 0.5em !important;
+        border-bottom: 1px solid rgb(222, 222, 222);
+    }
+
+    div[mwftype='datatable'].datatable_edit_mode .mwf_totaltr>td {
+        padding: 0.7em 1.1em !important;
+        border-bottom: 1px solid rgb(222, 222, 222);
+    }
+
+    .datatable_edit_mode .addLineAction, .datatable_edit_mode .delLineAction{
+        width: unset !important;
+        height: unset !important;
+        display: flex !important;
+        border: 1px solid #999999;
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        margin-left: 0.5em;
+        background-color: #ffffff;
+    }
+    .datatable_edit_mode .addLineAction::after{
+        content: "添加";
+        display: block;
+    }
+    .datatable_edit_mode .delLineAction::after{
+        content: "删除";
+        display: block;
+    }
+
+    .datatable_edit_mode .mwf_moveaction{
+        width: unset !important;
+        grid-column: 1 / -1;
+        background-color: #f3f3f3 !important;
+        overflow: hidden;
+        padding: 0.3em 0.5em !important;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .datatable_edit_mode .mwf_moveaction>div{
+        width: unset !important;
+        height: unset !important;
+        display: flex !important;
+        border: 1px solid #999999;
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        margin-left: 0.5em;
+        background-color: #ffffff;
+        white-space: nowrap;
+        color: revert !important;
+    }
+    .datatable_edit_mode .mwf_moveaction>div::after{
+        content: "上移";
+        display: block;
+    }
+    .datatable_edit_mode .mwf_totaltr{
+        height: unset !important;
+    }
+    .datatable_edit_mode .mwf_totaltr .mwf_moveaction{
+        display: none !important;
+    }
+
+    .datatable_edit_mode .mwf_totaltr .mwf_editaction{
+        justify-content: flex-start;
+        padding: 0.7em 0.5em !important;
+    }
+
+    .datatable_edit_mode .mwf_totaltr .mwf_editaction>span{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .datatable_edit_mode .mwf_totaltr .mwf_editaction>span::before{
+        content: "合计";
+        display: block;
+    }
+
+    .datatable_edit_mode .mwf_mobile_actions{
+        /* border-top: 1px solid #999999; */
+        box-shadow: 0 0 10px 0px #cccccc;
+        position: sticky;
+        bottom: 0;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1em;
+        padding: 1em 1em 1.5em 1em;
+    }
+    .datatable_edit_mode .mwf_mobile_addAction{
+        flex: 2;
+    }
+    .datatable_edit_mode  .mwf_mobile_okAction{
+        flex: 3;
+    }
 }
 
 /* 平板电脑 */

@@ -482,7 +482,9 @@ MWF.xApplication.process.Xform.LP = {
 
     "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。",
 
-    "editDatatable": "编辑数据表格"
+    "editDatatable": "编辑数据表格",
+    "addLine": "添加",
+    "editOk": "编辑完成"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;
