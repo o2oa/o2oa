@@ -201,10 +201,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         }
 
         if( !this.options.embedded && layout.mobile ){
-            this.node.setStyles({
-                "top": "0px",
-                "left": "0px"
-            });
+            if( this.options.style !== 'v10_mobile' ){
+                this.node.setStyles({
+                    "top": "0px",
+                    "left": "0px"
+                });
+            }
         }
 
         this.setEvent();

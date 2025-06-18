@@ -496,13 +496,23 @@ MWF.xApplication.Selector.Person = new Class({
                 "destroyOnHide": true,
                 "style": this.css.maskNode
             });
+            if( this.options.style === 'v10_mobile' ){
+                this.maskRelativeNode.get('mask').addEvent('click', function () {
+                    debugger;
+                    if( this.selectedMode ){
+                        this.switchSelectedMode();
+                    }else{
+                        this.close();
+                    }
+                }.bind(this));
+            }
         }
 
         if( !this.options.embedded ) {
             this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
             this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
         }
-        if( layout.mobile ){
+        if( layout.mobile && this.options.style !== 'v10_mobile'){
             this.node.setStyle("height", ( container.getSize().y ) + "px");
         }
 
@@ -519,10 +529,12 @@ MWF.xApplication.Selector.Person = new Class({
 
         if( !this.options.embedded ){
             if( layout.mobile ){
-                this.node.setStyles({
-                    "top": "0px",
-                    "left": "0px"
-                });
+                if( this.options.style !== 'v10_mobile' ){
+                    this.node.setStyles({
+                        "top": "0px",
+                        "left": "0px"
+                    });
+                }
             }else{
                 if( this.options.width || this.options.height ){
                     this.setSize()
