@@ -1,4 +1,16 @@
 /*第一层*/
+.MWF_selector_node{
+  transform-origin: bottom !important;
+  transition: height .2s,opacity .2s,transform .2s
+}
+.MWF_selector_node.visible{
+  transform: scale(1);
+  opacity: 1;
+}
+.MWF_selector_node.invisible{
+  transform: scale(1, 0);
+  opacity: 0;
+}
 .MWF_selector_titleNode {
   height: 2.75rem;
   font-size: 1.125rem;

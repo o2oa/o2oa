@@ -15,7 +15,19 @@
         "flex-direction": "column",
         "padding-bottom": "1rem",
         "border-radius": "0.25rem",
-        "box-shadow" : "0 0 0 1px var(--oo-color-gray-d)"
+        "box-shadow" : "0 0 0 1px var(--oo-color-gray-d)",
+		"transform-origin": "bottom",
+		"transition": "height .2s,opacity .2s,transform .2s",
+		"transform": "scale(1, 0)",
+		"opacity": 0
+	},
+	"containerNodeMobile_show": {
+		"transform": "scale(1)",
+		"opacity": 1
+	},
+	"containerNodeMobile_hide": {
+		"transform": "scale(1, 0)",
+		"opacity": 0
 	},
   	"tabContainer": {
 //		"height": "3.125rem",

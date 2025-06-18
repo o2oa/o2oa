@@ -471,6 +471,7 @@ MWF.xApplication.Selector.Person = new Class({
                             "module": this
                         });
                         this.node = node.getFirst();
+                        // this.node.addClass('MWF_selector_node').addClass('invisible');
                         if( navigator.userAgent.indexOf("O2OA") > -1 ){
                             this.addMode('app_mode');
                         }
@@ -512,8 +513,14 @@ MWF.xApplication.Selector.Person = new Class({
             this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
             this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
         }
-        if( layout.mobile && this.options.style !== 'v10_mobile'){
-            this.node.setStyle("height", ( container.getSize().y ) + "px");
+        if( layout.mobile ){
+            if( this.options.style !== 'v10_mobile' ){
+                this.node.setStyle("height", ( container.getSize().y ) + "px");
+            }else{
+                window.setTimeout(function () {
+                    this.node.setStyles(this.css.containerNodeMobile_show);
+                }.bind(this), 1)
+            }
         }
 
         if( !this.options.useO2Load ){
@@ -743,7 +750,17 @@ MWF.xApplication.Selector.Person = new Class({
             }.bind(this));
         }
     },
-    close: function(){
+    close: function (){
+        if( this.options.style === 'v10_mobile' ){
+            this.node.setStyles(this.css.containerNodeMobile_hide);
+            window.setTimeout(function () {
+                this._close()
+            }.bind(this), 200)
+        }else{
+            this._close();
+        }
+    },
+    _close: function(){
         this.fireEvent("close");
         this.clearTooltip();
         this.node.destroy();
