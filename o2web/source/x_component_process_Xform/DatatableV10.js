@@ -89,7 +89,7 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
         // }
     },
 
-    _
+    
     loadDatatable: function () {
         if (o2.isMediaMobile()) {
             //移动端模式，默认表格显示模式，不进行编辑，没有多行编辑等
