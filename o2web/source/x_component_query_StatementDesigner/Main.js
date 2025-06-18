@@ -93,14 +93,14 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     },
     keySave: function(e){
         if (this.shortcut) {
-            this.view.save();
+            this.statement.save();
             e.preventDefault();
         }
     },
     keyDelete: function(){
         if (this.shortcut) {
-            if (this.view.currentSelectedModule) {
-                var item = this.view.currentSelectedModule;
+            if (this.statement.currentSelectedModule) {
+                var item = this.statement.currentSelectedModule;
                 item["delete"]();
             }
         }

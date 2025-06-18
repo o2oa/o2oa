@@ -116,6 +116,10 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
             if (this.form.forms[module.id])delete this.form.forms[module.id];
             this.form.modules.erase(module);
 
+            if( module.name ){
+                delete this.form.allForName[module.name];
+            }
+
             delete this.form.json.moduleList[formKey];
         }.bind(this));
 
