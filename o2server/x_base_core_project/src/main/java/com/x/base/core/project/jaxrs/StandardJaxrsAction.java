@@ -48,9 +48,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的下一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param cls           实体类
 	 * @param wcls          wrap类
 	 * @param id            上一页最后一条的ID
@@ -192,9 +192,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的下一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param copier        对象转换类
 	 * @param id            上一页最后一条的ID
 	 * @param count         每页条目数:pagesize
@@ -338,9 +338,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的上一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param cls           实体类
 	 * @param wcls          wrap类
 	 * @param id            上一页最后一条的ID
@@ -483,9 +483,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的上一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param id            上一页最后一条的ID
 	 * @param count         每页条目数:pagesize
 	 * @param sequenceField 作分页序列的属性名
@@ -761,9 +761,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的下一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param copier        对象转换类
 	 * @param id            上一页最后一条的ID
 	 * @param count         每页条目数:pagesize
@@ -1011,9 +1011,10 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 	}
 
 	public Integer adjustSize(Integer pageSize) {
-		return (pageSize == null || pageSize < 1 || pageSize > EntityManagerContainer.MAX_PAGESIZE)
-				? EntityManagerContainer.DEFAULT_PAGESIZE.intValue()
-				: pageSize;
+		if(pageSize == null || pageSize < 1){
+			return EntityManagerContainer.DEFAULT_PAGESIZE;
+		}
+		return (pageSize > EntityManagerContainer.MAX_PAGESIZE) ? EntityManagerContainer.MAX_PAGESIZE : pageSize;
 	}
 
 	public <T extends JpaObject, W> ActionResult<List<W>> standardListNext(WrapCopier<T, W> copier, String id,
