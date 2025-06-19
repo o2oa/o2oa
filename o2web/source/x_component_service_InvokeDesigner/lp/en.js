@@ -10,6 +10,7 @@ MWF.xApplication.service.InvokeDesigner.LP={
 	"id": "ID",
 	"name": "Name",
 	"alias": "Alias",
+	"category": "Category",
 	"description": "Description",
 	"validated": "Is the code format correct",
 	"isEnable": "Whether to enable",

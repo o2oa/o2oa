@@ -778,6 +778,9 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.alias+":"}).inject(this.propertyContentArea);
         this.propertyAliasNode = new Element("input", {"styles": this.css.propertyInputNode, "value": ""}).inject(this.propertyContentArea);
 
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.category+":"}).inject(this.propertyContentArea);
+        this.propertyCategoryNode = new Element("input", {"styles": this.css.propertyInputNode, "value": ""}).inject(this.propertyContentArea);
+
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.remoteAddrRegex+":"}).inject(this.propertyContentArea);
         this.propertyRemoteAddrRegexNode = new Element("input", {"styles": this.css.propertyInputNode, "value": ""}).inject(this.propertyContentArea);
 
@@ -1198,6 +1201,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 "name": "",
                 "id": id,
                 "alias": "",
+                "category": "",
                 "description": "",
                 //"language": "javascript",
                 //"dependInvokeList": [],
