@@ -1,4 +1,16 @@
 /*第一层*/
+.MWF_selector_node{
+  transform-origin: bottom !important;
+  transition: height .2s,opacity .2s,transform .2s
+}
+.MWF_selector_node.visible{
+  transform: scale(1);
+  opacity: 1;
+}
+.MWF_selector_node.invisible{
+  transform: scale(1, 0);
+  opacity: 0;
+}
 .MWF_selector_titleNode {
   height: 2.75rem;
   font-size: 1.125rem;
@@ -177,10 +189,10 @@
 .MWF_selector_selectedMaskNode{
   display: none;
   position: absolute;
-  bottom: 5.125rem;
+  bottom: 6.125rem;
   left: 0;
   width: 100%;
-  height: calc( 100% - 5.125rem );
+  height: 100%;
   opacity: 0.4;
   z-index: 1002;
   background-color: #999;
@@ -188,11 +200,11 @@
 .MWF_selector_selectedWrapNode{
   display: none;
   position: absolute;
-  bottom: 5.125rem;
+  bottom: 6.125rem;
   left: 0;
   width: 100%;
-  height: calc( 80% - 5.125rem );
-  border-radius: 1rem 1rem 0 0;
+  height: calc( 100% - 6.125rem );
+  border-radius: 0.25rem;
   background: #FFF;
   z-index: 1003;
 }
