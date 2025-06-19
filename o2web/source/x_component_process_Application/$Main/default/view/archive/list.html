@@ -1,0 +1,42 @@
+<div>
+    {{if $.data.length}}
+    <table>
+        <tbody>
+        {{each $.data}}
+
+        <tr class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; o2load:loadItemFlag">
+            <td style="width: 50px;">
+                <div class="selectFlag" style="display: none">
+                    <div class="selectFlagArea" style="cursor: pointer"data-o2-events="click:selectFile:{{$.id}}">
+                        <div class="selectFlagIcon o2WorkApplication"></div>
+                    </div>
+                </div>
+            </td>
+            <td ><span>{{$.name}}</span></td>
+            <td ><span>{{$.processName}}</span></td>
+            <td ><span>{{$.startTime}}</span></td>
+            <td ><span>{{$.completedTime}}</span></td>
+            <td ><span>{{$.count}}</span></td>
+            <td ><span>{{$.estimatedCount}}</span></td>
+            <td ><span>{{function(){
+                if($.enable){
+                    return "启用";
+                }else{
+                    return  "未启用"
+                }
+                }()
+                }}</span></td>
+        </tr>
+        {{end each}}
+        </tbody>
+    </table>
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            {{$.lp.noFile}}
+        </div>
+    </div>
+    {{end if}}
+</div>
