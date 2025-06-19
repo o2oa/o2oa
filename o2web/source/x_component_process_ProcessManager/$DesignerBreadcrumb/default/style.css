@@ -1,0 +1,23 @@
+.breadcrumb {
+    display: flex;
+}
+.breadcrumb-item{
+
+}
+.breadcrumb-item.current{
+    font-weight: bold;
+    color: #4a90e2;
+}
+.breadcrumb-menu{
+
+}
+.breadcrumb-menu-item{
+
+}
+.breadcrumb-menu-item:hover{
+
+}
+.breadcrumb-menu-item.current{
+
+}
+
