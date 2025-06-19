@@ -17,13 +17,41 @@ MWF.xApplication.AI.Mcp = new Class({
         this.load();
     },
     load: async function(){
+
         const config = await this.action.ConfigAction.getConfig();
         this.config = config.data;
-        this.action.ConfigAction.listMcpConfigPaging(1,100, function( json ){
-            this.container.loadHtml(this.viewPath, {"bind": {"modelList":json.data,"lp": this.app.lp,"config":this.app.config}, "module": this}, function(){
+        this.action.ConfigAction.listMcpConfigPaging(1,1000, function( json ){
 
+
+            this.categoryList = ["all", ...new Set(json.data.map(item => item.category).filter(category => category !== ""))];
+
+            this.container.loadHtml(this.viewPath, {"bind": {"categoryList":this.categoryList,"modelList":json.data,"lp": this.app.lp,"config":this.app.config}, "module": this}, function(){
+                this.categoryList.each(function (d){
+                    const el = new Element("div.model-category-item",{"text":d=="all"?"全部":d}).inject(this.categoryNode);
+                    el.addEvent("click",function (){
+                        this.loadList(d);
+                        el.addClass("model-category-item-c");
+                        el.getSiblings().removeClass("model-category-item-c");
+                    }.bind(this));
+                    if(d === "all"){
+                        el.addClass("model-category-item-c");
+                    }
+                }.bind(this))
             }.bind(this));
         }.bind(this));
+    },
+    loadList : function (name){
+        if(name === "all") {
+            this.modelNode.getElements(".model-item").show();
+            return;
+        }
+        this.modelNode.getElements(".model-item").each(function(node){
+            if(node.get("category")==name){
+                node.show();
+            }else{
+                node.hide();
+            }
+        }.bind(this))
     },
     addMcpBodyParameter : function (){
         const row = new Element("div.form-row").inject(this.mcpBodyParameterListNode);
@@ -64,6 +92,70 @@ MWF.xApplication.AI.Mcp = new Class({
                     this.reload();
                     dlg.close();
                 }.bind(this));
+            }
+        });
+    },
+    importMcp : function () {
+        const _this = this;
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.json';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            document.body.removeChild(fileInput);
+            if (!file) {
+                $OOUI.notice.warn("提示", "未选择文件");
+                return;
+            }
+            if (file.type !== 'application/json') {
+                $OOUI.notice.warn("提示", `文件类型不正确，期望 application/json，实际是 ${file.type}`);
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    _this.action.ConfigAction.updateMcpConfig(jsonData.id,jsonData, function( json ){
+                        $OOUI.notice.success("提示", "导入成功");
+                        _this.reload();
+                    });
+                } catch (error) {
+                    $OOUI.notice.warn("提示", `JSON 解析失败: ${error.message}`);
+                }
+            };
+            reader.onerror = function() {
+                $OOUI.notice.warn("提示", `文件读取失败: ${reader.error.message}`);
+            };
+            reader.readAsText(file);
+        });
+        fileInput.click();
+    },
+    downloadJSON : function (jsonString, fileName = 'data.json') {
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    },
+
+    exportMcp : function (id, ev){
+        $OOUI.confirm.warn('导出确认', '您确定要导出吗？', null, ev.target, 'left top').then(({dlg, status}) => {
+            if (status === 'ok') {
+
+
+                this.action.ConfigAction.getMcpConfig(id, function( json ){
+                    const jsonStr = JSON.stringify(json.data);
+                    this.downloadJSON(jsonStr,json.data.name + ".json")
+                    dlg.close();
+                }.bind(this),null,false);
+
+
+
             }
         });
     },
@@ -161,6 +253,8 @@ debugger
                                     });
                                 }
                             })
+                            console.log(templateEditor.getData())
+                            console.log(scriptEditor.getData())
                             let newData = {
                                 "name" : name.get("value"),
                                 "category" : category.get("value"),
@@ -169,8 +263,8 @@ debugger
                                 "httpOption" :httpOption,
                                 "mcpParameterList" :mcpParameterList,
                                 "extra" :{
-                                    "template" : templateEditor.getData(),
-                                    "script" : scriptEditor.getData()
+                                    "template" : o2.typeOf(templateEditor.getData()) === "object"?"" : templateEditor.getData(),
+                                    "script" : o2.typeOf(scriptEditor.getData()) === "object"?"" : scriptEditor.getData()
                                 }
                             }
 

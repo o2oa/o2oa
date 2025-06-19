@@ -184,6 +184,7 @@ MWF.xApplication.AI.Main = new Class({
         return data;
     },
     renderTemplate :function(templateString, data) {
+        if(templateString === "") return "";
         return templateString.replace(/\$\{([^}]+)\}/g, (match, expr) => {
             try {
                 // 创建一个新的函数来执行表达式
