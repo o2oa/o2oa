@@ -1,7 +1,18 @@
 package com.x.program.center.jaxrs.invoke;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.JaxrsDescribe;
+import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.HttpMediaType;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -16,23 +27,9 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-
-import com.google.gson.JsonElement;
-import com.x.base.core.project.annotation.JaxrsDescribe;
-import com.x.base.core.project.annotation.JaxrsMethodDescribe;
-import com.x.base.core.project.annotation.JaxrsParameterDescribe;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("invoke")
 @JaxrsDescribe("调用接口")
@@ -222,5 +219,41 @@ public class InvokeAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "列示指定分类下的接口服务.", action = ActionListWithCategory.class)
+	@GET
+	@Path("list/with/category/{category}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithCategory(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("分类") @PathParam("category") String category) {
+		ActionResult<List<ActionListWithCategory.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithCategory().execute(effectivePerson, category);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示接口服务所有分类.", action = ActionListCategory.class)
+	@GET
+	@Path("list/category")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listCategory(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<List<ActionListCategory.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListCategory().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }
