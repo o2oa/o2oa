@@ -981,7 +981,8 @@ o2DesignerBreadcrumb.Menu = new Class({
             return siblings[0].listAction( appid ).then((data)=>{
                 return data.map(d=>{
                     if( siblings[0].type === 'app' ){
-                        d.children = Array.clone(siblings[0].children).map((child)=>{
+                        var children = Array.clone(siblings[0].children);
+                        d.children = children.map((child)=>{
                             child.appid = d.id;
                             return child;
                         });
@@ -1088,7 +1089,8 @@ o2DesignerBreadcrumb.SubMenu = new Class({
             return list[0].listAction( appid ).then((data)=>{
                 return data.map(d=>{
                     if( list[0].type === 'app' ){
-                        d.children = Array.clone(list[0].children).map((child)=>{
+                        var children = Array.clone(list[0].children);
+                        d.children = children.map((child)=>{
                             child.appid = d.id;
                             return child;
                         });
