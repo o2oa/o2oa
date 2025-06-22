@@ -1,4 +1,9 @@
 var _openApp = o2.api.page.openApplication;
+var _portalAction = o2.Actions.load('x_portal_assemble_designer');
+var _processAction = o2.Actions.load('x_processplatform_assemble_designer');
+var _cmsAction = o2.Actions.load('x_cms_assemble_control');
+var _queryAction = o2.Actions.load('x_query_assemble_designer');
+var _serviceAction = o2.Actions.load('x_program_center');
 
 var _sort =  (data, key='name', isDesc=false)=>{
     return data.sort(function (a, b){
@@ -17,97 +22,787 @@ var _sort =  (data, key='name', isDesc=false)=>{
 };
 
 var o2DesignerConfig = {
-    menus: [
+    children: [
         {
-            handleClick: ()=>{ _openApp('portal.PortalManager'); },
+            handleClick: () => {
+                _openApp('portal.PortalExplorer');
+            },
             name: '门户管理',
+            id: 'portal.PortalExplorer',
             icon: 'O2',
-            menus: ()=>{
-                return o2.Actions.load('x_portal_assemble_surface').PortalAction.list().then((json)=>{
-                    return json.data.map((item)=>{
-                        return {
-                            handleClick: ()=>{
-                                _openApp('portal.PortalManager', null, {application:item.id});
+            type: 'app-category',
+            children: [{
+                name: '门户应用',
+                id: 'portal.PortalManager',
+                label: '应用',
+                type: 'app',
+                handleClick: (item) => {
+                    _openApp('portal.PortalManager', null, {application: item.id});
+                },
+                listAction: () => {
+                    return _portalAction.PortalAction.list().then((json) => {
+                        return _sort(json.data, 'name').map((item) => {
+                            return {
+                                category: item.category,
+                                name: item.name,
+                                icon: 'O2',
+                                id: item.id,
+                                type: 'app'
+                            };
+                        });
+                    })
+                },
+                children: [
+                    {
+                        name: '页面配置',
+                        id: 'portal.PageManager',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('portal.PortalManager', null, {navi: 0, application: appid});
+                        },
+                        children: [{
+                            label: '页面',
+                            type: 'desiginer',
+                            handleClick: (page) => {
+                                _openApp('portal.PageDesigner', null, {id: page.id});
                             },
-                            category: item.category,
-                            name: item.name,
-                            icon: 'O2',
-                            id: item.id,
-                            menus: [{
-                                name: '页面配置',
-                                handleClick: ()=>{
-                                    _openApp('portal.PortalManager', null, {navi:0,application:item.id});
-                                },
-                                menus: (item)=> {
-                                    return o2.Actions.load('x_portal_assemble_surface').PageAction.list(item.id).then((pages)=>{
-                                        return _sort( pages.data ).map((page)=>{
-                                            return {
-                                                handleClick: ()=>{
-                                                    _openApp('portal.PageDesigner', null, {id: page.id});
-                                                },
-                                                name: page.name,
-                                                icon: 'O2',
-                                                id: page.id
-                                            };
-                                        });
-                                    })
-                                }
-                            },{
-                                name: '部件配置',
-                                handleClick: ()=>{
-                                    _openApp('portal.PortalManager', null, {navi:1,application:item.id});
-                                },
-                                menus: (item)=> {
-                                    return o2.Actions.load('x_portal_assemble_surface').WidgetAction.list(item.id).then((widgets)=>{
-                                        return _sort( widgets.data ).map((widget)=>{
-                                            return {
-                                                handleClick: ()=>{
-                                                    _openApp('portal.WidgetDesigner', null, {id: widget.id});
-                                                },
-                                                name: widget.name,
-                                                icon: 'O2',
-                                                id: widget.id
-                                            };
-                                        });
-                                    })
-                                }
-                            },{
-                                name: '数据字典',
-                            },{
-                                name: '脚本配置',
-                            },{
-                                name: '资源文件',
-                            },{
-                                name: '门户属性',
-                            }]
-                        };
-                    });
-                })
-            }
+                            listAction: (appid) => {
+                                return _portalAction.PageAction.listWithPortal(appid).then((pages) => {
+                                    return _sort(pages.data).map((page) => {
+                                        return {
+                                            name: page.name,
+                                            icon: 'O2',
+                                            id: page.id
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    },
+                    {
+                        name: '部件配置',
+                        id: 'portal.WidgetDesigner',
+                        type: 'desiginer-category',
+                        label: '部件',
+                        handleClick: (item, appid) => {
+                            _openApp('portal.PortalManager', null, {navi: 1, application: appid});
+                        },
+                        children: [{
+                            label: '部件',
+                            type: 'desiginer',
+                            handleClick: (portal) => {
+                                _openApp('portal.WidgetDesigner', null, {id: portal.id});
+                            },
+                            listAction: (appid) => {
+                                return _portalAction.WidgetAction.listWithPortal(appid).then((widgets) => {
+                                    return _sort(widgets.data).map((widget) => {
+                                        return {
+                                            name: widget.name,
+                                            icon: 'O2',
+                                            id: widget.id
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '数据字典',
+                        id: 'portal.DictionaryDesigner',
+                        type: 'desiginer-category',
+                        label: '数据字典',
+                        handleClick: (item, appid) => {
+                            _openApp('portal.PortalManager', null, {navi: 2, application: appid});
+                        },
+                        children: [{
+                            label: '数据字典',
+                            type: 'desiginer',
+                            handleClick: (dict) => {
+                                _openApp('portal.DictionaryDesigner', null, {
+                                    id: dict.id, application: {
+                                        id: dict.appid
+                                    }
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _portalAction.DictAction.listWithApplication(appid).then((dicts) => {
+                                    return _sort(dicts.data).map((dict) => {
+                                        return {
+                                            name: dict.name,
+                                            icon: 'O2',
+                                            id: dict.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '脚本配置',
+                        id: 'portal.ScriptDesigner',
+                        type: 'desiginer-category',
+                        label: '脚本配置',
+                        handleClick: (item, appid) => {
+                            _openApp('portal.PortalManager', null, {navi: 3, application: appid});
+                        },
+                        children: [{
+                            label: '脚本配置',
+                            type: 'desiginer',
+                            handleClick: (script) => {
+                                _openApp('portal.ScriptDesigner', null, {
+                                    id: script.id,
+                                    application: {id: script.appid}
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _portalAction.ScriptAction.listWithPortal(appid).then((scripts) => {
+                                    return _sort(scripts.data).map((script) => {
+                                        return {
+                                            name: script.name,
+                                            icon: 'O2',
+                                            id: script.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '资源文件',
+                        id: 'portal.FileDesigner',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('portal.PortalManager', null, {navi: 4, application: appid});
+                        }
+                    }, {
+                        name: '门户属性',
+                        id: 'portal.Property',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('portal.PortalManager', null, {navi: 5, application: appid});
+                        }
+                    }]
+            }]
         },
         {
-            app: 'process.ApplicationExplorer',
+            handleClick: () => {
+                _openApp('process.ApplicationExplorer');
+            },
             name: '流程管理',
-            listAction: ()=>{ return o2.Actions.load('x_portal_assemble_surface').PortalAction.list() },
-            icon: 'O2'
+            id: 'process.ApplicationExplorer',
+            icon: 'O2',
+            type: 'app-category',
+            children: [{
+                name: '流程应用',
+                id: 'process.ProcessManager',
+                label: '应用',
+                type: 'app',
+                handleClick: (item) => {
+                    _openApp('process.ProcessManager', null, {application: item.id});
+                },
+                listAction: () => {
+                    return _processAction.ApplicationAction.list().then((json) => {
+                        return _sort(json.data, 'name').map((item) => {
+                            return {
+                                category: item.category,
+                                name: item.name,
+                                icon: 'O2',
+                                id: item.id,
+                                type: 'app'
+                            };
+                        });
+                    })
+                },
+                children: [
+                    {
+                        name: '表单配置',
+                        id: 'process.FormManager',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('process.ProcessManager', null, {navi: 0, application: appid});
+                        },
+                        children: [{
+                            label: '表单',
+                            type: 'desiginer',
+                            handleClick: (form) => {
+                                _openApp('process.FormDesigner', null, {id: form.id});
+                            },
+                            listAction: (appid) => {
+                                return _processAction.FormAction.listWithApplication(appid).then((forms) => {
+                                    return _sort(forms.data).map((form) => {
+                                        return {
+                                            name: form.name,
+                                            icon: 'O2',
+                                            id: form.id
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    },
+                    {
+                        name: '流程配置',
+                        id: 'process.ProcessDesigner',
+                        type: 'desiginer-category',
+                        label: '流程',
+                        handleClick: (item, appid) => {
+                            _openApp('process.ProcessManager', null, {navi: 1, application: appid});
+                        },
+                        children: [{
+                            label: '流程',
+                            type: 'desiginer',
+                            handleClick: (process) => {
+                                _openApp('process.ProcessDesigner', null, {id: process.id});
+                            },
+                            listAction: (appid) => {
+                                return _processAction.ProcessAction.listWithApplication(appid).then((processes) => {
+                                    return _sort(processes.data).map((process) => {
+                                        return {
+                                            name: process.name,
+                                            icon: 'O2',
+                                            id: process.id
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '数据字典',
+                        id: 'process.DictionaryDesigner',
+                        type: 'desiginer-category',
+                        label: '数据字典',
+                        handleClick: (item, appid) => {
+                            _openApp('process.ProcessManager', null, {navi: 2, application: appid});
+                        },
+                        children: [{
+                            label: '数据字典',
+                            type: 'desiginer',
+                            handleClick: (dict) => {
+                                _openApp('process.DictionaryDesigner', null, {
+                                    id: dict.id, application: {
+                                        id: dict.appid
+                                    }
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _processAction.ApplicationDictAction.listWithApplication(appid).then((dicts) => {
+                                    return _sort(dicts.data).map((dict) => {
+                                        return {
+                                            name: dict.name,
+                                            icon: 'O2',
+                                            id: dict.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '脚本配置',
+                        id: 'process.ScriptDesigner',
+                        type: 'desiginer-category',
+                        label: '脚本配置',
+                        handleClick: (item, appid) => {
+                            _openApp('process.ProcessManager', null, {navi: 3, application: appid});
+                        },
+                        children: [{
+                            label: '脚本配置',
+                            type: 'desiginer',
+                            handleClick: (script) => {
+                                _openApp('process.ScriptDesigner', null, {
+                                    id: script.id,
+                                    application: {id: script.appid}
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _processAction.ScriptAction.listWithApplication(appid).then((scripts) => {
+                                    return _sort(scripts.data).map((script) => {
+                                        return {
+                                            name: script.name,
+                                            icon: 'O2',
+                                            id: script.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '资源文件',
+                        id: 'process.FileDesigner',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('process.ProcessManager', null, {navi: 4, application: appid});
+                        }
+                    }, {
+                        name: '表单属性',
+                        id: 'process.Property',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('process.ProcessManager', null, {navi: 5, application: appid});
+                        }
+                    }]
+            }]
         },
         {
-            app: 'cms.Column',
+            handleClick: () => {
+                _openApp('cms.Column');
+            },
             name: '内容管理',
-            listAction: ()=>{ return o2.Actions.load('x_portal_assemble_surface').PortalAction.list() },
-            icon: 'O2'
+            id: 'cms.Column',
+            icon: 'O2',
+            type: 'app-category',
+            children: [{
+                name: '内容管理',
+                id: 'cms.ColumnManager',
+                label: '应用',
+                type: 'app',
+                handleClick: (item) => {
+                    _openApp('cms.ColumnManager', null, {column: item.id});
+                },
+                listAction: () => {
+                    return _cmsAction.AppInfoAction.listAllAppInfo().then((json) => {
+                        return _sort(json.data, 'appName').map((item) => {
+                            return {
+                                category: item.appType,
+                                name: item.appName,
+                                icon: 'O2',
+                                id: item.id,
+                                type: 'app'
+                            };
+                        });
+                    })
+                },
+                children: [
+                    {
+                        name: '分类配置',
+                        id: 'cms.CategoryManager',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('cms.ColumnManager', null, {navi: 'categoryConfig', column: appid});
+                        },
+                        children: [{
+                            label: '分类',
+                            type: 'desiginer',
+                            handleClick: (category) => {
+                                _openApp('cms.ColumnManager', null, {
+                                    navi: 'categoryConfig',
+                                    column: category.appid,
+                                    categoryId: category.id
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _cmsAction.CategoryInfoAction.listViewableCategoryInfo_AllType(appid).then((categorys) => {
+                                    return _sort(categorys.data).map((category) => {
+                                        return {
+                                            name: category.categoryName,
+                                            icon: 'O2',
+                                            id: category.id,
+                                            appid: category.appId
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    },
+                    {
+                        name: '表单配置',
+                        id: 'cms.FormDesigner',
+                        type: 'desiginer-category',
+                        label: '表单',
+                        handleClick: (item, appid) => {
+                            _openApp('cms.ColumnManager', null, {navi: 'formConfig', column: appid});
+                        },
+                        children: [{
+                            label: '表单',
+                            type: 'desiginer',
+                            handleClick: (form) => {
+                                _openApp('cms.FormDesigner', null, {id: form.id});
+                            },
+                            listAction: (appid) => {
+                                return _cmsAction.FormAction.listFormByAppId(appid).then((forms) => {
+                                    return _sort(forms.data).map((form) => {
+                                        return {
+                                            name: form.name,
+                                            icon: 'O2',
+                                            id: form.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '数据字典',
+                        id: 'cms.DictionaryDesigner',
+                        type: 'desiginer-category',
+                        label: '数据字典',
+                        handleClick: (item, appid) => {
+                            _openApp('cms.ColumnManager', null, {navi: 'dataConfig', column: appid});
+                        },
+                        children: [{
+                            label: '数据字典',
+                            type: 'desiginer',
+                            handleClick: (dict) => {
+                                _openApp('cms.DictionaryDesigner', null, {
+                                    id: dict.id, application: {
+                                        id: dict.appid
+                                    }
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _cmsAction.AppDictDesignAction.listWithAppInfo(appid).then((dicts) => {
+                                    return _sort(dicts.data).map((dict) => {
+                                        return {
+                                            name: dict.name,
+                                            icon: 'O2',
+                                            id: dict.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '脚本配置',
+                        id: 'cms.ScriptDesigner',
+                        type: 'desiginer-category',
+                        label: '脚本配置',
+                        handleClick: (item, appid) => {
+                            _openApp('cms.ColumnManager', null, {navi: 'scriptConfig', column: appid});
+                        },
+                        children: [{
+                            label: '脚本配置',
+                            type: 'desiginer',
+                            handleClick: (script) => {
+                                _openApp('cms.ScriptDesigner', null, {id: script.id, application: {id: script.appid}});
+                            },
+                            listAction: (appid) => {
+                                return _cmsAction.ScriptAction.listWithApplication(appid).then((scripts) => {
+                                    return _sort(scripts.data).map((script) => {
+                                        return {
+                                            name: script.name,
+                                            icon: 'O2',
+                                            id: script.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '资源文件',
+                        id: 'cms.FileDesigner',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('cms.ColumnManager', null, {navi: 'fileConfig', column: appid});
+                        }
+                    }, {
+                        name: '栏目属性',
+                        id: 'cms.Property',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('cms.ColumnManager', null, {navi: 'applicationProperty', column: appid});
+                        }
+                    }]
+            }]
         },
         {
-            app: 'query.QueryExplorer',
+            handleClick: () => {
+                _openApp('query.QueryExplorer');
+            },
             name: '数据中心',
-            listAction: ()=>{ return o2.Actions.load('x_portal_assemble_surface').PortalAction.list() },
-            icon: 'O2'
+            id: 'query.QueryExplorer',
+            icon: 'O2',
+            type: 'app-category',
+            children: [{
+                name: '数据应用',
+                id: 'query.QueryManager',
+                label: '应用',
+                type: 'app',
+                handleClick: (item) => {
+                    _openApp('query.QueryManager', null, {application: item.id});
+                },
+                listAction: () => {
+                    return _queryAction.QueryAction.listAll().then((json) => {
+                        return _sort(json.data, 'name').map((item) => {
+                            return {
+                                category: item.queryCategory,
+                                name: item.name,
+                                icon: 'O2',
+                                id: item.id,
+                                type: 'app'
+                            };
+                        });
+                    })
+                },
+                children: [
+                    {
+                        name: '视图配置',
+                        id: 'query.PageManager',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('query.QueryManager', null, {navi: 0, application: appid});
+                        },
+                        children: [{
+                            label: '视图',
+                            type: 'desiginer',
+                            handleClick: (view) => {
+                                _openApp('query.ViewDesigner', null, {id: view.id, application: {id: view.appid}});
+                            },
+                            listAction: (appid) => {
+                                return _queryAction.ViewAction.listWithQuery(appid).then((views) => {
+                                    return _sort(views.data).map((view) => {
+                                        return {
+                                            name: view.name,
+                                            icon: 'O2',
+                                            id: view.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    },
+                    {
+                        name: '统计配置',
+                        id: 'query.StatDesigner',
+                        type: 'desiginer-category',
+                        label: '统计',
+                        handleClick: (item, appid) => {
+                            _openApp('query.QueryManager', null, {navi: 1, application: appid});
+                        },
+                        children: [{
+                            label: '统计',
+                            type: 'desiginer',
+                            handleClick: (stat) => {
+                                _openApp('query.StatDesigner', null, {id: stat.id, application: {id: stat.appid}});
+                            },
+                            listAction: (appid) => {
+                                return _queryAction.StatAction.listWithQuery(appid).then((stats) => {
+                                    return _sort(stats.data).map((stat) => {
+                                        return {
+                                            name: stat.name,
+                                            icon: 'O2',
+                                            id: stat.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '数据表',
+                        id: 'query.TableDesigner',
+                        type: 'desiginer-category',
+                        label: '数据表',
+                        handleClick: (item, appid) => {
+                            _openApp('query.QueryManager', null, {navi: 2, application: appid});
+                        },
+                        children: [{
+                            label: '数据表',
+                            type: 'desiginer',
+                            handleClick: (table) => {
+                                _openApp('query.TableDesigner', null, {
+                                    id: table.id, application: {
+                                        id: table.appid
+                                    }
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _queryAction.TableAction.listWithQuery(appid).then((tables) => {
+                                    return _sort(tables.data).map((table) => {
+                                        return {
+                                            name: table.name,
+                                            icon: 'O2',
+                                            id: table.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '查询配置',
+                        id: 'query.StatementDesigner',
+                        type: 'desiginer-category',
+                        label: '脚本配置',
+                        handleClick: (item, appid) => {
+                            _openApp('query.QueryManager', null, {navi: 3, application: appid});
+                        },
+                        children: [{
+                            label: '查询配置',
+                            type: 'desiginer',
+                            handleClick: (statement) => {
+                                _openApp('query.StatementDesigner', null, {
+                                    id: statement.id,
+                                    application: {id: statement.appid}
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _queryAction.StatementAction.listWithQuery(appid).then((statements) => {
+                                    return _sort(statements.data).map((statement) => {
+                                        return {
+                                            name: statement.name,
+                                            icon: 'O2',
+                                            id: statement.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '导入模型',
+                        id: 'query.ImporterDesigner',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('query.QueryManager', null, {navi: 4, application: appid});
+                        },
+                        children: [{
+                            label: '导入模型',
+                            type: 'desiginer',
+                            handleClick: (importer) => {
+                                _openApp('query.ImporterDesigner', null, {
+                                    id: importer.id,
+                                    application: {id: importer.appid}
+                                });
+                            },
+                            listAction: (appid) => {
+                                return _queryAction.ImportModelAction.listWithQuery(appid).then((items) => {
+                                    return _sort(items.data).map((item) => {
+                                        return {
+                                            name: item.name,
+                                            icon: 'O2',
+                                            id: item.id,
+                                            appid: appid
+                                        };
+                                    });
+                                })
+                            }
+                        }]
+                    }, {
+                        name: '数据中心属性',
+                        id: 'query.Property',
+                        type: 'desiginer-category',
+                        handleClick: (item, appid) => {
+                            _openApp('query.QueryManager', null, {navi: 5, application: appid});
+                        }
+                    }]
+            }]
         },
         {
-            app: 'service.ServiceManager',
+            handleClick: () => {
+                _openApp('service.ServiceManager');
+            },
             name: '服务管理',
-            listAction: ()=>{ return o2.Actions.load('x_portal_assemble_surface').PortalAction.list() },
-            icon: 'O2'
+            id: 'service.ServiceManager',
+            icon: 'O2',
+            type: 'app-category',
+            children: [{
+                name: '代理配置',
+                id: 'service.AgentDesigner',
+                type: 'desiginer-category',
+                handleClick: (item, appid) => {
+                    _openApp('service.ServiceManager', null, {navi: 0});
+                },
+                children: [{
+                    label: '代理',
+                    type: 'desiginer',
+                    handleClick: (item) => {
+                        _openApp('service.AgentDesigner', null, {id: item.id});
+                    },
+                    listAction: () => {
+                        return _serviceAction.AgentAction.list().then((pages) => {
+                            return _sort(pages.data).map((page) => {
+                                return {
+                                    name: page.name,
+                                    icon: 'O2',
+                                    id: page.id
+                                };
+                            });
+                        })
+                    }
+                }]
+            },
+                {
+                    name: '接口配置',
+                    id: 'portal.InvokeDesigner',
+                    type: 'desiginer-category',
+                    label: '接口',
+                    handleClick: (item, appid) => {
+                        _openApp('service.ServiceManager', null, {navi: 1});
+                    },
+                    children: [{
+                        label: '接口',
+                        type: 'desiginer',
+                        handleClick: (item) => {
+                            _openApp('service.InvokeDesigner', null, {id: item.id});
+                        },
+                        listAction: () => {
+                            return _serviceAction.InvokeAction.list().then((items) => {
+                                return _sort(items.data).map((item) => {
+                                    return {
+                                        name: item.name,
+                                        icon: 'O2',
+                                        id: item.id
+                                    };
+                                });
+                            })
+                        }
+                    }]
+                }, {
+                    name: '脚本配置',
+                    id: 'service.ScriptDesigner',
+                    type: 'desiginer-category',
+                    label: '脚本配置',
+                    handleClick: (item, appid) => {
+                        _openApp('service.ServiceManager', null, {navi: 2});
+                    },
+                    children: [{
+                        label: '脚本配置',
+                        type: 'desiginer',
+                        handleClick: (item) => {
+                            _openApp('service.ScriptDesigner', null, { id: item.id });
+                        },
+                        listAction: () => {
+                            return _serviceAction.ScriptAction.list().then((items) => {
+                                return _sort(items.data).map((item) => {
+                                    return {
+                                        name: item.name,
+                                        icon: 'O2',
+                                        id: item.id
+                                    };
+                                });
+                            })
+                        }
+                    }]
+                }, {
+                    name: '数据配置',
+                    id: 'service.DictionaryDesigner',
+                    type: 'desiginer-category',
+                    label: '数据配置',
+                    handleClick: () => {
+                        _openApp('service.ServiceManager', null, {navi: 3});
+                    },
+                    children: [{
+                        label: '脚本配置',
+                        type: 'desiginer',
+                        handleClick: (item) => {
+                            _openApp('service.DictionaryDesigner', null, {id: item.id});
+                        },
+                        listAction: () => {
+                            return _serviceAction.DictAction.list().then((items) => {
+                                return _sort(items.data).map((item) => {
+                                    return {
+                                        name: item.name,
+                                        icon: 'O2',
+                                        id: item.id
+                                    };
+                                });
+                            })
+                        }
+                    }]
+                }]
         }
     ]
 };
@@ -117,94 +812,118 @@ var o2DesignerBreadcrumb = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "pathlist": ''
+        "pathlist": [
+            {
+                name: '流程管理',
+                id: 'process.ApplicationExplorer',
+                type: 'app-category'
+            },
+            {
+                name: '员工管理',
+                id: 'e8ebf354-7a7d-4b98-b804-69f921a97840',
+                type: 'app'
+            },
+            {
+                name: '流程表单',
+                id: 'process.FormManager',
+                type: 'desiginer-category'
+            },
+            {
+                name: '1.1入职手续办理单_编辑',
+                id: '9dbf2b87-2909-4568-a71d-d5296ad247b3',
+                type: 'desiginer'
+            }
+        ]
     },
-    initialize: function(container, options){
+    initialize: function(container, app, options){
         this.setOptions(options);
+        this.app = app;
         this.path = `../x_component_process_ProcessManager/$DesignerBreadcrumb/${this.options.style}/`;
         this.container = $(container);
         this.items = [];
+        if( typeof this.options.pathlist === 'string'){
+            this.options.pathlist = this.options.pathlist.split(',');
+        }
     },
     load: function (){
+        this.container.loadCss(`${this.path}style.css`);
         this.node = new Element('div.breadcrumb').inject(this.container);
-        this.node.loadCss(`${this.path}style.css`);
-        this.addItem(o2DesignerConfig);
+        this.options.pathlist.each((pathData, i)=>{
+            this.addItem(pathData, i);
+        });
     },
-    addItem: function(data){
-        var item = new o2DesignerBreadcrumb.Item(this, this.items.getLast() || null, data);
+    addItem: function(pathData){
+        var item = new o2DesignerBreadcrumb.Item(this, this.items.getLast() || null, pathData);
         this.items.push(item);
         item.load();
-        this.setCurrentItem(item);
         return item;
     },
-    removeItem: function(item){
-        this.items.erase(item);
-        item.destroy();
-    },
-    toItem: function (item){
-        var index = this.items.indexOf(item);
-        if( index > -1 ){
-            while( this.items.length > index+1 ){
-                this.removeItem(this.items[this.items.length-1]);
-            }
-        }
-        this.setCurrentItem(item);
-    },
-    setCurrentItem: function (item) {
-        if( this.currentItem ){
-            this.currentItem.cancelCurrent();
-        }
-        item.setCurrent();
-        this.currentItem = item;
-    },
-    back: function (){
-        if( this.currentItem ){
-            var index = this.items.indexOf(this.currentItem);
-            if( index > 0 ){
-                this.toItem( this.items[index-1] );
-                return true;
-            }
-        }
-        return false;
-    }
+    // removeItem: function(item){
+    //     this.items.erase(item);
+    //     item.destroy();
+    // },
+    // toItem: function (item){
+    //     var index = this.items.indexOf(item);
+    //     if( index > -1 ){
+    //         while( this.items.length > index+1 ){
+    //             this.removeItem(this.items[this.items.length-1]);
+    //         }
+    //     }
+    //     this.setCurrentItem(item);
+    // },
+    // setCurrentItem: function (item) {
+    //     if( this.currentItem ){
+    //         this.currentItem.cancelCurrent();
+    //     }
+    //     item.setCurrent();
+    //     this.currentItem = item;
+    // },
+    // back: function (){
+    //     if( this.currentItem ){
+    //         var index = this.items.indexOf(this.currentItem);
+    //         if( index > 0 ){
+    //             this.toItem( this.items[index-1] );
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 });
 
 o2DesignerBreadcrumb.Item = new Class({
-    initialize: function(breadcrumb, parent, data){
+    initialize: function(breadcrumb, parent, pathData, config){
         this.breadcrumb = breadcrumb;
         this.app = breadcrumb.app;
         this.parent = parent;
-        this.data = data;
+        this.pathData = pathData;
         this.level = parent ? (parent.level + 1) : 1;
+        this.siblingConfigs = this.level === 1 ? o2DesignerConfig.children : this.parent.config.children;
+        this.config = this.siblingConfigs.length === 1 ? this.siblingConfigs[0] : this.siblingConfigs.find((item)=>{
+            return item.id === this.pathData.id || item.name === this.pathData.name;
+        });
+        console.log('breadcrumb item',this.level, this.pathData, this.config, this.siblingConfigs);
     },
     load: function (){
         if( this.level > 1 ){
-            this.separator = new Element('div', {
+            this.separator = new Element('div.breadcrumb-separator', {
                 text: '>'
             }).inject(this.breadcrumb.node);
         }
         this.node = new Element('div.breadcrumb-item', {
-            text: this.isRoot ?  '顶层' : this.category._getShowName()
+            text: (this.config.label ? this.config.label+'：' : '') + this.pathData.name
         }).inject(this.breadcrumb.node);
-        this.node.addEvent('click', function (ev){
-            this.breadcrumb.toItem(this);
-        }.bind(this));
+
+        this.loadMenu();
     },
-    loadTooltip: function (){
+    loadMenu: function (){
         const { app, node, data } = this;
-        this.tooltip = new o2DesignerBreadcrumb.Menu(app.content, node, app, data, {
+        this.menu = new o2DesignerBreadcrumb.Menu(app.content, node, app, data, {
+            overflow : "scroll",
             axis : "y",
             hiddenDelay : 300,
             displayDelay : 300
         });
-    },
-    setCurrent: function (){
-        this.node.addClass('current').addClass('mainColor_color');
-        this.switchCategory(true);
-    },
-    cancelCurrent: function (){
-        this.node.removeClass('current').removeClass('mainColor_color');
-        this.switchCategory(false);
+        this.menu.item = this;
     },
     destroy: function () {
         this.separator && this.separator.destroy();
@@ -217,16 +936,201 @@ o2.xDesktop.requireApp('Template', 'MTooltips', null, false);
 o2DesignerBreadcrumb.Menu = new Class({
     Extends: MTooltips,
     Implements: [Options, Events],
+    options: {
+        // isAutoHide: false,
+        // hideByClickBody : true,
+        nodeStyles: {
+            "position" : "absolute",
+            "max-width" : "500px",
+            "min-width" : "50px",
+            "z-index" : "101",
+            "background-color" : "#fff",
+            "padding" : "5px 0px",
+            "border-radius" : "4px",
+            "box-shadow": "0 0 18px 0 #999999",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text"
+        }
+    },
     //执行后才显示位置也样式
     _loadCustom : function( callback ){
-        this.contentNode.loadHtml(this.breadcrumb.path+"/menu.html", {
-             "bind": {"lp": this.lp, "data": this.data}, "module": this},
-            function(){
-                if(callback)callback();
-            }.bind(this)
-        );
+        this.menus = [];
+        this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
+        Promise.resolve(this.getSilbings()).then((data)=>{
+            this.contentNode.loadHtml(this.item.breadcrumb.path+"menu.html", {
+                    "bind": {"lp": this.lp, "data": data}, "module": this},
+                function(){
+                    if(callback)callback();
+                }.bind(this)
+            );
+        });
+    },
+    getAppid: function(){
+        var parent = this.item.parent;
+        while(parent){
+            if( parent.pathData && parent.pathData.id && parent.pathData.type === 'app' ){
+                return parent.pathData.id;
+            }
+            parent = parent.parent;
+        }
+    },
+    getSilbings: function () {
+        var siblings = this.item.siblingConfigs;
+        if( siblings.length === 1 && siblings[0].listAction){
+            var appid = this.getAppid();
+            return siblings[0].listAction( appid ).then((data)=>{
+                return data.map(d=>{
+                    if( siblings[0].type === 'app' ){
+                        d.children = Array.clone(siblings[0].children).map((child)=>{
+                            child.appid = d.id;
+                            return child;
+                        });
+                    }
+                    d.handleClick = ()=>{
+                        siblings[0].handleClick(d, appid);
+                    };
+                    return d;
+                });
+            });
+        }else{
+            return siblings;
+        }
+    },
+    handleMouseEnter: function (e, data){
+        if( this.item.activeMenu && this.item.activeMenu !== this ){
+            this.item.activeMenu.target.removeClass('active');
+            this.item.activeMenu.hide();
+            this.item.activeMenu = null;
+        }
+    },
+    handleMouseLeave: function (e, data){
+
+    },
+    handleClick: function (e, data){
+        data.handleClick(data, this.getAppid());
+    },
+    handleLoadItem: function (e, data){
+        debugger;
+        var app = this.item.breadcrumb.app;
+        if( data.children && data.children.length > 0 ){
+            var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.target, app, data, {
+                overflow : "scroll",
+                axis : "x",
+                hiddenDelay : 300,
+                displayDelay : 300
+            });
+            menu.item = this.item;
+            menu.parent = this;
+            menu.currentAppid = this.getAppid();
+            this.menus.push(menu);
+        }
     },
     _customNode : function( node, contentNode ){
+        node.addEvent('mouseenter', (e)=>{
+            this.item.activeMenu = this;
+        });
         this.fireEvent("customContent", [contentNode, node])
+    },
+})
+
+o2DesignerBreadcrumb.SubMenu = new Class({
+    Extends: MTooltips,
+    Implements: [Options, Events],
+    options: {
+        // isAutoHide: false,
+        // hideByClickBody : true,
+        priorityOfAuto :{
+            x : [ "center", "right", "left" ], //当position x 为 auto 时候的优先级
+            y : ["top", "middle", "bottom" ] //当position y 为 auto 时候的优先级
+        },
+        nodeStyles: {
+            "position" : "absolute",
+            "max-width" : "500px",
+            "min-width" : "50px",
+            "z-index" : "101",
+            "background-color" : "#fff",
+            "padding" : "5px 0px",
+            "border-radius" : "4px",
+            "box-shadow": "0 0 18px 0 #999999",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text"
+        }
+    },
+    //执行后才显示位置也样式
+    _loadCustom : function( callback ){
+        this.menus = [];
+        Promise.resolve(this.getList()).then((data)=>{
+            this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
+            this.contentNode.loadHtml(this.item.breadcrumb.path+"menu.html", {
+                    "bind": {"lp": this.lp, "data": data}, "module": this},
+                function(){
+                    if(callback)callback();
+                }.bind(this)
+            );
+        });
+    },
+    getAppid: function(){
+        var parent = this.parent, topParent;
+        while(parent){
+            if( parent.data && parent.data.id && parent.data.type === 'app' ){
+                return parent.data.id;
+            }
+            topParent = parent;
+            parent = parent.parent;
+        }
+        return this.currentAppid;
+    },
+    getList: function () {
+        debugger;
+        var list = this.data.children;
+        if( list.length === 1 && list[0].listAction){
+            var appid = this.getAppid();
+            return list[0].listAction( appid ).then((data)=>{
+                return data.map(d=>{
+                    if( list[0].type === 'app' ){
+                        d.children = Array.clone(list[0].children).map((child)=>{
+                            child.appid = d.id;
+                            return child;
+                        });
+                    }
+                    d.handleClick = ()=>{
+                        list[0].handleClick(d, appid);
+                    };
+                    return d;
+                });
+            });
+        }else{
+            return list;
+        }
+    },
+    handleClick: function (e, data){
+        data.handleClick(data, data.appid || this.getAppid());
+    },
+    handleLoadItem: function (e, data){
+        debugger;
+        var app = this.item.breadcrumb.app;
+        if( data.children && data.children.length > 0 ){
+            var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.target, app, data, {
+                overflow : "scroll",
+                axis : "x",
+                hiddenDelay : 300,
+                displayDelay : 300
+            });
+            menu.item = this.item;
+            menu.parent = this;
+            menu.currentAppid = this.currentAppid;
+            this.menus.push(menu);
+        }
+    },
+    _customNode : function( node, contentNode ){
+        node.addEvent('mouseenter', (e)=>{
+            if( this.parent.timer_hide ){
+                clearTimeout(this.parent.timer_hide);
+                this.parent.timer_hide = null;
+            }
+            this.target.addClass('active');
+            this.parent.activeMenu = this;
+        });
+        this.fireEvent("customContent", [contentNode, node]);
     },
 });

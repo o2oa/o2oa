@@ -1,8 +1,12 @@
 <div class="breadcrumb-menu" data-o2-element="menu">
     {{each $.data}}
     <div
-            data-o2-element="{{$.key}}TitleNode"
             class="breadcrumb-menu-item"
-            data-o2-events="click:changeAction:{{$.key}}:;">{{$.label}}</div>
-    {{end data}}
+            data-o2-events="click:handleClick;
+                            mouseleave:handleMouseLeave;
+                            mouseenter:handleMouseEnter;
+                            o2load:handleLoadItem;">
+        {{$.name}}
+    </div>
+    {{end each}}
 </div>

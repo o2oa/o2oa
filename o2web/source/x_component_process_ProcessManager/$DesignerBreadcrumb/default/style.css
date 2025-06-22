@@ -1,23 +1,32 @@
 .breadcrumb {
     display: flex;
+    height: 22px;
+    gap: 0.5rem;
+    align-items: center;
+}
+.breadcrumb-separator{
+    color: #666;
+    font-size: 0.8rem;
 }
 .breadcrumb-item{
 
-}
-.breadcrumb-item.current{
-    font-weight: bold;
-    color: #4a90e2;
 }
 .breadcrumb-menu{
 
 }
 .breadcrumb-menu-item{
-
+    display: flex;
+    align-items: center;
+    height: 1rem;
+    padding: 0.5rem 1rem;
+    color: #333;
+    font-size: 1rem;
+    cursor: pointer;
 }
 .breadcrumb-menu-item:hover{
-
+    color: blue;
 }
-.breadcrumb-menu-item.current{
-
+.breadcrumb-menu-item.active{
+    color: blue;
 }
 

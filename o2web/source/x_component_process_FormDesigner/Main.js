@@ -407,6 +407,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 			if (this.designNode) this.designNode.setStyles(this.css.designNode);
 		}.bind(this));
 	},
+    loadDesignerBreadcrumb: function (){
+        MWF.xDesktop.requireApp("process.ProcessManager", "DesignerBreadcrumb", null, false);
+        this.designerBreadcrumbNode = this.formToolbarNode.getElement('#O2DesignerBreadcrumbNode');
+        this.breadcrumb = new o2DesignerBreadcrumb(this.designerBreadcrumbNode, this, {});
+        this.breadcrumb.load();
+    },
     loaddesignerActionNode: function(){
         this.pcDesignerActionNode = this.formToolbarNode.getElement("#MWFFormPCDesignerAction");
         this.mobileDesignerActionNode = this.formToolbarNode.getElement("#MWFFormMobileDesignerAction");
@@ -538,6 +544,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 				this.formToolbar.load();
 
                 this.loaddesignerActionNode();
+
+                this.loadDesignerBreadcrumb();
 
 				if (callback) callback();
 			}.bind(this));

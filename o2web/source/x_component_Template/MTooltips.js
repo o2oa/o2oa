@@ -426,6 +426,22 @@ var MTooltips = new Class({
         }
         this.arrowNode.setStyles( this.arrowStyles );
     },
+    getOffsetX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 )+
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 ) +
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
+    },
+    getOffsetY : function(node){
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 ) +
+            (node.getStyle("padding-top").toInt() || 0 ) +
+            (node.getStyle("padding-bottom").toInt() || 0 )+
+            (node.getStyle("border-top-width").toInt() || 0 ) +
+            (node.getStyle("border-bottom-width").toInt() || 0 );
+    },
     setCoondinates : function(){
         if( !this.target && !this.targetCoordinates )return;
         if( this.options.axis == "x" ){
@@ -575,6 +591,14 @@ var MTooltips = new Class({
         }
 
         if( this.options.overflow == "scroll" ){
+            if( top < 0 ){
+                node.setStyles({
+                    "overflow" : "auto",
+                    "height" : containerSize.y - containerScroll.y - this.getOffsetY(node)
+                });
+                this.resetHeight = true;
+                top = 0;
+            }
             if( left < 0 ){
                 node.setStyles({
                     "overflow" : "auto",
@@ -811,6 +835,14 @@ var MTooltips = new Class({
         }
 
         if( this.options.overflow == "scroll" ){
+            if( left < 0 ){
+                node.setStyles({
+                    "overflow" : "auto",
+                    "height" : containerSize.x - containerScroll.x - this.getOffsetX(node)
+                });
+                this.resetHeight = true;
+                left = 0;
+            }
             if( top < 0 ){
                 node.setStyles({
                     "overflow" : "auto",
