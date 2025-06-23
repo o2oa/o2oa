@@ -54,6 +54,14 @@ class V2Retract extends BaseAction {
 		Record rec = this.recordWorkProcessing(Record.TYPE_RETRACT, "", "", param.work.getJob(), param.workLog.getId(),
 				param.taskCompleted.getIdentity(), param.series);
 
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			rec = emc.find(rec.getId(), Record.class);
+			emc.beginTransaction(Record.class);
+			// 写入撤回的已办标识
+			rec.setRetractTaskCompleted(param.taskCompleted.getId());
+			emc.commit();
+		}
+
 		result.setData(Wo.copier.copy(rec));
 
 		return result;
