@@ -6,7 +6,13 @@
                             mouseleave:handleMouseLeave;
                             mouseenter:handleMouseEnter;
                             o2load:handleLoadItem;">
-        {{$.name}}
+        {{if $.icon}}
+        <i class="breadcrumb-menu-item-icon ooicon-{{$.icon}}"></i>
+        {{end if}}
+        <span class="breadcrumb-menu-item-text">{{$.name}}</span>
+<!--        {{if $.children}}-->
+<!--        <i class="breadcrumb-menu-item-arrow ooicon-drop_down"></i>-->
+<!--        {{end if}}-->
     </div>
     {{end each}}
 </div>
