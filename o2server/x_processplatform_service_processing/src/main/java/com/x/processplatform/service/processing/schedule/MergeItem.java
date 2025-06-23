@@ -37,18 +37,13 @@ public class MergeItem extends AbstractJob {
 	private static Logger logger = LoggerFactory.getLogger(MergeItem.class);
 	protected static Gson gson = XGsonBuilder.instance();
 
+	private static final Integer BATCH_SIZE = 100;
+
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!MergeItem");
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			MergeItemPlan mergeItemPlan = this.getMergeItemPlan(emc);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!0");
-			System.out.println(gson.toJson(mergeItemPlan));
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!0");
 			if (Objects.nonNull(mergeItemPlan)) {
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-				System.out.println(gson.toJson(mergeItemPlan));
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 				if (Objects.isNull(mergeItemPlan.getEstimatedCount()) || mergeItemPlan.getEstimatedCount() < 0) {
 					Long estimatedCount = this.estimatedCount(emc, mergeItemPlan);
 					emc.beginTransaction(MergeItemPlan.class);
@@ -73,9 +68,6 @@ public class MergeItem extends AbstractJob {
 		do {
 			workCompleted = this.getWorkCompleted(emc, mergeItemPlan);
 			if (Objects.nonNull(workCompleted)) {
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2");
-				System.out.println(gson.toJson(workCompleted.getTitle()));
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2");
 				logger.print("开始合并已完成工作数据条目, 标识:{}, 标题:{}.", workCompleted.getId(), workCompleted.getTitle());
 				this.mergeItem(emc, workCompleted);
 				emc.beginTransaction(MergeItemPlan.class);
@@ -87,8 +79,8 @@ public class MergeItem extends AbstractJob {
 				emc.commit();
 				loop++;
 			}
-		} while (Objects.nonNull(workCompleted) && loop < 100);
-		return (loop != 100);
+		} while (Objects.nonNull(workCompleted) && loop < BATCH_SIZE);
+		return (loop != BATCH_SIZE);
 	}
 
 	private void mergeItem(EntityManagerContainer emc, WorkCompleted workCompleted) throws Exception {
