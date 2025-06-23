@@ -812,28 +812,7 @@ var o2DesignerBreadcrumb = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "pathlist": [
-            {
-                name: '流程管理',
-                id: 'process.ApplicationExplorer',
-                type: 'app-category'
-            },
-            {
-                name: '员工管理',
-                id: 'e8ebf354-7a7d-4b98-b804-69f921a97840',
-                type: 'app'
-            },
-            {
-                name: '流程表单',
-                id: 'process.FormManager',
-                type: 'desiginer-category'
-            },
-            {
-                name: '1.1入职手续办理单_编辑',
-                id: '9dbf2b87-2909-4568-a71d-d5296ad247b3',
-                type: 'desiginer'
-            }
-        ]
+        "pathlist": []
     },
     initialize: function(container, app, options){
         this.setOptions(options);
@@ -841,9 +820,6 @@ var o2DesignerBreadcrumb = new Class({
         this.path = `../x_component_process_ProcessManager/$DesignerBreadcrumb/${this.options.style}/`;
         this.container = $(container);
         this.items = [];
-        if( typeof this.options.pathlist === 'string'){
-            this.options.pathlist = this.options.pathlist.split(',');
-        }
     },
     load: function (){
         this.container.loadCss(`${this.path}style.css`);
@@ -857,37 +833,7 @@ var o2DesignerBreadcrumb = new Class({
         this.items.push(item);
         item.load();
         return item;
-    },
-    // removeItem: function(item){
-    //     this.items.erase(item);
-    //     item.destroy();
-    // },
-    // toItem: function (item){
-    //     var index = this.items.indexOf(item);
-    //     if( index > -1 ){
-    //         while( this.items.length > index+1 ){
-    //             this.removeItem(this.items[this.items.length-1]);
-    //         }
-    //     }
-    //     this.setCurrentItem(item);
-    // },
-    // setCurrentItem: function (item) {
-    //     if( this.currentItem ){
-    //         this.currentItem.cancelCurrent();
-    //     }
-    //     item.setCurrent();
-    //     this.currentItem = item;
-    // },
-    // back: function (){
-    //     if( this.currentItem ){
-    //         var index = this.items.indexOf(this.currentItem);
-    //         if( index > 0 ){
-    //             this.toItem( this.items[index-1] );
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    }
 });
 
 o2DesignerBreadcrumb.Item = new Class({
@@ -901,7 +847,6 @@ o2DesignerBreadcrumb.Item = new Class({
         this.config = this.siblingConfigs.length === 1 ? this.siblingConfigs[0] : this.siblingConfigs.find((item)=>{
             return item.id === this.pathData.id || item.name === this.pathData.name;
         });
-        console.log('breadcrumb item',this.level, this.pathData, this.config, this.siblingConfigs);
     },
     load: function (){
         if( this.level > 1 ){
@@ -937,7 +882,7 @@ o2DesignerBreadcrumb.Menu = new Class({
     Extends: MTooltips,
     Implements: [Options, Events],
     options: {
-        // isAutoHide: false,
+        isAutoHide: false,
         // hideByClickBody : true,
         nodeStyles: {
             "position" : "absolute",
@@ -956,7 +901,7 @@ o2DesignerBreadcrumb.Menu = new Class({
     _loadCustom : function( callback ){
         this.menus = [];
         this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
-        Promise.resolve(this.getSilbings()).then((data)=>{
+        Promise.resolve(this.getList()).then((data)=>{
             this.contentNode.loadHtml(this.item.breadcrumb.path+"menu.html", {
                     "bind": {"lp": this.lp, "data": data}, "module": this},
                 function(){
@@ -974,15 +919,14 @@ o2DesignerBreadcrumb.Menu = new Class({
             parent = parent.parent;
         }
     },
-    getSilbings: function () {
-        var siblings = this.item.siblingConfigs;
+    getList: function () {
+        var siblings = Array.clone(this.item.siblingConfigs);
         if( siblings.length === 1 && siblings[0].listAction){
             var appid = this.getAppid();
             return siblings[0].listAction( appid ).then((data)=>{
                 return data.map(d=>{
                     if( siblings[0].type === 'app' ){
-                        var children = Array.clone(siblings[0].children);
-                        d.children = children.map((child)=>{
+                        d.children = siblings[0].children.map((child)=>{
                             child.appid = d.id;
                             return child;
                         });
@@ -998,10 +942,8 @@ o2DesignerBreadcrumb.Menu = new Class({
         }
     },
     handleMouseEnter: function (e, data){
-        if( this.item.activeMenu && this.item.activeMenu !== this ){
-            this.item.activeMenu.target.removeClass('active');
-            this.item.activeMenu.hide();
-            this.item.activeMenu = null;
+        if(this.activeMenu){
+            this.activeMenu.hide();
         }
     },
     handleMouseLeave: function (e, data){
@@ -1011,14 +953,23 @@ o2DesignerBreadcrumb.Menu = new Class({
         data.handleClick(data, this.getAppid());
     },
     handleLoadItem: function (e, data){
-        debugger;
         var app = this.item.breadcrumb.app;
+        var _self = this;
         if( data.children && data.children.length > 0 ){
-            var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.target, app, data, {
+            var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.currentTarget, app, data, {
                 overflow : "scroll",
                 axis : "x",
                 hiddenDelay : 300,
-                displayDelay : 300
+                displayDelay : 300,
+                onPostCreate: function (){
+                    _self.setActiveMenu(this);
+                },
+                onShow: function (){
+                    _self.setActiveMenu(this);
+                },
+                onHide: function (){
+                    _self.cancelActiveMenu(this);
+                }
             });
             menu.item = this.item;
             menu.parent = this;
@@ -1026,49 +977,31 @@ o2DesignerBreadcrumb.Menu = new Class({
             this.menus.push(menu);
         }
     },
-    _customNode : function( node, contentNode ){
-        node.addEvent('mouseenter', (e)=>{
-            this.item.activeMenu = this;
-        });
-        this.fireEvent("customContent", [contentNode, node])
+    setActiveMenu: function ( submenu ){
+        this.activeEl = submenu.target;
+        this.activeEl.addClass('active');
+        this.activeMenu = submenu;
     },
+    cancelActiveMenu: function ( submenu ){
+        submenu.target.removeClass('active');
+        if( submenu.activeMenu ){
+            submenu.activeMenu.hide();
+        }
+    },
+    _customNode : function( node, contentNode ){
+        this.fireEvent("customContent", [contentNode, node])
+    }
 })
 
 o2DesignerBreadcrumb.SubMenu = new Class({
-    Extends: MTooltips,
+    Extends: o2DesignerBreadcrumb.Menu,
     Implements: [Options, Events],
     options: {
-        // isAutoHide: false,
         // hideByClickBody : true,
         priorityOfAuto :{
             x : [ "center", "right", "left" ], //当position x 为 auto 时候的优先级
             y : ["top", "middle", "bottom" ] //当position y 为 auto 时候的优先级
-        },
-        nodeStyles: {
-            "position" : "absolute",
-            "max-width" : "500px",
-            "min-width" : "50px",
-            "z-index" : "101",
-            "background-color" : "#fff",
-            "padding" : "5px 0px",
-            "border-radius" : "4px",
-            "box-shadow": "0 0 18px 0 #999999",
-            "-webkit-user-select": "text",
-            "-moz-user-select": "text"
         }
-    },
-    //执行后才显示位置也样式
-    _loadCustom : function( callback ){
-        this.menus = [];
-        Promise.resolve(this.getList()).then((data)=>{
-            this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
-            this.contentNode.loadHtml(this.item.breadcrumb.path+"menu.html", {
-                    "bind": {"lp": this.lp, "data": data}, "module": this},
-                function(){
-                    if(callback)callback();
-                }.bind(this)
-            );
-        });
     },
     getAppid: function(){
         var parent = this.parent, topParent;
@@ -1082,15 +1015,13 @@ o2DesignerBreadcrumb.SubMenu = new Class({
         return this.currentAppid;
     },
     getList: function () {
-        debugger;
-        var list = this.data.children;
+        var list = Array.clone(this.data.children);
         if( list.length === 1 && list[0].listAction){
             var appid = this.getAppid();
             return list[0].listAction( appid ).then((data)=>{
                 return data.map(d=>{
                     if( list[0].type === 'app' ){
-                        var children = Array.clone(list[0].children);
-                        d.children = children.map((child)=>{
+                        d.children = list[0].children.map((child)=>{
                             child.appid = d.id;
                             return child;
                         });
@@ -1105,34 +1036,40 @@ o2DesignerBreadcrumb.SubMenu = new Class({
             return list;
         }
     },
+    handleMouseEnter: function (e, data){
+        if(this.activeMenu){
+            this.activeMenu.hide();
+        }
+    },
+    handleMouseLeave: function (e, data){
+
+    },
     handleClick: function (e, data){
         data.handleClick(data, data.appid || this.getAppid());
     },
     handleLoadItem: function (e, data){
-        debugger;
         var app = this.item.breadcrumb.app;
+        var _self = this;
         if( data.children && data.children.length > 0 ){
-            var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.target, app, data, {
+            var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.currentTarget, app, data, {
                 overflow : "scroll",
                 axis : "x",
                 hiddenDelay : 300,
-                displayDelay : 300
+                displayDelay : 300,
+                onPostCreate: function (){
+                    _self.setActiveMenu(this);
+                },
+                onShow: function (){
+                    _self.setActiveMenu(this);
+                },
+                onHide: function (){
+                    _self.cancelActiveMenu(this);
+                }
             });
             menu.item = this.item;
             menu.parent = this;
             menu.currentAppid = this.currentAppid;
             this.menus.push(menu);
         }
-    },
-    _customNode : function( node, contentNode ){
-        node.addEvent('mouseenter', (e)=>{
-            if( this.parent.timer_hide ){
-                clearTimeout(this.parent.timer_hide);
-                this.parent.timer_hide = null;
-            }
-            this.target.addClass('active');
-            this.parent.activeMenu = this;
-        });
-        this.fireEvent("customContent", [contentNode, node]);
-    },
+    }
 });

@@ -408,10 +408,33 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		}.bind(this));
 	},
     loadDesignerBreadcrumb: function (){
-        MWF.xDesktop.requireApp("process.ProcessManager", "DesignerBreadcrumb", null, false);
-        this.designerBreadcrumbNode = this.formToolbarNode.getElement('#O2DesignerBreadcrumbNode');
-        this.breadcrumb = new o2DesignerBreadcrumb(this.designerBreadcrumbNode, this, {});
-        this.breadcrumb.load();
+        MWF.xDesktop.requireApp("process.ProcessManager", "DesignerBreadcrumb", function (){
+            this.designerBreadcrumbNode = this.formToolbarNode.getElement('#O2DesignerBreadcrumbNode');
+            this.breadcrumb = new o2DesignerBreadcrumb(this.designerBreadcrumbNode, this, {
+                pathlist: [
+                    {
+                        name: '流程管理',
+                        id: 'process.ApplicationExplorer',
+                        type: 'app-category'
+                    },
+                    {
+                        name: this.formData.json.applicationName,
+                        id: this.formData.json.application,
+                        type: 'app'
+                    },
+                    {
+                        name: '流程表单',
+                        id: 'process.FormManager',
+                        type: 'desiginer-category'
+                    },
+                    {
+                        name: this.formData.json.name,
+                        id: this.formData.json.id,
+                        type: 'desiginer'
+                    }]
+            });
+            this.breadcrumb.load();
+        }.bind(this), true);
     },
     loaddesignerActionNode: function(){
         this.pcDesignerActionNode = this.formToolbarNode.getElement("#MWFFormPCDesignerAction");
@@ -544,8 +567,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 				this.formToolbar.load();
 
                 this.loaddesignerActionNode();
-
-                this.loadDesignerBreadcrumb();
 
 				if (callback) callback();
 			}.bind(this));
@@ -1310,6 +1331,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
 //		try{
 		this.getFormData(function(){
+            this.loadDesignerBreadcrumb();
+
 			this.pcForm = new MWF.FCForm(this, this.designNode);
 			this.pcForm.load(this.formData);
 

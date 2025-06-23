@@ -24,9 +24,10 @@
     cursor: pointer;
 }
 .breadcrumb-menu-item:hover{
-    color: blue;
+    color: var(--oo-color-main);
 }
 .breadcrumb-menu-item.active{
-    color: blue;
+    color: var(--oo-color-main);
+    background-color: var(--oo-color-over);
 }
 
