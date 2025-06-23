@@ -49,7 +49,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 			"x_component_service_AgentDesigner", "x_component_service_DictionaryDesigner",
 			"x_component_service_InvokeDesigner", "x_component_service_ScriptDesigner",
 			"x_component_service_ServiceManager", "x_component_Setting", "x_component_systemconfig",
-			"x_component_Template", "x_component_ThreeMember", "x_desktop", "x_init");
+			"x_component_Template", "x_component_ThreeMember", "x_desktop", "x_init", "x_component_AI");
 
 	public WebServers() {
 		super();
