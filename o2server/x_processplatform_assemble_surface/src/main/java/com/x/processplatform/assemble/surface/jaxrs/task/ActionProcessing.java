@@ -315,6 +315,7 @@ class ActionProcessing extends BaseAction {
 			rec.setType(Record.TYPE_TASK);
 			rec.setOpinion(param.task.getOpinion());
 			rec.setRouteName(param.task.getRouteName());
+			rec.setTaskCompleted(taskCompletedId);
 			rec.setCompleted(true);
 		}
 		return rec;

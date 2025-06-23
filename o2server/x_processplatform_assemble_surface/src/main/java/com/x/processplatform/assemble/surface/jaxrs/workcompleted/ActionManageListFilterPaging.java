@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -36,7 +37,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, "","")) {
+			if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")) {
 				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
 				List<Wo> wos = emc.fetchDescPaging(WorkCompleted.class, Wo.copier, p, page, size,
@@ -94,7 +95,9 @@ class ActionManageListFilterPaging extends BaseAction {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
 			p = cb.and(p, cb.like(root.get(WorkCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
-
+		if (Objects.nonNull(wi.getMerged())) {
+			p = cb.and(p, root.get(WorkCompleted_.merged).in(wi.getMerged()));
+		}
 		if (StringUtils.isNotBlank(wi.getStringValue01())) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.stringValue01), wi.getStringValue01()));
 		}
@@ -163,6 +166,10 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		@FieldDescribe("关键字")
 		private String key;
+
+		@FieldDescribe("是否已经合并")
+		private Boolean merged;
+
 		@FieldDescribe("业务数据String值01")
 		private String stringValue01;
 		@FieldDescribe("业务数据String值02")
@@ -351,6 +358,15 @@ class ActionManageListFilterPaging extends BaseAction {
 		public void setJobList(List<String> jobList) {
 			this.jobList = jobList;
 		}
+
+		public Boolean getMerged() {
+			return merged;
+		}
+
+		public void setMerged(Boolean merged) {
+			this.merged = merged;
+		}
+
 	}
 
 	public static class Wo extends WorkCompleted {

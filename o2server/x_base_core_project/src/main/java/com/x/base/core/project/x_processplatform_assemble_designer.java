@@ -28,10 +28,11 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.End", "com.x.processplatform.core.entity.element.ApplicationDict",
 		"com.x.processplatform.core.entity.element.ApplicationDictItem",
 		"com.x.processplatform.core.entity.element.Publish", "com.x.processplatform.core.entity.element.Mapping",
-		"com.x.query.core.entity.Item", "com.x.cms.core.entity.element.Script",
-		"com.x.portal.core.entity.Script" }, storeJars = { "x_organization_core_entity", "x_organization_core_express",
-				"x_processplatform_core_entity", "x_processplatform_core_express", "x_query_core_entity",
-				"x_cms_core_entity", "x_portal_core_entity" }, storageTypes = { StorageType.processPlatform })
+		"com.x.processplatform.core.entity.log.MergeItemPlan", "com.x.query.core.entity.Item",
+		"com.x.cms.core.entity.element.Script", "com.x.portal.core.entity.Script" }, storeJars = {
+				"x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
+				"x_processplatform_core_express", "x_query_core_entity", "x_cms_core_entity",
+				"x_portal_core_entity" }, storageTypes = { StorageType.processPlatform })
 public class x_processplatform_assemble_designer extends Deployable {
 
 }

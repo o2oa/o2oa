@@ -317,6 +317,7 @@ public class ProcessPlatformPlan extends Plan {
 			if (ps.isEmpty()) {
 				throw new IllegalAccessException("where is empty.");
 			}
+			ps.add(this.workCompletedPredicateMerged(cb, root));
 			return cb.and(ps.toArray(new Predicate[] {}));
 		}
 
@@ -430,6 +431,10 @@ public class ProcessPlatformPlan extends Plan {
 				return cb.and(cb.greaterThanOrEqualTo(root.get(WorkCompleted_.startTime), this.dateRange.start),
 						cb.lessThanOrEqualTo(root.get(WorkCompleted_.startTime), this.dateRange.completed));
 			}
+		}
+
+		private Predicate workCompletedPredicateMerged(CriteriaBuilder cb, Root<WorkCompleted> root) {
+			return cb.or(cb.equal(root.get(WorkCompleted_.merged), false), cb.isNull(root.get(WorkCompleted_.merged)));
 		}
 	}
 }

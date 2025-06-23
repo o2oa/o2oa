@@ -34,6 +34,7 @@ import com.x.processplatform.service.processing.ThisApplication;
 
 import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
+@Deprecated
 public class Merge extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(Merge.class);

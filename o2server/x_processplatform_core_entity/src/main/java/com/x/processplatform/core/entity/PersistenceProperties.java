@@ -261,5 +261,17 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 		}
 	}
+	
+	public static class  Log {
+		private Log() {}
+		
+		public static class MergeItemPlan {
+			
+			private MergeItemPlan() {
+			}
+			
+			public static final String table = "PP_L_MERGEITEMPLAN";
+		}
+	}
 
 }
