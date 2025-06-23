@@ -2,7 +2,6 @@ package com.x.processplatform.service.processing;
 
 import java.util.concurrent.ForkJoinPool;
 
-import com.x.processplatform.service.processing.schedule.*;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
@@ -12,6 +11,14 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxrsInvokeQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxwsInvokeQueue;
+import com.x.processplatform.service.processing.schedule.CleanEvent;
+import com.x.processplatform.service.processing.schedule.DeleteDraft;
+import com.x.processplatform.service.processing.schedule.HandoverJob;
+import com.x.processplatform.service.processing.schedule.LogLongDetained;
+import com.x.processplatform.service.processing.schedule.MergeItem;
+import com.x.processplatform.service.processing.schedule.TouchDelay;
+import com.x.processplatform.service.processing.schedule.UpdateTable;
+import com.x.processplatform.service.processing.schedule.Urge;
 
 public class ThisApplication {
 
@@ -52,8 +59,8 @@ public class ThisApplication {
 			context().startQueue(syncJaxrsInvokeQueue);
 			context().startQueue(syncJaxwsInvokeQueue);
 			context().startQueue(updateTableQueue);
-			if (BooleanUtils.isTrue(Config.processPlatform().getMerge().getEnable())) {
-				context.schedule(Merge.class, Config.processPlatform().getMerge().getCron());
+			if (BooleanUtils.isTrue(Config.processPlatform().getMergeItem().getEnable())) {
+				context.schedule(MergeItem.class, Config.processPlatform().getMergeItem().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getDeleteDraft().getEnable())) {
 				context.schedule(DeleteDraft.class, Config.processPlatform().getDeleteDraft().getCron());

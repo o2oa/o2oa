@@ -1,10 +1,10 @@
 [
 	{
-		"url" : "jdbc:sqlserver://127.0.0.1:1433;DatabaseName=X;selectMethod=cursor;sendStringParametersAsUnicode=false",
-		"username" : "sa",
-		"password" :"password",
+		"url": "jdbc:sqlserver://127.0.0.1:1433;DatabaseName=X;selectMethod=cursor;sendStringParametersAsUnicode=false;encrypt=true;trustServerCertificate=true",
+		"username": "sa",
+		"password": "123456",
 		"includes": [],
 		"excludes": [],
-		"enable" : true
+		"enable": true
 	}
 ]
