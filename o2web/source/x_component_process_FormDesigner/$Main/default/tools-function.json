@@ -9,16 +9,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.view,
     "className": "View"
   },
-  "stat": {
-    "icon": "stat.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.stat,
-    "className": "Stat"
-  },
-  "documenteditor": {
-    "icon": "documenteditor.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.documenteditor,
-    "className": "Documenteditor"
-  },
   "statementSelector": {
     "icon": "statementSelector.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
@@ -28,6 +18,16 @@
     "icon": "statement.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statement,
     "className": "Statement"
+  },
+  "stat": {
+    "icon": "stat.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.stat,
+    "className": "Stat"
+  },
+  "documenteditor": {
+    "icon": "documenteditor.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.documenteditor,
+    "className": "Documenteditor"
   },
   "importer": {
     "icon": "importer.png",

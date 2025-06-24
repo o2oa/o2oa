@@ -139,6 +139,7 @@
             <div class="MWFMaplist" name="selectedSetValues" title="{{$.lp.assignValueForResult}}"></div>
         </div>
         <div id="text{$.pid}selectedScriptArea" style="display: text{($.result=='script')?'block':'none'};">
+            <div style="padding: 5px;color:#999">通过this.target.selectedData获取选择的数据</div>
             <div class="MWFScriptArea" name="selectedScript" title="{{$.lp.selectResult}} (S)"></div>
         </div>
         <div class="MWFScriptArea" name="defaultSelectedScript" title="{{$.lp.defaultSelectedLineScript}}"></div>

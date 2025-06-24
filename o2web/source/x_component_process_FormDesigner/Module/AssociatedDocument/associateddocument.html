@@ -89,6 +89,25 @@
 			<div class="MWFScriptArea" name="displayScript" title="{{$.lp.logHtmlScript}} (S)"></div>
 		</div>
 
+		<div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center;">{{$.lp.selectResultProcessing}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.resultProcessing}}:</td>
+				<td class="editTableValue">
+					<input type="radio" onclick="if (this.checked){ $('text{$.pid}selectedSetValueArea').setStyle('display', 'block'); $('text{$.pid}selectedScriptArea').setStyle('display', 'none')}" name="result" value="setValue" text{($.result!='script')?'checked':''}/>{{$.lp.assignValue}}
+					<input type="radio" onclick="if (this.checked){ $('text{$.pid}selectedSetValueArea').setStyle('display', 'none'); $('text{$.pid}selectedScriptArea').setStyle('display', 'block')}" name="result" value="script" text{($.result=='script')?'checked':''}/>{{$.lp.script}}
+				</td>
+			</tr>
+		</table>
+
+		<div id="text{$.pid}selectedSetValueArea" style="display: text{($.result!='script')?'block':'none'};">
+			<div class="MWFMaplist" name="selectedSetValues" title="{{$.lp.assignValueForResult}}"></div>
+		</div>
+		<div id="text{$.pid}selectedScriptArea" style="display: text{($.result=='script')?'block':'none'};">
+			<div style="padding: 5px;color:#999">通过this.target.selectedData获取选择的数据</div>
+			<div class="MWFScriptArea" name="selectedScript" title="{{$.lp.selectResult}} (S)"></div>
+		</div>
+
 		<div class="MWFValidation" name="validationConfig"></div>
 		<div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
 
