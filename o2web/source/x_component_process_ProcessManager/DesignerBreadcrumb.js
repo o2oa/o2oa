@@ -1015,7 +1015,8 @@ o2DesignerBreadcrumb.Menu = new Class({
                     d.handleClick = ()=>{
                         list[0].handleClick(d, appid);
                     };
-                    if( list[0].categorized && !!d.category ){
+                    if( list[0].categorized ){
+                        !d.category && (d.category = '未分类');
                         if( !this.categories.includes( d.category ) ){
                             this.categories.push( d.category );
                         }
