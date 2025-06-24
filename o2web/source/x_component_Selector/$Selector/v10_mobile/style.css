@@ -24,12 +24,12 @@
 }
 .MWF_selector_contentNode{
   flex: 1;
-  height: calc( 100% - 7.875rem );
+  height: calc( 100% - 10.875rem );
   background-color: #FFFFFF;
 }
 .multiple_mode .MWF_selector_contentNode{
-  /*3rem是tab高度， 0.625rem是tab的margin-bottom*/
-  height: calc( 100% - 7.875rem - 3rem - 0.625rem );
+  /*2.5rem是tab高度， 0.625rem是tab的margin-bottom*/
+  height: calc( 100% - 10.875rem - 2.5rem - 0.625rem );
 }
 .multiple_mode .MWF_selector_contentNode > div{
   height: 100%
@@ -41,20 +41,20 @@
   height: 100%
 }
 .MWF_selector_bottomNode{
-  height: 5.125rem;
-  overflow: hidden;
-  padding: 0 0.625rem;
-  align-items: center;
-  background: #F7F7F7;
-  gap: 0.5rem;
-  /*box-shadow: 0 0 10px 0px #cccccc;*/
-  /*position: sticky;*/
-  /*bottom: 0;*/
-  /*background-color: #ffffff;*/
+  /*height: 5.125rem;*/
+  /*overflow: hidden;*/
+  /*padding: 0 0.625rem;*/
+  /*align-items: center;*/
+  /*background: #F7F7F7;*/
+  /*gap: 0.5rem;*/
+  box-shadow: 0 0 10px 0px #cccccc;
+  position: sticky;
+  bottom: 0;
+  background-color: #ffffff;
   /*justify-content: space-between;*/
   /*align-items: center;*/
   /*gap: 1em;*/
-  /*padding: 0.5em 1em 2em 1em;*/
+  padding: 0 1em 2em 1em;
 }
 
 
@@ -86,7 +86,7 @@
 }
 .multiple_mode .MWF_selector_tabContainer{
   display: block;
-  height: 3rem;
+  height: 2.5rem;
   margin-bottom: 0.625rem;
   background: #FFFFFF;
 }
@@ -196,7 +196,7 @@
 .MWF_selector_selectedMaskNode{
   display: none;
   position: absolute;
-  bottom: 6.125rem;
+  bottom: 7.125rem;
   left: 0;
   width: 100%;
   height: 100%;
@@ -207,10 +207,10 @@
 .MWF_selector_selectedWrapNode{
   display: none;
   position: absolute;
-  bottom: 6.125rem;
+  bottom: 7.125rem;
   left: 0;
   width: 100%;
-  height: calc( 100% - 6.125rem );
+  height: calc( 100% - 7.125rem );
   border-radius: 0.25rem;
   background: #FFF;
   z-index: 1003;
@@ -368,27 +368,37 @@
 .MWF_selector_actionNode{
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 .MWF_selector_cancelActionNode{
-  height: 2rem;
-  line-height: 2rem;
-  border-radius: 0.375rem;
-  padding: 0 1rem;
-  border: 1px solid #ccc;
-  background: #fff;
-  color: #666;
-  width: 40%;
+  font-size: 16px !important;
+  font-weight: normal;
+  font-family: "Microsoft YaHei", "SimSun", "宋体", serif;
+  border-radius: var(--oo-default-radius);
+  height: 2.75em;
+  padding: 0.375em 0.8em;
+  cursor: pointer;
+  color: unset;
+  background-color: var(--oo-color-bg-white);
+  transition: background 0.1s, color 0.1s;
+  text-align: center;
+  border: 1px solid var(--oo-color-gray-b);
+  flex: 2;
 }
 .MWF_selector_okActionNode{
-  height: 2rem;
-  line-height: 2rem;
-  background: #2E82F7;
-  border-radius: 0.375rem;
-  color: #fff;
-  padding: 0 1rem;
-  border: 1px solid #2E82F7;
-  flex: 1;
+  font-family: "Microsoft YaHei", "SimSun", "宋体", serif;
+  font-size: 16px !important;
+  font-weight: normal;
+  border-radius: var(--oo-default-radius);
+  height: 2.75em;
+  padding: 0.375em 0.6em;
+  cursor: pointer;
+  color: var(--oo-color-text-white);
+  background-color: var(--oo-color-main);
+  transition: background 0.1s, color 0.1s;
+  text-align: center;
+  border: 1px solid var(--oo-color-main);
+  flex: 3;
 }
 
 .selected_mode .MWF_selector_selectedShowIcon{

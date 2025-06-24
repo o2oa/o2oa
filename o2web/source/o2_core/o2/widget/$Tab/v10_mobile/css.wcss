@@ -15,8 +15,8 @@
 	},
 	"tabNodeContainerArea": {
 		"display": "flex",
-		"height": "3rem",
-		"line-height": "3rem",
+		"height": "2.5rem",
+		"line-height": "2.5rem",
 		"font-size": "1rem",
 		"gap": "0.626rem",
 		"justify-content": "space-evenly",
