@@ -4,7 +4,7 @@
 		"z-index":1000
 	},
 	"containerNodeMobile": {
-        "height": "80%",
+        "height": "90%",
         "bottom": "0",
         "width": "100%",
         "background-color": "#F7F7F7",
