@@ -1,18 +1,34 @@
-<div class="breadcrumb-menu" data-o2-element="menu">
-    {{each $.data}}
+<div class="breadcrumb-content" data-o2-element="topNode">
+    {{if $.categories.length > 0}}
+        <oo-select value="all"
+                   data-o2-events="o2load:handLoadCategory;
+                                    change:handleChangeCategory">
+        </oo-select>
+    {{end if}}
+    {{if $.creatable}}
     <div
-            class="breadcrumb-menu-item"
-            data-o2-events="click:handleClick;
-                            mouseleave:handleMouseLeave;
-                            mouseenter:handleMouseEnter;
-                            o2load:handleLoadItem;">
-        {{if $.icon}}
-        <i class="breadcrumb-menu-item-icon ooicon-{{$.icon}}"></i>
-        {{end if}}
-        <span class="breadcrumb-menu-item-text">{{$.name}}</span>
-<!--        {{if $.children}}-->
-<!--        <i class="breadcrumb-menu-item-arrow ooicon-drop_down"></i>-->
-<!--        {{end if}}-->
+            class="breadcrumb-menu-create"
+            data-o2-events="click:handleCreate;">
+        <i class="breadcrumb-menu-item-icon ooicon-create"></i>
+        <span>新建</span>
     </div>
-    {{end each}}
+    {{end if}}
+
+    <div class="breadcrumb-menu" data-o2-element="menuNode">
+        {{each $.data}}
+        <div
+                data-category="{{$.category}}"
+                class="breadcrumb-menu-item"
+                data-o2-events="click:handleClick;
+                                mouseleave:handleMouseLeave;
+                                mouseenter:handleMouseEnter;
+                                o2load:handleLoadItem;">
+            {{if $.icon}}
+            <i class="breadcrumb-menu-item-icon ooicon-{{$.icon}}"></i>
+            {{end if}}
+            <span class="breadcrumb-menu-item-text">{{$.name}}
+            </span>
+        </div>
+        {{end each}}
+    </div>
 </div>

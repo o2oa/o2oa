@@ -11,6 +11,10 @@
 .breadcrumb-item{
 
 }
+oo-select{
+    width: calc( 100% - 2rem );
+    margin: 0 1rem;
+}
 .breadcrumb-menu{
 
 }
@@ -38,9 +42,13 @@
 /*}*/
 .breadcrumb-menu-item:hover{
     color: var(--oo-color-main);
+    background-color: var(--oo-color-over);
 }
 .breadcrumb-menu-item.active{
     color: var(--oo-color-main);
     background-color: var(--oo-color-over);
+}
+.hide{
+    display: none !important;
 }
 

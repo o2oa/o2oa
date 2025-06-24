@@ -1,13 +1,19 @@
-var _openApp = o2.api.page.openApplication;
 var _portalAction = o2.Actions.load('x_portal_assemble_designer');
 var _processAction = o2.Actions.load('x_processplatform_assemble_designer');
 var _cmsAction = o2.Actions.load('x_cms_assemble_control');
 var _queryAction = o2.Actions.load('x_query_assemble_designer');
 var _serviceAction = o2.Actions.load('x_program_center');
+var _openApp = o2.api.page.openApplication;
+
+var _checkClass = (dom, clazz, flag)=>{
+    !!flag ?
+        !dom.hasClass(clazz) && dom.addClass(clazz) :
+        dom.hasClass(clazz) && dom.removeClass(clazz);
+};
 
 var _sort =  (data, key='name', isDesc=false)=>{
     return data.sort(function (a, b){
-        var av = a[key], bv = b[key];
+        var av = !!key ? a[key] : a, bv = !!key ? b[key] : b;
         if( typeOf(av) === 'string' && typeOf(bv) === 'string' ){
             var isLetterA = /^[a-zA-Z0-9]/.test(av);
             var isLetterB = /^[a-zA-Z0-9]/.test(bv);
@@ -36,7 +42,7 @@ var o2DesignerConfig = {
                 id: 'portal.PortalManager',
                 label: '应用',
                 type: 'app',
-                icon: '',
+                categorized: true,
                 handleClick: (item) => {
                     _openApp('portal.PortalManager', null, {application: item.id});
                 },
@@ -44,7 +50,8 @@ var o2DesignerConfig = {
                     return _portalAction.PortalAction.list().then((json) => {
                         return _sort(json.data, 'name').map((item) => {
                             return {
-                                category: item.category,
+                                ...item,
+                                category: item.appType,
                                 name: item.name,
                                 icon: '',
                                 id: item.id,
@@ -64,6 +71,10 @@ var o2DesignerConfig = {
                         children: [{
                             label: '页面',
                             type: 'desiginer',
+                            categorized: true,
+                            createFunction: (appid)=>{
+                                _openApp('portal.PageDesigner', null, {application: {id: appid}});
+                            },
                             handleClick: (page) => {
                                 _openApp('portal.PageDesigner', null, {id: page.id});
                             },
@@ -71,6 +82,8 @@ var o2DesignerConfig = {
                                 return _portalAction.PageAction.listWithPortal(appid).then((pages) => {
                                     return _sort(pages.data).map((page) => {
                                         return {
+                                            ...page,
+                                            category: page.category,
                                             name: page.name,
                                             icon: '',
                                             id: page.id
@@ -881,7 +894,6 @@ o2DesignerBreadcrumb.Item = new Class({
         const { app, node, data } = this;
         var _self = this;
         this.menu = new o2DesignerBreadcrumb.Menu(app.content, node, app, data, {
-            overflow : "scroll",
             axis : "y",
             hiddenDelay : 300,
             displayDelay : 300,
@@ -929,16 +941,18 @@ o2DesignerBreadcrumb.Menu = new Class({
         },
         hasArrow: false,
         isAutoHide: false,
+        overflow: 'scroll',
         // hideByClickBody : true,
         nodeStyles: {
             "position" : "absolute",
             "max-width" : "500px",
             "min-width" : "50px",
             "z-index" : "101",
+            "border-color" : "var(--oo-color-gray-d)",
             "background-color" : "#fff",
             "padding" : "5px 0px",
-            "border-radius" : "4px",
-            "box-shadow": "0 0 18px 0 #999999",
+            "border-radius" : "var(--oo-default-radius)",
+            "box-shadow": "0 0 10px 1px var(--oo-color-gray-d)",
             "-webkit-user-select": "text",
             "-moz-user-select": "text"
         }
@@ -948,9 +962,22 @@ o2DesignerBreadcrumb.Menu = new Class({
         this.menus = []
         this.contentNode.addEvent('mousedown', (e)=>{ e.stopPropagation(); });
         this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
-        Promise.resolve(this.getList()).then((data)=>{
-            this.contentNode.loadHtml(this.item.breadcrumb.path+"menu.html", {
-                    "bind": {"lp": this.lp, "data": data}, "module": this},
+
+        var template = Array.clone(this.getChildrenTempalte());
+        var creatable = !!(template.length === 1 && template[0].createFunction);
+        Promise.resolve(this.getList( template )).then((data)=>{
+            this.categories = _sort(this.categories, '');
+            this.contentNode.loadHtml(
+                this.item.breadcrumb.path+"menu.html",
+                {
+                    bind: {
+                        lp: this.lp,
+                        data: data,
+                        creatable: creatable,
+                        categories: this.categories
+                    },
+                    module: this
+                },
                 function(){
                     if(callback)callback();
                 }.bind(this)
@@ -969,11 +996,12 @@ o2DesignerBreadcrumb.Menu = new Class({
     getCurrentAppid: function (){
         return this.getAppid();
     },
-    getChildren: function () {
-        return Array.clone(this.item.siblingConfigs);
+    getChildrenTempalte: function () {
+        return this.item.siblingConfigs;
     },
-    getList: function () {
-        var list = this.getChildren();
+    getList: function ( template ) {
+        var list = template;
+        this.categories = [];
         if( list.length === 1 && list[0].listAction){
             var appid = this.getAppid();
             return list[0].listAction( appid ).then((data)=>{
@@ -987,12 +1015,39 @@ o2DesignerBreadcrumb.Menu = new Class({
                     d.handleClick = ()=>{
                         list[0].handleClick(d, appid);
                     };
+                    if( list[0].categorized && !!d.category ){
+                        if( !this.categories.includes( d.category ) ){
+                            this.categories.push( d.category );
+                        }
+                    }
                     return d;
                 });
             });
         }else{
             return list;
         }
+    },
+    handLoadCategory: function (e){
+        var option = new Element('oo-option', { value: 'all' }).inject(e.currentTarget);
+        option.setAttribute('text', '选择分类');
+        this.categories.forEach(category=>{
+            var option = new Element('oo-option', { value: category }).inject(e.currentTarget);
+            option.setAttribute('text', category);
+        });
+    },
+    handleChangeCategory: function (e){
+        debugger;
+        var items = this.menuNode.querySelectorAll('.breadcrumb-menu-item');
+        items.forEach(item=>{
+            _checkClass(
+                item,
+                'hide',
+                e.currentTarget.value !== 'all' && item.dataset.category !== e.currentTarget.value
+            );
+        });
+    },
+    handleCreate: function (){
+        this.getChildrenTempalte()[0].createFunction(this.getAppid());
     },
     handleMouseEnter: function (e, data){
         if(this.activeMenu){
@@ -1010,7 +1065,6 @@ o2DesignerBreadcrumb.Menu = new Class({
         var _self = this;
         if( data.children && data.children.length > 0 ){
             var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.currentTarget, app, data, {
-                overflow : "scroll",
                 axis : "x",
                 hiddenDelay : 300,
                 displayDelay : 300,
@@ -1064,8 +1118,8 @@ o2DesignerBreadcrumb.SubMenu = new Class({
         }
         return this.currentAppid;
     },
-    getChildren: function () {
-        return Array.clone(this.data.children);
+    getChildrenTempalte: function () {
+        return this.data.children;
     },
     handleMouseEnter: function (e, data){
         if(this.activeMenu){
