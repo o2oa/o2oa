@@ -4,7 +4,7 @@
 		"z-index":1000
 	},
 	"containerNodeMobile": {
-        "height": "80%",
+        "height": "90%",
         "bottom": "0",
         "width": "100%",
         "background-color": "#F7F7F7",
@@ -13,7 +13,6 @@
         "z-index":1001,
         "display": "flex",
         "flex-direction": "column",
-        "padding-bottom": "1rem",
         "border-radius": "0.25rem",
         "box-shadow" : "0 0 0 1px var(--oo-color-gray-d)",
 		"transform-origin": "bottom",
