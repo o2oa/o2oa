@@ -165,6 +165,16 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.view,
     "className": "View"
   },
+  "statementSelector": {
+    "icon": "statementSelector.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.statementSelector,
+    "className": "StatementSelector"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.statement,
+    "className": "Statement"
+  },
   "stat": {
     "icon": "stat.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.stat,
@@ -264,16 +274,6 @@
     "icon": "comment.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.comment,
     "className": "Comment"
-  },
-  "statementSelector": {
-    "icon": "statementSelector.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.statementSelector,
-    "className": "StatementSelector"
-  },
-  "statement": {
-    "icon": "statement.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.statement,
-    "className": "Statement"
   },
   "importer": {
     "icon": "importer.png",
