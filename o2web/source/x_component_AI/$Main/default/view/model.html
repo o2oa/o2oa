@@ -1,0 +1,47 @@
+<div class="layout-wrap" data-o2-element="rootNode">
+    <div class="layout-left" data-o2-element="leftNode">
+        <div class="title">
+            <img src="{{$.config.appIconUrl}}">
+            <span>{{$.config.appName}}</span>
+        </div>
+        <div class="menu-item " data-o2-events="click:openIndex">
+            <div class="ooicon-a-home2"></div>
+            <div>{{$.lp.navi.index}}</div>
+        </div>
+        <div class="menu-item " data-o2-events="click:openMcp">
+            <div class="ooicon-m1"></div>
+            <div>{{$.lp.navi.mcp}}</div>
+        </div>
+        <div class="menu-item   menu-item-c" data-o2-events="click:openModel">
+            <div class="ooicon-list-alt"></div>
+            <div>{{$.lp.navi.model}}</div>
+        </div>
+        <div class="menu-item" data-o2-events="click:openSetting">
+            <div class="ooicon-config"></div>
+            <div>{{$.lp.navi.setting}}</div>
+        </div>
+    </div>
+    <div class="layout-right" data-o2-element="rightNode">
+        <div class="page">
+            <div class="chat-top" data-o2-element="titleNode">模型设置</div>
+            <div class="model-wrap">
+                <oo-button data-o2-events="click:newModel:new" style="width: 7em;">
+                    新建模型
+                </oo-button>
+                <div class="model-list">
+
+                    {{each $.modelList}}
+                    <div  class="model-item {{if $.asDefault}} model-item-cur {{end if}}">
+                        <div class="model-item-1"><img src="../x_component_AI/$Main/default/icons/{{$.type}}.png"></div>
+                        <div class="model-item-2" data-o2-events="click:newModel:edit:{{$.id}}">
+                            <div class="model-item-2-1">{{$.name}}{{if $.asDefault}}(当前启用){{end if}}</div>
+                            <div class="model-item-2-2">{{$.desc}}</div>
+                        </div>
+                        <div class="model-item-3"><i class="ooicon-delete" data-o2-events="click:removeModel:{{$.id}}" ></i></div>
+                    </div>
+                    {{end each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

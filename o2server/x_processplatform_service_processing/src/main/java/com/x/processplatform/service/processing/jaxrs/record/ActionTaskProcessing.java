@@ -117,6 +117,7 @@ class ActionTaskProcessing extends BaseAction {
 				rec.setStartTime(param.taskCompleted.getStartTime());
 				rec.setEmpowerFromIdentity(param.taskCompleted.getEmpowerFromIdentity());
 				rec.setType(param.recordType);
+				rec.setTaskCompleted(param.taskCompleted.getId());
 				// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
 				checkIfWorkAlreadyCompleted(business, rec, param.workLog.getJob());
 				elapsed(rec);

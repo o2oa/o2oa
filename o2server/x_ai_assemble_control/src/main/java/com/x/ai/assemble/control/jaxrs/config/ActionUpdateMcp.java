@@ -11,7 +11,6 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.ActionResult.Type;
@@ -46,27 +45,32 @@ class ActionUpdateMcp extends BaseAction {
             throw new ExceptionFieldEmpty("name");
         }
         wi.setType(McpConfig.TYPE_HTTP);
+        wi.setId(id);
+        this.saveOrUpdate(wi, aiConfig);
+        Wo wo = new Wo();
+        wo.setValue(true);
+        result.setData(wo);
+        return result;
+    }
+
+    public void saveOrUpdate(McpConfig mcp, AiConfig aiConfig) throws Exception{
         List<NameValuePair> heads = List.of(
                 new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
         String url =
-                aiConfig.getO2AiBaseUrl() + "/ai-gateway-mcp/get/"+ UrlEncoded.encodeString(id);
+                aiConfig.getO2AiBaseUrl() + "/ai-gateway-mcp/get/"+ UrlEncoded.encodeString(mcp.getId());
         ActionResponse resp = ConnectionAction.get(url, heads);
         if(!Type.success.equals(resp.getType())){
-            throw new ExceptionEntityNotExist(id);
-        }
-
-        url = aiConfig.getO2AiBaseUrl() + "/ai-gateway-mcp/update";
-        wi.setId(id);
-        String json = gson.toJson(wi);
-        logger.debug("更新mcp配置信息：{}", json);
-        resp = ConnectionAction.post(url, heads, json);
-        if(Type.success.equals(resp.getType())){
-            Wo wo = resp.getData(Wo.class);
-            result.setData(wo);
+            url = aiConfig.getO2AiBaseUrl() + "/ai-gateway-mcp/create";
+            resp = ConnectionAction.post(url, heads, gson.toJson(mcp));
         }else{
+            url = aiConfig.getO2AiBaseUrl() + "/ai-gateway-mcp/update";
+            String json = gson.toJson(mcp);
+            logger.debug("更新mcp配置信息：{}", json);
+            resp = ConnectionAction.post(url, heads, json);
+        }
+        if(!Type.success.equals(resp.getType())){
             throw new ExceptionCustom(resp.getMessage());
         }
-        return result;
     }
 
     public static class Wi extends McpConfig {

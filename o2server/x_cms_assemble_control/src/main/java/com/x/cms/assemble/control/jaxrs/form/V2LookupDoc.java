@@ -25,7 +25,6 @@ import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.Form;
-import com.x.cms.core.entity.element.FormProperties;
 
 class V2LookupDoc extends BaseAction {
 
@@ -54,11 +53,11 @@ class V2LookupDoc extends BaseAction {
 			readFormId = readForm.getId();
 			this.wo.setReadFormId(readFormId);
 		}
-		if (null != this.ppForm){
+		if (null != this.ppForm) {
 			ppFormId = this.ppForm.getId();
 			this.wo.setPpFormId(ppFormId);
 		}
-		if(StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId) || StringUtils.isNotEmpty(ppFormId)){
+		if (StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId) || StringUtils.isNotEmpty(ppFormId)) {
 			CacheKey cacheKey = new CacheKey(this.getClass(), formId, readFormId, ppFormId);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
@@ -66,24 +65,20 @@ class V2LookupDoc extends BaseAction {
 			} else {
 				List<String> list = new ArrayList<>();
 				if (null != this.form) {
-					CompletableFuture<List<String>> relatedFormFuture = this
-							.relatedFormFuture(this.form.getProperties());
-					CompletableFuture<List<String>> relatedScriptFuture = this
-							.relatedScriptFuture(this.form.getProperties());
+					CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form);
+					CompletableFuture<List<String>> relatedScriptFuture = this.relatedScriptFuture(this.form);
 					list.add(this.form.getId() + this.form.getUpdateTime().getTime());
 					list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
 					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
 				}
 				if (null != this.readForm && !formId.equals(readFormId)) {
-					CompletableFuture<List<String>> relatedFormFuture = this
-							.relatedFormFuture(this.readForm.getProperties());
-					CompletableFuture<List<String>> relatedScriptFuture = this
-							.relatedScriptFuture(this.readForm.getProperties());
+					CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.readForm);
+					CompletableFuture<List<String>> relatedScriptFuture = this.relatedScriptFuture(this.readForm);
 					list.add(this.readForm.getId() + this.readForm.getUpdateTime().getTime());
 					list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
 					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
 				}
-				if(this.ppForm != null){
+				if (this.ppForm != null) {
 					list.add(this.ppForm.getId() + this.ppForm.getUpdateTime().getTime());
 				}
 				list = list.stream().sorted().collect(Collectors.toList());
@@ -100,8 +95,9 @@ class V2LookupDoc extends BaseAction {
 	private void getDocForm(String docId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME, Document.form_FIELDNAME,
-					Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME, Document.ppFormId_FIELDNAME));
+			Document document = emc.fetch(docId, Document.class,
+					ListTools.toList(JpaObject.id_FIELDNAME, Document.form_FIELDNAME, Document.readFormId_FIELDNAME,
+							Document.categoryId_FIELDNAME, Document.ppFormId_FIELDNAME));
 			if (null != document) {
 				String formId = document.getForm();
 				String readFormId = document.getReadFormId();
@@ -129,48 +125,69 @@ class V2LookupDoc extends BaseAction {
 						this.readForm = business.getFormFactory().pick(readFormId);
 					}
 				}
-				if(StringUtils.isNotBlank(document.getPpFormId())){
+				if (StringUtils.isNotBlank(document.getPpFormId())) {
 					this.ppForm = business.process().form().pick(document.getPpFormId());
-					LOGGER.info("通过流程ID：{}获取表单：{}", this.ppForm == null? "" : this.ppForm.getName());
+					LOGGER.info("通过流程ID：{}获取表单：{}", this.ppForm == null ? "" : this.ppForm.getName());
 				}
 			}
 		}
 	}
 
-	private CompletableFuture<List<String>> relatedFormFuture(FormProperties properties) {
+	private CompletableFuture<List<String>> relatedFormFuture(Form form) {
 		return CompletableFuture.supplyAsync(() -> {
 			List<String> list = new ArrayList<>();
-			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Form f;
-					for (String id : properties.getRelatedFormList()) {
-						f = emc.fetch(id, Form.class,
-								ListTools.toList(JpaObject.id_FIELDNAME, JpaObject.updateTime_FIELDNAME));
-						if (null != f) {
-							list.add(f.getId() + f.getUpdateTime().getTime());
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Form f;
+				if (StringUtils.isNotEmpty(form.getData())) {
+					if (ListTools.isNotEmpty(form.getProperties().getRelatedFormList())) {
+						for (String id : form.getProperties().getRelatedFormList()) {
+							f = emc.fetch(id, Form.class,
+									ListTools.toList(JpaObject.id_FIELDNAME, JpaObject.updateTime_FIELDNAME));
+							if (null != f) {
+								list.add(f.getId() + f.getUpdateTime().getTime());
+							}
 						}
 					}
-				} catch (Exception e) {
-					LOGGER.error(e);
+				} else {
+					if (ListTools.isNotEmpty(form.getProperties().getMobileRelatedFormList())) {
+						for (String id : form.getProperties().getMobileRelatedFormList()) {
+							f = emc.fetch(id, Form.class,
+									ListTools.toList(JpaObject.id_FIELDNAME, JpaObject.updateTime_FIELDNAME));
+							if (null != f) {
+								list.add(f.getId() + f.getUpdateTime().getTime());
+							}
+						}
+					}
 				}
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
 			return list;
-		},ThisApplication.forkJoinPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
-	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
+	private CompletableFuture<List<String>> relatedScriptFuture(Form form) {
 		return CompletableFuture.supplyAsync(() -> {
 			List<String> list = new ArrayList<>();
-			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					list = convertScriptToCacheTag(business, properties.getRelatedScriptMap());
-				} catch (Exception e) {
-					LOGGER.error(e);
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				if (StringUtils.isNotEmpty(form.getData())) {
+					if ((null != form.getProperties().getRelatedScriptMap())
+							&& (form.getProperties().getRelatedScriptMap().size() > 0)) {
+						Business business = new Business(emc);
+						list = convertScriptToCacheTag(business, form.getProperties().getRelatedScriptMap());
+					}
+				} else {
+					if ((null != form.getProperties().getMobileRelatedScriptMap())
+							&& (form.getProperties().getMobileRelatedScriptMap().size() > 0)) {
+						Business business = new Business(emc);
+						list = convertScriptToCacheTag(business, form.getProperties().getMobileRelatedScriptMap());
+					}
 				}
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
 			return list;
-		},ThisApplication.forkJoinPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	public static class Wo extends AbstractWo {

@@ -1,0 +1,600 @@
+[
+  {
+    "name": "startProcess_apply",
+    "category": "流程",
+    "desc": "为用户提供加班请假流程，创建请假申请流程",
+    "enable": true,
+    "id": "1iu13b0oa-7b98df1b-7387-4f5c-9d60-1a7819751b21-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_startProcess/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "startTime": "${beginTime}",
+        "endTime": "${endTime}",
+        "explain": "${reason}",
+        "person": "${person}",
+        "process": "f924a80e-e809-41ae-98de-ef656c918ed7",
+        "number": "${overtime}",
+        "routeName": "送审批",
+        "opinion": "请审核",
+        "mcp": "startProcess_apply",
+        "type": "${type}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "reason",
+        "desc": "请假事由",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "beginTime",
+        "desc": "请假开始时间, 格式为 2025-01-01",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "请假结束时间, 格式为 2025-01-01",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "overtime",
+        "desc": "请假时长，自动根据开始时间结束时间计算出来天数",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "type",
+        "desc": "请假类型，从事假  病假  年休假  婚假  产假  陪产假  其他 选一个",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-18 16:43:55",
+    "updateDateTime": "2025-06-18 16:51:08",
+    "extra": {
+      "template": "已经为您提交好请假申请流程，点击查看：",
+      "script": "\nvar item \u003d new Element(\"a\",{\"text\":data.title}).inject(node);\nitem.addEvent(\"click\",function(){\n    var options \u003d {\n        \"workId\": data.work, \"appId\": \"process.Work\"+data.work\n    };\n    layout.openApplication(null, \"process.Work\", options);\n})"
+    },
+    "type": "http"
+  },
+  {
+    "name": "sendMail",
+    "category": "邮件",
+    "desc": "发送邮件，给用户发送邮件，帮用户发邮件",
+    "enable": true,
+    "id": "1itjguucc-e2b70d5b-c0c5-47b9-8f9a-dc02ff433516-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_SendMail/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "person": "${person}",
+        "sendTo": "${sendTo}",
+        "subject": "${subject}",
+        "content": "${content}",
+        "mcp": "sendMail"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "subject",
+        "desc": "邮件标题",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "content",
+        "desc": "邮件内容",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "sendTo",
+        "desc": "收件人",
+        "type": "array",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-13 10:12:37",
+    "updateDateTime": "2025-06-18 15:08:26",
+    "extra": {
+      "template": "邮件发送成功,点击查看邮件。",
+      "script": "node.addEvent(\"click\",function(){\r\n    layout.desktop.openApplication(null, \"portal.Portal\", {\r\n        \"portalId\": \"mail\",\r\n        \"pageId\": \"0b0709c2-02ba-4576-b442-617377882bb6\",\r\n        \"parameters\": {\r\n            \"documentId\" : data.id\r\n        },\r\n        \"appId\": \"portal.Portal\" + data.id\r\n    })\r\n\r\n})\r\n"
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryPerformance",
+    "category": "",
+    "desc": "我的绩效",
+    "enable": false,
+    "id": "1itflcjos-221f11fc-3883-4eab-8364-790a1b344194-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/startProcess/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {},
+      "internalEnable": true
+    },
+    "mcpParameterList": [],
+    "createDateTime": "2025-06-11 22:13:01",
+    "updateDateTime": "2025-06-13 09:46:44",
+    "extra": {},
+    "type": "http"
+  },
+  {
+    "name": "queryMail",
+    "category": "邮件",
+    "desc": "个人邮件，我的邮件，未读邮件，邮件查询",
+    "enable": true,
+    "id": "1itfk4pqn-7a168b15-9c24-4fa5-b658-35fae5f3b899-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryMail/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "person": "${person}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-11 21:51:17",
+    "updateDateTime": "2025-06-18 15:05:42",
+    "extra": {
+      "template": "未读邮件列表:",
+      "script": "dataList \u003d data;\nconst ul \u003d new Element(\"ul\", { \"style\": \"cursor:pointer;\" }).inject(node);\ndataList.each(function (d) {\n    var item \u003d new Element(\"li\", { \"text\": d.subject + \"[\" + d.mailFrom + \"]\" + \"--\" + d.publishTime }).inject(ul);\n    item.addEvent(\"click\", function () {\n        var options \u003d {\n            \"portalId\": \"408de14b-41cf-4327-954d-99c8ad5e225e\",\n            \"pageId\": \"0b0709c2-02ba-4576-b442-617377882bb6\",\n            \"parameters\": {\n                \"documentId\": d.documentId\n            },\n            \"appId\": \"app\u003dportal.Portal\" + d.documentId\n        };\n        layout.openApplication(null, \"portal.Portal\", options);\n    })\n})\n"
+    },
+    "type": "http"
+  },
+  {
+    "name": "statProcess",
+    "category": "流程",
+    "desc": "统计一下本月发文，本季度发文",
+    "enable": true,
+    "id": "1itctcju5-bc94bf24-f528-4c97-bb48-1df10c5cad7b-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/statProcess/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "beginTime": "${beginTime}",
+        "endTime": "${endTime}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "beginTime",
+        "desc": "统计开始时间",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "统计结束时间",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-10 20:35:07",
+    "updateDateTime": "2025-06-23 09:30:38",
+    "extra": {
+      "template": "公文统计：",
+      "script": "o2.load(\u0027/o2_lib/echarts5/echarts.js\u0027, () \u003d\u003e {\n    node.setStyle(\"height\", \"20rem\");\n    node.setStyle(\"width\", \"30rem\");\n    const chart \u003d echarts.init(node);\n\n    const option \u003d {\n        title: {\n            text: \u0027公文数量统计\u0027\n        },\n        tooltip: {},\n        legend: {\n            data: [\u0027部门A\u0027, \u0027部门B\u0027]\n        },\n        xAxis: {\n            type: \u0027category\u0027,\n            data: [\u0027发文\u0027, \u0027收文\u0027, \u0027会议纪要\u0027]\n        },\n        yAxis: {\n            type: \u0027value\u0027\n        },\n        series: [\n            {\n                name: \u0027部门A\u0027,\n                data: [120, 200, 150],\n                type: \u0027bar\u0027\n            },\n            {\n                name: \u0027部门B\u0027,\n                data: [110, 20, 250],\n                type: \u0027bar\u0027\n            }\n        ]\n    };\n\n    chart.setOption(option);\n});"
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryAttendance",
+    "category": "考勤",
+    "desc": "我的考勤，考勤记录，考勤异常记录，本月考勤",
+    "enable": false,
+    "id": "1itchmp90-815600f1-7def-478b-a206-765f9babf7bf-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/queryAttendance/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "person": "${person}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "beginTime",
+        "desc": "开始时间",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "endTime",
+        "desc": "结束时间",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "createDateTime": "2025-06-10 17:10:57",
+    "updateDateTime": "2025-06-18 15:13:53",
+    "extra": {
+      "template": "",
+      "script": ""
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryHr",
+    "category": "人力",
+    "desc": "个人查询，通讯录查询，员工档案查询，员工个人信息查询",
+    "enable": true,
+    "id": "1itchilf0-85148c7c-1322-46e0-8944-8bba01897a02-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryHr/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "name": "${name}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "name",
+        "desc": "输入要查询的员工姓名或手机号码等信息",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-10 17:08:42",
+    "updateDateTime": "2025-06-14 10:39:12",
+    "extra": {
+      "template": "\u003cdiv style\u003d\"border:1px solid #ddd; border-radius:10px; padding:20px; width:320px; font-family:Arial, sans-serif;\"\u003e\n  \u003ch3 style\u003d\"margin:0; color:#333;\"\u003e${name}\u003c/h3\u003e\n  \u003cp style\u003d\"color:#666; margin:5px 0;\"\u003eID: ${id}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e性别:\u003c/strong\u003e ${genderType\u003d\u003d\"m\"?\"男\":\"女\"} \u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e员工编号:\u003c/strong\u003e ${employee}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e唯一标识:\u003c/strong\u003e ${unique}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e手机号码:\u003c/strong\u003e ${mobile}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e办公电话:\u003c/strong\u003e ${officePhone}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e邮箱:\u003c/strong\u003e ${mail}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e微信:\u003c/strong\u003e ${weixin}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003eQQ:\u003c/strong\u003e ${qq}\u003c/p\u003e\n  \u003cdiv style\u003d\"margin-top:15px; font-size:0.9em; color:#999;\"\u003e—— 企业内部通讯录 ——\u003c/div\u003e\n\u003c/div\u003e",
+      "script": ""
+    },
+    "type": "http"
+  },
+  {
+    "name": "querySalary",
+    "category": "",
+    "desc": "工资查询，员工个人工资查询，我的工资条，工资条，查询指定月份工资，本月工资",
+    "enable": true,
+    "id": "1itch4k4f-aa34ca69-2532-48ab-82f3-5f0a6d9d34d5-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/querySalary/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {},
+      "internalEnable": true
+    },
+    "mcpParameterList": [],
+    "createDateTime": "2025-06-10 17:01:02",
+    "updateDateTime": "2025-06-23 09:33:53",
+    "extra": {
+      "template": "# 工资条 (Pay Slip)\n\n**姓名:** xxx\n**部门:** 技术部  \n**职位:** 软件工程师  \n**发放日期:** 2025年6月10日  \n\n## 工资明细\n\n| 项目             | 金额         |\n|------------------|--------------|\n| 基本工资         | ¥10,000.00   |\n| 绩效奖金         | ¥2,000.00    |\n| 加班费           | ¥800.00      |\n| 其他补贴         | ¥500.00      |\n| **总收入**       | **¥13,300.00** |\n| 社保             | ¥1,200.00    |\n| 公积金           | ¥1,000.00    |\n| 个人所得税       | ¥900.00      |\n| 迟到扣款         | ¥100.00      |\n| **总扣除**       | **¥3,200.00**  |\n| **实发工资**     | **¥10,100.00** |\n\n---",
+      "script": ""
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryCalendar",
+    "category": "日程",
+    "desc": "查询日程安排，查用户日程，我的日程安排",
+    "enable": true,
+    "id": "1itcgr9u1-514d4262-fb76-4b65-8a86-aec57a60e1b2-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryCalendar/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "person": "${person}",
+        "startTime": "${startTime}",
+        "endTime": "${endTime}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "startTime",
+        "desc": "日程开始时间",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "日程结束时间",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-10 16:55:57",
+    "updateDateTime": "2025-06-18 15:38:25",
+    "extra": {
+      "template": "",
+      "script": "            dataList \u003d data;\n            if(dataList.length \u003d\u003d 0 ){\n                new Element(\"div\",{\"text\":\"暂无日程安排\"}).inject(node);\n                return;\n            }\n            const ul \u003d new Element(\"ul\",{\"style\":\"cursor:pointer;\"}).inject(node);\n            dataList.each(function(d){\n                var item \u003d new Element(\"li\", {\"text\": d.startTime + \"~\" + d.endTime + \":\" + d.title}).inject(ul);\n                item.addEvent(\"click\",function(){\n                    const options \u003d {\n                        \"eventId\": d.id,\n                        \"appId\":  \"Calendar\"\n                    };\n                    layout.openApplication(null, \"Calendar\", options);\n                })\n            })"
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryMeeting",
+    "category": "会议",
+    "desc": "查询会议，查询某个时间段会议",
+    "enable": false,
+    "id": "1itcgqd7d-88b10bb2-65f7-4697-a313-1e6959839bee-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/startProcess/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {},
+      "internalEnable": true
+    },
+    "mcpParameterList": [],
+    "createDateTime": "2025-06-10 16:55:27",
+    "updateDateTime": "2025-06-10 16:55:27",
+    "extra": {},
+    "type": "http"
+  },
+  {
+    "name": "createCalendar",
+    "category": "日程",
+    "desc": "创建日程,用户创建日程安排",
+    "enable": true,
+    "id": "1itcc42rp-eb2c1e62-ed68-4254-94f1-a7f57fb2b988-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_createCalendar/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "person": "${person}",
+        "beginTime": "${beginTime}",
+        "endTime": "${endTime}",
+        "subject": "${subject}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "beginTime",
+        "desc": "日程开始时间",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "日程结束时间",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "subject",
+        "desc": "日程内容",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-10 15:33:21",
+    "updateDateTime": "2025-06-18 15:50:31",
+    "extra": {
+      "template": "已经为您创建好日程，点击查看：",
+      "script": "        const btn \u003d new Element(\"oo-button\",{\"text\":\"查看日程\"}).inject(node);\n        btn.addEvent(\"click\",function (){\n            const options \u003d {\n                \"eventId\": data.id,\n                \"appId\":  \"Calendar\"\n            };\n            layout.openApplication(null, \"Calendar\", options);\n\n        })      "
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryTask",
+    "category": "流程",
+    "desc": "查询用户待办，查询当前用户待办,我的待办",
+    "enable": true,
+    "id": "1it9u99cg-d45aed76-48ba-4b9d-a1db-1e0138c95c5a-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryTask/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "person": "${person}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-09 16:53:03",
+    "updateDateTime": "2025-06-18 14:29:07",
+    "extra": {
+      "template": "",
+      "script": "dataList \u003d data;\nconst ul \u003d new Element(\"ul\", { \"style\": \"cursor:pointer;\" }).inject(node);\ndataList.each(function (d) {\n    var item \u003d new Element(\"li\", { \"text\": d.title + \"[\" + d.processName + \"]\" }).inject(ul);\n    item.addEvent(\"click\", function () {\n        var options \u003d {\n            \"workId\": d.work, \"appId\": \"process.Work\" + d.work\n        };\n        layout.openApplication(null, \"process.Work\", options);\n    })\n})"
+    },
+    "type": "http"
+  },
+  {
+    "name": "startProcess_overtime",
+    "category": "流程",
+    "desc": "为用户提供加班申请流程，创建加班申请流程",
+    "enable": true,
+    "id": "1it9ic33m-57afb8da-e512-4463-8e97-757a631805aa-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_startProcess/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "beginTime": "${beginTime}",
+        "endTime": "${endTime}",
+        "reason": "${reason}",
+        "person": "${person}",
+        "process": "e8a25af5-dafb-484a-a87e-7de1befb2d64",
+        "overtime": "${overtime}",
+        "routeName": "送审批",
+        "opinion": "请审核",
+        "mcp": "startProcess_overtime"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "reason",
+        "desc": "加班事由",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "beginTime",
+        "desc": "加班开始时间, 格式为 2025-01-01 12:00:00",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "加班结束时间, 格式为 2025-01-01 12:00:00",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "overtime",
+        "desc": "加班时长，小时，根据开始时间结束时间计算出来",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2025-06-09 13:24:52",
+    "updateDateTime": "2025-06-14 11:02:08",
+    "extra": {
+      "template": "已经为您提交好加班申请流程，点击查看：",
+      "script": "\r\nvar item \u003d new Element(\"a\",{\"text\":data.title}).inject(node);\r\nitem.addEvent(\"click\",function(){\r\n    var options \u003d {\r\n        \"workId\": data.work, \"appId\": \"process.Work\"+data.work\r\n    };\r\n    layout.openApplication(null, \"process.Work\", options);\r\n})"
+    },
+    "type": "http"
+  },
+  {
+    "name": "createMeeting",
+    "category": "会议",
+    "desc": "为当前用户创建会议以及会议室预定",
+    "enable": true,
+    "id": "1it2269bl-c1d4b94b-1c14-43d5-b11c-92dc5aae2e04-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_createMeeting/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "subject": "${subject}",
+        "room": "${room}",
+        "startTime": "${startTime}",
+        "completedTime": "${completedTime}",
+        "inviteList": "${inviteList}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "subject",
+        "desc": "会议主题,描述会议主要议题或内容.",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "room",
+        "desc": "申请的会议室",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "startTime",
+        "desc": "会议开始时间, 格式为 2025-01-01 12:00:00",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "completedTime",
+        "desc": "会议结束时间, 格式为 2025-01-01 12:00:00",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "inviteList",
+        "desc": "邀请参会人员(多值)",
+        "type": "array",
+        "required": false
+      }
+    ],
+    "createDateTime": "2025-06-06 15:27:24",
+    "updateDateTime": "2025-06-19 10:27:58",
+    "extra": {
+      "template": "\u003ch2 id\u003d\"-\"\u003e请确认会议信息\u003c/h2\u003e\n\u003ctable\u003e\n  \u003cthead\u003e\n    \u003ctr\u003e\n      \u003cth\u003e项目\u003c/th\u003e\n      \u003cth\u003e详情\u003c/th\u003e\n    \u003c/tr\u003e\n  \u003c/thead\u003e\n  \u003ctbody\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e会议主题\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${subject}\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e会议地点\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${room } \u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e开始时间\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${startTime}\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e结束时间\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${completedTime }\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e受邀人员\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${inviteList.join(\", \")}\u003c/td\u003e\n    \u003c/tr\u003e\n  \u003c/tbody\u003e\n\u003c/table\u003e\n\u003coo-button\u003e确认预定\u003c/oo-button\u003e",
+      "script": "\n            const msgId \u003d node.get(\"id\");\n            const okNode \u003d node.getElement(\"oo-button\");\n            debugger\n            if(data.extra \u0026\u0026 data.extra.meetingId){\n                const btn \u003d new Element(\"oo-button\",{\"text\":\"查看会议\"}).inject(okNode,\"after\");\n                okNode.hide();\n                btn.addEvent(\"click\",function (){\n                    const options \u003d {\n                        \"meeting\": data.extra.meetingId,\n                        \"appId\":  \"Meeting\"\n                    };\n                    layout.openApplication(null, \"Meeting\", options);\n\n                })       \n                return;\n            }\n            \n            okNode.addEvent(\"click\",function(){\n            const meeting \u003d {\n                    \"subject\": data.subject,\n                    \"room\": data.roomObj.id,\n                    \"startTime\": data.startTime ,\n                    \"completedTime\": data.completedTime,\n                    \"applicant\":layout.user.distinguishedName,\n                    \"invitePersonList\" : data.inviteObjList\n                };\n\n                const action \u003d o2.Actions.load(\"x_meeting_assemble_control\");\n                action.MeetingAction.post(meeting,function( json ){\n                    const btn \u003d new Element(\"oo-button\",{\"text\":\"查看会议\"}).inject(okNode,\"after\");\n\n                    btn.addEvent(\"click\",function (){\n                        debugger\n                        const options \u003d {\n                            \"meeting\": json.data.id,\n                            \"appId\":  \"Meeting\"\n                        };\n                        layout.openApplication(null, \"Meeting\", options);\n\n                    })\n                    okNode.hide();\n                    $OOUI.notice.success(\"提示\", \"会议创建成功\");\n\n\n                    o2.Actions.load(\"x_ai_assemble_control\").ChatAction.writeCompletionExtra({\n                        \"id\" : msgId,\n                        \"extra\" : {\"meetingId\":json.data.id}\n                    },function(){ \n\n                    });\n\n                });\n            })"
+    },
+    "type": "http"
+  }
+]

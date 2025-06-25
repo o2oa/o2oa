@@ -2817,7 +2817,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if(callback)callback();
     },
     postLoad : function(){
-        this.node.addClass('item');
     },
     getParentCategoryByLevel : function( level ){
         var category = this.category;

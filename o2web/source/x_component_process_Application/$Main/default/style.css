@@ -505,3 +505,34 @@ common
 .operateicon:hover{
     color :#4A90E2
 }
+
+.hide{
+    display: none!important;
+}
+.formTable{
+    display: grid;
+    grid-template-rows: 3em;
+    gap: 0.8em;
+    align-items: center;
+}
+.formLine{
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+.formLabel{
+    padding: 0.5em 0.35em;
+    margin-right: 0.5em;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    width: 6.2vw;
+    min-width: 4.3em;
+    max-width: 9em;
+    justify-content: flex-end;
+    box-sizing: border-box !important;
+    white-space: nowrap;
+}
+.formValue{
+    flex: 1;
+}

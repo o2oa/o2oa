@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -65,6 +67,28 @@ public class RecordProperties extends JsonProperties {
 
 	@FieldDescribe("意见组")
 	private String fromOpinionGroup;
+
+	@FieldDescribe("发起撤回的已办标识")
+	private String retractTaskCompleted;
+
+	@FieldDescribe("已办标识")
+	private String taskCompleted;
+
+	public String getTaskCompleted() {
+		return taskCompleted;
+	}
+
+	public void setTaskCompleted(String taskCompleted) {
+		this.taskCompleted = taskCompleted;
+	}
+
+	public String getRetractTaskCompleted() {
+		return retractTaskCompleted;
+	}
+
+	public void setRetractTaskCompleted(String retractTaskCompleted) {
+		this.retractTaskCompleted = retractTaskCompleted;
+	}
 
 	public Integer getPersonOrderNumber() {
 		return personOrderNumber;

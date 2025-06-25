@@ -1,0 +1,39 @@
+<div class="index">
+    <div class="chat">
+        <div class="chat-title">
+            <div><img src="{{$.config.appIconUrl}}"></div>
+            <div>{{$.config.title}}</div>
+        </div>
+        <div class="chat-desc">{{$.config.desc}}</div>
+        <div class="chat-wrap">
+            <div class="chat-att" data-o2-element="attUplodListNode">
+            </div>
+            <div class="chat-input"><textarea placeholder="{{$.lp.inputholder}}" data-o2-element="chatNode"></textarea>
+            </div>
+            <div class="chat-tools" >
+                <div class="chat-tools-l" >
+                    <div data-o2-events="click:showGenerateType" data-o2-element="tool1Node" class="chat-tools-cur ooicon-networking_click"></div>
+                    <div data-o2-events="click:showGenerateType" data-o2-element="tool2Node" class="chat-tools-cur" style="cursor: pointer;">{{$.lp.types.auto}}
+                    </div>
+                    <div>｜</div>
+                    <div data-o2-element="tool3Node">{{$.lp.types.auto_text}}</div>
+                </div>
+                {{if $.config.o2AiEnable}}
+                <div class="ooicon-fujian" style="width: 2.3rem;font-size: 1.8rem;cursor: pointer;"
+                     data-o2-events="click:addAtt" data-o2-element="addAttNode"></div>
+                {{end if}}
+                <div data-o2-element="btnSendNode" data-o2-events="click:sendNew">
+                    <div class="btn">
+                        <i class="ooicon-send1"></i>
+                    </div>
+                </div>
+                <div data-o2-element="btnCancelNode" data-o2-events="click:stop" style="display: none">
+                    <div class="btn" style="color: #fff;background: #2E82F7;">
+                        <i class="ooicon-stop1"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

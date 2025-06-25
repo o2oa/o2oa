@@ -50,7 +50,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			x_bbs_assemble_control.class.getName(), x_file_assemble_control.class.getName(),
 			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
 			x_hotpic_assemble_control.class.getName(), x_query_service_processing.class.getName(),
-			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName()));
+			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName(),
+			x_ai_assemble_control.class.getName()));
 
 	private static final long serialVersionUID = -2416559829493154858L;
 

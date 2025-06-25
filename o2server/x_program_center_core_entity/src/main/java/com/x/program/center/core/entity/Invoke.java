@@ -1,7 +1,14 @@
 package com.x.program.center.core.entity;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.entity.annotation.CitationNotExist;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.annotation.Flag;
+import com.x.base.core.project.annotation.FieldDescribe;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
-
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,25 +18,15 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
-import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
-
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.annotation.CheckPersist;
-import com.x.base.core.entity.annotation.CitationNotExist;
-import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.entity.annotation.Flag;
-import com.x.base.core.project.annotation.FieldDescribe;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * @author sword
@@ -47,6 +44,7 @@ public class Invoke extends SliceJpaObject {
 
 	private static final long serialVersionUID = 8877822163007579542L;
 	private static final String TABLE = PersistenceProperties.Invoke.TABLE;
+	public static final String CATEGORY_DEFAULT = "未分类";
 
 	@Override
 	public String getId() {
@@ -65,7 +63,12 @@ public class Invoke extends SliceJpaObject {
 
 	@Override
 	public void onPersist() throws Exception {
+		this.category = StringUtils.isBlank(this.category) ? CATEGORY_DEFAULT : StringUtils.trimToEmpty(this.category);
+	}
 
+	@PostLoad
+	public void postLoad() {
+		this.category = StringUtils.isBlank(this.category) ? CATEGORY_DEFAULT : this.category;
 	}
 
 	public static final String name_FIELDNAME = "name";
@@ -90,6 +93,13 @@ public class Invoke extends SliceJpaObject {
 	// 检查在同一应用下不能重名
 	@CitationNotExist(fields = { "name", "id", "alias" }, type = Invoke.class))
 	private String alias;
+
+	public static final String category_FIELDNAME = "category";
+	@FieldDescribe("分类.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + category_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + category_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String category;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
@@ -251,5 +261,13 @@ public class Invoke extends SliceJpaObject {
 
 	public void setExecutorList(List<String> executorList) {
 		this.executorList = executorList;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }

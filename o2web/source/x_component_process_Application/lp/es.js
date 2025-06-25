@@ -20,6 +20,7 @@ MWF.xApplication.process.Application.LP={
 	"workdelete": "Trabajos eliminados",
 	"dict": "Config. de datos",
 	"serial": "Config. numérica",
+	"archive" : "Config Archive",
 	"startProcess": "Crear tarea",
 	"query": "Buscar",
 	"reset": "Reiniciar",

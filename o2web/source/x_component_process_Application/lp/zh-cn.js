@@ -18,6 +18,7 @@ MWF.xApplication.process.Application.LP = {
 	"workdelete" : "已删除工作",
 	"dict" : "数据配置",
 	"serial" : "编号配置",
+	"archive" : "归档配置",
 	"startProcess" : "发起流程",
 
 	"query": "搜索",

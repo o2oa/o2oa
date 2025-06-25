@@ -114,6 +114,24 @@ public class AiModel extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String desc;
 
+	public static final String proxyEnable_FIELDNAME = "proxyEnable";
+	@FieldDescribe("是否启用代理.")
+	@Column(name = ColumnNamePrefix + proxyEnable_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean proxyEnable;
+
+	public static final String proxyHost_FIELDNAME = "proxyHost";
+	@FieldDescribe("代理主机.")
+	@Column(length = 500, name = ColumnNamePrefix + proxyHost_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String proxyHost;
+
+	public static final String proxyPort_FIELDNAME = "proxyPort";
+	@FieldDescribe("代理端口.")
+	@Column(name = ColumnNamePrefix + proxyPort_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer proxyPort;
+
 	@FieldDescribe("创建时间.")
 	@Transient
 	private Date createDateTime;
@@ -192,5 +210,29 @@ public class AiModel extends SliceJpaObject {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public Boolean getProxyEnable() {
+		return proxyEnable;
+	}
+
+	public void setProxyEnable(Boolean proxyEnable) {
+		this.proxyEnable = proxyEnable;
+	}
+
+	public String getProxyHost() {
+		return proxyHost;
+	}
+
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
+	}
+
+	public Integer getProxyPort() {
+		return proxyPort;
+	}
+
+	public void setProxyPort(Integer proxyPort) {
+		this.proxyPort = proxyPort;
 	}
 }

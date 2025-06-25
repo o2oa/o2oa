@@ -687,8 +687,35 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             array = array.concat(data);
         }.bind(this));
 
+        this.doResult(array);
+
         this.fireEvent("selectResult", [array]);
         if (callback) callback(array, dlg );
+    },
+    doResult: function(data){
+        if (this.json.result === "script"){
+            this.selectedData = data;
+            return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";
+        }else{
+            Object.each(this.json.selectedSetValues, function(v, k){
+                var value = "";
+                data.each(function(d, idx){
+                    Object.each(d.data, function(dv, dk){
+                        if (dk===v) value = (value) ? (value+", "+dv) : dv;
+                    }.bind(this));
+                }.bind(this));
+
+                var field = this.form.all[k];
+                if (field){
+                    field.setData(value);
+                    if (value){
+                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "none");
+                    }else{
+                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "block");
+                    }
+                }
+            }.bind(this));
+        }
     },
     openDoc: function(e, d){
 	    if( d.targetType === "processPlatform" ){

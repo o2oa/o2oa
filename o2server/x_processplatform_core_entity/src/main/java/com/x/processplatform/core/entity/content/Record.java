@@ -150,6 +150,8 @@ public class Record extends SliceJpaObject {
 			this.identityOrderNumber = this.getProperties().getIdentityOrderNumber();
 			this.unitOrderNumber = this.getProperties().getUnitOrderNumber();
 			this.unitLevelName = this.getProperties().getUnitLevelName();
+			this.retractTaskCompleted = this.getProperties().getRetractTaskCompleted();
+			this.taskCompleted = this.getProperties().getTaskCompleted();
 		}
 	}
 
@@ -376,6 +378,40 @@ public class Record extends SliceJpaObject {
 	public void setUnitLevelName(String unitLevelName) {
 		this.getProperties().setUnitLevelName(unitLevelName);
 		this.unitLevelName = unitLevelName;
+	}
+
+	public static final String TASKCOMPLETED_FIELDNAME = "taskCompleted";
+	@Transient
+	@FieldDescribe("已办标识")
+	private String taskCompleted;
+
+	public String getTaskCompleted() {
+		if ((null != this.properties) && (null == this.taskCompleted)) {
+			this.taskCompleted = this.properties.getTaskCompleted();
+		}
+		return this.taskCompleted;
+	}
+
+	public void setTaskCompleted(String taskCompleted) {
+		this.getProperties().setTaskCompleted(taskCompleted);
+		this.taskCompleted = taskCompleted;
+	}
+	
+	public static final String RETRACTTASKCOMPLETED_FIELDNAME = "retractTaskCompleted";
+	@Transient
+	@FieldDescribe("发起撤回的已办标识")
+	private String retractTaskCompleted;
+
+	public String getRetractTaskCompleted() {
+		if ((null != this.properties) && (null == this.retractTaskCompleted)) {
+			this.retractTaskCompleted = this.properties.getRetractTaskCompleted();
+		}
+		return this.retractTaskCompleted;
+	}
+
+	public void setRetractTaskCompleted(String retractTaskCompleted) {
+		this.getProperties().setRetractTaskCompleted(retractTaskCompleted);
+		this.retractTaskCompleted = retractTaskCompleted;
 	}
 
 	public RecordProperties getProperties() {
