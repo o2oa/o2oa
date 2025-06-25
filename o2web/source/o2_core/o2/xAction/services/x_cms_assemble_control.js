@@ -123,6 +123,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             "name": formData.json.name,
             "alias": formData.json.name,
             "description": formData.json.description,
+            "hasMobile": false,
             "appId": formData.json.application,
             "formFieldList": fieldList,
             "relatedScriptMap": relatedScriptMap,
@@ -130,6 +131,13 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             "mobileRelatedScriptMap": mobileRelatedScriptMap,
             "mobileRelatedFormList": (mobileData && mobileData.json.subformList) ? mobileData.json.subformList : []
         };
+        if (mobileData && mobileData.json.moduleList){
+            if (Object.keys(mobileData.json.moduleList).length){
+                json.hasMobile = true;
+            }else{
+                json.hasMobile = false;
+            }
+        }
         if (formData) json.data = data;
         if (mobileData) json.mobileData = mobileDataStr;
 
@@ -170,12 +178,20 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
                     "alias": formData.json.name,
                     "description": formData.json.description,
                     "appId": formData.json.application,
+                    "hasMobile": false,
                     "formFieldList": fieldList,
                     "relatedScriptMap": relatedScriptMap,
                     "relatedFormList": (formData && formData.json.subformList) ? formData.json.subformList : [],
                     "mobileRelatedScriptMap": mobileRelatedScriptMap,
                     "mobileRelatedFormList": (mobileData && mobileData.json.subformList) ? mobileData.json.subformList : []
                 };
+                if (mobileData && mobileData.json.moduleList){
+                    if (Object.keys(mobileData.json.moduleList).length){
+                        json.hasMobile = true;
+                    }else{
+                        json.hasMobile = false;
+                    }
+                }
                 if (formData) json.data = data;
                 if (mobileData) json.mobileData = mobileDataStr;
                 this.action.invoke({"name": "addForm","data": json, "parameter": {"id": formData.json.id }, "success": success,"failure": failure});
@@ -192,10 +208,18 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
                 "id": formData.json.id,
                 "name": formData.json.name,
                 "alias": formData.json.name,
+                "hasMobile": false,
                 "description": formData.json.description,
                 "appId": formData.json.application,
                 "formFieldList": fieldList
             };
+            if (mobileData && mobileData.json.moduleList){
+                if (Object.keys(mobileData.json.moduleList).length){
+                    json.hasMobile = true;
+                }else{
+                    json.hasMobile = false;
+                }
+            }
             if (formData) json.data = data;
             if (mobileData) json.mobileData = mobileDataStr;
             this.action.invoke({"name": "addForm","data": json, "parameter": {"id": formData.json.categoryId}, "success": success,"failure": failure});
