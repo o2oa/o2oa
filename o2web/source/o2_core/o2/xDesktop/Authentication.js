@@ -52,11 +52,11 @@ MWF.xDesktop.Authentication = new Class({
             if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
                 o2.Actions.load('x_portal_assemble_surface').PortalAction.get(layout.config.loginPage.portal, function (){
                     MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter, true);
+                    this.fireEvent("openLogin");
                 }.bind(this), function () {
                     this._loagDefaultLogin(node);
                     return true;
                 }.bind(this))
-                this.fireEvent("openLogin");
             } else {
                 this._loagDefaultLogin(node);
             }
