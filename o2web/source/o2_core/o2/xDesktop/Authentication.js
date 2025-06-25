@@ -50,51 +50,15 @@ MWF.xDesktop.Authentication = new Class({
             if (node) this.loginNode = node;
             if (!node && this.loginNode) node = this.loginNode;
             if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
-                MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter, true);
+                o2.Actions.load('x_portal_assemble_surface').PortalAction.get(layout.config.loginPage.portal, function (){
+                    MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter, true);
+                }.bind(this), function () {
+                    this._loagDefaultLogin(node);
+                    return true;
+                }.bind(this))
                 this.fireEvent("openLogin");
             } else {
-                this.popupOptions = {
-                    "draggable": false,
-                    "closeAction": false,
-                    "hasMask": false,
-                    "relativeToApp": false
-                };
-                this.popupPara = {
-                    container: node
-                };
-                this.postLogin = function (json) {
-                    layout.desktop.session.user = json.data;
-                    layout.session.user = json.data;
-                    layout.session.token = layout.session.user.token;
-                    var user = layout.desktop.session.user;
-                    if (!user.identityList) user.identityList = [];
-                    if (user.roleList) {
-                        var userRoleName = [];
-                        user.roleList.each(function (role) {
-                            userRoleName.push(role.substring(0, role.indexOf("@")));
-                        });
-                        user.roleList = user.roleList.concat(userRoleName);
-                    }
-                    var roleLCList = (user.roleList || []).map(function (role) {
-                        return role.toLowerCase();
-                    }.bind(this));
-
-                    var uri = new URI(window.location.toString());
-                    var redirect = uri.getData("redirect");
-
-                    if (redirect){
-                        window.location = redirect;
-                    }else{
-                        if (roleLCList.isIntersect(["systemmanager", "securitymanager", "auditmanager"])) {
-                            window.location = "../x_desktop/app.html?app=ThreeMember";
-                        } else {
-                            window.location.reload();
-                        }
-                    }
-
-                }.bind(this);
-                this.openLoginForm(this.popupOptions);
-                this.fireEvent("openLogin");
+                this._loagDefaultLogin(node);
             }
         }.bind(this), function (xhr) {
             var message;
@@ -111,6 +75,50 @@ MWF.xDesktop.Authentication = new Class({
                 "text": message
             }).inject(node);
         }.bind(this));
+    },
+    _loagDefaultLogin: function (node) {
+        this.popupOptions = {
+            "draggable": false,
+            "closeAction": false,
+            "hasMask": false,
+            "relativeToApp": false
+        };
+        this.popupPara = {
+            container: node
+        };
+        this.postLogin = function (json) {
+            layout.desktop.session.user = json.data;
+            layout.session.user = json.data;
+            layout.session.token = layout.session.user.token;
+            var user = layout.desktop.session.user;
+            if (!user.identityList) user.identityList = [];
+            if (user.roleList) {
+                var userRoleName = [];
+                user.roleList.each(function (role) {
+                    userRoleName.push(role.substring(0, role.indexOf("@")));
+                });
+                user.roleList = user.roleList.concat(userRoleName);
+            }
+            var roleLCList = (user.roleList || []).map(function (role) {
+                return role.toLowerCase();
+            }.bind(this));
+
+            var uri = new URI(window.location.toString());
+            var redirect = uri.getData("redirect");
+
+            if (redirect){
+                window.location = redirect;
+            }else{
+                if (roleLCList.isIntersect(["systemmanager", "securitymanager", "auditmanager"])) {
+                    window.location = "../x_desktop/app.html?app=ThreeMember";
+                } else {
+                    window.location.reload();
+                }
+            }
+
+        }.bind(this);
+        this.openLoginForm(this.popupOptions);
+        this.fireEvent("openLogin");
     },
     safeLogout: function(){
         o2.Actions.get("x_organization_assemble_authentication").safeLogout(function () {
