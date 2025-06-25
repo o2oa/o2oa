@@ -59,4 +59,13 @@ oo-select{
 .hide{
     display: none !important;
 }
+.breadcrumb-menu-empty{
+    display: flex;
+    align-items: center;
+    height: 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    color: #333;
+    font-size: 1rem;
+    cursor: pointer;
+}
 

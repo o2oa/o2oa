@@ -68,13 +68,13 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 0, application: appid});
                         },
+                        createFunction: (appid)=>{
+                            _openApp('portal.PageDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '页面',
                             type: 'desiginer',
                             categorized: true,
-                            createFunction: (appid)=>{
-                                _openApp('portal.PageDesigner', null, {application: {id: appid}});
-                            },
                             handleClick: (page) => {
                                 _openApp('portal.PageDesigner', null, {id: page.id});
                             },

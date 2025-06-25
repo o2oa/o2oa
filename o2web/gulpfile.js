@@ -998,12 +998,12 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
             'source/x_component_portal_Portal/Main.js',
 
             'source/x_component_Selector/package.js',
-            'source/x_component_Selector/Person.js',
-            'source/x_component_Selector/Identity.js',
-            'source/x_component_Selector/Unit.js',
-            'source/x_component_Selector/IdentityWidthDuty.js',
-            'source/x_component_Selector/IdentityWidthDutyCategoryByUnit.js',
-            'source/x_component_Selector/UnitWithType.js',
+            // 'source/x_component_Selector/Person.js',
+            // 'source/x_component_Selector/Identity.js',
+            // 'source/x_component_Selector/Unit.js',
+            // 'source/x_component_Selector/IdentityWidthDuty.js',
+            // 'source/x_component_Selector/IdentityWidthDutyCategoryByUnit.js',
+            // 'source/x_component_Selector/UnitWithType.js',
 
             'source/o2_core/o2/xScript/Actions/UnitActions.js',
             'source/o2_core/o2/xScript/Actions/ScriptActions.js',

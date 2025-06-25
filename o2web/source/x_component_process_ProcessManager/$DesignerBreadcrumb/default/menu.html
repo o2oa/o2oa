@@ -36,5 +36,12 @@
             </span>
         </div>
         {{end each}}
+
+        {{if !$.data.length}}
+        <div class="breadcrumb-menu-empty">
+            <div class="breadcrumb-menu-item-ooicon ooicon-empty"></div>
+            <div class="breadcrumb-menu-item-text">未找到内容</div>
+        </div>
+        {{end if}}
     </div>
 </div>
