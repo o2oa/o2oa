@@ -65,6 +65,7 @@ var o2DesignerConfig = {
                         name: '页面配置',
                         id: 'portal.PageManager',
                         type: 'desiginer-category',
+                        ooicon: 'pagepeizhi',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 0, application: appid});
                         },
@@ -96,6 +97,7 @@ var o2DesignerConfig = {
                         id: 'portal.WidgetDesigner',
                         type: 'desiginer-category',
                         label: '部件',
+                        ooicon: 'app-center',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 1, application: appid});
                         },
@@ -123,6 +125,7 @@ var o2DesignerConfig = {
                         id: 'portal.DictionaryDesigner',
                         type: 'desiginer-category',
                         label: '数据字典',
+                        ooicon: 'shujuzidian',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 2, application: appid});
                         },
@@ -154,6 +157,7 @@ var o2DesignerConfig = {
                         id: 'portal.ScriptDesigner',
                         type: 'desiginer-category',
                         label: '脚本配置',
+                        ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 3, application: appid});
                         },
@@ -183,6 +187,7 @@ var o2DesignerConfig = {
                         name: '资源文件',
                         id: 'portal.FileDesigner',
                         type: 'desiginer-category',
+                        ooicon: 'folder-open',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 4, application: appid});
                         }
@@ -190,6 +195,7 @@ var o2DesignerConfig = {
                         name: '门户属性',
                         id: 'portal.Property',
                         type: 'desiginer-category',
+                        ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 5, application: appid});
                         }
@@ -232,6 +238,7 @@ var o2DesignerConfig = {
                         name: '表单配置',
                         id: 'process.FormManager',
                         type: 'desiginer-category',
+                        ooicon: 'biaodan',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 0, application: appid});
                         },
@@ -260,6 +267,7 @@ var o2DesignerConfig = {
                         id: 'process.ProcessDesigner',
                         type: 'desiginer-category',
                         label: '流程',
+                        ooicon: 'a-flowprocess',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 1, application: appid});
                         },
@@ -287,6 +295,7 @@ var o2DesignerConfig = {
                         id: 'process.DictionaryDesigner',
                         type: 'desiginer-category',
                         label: '数据字典',
+                        ooicon: 'shujuzidian',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 2, application: appid});
                         },
@@ -318,6 +327,7 @@ var o2DesignerConfig = {
                         id: 'process.ScriptDesigner',
                         type: 'desiginer-category',
                         label: '脚本配置',
+                        ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 3, application: appid});
                         },
@@ -347,6 +357,7 @@ var o2DesignerConfig = {
                         name: '资源文件',
                         id: 'process.FileDesigner',
                         type: 'desiginer-category',
+                        ooicon: 'folder-open',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 4, application: appid});
                         }
@@ -354,6 +365,7 @@ var o2DesignerConfig = {
                         name: '应用属性',
                         id: 'process.Property',
                         type: 'desiginer-category',
+                        ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 5, application: appid});
                         }
@@ -397,6 +409,7 @@ var o2DesignerConfig = {
                         name: '分类配置',
                         id: 'cms.CategoryManager',
                         type: 'desiginer-category',
+                        ooicon: 'bujianpeizhi',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'categoryConfig', column: appid});
                         },
@@ -429,6 +442,7 @@ var o2DesignerConfig = {
                         id: 'cms.FormDesigner',
                         type: 'desiginer-category',
                         label: '表单',
+                        ooicon: 'biaodan',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'formConfig', column: appid});
                         },
@@ -456,6 +470,7 @@ var o2DesignerConfig = {
                         id: 'cms.DictionaryDesigner',
                         type: 'desiginer-category',
                         label: '数据字典',
+                        ooicon: 'shujuzidian',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'dataConfig', column: appid});
                         },
@@ -487,6 +502,7 @@ var o2DesignerConfig = {
                         id: 'cms.ScriptDesigner',
                         type: 'desiginer-category',
                         label: '脚本配置',
+                        ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'scriptConfig', column: appid});
                         },
@@ -513,6 +529,7 @@ var o2DesignerConfig = {
                         name: '资源文件',
                         id: 'cms.FileDesigner',
                         type: 'desiginer-category',
+                        ooicon: 'folder-open',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'fileConfig', column: appid});
                         }
@@ -520,6 +537,7 @@ var o2DesignerConfig = {
                         name: '栏目属性',
                         id: 'cms.Property',
                         type: 'desiginer-category',
+                        ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'applicationProperty', column: appid});
                         }
@@ -565,6 +583,7 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 0, application: appid});
                         },
+                        ooicon: 'shitupeizhi3',
                         children: [{
                             label: '视图',
                             type: 'desiginer',
@@ -590,6 +609,7 @@ var o2DesignerConfig = {
                         id: 'query.StatDesigner',
                         type: 'desiginer-category',
                         label: '统计',
+                        ooicon: 'shujubiao2',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 1, application: appid});
                         },
@@ -617,6 +637,7 @@ var o2DesignerConfig = {
                         id: 'query.TableDesigner',
                         type: 'desiginer-category',
                         label: '数据表',
+                        ooicon: 'shujubiao',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 2, application: appid});
                         },
@@ -648,6 +669,7 @@ var o2DesignerConfig = {
                         id: 'query.StatementDesigner',
                         type: 'desiginer-category',
                         label: '脚本配置',
+                        ooicon: 'chaxunpeizhi',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 3, application: appid});
                         },
@@ -677,6 +699,7 @@ var o2DesignerConfig = {
                         name: '导入模型',
                         id: 'query.ImporterDesigner',
                         type: 'desiginer-category',
+                        ooicon: 'file_upload',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 4, application: appid});
                         },
@@ -706,6 +729,7 @@ var o2DesignerConfig = {
                         name: '数据中心属性',
                         id: 'query.Property',
                         type: 'desiginer-category',
+                        ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 5, application: appid});
                         }
@@ -724,6 +748,7 @@ var o2DesignerConfig = {
                 name: '代理配置',
                 id: 'service.AgentDesigner',
                 type: 'desiginer-category',
+                ooicon: 'dailipeizhi',
                 handleClick: (item, appid) => {
                     _openApp('service.ServiceManager', null, {navi: 0});
                 },
@@ -751,6 +776,7 @@ var o2DesignerConfig = {
                     id: 'portal.InvokeDesigner',
                     type: 'desiginer-category',
                     label: '接口',
+                    ooicon: 'jiekoupeizhi',
                     handleClick: (item, appid) => {
                         _openApp('service.ServiceManager', null, {navi: 1});
                     },
@@ -777,6 +803,7 @@ var o2DesignerConfig = {
                     id: 'service.ScriptDesigner',
                     type: 'desiginer-category',
                     label: '脚本配置',
+                    ooicon: 'jiaoben',
                     handleClick: (item, appid) => {
                         _openApp('service.ServiceManager', null, {navi: 2});
                     },
@@ -803,6 +830,7 @@ var o2DesignerConfig = {
                     id: 'service.DictionaryDesigner',
                     type: 'desiginer-category',
                     label: '数据配置',
+                    ooicon: 'shujuzidian',
                     handleClick: () => {
                         _openApp('service.ServiceManager', null, {navi: 3});
                     },
