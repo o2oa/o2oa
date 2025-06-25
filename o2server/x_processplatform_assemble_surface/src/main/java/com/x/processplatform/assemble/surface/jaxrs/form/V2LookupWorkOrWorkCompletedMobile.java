@@ -16,7 +16,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -26,13 +25,9 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.FormProperties;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 
@@ -57,9 +52,8 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 				this.wo = (Wo) optional.get();
 			} else {
 				List<String> list = new ArrayList<>();
-				CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form.getProperties());
-				CompletableFuture<List<String>> relatedScriptFuture = this
-						.relatedScriptFuture(this.form.getProperties());
+				CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form);
+				CompletableFuture<List<String>> relatedScriptFuture = this.relatedScriptFuture(this.form);
 				list.add(this.form.getId() + this.form.getUpdateTime().getTime());
 				list.addAll(relatedFormFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 				list.addAll(
@@ -121,43 +115,63 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 		return o;
 	}
 
-	private CompletableFuture<List<String>> relatedFormFuture(FormProperties properties) {
+	private CompletableFuture<List<String>> relatedFormFuture(Form form) {
 		return CompletableFuture.supplyAsync(() -> {
 			List<String> list = new ArrayList<>();
-			if (ListTools.isNotEmpty(properties.getMobileRelatedFormList())) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Form f;
-					for (String id : properties.getMobileRelatedFormList()) {
-						f = emc.find(id, Form.class);
-						if (null != f) {
-							list.add(f.getId() + f.getUpdateTime().getTime());
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Form f;
+				if (StringUtils.isNotEmpty(form.getMobileData())) {
+					if (ListTools.isNotEmpty(form.getProperties().getMobileRelatedFormList())) {
+						for (String id : form.getProperties().getMobileRelatedFormList()) {
+							f = emc.find(id, Form.class);
+							if (null != f) {
+								list.add(f.getId() + f.getUpdateTime().getTime());
+							}
+						}
+
+					}
+				} else {
+					if (ListTools.isNotEmpty(form.getProperties().getRelatedFormList())) {
+						for (String id : form.getProperties().getRelatedFormList()) {
+							f = emc.find(id, Form.class);
+							if (null != f) {
+								list.add(f.getId() + f.getUpdateTime().getTime());
+							}
 						}
 					}
-				} catch (Exception e) {
-					LOGGER.error(e);
 				}
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
 			return list;
 		}, ThisApplication.forkJoinPool());
 	}
 
-	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
+	private CompletableFuture<List<String>> relatedScriptFuture(Form form) {
 		return CompletableFuture.supplyAsync(() -> {
 			List<String> list = new ArrayList<>();
-			if ((null != properties.getMobileRelatedScriptMap())
-					&& (properties.getMobileRelatedScriptMap().size() > 0)) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					list = convertScriptToCacheTag(business, properties.getMobileRelatedScriptMap());
-				} catch (Exception e) {
-					LOGGER.error(e);
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				if (StringUtils.isNotEmpty(form.getMobileData())) {
+					if ((null != form.getProperties().getMobileRelatedScriptMap())
+							&& (form.getProperties().getMobileRelatedScriptMap().size() > 0)) {
+						Business business = new Business(emc);
+						list = convertScriptToCacheTag(business, form.getProperties().getMobileRelatedScriptMap());
+					}
+				} else {
+					if ((null != form.getProperties().getRelatedScriptMap())
+							&& (form.getProperties().getRelatedScriptMap().size() > 0)) {
+						Business business = new Business(emc);
+						list = convertScriptToCacheTag(business, form.getProperties().getRelatedScriptMap());
+					}
 				}
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
+
 			return list;
 		}, ThisApplication.forkJoinPool());
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2LookupWorkOrWorkCompletedMobile$Wo")
 	public static class Wo extends AbstractWo {
 
 		private static final long serialVersionUID = 4034113778768000046L;
