@@ -729,20 +729,6 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 		this.resizeContentFun = this.resizeContent.bind(this);
 		this.app.addEvent("resize", this.resizeContentFun);
 	},
-	loadTooltip: function(){
-		this.tooltip = new MWF.xApplication.process.ApplicationExplorer.ApplicationTooltip(
-			this.container,
-			this.node,
-			this.app,
-			{},
-			{
-				axis : "x",
-				hiddenDelay : 300,
-				displayDelay : 300
-			}
-		);
-		this.tooltip.data = this.data;
-	},
 	loadElements: function(){
 		this.loadElementList("formList", this.formListNode, this.openForm.bind(this), this.lp.noForm, this.createNewForm.bind(this));
 		this.loadElementList("processList", this.processListNode, this.openProcess.bind(this), this.lp.noProcess, this.createNewProcess.bind(this));

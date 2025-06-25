@@ -27,10 +27,19 @@ oo-select{
     font-size: 1rem;
     cursor: pointer;
 }
-.breadcrumb-menu-item-icon{
+.breadcrumb-menu-item-ooicon{
     margin-right: 0.5rem;
     width: 1rem;
     height: 1rem;
+}
+.breadcrumb-menu-item-icon {
+    margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 19px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px;
 }
 .breadcrumb-menu-item-text{
     margin-right: 0.5rem;
@@ -41,8 +50,7 @@ oo-select{
 /*    transform: rotate(270deg)*/
 /*}*/
 .breadcrumb-menu-item:hover{
-    color: var(--oo-color-main);
-    background-color: var(--oo-color-over);
+    background-color: var(--oo-color-gray-e);
 }
 .breadcrumb-menu-item.active{
     color: var(--oo-color-main);

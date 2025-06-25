@@ -35,7 +35,7 @@ var o2DesignerConfig = {
             },
             name: '门户管理',
             id: 'portal.PortalExplorer',
-            icon: 'portal',
+            ooicon: 'portal',
             type: 'app-category',
             children: [{
                 name: '门户应用',
@@ -51,9 +51,9 @@ var o2DesignerConfig = {
                         return _sort(json.data, 'name').map((item) => {
                             return {
                                 ...item,
-                                category: item.appType,
+                                category: item.portalCategory,
+                                defaultIcon: '../x_component_portal_PortalExplorer/$Main/default/icon/application.png',
                                 name: item.name,
-                                icon: '',
                                 id: item.id,
                                 type: 'app'
                             };
@@ -83,9 +83,7 @@ var o2DesignerConfig = {
                                     return _sort(pages.data).map((page) => {
                                         return {
                                             ...page,
-                                            category: page.category,
                                             name: page.name,
-                                            icon: '',
                                             id: page.id
                                         };
                                     });
@@ -104,6 +102,7 @@ var o2DesignerConfig = {
                         children: [{
                             label: '部件',
                             type: 'desiginer',
+                            categorized: true,
                             handleClick: (portal) => {
                                 _openApp('portal.WidgetDesigner', null, {id: portal.id});
                             },
@@ -203,23 +202,25 @@ var o2DesignerConfig = {
             },
             name: '流程管理',
             id: 'process.ApplicationExplorer',
-            icon: 'liucheng',
+            ooicon: 'liucheng',
             type: 'app-category',
             children: [{
                 name: '流程应用',
                 id: 'process.ProcessManager',
                 label: '应用',
                 type: 'app',
+                categorized: true,
                 handleClick: (item) => {
                     _openApp('process.ProcessManager', null, {application: item.id});
                 },
                 listAction: () => {
-                    return _processAction.ApplicationAction.list().then((json) => {
+                    return _processAction.ApplicationAction.listSummary().then((json) => {
                         return _sort(json.data, 'name').map((item) => {
                             return {
-                                category: item.category,
+                                ...item,
+                                category: item.applicationCategory,
                                 name: item.name,
-                                icon: '',
+                                defaultIcon: '../x_component_process_ApplicationExplorer/$Main/default/icon/application.png',
                                 id: item.id,
                                 type: 'app'
                             };
@@ -237,6 +238,7 @@ var o2DesignerConfig = {
                         children: [{
                             label: '表单',
                             type: 'desiginer',
+                            categorized: true,
                             handleClick: (form) => {
                                 _openApp('process.FormDesigner', null, {id: form.id});
                             },
@@ -244,8 +246,8 @@ var o2DesignerConfig = {
                                 return _processAction.FormAction.listWithApplication(appid).then((forms) => {
                                     return _sort(forms.data).map((form) => {
                                         return {
+                                            ...form,
                                             name: form.name,
-                                            icon: '',
                                             id: form.id
                                         };
                                     });
@@ -264,6 +266,7 @@ var o2DesignerConfig = {
                         children: [{
                             label: '流程',
                             type: 'desiginer',
+                            categorized: true,
                             handleClick: (process) => {
                                 _openApp('process.ProcessDesigner', null, {id: process.id});
                             },
@@ -363,13 +366,14 @@ var o2DesignerConfig = {
             },
             name: '内容管理',
             id: 'cms.Column',
-            icon: 'note',
+            ooicon: 'note',
             type: 'app-category',
             children: [{
                 name: '内容管理',
                 id: 'cms.ColumnManager',
                 label: '应用',
                 type: 'app',
+                categorized: true,
                 handleClick: (item) => {
                     _openApp('cms.ColumnManager', null, {column: item.id});
                 },
@@ -377,9 +381,11 @@ var o2DesignerConfig = {
                     return _cmsAction.AppInfoAction.listAllAppInfo().then((json) => {
                         return _sort(json.data, 'appName').map((item) => {
                             return {
+                                ...item,
                                 category: item.appType,
                                 name: item.appName,
-                                icon: '',
+                                icon: item.appIcon,
+                                defaultIcon: '../x_component_cms_Column/$Main/default/icon/column.png',
                                 id: item.id,
                                 type: 'app'
                             };
@@ -526,13 +532,14 @@ var o2DesignerConfig = {
             },
             name: '数据中心',
             id: 'query.QueryExplorer',
-            icon: 'integral',
+            ooicon: 'integral',
             type: 'app-category',
             children: [{
                 name: '数据应用',
                 id: 'query.QueryManager',
                 label: '应用',
                 type: 'app',
+                categorized: true,
                 handleClick: (item) => {
                     _openApp('query.QueryManager', null, {application: item.id});
                 },
@@ -540,9 +547,10 @@ var o2DesignerConfig = {
                     return _queryAction.QueryAction.listAll().then((json) => {
                         return _sort(json.data, 'name').map((item) => {
                             return {
+                                ...item,
                                 category: item.queryCategory,
+                                defaultIcon: '../x_component_query_QueryExplorer/$Main/default/icon/application.png',
                                 name: item.name,
-                                icon: '',
                                 id: item.id,
                                 type: 'app'
                             };
@@ -710,7 +718,7 @@ var o2DesignerConfig = {
             },
             name: '服务管理',
             id: 'service.ServiceManager',
-            icon: 'process-service',
+            ooicon: 'process-service',
             type: 'app-category',
             children: [{
                 name: '代理配置',
@@ -749,6 +757,7 @@ var o2DesignerConfig = {
                     children: [{
                         label: '接口',
                         type: 'desiginer',
+                        categorized: true,
                         handleClick: (item) => {
                             _openApp('service.InvokeDesigner', null, {id: item.id});
                         },
@@ -757,7 +766,6 @@ var o2DesignerConfig = {
                                 return _sort(items.data).map((item) => {
                                     return {
                                         name: item.name,
-                                        icon: '',
                                         id: item.id
                                     };
                                 });
@@ -937,7 +945,11 @@ o2DesignerBreadcrumb.Menu = new Class({
     options: {
         offset : {
             x : 0,
-            y : 5
+            y : 8
+        },
+        priorityOfAuto: {
+            x : ["right", "center", "left" ], //当position x 为 auto 时候的优先级
+            y : ["bottom", "middle", "top" ] //当position y 为 auto 时候的优先级
         },
         hasArrow: false,
         isAutoHide: false,
@@ -966,7 +978,6 @@ o2DesignerBreadcrumb.Menu = new Class({
         var template = Array.clone(this.getChildrenTempalte());
         var creatable = !!(template.length === 1 && template[0].createFunction);
         Promise.resolve(this.getList( template )).then((data)=>{
-            this.categories = _sort(this.categories, '');
             this.contentNode.loadHtml(
                 this.item.breadcrumb.path+"menu.html",
                 {
@@ -974,7 +985,9 @@ o2DesignerBreadcrumb.Menu = new Class({
                         lp: this.lp,
                         data: data,
                         creatable: creatable,
-                        categories: this.categories
+                        categories: this.categories.filter(c=>{
+                            return c !== '未分类';
+                        })
                     },
                     module: this
                 },
@@ -1031,15 +1044,24 @@ o2DesignerBreadcrumb.Menu = new Class({
     handLoadCategory: function (e){
         var option = new Element('oo-option', { value: 'all' }).inject(e.currentTarget);
         option.setAttribute('text', '选择分类');
+
+        var hasUncategory = false;
+        if( this.categories.includes('未分类') ){
+            this.categories = this.categories.erase( '未分类' );
+            hasUncategory = true;
+        }
         this.categories.forEach(category=>{
             var option = new Element('oo-option', { value: category }).inject(e.currentTarget);
             option.setAttribute('text', category);
         });
+        if(hasUncategory){
+            option = new Element('oo-option', { value: '未分类' }).inject(e.currentTarget);
+            option.setAttribute('text', '未分类');
+        }
     },
     handleChangeCategory: function (e){
-        debugger;
-        var items = this.menuNode.querySelectorAll('.breadcrumb-menu-item');
-        items.forEach(item=>{
+        var items = this.menuNode && this.menuNode.querySelectorAll('.breadcrumb-menu-item');
+        (items || []).forEach(item=>{
             _checkClass(
                 item,
                 'hide',
@@ -1051,12 +1073,17 @@ o2DesignerBreadcrumb.Menu = new Class({
         this.getChildrenTempalte()[0].createFunction(this.getAppid());
     },
     handleMouseEnter: function (e, data){
-        if(this.activeMenu){
-            this.activeMenu.hide();
-        }
+        this.timer_hide_acitvie = window.setTimeout(() => {
+            if(this.activeMenu){
+                this.activeMenu.hide();
+            }
+            this.timer_hide_acitvie = null;
+        }, this.options.hiddenDelay);
     },
     handleMouseLeave: function (e, data){
-
+        if(this.timer_hide_acitvie){
+            window.clearTimeout(this.timer_hide_acitvie);
+        }
     },
     handleClick: function (e, data){
         data.handleClick(data, this.getAppid());
@@ -1121,14 +1148,6 @@ o2DesignerBreadcrumb.SubMenu = new Class({
     },
     getChildrenTempalte: function () {
         return this.data.children;
-    },
-    handleMouseEnter: function (e, data){
-        if(this.activeMenu){
-            this.activeMenu.hide();
-        }
-    },
-    handleMouseLeave: function (e, data){
-
     },
     handleClick: function (e, data){
         data.handleClick(data, data.appid || this.getAppid());

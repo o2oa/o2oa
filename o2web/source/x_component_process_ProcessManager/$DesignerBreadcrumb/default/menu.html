@@ -23,8 +23,14 @@
                                 mouseleave:handleMouseLeave;
                                 mouseenter:handleMouseEnter;
                                 o2load:handleLoadItem;">
+            {{if $.ooicon}}
+            <i class="breadcrumb-menu-item-ooicon ooicon-{{$.ooicon}}"></i>
+            {{end if}}
             {{if $.icon}}
-            <i class="breadcrumb-menu-item-icon ooicon-{{$.icon}}"></i>
+            <i class="breadcrumb-menu-item-icon" style="background-image:url(data:image/png;base64,{{$.icon}});"></i>
+            {{end if}}
+            {{if !$.icon && $.defaultIcon}}
+            <i class="breadcrumb-menu-item-icon" style="background-image:url({{$.defaultIcon}});"></i>
             {{end if}}
             <span class="breadcrumb-menu-item-text">{{$.name}}
             </span>
