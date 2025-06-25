@@ -441,7 +441,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.setSize(0);
             if( this.orgsArea )this.orgsArea.hide();
         }else{
-            // this.setSize(0);
+            this.setSize(0);
         }
     },
     overRoute: function (node) {
