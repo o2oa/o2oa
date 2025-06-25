@@ -69,7 +69,7 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 0, application: appid});
                         },
-                        createFunction: (appid)=>{
+                        handleCreate: (appid)=>{
                             _openApp('portal.PageDesigner', null, {application: {id: appid}});
                         },
                         children: [{
@@ -101,6 +101,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 1, application: appid});
                         },
+                        handleCreate: (appid)=>{
+                            _openApp('portal.WidgetDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '部件',
                             type: 'desiginer',
@@ -128,6 +131,9 @@ var o2DesignerConfig = {
                         ooicon: 'shujuzidian',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 2, application: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('portal.DictionaryDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '数据字典',
@@ -160,6 +166,9 @@ var o2DesignerConfig = {
                         ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 3, application: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('portal.ScriptDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '脚本配置',
@@ -242,6 +251,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 0, application: appid});
                         },
+                        handleCreate: (appid)=>{
+                            _openApp('process.FormDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '表单',
                             type: 'desiginer',
@@ -271,6 +283,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 1, application: appid});
                         },
+                        handleCreate: (appid)=>{
+                            _openApp('process.ProcessDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '流程',
                             type: 'desiginer',
@@ -298,6 +313,9 @@ var o2DesignerConfig = {
                         ooicon: 'shujuzidian',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 2, application: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('process.DictionaryDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '数据字典',
@@ -330,6 +348,9 @@ var o2DesignerConfig = {
                         ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 3, application: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('process.ScriptDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '脚本配置',
@@ -446,6 +467,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'formConfig', column: appid});
                         },
+                        handleCreate: (appid)=>{
+                            _openApp('cms.FormDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '表单',
                             type: 'desiginer',
@@ -473,6 +497,9 @@ var o2DesignerConfig = {
                         ooicon: 'shujuzidian',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'dataConfig', column: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('cms.DictionaryDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '数据字典',
@@ -505,6 +532,9 @@ var o2DesignerConfig = {
                         ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'scriptConfig', column: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('cms.ScriptDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '脚本配置',
@@ -580,10 +610,13 @@ var o2DesignerConfig = {
                         name: '视图配置',
                         id: 'query.PageManager',
                         type: 'desiginer-category',
+                        ooicon: 'shitupeizhi3',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 0, application: appid});
                         },
-                        ooicon: 'shitupeizhi3',
+                        handleCreate: (appid)=>{
+                            _openApp('query.ViewDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '视图',
                             type: 'desiginer',
@@ -613,6 +646,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 1, application: appid});
                         },
+                        handleCreate: (appid)=>{
+                            _openApp('query.StatDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '统计',
                             type: 'desiginer',
@@ -640,6 +676,9 @@ var o2DesignerConfig = {
                         ooicon: 'shujubiao',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 2, application: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('query.TableDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '数据表',
@@ -673,6 +712,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 3, application: appid});
                         },
+                        handleCreate: (appid)=>{
+                            _openApp('query.StatementDesigner', null, {application: {id: appid}});
+                        },
                         children: [{
                             label: '查询配置',
                             type: 'desiginer',
@@ -702,6 +744,9 @@ var o2DesignerConfig = {
                         ooicon: 'file_upload',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 4, application: appid});
+                        },
+                        handleCreate: (appid)=>{
+                            _openApp('query.ImporterDesigner', null, {application: {id: appid}});
                         },
                         children: [{
                             label: '导入模型',
@@ -752,6 +797,9 @@ var o2DesignerConfig = {
                 handleClick: (item, appid) => {
                     _openApp('service.ServiceManager', null, {navi: 0});
                 },
+                handleCreate: ()=>{
+                    _openApp('service.AgentDesigner', null, {});
+                },
                 children: [{
                     label: '代理',
                     type: 'desiginer',
@@ -780,6 +828,9 @@ var o2DesignerConfig = {
                     handleClick: (item, appid) => {
                         _openApp('service.ServiceManager', null, {navi: 1});
                     },
+                    handleCreate: ()=>{
+                        _openApp('service.ServiceManager', null, {});
+                    },
                     children: [{
                         label: '接口',
                         type: 'desiginer',
@@ -806,6 +857,9 @@ var o2DesignerConfig = {
                     ooicon: 'jiaoben',
                     handleClick: (item, appid) => {
                         _openApp('service.ServiceManager', null, {navi: 2});
+                    },
+                    handleCreate: ()=>{
+                        _openApp('service.ScriptDesigner', null, {});
                     },
                     children: [{
                         label: '脚本配置',
@@ -834,8 +888,11 @@ var o2DesignerConfig = {
                     handleClick: () => {
                         _openApp('service.ServiceManager', null, {navi: 3});
                     },
+                    handleCreate: ()=>{
+                        _openApp('service.DictionaryDesigner', null, {});
+                    },
                     children: [{
-                        label: '脚本配置',
+                        label: '数据配置',
                         type: 'desiginer',
                         handleClick: (item) => {
                             _openApp('service.DictionaryDesigner', null, {id: item.id});
@@ -999,12 +1056,12 @@ o2DesignerBreadcrumb.Menu = new Class({
     },
     //执行后才显示位置也样式
     _loadCustom : function( callback ){
-        this.menus = []
+        this.menus = [];
         this.contentNode.addEvent('mousedown', (e)=>{ e.stopPropagation(); });
         this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
 
         var template = Array.clone(this.getChildrenTempalte());
-        var creatable = !!(template.length === 1 && template[0].createFunction);
+        // var creatable = !!(template.length === 1 && template[0].createFunction);
         Promise.resolve(this.getList( template )).then((data)=>{
             this.contentNode.loadHtml(
                 this.item.breadcrumb.path+"menu.html",
@@ -1012,7 +1069,7 @@ o2DesignerBreadcrumb.Menu = new Class({
                     bind: {
                         lp: this.lp,
                         data: data,
-                        creatable: creatable,
+                        // creatable: creatable,
                         categories: this.categories.filter(c=>{
                             return c !== '未分类';
                         })
@@ -1097,25 +1154,6 @@ o2DesignerBreadcrumb.Menu = new Class({
             );
         });
     },
-    handleCreate: function (){
-        this.getChildrenTempalte()[0].createFunction(this.getAppid());
-    },
-    handleMouseEnter: function (e, data){
-        this.timer_hide_acitvie = window.setTimeout(() => {
-            if(this.activeMenu){
-                this.activeMenu.hide();
-            }
-            this.timer_hide_acitvie = null;
-        }, this.options.hiddenDelay);
-    },
-    handleMouseLeave: function (e, data){
-        if(this.timer_hide_acitvie){
-            window.clearTimeout(this.timer_hide_acitvie);
-        }
-    },
-    handleClick: function (e, data){
-        data.handleClick(data, this.getAppid());
-    },
     handleLoadItem: function (e, data){
         var app = this.item.breadcrumb.app;
         var _self = this;
@@ -1144,6 +1182,27 @@ o2DesignerBreadcrumb.Menu = new Class({
         if( submenu.activeMenu ){
             submenu.activeMenu.hide();
         }
+    },
+    handleMouseEnter: function (e, data){
+        this.timer_hide_acitvie = window.setTimeout(() => {
+            if(this.activeMenu && this.activeMenu.data.id !== data.id){
+                this.activeMenu.hide();
+            }
+            this.timer_hide_acitvie = null;
+        }, this.options.hiddenDelay);
+    },
+    handleMouseLeave: function (e, data){
+        if(this.timer_hide_acitvie){
+            window.clearTimeout(this.timer_hide_acitvie);
+            this.timer_hide_acitvie = null;
+        }
+    },
+    handleCreate: function (e, data){
+        data.handleCreate(this.getAppid());
+        e.stopPropagation();
+    },
+    handleClick: function (e, data){
+        data.handleClick(data, this.getAppid());
     },
     _customNode : function( node, contentNode ){
         this.fireEvent("customContent", [contentNode, node])
@@ -1176,6 +1235,10 @@ o2DesignerBreadcrumb.SubMenu = new Class({
     },
     getChildrenTempalte: function () {
         return this.data.children;
+    },
+    handleCreate: function (e, data){
+        data.handleCreate(data.appid || this.getAppid());
+        e.stopPropagation();
     },
     handleClick: function (e, data){
         data.handleClick(data, data.appid || this.getAppid());

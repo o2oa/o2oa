@@ -5,14 +5,6 @@
                                     change:handleChangeCategory">
         </oo-select>
     {{end if}}
-    {{if $.creatable}}
-    <div
-            class="breadcrumb-menu-create"
-            data-o2-events="click:handleCreate;">
-        <i class="breadcrumb-menu-item-icon ooicon-create"></i>
-        <span>新建</span>
-    </div>
-    {{end if}}
 
     <div class="breadcrumb-menu" data-o2-element="menuNode">
         {{each $.data}}
@@ -24,16 +16,22 @@
                                 mouseenter:handleMouseEnter;
                                 o2load:handleLoadItem;">
             {{if $.ooicon}}
-            <i class="breadcrumb-menu-item-ooicon ooicon-{{$.ooicon}}"></i>
+            <i class="breadcrumb-menu-item-ooicon ooicon-{{$.ooicon}} {{!!$.handleCreate ? 'has-create' : ''}}"></i>
             {{end if}}
             {{if $.icon}}
-            <i class="breadcrumb-menu-item-icon" style="background-image:url(data:image/png;base64,{{$.icon}});"></i>
+            <i class="breadcrumb-menu-item-icon {{!!$.handleCreate ? 'has-create' : ''}}" style="background-image:url(data:image/png;base64,{{$.icon}});"></i>
             {{end if}}
             {{if !$.icon && $.defaultIcon}}
             <i class="breadcrumb-menu-item-icon" style="background-image:url({{$.defaultIcon}});"></i>
             {{end if}}
-            <span class="breadcrumb-menu-item-text">{{$.name}}
-            </span>
+
+            {{if $.handleCreate}}
+            <i class="breadcrumb-menu-item-create ooicon-create"
+               data-o2-events="click:handleCreate;" title="创建">
+            </i>
+            {{end if}}
+
+            <span class="breadcrumb-menu-item-text">{{$.name}}</span>
         </div>
         {{end each}}
 
