@@ -77,6 +77,9 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         if(this.json.buttonStyles){
             button.setStyles( this.json.buttonStyles );
         }
+        if( this.form.json.formStyleType === 'v10' ){
+            button.addClass('form-content-button');
+        }
         button.addEvent("click", function(){
             this.validationMode();
             var d = this._getBusinessData();
