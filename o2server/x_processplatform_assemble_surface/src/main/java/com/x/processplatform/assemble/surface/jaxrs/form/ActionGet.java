@@ -30,7 +30,7 @@ class ActionGet extends BaseAction {
 				throw new ExceptionEntityNotExist(flag, Form.class);
 			}
 			Wo wo = new Wo();
-			wo.setData(form.getDataOrMobileData());
+			wo.setData(form.getData());
 			wo.setFastETag(form.getId() + form.getUpdateTime().getTime());
 			result.setData(wo);
 			return result;

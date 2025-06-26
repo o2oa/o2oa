@@ -33,7 +33,7 @@ class ActionGetWithApplication extends BaseAction {
 			}
 			Form form = business.form().pick(application, flag);
 			Wo wo = new Wo();
-			wo.setData(form.getDataOrMobileData());
+			wo.setData(form.getData());
 			wo.setFastETag(form.getId() + form.getUpdateTime().getTime());
 			result.setData(wo);
 			return result;
