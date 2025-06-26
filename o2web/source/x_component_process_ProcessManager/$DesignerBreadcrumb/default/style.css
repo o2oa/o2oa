@@ -78,4 +78,8 @@ oo-select{
     font-size: 1rem;
     cursor: pointer;
 }
+.breadcrumb-menu-separator{
+    border-top: 1px solid var(--oo-color-gray-b);
+    margin: 0.2rem 1rem 0.2rem 1rem;
+}
 

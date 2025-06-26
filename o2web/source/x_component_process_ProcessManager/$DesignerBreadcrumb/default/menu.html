@@ -8,31 +8,38 @@
 
     <div class="breadcrumb-menu" data-o2-element="menuNode">
         {{each $.data}}
-        <div
-                data-category="{{$.category}}"
-                class="breadcrumb-menu-item"
-                data-o2-events="click:handleClick;
-                                mouseleave:handleMouseLeave;
-                                mouseenter:handleMouseEnter;
-                                o2load:handleLoadItem;">
-            {{if $.ooicon}}
-            <i class="breadcrumb-menu-item-ooicon ooicon-{{$.ooicon}} {{!!$.handleCreate ? 'has-create' : ''}}"></i>
-            {{end if}}
-            {{if $.icon}}
-            <i class="breadcrumb-menu-item-icon {{!!$.handleCreate ? 'has-create' : ''}}" style="background-image:url(data:image/png;base64,{{$.icon}});"></i>
-            {{end if}}
-            {{if !$.icon && $.defaultIcon}}
-            <i class="breadcrumb-menu-item-icon" style="background-image:url({{$.defaultIcon}});"></i>
+            {{if $.type !== 'separator'}}
+            <div
+                    title="{{$.title}}"
+                    data-category="{{$.category}}"
+                    class="breadcrumb-menu-item"
+                    data-o2-events="click:handleClick;
+                                    mouseleave:handleMouseLeave;
+                                    mouseenter:handleMouseEnter;
+                                    o2load:handleLoadItem;">
+                {{if $.ooicon}}
+                <i class="breadcrumb-menu-item-ooicon ooicon-{{$.ooicon}} {{!!$.handleCreate ? 'has-create' : ''}}"></i>
+                {{end if}}
+                {{if $.icon}}
+                <i class="breadcrumb-menu-item-icon {{!!$.handleCreate ? 'has-create' : ''}}" style="background-image:url(data:image/png;base64,{{$.icon}});"></i>
+                {{end if}}
+                {{if !$.icon && $.defaultIcon}}
+                <i class="breadcrumb-menu-item-icon" style="background-image:url({{$.defaultIcon}});"></i>
+                {{end if}}
+
+                {{if $.handleCreate}}
+                <i class="breadcrumb-menu-item-create ooicon-create"
+                   data-o2-events="click:handleCreate;" title="创建">
+                </i>
+                {{end if}}
+
+                <span class="breadcrumb-menu-item-text">{{$.name}}</span>
+            </div>
             {{end if}}
 
-            {{if $.handleCreate}}
-            <i class="breadcrumb-menu-item-create ooicon-create"
-               data-o2-events="click:handleCreate;" title="创建">
-            </i>
+            {{if $.type === 'separator'}}
+                <div class="breadcrumb-menu-separator"></div>
             {{end if}}
-
-            <span class="breadcrumb-menu-item-text">{{$.name}}</span>
-        </div>
         {{end each}}
 
         {{if !$.data.length}}

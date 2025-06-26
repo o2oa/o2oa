@@ -9,13 +9,13 @@ MWF.xDesktop.UserData = MWF.UD = {
     },
     getData: function(name, callback, async){
         if (!this.action) this.getAction();
-        this.action.getUserData(name, function(json){
+        return this.action.getUserData(name, function(json){
             if (callback) callback(json);
         }, null, async);
     },
     getDataJson: function(name, callback, async){
         if (!this.action) this.getAction();
-        this.action.getUserData(name, function(json){
+        return this.action.getUserData(name, function(json){
             var returnJson = null;
             if (json.data){
                 try{
@@ -28,7 +28,7 @@ MWF.xDesktop.UserData = MWF.UD = {
 
     putData: function(name, data, callback, async){
         if (!this.action) this.getAction();
-        this.action.putUserData(name, data, function(json){
+        return this.action.putUserData(name, data, function(json){
             if (callback) callback(json);
         }, null, async)
 
@@ -38,7 +38,7 @@ MWF.xDesktop.UserData = MWF.UD = {
     },
     deleteData: function(name, callback, async){
         if (!this.action) this.getAction();
-        this.action.deleteUserData(name, function(json){
+        return this.action.deleteUserData(name, function(json){
             if (callback) callback(json);
         }, null, async)
 
@@ -49,7 +49,7 @@ MWF.xDesktop.UserData = MWF.UD = {
 
     getPublicData: function(name, callback, async){
         if (!this.action) this.getAction();
-        this.action.getPublicUserData(name, function(json){
+        return this.action.getPublicUserData(name, function(json){
             var returnJson = null;
             if (json.data){
                 try{
@@ -68,7 +68,7 @@ MWF.xDesktop.UserData = MWF.UD = {
     putPublicData: function(name, data, callback, async){
         if (!this.action) this.getAction();
 
-        this.action.putPublicUserData(name, data, function(json){
+        return this.action.putPublicUserData(name, data, function(json){
             if (callback){
                 if (callback.success){
                     callback.success(json);
@@ -118,7 +118,7 @@ MWF.xDesktop.UserData = MWF.UD = {
     },
     deletePublicData: function(name, callback, async){
         if (!this.action) this.getAction();
-        this.action.deletePublicUserData(name, function(json){
+        return this.action.deletePublicUserData(name, function(json){
             if (callback) callback(json);
         }, null, async);
 

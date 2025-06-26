@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "44736653",
+      "name": "jiekoupeizhi2",
+      "font_class": "jiekoupeizhi21",
+      "unicode": "e794",
+      "unicode_decimal": 59284
+    },
+    {
+      "icon_id": "44736654",
+      "name": "dailipeizhi",
+      "font_class": "dailipeizhi1",
+      "unicode": "e793",
+      "unicode_decimal": 59283
+    },
+    {
+      "icon_id": "44725057",
+      "name": "js",
+      "font_class": "js",
+      "unicode": "e792",
+      "unicode_decimal": 59282
+    },
+    {
       "icon_id": "44722865",
       "name": "neirongguanli1",
       "font_class": "neirongguanli1",
@@ -55,13 +76,6 @@
       "unicode_decimal": 59266
     },
     {
-      "icon_id": "44719704",
-      "name": "jiekoupeizhi",
-      "font_class": "jiekoupeizhi",
-      "unicode": "e783",
-      "unicode_decimal": 59267
-    },
-    {
       "icon_id": "44719710",
       "name": "daorumoxing",
       "font_class": "daorumoxing",
@@ -95,13 +109,6 @@
       "font_class": "tongjipeizhi",
       "unicode": "e788",
       "unicode_decimal": 59272
-    },
-    {
-      "icon_id": "44719701",
-      "name": "dailipeizhi",
-      "font_class": "dailipeizhi",
-      "unicode": "e789",
-      "unicode_decimal": 59273
     },
     {
       "icon_id": "44719700",

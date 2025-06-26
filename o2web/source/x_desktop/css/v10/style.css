@@ -371,6 +371,18 @@ oo-nav{
     -moz-osx-font-smoothing: grayscale;
 }
 
+.ooicon-jiekoupeizhi21:before {
+  content: "\e794";
+}
+
+.ooicon-dailipeizhi1:before {
+  content: "\e793";
+}
+
+.ooicon-js:before {
+  content: "\e792";
+}
+
 .ooicon-neirongguanli1:before {
   content: "\e790";
 }
@@ -399,10 +411,6 @@ oo-nav{
   content: "\e782";
 }
 
-.ooicon-jiekoupeizhi:before {
-  content: "\e783";
-}
-
 .ooicon-daorumoxing:before {
   content: "\e784";
 }
@@ -421,10 +429,6 @@ oo-nav{
 
 .ooicon-tongjipeizhi:before {
   content: "\e788";
-}
-
-.ooicon-dailipeizhi:before {
-  content: "\e789";
 }
 
 .ooicon-shitupeizhi:before {
