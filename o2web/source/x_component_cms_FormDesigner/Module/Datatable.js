@@ -4,7 +4,7 @@ MWF.xApplication.cms.FormDesigner.Module.Datatable = MWF.CMSFCDatatable = new Cl
 	Extends: MWF.FCDatatable,
 	Implements : [MWF.CMSFCMI],
 	options: {
-		"style": "default",
-		"propertyPath": "../x_component_cms_FormDesigner/Module/Datatable/datatable.html"
+		"style": "default"
+		// "propertyPath": "../x_component_cms_FormDesigner/Module/Datatable/datatable.html"
 	}
 });

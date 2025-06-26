@@ -52,7 +52,7 @@ public class BaseTools {
 
 	/**
 	 * 从Main.class所在的目录开始递归向上,找到version.o2所在目录,就是程序根目录.
-	 * 
+	 *
 	 * @return
 	 * @throws IOException
 	 * @throws URISyntaxException
@@ -215,7 +215,10 @@ public class BaseTools {
 	public static String getIpAddress() {
 		try {
 			Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
-			InetAddress ip = null;
+			InetAddress ip = InetAddress.getLocalHost();
+			if(!"127.0.0.1".equals(ip.getHostAddress())){
+				return ip.getHostAddress();
+			}
 			while (allNetInterfaces.hasMoreElements()) {
 				NetworkInterface netInterface = allNetInterfaces.nextElement();
 				if (!(netInterface.isLoopback() || netInterface.isVirtual() || !netInterface.isUp())) {

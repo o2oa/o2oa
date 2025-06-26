@@ -294,6 +294,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			//是否多行同时编辑
 			this.multiEditMode = this.json.editMode === "multi";
 
+			//是否显示操作列
+			this.isOperationRowHidden = !this.deleteable && !this.addable && this.multiEditMode;
+
 			//是否有总计列
 			this.totalFlag = false;
 			this.totalColumns = [];
@@ -420,6 +423,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if(this.editable){
 				var actionTh = new Element("th.mwf_addlineaction", {"styles": {"width": "46px"}}).inject(this.titleTr, "top"); //操作列
+				if(this.isOperationRowHidden){
+					actionTh.setStyle('display', 'none');
+				}
 				if(this.addable){
 					var addLineAction = new Element("div.addLineAction.ooicon-create", {
 						"styles": this.form.css.addLineAction,
@@ -496,6 +502,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if(this.editable){
 				var eTd = new Element("td.mwf_editaction",{"styles": this.json.actionStyles || {}}).inject(this.templateNode, "top"); //操作列
+				if(this.isOperationRowHidden){
+					eTd.setStyle('display', 'none');
+				}
 				this.columnCount = this.columnCount+1;
 				var mTd;
 				if( this.sortable ){
@@ -2203,6 +2212,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.exportActionNode.addEvent("click", function () {
 					this.exportToExcel();
 				}.bind(this))
+
+				if( this.form.json.formStyleType === 'v10' ){
+					this.exportActionNode.addClass('form-content-button');
+				}
 			}
 
 			if( this.importenable ){
@@ -2219,6 +2232,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.importActionNode.addEvent("click", function () {
 					this.importFromExcel();
 				}.bind(this))
+
+				if( this.form.json.formStyleType === 'v10' ){
+					this.importActionNode.addClass('form-content-button');
+				}
 			}
 
 			if( ["centerTop","centerBottom"].contains( this.json.impexpPosition ) ){

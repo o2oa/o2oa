@@ -137,6 +137,16 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.view,
     "className": "View"
   },
+  "statementSelector": {
+    "icon": "statementSelector.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
+    "className": "StatementSelector"
+  },
+  "statement": {
+    "icon": "statement.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.statement,
+    "className": "Statement"
+  },
   "stat": {
     "icon": "stat.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.stat,
@@ -231,16 +241,6 @@
     "icon": "wpsOffice.png",
     "text": "wpsOffice2",
     "className": "WpsOffice2"
-  },
-  "statementSelector": {
-    "icon": "statementSelector.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
-    "className": "StatementSelector"
-  },
-  "statement": {
-    "icon": "statement.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.statement,
-    "className": "Statement"
   },
   "importer": {
     "icon": "importer.png",

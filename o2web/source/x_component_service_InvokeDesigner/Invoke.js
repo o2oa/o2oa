@@ -235,6 +235,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyIdNode.set("text", this.data.id || "");
         this.designer.propertyNameNode.set("value", this.data.name || "");
         this.designer.propertyAliasNode.set("value", this.data.alias || "");
+        this.designer.propertyCategoryNode.set("value", this.data.category || "");
 
         this.designer.executorListSelector.setData( this.data.executorList || []);
 
@@ -353,6 +354,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
             var name = this.designer.propertyNameNode.get("value");
             var alias = this.designer.propertyAliasNode.get("value");
+            var category = this.designer.propertyCategoryNode.get("value");
             var description = this.designer.propertyDescriptionNode.get("value");
             var remoteAddrRegex = this.designer.propertyRemoteAddrRegexNode.get("value");
             var enable = true;
@@ -393,6 +395,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             //}
             this.data.name = name;
             this.data.alias = alias;
+            this.data.category = category;
             this.data.description = description;
             this.data.remoteAddrRegex = remoteAddrRegex;
             this.data.validated = validated;
@@ -456,6 +459,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
                 var name = this.designer.propertyNameNode.get("value");
                 var alias = this.designer.propertyAliasNode.get("value");
+                var category = this.designer.propertyCategoryNode.get("value");
                 var description = this.designer.propertyDescriptionNode.get("value");
                 var remoteAddrRegex = this.designer.propertyRemoteAddrRegexNode.get("value");
                 var enable = true;
@@ -489,6 +493,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 //}
                 this.data.name = name;
                 this.data.alias = alias;
+                this.data.category = category;
                 this.data.description = description;
                 this.data.remoteAddrRegex = remoteAddrRegex;
                 this.data.validated = validated;

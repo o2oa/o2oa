@@ -1,0 +1,27 @@
+<div class="layout-wrap" data-o2-element="rootNode">
+    <div class="layout-left" data-o2-element="leftNode">
+        <div class="title">
+            <img src="{{$.config.appIconUrl}}">
+            <span>{{$.config.appName}}</span>
+        </div>
+        <div class="new" data-o2-events="click:loadNew">
+            <div class="ooicon-a-newtalk" ></div>
+            <div>{{$.lp.newchat}}</div>
+        </div>
+        <div class="search">
+            <input placeholder="{{$.lp.searchhistory}}" data-o2-element="searchNode" data-o2-events="keyup:search">
+        </div>
+        <div class="history_wrap">
+            <div data-o2-element="historyListNode" class="history" data-o2-events="o2load:loadHistory">
+            </div>
+        </div>
+        {{if $.user.roleList.contains("Manager@ManagerSystemRole@R")}}
+        <div class="setting" data-o2-events="click:setting" >
+            <div class="ooicon-config"></div>
+            <div>{{$.lp.setting}}</div>
+        </div>
+        {{end if}}
+    </div>
+    <div class="layout-right" data-o2-element="rightNode" data-o2-events="o2load:loadNew">
+    </div>
+</div>

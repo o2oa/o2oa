@@ -107,6 +107,16 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 "destroyOnHide": true,
                 "style": this.css.maskNode
             });
+            if( this.options.style === 'v10_mobile' ){
+                this.maskRelativeNode.get('mask').addEvent('click', function () {
+                    debugger;
+                    if( this.selectedMode ){
+                        this.switchSelectedMode();
+                    }else{
+                        this.close();
+                    }
+                }.bind(this));
+            }
         }
 
         if( !this.options.embedded ) {
@@ -114,7 +124,13 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
         }
         if( layout.mobile ){
-            this.node.setStyle("height", ( container.getSize().y ) + "px");
+            if( this.options.style !== 'v10_mobile' ){
+                this.node.setStyle("height", ( container.getSize().y ) + "px");
+            }else {
+                window.setTimeout(function () {
+                    this.node.setStyles(this.css.containerNodeMobile_show);
+                }.bind(this), 1)
+            }
         }
 
         if( !this.options.useO2Load ){
@@ -127,29 +143,35 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         if( this.options.injectToBody ){
             size = $(document.body).getSize();
         }else if( layout.mobile ){
-            var containerSize = this.container.getSize();
-            var bodySize = $(document.body).getSize();
-            if(containerSize.y === 0){
-                containerSize.y = bodySize.y
-            }
+            if( this.options.style !== 'v10_mobile' ) {
 
-            size = {
-                "x" : Math.min( containerSize.x, bodySize.x ),
-                "y" : Math.min( containerSize.y, bodySize.y )
-            };
+                var containerSize = this.container.getSize();
+                var bodySize = $(document.body).getSize();
+                if (containerSize.y === 0) {
+                    containerSize.y = bodySize.y
+                }
 
-            var zoom = this.node.getStyle("zoom").toInt();
-            zoom = zoom ? (zoom * 100) : 0;
-            if( zoom ){
-                size.x = size.x * 100 / zoom;
-                size.y = size.y * 100 / zoom;
+                size = {
+                    "x": Math.min(containerSize.x, bodySize.x),
+                    "y": Math.min(containerSize.y, bodySize.y)
+                };
+
+                var zoom = this.node.getStyle("zoom").toInt();
+                zoom = zoom ? (zoom * 100) : 0;
+                if (zoom) {
+                    size.x = size.x * 100 / zoom;
+                    size.y = size.y * 100 / zoom;
+                }
+                this.node.setStyles({
+                    "width": size.x + "px",
+                    "height": size.y + "px"
+                });
+            }else{
+                window.setTimeout(function () {
+                    this.node.setStyles(this.css.containerNodeMobile_show);
+                }.bind(this), 1)
             }
-            this.node.setStyles({
-                "width" : size.x+"px",
-                "height" : size.y+"px"
-            });
         }else{
-            debugger;
             if( this.options.width || this.options.height ){
                 this.setSize()
             }
@@ -201,10 +223,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         }
 
         if( !this.options.embedded && layout.mobile ){
-            this.node.setStyles({
-                "top": "0px",
-                "left": "0px"
-            });
+            if( this.options.style !== 'v10_mobile' ){
+                this.node.setStyles({
+                    "top": "0px",
+                    "left": "0px"
+                });
+            }
         }
 
         this.setEvent();
@@ -526,7 +550,17 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             }.bind(this));
         }
     },
-    close: function(){
+    close: function (){
+        if( this.options.style === 'v10_mobile' ){
+            this.node.setStyles(this.css.containerNodeMobile_hide);
+            window.setTimeout(function () {
+                this._close()
+            }.bind(this), 200)
+        }else{
+            this._close();
+        }
+    },
+    _close: function(){
         this.fireEvent("close");
         this.clearTooltip();
         this.node.destroy();

@@ -8,6 +8,7 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "id": "标识",
     "name": "名称",
     "alias": "别名",
+    "category": "分类",
     "description": "描述",
     "validated" : "代码格式是否正确",
     "isEnable" : "是否启用",

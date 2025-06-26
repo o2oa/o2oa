@@ -18,6 +18,7 @@ MWF.xApplication.Meeting.Main = new Class({
         "isMax": true,
         "sideBarEnable" : true,
         "settingEnable" : true,
+        "meeting": '', //立即打开的会议id
         "title": MWF.xApplication.Meeting.LP.title
     },
     onQueryLoad: function(){
@@ -105,6 +106,9 @@ MWF.xApplication.Meeting.Main = new Class({
         if( this.options.sideBarEnable ){
             this.loadSideBar();
         }
+        if(this.options.meeting){
+            this.openMeeting(this.options.meeting);
+        }
         //this.loadBottomMenus();
 
         //this.hideMenu();
@@ -127,6 +131,11 @@ MWF.xApplication.Meeting.Main = new Class({
     },
     isAutoCreateOnlineRoom: function(){
         return this.meetingConfig.enableOnline && this.meetingConfig.onlineProduct === "好视通"
+    },
+    openMeeting: function(meeting){
+        this.form = new MWF.xApplication.Meeting.MeetingForm(this, {id: meeting}, {}, {app:this});
+        this.form.view = this;
+        this.form.open();
     },
     isCopyEnable: function(){
         return Promise.resolve(false);

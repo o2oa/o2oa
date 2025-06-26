@@ -11,7 +11,7 @@ MWF.xApplication.service.ServiceManager.InvokeExplorer = new Class({
             "searchText": MWF.xApplication.service.ServiceManager.LP.invoke.searchText,
             "noElement": MWF.xApplication.service.ServiceManager.LP.invoke.noInvokeNoticeText
         },
-        "categoryEnable": false,
+        "categoryEnable": true,
         "itemStyle": "card",
         "name": "service.InvokeExplorer"
     },
@@ -58,10 +58,13 @@ MWF.xApplication.service.ServiceManager.InvokeExplorer = new Class({
                 if (json.data.length){
                     this.checkSort(json.data);
                     json.data.each(function(item){
+                    if (this.categoryList.indexOf(item.category) === -1) if (item.category) this.categoryList.push(item.category);
+                    if (!this.elementCategory || (item.category === this.elementCategory)){
                         var itemObj = this._getItemObject(item);
                         itemObj.load();
                         this.checkShow(itemObj);
                         this.itemList.push(itemObj);
+                    }
                     }.bind(this));
                 }else{
                     var noElementNode = new Element("div.noElementNode", {
