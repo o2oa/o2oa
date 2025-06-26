@@ -4,7 +4,7 @@ MWF.xApplication.cms.FormDesigner.Module.Datatemplate = MWF.CMSFCDatatemplate = 
 	Extends: MWF.FCDatatemplate,
 	Implements : [MWF.CMSFCMI],
 	options: {
-		"style": "default",
-		"propertyPath": "../x_component_cms_FormDesigner/Module/Datatemplate/datatemplate.html"
+		"style": "default"
+		//"propertyPath": "../x_component_cms_FormDesigner/Module/Datatemplate/datatemplate.html"
 	}
 });
