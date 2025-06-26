@@ -66,13 +66,12 @@ public class ActionOpen extends BaseAction {
 			wo.setSample(false);
 		}else if(TOKEN_CONFIG.equalsIgnoreCase(fileName)){
 			Token token = Config.token();
-			Token nToken = new Token();
-			token.copyTo(nToken);
+			Token nToken = XGsonBuilder.instance().fromJson(token.toString(), Token.class);
 			if(BooleanUtils.isFalse(Config.general().getConfigApiEnable())) {
 				nToken.getSsos().forEach(s -> s.setKey("***"));
 				nToken.getOauthClients().forEach(o -> o.setClientSecret("***"));
 			}
-			wo.setFileContent(XGsonBuilder.toJson(nToken));
+			wo.setFileContent(nToken.toString());
 		}else {
 			File file = new File(Config.base(), "config/" + fileName);
 			wo.setSample(false);
