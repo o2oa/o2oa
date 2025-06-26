@@ -350,7 +350,6 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             return ;
         }
 
-
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
             filter = [];
@@ -376,8 +375,66 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
         };
 
+        this.viewJson = viewJson;
+
         this.fireEvent("beforeLoadView", [viewJson]);
 
+        if (layout.mobile && o2.version.v==="o2oa-10"){
+            this._selectQueryViewMobile(callback);
+        }else{
+            this._selectQueryViewPc(callback);
+        }
+    },
+    loadViewer: function(viewNode){
+        return new Promise((resolve, reject)=>{
+            MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+                this.view = new MWF.xApplication.query.Query.Viewer(viewNode, this.viewJson, {
+                    "style": "select",
+                    "onLoadLayout": function () {
+                        this.fireEvent("loadViewLayout");
+                    }.bind(this),
+                    "onLoadView": function(){
+                        this.fireEvent("loadView");
+                    }.bind(this),
+                    "onSelect": function(item){
+                        this.fireEvent("select", [item]);
+                    }.bind(this),
+                    "onUnselect": function(item){
+                        this.fireEvent("unselect", [item]);
+                    }.bind(this),
+                    "onOpenDocument": function(options, item){
+                        this.openOptions = {
+                            "options": options,
+                            "item": item
+                        };
+                        this.fireEvent("openDocument", [this.openOptions]);
+                        this.openOptions = null;
+                    }.bind(this)
+                }, this.form.app, this.form.Macro)
+                resolve();
+            }.bind(this));
+        })
+    },
+    _selectQueryViewMobile: function (callback){
+        var render = this.form.Macro.environment._renderViewMobileContainer;
+        render(
+            this.json.title,
+            (viewNode)=>{
+                this.loadViewer(viewNode).then(()=>{
+                    this.view.addEvent('selectRow', (row)=>{
+                        row.node.addClass('selectedRow');
+                    });
+                    this.view.addEvent('unselectRow', (row)=>{
+                        row.node.removeClass('selectedRow');
+                    });
+                });
+            },
+            ()=>{
+                if(callback)callback(this.view.getData());
+            }
+        );
+    },
+    _selectQueryViewPc: function (callback){
         var options = {};
         // var width = options.width || "850";
         // var height = options.height || "700";
@@ -391,18 +448,6 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             height = size.y;
             options.style = "viewmobile";
         }
-        //width = width.toInt();
-        //height = height.toInt();
-
-        //var size = this.form.app.content.getSize();
-        //var x = (size.x-width)/2;
-        //var y = (size.y-height)/2;
-        //if (x<0) x = 0;
-        //if (y<0) y = 0;
-        //if (layout.mobile){
-        //    x = 20;
-        //    y = 0;
-        //}
 
         var _self = this;
         MWF.require("MWF.xDesktop.Dialog", function(){
@@ -440,32 +485,9 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                     if(layout.mobile){
                         dlg.node.setStyle("z-index",200);
                     }
-                    MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
-                            "style": "select",
-                            "onLoadLayout": function () {
-                                this.fireEvent("loadViewLayout");
-                            }.bind(this),
-                            "onLoadView": function(){
-                                this.fireEvent("loadView");
-                            }.bind(this),
-                            "onSelect": function(item){
-                                this.fireEvent("select", [item]);
-                            }.bind(this),
-                            "onUnselect": function(item){
-                                this.fireEvent("unselect", [item]);
-                            }.bind(this),
-                            "onOpenDocument": function(options, item){
-                                this.openOptions = {
-                                    "options": options,
-                                    "item": item
-                                };
-                                this.fireEvent("openDocument", [this.openOptions]);
-                                this.openOptions = null;
-                            }.bind(this)
-                        }, this.form.app, this.form.Macro);
-                    }.bind(this));
-                    this.fireEvent("showDialog", [dlg]);
+                    this.loadViewer(dlg.node).then(()=>{
+                        this.fireEvent("showDialog", [dlg]);
+                    });
                 }.bind(this)
             });
             //dlg.show();
