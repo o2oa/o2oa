@@ -3349,6 +3349,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     var dlg = new MWF.xDesktop.Dialog({
                         "title": options.title || "select view",
                         "style": options.style || "view",
+                        "zindex": options.zindex,
                         "top": y,
                         "left": x - 20,
                         "fromTop": y,

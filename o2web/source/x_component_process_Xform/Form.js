@@ -724,10 +724,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this._loadModules(this.node);
         if (Browser.firefox) this.container.setStyle("opacity", 1);
 
-        if (this.json.mode === "Mobile") {
+        if (this.json.mode === "Mobile" || layout.mobile) {
             var node = document.body.getElement(".o2_form_mobile_actions");
             if (node) {
                 node.empty();
+                debugger;
                 this._loadMobileActions(node, callback);
             } else {
                 if (callback) callback();
@@ -937,22 +938,37 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         document.body.mask({
             "style": {
                 "background-color": "#cccccc",
-                "opacity": 0.6
+                "opacity": 0.6,
+                "z-index": 300
             },
             "hideOnClick": true,
             "onHide": function () {
-                this.actionMoreArea.setStyle("display", "none");
+                this.actionMoreArea.style.scale = '1 0';
+                this.actionMoreArea.style.opacity = '0';
+                // this.actionMoreArea.setStyle("display", "none");
             }.bind(this)
         });
         if (this.actionMoreArea) {
             this.actionMoreArea.setStyle("display", "block");
+            this.actionMoreArea.style.scale = '1 1';
+            this.actionMoreArea.style.opacity = '1';
         } else {
             var size = document.body.getSize();
-            this.actionMoreArea = new Element("div", { "styles": this.css.html5ActionOtherArea }).inject(document.body);
+            this.actionMoreArea = new Element("div.mobileMoreArea", { "styles": this.css.html5ActionOtherArea }).inject(document.body);
             var pl = this.actionMoreArea.getStyle("padding-left").toInt();
             var pr = this.actionMoreArea.getStyle("padding-right").toInt();
             var w = size.x - pl - pr;
             this.actionMoreArea.setStyle("width", "" + w + "px");
+            this.actionMoreArea.style.transition = "scale 0.2s, opacity 0.2s";
+            this.actionMoreArea.style.scale = '1 0';
+            this.actionMoreArea.style.opacity = '0';
+            this.actionMoreArea.style.transformOrigin = 'bottom center';
+
+            requestAnimationFrame(function () {
+                this.actionMoreArea.style.scale = '1 1';
+                this.actionMoreArea.style.opacity = '1';
+            }.bind(this));
+
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
@@ -3422,7 +3438,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var size = this.container.getSize();
             var x = 0;
             var y = 0;
-
+debugger;
             if (typeOf(e) === "element") {
                 var position = e.getPosition(this.app.content);
                 x = position.x;
@@ -3437,7 +3453,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
 
                 if (e.target) {
-                    var position = e.target.getPosition(this.app.content);
+                    var position = e.target.getPosition(layout.mobile ? $(document.body) : this.app.content);
                     //var position =  e.target.getPosition();
                     x = position.x;
                     y = position.y;

@@ -598,7 +598,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             var v = (data.valueType==="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":
-                    if (!v || (o2.typeOf(v)==="array" && !v.length)){
+                    if ((!v && v!==0) || (o2.typeOf(v)==="array" && !v.length)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }

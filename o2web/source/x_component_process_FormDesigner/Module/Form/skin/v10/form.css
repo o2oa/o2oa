@@ -569,6 +569,7 @@
         width: unset !important;
         min-width: unset !important;
         gap: 0.625rem !important;
+        box-shadow: none !important
     }
     .form-content-area oo-input {
         flex: 1 1 100%;
@@ -586,7 +587,7 @@
     .form-description {
         margin: 0;
     }
-    .form-toolbar-area {
+    div[mwftype="actionbar"].form-toolbar-area {
         display: none !important;
     }
     .form-side-content{
@@ -680,6 +681,16 @@
         position: absolute;
         border: 1px solid blue;
     }*/
+
+    .mobileMoreArea{
+        width: 100% !important;
+        bottom: 4em !important;
+        z-index: 301 !important;
+    }
+    .o2_form_mobile_actions{
+        z-index: 301 !important;
+    }
+
     .ooui-select-visible .o2_form_mobile_actions{
         position: static !important;
         display: none !important;
@@ -722,10 +733,13 @@
     }
     div[mwftype='datatable']{
         background-color: #ffffff;
-        transition: scale 0.3s, top 0.3s, left 0.3s;
+        transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s, bottom 0.3s;
     }
 
     /* .datatable_edit_mode */
+    .datatable_edit_mode{
+        z-index: 301 !important;
+    }
     .datatable_edit_mode table, .datatable_edit_mode table tr, .datatable_edit_mode table td{
         display: block;
     }
@@ -743,7 +757,8 @@
         overscroll-behavior: contain;
     }
     .datatable_edit_mode table{
-        padding: 0.5em;
+        padding: 1em;
+        min-height: 100%;
     }
     .datatable_edit_mode table tr{
         /* border: 1px solid #dedede !important; */
@@ -751,13 +766,14 @@
         overflow: hidden;
         position: relative;
         display: grid;
-        gap: 0;
+        gap: 0 0.3em;
         /* padding-bottom: 0.5em; */
         grid-template-columns: 6em 1fr;
+        transition: filter 0.5s;
     }
     .datatable_edit_mode .mwf_origional{
         display: flex !important;
-        padding: 0.2em 0.5em !important;
+        padding: 0.5em 0.5em !important;
         align-items: center;
         font-size: 1rem;
     }
@@ -768,29 +784,51 @@
     .datatable_edit_mode td.mwf_editaction{
         background-color: #f3f3f3 !important;
         overflow: hidden;
-        padding: 0.3em 0.5em !important;
+        padding: 0.4em 0.5em !important;
         display: flex;
         justify-content: flex-end;
         min-height: 2.2em;
     }
     .datatable_edit_mode td.mwf_sequence{
         border-bottom: 1px solid rgb(222, 222, 222);
-        /* position: absolute; */
+        position: absolute;
         width: unset !important;
         /* height: 100%; */
         /* display: none; */
         /* align-items: center; */
         word-break: keep-all;
         text-overflow: ellipsis;
-        cursor: pointer;
-        padding: 0.7em 1.1em !important;
+        /* cursor: pointer; */
+        padding: 0.9em 0.5em !important;
+        font-weight: bold;
+    }
+    .datatable_edit_mode td.mwf_sequence::before {
+        content: "\e72c";
+        font-family: 'ooicon' !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        margin-right: 0.3em;
+        font-weight: normal;
     }
 
     div[mwftype='datatable'].datatable_edit_mode tr:nth-child(even) {
-        background-color: #fcfcfc !important;
+        background-color: #FAFAFA !important;
+    }
+    div[mwftype='datatable'].datatable_edit_mode  tr:nth-child(even)>td:first-child{
+        background-color: #F0F0F0 !important;
+        margin-right: 0;
     }
     div[mwftype='datatable'].datatable_edit_mode  tr:nth-child(odd){
-        background-color: #fcfcfc !important;;
+        background-color: var(--oo-color-hover) !important;
+    }
+    div[mwftype='datatable'].datatable_edit_mode  tr:nth-child(odd)>td:first-child{
+        background-color: var(--oo-color-over) !important;
+        margin-right: 0;
     }
 
     .datatable_edit_mode table th{
@@ -798,6 +836,10 @@
         height: unset !important;
         align-items: center;
         background-color: transparent !important;
+        margin-left: 0.5em;
+    }
+    .datatable_edit_mode table td{
+        margin-right: 0.5em;
     }
 
      div[mwftype='datatable'].datatable_edit_mode oo-input,
@@ -810,6 +852,14 @@
         white-space: normal !important;
     }
 
+    div[mwftype='datatable'].datatable_edit_mode oo-input[readmode='false'],
+    div[mwftype='datatable'].datatable_edit_mode oo-selector[readmode='false'],
+    div[mwftype='datatable'].datatable_edit_mode oo-textarea[readmode='false'],
+    div[mwftype='datatable'].datatable_edit_mode oo-select[readmode='false'],
+    div[mwftype='datatable'].datatable_edit_mode oo-datetime[readmode='false'] {
+       background-color: #ffffff;
+   }
+
     div[mwftype='datatable'] .mwf_totaltr>td {
         padding: 0.5em !important;
         border-bottom: 1px solid rgb(222, 222, 222);
@@ -820,12 +870,12 @@
         border-bottom: 1px solid rgb(222, 222, 222);
     }
 
-    .datatable_edit_mode .addLineAction, .datatable_edit_mode .delLineAction{
+    .datatable_edit_mode .addLineAction, .datatable_edit_mode .delLineAction, .datatable_edit_mode .completeLineAction, .datatable_edit_mode .cancelLineEditAction{
         width: unset !important;
         height: unset !important;
-        display: flex !important;
+        display: flex;
         border: 1px solid #999999;
-        padding: 0.2em 0.5em;
+        padding: 0.5em 0.5em;
         border-radius: 4px;
         margin-left: 0.5em;
         background-color: #ffffff;
@@ -833,33 +883,61 @@
     .datatable_edit_mode .addLineAction::after{
         content: "添加";
         display: block;
+        margin-left: 0.3em;
     }
     .datatable_edit_mode .delLineAction::after{
         content: "删除";
         display: block;
+        margin-left: 0.3em;
     }
+    .datatable_edit_mode .completeLineAction::after{
+        content: "确定";
+        display: block;
+        margin-left: 0.3em;
+    }
+    .datatable_edit_mode .cancelLineEditAction::after{
+        content: "取消";
+        display: block;
+        margin-left: 0.3em;
+    }
+    
 
     .datatable_edit_mode .mwf_moveaction{
         width: unset !important;
         grid-column: 1 / -1;
-        background-color: #f3f3f3 !important;
         overflow: hidden;
-        padding: 0.3em 0.5em !important;
+        padding: 0.4em 0.5em !important;
         display: flex;
         justify-content: flex-end;
+        position: absolute;
+        background-color: transparent !important;
+        right: 9.7em;
+        margin-right: 0;
+        border-bottom: 0 !important;
     }
     .datatable_edit_mode .mwf_moveaction>div{
         width: unset !important;
         height: unset !important;
         display: flex !important;
         border: 1px solid #999999;
-        padding: 0.2em 0.5em;
         border-radius: 4px;
-        margin-left: 0.5em;
         background-color: #ffffff;
         white-space: nowrap;
         color: revert !important;
+        padding: 0.5em 0.5em;
+        margin-right: 0;
     }
+    /* .datatable_edit_mode .mwf_moveaction>div::before{
+        content: "\e72a";
+        font-family: 'ooicon' !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+    } */
     .datatable_edit_mode .mwf_moveaction>div::after{
         content: "上移";
         display: block;
@@ -897,13 +975,255 @@
         justify-content: space-between;
         align-items: center;
         gap: 1em;
-        padding: 1em 1em 1.5em 1em;
+        padding: 0.5em 1em 2em 1em;
     }
     .datatable_edit_mode .mwf_mobile_addAction{
         flex: 2;
+        height: 2.75em;
     }
     .datatable_edit_mode  .mwf_mobile_okAction{
         flex: 3;
+        height: 2.75em;
+    }
+
+    .datatable_edit_mode .mwf_datatable_mobile_title{
+        padding: 0.75em;
+        font-size: 1.125em;
+        text-align: left;
+        font-weight: bold;
+        /* position: sticky;
+        top: 0;
+        z-index: 1; */
+        background-color: #ffffff;
+        border-bottom: 1px solid #cccccc;
+    }
+    .datatable_edit_mode .mwf_move_line{
+        /* filter: invert(0.7); */
+    }
+
+    
+
+    .mwf_selectView_node {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: #cccccc33;
+        z-index: 300000;
+        top: 0;
+        left: 0;
+    }
+    .mwf_selectView_content{
+        position: absolute;
+        border: 1px solid var(--oo-color-gray-d);
+        background-color: #ffffff;
+        border-radius: var(--oo-area-radius);
+        box-shadow: 0 0 10px 1px var(--oo-color-gray-d);
+        z-index: 100;
+        bottom: 0;
+        width: 100%;
+        height: 85%;
+        transform-origin: bottom;
+        transition: height 0.2s, opacity 0.2s, transform 0.2s;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+    }
+    .mwf_selectView_content.visible{
+        transform: scale(1);
+        opacity: 1;
+    }
+    .mwf_selectView_content.invisible{
+        transform: scale(1, 0.001);
+        opacity: 0
+    }
+    .mwf_selectView_view{
+        overflow: auto;
+    }
+    .mwf_selectView_action{
+        background-color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1em;
+        padding: 0.5em 1em 2em 1em;
+        box-shadow: 0 0 10px 0px #cccccc;
+    }
+    .mwf_selectView_action_ok{
+        flex: 3;
+        height: 2.75em;
+    }
+    .mwf_selectView_action_cancel{
+        flex: 2;
+        height: 2.75em;
+    }
+
+    .form-content-view{
+        display: flex;
+        flex-direction: column;
+    }
+    .form-content-view .viewAreaNode{
+        flex: 1;
+    }
+    .form-content-view .viewAreaNode td{
+        white-space: nowrap;
+    }
+    .mwf_selectView_node .mwf_selectView_title{
+        padding: 0.75em;
+        font-size: 1.125em;
+        font-weight: bold;
+    }
+
+    .mwf_selectView_node .searchAreaNode>div{
+        height: unset !important;
+        border: 0 !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        padding: 0.5em 1em;
+        display: flex;
+        font-size: 1rem;
+        background-color: transparent !important;
+        gap: 0.5em;
+        align-items: center;
+        flex-direction: row-reverse;
+    }
+    .mwf_selectView_node .searchAreaNode>div::after {
+        /* display: block;
+        content: '搜索';
+        padding: 0.5em 1.5em;
+        background-color: var(--oo-color-main);
+        color: #ffffff;
+        border-radius: var(--oo-default-radius); */
+    }
+
+    .mwf_selectView_node .searchAreaNode>div>div:first-child{
+        float: right;
+        background-image: none !important;
+        display: block;
+        content: "搜索";
+        background-color: var(--oo-color-main) !important;
+        color: rgb(255, 255, 255);
+        padding: 0.5em 1.5em;
+        border-radius: var(--oo-default-radius);
+        display: flex;
+        align-items: stretch;
+        height: unset !important;
+        width: unset !important;
+    }
+    .mwf_selectView_node .searchAreaNode>div>div:first-child::after{
+        content: "搜索";
+    }
+
+    .mwf_selectView_node .searchAreaNode>div>div:last-child{
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        height: unset !important; 
+        overflow: hidden;
+        flex: 1;
+        padding: 0.5em;
+        background-color: #f7f7f7;
+        border-radius: var(--oo-default-radius);
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .mwf_selectView_node .searchAreaNode>div>div:last-child::before{
+        font-family: 'ooicon' !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        content: "\e644";
+    }
+    .mwf_selectView_node .searchAreaNode input{
+        width: 99%;
+        height: unset !important;
+        color: rgb(153, 153, 153);
+        border: 0px;
+        font-size: 1rem;
+        background-color: transparent !important;
+    }
+    .mwf_selectView_node .mwf_selectView_view .contentAreaNode{
+        font-size: 1rem !important;
+    }
+    .mwf_selectView_node .mwf_selectView_view .viewAreaNode{
+        padding: 0.5em 1em !important;
+        height: unset !important;
+    }
+    .mwf_selectView_node .mwf_selectView_view table tr:first-child>td{
+        line-height: unset !important;
+        height: 2.5em !important;
+        background-color: var(--oo-color-gray-f0) !important;
+    }
+
+    .mwf_selectView_view table tr:nth-child(odd)>td {
+        height: 3.2em !important;
+        background-color: #F7F7F7 !important;
+    }
+    .mwf_selectView_view table tr:nth-child(even)>td {
+        height: 3.2em !important;
+        background-color: #FFFFFF !important;
+    }
+    .mwf_selectView_view table tr>td{
+        border-bottom: 0 !important;
+    }
+    .mwf_selectView_view table tr>td:first-child {
+        height: unset !important;
+        line-height: unset !important;
+        padding: 0 !important;
+        min-width: 2.5em !important;
+        font-size: 1.25em;
+        position: sticky;
+        left: 0;
+        z-index: 10;
+    }
+    .mwf_selectView_view table tr>td:first-child::before {
+        content: "\e67e";
+        font-family: 'ooicon' !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+    }
+    .mwf_selectView_view table tr:first-child>td:first-child::before {
+        content: "" !important;
+    }
+
+    .mwf_selectView_view table tr.selectedRow td{
+        background-color: var(--oo-color-over) !important;
+
+    }
+    .mwf_selectView_view table .selectedRow td:first-child::before{
+        content: "\e68b";
+    }
+
+    .mwf_selectView_view .pagingBarWraper div{
+        border-radius: var(--oo-default-radius) !important;
+        height: 1.6em !important;
+    }
+    .mwf_selectView_view .pagingBarWraper .pagingBar{
+        display: flex;
+        align-items: center;
+    }
+ 
+    .content-item.flex{
+        flex-direction: column;
+        align-items: stretch !important;
+        font-size: 1.125rem !important;
+    }
+
+    .content-item .item-label{
+        width: unset !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        padding: 0.5em 0.35em;
+        align-items: flex-start;
+        color: var(--oo-color-text3) !important;
+        font-size: 1rem !important;
     }
 }
 

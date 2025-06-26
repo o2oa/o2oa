@@ -251,7 +251,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
     loadLayout: function(){
-
         /**
          * @summary 视图的节点，mootools封装过的Dom对象，可以直接使用原生的js和moootools方法访问和操作该对象。
          * @see https://mootools.net/core/docs/1.6.0/Element/Element
@@ -274,18 +273,18 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          * @summary 搜索界面容器
          * @member {Element}
          */
-        this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
+        this.searchAreaNode = new Element("div.searchAreaNode", {"styles": this.css.searchAreaNode}).inject(this.node);
         /**
          * @summary 表头和条目容器，
          * @member {Element}
          */
-        this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
+        this.viewAreaNode = new Element("div.viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.node);
         // this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
         /**
          * @summary 分页组件容器，
          * @member {Element}
          */
-        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
+        this.viewPageAreaNode = new Element("div.viewPageAreaNode", {"styles": this.css.viewPageAreaNode}).inject(this.node);
 
         this.fireEvent("loadLayout");
     },
@@ -404,13 +403,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         var viewStyles = this.viewJson.viewStyles;
 
-        this.contentAreaNode = new Element("div", {"styles":
+        this.contentAreaNode = new Element("div.contentAreaNode", {"styles":
                 (viewStyles && viewStyles["container"]) ? viewStyles["container"] : this.css.contentAreaNode
         }).inject(this.viewAreaNode);
 
         this.loadObserver();
 
-        this.viewTable = new Element("table", {
+        this.viewTable = new Element("table.viewTable", {
             "styles": this.css.viewTitleTableNode,
             "border": "0px",
             "cellPadding": "0",

@@ -3506,7 +3506,7 @@ if (!window.o2) {
         o2.isMediaMobile = function(media){
             const mediaQuery = window.matchMedia(media || 'only screen and (max-width: 767px)');
             // 检查是否满足媒体查询条件
-            return mediaQuery.matches;
+            return mediaQuery.matches || layout.mobile || o2.thirdparty.isMobile();
         }
 
         o2.common = o2.common || {};

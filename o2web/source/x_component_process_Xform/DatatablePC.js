@@ -197,7 +197,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
 				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine", "editLine",
-				"completeLineEdit", "cancelLineEdit", "beforeExport", "export", "beforeImport", "import", "validImport", "afterImport"]
+				"completeLineEdit", "cancelLineEdit", "beforeExport", "export", "beforeImport", "import", "validImport", "afterImport", "validation", "validationLine"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -1435,7 +1435,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				data.data[line.options.index - 1] = curData;
 				this.setData(data, false, "moveUpList");
 			}
-			this.fireEvent("change", [{lines: this.lineList, "type":"move"}]);
+			this.fireEvent("change", [{lines: this.lineList, "type":"move", line: line}]);
 		},
 		_changeEditedLine: function(line){
 			if( this.currentEditedLine ){
@@ -2132,12 +2132,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( !line.validation() )return false;
 			return true;
 		},
-		validation: function(routeName, opinion){
+		_validation: function(routeName, opinion){
 			// if (this.isEdit){
 			// 	if (!this.editValidation()){
 			// 		return false;
 			// 	}
 			// }
+			let validationFlag = '';
 			if (!this.validationConfig(routeName, opinion))  return false;
 
 			if( !this.validationCurrentEditedLine() )return false;
@@ -2155,6 +2156,14 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return false;
 			}
 			return true;
+
+
+			
+		},
+		validation: function(routeName, opinion){
+			const flag = this._validation(routeName, opinion);
+			this.fireEvent("validation", [flag]);
+			return flag;
 		},
 		getAttachmentRandomSite: function(){
 			var i = (new Date()).getTime();
@@ -3180,11 +3189,16 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	setData: function (data) {
 		this.datatable._setLineData(this, data);
 	},
-	validation: function(){
+	_validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
 		if( !this.validationFields())return false;
 		if( !this.validationCompleteLine())return false;
 		return true;
+	},
+	validation: function(){
+		const flag = this._validation();
+		this.datatable.fireEvent("validationLine", [this, flag]);
+		return flag
 	},
 	validationFields: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
@@ -3438,7 +3452,6 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
 		return line;
 	},
 	_addLine: function(ev, edited, d){
-
 		var data, index, line;
 
 		index = this.lineList.length;

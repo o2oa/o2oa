@@ -3,8 +3,8 @@ MWF.xDesktop.requireApp("process.Xform", "DatatablePC", null, false);
 MWF.xDesktop.requireApp("process.Xform", "DatatableMobile", null, false);
 MWF.xDesktop.requireApp("process.Xform", "DatatableV10", null, false);
 //if (COMMON.Browser.Platform.isMobile){
-debugger
-if (o2.version.v==="o2oa-10"){
+
+if ((layout.mobile || COMMON.Browser.Platform.isMobile) && o2.version.v==="o2oa-10"){
     MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = MWF.xApplication.process.Xform.DatatableV10;
     MWF.xApplication.process.Xform.Datatable$Title = MWF.APPDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
     MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
