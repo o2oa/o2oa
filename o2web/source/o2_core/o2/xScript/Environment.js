@@ -1921,13 +1921,13 @@ MWF.xScript.Environment = function(ev){
         });
     };
 
-    var selectViewMobile = function (viewJson, okCallback, dlalogOptions, viewOptions, loadedCallback){
+    var selectViewMobile = function (viewJson, okCallback, dialogOptions, viewOptions, loadedCallback){
         if(!viewOptions)viewOptions = {"style": "select"};
-        if(!dlalogOptions)dlalogOptions = {};
+        if(!dialogOptions)dialogOptions = {};
 
         var viewer = null;
         _renderViewContainerMobile(
-            dlalogOptions.title || viewJson.caption,
+            dialogOptions.title || viewJson.caption,
             (viewNode)=>{
                 MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
                     viewer = new MWF.xApplication.query.Query.Viewer(viewNode, viewJson, viewOptions, _form.app, _form.Macro);
@@ -2064,12 +2064,12 @@ MWF.xScript.Environment = function(ev){
 
 
     var selectStatementMobile = function (statementJson, okCallback, dialogOptions, statementOptions, loadedCallback){
-            if(!viewOptions)viewOptions = {"style": "select"};
-            if(!dlalogOptions)dlalogOptions = {};
+            if(!statementJson)statementJson = {"style": "select"};
+            if(!dialogOptions)dialogOptions = {};
 
             var viewer = null;
             _renderViewContainerMobile(
-                dlalogOptions.title || statementJson.caption,
+                dialogOptions.title || statementJson.caption,
                 (viewNode)=>{
                     MWF.xDesktop.requireApp("query.Query", "Statement", ()=>{
                         viewer = new MWF.xApplication.query.Query.Statement( viewNode, statementJson, statementOptions, _form.app, _form.Macro);
@@ -2091,7 +2091,7 @@ MWF.xScript.Environment = function(ev){
 
             if(!statementOptions)statementOptions = {"style": "select"};
 
-            var options =  dlalogOptions || {};
+            var options =  dialogOptions || {};
             var width = options.width || statementJson.width || "700";
             var height = options.height || statementJson.height || "400";
             var style = options.style || "v10_view";
