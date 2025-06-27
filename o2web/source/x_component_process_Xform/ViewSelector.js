@@ -79,6 +79,10 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             this.node.set(this.json.properties );
         }
 
+        if( this.form.json.formStyleType === 'v10' ){
+            this.node.addClass('form-content-button');
+        }
+
         this.node.addEvent("click", function(){
             this.selectedData = null;
             this.selectView(function(data){
@@ -87,6 +91,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
         }.bind(this));
 	},
     doResult: function(data){
+        debugger;
         if (this.json.result === "script"){
             this.selectedData = data;
             return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";
@@ -369,7 +374,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             "titleStyles": this.json.titleStyles,
             "itemStyles": this.json.itemStyles,
             "isExpand": this.json.isExpand || "no",
-            "showActionbar" : this.json.actionbar === "show",
+            "showActionbar": this.json.actionbar === "show",
             "filter": filter,
             "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
             "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
@@ -377,134 +382,54 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
 
         this.viewJson = viewJson;
 
-        this.fireEvent("beforeLoadView", [viewJson]);
-
-        if (layout.mobile && o2.version.v==="o2oa-10"){
-            this._selectQueryViewMobile(callback);
-        }else{
-            this._selectQueryViewPc(callback);
-        }
-    },
-    loadViewer: function(viewNode){
-        return new Promise((resolve, reject)=>{
-            MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                this.view = new MWF.xApplication.query.Query.Viewer(viewNode, this.viewJson, {
-                    "style": "select",
-                    "onLoadLayout": function () {
-                        this.fireEvent("loadViewLayout");
-                    }.bind(this),
-                    "onLoadView": function(){
-                        this.fireEvent("loadView");
-                    }.bind(this),
-                    "onSelect": function(item){
-                        this.fireEvent("select", [item]);
-                    }.bind(this),
-                    "onUnselect": function(item){
-                        this.fireEvent("unselect", [item]);
-                    }.bind(this),
-                    "onOpenDocument": function(options, item){
-                        this.openOptions = {
-                            "options": options,
-                            "item": item
-                        };
-                        this.fireEvent("openDocument", [this.openOptions]);
-                        this.openOptions = null;
-                    }.bind(this)
-                }, this.form.app, this.form.Macro)
-                resolve();
-            }.bind(this));
-        })
-    },
-    _selectQueryViewMobile: function (callback){
-        var render = this.form.Macro.environment._renderViewMobileContainer;
-        render(
-            this.json.title,
-            (viewNode)=>{
-                this.loadViewer(viewNode).then(()=>{
-                    this.view.addEvent('selectRow', (row)=>{
-                        row.node.addClass('selectedRow');
-                    });
-                    this.view.addEvent('unselectRow', (row)=>{
-                        row.node.removeClass('selectedRow');
-                    });
-                });
-            },
-            ()=>{
-                if(callback)callback(this.view.getData());
-            }
-        );
-    },
-    _selectQueryViewPc: function (callback){
-        var options = {};
-        // var width = options.width || "850";
-        // var height = options.height || "700";
-        var width = this.json.DialogWidth || "850";
-        var height = this.json.DialogHeight || "700";
-        options.style = this.json.viewStyle || "v10_view";
-
-        if (layout.mobile){
-            var size = document.body.getSize();
-            width = size.x;
-            height = size.y;
-            options.style = "viewmobile";
-        }
+        var viewOptions = {
+            "style": "select",
+            "onLoadLayout": function () {
+                this.fireEvent("loadViewLayout");
+            }.bind(this),
+            "onLoadView": function(){
+                this.fireEvent("loadView");
+            }.bind(this),
+            "onSelect": function(item){
+                this.fireEvent("select", [item]);
+            }.bind(this),
+            "onUnselect": function(item){
+                this.fireEvent("unselect", [item]);
+            }.bind(this),
+            "onOpenDocument": function(options, item){
+                this.openOptions = {
+                    "options": options,
+                    "item": item
+                };
+                this.fireEvent("openDocument", [this.openOptions]);
+                this.openOptions = null;
+            }.bind(this)
+        };
+        this.viewOptions = viewOptions;
 
         var _self = this;
-        MWF.require("MWF.xDesktop.Dialog", function(){
-            var dlg = o2.DL.open({
-                "title": this.json.title || "select view",
-                "style": options.style || "v10_view",
-                //"top": y,
-                //"left": x-20,
-                //"fromTop":y,
-                //"fromLeft": x-20,
-                "width": width,
-                "height": height,
-                "html": "",
-                "maxHeightPercent": layout.mobile ? "100%" : "98%",
-                "maskNode": layout.mobile?$(document.body) : this.form.app.content,
-                "container": layout.mobile?$(document.body) : this.form.app.content,
-                "buttonList": [
-                    {
-                        "text": MWF.LP.process.button.ok,
-                        "action": function(){
-                            //if (callback) callback(_self.view.selectedItems);
-                            if (callback) callback(_self.view.getData());
-                            this.close();
-                        }
-                    },
-                    {
-                        "text": MWF.LP.process.button.cancel,
-                        "action": function(){this.close();}
-                    }
-                ],
-                "onPostLoad": function (){
-                    this.fireEvent("loadDialog", [dlg]);
-                }.bind(this),
-                "onPostShow": function(){
-                    if(layout.mobile){
-                        dlg.node.setStyle("z-index",200);
-                    }
-                    this.loadViewer(dlg.node).then(()=>{
-                        this.fireEvent("showDialog", [dlg]);
-                    });
-                }.bind(this)
-            });
-            //dlg.show();
-
-            if (layout.mobile){
-                var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
-                var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                if (backAction) backAction.addEvent("click", function(e){
-                    dlg.close();
-                }.bind(this));
-                if (okAction) okAction.addEvent("click", function(e){
-                    //if (callback) callback(this.view.selectedItems);
-                    if (callback) callback(this.view.getData());
-                    dlg.close();
-                }.bind(this));
+        var dlgOptions = {
+            title: this.json.title,
+            width: this.json.DialogWidth || "850",
+            height: this.json.DialogHeight || "700",
+            style: this.json.viewStyle || "v10_view",
+            "onPostLoad": function (){
+                _self.fireEvent("loadDialog", [this]);
+            }.bind(this),
+            "onPostShow": function(){
+                if(layout.mobile){
+                    this.node.setStyle("z-index",200);
+                }
+                _self.fireEvent("showDialog", [this]);
             }
-        }.bind(this));
+        };
+        this.dialogOptions = dlgOptions;
+
+        this.fireEvent("beforeLoadView", [viewJson]);
+
+        this.form.Macro.environment.view.select(viewJson, callback, dlgOptions, viewOptions, (viewer)=>{
+            this.view = viewer;
+        });
     },
     selectView: function(callback){
         if(!!this.json.viewType){
