@@ -267,6 +267,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         this.sectionListObj = {};
 
+        if (layout.mobile){
+            this.json.mode = "Mobile";
+        }
+
         /**
          * @summary 表单中的所有组件数组.
          * @member {Array}
@@ -726,9 +730,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         if (this.json.mode === "Mobile" || layout.mobile) {
             var node = document.body.getElement(".o2_form_mobile_actions");
-            if (node) {
+            if (node && this.businessData.work) {
                 node.empty();
-                debugger;
                 this._loadMobileActions(node, callback);
             } else {
                 if (callback) callback();
@@ -781,7 +784,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (callback) callback();
         } else {
             this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
-                this.json.defaultTools = json;
+                debugger;
+                tools = json.filter( function (d) { return !d.hidden; } );
+                // this.json.multiTools = tools;
+                this.json.defaultTools = tools;
                 if (callback) callback();
             }.bind(this));
         }
@@ -2750,9 +2756,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this), defaultRoute);
     },
     flowWork_mobile: function ( defaultRoute ) {
-        if (this.app.inBrowser) {
-            this.app.content.setStyle("height", document.body.getSize().y);
-        }
+        // if (this.app.inBrowser) {
+        //     this.app.content.setStyle("height", document.body.getSize().y);
+        // }
 
         this.fireEvent("beforeProcessWork");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
@@ -3438,7 +3444,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var size = this.container.getSize();
             var x = 0;
             var y = 0;
-debugger;
             if (typeOf(e) === "element") {
                 var position = e.getPosition(this.app.content);
                 x = position.x;

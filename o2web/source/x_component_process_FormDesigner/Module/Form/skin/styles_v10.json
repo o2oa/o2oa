@@ -8,6 +8,7 @@
         "properties": {
             "class": "form-layout"
         },
+        "actionIconType": "font",
         "cssLink": "../x_component_process_FormDesigner/Module/Form/skin/styles_v10.css"
     },
     "label": {

@@ -1225,7 +1225,158 @@
         color: var(--oo-color-text3) !important;
         font-size: 1rem !important;
     }
+    .flowNode_mobile{
+        z-index: 500 !important;
+    }
+    .o2flow-handwriting-node{
+        z-index: 501 !important;
+    }
+
+    /* 继续流转界面 **/
+    .flowNode_mobile div.o2flow-quick-select{
+        border-radius: var(--oo-default-radius);
+        /* box-shadow: var(--oo-shadow-border) !important; */
+        padding: 0.5em;
+        font-size: 1.125rem;
+        height: unset;
+        line-height: unset;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .flowNode_mobile i.o2flow-quick-select-arrow{
+        float: none;
+        padding-top: 0;
+        padding-right: 0;
+    }
+    .flowNode_mobile .o2flow-quick-select > i.o2flow-quick-select-arrow::before{
+        content: "\e655";
+        font-family: "ooicon" !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+    }
+    .flowNode_mobile .o2flow-quick-select > .o2flow-quick-select-text{
+        padding-left: 10px;
+    }
+
+    .flowNode_mobile div.o2flow-navi-node{
+        border-radius: var(--oo-default-radius);
+        padding: 0.2em;
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div.o2flow-navi-node div.o2flow-navi-item{
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div.o2flow-route-wraper{
+        border-radius: var(--oo-default-radius);
+        /* box-shadow: var(--oo-shadow-border) !important; */
+        padding: 0.5em;
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div.o2flow-route-wraper div.o2flow-section-title{
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div.o2flow-radio2-text{
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div.o2flow-opinion-area{
+        border-radius: var(--oo-default-radius);
+        padding: 0.5em;
+        font-size: 1.125rem;
+        /* box-shadow: var(--oo-shadow-border) !important; */
+    }
+    .flowNode_mobile div.o2flow-section-title{
+        font-size: revert !important;
+    }
+    .flowNode_mobile textarea.o2flow-opinion-textarea{
+        font-size: 1rem;
+    }
+    .flowNode_mobile div.o2flow-handwriting-button{
+        border-radius: var(--oo-default-radius);
+        font-size: 0.875rem;
+        bottom: 15px;
+    }
+    .flowNode_mobile div.o2flow-orgs-wraper{
+        border-radius: var(--oo-default-radius);
+        padding: 0.5em;
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div.o2flow-selector-title{
+        padding-left: 0;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .flowNode_mobile div.o2flow-selector-icon{
+        height: 2rem;
+        line-height: unset;
+        border-radius: 100em;
+        border: 1px solid #FB4747;
+        color: #FB4747;
+        width: 2rem;
+        text-align: center;
+        font-size: 1.25rem;
+        position: static;
+        right: 0;
+        top: 0;
+    }
+
+    .flowNode_mobile div.o2flow-selector-icon>i::before{
+        content: "\e667";
+        font-family: "ooicon" !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .flowNode_mobile div.o2flow-section{
+        border-radius: var(--oo-default-radius);
+        padding: 0.5em;
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div[data-o2-element="addTaskContentNode"] div[data-o2-element="orgNode"]{
+        margin-right: 10px;
+        margin-left: 10px;
+        margin-top: 5px;
+    }
+
+    .flowNode_mobile div[data-o2-element="addTaskContentNode"] div[data-o2-element="orgNode"] div.o2flow-selector-titletext{
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div[data-o2-element="addTaskContentNode"] div[data-o2-element="orgNode"] div.o2flow-reset-selector-content{
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .flowNode_mobile div.o2flow-reset-selector-content-info{
+        font-size: 1rem;
+    }
+
+    .flowNode_mobile div[data-o2-element="resetContentNode"] div.o2flow-selector-titletext{
+        font-size: 1.125rem;
+    }
+    .flowNode_mobile div[data-o2-element="resetContentNode"] div.o2flow-reset-selector-content{
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .flowNode_mobile div[data-o2-element="resetContentNode"] div[data-o2-element="orgNode"]{
+        margin-right: 10px;
+        margin-left: 10px;
+        margin-top: 5px;
+    }
 }
+
 
 /* 平板电脑 */
 @media only screen and (min-width: 768px) and (max-width: 1279px) {
