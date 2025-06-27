@@ -95,7 +95,7 @@ if (!window.o2) {
 
         if (_par) {
             var _parList = _par.split("&");
-            for (var i = 0; i < _parList.length; i++) {
+            for (var i = 0; i < _parList.length; i++) {resetContentNode
                 var _v = _parList[i];
                 var _kv = _v.split("=");
                 if (_kv[0].toLowerCase() === "lg") _lp = _kv[1];
@@ -119,7 +119,8 @@ if (!window.o2) {
          * var v = o2.version.v;
          */
         this.o2.version = {
-            "v": "o2oa-10",
+            "v": "o2oa",
+            "dev": 10,
             "build": "2025.06.28",
             "info": "O2OA 活力办公 创意无限. Copyright © 2025, o2oa.net O2 Team All rights reserved."
         };
