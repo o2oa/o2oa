@@ -14,6 +14,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -35,6 +36,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "Form", description = "流程平台表单.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -109,22 +111,12 @@ public class Form extends SliceJpaObject {
 		this.properties = properties;
 	}
 
-	public String getDataOrMobileData() {
-		if (StringUtils.isNotEmpty(this.getData())) {
-			return this.getData();
-		} else if (StringUtils.isNotEmpty(this.getMobileData())) {
-			return this.getMobileData();
-		}
-		return null;
-	}
-
 	public String getMobileDataOrData() {
-		if (StringUtils.isNotEmpty(this.getMobileData())) {
+		if (BooleanUtils.isTrue(hasMobile)) {
 			return this.getMobileData();
-		} else if (StringUtils.isNotEmpty(this.getData())) {
+		} else {
 			return this.getData();
 		}
-		return null;
 	}
 
 	public String getCategory() {

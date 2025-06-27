@@ -53,7 +53,7 @@ class V2Get extends BaseAction {
 			Wo wo = new Wo();
 			final FormProperties properties = form.getProperties();
 			final List<String> list = new CopyOnWriteArrayList<>();
-			wo.setForm(new RelatedForm(form, form.getDataOrMobileData()));
+			wo.setForm(new RelatedForm(form, form.getData()));
 			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties,
 					list);
 			CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
@@ -79,11 +79,10 @@ class V2Get extends BaseAction {
 			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business bus = new Business(emc);
-					Form f;
 					for (String id : properties.getRelatedFormList()) {
-						f = bus.getFormFactory().pick(id);
+						Form f = bus.getFormFactory().pick(id);
 						if (null != f) {
-							map.put(id, new RelatedForm(f, f.getDataOrMobileData()));
+							map.put(id, new RelatedForm(f, f.getData()));
 							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
 					}

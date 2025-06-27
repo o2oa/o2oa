@@ -77,9 +77,8 @@ class V2GetMobile extends BaseAction {
 			if (ListTools.isNotEmpty(properties.getMobileRelatedFormList())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business bus = new Business(emc);
-					Form f;
 					for (String id : properties.getMobileRelatedFormList()) {
-						f = bus.getFormFactory().pick(id);
+						Form f = bus.getFormFactory().pick(id);
 						if (null != f) {
 							map.put(id, new RelatedForm(f, f.getMobileDataOrData()));
 							list.add(f.getId() + f.getUpdateTime().getTime());
