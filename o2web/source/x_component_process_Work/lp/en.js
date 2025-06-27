@@ -104,6 +104,7 @@ MWF.xApplication.process.Work.LP={
 	"resetQuickText": "Opinion: {opinion}, reset to: {org}.",
 	"deleteQuickItemTitle": "Delete quick selection",
 	"deleteQuickItemContent": "Are you sure you want to delete the quick selection?",
+	"select": "select ",
 	"users": "handler",
 	"goBackActivity": "Return to activity",
 	"goBackActivityWay": "Processing after return:",
