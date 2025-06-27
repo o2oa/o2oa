@@ -390,7 +390,7 @@ public class AppStyle extends ConfigObject {
 		public static final String name_application_top = "application_top";
 
 
-		public static final String default_image_folder_path = "x_desktop/img/app";
+		public static final String default_image_folder_path = "x_native_app/img/app";
 		public static final String default_launch_logo_path =  "x_desktop/img/app/default/launch_logo.png";
 		public static final String default_login_avatar_path = "x_desktop/img/app/default/login_avatar.png";
 		public static final String default_index_bottom_menu_logo_blur_path = "x_desktop/img/app/default/index_bottom_menu_logo_blur.png";
