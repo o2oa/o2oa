@@ -2033,10 +2033,10 @@ MWF.xScript.Environment = function(ev){
             }.bind(this));
         },
         "select": function(view, okCallback, dialogOptions, viewOptions, loadedCallback){
-            if( view.view || view.viewName || view.viewId ){
+            if( view.view || view.viewName || view.name || view.viewId ){
                 var viewJson = {
                     "application": view.application || _form.json.application,
-                    "viewName": view.viewName || view.view || "",
+                    "viewName": view.viewName || view.view || view.name || "",
                     "isTitle": typeOf( view.isTitle ) === 'string' ? view.isTitle : ((view.isTitle===false) ? "no" : "yes"),
                     "select": typeOf( view.select ) === 'string' ? view.select : ((view.isMulti===false) ? "single" : "multi"),
                     "filter": view.filter
@@ -2264,11 +2264,11 @@ MWF.xScript.Environment = function(ev){
             if( statement.name || statement.statementName || statement.statementId || statement.statement ) {
                 var statementJson = {
                     "application": statement.application || _form.json.application,
-                    "statementName": statement.statementName || statement.statement || "",
+                    "statementName": statement.statementName || statement.name || statement.statement || "",
                     "isTitle": typeOf(statement.isTitle) === 'string' ? statement.isTitle : ((statement.isTitle === false) ? "no" : "yes"),
                     "select": typeOf(statement.select) === 'string' ? statement.select : ((statement.isMulti === false) ? "single" : "multi"),
                      "filter": statement.filter,
-                     "parameter": statement.parameter,
+                     "parameter": statement.parameter
                 };
                 if (statement.name)statementJson.statementId = statement.statementId;
                 if (statement.statementId) statementJson.statementId = statement.statementId;
