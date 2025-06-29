@@ -1197,6 +1197,7 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
+        this.selectTd.setStyles(this.css.viewSelectTdNode);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
         //var selectFlag = this.view.json.select || this.view.viewJson.select ||  "none";

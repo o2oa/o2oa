@@ -1872,12 +1872,13 @@ MWF.xScript.Environment = function(ev){
         }
     };
 
-    var _renderViewContainerMobile = function(title, viewerGenerator, okCallback){
+    var _renderViewContainerMobile = function(title, viewerGenerator, okCallback, notCloseOnOK){
         const node = new Element('div.mwf_selectView_node');
         const html = `<div class="mwf_selectView_content invisible" data-o2-element="contentNode">
                             <div class="mwf_selectView_title">${title || ''}</div>
                             <div class="mwf_selectView_view" data-o2-element="viewNode"></div>
                             <div class="mwf_selectView_action">
+                                <oo-button type="light" class="mwf_selectView_action_close hide" data-o2-events="click:selectCancel">${o2.LP.widget.close}</oo-button>
                                 <oo-button type="light" class="mwf_selectView_action_cancel" data-o2-events="click:selectCancel">${o2.LP.widget.cancel}</oo-button>
                                 <oo-button class="mwf_selectView_action_ok" data-o2-events="click:selectOk">${o2.LP.widget.ok}</oo-button>
                             </div>
@@ -1885,7 +1886,9 @@ MWF.xScript.Environment = function(ev){
         const o = {
             selectOk: function(){
                 okCallback && okCallback();
-                this.selectCancel();
+                if( !notCloseOnOK ){
+                    this.selectCancel();
+                }
             },
             selectCancel: function(){
                 this.contentNode.removeClass('visible');
@@ -1907,7 +1910,7 @@ MWF.xScript.Environment = function(ev){
         //         row.node.removeClass('selectedRow');
         //     });
         // });
-         viewerGenerator(o.viewNode);
+         viewerGenerator(o.viewNode, o);
 
         requestAnimationFrame(()=>{
             o.contentNode.removeClass('invisible');
@@ -1919,7 +1922,8 @@ MWF.xScript.Environment = function(ev){
         node.addEventListener('click', ()=>{
             o.selectCancel();
         });
-    };
+    }
+    this._renderViewContainerMobile = _renderViewContainerMobile;
 
     var selectViewMobile = function (viewJson, okCallback, dialogOptions, viewOptions, loadedCallback){
         if(!viewOptions)viewOptions = {"style": "select"};
@@ -2064,7 +2068,7 @@ MWF.xScript.Environment = function(ev){
 
 
     var selectStatementMobile = function (statementJson, okCallback, dialogOptions, statementOptions, loadedCallback){
-            if(!statementJson)statementJson = {"style": "select"};
+            if(!statementOptions)statementOptions = {"style": "select"};
             if(!dialogOptions)dialogOptions = {};
 
             var viewer = null;
