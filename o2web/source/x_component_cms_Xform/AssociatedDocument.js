@@ -11,6 +11,7 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
                     targetList: data
                 }, function (json) {
                     this.status = "showResult";
+                    if( this.dlg ){
                     if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
                     if( layout.mobile ){
                         var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
@@ -23,6 +24,14 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
                             if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
                         }
                     }
+                    }else if(this.dlg_mobile){
+                        var toolbar = this.dlg_mobile.contentNode.querySelector('.mwf_selectView_action');
+                        if(toolbar){
+                            toolbar.querySelectorAll('oo-button').forEach((btn)=> !btn.hasClass('hide') && btn.addClass('hide'));
+                            toolbar.querySelector('.mwf_selectView_action_close').removeClass('hide');
+                        }
+                    }
+
                     if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
                         this.showCreateResult(json.data.failureList, json.data.successList);
                     }

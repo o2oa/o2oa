@@ -3123,6 +3123,147 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }
     };
 
+    var _renderViewContainerMobile = function(title, viewerGenerator, okCallback, notCloseOnOK){
+        const node = new Element('div.mwf_selectView_node');
+        const html = `<div class="mwf_selectView_content invisible" data-o2-element="contentNode">
+                            <div class="mwf_selectView_title">${title || ''}</div>
+                            <div class="mwf_selectView_view" data-o2-element="viewNode"></div>
+                            <div class="mwf_selectView_action">
+                                <oo-button type="light" class="mwf_selectView_action_close hide" data-o2-events="click:selectCancel">${o2.LP.widget.close}</oo-button>
+                                <oo-button type="light" class="mwf_selectView_action_cancel" data-o2-events="click:selectCancel">${o2.LP.widget.cancel}</oo-button>
+                                <oo-button class="mwf_selectView_action_ok" data-o2-events="click:selectOk">${o2.LP.widget.ok}</oo-button>
+                            </div>
+                          </div>`;
+        const o = {
+            selectOk: function(){
+                okCallback && okCallback();
+                if( !notCloseOnOK ){
+                    this.selectCancel();
+                }
+            },
+            selectCancel: function(){
+                this.contentNode.removeClass('visible');
+                this.contentNode.addClass('invisible');
+                window.setTimeout(()=>{
+                    node.destroy();
+                }, 200);
+            }
+        };
+        node.loadHtmlText(html, {module: o});
+        document.body.appendChild(node);
+
+        // MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
+        //     viewer = new MWF.xApplication.query.Query.Viewer(o.viewNode, viewJson, {"style": "select"}, _form.app, _form.Macro);
+        //     viewer.addEvent('selectRow', (row)=>{
+        //         row.node.addClass('selectedRow');
+        //     });
+        //     viewer.addEvent('unselectRow', (row)=>{
+        //         row.node.removeClass('selectedRow');
+        //     });
+        // });
+        viewerGenerator(o.viewNode, o);
+
+        requestAnimationFrame(()=>{
+            o.contentNode.removeClass('invisible');
+            o.contentNode.addClass('visible');
+        });
+        o.contentNode.addEventListener('click', (e)=>{
+            e.stopPropagation();
+        });
+        node.addEventListener('click', ()=>{
+            o.selectCancel();
+        });
+    }
+    this._renderViewContainerMobile = _renderViewContainerMobile;
+
+    var selectViewMobile = function (viewJson, okCallback, dialogOptions, viewOptions, loadedCallback){
+        if(!viewOptions)viewOptions = {"style": "select"};
+        if(!dialogOptions)dialogOptions = {};
+
+        var viewer = null;
+        _renderViewContainerMobile(
+            dialogOptions.title || viewJson.caption,
+            (viewNode)=>{
+                MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
+                    viewer = new MWF.xApplication.query.Query.Viewer(viewNode, viewJson, viewOptions, _form.app, _form.Macro);
+                    viewer.addEvent('selectRow', (row)=>{
+                        row.node.addClass('selectedRow');
+                    });
+                    viewer.addEvent('unselectRow', (row)=>{
+                        row.node.removeClass('selectedRow');
+                    });
+                    if(loadedCallback)loadedCallback(viewer);
+                });
+            },
+            ()=>{
+                if(okCallback)okCallback(viewer.getData());
+            }
+        );
+    };
+    var selectViewPc = function(viewJson, okCallback, dlalogOptions, viewOptions, loadedCallback){
+
+        if(!viewOptions)viewOptions = {"style": "select"};
+
+        var options =  dlalogOptions || {};
+        var width = options.width || viewJson.width || "700";
+        var height = options.height || viewJson.height || "400";
+        var style = options.style || "v10_view";
+        if (layout.mobile){
+            var size = document.body.getSize();
+            width = size.x;
+            height = size.y;
+            style = "viewmobile";
+        }
+
+        var opts = Object.assign({}, options, {
+            title: options.title || viewJson.caption || "select view",
+            style: style,
+            width: width.toInt(),
+            height: height.toInt(),
+            zindex: options.zindex,
+            html: "<div style='height: 100%;'></div>",
+            maxHeightPercent: layout.mobile ? "100%" : "98%",
+            maskNode: layout.mobile ? $(document.body) :  _form.app.content,
+            container: layout.mobile ? $(document.body) : _form.app.content,
+            buttonList: [
+                {
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        //if (callback) callback(_self.view.selectedItems);
+                        if (okCallback) okCallback(_self.view.getData());
+                        this.close();
+                    }
+                },
+                {
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){this.close();}
+                }
+            ]
+        });
+
+        var _self = this;
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            var dlg = o2.DL.open(opts);
+            if (layout.mobile){
+                var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
+                var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
+                if (backAction) backAction.addEvent("click", function(e){
+                    dlg.close();
+                }.bind(this));
+                if (okAction) okAction.addEvent("click", function(e){
+                    //if (okCallback) okCallback(this.view.selectedItems);
+                    if (okCallback) okCallback(this.view.getData());
+                    dlg.close();
+                }.bind(this));
+            }
+
+            MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+                this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, viewOptions, _form.app, _form.Macro);
+                if(loadedCallback)loadedCallback(this.view);
+            }.bind(this));
+        }.bind(this));
+    };
+
     /**
      * 您可以通过view对象，获取视图数据或选择视图数据。<br/>
      * @module view
@@ -3308,93 +3449,122 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *    }
          * }.bind(this));
          */
-        "select": function (view, callback, options) {
-            if (view.view) {
+        "select": function(view, okCallback, dialogOptions, viewOptions, loadedCallback){
+            if( view.view || view.viewName || view.name || view.viewId ){
                 var viewJson = {
                     "application": view.application || _form.json.application,
-                    "viewName": view.view || "",
-                    "isTitle": (view.isTitle === false) ? "no" : "yes",
-                    "select": (view.isMulti === false) ? "single" : "multi",
+                    "viewName": view.viewName || view.view || view.name || "",
+                    "isTitle": typeOf( view.isTitle ) === 'string' ? view.isTitle : ((view.isTitle===false) ? "no" : "yes"),
+                    "select": typeOf( view.select ) === 'string' ? view.select : ((view.isMulti===false) ? "single" : "multi"),
                     "filter": view.filter
                 };
-                if (!options) options = {};
-                options.width = view.width;
-                options.height = view.height;
-                options.title = view.caption;
-
-                var width = options.width || "700";
-                var height = options.height || "400";
-
-                if (layout.mobile) {
-                    var size = document.body.getSize();
-                    width = size.x;
-                    height = size.y;
-                    options.style = "viewmobile";
-                }
-                width = width.toInt();
-                height = height.toInt();
-
-                var size = _form.app.content.getSize();
-                var x = (size.x - width) / 2;
-                var y = (size.y - height) / 2;
-                if (x < 0) x = 0;
-                if (y < 0) y = 0;
-                if (layout.mobile) {
-                    x = 20;
-                    y = 0;
-                }
-
-                var _self = this;
-                MWF.require("MWF.xDesktop.Dialog", function () {
-                    var dlg = new MWF.xDesktop.Dialog({
-                        "title": options.title || "select view",
-                        "style": options.style || "view",
-                        "zindex": options.zindex,
-                        "top": y,
-                        "left": x - 20,
-                        "fromTop": y,
-                        "fromLeft": x - 20,
-                        "width": width,
-                        "height": height,
-                        "html": "<div style='height: 100%;'></div>",
-                        "maskNode": _form.app.content,
-                        "container": _form.app.content,
-                        "buttonList": [
-                            {
-                                "text": MWF.LP.process.button.ok,
-                                "action": function () {
-                                    //if (callback) callback(_self.view.selectedItems);
-                                    if (callback) callback(_self.view.getData());
-                                    this.close();
-                                }
-                            },
-                            {
-                                "text": MWF.LP.process.button.cancel,
-                                "action": function () { this.close(); }
-                            }
-                        ]
-                    });
-                    dlg.show();
-
-                    if (layout.mobile) {
-                        var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
-                        var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                        if (backAction) backAction.addEvent("click", function (e) {
-                            dlg.close();
-                        }.bind(this));
-                        if (okAction) okAction.addEvent("click", function (e) {
-                            //if (callback) callback(this.view.selectedItems);
-                            if (callback) callback(this.view.getData());
-                            dlg.close();
-                        }.bind(this));
+                if( view.hasOwnProperty('viewId') )viewJson.viewId = view.viewId;
+                // if( view.hasOwnProperty('titleStyles') )viewJson.titleStyles = view.titleStyles;
+                // if( view.hasOwnProperty('itemStyles') )viewJson.itemStyles = view.itemStyles;
+                // if( view.hasOwnProperty('isExpand') )viewJson.isExpand = view.isExpand;
+                // if( view.hasOwnProperty('showActionbar') )viewJson.showActionbar = view.showActionbar;
+                // if( view.hasOwnProperty('defaultSelectedScript') )viewJson.defaultSelectedScript = view.defaultSelectedScript;
+                // if( view.hasOwnProperty('selectedAbleScript') )viewJson.selectedAbleScript = view.selectedAbleScript;
+                for( var key in view){
+                    if( !viewJson.hasOwnProperty(key) ){
+                        viewJson[key] = view[key];
                     }
-
-                    MWF.xDesktop.requireApp("query.Query", "Viewer", function () {
-                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, { "style": "select" }, _form.app, _form.Macro);
-                    }.bind(this));
-                }.bind(this));
+                }
+                if (layout.mobile && o2.version.dev===10){
+                    selectViewMobile(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
+                }else{
+                    selectViewPc(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
+                }
             }
         }
+    };
+
+
+    var selectStatementMobile = function (statementJson, okCallback, dialogOptions, statementOptions, loadedCallback){
+        if(!statementOptions)statementOptions = {"style": "select"};
+        if(!dialogOptions)dialogOptions = {};
+
+        var viewer = null;
+        _renderViewContainerMobile(
+            dialogOptions.title || statementJson.caption,
+            (viewNode)=>{
+                MWF.xDesktop.requireApp("query.Query", "Statement", ()=>{
+                    viewer = new MWF.xApplication.query.Query.Statement( viewNode, statementJson, statementOptions, _form.app, _form.Macro);
+                    viewer.addEvent('selectRow', (row)=>{
+                        row.node.addClass('selectedRow');
+                    });
+                    viewer.addEvent('unselectRow', (row)=>{
+                        row.node.removeClass('selectedRow');
+                    });
+                    if(loadedCallback)loadedCallback(viewer);
+                });
+            },
+            ()=>{
+                if(callback)callback(viewer.getData());
+            }
+        );
+    };
+    var selectStatementPc = function(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback){
+
+        if(!statementOptions)statementOptions = {"style": "select"};
+
+        var options =  dialogOptions || {};
+        var width = options.width || statementJson.width || "700";
+        var height = options.height || statementJson.height || "400";
+        var style = options.style || "v10_view";
+
+        if (layout.mobile) {
+            var size = document.body.getSize();
+            width = size.x;
+            height = size.y;
+            style = "viewmobile";
+        }
+
+        var opts = Object.assign({}, options, {
+            title: options.title || statementJson.caption || "select view",
+            style: style,
+            width: width.toInt(),
+            height: height.toInt(),
+            zindex: options.zindex,
+            html: "<div style='height: 100%;'></div>",
+            maxHeightPercent: layout.mobile ? "100%" : "98%",
+            maskNode: layout.mobile ? $(document.body) :  _form.app.content,
+            container: layout.mobile ? $(document.body) : _form.app.content,
+            buttonList: [
+                {
+                    "text": MWF.LP.process.button.ok,
+                    "action": function () {
+                        //if (callback) callback(_self.view.selectedItems);
+                        if (okCallback) okCallback(_self.statement.getData());
+                        this.close();
+                    }
+                },
+                {
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () { this.close(); }
+                }
+            ]
+        });
+        var _self = this;
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var dlg = o2.DL.open(opts);
+            if (layout.mobile) {
+                var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
+                var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
+                if (backAction) backAction.addEvent("click", function (e) {
+                    dlg.close();
+                }.bind(this));
+                if (okAction) okAction.addEvent("click", function (e) {
+                    if (okCallback) okCallback(this.statement.getData());
+                    dlg.close();
+                }.bind(this));
+            }
+
+            MWF.xDesktop.requireApp("query.Query", "Statement", function () {
+                this.statement = new MWF.xApplication.query.Query.Statement(dlg.content.getFirst(), statementJson, statementOptions, _form.app, _form.Macro);
+                if(loadedCallback)loadedCallback(this.statement);
+            }.bind(this));
+        }.bind(this));
     };
 
     /**
@@ -3521,97 +3691,97 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
             }
         },
-            needCheckFormat: function(s){
-                if( s.format )return false;
-                if( typeOf(s.parameter) === "object" ){
-                    for( var p in s.parameter ){
-                        if( typeOf( s.parameter[p] ) === "date" )return true;
-                    }
+        needCheckFormat: function(s){
+            if( s.format )return false;
+            if( typeOf(s.parameter) === "object" ){
+                for( var p in s.parameter ){
+                    if( typeOf( s.parameter[p] ) === "date" )return true;
                 }
-                if( typeOf(s.filter) === "array" ){
-                    for( var i=0; i< s.filter.length; i++){
-                        var fType = s.filter[i].formatType;
-                        if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].contains( fType ) )return true;
-                    }
+            }
+            if( typeOf(s.filter) === "array" ){
+                for( var i=0; i< s.filter.length; i++){
+                    var fType = s.filter[i].formatType;
+                    if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].contains( fType ) )return true;
                 }
-                return false;
-            },
-            _execute: function(statement, callback, async, format){
-                var parameter = this.parseParameter(statement.parameter, format);
-                var filterList = this.parseFilter(statement.filter, parameter, format);
-                var obj = {
-                    "filterList": filterList,
-                    "parameter" : parameter
-                };
-                return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-                    statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
-                    function (json) {
-                        if (callback) callback(json);
-                        return json;
-                    }, null, async);
-            },
-            parseFilter: function (filter, parameter, format) {
-                if (typeOf(filter) !== "array") return [];
-                if( !parameter )parameter = {};
-                var filterList = [];
-                (filter || []).each(function (d) {
-                    if( !d.logic )d.logic = "and";
+            }
+            return false;
+        },
+        _execute: function(statement, callback, async, format){
+            var parameter = this.parseParameter(statement.parameter, format);
+            var filterList = this.parseFilter(statement.filter, parameter, format);
+            var obj = {
+                "filterList": filterList,
+                "parameter" : parameter
+            };
+            return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
+                function (json) {
+                    if (callback) callback(json);
+                    return json;
+                }, null, async);
+        },
+        parseFilter: function (filter, parameter, format) {
+            if (typeOf(filter) !== "array") return [];
+            if( !parameter )parameter = {};
+            var filterList = [];
+            (filter || []).each(function (d) {
+                if( !d.logic )d.logic = "and";
 
-                    //var parameterName = d.path.replace(/\./g, "_");
-                    var pName = d.path.replace(/\./g, "_");
+                //var parameterName = d.path.replace(/\./g, "_");
+                var pName = d.path.replace(/\./g, "_");
 
-                    var parameterName = pName;
-                    var suffix = 1;
-                    while( parameter[parameterName] ){
-                        parameterName = pName + "_" + suffix;
-                        suffix++;
-                    }
-                    var value = d.value;
-                    if (d.comparison === "like" || d.comparison === "notLike") {
-                        if (value.substr(0, 1) !== "%") value = "%" + value;
-                        if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
-                        parameter[parameterName] = value; //"%"+value+"%";
-                    } else {
-                         if( ["sql", "sqlScript"].contains(format) ) {
-                            if (d.formatType === "numberValue") {
-                                value = parseFloat(value);
-                            }
-                        }else{
-                            if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
-                                value = "{ts '" + value + "'}"
-                            } else if (d.formatType === "dateValue") {
-                                value = "{d '" + value + "'}"
-                            } else if (d.formatType === "timeValue") {
-                                value = "{t '" + value + "'}"
-                            } else if (d.formatType === "numberValue") {
-                                value = parseFloat(value);
-                            }
+                var parameterName = pName;
+                var suffix = 1;
+                while( parameter[parameterName] ){
+                    parameterName = pName + "_" + suffix;
+                    suffix++;
+                }
+                var value = d.value;
+                if (d.comparison === "like" || d.comparison === "notLike") {
+                    if (value.substr(0, 1) !== "%") value = "%" + value;
+                    if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
+                    parameter[parameterName] = value; //"%"+value+"%";
+                } else {
+                    if( ["sql", "sqlScript"].contains(format) ) {
+                        if (d.formatType === "numberValue") {
+                            value = parseFloat(value);
                         }
-                        parameter[parameterName] = value;
-                    }
-                    d.value = parameterName;
-
-                    filterList.push(d);
-                }.bind(this));
-                return filterList;
-            },
-            parseParameter : function( obj, format ){
-                if( typeOf(obj) !== "object" )return {};
-                var parameter = {};
-                //传入的参数
-                for( var p in obj ){
-                    var value = obj[p];
-                    if( typeOf( value ) === "date" ){
-                        if( ["sql", "sqlScript"].contains(format) ){
-                            value = value.format("db");
-                        }else{
-                            value = "{ts '"+value.format("db")+"'}"
+                    }else{
+                        if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                            value = "{ts '" + value + "'}"
+                        } else if (d.formatType === "dateValue") {
+                            value = "{d '" + value + "'}"
+                        } else if (d.formatType === "timeValue") {
+                            value = "{t '" + value + "'}"
+                        } else if (d.formatType === "numberValue") {
+                            value = parseFloat(value);
                         }
                     }
-                    parameter[ p ] = value;
+                    parameter[parameterName] = value;
                 }
-                return parameter;
-            },
+                d.value = parameterName;
+
+                filterList.push(d);
+            }.bind(this));
+            return filterList;
+        },
+        parseParameter : function( obj, format ){
+            if( typeOf(obj) !== "object" )return {};
+            var parameter = {};
+            //传入的参数
+            for( var p in obj ){
+                var value = obj[p];
+                if( typeOf( value ) === "date" ){
+                    if( ["sql", "sqlScript"].contains(format) ){
+                        value = value.format("db");
+                    }else{
+                        value = "{ts '"+value.format("db")+"'}"
+                    }
+                }
+                parameter[ p ] = value;
+            }
+            return parameter;
+        },
 
         /**
          * 如果查询的类型是"select"，并且配置了查询视图，可以通过本方法进行数据选择。
@@ -3664,92 +3834,34 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     }
          * }.bind(this));
          */
-        "select": function (statement, callback, options) {
-            if (statement.name) {
-                // var parameter = this.parseParameter(statement.parameter);
-                // var filterList = this.parseFilter(statement.filter, parameter);
+        "select": function(statement, okCallback, dialogOptions, statementOptions, loadedCallback){
+            if( statement.name || statement.statementName || statement.statementId || statement.statement ) {
                 var statementJson = {
-                    "statementId": statement.name || "",
-                    "isTitle": (statement.isTitle === false) ? "no" : "yes",
-                    "select": (statement.isMulti === false) ? "single" : "multi",
+                    "application": statement.application || _form.json.application,
+                    "statementName": statement.statementName || statement.name || statement.statement || "",
+                    "isTitle": typeOf(statement.isTitle) === 'string' ? statement.isTitle : ((statement.isTitle === false) ? "no" : "yes"),
+                    "select": typeOf(statement.select) === 'string' ? statement.select : ((statement.isMulti === false) ? "single" : "multi"),
                     "filter": statement.filter,
                     "parameter": statement.parameter
                 };
-                if (!options) options = {};
-                options.width = statement.width;
-                options.height = statement.height;
-                options.title = statement.caption;
-
-                var width = options.width || "700";
-                var height = options.height || "400";
-
-                if (layout.mobile) {
-                    var size = document.body.getSize();
-                    width = size.x;
-                    height = size.y;
-                    options.style = "viewmobile";
-                }
-                width = width.toInt();
-                height = height.toInt();
-
-                var size = _form.app.content.getSize();
-                var x = (size.x - width) / 2;
-                var y = (size.y - height) / 2;
-                if (x < 0) x = 0;
-                if (y < 0) y = 0;
-                if (layout.mobile) {
-                    x = 20;
-                    y = 0;
-                }
-
-                var _self = this;
-                MWF.require("MWF.xDesktop.Dialog", function () {
-                    var dlg = new MWF.xDesktop.Dialog({
-                        "title": options.title || "select statement view",
-                        "style": options.style || "view",
-                        "top": y,
-                        "left": x - 20,
-                        "fromTop": y,
-                        "fromLeft": x - 20,
-                        "width": width,
-                        "height": height,
-                        "html": "<div style='height: 100%;'></div>",
-                        "maskNode": _form.app.content,
-                        "container": _form.app.content,
-                        "buttonList": [
-                            {
-                                "text": MWF.LP.process.button.ok,
-                                "action": function () {
-                                    //if (callback) callback(_self.view.selectedItems);
-                                    if (callback) callback(_self.statement.getData());
-                                    this.close();
-                                }
-                            },
-                            {
-                                "text": MWF.LP.process.button.cancel,
-                                "action": function () { this.close(); }
-                            }
-                        ]
-                    });
-                    dlg.show();
-
-                    if (layout.mobile) {
-                        var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
-                        var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                        if (backAction) backAction.addEvent("click", function (e) {
-                            dlg.close();
-                        }.bind(this));
-                        if (okAction) okAction.addEvent("click", function (e) {
-                            //if (callback) callback(this.view.selectedItems);
-                            if (callback) callback(this.statement.getData());
-                            dlg.close();
-                        }.bind(this));
+                if (statement.name)statementJson.statementId = statement.statementId;
+                if (statement.statementId) statementJson.statementId = statement.statementId;
+                // if (statement.hasOwnProperty('titleStyles')) statementJson.titleStyles = statement.titleStyles;
+                // if (statement.hasOwnProperty('itemStyles')) statementJson.itemStyles = statement.itemStyles;
+                // if (statement.hasOwnProperty('isExpand')) statementJson.isExpand = statement.isExpand;
+                // if (statement.hasOwnProperty('showActionbar')) statementJson.showActionbar = statement.showActionbar;
+                // if (statement.hasOwnProperty('defaultSelectedScript')) statementJson.defaultSelectedScript = statement.defaultSelectedScript;
+                // if (statement.hasOwnProperty('selectedAbleScript')) statementJson.selectedAbleScript = statement.selectedAbleScript;
+                for (var key in statement) {
+                    if (!statementJson.hasOwnProperty(key)) {
+                        statementJson[key] = statement[key];
                     }
-
-                    MWF.xDesktop.requireApp("query.Query", "Statement", function () {
-                        this.statement = new MWF.xApplication.query.Query.Statement(dlg.content.getFirst(), statementJson, { "style": "select" }, _form.app, _form.Macro);
-                    }.bind(this));
-                }.bind(this));
+                }
+                if (layout.mobile && o2.version.dev === 10) {
+                    selectStatementMobile(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
+                } else {
+                    selectStatementPc(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
+                }
             }
         }
     };
@@ -3851,69 +3963,69 @@ MWF.xScript.ViewEnvironment = function (ev) {
     // }else{
     //     var includedScripts = window.includedScripts;
     // }
-        var _getScriptAction = function ( type ){
-            var scriptAction;
-            switch (type) {
-                case "portal" :
-                    if (this.scriptActionPortal) {
-                        scriptAction = this.scriptActionPortal;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
-                        scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
-                    }
-                    break;
-                case "process" :
-                    if (this.scriptActionProcess) {
-                        scriptAction = this.scriptActionProcess;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
-                        scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
-                    }
-                    break;
-                case "cms" :
-                    if (this.scriptActionCMS) {
-                        scriptAction = this.scriptActionCMS;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
-                        scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
-                    }
-                    break;
-                case "service" :
-                    if (this.scriptActionService) {
-                        scriptAction = this.scriptActionService;
-                    } else {
-                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
-                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
-                    }
-                    break;
-            }
-            return scriptAction;
-        }
-
-
-        //缓存名称、别名、id
-        var _parseScriptImportList = function (json, type){
-            var includedScripts = [];
-            var importedList = json.data.importedList || [];
-            importedList.each(function (flag) {
-                if (type === "portal") {
-                    includedScripts.push(type + "-" + json.data.portal + "-" + flag);
-                    if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
-                    if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
-                } else if (type === "cms") {
-                    includedScripts.push(type + "-" + json.data.appId + "-" + flag);
-                    if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                    if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                } else if (type === "process") {
-                    includedScripts.push(type + "-" + json.data.application + "-" + flag);
-                    if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
-                    if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
-                }else if (type === "service") {
-                    includedScripts.push(type + "-" + flag);
+    var _getScriptAction = function ( type ){
+        var scriptAction;
+        switch (type) {
+            case "portal" :
+                if (this.scriptActionPortal) {
+                    scriptAction = this.scriptActionPortal;
+                } else {
+                    MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
+                    scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
                 }
-            });
-            return includedScripts.concat(importedList);
+                break;
+            case "process" :
+                if (this.scriptActionProcess) {
+                    scriptAction = this.scriptActionProcess;
+                } else {
+                    MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
+                    scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
+                }
+                break;
+            case "cms" :
+                if (this.scriptActionCMS) {
+                    scriptAction = this.scriptActionCMS;
+                } else {
+                    MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
+                    scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
+                }
+                break;
+            case "service" :
+                if (this.scriptActionService) {
+                    scriptAction = this.scriptActionService;
+                } else {
+                    MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                    scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                }
+                break;
         }
+        return scriptAction;
+    }
+
+
+    //缓存名称、别名、id
+    var _parseScriptImportList = function (json, type){
+        var includedScripts = [];
+        var importedList = json.data.importedList || [];
+        importedList.each(function (flag) {
+            if (type === "portal") {
+                includedScripts.push(type + "-" + json.data.portal + "-" + flag);
+                if (json.data.portalName) includedScripts.push(type + "-" + json.data.portalName + "-" + flag);
+                if (json.data.portalAlias) includedScripts.push(type + "-" + json.data.portalAlias + "-" + flag);
+            } else if (type === "cms") {
+                includedScripts.push(type + "-" + json.data.appId + "-" + flag);
+                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+            } else if (type === "process") {
+                includedScripts.push(type + "-" + json.data.application + "-" + flag);
+                if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
+                if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+            }else if (type === "service") {
+                includedScripts.push(type + "-" + flag);
+            }
+        });
+        return includedScripts.concat(importedList);
+    }
 
     var includedScripts = [];
     var _includeSingle = function (optionsOrName, callback, async) {
@@ -3941,24 +4053,24 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }
 
         var successCallback = function (json) {
-                if (json.data) {
-                    includedScripts.push(key);
-                    includedScripts = includedScripts.concat( _parseScriptImportList(json, type) );
-                    if( (options.enableAnonymous || options.anonymous ) && type === "cms" ){
-                        MWF.CMSMacro.exec(json.data.text, this)
-                    }else{
-                        MWF.Macro.exec(json.data.text, this);
-                    }
-                    if (callback) callback.apply(this);
-                } else {
-                    if (callback) callback.apply(this);
+            if (json.data) {
+                includedScripts.push(key);
+                includedScripts = includedScripts.concat( _parseScriptImportList(json, type) );
+                if( (options.enableAnonymous || options.anonymous ) && type === "cms" ){
+                    MWF.CMSMacro.exec(json.data.text, this)
+                }else{
+                    MWF.Macro.exec(json.data.text, this);
                 }
-            }.bind(this);
-
-            if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
-                o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, successCallback, null, !!async);
+                if (callback) callback.apply(this);
             } else {
-                var scriptAction = _getScriptAction.call(this, type);
+                if (callback) callback.apply(this);
+            }
+        }.bind(this);
+
+        if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
+            o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, successCallback, null, !!async);
+        } else {
+            var scriptAction = _getScriptAction.call(this, type);
             if( type === "service" ){
                 scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
             }else{
@@ -3996,11 +4108,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
         var type = options.type === "service" ? options.type : ((options.type && options.application) ? options.type : "portal");
         var application = options.application || _form.json.application;
         var key = type === "service" ? (type + "-" + name) : (type + "-" + application + "-" + name);
-            var data, result;
+        var data, result;
         if( includedSourceMap[key] ){
-                data = includedSourceMap[key];
-                if(callback)callback( data.text );
-                return !!async ? Promise.resolve( data.text ) : data.text;
+            data = includedSourceMap[key];
+            if(callback)callback( data.text );
+            return !!async ? Promise.resolve( data.text ) : data.text;
         }
         var successCallback = function (json) {
             if (json.data) {
@@ -4034,13 +4146,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
         return !!async ? p.then( successCallback ) : result;
     };
     this.includeHtml = function (optionsOrName, callback, async){
-         return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'html'])
+        return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'html'])
     };
     this.includeJson = function (optionsOrName, callback, async){
-          return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'json'])
+        return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'json'])
     };
     this.includeCss = function (optionsOrName, callback, async){
-         return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'css']);
+        return _includeSource.apply(this, [optionsOrName, callback, async!==false, 'css']);
     };
 
     this.define = function (name, fun, overwrite) {
@@ -4135,13 +4247,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 如:  "select o from table o" 返回 json数组
      *<pre><code class='language-js'>[
      {
-        "id" : "id1",
-        "title" : "title1"
-    },
+     "id" : "id1",
+     "title" : "title1"
+     },
      {
-        "id" : "id2",
-        "title" : "title2"
-    },
+     "id" : "id2",
+     "title" : "title2"
+     },
      ...
      *]
      * </code></pre>
@@ -4200,13 +4312,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * 如:  "select o from table o" 返回 json数组
      *<pre><code class='language-js'>[
      {
-        "id" : "id1",
-        "title" : "title1"
-    },
+     "id" : "id1",
+     "title" : "title1"
+     },
      {
-        "id" : "id2",
-        "title" : "title2"
-    },
+     "id" : "id2",
+     "title" : "title2"
+     },
      ...
      *]
      * </code></pre>
@@ -4425,12 +4537,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * <pre><code class='language-js'>
          * [
          {
-            "bundle": "099ed3c9-dfbc-4094-a8b7-5bfd6c5f7070", //cms 的 documentId, process 的 jobId
-            "data": {  //视图中配置的数据
-              "title": "考勤管理-配置-统计周期设置", //列名称及列值
-              "time": "2018-08-25 11:29:45"
-            }
-          },
+         "bundle": "099ed3c9-dfbc-4094-a8b7-5bfd6c5f7070", //cms 的 documentId, process 的 jobId
+         "data": {  //视图中配置的数据
+         "title": "考勤管理-配置-统计周期设置", //列名称及列值
+         "time": "2018-08-25 11:29:45"
+         }
+         },
          ...
          * ]
          </code></pre>
@@ -5025,7 +5137,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     options["ignoreTitle"] = ignoreTitle
                 }
                 if (window.o2android && window.o2android.postMessage) {
-                        var body = {
+                    var body = {
                         type: "createO2CmsDocument",
                         data: options
                     };
