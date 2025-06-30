@@ -1,20 +1,19 @@
 package com.x.organization.assemble.express.jaxrs.unit;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 class BaseAction extends StandardJaxrsAction {
 
@@ -56,6 +55,16 @@ class BaseAction extends StandardJaxrsAction {
 				t.setSuperior(superior.getDistinguishedName());
 			}
 		}
+		List<String> controllerList = new ArrayList<>();
+		if(ListTools.isNotEmpty(unit.getControllerList())){
+			for (String str : unit.getControllerList()) {
+				Person person = business.person().pick(str);
+				if (null != person) {
+					controllerList.add(person.getDistinguishedName());
+				}
+			}
+		}
+		t.setControllerList(controllerList);
 
 		return t;
 	}

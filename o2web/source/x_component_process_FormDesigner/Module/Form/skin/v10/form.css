@@ -533,6 +533,9 @@
 .form-layout .MWFADButtonArea{
     padding: 0.5rem 0;
 }
+.hide{
+    display: none !important;
+}
 
 /* 手机 */
 @media only screen and (max-width: 767px) {
@@ -698,8 +701,8 @@
     .ooui-select-visible .form-side-content{
         /* position: static !important; */
         pointer-events: none;
-    } 
-    
+    }
+
     div[mwftype='datatable'] tr:nth-child(odd){
         background-color: #ffffff !important;;
     }
@@ -900,7 +903,7 @@
         display: block;
         margin-left: 0.3em;
     }
-    
+
 
     .datatable_edit_mode .mwf_moveaction{
         width: unset !important;
@@ -1001,7 +1004,7 @@
         /* filter: invert(0.7); */
     }
 
-    
+
 
     .mwf_selectView_node {
         position: fixed;
@@ -1053,6 +1056,10 @@
     }
     .mwf_selectView_action_cancel{
         flex: 2;
+        height: 2.75em;
+    }
+    .mwf_selectView_action_close{
+        flex: 100%;
         height: 2.75em;
     }
 
@@ -1115,7 +1122,7 @@
     .mwf_selectView_node .searchAreaNode>div>div:last-child{
         margin-right: 0 !important;
         margin-left: 0 !important;
-        height: unset !important; 
+        height: unset !important;
         overflow: hidden;
         flex: 1;
         padding: 0.5em;
@@ -1177,6 +1184,7 @@
         position: sticky;
         left: 0;
         z-index: 10;
+        background-image: unset!important;
     }
     .mwf_selectView_view table tr>td:first-child::before {
         content: "\e67e";
@@ -1201,6 +1209,32 @@
         content: "\e68b";
     }
 
+    .mwf_selectView_view table .successRow td:first-child::before{
+        content: "\e68b";
+        color: var(--oo-color-success) !important;
+    }
+
+    .mwf_selectView_view table .failRow td:first-child::before{
+        content: "\e748";
+        color: var(--oo-color-error) !important;
+    }
+    .mwf_selectView_view table .titleCell.associationResult{
+        position: sticky!important;
+        right: 0;
+        min-width: 2.5em !important;
+        z-index: 10;
+    }
+    .mwf_selectView_view table .successRow td:last-child, .mwf_selectView_view table .failRow td:last-child {
+        height: unset !important;
+        line-height: unset !important;
+        padding: 0 !important;
+        min-width: 2.5em !important;
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        background-image: unset!important;
+    }
+
     .mwf_selectView_view .pagingBarWraper div{
         border-radius: var(--oo-default-radius) !important;
         height: 1.6em !important;
@@ -1209,7 +1243,55 @@
         display: flex;
         align-items: center;
     }
- 
+    .mwf_selectView_view .tabTitleArea{
+        display: block;
+        height: 3.125rem;
+        border-top: 1px solid #ccc;
+        border-bottom: 0.625rem solid rgb(247, 247, 247);
+        background: #FFFFFF;
+    }
+    .mwf_selectView_view .tabContentArea{
+        height: calc( 100% - 2.5rem - 0.625rem - 1px);
+    }
+    .mwf_selectView_view .tabContentArea > div{
+        height: 100%;
+    }
+    .mwf_selectView_view .tabContentArea > div > div{
+        height: 100%;
+    }
+    .form-layout div[mwftype='AssociatedDocument'] {
+        width: 100% !important;
+        height: 100% !important;
+        position: relative;
+    }
+    .form-layout .MWFADContent{
+        overflow: auto;
+        width: 100%;
+    }
+    .form-layout .MWFADContent table{
+        width: 100%;
+        border: 0;
+    }
+    .form-layout .MWFADContent table td, .form-layout .MWFADContent table th{
+        white-space: nowrap;
+        height: 3.2em !important;
+        padding: 5px;
+    }
+    .form-layout .MWFADContent table td:last-child {
+        position: sticky;
+        right: -3px;
+        z-index: 10;
+        min-width: 2.5em !important;
+        background-color: #ffffff !important;
+    }
+    .form-layout .MWFADContent table th:last-child {
+         position: sticky;
+         right: 0;
+         z-index: 10;
+         min-width: 2.5em !important;
+         background-color: #f7f7f7 !important;
+     }
+
     .content-item.flex{
         flex-direction: column;
         align-items: stretch !important;

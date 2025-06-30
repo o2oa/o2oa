@@ -799,7 +799,7 @@ function build_concat_basework_body() {
         'o2web/source/o2_core/o2/xScript/Actions/ScriptActions.js',
         'o2web/source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
         'o2web/source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
-        'o2web/source/o2_core/o2/xScript/Environment.js',
+        //'o2web/source/o2_core/o2/xScript/Environment.js',
         'o2web/source/x_component_Template/MTooltips.js',
         'o2web/source/x_component_Template/MSelector.js',
 

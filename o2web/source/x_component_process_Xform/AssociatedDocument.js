@@ -146,18 +146,27 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     targetList: data
                 }, function (json) {
                     this.status = "showResult";
-                    if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
-                    if( layout.mobile ){
-                        var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
-                        if (okAction) okAction.hide();
-                    }else{
-                        var okNode = this.dlg.button.getFirst();
-                        if(okNode){
-                            okNode.hide();
-                            var cancelButton = okNode.getNext();
-                            if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                    if( this.dlg ){
+                        if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
+                        if( layout.mobile ){
+                            var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
+                            if (okAction) okAction.hide();
+                        }else{
+                            var okNode = this.dlg.button.getFirst();
+                            if(okNode){
+                                okNode.hide();
+                                var cancelButton = okNode.getNext();
+                                if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                            }
+                        }
+                    }else if(this.dlg_mobile){
+                        var toolbar = this.dlg_mobile.contentNode.querySelector('.mwf_selectView_action');
+                        if(toolbar){
+                            toolbar.querySelectorAll('oo-button').forEach((btn)=> !btn.hasClass('hide') && btn.addClass('hide'));
+                            toolbar.querySelector('.mwf_selectView_action_close').removeClass('hide');
                         }
                     }
+
                     if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
                         this.showCreateResult(json.data.failureList, json.data.successList);
                     }
@@ -479,6 +488,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             disableSelectJobs.push( this.getBundle() );
 
             var viewJsonList = [];
+            this.viewJsonList = viewJsonList;
 
             this.selectedBundleMap = {};
             this.documentList.each(function (d) {
@@ -518,162 +528,214 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this));
             this.fireEvent("beforeLoadView", [viewDataList]);
 
-            var options = {};
-            // var width = options.width || "850";
-            // var height = options.height || "700";
-            var width = this.json.DialogWidth || "850";
-            var height = this.json.DialogHeight || "700";
-
-            if (layout.mobile){
-                var size = document.body.getSize();
-                width = size.x;
-                height = size.y;
-                options.style = "viewmobile";
-            }
-            width = width.toInt();
-            height = height.toInt();
-
-            var size = this.form.app.content.getSize();
-            var x = (size.x-width)/2;
-            var y = (size.y-height)/2;
-            if (x<0) x = 0;
-            if (y<0) y = 0;
-            if (layout.mobile){
-                x = 20;
-                y = 0;
+            if (layout.mobile && o2.version.dev===10){
+                this.selectViewMobile(callback);
+            }else{
+                this.selectViewPc(callback);
             }
 
-            var _self = this;
-            MWF.require("MWF.xDesktop.Dialog", function(){
-                var dlg = new MWF.xDesktop.Dialog({
-                    "title": this.json.title || MWF.xApplication.process.Xform.LP.associatedDocument,
-                    "style": options.style || "view",
-                    "top": y,
-                    "left": x-20,
-                    "fromTop":y,
-                    "fromLeft": x-20,
-                    "width": width,
-                    "height": height,
-                    "html": "",
-                    "maskNode": layout.mobile?$(document.body) : this.form.app.content,
-                    "container": layout.mobile?$(document.body) : this.form.app.content,
-                    "buttonList": [
-                        {
-                            "text": MWF.LP.process.button.ok,
-                            "action": function(){
-                                //if (callback) callback(_self.view.selectedItems);
-
-                                _self.afterSelectView( callback, dlg );
-                                //this.close();
-                            }
-                        },
-                        {
-                            "text": MWF.LP.process.button.cancel,
-                            "action": function(){this.close();}
-                        }
-                    ],
-                    "onQueryClose": function () {
-                        this.dlg = null;
-                    }.bind(this),
-                    "onPostShow": function(){
-                        if(layout.mobile){
-                            dlg.node.setStyle("z-index",200);
-                        }
-
-                        MWF.require("MWF.widget.Tab", null, false);
-
-                        this.tab = new MWF.widget.Tab(dlg.content, {"style": "script"});
-                        this.tab.load();
-
-                        MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                            // this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
-                            //     "style": "select"
-                            // }, this.form.app, this.form.Macro );
-
-                            this.viewList = [];
-                            viewJsonList.each(function (viewJson, index) {
-                                var tabViewNode = Element("div", {"styles": {"height": "100%"}});
-                                var pageViewNode = new Element("div.pageViewNode").inject(tabViewNode);
-
-                                var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
-
-                                var selectedBundles = this.selectedBundleMap[ viewJson.viewId ] || [];
-
-                                //this.viewPage.showTabIm();
-                                var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
-
-                                pageViewNode.setStyle("height", viewHeight);
-
-                                var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
-                                    "isloadContent": this.status !== "showResult",
-                                    "isloadActionbar": this.status !== "showResult",
-                                    "isloadSearchbar": this.status !== "showResult",
-                                    "style": "select",
-                                    "defaultBundles": this.selectedBundleMap[viewJson.viewId] || [],
-                                    "onLoadView": function(){
-                                        this.fireEvent("loadView");
-                                    }.bind(this),
-                                    "onSelect": function(item){
-                                        this.fireEvent("select", [item]);
-                                    }.bind(this),
-                                    "onUnselect": function(item){
-                                        selectedBundles.erase( item.data.bundle );
-                                        this.fireEvent("unselect", [item]);
-                                    }.bind(this),
-                                    "onOpenDocument": function(options, item){
-                                        this.openOptions = {
-                                            "options": options,
-                                            "item": item
-                                        };
-                                        this.fireEvent("openViewDocument", [this.openOptions]);
-                                        this.openOptions = null;
-                                    }.bind(this)
-                                }, this.form.app, this.form.Macro);
-
-                                viewPage.Viewer = view;
-                                this.viewList.push(view);
-
-                                viewPage.addEvent("postShow", function () {
-                                    if( viewPage.Viewer && viewPage.Viewer.node ){
-                                        viewPage.Viewer.setContentHeight();
-                                    }
-                                    // var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
-                                    // pageViewNode.setStyle("height", viewHeight);
-                                }.bind(this));
-
-                                if( index === 0 )viewPage.showTabIm();
-
-                            }.bind(this));
+        }
+    },
+    loadViewers: function(viewNode, dlg){
 
 
-                        }.bind(this));
-                    }.bind(this)
-                });
-                this.dlg = dlg;
-                dlg.show();
+        MWF.require("MWF.widget.Tab", null, false);
 
-                if (layout.mobile){
-                    if(dlg.title)dlg.title.addClass("mainColor_color");
-                    var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
-                    var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                    if (backAction) backAction.addEvent("click", function(e){
-                        dlg.close();
-                    }.bind(this));
-                    if (okAction) okAction.addEvent("click", function(e){
-                        //if (callback) callback(this.view.getData());
-                        _self.afterSelectView( callback, dlg );
-                        //dlg.close();
-                    }.bind(this));
+        this.viewTabArea = new Element('div.tabTitleArea').inject(viewNode);
+        this.viewContentNode = new Element('div.tabContentArea').inject(viewNode);
+
+        this.tab = new MWF.widget.Tab(this.viewTabArea, {
+            "style": layout.mobile && o2.version.dev === 10 ? 'v10_mobile' : "script"
+        });
+        this.tab.load();
+        this.tab.contentNodeContainer.inject(this.viewContentNode)
+
+        // if( layout.mobile && o2.version.dev === 10 ){
+        //     this.viewTabArea.setStyles({
+        //         "border-top": "1px solid #ccc",
+        //         "border-bottom": "0.624rem solid rgb(247, 247, 247)"
+        //     });
+        // }
+
+        MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+            // this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
+            //     "style": "select"
+            // }, this.form.app, this.form.Macro );
+
+            this.viewList = [];
+            this.viewJsonList.each(function (viewJson, index) {
+                var tabViewNode = Element("div", {"styles": {"height": "100%"}});
+                var pageViewNode = new Element("div.pageViewNode").inject(tabViewNode);
+
+                var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
+
+                var selectedBundles = this.selectedBundleMap[ viewJson.viewId ] || [];
+                if( layout.mobile && o2.version.dev === 10 ){
+                    pageViewNode.setStyle("height", '100%');
+                }else{
+                    var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
+                    pageViewNode.setStyle("height", viewHeight);
                 }
 
-                // MWF.xDesktop.requireApp("process.Xform", "widget.View", function(){
-                //     this.view = new MWF.xApplication.process.Xform.widget.View(dlg.content.getFirst(), viewJson, {"style": "select"});
-                // }.bind(this));
-                // MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                //     this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"});
-                // }.bind(this));
+                var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
+                    "isloadContent": this.status !== "showResult",
+                    "isloadActionbar": this.status !== "showResult",
+                    "isloadSearchbar": this.status !== "showResult",
+                    "style": "select",
+                    "defaultBundles": this.selectedBundleMap[viewJson.viewId] || [],
+                    "onLoadView": function(){
+                        this.fireEvent("loadView");
+                    }.bind(this),
+                    "onSelect": function(item){
+                        this.fireEvent("select", [item]);
+                    }.bind(this),
+                    "onUnselect": function(item){
+                        selectedBundles.erase( item.data.bundle );
+                        this.fireEvent("unselect", [item]);
+                    }.bind(this),
+                    "onOpenDocument": function(options, item){
+                        this.openOptions = {
+                            "options": options,
+                            "item": item
+                        };
+                        this.fireEvent("openViewDocument", [this.openOptions]);
+                        this.openOptions = null;
+                    }.bind(this)
+                }, this.form.app, this.form.Macro)
+
+                if( layout.mobile && o2.version.dev === 10 ){
+                    view.addEvent('selectRow', (row)=>{
+                        row.node.addClass('selectedRow');
+                    });
+                    view.addEvent('unselectRow', (row)=>{
+                        row.node.removeClass('selectedRow');
+                    });
+                }
+
+                viewPage.Viewer = view;
+                this.viewList.push(view);
+
+                viewPage.addEvent("postShow", function () {
+                    if( viewPage.Viewer && viewPage.Viewer.node ){
+                        viewPage.Viewer.setContentHeight();
+                    }
+                    // var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+                    // pageViewNode.setStyle("height", viewHeight);
+                }.bind(this));
+
+                if( index === 0 )viewPage.showTabIm();
+
             }.bind(this));
+
+
+        }.bind(this));
+    },
+    selectViewPc: function(callback){
+        var options = {};
+        // var width = options.width || "850";
+        // var height = options.height || "700";
+        var width = this.json.DialogWidth || "850";
+        var height = this.json.DialogHeight || "700";
+
+        if (layout.mobile){
+            var size = document.body.getSize();
+            width = size.x;
+            height = size.y;
+            options.style = "viewmobile";
         }
+        width = width.toInt();
+        height = height.toInt();
+
+        var size = this.form.app.content.getSize();
+        var x = (size.x-width)/2;
+        var y = (size.y-height)/2;
+        if (x<0) x = 0;
+        if (y<0) y = 0;
+        if (layout.mobile){
+            x = 20;
+            y = 0;
+        }
+
+        var _self = this;
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": this.json.title || MWF.xApplication.process.Xform.LP.associatedDocument,
+                "style": options.style || "v10_view",
+                "top": y,
+                "left": x-20,
+                "fromTop":y,
+                "fromLeft": x-20,
+                "width": width,
+                "height": height,
+                "html": "",
+                "maskNode": layout.mobile?$(document.body) : this.form.app.content,
+                "container": layout.mobile?$(document.body) : this.form.app.content,
+                "buttonList": [
+                    {
+                        "text": MWF.LP.process.button.ok,
+                        "action": function(){
+                            //if (callback) callback(_self.view.selectedItems);
+
+                            _self.afterSelectView( callback, dlg );
+                            //this.close();
+                        }
+                    },
+                    {
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function(){this.close();}
+                    }
+                ],
+                "onQueryClose": function () {
+                    this.dlg = null;
+                }.bind(this),
+                "onPostShow": function(){
+                    if(layout.mobile){
+                        dlg.node.setStyle("z-index",200);
+                    }
+                    this.loadViewers(dlg.content, dlg);
+                }.bind(this)
+            });
+            this.dlg = dlg;
+            dlg.show();
+
+            if (layout.mobile){
+                if(dlg.title)dlg.title.addClass("mainColor_color");
+                var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
+                var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
+                if (backAction) backAction.addEvent("click", function(e){
+                    dlg.close();
+                }.bind(this));
+                if (okAction) okAction.addEvent("click", function(e){
+                    //if (callback) callback(this.view.getData());
+                    _self.afterSelectView( callback, dlg );
+                    //dlg.close();
+                }.bind(this));
+            }
+        }.bind(this));
+    },
+    selectViewMobile: function (callback){
+        var _renderViewContainerMobile = this.form.Macro.environment._renderViewContainerMobile;
+        var viewer = null;
+        _renderViewContainerMobile(
+            this.json.title || MWF.xApplication.process.Xform.LP.associatedDocument,
+            (viewNode, o)=>{
+                this.loadViewers(viewNode);
+                this.dlg_mobile = o;
+                // MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
+                //     viewer = new MWF.xApplication.query.Query.Viewer(viewNode, viewJson, viewOptions, _form.app, _form.Macro);
+                //     viewer.addEvent('selectRow', (row)=>{
+                //         row.node.addClass('selectedRow');
+                //     });
+                //     viewer.addEvent('unselectRow', (row)=>{
+                //         row.node.removeClass('selectedRow');
+                //     });
+                // });
+            },
+            ()=>{
+                this.afterSelectView( callback );
+            },
+            true
+        );
     },
     afterSelectView: function( callback, dlg ){
         var array = [];
