@@ -3278,7 +3278,6 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.selector.fireEvent("postLoadCategory",[this]);
     },
     loadForHtml: function (){
-        debugger;
         this.selector.fireEvent("queryLoadCategory",[this]);
         var node = new Element("div");
         node.loadHtmlText(this.selector.categoryHtml, {
