@@ -19,6 +19,10 @@ public class ThisApplication {
 	}
 
 	public static MissionRestore getMissionRestore() {
+		if(missionRestore == null){
+			missionRestore = new MissionRestore();
+			missionRestore.setStamp(MissionRestore.INIT_DATA_STAMP);
+		}
 		return missionRestore;
 	}
 

@@ -18,6 +18,19 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
         "dutyUnitLevelBy" : "duty"
     },
     initialize: function(container, options, delayLoad){
+        if(layout.mobile && o2.version.dev === 10){
+            options = Object.assign(options || {}, {
+                style: "v10_mobile",
+                tabStyle: "v10_mobile",
+                useBreadcrumbs: true,
+                contentUrl: "../x_component_Selector/$Selector/v10_mobile/selector.html",
+                categoryUrl: "../x_component_Selector/$Selector/v10_mobile/category.html",
+                categoryItemUrl: "../x_component_Selector/$Selector/v10_mobile/category_item.html",
+                itemUrl: "../x_component_Selector/$Selector/v10_mobile/item.html",
+                useO2Load: true,
+                injectToBody: true
+            });
+        }
         MWF.O2Selector.selectedIndex = 1;
         if( !MWF.xApplication.Selector.LP ){
             MWF.xDesktop.requireApp("Selector", "lp."+MWF.language, null, false);

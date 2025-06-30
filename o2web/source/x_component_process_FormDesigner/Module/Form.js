@@ -148,7 +148,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 	// 移动端表单加载工具栏
 	loadMobileActionToos: function() {
-		if (this.options.mode==="Mobile"){
+		// if (this.options.mode==="Mobile"){
 			if (!this.json.multiTools){
 				var tools = [];
 				if( this.json.defaultTools ){
@@ -167,7 +167,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			// 	this.json.defaultTools = o2.JSON.get(this.path+"toolbars.json", null,false);
 			// }
 			// if (!this.json.tools) this.json.tools=[];
-		}
+		// }
 	},
 	_load : function( templateStyles, oldStyleValue ){
 		this.templateStyles = templateStyles;
@@ -261,6 +261,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.json.cssLink = styles.cssLink;
 			this.container.loadCss(styles.cssLink);
 		}
+		this.json.actionIconType = styles.actionIconType;
 
 		//if( styles.confirmStyle )this.json.confirmStyle = styles.confirmStyle;
 		//if( styles.dialogStyle )this.json.dialogStyle = styles.dialogStyle;

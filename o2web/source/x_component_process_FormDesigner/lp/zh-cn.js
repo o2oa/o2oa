@@ -1624,7 +1624,18 @@ MWF.xApplication.process.FormDesigner.LP = {
         lineNumber: '显示行号',
 
         defaultParameters: '默认参数',
-        useQuickSelect: '使用快速选择'
+        useQuickSelect: '使用快速选择',
+
+        "showConfig": '可见配置',
+        "showConfigInfo": '设置此元素的可见范围，未设置时，任何情况都可见',
+        "showConfig_activity": "指定的活动可见",
+        "showConfig_org": "指定的人或组织可见",
+        "showConfig_script": "通过脚本指定可见范围",
+        "showActivity": "可见活动",
+        "showOrg": "人员组织",
+        "showScript": "可见脚本",
+        "showScriptInfo": '返回一个布尔值，true表示可见，false表示不可见'
+
     },
     smartbi: {
         nosetup: '请先安装SmartBI应用',

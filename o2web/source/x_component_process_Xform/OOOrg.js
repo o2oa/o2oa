@@ -145,17 +145,17 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
                          * var options = selector.options; //获取人员选择框的选项
                          */
                         //options.style = 'v10';
-                        Object.assign(options, {
-                            style: "v10_mobile",
-                            tabStyle: "v10_mobile",
-                            useBreadcrumbs: true,
-                            contentUrl: "../x_component_Selector/$Selector/v10_mobile/selector.html",
-                            categoryUrl: "../x_component_Selector/$Selector/v10_mobile/category.html",
-                            categoryItemUrl: "../x_component_Selector/$Selector/v10_mobile/category_item.html",
-                            itemUrl: "../x_component_Selector/$Selector/v10_mobile/item.html",
-                            useO2Load: true,
-                            injectToBody: true
-                        });
+                        // Object.assign(options, {
+                        //     style: "v10_mobile",
+                        //     tabStyle: "v10_mobile",
+                        //     useBreadcrumbs: true,
+                        //     contentUrl: "../x_component_Selector/$Selector/v10_mobile/selector.html",
+                        //     categoryUrl: "../x_component_Selector/$Selector/v10_mobile/category.html",
+                        //     categoryItemUrl: "../x_component_Selector/$Selector/v10_mobile/category_item.html",
+                        //     itemUrl: "../x_component_Selector/$Selector/v10_mobile/item.html",
+                        //     useO2Load: true,
+                        //     injectToBody: true
+                        // });
                         this.selector = new MWF.O2Selector(this.form.app.content, options);
                     }
                 }

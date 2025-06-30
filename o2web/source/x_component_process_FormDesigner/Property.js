@@ -1961,6 +1961,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
         var dictionaryNodes = this.propertyContent.getElements(".MWFDictionarySelect");
         var queryImportModelNodes = this.propertyContent.getElements(".MWFQueryImportModelSelect");
+        var processActivityNodes = this.propertyContent.getElements(".MWFProcessActivitySelect");
 
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
@@ -2290,6 +2291,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "onChange": function(ids){this.saveFileItem(node, ids);}.bind(this)
                 });
             }.bind(this));
+
+            processActivityNodes.each(function(node){
+                var d = this.data[node.get("name")];
+                var data = d || [];
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "ProcessActivity",
+                    "names": data,
+                    "onChange": function(ids){
+                        var values = [];
+                        ids.each(function(id){
+                            values.push(id.data);
+                        }.bind(this));
+                        var name = node.get("name");
+                        var oldValue = this.data[name];
+                        this.data[name] = values;
+                        this.checkHistory(name, oldValue, this.data[name]);
+                    }.bind(this)
+                });
+            });
 
             cmsFileNodes.each(function(node){
                 var d = this.data[node.get("name")];
@@ -2936,13 +2956,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
     loadActionArea: function(){
 	    var multiActionArea = this.propertyContent.getElements(".MWFMultiActionArea");
+        debugger;
         multiActionArea.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];
             var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var options = {
-                    "iconType": this.data.iconType,
+                    "iconType": this.data.iconType || this.data.actionIconType,
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
                     "target" : node.get("data-target"),
@@ -2969,17 +2990,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var actionContent = this.data[name];
             var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
-                // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
-                //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                //     "noCreate": true,
-                //     "noDelete": true,
-                //     "noCode": true,
-                //     "onChange": function(){
-                //         this.data[name] = actionEditor.data;
-                //     }.bind(this)
-                // });
-                // actionEditor.load(this.module.defaultToolBarsData);
-
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "onChange": function(historyOptions){
@@ -3020,18 +3030,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }.bind(this)
                 });
                 actionEditor.load(actionContent);
-
-                // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
-                //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                //     "onChange": function(){
-                //         this.data[name] = actionEditor.data;
-                //     }.bind(this)
-                // });
-                // actionEditor.load(actionContent);
             }.bind(this));
-
         }.bind(this));
-
     },
 	loadMaplist: function(){
 		var maplists = this.propertyContent.getElements(".MWFMaplist");

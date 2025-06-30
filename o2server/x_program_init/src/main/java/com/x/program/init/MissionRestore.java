@@ -9,6 +9,7 @@ import java.nio.file.PathMatcher;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.config.Config;
@@ -27,12 +28,17 @@ public class MissionRestore implements Mission {
 		this.stamp = stamp;
 	}
 
+	public static final String INIT_DATA_STAMP = "initData";
+
 	@Override
 	public void execute(Missions.Messages messages) {
 		messages.head(MissionRestore.class.getSimpleName());
 		try {
 			messages.msg("executing");
 			Path path = Config.path_local_temp(true).resolve(getStamp() + ".zip");
+			if(!Files.exists(path)){
+				return;
+			}
 			if (!ZipTools.isZipFile(path)) {
 				throw new ExceptionMissionExecute("file is not zip file format.");
 			}

@@ -248,6 +248,7 @@ MWF.ProcessFlow.ResetMobile = new Class({
         this.orgNode.addEvent("click", function () {
             this.getSelOptions( function (options) {
                 options.values = this.orgData || [] ;
+                options.title = this.lp.inputResetPeople;
                 setTimeout(function () {
                     this.selector = new MWF.O2Selector($(document.body), options);
                 }.bind(this), 100);
@@ -435,6 +436,7 @@ MWF.ProcessFlow.AddTaskMobile = new Class({
         this.orgNode.addEvent("click", function () {
             this.getSelOptions( function (options) {
                 options.values = this.orgData || [] ;
+                options.title = this.lp.inputAddTaskPeople;
                 setTimeout(function () {
                     this.selector = new MWF.O2Selector($(document.body), options);
                 }.bind(this), 100);

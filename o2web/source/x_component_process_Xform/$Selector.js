@@ -255,7 +255,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
      */
     getTextData: function () {
         var ops;
-        if (this.isReadonly() || !this._getInputTextData ) {
+        if (this.isReadonly() || !this._getInputTextData || (this.json.type || '').substring(0, 2) === 'El' ) {
             ops = this.getOptionsObj();
             var data = this._getBusinessData();
             var d = typeOf(data) === "array" ? data : [data];

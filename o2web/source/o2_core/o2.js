@@ -119,7 +119,8 @@ if (!window.o2) {
          * var v = o2.version.v;
          */
         this.o2.version = {
-            "v": "o2oa-10",
+            "v": "o2oa",
+            "dev": 10,
             "build": "2025.06.28",
             "info": "O2OA 活力办公 创意无限. Copyright © 2025, o2oa.net O2 Team All rights reserved."
         };
@@ -3506,7 +3507,7 @@ if (!window.o2) {
         o2.isMediaMobile = function(media){
             const mediaQuery = window.matchMedia(media || 'only screen and (max-width: 767px)');
             // 检查是否满足媒体查询条件
-            return mediaQuery.matches;
+            return mediaQuery.matches || layout.mobile || o2.thirdparty.isMobile();
         }
 
         o2.common = o2.common || {};

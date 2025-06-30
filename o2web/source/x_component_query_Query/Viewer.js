@@ -251,7 +251,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
     loadLayout: function(){
-
         /**
          * @summary 视图的节点，mootools封装过的Dom对象，可以直接使用原生的js和moootools方法访问和操作该对象。
          * @see https://mootools.net/core/docs/1.6.0/Element/Element
@@ -274,18 +273,18 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          * @summary 搜索界面容器
          * @member {Element}
          */
-        this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
+        this.searchAreaNode = new Element("div.searchAreaNode", {"styles": this.css.searchAreaNode}).inject(this.node);
         /**
          * @summary 表头和条目容器，
          * @member {Element}
          */
-        this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
+        this.viewAreaNode = new Element("div.viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.node);
         // this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
         /**
          * @summary 分页组件容器，
          * @member {Element}
          */
-        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
+        this.viewPageAreaNode = new Element("div.viewPageAreaNode", {"styles": this.css.viewPageAreaNode}).inject(this.node);
 
         this.fireEvent("loadLayout");
     },
@@ -404,13 +403,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         var viewStyles = this.viewJson.viewStyles;
 
-        this.contentAreaNode = new Element("div", {"styles":
+        this.contentAreaNode = new Element("div.contentAreaNode", {"styles":
                 (viewStyles && viewStyles["container"]) ? viewStyles["container"] : this.css.contentAreaNode
         }).inject(this.viewAreaNode);
 
         this.loadObserver();
 
-        this.viewTable = new Element("table", {
+        this.viewTable = new Element("table.viewTable", {
             "styles": this.css.viewTitleTableNode,
             "border": "0px",
             "cellPadding": "0",
@@ -994,7 +993,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         var viewStyles = this.viewJson.viewStyles;
         if (this.options.isloadTitle && this.selectTitleCell){
             //if (this.json.select==="single" || this.json.select==="multi") {
-            var titleCell = new Element("td.titleCell", {
+            var titleCell = new Element("td.titleCell.associationResult", {
                 "styles": (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode,
                 "text": this.lp.associationResult
             }).inject(this.viewTitleLine);
@@ -2754,7 +2753,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
         this.selectTd.setStyles(this.css.viewSelectTdNode);
-        
+
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
         //var selectFlag = this.view.json.select || this.view.viewJson.select ||  "none";
@@ -3116,11 +3115,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                         }
                     }
                 }.bind(this),
-                "mouseout": function(){  
+                "mouseout": function(){
                     if (!this.isSelected && this.view.viewJson.selectBoxShow !=="always"){
-                        this.selectTd.className = '';  
+                        this.selectTd.className = '';
                         this.selectTd.setStyles({"background": "transparent"});
-                    } 
+                    }
                 }.bind(this),
                 "click": function(){this.select();}.bind(this)
             });
@@ -3162,9 +3161,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         this.view.selectedItems.push(this);
         var viewStyles = this.view.viewJson.viewStyles;
         if( viewStyles ){
-            this.selectTd.removeClass( viewStyles["checkboxNode"].className );    
+            this.selectTd.removeClass( viewStyles["checkboxNode"].className );
             if (viewStyles["checkedCheckboxNode"].className){
-                this.selectTd.addClass( viewStyles["checkedCheckboxNode"].className );    
+                this.selectTd.addClass( viewStyles["checkedCheckboxNode"].className );
             }
             this.selectTd.setStyles( viewStyles["checkedCheckboxNode"] );
             this.node.setStyles( viewStyles["contentSelectedTr"] );
@@ -3206,9 +3205,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         // }else{
             this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
-                this.selectTd.removeClass( viewStyles["checkedCheckboxNode"].className );    
+                this.selectTd.removeClass( viewStyles["checkedCheckboxNode"].className );
                 if (viewStyles["checkboxNode"].className){
-                    this.selectTd.addClass( viewStyles["checkboxNode"].className );    
+                    this.selectTd.addClass( viewStyles["checkboxNode"].className );
                 }
                 if (viewStyles["checkboxNode"].className){
                     this.selectTd.addClass(viewStyles["checkboxNode"].className);
@@ -3249,9 +3248,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         var viewStyles = this.view.viewJson.viewStyles;
         this.selectTd.setStyles({opacity: 1});
         if( viewStyles ){
-            this.selectTd.removeClass( viewStyles["radioNode"].className );    
+            this.selectTd.removeClass( viewStyles["radioNode"].className );
             if (viewStyles["checkedRadioNode"].className){
-                this.selectTd.addClass( viewStyles["checkedRadioNode"].className );    
+                this.selectTd.addClass( viewStyles["checkedRadioNode"].className );
             }
             this.selectTd.setStyles( viewStyles["checkedRadioNode"] );
             this.node.setStyles( viewStyles["contentSelectedTr"] );
@@ -3283,9 +3282,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }else{
             this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
-                this.selectTd.removeClass( viewStyles["checkedRadioNode"].className ); 
+                this.selectTd.removeClass( viewStyles["checkedRadioNode"].className );
                 if (viewStyles["radioNode"].className){
-                    this.selectTd.addClass( viewStyles["radioNode"].className );    
+                    this.selectTd.addClass( viewStyles["radioNode"].className );
                 }
                 this.selectTd.setStyles(viewStyles["radioNode"]);
             }else{
@@ -4220,8 +4219,10 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         this.selectTd.setStyles({"cursor": "default"});
         if( this.data.$failure ){
+            this.node.removeClass('selectedRow').addClass('successRow');
             this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + "error" + ".png) center center no-repeat"});
         }else{
+            this.node.removeClass('selectedRow').addClass('successRow');
             this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + "success" + ".png) center center no-repeat"});
         }
 

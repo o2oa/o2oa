@@ -8,7 +8,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 public class Unit extends GsonPropertyObject {
 
 	private static final long serialVersionUID = 5213623128307370812L;
-	
+
 	@FieldDescribe("组织名称")
 	private String name;
 	@FieldDescribe("唯一标识")
@@ -39,6 +39,8 @@ public class Unit extends GsonPropertyObject {
 	private String zhengwuDingdingId;
 	@FieldDescribe("华为WeLink Id")
 	private String weLinkId;
+	@FieldDescribe("组织管理员")
+	private List<String> controllerList;
 
 	public String getWeLinkId() {
 		return weLinkId;
@@ -160,4 +162,11 @@ public class Unit extends GsonPropertyObject {
 		this.levelOrderNumber = levelOrderNumber;
 	}
 
+	public List<String> getControllerList() {
+		return controllerList;
+	}
+
+	public void setControllerList(List<String> controllerList) {
+		this.controllerList = controllerList;
+	}
 }

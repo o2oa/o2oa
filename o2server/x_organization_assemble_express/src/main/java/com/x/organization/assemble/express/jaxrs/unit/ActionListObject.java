@@ -150,6 +150,16 @@ class ActionListObject extends BaseAction {
 							wo.setSuperior(superior.getDistinguishedName());
 						}
 					}
+					List<String> controllerList = new ArrayList<>();
+					if(ListTools.isNotEmpty(wo.getControllerList())){
+						for (String ctl : wo.getControllerList()) {
+							Person person = business.person().pick(ctl);
+							if (null != person) {
+								controllerList.add(person.getDistinguishedName());
+							}
+						}
+					}
+					wo.setControllerList(controllerList);
 					wo.setSubDirectIdentityCount(business.identity().countByUnit(wo.getId()));
 					wo.setSubDirectUnitCount(business.unit().countBySuper(wo.getId()));
 					wo.setSubDirectDutyCount(business.unitDuty().countByUnit(wo.getId()));

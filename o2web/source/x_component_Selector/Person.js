@@ -3320,7 +3320,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             this.selector.options.useBreadcrumbs ? "bottom" : "after"
         );
 
-        if (!this.selector.options.expand) this.children.setStyle("display", "none");
+        if (!this.selector.options.expand || this.selector.options.useBreadcrumbs) this.children.setStyle("display", "none");
 
         if( this.selector.options.expandEmptyCategory && !this._hasChildItem() ){ //点击允许展开空分类
             this.children.hide();

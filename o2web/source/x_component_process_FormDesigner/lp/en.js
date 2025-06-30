@@ -1539,7 +1539,15 @@ MWF.xApplication.process.FormDesigner.LP={
 		"allowSelectInput": "Allow input",
 		"valueLength": "length",
 		"maxHeight": "maximum height",
-		"minWidth": "Minimum width"
+		"minWidth": "Minimum width",
+		"showConfig": "Visible configuration",
+		"showConfigInfo": "Set the visible range of this element so that it is visible in any situation",
+		"showConfig_activity": "The specified activity is visible",
+		"showConfig_org": "Visible to designated individuals or organizations",
+		"showConfig_script": "Specify visible range through script",
+		"showActivity": "Visible activities",
+		"showOrg": "Visible individuals or organizations",
+		"showScriptInfo": "Return a Boolean value, true indicates visible, false indicates invisible"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

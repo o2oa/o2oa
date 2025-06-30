@@ -101,7 +101,7 @@ class ActionMerge extends BaseAction {
 					if (null != form) {
 						StoreForm storeForm = new StoreForm();
 						StoreForm mobileStoreForm = new StoreForm();
-						storeForm.setForm(new RelatedForm(form, form.getDataOrMobileData()));
+						storeForm.setForm(new RelatedForm(form, form.getData()));
 						mobileStoreForm.setForm(new RelatedForm(form, form.getMobileDataOrData()));
 						CompletableFuture
 								.allOf(relateForm(business, form, storeForm), relateScript(business, form, storeForm),
@@ -351,7 +351,7 @@ class ActionMerge extends BaseAction {
 					for (String fid : form.getProperties().getRelatedFormList()) {
 						f = business.element().get(fid, Form.class);
 						if (null != f) {
-							map.put(fid, new RelatedForm(f, f.getDataOrMobileData()));
+							map.put(fid, new RelatedForm(f, f.getData()));
 						}
 					}
 				} catch (Exception e) {

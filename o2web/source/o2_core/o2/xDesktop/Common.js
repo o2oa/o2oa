@@ -117,7 +117,7 @@ MWF.xDesktop.loadPortal =  function(portalId, parameters, isLoginPage){
             if (layoutNode) layoutNode.setStyles({
                 "position": "absolute",
                 "width": "100%",
-                "z-index": 100,
+                "z-index": 500,
                 "top": "0px",
                 "left": "0px"
             }).fade("out");
@@ -127,7 +127,9 @@ MWF.xDesktop.loadPortal =  function(portalId, parameters, isLoginPage){
                 "width": "100%",
                 "top": "0px",
                 "opacity": 0,
-                "left": "0px"
+                "z-index": 500,
+                "left": "0px",
+                "height": "100%"
             }).fade("in");
         }
     }, null, true);
