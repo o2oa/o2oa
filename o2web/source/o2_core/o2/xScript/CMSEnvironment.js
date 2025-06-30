@@ -1234,6 +1234,146 @@ MWF.xScript.CMSEnvironment = function(ev){
         }
     };
 
+    var _renderViewContainerMobile = function(title, viewerGenerator, okCallback, notCloseOnOK){
+        const node = new Element('div.mwf_selectView_node');
+        const html = `<div class="mwf_selectView_content invisible" data-o2-element="contentNode">
+                            <div class="mwf_selectView_title">${title || ''}</div>
+                            <div class="mwf_selectView_view" data-o2-element="viewNode"></div>
+                            <div class="mwf_selectView_action">
+                                <oo-button type="light" class="mwf_selectView_action_close hide" data-o2-events="click:selectCancel">${o2.LP.widget.close}</oo-button>
+                                <oo-button type="light" class="mwf_selectView_action_cancel" data-o2-events="click:selectCancel">${o2.LP.widget.cancel}</oo-button>
+                                <oo-button class="mwf_selectView_action_ok" data-o2-events="click:selectOk">${o2.LP.widget.ok}</oo-button>
+                            </div>
+                          </div>`;
+        const o = {
+            selectOk: function(){
+                okCallback && okCallback();
+                if( !notCloseOnOK ){
+                    this.selectCancel();
+                }
+            },
+            selectCancel: function(){
+                this.contentNode.removeClass('visible');
+                this.contentNode.addClass('invisible');
+                window.setTimeout(()=>{
+                    node.destroy();
+                }, 200);
+            }
+        };
+        node.loadHtmlText(html, {module: o});
+        document.body.appendChild(node);
+
+        // MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
+        //     viewer = new MWF.xApplication.query.Query.Viewer(o.viewNode, viewJson, {"style": "select"}, _form.app, _form.Macro);
+        //     viewer.addEvent('selectRow', (row)=>{
+        //         row.node.addClass('selectedRow');
+        //     });
+        //     viewer.addEvent('unselectRow', (row)=>{
+        //         row.node.removeClass('selectedRow');
+        //     });
+        // });
+         viewerGenerator(o.viewNode, o);
+
+        requestAnimationFrame(()=>{
+            o.contentNode.removeClass('invisible');
+            o.contentNode.addClass('visible');
+        });
+        o.contentNode.addEventListener('click', (e)=>{
+            e.stopPropagation();
+        });
+        node.addEventListener('click', ()=>{
+            o.selectCancel();
+        });
+    }
+    this._renderViewContainerMobile = _renderViewContainerMobile;
+
+    var selectViewMobile = function (viewJson, okCallback, dialogOptions, viewOptions, loadedCallback){
+        if(!viewOptions)viewOptions = {"style": "select"};
+        if(!dialogOptions)dialogOptions = {};
+
+        var viewer = null;
+        _renderViewContainerMobile(
+            dialogOptions.title || viewJson.caption,
+            (viewNode)=>{
+                MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
+                    viewer = new MWF.xApplication.query.Query.Viewer(viewNode, viewJson, viewOptions, _form.app, _form.Macro);
+                    viewer.addEvent('selectRow', (row)=>{
+                        row.node.addClass('selectedRow');
+                    });
+                    viewer.addEvent('unselectRow', (row)=>{
+                        row.node.removeClass('selectedRow');
+                    });
+                    if(loadedCallback)loadedCallback(viewer);
+                });
+            },
+            ()=>{
+                if(okCallback)okCallback(viewer.getData());
+            }
+        );
+    };
+    var selectViewPc = function(viewJson, okCallback, dlalogOptions, viewOptions, loadedCallback){
+
+            if(!viewOptions)viewOptions = {"style": "select"};
+
+            var options =  dlalogOptions || {};
+            var width = options.width || viewJson.width || "700";
+            var height = options.height || viewJson.height || "400";
+            var style = options.style || "v10_view";
+            if (layout.mobile){
+                var size = document.body.getSize();
+                width = size.x;
+                height = size.y;
+                style = "viewmobile";
+            }
+
+            var opts = Object.assign({}, options, {
+                title: options.title || viewJson.caption || "select view",
+                style: style,
+                width: width.toInt(),
+                height: height.toInt(),
+                zindex: options.zindex,
+                html: "<div style='height: 100%;'></div>",
+                maxHeightPercent: layout.mobile ? "100%" : "98%",
+                maskNode: layout.mobile ? $(document.body) :  _form.app.content,
+                container: layout.mobile ? $(document.body) : _form.app.content,
+                buttonList: [
+                    {
+                        "text": MWF.LP.process.button.ok,
+                        "action": function(){
+                            //if (callback) callback(_self.view.selectedItems);
+                            if (okCallback) okCallback(_self.view.getData());
+                            this.close();
+                        }
+                    },
+                    {
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function(){this.close();}
+                    }
+                ]
+            });
+
+            var _self = this;
+            MWF.require("MWF.xDesktop.Dialog", function(){
+                var dlg = o2.DL.open(opts);
+                if (layout.mobile){
+                    var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
+                    var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
+                    if (backAction) backAction.addEvent("click", function(e){
+                        dlg.close();
+                    }.bind(this));
+                    if (okAction) okAction.addEvent("click", function(e){
+                        //if (okCallback) okCallback(this.view.selectedItems);
+                        if (okCallback) okCallback(this.view.getData());
+                        dlg.close();
+                    }.bind(this));
+                }
+
+                MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+                    this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, viewOptions, _form.app, _form.Macro);
+                    if(loadedCallback)loadedCallback(this.view);
+                }.bind(this));
+            }.bind(this));
+    };
     this.view = {
         "lookup": function(view, callback, async){
             var filterList = {"filterList": (view.filter || null)};
@@ -1258,92 +1398,122 @@ MWF.xScript.CMSEnvironment = function(ev){
                     }.bind(this)});
             }.bind(this));
         },
-        "select": function(view, callback, options){
-            if (view.view){
+        "select": function(view, okCallback, dialogOptions, viewOptions, loadedCallback){
+            if( view.view || view.viewName || view.name || view.viewId ){
                 var viewJson = {
                     "application": view.application || _form.json.application,
-                    "viewName": view.view || "",
-                    "isTitle": (view.isTitle===false) ? "no" : "yes",
-                    "select": (view.isMulti===false) ? "single" : "multi",
+                    "viewName": view.viewName || view.view || view.name || "",
+                    "isTitle": typeOf( view.isTitle ) === 'string' ? view.isTitle : ((view.isTitle===false) ? "no" : "yes"),
+                    "select": typeOf( view.select ) === 'string' ? view.select : ((view.isMulti===false) ? "single" : "multi"),
                     "filter": view.filter
                 };
-                if (!options) options = {};
-                options.width = view.width;
-                options.height = view.height;
-                options.title = view.caption;
-                var width = options.width || "700";
-                var height = options.height || "400";
-
-                if (layout.mobile){
-                    var size = document.body.getSize();
-                    width = size.x;
-                    height = size.y;
-                    options.style = "viewmobile";
-                }
-                width = width.toInt();
-                height = height.toInt();
-
-                var size = _form.app.content.getSize();
-                var x = (size.x-width)/2;
-                var y = (size.y-height)/2;
-                if (x<0) x = 0;
-                if (y<0) y = 0;
-                if (layout.mobile){
-                    x = 20;
-                    y = 0;
-                }
-
-                var _self = this;
-                MWF.require("MWF.xDesktop.Dialog", function(){
-                    var dlg = new MWF.xDesktop.Dialog({
-                        "title": options.title || "select view",
-                        "style": options.style || "view",
-                        "zindex": options.zindex,
-                        "top": y,
-                        "left": x-20,
-                        "fromTop":y,
-                        "fromLeft": x-20,
-                        "width": width,
-                        "height": height,
-                        "html": "<div style='height: 100%;'></div>",
-                        "maskNode": _form.app.content,
-                        "container": _form.app.content,
-                        "buttonList": [
-                            {
-                                "text": MWF.LP.process.button.ok,
-                                "action": function(){
-                                    //if (callback) callback(_self.view.selectedItems);
-                                    if (callback) callback(_self.view.getData());
-                                    this.close();
-                                }
-                            },
-                            {
-                                "text": MWF.LP.process.button.cancel,
-                                "action": function(){this.close();}
-                            }
-                        ]
-                    });
-                    dlg.show();
-
-                    if (layout.mobile){
-                        var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
-                        var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                        if (backAction) backAction.addEvent("click", function(e){
-                            dlg.close();
-                        }.bind(this));
-                        if (okAction) okAction.addEvent("click", function(e){
-                            //if (callback) callback(this.view.selectedItems);
-                            if (callback) callback(this.view.getData());
-                            dlg.close();
-                        }.bind(this));
+                if( view.hasOwnProperty('viewId') )viewJson.viewId = view.viewId;
+                // if( view.hasOwnProperty('titleStyles') )viewJson.titleStyles = view.titleStyles;
+                // if( view.hasOwnProperty('itemStyles') )viewJson.itemStyles = view.itemStyles;
+                // if( view.hasOwnProperty('isExpand') )viewJson.isExpand = view.isExpand;
+                // if( view.hasOwnProperty('showActionbar') )viewJson.showActionbar = view.showActionbar;
+                // if( view.hasOwnProperty('defaultSelectedScript') )viewJson.defaultSelectedScript = view.defaultSelectedScript;
+                // if( view.hasOwnProperty('selectedAbleScript') )viewJson.selectedAbleScript = view.selectedAbleScript;
+                for( var key in view){
+                    if( !viewJson.hasOwnProperty(key) ){
+                        viewJson[key] = view[key];
                     }
-
-                    MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, {"style": "select"}, _form.app, _form.Macro);
-                    }.bind(this));
-                }.bind(this));
+                }
+                if (layout.mobile && o2.version.dev===10){
+                    selectViewMobile(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
+                }else{
+                    selectViewPc(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
+                }
             }
         }
+    }
+
+
+    var selectStatementMobile = function (statementJson, okCallback, dialogOptions, statementOptions, loadedCallback){
+        if(!statementOptions)statementOptions = {"style": "select"};
+        if(!dialogOptions)dialogOptions = {};
+
+        var viewer = null;
+        _renderViewContainerMobile(
+            dialogOptions.title || statementJson.caption,
+            (viewNode)=>{
+                MWF.xDesktop.requireApp("query.Query", "Statement", ()=>{
+                    viewer = new MWF.xApplication.query.Query.Statement( viewNode, statementJson, statementOptions, _form.app, _form.Macro);
+                    viewer.addEvent('selectRow', (row)=>{
+                        row.node.addClass('selectedRow');
+                    });
+                    viewer.addEvent('unselectRow', (row)=>{
+                        row.node.removeClass('selectedRow');
+                    });
+                    if(loadedCallback)loadedCallback(viewer);
+                });
+            },
+            ()=>{
+                if(callback)callback(viewer.getData());
+            }
+        );
+    };
+    var selectStatementPc = function(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback){
+
+        if(!statementOptions)statementOptions = {"style": "select"};
+
+        var options =  dialogOptions || {};
+        var width = options.width || statementJson.width || "700";
+        var height = options.height || statementJson.height || "400";
+        var style = options.style || "v10_view";
+
+        if (layout.mobile){
+            var size = document.body.getSize();
+            width = size.x;
+            height = size.y;
+            style = "viewmobile";
+        }
+
+        var opts = Object.assign({}, options, {
+            title: options.title || statementJson.caption || "select view",
+            style: style,
+            width: width.toInt(),
+            height: height.toInt(),
+            zindex: options.zindex,
+            html: "<div style='height: 100%;'></div>",
+            maxHeightPercent: layout.mobile ? "100%" : "98%",
+            maskNode: layout.mobile ? $(document.body) :  _form.app.content,
+            container: layout.mobile ? $(document.body) : _form.app.content,
+            buttonList: [
+                {
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        //if (callback) callback(_self.view.selectedItems);
+                        if (okCallback) okCallback(_self.statement.getData());
+                        this.close();
+                    }
+                },
+                {
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){this.close();}
+                }
+            ]
+        });
+        var _self = this;
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var dlg = o2.DL.open(opts);
+            if (layout.mobile){
+                var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
+                var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
+                if (backAction) backAction.addEvent("click", function(e){
+                    dlg.close();
+                }.bind(this));
+                if (okAction) okAction.addEvent("click", function(e){
+                    if (okCallback) okCallback(this.statement.getData());
+                    dlg.close();
+                }.bind(this));
+            }
+
+            MWF.xDesktop.requireApp("query.Query", "Statement", function () {
+                this.statement = new MWF.xApplication.query.Query.Statement(dlg.content.getFirst(), statementJson, statementOptions, _form.app, _form.Macro);
+                if(loadedCallback)loadedCallback(this.statement);
+            }.bind(this));
+        }.bind(this));
     };
 
     this.statement = {
@@ -1456,92 +1626,34 @@ MWF.xScript.CMSEnvironment = function(ev){
             }
             return parameter;
         },
-        "select": function (statement, callback, options) {
-            if (statement.name) {
-                // var parameter = this.parseParameter(statement.parameter);
-                // var filterList = this.parseFilter(statement.filter, parameter);
+        "select": function(statement, okCallback, dialogOptions, statementOptions, loadedCallback){
+            if( statement.name || statement.statementName || statement.statementId || statement.statement ) {
                 var statementJson = {
-                    "statementId": statement.name || "",
-                    "isTitle": (statement.isTitle === false) ? "no" : "yes",
-                    "select": (statement.isMulti === false) ? "single" : "multi",
+                    "application": statement.application || _form.json.application,
+                    "statementName": statement.statementName || statement.name || statement.statement || "",
+                    "isTitle": typeOf(statement.isTitle) === 'string' ? statement.isTitle : ((statement.isTitle === false) ? "no" : "yes"),
+                    "select": typeOf(statement.select) === 'string' ? statement.select : ((statement.isMulti === false) ? "single" : "multi"),
                     "filter": statement.filter,
                     "parameter": statement.parameter
                 };
-                if (!options) options = {};
-                options.width = statement.width;
-                options.height = statement.height;
-                options.title = statement.caption;
-
-                var width = options.width || "700";
-                var height = options.height || "400";
-
-                if (layout.mobile) {
-                    var size = document.body.getSize();
-                    width = size.x;
-                    height = size.y;
-                    options.style = "viewmobile";
-                }
-                width = width.toInt();
-                height = height.toInt();
-
-                var size = _form.app.content.getSize();
-                var x = (size.x - width) / 2;
-                var y = (size.y - height) / 2;
-                if (x < 0) x = 0;
-                if (y < 0) y = 0;
-                if (layout.mobile) {
-                    x = 20;
-                    y = 0;
-                }
-
-                var _self = this;
-                MWF.require("MWF.xDesktop.Dialog", function () {
-                    var dlg = new MWF.xDesktop.Dialog({
-                        "title": options.title || "select statement view",
-                        "style": options.style || "view",
-                        "top": y,
-                        "left": x - 20,
-                        "fromTop": y,
-                        "fromLeft": x - 20,
-                        "width": width,
-                        "height": height,
-                        "html": "<div style='height: 100%;'></div>",
-                        "maskNode": _form.app.content,
-                        "container": _form.app.content,
-                        "buttonList": [
-                            {
-                                "text": MWF.LP.process.button.ok,
-                                "action": function () {
-                                    //if (callback) callback(_self.view.selectedItems);
-                                    if (callback) callback(_self.statement.getData());
-                                    this.close();
-                                }
-                            },
-                            {
-                                "text": MWF.LP.process.button.cancel,
-                                "action": function () { this.close(); }
-                            }
-                        ]
-                    });
-                    dlg.show();
-
-                    if (layout.mobile) {
-                        var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
-                        var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                        if (backAction) backAction.addEvent("click", function (e) {
-                            dlg.close();
-                        }.bind(this));
-                        if (okAction) okAction.addEvent("click", function (e) {
-                            //if (callback) callback(this.view.selectedItems);
-                            if (callback) callback(this.statement.getData());
-                            dlg.close();
-                        }.bind(this));
+                if (statement.name)statementJson.statementId = statement.statementId;
+                if (statement.statementId) statementJson.statementId = statement.statementId;
+                // if (statement.hasOwnProperty('titleStyles')) statementJson.titleStyles = statement.titleStyles;
+                // if (statement.hasOwnProperty('itemStyles')) statementJson.itemStyles = statement.itemStyles;
+                // if (statement.hasOwnProperty('isExpand')) statementJson.isExpand = statement.isExpand;
+                // if (statement.hasOwnProperty('showActionbar')) statementJson.showActionbar = statement.showActionbar;
+                // if (statement.hasOwnProperty('defaultSelectedScript')) statementJson.defaultSelectedScript = statement.defaultSelectedScript;
+                // if (statement.hasOwnProperty('selectedAbleScript')) statementJson.selectedAbleScript = statement.selectedAbleScript;
+                for (var key in statement) {
+                    if (!statementJson.hasOwnProperty(key)) {
+                        statementJson[key] = statement[key];
                     }
-
-                    MWF.xDesktop.requireApp("query.Query", "Statement", function () {
-                        this.statement = new MWF.xApplication.query.Query.Statement(dlg.content.getFirst(), statementJson, { "style": "select" }, _form.app, _form.Macro);
-                    }.bind(this));
-                }.bind(this));
+                }
+                if (layout.mobile && o2.version.dev === 10) {
+                    selectStatementMobile(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
+                } else {
+                    selectStatementPc(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
+                }
             }
         }
     };

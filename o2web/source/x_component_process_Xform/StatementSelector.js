@@ -217,6 +217,8 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
 
         this.fireEvent("beforeLoadView", [viewJson]);
 
+        debugger;
+
         this.form.Macro.environment.statement.select(viewJson, callback, dlgOptions, viewOptions, (viewer)=>{
             this.view = viewer;
         });

@@ -1872,12 +1872,13 @@ MWF.xScript.Environment = function(ev){
         }
     };
 
-    var _renderViewContainerMobile = function(title, viewerGenerator, okCallback){
+    var _renderViewContainerMobile = function(title, viewerGenerator, okCallback, notCloseOnOK){
         const node = new Element('div.mwf_selectView_node');
         const html = `<div class="mwf_selectView_content invisible" data-o2-element="contentNode">
                             <div class="mwf_selectView_title">${title || ''}</div>
                             <div class="mwf_selectView_view" data-o2-element="viewNode"></div>
                             <div class="mwf_selectView_action">
+                                <oo-button type="light" class="mwf_selectView_action_close hide" data-o2-events="click:selectCancel">${o2.LP.widget.close}</oo-button>
                                 <oo-button type="light" class="mwf_selectView_action_cancel" data-o2-events="click:selectCancel">${o2.LP.widget.cancel}</oo-button>
                                 <oo-button class="mwf_selectView_action_ok" data-o2-events="click:selectOk">${o2.LP.widget.ok}</oo-button>
                             </div>
@@ -1885,7 +1886,9 @@ MWF.xScript.Environment = function(ev){
         const o = {
             selectOk: function(){
                 okCallback && okCallback();
-                this.selectCancel();
+                if( !notCloseOnOK ){
+                    this.selectCancel();
+                }
             },
             selectCancel: function(){
                 this.contentNode.removeClass('visible');
@@ -1907,7 +1910,7 @@ MWF.xScript.Environment = function(ev){
         //         row.node.removeClass('selectedRow');
         //     });
         // });
-         viewerGenerator(o.viewNode);
+         viewerGenerator(o.viewNode, o);
 
         requestAnimationFrame(()=>{
             o.contentNode.removeClass('invisible');
@@ -1919,7 +1922,8 @@ MWF.xScript.Environment = function(ev){
         node.addEventListener('click', ()=>{
             o.selectCancel();
         });
-    };
+    }
+    this._renderViewContainerMobile = _renderViewContainerMobile;
 
     var selectViewMobile = function (viewJson, okCallback, dialogOptions, viewOptions, loadedCallback){
         if(!viewOptions)viewOptions = {"style": "select"};
@@ -2033,10 +2037,10 @@ MWF.xScript.Environment = function(ev){
             }.bind(this));
         },
         "select": function(view, okCallback, dialogOptions, viewOptions, loadedCallback){
-            if( view.view || view.viewName || view.viewId ){
+            if( view.view || view.viewName || view.name || view.viewId ){
                 var viewJson = {
                     "application": view.application || _form.json.application,
-                    "viewName": view.viewName || view.view || "",
+                    "viewName": view.viewName || view.view || view.name || "",
                     "isTitle": typeOf( view.isTitle ) === 'string' ? view.isTitle : ((view.isTitle===false) ? "no" : "yes"),
                     "select": typeOf( view.select ) === 'string' ? view.select : ((view.isMulti===false) ? "single" : "multi"),
                     "filter": view.filter
@@ -2064,7 +2068,7 @@ MWF.xScript.Environment = function(ev){
 
 
     var selectStatementMobile = function (statementJson, okCallback, dialogOptions, statementOptions, loadedCallback){
-            if(!statementJson)statementJson = {"style": "select"};
+            if(!statementOptions)statementOptions = {"style": "select"};
             if(!dialogOptions)dialogOptions = {};
 
             var viewer = null;
@@ -2264,11 +2268,11 @@ MWF.xScript.Environment = function(ev){
             if( statement.name || statement.statementName || statement.statementId || statement.statement ) {
                 var statementJson = {
                     "application": statement.application || _form.json.application,
-                    "statementName": statement.statementName || statement.statement || "",
+                    "statementName": statement.statementName || statement.name || statement.statement || "",
                     "isTitle": typeOf(statement.isTitle) === 'string' ? statement.isTitle : ((statement.isTitle === false) ? "no" : "yes"),
                     "select": typeOf(statement.select) === 'string' ? statement.select : ((statement.isMulti === false) ? "single" : "multi"),
                      "filter": statement.filter,
-                     "parameter": statement.parameter,
+                     "parameter": statement.parameter
                 };
                 if (statement.name)statementJson.statementId = statement.statementId;
                 if (statement.statementId) statementJson.statementId = statement.statementId;
