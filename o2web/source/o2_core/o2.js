@@ -95,7 +95,7 @@ if (!window.o2) {
 
         if (_par) {
             var _parList = _par.split("&");
-            for (var i = 0; i < _parList.length; i++) {resetContentNode
+            for (var i = 0; i < _parList.length; i++) {
                 var _v = _parList[i];
                 var _kv = _v.split("=");
                 if (_kv[0].toLowerCase() === "lg") _lp = _kv[1];

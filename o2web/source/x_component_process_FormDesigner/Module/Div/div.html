@@ -22,6 +22,54 @@
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">{{$.lp.showConfig}}</div>
+        <div style="padding: 5px; color: #999999; ">{{$.lp.showConfigInfo}}</div>
+        
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f3f3f3;">
+            <label><input name="showByActivity" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}showByActivityArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}showByActivityArea').setStyle('display', 'none');
+            }"/>{{$.lp.showConfig_activity}}</label>
+        </div>
+        <table id="text{$.pid}showByActivityArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.showByActivity && $.showByActivity=='true')?'block':'none'}">
+            <tr>
+                <td class="editTableTitle">{{$.lp.showActivity}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonMultiple" name="identityValue"></div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f3f3f3;">
+            <label><input name="showByOrg" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}showByOrgArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}showByOrgArea').setStyle('display', 'none');
+            }"/>{{$.lp.showConfig_org}}</label>
+        </div>
+        <table id="text{$.pid}showByOrgArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.showByOrg && $.showByOrg=='true')?'block':'none'}">
+            <tr>
+                <td class="editTableTitle">{{$.lp.showOrg}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonMultiple" name="showByOrgValue"></div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f3f3f3;">
+            <label><input name="showByScript" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}showByScriptArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}showByScriptArea').setStyle('display', 'none');
+            }"/>{{$.lp.showConfig_script}}</label>
+        </div>
+        <div id="text{$.pid}showByScriptArea" style="display: text{($.showByScript && $.showByScript=='true')?'block':'none'}">
+            <div class="MWFScriptArea" name="defaultValue" title="{{$.lp.showScript}} (S)"></div>
+            <div style="padding: 5px; color: #999999;">{{$.lp.showScriptInfo}}</div>
+        </div>
+
+
     </div>
     <div title="{{$.lp.event}}"  class="MWFTab">
         <div class="MWFEventsArea" name="events"></div>
