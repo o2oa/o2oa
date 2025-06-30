@@ -11,6 +11,7 @@ MWF.xDesktop.UserData = MWF.UD = {
         if (!this.action) this.getAction();
         return this.action.getUserData(name, function(json){
             if (callback) callback(json);
+            return json;
         }, null, async);
     },
     getDataJson: function(name, callback, async){
@@ -23,6 +24,7 @@ MWF.xDesktop.UserData = MWF.UD = {
                 }catch(e){}
             }
             if (callback) callback(returnJson);
+            return returnJson;
         }, null, async);
     },
 
@@ -30,6 +32,7 @@ MWF.xDesktop.UserData = MWF.UD = {
         if (!this.action) this.getAction();
         return this.action.putUserData(name, data, function(json){
             if (callback) callback(json);
+            return json;
         }, null, async)
 
         // this.action.invoke({"name": "putUserData", "async": async, "data": data, "parameter": {"name": name}, "success": function(json){
@@ -40,6 +43,7 @@ MWF.xDesktop.UserData = MWF.UD = {
         if (!this.action) this.getAction();
         return this.action.deleteUserData(name, function(json){
             if (callback) callback(json);
+            return json;
         }, null, async)
 
         // this.action.invoke({"name": "deleteUserData", "async": async, "parameter": {"name": name}, "success": function(json){
@@ -57,6 +61,7 @@ MWF.xDesktop.UserData = MWF.UD = {
                 }catch(e){}
             }
             if (callback) callback(returnJson);
+            return returnJson;
         }, null, async)
 
         // this.action.invoke({"name": "getPublicUserData", "async": async, "parameter": {"name": name}, "success": function(json){
@@ -76,6 +81,7 @@ MWF.xDesktop.UserData = MWF.UD = {
                     callback(json);
                 }
             }
+            return json;
         }, function(xhr, text, error){
             if (xhr.status!=0){
                 var errorText = error;
@@ -120,6 +126,7 @@ MWF.xDesktop.UserData = MWF.UD = {
         if (!this.action) this.getAction();
         return this.action.deletePublicUserData(name, function(json){
             if (callback) callback(json);
+            return json;
         }, null, async);
 
         // this.action.invoke({"name": "deletePublicUserData", "async": async, "parameter": {"name": name}, "success": function(json){

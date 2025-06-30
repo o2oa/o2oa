@@ -305,6 +305,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
 
             this.getProcessData(function(){
                 this.loadPaper();
+                this.loadDesignerBreadcrumb();
             }.bind(this));
         }.bind(this));
         this.resizeNode();
@@ -836,5 +837,35 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
         }, {
             "navi": 1
         });
-    }
+    },
+    loadDesignerBreadcrumb: function (){
+        MWF.xDesktop.requireApp("process.ProcessManager", "DesignerBreadcrumb", function (){
+            this.designerBreadcrumbNode = this.processToolbar.node.getElement('#O2DesignerBreadcrumbNode');
+            this.breadcrumb = new o2DesignerBreadcrumb(this.designerBreadcrumbNode, this, {
+                pathlist: [
+                    {
+                        name: '流程管理',
+                        id: 'process.ApplicationExplorer',
+                        type: 'app-category'
+                    },
+                    {
+                        name: this.processData.applicationName,
+                        id: this.processData.application,
+                        type: 'app'
+                    },
+                    {
+                        name: '流程设计',
+                        id: 'process.ProcessDesigner',
+                        type: 'desiginer-category'
+                    },
+                    {
+                        name: this.processData.name,
+                        id: this.processData.id,
+                        type: 'desiginer'
+                    }]
+            });
+            this.breadcrumb.load();
+        }.bind(this), true);
+    },
+
 });

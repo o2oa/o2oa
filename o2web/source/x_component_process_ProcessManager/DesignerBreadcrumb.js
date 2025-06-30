@@ -27,6 +27,29 @@ var _ooiconMap = {
     'service.ScriptDesigner': 'jiaoben',
     'service.DictionaryDesigner': 'js'
 };
+var _appNameMap = {
+    'portal.PageDesigner': '门户页面',
+    'portal.WidgetDesigner': '门户部件',
+    'portal.DictionaryDesigner': '门户数据字典',
+    'portal.ScriptDesigner': '门户脚本',
+    'process.FormDesigner': '流程表单',
+    'process.ProcessDesigner': '流程设计',
+    'process.DictionaryDesigner': '流程数据字典',
+    'process.ScriptDesigner': '流程脚本',
+    'cms.CategoryManager': '内容管理分类',
+    'cms.FormDesigner': '内容管理表单',
+    'cms.DictionaryDesigner': '内容管理数据字典',
+    'cms.ScriptDesigner': '内容管理脚本',
+    'query.ViewDesigner': '视图配置',
+    'query.StatDesigner': '统计配置',
+    'query.TableDesigner': '数据表',
+    'query.StatementDesigner': '查询配置',
+    'query.ImporterDesigner': '导入模型',
+    'service.AgentDesigner': '代理',
+    'service.InvokeDesigner': '接口',
+    'service.ScriptDesigner': '服务中心脚本',
+    'service.DictionaryDesigner': '服务中心数据字典'
+};
 
 var RECENTLY_DESIGNER_NAME = 'RecentlyOpenedDesigner';
 var RECENTLY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
@@ -952,10 +975,11 @@ var o2DesignerConfig = {
                 },
                 listAction: () => {
                     return o2.UD.getDataJson(RECENTLY_DESIGNER_NAME).then((items) => {
-                        return _sort(items, 'time', true).map((item) => {
+                        return _sort(items || [], 'time', true).map((item) => {
                             return {
                                 ...item,
-                                icon: _ooiconMap[item.app] || ''
+                                ooicon: _ooiconMap[item.app] || '',
+                                title: (item.applicationName || '') + ' ' + _appNameMap[item.app] + ' ' + item.app
                             };
                         });
                     })
@@ -1010,21 +1034,24 @@ var o2DesignerBreadcrumb = new Class({
         return item;
     },
     addToRecently: function(){
-        var path = this.options.pathlist.getLast();
+        var pathlist = this.options.pathlist;
+        var path = pathlist.getLast();
+        var applicationName = pathlist.length === 4 ? pathlist[1].name : pathlist[0].name;
         if( path.id ){
             o2.UD.getDataJson(RECENTLY_DESIGNER_NAME).then((items) => {
-                var list = _sort(items, 'time', true).filter((item) => {
-                    item.id !== path.id;
+                var list = _sort(items || [], 'time', true).filter((item) => {
+                    return item.id !== path.id;
                 });
                 list.unshift({
+                    applicationName: applicationName,
                     app: this.app.options.name,
                     id: path.id,
                     name: path.name,
                     time: new Date().getTime(),
                     timeString: new Date().format('db')
                 });
-                list.length > RECENTLY_DESIGNER_MAX_COUNT && (list.length = RECENTLY_DESIGNER_MAX_COUNT);
-                o2.UD.putData(RECENTLY_DESIGNER_NAME, JSON.stringify(list));
+                (list.length > RECENTLY_DESIGNER_MAX_COUNT) && (list.length = RECENTLY_DESIGNER_MAX_COUNT);
+                o2.UD.putData(RECENTLY_DESIGNER_NAME, list);
             });
         }
     }
