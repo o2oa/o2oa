@@ -1961,6 +1961,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
         var dictionaryNodes = this.propertyContent.getElements(".MWFDictionarySelect");
         var queryImportModelNodes = this.propertyContent.getElements(".MWFQueryImportModelSelect");
+        var processActivityNodes = this.propertyContent.getElements(".MWFProcessActivitySelect");
 
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
@@ -2290,6 +2291,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "onChange": function(ids){this.saveFileItem(node, ids);}.bind(this)
                 });
             }.bind(this));
+
+            processActivityNodes.each(function(node){
+                var d = this.data[node.get("name")];
+                var data = d || [];
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "ProcessActivity",
+                    "names": data,
+                    "onChange": function(ids){
+                        var values = [];
+                        ids.each(function(id){
+                            values.push(id.data);
+                        }.bind(this));
+                        var name = node.get("name");
+                        var oldValue = this.data[name];
+                        this.data[name] = values;
+                        this.checkHistory(name, oldValue, this.data[name]);
+                    }.bind(this)
+                });
+            });
 
             cmsFileNodes.each(function(node){
                 var d = this.data[node.get("name")];

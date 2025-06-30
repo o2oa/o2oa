@@ -36,7 +36,7 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.showActivity}}:</td>
                 <td class="editTableValue">
-                    <div class="MWFPersonMultiple" name="identityValue"></div>
+                    <div class="MWFPersonMultiple" name="identityValue" data-types="person,unit"></div>
                 </td>
             </tr>
         </table>
@@ -48,11 +48,11 @@
                 $('text{$.pid}showByOrgArea').setStyle('display', 'none');
             }"/>{{$.lp.showConfig_org}}</label>
         </div>
-        <table id="text{$.pid}showByOrgArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.showByOrg && $.showByOrg=='true')?'block':'none'}">
+        <table id="text{$.pid}showByOrgArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.showByOrg && $.showByOrg=='true')?'block':'block'}">
             <tr>
                 <td class="editTableTitle">{{$.lp.showOrg}}:</td>
                 <td class="editTableValue">
-                    <div class="MWFPersonMultiple" name="showByOrgValue"></div>
+                    <div class="MWFPersonMultiple" name="showByOrgValue" data-types="person,unit"></div>
                 </td>
             </tr>
         </table>
