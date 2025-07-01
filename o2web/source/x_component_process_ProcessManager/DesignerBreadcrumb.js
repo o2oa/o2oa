@@ -1,3 +1,4 @@
+o2.require("o2.widget.PinYin", null, false);
 var _portalAction = o2.Actions.load('x_portal_assemble_designer');
 var _processAction = o2.Actions.load('x_processplatform_assemble_designer');
 var _cmsAction = o2.Actions.load('x_cms_assemble_control');
@@ -62,6 +63,13 @@ var _checkClass = (dom, clazz, flag)=>{
         dom.hasClass(clazz) && dom.removeClass(clazz);
 };
 
+var _toPY = (item)=>{
+    return `${item.name}`.toPY().toLowerCase() + '#' +
+        `${item.alias||''}`.toPY().toLowerCase() + '#' +
+        `${item.name}`.toPYFirst().toLowerCase() + '#' +
+        `${item.alias||''}`.toPYFirst().toLowerCase() + '#';
+};
+
 var _sort =  (data, key='name', isDesc=false)=>{
     return data.sort(function (a, b){
         var av = !!key ? a[key] : a, bv = !!key ? b[key] : b;
@@ -103,10 +111,9 @@ var o2DesignerConfig = {
                         return _sort(json.data, 'name').map((item) => {
                             return {
                                 ...item,
+                                pinyin: _toPY(item),
                                 category: item.portalCategory,
                                 defaultIcon: '../x_component_portal_PortalExplorer/$Main/default/icon/application.png',
-                                name: item.name,
-                                id: item.id,
                                 type: 'app'
                             };
                         });
@@ -137,8 +144,8 @@ var o2DesignerConfig = {
                                     return _sort(pages.data).map((page) => {
                                         return {
                                             ...page,
-                                            name: page.name,
-                                            id: page.id
+                                            appid: appid,
+                                            pinyin: _toPY(page)
                                         };
                                     });
                                 })
@@ -169,9 +176,9 @@ var o2DesignerConfig = {
                                 return _portalAction.WidgetAction.listWithPortal(appid).then((widgets) => {
                                     return _sort(widgets.data).map((widget) => {
                                         return {
-                                            name: widget.name,
-                                            icon: '',
-                                            id: widget.id
+                                            ...widget,
+                                            appid: appid,
+                                            pinyin: _toPY(widget)
                                         };
                                     });
                                 })
@@ -204,10 +211,9 @@ var o2DesignerConfig = {
                                 return _portalAction.DictAction.listWithApplication(appid).then((dicts) => {
                                     return _sort(dicts.data).map((dict) => {
                                         return {
-                                            name: dict.name,
-                                            icon: '',
-                                            id: dict.id,
-                                            appid: appid
+                                            ...dict,
+                                            appid: appid,
+                                            pinyin: _toPY(dict)
                                         };
                                     });
                                 })
@@ -239,10 +245,9 @@ var o2DesignerConfig = {
                                 return _portalAction.ScriptAction.listWithPortal(appid).then((scripts) => {
                                     return _sort(scripts.data).map((script) => {
                                         return {
-                                            name: script.name,
-                                            icon: '',
-                                            id: script.id,
-                                            appid: appid
+                                            ...script,
+                                            appid: appid,
+                                            pinyin: _toPY(script)
                                         };
                                     });
                                 })
@@ -290,10 +295,9 @@ var o2DesignerConfig = {
                             return {
                                 ...item,
                                 category: item.applicationCategory,
-                                name: item.name,
                                 defaultIcon: '../x_component_process_ApplicationExplorer/$Main/default/icon/application.png',
-                                id: item.id,
-                                type: 'app'
+                                type: 'app',
+                                pinyin: _toPY(item)
                             };
                         });
                     })
@@ -323,8 +327,8 @@ var o2DesignerConfig = {
                                     return _sort(forms.data).map((form) => {
                                         return {
                                             ...form,
-                                            name: form.name,
-                                            id: form.id
+                                            appid: appid,
+                                            pinyin: _toPY(form)
                                         };
                                     });
                                 })
@@ -355,12 +359,12 @@ var o2DesignerConfig = {
                                 return _processAction.ProcessAction.listWithApplication(appid).then((processes) => {
                                     return _sort(processes.data).map((process) => {
                                         return {
-                                            name: process.name,
-                                            icon: '',
-                                            id: process.id
+                                            ...process,
+                                            appid: appid,
+                                            pinyin: _toPY(process)
                                         };
                                     });
-                                })
+                                });
                             }
                         }]
                     }, {
@@ -380,20 +384,15 @@ var o2DesignerConfig = {
                             label: '数据字典',
                             type: 'designer',
                             handleClick: (dict) => {
-                                _openApp('process.DictionaryDesigner', null, {
-                                    id: dict.id, application: {
-                                        id: dict.appid
-                                    }
-                                });
+                                _openApp('process.DictionaryDesigner', null, { id: dict.id, application: { id: dict.appid } });
                             },
                             listAction: (appid) => {
                                 return _processAction.ApplicationDictAction.listWithApplication(appid).then((dicts) => {
                                     return _sort(dicts.data).map((dict) => {
                                         return {
-                                            name: dict.name,
-                                            icon: '',
-                                            id: dict.id,
-                                            appid: appid
+                                            ...dict,
+                                            appid: appid,
+                                            pinyin: _toPY(dict)
                                         };
                                     });
                                 })
@@ -425,10 +424,9 @@ var o2DesignerConfig = {
                                 return _processAction.ScriptAction.listWithApplication(appid).then((scripts) => {
                                     return _sort(scripts.data).map((script) => {
                                         return {
-                                            name: script.name,
-                                            icon: '',
-                                            id: script.id,
-                                            appid: appid
+                                            ...script,
+                                            appid: appid,
+                                            pinyin: _toPY(script)
                                         };
                                     });
                                 })
@@ -476,11 +474,12 @@ var o2DesignerConfig = {
                             return {
                                 ...item,
                                 category: item.appType,
+                                alias: item.appAlias,
                                 name: item.appName,
                                 icon: item.appIcon,
                                 defaultIcon: '../x_component_cms_Column/$Main/default/icon/column.png',
-                                id: item.id,
-                                type: 'app'
+                                type: 'app',
+                                pinyin: _toPY({alias: item.appAlias, name: item.appName})
                             };
                         });
                     })
@@ -508,10 +507,11 @@ var o2DesignerConfig = {
                                 return _cmsAction.CategoryInfoAction.listViewableCategoryInfo_AllType(appid).then((categorys) => {
                                     return _sort(categorys.data).map((category) => {
                                         return {
+                                            ...category,
+                                            alias: category.categoryAlias,
                                             name: category.categoryName,
-                                            icon: '',
-                                            id: category.id,
-                                            appid: category.appId
+                                            appid: category.appId,
+                                            pinyin: _toPY({alias: category.categoryAlias, name: category.categoryName})
                                         };
                                     });
                                 })
@@ -541,10 +541,9 @@ var o2DesignerConfig = {
                                 return _cmsAction.FormAction.listFormByAppId(appid).then((forms) => {
                                     return _sort(forms.data).map((form) => {
                                         return {
-                                            name: form.name,
-                                            icon: '',
-                                            id: form.id,
-                                            appid: appid
+                                            ...form,
+                                            appid: appid,
+                                            pinyin: _toPY(form)
                                         };
                                     });
                                 })
@@ -568,19 +567,16 @@ var o2DesignerConfig = {
                             type: 'designer',
                             handleClick: (dict) => {
                                 _openApp('cms.DictionaryDesigner', null, {
-                                    id: dict.id, application: {
-                                        id: dict.appid
-                                    }
+                                    id: dict.id, application: { id: dict.appid }
                                 });
                             },
                             listAction: (appid) => {
                                 return _cmsAction.AppDictDesignAction.listWithAppInfo(appid).then((dicts) => {
                                     return _sort(dicts.data).map((dict) => {
                                         return {
-                                            name: dict.name,
-                                            icon: '',
-                                            id: dict.id,
-                                            appid: appid
+                                            ...dict,
+                                            appid: appid,
+                                            pinyin: _toPY(dict)
                                         };
                                     });
                                 })
@@ -609,10 +605,9 @@ var o2DesignerConfig = {
                                 return _cmsAction.ScriptAction.listWithApplication(appid).then((scripts) => {
                                     return _sort(scripts.data).map((script) => {
                                         return {
-                                            name: script.name,
-                                            icon: '',
-                                            id: script.id,
-                                            appid: appid
+                                            ...script,
+                                            appid: appid,
+                                            pinyin: _toPY(script)
                                         };
                                     });
                                 })
@@ -661,9 +656,8 @@ var o2DesignerConfig = {
                                 ...item,
                                 category: item.queryCategory,
                                 defaultIcon: '../x_component_query_QueryExplorer/$Main/default/icon/application.png',
-                                name: item.name,
-                                id: item.id,
-                                type: 'app'
+                                type: 'app',
+                                pinyin: _toPY(item)
                             };
                         });
                     })
@@ -691,10 +685,9 @@ var o2DesignerConfig = {
                                 return _queryAction.ViewAction.listWithQuery(appid).then((views) => {
                                     return _sort(views.data).map((view) => {
                                         return {
-                                            name: view.name,
-                                            icon: '',
-                                            id: view.id,
-                                            appid: appid
+                                            ...view,
+                                            appid: appid,
+                                            pinyin: _toPY(view)
                                         };
                                     });
                                 })
@@ -724,10 +717,9 @@ var o2DesignerConfig = {
                                 return _queryAction.StatAction.listWithQuery(appid).then((stats) => {
                                     return _sort(stats.data).map((stat) => {
                                         return {
-                                            name: stat.name,
-                                            icon: '',
-                                            id: stat.id,
-                                            appid: appid
+                                            ...stat,
+                                            appid: appid,
+                                            pinyin: _toPY(stat)
                                         };
                                     });
                                 })
@@ -760,10 +752,9 @@ var o2DesignerConfig = {
                                 return _queryAction.TableAction.listWithQuery(appid).then((tables) => {
                                     return _sort(tables.data).map((table) => {
                                         return {
-                                            name: table.name,
-                                            icon: '',
-                                            id: table.id,
-                                            appid: appid
+                                            ...table,
+                                            appid: appid,
+                                            pinyin: _toPY(table)
                                         };
                                     });
                                 })
@@ -795,10 +786,9 @@ var o2DesignerConfig = {
                                 return _queryAction.StatementAction.listWithQuery(appid).then((statements) => {
                                     return _sort(statements.data).map((statement) => {
                                         return {
-                                            name: statement.name,
-                                            icon: '',
-                                            id: statement.id,
-                                            appid: appid
+                                            ...statement,
+                                            appid: appid,
+                                            pinyin: _toPY(statement)
                                         };
                                     });
                                 })
@@ -829,10 +819,9 @@ var o2DesignerConfig = {
                                 return _queryAction.ImportModelAction.listWithQuery(appid).then((items) => {
                                     return _sort(items.data).map((item) => {
                                         return {
-                                            name: item.name,
-                                            icon: '',
-                                            id: item.id,
-                                            appid: appid
+                                            ...item,
+                                            appid: appid,
+                                            pinyin: _toPY(item)
                                         };
                                     });
                                 })
@@ -875,12 +864,11 @@ var o2DesignerConfig = {
                         _openApp('service.AgentDesigner', null, {id: item.id});
                     },
                     listAction: () => {
-                        return _serviceAction.AgentAction.list().then((pages) => {
-                            return _sort(pages.data).map((page) => {
+                        return _serviceAction.AgentAction.list().then((agents) => {
+                            return _sort(agents.data).map(agent=>{
                                 return {
-                                    name: page.name,
-                                    icon: '',
-                                    id: page.id
+                                    ...agent,
+                                    pinyin: _toPY(agent)
                                 };
                             });
                         })
@@ -908,10 +896,10 @@ var o2DesignerConfig = {
                         },
                         listAction: () => {
                             return _serviceAction.InvokeAction.list().then((items) => {
-                                return _sort(items.data).map((item) => {
+                                return _sort(items.data).map(item=>{
                                     return {
-                                        name: item.name,
-                                        id: item.id
+                                        ...item,
+                                        pinyin: _toPY(item)
                                     };
                                 });
                             })
@@ -937,11 +925,10 @@ var o2DesignerConfig = {
                         },
                         listAction: () => {
                             return _serviceAction.ScriptAction.list().then((items) => {
-                                return _sort(items.data).map((item) => {
+                                return _sort(items.data).map(item=>{
                                     return {
-                                        name: item.name,
-                                        icon: '',
-                                        id: item.id
+                                        ...item,
+                                        pinyin: _toPY(item)
                                     };
                                 });
                             })
@@ -967,14 +954,13 @@ var o2DesignerConfig = {
                         },
                         listAction: () => {
                             return _serviceAction.DictAction.list().then((items) => {
-                                return _sort(items.data).map((item) => {
+                                return _sort(items.data).map(item=>{
                                     return {
-                                        name: item.name,
-                                        icon: '',
-                                        id: item.id
+                                        ...item,
+                                        pinyin: _toPY(item)
                                     };
                                 });
-                            })
+                            });
                         }
                     }]
                 }]
@@ -997,7 +983,7 @@ var o2DesignerConfig = {
             type: 'app-category',
             autoRefresh: true,
             children: [{
-                label: '脚本配置',
+                label: '最近打开',
                 type: 'designer',
                 handleClick: (item) => {
                     _openApp(item.app, null, { id: item.id, application: {id: item.appid} });
@@ -1007,6 +993,7 @@ var o2DesignerConfig = {
                         return _sort(items || [], 'time', true).map((item) => {
                             return {
                                 ...item,
+                                pinyin: _toPY(item),
                                 ooicon: _ooiconMap[item.app] || '',
                                 title: (item.applicationName || '') + ' ' + _appNameMap[item.app] + ' ' + item.app
                             };
@@ -1076,6 +1063,7 @@ var o2DesignerBreadcrumb = new Class({
                     app: this.app.options.name,
                     id: path.id,
                     name: path.name,
+                    alias: path.alias || '',
                     time: new Date().getTime(),
                     timeString: new Date().format('db')
                 });
@@ -1319,28 +1307,37 @@ o2DesignerBreadcrumb.Menu = new Class({
         //输入法结束输入事件
         searchInput.addEventListener('compositionend', (e) => {
             isComposing = false;
-            this.search( e.currentTarget.value );
+            this.currentSearchKey = e.currentTarget.value;
+            this.search();
         });
 
         //常规的input事件
         searchInput.addEventListener('input', (e) => {
-            !isComposing && this.search( e.currentTarget.value );
+            this.currentSearchKey = e.currentTarget.value;
+            !isComposing && this.search();
         });
-
-        // clearSearch.addEventListener('click', (e)=>{
-        //     searchInput.setAttribute('value', '');
-        //     this.search('');
-        // })
     },
-    search: function( key ) {
+    clearSearch: function (){
+        this.currentSearchKey = '';
+        this.searchInput.setAttribute('value', '');
+        this.search();
+    },
+    search: function() {
         var category = this.currentCategory;
+        var key = this.currentSearchKey.toLowerCase();
         var items = this.menuNode && this.menuNode.querySelectorAll('.breadcrumb-menu-item');
         (items || []).forEach(item=>{
-            var dataset = item.dataset;
-            var isMatchKey = !key || (dataset.id.includes(key) || dataset.name.includes(key) || dataset.alias.includes(key));
-            var isMatchCategory = !category || category === ALL || dataset.category === category;
+            var ds = item.dataset;
+            var isMatchKey = !key || (ds.id.includes(key) ||
+                    ds.name.includes(key) ||
+                    (ds.alias||'').includes(key) ||
+                    (ds.pinyin||'').includes(key)
+                );
+            var isMatchCategory = !category || category === ALL || ds.category === category;
             _checkClass( item, 'hide', !isMatchKey || !isMatchCategory );
         });
+
+        _checkClass(this.clearSearchNode, 'hide', !key);
 
         if( !!this.activeMenu ){
             var fun = this.activeMenu.target.offsetParent === null ? 'hide' : 'setCoondinates';

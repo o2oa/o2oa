@@ -2,13 +2,16 @@
     {{if ($.type === 'app' || $.type === 'designer')}}
         <div class="breadcrumb-top" data-o2-element="topNode">
             <div class="breadcrumb-top-tools">
+                {{if $.data.length > 2}}
                 <oo-input
                         data-o2-element="searchInput"
                         placeholder="输入名称、别名和id搜索"
                         left-icon="search"
                         style="flex: 1"
                         data-o2-events="o2load:loadSearchInput">
+                    <div slot="after-inner-before" class="ooicon-close clear-search hide" data-o2-element="clearSearchNode"></div>
                 </oo-input>
+                {{end if}}
                 {{if $.categories.length > 0}}
                 <i class="ooicon-search" data-o2-events="click:switchCategoryArea" title="分类"></i>
                 {{end if}}
@@ -37,6 +40,7 @@
                     data-name="{{$.name}}"
                     data-alias="{{$.alias}}"
                     data-category="{{$.category}}"
+                    data-pinyin="{{$.pinyin}}"
                     class="breadcrumb-menu-item"
                     data-o2-events="click:handleClick;
                                     mouseleave:handleMouseLeave;
@@ -58,7 +62,7 @@
                 </i>
                 {{end if}}
 
-                <span class="breadcrumb-menu-item-text">{{$.name}}</span>
+                <span class="breadcrumb-menu-item-text">{{$.name}}{{($.alias && $.alias!==$.name) ? ` - ${$.alias}` : '' }}</span>
 
                 {{if $._.pathData.id === $.id && ( !$.appid || ($.appid === $._.editingAppid )) }}
                 <i class="ooicon-pentagram_fill current-icon"></i>
