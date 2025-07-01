@@ -841,6 +841,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
     loadDesignerBreadcrumb: function (){
         MWF.xDesktop.requireApp("process.ProcessManager", "DesignerBreadcrumb", function (){
             this.designerBreadcrumbNode = this.processToolbar.node.getElement('#O2DesignerBreadcrumbNode');
+            debugger;
             this.breadcrumb = new o2DesignerBreadcrumb(this.designerBreadcrumbNode, this, {
                 pathlist: [
                     {
@@ -849,7 +850,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                         type: 'app-category'
                     },
                     {
-                        name: this.processData.applicationName,
+                        name: this.application.name,
                         id: this.processData.application,
                         type: 'app'
                     },

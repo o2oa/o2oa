@@ -51,6 +51,8 @@ var _appNameMap = {
     'service.DictionaryDesigner': '服务中心数据字典'
 };
 
+var UNCATEGORIZED = 'uncategorized';
+var ALL = 'all';
 var RECENTLY_DESIGNER_NAME = 'RecentlyOpenedDesigner';
 var RECENTLY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
 
@@ -77,6 +79,7 @@ var _sort =  (data, key='name', isDesc=false)=>{
 };
 
 var o2DesignerConfig = {
+    type: 'root',
     children: [
         {
             handleClick: () => {
@@ -118,8 +121,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 0, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('portal.PageDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('portal.PageDesigner', opt, opt);
                         },
                         children: [{
                             label: '页面',
@@ -150,8 +154,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 1, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('portal.WidgetDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('portal.WidgetDesigner', opt, opt);
                         },
                         children: [{
                             label: '部件',
@@ -181,8 +186,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 2, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('portal.DictionaryDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('portal.DictionaryDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据字典',
@@ -216,8 +222,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 3, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('portal.ScriptDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('portal.ScriptDesigner', opt, opt);
                         },
                         children: [{
                             label: '脚本配置',
@@ -300,8 +307,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 0, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('process.FormDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('process.FormDesigner', opt, opt);
                         },
                         children: [{
                             label: '表单',
@@ -332,8 +340,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 1, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('process.ProcessDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('process.ProcessDesigner', opt, opt);
                         },
                         children: [{
                             label: '流程',
@@ -363,8 +372,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 2, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('process.DictionaryDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('process.DictionaryDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据字典',
@@ -398,8 +408,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 3, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('process.ScriptDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('process.ScriptDesigner', opt, opt);
                         },
                         children: [{
                             label: '脚本配置',
@@ -516,8 +527,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'formConfig', column: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('cms.FormDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('cms.FormDesigner', opt, opt);
                         },
                         children: [{
                             label: '表单',
@@ -547,8 +559,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'dataConfig', column: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('cms.DictionaryDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('cms.DictionaryDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据字典',
@@ -582,8 +595,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'scriptConfig', column: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('cms.ScriptDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('cms.ScriptDesigner', opt, opt);
                         },
                         children: [{
                             label: '脚本配置',
@@ -663,8 +677,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 0, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('query.ViewDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('query.ViewDesigner', opt, opt);
                         },
                         children: [{
                             label: '视图',
@@ -695,8 +710,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 1, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('query.StatDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('query.StatDesigner', opt, opt);
                         },
                         children: [{
                             label: '统计',
@@ -726,8 +742,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 2, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('query.TableDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('query.TableDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据表',
@@ -761,8 +778,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 3, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('query.StatementDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('query.StatementDesigner', opt, opt);
                         },
                         children: [{
                             label: '查询配置',
@@ -794,8 +812,9 @@ var o2DesignerConfig = {
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 4, application: appid});
                         },
-                        handleCreate: (appid)=>{
-                            _openApp('query.ImporterDesigner', null, {application: {id: appid}});
+                        handleCreate: (appid, appname)=>{
+                            var opt = {application: {id: appid, name: appname}};
+                            _openApp('query.ImporterDesigner', opt, opt);
                         },
                         children: [{
                             label: '导入模型',
@@ -962,11 +981,21 @@ var o2DesignerConfig = {
         },
         {type: 'separator'},
         {
+            name: '搜索设计',
+            title: '根据关键字搜索具体设计',
+            id: 'FindDesigner',
+            ooicon: 'search',
+            handleClick: (item) => {
+                _openApp('FindDesigner');
+            }
+        },
+        {
             name: '最近打开',
             title: '最近打开的设计元素',
             id: 'recentlyOpened',
             ooicon: 'clock',
             type: 'app-category',
+            autoRefresh: true,
             children: [{
                 label: '脚本配置',
                 type: 'designer',
@@ -1092,6 +1121,7 @@ o2DesignerBreadcrumb.Item = new Class({
             onShow: function (){ _self.setActiveMenu(this); },
             onHide: function (){ _self.cancelActiveMenu(this); }
         });
+        this.menu.level = this.level;
         this.menu.item = this;
     },
     setActiveMenu: function ( submenu ){
@@ -1139,9 +1169,11 @@ o2DesignerBreadcrumb.Menu = new Class({
         overflow: 'scroll',
         // hideByClickBody : true,
         nodeStyles: {
+            "max-height":  "80%",
+            "display": "flex",
             "position" : "absolute",
             "max-width" : "500px",
-            "min-width" : "50px",
+            "min-width" : "100px",
             "z-index" : "101",
             "border-color" : "var(--oo-color-gray-d)",
             "background-color" : "#fff",
@@ -1153,24 +1185,28 @@ o2DesignerBreadcrumb.Menu = new Class({
         }
     },
     //执行后才显示位置也样式
-    _loadCustom : function( callback ){
+    _loadCustom : function( callback, refresh ){
         this.menus = [];
-        this.contentNode.addEvent('mousedown', (e)=>{ e.stopPropagation(); });
-        this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
+        if( !refresh ){
+            this.contentNode.addEvent('mousedown', (e)=>{ e.stopPropagation(); });
+            this.contentNode.loadCss(`${this.item.breadcrumb.path}style.css`);
+            this.contentNode.setStyles({'height': 'auto'});
+        }
 
         var template = Array.clone(this.getChildrenTempalte());
         // var creatable = !!(template.length === 1 && template[0].createFunction);
         Promise.resolve(this.getList( template )).then((data)=>{
+            this.parseCategory();
             this.contentNode.loadHtml(
                 this.item.breadcrumb.path+"menu.html",
                 {
                     bind: {
                         lp: this.lp,
                         data: data,
-                        // creatable: creatable,
-                        categories: this.categories.filter(c=>{
-                            return c !== '未分类';
-                        })
+                        type: template[0].type,
+                        editingAppid: this.getPathAppid(),
+                        pathData: this.getPathData(),
+                        categories: this.categories
                     },
                     module: this
                 },
@@ -1179,6 +1215,13 @@ o2DesignerBreadcrumb.Menu = new Class({
                 }.bind(this)
             );
         });
+    },
+    getPathAppid : function(){
+        var pathlist = this.item.breadcrumb.options.pathlist;
+        return pathlist.length === 4 ? pathlist[1].id : pathlist[0].id;
+    },
+    getPathData: function(){
+        return this.item.breadcrumb.options.pathlist[this.level-1] || {};
     },
     getAppid: function(){
         var parent = this.item.parent;
@@ -1189,8 +1232,20 @@ o2DesignerBreadcrumb.Menu = new Class({
             parent = parent.parent;
         }
     },
+    getAppname: function(){
+        var parent = this.item.parent;
+        while(parent){
+            if( parent.pathData && parent.pathData.name && parent.pathData.type === 'app' ){
+                return parent.pathData.name;
+            }
+            parent = parent.parent;
+        }
+    },
     getCurrentAppid: function (){
         return this.getAppid();
+    },
+    getCurrentAppname: function (){
+        return this.getAppname();
     },
     getChildrenTempalte: function () {
         return this.item.siblingConfigs;
@@ -1198,8 +1253,8 @@ o2DesignerBreadcrumb.Menu = new Class({
     getList: function ( template ) {
         var list = template;
         this.categories = [];
+        var appid = this.getAppid();
         if( list.length === 1 && list[0].listAction){
-            var appid = this.getAppid();
             return list[0].listAction( appid ).then((data)=>{
                 return data.map(d=>{
                     if( list[0].type === 'app' ){
@@ -1212,7 +1267,7 @@ o2DesignerBreadcrumb.Menu = new Class({
                         list[0].handleClick(d, appid);
                     };
                     if( list[0].categorized ){
-                        !d.category && (d.category = '未分类');
+                        (!d.category || d.category==='未分类') && (d.category = UNCATEGORIZED);
                         if( !this.categories.includes( d.category ) ){
                             this.categories.push( d.category );
                         }
@@ -1221,36 +1276,76 @@ o2DesignerBreadcrumb.Menu = new Class({
                 });
             });
         }else{
-            return list;
+            return list.map(child=>{
+                child.appid = appid;
+                return child;
+            });
         }
     },
-    handLoadCategory: function (e){
-        var option = new Element('oo-option', { value: 'all' }).inject(e.currentTarget);
-        option.setAttribute('text', '选择分类');
+    switchCategoryArea: function (e) {
+        if( this.categoryArea.hasClass('hide') ){
+            this.categoryArea.setStyles({'width': this.menuNode.getSize().x+'px'})
+        }
+        _checkClass(this.categoryArea, 'hide', !this.categoryArea.hasClass('hide'));
+        _checkClass(e.currentTarget, 'active', !this.categoryArea.hasClass('hide'));
+        !!this.activeMenu && this.activeMenu.setCoondinates();
+    },
+    parseCategory: function (e){
+        var hasUncategorized = this.categories.includes(UNCATEGORIZED);
+        hasUncategorized && (this.categories = this.categories.erase( UNCATEGORIZED ));
+        if( this.categories.length > 0 ){
+            this.categories = _sort(this.categories,'').map(c=>{ return {value: c, label: c}; });
+            this.categories.unshift({value: ALL, label: '全部分类'});
+            hasUncategorized && this.categories.push({value: UNCATEGORIZED, label: '未分类'});
+        }
+    },
+    filterByCategory: function (e, data){
+        !!this.activeCategoryNode && this.activeCategoryNode.removeClass('active');
+        this.activeCategoryNode = e.currentTarget;
+        e.currentTarget.addClass('active');
 
-        var hasUncategory = false;
-        if( this.categories.includes('未分类') ){
-            this.categories = this.categories.erase( '未分类' );
-            hasUncategory = true;
-        }
-        this.categories.forEach(category=>{
-            var option = new Element('oo-option', { value: category }).inject(e.currentTarget);
-            option.setAttribute('text', category);
-        });
-        if(hasUncategory){
-            option = new Element('oo-option', { value: '未分类' }).inject(e.currentTarget);
-            option.setAttribute('text', '未分类');
-        }
+        this.currentCategory = data.value;
+
+        this.search();
     },
-    handleChangeCategory: function (e){
+    loadSearchInput: function (e) {
+        var searchInput = this.searchInput;
+
+        var isComposing = false; // 标记是否处于输入法输入中
+
+        //输入法开始输入事件
+        searchInput.addEventListener('compositionstart', () => { isComposing = true; });
+
+        //输入法结束输入事件
+        searchInput.addEventListener('compositionend', (e) => {
+            isComposing = false;
+            this.search( e.currentTarget.value );
+        });
+
+        //常规的input事件
+        searchInput.addEventListener('input', (e) => {
+            !isComposing && this.search( e.currentTarget.value );
+        });
+
+        // clearSearch.addEventListener('click', (e)=>{
+        //     searchInput.setAttribute('value', '');
+        //     this.search('');
+        // })
+    },
+    search: function( key ) {
+        var category = this.currentCategory;
         var items = this.menuNode && this.menuNode.querySelectorAll('.breadcrumb-menu-item');
         (items || []).forEach(item=>{
-            _checkClass(
-                item,
-                'hide',
-                e.currentTarget.value !== 'all' && item.dataset.category !== e.currentTarget.value
-            );
+            var dataset = item.dataset;
+            var isMatchKey = !key || (dataset.id.includes(key) || dataset.name.includes(key) || dataset.alias.includes(key));
+            var isMatchCategory = !category || category === ALL || dataset.category === category;
+            _checkClass( item, 'hide', !isMatchKey || !isMatchCategory );
         });
+
+        if( !!this.activeMenu ){
+            var fun = this.activeMenu.target.offsetParent === null ? 'hide' : 'setCoondinates';
+            this.activeMenu[fun]();
+        }
     },
     handleLoadItem: function (e, data){
         var app = this.item.breadcrumb.app;
@@ -1260,13 +1355,16 @@ o2DesignerBreadcrumb.Menu = new Class({
                 axis : "x",
                 hiddenDelay : 300,
                 displayDelay : 300,
+                autoRefresh: data.autoRefresh,
                 onPostCreate: function (){ _self.setActiveMenu(this); },
                 onShow: function (){ _self.setActiveMenu(this); },
                 onHide: function (){ _self.cancelActiveMenu(this); }
             });
+            menu.level = this.level + 1;
             menu.item = this.item;
             menu.parent = this;
             menu.currentAppid = this.getCurrentAppid();
+            menu.currentAppname = this.getCurrentAppname();
             this.menus.push(menu);
         }
     },
@@ -1296,7 +1394,7 @@ o2DesignerBreadcrumb.Menu = new Class({
         }
     },
     handleCreate: function (e, data){
-        data.handleCreate(this.getAppid());
+        data.handleCreate(this.getAppid(), this.getAppname());
         e.stopPropagation();
     },
     handleClick: function (e, data){
@@ -1321,7 +1419,7 @@ o2DesignerBreadcrumb.SubMenu = new Class({
         }
     },
     getAppid: function(){
-        var parent = this.parent, topParent;
+        var parent = this, topParent;
         while(parent){
             if( parent.data && parent.data.id && parent.data.type === 'app' ){
                 return parent.data.id;
@@ -1331,11 +1429,22 @@ o2DesignerBreadcrumb.SubMenu = new Class({
         }
         return this.currentAppid;
     },
+    getAppname: function(){
+        var parent = this, topParent;
+        while(parent){
+            if( parent.data && (parent.data.name || parent.data.appName) && parent.data.type === 'app' ){
+                return parent.data.name || parent.data.appName;
+            }
+            topParent = parent;
+            parent = parent.parent;
+        }
+        return this.currentAppname;
+    },
     getChildrenTempalte: function () {
         return this.data.children;
     },
     handleCreate: function (e, data){
-        data.handleCreate(data.appid || this.getAppid());
+        data.handleCreate(data.appid || this.getAppid(), this.getAppname());
         e.stopPropagation();
     },
     handleClick: function (e, data){
@@ -1343,5 +1452,8 @@ o2DesignerBreadcrumb.SubMenu = new Class({
     },
     getCurrentAppid: function (){
         return this.currentAppid;
+    },
+    getCurrentAppname: function (){
+        return this.currentAppname;
     }
 });

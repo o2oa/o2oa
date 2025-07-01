@@ -16,6 +16,7 @@ var MTooltips = new Class({
             x : 0,
             y : 0
         },
+        autoRefresh: false,
         isFitToContainer : true, //当position x 不为 auto， y 不为 auto 的时候，自动设置偏移量，使tooltip不超过容器的可见范围
         isParentOffset: false, //如果容器position不是absoulte 或 relative，计算到祖先absoulte 或 relative的偏移量
         event : "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
@@ -115,7 +116,7 @@ var MTooltips = new Class({
         this.fireEvent("queryLoad",[this]);
         if( this.isEnable() ){
             if( this.node ){
-                this.show();
+                this.options.autoRefresh ? this.refresh() : this.show();
             }else{
                 this.create();
             }
@@ -201,12 +202,32 @@ var MTooltips = new Class({
             this.fireEvent("hide",[this]);
         }
     },
+    refresh: function( notFire ){
+        this.status = "display";
+        if( this.maskNode ){
+            this.maskNode.setStyle("display", "");
+        }
+        this.node.setStyle("display", this.nodeStyles.display || "");
+
+        var width = this.node.getStyle("width");
+        var height = this.node.getStyle("height");
+
+        var size = this.contentNode.getSize();
+        this.contentNode.setStyles({'height': size.y+'px', 'width': size.x+'px'});
+        this.contentNode.empty();
+        this._customNode( this.node, this.contentNode );
+        this._loadCustom( function(){
+            this.contentNode.setStyles({ 'height': height, 'width': width });
+            this.setCoondinates();
+            !notFire && this.fireEvent("show",[this]);
+        }.bind(this), true);
+    },
     show: function(){
         this.status = "display";
         if( this.maskNode ){
-            this.maskNode.setStyle("display","");
+            this.maskNode.setStyle("display", "");
         }
-        this.node.setStyle("display","");
+        this.node.setStyle("display", this.nodeStyles.display || "");
         this.setCoondinates();
 
         this.fireEvent("show",[this]);

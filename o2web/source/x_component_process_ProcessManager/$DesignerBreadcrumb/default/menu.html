@@ -1,9 +1,31 @@
-<div class="breadcrumb-content" data-o2-element="topNode">
-    {{if $.categories.length > 0}}
-        <oo-select value="all"
-                   data-o2-events="o2load:handLoadCategory;
-                                    change:handleChangeCategory">
-        </oo-select>
+<div class="breadcrumb-menu-wrap">
+    {{if ($.type === 'app' || $.type === 'designer')}}
+        <div class="breadcrumb-top" data-o2-element="topNode">
+            <div class="breadcrumb-top-tools">
+                <oo-input
+                        data-o2-element="searchInput"
+                        placeholder="输入名称、别名和id搜索"
+                        left-icon="search"
+                        style="flex: 1"
+                        data-o2-events="o2load:loadSearchInput">
+                </oo-input>
+                {{if $.categories.length > 0}}
+                <i class="ooicon-search" data-o2-events="click:switchCategoryArea" title="分类"></i>
+                {{end if}}
+                <i class="ooicon-reload" data-o2-events="click:reload" title="刷新"></i>
+            </div>
+            {{if $.categories.length > 0}}
+            <div class="breadcrumb-categorys-wrap hide" data-o2-element="categoryArea">
+                <div class="breadcrumb-categorys">
+                    {{each $.categories}}
+                    <div class="breadcrumb-category" data-value="{{$.value}}" data-o2-events="click:filterByCategory">
+                        {{$.label}}
+                    </div>
+                    {{end each}}
+                </div>
+            </div>
+            {{end if}}
+        </div>
     {{end if}}
 
     <div class="breadcrumb-menu" data-o2-element="menuNode">
@@ -11,6 +33,9 @@
             {{if $.type !== 'separator'}}
             <div
                     title="{{$.title}}"
+                    data-id="{{$.id}}"
+                    data-name="{{$.name}}"
+                    data-alias="{{$.alias}}"
                     data-category="{{$.category}}"
                     class="breadcrumb-menu-item"
                     data-o2-events="click:handleClick;
@@ -34,6 +59,10 @@
                 {{end if}}
 
                 <span class="breadcrumb-menu-item-text">{{$.name}}</span>
+
+                {{if $._.pathData.id === $.id && ( !$.appid || ($.appid === $._.editingAppid )) }}
+                <i class="ooicon-pentagram_fill current-icon"></i>
+                {{end if}}
             </div>
             {{end if}}
 

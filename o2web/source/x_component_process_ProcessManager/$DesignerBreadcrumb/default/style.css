@@ -3,6 +3,7 @@
     height: 22px;
     gap: 0.5rem;
     align-items: center;
+    height: 100%;
 }
 .breadcrumb-separator{
     color: #666;
@@ -15,8 +16,59 @@ oo-select{
     width: calc( 100% - 2rem );
     margin: 0 1rem;
 }
+.breadcrumb-menu-wrap{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.breadcrumb-menu-wrap [data-o2-binddataid]{
+    display: contents;
+}
 .breadcrumb-menu{
+    flex: 1;
+    overflow: auto;
+}
+.breadcrumb-top{
+    /*padding: 0 0.5rem;*/
+    box-shadow: 0 2px 5px 0 var(--oo-color-gray-e1);
+}
+.breadcrumb-top-tools{
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+    color: var(--oo-color-text3);
+    align-items: center;
+}
+.breadcrumb-top-tools i{
+    cursor: pointer;
+}
+.breadcrumb-top-tools i:hover{
+    color: var(--oo-color-main);
+}
+.breadcrumb-top-tools i.active{
+    color: var(--oo-color-main);
+}
 
+.breadcrumb-categorys{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+    gap: 0.25rem;
+}
+.breadcrumb-category{
+    border-radius: var(--oo-default-radius);
+    font-size: 0.875rem;
+    padding: 0.25rem;
+    cursor: pointer;
+}
+.breadcrumb-category:hover{
+    background-color: var(--oo-color-over);
+}
+.breadcrumb-category.active{
+    background-color: var(--oo-color-over);
+    color: var(--oo-color-main);
 }
 .breadcrumb-menu-item{
     display: flex;
@@ -65,6 +117,10 @@ oo-select{
 .breadcrumb-menu-item.active{
     color: var(--oo-color-main);
     background-color: var(--oo-color-over);
+}
+.current-icon{
+    font-size: 0.3rem;
+    color: var(--oo-color-main);
 }
 .hide{
     display: none !important;
