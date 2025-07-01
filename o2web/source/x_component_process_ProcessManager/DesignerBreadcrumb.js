@@ -1204,6 +1204,10 @@ o2DesignerBreadcrumb.Menu = new Class({
             );
         });
     },
+    reload: function (){
+        debugger;
+        this.refresh(true);
+    },
     getPathAppid : function(){
         var pathlist = this.item.breadcrumb.options.pathlist;
         return pathlist.length === 4 ? pathlist[1].id : pathlist[0].id;

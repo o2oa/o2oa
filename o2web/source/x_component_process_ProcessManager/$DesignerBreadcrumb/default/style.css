@@ -35,7 +35,7 @@ oo-select{
 .breadcrumb-top-tools{
     display: flex;
     justify-content: flex-end;
-    padding: 0.25rem 1rem 0.5rem 1rem;
+    padding: 0.5rem 1rem 0.75rem 1rem;
     font-size: 1rem;
     gap: 0.5rem;
     color: var(--oo-color-text3);

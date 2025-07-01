@@ -203,22 +203,26 @@ var MTooltips = new Class({
         }
     },
     refresh: function( notFire ){
-        this.status = "display";
         if( this.maskNode ){
             this.maskNode.setStyle("display", "");
         }
         this.node.setStyle("display", this.nodeStyles.display || "");
+        // if( this.status === "display" ){
+        //     var width = this.node.getStyle("width");
+        //     var height = this.node.getStyle("height");
+        //
+        //     var size = this.node.getSize();
+        //     this.node.setStyles({'height': size.y+'px', 'width': size.x+'px'});
+        // }
 
-        var width = this.node.getStyle("width");
-        var height = this.node.getStyle("height");
-
-        var size = this.contentNode.getSize();
-        this.contentNode.setStyles({'height': size.y+'px', 'width': size.x+'px'});
         this.contentNode.empty();
         this._customNode( this.node, this.contentNode );
         this._loadCustom( function(){
-            this.contentNode.setStyles({ 'height': height, 'width': width });
+            // if( this.status === "display" ) {
+            //     this.node.setStyles({'height': height, 'width': width});
+            // }
             this.setCoondinates();
+            this.status = "display";
             !notFire && this.fireEvent("show",[this]);
         }.bind(this), true);
     },

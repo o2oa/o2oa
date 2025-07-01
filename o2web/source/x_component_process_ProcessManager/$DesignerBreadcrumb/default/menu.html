@@ -9,7 +9,12 @@
                         left-icon="search"
                         style="flex: 1"
                         data-o2-events="o2load:loadSearchInput">
-                    <div slot="after-inner-before" class="ooicon-close clear-search hide" data-o2-element="clearSearchNode"></div>
+                    <div
+                            slot="after-inner-before"
+                            class="ooicon-close clear-search hide"
+                            data-o2-element="clearSearchNode"
+                            data-o2-events="click:clearSearch"
+                    ></div>
                 </oo-input>
                 {{end if}}
                 {{if $.categories.length > 0}}
