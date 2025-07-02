@@ -57,6 +57,7 @@ MWF.xApplication.process.Application.Main = new Class({
 	},
 	initAcl : function (callback){
 		this.acl = {
+			"allowArchive" : layout.config.allowArchive
 		}
 		this.action.ApplicationAction.isManager(this.options.id).then(function (json){
 			this.acl.isAppManager = json.data.value;
