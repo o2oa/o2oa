@@ -5,6 +5,12 @@ var _cmsAction = o2.Actions.load('x_cms_assemble_control');
 var _queryAction = o2.Actions.load('x_query_assemble_designer');
 var _serviceAction = o2.Actions.load('x_program_center');
 var _openApp = o2.api.page.openApplication;
+
+var _UNCATEGORIZED = 'uncategorized';
+var _ALL = 'all';
+var _RECENTLY_DESIGNER_NAME = 'RecentlyOpenedDesigner';
+var _RECENTLY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
+
 var _ooiconMap = {
     'portal.PageDesigner': 'pagepeizhi',
     'portal.WidgetDesigner': 'app-center',
@@ -52,11 +58,6 @@ var _appNameMap = {
     'service.DictionaryDesigner': '服务中心数据字典'
 };
 
-var UNCATEGORIZED = 'uncategorized';
-var ALL = 'all';
-var RECENTLY_DESIGNER_NAME = 'RecentlyOpenedDesigner';
-var RECENTLY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
-
 var _checkClass = (dom, clazz, flag)=>{
     !!flag ?
         !dom.hasClass(clazz) && dom.addClass(clazz) :
@@ -86,35 +87,130 @@ var _sort =  (data, key='name', isDesc=false)=>{
     }.bind(this));
 };
 
+var _copyTextToClipboard=(text)=>{
+    try{
+        navigator.clipboard.writeText(text);
+    }catch(err){
+        o2.api.page.notice(err.message, 'error');
+        throw err;
+    }
+};
+
+var _appTools = [{
+        ooicon: 'window-max',
+        _type: 'app-tool',
+        name: '复制名称',
+        handleClick: (data, appid, appdata)=>{ _copyTextToClipboard(appdata.name); },
+    },{
+        ooicon: 'window-max',
+        _type: 'app-tool',
+        name: '复制别名',
+        condition: (data, appdata)=>{ return !!appdata.alias; },
+        handleClick: (data, appid, appdata)=>{ _copyTextToClipboard(appdata.alias); },
+    },{
+        ooicon: 'window-max',
+        _type: 'app-tool',
+        name: '复制id',
+        handleClick: (data, appid, appdata)=>{ _copyTextToClipboard(appdata.id); },
+    },{
+        ooicon: 'window-max',
+        _type: 'app-tool',
+        name: '复制对象',
+        handleClick: (data, appid, appdata)=>{
+            var {name, alias, id} = appdata;
+            _copyTextToClipboard(
+                JSON.stringify({name, alias, id}, null, 2)
+            )
+        }
+    }
+];
+
+var _designerTools = [{
+        ooicon: 'window-max',
+        _type: 'designer-tool',
+        name: '复制名称',
+        handleClick: (data, appdata)=>{ _copyTextToClipboard(data.name); },
+    },{
+        ooicon: 'window-max',
+        _type: 'designer-tool',
+        name: '复制别名',
+        condition: (data, appdata)=>{ return !!data.alias; },
+        handleClick: (data, appdata)=>{ _copyTextToClipboard(data.alias); },
+    },{
+        ooicon: 'window-max',
+        _type: 'designer-tool',
+        name: '复制id',
+        handleClick: (data, appdata)=>{ _copyTextToClipboard(data.id); },
+    },{
+        ooicon: 'window-max',
+        _type: 'designer-tool',
+        name: '复制对象',
+        handleClick: (data, appdata)=>{
+            var {name, alias, id} = data;
+            _copyTextToClipboard(
+                JSON.stringify({name, alias, id}, null, 2)
+            )
+        }
+    },{
+        ooicon: 'window-max',
+        _type: 'designer-tool',
+        name: '复制应用和设计对象',
+        title: '优先级：别名->名称',
+        handleClick: (data, appdata)=>{
+            var obj = {
+                type: appdata ? appdata._appType : data._appType,
+                name: data.alias || data.name
+            };
+            if( appdata ){
+                obj.application = appdata.alias || appdata.name;
+            }
+            _copyTextToClipboard( JSON.stringify(obj, null, 2) )
+        }
+    },{
+        ooicon: 'window-max',
+        _type: 'designer-tool',
+        name: '拷贝到其他应用',
+        handleClick: (data, appid, appdata)=>{
+            var {name, alias, id} = appdata;
+            _copyTextToClipboard(
+                JSON.stringify({name, alias, id}, null, 2)
+            )
+        }
+    }
+];
+
 var o2DesignerConfig = {
-    type: 'root',
+    _type: 'root',
     children: [
         {
             handleClick: () => {
                 _openApp('portal.PortalExplorer');
             },
             name: '门户管理',
-            id: 'portal.PortalExplorer',
+            componentName: 'portal.PortalExplorer',
             ooicon: 'portal',
-            type: 'app-category',
+            _type: 'app-category',
             children: [{
                 name: '门户应用',
-                id: 'portal.PortalManager',
+                componentName: 'portal.PortalManager',
                 label: '应用',
-                type: 'app',
+                _type: 'app',
                 categorized: true,
                 handleClick: (item) => {
                     _openApp('portal.PortalManager', null, {application: item.id});
+                },
+                getAction: (appid)=>{
+                    return _portalAction.PortalAction.get(appid);
                 },
                 listAction: () => {
                     return _portalAction.PortalAction.list().then((json) => {
                         return _sort(json.data, 'name').map((item) => {
                             return {
                                 ...item,
-                                pinyin: _toPY(item),
+                                _pinyin: _toPY(item),
                                 category: item.portalCategory,
                                 defaultIcon: '../x_component_portal_PortalExplorer/$Main/default/icon/application.png',
-                                type: 'app'
+                                _appType: 'portal'
                             };
                         });
                     })
@@ -122,8 +218,8 @@ var o2DesignerConfig = {
                 children: [
                     {
                         name: '页面配置',
-                        id: 'portal.PageManager',
-                        type: 'desiginer-category',
+                        componentName: 'portal.PageManager',
+                        _type: 'desiginer-category',
                         ooicon: 'pagepeizhi',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 0, application: appid});
@@ -134,7 +230,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '页面',
-                            type: 'designer',
+                            _type: 'designer',
                             categorized: true,
                             handleClick: (page) => {
                                 _openApp('portal.PageDesigner', null, {id: page.id});
@@ -145,7 +241,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...page,
                                             appid: appid,
-                                            pinyin: _toPY(page)
+                                            _pinyin: _toPY(page)
                                         };
                                     });
                                 })
@@ -154,8 +250,8 @@ var o2DesignerConfig = {
                     },
                     {
                         name: '部件配置',
-                        id: 'portal.WidgetDesigner',
-                        type: 'designer-category',
+                        componentName: 'portal.WidgetDesigner',
+                        _type: 'designer-category',
                         label: '部件',
                         ooicon: 'app-center',
                         handleClick: (item, appid) => {
@@ -167,7 +263,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '部件',
-                            type: 'designer',
+                            _type: 'designer',
                             categorized: true,
                             handleClick: (portal) => {
                                 _openApp('portal.WidgetDesigner', null, {id: portal.id});
@@ -178,7 +274,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...widget,
                                             appid: appid,
-                                            pinyin: _toPY(widget)
+                                            _pinyin: _toPY(widget)
                                         };
                                     });
                                 })
@@ -186,8 +282,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '数据字典',
-                        id: 'portal.DictionaryDesigner',
-                        type: 'designer-category',
+                        componentName: 'portal.DictionaryDesigner',
+                        _type: 'designer-category',
                         label: '数据字典',
                         ooicon: 'js',
                         handleClick: (item, appid) => {
@@ -199,12 +295,10 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '数据字典',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (dict) => {
                                 _openApp('portal.DictionaryDesigner', null, {
-                                    id: dict.id, application: {
-                                        id: dict.appid
-                                    }
+                                    id: dict.id, application: { id: dict.appid }
                                 });
                             },
                             listAction: (appid) => {
@@ -213,7 +307,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...dict,
                                             appid: appid,
-                                            pinyin: _toPY(dict)
+                                            _pinyin: _toPY(dict)
                                         };
                                     });
                                 })
@@ -221,8 +315,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '脚本配置',
-                        id: 'portal.ScriptDesigner',
-                        type: 'designer-category',
+                        componentName: 'portal.ScriptDesigner',
+                        _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
@@ -234,7 +328,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '脚本配置',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (script) => {
                                 _openApp('portal.ScriptDesigner', null, {
                                     id: script.id,
@@ -247,7 +341,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...script,
                                             appid: appid,
-                                            pinyin: _toPY(script)
+                                            _pinyin: _toPY(script)
                                         };
                                     });
                                 })
@@ -255,16 +349,16 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '资源文件',
-                        id: 'portal.FileDesigner',
-                        type: 'designer-category',
+                        componentName: 'portal.FileDesigner',
+                        _type: 'designer-category',
                         ooicon: 'folder-open',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 4, application: appid});
                         }
                     }, {
                         name: '门户属性',
-                        id: 'portal.Property',
-                        type: 'designer-category',
+                        componentName: 'portal.Property',
+                        _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('portal.PortalManager', null, {navi: 5, application: appid});
@@ -277,17 +371,20 @@ var o2DesignerConfig = {
                 _openApp('process.ApplicationExplorer');
             },
             name: '流程管理',
-            id: 'process.ApplicationExplorer',
+            componentName: 'process.ApplicationExplorer',
             ooicon: 'liucheng',
-            type: 'app-category',
+            _type: 'app-category',
             children: [{
                 name: '流程应用',
-                id: 'process.ProcessManager',
+                componentName: 'process.ProcessManager',
                 label: '应用',
-                type: 'app',
+                _type: 'app',
                 categorized: true,
                 handleClick: (item) => {
                     _openApp('process.ProcessManager', null, {application: item.id});
+                },
+                getAction: (appid)=>{
+                    return _processAction.ApplicationAction.get(appid);
                 },
                 listAction: () => {
                     return _processAction.ApplicationAction.listSummary().then((json) => {
@@ -296,8 +393,8 @@ var o2DesignerConfig = {
                                 ...item,
                                 category: item.applicationCategory,
                                 defaultIcon: '../x_component_process_ApplicationExplorer/$Main/default/icon/application.png',
-                                type: 'app',
-                                pinyin: _toPY(item)
+                                _appType: 'process',
+                                _pinyin: _toPY(item)
                             };
                         });
                     })
@@ -305,8 +402,8 @@ var o2DesignerConfig = {
                 children: [
                     {
                         name: '表单配置',
-                        id: 'process.FormManager',
-                        type: 'designer-category',
+                        componentName: 'process.FormManager',
+                        _type: 'designer-category',
                         ooicon: 'biaodan',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 0, application: appid});
@@ -317,7 +414,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '表单',
-                            type: 'designer',
+                            _type: 'designer',
                             categorized: true,
                             handleClick: (form) => {
                                 _openApp('process.FormDesigner', null, {id: form.id});
@@ -328,7 +425,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...form,
                                             appid: appid,
-                                            pinyin: _toPY(form)
+                                            _pinyin: _toPY(form)
                                         };
                                     });
                                 })
@@ -337,8 +434,8 @@ var o2DesignerConfig = {
                     },
                     {
                         name: '流程配置',
-                        id: 'process.ProcessDesigner',
-                        type: 'designer-category',
+                        componentName: 'process.ProcessDesigner',
+                        _type: 'designer-category',
                         label: '流程',
                         ooicon: 'a-flowprocess',
                         handleClick: (item, appid) => {
@@ -350,7 +447,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '流程',
-                            type: 'designer',
+                            _type: 'designer',
                             categorized: true,
                             handleClick: (process) => {
                                 _openApp('process.ProcessDesigner', null, {id: process.id});
@@ -361,7 +458,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...process,
                                             appid: appid,
-                                            pinyin: _toPY(process)
+                                            _pinyin: _toPY(process)
                                         };
                                     });
                                 });
@@ -369,8 +466,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '数据字典',
-                        id: 'process.DictionaryDesigner',
-                        type: 'designer-category',
+                        componentName: 'process.DictionaryDesigner',
+                        _type: 'designer-category',
                         label: '数据字典',
                         ooicon: 'js',
                         handleClick: (item, appid) => {
@@ -382,7 +479,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '数据字典',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (dict) => {
                                 _openApp('process.DictionaryDesigner', null, { id: dict.id, application: { id: dict.appid } });
                             },
@@ -392,7 +489,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...dict,
                                             appid: appid,
-                                            pinyin: _toPY(dict)
+                                            _pinyin: _toPY(dict)
                                         };
                                     });
                                 })
@@ -400,8 +497,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '脚本配置',
-                        id: 'process.ScriptDesigner',
-                        type: 'designer-category',
+                        componentName: 'process.ScriptDesigner',
+                        _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
@@ -413,7 +510,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '脚本配置',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (script) => {
                                 _openApp('process.ScriptDesigner', null, {
                                     id: script.id,
@@ -426,7 +523,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...script,
                                             appid: appid,
-                                            pinyin: _toPY(script)
+                                            _pinyin: _toPY(script)
                                         };
                                     });
                                 })
@@ -434,16 +531,16 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '资源文件',
-                        id: 'process.FileDesigner',
-                        type: 'designer-category',
+                        componentName: 'process.FileDesigner',
+                        _type: 'designer-category',
                         ooicon: 'folder-open',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 4, application: appid});
                         }
                     }, {
                         name: '应用属性',
-                        id: 'process.Property',
-                        type: 'designer-category',
+                        componentName: 'process.Property',
+                        _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('process.ProcessManager', null, {navi: 5, application: appid});
@@ -456,17 +553,27 @@ var o2DesignerConfig = {
                 _openApp('cms.Column');
             },
             name: '内容管理',
-            id: 'cms.Column',
+            componentName: 'cms.Column',
             ooicon: 'note',
-            type: 'app-category',
+            _type: 'app-category',
             children: [{
                 name: '内容管理',
-                id: 'cms.ColumnManager',
+                componentName: 'cms.ColumnManager',
                 label: '应用',
-                type: 'app',
+                _type: 'app',
                 categorized: true,
                 handleClick: (item) => {
                     _openApp('cms.ColumnManager', null, {column: item.id});
+                },
+                getAction: (appid)=>{
+                    return _cmsAction.AppInfoAction.getAppInfo(appid).then((item) => {
+                        item.data = {
+                            ...item.data,
+                            alias: item.appAlias,
+                            name: item.appName,
+                        }
+                        return item;
+                    });
                 },
                 listAction: () => {
                     return _cmsAction.AppInfoAction.listAllAppInfo().then((json) => {
@@ -478,8 +585,8 @@ var o2DesignerConfig = {
                                 name: item.appName,
                                 icon: item.appIcon,
                                 defaultIcon: '../x_component_cms_Column/$Main/default/icon/column.png',
-                                type: 'app',
-                                pinyin: _toPY({alias: item.appAlias, name: item.appName})
+                                _appType: 'cms',
+                                _pinyin: _toPY({alias: item.appAlias, name: item.appName})
                             };
                         });
                     })
@@ -487,15 +594,15 @@ var o2DesignerConfig = {
                 children: [
                     {
                         name: '分类配置',
-                        id: 'cms.CategoryManager',
-                        type: 'designer-category',
+                        componentName: 'cms.CategoryManager',
+                        _type: 'designer-category',
                         ooicon: 'bujianpeizhi',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'categoryConfig', column: appid});
                         },
                         children: [{
                             label: '分类',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (category) => {
                                 _openApp('cms.ColumnManager', null, {
                                     navi: 'categoryConfig',
@@ -511,7 +618,7 @@ var o2DesignerConfig = {
                                             alias: category.categoryAlias,
                                             name: category.categoryName,
                                             appid: category.appId,
-                                            pinyin: _toPY({alias: category.categoryAlias, name: category.categoryName})
+                                            _pinyin: _toPY({alias: category.categoryAlias, name: category.categoryName})
                                         };
                                     });
                                 })
@@ -520,8 +627,8 @@ var o2DesignerConfig = {
                     },
                     {
                         name: '表单配置',
-                        id: 'cms.FormDesigner',
-                        type: 'designer-category',
+                        componentName: 'cms.FormDesigner',
+                        _type: 'designer-category',
                         label: '表单',
                         ooicon: 'biaodan',
                         handleClick: (item, appid) => {
@@ -533,7 +640,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '表单',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (form) => {
                                 _openApp('cms.FormDesigner', null, {id: form.id});
                             },
@@ -543,7 +650,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...form,
                                             appid: appid,
-                                            pinyin: _toPY(form)
+                                            _pinyin: _toPY(form)
                                         };
                                     });
                                 })
@@ -551,8 +658,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '数据字典',
-                        id: 'cms.DictionaryDesigner',
-                        type: 'designer-category',
+                        componentName: 'cms.DictionaryDesigner',
+                        _type: 'designer-category',
                         label: '数据字典',
                         ooicon: 'js',
                         handleClick: (item, appid) => {
@@ -564,7 +671,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '数据字典',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (dict) => {
                                 _openApp('cms.DictionaryDesigner', null, {
                                     id: dict.id, application: { id: dict.appid }
@@ -576,7 +683,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...dict,
                                             appid: appid,
-                                            pinyin: _toPY(dict)
+                                            _pinyin: _toPY(dict)
                                         };
                                     });
                                 })
@@ -584,8 +691,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '脚本配置',
-                        id: 'cms.ScriptDesigner',
-                        type: 'designer-category',
+                        componentName: 'cms.ScriptDesigner',
+                        _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'jiaoben',
                         handleClick: (item, appid) => {
@@ -597,7 +704,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '脚本配置',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (script) => {
                                 _openApp('cms.ScriptDesigner', null, {id: script.id, application: {id: script.appid}});
                             },
@@ -607,7 +714,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...script,
                                             appid: appid,
-                                            pinyin: _toPY(script)
+                                            _pinyin: _toPY(script)
                                         };
                                     });
                                 })
@@ -615,16 +722,16 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '资源文件',
-                        id: 'cms.FileDesigner',
-                        type: 'designer-category',
+                        componentName: 'cms.FileDesigner',
+                        _type: 'designer-category',
                         ooicon: 'folder-open',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'fileConfig', column: appid});
                         }
                     }, {
                         name: '栏目属性',
-                        id: 'cms.Property',
-                        type: 'designer-category',
+                        componentName: 'cms.Property',
+                        _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('cms.ColumnManager', null, {navi: 'applicationProperty', column: appid});
@@ -637,17 +744,20 @@ var o2DesignerConfig = {
                 _openApp('query.QueryExplorer');
             },
             name: '数据中心',
-            id: 'query.QueryExplorer',
+            componentName: 'query.QueryExplorer',
             ooicon: 'integral',
-            type: 'app-category',
+            _type: 'app-category',
             children: [{
                 name: '数据应用',
-                id: 'query.QueryManager',
+                componentName: 'query.QueryManager',
                 label: '应用',
-                type: 'app',
+                _type: 'app',
                 categorized: true,
                 handleClick: (item) => {
                     _openApp('query.QueryManager', null, {application: item.id});
+                },
+                getAction: (appid)=>{
+                    return _queryAction.QueryAction.get(appid);
                 },
                 listAction: () => {
                     return _queryAction.QueryAction.listAll().then((json) => {
@@ -656,8 +766,8 @@ var o2DesignerConfig = {
                                 ...item,
                                 category: item.queryCategory,
                                 defaultIcon: '../x_component_query_QueryExplorer/$Main/default/icon/application.png',
-                                type: 'app',
-                                pinyin: _toPY(item)
+                                _appType: 'query',
+                                _pinyin: _toPY(item)
                             };
                         });
                     })
@@ -665,8 +775,8 @@ var o2DesignerConfig = {
                 children: [
                     {
                         name: '视图配置',
-                        id: 'query.ViewDesigner',
-                        type: 'designer-category',
+                        componentName: 'query.ViewDesigner',
+                        _type: 'designer-category',
                         ooicon: 'shitupeizhi3',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 0, application: appid});
@@ -677,7 +787,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '视图',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (view) => {
                                 _openApp('query.ViewDesigner', null, {id: view.id, application: {id: view.appid}});
                             },
@@ -687,7 +797,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...view,
                                             appid: appid,
-                                            pinyin: _toPY(view)
+                                            _pinyin: _toPY(view)
                                         };
                                     });
                                 })
@@ -696,8 +806,8 @@ var o2DesignerConfig = {
                     },
                     {
                         name: '统计配置',
-                        id: 'query.StatDesigner',
-                        type: 'designer-category',
+                        componentName: 'query.StatDesigner',
+                        _type: 'designer-category',
                         label: '统计',
                         ooicon: 'shujubiao2',
                         handleClick: (item, appid) => {
@@ -709,7 +819,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '统计',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (stat) => {
                                 _openApp('query.StatDesigner', null, {id: stat.id, application: {id: stat.appid}});
                             },
@@ -719,7 +829,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...stat,
                                             appid: appid,
-                                            pinyin: _toPY(stat)
+                                            _pinyin: _toPY(stat)
                                         };
                                     });
                                 })
@@ -727,8 +837,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '数据表',
-                        id: 'query.TableDesigner',
-                        type: 'designer-category',
+                        componentName: 'query.TableDesigner',
+                        _type: 'designer-category',
                         label: '数据表',
                         ooicon: 'shujubiao',
                         handleClick: (item, appid) => {
@@ -740,12 +850,10 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '数据表',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (table) => {
                                 _openApp('query.TableDesigner', null, {
-                                    id: table.id, application: {
-                                        id: table.appid
-                                    }
+                                    id: table.id, application: { id: table.appid }
                                 });
                             },
                             listAction: (appid) => {
@@ -754,7 +862,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...table,
                                             appid: appid,
-                                            pinyin: _toPY(table)
+                                            _pinyin: _toPY(table)
                                         };
                                     });
                                 })
@@ -762,8 +870,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '查询配置',
-                        id: 'query.StatementDesigner',
-                        type: 'designer-category',
+                        componentName: 'query.StatementDesigner',
+                        _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'chaxunpeizhi',
                         handleClick: (item, appid) => {
@@ -775,7 +883,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '查询配置',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (statement) => {
                                 _openApp('query.StatementDesigner', null, {
                                     id: statement.id,
@@ -788,7 +896,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...statement,
                                             appid: appid,
-                                            pinyin: _toPY(statement)
+                                            _pinyin: _toPY(statement)
                                         };
                                     });
                                 })
@@ -796,8 +904,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '导入模型',
-                        id: 'query.ImporterDesigner',
-                        type: 'designer-category',
+                        componentName: 'query.ImporterDesigner',
+                        _type: 'designer-category',
                         ooicon: 'file_upload',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 4, application: appid});
@@ -808,7 +916,7 @@ var o2DesignerConfig = {
                         },
                         children: [{
                             label: '导入模型',
-                            type: 'designer',
+                            _type: 'designer',
                             handleClick: (importer) => {
                                 _openApp('query.ImporterDesigner', null, {
                                     id: importer.id,
@@ -821,7 +929,7 @@ var o2DesignerConfig = {
                                         return {
                                             ...item,
                                             appid: appid,
-                                            pinyin: _toPY(item)
+                                            _pinyin: _toPY(item)
                                         };
                                     });
                                 })
@@ -829,8 +937,8 @@ var o2DesignerConfig = {
                         }]
                     }, {
                         name: '数据中心属性',
-                        id: 'query.Property',
-                        type: 'designer-category',
+                        componentName: 'query.Property',
+                        _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
                         handleClick: (item, appid) => {
                             _openApp('query.QueryManager', null, {navi: 5, application: appid});
@@ -843,13 +951,13 @@ var o2DesignerConfig = {
                 _openApp('service.ServiceManager');
             },
             name: '服务管理',
-            id: 'service.ServiceManager',
+            componentName: 'service.ServiceManager',
             ooicon: 'process-service',
-            type: 'app-category',
+            _type: 'app-category',
             children: [{
                 name: '代理配置',
-                id: 'service.AgentDesigner',
-                type: 'designer-category',
+                componentName: 'service.AgentDesigner',
+                _type: 'designer-category',
                 ooicon: 'dailipeizhi1',
                 handleClick: (item, appid) => {
                     _openApp('service.ServiceManager', null, {navi: 0});
@@ -859,7 +967,7 @@ var o2DesignerConfig = {
                 },
                 children: [{
                     label: '代理',
-                    type: 'designer',
+                    _type: 'designer',
                     handleClick: (item) => {
                         _openApp('service.AgentDesigner', null, {id: item.id});
                     },
@@ -868,7 +976,8 @@ var o2DesignerConfig = {
                             return _sort(agents.data).map(agent=>{
                                 return {
                                     ...agent,
-                                    pinyin: _toPY(agent)
+                                    _appType: 'service',
+                                    _pinyin: _toPY(agent)
                                 };
                             });
                         })
@@ -877,8 +986,8 @@ var o2DesignerConfig = {
             },
                 {
                     name: '接口配置',
-                    id: 'portal.InvokeDesigner',
-                    type: 'designer-category',
+                    componentName: 'portal.InvokeDesigner',
+                    _type: 'designer-category',
                     label: '接口',
                     ooicon: 'jiekoupeizhi21',
                     handleClick: (item, appid) => {
@@ -889,7 +998,7 @@ var o2DesignerConfig = {
                     },
                     children: [{
                         label: '接口',
-                        type: 'designer',
+                        _type: 'designer',
                         categorized: true,
                         handleClick: (item) => {
                             _openApp('service.InvokeDesigner', null, {id: item.id});
@@ -899,7 +1008,8 @@ var o2DesignerConfig = {
                                 return _sort(items.data).map(item=>{
                                     return {
                                         ...item,
-                                        pinyin: _toPY(item)
+                                        _appType: 'service',
+                                        _pinyin: _toPY(item)
                                     };
                                 });
                             })
@@ -907,8 +1017,8 @@ var o2DesignerConfig = {
                     }]
                 }, {
                     name: '脚本配置',
-                    id: 'service.ScriptDesigner',
-                    type: 'designer-category',
+                    componentName: 'service.ScriptDesigner',
+                    _type: 'designer-category',
                     label: '脚本配置',
                     ooicon: 'jiaoben',
                     handleClick: (item, appid) => {
@@ -919,7 +1029,7 @@ var o2DesignerConfig = {
                     },
                     children: [{
                         label: '脚本配置',
-                        type: 'designer',
+                        _type: 'designer',
                         handleClick: (item) => {
                             _openApp('service.ScriptDesigner', null, { id: item.id });
                         },
@@ -928,7 +1038,8 @@ var o2DesignerConfig = {
                                 return _sort(items.data).map(item=>{
                                     return {
                                         ...item,
-                                        pinyin: _toPY(item)
+                                        _appType: 'service',
+                                        _pinyin: _toPY(item)
                                     };
                                 });
                             })
@@ -936,8 +1047,8 @@ var o2DesignerConfig = {
                     }]
                 }, {
                     name: '数据配置',
-                    id: 'service.DictionaryDesigner',
-                    type: 'designer-category',
+                    componentName: 'service.DictionaryDesigner',
+                    _type: 'designer-category',
                     label: '数据配置',
                     ooicon: 'js',
                     handleClick: () => {
@@ -948,7 +1059,7 @@ var o2DesignerConfig = {
                     },
                     children: [{
                         label: '数据配置',
-                        type: 'designer',
+                        _type: 'designer',
                         handleClick: (item) => {
                             _openApp('service.DictionaryDesigner', null, {id: item.id});
                         },
@@ -957,7 +1068,8 @@ var o2DesignerConfig = {
                                 return _sort(items.data).map(item=>{
                                     return {
                                         ...item,
-                                        pinyin: _toPY(item)
+                                        _appType: 'service',
+                                        _pinyin: _toPY(item)
                                     };
                                 });
                             });
@@ -965,11 +1077,11 @@ var o2DesignerConfig = {
                     }]
                 }]
         },
-        {type: 'separator'},
+        {_type: 'separator'},
         {
             name: '搜索设计',
             title: '根据关键字搜索具体设计',
-            id: 'FindDesigner',
+            componentName: 'FindDesigner',
             ooicon: 'search',
             handleClick: (item) => {
                 _openApp('FindDesigner');
@@ -978,22 +1090,22 @@ var o2DesignerConfig = {
         {
             name: '最近打开',
             title: '最近打开的设计元素',
-            id: 'recentlyOpened',
+            componentName: 'recentlyOpened',
             ooicon: 'clock',
-            type: 'app-category',
+            _type: 'app-category',
             autoRefresh: true,
             children: [{
                 label: '最近打开',
-                type: 'designer',
+                _type: 'designer',
                 handleClick: (item) => {
                     _openApp(item.app, null, { id: item.id, application: {id: item.appid} });
                 },
                 listAction: () => {
-                    return o2.UD.getDataJson(RECENTLY_DESIGNER_NAME).then((items) => {
+                    return o2.UD.getDataJson(_RECENTLY_DESIGNER_NAME).then((items) => {
                         return _sort(items || [], 'time', true).map((item) => {
                             return {
                                 ...item,
-                                pinyin: _toPY(item),
+                                _pinyin: _toPY(item),
                                 ooicon: _ooiconMap[item.app] || '',
                                 title: (item.applicationName || '') + ' ' + _appNameMap[item.app] + ' ' + item.app
                             };
@@ -1011,7 +1123,7 @@ var o2DesignerBreadcrumb = new Class({
     options: {
         "style": "default", //样式
         "keepActive": true, //是否保持上次的激活状态
-        "pathlist": [] //路径列表 [{id, name, type}]
+        "pathlist": [] //路径列表 [{id, name, _type}]
     },
     initialize: function(container, app, options){
         this.setOptions(options);
@@ -1023,25 +1135,49 @@ var o2DesignerBreadcrumb = new Class({
     load: function (){
         this.container.loadCss(`${this.path}style.css`);
         this.node = new Element('div.breadcrumb').inject(this.container);
+
+        var p;
+        var componentNames = [];
         this.options.pathlist.each((pathData, i)=>{
-            this.addItem(pathData, i);
-        });
-        this.app.content.addEvent('mousedown', (e)=>{
-            if( this.activeMenu ){
-                // if(this.options.keepActive){
-                //     this.lastActiveMenus = [];
-                //     var activeMenu = this.activeMenu;
-                //     while(activeMenu){
-                //         this.lastActiveMenus.push(activeMenu);
-                //         activeMenu = activeMenu.activeMenu;
-                //     }
-                // }
-                this.activeMenu.hide();
-                this.activeMenu = null;
+            componentNames.push(pathData.componentName);
+            if( pathData._type === 'app' ){
+                if( !pathData.hasOwnProperty('name') || !pathData.hasOwnProperty('alias') ){
+                    var config = this.getConfig( componentNames );
+                    p = config.getAction( pathData.id ).then((json)=>{
+                        pathData.name = json.data.name;
+                        pathData.alias = json.data.alias || '';
+                    });
+                }
             }
         });
-        this.node.addEvent('mousedown', (e)=>{ e.stopPropagation(); });
-        this.addToRecently();
+
+        Promise.resolve(p).then(() => {
+            this.options.pathlist.each((pathData, i)=>{
+                this.addItem(pathData, i);
+            });
+            this.app.content.addEvent('mousedown', (e)=>{
+                if( this.activeMenu ){
+                    this.activeMenu.hide();
+                    this.activeMenu.target.removeClass('active');
+                    this.activeMenu = null;
+                }
+            });
+            this.node.addEvent('mousedown', (e)=>{ e.stopPropagation(); });
+            this.addToRecently();
+        });
+    },
+    getConfig: function( componentNamePaths){
+        var config = o2DesignerConfig;
+        for( var i=0; i < componentNamePaths.length; i++ ){
+            if( !config )return null;
+            var arr = config.children && config.children.filter((item)=>{
+                return item.componentName === componentNamePaths[i];
+            });
+            if( arr && arr.length ){
+                config = arr[0];
+            }
+        }
+        return config;
     },
     addItem: function(pathData){
         var item = new o2DesignerBreadcrumb.Item(this, this.items.getLast() || null, pathData);
@@ -1054,7 +1190,7 @@ var o2DesignerBreadcrumb = new Class({
         var path = pathlist.getLast();
         var applicationName = pathlist.length === 4 ? pathlist[1].name : pathlist[0].name;
         if( path.id ){
-            o2.UD.getDataJson(RECENTLY_DESIGNER_NAME).then((items) => {
+            o2.UD.getDataJson(_RECENTLY_DESIGNER_NAME).then((items) => {
                 var list = _sort(items || [], 'time', true).filter((item) => {
                     return item.id !== path.id;
                 });
@@ -1067,8 +1203,8 @@ var o2DesignerBreadcrumb = new Class({
                     time: new Date().getTime(),
                     timeString: new Date().format('db')
                 });
-                (list.length > RECENTLY_DESIGNER_MAX_COUNT) && (list.length = RECENTLY_DESIGNER_MAX_COUNT);
-                o2.UD.putData(RECENTLY_DESIGNER_NAME, list);
+                (list.length > _RECENTLY_DESIGNER_MAX_COUNT) && (list.length = _RECENTLY_DESIGNER_MAX_COUNT);
+                o2.UD.putData(_RECENTLY_DESIGNER_NAME, list);
             });
         }
     }
@@ -1083,8 +1219,18 @@ o2DesignerBreadcrumb.Item = new Class({
         this.level = parent ? (parent.level + 1) : 1;
         this.siblingConfigs = this.level === 1 ? o2DesignerConfig.children : this.parent.config.children;
         this.config = this.siblingConfigs.length === 1 ? this.siblingConfigs[0] : this.siblingConfigs.find((item)=>{
-            return item.id === this.pathData.id || item.name === this.pathData.name;
+            return item.componentName === pathData.componentName ||
+                (pathData.id && item.id === pathData.id) ||
+                (pathData.name && item.name === pathData.name);
         });
+    },
+    getPaths: function(){
+        var paths = [], parent = this;
+        while (parent){
+            paths.unshift(parent.pathData.componentName || parent.pathData.id);
+            parent = parent.parent;
+        }
+        return paths;
     },
     load: function (){
         if( this.level > 1 ){
@@ -1102,12 +1248,10 @@ o2DesignerBreadcrumb.Item = new Class({
         const { app, node, data } = this;
         var _self = this;
         this.menu = new o2DesignerBreadcrumb.Menu(app.content, node, app, data, {
-            axis : "y",
-            hiddenDelay : 300,
-            displayDelay : 300,
             onPostCreate: function (){ _self.setActiveMenu(this); },
             onShow: function (){ _self.setActiveMenu(this); },
-            onHide: function (){ _self.cancelActiveMenu(this); }
+            onHide: function (){ _self.cancelActiveMenu(this); },
+            onPostSetCoondinates: function (){ _self.setActiveMenuCoondinates(this); }
         });
         this.menu.level = this.level;
         this.menu.item = this;
@@ -1124,12 +1268,20 @@ o2DesignerBreadcrumb.Item = new Class({
             //     }
             // }
             bc.activeMenu.hide();
+            bc.activeMenu.target.removeClass('active');
+            bc.activeMenu = null;
         }
         bc.activeMenu = submenu;
+        this.node.addClass('active');
     },
     cancelActiveMenu: function ( submenu ){
         if( submenu.activeMenu ){
             submenu.activeMenu.hide();
+        }
+    },
+    setActiveMenuCoondinates: function (submenu){
+        if( submenu.activeMenu ){
+            submenu.activeMenu.setCoondinates();
         }
     },
     destroy: function () {
@@ -1144,9 +1296,12 @@ o2DesignerBreadcrumb.Menu = new Class({
     Extends: MTooltips,
     Implements: [Options, Events],
     options: {
+        axis : "y",
+        hiddenDelay : 300,
+        displayDelay : 300,
         offset : {
             x : 0,
-            y : 8
+            y : 4
         },
         priorityOfAuto: {
             x : ["right", "center", "left" ], //当position x 为 auto 时候的优先级
@@ -1191,7 +1346,7 @@ o2DesignerBreadcrumb.Menu = new Class({
                     bind: {
                         lp: this.lp,
                         data: data,
-                        type: template[0].type,
+                        _type: template[0]._type,
                         editingAppid: this.getPathAppid(),
                         pathData: this.getPathData(),
                         categories: this.categories
@@ -1205,7 +1360,6 @@ o2DesignerBreadcrumb.Menu = new Class({
         });
     },
     reload: function (){
-        debugger;
         this.refresh(true);
     },
     getPathAppid : function(){
@@ -1215,23 +1369,26 @@ o2DesignerBreadcrumb.Menu = new Class({
     getPathData: function(){
         return this.item.breadcrumb.options.pathlist[this.level-1] || {};
     },
-    getAppid: function(){
+    getParentData: function (type){
         var parent = this.item.parent;
         while(parent){
-            if( parent.pathData && parent.pathData.id && parent.pathData.type === 'app' ){
-                return parent.pathData.id;
+            if( parent.pathData && parent.pathData._type === type ){
+                return parent.pathData;
             }
             parent = parent.parent;
         }
     },
+    getDesignerData : function(){
+        return this.getParentData('designer');
+    },
+    getAppdata: function(){
+        return this.getParentData('app');
+    },
+    getAppid: function(){
+        return this.getAppdata()?.id;
+    },
     getAppname: function(){
-        var parent = this.item.parent;
-        while(parent){
-            if( parent.pathData && parent.pathData.name && parent.pathData.type === 'app' ){
-                return parent.pathData.name;
-            }
-            parent = parent.parent;
-        }
+        return this.getAppdata()?.name;
     },
     getCurrentAppid: function (){
         return this.getAppid();
@@ -1249,21 +1406,27 @@ o2DesignerBreadcrumb.Menu = new Class({
         if( list.length === 1 && list[0].listAction){
             return list[0].listAction( appid ).then((data)=>{
                 return data.map(d=>{
-                    if( list[0].type === 'app' ){
+                    if( list[0]._type === 'app' ){
                         d.children = list[0].children.map((child)=>{
                             child.appid = d.id;
                             return child;
                         });
+                        d.children.push({_type: 'separator'});
+                        d.children.push(..._appTools);
+                    }else if( list[0]._type === 'designer' ){
+                        d.children = [..._designerTools];
                     }
                     d.handleClick = ()=>{
                         list[0].handleClick(d, appid);
                     };
                     if( list[0].categorized ){
-                        (!d.category || d.category==='未分类') && (d.category = UNCATEGORIZED);
+                        (!d.category || d.category==='未分类') && (d.category = _UNCATEGORIZED);
                         if( !this.categories.includes( d.category ) ){
                             this.categories.push( d.category );
                         }
                     }
+                    d._type = list[0]._type;
+                    d._config = list[0];
                     return d;
                 });
             });
@@ -1283,12 +1446,12 @@ o2DesignerBreadcrumb.Menu = new Class({
         !!this.activeMenu && this.activeMenu.setCoondinates();
     },
     parseCategory: function (e){
-        var hasUncategorized = this.categories.includes(UNCATEGORIZED);
-        hasUncategorized && (this.categories = this.categories.erase( UNCATEGORIZED ));
+        var hasUncategorized = this.categories.includes(_UNCATEGORIZED);
+        hasUncategorized && (this.categories = this.categories.erase( _UNCATEGORIZED ));
         if( this.categories.length > 0 ){
             this.categories = _sort(this.categories,'').map(c=>{ return {value: c, label: c}; });
-            this.categories.unshift({value: ALL, label: '全部分类'});
-            hasUncategorized && this.categories.push({value: UNCATEGORIZED, label: '未分类'});
+            this.categories.unshift({value: _ALL, label: '全部分类'});
+            hasUncategorized && this.categories.push({value: _UNCATEGORIZED, label: '未分类'});
         }
     },
     filterByCategory: function (e, data){
@@ -1328,7 +1491,7 @@ o2DesignerBreadcrumb.Menu = new Class({
     },
     search: function() {
         var category = this.currentCategory;
-        var key = this.currentSearchKey.toLowerCase();
+        var key = (this.currentSearchKey||'').toLowerCase();
         var items = this.menuNode && this.menuNode.querySelectorAll('.breadcrumb-menu-item');
         (items || []).forEach(item=>{
             var ds = item.dataset;
@@ -1337,7 +1500,7 @@ o2DesignerBreadcrumb.Menu = new Class({
                     (ds.alias||'').includes(key) ||
                     (ds.pinyin||'').includes(key)
                 );
-            var isMatchCategory = !category || category === ALL || ds.category === category;
+            var isMatchCategory = !category || category === _ALL || ds.category === category;
             _checkClass( item, 'hide', !isMatchKey || !isMatchCategory );
         });
 
@@ -1348,18 +1511,33 @@ o2DesignerBreadcrumb.Menu = new Class({
             this.activeMenu[fun]();
         }
     },
+    checkCondition: function (e, data){
+        if( !data.condition ){
+            return true;
+        }
+        var flag = true;
+        switch(data._type){
+           case 'app-tool':
+               flag = data.condition(data, this.getAppdata());
+               break;
+           case 'designer-tool':
+               flag = data.condition(this.getDesignerData(), this.getAppdata());
+               break;
+        }
+        !flag && e.currentTarget.addClass('hide');
+        return flag;
+    },
     handleLoadItem: function (e, data){
+        if( !this.checkCondition(e, data) )return;
         var app = this.item.breadcrumb.app;
         var _self = this;
         if( data.children && data.children.length > 0 ){
             var menu = new o2DesignerBreadcrumb.SubMenu(app.content, e.currentTarget, app, data, {
-                axis : "x",
-                hiddenDelay : 300,
-                displayDelay : 300,
                 autoRefresh: data.autoRefresh,
                 onPostCreate: function (){ _self.setActiveMenu(this); },
                 onShow: function (){ _self.setActiveMenu(this); },
-                onHide: function (){ _self.cancelActiveMenu(this); }
+                onHide: function (){ _self.cancelActiveMenu(this); },
+                onPostSetCoondinates: function (){ _self.setActiveMenuCoondinates(this); }
             });
             menu.level = this.level + 1;
             menu.item = this.item;
@@ -1380,10 +1558,18 @@ o2DesignerBreadcrumb.Menu = new Class({
             submenu.activeMenu.hide();
         }
     },
+    setActiveMenuCoondinates: function ( submenu ){
+        if( submenu.activeMenu ){
+            submenu.activeMenu.setCoondinates();
+        }
+    },
     handleMouseEnter: function (e, data){
         this.timer_hide_acitvie = window.setTimeout(() => {
-            if(this.activeMenu && this.activeMenu.data.id !== data.id){
-                this.activeMenu.hide();
+            if(this.activeMenu ){
+                var d = this.activeMenu.data;
+                if( (d.id && d.id !== data.id) || (d.componentName && d.componentName !== data.componentName ) ){
+                    this.activeMenu.hide();
+                }
             }
             this.timer_hide_acitvie = null;
         }, this.options.hiddenDelay);
@@ -1404,12 +1590,13 @@ o2DesignerBreadcrumb.Menu = new Class({
     _customNode : function( node, contentNode ){
         this.fireEvent("customContent", [contentNode, node])
     }
-})
+});
 
 o2DesignerBreadcrumb.SubMenu = new Class({
     Extends: o2DesignerBreadcrumb.Menu,
     Implements: [Options, Events],
     options: {
+        axis : "x",
         offset : {
             x : 5,
             y : 0
@@ -1419,27 +1606,28 @@ o2DesignerBreadcrumb.SubMenu = new Class({
             y : ["bottom", "middle", "top" ] //当position y 为 auto 时候的优先级
         }
     },
-    getAppid: function(){
-        var parent = this, topParent;
+    getParentData: function (_type) {
+        var parent = this;
         while(parent){
-            if( parent.data && parent.data.id && parent.data.type === 'app' ){
-                return parent.data.id;
+            if( parent.data && parent.data._type === _type ){
+                return parent.data;
             }
-            topParent = parent;
             parent = parent.parent;
         }
-        return this.currentAppid;
+    },
+    getDesignerData: function () {
+        return this.getParentData('designer');
+    },
+    getAppdata: function (){
+        return this.getParentData('app');
+    },
+    getAppid: function(){
+        var appdata = this.getAppdata();
+        return !!appdata ? appdata.id : this.currentAppid;
     },
     getAppname: function(){
-        var parent = this, topParent;
-        while(parent){
-            if( parent.data && (parent.data.name || parent.data.appName) && parent.data.type === 'app' ){
-                return parent.data.name || parent.data.appName;
-            }
-            topParent = parent;
-            parent = parent.parent;
-        }
-        return this.currentAppname;
+        var appdata = this.getAppdata();
+        return !!appdata ? (appdata.name || appdata.appName) : this.currentAppname;
     },
     getChildrenTempalte: function () {
         return this.data.children;
@@ -1449,7 +1637,12 @@ o2DesignerBreadcrumb.SubMenu = new Class({
         e.stopPropagation();
     },
     handleClick: function (e, data){
-        data.handleClick(data, data.appid || this.getAppid());
+        debugger;
+        if( data._type === 'designer-tool' ){
+            data.handleClick(this.getDesignerData(), this.getAppdata());
+        }else{
+            data.handleClick(data, data.appid || this.getAppid(), this.getAppdata());
+        }
     },
     getCurrentAppid: function (){
         return this.currentAppid;

@@ -846,23 +846,24 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                 pathlist: [
                     {
                         name: '流程管理',
-                        id: 'process.ApplicationExplorer',
-                        type: 'app-category'
+                        componentName: 'process.ApplicationExplorer',
+                        _type: 'app-category'
                     },
                     {
+                        componentName: 'process.ProcessManger',
                         name: this.application.name,
                         id: this.processData.application,
-                        type: 'app'
+                        _type: 'app'
                     },
                     {
                         name: '流程设计',
-                        id: 'process.ProcessDesigner',
-                        type: 'desiginer-category'
+                        componentName: 'process.ProcessDesigner',
+                        _type: 'desiginer-category'
                     },
                     {
                         name: this.processData.name,
                         id: this.processData.id,
-                        type: 'desiginer'
+                        _type: 'desiginer'
                     }]
             });
             this.breadcrumb.load();

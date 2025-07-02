@@ -1,16 +1,22 @@
 .breadcrumb {
     display: flex;
-    height: 22px;
-    gap: 0.5rem;
-    align-items: center;
     height: 100%;
+    gap: 0.25rem;
+    align-items: center;
 }
 .breadcrumb-separator{
     color: #666;
     font-size: 0.8rem;
 }
 .breadcrumb-item{
-
+    padding: 0.25rem 0.25rem;
+}
+.breadcrumb-item:hover{
+    background-color: var(--oo-color-over);
+}
+.breadcrumb-item.active{
+    background-color: var(--oo-color-over);
+    color: var(--oo-color-main);
 }
 oo-select{
     width: calc( 100% - 2rem );
@@ -121,6 +127,20 @@ oo-select{
 .breadcrumb-menu-item.active{
     color: var(--oo-color-main);
     background-color: var(--oo-color-over);
+}
+.more-action-area{
+    width: 1rem;
+    height: 100%;
+    text-align: right;
+}
+.more-action-area i{
+    display: none;
+    width: 1rem;
+    height: 100%;
+    color: var(--oo-color-text3);
+}
+.breadcrumb-menu-item:hover .more-action-area i{
+    display: block;
 }
 .current-icon{
     font-size: 0.3rem;

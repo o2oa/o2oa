@@ -230,7 +230,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		this.initOptions();
 		this.loadNodes();
 		this.loadToolbar();
-		this.loadFormNode();
+		this.loadFormNode( this.loadDesignerBreadcrumb.bind(this) );
 		this.loadProperty();
 
 		this.loadTools(function(){
@@ -238,7 +238,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             this.addEvent("resize", this.resizeNode.bind(this));
         }.bind(this));
 
-		this.loadForm();
+		this.loadForm( this.loadDesignerBreadcrumb.bind(this) );
 
         MWF.require("MWF.widget.ScrollBar", function(){
             new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
@@ -393,11 +393,11 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 	},
 
 	//loadFormNode------------------------------
-	loadFormNode: function(){
+	loadFormNode: function(callback){
 		this.formToolbarNode = new Element("div", {
 			"styles": this.css.formToolbarNode
 		}).inject(this.formNode);
-		this.loadFormToolbar();
+		this.loadFormToolbar(callback);
 
 		this.formContentNode = new Element("div", {
 			"styles": this.css.formContentNode
@@ -408,33 +408,38 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		}.bind(this));
 	},
     loadDesignerBreadcrumb: function (){
-        MWF.xDesktop.requireApp("process.ProcessManager", "DesignerBreadcrumb", function (){
-            this.designerBreadcrumbNode = this.formToolbarNode.getElement('#O2DesignerBreadcrumbNode');
-            this.breadcrumb = new o2DesignerBreadcrumb(this.designerBreadcrumbNode, this, {
-                pathlist: [
-                    {
-                        name: '流程管理',
-                        id: 'process.ApplicationExplorer',
-                        type: 'app-category'
-                    },
-                    {
-                        name: this.formData.json.applicationName,
-                        id: this.formData.json.application,
-                        type: 'app'
-                    },
-                    {
-                        name: '流程表单',
-                        id: 'process.FormManager',
-                        type: 'desiginer-category'
-                    },
-                    {
-                        name: this.formData.json.name,
-                        id: this.formData.json.id,
-                        type: 'desiginer'
-                    }]
-            });
-            this.breadcrumb.load();
-        }.bind(this), true);
+        this.designerBreadcrumbNode = this.formToolbarNode && this.formToolbarNode.getElement('#O2DesignerBreadcrumbNode');
+        if( this.designerBreadcrumbNode && this.formData ){
+            MWF.xDesktop.requireApp("process.ProcessManager", "DesignerBreadcrumb", function (){
+                debugger;
+                this.breadcrumb = new o2DesignerBreadcrumb(this.designerBreadcrumbNode, this, {
+                    pathlist: [
+                        {
+                            name: '流程管理',
+                            componentName: 'process.ApplicationExplorer',
+                            _type: 'app-category'
+                        },
+                        {
+                            componentName: 'process.ProcessManger',
+                            name: this.formData.json.applicationName,
+                            id: this.formData.json.application,
+                            _type: 'app'
+                        },
+                        {
+                            name: '流程表单',
+                            componentName: 'process.FormManager',
+                            _type: 'desiginer-category'
+                        },
+                        {
+                            name: this.formData.json.name,
+                            id: this.formData.json.id,
+                            alias: this.formData.json.alias,
+                            _type: 'desiginer'
+                        }]
+                });
+                this.breadcrumb.load();
+            }.bind(this), true);
+        }
     },
     loaddesignerActionNode: function(){
         this.pcDesignerActionNode = this.formToolbarNode.getElement("#MWFFormPCDesignerAction");
@@ -1327,16 +1332,16 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 	},
 
 	//loadForm------------------------------------------
-	loadForm: function(){
+	loadForm: function(callback){
 
 //		try{
 		this.getFormData(function(){
-            this.loadDesignerBreadcrumb();
 
 			this.pcForm = new MWF.FCForm(this, this.designNode);
 			this.pcForm.load(this.formData);
 
             this.form = this.pcForm;
+            if(callback)callback()
 		}.bind(this));
 
 //		}catch(e){
