@@ -63,6 +63,8 @@
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-serial"></icon></div>
                 <div class="menuItemText">{{$.lp.serial}}</div>
             </div>
+            {{end if}}
+            {{if $.acl.isAppManager && $.acl.allowArchive}}
             <div  style="padding-left:20px" class="menuItem" data-o2-element="archiveMenuNode" data-o2-events="click:loadList:archive">
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-serial"></icon></div>
                 <div class="menuItemText">{{$.lp.archive}}</div>

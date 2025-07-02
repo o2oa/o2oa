@@ -61,13 +61,13 @@
                                      label-style="width:6.2vw;"
                                      label-Align="right">
                         </oo-textarea>
-                        <oo-radio-group data-o2-events="click:setAiEnable" name="o2AiEnable"
+                        <oo-radio-group name="o2AiEnable"
                                         label="{{$.lp.config.o2AiEnable}}"
                                         value="{{$.config.o2AiEnable}}"
                                         label-style="width:6.2vw;"
                                         label-Align="right">
-                            <oo-radio value="true">是</oo-radio>
-                            <oo-radio value="false">否</oo-radio>
+                            <oo-radio value="true" data-o2-events="click:setAiEnable" >{{$.lp.common.yes}}</oo-radio>
+                            <oo-radio value="false" data-o2-events="click:setAiEnable" >{{$.lp.common.no}}</oo-radio>
                         </oo-radio-group>
                         <div data-o2-element="aiEnableNode" style="{{if !$.config.o2AiEnable}}display:none{{end if }}">
                             <div class="content-item"  style="width:100%;flex:100%;flex-wrap: wrap;gap: 1em 2em;display: flex;">

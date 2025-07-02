@@ -26,13 +26,12 @@ MWF.xApplication.AI.Model = new Class({
         }.bind(this));
 
     },
-
     reload : function (){
         this.rootNode.destroy();
         this.load();
     },
     removeModel : function (id,ev){
-        $OOUI.confirm.warn('删除确认', '您确定要删除该文档吗？', null, ev.target, 'left top').then(({ dlg, status }) => {
+        $OOUI.confirm.warn(this.lp.common.removetitle, this.lp.common.removeconfirm, null, ev.target, 'left top').then(({ dlg, status }) => {
             if (status === 'ok') {
                 this.action.ConfigAction.deleteModel(id, function( json ){
                     this.reload();
@@ -57,7 +56,7 @@ MWF.xApplication.AI.Model = new Class({
 
         node.loadHtml(url, {"bind": {"lp": _self.lp,"data" : data||{}}, "module": this}, function () {
 
-            $OOUI.dialog(type === "edit"?"修改模型":"新建模型", node, this.container, {
+            $OOUI.dialog(type === "edit"?_self.lp.modifymodule:_self.lp.newmodule, node, this.container, {
                 buttons: 'ok, cancel', canMove: false,
                 events: {
                     "ok": function () {
@@ -68,6 +67,11 @@ MWF.xApplication.AI.Model = new Class({
                         const completionUrl = node.querySelector("[name='completionUrl']");
                         const apiKey = node.querySelector("[name='apiKey']");
                         const asDefault = node.querySelector("[name='asDefault']");
+
+                        const proxyEnable = node.querySelector("[name='proxyEnable']");
+                        const proxyHost = node.querySelector("[name='proxyHost']");
+                        const proxyPort = node.querySelector("[name='proxyPort']");
+
                         let newData = {
                             "name" : name.get("value"),
                             "type" : moduletype.get("value"),
@@ -75,7 +79,11 @@ MWF.xApplication.AI.Model = new Class({
                             "completionUrl" : completionUrl.get("value"),
                             "apiKey" : apiKey.get("value"),
                             "desc" : desc.get("value"),
-                            "asDefault" :asDefault.get("value")
+                            "asDefault" :asDefault.get("value"),
+                            "proxyEnable" :proxyEnable.get("value"),
+                            "proxyHost" :proxyHost.get("value"),
+                            "proxyPort" :proxyPort.get("value"),
+
                         }
 
                         if(type === "edit"){
@@ -90,59 +98,9 @@ MWF.xApplication.AI.Model = new Class({
                             }.bind(this));
                         }
 
-
-
                     }
                 }
-
             });
-
-        }.bind(this));
-
-    },
-    selectCMS :function (ev){
-        const node = ev.target;
-        const opt = {
-            "types": ["CMSApplication"],
-            "count": 0,
-            "title": "选择",
-            "values":[],
-            "onComplete": function (items) {
-                console.log(items)
-                let values = [];
-                let names = [];
-                if(items.length>0){
-                    items.forEach((item)=>{
-                        values.push(item.data.name);
-                        names.push(item.data.id + "|" + item.data.name);
-                    })
-                    node.value = values.join();
-                    node.set("v",names.join());
-                }
-
-            }.bind(this)
-        };
-        o2.xDesktop.requireApp("Selector", "package", function(){
-            new o2.O2Selector(this.app.content, opt);
-        }.bind(this), false);
-    },
-    save : function (){
-        const node = this.rightNode;
-        const appName = node.querySelector("[name='appName']");
-        const title = node.querySelector("[name='title']");
-        const desc = node.querySelector("[name='desc']");
-        const appIconUrl = node.querySelector("[name='appIconUrl']");
-        const knowledgeIndexAppList = node.querySelector("[name='knowledgeIndexAppList']");
-
-
-        this.action.ConfigAction.saveConfig({
-            "appName" : appName.get("value"),
-            "title" : title.get("value"),
-            "desc" : desc.get("value"),
-            "appIconUrl" : appIconUrl.get("value"),
-            "knowledgeIndexAppList" :knowledgeIndexAppList.get("v")!==""?knowledgeIndexAppList.get("v").split(","):[]
-        }, function( json ){
-            alert("success")
         }.bind(this));
     }
 });
