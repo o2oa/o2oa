@@ -260,11 +260,20 @@ o2DB.Menu = new Class({
     getPathData: function(){
         return this.item.breadcrumb.options.pathlist[this.level-1] || {};
     },
-    getParentData: function (type){
-        var parent = this.item.parent;
+    // getParentData: function (type){
+    //     var parent = this.item.parent;
+    //     while(parent){
+    //         if( parent.pathData && parent.pathData._type === type ){
+    //             return parent.pathData;
+    //         }
+    //         parent = parent.parent;
+    //     }
+    // },
+    getParentData: function (_type) {
+        var parent = this;
         while(parent){
-            if( parent.pathData && parent.pathData._type === type ){
-                return parent.pathData;
+            if( parent.data && parent.data._type === _type ){
+                return parent.data;
             }
             parent = parent.parent;
         }
@@ -498,21 +507,21 @@ o2DB.SubMenu = new Class({
             y : ["bottom", "middle", "top" ] //当position y 为 auto 时候的优先级
         }
     },
-    getParentData: function (_type) {
-        var parent = this;
-        while(parent){
-            if( parent.data && parent.data._type === _type ){
-                return parent.data;
-            }
-            parent = parent.parent;
-        }
-    },
-    getDesignerData: function () {
-        return this.getParentData('designer');
-    },
-    getAppdata: function (){
-        return this.getParentData('app');
-    },
+    // getParentData: function (_type) {
+    //     var parent = this;
+    //     while(parent){
+    //         if( parent.data && parent.data._type === _type ){
+    //             return parent.data;
+    //         }
+    //         parent = parent.parent;
+    //     }
+    // },
+    // getDesignerData: function () {
+    //     return this.getParentData('designer');
+    // },
+    // getAppdata: function (){
+    //     return this.getParentData('app');
+    // },
     getAppid: function(){
         var appdata = this.getAppdata();
         return !!appdata ? appdata.id : this.currentAppid;
