@@ -420,7 +420,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             _type: 'app-category'
                         },
                         {
-                            componentName: 'process.ProcessManger',
+                            componentName: 'process.ProcessManager',
                             name: this.formData.json.applicationName,
                             id: this.formData.json.application,
                             _type: 'app'
