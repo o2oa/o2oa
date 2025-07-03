@@ -3,6 +3,15 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
     Extends: MWF.APPSubform,
 
     getSubform: function(callback){
+        var defaultApp, actionMothod;
+        if( this.form.options.useProcessForm ){
+            var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm" : "getFormMobile";
+            defaultApp = this.form.businessData.data.$work.application;
+            actionMothod = MWF.Actions.get("x_processplatform_assemble_surface")[method];
+        }else{
+            actionMothod = MWF.Actions.get("x_cms_assemble_control").getFormWithColumn;
+            defaultApp = this.form.businessData.document.appId || this.form.businessData.document.application;
+        }
         if (this.json.subformType==="script"){
             if (this.json.subformScript && this.json.subformScript.code){
                 var data = this.form.Macro.exec(this.json.subformScript.code, this);
@@ -15,8 +24,8 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
                         if( data.subform )formName = data.subform;
                     }
                     if( formName ){
-                        if( !app )app = this.form.businessData.document.appId || this.form.businessData.document.application;
-                        MWF.Actions.get("x_cms_assemble_control").getFormWithColumn(formName, app, function(json){
+                        if( !app )app = defaultApp;
+                        actionMothod(formName, app, function(json){
                             this.getSubformData(json.data);
                             if (callback) callback();
                         }.bind(this));
@@ -36,13 +45,8 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
                     this.getSubformData({"data": subformData.data});
                     if (callback) callback();
                 } else {
-                    var app;
-                    if( this.json.subformAppSelected ){
-                        app = this.json.subformAppSelected;
-                    }else{
-                        app = this.form.businessData.document.appId || this.form.businessData.document.application;
-                    }
-                    MWF.Actions.get("x_cms_assemble_control").getFormWithColumn(this.json.subformSelected, app, function(json){
+                    var app = this.json.subformAppSelected || defaultApp;
+                    actionMothod(this.json.subformSelected, app, function(json){
                         this.getSubformData(json.data);
                         if (callback) callback();
                     }.bind(this));
@@ -77,10 +81,14 @@ MWF.xApplication.cms.Xform.Subform = MWF.CMSSubform =  new Class({
     getSubformData: function (data) {
         if (!data || typeOf(data) !== "object") return;
         var subformDataStr = null;
-        if ( this.form.json.mode !== "Mobile" && !layout.mobile){
+        if( this.form.options.useProcessForm ){
             subformDataStr = data.data;
         }else{
-            subformDataStr = data.mobileData || data.data;
+            if ( this.form.json.mode !== "Mobile" && !layout.mobile){
+                subformDataStr = data.data;
+            }else{
+                subformDataStr = data.mobileData || data.data;
+            }
         }
         this.subformData = null;
         if (subformDataStr) {
