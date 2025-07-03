@@ -139,12 +139,209 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
         this.loadAssociatedDocument();
 	},
+    _createAssociation: function( data, async ){
+        return o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(
+            this.getBundle(),
+            { targetList: data },
+            null,
+            null,
+            async !== false
+        );
+    },
+    _cancelAssociated: function(ids, async){
+        return o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(
+            this.getBundle(),
+            { idList: ids },
+            null,
+            null,
+            async !== false
+        );
+    },
+    _listAllAssociated: function(async){
+        return o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.listWithJobWithSite(
+            this.getBundle(),
+            this.json.site || this.json.id,
+            null,
+            null,
+            async !== false
+        );
+    },
+    _parseData: function(data){
+        !data && (data = []);
+        typeOf(data) !== 'array' && (data = [data]);
+        data.each(function(d){
+            !d.type && (d.type === 'processPlatform');
+            d.site = this.json.site || this.json.id;
+        });
+        return data;
+    },
+    getLp: function(){
+        return MWF.xApplication.process.Xform.LP;
+    },
+    /**
+     * @summary 设置关联文档，清空所有的已关联文档后再关联。
+     * @param data{Object[]} .
+     * @param callback {Function}
+     * @param async {Boolean} 是否异步执行，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
+     * @return {Promise}
+     * @example
+     *  this.form.get("fieldId").set([{
+     *      type: 'processPlatform', //类型，processPlatform表示流程，cms表示内容管理，如果为空默认为流程
+     *      bundle: '', //流程实例的 job, 或者是内容挂历文档的id
+     *      view: '' //视图的id
+     *  }], function(json){
+     *      //json.data.failureList 关联失败列表
+     *      //json.data.successList 关联成功列表
+     *  }, true);
+     * @example
+     *  var p = this.form.get("fieldId").set([{
+     *      type: 'processPlatform',
+     *      bundle: '',
+     *      view: ''
+     *  }]);
+     *  p.then(function(json){
+     *      //json.data.failureList 关联失败列表
+     *      //json.data.successList 关联成功列表
+     *  })
+     *  @example
+     *  this.form.get('fieldId').set([])取消所有关联
+     */
+    set: function(data, callback, async){
+        var after = function (json){
+            this.loadAssociatedDocument();
+            this.validationMode();
+            !!callback && callback(json);
+        }.bind(this);
+        data = this._parseData(data);
+
+        var execute = function(){
+            if( async ){
+                return Promise.resolve(
+                    this.cancelAllAssociated()
+                ).then(function(json){
+                    var p = !!data.length ? this._createAssociation(data) : {data: {}};
+                    return Promise.resolve(p).then( after );
+                }.bind(this));
+            }else{
+                this.cancelAllAssociated( null, false);
+                var json = !!data.length ? this._createAssociation(data, false) : {data: {}};
+                after(json);
+                return json;
+            }
+        }.bind(this);
+
+        return this.listPromise ? this.listPromise.then( execute ) : execute();
+    },
+    /**
+     * @summary 根据传入的数据添加关联文档。
+     * @param data {Object[]}
+     * @param keepOrder{Boolean} 如果添加的已经存在，是否保留原有顺序, 默认不保留。
+     * @param callback {Function}
+     * @param async{Boolean} 是否为异步，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
+     * @return {Promise|Object}
+     * @example
+     *  this.form.get("fieldId").add([{
+     *      type: 'processPlatform', //类型，processPlatform表示流程，cms表示内容管理，如果为空默认为流程
+     *      bundle: '', //流程实例的 job, 或者是内容挂历文档的id
+     *      view: '' //视图的id
+     *  }],
+     *  true,
+     *  function(json){
+     *      //json.data.failureList 关联失败列表
+     *      //json.data.successList 关联成功列表
+     *  }, true);
+     * @example
+     *  var p = this.form.get("fieldId").add([{
+     *      type: 'processPlatform',
+     *      bundle: '',
+     *      view: ''
+     *  }]);
+     *  p.then(function(json){
+     *      //json.data.failureList 关联失败列表
+     *      //json.data.successList 关联成功列表
+     *  })
+     */
+    add: function(data, keepOrder, callback, async){
+        var execute = function(){
+            data = this._parseData(data);
+            var remains = this.documentList.map(function(d){
+                return {
+                    type: d.targetType,
+                    bundle: d.targetBundle,
+                    view: d.view
+                };
+            });
+            var filter = (arr1, arr2) => {
+                var bundles = arr1.map(function(d){ return d.bundle; });
+                return arr2.filter(function(d){
+                    return !bundles.contains( d.bundle );
+                });
+            };
+            if( !!keepOrder ){
+                data = filter(remains, data);
+            }else{
+                data = filter(data, remains);
+            }
+            return this.set(data, callback, async);
+        }.bind(this);
+
+        return this.listPromise ? this.listPromise.then( execute ) : execute();
+    },
+    /**
+     * @summary 取消指定的关联。
+     * @param bundles {String[]}
+     * @param callback {Function}
+     * @param async{Boolean} 是否为异步，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
+     * @return {Promise}
+     * @example
+     *  this.form.get("fieldId").remove();
+     */
+    cancel: function(bundles, callback, async){
+        var execute = function(){
+            var remains = this.documentList.filter(function(d){
+                return !bundles.contains(d);
+            }).map(function(d){
+                return {
+                    type: d.targetType,
+                    bundle: d.targetBundle,
+                    view: d.view
+                };
+            });
+            return this.set(remains, callback, async);
+        }.bind(this);
+
+        return this.listPromise ? this.listPromise.then( execute ) : execute();
+    },
+    /**
+     * @summary 得到关联的列表。
+     * @return {Promise|Object[]} 如果组件未加载完成的时候执行该方法，返回promise，否则返回对象数组。
+     * @example
+     * var documentList = this.form.get('fieldId').get();
+     * @example
+     * var documentList = Promise.resolve( this.form.get('fieldId').get() )
+     */
+    get: function(){
+        var execute = function(){
+            return this.documentList.map(function(d){
+                return {
+                    site: d.site || this.json.site || this.json.id,
+                    type: d.targetType,
+                    bundle: d.targetBundle,
+                    view: d.view
+                };
+            });
+        }.bind(this);
+
+        return this.listPromise ? this.listPromise.then( execute ) : execute();
+    },
+    getData: function(){
+        return this.documentList;
+    },
     selectDocument: function(data){
         this.cancelAllAssociated( function () {
             if( data && data.length ){
-                o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(this.form.businessData.work.job, {
-                    targetList: data
-                }, function (json) {
+                var p = this._createAssociation(data);
+                p.then(function (json){
                     this.status = "showResult";
                     if( this.dlg ){
                         if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
@@ -185,7 +382,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }
         }.bind(this));
     },
-    cancelAllAssociated: function( callback ){
+    cancelAllAssociated: function( callback, async ){
 	    var _self = this;
 	    if( this.documentList.length ){
             var ids = [];
@@ -204,22 +401,24 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     return doc.id;
                 });
             }
-            o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(this.getBundle(), {
-                idList: ids
-            },function (json) {
-                //this.documentList = [];
-                if(callback)callback();
+            var p = this._cancelAssociated(ids, async);
+            return p.then(function (json) {
+                !!callback && callback();
             }.bind(this));
         }else{
-	        if(callback)callback();
+            !!callback && callback();
+            return new Promise();
         }
     },
     loadAssociatedDocument: function( callback ){
         this.documentListNode.empty();
-	    o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.listWithJobWithSite(this.form.businessData.work.job, (this.json.site || this.json.id), function (json) {
+        var p = this._listAllAssociated();
+        this.listPromise = p;
+	    p.then(function (json) {
             this.documentList = json.data;
             this.showDocumentList();
-            if(callback)callback();
+            this.listPromise = null;
+            !!callback && callback();
         }.bind(this));
     },
     showCreateResult: function(failureList, successList){
@@ -426,14 +625,13 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         var _self = this;
         this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
             _self.fireEvent("deleteDocument", [d]);
-            o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(_self.form.businessData.work.job, {
-                idList: [d.id]
-            },function (json) {
+
+            var p = this._cancelAssociated([d.id]);
+            p.then(function (json) {
                 itemNode.destroy();
                 _self.documentList.erase(d);
                 _self.fireEvent("afterDeleteDocument", [d]);
                 this.close();
-                //this.showDocumentList();
             }.bind(this));
         }, function () {
             this.close();
@@ -757,26 +955,33 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     doResult: function(data){
         if (this.json.result === "script"){
             this.selectedData = data;
-            return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";
+            var code = this.json.selectedScript.code;
+            if (!!code && !!code.trim()) {
+                this.form.Macro.exec(this.json.selectedScript.code, this);
+                this.form.saveFormData();
+            }
         }else{
-            Object.each(this.json.selectedSetValues, function(v, k){
-                var value = "";
-                data.each(function(d, idx){
-                    Object.each(d.data, function(dv, dk){
-                        if (dk===v) value = (value) ? (value+", "+dv) : dv;
+            if( Object.keys(this.json.selectedSetValues).length > 0 ){
+                Object.each(this.json.selectedSetValues, function(v, k){
+                    var value = "";
+                    data.each(function(d, idx){
+                        Object.each(d.data, function(dv, dk){
+                            if (dk===v) value = (value) ? (value+", "+dv) : dv;
+                        }.bind(this));
                     }.bind(this));
-                }.bind(this));
 
-                var field = this.form.all[k];
-                if (field){
-                    field.setData(value);
-                    if (value){
-                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "none");
-                    }else{
-                        if (field.descriptionNode) field.descriptionNode.setStyle("display", "block");
+                    var field = this.form.all[k];
+                    if (field){
+                        field.setData(value);
+                        if (value){
+                            if (field.descriptionNode) field.descriptionNode.setStyle("display", "none");
+                        }else{
+                            if (field.descriptionNode) field.descriptionNode.setStyle("display", "block");
+                        }
                     }
-                }
-            }.bind(this));
+                }.bind(this));
+                this.form.saveFormData();
+            }
         }
     },
     openDoc: function(e, d){
@@ -799,11 +1004,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 return true;
             }.bind(this))
         }
-    },
-
-    setData: function(){},
-    getData: function(){
-        return this.documentList;
     },
     getInputData: function (){
         return this.documentList;
