@@ -73,7 +73,7 @@
                     </div>
                 </td>
             </tr>
-            
+
             <tr>
                 <td class="editTableTitle">{{$.lp.secondEnable}}:</td>
                 <td class="editTableValue">
@@ -120,6 +120,97 @@
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
 
 	</div>
+
+    <div title="{{$.lp.range}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue">
+                    <input type="radio" name="rangeType"  text{(!$.rangeType || $.rangeType=='none')?'checked':''} value="none" onclick="if (this.checked){
+                         $('text{$.pid}dateTimeRangeArea').setStyle('display', 'none');
+                         $('text{$.pid}dateAndTimeRangeArea').setStyle('display', 'none');
+                         $('text{$.pid}otherRangeArea').setStyle('display', 'none');
+                     }"/>{{$.lp.none}}
+                    <input type="radio" name="rangeType" text{($.rangeType=='dateTime')?'checked':''} value="dateTime" onclick="if (this.checked){
+                        $('text{$.pid}dateTimeRangeArea').setStyle('display', '');
+                        $('text{$.pid}dateAndTimeRangeArea').setStyle('display', 'none');
+                        $('text{$.pid}otherRangeArea').setStyle('display', 'none');
+                    }"/>{{$.lp.rangeByDatetime}}
+                    <input type="radio" name="rangeType" text{($.rangeType=='dateAndTime')?'checked':''} value="dateAndTime" onclick="if (this.checked){
+                        $('text{$.pid}dateTimeRangeArea').setStyle('display', 'none');
+                        $('text{$.pid}dateAndTimeRangeArea').setStyle('display', '');
+                        $('text{$.pid}otherRangeArea').setStyle('display', 'none');
+                    }"/>{{$.lp.rangeByDateAndTime}}
+                    <input type="radio" name="rangeType" text{($.rangeType=='other')?'checked':''} value="other" onclick="if (this.checked){
+                         $('text{$.pid}dateTimeRangeArea').setStyle('display', 'none');
+                         $('text{$.pid}dateAndTimeRangeArea').setStyle('display', 'none');
+                         $('text{$.pid}otherRangeArea').setStyle('display', '');
+                    }"/>{{$.lp.rangeByOhter}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}dateTimeRangeArea" style="display: text{($.rangeType=='dateTime')?'block':'none'};">
+            <div style="line-height: 24px;padding:5px 0px;">
+                //起止日期时间<br/>
+                return ["2023-01-01 08:00:00", "2023-03-03 18:00:00"];<br/>
+                //起止日期时间数组<br/>
+                return [ ["2023-01-01 08:00:00", "2023-03-03 18:00:00"], ... ];
+            </div>
+            <div class="MWFScriptArea" name="dateTimeRangeScript" title="{{$.lp.rangeByDatetime}} (S)"></div>
+        </div>
+        <div id="text{$.pid}dateAndTimeRangeArea" style="display: text{($.rangeType=='dateAndTime')?'block':'none'};">
+            <div style="line-height: 24px;padding:5px 0px;">
+                //起止日期<br/>
+                return ["2023-01-01", "2023-03-03"];<br/>
+                //起止日期数组<br/>
+                return [ ["2023-01-01", "2023-03-03"], ... ];
+            </div>
+            <div class="MWFScriptArea" name="dateRangeScript" title="{{$.lp.rangeByDate}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                //起止时间<br/>
+                return ["08:00:00", "18:00:00"];<br/>
+                //起止时间数组<br/>
+                return [ ["08:00:00", "18:00:00"], ... ];
+            </div>
+            <div class="MWFScriptArea" name="timeRangeScript" title="{{$.lp.rangeByTime}} (S)"></div>
+        </div>
+        <div id="text{$.pid}otherRangeArea" style="display: text{($.rangeType=='other')?'block':'none'};">
+            <div style="line-height: 24px;padding:5px 0px;">
+                var date = this.event.date; //获取传入的日期<br/>
+                return new Date() > date;   //早于当前日期，则可选
+            </div>
+            <div class="MWFScriptArea" name="enableDate" title="{{$.lp.enableDate}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                var date = this.event.date; //获取传入的日期<br/>
+                if( new Date() > date ){    //早于当前日期<br/>
+                &nbsp;&nbsp;  return [8, 18];         //可选范围为8到18时<br/>
+                }else{ <br/>
+                &nbsp;&nbsp;  return [ [8, 12], [13, 18] ]; //否则可选范围为8到12时，13到18时<br/>
+                }
+            </div>
+            <div class="MWFScriptArea" name="enableHours" title="{{$.lp.enableHours}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                var date = this.event.date; //获取传入的日期<br/>
+                var hour = this.event.hour; //获取传入的小时<br/>
+                if( hour > 12 ){    //早于12点<br/>
+                &nbsp;&nbsp;  return [0, 30];         //可选范围为0到30分<br/>
+                }else{ <br/>
+                &nbsp;&nbsp;  return [ [20, 40], [40, 50] ]; //否则可选范围为20到40分，40到50分<br/>
+                }
+            </div>
+            <div class="MWFScriptArea" name="enableMinutes" title="{{$.lp.enableMinutes}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                var date = this.event.date; //获取传入的日期<br/>
+                var hour = this.event.hour; //获取传入的小时<br/>
+                var minute = this.event.minute; //获取传入的分<br/>
+                if( minute > 12 ){    //早于12分<br/>
+                &nbsp;&nbsp;  return [0, 30];         //可选范围为0到30秒<br/>
+                }else{ <br/>
+                &nbsp;&nbsp;  return [ [20, 40], [40, 50] ]; //否则可选范围为20到40秒，40到50秒<br/>
+                }
+            </div>
+            <div class="MWFScriptArea" name="enableSeconds" title="{{$.lp.enableSeconds}} (S)"></div>
+        </div>
+    </div>
 
     <div title="{{$.lp.section}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
