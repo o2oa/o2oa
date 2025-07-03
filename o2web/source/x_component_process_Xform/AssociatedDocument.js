@@ -12,7 +12,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2range {Process|CMS}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument =  new Class({
+MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument =  new Class(
+    /** @lends MWF.xApplication.process.Xform.AssociatedDocument# */
+    {
 	Implements: [Events],
 	Extends: MWF.APP$Module,
     options: {
@@ -294,7 +296,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
      * @param async{Boolean} 是否为异步，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
      * @return {Promise}
      * @example
-     *  this.form.get("fieldId").remove();
+     *  this.form.get("fieldId").cancel([id1, id2]);
      */
     cancel: function(bundles, callback, async){
         var execute = function(){
