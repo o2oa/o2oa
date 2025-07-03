@@ -12,7 +12,9 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2range {Process|CMS}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument =  new Class({
+MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument =  new Class(
+    /** @lends MWF.xApplication.process.Xform.AssociatedDocument# */
+    {
 	Implements: [Events],
 	Extends: MWF.APP$Module,
     options: {
@@ -170,9 +172,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         !data && (data = []);
         typeOf(data) !== 'array' && (data = [data]);
         data.each(function(d){
-            !d.type && (d.type === 'processPlatform');
+            !d.type && (d.type = 'processPlatform');
             d.site = this.json.site || this.json.id;
-        });
+        }.bind(this));
         return data;
     },
     getLp: function(){
@@ -181,13 +183,13 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     /**
      * @summary 设置关联文档，清空所有的已关联文档后再关联。
      * @param data{Object[]} .
-     * @param callback {Function}
-     * @param async {Boolean} 是否异步执行，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
+     * @param [callback] {Function}
+     * @param [async] {Boolean} 是否异步执行，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
      * @return {Promise}
      * @example
      *  this.form.get("fieldId").set([{
      *      type: 'processPlatform', //类型，processPlatform表示流程，cms表示内容管理，如果为空默认为流程
-     *      bundle: '', //流程实例的 job, 或者是内容挂历文档的id
+     *      bundle: '', //流程实例的 job, 或者是内容管理文档的id
      *      view: '' //视图的id
      *  }], function(json){
      *      //json.data.failureList 关联失败列表
@@ -213,17 +215,18 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             !!callback && callback(json);
         }.bind(this);
         data = this._parseData(data);
-
+        async = async !== false;
         var execute = function(){
+            debugger;
             if( async ){
                 return Promise.resolve(
-                    this.cancelAllAssociated()
+                    this.cancelAllAssociated( null, true, true )
                 ).then(function(json){
                     var p = !!data.length ? this._createAssociation(data) : {data: {}};
                     return Promise.resolve(p).then( after );
                 }.bind(this));
             }else{
-                this.cancelAllAssociated( null, false);
+                this.cancelAllAssociated( null, false, true);
                 var json = !!data.length ? this._createAssociation(data, false) : {data: {}};
                 after(json);
                 return json;
@@ -235,16 +238,18 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     /**
      * @summary 根据传入的数据添加关联文档。
      * @param data {Object[]}
-     * @param keepOrder{Boolean} 如果添加的已经存在，是否保留原有顺序, 默认不保留。
-     * @param callback {Function}
-     * @param async{Boolean} 是否为异步，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
+     * @param [toTop]{Boolean} 是否添加到已有文档前面，默认为否。
+     * @param [keepOrder]{Boolean} 如果添加的已经存在，是否保留原有位置, 默认不保留。
+     * @param [callback] {Function}
+     * @param [async]{Boolean} 是否为异步，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
      * @return {Promise|Object}
      * @example
      *  this.form.get("fieldId").add([{
      *      type: 'processPlatform', //类型，processPlatform表示流程，cms表示内容管理，如果为空默认为流程
-     *      bundle: '', //流程实例的 job, 或者是内容挂历文档的id
+     *      bundle: '', //流程实例的 job, 或者是内容管理文档的id
      *      view: '' //视图的id
      *  }],
+     *  true,
      *  true,
      *  function(json){
      *      //json.data.failureList 关联失败列表
@@ -261,7 +266,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
      *      //json.data.successList 关联成功列表
      *  })
      */
-    add: function(data, keepOrder, callback, async){
+    add: function(data, toTop, keepOrder, callback, async){
         var execute = function(){
             data = this._parseData(data);
             var remains = this.documentList.map(function(d){
@@ -273,15 +278,17 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             });
             var filter = (arr1, arr2) => {
                 var bundles = arr1.map(function(d){ return d.bundle; });
-                return arr2.filter(function(d){
+                arr2 = arr2.filter(function(d){
                     return !bundles.contains( d.bundle );
                 });
+                return arr2;
             };
             if( !!keepOrder ){
                 data = filter(remains, data);
             }else{
-                data = filter(data, remains);
+                remains = filter(data, remains);
             }
+            data = !toTop ? remains.concat(data) : data.concat(remains);
             return this.set(data, callback, async);
         }.bind(this);
 
@@ -290,16 +297,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     /**
      * @summary 取消指定的关联。
      * @param bundles {String[]}
-     * @param callback {Function}
-     * @param async{Boolean} 是否为异步，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
+     * @param [callback] {Function}
+     * @param [async]{Boolean} 是否为异步，默认为异步。如果组件未加载完成的时候执行该方法，强制为异步。
      * @return {Promise}
      * @example
-     *  this.form.get("fieldId").remove();
+     *  this.form.get("fieldId").cancel([id1, id2]);
      */
     cancel: function(bundles, callback, async){
         var execute = function(){
             var remains = this.documentList.filter(function(d){
-                return !bundles.contains(d);
+                return !bundles.contains(d.targetBundle);
             }).map(function(d){
                 return {
                     type: d.targetType,
@@ -315,6 +322,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     /**
      * @summary 得到关联的列表。
      * @return {Promise|Object[]} 如果组件未加载完成的时候执行该方法，返回promise，否则返回对象数组。
+     * <pre>
+     * [
+     *     {
+     *         "site": "associatedDocument", //组件site，如果没有设置，则为组件id
+     *         "type": "cms", //类型，processPlatform表示流程，cms表示内容管理
+     *         "bundle": "909b78e1-3ec2-4c63-b756-200ff734c318", //流程实例的 job, 或者是内容管理文档的id
+     *         "view": "b5bd7fae-239e-4cab-aa34-8c63350d9e97" //视图的id
+     *     }
+     * ]
+     * </pre>
      * @example
      * var documentList = this.form.get('fieldId').get();
      * @example
@@ -382,11 +399,11 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }
         }.bind(this));
     },
-    cancelAllAssociated: function( callback, async ){
+    cancelAllAssociated: function( callback, async, force ){
 	    var _self = this;
 	    if( this.documentList.length ){
             var ids = [];
-            if( this.json.reserve === false ){
+            if( !!force || this.json.reserve === false ){
                 ids = this.documentList.map(function (doc) {
                     return doc.id;
                 });
@@ -407,7 +424,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this));
         }else{
             !!callback && callback();
-            return new Promise();
+            return Promise.resolve();
         }
     },
     loadAssociatedDocument: function( callback ){
@@ -961,8 +978,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 this.form.saveFormData();
             }
         }else{
-            if( Object.keys(this.json.selectedSetValues).length > 0 ){
-                Object.each(this.json.selectedSetValues, function(v, k){
+            var obj = this.json.selectedSetValues;
+            if( obj && Object.keys(obj).length > 0 ){
+                Object.each(obj, function(v, k){
                     var value = "";
                     data.each(function(d, idx){
                         Object.each(d.data, function(dv, dk){
