@@ -7,8 +7,12 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         "moduleEvents": ["load", "queryLoad", "postLoad", "change", "select", "removeItem"]
     },
     _loadNode: function () {
-        this._getOrgOptions();
-        this._loadNodeEdit();
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            this._getOrgOptions();
+            this._loadNodeEdit();
+        }
     },
     loadDescription: function () {
         this.node.setAttribute('placeholder', this.json.description || '');
@@ -63,7 +67,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         this.node.setAttribute('readmode', false);
         this.node.setAttribute('disabled', false);
 
-        if (!this.isReadonly()){
+        if (!this.isReadonly() && this.isEditable){
             if (this.json.showMode === 'readonlyMode') {
                 this.node.setAttribute('readonly', true);
             } else if (this.json.showMode === 'disabled') {
@@ -124,7 +128,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
 
 
     clickSelect: function( ev ){
-        if (this.isReadonly())return;
+        if (this.isReadonly() || !this.isEditable)return;
         if( layout.mobile ){
             setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
                 var options = this.getOptions();
@@ -260,7 +264,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         return value;
     },
     isReadonly : function(){
-        var readonly = !!(this.readonly || this.form.json.isReadonly || this.json.showMode==="read");
+        var readonly = !!(!this.isEditable || this.readonly || this.form.json.isReadonly || this.json.showMode==="read");
         if( readonly )return readonly;
         if( this.json.isReadonly === "script" ){
             if( this.json.readonlyScript && this.json.readonlyScript.code ){

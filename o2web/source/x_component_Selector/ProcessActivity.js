@@ -1,6 +1,6 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
-MWF.xDesktop.requireApp("Selector", "Person", null, false);
-MWF.xApplication.Selector.Process = new Class({
+MWF.xDesktop.requireApp("Selector", "Identity", null, false);
+MWF.xApplication.Selector.ProcessActivity = new Class({
 	Extends: MWF.xApplication.Selector.Person,
     options: {
         "style": "default",
@@ -17,8 +17,8 @@ MWF.xApplication.Selector.Process = new Class({
         this.setOptions({"title": MWF.xApplication.Selector.LP.selectProcess});
     },
     _init : function(){
-        this.selectType = "process";
-        this.className = "Process";
+        this.selectType = "ProcessActivity";
+        this.className = "ProcessActivity";
     },
     loadSelectItems: function(addToNext){
         this.designerAction.listProcess(this.options.application, function(json){
@@ -31,6 +31,36 @@ MWF.xApplication.Selector.Process = new Class({
             if (processes.length){
                 processes.each(function(data){
                     var category = this._newItemCategory(data, this, this.itemAreaNode);
+                    // this.designerAction.getProcess(data.id, function(data){
+                    //     var processData = data.data;
+                    //     var activityList = [].concat(
+                    //         processData.manualList || [],
+                    //         processData.conditionList || [],
+                    //         processData.choiceList || [],
+                    //         processData.parallelList || [],
+                    //         processData.splitList || [],
+                    //         processData.mergeList || [],
+                    //         processData.embedList || [],
+                    //         processData.publishList || [],
+                    //         processData.invokeList || [],
+                    //         processData.cancelList || [],
+                    //         processData.delayList || [],
+                    //         processData.messageList || [],
+                    //         processData.serviceList || [],
+                    //         processData.endList || []
+                    //     );
+                    //     activityList.forEach(function(data){
+                    //         var d = {
+                    //             id: data.id,
+                    //             name: data.name,
+                    //             distinguishedName: data.name+'@'+data.id+'@A'
+                    //         }
+                    //         var item = this._newItem(d, this, category.children);
+                    //         this.items.push(item);
+                    //     }.bind(this));
+
+                    // }.bind(this));
+
                     // data.processList.each(function(d){
                     //     d.applicationName = data.name;
                     //     var item = this._newItem(d, this, category.children);
@@ -48,7 +78,7 @@ MWF.xApplication.Selector.Process = new Class({
         return data.processList || [];
     },
     _newItemCategory: function(data, selector, item, level){
-        return new MWF.xApplication.Selector.Process.ItemCategory(data, selector, item, level)
+        return new MWF.xApplication.Selector.ProcessActivity.ItemCategory(data, selector, item, level)
     },
 
     _listItemByKey: function(callback, failure, key){
@@ -61,25 +91,25 @@ MWF.xApplication.Selector.Process = new Class({
         }.bind(this), failure, ((typeOf(id)==="string") ? id : (typeOf(id)=="string") ? id : id.id), async);
     },
     _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.Process.ItemSelected(data, selector, item)
+        return new MWF.xApplication.Selector.ProcessActivity.ItemSelected(data, selector, item)
     },
     _listItemByPinyin: function(callback, failure, key){
         return false;
     },
     _newItem: function(data, selector, container, level){
-        return new MWF.xApplication.Selector.Process.Item(data, selector, container, level);
+        return new MWF.xApplication.Selector.ProcessActivity.Item(data, selector, container, level);
     }
 });
-MWF.xApplication.Selector.Process.Item = new Class({
+MWF.xApplication.Selector.ProcessActivity.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
     _getShowName: function(){
-        return this.data.name;
+        return this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
     },
     _getTtiteText: function(){
-        return this.data.name;
+        return this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
     },
     loadSubItem: function(){
         return false;
@@ -105,7 +135,6 @@ MWF.xApplication.Selector.Process.Item = new Class({
 
         var selectedItem = this.selector.selectedItems.filter(function(item, index){
             //return (item.data.id === this.data.id);
-            debugger;
             if( item.data.id && this.data.id){
                 return item.data.id === this.data.id;
             }else{
@@ -121,10 +150,11 @@ MWF.xApplication.Selector.Process.Item = new Class({
     }
 });
 
-MWF.xApplication.Selector.Process.ItemSelected = new Class({
+MWF.xApplication.Selector.ProcessActivity.ItemSelected = new Class({
 	Extends: MWF.xApplication.Selector.Person.ItemSelected,
     _getShowName: function(){
-        return this.data.name;
+        var name =  this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
+        return this.data.processName + ' - '+name;
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
@@ -132,7 +162,6 @@ MWF.xApplication.Selector.Process.ItemSelected = new Class({
     check: function(){
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
-                debugger;
                 if( item.data.id && this.data.id){
                     return item.data.id === this.data.id;
                 }else{
@@ -150,8 +179,8 @@ MWF.xApplication.Selector.Process.ItemSelected = new Class({
     }
 });
 
-MWF.xApplication.Selector.Process.ItemCategory = new Class({
-    Extends: MWF.xApplication.Selector.Person.ItemCategory,
+MWF.xApplication.Selector.ProcessActivity.ItemCategory = new Class({
+    Extends: MWF.xApplication.Selector.Identity.ItemCategory,
     _getShowName: function(){
         return this.data.name;
     },
@@ -165,23 +194,57 @@ MWF.xApplication.Selector.Process.ItemCategory = new Class({
     },
     loadSub: function(callback){
         if (!this.loaded){
-            this.selector.action.listProcess(function(subJson){
-                subJson.data.each(function(subData){
-                    subData.applicationName = this.data.name;
-                    subData.application = this.data.id;
-                    var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
-                    this.selector.items.push( category );
+            this.selector.designerAction.getProcess(this.data.id, function(data){
+                var processData = data.data;
+                var activityList = [].concat(
+                    processData.manualList || [],
+                    processData.conditionList || [],
+                    processData.choiceList || [],
+                    processData.parallelList || [],
+                    processData.splitList || [],
+                    processData.mergeList || [],
+                    processData.embedList || [],
+                    processData.publishList || [],
+                    processData.invokeList || [],
+                    processData.cancelList || [],
+                    processData.delayList || [],
+                    processData.messageList || [],
+                    processData.serviceList || [],
+                    processData.endList || []
+                );
+                activityList.forEach(function(data){
+                    var d = {
+                        processName: this.data.name,
+                        id: data.id,
+                        name: data.name,
+                        alias: data.alias,
+                        distinguishedName: data.name+'@'+data.id+'@A'
+                    }
+                    var item = this.selector._newItem(d, this.selector, this.children);
+                    this.selector.items.push(item);
                 }.bind(this));
 
-                this.loaded = true;
                 if (callback) callback();
-            }.bind(this), null, this.data.id);
+            }.bind(this));
+            this.loaded = true;
+
+            // this.selector.action.listProcess(function(subJson){
+            //     subJson.data.each(function(subData){
+            //         subData.applicationName = this.data.name;
+            //         subData.application = this.data.id;
+            //         var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+            //         this.selector.items.push( category );
+            //     }.bind(this));
+
+            //     this.loaded = true;
+            //     if (callback) callback();
+            // }.bind(this), null, this.data.id);
         }else{
             if (callback) callback();
         }
     },
     _hasChild: function(){
-        return (this.data.processList && this.data.processList.length);
+        return true;
     },
     check: function(){}
 });

@@ -42,6 +42,7 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         contentNode.set("text", d.join( this.json.rangeSeparator ? " "+this.json.rangeSeparator+" " : " 至 " ) );
     },
     _queryLoaded: function(){
+        this._loadReadEditAbeld();
         var data = this._getBusinessData();
         if (data){
             if( ["monthrange","daterange"].contains(this.json.selectType) ) {

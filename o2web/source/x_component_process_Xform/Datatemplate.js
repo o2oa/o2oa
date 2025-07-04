@@ -634,6 +634,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return value;
 		},
 		getValue: function(){
+			if (!this.isReadable) return [];
 			return this._getValue();
 		},
 

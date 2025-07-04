@@ -22,7 +22,6 @@ MWF.xApplication.Selector.CMSFormField = new Class({
         this.className = "CMSFormField";
     },
     getFields : function(){
-	    debugger;
         var dataTypes = {
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
             "person": ["personfield","org","orgfield","reader","author"],

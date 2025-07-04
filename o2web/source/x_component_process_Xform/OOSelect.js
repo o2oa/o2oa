@@ -36,7 +36,13 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	},
 
     _loadNode: function(){
-		this._loadNodeEdit();
+		if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            this._loadNodeEdit();
+        }
+
+		// this._loadNodeEdit();
     },
 	_loadMergeReadContentNode: function( contentNode, data ){
 		// this._showValue(contentNode, data.data);
@@ -132,7 +138,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		this.node.setAttribute('readonly', false);
 		this.node.setAttribute('readmode', false);
 		this.node.setAttribute('disabled', false);
-		if (!this.isReadonly()){
+		if (!this.isReadonly() && this.isEditable){
 			if (this.json.showMode === 'readonlyMode') {
 				this.node.setAttribute('readonly', true);
 			} else if (this.json.showMode === 'disabled') {

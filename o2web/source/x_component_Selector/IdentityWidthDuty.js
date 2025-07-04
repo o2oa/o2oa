@@ -88,8 +88,6 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                     if (unitName)unitList.push( unitName )
                 });
 
-                debugger;
-
                 if( !this.options.expandSubEnable ){
                     this.allUnitNames = unitList;
                     loadDuty();
@@ -304,7 +302,6 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
     },
     _addSelectedCountWithDuty: function( itemOrItemSelected, count, items ){
         var itemData = itemOrItemSelected.data;
-        debugger;
         items.each(function(item){
             if(item.category && item.category._addSelectedCount && item.category.className === "ItemCategory"){
                 item.category._addSelectedCount( count );

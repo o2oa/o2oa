@@ -258,6 +258,8 @@ o2.widget.O2Identity = new Class({
 //     }
 // });
 
+console.log('load o2.widget.O2Identity ..............');
+
 o2.widget.O2Person = new Class({
     Extends: o2.widget.O2Identity,
     options: {
@@ -965,7 +967,29 @@ o2.widget.O2Dictionary = new Class({
         }
     }
 });
-
+o2.widget.O2ProcessActivity = new Class({
+    Extends: o2.widget.O2Group,
+    getPersonData: function(){
+        return this.data;
+    },
+    createInforNode: function(){
+        this.inforNode = new Element("div", {
+            "styles": this.style.identityInforNode
+        });
+        var name =  this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
+        var showName = this.data.processName + ' - '+name;
+        var nameNode = new Element("div", {
+            "styles": this.style.identityInforNameNode,
+            "text": showName
+        }).inject(this.inforNode);
+        this.tooltip = new mBox.Tooltip({
+            content: this.inforNode,
+            setStyles: {content: {padding: 15, lineHeight: 20}},
+            attach: this.node,
+            transition: 'flyin'
+        });
+    }
+});
 
 o2.widget.O2Other = new Class({
     Extends: o2.widget.O2Group,

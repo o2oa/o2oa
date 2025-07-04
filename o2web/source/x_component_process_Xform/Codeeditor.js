@@ -26,20 +26,23 @@ MWF.xApplication.process.Xform.Codeeditor = MWF.APPCodeeditor =  new Class({
 
 
     _loadUserInterface: function(){
-
-        this.node.empty();
-        if (this.isReadonly()){
-            var value = this._getBusinessData();
-            this.highlighting(value);
-            this.node.setStyles({
-                "padding": "0.5em 0.6em",
-                "background-color": "#f7f7f7",
-                "overflow": "auto",
-                "font-size": "0.875em",
-                "border-radius": "var(--oo-default-radius)"
-            })
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
         }else{
-            this.loadCodeeditor();
+            this.node.empty();
+            if (this.isReadonly() || !this.isEditable){
+                var value = this._getBusinessData();
+                this.highlighting(value);
+                this.node.setStyles({
+                    "padding": "0.5em 0.6em",
+                    "background-color": "#f7f7f7",
+                    "overflow": "auto",
+                    "font-size": "0.875em",
+                    "border-radius": "var(--oo-default-radius)"
+                })
+            }else{
+                this.loadCodeeditor();
+            }
         }
     },
     highlighting: function(value){

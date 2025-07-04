@@ -12,10 +12,16 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
         // if (this.isReadonly() || this.json.showMode==="read"){
         //     this._loadNodeRead();
         // }else{
-        this._loadNodeEdit();
+            if (!this.isReadable && !!this.isHideUnreadable){
+                this.node.setStyle('display', 'none');
+            }else{
+                this._loadNodeEdit();
+            }
         // }
     },
     getValue: function(){
+        debugger;
+        if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
@@ -54,7 +60,7 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
             this.node.setAttribute('view-style', '');
         }
 
-        if (!this.isReadonly()){
+        if (!this.isReadonly() && this.isEditable){
             if (this.json.showMode === 'disabled') {
                 this.node.setAttribute('disabled', true);
             } else if (this.json.showMode === 'read') {

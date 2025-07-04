@@ -451,7 +451,6 @@ MWF.xApplication.Selector.Identity = new Class({
         if( groupList.length )ps.push( action.listWithGroupObject({groupList: groupList}) );
         if( ps.length ){
             return Promise.all(ps).then(function (arr){
-                debugger;
                 arr.each(function(a){
                     identityList =  identityList.concat( a.data )
                 });

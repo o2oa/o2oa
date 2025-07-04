@@ -1630,12 +1630,18 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.fieldModuleLoaded = false;
     },
     _loadUserInterface: function () {
-        this.node.empty();
-        if (this.form.businessData.work.startTime){
-            this.loadAttachmentController();
-            this.fireEvent("afterLoad");
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            this.node.empty();
+            if (this.form.businessData.work.startTime){
+                this.loadAttachmentController();
+                this.fireEvent("afterLoad");
+            }
+            this.fieldModuleLoaded = true;
         }
-        this.fieldModuleLoaded = true;
+
+       
     },
     /** @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
      * @memberof MWF.xApplication.process.Xform.Attachment
@@ -1694,7 +1700,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
             "dblclick": this.json.dblclick,
-            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
+            "readonly": (!this.isEditable || this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
@@ -1730,15 +1736,18 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
         this.fireEvent("postLoadController");
 
-        this.form.businessData.attachmentList.each(function (att) {
-            //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
-            if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
-        }.bind(this));
-        this.setAttachmentBusinessData();
-
-        this.addEvent("change", function () {
-            if(this.validationMode)this.validationMode();
-        }.bind(this))
+        if (this.isReadable){
+            this.form.businessData.attachmentList.each(function (att) {
+                //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
+                if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
+            }.bind(this));
+            this.setAttachmentBusinessData();
+    
+            this.addEvent("change", function () {
+                if(this.validationMode)this.validationMode();
+            }.bind(this))
+        }
+        
 
         //}.bind(this));
     },

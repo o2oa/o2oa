@@ -7,7 +7,11 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         moduleEvents: ['load', 'queryLoad', 'postLoad'],
     },
     _loadNode: function () {
-        this._loadNodeEdit();
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            this._loadNodeEdit();
+        }
     },
     loadDescription: function () {
         this.node.setAttribute('placeholder', this.json.description || '');
@@ -67,7 +71,7 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         this.node.setAttribute('disabled', false);
         this.node.setAttribute('read', false);
 
-        if (!this.isReadonly()) {
+        if (!this.isReadonly() && this.isEditable) {
             if (this.json.showMode === 'readonlyMode') {
                 this.node.setAttribute('readonly', true);
                 this.node.setAttribute('read', true);

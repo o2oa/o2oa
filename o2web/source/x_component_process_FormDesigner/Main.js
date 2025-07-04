@@ -1687,7 +1687,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
                 this.isSave = false;
 
-                if (cb) cb();
+                if (cb && o2.typeOf(cb)==='function') cb();
 
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
