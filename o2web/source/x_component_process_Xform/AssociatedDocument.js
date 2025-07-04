@@ -210,6 +210,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
      */
     set: function(data, callback, async){
         var after = function (json){
+            if( json.data.failureList && json.data.failureList.length ){
+                this.form.notice(this.getLp().associatedFailureMessage.replace('{count}', json.data.failureList.length), 'error');
+            }
             this.loadAssociatedDocument();
             this.validationMode();
             !!callback && callback(json);
@@ -217,7 +220,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         data = this._parseData(data);
         async = async !== false;
         var execute = function(){
-            debugger;
             if( async ){
                 return Promise.resolve(
                     this.cancelAllAssociated( null, true, true )

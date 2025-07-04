@@ -175,40 +175,37 @@
         </div>
         <div id="text{$.pid}otherRangeArea" style="display: text{($.rangeType=='other')?'block':'none'};">
             <div style="line-height: 24px;padding:5px 0px;">
+                //该脚本用于选择年份界面的判断<br/>
+                var year = this.event.year; //获取传入的年份<br/>
+                return new Date() > new Date(`${year}-01-01`); //早入当前年份可选
+            </div>
+            <div class="MWFScriptArea" name="enableYear" title="{{$.lp.enableYear}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                //该脚本用于选择月份界面的判断<br/>
+                var month = this.event.month; //获取传入的月份<br/>
+                return new Date() > new Date(`${month}-01`); //早入当前年份可选
+            </div>
+            <div class="MWFScriptArea" name="enableMonth" title="{{$.lp.enableMonth}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
                 var date = this.event.date; //获取传入的日期<br/>
                 return new Date() > date;   //早于当前日期，则可选
             </div>
             <div class="MWFScriptArea" name="enableDate" title="{{$.lp.enableDate}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
-                var date = this.event.date; //获取传入的日期<br/>
-                if( new Date() > date ){    //早于当前日期<br/>
-                &nbsp;&nbsp;  return [8, 18];         //可选范围为8到18时<br/>
-                }else{ <br/>
-                &nbsp;&nbsp;  return [ [8, 12], [13, 18] ]; //否则可选范围为8到12时，13到18时<br/>
-                }
+                var {date, hour} = this.event; //获取传入的日期和小时<br/>
+                return new Date() > > new Date() && hour > 8 //早入当前日期，且在8点之前可选
             </div>
-            <div class="MWFScriptArea" name="enableHours" title="{{$.lp.enableHours}} (S)"></div>
+            <div class="MWFScriptArea" name="enableHour" title="{{$.lp.enableHour}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
-                var date = this.event.date; //获取传入的日期<br/>
-                var hour = this.event.hour; //获取传入的小时<br/>
-                if( hour > 12 ){    //早于12点<br/>
-                &nbsp;&nbsp;  return [0, 30];         //可选范围为0到30分<br/>
-                }else{ <br/>
-                &nbsp;&nbsp;  return [ [20, 40], [40, 50] ]; //否则可选范围为20到40分，40到50分<br/>
-                }
+                var {date, hour, minute} = this.event; //获取传入的日期、小时和分<br/>
+                return new Date() > new Date() && hour > 8 && minute > 30; //早入当前日期，且在8点30分之前可选
             </div>
-            <div class="MWFScriptArea" name="enableMinutes" title="{{$.lp.enableMinutes}} (S)"></div>
+            <div class="MWFScriptArea" name="enableMinute" title="{{$.lp.enableMinute}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
-                var date = this.event.date; //获取传入的日期<br/>
-                var hour = this.event.hour; //获取传入的小时<br/>
-                var minute = this.event.minute; //获取传入的分<br/>
-                if( minute > 12 ){    //早于12分<br/>
-                &nbsp;&nbsp;  return [0, 30];         //可选范围为0到30秒<br/>
-                }else{ <br/>
-                &nbsp;&nbsp;  return [ [20, 40], [40, 50] ]; //否则可选范围为20到40秒，40到50秒<br/>
-                }
+                var {date, hour, minute, second} = this.event; //获取传入的日期、时分秒<br/>
+                return new Date() > new Date() && hour > 8 && minute > 30 && second > 30; //早入当前日期，且在8点30分30秒之前可选
             </div>
-            <div class="MWFScriptArea" name="enableSeconds" title="{{$.lp.enableSeconds}} (S)"></div>
+            <div class="MWFScriptArea" name="enableSecond" title="{{$.lp.enableSecond}} (S)"></div>
         </div>
     </div>
 
