@@ -109,7 +109,6 @@ MWF.xApplication.Selector.UnitDuty.Item = new Class({
         return this.data.name;
     },
     _getTtiteText: function(){
-        debugger;
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
     },
     _setIcon: function(){

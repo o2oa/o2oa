@@ -156,6 +156,18 @@ if (!layout.isReady) {
                 layout.session.user = data;
                 layout.session.token = data.token;
                 layout.desktop.session = layout.session;
+
+                return o2.Actions.load("x_organization_assemble_express").PersonAction.detail(layout.session.user.distinguishedName, null, function (json) {
+                    layout.session.userDetail = json.data;
+                    layout.session.userDetail.list = [].concat(
+                        layout.session.userDetail.groupList || [], 
+                        layout.session.userDetail.identityList || [],
+                        layout.session.userDetail.personAttributeList || [],
+                        layout.session.userDetail.roleList || [],
+                        layout.session.userDetail.unitDutyList || [],
+                        layout.session.userDetail.unitList || []
+                    )
+                });
                 //_loadApp();
             }, function () {
                 //允许匿名访问

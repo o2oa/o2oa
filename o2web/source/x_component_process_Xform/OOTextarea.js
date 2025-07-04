@@ -10,7 +10,11 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
         // if (this.isReadonly() || this.json.showMode==="read"){
         //     this._loadNodeRead();
         // }else{
-        this._loadNodeEdit();
+            if (!this.isReadable && !!this.isHideUnreadable){
+                this.node.setStyle('display', 'none');
+            }else{
+                this._loadNodeEdit();
+            }
         // }
     },
     loadDescription: function () {
@@ -64,7 +68,7 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
         this.node.setAttribute('readmode', false);
         this.node.setAttribute('disabled', false);
 
-        if (!this.isReadonly()){
+        if (!this.isReadonly() && this.isEditable){
             if (this.json.showMode === 'readonlyMode') {
                 this.node.setAttribute('readonly', true);
             } else if (this.json.showMode === 'disabled') {

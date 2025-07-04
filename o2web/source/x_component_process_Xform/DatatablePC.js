@@ -904,6 +904,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return value || {"data": [], "total":{}};
 		},
 		getValue: function(){
+			if (!this.isReadable) return {"data": [], "total":{}};
 			return this._getValue();
 		},
 

@@ -136,7 +136,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
     iconStyle: "orgIcon",
     isReadonly : function(){
-        var readonly = !!(this.readonly || this.form.json.isReadonly);
+        var readonly = !!(!this.isEditable || this.readonly || this.form.json.isReadonly);
         if( readonly )return readonly;
         if( this.json.isReadonly === "script" ){
             if( this.json.readonlyScript && this.json.readonlyScript.code ){
@@ -220,17 +220,21 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         }
     },
     _loadNode: function(){
-        this.field = true;
-        if (this.isReadonly()){
-            this._loadNodeRead();
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
         }else{
-            this._getOrgOptions();
-            if (this.json.isInput){
-                this._loadNodeInputEdit();
+            this.field = true;
+            if (this.isReadonly()){
+                this._loadNodeRead();
             }else{
-                this._loadNodeEdit();
-            }
+                this._getOrgOptions();
+                if (this.json.isInput){
+                    this._loadNodeInputEdit();
+                }else{
+                    this._loadNodeEdit();
+                }
 
+            }
         }
     },
     _loadMergeReadContentNode: function(contentNode, data){

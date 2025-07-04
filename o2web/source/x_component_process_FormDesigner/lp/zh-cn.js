@@ -407,6 +407,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     propertyTemplate: {
         base: '基本',
         event: '事件',
+        power: '权限',
         html: 'HTML',
         json: 'JSON',
         action: '操作',
@@ -1626,15 +1627,28 @@ MWF.xApplication.process.FormDesigner.LP = {
         defaultParameters: '默认参数',
         useQuickSelect: '使用快速选择',
 
-        "showConfig": '可见配置',
-        "showConfigInfo": '设置此元素的可见范围，未设置时，任何情况都可见',
-        "showConfig_activity": "指定的活动可见",
-        "showConfig_org": "指定的人或组织可见",
-        "showConfig_script": "通过脚本指定可见范围",
-        "showActivity": "可见活动",
-        "showOrg": "人员组织",
-        "showScript": "可见脚本",
-        "showScriptInfo": '返回一个布尔值，true表示可见，false表示不可见'
+        "readConfig": '可读配置',
+        "readConfigInfo": '设置此元素的可读范围，如果未设置时，表示有权限查看此文档的用户都可读。注意：在判断当前元素是否可读时，会判断其父元素是否可读，如果父元素不可读，当前元素也不可读；如果父元素可读，再判断当前元素的可读配置。',
+        "readConfig_activity": "指定的活动可读",
+        "readConfig_org": "指定的人或组织可读",
+        "readConfig_script": "通过脚本判断可读",
+        "readActivity": "可见活动",
+        "readOrg": "人员组织",
+        "readScript": "可读脚本",
+        "readScriptInfo": '返回一个布尔值，true表示可读，false表示不可读',
+        "hideCannotRead": '隐藏不可读元素',
+
+        "editConfig": '编辑配置',
+        "editConfigInfo": '设置此元素的可编辑范围，如果未设置时，表示拥有此文档编辑权限的用户（一般是当前办理人），都可编辑此元素。注意：在判断当前元素是否可编辑时，会判断其父元素是否可编辑，如果父元素不可编辑，当前元素也不可编辑；如果父元素可编辑，再判断当前元素的可编辑配置。如果当前元素可编辑，那此元素一定可读。此时忽略可读配置。',
+        "editConfig_activity": "指定活动时可编辑",
+        "editConfig_org": "指定的人或组织可编辑",
+        "editConfig_script": "通过脚本判断可编辑",
+        "editActivity": "可编辑活动",
+        "editOrg": "人员组织",
+        "editScript": "可编辑脚本",
+        "editScriptInfo": '返回一个布尔值，true表示可编辑，false表示不可编辑',
+
+        "inherit": "继承父元素"
 
     },
     smartbi: {

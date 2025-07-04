@@ -38,6 +38,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         "elEvents": ["focus", "blur", "change"]
     },
     _queryLoaded: function(){
+        this._loadReadEditAbeld();
         var data = this._getBusinessData();
         if( ["picker"].contains(this.json.timeSelectType) && this.json.isRange) {
             if (typeOf(data) === "string") this._setBusinessData([data, ""]);

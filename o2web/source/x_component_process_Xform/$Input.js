@@ -260,6 +260,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
     },
 	getValue: function(){
+        if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
@@ -331,7 +332,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
      * @return {Boolean} 是否只读.
      */
 	isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
+        return !!(!this.isEditable || this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
     },
 	getTextData: function(){
 		//var value = this.node.get("value");

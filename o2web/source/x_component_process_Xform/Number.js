@@ -19,39 +19,43 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
     Extends: MWF.APPTextfield,
     iconStyle: "numberIcon",
     _loadUserInterface: function(){
-        if ( this.isSectionMergeRead() ) { //区段合并显示
-            this.node.empty();
-            this.node.set({
-                "nodeId": this.json.id,
-                "MWFType": this.json.type
-            });
-            switch (this.json.mergeTypeRead) {
-                case "amount":
-                    this._loadMergeAmountReadNode();
-                    break;
-                case "average":
-                    this._loadMergeAverageReadNode();
-                    break;
-                default:
-                    this._loadMergeReadNode();
-                    break;
-            }
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
         }else{
-            if( this.isSectionMergeEdit() ){
-                switch (this.json.mergeTypeEdit) {
+            if ( this.isSectionMergeRead() ) { //区段合并显示
+                this.node.empty();
+                this.node.set({
+                    "nodeId": this.json.id,
+                    "MWFType": this.json.type
+                });
+                switch (this.json.mergeTypeRead) {
                     case "amount":
-                        this._loadMergeAmountEidtNode();
+                        this._loadMergeAmountReadNode();
                         break;
                     case "average":
-                        this._loadMergeAverageEditNode();
+                        this._loadMergeAverageReadNode();
+                        break;
+                    default:
+                        this._loadMergeReadNode();
+                        break;
                 }
             }else{
-                this._loadNode();
-            }
-            if (this.json.compute === "show"){
-                this._setValue(this._computeValue());
-            }else{
-                this._loadValue();
+                if( this.isSectionMergeEdit() ){
+                    switch (this.json.mergeTypeEdit) {
+                        case "amount":
+                            this._loadMergeAmountEidtNode();
+                            break;
+                        case "average":
+                            this._loadMergeAverageEditNode();
+                    }
+                }else{
+                    this._loadNode();
+                }
+                if (this.json.compute === "show"){
+                    this._setValue(this._computeValue());
+                }else{
+                    this._loadValue();
+                }
             }
         }
     },
@@ -416,6 +420,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
     },
 
     getValue: function(){
+        if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if( this.json.emptyValue === "string" ){
@@ -442,7 +447,13 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
             if( v === 0 || v === "" || typeOf(v)==="null" )val = "0";
         }
         if (this.node.getFirst()) this.node.getFirst().set("value", value || val);
-        if (this.isReadonly()) this.node.set("text", value || val);
+        if (this.isReadonly()){
+            if (this.isReadable){
+                this.node.set("text", value || val);
+            }else{
+                this.node.set("text", '');
+            }
+        } 
         this.moduleValueAG = null;
         this.fieldModuleLoaded = true;
         return value;

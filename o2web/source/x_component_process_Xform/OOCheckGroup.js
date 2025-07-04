@@ -55,7 +55,7 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
             this.node.setAttribute('view-style', '');
         }
 
-        if (!this.isReadonly()){
+        if (!this.isReadonly() && this.isEditable){
             if (this.json.showMode === 'disabled') {
                 this.node.setAttribute('disabled', true);
             } else if (this.json.showMode === 'read') {

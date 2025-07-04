@@ -283,6 +283,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 		}
 	},
     getValue: function(){
+        if (!this.isReadable) return '';
         var value = this._getBusinessData();
         if( typeOf( value ) === "array" ){
             if( value.length === 0 )value = this._computeValue();

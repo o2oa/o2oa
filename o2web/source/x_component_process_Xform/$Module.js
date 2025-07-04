@@ -102,6 +102,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if (this.getInputData){
                 this._setBusinessData(this.getInputData("change"));
             }
+            if (this.node.checkValidity){
+                if (!this.node.checkValidity()) return false;
+            }
             if (this.validationFormat){
                 if (!this.validationFormat()) return false;
             }
@@ -257,7 +260,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return null;
     },
     isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
+        return !!(!this.isEditable || this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
     },
     isAllSectionShow: function(){
         return this.json.showAllSection && this.json.section === "yes" && this.isSectionData();
@@ -495,6 +498,97 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
     },
+
+    _queryLoaded: function(){
+        this._loadReadEditAbeld();
+    },
+    _afterLoaded: function(){},
+    
+    _loadReadEditAbeld: function(){
+        this._loadPoweer();
+        this.isReadable = this._isReadable();
+        this.isEditable = !this.isReadable ? false : this._isEditable();
+        this.isHideUnreadable = this._isHideUnreadable();
+    },
+    _isEditable: function () {
+        //如果可编辑判定是no，则一定不可编辑
+        if (this.editable==='no') return false;
+
+        //如果当前可编辑判定不是no，则需要查找父元素，以便确定是否可编辑。
+        let p = this.getParentModule();
+        while (p) {
+            //如果父元素可编辑判定是no，则当前元素也不可编辑
+            if (p.editable=== 'no') return false;
+            p = p.getParentModule();
+        }
+
+        //剩下的情况是，父元素的可编辑判定不为no，当前元素的可编辑判定也不为no，则只要当前元素可读，即可编辑
+        return this.readable!=='no';
+    },
+    _isReadable: function () {
+        //如果可读判定是no，则一定不可读
+        if (this.readable==='no') return false;
+
+        //如果当前可读判定不是no，则需要查找父元素，以便确定是否可读。
+        let p = this.getParentModule();
+        while (p) {
+            //如果父元素可读判定是no，则当前元素也不可读
+            if (p.readable=== 'no') return false;
+            p = p.getParentModule();
+        }
+
+        //剩下的情况是，父元素的可读判定不为no，当前元素的可读判定也不为no，则当前元素可读
+        return true;
+    },
+    _isHideUnreadable: function(){
+        if (this.json.hideCannotRead === 'no') return false;
+        if (this.json.hideCannotRead === 'yes') return true;
+        let p = this.getParentModule();
+        while (p) {
+            if (p.json.hideCannotRead === 'yes') return true;
+            if (p.json.hideCannotRead === 'no') return false;
+            p = p.getParentModule();
+        }
+        return false;
+    },
+    _loadPoweer: function () {
+        this.editable = this._checkEditAbled();
+        //如果可编辑已设置，并判断为yes，则readable一定为yes，忽略可读配置。
+        this.readable = this.editable==='yes' ? 'yes' : this._checkReadAbled();
+    },
+    _checkReadAbled: function () {
+        return this._checkpowerAbled('readByActivity', 'readByOrg', 'readByScript', 'readByActivityValue', 'readByOrgValue', 'readByScriptValue');
+    },
+    _checkEditAbled: function () {
+        return this._checkpowerAbled('editByActivity', 'editByOrg', 'editByScript', 'editByActivityValue', 'editByOrgValue', 'editByScriptValue');
+    },
+    _checkpowerAbled: function (activity, org, script, activityValue, orgValue, scriptValue) {
+        const hasByActivity = this.json[activity] && this.json[activity].includes('true') && this.json[activityValue] && this.json[activityValue].length;
+        const hasByOrg = this.json[org] && this.json[org].includes('true') && this.json[orgValue] && this.json[orgValue].length;
+        const hasByScript = this.json[script] && this.json[script].includes('true') && this.json[scriptValue] && this.json[scriptValue].code;
+
+        if (hasByActivity || hasByOrg || hasByScript){
+            if (hasByActivity){
+                const i = this.json[activityValue].findIndex((act)=>{
+                    return act.id === this.form.businessData.activity.id;
+                });
+                if (i!==-1) return 'yes';
+            }
+            if (hasByOrg){
+                const i = this.json[orgValue].findIndex((org)=>{
+                    return layout.session.userDetail.distinguishedName === org.distinguishedName || layout.session.userDetail.list.includes(org.distinguishedName);
+                });
+                if (i!==-1) return 'yes';
+            }
+            if (hasByScript){
+                var flag = this.form.Macro.exec(this.json[scriptValue].code, this);
+                return !!flag ? 'yes' : 'no';
+            }
+            return 'no';
+        }
+        return 'unset'
+    },
+    
     _loadUserInterface: function(){
         //	this.node = this.node;
     },
@@ -782,6 +876,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
     _setBusinessData: function(v, id){
         //if (o2.typeOf(v)==="string") v = o2.txt(v);
+        if (!this.isEditable) return;
         if (this.json.section=="yes"){
             this._setBusinessSectionData(v, id);
         }else {
@@ -931,9 +1026,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
         return evdata;
     },
-
-    _queryLoaded: function(){},
-    _afterLoaded: function(){},
 
     setValue: function(){
     },

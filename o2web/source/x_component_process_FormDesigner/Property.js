@@ -2295,10 +2295,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             processActivityNodes.each(function(node){
                 var d = this.data[node.get("name")];
                 var data = d || [];
+                debugger;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "ProcessActivity",
                     "names": data,
+                    "application": this.form.data.json.application,
                     "onChange": function(ids){
+                        debugger;
                         var values = [];
                         ids.each(function(id){
                             values.push(id.data);
@@ -2309,7 +2312,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         this.checkHistory(name, oldValue, this.data[name]);
                     }.bind(this)
                 });
-            });
+            }.bind(this));
 
             cmsFileNodes.each(function(node){
                 var d = this.data[node.get("name")];
