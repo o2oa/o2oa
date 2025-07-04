@@ -187,7 +187,6 @@ MWF.xApplication.AI.Main = new Class({
         if(templateString === "") return "";
         return templateString.replace(/\$\{([^}]+)\}/g, (match, expr) => {
             try {
-                // 创建一个新的函数来执行表达式
                 const func = new Function(...Object.keys(data), `return (${expr})`);
                 return func(...Object.values(data));
             } catch (e) {
@@ -262,7 +261,6 @@ MWF.xApplication.AI.Main = new Class({
                                 template : msg.content
                             }
                         }
-
                         const template = _this.renderTemplate(mcpExtra.template,mcpData.data);
                         html = `
                             <div class="chat-list-l">
@@ -322,7 +320,7 @@ MWF.xApplication.AI.Main = new Class({
         this.rightNode.loadHtml(this.path + this.options.style + "/list.html", {"bind": {"lp": this.lp,"generateType":this.generateType,"config":this.config}, "module": this}, function () {
             this.bindEvent(true);
             this.chatListNode.empty();
-            this.titleNode.set("text",msg);
+            this.titleNode.set("text",msg.length>30?msg.substring(0,30):msg);
             this.send(msg);
         }.bind(this));
     },
@@ -424,7 +422,7 @@ MWF.xApplication.AI.Main = new Class({
                 <div style="display:flex; align-items: center; justify-content: center;">
                   <img src="../x_component_AI/$Main/default/loadding.gif" style="height:1.6rem;margin-top: .8em;">
                   <span class="shining-animation">
-                    正在努力思考中
+                    <span>${_this.lp.thinking}</span>
                     <span class="loading-dot">.</span>
                     <span class="loading-dot">.</span>
                     <span class="loading-dot">.</span>

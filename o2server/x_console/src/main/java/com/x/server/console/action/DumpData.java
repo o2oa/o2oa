@@ -160,7 +160,8 @@ public class DumpData {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 			Root<T> root = cq.from(cls);
-			cq.select(cb.count(root));
+			// count(*) 可能导致全表扫描
+			cq.select(cb.count(root.get(JpaObject.id_FIELDNAME)));
 			return em.createQuery(cq).getSingleResult();
 		}
 

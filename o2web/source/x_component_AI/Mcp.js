@@ -22,12 +22,10 @@ MWF.xApplication.AI.Mcp = new Class({
         this.config = config.data;
         this.action.ConfigAction.listMcpConfigPaging(1,1000, function( json ){
 
-
             this.categoryList = ["all", ...new Set(json.data.map(item => item.category).filter(category => category !== ""))];
-
             this.container.loadHtml(this.viewPath, {"bind": {"categoryList":this.categoryList,"modelList":json.data,"lp": this.app.lp,"config":this.app.config}, "module": this}, function(){
                 this.categoryList.each(function (d){
-                    const el = new Element("div.model-category-item",{"text":d=="all"?"全部":d}).inject(this.categoryNode);
+                    const el = new Element("div.model-category-item",{"text":d=="all"?this.lp.common.all:d}).inject(this.categoryNode);
                     el.addEvent("click",function (){
                         this.loadList(d);
                         el.addClass("model-category-item-c");
@@ -67,11 +65,11 @@ MWF.xApplication.AI.Mcp = new Class({
         new Element("oo-input.key", {"label": "key"}).inject(row);
         new Element("oo-input.value", {"label": "value"}).inject(row);
 
-        const group = new Element("oo-radio-group.required",{"label":"是否必填"}).inject(row);
+        const group = new Element("oo-radio-group.required",{"label":this.lp.mcp.required}).inject(row);
 
-        new Element("oo-radio", {"text": "是","value":"true"}).inject(group);
-        new Element("oo-radio", {"text": "否","value":"false"}).inject(group);
-        const select = new Element("oo-select.type",{"label":"字段类型"}).inject(row);
+        new Element("oo-radio", {"text": this.lp.common.yes,"value":"true"}).inject(group);
+        new Element("oo-radio", {"text": this.lp.common.no,"value":"false"}).inject(group);
+        const select = new Element("oo-select.type",{"label":this.lp.mcp.fieldtype}).inject(row);
 
         select.set("html",`<oo-option value="string">string</oo-option>
                     <oo-option value="array">array</oo-option>`)
@@ -86,7 +84,7 @@ MWF.xApplication.AI.Mcp = new Class({
         this.load();
     },
     removeMcp: function (id, ev) {
-        $OOUI.confirm.warn('删除确认', '您确定要删除吗？', null, ev.target, 'left top').then(({dlg, status}) => {
+        $OOUI.confirm.warn(this.lp.common.removetitle, this.lp.common.removeconfirm, null, ev.target, 'left top').then(({dlg, status}) => {
             if (status === 'ok') {
                 this.action.ConfigAction.deleteMcpConfig(id, function (json) {
                     this.reload();
@@ -106,11 +104,11 @@ MWF.xApplication.AI.Mcp = new Class({
             const file = e.target.files[0];
             document.body.removeChild(fileInput);
             if (!file) {
-                $OOUI.notice.warn("提示", "未选择文件");
+                $OOUI.notice.warn(this.lp.common.tip, this.lp.common.unselectfile);
                 return;
             }
             if (file.type !== 'application/json') {
-                $OOUI.notice.warn("提示", `文件类型不正确，期望 application/json，实际是 ${file.type}`);
+                $OOUI.notice.warn(this.lp.common.tip, `The file type is incorrect; expected application/json, but got ${file.type}`);
                 return;
             }
             const reader = new FileReader();
@@ -118,15 +116,15 @@ MWF.xApplication.AI.Mcp = new Class({
                 try {
                     const jsonData = JSON.parse(e.target.result);
                     _this.action.ConfigAction.updateMcpConfig(jsonData.id,jsonData, function( json ){
-                        $OOUI.notice.success("提示", "导入成功");
+                        $OOUI.notice.success(this.lp.common.tip, "success");
                         _this.reload();
                     });
                 } catch (error) {
-                    $OOUI.notice.warn("提示", `JSON 解析失败: ${error.message}`);
+                    $OOUI.notice.warn(this.lp.common.tip, `JSON Error: ${error.message}`);
                 }
             };
             reader.onerror = function() {
-                $OOUI.notice.warn("提示", `文件读取失败: ${reader.error.message}`);
+                $OOUI.notice.warn(this.lp.common.tip, `File Read Error: ${reader.error.message}`);
             };
             reader.readAsText(file);
         });
@@ -144,18 +142,13 @@ MWF.xApplication.AI.Mcp = new Class({
     },
 
     exportMcp : function (id, ev){
-        $OOUI.confirm.warn('导出确认', '您确定要导出吗？', null, ev.target, 'left top').then(({dlg, status}) => {
+        $OOUI.confirm.warn(this.lp.common.export, this.lp.common.exportconfirm, null, ev.target, 'left top').then(({dlg, status}) => {
             if (status === 'ok') {
-
-
                 this.action.ConfigAction.getMcpConfig(id, function( json ){
                     const jsonStr = JSON.stringify(json.data);
                     this.downloadJSON(jsonStr,json.data.name + ".json")
                     dlg.close();
                 }.bind(this),null,false);
-
-
-
             }
         });
     },
@@ -184,19 +177,25 @@ MWF.xApplication.AI.Mcp = new Class({
                 }, []);
             }.bind(this),null,false);
         }
-debugger
         node.loadHtml(url, {"bind": {"lp": _self.lp,"data" : data||{}}, "module": this}, function () {
-
+            let template = "",script = "";
+            if(o2.typeOf(data.extra.template) === "object"){
+                template = ""
+            }else{
+                template = data.extra.template;
+            }
+            if(o2.typeOf(data.extra.script) === "object"){
+                script = ""
+            }else{
+                script = data.extra.script;
+            }
             const templateEditor = new o2.widget.ScriptArea(this.msgTemplateNode, { "option": { "mode": "markdown" } });
-            templateEditor.load({"code":data.extra.template?data.extra.template:""});
+            templateEditor.load({"code":template});
             const scriptEditor = new o2.widget.ScriptArea(this.msgScriptNode, { "option": { "mode": "javascript" } });
-            scriptEditor.load({"code":data.extra.script?data.extra.script:""});
-
-            //scriptEditor.load({"code":""});
-
+            scriptEditor.load({"code":script});
 
             var dlg = o2.DL.open({
-                "title": type === "edit"?"修改MCP":"新建MCP",
+                "title": type === "edit"?this.lp.modifymcp:this.lp.newmcp,
                 "width": "1200px",
                 "height": "700px",
                 "mask": true,
@@ -209,15 +208,13 @@ debugger
                 }.bind(this),
                 "buttonList": [
                     {
-                        "text": "保存",
+                        "text": this.lp.common.save,
                         "action": function () {
                             const name = node.querySelector("[name='name']");
                             const category = node.querySelector("[name='category']");
                             const desc = node.querySelector("[name='desc']");
                             const enable = node.querySelector("[name='enable']");
                             const url = node.querySelector("[name='url']");
-
-
                             let mcpParameterList = [];
                             let bodyMap = {};
 
@@ -253,8 +250,6 @@ debugger
                                     });
                                 }
                             })
-                            console.log(templateEditor.getData())
-                            console.log(scriptEditor.getData())
                             let newData = {
                                 "name" : name.get("value"),
                                 "category" : category.get("value"),
@@ -283,7 +278,7 @@ debugger
                         }
                     },
                     {
-                        "text": "关闭",
+                        "text": this.lp.common.close,
                         "action": function () {
                             dlg.close();
                         }.bind(this)

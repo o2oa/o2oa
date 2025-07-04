@@ -2,7 +2,7 @@
     <div class="form-content">
         <div class="form-content-area">
             <oo-input required="true"
-                      label="名称"
+                      label="{{$.lp.mcp.name}}"
                       value="{{$.data.name}}"
                       style="width:100%"
                       name="name"
@@ -10,7 +10,7 @@
                       label-Align="right">
             </oo-input>
             <oo-input required="true"
-                      label="分组"
+                      label="{{$.lp.mcp.category}}"
                       value="{{$.data.category}}"
                       style="width:100%"
                       name="category"
@@ -18,7 +18,7 @@
                       label-Align="right">
             </oo-input>
             <oo-textarea required="true"
-                         label="说明"
+                         label="{{$.lp.mcp.desc}}"
                          value="{{$.data.desc}}"
                          style="flex:100%"
                          name="desc"
@@ -26,15 +26,15 @@
                          label-Align="right">
             </oo-textarea>
             <oo-radio-group name="enable"
-                            label="是否启用"
+                            label="{{$.lp.mcp.enable}}"
                             value="{{$.data.enable}}"
                             label-style="width:8.2vw;"
                             label-Align="right">
-                <oo-radio text="是" value="true"></oo-radio>
-                <oo-radio text="否" value="false"></oo-radio>
+                <oo-radio text="{{$.lp.common.yes}}" value="true"></oo-radio>
+                <oo-radio text="{{$.lp.common.no}}" value="false"></oo-radio>
             </oo-radio-group>
             <oo-input required="true"
-                      label="接口地址"
+                      label="{{$.lp.mcp.url}}"
                       value="{{$.data.httpOption.url}}"
                       style="flex:100%"
                       name="url"
@@ -43,7 +43,7 @@
             </oo-input>
 
             <div class="content-item flex" style="flex:100%">
-                <label class="label" style="min-width: 8.2vw;">body参数列表</label>
+                <label class="label" style="min-width: 8.2vw;">{{$.lp.mcp.mcpbody}}</label>
                 <div style="width: 100%;">
                     <div class="form-container" data-o2-element="mcpBodyParameterListNode">
                         {{each $.data.mcpBodyParameterList}}
@@ -54,11 +54,11 @@
                         </div>
                         {{end each}}
                     </div>
-                    <oo-button data-o2-events="click:addMcpBodyParameter" style="flex: 100%;">+ 添加body参数</oo-button>
+                    <oo-button data-o2-events="click:addMcpBodyParameter" style="flex: 100%;">+ {{$.lp.mcp.addbody}}</oo-button>
                 </div>
             </div>
             <div class="content-item flex" style="flex:100%">
-                <label class="label" style="min-width: 8.2vw;">mcp参数列表</label>
+                <label class="label" style="min-width: 8.2vw;">{{$.lp.mcp.mcplist}}</label>
                 <div style="width: 100%;">
                     <div class="form-container" data-o2-element="mcpListNode">
                         {{each $.data.mcpParameterList}}
@@ -66,13 +66,13 @@
                             <oo-input class="key" label="key" value="{{$.name}}"></oo-input>
                             <oo-input class="value" label="value" value="{{$.desc}}"></oo-input>
                             <oo-radio-group class="required"
-                                            label="是否必填"
+                                            label="{{$.lp.mcp.required}}"
                                             value="{{$.required}}">
-                                <oo-radio text="是" value="true"></oo-radio>
-                                <oo-radio text="否" value="false"></oo-radio>
+                                <oo-radio text="{{$.lp.common.yes}}" value="true"></oo-radio>
+                                <oo-radio text="{{$.lp.common.no}}" value="false"></oo-radio>
                             </oo-radio-group>
                             <oo-select class="type"
-                                       label="字段类型"
+                                       label="{{$.lp.mcp.fieldtype}}"
                                        value="{{$.type}}">
                                 <oo-option value="string">string</oo-option>
                                 <oo-option value="array">array</oo-option>
@@ -82,18 +82,18 @@
                         </div>
                         {{end each}}
                     </div>
-                    <oo-button data-o2-events="click:addMcpParameter">+ 添加mcp参数</oo-button>
+                    <oo-button data-o2-events="click:addMcpParameter">+ {{$.lp.mcp.addmcp}}</oo-button>
                 </div>
             </div>
             <div class="content-item flex" style="flex:100%">
-                <label class="label" style="min-width: 8.2vw;">返回模板</label>
+                <label class="label" style="min-width: 8.2vw;">{{$.lp.mcp.returntemplate}}</label>
                 <div style="overflow: hidden;width:60rem;height:10rem;">
                     <div style="width: 100%;height:100%;"  data-o2-element="msgTemplateNode">
                     </div>
                 </div>
             </div>
             <div class="content-item flex" style="flex:100%">
-                <label class="label" style="min-width: 8.2vw;">执行脚本</label>
+                <label class="label" style="min-width: 8.2vw;">{{$.lp.mcp.script}}</label>
                 <div style="overflow: hidden;width:60rem;height:10rem;">
                     <div style="width: 100%;height:100%;"  data-o2-element="msgScriptNode">
                     </div>

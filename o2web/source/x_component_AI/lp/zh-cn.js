@@ -16,10 +16,19 @@ MWF.xApplication.AI.LP = {
 	},
 	"o2AiEnableTip" : "请先启用O2智能体",
 	"common" : {
+		"yes" : "是",
+		"close" : "关闭",
+		"all" : "全部",
+		"no" : "否",
 		"tip" : "提示",
 		"save" : "保存",
 		"select" : "选择",
-		"savesuccess" : "保存成功"
+		"savesuccess" : "保存成功",
+		"removetitle" : "删除确认",
+		"removeconfirm" : "您确定要删除吗？",
+		"unselectfile" : "未选择文件",
+		"export" : "导出",
+		"exportconfirm" : "导出确认"
 	},
 	"navi" : {
 		"index" : "首页",
@@ -37,6 +46,7 @@ MWF.xApplication.AI.LP = {
 	"newchat" : "开启新对话",
 	"expandthingking" : "收起思考过程",
 	"collapsethingking" : "展开思考过程",
+	"thinking" : "正在努力思考中",
 	"types" : {
 		"auto" : "自动",
 		"auto_text" : "AI根据你的问题自动挑最合适的",
@@ -49,5 +59,38 @@ MWF.xApplication.AI.LP = {
 	},
 	"searchhistory" : "搜索历史记录",
 	"inputholder" : "请输入内容,Shift + Enter 换行",
-	"setting" : "系统设置"
+	"setting" : "系统设置",
+	"newmodule" : "新建模型",
+	"modifymodule" : "修改模型",
+	"newmcp" : "新建MCP",
+	"modifymcp" : "修改MCP",
+	"module" : {
+		"name" : "模型名称",
+		"desc" : "模型描述",
+		"company" : "模型服务商",
+		"ali" : "阿里通义千问",
+		"local" : "本地模型",
+		"version" : "模型版本",
+		"completionUrl" : "模型服务地址",
+		"apiKey" :"模型秘钥",
+		"asDefault" : "是否默认",
+		"proxyHost" : "代理主机",
+		"proxyPort" : "代理端口",
+		"proxyEnable" : "是否启用代理"
+	},
+	"mcp" : {
+		"name" : "名称",
+		"category" : "分组",
+		"desc" : "说明",
+		"enable" : "是否启用",
+		"url" : "接口地址",
+		"mcpbody" : "body参数列表",
+		"addbody" : "添加body参数",
+		"mcplist" : "mcp参数列表",
+		"required" : "是否必填",
+		"fieldtype" : "字段类型",
+		"addmcp" : "添加mcp参数",
+		"returntemplate" : "返回模板",
+		"script" : "执行脚本"
+	}
 };
