@@ -276,7 +276,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
-			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true)); 
+			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
 			if( this.isMergeRead )this.editable = false;
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
@@ -1918,10 +1918,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * @return {DatatableData}
 		 */
 		getData: function(){
-			debugger;
 			if( this.importer ){
 				this.importer.destroySimulateModule();
 			}
+			var data;
 			if (this.editable!==false){
 
 				if( this.currentEditedLine ){
@@ -1940,9 +1940,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 						line.computeModuleData("save");
 					})
 				}
-				return this._getBusinessData();
+				data = this._getBusinessData();
+				return o2.typeOf(data) === 'object' ? Object.clone(data) : data;
 			}else{
-				return this._getBusinessData();
+				data = this._getBusinessData();
+				return o2.typeOf(data) === 'object' ? Object.clone(data) : data;
 			}
 		},
 		getInputData: function(){
@@ -1982,7 +1984,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		createErrorNode: function(text){
 			node = new Element("div", {styles:{
-                "margin-top": "0.3em"  
+                "margin-top": "0.3em"
             }});
             var iconNode = new Element("div.ooicon-error", {
                 "styles": {
@@ -2168,7 +2170,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return true;
 
 
-			
+
 		},
 		validation: function(routeName, opinion){
 			const flag = this._validation(routeName, opinion);
@@ -3285,7 +3287,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
 			}
 			node = new Element("div", {styles:{
-				"margin-top": "0.3em"  
+				"margin-top": "0.3em"
 			}});
 			if( td )node.inject(td);
 			var iconNode = new Element("div", {
