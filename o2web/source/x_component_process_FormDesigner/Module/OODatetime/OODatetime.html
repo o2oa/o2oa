@@ -175,37 +175,42 @@
         </div>
         <div id="text{$.pid}otherRangeArea" style="display: text{($.rangeType=='other')?'block':'none'};">
             <div style="line-height: 24px;padding:5px 0px;">
+                var date = this.event.date; //获取传入的日期<br/>
+                return date > new Date();   //晚于当前日期，则可选
+            </div>
+            <div class="MWFScriptArea" name="enableDate" title="{{$.lp.enableDate}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                //该脚本用于选择小时界面的判断<br/>
+                var {date, hour} = this.event; //获取传入的日期和小时<br/>
+                return hour >= 8 //每天8点之后可选
+            </div>
+            <div class="MWFScriptArea" name="enableHour" title="{{$.lp.enableHour}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                //该脚本用于选择分界面的判断<br/>
+                var {date, hour, minute} = this.event; //获取传入的日期、小时和分<br/>
+                return hour > 8 || (hour === 8 && minute >= 30); //每天8点30分之后可选
+            </div>
+            <div class="MWFScriptArea" name="enableMinute" title="{{$.lp.enableMinute}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
+                //该脚本用于选择秒界面的判断<br/>
+                var {date, hour, minute, second} = this.event; //获取传入的日期、时分秒<br/>
+                return hour > 8 ||
+                (hour === 8 && minute > 30) ||
+                (hour === 8 && minute === 30 && second >= 30) //每天8点30分30秒之后可选
+            </div>
+            <div class="MWFScriptArea" name="enableSecond" title="{{$.lp.enableSecond}} (S)"></div>
+            <div style="line-height: 24px;padding:5px 0px;">
                 //该脚本用于选择年份界面的判断<br/>
-                var year = this.event.year; //获取传入的年份<br/>
-                return new Date() > new Date(`${year}-01-01`); //早入当前年份可选
+                var year = this.event.year; //获取传入的年份(number)
+                return year >= new Date().getFullYear(); //晚于当前年份可选
             </div>
             <div class="MWFScriptArea" name="enableYear" title="{{$.lp.enableYear}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
                 //该脚本用于选择月份界面的判断<br/>
-                var month = this.event.month; //获取传入的月份<br/>
-                return new Date() > new Date(`${month}-01`); //早入当前年份可选
+                var month = this.event.month; //获取传入的月份YYYY-MM<br/>
+                return month >= '2025-07'; //晚于2025年7月可选
             </div>
             <div class="MWFScriptArea" name="enableMonth" title="{{$.lp.enableMonth}} (S)"></div>
-            <div style="line-height: 24px;padding:5px 0px;">
-                var date = this.event.date; //获取传入的日期<br/>
-                return new Date() > date;   //早于当前日期，则可选
-            </div>
-            <div class="MWFScriptArea" name="enableDate" title="{{$.lp.enableDate}} (S)"></div>
-            <div style="line-height: 24px;padding:5px 0px;">
-                var {date, hour} = this.event; //获取传入的日期和小时<br/>
-                return new Date() > > new Date() && hour > 8 //早入当前日期，且在8点之前可选
-            </div>
-            <div class="MWFScriptArea" name="enableHour" title="{{$.lp.enableHour}} (S)"></div>
-            <div style="line-height: 24px;padding:5px 0px;">
-                var {date, hour, minute} = this.event; //获取传入的日期、小时和分<br/>
-                return new Date() > new Date() && hour > 8 && minute > 30; //早入当前日期，且在8点30分之前可选
-            </div>
-            <div class="MWFScriptArea" name="enableMinute" title="{{$.lp.enableMinute}} (S)"></div>
-            <div style="line-height: 24px;padding:5px 0px;">
-                var {date, hour, minute, second} = this.event; //获取传入的日期、时分秒<br/>
-                return new Date() > new Date() && hour > 8 && minute > 30 && second > 30; //早入当前日期，且在8点30分30秒之前可选
-            </div>
-            <div class="MWFScriptArea" name="enableSecond" title="{{$.lp.enableSecond}} (S)"></div>
         </div>
     </div>
 
@@ -250,7 +255,7 @@
         <!-- 可阅读配置 -->
         <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.readConfig}}</div>
         <div style="padding: 5px; color: #999999; ">{{$.lp.readConfigInfo}}</div>
-        
+
         <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9;">
             <label><input name="readByActivity" type="checkbox" value="true" onclick="if (this.checked){
                 $('text{$.pid}readByActivityArea').setStyle('display', 'block');
@@ -307,7 +312,7 @@
                 </tr>
             </table>
         </div>
-        
+
         <!-- 可编辑配置 -->
         <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.editConfig}}</div>
         <div style="padding: 5px; color: #999999; ">{{$.lp.editConfigInfo}}</div>
