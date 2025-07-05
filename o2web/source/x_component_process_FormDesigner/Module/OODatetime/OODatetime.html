@@ -176,7 +176,7 @@
         <div id="text{$.pid}otherRangeArea" style="display: text{($.rangeType=='other')?'block':'none'};">
             <div style="line-height: 24px;padding:5px 0px;">
                 var date = this.event.date; //获取传入的日期<br/>
-                return date > new Date();   //晚于当前日期，则可选
+                return date > new Date().clearTime();   //晚于当前日期，则可选
             </div>
             <div class="MWFScriptArea" name="enableDate" title="{{$.lp.enableDate}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
