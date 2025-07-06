@@ -39,6 +39,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
+  "OOCurrency": {
+    "fontIcon": "ooicon-currency",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_currency,
+    "className": "OOCurrency"
+  },
   "OOPagination":{
     "fontIcon": "ooicon-numeric_field",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_pagination,

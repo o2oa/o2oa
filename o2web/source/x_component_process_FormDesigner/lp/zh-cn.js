@@ -393,6 +393,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         oo_datetime: '日期框',
         oo_org: '人员',
         oo_pagination: '页码',
+        oo_currency: '货币',
 
         importer: '数据导入',
         readLog: '阅读记录',
@@ -603,6 +604,17 @@ MWF.xApplication.process.FormDesigner.LP = {
         digitsToSeparateNote: '每几个数位添加,分隔符，如千分位为每3位数添加分隔符，那么填3。',
         asyncMode: '异步模式',
         asyncLoad: '异步加载',
+
+        usePreset: '使用预设',
+        custom: '自定义',
+        currency: '货币',
+        prefixUse: '前缀使用',
+        isoCode: 'ISO编码',
+        symbol: '货币符号',
+        thousands: '千分位',
+        allowBlank: '允许空值',
+        disableNegative: '禁止负数',
+        round: '四舍五入',
 
         isReader: '作为内容管理读者',
         isAuther: '作为内容管理编辑者',
@@ -1404,6 +1416,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         step: '步长',
         step_strictly: '只允许输入步长的倍数',
         precision: '数值精度',
+        precision2: '小数点位数',
         controls: '控制按钮',
         controlsPosition: '按钮位置',
 
@@ -1653,8 +1666,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "editScript": "可编辑脚本",
         "editScriptInfo": '返回一个布尔值，true表示可编辑，false表示不可编辑',
 
-        "inherit": "继承父元素"
-
+        "inherit": "继承父元素",
+        "currencyInvalidOption": '前缀,后缀,千分位,小数点不允许用正负号和数字'
     },
     smartbi: {
         nosetup: '请先安装SmartBI应用',
@@ -1741,4 +1754,58 @@ MWF.xApplication.process.FormDesigner.LP = {
         add: '新建',
         gotoApp: '打开所在应用',
     },
+    currency: {
+        CNY: '人民币',
+        JPY: '日元',
+        INR: '印度卢比',
+        KRW: '韩元',
+        SGD: '新加坡元',
+        THB: '泰铢',
+        MYR: '马来西亚林吉特',
+        PHP: '菲律宾比索',
+        VND: '越南盾',
+
+        // 特殊货币区域
+        HKD: '港元',
+        MOP: '澳门元',
+        TWD: '新台币',
+        AED: '阿联酋迪拉姆',
+        SAR: '沙特里亚尔',
+        TRY: '土耳其里拉',
+
+        // 欧洲货币
+        EUR: '欧元',
+        GBP: '英镑',
+        CHF: '瑞士法郎',
+        RUB: '俄罗斯卢布',
+        PLN: '波兰兹罗提',
+        NOK: '挪威克朗',
+        SEK: '瑞典克朗',
+        DKK: '丹麦克朗',
+        HUF: '匈牙利福林',
+
+        // 美洲货币
+        USD: '美元',
+        CAD: '加拿大元',
+        MXN: '墨西哥比索',
+        BRL: '巴西雷亚尔',
+        ARS: '阿根廷比索',
+        CLP: '智利比索',
+
+        // 大洋洲货币
+        AUD: '澳元',
+        NZD: '新西兰元',
+        PGK: '巴布亚新几内亚基那',
+        TOP: '汤加潘加',
+        WST: '萨摩亚塔拉',
+
+        // 非洲货币
+        ZAR: '南非兰特',
+        EGP: '埃及镑',
+        NGN: '尼日利亚奈拉',
+        KES: '肯尼亚先令',
+        GHS: '加纳塞地',
+        MAD: '摩洛哥迪拉姆',
+        TZS: '坦桑尼亚先令'
+    }
 };

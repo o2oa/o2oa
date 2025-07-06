@@ -46,7 +46,7 @@ oo-org {
     line-height: normal;
 }
 
-oo-input, oo-select, oo-textarea, oo-datetime{
+oo-input, oo-select, oo-textarea, oo-datetime, oo-currency{
     display: inline-block;
     border-radius: var(--oo-default-radius);
     color: var(--oo-color-text2);
@@ -369,6 +369,114 @@ oo-nav{
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.ooicon-hopper:before {
+  content: "\e783";
+}
+
+.ooicon-jiekoupeizhi21:before {
+  content: "\e794";
+}
+
+.ooicon-dailipeizhi1:before {
+  content: "\e793";
+}
+
+.ooicon-js:before {
+  content: "\e792";
+}
+
+.ooicon-neirongguanli1:before {
+  content: "\e790";
+}
+
+.ooicon-neirongguanli2:before {
+  content: "\e791";
+}
+
+.ooicon-shitupeizhi3:before {
+  content: "\e78e";
+}
+
+.ooicon-bujianpeizhi:before {
+  content: "\e78f";
+}
+
+.ooicon-shujubiao2:before {
+  content: "\e780";
+}
+
+.ooicon-shujubiao:before {
+  content: "\e781";
+}
+
+.ooicon-chaxunpeizhi:before {
+  content: "\e782";
+}
+
+.ooicon-daorumoxing:before {
+  content: "\e784";
+}
+
+.ooicon-information_peizhi:before {
+  content: "\e785";
+}
+
+.ooicon-biaodan:before {
+  content: "\e786";
+}
+
+.ooicon-pagepeizhi:before {
+  content: "\e787";
+}
+
+.ooicon-tongjipeizhi:before {
+  content: "\e788";
+}
+
+.ooicon-shitupeizhi:before {
+  content: "\e78a";
+}
+
+.ooicon-jiaoben:before {
+  content: "\e78b";
+}
+
+.ooicon-bianzu:before {
+  content: "\e78c";
+}
+
+.ooicon-yingyongshuxing:before {
+  content: "\e78d";
+}
+
+.ooicon-jiekoupeizhi2:before {
+  content: "\e77e";
+}
+
+.ooicon-shujuzidian:before {
+  content: "\e77f";
+}
+
+.ooicon-a-moveup:before {
+  content: "\e77c";
+}
+
+.ooicon-a-movedown:before {
+  content: "\e77d";
+}
+
+.ooicon-import2:before {
+  content: "\e77b";
+}
+
+.ooicon-currency:before {
+  content: "\e77a";
+}
+
+.ooicon-mail2:before {
+  content: "\e779";
 }
 
 .ooicon-liucheng:before {
