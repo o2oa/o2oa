@@ -146,8 +146,6 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
         option.setAttribute('icon', 'loading');
         node.appendChild(option);
 
-		debugger;
-
         const loadSubOptionFun = async () => {
             const items = await this._getAddressData(node);
             node.empty();

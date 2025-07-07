@@ -464,6 +464,7 @@ MWF.xApplication.cms.Xform.LP={
 	"requiredHintField": "Esto",
 	"editDatatable": "Editar tabla de datos",
 	"select": "Selección",
-	"editOk": "Edición completada"
+	"editOk": "Edición completada",
+	"associatedFailureMessage": "Hubo una asociación de documentos fallida."
 }
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP

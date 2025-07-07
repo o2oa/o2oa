@@ -314,7 +314,7 @@
 .form-layout .form-side-top {
     margin-top: 0.5em;
     /* width: 6em; */
-    background: #2e82f7;
+    background: var(--oo-color-main);
     box-shadow: 0 0 0.3em 0 #dedede;
     border-radius: 0.42857em;
     padding: 0.5em 0.5em;

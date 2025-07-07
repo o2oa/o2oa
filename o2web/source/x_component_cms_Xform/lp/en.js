@@ -466,6 +466,7 @@ MWF.xApplication.cms.Xform.LP={
 	"requiredHintField": "this",
 	"editDatatable": "Edit data table",
 	"select": "select",
-	"editOk": "Editing completed"
+	"editOk": "Editing completed",
+	"associatedFailureMessage": "{count} documents failed to be associated."
 }
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP

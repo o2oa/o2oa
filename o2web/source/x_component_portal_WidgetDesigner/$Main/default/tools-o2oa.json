@@ -24,6 +24,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_select,
     "className": "OOSelect"
   },
+  "OOAddress": {
+    "fontIcon": "ooicon-person",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Address,
+    "className": "OOAddress"
+  },
   "OOTextarea": {
     "fontIcon": "ooicon-multiline",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_textarea,

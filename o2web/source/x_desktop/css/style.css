@@ -1,19 +1,15 @@
-@CHARSET "UTF-8";
-/*@font-face {*/
-/*	font-family: 'o2font';*/
-/*	!*src:url('../font/alfont.eot');*!*/
-/*	src:*/
-/*			!*url('../font/alfont.eot?#iefix') format('embedded-opentype'),*!*/
-/*			!*url('../font/alfont.woff') format('woff'),*!*/
-/*			url('../font/alfont.ttf') format('truetype');*/
-/*			!*url('../font/alfont.otf') format('opentype');*!*/
-/*			!*url('../x_desktop/font/font.eot?#font-spider') format('embedded-opentype'),*!*/
+@charset "UTF-8";
 
-/*			!*url('/x_desktop/font/font.svg') format('svg');*!*/
-/*	font-weight: normal;*/
-/*	font-style: normal;*/
-/*}*/
-
+@font-face {
+    font-family: 'ooicon';
+    src:
+            url('./ooicon.ttf') format('truetype'),
+            url('.ooicon.woff') format('woff'),
+            url('.ooicon.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
 html{
 	overflow: hidden;
 	height: 100%;
