@@ -54,34 +54,39 @@ MWF.xApplication.process.FormDesigner.Module.OOCurrency = MWF.FCOOCurrency = new
 		//['preset','currency','prefixUse','prefix','suffix','thousands','decimal']
 		//precision,allowBlank,disableNegative,maximum,minimum,round
 
-		if(name === 'preset'){
-			debugger;
-			if( this.json.preset === 'currency' ){
-				this._setAttributeWithPreset();
-			}else{
-				this.node.setAttribute('prefix', this.json.prefix);
-				this.node.setAttribute('suffix', this.json.suffix||'');
-				this.node.setAttribute('thousands', this.json.thousands);
-				this.node.setAttribute('decimal', this.json.decimal);
-			}
-		}
-		if (name==="currency"){
-			this._setAttributeWithPreset();
-		}
-		if (name==="prefixuse"){
-			this._setAttributeWithPreset();
-		}
-		if( [
-			'prefix', 'suffix', 'thousands', 'decimal',
-			'precision','allowblank','disablenegative',
-			'maximum','minimum','round'
-		].contains(name) ){
-			if(this.json[name] === 'null' || o2.typeOf(this.json[name]) === 'null'){
-				this.node.removeAttribute(name);
-			}else{
-				this.node.setAttribute(name, this.json[name]);
-			}
-		}
+		// if(name === 'preset'){
+		// 	if( this.json.preset === 'currency' ){
+		// 		this._setAttributeWithPreset();
+		// 	}else{
+		// 		this.node.hasAttribute('currency') && this.node.removeAttribute('currency');
+		// 		this.node.hasAttribute('prefixuse') && this.node.removeAttribute('prefixuse');
+		// 		this.node.setAttribute('prefix', this.json.prefix||'');
+		// 		this.node.setAttribute('suffix', this.json.suffix||'');
+		// 		this.node.setAttribute('thousands', this.json.thousands||'');
+		// 		this.node.setAttribute('decimal', this.json.decimal||'');
+		// 	}
+		// }
+		// if (name==="currency"){
+		// 	this._setAttributeWithPreset();
+		// }
+		// if (name==="prefixuse"){
+		// 	this._setAttributeWithPreset();
+		// }
+		// if( [
+		// 	'prefix', 'suffix', 'thousands', 'decimal',
+		// 	'precision','allowblank','disablenegative',
+		// 	'round'
+		// ].contains(name) ){
+		// 	this.node.setAttribute(name, this.json[name]);
+		// }
+		//
+		// if(['maximum','minimum'].contains(name) ){
+		// 	if( this.json[name] === '' ){
+		// 		this.node.hasAttribute(name) && this.node.removeAttribute(name);
+		// 	}else{
+		// 		this.node.setAttribute(name, this.json[name]);
+		// 	}
+		// }
 
 		if (this.form.options.mode == "Mobile"){
 			if (!this.node.getParent('table.form-datatable')){
@@ -91,12 +96,12 @@ MWF.xApplication.process.FormDesigner.Module.OOCurrency = MWF.FCOOCurrency = new
 	},
 	_setAttributeWithPreset: function(){
 		if( this.json.preset === 'currency' ){
-			var OOCurrency = window.customElements.get('oo-currency');
-			var preset = OOCurrency.preset[this.json.currency];
-			this.node.setAttribute('prefix', preset[this.json.prefixuse]);
-			this.node.setAttribute('thousands', preset.thousands);
-			this.node.setAttribute('decimal', preset.decimal);
-			this.node.setAttribute("suffix", preset.suffix||'');
+			this.node.hasAttribute('prefix') && this.node.removeAttribute('prefix');
+			this.node.hasAttribute('suffix') && this.node.removeAttribute('suffix');
+			this.node.hasAttribute('thousands') && this.node.removeAttribute('thousands');
+			this.node.hasAttribute('decimal') && this.node.removeAttribute('decimal');
+			this.node.setAttribute('currency', this.json.currency);
+			this.node.setAttribute('prefixuse', this.json.prefixuse);
 		}
 	},
 	_createMoveNode: function(){

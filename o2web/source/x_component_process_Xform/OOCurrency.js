@@ -106,30 +106,7 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
 			this.node.set("html", this.json.innerHTML);
 		}
 
-        if( this.json.preset === 'currency' ){
-            var OOCurrency = window.customElements.get('oo-currency');
-            var preset = OOCurrency.preset[this.json.currency];
-            this.node.setAttribute('prefix', preset[this.json.prefixuse]);
-            this.node.setAttribute('thousands', preset.thousands);
-            this.node.setAttribute('decimal', preset.decimal);
-            this.node.setAttribute("suffix", preset.suffix||'');
-        }else{
-            this.node.setAttribute('prefix', this.json.prefix||'');
-            this.node.setAttribute('suffix', this.json.suffix||'');
-            this.node.setAttribute('thousands', this.json.thousands||'');
-            this.node.setAttribute('decimal', this.json.decimal||'.');
-        }
-
-        [
-            'precision','allowblank','disablenegative',
-            'maximum','minimum','round'
-        ].forEach(function (name){
-            if(this.json[name] === 'null' || o2.typeOf(this.json[name]) === 'null'){
-                this.node.hasAttribute(name) && this.node.removeAttribute(name);
-            }else{
-                this.node.setAttribute(name, this.json[name]);
-            }
-        }.bind(this));
+        this.checkCurrencyAttribute();
 
         this.node.addEvent('change', function () {
             var v = this.getInputData('change');
@@ -158,6 +135,49 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
                 e.target.setCustomValidity(this.validationText);
             }
         });
+    },
+    checkCurrencyAttribute: function (){
+        var checkAttribute = function (name) {
+            if( typeof this.json[name] === 'undefined' ){
+                console.log('removeAttribute', name);
+                removeAttribute(name);
+            }else{
+                if( this.node.getAttribute(name) !== this.json[name].toString() ){
+                    console.log('setAttribute', name, this.json[name], this.node.getAttribute(name));
+                    this.node.setAttribute(name, this.json[name]);
+                }
+            }
+        }.bind(this);
+        var removeAttribute = function (name) {
+            this.node.hasAttribute(name) && this.node.removeAttribute(name);
+        }.bind(this);
+
+        if( this.json.preset === 'currency' ){
+            removeAttribute("prefix");
+            removeAttribute("suffix");
+            removeAttribute('thousands');
+            removeAttribute('decimal');
+            checkAttribute('currency');
+            checkAttribute('prefixuse');
+        }else{
+            if( !this.json.decimal ){
+                this.json.decimal = '.';
+            }
+            removeAttribute('currency');
+            removeAttribute('prefixuse');
+            checkAttribute("prefix");
+            checkAttribute("suffix");
+            checkAttribute('thousands');
+            checkAttribute('decimal');
+        }
+
+        ['precision','allowblank','disablenegative', 'round'].forEach(function (name){
+            checkAttribute(name);
+        }.bind(this));
+
+        ['maximum','minimum'].forEach(function (name){
+            this.json[name] === '' ? removeAttribute(name) : checkAttribute(name);
+        }.bind(this));
     },
     createModelNode: function () {
     },

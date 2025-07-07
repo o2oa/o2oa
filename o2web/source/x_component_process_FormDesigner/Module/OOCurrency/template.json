@@ -15,9 +15,13 @@
 	"currency": "CNY",
 	"prefixuse": "symbol",
 	"prefix": "¥",
+	"suffix": "",
 	"thousands": ",",
 	"decimal": ".",
 	"precision": 2,
+	"round": true,
+	"allowblank": true,
+	"disablenegative": true,
     "section": "no",
     "sectionBy": "person",
     "sectionByScript": {
