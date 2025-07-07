@@ -67,6 +67,7 @@ MWF.xApplication.process.Xform.require = function (callback) {
         ['process.Xform', 'OORadioGroup'],
         ['process.Xform', 'OOCheckGroup'],
         ['process.Xform', 'OOSelect'],
+        ['process.Xform', 'OOAddress'],
         ['process.Xform', 'OOTextarea'],
         ['process.Xform', 'OODatetime'],
         ['process.Xform', 'OOOrg'],

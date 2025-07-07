@@ -597,6 +597,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         if (flag){
             var n = this.getInputData();
             var v = (data.valueType==="value") ? n : n.length;
+            debugger;
             switch (data.operateor){
                 case "isnull":
                     if ((!v && v!==0) || (o2.typeOf(v)==="array" && !v.length)){

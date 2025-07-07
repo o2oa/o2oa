@@ -139,6 +139,10 @@ MWF.xDesktop.requireApp("process.Xform", "OOTextarea", null, false);
 MWF.xApplication.cms.Xform.OOTextarea = MWF.CMSOOTextarea =  new Class({
     Extends: MWF.APPOOTextarea
 });
+MWF.xDesktop.requireApp("process.Xform", "OOPagination", null, false);
+MWF.xApplication.cms.Xform.OOPagination = MWF.CMSOOPagination =  new Class({
+    Extends: MWF.APPOOPagination
+});
 
 MWF.xDesktop.requireApp("process.Xform", "Codeeditor", null, false);
 MWF.xApplication.cms.Xform.Codeeditor = MWF.CMSCodeeditor =  new Class({
