@@ -1554,6 +1554,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if( this.importer ){
 				this.importer.destroySimulateModule();
 			}
+			var data;
 			if (this.editable!==false){
 				// var data = [];
 				// this.lineList.each(function(line, index){
@@ -1568,9 +1569,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.lineList.each(function (line) {
 					line.computeModuleData("save");
 				})
-				return this._getBusinessData();
+				data = this._getBusinessData();
+				return o2.typeOf(data) === 'array' ? Array.clone(data) : data;
 			}else{
-				return this._getBusinessData();
+				data = this._getBusinessData();
+				return o2.typeOf(data) === 'array' ? Array.clone(data) : data;
 			}
 		},
 		getInputData: function(){
@@ -1609,7 +1612,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		createErrorNode: function(text){
 			node = new Element("div", {styles:{
-                "margin-top": "0.3em"  
+                "margin-top": "0.3em"
             }});
             var iconNode = new Element("div.ooicon-error", {
                 "styles": {

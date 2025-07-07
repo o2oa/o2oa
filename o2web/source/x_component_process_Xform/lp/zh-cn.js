@@ -26,6 +26,8 @@ MWF.xApplication.process.Xform.LP = {
 
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
 
+    "associatedFailureMessage": "有{count}份文档关联失败。",
+
     "activity": "活动",
     "dataSaved": "数据保存成功",
     "taskProcessed": "文件已提交",
