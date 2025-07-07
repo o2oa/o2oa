@@ -1462,7 +1462,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     getFieldList: function(){
         //fieldTypes = ["calender", "checkbox", "datagrid", "htmledit", "number", "personfield", "radio", "select", "textarea", "textfield"];
         dataTypes = {
-             "string": ["htmledit", "radio", "select", "textarea", "textfield","imageclipper","htmleditor","tinymceeditor","ooinput","ootextarea","ooselect","ooradioGroup"],
+             "string": ["htmledit", "radio", "select", "textarea", "textfield","imageclipper","htmleditor","tinymceeditor","ooinput","ootextarea","ooselect","ooradioGroup","oocurrency"],
             "person": ["personfield","orgfield","org","ooorg"],
             "date": ["calender","oodatetime"],
             "number": ["number","currency"],

@@ -54,6 +54,7 @@
 .form-layout .form-content-area oo-checkbox-group,
 .form-layout .form-content-area oo-select,
 .form-layout .form-content-area oo-datetime,
+.form-layout .form-content-area oo-currency,
 .form-layout .form-content-area div[mwftype='OOCheckGroup'],
 .form-layout .form-content-area div[mwftype='OORadioGroup'] {
     flex: 1 1 46%;
@@ -553,7 +554,7 @@
     body *{
         box-sizing: border-box !important;
     }
-    oo-input, oo-select, oo-textarea, oo-datetime {
+    oo-input, oo-select, oo-textarea, oo-datetime, oo-currency {
         color: var(--oo-color-text);
     }
 
@@ -722,6 +723,7 @@
     div[mwftype='datatable'] oo-radio-group,
     div[mwftype='datatable'] oo-checkbox-group,
     div[mwftype='datatable'] oo-select,
+    div[mwftype='datatable'] oo-currency,
     div[mwftype='datatable'] oo-datetime {
         white-space: nowrap !important;
     }
@@ -851,6 +853,7 @@
      div[mwftype='datatable'].datatable_edit_mode oo-radio-group,
      div[mwftype='datatable'].datatable_edit_mode oo-checkbox-group,
      div[mwftype='datatable'].datatable_edit_mode oo-select,
+     div[mwftype='datatable'].datatable_edit_mode oo-currency,
      div[mwftype='datatable'].datatable_edit_mode oo-datetime {
         white-space: normal !important;
     }
@@ -859,6 +862,7 @@
     div[mwftype='datatable'].datatable_edit_mode oo-selector[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-textarea[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-select[readmode='false'],
+    div[mwftype='datatable'].datatable_edit_mode oo-currency[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-datetime[readmode='false'] {
        background-color: #ffffff;
    }

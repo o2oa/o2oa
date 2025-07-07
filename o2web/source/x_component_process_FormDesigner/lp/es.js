@@ -367,6 +367,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_calendar": "Calendario",
 		"oo_datetime": "Marco de fecha",
 		"oo_org": "Personal",
+		"oo_currency": "Moneda",
 		"codeedit": "Editor de guiones",
 		"oo_pagination": "Número de página"
 	},
