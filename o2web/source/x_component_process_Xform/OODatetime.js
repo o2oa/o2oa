@@ -168,6 +168,21 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
                 e.target.setCustomValidity(this.validationText);
             }
         });
+        this.node.addEventListener('invalid', (e)=>{
+            var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
+            const o = {
+                valueMissing: MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
+            }
+            //通过 e.detail 获取 验证有效性状态对象：ValidityState
+            for (const k in o){
+                if (e.detail[k]){
+                    if (o[k]){
+                        e.target.setCustomValidity(o[k]);
+                        break;
+                    }
+                }
+            }
+        });
     },
     createModelNode: function () {
         this.modelNode = new Element('div', {styles: this.form.css.modelNode}).inject(this.node, 'after');

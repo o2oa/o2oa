@@ -353,7 +353,17 @@ oo-nav{
 }
 
 
-
+.ooicon-loading {
+  position: relative;
+  width: 0.875em;
+  height: 0.875em;
+  border: 0.125em solid #000;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  border-right-color: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  border-radius: 100%;
+  animation: circle infinite 0.75s linear;
+}
 
 [class^="ooicon-"],
 [class*=" ooicon-"] {

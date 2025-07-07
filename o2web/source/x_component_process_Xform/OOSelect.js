@@ -205,6 +205,21 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 				e.target.setCustomValidity(this.validationText);
 			}
 		});
+		this.node.addEventListener('invalid', (e)=>{
+            var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
+            const o = {
+                valueMissing: MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
+            }
+            //通过 e.detail 获取 验证有效性状态对象：ValidityState
+            for (const k in o){
+                if (e.detail[k]){
+                    if (o[k]){
+                        e.target.setCustomValidity(o[k]);
+                        break;
+                    }
+                }
+            }
+        });
 
 		this.setOptions();
 	},
@@ -222,6 +237,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 					var option = new Element("oo-option", {
 						"value": value
 					});
+					option.setAttribute('value', value);
 					option.setAttribute('text', text);
 					option.inject(this.node);
 
@@ -244,6 +260,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
             "value": value || text,
             "text": text
         }).inject(this.node);
+		option.setAttribute('value', value || text);
 		this.fireEvent("addOption", [text, value])
 	},
 
@@ -276,6 +293,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	// },
 
 	__setValue: function(value){
+		debugger;
 		this._setBusinessData(value);
 		this.node.value = value;
 		this.fieldModuleLoaded = true;

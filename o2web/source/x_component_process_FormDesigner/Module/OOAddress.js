@@ -1,16 +1,16 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.OOInput", null, false);
-MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Class({
+MWF.xApplication.process.FormDesigner.Module.OOAddress = MWF.FCOOAddress = new Class({
 	Extends: MWF.FCOOInput,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"type": "OOSelect",
-		"path": "../x_component_process_FormDesigner/Module/OOSelect/",
-		"propertyPath": "../x_component_process_FormDesigner/Module/OOSelect/OOSelect.html"
+		"type": "OOAddress",
+		"path": "../x_component_process_FormDesigner/Module/OOAddress/",
+		"propertyPath": "../x_component_process_FormDesigner/Module/OOAddress/OOAddress.html"
 	},
 	_loadNodeStyles: function(){
-		this.node.setAttribute('readonly', true);
+		this.node.setAttribute('readonly', 'true');
 	},
 	_setEditStyle_custom: function(name){
 		if (name==="id") this.node.set("placeholder", this.json.id);
@@ -19,22 +19,21 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 		}
 
 		this.node.setAttribute('readonly', 'true');
-
 		if (name==="showMode"){
 			if (this.json.showMode==="disabled"){
 				this.node.setAttribute("bgcolor", "#f3f3f3");
-				this.node.setAttribute("readmode", false);
+				this.node.setAttribute("readmode", 'false');
 			}else if (this.json.showMode==="read"){
-				this.node.setAttribute("readmode", true);
+				this.node.setAttribute("readmode", 'true');
 				this.node.removeAttribute("bgcolor");
 			}else{
-				this.node.setAttribute("readmode", false);
+				this.node.setAttribute("readmode", 'false');
 				this.node.removeAttribute("bgcolor");
 			}
 		}
 		if (name==="required"){
 			if (this.json.required){
-				this.node.setAttribute("required", true);
+				this.node.setAttribute("required", 'true');
 			}else{
 				this.node.removeAttribute("required");
 			}
@@ -49,9 +48,8 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-select", {
-			"MWFType": "OOSelect",
+			"MWFType": "OOAddress",
 			"id": this.json.id,
-			// "label-style": "width:6.2vw; min-width:5em; max-width:9em",
 			"styles": this.css.moduleNodeMove,
 			"placeholder": this.json.id,
 			"readonly": "true",
@@ -61,18 +59,11 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 				}
 			}
 		}).inject(this.form.container);
-
-		// this.moveNode._elements.input.setAttribute("readonly", true);
 	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
 			try{
 				this.setCustomStyles();
-			}catch(e){}
-		}
-		if (name=="inputStyles"){
-			try{
-				this.setCustomInputStyles();
 			}catch(e){}
 		}
 		if (name=="properties"){

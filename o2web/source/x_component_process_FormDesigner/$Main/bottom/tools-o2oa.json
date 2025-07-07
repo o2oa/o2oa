@@ -39,6 +39,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
+  "OOAddress": {
+    "fontIcon": "ooicon-person",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Address,
+    "className": "OOAddress"
+  },
   "OOPagination":{
     "fontIcon": "ooicon-numeric_field",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_pagination,
