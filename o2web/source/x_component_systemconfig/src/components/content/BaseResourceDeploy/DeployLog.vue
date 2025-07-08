@@ -11,6 +11,7 @@
         <el-table-column prop="installPerson" :label="lp._resource.installPerson"/>
         <el-table-column prop="installTime" :label="lp._resource.installTime"/>
       </el-table>
+      <el-pagination layout="prev, pager, next" :default-page-size="size" :total="total" small/>
   </div>
   </div>
 </template>
@@ -18,14 +19,19 @@
 <script setup>
 import {ref} from 'vue';
 import {lp} from '@o2oa/component';
-import {getConfigData, listDeployLog} from '@/util/acrions';
+import {listDeployLog} from '@/util/acrions';
 
 const deployLogs = ref([]);
+const size = 20;
+const total = ref(0);
 
-const loadPaging = async () => {
-  deployLogs.value = await listDeployLog(1, 20)
+const loadPaging = async (page) => {
+  const json = await listDeployLog(page, size);
+  deployLogs.value = json.data;
+  total.value = json.size;
 }
-loadPaging();
+
+loadPaging(1);
 
 </script>
 

@@ -165,8 +165,7 @@ async function deployWarResource(data) {
 }
 
 async function listDeployLog(page, size){
-    const list = await o2.Actions.load("x_program_center").DeployAction.listPaging(page, size);
-    return list.data;
+    return await o2.Actions.load("x_program_center").DeployAction.listPaging(page, size);
 }
 
 function getPublicData(name){
