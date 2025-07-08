@@ -34,7 +34,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 			"htmleditor", "tinymceeditor", "button","imageclipper", "address", "attachment",
 			"elinput", "elcheckbox", "elselect", "elautocomplete", "elnumber", "elradio", "elcascader",
 			"elswitch", "elslider", "eltime", "eldate", "eldatetime", "elrate",
-			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup", "OOOrg", "OOCurrency"
+			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup", "OOOrg", "OOCurrency", "OOAddress"
 		]
 	},
 

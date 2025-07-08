@@ -92,6 +92,7 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOSelect", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOAddress", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOTextarea", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OODatetime", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOCurrency", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OOOrg", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Codeeditor", null, false);
 
