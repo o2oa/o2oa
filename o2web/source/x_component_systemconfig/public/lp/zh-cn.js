@@ -198,6 +198,8 @@ o2.xApplication.systemconfig.LP = {
         "webResourceInfo": "您可以在此处部署Web资源，上传静态资源文件或zip文件，它将被部署到系统的Web服务器，可以通过Http协议访问到。",
         "serviceResource": "部署自定义服务",
         "serviceResourceInfo": "您可以在此处部署您开发的自定义工程，上传编译后的jar包或者war包。部署后需要重启服务器。",
+        "deployLog": "部署日志",
+        "deployLogInfo": "展现web资源和自定义服务的部署日志",
 
         "componentResource": "组件部署",
         "componentResourceInfo": "您自定义开发的O2OA组件，或从官方获取组件，都可以在此处部署。O2OA组件是名为“x_component_{组件名称}”的文件夹或zip文件。更多详细信息请查阅：<a href='https://www.o2oa.net/develop.html' target='_blank'>O2OA官方社区。</a>",
@@ -213,7 +215,21 @@ o2.xApplication.systemconfig.LP = {
         "deployPath": "部署路径",
         "deployPathInfo": "如果部署zip文件，路径可以为空；单个文件部署必须指定部署路径。如：/myWebResource/subPath",
 
+        "title": "标题",
+        "titleInfo": "本次部署的简要描述，必填。",
+
+        "remark": "更新描述",
+        "remarkInfo": "本次部署的详细描述。",
+
+        "version": "版本",
+        "versionInfo": "本次部署的程序的版本。",
+
+        "fileName": "部署文件名称",
+        "installPerson": "部署人员",
+        "installTime": "部署时间",
+
         "noDeployFile": "请先选择要部署的资源文件",
+        "noDeployTitle": "请先填写本次部署的标题",
         "deploySuccess": "部署资源成功",
 
         "notWebResource": "<span style='color: red'>当前服务器不允许前端部署Web资源，您可以到服务器配置-服务器任务中开启此功能</span>",

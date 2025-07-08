@@ -1,8 +1,8 @@
 module.exports = {
     "server": {
-        "host": "172.16.89.21",
+        "host": "devp.o2oa.net",
         "port": "80",
         "httpPort": "80",
-        "https": false
+        "https": true
     }
 }

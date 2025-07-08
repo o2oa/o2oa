@@ -19,6 +19,15 @@
       <BaseInput :label-style="labelStyle" :label="lp._resource.deployPath" v-model:value="deloyData.path"/>
       <div class="editorPathInfo">{{lp._resource.deployPathInfo}}</div>
 
+      <BaseInput :label-style="labelStyle" :label="lp._resource.title" v-model:value="deloyData.title"/>
+      <div class="editorPathInfo">{{lp._resource.titleInfo}}</div>
+
+      <BaseInput inputType="textarea" :label-style="labelStyle" :label="lp._resource.remark" v-model:value="deloyData.remark"/>
+      <div class="editorPathInfo">{{lp._resource.remarkInfo}}</div>
+
+      <BaseInput :label-style="labelStyle" :label="lp._resource.version" v-model:value="deloyData.version"/>
+      <div class="editorPathInfo">{{lp._resource.versionInfo}}</div>
+
       <button class="mainColor_bg" @click="deploy($event)">{{lp._resource.webResource}}</button>
     </div>
     <div class="systemconfig_item_info" v-else v-html="lp._resource.notWebResource"></div>
@@ -28,7 +37,7 @@
 
 <script setup>
 import {ref} from 'vue';
-import {component, lp} from '@o2oa/component';
+import {component, lp, layout} from '@o2oa/component';
 import {deployWebResource, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 import BaseRadio from '@/components/item/BaseRadio.vue';
@@ -37,7 +46,10 @@ import BaseInput from '@/components/item/BaseInput.vue';
 const deloyData = ref({
   file: [],
   overwrite: 'false',
-  path: ''
+  path: '',
+  title: '',
+  version: layout.config.version,
+  remark: ''
 });
 const labelStyle = {
   fontWeight: 'bold',
@@ -54,12 +66,19 @@ async function deploy(e) {
     component.notice(lp._resource.noDeployFile, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
+  if (!deloyData.value.title.length) {
+    component.notice(lp._resource.noDeployTitle, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
+    return false;
+  }
   var p = [];
   deloyData.value.file.forEach((f)=>{
     const o = {
       file: [f],
       overwrite: deloyData.value.overwrite,
-      path: deloyData.value.path
+      path: deloyData.value.path,
+      title: deloyData.value.title,
+      version: deloyData.value.version,
+      remark: deloyData.value.remark
     }
     p.push(deployWebResource(o));
   });

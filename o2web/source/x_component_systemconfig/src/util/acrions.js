@@ -164,6 +164,11 @@ async function deployWarResource(data) {
     return result.data;
 }
 
+async function listDeployLog(page, size){
+    const list = await o2.Actions.load("x_program_center").DeployAction.listPaging(page, size);
+    return list.data;
+}
+
 function getPublicData(name){
     return new Promise((resolve)=>{
         o2.UD.getPublicData(name, dData=>resolve(dData));
@@ -320,6 +325,7 @@ export {
     dispatchComponentFile,
     deployWebResource,
     deployWarResource,
+    listDeployLog,
     getPublicData,
     clearPublicData,
     loadProcessApplication,
