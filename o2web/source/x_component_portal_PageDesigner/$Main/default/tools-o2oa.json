@@ -47,7 +47,7 @@
   "OOCurrency": {
     "fontIcon": "ooicon-currency",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_currency,
-    "className": "OOAddress"
+    "className": "OOCurrency"
   },
   "OOPagination":{
     "fontIcon": "ooicon-numeric_field",
