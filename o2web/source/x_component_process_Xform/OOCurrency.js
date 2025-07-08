@@ -139,11 +139,9 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
     checkCurrencyAttribute: function (){
         var checkAttribute = function (name) {
             if( typeof this.json[name] === 'undefined' ){
-                console.log('removeAttribute', name);
                 removeAttribute(name);
             }else{
                 if( this.node.getAttribute(name) !== this.json[name].toString() ){
-                    console.log('setAttribute', name, this.json[name], this.node.getAttribute(name));
                     this.node.setAttribute(name, this.json[name]);
                 }
             }

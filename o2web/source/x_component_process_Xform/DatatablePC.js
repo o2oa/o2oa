@@ -655,7 +655,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			var s = tmpV.toString(), total;
 			if(json.type==='OOCurrency'){
-
+				var obj = this.formatCurrency(json, s);
+				column.td.set("text", obj.text );
+				total = obj.value.toString();
 			}else{
 				if( json.decimals && (json.decimals!=="*")){
 					total = this.formatDecimals( json, s.toFloat());
@@ -674,6 +676,34 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}
 			return total;
+		},
+		formatCurrency: function( json, total ){
+			debugger;
+			var opt = {};
+			if( json.preset === 'currency' ){
+				opt.currency = json.currency;
+				opt.prefixuse = json.prefixuse;
+			}else{
+				opt.prefix = json.prefix || '';
+				opt.suffix = json.suffix|| '';
+				opt.thousands = json.thousands || '';
+				opt.decimal = json.decimal || '';
+			}
+			opt.precision = json.hasOwnProperty('precision') ? json.precision : 2;
+			['allowblank','disablenegative', 'round'].forEach(function(key){
+				if( json.hasOwnProperty(key) ){
+					opt[key] = json[key];
+				}
+			});
+			['maximum', 'minimum'].forEach(function(key){
+				if( json.hasOwnProperty(key) && json[key] !== '' ){
+					opt[key] = json[key];
+				}
+			});
+			var OOCurrency = window.customElements.get('oo-currency');
+			var text = OOCurrency.formatCurrency(total, opt, opt.currency || '');
+			var value = OOCurrency.unformatCurrency(text, opt, opt.currency || '');
+			return {text: text, value: value};
 		},
 		formatDecimals: function( json, v ){
 			var str;
