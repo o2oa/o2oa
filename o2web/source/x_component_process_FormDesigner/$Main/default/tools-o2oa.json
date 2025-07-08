@@ -39,15 +39,15 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_org,
     "className": "OOOrg"
   },
+  "OOAddress": {
+    "fontIcon": "ooicon-gprs",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.Address,
+    "className": "OOAddress"
+  },
   "OOCurrency": {
     "fontIcon": "ooicon-currency",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_currency,
     "className": "OOCurrency"
-  },
-  "OOAddress": {
-    "fontIcon": "ooicon-person",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.Address,
-    "className": "OOAddress"
   },
   "OOPagination":{
     "fontIcon": "ooicon-numeric_field",
