@@ -654,22 +654,56 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 
 			var s = tmpV.toString(), total;
-			if( json.decimals && (json.decimals!=="*")){
-				total = this.formatDecimals( json, s.toFloat());
-			}else if( pointLength <= 0 || s === "0" ){
-				total = s;
-			}else if( s.indexOf(".") > -1 ){
-				var length = s.split(".")[1].length;
-				total = length < pointLength ? (s + "0".repeat(pointLength-length)) : s
+			if(json.type==='OOCurrency'){
+				var obj = this.formatCurrency(json, s);
+				column.td.set("text", obj.text );
+				total = obj.value.toString();
 			}else{
-				total = s +"."+ "0".repeat(pointLength);
-			}
+				if( json.decimals && (json.decimals!=="*")){
+					total = this.formatDecimals( json, s.toFloat());
+				}else if( pointLength <= 0 || s === "0" ){
+					total = s;
+				}else if( s.indexOf(".") > -1 ){
+					var length = s.split(".")[1].length;
+					total = length < pointLength ? (s + "0".repeat(pointLength-length)) : s
+				}else{
+					total = s +"."+ "0".repeat(pointLength);
+				}
 
-			column.td.set("text", this.formatSeparate( json, total ) );
-			if( json.currencySymbol ){
-				new Element("span", {"text": json.currencySymbol, "style":"padding-right:5px"}).inject( column.td, "top" );
+				column.td.set("text", this.formatSeparate( json, total ) );
+				if( json.currencySymbol ){
+					new Element("span", {"text": json.currencySymbol, "style":"padding-right:5px"}).inject( column.td, "top" );
+				}
 			}
 			return total;
+		},
+		formatCurrency: function( json, total ){
+			debugger;
+			var opt = {};
+			if( json.preset === 'currency' ){
+				opt.currency = json.currency;
+				opt.prefixuse = json.prefixuse;
+			}else{
+				opt.prefix = json.prefix || '';
+				opt.suffix = json.suffix|| '';
+				opt.thousands = json.thousands || '';
+				opt.decimal = json.decimal || '';
+			}
+			opt.precision = json.hasOwnProperty('precision') ? json.precision : 2;
+			['allowblank','disablenegative', 'round'].forEach(function(key){
+				if( json.hasOwnProperty(key) ){
+					opt[key] = json[key];
+				}
+			});
+			['maximum', 'minimum'].forEach(function(key){
+				if( json.hasOwnProperty(key) && json[key] !== '' ){
+					opt[key] = json[key];
+				}
+			});
+			var OOCurrency = window.customElements.get('oo-currency');
+			var text = OOCurrency.formatCurrency(total, opt, opt.currency || '');
+			var value = OOCurrency.unformatCurrency(text, opt, opt.currency || '');
+			return {text: text, value: value};
 		},
 		formatDecimals: function( json, v ){
 			var str;
@@ -4467,6 +4501,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					break;
 				case "Number":
 				case "Currency":
+				case "OOCurrency":
 				case "Elnumber":
 					if (isNaN(d)){
 						lineData.errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
