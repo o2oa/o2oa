@@ -169,7 +169,7 @@ async function deployWarResource(data) {
     const result = await action.deployServerResource(formData, file);
     return result.data;
 }
-async function 	deployO2Server(data) {
+function deployO2Server(data) {
     var action = o2.Actions.load("x_program_center").DeployAction;
     const formData = new FormData();
     const file = data.file[0];
@@ -179,8 +179,7 @@ async function 	deployO2Server(data) {
     formData.append('title', data.title);
     formData.append('version', data.version);
     //formData.append('filePath', data.path);
-    const result = await action.deployO2Server(formData, file);
-    return result.data;
+    return action.deployO2Server(formData, file);
 }
 
 async function listDeployLog(page, size){

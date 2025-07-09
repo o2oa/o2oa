@@ -64,20 +64,16 @@ async function deploy(e) {
     component.notice(lp._resource.noDeployTitle, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
-  var p = [];
-  deloyData.value.file.forEach((f)=>{
-    const o = {
-      file: [f],
-      title: deloyData.value.title,
-      version: deloyData.value.version,
-      remark: deloyData.value.remark
-      // overwrite: deloyData.value.overwrite,
-      // path: deloyData.value.path
-    }
-    p.push(deployO2Server(o));
-  });
-  // const data = await deployWebResource(deloyData.value);
-  Promise.all(p).then(()=>{
+
+  debugger;
+  const o = {
+    file: deloyData.value.file,
+    title: deloyData.value.title,
+    version: deloyData.value.version,
+    remark: deloyData.value.remark
+  }
+  const p = deployO2Server(o);
+  p.then(()=>{
     component.notice(lp._resource.deploySuccess, "success");
     deloyData.value.title = '';
     deloyData.value.remark = '';

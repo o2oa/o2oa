@@ -245,8 +245,8 @@ o2.xApplication.systemconfig.LP = {
         "deploySuccess": "部署资源成功",
         "noO2ServerFile": "请先选择要部署的服务器安装包(zip格式)",
 
-        "serverRes": "自定义服务",
-        "webRes": "Web资源",
+        "serverRes": "部署自定义服务",
+        "webRes": "部署Web资源",
         "o2server": "升级o2服务器",
 
 
