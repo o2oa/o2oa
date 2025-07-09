@@ -37,6 +37,12 @@ MWF.xApplication.AI.Setting = new Class({
         this.rootNode.destroy();
         this.app.rootNode.show();
     },
+    openKnowledge : function (){
+        this.rootNode.destroy();
+        o2.requireApp("AI", "Knowledge", function(){
+            new MWF.xApplication.AI.Knowledge(this.app, this.container);
+        }.bind(this));
+    },
     openModel : function (){
         this.rootNode.destroy();
         o2.requireApp("AI", "Model", function(){
