@@ -1,4 +1,4 @@
-<template xmlns="">
+<template>
   <div class="systemconfig_area">
     <div class="systemconfig_title">{{lp.resourceDeploy}}</div>
 

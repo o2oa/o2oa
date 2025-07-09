@@ -1,5 +1,5 @@
 <template xmlns="">
-  <div>
+  <div v-loading="loading" :element-loading-text="lp._resource.uploading">
     <div class="systemconfig_item_title">{{lp._resource.webResource}}</div>
     <div class="systemconfig_item_info">{{lp._resource.webResourceInfo}}</div>
 
@@ -43,6 +43,8 @@ import BaseUpload from '@/components/item/BaseUpload.vue';
 import BaseRadio from '@/components/item/BaseRadio.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
 
+const loading = ref(false);
+
 const deloyData = ref({
   file: [],
   overwrite: 'false',
@@ -70,7 +72,26 @@ async function deploy(e) {
     component.notice(lp._resource.noDeployTitle, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
-  var p = [];
+  loading.value = true;
+
+  let successCount = 0;
+  let failureCount = 0;
+  const checkUpload = ()=>{
+    if( deloyData.value.file.length !== successCount + failureCount )return;
+    if( successCount === deloyData.value.file.length ){
+      component.notice(lp._resource.deploySuccess, "success");
+    }else if( failureCount === deloyData.value.file.length ){
+      component.notice(lp._resource.deployFailure, "error");
+    }else{
+      component.notice(
+          lp._resource.deployNote.replace('{success}', successCount).replace('{failure}', failureCount),
+          "error"
+      );
+    }
+    deloyData.value.title = '';
+    deloyData.value.remark = '';
+    loading.value = false;
+  }
   deloyData.value.file.forEach((f)=>{
     const o = {
       file: [f],
@@ -80,15 +101,16 @@ async function deploy(e) {
       version: deloyData.value.version,
       remark: deloyData.value.remark
     }
-    p.push(deployWebResource(o));
-  });
-  // const data = await deployWebResource(deloyData.value);
-  Promise.all(p).then(()=>{
-    deloyData.value.title = '';
-    deloyData.value.remark = '';
-    component.notice(lp._resource.deploySuccess, "success");
+    deployWebResource(o, ()=>{
+      successCount++;
+      checkUpload();
+    }, function (){
+      failureCount++;
+      checkUpload();
+    });
   });
 }
+
 
 const general = ref({});
 getConfigData('general').then((data)=>{

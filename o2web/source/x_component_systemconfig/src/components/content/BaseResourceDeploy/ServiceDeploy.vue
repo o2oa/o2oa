@@ -1,5 +1,5 @@
 <template xmlns="">
-  <div>
+  <div v-loading="loading" :element-loading-text="lp._resource.uploading">
     <div class="systemconfig_item_title">{{lp._resource.serviceResource}}</div>
     <div class="systemconfig_item_info">{{lp._resource.serviceResourceInfo}}</div>
 
@@ -36,6 +36,8 @@ import {deployWarResource, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
 
+const loading = ref(false);
+
 const deloyData = ref({
   file: [],
   overwrite: 'true',
@@ -63,23 +65,40 @@ async function deploy(e) {
     component.notice(lp._resource.noDeployTitle, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
-  var p = [];
+  loading.value = true;
+
+  let successCount = 0;
+  let failureCount = 0;
+  const checkUpload = ()=>{
+    if( deloyData.value.file.length !== successCount + failureCount )return;
+    if( successCount === deloyData.value.file.length ){
+      component.notice(lp._resource.deploySuccess, "success");
+    }else if( failureCount === deloyData.value.file.length ){
+      component.notice(lp._resource.deployFailure, "error");
+    }else{
+      component.notice(
+          lp._resource.deployNote.replace('{success}', successCount).replace('{failure}', failureCount),
+          "error"
+      );
+    }
+    deloyData.value.title = '';
+    deloyData.value.remark = '';
+    loading.value = false;
+  }
   deloyData.value.file.forEach((f)=>{
     const o = {
       file: [f],
       title: deloyData.value.title,
       version: deloyData.value.version,
       remark: deloyData.value.remark
-      // overwrite: deloyData.value.overwrite,
-      // path: deloyData.value.path
     }
-    p.push(deployWarResource(o));
-  });
-  // const data = await deployWebResource(deloyData.value);
-  Promise.all(p).then(()=>{
-    component.notice(lp._resource.deploySuccess, "success");
-    deloyData.value.title = '';
-    deloyData.value.remark = '';
+    deployWarResource(o, ()=>{
+      successCount++;
+      checkUpload();
+    }, function (){
+      failureCount++;
+      checkUpload();
+    });
   });
 }
 

@@ -239,15 +239,18 @@ o2.xApplication.systemconfig.LP = {
         "detail": "详情",
         "retry": "重试",
         "loading": "加载中...",
+        "uploading": "正在部署资源，请耐心等候...",
 
         "noDeployFile": "请先选择要部署的资源文件",
         "noDeployTitle": "请先填写本次部署的标题",
         "deploySuccess": "部署资源成功",
+        "deployFailure": "部署资源失败",
+        "deployNote": "部署完成，{success}个文件成功，{failure}个文件成功",
         "noO2ServerFile": "请先选择要部署的服务器安装包(zip格式)",
 
-        "serverRes": "部署自定义服务",
-        "webRes": "部署Web资源",
-        "o2server": "升级o2服务器",
+        "serverRes": "自定义服务",
+        "webRes": "Web资源",
+        "o2server": "o2服务器",
 
 
         "notWebResource": "<span style='color: red'>当前服务器不允许前端部署Web资源，您可以到服务器配置-服务器任务中开启此功能</span>",

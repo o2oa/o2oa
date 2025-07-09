@@ -1,5 +1,5 @@
-<template xmlns="">
-  <div>
+<template>
+  <div v-loading="loading" :element-loading-text="lp._resource.uploading">
     <div class="systemconfig_item_title">{{lp._resource.o2ServerResource}}</div>
     <div class="systemconfig_item_info">{{lp._resource.o2ServerResourceInfo}}</div>
     <div class="systemconfig_item_info" style="color:red;">{{lp._resource.o2ServerResourceNote}}</div>
@@ -11,7 +11,6 @@
                   accept=".zip"
                   :upload-files="deloyData.file"
                   @upload="uploadFile"
-                  multiple
                   @remove="removeFile"/>
 
      <BaseInput :label-style="labelStyle" :label="lp._resource.title" v-model:value="deloyData.title"/>
@@ -36,6 +35,8 @@ import {component, lp, layout} from '@o2oa/component';
 import {deployO2Server, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
+
+const loading = ref(false);
 
 const deloyData = ref({
   file: [],
@@ -72,12 +73,18 @@ async function deploy(e) {
     version: deloyData.value.version,
     remark: deloyData.value.remark
   }
-  const p = deployO2Server(o);
-  p.then(()=>{
+  loading.value = true;
+  deployO2Server(o, (json)=>{
+    console.log('deployO2Server success', json)
     component.notice(lp._resource.deploySuccess, "success");
     deloyData.value.title = '';
     deloyData.value.remark = '';
     deloyData.value.version = '';
+    loading.value = false;
+  }, (error)=>{
+    component.notice(lp._resource.deployFailure, "error");
+    console.log('deployO2Server failure', error);
+    loading.value = false;
   });
 }
 

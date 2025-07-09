@@ -29,7 +29,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="typeCn" :label="lp._resource.type" width="120"/>
+        <el-table-column prop="typeCn" :label="lp._resource.type" width="100"/>
         <el-table-column prop="title" :label="lp._resource.title"/>
         <el-table-column prop="name" :label="lp._resource.fileName"/>
         <el-table-column prop="version" :label="lp._resource.version" width="200"/>
