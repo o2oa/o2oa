@@ -4279,6 +4279,10 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							if (!fieldName) return false;
 							workData[fieldName] = (fieldType === "object" ? JSON.parse(fieldValue) : fieldValue);
 
+							if(fieldType === "number"){
+								workData[fieldName] = parseInt(fieldValue);
+							}
+
 							_self = this;
 							this.app.confirm("warn", e.node, "提示", "确认是否修改", 350, 120, function () {
 								if(_self.isCompletedWork){
