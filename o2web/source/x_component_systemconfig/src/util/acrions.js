@@ -144,28 +144,52 @@ async function dispatchComponentFile(file) {
     return result.data;
 }
 async function deployWebResource(data) {
-    var action = o2.Actions.load("x_program_center").ModuleAction;
+    var action = o2.Actions.load("x_program_center").DeployAction;
     const formData = new FormData();
     const file = data.file[0];
     formData.append('file', file);
     formData.append('fileName', file.name);
     formData.append('filePath', data.path);
-    const result = await action.dispatchResource(data.overwrite, formData, file);
+    formData.append('remark', data.remark);
+    formData.append('title', data.title);
+    formData.append('version', data.version);
+    const result = await action.deployWebResource(data.overwrite, formData, file);
     return result.data;
 }
 async function deployWarResource(data) {
-    var action = o2.Actions.load("x_program_center").CommandAction;
+    var action = o2.Actions.load("x_program_center").DeployAction;
     const formData = new FormData();
     const file = data.file[0];
     formData.append('file', file);
     formData.append('fileName', file.name);
+    formData.append('remark', data.remark);
+    formData.append('title', data.title);
+    formData.append('version', data.version);
     //formData.append('filePath', data.path);
-    const result = await action.upload(formData, file);
+    const result = await action.deployServerResource(formData, file);
+    return result.data;
+}
+async function 	deployO2Server(data) {
+    var action = o2.Actions.load("x_program_center").DeployAction;
+    const formData = new FormData();
+    const file = data.file[0];
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    formData.append('remark', data.remark);
+    formData.append('title', data.title);
+    formData.append('version', data.version);
+    //formData.append('filePath', data.path);
+    const result = await action.deployO2Server(formData, file);
     return result.data;
 }
 
 async function listDeployLog(page, size){
     return await o2.Actions.load("x_program_center").DeployAction.listPaging(page, size);
+}
+
+async function getDeployLogData(id){
+    const json = await o2.Actions.load("x_program_center").DeployAction.get(id);
+    return json.data;
 }
 
 function getPublicData(name){
@@ -324,7 +348,9 @@ export {
     dispatchComponentFile,
     deployWebResource,
     deployWarResource,
+    deployO2Server,
     listDeployLog,
+    getDeployLogData,
     getPublicData,
     clearPublicData,
     loadProcessApplication,

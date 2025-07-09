@@ -78,6 +78,8 @@ async function deploy(e) {
   // const data = await deployWebResource(deloyData.value);
   Promise.all(p).then(()=>{
     component.notice(lp._resource.deploySuccess, "success");
+    deloyData.value.title = '';
+    deloyData.value.remark = '';
   });
 }
 

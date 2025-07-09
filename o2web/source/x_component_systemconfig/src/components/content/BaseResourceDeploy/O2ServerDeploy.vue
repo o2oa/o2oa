@@ -1,54 +1,48 @@
 <template xmlns="">
   <div>
-    <div class="systemconfig_item_title">{{lp._resource.webResource}}</div>
-    <div class="systemconfig_item_info">{{lp._resource.webResourceInfo}}</div>
+    <div class="systemconfig_item_title">{{lp._resource.o2ServerResource}}</div>
+    <div class="systemconfig_item_info">{{lp._resource.o2ServerResourceInfo}}</div>
+    <div class="systemconfig_item_info" style="color:red;">{{lp._resource.o2ServerResourceNote}}</div>
 
-    <div style="padding: 20px 10px" v-if="general.deployResourceEnable">
+    <div style="padding: 20px 10px" v-if="general.deployWarEnable">
       <BaseUpload :label-style="labelStyle"
                   :label="lp._resource.upload"
-                  :warn="lp._resource.webUploadWarn"
+                  :warn="lp._resource.o2ServerUploadWarn"
+                  accept=".zip"
                   :upload-files="deloyData.file"
                   @upload="uploadFile"
                   multiple
                   @remove="removeFile"/>
-      <BaseRadio :label-style="labelStyle"
-                 :label="lp._resource.overwrite"
-                 :options="[{label: 'false', value: 'false', text: lp._resource.overwriteTrue}, {label: 'true', value: 'true', text: lp._resource.overwriteFalse}]"
-                 v-model:value="deloyData.overwrite"/>
 
-      <BaseInput :label-style="labelStyle" :label="lp._resource.deployPath" v-model:value="deloyData.path"/>
-      <div class="editorPathInfo">{{lp._resource.deployPathInfo}}</div>
-
-      <BaseInput :label-style="labelStyle" :label="lp._resource.title" v-model:value="deloyData.title"/>
+     <BaseInput :label-style="labelStyle" :label="lp._resource.title" v-model:value="deloyData.title"/>
       <div class="editorPathInfo">{{lp._resource.titleInfo}}</div>
 
       <BaseInput inputType="textarea" :label-style="labelStyle" :label="lp._resource.remark" v-model:value="deloyData.remark"/>
       <div class="editorPathInfo">{{lp._resource.remarkInfo}}</div>
 
       <BaseInput :label-style="labelStyle" :label="lp._resource.version" v-model:value="deloyData.version"/>
-      <div class="editorPathInfo">{{lp._resource.versionInfo}}</div>
+      <div class="editorPathInfo">{{lp._resource.o2VersionInfo}}</div>
 
-      <button class="mainColor_bg" @click="deploy($event)">{{lp._resource.webResource}}</button>
+      <button class="mainColor_bg" @click="deploy($event)">{{lp._resource.o2ServerResource}}</button>
     </div>
-    <div class="systemconfig_item_info" v-else v-html="lp._resource.notWebResource"></div>
 
+    <div class="systemconfig_item_info" v-else v-html="lp._resource.notServiceResource"></div>
   </div>
 </template>
 
 <script setup>
 import {ref} from 'vue';
 import {component, lp, layout} from '@o2oa/component';
-import {deployWebResource, getConfigData} from '@/util/acrions';
+import {deployO2Server, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
-import BaseRadio from '@/components/item/BaseRadio.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
 
 const deloyData = ref({
   file: [],
-  overwrite: 'false',
+  overwrite: 'true',
   path: '',
   title: '',
-  version: layout.config.version,
+  version: '',
   remark: ''
 });
 const labelStyle = {
@@ -63,7 +57,7 @@ function removeFile(file){
 }
 async function deploy(e) {
   if (!deloyData.value.file.length) {
-    component.notice(lp._resource.noDeployFile, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
+    component.notice(lp._resource.noO2ServerFile, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
   if (!deloyData.value.title.length) {
@@ -74,19 +68,20 @@ async function deploy(e) {
   deloyData.value.file.forEach((f)=>{
     const o = {
       file: [f],
-      overwrite: deloyData.value.overwrite,
-      path: deloyData.value.path,
       title: deloyData.value.title,
       version: deloyData.value.version,
       remark: deloyData.value.remark
+      // overwrite: deloyData.value.overwrite,
+      // path: deloyData.value.path
     }
-    p.push(deployWebResource(o));
+    p.push(deployO2Server(o));
   });
   // const data = await deployWebResource(deloyData.value);
   Promise.all(p).then(()=>{
+    component.notice(lp._resource.deploySuccess, "success");
     deloyData.value.title = '';
     deloyData.value.remark = '';
-    component.notice(lp._resource.deploySuccess, "success");
+    deloyData.value.version = '';
   });
 }
 
@@ -94,6 +89,7 @@ const general = ref({});
 getConfigData('general').then((data)=>{
   general.value = data;
 });
+
 
 </script>
 
