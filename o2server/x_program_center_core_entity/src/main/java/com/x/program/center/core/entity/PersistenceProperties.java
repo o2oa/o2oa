@@ -102,6 +102,13 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String TABLE = "CTE_INSTALL_LOG";
 	}
 
+	public static class DeployLog {
+		private DeployLog() {
+		}
+
+		public static final String TABLE = "CTE_DEPLOY_LOG";
+	}
+
 	public static class MPWeixinMenu {
 		private MPWeixinMenu() {
 		}
