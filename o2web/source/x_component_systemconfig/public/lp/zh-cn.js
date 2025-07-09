@@ -198,6 +198,11 @@ o2.xApplication.systemconfig.LP = {
         "webResourceInfo": "您可以在此处部署Web资源，上传静态资源文件或zip文件，它将被部署到系统的Web服务器，可以通过Http协议访问到。",
         "serviceResource": "部署自定义服务",
         "serviceResourceInfo": "您可以在此处部署您开发的自定义工程，上传编译后的jar包或者war包。部署后需要重启服务器。",
+        "deployLog": "部署日志",
+        "deployLogInfo": "展现web资源、自定义服务和升级o2服务器的部署日志。",
+        "o2ServerResource": "升级o2服务器",
+        "o2ServerResourceInfo": "您可以在此上传服务器安装包，升级O2服务器。",
+        "o2ServerResourceNote": "升级以后需要重启o2服务器才能生效！",
 
         "componentResource": "组件部署",
         "componentResourceInfo": "您自定义开发的O2OA组件，或从官方获取组件，都可以在此处部署。O2OA组件是名为“x_component_{组件名称}”的文件夹或zip文件。更多详细信息请查阅：<a href='https://www.o2oa.net/develop.html' target='_blank'>O2OA官方社区。</a>",
@@ -205,6 +210,7 @@ o2.xApplication.systemconfig.LP = {
         "upload": "上传资源",
         "webUploadWarn": "上传要部署的静态资源文件，zip文件会自动解压",
         "serviceUploadWarn": "上传要部署的jar包或者war包",
+        "o2ServerUploadWarn": "上传要部署的服务器安装zip包",
 
         "overwrite": "部署方式",
         "overwriteFalse": "删除后上传：删除同名文件和文件夹后上传。",
@@ -213,8 +219,39 @@ o2.xApplication.systemconfig.LP = {
         "deployPath": "部署路径",
         "deployPathInfo": "如果部署zip文件，路径可以为空；单个文件部署必须指定部署路径。如：/myWebResource/subPath",
 
+        "title": "标题",
+        "titleInfo": "本次部署的简要描述，必填。",
+
+        "remark": "更新描述",
+        "remarkInfo": "本次部署的详细描述。",
+        "noRemark": "未填写",
+
+        "version": "版本",
+        "versionInfo": "本次部署的程序的版本。",
+        "o2VersionInfo": "本次部署的服务器版本。",
+
+        "type": "类型",
+        "fileName": "部署文件",
+        "installPerson": "部署人员",
+        "installTime": "部署时间",
+        "logDetail": "日志详情",
+        "operations": "操作",
+        "detail": "详情",
+        "retry": "重试",
+        "loading": "加载中...",
+        "uploading": "正在部署资源，请耐心等候...",
+
         "noDeployFile": "请先选择要部署的资源文件",
+        "noDeployTitle": "请先填写本次部署的标题",
         "deploySuccess": "部署资源成功",
+        "deployFailure": "部署资源失败",
+        "deployNote": "部署完成，{success}个文件成功，{failure}个文件成功",
+        "noO2ServerFile": "请先选择要部署的服务器安装包(zip格式)",
+
+        "serverRes": "自定义服务",
+        "webRes": "Web资源",
+        "o2server": "o2服务器",
+
 
         "notWebResource": "<span style='color: red'>当前服务器不允许前端部署Web资源，您可以到服务器配置-服务器任务中开启此功能</span>",
         "notServiceResource": "<span style='color: red'>当前服务器不允许前端部署部署自定义服务，您可以到服务器配置-服务器任务中开启此功能</span>"

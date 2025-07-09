@@ -1,16 +1,16 @@
-<template xmlns="">
+<template>
   <div v-loading="loading" :element-loading-text="lp._resource.uploading">
-    <div class="systemconfig_item_title">{{lp._resource.serviceResource}}</div>
-    <div class="systemconfig_item_info">{{lp._resource.serviceResourceInfo}}</div>
+    <div class="systemconfig_item_title">{{lp._resource.o2ServerResource}}</div>
+    <div class="systemconfig_item_info">{{lp._resource.o2ServerResourceInfo}}</div>
+    <div class="systemconfig_item_info" style="color:red;">{{lp._resource.o2ServerResourceNote}}</div>
 
     <div style="padding: 20px 10px" v-if="general.deployWarEnable">
       <BaseUpload :label-style="labelStyle"
                   :label="lp._resource.upload"
-                  :warn="lp._resource.serviceUploadWarn"
-                  accept=".jar,.war"
+                  :warn="lp._resource.o2ServerUploadWarn"
+                  accept=".zip"
                   :upload-files="deloyData.file"
                   @upload="uploadFile"
-                  multiple
                   @remove="removeFile"/>
 
      <BaseInput :label-style="labelStyle" :label="lp._resource.title" v-model:value="deloyData.title"/>
@@ -20,9 +20,9 @@
       <div class="editorPathInfo">{{lp._resource.remarkInfo}}</div>
 
       <BaseInput :label-style="labelStyle" :label="lp._resource.version" v-model:value="deloyData.version"/>
-      <div class="editorPathInfo">{{lp._resource.versionInfo}}</div>
+      <div class="editorPathInfo">{{lp._resource.o2VersionInfo}}</div>
 
-      <button class="mainColor_bg" @click="deploy($event)">{{lp._resource.serviceResource}}</button>
+      <button class="mainColor_bg" @click="deploy($event)">{{lp._resource.o2ServerResource}}</button>
     </div>
 
     <div class="systemconfig_item_info" v-else v-html="lp._resource.notServiceResource"></div>
@@ -32,7 +32,7 @@
 <script setup>
 import {ref} from 'vue';
 import {component, lp, layout} from '@o2oa/component';
-import {deployWarResource, getConfigData} from '@/util/acrions';
+import {deployO2Server, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
 
@@ -43,7 +43,7 @@ const deloyData = ref({
   overwrite: 'true',
   path: '',
   title: '',
-  version: layout.config.version,
+  version: '',
   remark: ''
 });
 const labelStyle = {
@@ -58,47 +58,33 @@ function removeFile(file){
 }
 async function deploy(e) {
   if (!deloyData.value.file.length) {
-    component.notice(lp._resource.noDeployFile, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
+    component.notice(lp._resource.noO2ServerFile, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
   if (!deloyData.value.title.length) {
     component.notice(lp._resource.noDeployTitle, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
-  loading.value = true;
 
-  let successCount = 0;
-  let failureCount = 0;
-  const checkUpload = ()=>{
-    if( deloyData.value.file.length !== successCount + failureCount )return;
-    if( successCount === deloyData.value.file.length ){
-      component.notice(lp._resource.deploySuccess, "success");
-    }else if( failureCount === deloyData.value.file.length ){
-      component.notice(lp._resource.deployFailure, "error");
-    }else{
-      component.notice(
-          lp._resource.deployNote.replace('{success}', successCount).replace('{failure}', failureCount),
-          "error"
-      );
-    }
+  debugger;
+  const o = {
+    file: deloyData.value.file,
+    title: deloyData.value.title,
+    version: deloyData.value.version,
+    remark: deloyData.value.remark
+  }
+  loading.value = true;
+  deployO2Server(o, (json)=>{
+    console.log('deployO2Server success', json)
+    component.notice(lp._resource.deploySuccess, "success");
     deloyData.value.title = '';
     deloyData.value.remark = '';
+    deloyData.value.version = '';
     loading.value = false;
-  }
-  deloyData.value.file.forEach((f)=>{
-    const o = {
-      file: [f],
-      title: deloyData.value.title,
-      version: deloyData.value.version,
-      remark: deloyData.value.remark
-    }
-    deployWarResource(o, ()=>{
-      successCount++;
-      checkUpload();
-    }, function (){
-      failureCount++;
-      checkUpload();
-    });
+  }, (error)=>{
+    component.notice(lp._resource.deployFailure, "error");
+    console.log('deployO2Server failure', error);
+    loading.value = false;
   });
 }
 
