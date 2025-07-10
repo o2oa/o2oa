@@ -29,6 +29,7 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column prop="sequence" :label="lp._resource.sequence" width="70"/>
         <el-table-column prop="typeCn" :label="lp._resource.type" width="100"/>
         <el-table-column prop="title" :label="lp._resource.title"/>
         <el-table-column prop="name" :label="lp._resource.fileName"/>
@@ -59,10 +60,11 @@ const loadPaging = async () => {
 
   expandedRowKeys.value = [];
 
-  deployLogs.value = json.data.map(l=>({
+  deployLogs.value = json.data.map((l, i)=>({
     ...l,
+    sequence: (currentPage.value - 1) * size + i + 1,
     installPersonCn: l.installPerson.split('@')[0],
-    typeCn: lp._resource[l.type],
+    typeCn: lp._resource[l.type] || l.type,
     expandLoading: false,
     expandError: false,
     expandData: null
