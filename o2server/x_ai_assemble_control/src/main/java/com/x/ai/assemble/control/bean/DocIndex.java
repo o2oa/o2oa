@@ -28,6 +28,7 @@ public class DocIndex extends GsonPropertyObject {
     private Boolean catalogEnable = true;
     private Boolean searchEnable = true;
     private Boolean embedEnable = true;
+    private Boolean questionEnable = false;
 
     public String getCatalogId() {
         return catalogId;
@@ -131,5 +132,13 @@ public class DocIndex extends GsonPropertyObject {
 
     public void setEmbedEnable(Boolean embedEnable) {
         this.embedEnable = embedEnable;
+    }
+
+    public Boolean getQuestionEnable() {
+        return questionEnable;
+    }
+
+    public void setQuestionEnable(Boolean questionEnable) {
+        this.questionEnable = questionEnable;
     }
 }
