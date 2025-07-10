@@ -194,6 +194,7 @@ o2.xApplication.systemconfig.LP = {
         "componentDataError": "组件名称、组件路径和组件标题不能为空"
     },
     "_resource": {
+        "sequence": "序号",
         "webResource": "部署Web资源",
         "webResourceInfo": "您可以在此处部署Web资源，上传静态资源文件或zip文件，它将被部署到系统的Web服务器，可以通过Http协议访问到。",
         "serviceResource": "部署自定义服务",
