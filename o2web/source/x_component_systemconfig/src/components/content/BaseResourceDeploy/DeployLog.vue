@@ -64,7 +64,7 @@ const loadPaging = async () => {
     ...l,
     sequence: (currentPage.value - 1) * size + i + 1,
     installPersonCn: l.installPerson.split('@')[0],
-    typeCn: lp._resource[l.type],
+    typeCn: lp._resource[l.type] || l.type,
     expandLoading: false,
     expandError: false,
     expandData: null
