@@ -62,7 +62,7 @@ const loadPaging = async () => {
 
   deployLogs.value = json.data.map((l, i)=>({
     ...l,
-    sequence: (currentPage.value - 1) * 10 + i + 1,
+    sequence: (currentPage.value - 1) * size + i + 1,
     installPersonCn: l.installPerson.split('@')[0],
     typeCn: lp._resource[l.type],
     expandLoading: false,
