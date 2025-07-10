@@ -35,7 +35,8 @@ MWF.xApplication.AI.LP = {
 		"newmcp" : "新建MCP",
 		"mcp" : "MCP设置",
 		"model" : "模型设置",
-		"setting" : "对话设置"
+		"setting" : "对话设置",
+		"knowledge" : "知识库索引"
 	},
 	"copysuccess" : "已拷贝到剪切板",
 	"copyerror" : "无法复制文本",
@@ -92,5 +93,14 @@ MWF.xApplication.AI.LP = {
 		"addmcp" : "添加mcp参数",
 		"returntemplate" : "返回模板",
 		"script" : "执行脚本"
-	}
+	},
+	"knowledge" : {
+		"title" : "标题",
+		"category" : "分类",
+		"createPerson" : "创建者",
+		"createTime" : "创建时间",
+		"remove" : "删除"
+	},
+	"firstPage": "第一页",
+	"lastPage": "最后一页"
 };

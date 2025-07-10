@@ -1,0 +1,128 @@
+
+.contentTitle{
+    padding: 0px 20px;
+    height: 50px;
+}
+.contentList{
+    padding:20px;
+}
+.contentList::-webkit-scrollbar {
+    width: 8px;
+}
+.contentList::-webkit-scrollbar-track {
+    background-color: #e2dfdf;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius:2em;
+}
+.contentList::-webkit-scrollbar-thumb {
+    background-color: #d0d0d0;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius:2em;
+}
+.contentList table {
+    width:100%;
+    border-spacing: 0;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+}
+.contentList tr {
+    border-bottom: 1px solid #E6E6E6;
+}
+.contentList tr:hover {
+    background: #F7F7F7;
+}
+.contentList td {
+    height: 40px;
+    line-height: 40px;
+    color: #333333;
+    font-weight: 400;
+    text-align: left;
+    padding-left: 4px;
+}
+.toolBarList{
+    /*height: 40px;*/
+    padding: 0px 20px;
+    margin-bottom: 10px;
+}
+
+.contentBottom{
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.contentPageArea{
+    height: 60px;
+}
+.firstPage, .lastPage, .pageItem, .prevPage, .nextPage{
+    height: 24px;
+    width: 80px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    font-size: 12px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+}
+.firstPage{
+    float: left;
+}
+.lastPage {
+    float: right;
+    margin-left: 10px;
+}
+.prevPage{
+    float: left;
+    margin-left: 10px;
+    width: 24px;
+    font-size: 16x;
+    color: #999999;
+}
+.nextPage{
+    float: right;
+    margin-left: 10px;
+    width: 24px;
+    font-size: 16px;
+    color: #999999;
+}
+.pageNumberArea{
+    float: left;
+}
+.pageItem{
+    float: left;
+    width: 24px;
+    margin-left: 10px;
+}
+.contentTitleArea {
+    overflow: hidden;
+}
+.contentTitleArea table{
+    width:100%;
+    border-spacing: 0;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+.contentTitleArea table th{
+    height: 40px;
+    background: #F0F0F0;
+    color: #333333;
+    font-weight: 400;
+    text-align: left;
+    padding-left: 4px;
+}
+
+
+/*list*/
+.listItem{
+    background: #FFFFFF;
+    border-bottom: 1px solid #E6E6E6;
+    cursor: pointer;
+    overflow: hidden;
+}
+.listItem_over{
+    background: #F7F7F7;
+}
