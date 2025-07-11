@@ -397,18 +397,33 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
          * var texts = this.form.get('fieldId').getText(); //获取选中项的文本或数组
          */
         getText: function(){
-            var data = this._getBusinessData();
-            var options = this.json.$options || this.json.options || this.moduleSelectAG;
-            if( typeOf(options.then) === 'function' ){
-                return options.then(function(opt){
-                    var values = (o2.typeOf(data) !== "array") ? [data] : data;
-                    return this.__getOptionsText(opt, values);
-                });
+            var d = this.getTextData();
+            if( typeOf(d.then) === "function" ){
+                return d.then(function( d1 ){
+                    var texts = d1.text;
+                    var ts = (texts && texts.length) ? texts : [];
+                    return this.json.multiple ? ts : (ts[0] || "");
+                }.bind(this));
             }else{
-                var values = (o2.typeOf(data) !== "array") ? [data] : data;
-                return this.__getOptionsText(options, values);
+                var texts = d.text;
+                var ts = (texts && texts.length) ? texts : [];
+                return this.json.multiple ? ts : (ts[0] || "");
             }
         },
+
+        // getText: function(){
+        //     var data = this._getBusinessData();
+        //     var options = this.json.$options || this.json.options || this.moduleSelectAG;
+        //     if( typeOf(options.then) === 'function' ){
+        //         return options.then(function(opt){
+        //             var values = (o2.typeOf(data) !== "array") ? [data] : data;
+        //             return this.__getOptionsText(opt, values);
+        //         });
+        //     }else{
+        //         var values = (o2.typeOf(data) !== "array") ? [data] : data;
+        //         return this.__getOptionsText(options, values);
+        //     }
+        // },
 
         getExcelData: function(){
             var data = this.json[this.json.$id];
