@@ -231,9 +231,17 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var textList = [];
         var valueList = [];
         optItems.each(function (item) {
-            var tmps = item.split("|");
-            textList.push(tmps[0]);
-            valueList.push(tmps[1] || tmps[0]);
+            switch (o2.typeOf(item)){
+                case 'string':
+                    var tmps = item.split("|");
+                    textList.push(tmps[0]);
+                    valueList.push(tmps[1] || tmps[0]);
+                    break;
+                case 'object':
+                    textList.push(item.label || item.text);
+                    valueList.push(item.value);
+                    break;
+            }
         });
         return {textList: textList, valueList: valueList};
     },
