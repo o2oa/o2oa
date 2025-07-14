@@ -2091,9 +2091,11 @@ MWF.ProcessFlow.Processor.Org = new Class({
         } else if (values.length || oldValues.length) {
             change = true;
         }
-        var field = this.json.name && this.form.all[this.json.name];
-        if( !!field && ['OOOrg','Org'].contains(field.json.type) ){
-            field.setData(values);
+        if( this.form && this.form.all ){
+            var field = this.json.name && this.form.all[this.json.name];
+            if( !!field && ['OOOrg','Org'].contains(field.json.type) ){
+                field.setData(values);
+            }
         }
         this._setBusinessData(values);
         if (change) this.fireEvent("change");
