@@ -327,9 +327,6 @@ MWF.xApplication.Selector.Person = new Class({
                     "keydown": function(e){e.stopPropagation();}
                 }
             });
-            if (options.style && options.style.startsWith("v10")){
-
-            }
 
             this.contentNode = new Element("div", {
                 "styles": this.css.contentNode_embedded ? this.css.contentNode_embedded : this.css.contentNode
