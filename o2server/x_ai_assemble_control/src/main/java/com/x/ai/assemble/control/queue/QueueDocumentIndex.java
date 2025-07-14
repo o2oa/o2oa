@@ -63,6 +63,9 @@ public class QueueDocumentIndex extends AbstractQueue<String> {
 				docIndex.setReferenceCreateDateTime(document.getCreateTime());
 				docIndex.setReferenceCreatorPerson(document.getCreatorPerson());
 				docIndex.setReferenceCreatorUnit(document.getCreatorUnitName());
+				if(StringUtils.join(aiConfig.getQuestionsIndexAppList()).contains(document.getAppId())){
+					docIndex.setQuestionEnable(true);
+				}
 				List<String> permissionList = new ArrayList<>();
 				if(BooleanUtils.isNotTrue(document.getIsAllRead())) {
 					Set<String> set = new HashSet<>(document.getReadPersonList());

@@ -42,6 +42,15 @@ public class CmsDocumentIndexTask extends AbstractJob {
 					ThisApplication.queueDocumentIndex.send(docId);
 				}
 			}
+			LOGGER.info("定时索引文档到问答库-来源于内容管理应用：{}", StringUtils.join(config.getQuestionsIndexAppList()));
+			appIdList = config.getQuestionsIndexAppList().stream().map(o -> StringUtils.substringBefore(o, "|")).collect(
+					Collectors.toList());
+			for (String appId : appIdList) {
+				List<String> docIds = queryDocIds(appId);
+				for (String docId : docIds) {
+					ThisApplication.queueDocumentIndex.send(docId);
+				}
+			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
