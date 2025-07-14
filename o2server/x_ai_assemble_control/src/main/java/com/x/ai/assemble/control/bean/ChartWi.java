@@ -24,6 +24,8 @@ public class ChartWi extends GsonPropertyObject {
 
     private String person;
 
+    private String token;
+
     @FieldDescribe("ai模式：chat|rag|mcp.")
     private String generateType;
 
@@ -115,5 +117,13 @@ public class ChartWi extends GsonPropertyObject {
 
     public void setMaterialIdList(List<String> materialIdList) {
         this.materialIdList = materialIdList;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

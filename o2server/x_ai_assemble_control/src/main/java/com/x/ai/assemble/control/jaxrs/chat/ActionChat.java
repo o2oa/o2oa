@@ -77,6 +77,7 @@ public class ActionChat extends BaseAction {
             try {
                 Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
                 wi.setPerson(effectivePerson.getUnique());
+                wi.setToken(effectivePerson.getToken());
                 if (StringUtils.isNotBlank(wi.getInput())) {
                     AiConfig aiConfig = Business.getConfig();
                     if (BooleanUtils.isTrue(aiConfig.getO2AiEnable())
