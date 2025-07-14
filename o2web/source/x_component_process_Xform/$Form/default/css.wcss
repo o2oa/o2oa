@@ -1186,7 +1186,7 @@
         "position": "absolute",
         "left": "0",
         "bottom": "50px",
-        "z-index": 100,
+        "z-index": 301,
         "padding": "0px 20px",
         "border-top": "1px solid #dfdfdf",
     },
