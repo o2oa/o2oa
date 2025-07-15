@@ -154,7 +154,9 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         });
     },
     exportExcel: function (){
-        debugger;
+        MWF.require("MWF.widget.Mask", null, false);
+        this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+        this.mask.loadNode(this.app.content);
         var filterData = this.view.filterData || this.form.getResult();
         var p = o2.Actions.load('x_auditlog_assemble_control').AuditLogAction.toExcel(filterData);
         p.then(function (json) {
@@ -164,7 +166,12 @@ MWF.xApplication.ThreeMember.LogView = new Class({
             var a = new Element("a", {"href": uri, "target":"_blank"});
             a.click();
             a.destroy();
-        });
+            this.mask.hide();
+            this.mask = null;
+        }.bind(this)).catch(function (e) {
+            this.mask.hide();
+            this.mask = null;
+        }.bind(this));
     },
     loadView: function (filterData) {
         if (this.view) this.view.destroy();
