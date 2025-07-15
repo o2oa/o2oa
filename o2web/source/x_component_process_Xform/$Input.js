@@ -263,20 +263,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (!value) value = this._computeValue();
-		return value || "";
+        if (o2.typeOf(value)==="null") value = this._computeValue();
+		return value ?? "";
 	},
     _setValue: function(value){
-	    // if (value && value.isAG){
-	    //     var ag = o2.AG.all(value).then(function(v){
-	    //         if (o2.typeOf(v)=="array") v = v[0];
-        //         this.__setValue(v);
-        //     }.bind(this));
-        //     this.moduleValueAG = ag;
-	    //     ag.then(function(){
-        //         this.moduleValueAG = null;
-        //     }.bind(this));
-        // }else {
         if (!!value && o2.typeOf(value.then)=="function"){
             var p = Promise.resolve(value).then(function(v){
                 this.__setValue(v);
@@ -286,10 +276,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             this.moduleValueAG = null;
             this.__setValue(value);
         }
-
-            //this.__setValue(value);
-        // }
-
     },
     __setValue: function(value){
         this.moduleValueAG = null;
@@ -597,7 +583,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         if (flag){
             var n = this.getInputData();
             var v = (data.valueType==="value") ? n : n.length;
-            debugger;
             switch (data.operateor){
                 case "isnull":
                     if ((!v && v!==0) || (o2.typeOf(v)==="array" && !v.length)){

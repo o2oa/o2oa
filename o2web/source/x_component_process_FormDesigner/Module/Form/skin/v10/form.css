@@ -262,7 +262,7 @@
     float: none;
     height: unset !important;
     line-height: unset !important;
-    font-size: 0.875em !important;
+    /* font-size: 0.875em !important; */
     margin-right: 0 !important;
     font-weight: normal;
 }

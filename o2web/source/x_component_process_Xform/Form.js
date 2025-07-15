@@ -784,7 +784,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (callback) callback();
         } else {
             this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
-                debugger;
                 tools = json.filter( function (d) { return !d.hidden; } );
                 // this.json.multiTools = tools;
                 this.json.defaultTools = tools;

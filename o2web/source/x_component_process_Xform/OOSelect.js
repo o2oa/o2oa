@@ -111,6 +111,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
         }
     },
     _loadNodeEdit: function(){
+		debugger;
 		this._resetNodeEdit();
 		this.node.setAttribute('value', undefined);
 		this.node.removeAttribute("placeholder");
@@ -293,7 +294,6 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	// },
 
 	__setValue: function(value){
-		debugger;
 		this._setBusinessData(value);
 		this.node.value = value;
 		this.fieldModuleLoaded = true;

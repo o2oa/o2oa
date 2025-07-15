@@ -91,7 +91,6 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
         }.bind(this));
 	},
     doResult: function(data){
-        debugger;
         if (this.json.result === "script"){
             this.selectedData = data;
             return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";

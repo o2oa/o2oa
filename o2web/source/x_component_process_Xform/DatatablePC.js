@@ -678,7 +678,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return total;
 		},
 		formatCurrency: function( json, total ){
-			debugger;
 			var opt = {};
 			if( json.preset === 'currency' ){
 				opt.currency = json.currency;
