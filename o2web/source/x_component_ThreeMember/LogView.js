@@ -153,6 +153,26 @@ MWF.xApplication.ThreeMember.LogView = new Class({
             "overflow": "auto"
         });
     },
+    exportExcel: function (){
+        MWF.require("MWF.widget.Mask", null, false);
+        this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+        this.mask.loadNode(this.app.content);
+        var filterData = this.view.filterData || this.form.getResult();
+        var p = o2.Actions.load('x_auditlog_assemble_control').AuditLogAction.toExcel(filterData);
+        p.then(function (json) {
+            var action = o2.Actions.load('x_auditlog_assemble_control').AuditLogAction;
+            var uri = action.action.actions.excelResult.uri.replace('{flag}', json.data.id);
+            uri = o2.filterUrl( action.action.address+uri );
+            var a = new Element("a", {"href": uri, "target":"_blank"});
+            a.click();
+            a.destroy();
+            this.mask.hide();
+            this.mask = null;
+        }.bind(this)).catch(function (e) {
+            this.mask.hide();
+            this.mask = null;
+        }.bind(this));
+    },
     loadView: function (filterData) {
         if (this.view) this.view.destroy();
         this.contentNode.empty();
@@ -187,7 +207,6 @@ MWF.xApplication.ThreeMember.LogView = new Class({
                     lastPage: this.lp.lastPage
                 },
                 onPostLoad: function () {
-                    debugger;
                     this.setContentSize();
                 }.bind(this)
             }
@@ -347,7 +366,7 @@ MWF.xApplication.ThreeMember.LogView = new Class({
                             this.loadConfigView();
                         }.bind(this)
                     }
-                },
+                }
             }
         }, this, this.css);
         this.configForm.load();
@@ -371,11 +390,12 @@ MWF.xApplication.ThreeMember.LogView = new Class({
                 "    <td styles='filterTableValue' item='operation'></td>";
             }
             html +=  "<td styles='filterTableTitle' lable='startTime'></td>" +
-            "    <td styles='filterTableValue' item='startTime' style='width: 150px;'></td>" +
+            "    <td styles='filterTableValue' item='startTime' style='width: 180px;'></td>" +
             "    <td styles='filterTableTitle' lable='endTime'></td>" +
-            "    <td styles='filterTableValue' item='endTime' style='width: 150px;'></td>" +
+            "    <td styles='filterTableValue' item='endTime' style='width: 180px;'></td>" +
             "    <td styles='filterTableValue' item='action'></td>" +
             "    <td styles='filterTableValue' item='reset'></td>" +
+            "    <td styles='filterTableValue' item='exportExcel'></td>" +
             "</tr>" +
             "</table>";
         this.fileterNode.set("html", html);
@@ -452,6 +472,14 @@ MWF.xApplication.ThreeMember.LogView = new Class({
                         click: function () {
                             this.form.reset();
                             this.loadView();
+                        }.bind(this)
+                    }
+                },
+                exportExcel: {
+                    "value": lp.exportExcel, type: "button", className: "filterButtonGrey", event: {
+                        click: function () {
+                            this.exportExcel();
+                            // this.loadView();
                         }.bind(this)
                     }
                 },

@@ -1499,6 +1499,7 @@ MWFCalendar.EventTooltip = new Class({
         displayDelay : 300
     },
     _loadCustom : function( callback ){
+        this.node.style.setProperty('box-sizing', 'content-box', 'important');
         this.loadAttachment();
         this.loadButton();
         if(callback)callback();
