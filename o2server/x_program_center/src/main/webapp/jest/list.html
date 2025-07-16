@@ -72,6 +72,7 @@
 			entityMap.set("x_correlation_core_entity", "关联文档相关");
 			entityMap.set("x_file_core_entity", "云文件相关");
 			entityMap.set("x_general_core_entity","常用功能相关");
+			entityMap.set("x_ai_core_entity","AI大模型对接相关");
 			entityMap.set("x_hotpic_core_entity", "热点信息相关");
 			entityMap.set("x_jpush_core_entity", "极光推送");
 			entityMap.set("x_meeting_core_entity", "会议管理相关");
@@ -170,16 +171,19 @@
 			}).done(function(json) {
 				if (json.type == 'success') {
 					if (json.data) {
+						const baseUrl = window.location.protocol + "//" + window.location.host;
 						var str = '<table border="1" id = "apiTable" >';
                         str += '<tr><td colspan="3"><center id="title" style="font-size:32px; font-weight:bold;">O2OA Service API URL </center> </td></tr>';
 						$.each(json.data, function(index, o) {
 							str += '<tr>';
 							str += '<td>' + o.name + '</td>';
 							let classNames = o.className.split(".");
-							str += '<td>' + classNames[classNames.length-1] + '</td>';
+							let className = classNames[classNames.length-1];
+							str += '<td>' + className + '</td>';
 							str += '<td>';
 							$.each(o.urlList, function(i, url) {
-								url = url.replace(/(127.0.0.1)/g, window.location.hostname);
+								const appUrl = new URL(url), fullPath = appUrl.pathname;
+								url = baseUrl + fullPath;
 								str += '<a href="'+url+'" target="_blank">' + url + '</a><br/>';
 							});
 							str += '</td>';
