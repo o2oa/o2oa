@@ -1,5 +1,7 @@
 package com.x.program.init;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -17,6 +19,7 @@ import com.x.base.core.project.tools.ZipTools;
 import com.x.program.init.Missions.Mission;
 
 public class MissionRestore implements Mission {
+	private static final Logger logger = LoggerFactory.getLogger(MissionRestore.class);
 
 	private String stamp;
 
@@ -37,11 +40,15 @@ public class MissionRestore implements Mission {
 			messages.msg("executing");
 			Path path = Config.path_local_temp(true).resolve(getStamp() + ".zip");
 			if(!Files.exists(path)){
-				return;
+				path = Config.path_localSample(true).resolve(INIT_DATA_STAMP + ".zip");
+				if(!Files.exists(path)) {
+					return;
+				}
 			}
 			if (!ZipTools.isZipFile(path)) {
 				throw new ExceptionMissionExecute("file is not zip file format.");
 			}
+			logger.info("ready to init product data...");
 			Path unzipFolder = Config.path_local_temp(true).resolve(getStamp());
 			ZipTools.unZip(path.toFile(), null, unzipFolder.toFile(), true, StandardCharsets.UTF_8);
 			if ((null == Config.externalDataSources().enable())
