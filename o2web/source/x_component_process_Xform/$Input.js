@@ -263,7 +263,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (o2.typeOf(value)==="null") value = this._computeValue();
+        if (o2.typeOf(value)==="null" || value==='') value = this._computeValue();
 		return value ?? "";
 	},
     _setValue: function(value){

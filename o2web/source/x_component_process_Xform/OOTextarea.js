@@ -141,16 +141,20 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
         });
 
         this.node.addEventListener('invalid', (e)=>{
-            var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
-            const o = {
-                valueMissing: MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
-            }
-            //通过 e.detail 获取 验证有效性状态对象：ValidityState
-            for (const k in o){
-                if (e.detail[k]){
-                    if (o[k]){
-                        e.target.setCustomValidity(o[k]);
-                        break;
+            if (this.node._props.validity){
+                e.target.setCustomValidity(this.node._props.validity);
+            }else{
+                var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
+                const o = {
+                    valueMissing: MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
+                }
+                //通过 e.detail 获取 验证有效性状态对象：ValidityState
+                for (const k in o){
+                    if (e.detail[k]){
+                        if (o[k]){
+                            
+                            break;
+                        }
                     }
                 }
             }

@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.Button = MWF.APPButton =  new Class({
         // this.node.destroy();
         // this.node = button;
 
-        if (this.isReadable){
+        if (this.isReadable && this.isEditable){
             var button = this.node.getElement("button");
             if (!button) button = new Element("button");
                 button.inject(this.node, "after");
