@@ -38,6 +38,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         "elEvents": ["focus", "blur", "change"]
     },
     _queryLoaded: function(){
+        this._loadReadEditAbeld();
         var data = this._getBusinessData();
         if( data ){
             if( ["datetimerange"].contains(this.json.selectType) ) {

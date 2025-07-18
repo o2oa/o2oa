@@ -24,7 +24,6 @@ MWF.xApplication.Selector.FormStyle = new Class({
         var stylesUrl = this.options.stylesUrl ||  "../x_component_process_FormDesigner/Module/Form/skin/config.json";
         MWF.getJSON(stylesUrl,{
                 "onSuccess": function(json){
-                    debugger;
                     var subItemList = [];
                     Object.each(json, function(s, key){
                         if( s.mode.contains( this.options.mode ) ){

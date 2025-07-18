@@ -158,7 +158,12 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
         }
         if (this.node.getFirst()) this.node.getFirst().set("value", value || val);
         if (this.isReadonly()) {
-            this.node.set("text", value || val);
+            if (this.isReadable){
+                this.node.set("text", value || val);
+            }else{
+                this.node.set("text", '');
+            }
+            // this.node.set("text", value || val);
             this.loadSymboleRead()
         }
         this.moduleValueAG = null;

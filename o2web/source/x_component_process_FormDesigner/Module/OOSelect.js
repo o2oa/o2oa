@@ -18,6 +18,8 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 			this.node.setAttribute(name, this.json[name]);
 		}
 
+		this.node.setAttribute('readonly', 'true');
+
 		if (name==="showMode"){
 			if (this.json.showMode==="disabled"){
 				this.node.setAttribute("bgcolor", "#f3f3f3");

@@ -109,7 +109,6 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             });
             if( this.options.style === 'v10_mobile' ){
                 this.maskRelativeNode.get('mask').addEvent('click', function () {
-                    debugger;
                     if( this.selectedMode ){
                         this.switchSelectedMode();
                     }else{

@@ -9,7 +9,7 @@ Object.assign(o2.APP$Elinput.prototype, o2.APP$Input.prototype);
 
 Object.assign(o2.APP$Elinput.prototype, {
     isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead() );
+        return !!(!this.isEditable || this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead() );
     },
     reload: function(){
         if (this.vm) {
@@ -119,6 +119,7 @@ Object.assign(o2.APP$Elinput.prototype, {
         }
     },
     getValue: function(){
+        if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (value || value===false || value===0){

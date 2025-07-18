@@ -39,69 +39,9 @@ if( !MWF.CMS$Input_Process ){
             //var isCMS = layout.desktop.currentApp.options.name.toLowerCase().contains("cms");
             var isCMS = this.form.app.options.name.toLowerCase().contains("cms");
             if( isCMS ){
-                return this.validationConfigItem_CMS( routeName, data );
-            }else{
-                return this.validationConfigItem_Process( routeName, data );
+                data.decision = "publish";
             }
-        },
-        validationConfigItem_Process : MWF.CMS$Input_Process.validationConfigItem,
-        validationConfigItem_CMS: function(routeName, data){
-            var flag = (data.status=="all") ? true: ( routeName == "publish");
-            if (flag){
-                var n = this.getInputData();
-                var v = (data.valueType=="value") ? n : n.length;
-                switch (data.operateor){
-                    case "isnull":
-                        if (!v){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                    case "notnull":
-                        if (v){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                    case "gt":
-                        if (v>data.value){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                    case "lt":
-                        if (v<data.value){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                    case "equal":
-                        if (v==data.value){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                    case "neq":
-                        if (v!=data.value){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                    case "contain":
-                        if (v.indexOf(data.value)!=-1){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                    case "notcontain":
-                        if (v.indexOf(data.value)==-1){
-                            this.notValidationMode(data.prompt);
-                            return false;
-                        }
-                        break;
-                }
-            }
-            return true;
+            return MWF.CMS$Input_Process.validationConfigItem.apply(this, [routeName, data]);
         }
     });
 

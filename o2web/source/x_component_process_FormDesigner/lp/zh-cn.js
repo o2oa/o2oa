@@ -393,6 +393,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         oo_datetime: '日期框',
         oo_org: '人员',
         oo_pagination: '页码',
+        oo_currency: '货币',
 
         importer: '数据导入',
         readLog: '阅读记录',
@@ -407,6 +408,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     propertyTemplate: {
         base: '基本',
         event: '事件',
+        power: '权限',
         html: 'HTML',
         json: 'JSON',
         action: '操作',
@@ -581,6 +583,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         rangeByTime: '时间范围',
         rangeByOhter: '其他',
         enableDate: '有效日期',
+        enableHour: '有效小时',
+        enableMinute: '有效分钟',
+        enableSecond: '有效秒',
+        enableYear: '有效年',
+        enableMonth: '有效月',
         enableHours: '有效小时范围',
         enableMinutes: '有效分钟范围',
         enableSeconds: '有效秒范围',
@@ -597,6 +604,17 @@ MWF.xApplication.process.FormDesigner.LP = {
         digitsToSeparateNote: '每几个数位添加,分隔符，如千分位为每3位数添加分隔符，那么填3。',
         asyncMode: '异步模式',
         asyncLoad: '异步加载',
+
+        usePreset: '使用预设',
+        custom: '自定义',
+        currency: '货币',
+        prefixUse: '前缀使用',
+        isoCode: 'ISO编码',
+        symbol: '货币符号',
+        thousands: '千分位',
+        allowBlank: '允许空值',
+        disableNegative: '禁止负数',
+        round: '四舍五入',
 
         isReader: '作为内容管理读者',
         isAuther: '作为内容管理编辑者',
@@ -1398,6 +1416,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         step: '步长',
         step_strictly: '只允许输入步长的倍数',
         precision: '数值精度',
+        precision2: '小数点位数',
         controls: '控制按钮',
         controlsPosition: '按钮位置',
 
@@ -1626,16 +1645,29 @@ MWF.xApplication.process.FormDesigner.LP = {
         defaultParameters: '默认参数',
         useQuickSelect: '使用快速选择',
 
-        "showConfig": '可见配置',
-        "showConfigInfo": '设置此元素的可见范围，未设置时，任何情况都可见',
-        "showConfig_activity": "指定的活动可见",
-        "showConfig_org": "指定的人或组织可见",
-        "showConfig_script": "通过脚本指定可见范围",
-        "showActivity": "可见活动",
-        "showOrg": "人员组织",
-        "showScript": "可见脚本",
-        "showScriptInfo": '返回一个布尔值，true表示可见，false表示不可见'
+        "readConfig": '可读配置',
+        "readConfigInfo": '设置此元素的可读范围，如果未设置时，表示有权限查看此文档的用户都可读。注意：在判断当前元素是否可读时，会判断其父元素是否可读，如果父元素不可读，当前元素也不可读；如果父元素可读，再判断当前元素的可读配置。',
+        "readConfig_activity": "指定的活动可读",
+        "readConfig_org": "指定的人或组织可读",
+        "readConfig_script": "通过脚本判断可读",
+        "readActivity": "可见活动",
+        "readOrg": "人员组织",
+        "readScript": "可读脚本",
+        "readScriptInfo": '返回一个布尔值，true表示可读，false表示不可读',
+        "hideCannotRead": '隐藏不可读元素',
 
+        "editConfig": '编辑配置',
+        "editConfigInfo": '设置此元素的可编辑范围，如果未设置时，表示拥有此文档编辑权限的用户（一般是当前办理人），都可编辑此元素。注意：在判断当前元素是否可编辑时，会判断其父元素是否可编辑，如果父元素不可编辑，当前元素也不可编辑；如果父元素可编辑，再判断当前元素的可编辑配置。如果当前元素可编辑，那此元素一定可读。此时忽略可读配置。',
+        "editConfig_activity": "指定活动时可编辑",
+        "editConfig_org": "指定的人或组织可编辑",
+        "editConfig_script": "通过脚本判断可编辑",
+        "editActivity": "可编辑活动",
+        "editOrg": "人员组织",
+        "editScript": "可编辑脚本",
+        "editScriptInfo": '返回一个布尔值，true表示可编辑，false表示不可编辑',
+
+        "inherit": "继承父元素",
+        "currencyInvalidOption": '前缀,后缀,千分位,小数点不允许用正负号和数字'
     },
     smartbi: {
         nosetup: '请先安装SmartBI应用',
@@ -1722,4 +1754,58 @@ MWF.xApplication.process.FormDesigner.LP = {
         add: '新建',
         gotoApp: '打开所在应用',
     },
+    currency: {
+        CNY: '人民币',
+        JPY: '日元',
+        INR: '印度卢比',
+        KRW: '韩元',
+        SGD: '新加坡元',
+        THB: '泰铢',
+        MYR: '马来西亚林吉特',
+        PHP: '菲律宾比索',
+        VND: '越南盾',
+
+        // 特殊货币区域
+        HKD: '港元',
+        MOP: '澳门元',
+        TWD: '新台币',
+        AED: '阿联酋迪拉姆',
+        SAR: '沙特里亚尔',
+        TRY: '土耳其里拉',
+
+        // 欧洲货币
+        EUR: '欧元',
+        GBP: '英镑',
+        CHF: '瑞士法郎',
+        RUB: '俄罗斯卢布',
+        PLN: '波兰兹罗提',
+        NOK: '挪威克朗',
+        SEK: '瑞典克朗',
+        DKK: '丹麦克朗',
+        HUF: '匈牙利福林',
+
+        // 美洲货币
+        USD: '美元',
+        CAD: '加拿大元',
+        MXN: '墨西哥比索',
+        BRL: '巴西雷亚尔',
+        ARS: '阿根廷比索',
+        CLP: '智利比索',
+
+        // 大洋洲货币
+        AUD: '澳元',
+        NZD: '新西兰元',
+        PGK: '巴布亚新几内亚基那',
+        TOP: '汤加潘加',
+        WST: '萨摩亚塔拉',
+
+        // 非洲货币
+        ZAR: '南非兰特',
+        EGP: '埃及镑',
+        NGN: '尼日利亚奈拉',
+        KES: '肯尼亚先令',
+        GHS: '加纳塞地',
+        MAD: '摩洛哥迪拉姆',
+        TZS: '坦桑尼亚先令'
+    }
 };

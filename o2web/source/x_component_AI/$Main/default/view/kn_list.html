@@ -1,0 +1,32 @@
+<div>
+    {{if $.data.length}}
+    <table>
+        <colgroup>
+            <col width="40%">
+            <col width="15%">
+            <col width="10%">
+            <col width="10%">
+            <col width="10%">
+        </colgroup>
+        <tbody>
+        {{each $.data}}
+        <tr class="listItem">
+            <td style="text-align: left;"><span>{{$.title}}</span></td>
+            <td style="text-align: left;"><span>{{$.catalogName}}</span></td>
+            <td style="text-align: left;"><span>{{$.createPerson}}</span></td>
+            <td style="text-align: left;"><span>{{$.referenceCreateDateTime}}</span></td>
+            <td style="text-align: left;"><oo-button data-o2-events="click:remove:{{$.referenceId}}">{{$._.lp.knowledge.remove}}</oo-button></td>
+        </tr>
+        {{end each}}
+        </tbody>
+    </table>
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            no index
+        </div>
+    </div>
+    {{end if}}
+</div>

@@ -44,6 +44,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
         this.loadIdentitys();
     },
     loadIdentitys: function(){
+        debugger;
         if (this.options.names){
             if( this.options.types && this.options.types.length ){
                 this.loadOrgWidget( this.node );
@@ -82,35 +83,116 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                         var data = (typeOf(name)==="string") ? {"name": name, "id": name}: name;
                         MWF.require("MWF.widget.O2Identity", function(){
                             var type = this.options.type.toLowerCase();
-                            if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(data, this.node));
-                            if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(data, this.node));
-                            if (type==="group") this.identitys.push(new MWF.widget.O2Group(data, this.node));
-                            if (type==="role") this.identitys.push(new MWF.widget.O2Role(data, this.node));
-                            if (type==="person") this.identitys.push(new MWF.widget.O2Person(data, this.node));
 
-                            if (type==="application") this.identitys.push(new MWF.widget.O2Application(data, this.node));
-                            if (type==="process") this.identitys.push(new MWF.widget.O2Process(data, this.node));
-                            if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
-                            if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
-                            if (type==="view") this.identitys.push(new MWF.widget.O2View(data, this.node));
-                            if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(data, this.node));
-                            if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(data, this.node));
-                            if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(data, this.node));
-                            if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(data, this.node));
-                            if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(data, this.node));
-                            if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(data, this.node));
-                            if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(data, this.node));
-                            if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(data, this.node));
-                            if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(data, this.node));
-                            if (type==="portal") this.identitys.push(new MWF.widget.O2Portal(data, this.node));
+                            switch (type) {
+                                case "identity":
+                                    this.identitys.push(new MWF.widget.O2Identity(data, this.node));
+                                    break;
+                                case "unit":
+                                    this.identitys.push(new MWF.widget.O2Unit(data, this.node));
+                                    break;
+                                case "group":
+                                    this.identitys.push(new MWF.widget.O2Group(data, this.node));
+                                    break;
+                                case "role":
+                                    this.identitys.push(new MWF.widget.O2Role(data, this.node));
+                                    break;
+                                case "person":
+                                    this.identitys.push(new MWF.widget.O2Person(data, this.node));
+                                    break;
+                                case "application":
+                                    this.identitys.push(new MWF.widget.O2Application(data, this.node));
+                                    break;
+                                case "process":
+                                    this.identitys.push(new MWF.widget.O2Process(data, this.node));
+                                    break;
+                                case "formfield":
+                                case "cmsformfield":
+                                    this.identitys.push(new MWF.widget.O2FormField(data, this.node));
+                                    break;
+                                case "view":
+                                    this.identitys.push(new MWF.widget.O2View(data, this.node));
+                                    break;
+                                case "cmsview":
+                                    this.identitys.push(new MWF.widget.O2CMSView(data, this.node));
+                                    break;
+                                case "queryview":
+                                    this.identitys.push(new MWF.widget.O2QueryView(data, this.node));
+                                    break;
+                                case "querystatement":
+                                    this.identitys.push(new MWF.widget.O2QueryStatement(data, this.node));
+                                    break;
+                                case "querystat":
+                                    this.identitys.push(new MWF.widget.O2QueryStat(data, this.node));
+                                    break;
+                                case "querytable":
+                                    this.identitys.push(new MWF.widget.O2QueryTable(data, this.node));
+                                    break;
+                                case "queryimportmodel":
+                                    this.identitys.push(new MWF.widget.O2QueryImportModel(data, this.node));
+                                    break;
+                                case "dutyname":
+                                    this.identitys.push(new MWF.widget.O2Duty(data, this.node));
+                                    break;
+                                case "cmsapplication":
+                                    this.identitys.push(new MWF.widget.O2CMSApplication(data, this.node));
+                                    break;
+                                case "cmscategory":
+                                    this.identitys.push(new MWF.widget.O2CMSCategory(data, this.node));
+                                    break;
+                                case "portal":
+                                    this.identitys.push(new MWF.widget.O2Portal(data, this.node));
+                                    break;
+                                case "portalfile":
+                                case "processfile":
+                                case "cmsfile":
+                                    this.identitys.push(new MWF.widget.O2File(data, this.node));
+                                    break;
+                                case "dictionary":
+                                    this.identitys.push(new MWF.widget.O2Dictionary(data, this.node));
+                                    break;
+                                case "script":
+                                    this.identitys.push(new MWF.widget.O2Script(data, this.node));
+                                    break;
+                                case "formstyle":
+                                    this.identitys.push(new MWF.widget.O2FormStyle(data, this.node));
+                                    break;
+                                case "processactivity":
+                                    this.identitys.push(new MWF.widget.O2ProcessActivity(data, this.node, {"style": "xform"}));
+                                    break;
+                                default:
+                                    this.identitys.push(new MWF.widget.O2Other(data, this.node));
+                            }
 
-                            if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
-                            if (type==="processfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
-                            if (type==="cmsfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
+                            // if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(data, this.node));
+                            // if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(data, this.node));
+                            // if (type==="group") this.identitys.push(new MWF.widget.O2Group(data, this.node));
+                            // if (type==="role") this.identitys.push(new MWF.widget.O2Role(data, this.node));
+                            // if (type==="person") this.identitys.push(new MWF.widget.O2Person(data, this.node));
 
-                            if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(data, this.node));
-                            if (type==="script") this.identitys.push(new MWF.widget.O2Script(data, this.node));
-                            if (type==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(data, this.node));
+                            // if (type==="application") this.identitys.push(new MWF.widget.O2Application(data, this.node));
+                            // if (type==="process") this.identitys.push(new MWF.widget.O2Process(data, this.node));
+                            // if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
+                            // if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
+                            // if (type==="view") this.identitys.push(new MWF.widget.O2View(data, this.node));
+                            // if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(data, this.node));
+                            // if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(data, this.node));
+                            // if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(data, this.node));
+                            // if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(data, this.node));
+                            // if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(data, this.node));
+                            // if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(data, this.node));
+                            // if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(data, this.node));
+                            // if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(data, this.node));
+                            // if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(data, this.node));
+                            // if (type==="portal") this.identitys.push(new MWF.widget.O2Portal(data, this.node));
+
+                            // if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
+                            // if (type==="processfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
+                            // if (type==="cmsfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
+
+                            // if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(data, this.node));
+                            // if (type==="script") this.identitys.push(new MWF.widget.O2Script(data, this.node));
+                            // if (type==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(data, this.node));
                         }.bind(this));
                     }
                 }.bind(this));
@@ -162,7 +244,6 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
     createAddNode: function(){
         this.addNode = new Element("div", {"styles": this.css.addPersonNode}).inject(this.node, "before");
         this.addNode.addEvent("click", function(e){
-            debugger;
 
             var include = [];
             if( this.options.type.toLowerCase()==="formfield" ){
@@ -193,7 +274,6 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                 "isImage": this.options.isImage,
                 "include" : include,
                 "onComplete": function(items){
-                    debugger;
                     if( typeOf(this.options.validFun)==="function" && !this.options.validFun( items ) ){
                         return;
                     }
@@ -207,35 +287,116 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             }));
                         }else{
                             items.each(function(item){
-                                if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(item.data, this.node));
-                                if (type==="person") this.identitys.push(new MWF.widget.O2Person(item.data, this.node));
-                                if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(item.data, this.node));
-                                if (type==="group") this.identitys.push(new MWF.widget.O2Group(item.data, this.node));
-                                if (type==="role") this.identitys.push(new MWF.widget.O2Role(item.data, this.node));
+                                switch (type) {
+                                    case "identity":
+                                        this.identitys.push(new MWF.widget.O2Identity(item.data, this.node));
+                                        break;
+                                    case "person":
+                                        this.identitys.push(new MWF.widget.O2Person(item.data, this.node));
+                                        break;
+                                    case "unit":
+                                        this.identitys.push(new MWF.widget.O2Unit(item.data, this.node));
+                                        break;
+                                    case "group":
+                                        this.identitys.push(new MWF.widget.O2Group(item.data, this.node));
+                                        break;
+                                    case "role":
+                                        this.identitys.push(new MWF.widget.O2Role(item.data, this.node));
+                                        break;
+                                    case "application":
+                                        this.identitys.push(new MWF.widget.O2Application(item.data, this.node));
+                                        break;
+                                    case "process":
+                                        this.identitys.push(new MWF.widget.O2Process(item.data, this.node));
+                                        break;
+                                    case "cmsapplication":
+                                        this.identitys.push(new MWF.widget.O2CMSApplication(item.data, this.node));
+                                        break;
+                                    case "cmscategory":
+                                        this.identitys.push(new MWF.widget.O2CMSCategory(item.data, this.node));
+                                        break;
+                                    case "portal":
+                                        this.identitys.push(new MWF.widget.O2Portal(item.data, this.node));
+                                        break;
+                                    case "formfield":
+                                        this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
+                                        break;
+                                    case "cmsformfield":
+                                        this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
+                                        break;
+                                    case "view":
+                                        this.identitys.push(new MWF.widget.O2View(item.data, this.node));
+                                        break;
+                                    case "cmsview":
+                                        this.identitys.push(new MWF.widget.O2CMSView(item.data, this.node));
+                                        break;
+                                    case "queryview":
+                                        this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));
+                                        break;
+                                    case "querystatement":
+                                        this.identitys.push(new MWF.widget.O2QueryStatement(item.data, this.node));
+                                        break;
+                                    case "querystat":
+                                        this.identitys.push(new MWF.widget.O2QueryStat(item.data, this.node));
+                                        break;
+                                    case "querytable":
+                                        this.identitys.push(new MWF.widget.O2QueryTable(item.data, this.node));
+                                        break;
+                                    case "queryimportmodel":
+                                        this.identitys.push(new MWF.widget.O2QueryImportModel(item.data, this.node));
+                                        break;
+                                    case "dutyname":
+                                        this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
+                                        break;
+                                    case "portalfile":
+                                    case "processfile":
+                                    case "cmsfile":
+                                        this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+                                        break;
+                                    case "dictionary":
+                                        this.identitys.push(new MWF.widget.O2Dictionary(item.data, this.node));
+                                        break;
+                                    case "script":
+                                        this.identitys.push(new MWF.widget.O2Script(item.data, this.node));
+                                        break;
+                                    case "formstyle":
+                                        this.identitys.push(new MWF.widget.O2FormStyle(item.data, this.node));
+                                        break;
+                                    case "processactivity":
+                                        this.identitys.push(new MWF.widget.O2ProcessActivity(item.data, this.node, {"style": "xform"}));
+                                        break;
+                                    default:
+                                        this.identitys.push(new MWF.widget.O2Other(item.data, this.node));
+                                }
+                                // if (type==="identity") this.identitys.push(new MWF.widget.O2Identity(item.data, this.node));
+                                // if (type==="person") this.identitys.push(new MWF.widget.O2Person(item.data, this.node));
+                                // if (type==="unit") this.identitys.push(new MWF.widget.O2Unit(item.data, this.node));
+                                // if (type==="group") this.identitys.push(new MWF.widget.O2Group(item.data, this.node));
+                                // if (type==="role") this.identitys.push(new MWF.widget.O2Role(item.data, this.node));
 
-                                if (type==="application") this.identitys.push(new MWF.widget.O2Application(item.data, this.node));
-                                if (type==="process") this.identitys.push(new MWF.widget.O2Process(item.data, this.node));
-                                if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(item.data, this.node));
-                                if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(item.data, this.node));
-                                if (type==="portal") this.identitys.push(new MWF.widget.O2Portal(item.data, this.node));
+                                // if (type==="application") this.identitys.push(new MWF.widget.O2Application(item.data, this.node));
+                                // if (type==="process") this.identitys.push(new MWF.widget.O2Process(item.data, this.node));
+                                // if (type==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(item.data, this.node));
+                                // if (type==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(item.data, this.node));
+                                // if (type==="portal") this.identitys.push(new MWF.widget.O2Portal(item.data, this.node));
 
-                                if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
-                                if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
-                                if (type==="view") this.identitys.push(new MWF.widget.O2View(item.data, this.node));
-                                if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(item.data, this.node));
-                                if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));
-                                if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(item.data, this.node));
-                                if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(item.data, this.node));
-                                if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(item.data, this.node));
-                                if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(item.data, this.node));
-                                if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
-                                if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
-                                if (type==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
-                                if (type==="cmsfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+                                // if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
+                                // if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
+                                // if (type==="view") this.identitys.push(new MWF.widget.O2View(item.data, this.node));
+                                // if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(item.data, this.node));
+                                // if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));
+                                // if (type==="querystatement") this.identitys.push(new MWF.widget.O2QueryStatement(item.data, this.node));
+                                // if (type==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(item.data, this.node));
+                                // if (type==="querytable") this.identitys.push(new MWF.widget.O2QueryTable(item.data, this.node));
+                                // if (type==="queryimportmodel") this.identitys.push(new MWF.widget.O2QueryImportModel(item.data, this.node));
+                                // if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
+                                // if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+                                // if (type==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+                                // if (type==="cmsfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
 
-                                if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(item.data, this.node));
-                                if (type==="script") this.identitys.push(new MWF.widget.O2Script(item.data, this.node));
-                                if (type==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(item.data, this.node));
+                                // if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(item.data, this.node));
+                                // if (type==="script") this.identitys.push(new MWF.widget.O2Script(item.data, this.node));
+                                // if (type==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(item.data, this.node));
                             }.bind(this));
                             if (type==="duty") {
                                 items.each(function(item){

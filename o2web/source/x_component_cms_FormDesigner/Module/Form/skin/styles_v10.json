@@ -369,6 +369,22 @@
       "view-style": "background-color:#f7f7f7"
     }
   },
+  "OOCurrency": {
+    "styles": {},
+    "properties": {
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+      "label-Align": "right",
+      "view-style": "background-color:#f7f7f7"
+    }
+  },
+  "OOAddress": {
+    "styles": {},
+    "properties": {
+      "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+      "label-Align": "right",
+      "view-style": "background-color:#f7f7f7"
+    }
+  },
   "OOOrg": {
     "styles": {},
     "properties": {

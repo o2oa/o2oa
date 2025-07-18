@@ -129,15 +129,29 @@ MWF.xDesktop.requireApp("process.Xform", "OOSelect", null, false);
 MWF.xApplication.cms.Xform.OOSelect = MWF.CMSOOSelect =  new Class({
     Extends: MWF.APPOOSelect
 });
+MWF.xDesktop.requireApp("process.Xform", "OOAddress", null, false);
+MWF.xApplication.cms.Xform.OOAddress = MWF.CMSOOAddress =  new Class({
+    Extends: MWF.APPOOAddress
+});
+
 
 MWF.xDesktop.requireApp("process.Xform", "OOOrg", null, false);
 MWF.xApplication.cms.Xform.OOOrg = MWF.CMSOOOrg =  new Class({
     Extends: MWF.APPOOOrg
 });
 
+MWF.xDesktop.requireApp("process.Xform", "OOCurrency", null, false);
+MWF.xApplication.cms.Xform.OOCurrency = MWF.CMSOOCurrency =  new Class({
+    Extends: MWF.APPOOCurrency
+});
+
 MWF.xDesktop.requireApp("process.Xform", "OOTextarea", null, false);
 MWF.xApplication.cms.Xform.OOTextarea = MWF.CMSOOTextarea =  new Class({
     Extends: MWF.APPOOTextarea
+});
+MWF.xDesktop.requireApp("process.Xform", "OOPagination", null, false);
+MWF.xApplication.cms.Xform.OOPagination = MWF.CMSOOPagination =  new Class({
+    Extends: MWF.APPOOPagination
 });
 
 MWF.xDesktop.requireApp("process.Xform", "Codeeditor", null, false);

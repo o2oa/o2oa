@@ -1,5 +1,19 @@
 package com.x.server.console;
 
+import com.google.common.collect.ImmutableList;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.WebServers;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
+import com.x.base.core.project.tools.ZipTools;
+import com.x.base.core.project.x_base_core_project;
+import com.x.server.console.command.Commands;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,36 +33,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.quickstart.QuickStartWebApp;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.gzip.GzipHandler;
-
-import com.google.common.collect.ImmutableList;
-import com.x.base.core.project.x_base_core_project;
-import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.WebServers;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.ZipTools;
-import com.x.server.console.server.Servers;
 
 public class NodeAgent extends Thread {
 
@@ -58,11 +53,9 @@ public class NodeAgent extends Thread {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NodeAgent.class);
 
-	private static ReentrantLock lock = new ReentrantLock();
+	private static final ReentrantLock lock = new ReentrantLock();
 
 	public static final Pattern redeploy_pattern = Pattern.compile("^redeploy:(.+)$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern uninstall_pattern = Pattern.compile("^uninstall:(.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern syncFile_pattern = Pattern.compile("^syncFile:(.+)$", Pattern.CASE_INSENSITIVE);
 
@@ -147,56 +140,31 @@ public class NodeAgent extends Thread {
 
 								}
 
-								matcher = uninstall_pattern.matcher(commandObject.getCommand());
-								if (matcher.find()) {
-									String strCommand = commandObject.getCommand();
-									strCommand = strCommand.trim();
-									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
-									LOGGER.info("收接到命令:" + strCommand);
-									String filename = dis.readUTF();
-									File tempFile = null;
-									switch (strCommand) {
-									case "customWar":
-										tempFile = Config.dir_custom();
-										break;
-									// case "customJar":
-									default:
-										tempFile = Config.dir_custom_jars();
-										break;
-									}
-									LOGGER.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
-									// File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
-									filename = filename.substring(0, filename.indexOf("."));
-									// uninstall
-									boolean result = this.customWarUninstall(filename);
-									LOGGER.info("uninstall:" + result);
-									continue;
-								}
-
 								matcher = redeploy_pattern.matcher(commandObject.getCommand());
 								if (matcher.find()) {
 									String strCommand = commandObject.getCommand().trim();
 									strCommand = StringUtils.substringAfter(strCommand, ":");
 									LOGGER.info("收接到命令:" + strCommand);
 									String filename = dis.readUTF();
-
-									byte[] bytes;
-									try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+									FileUtils.forceMkdir(Config.dir_local_temp());
+									File tempFile = new File(Config.dir_local_temp(), filename);
+									try (FileOutputStream bos = new FileOutputStream(tempFile)) {
 										byte[] onceBytes = new byte[1024];
-										int length = 0;
+										int length;
 										while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
 											bos.write(onceBytes, 0, length);
 											bos.flush();
 										}
-										bytes = bos.toByteArray();
 									}
 
 									filename = filename.substring(0, filename.lastIndexOf("."));
 									// 部署
-									String result = this.redeploy(strCommand, filename, bytes, true);
+									String result = this.redeploy(strCommand, filename, tempFile);
 									LOGGER.info("部署:" + result);
+									dos.writeUTF(result);
+									dos.flush();
+									FileUtils.forceDelete(tempFile);
 									continue;
-
 								}
 
 								matcher = upload_resource_pattern.matcher(commandObject.getCommand());
@@ -257,17 +225,17 @@ public class NodeAgent extends Thread {
 					} catch (SocketException se) {
 						LOGGER.debug("nodeAgent is closed:{}.", se.getMessage());
 					} catch (Exception e) {
-						e.printStackTrace();
+						LOGGER.error(e);
 					}
 				}
 				try {
-					Thread.sleep(2000);
+					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 		} finally {
 			if (serverSocket != null) {
 				try {
@@ -399,9 +367,7 @@ public class NodeAgent extends Thread {
 					dist = new File(dist, filePath);
 					FileTools.forceMkdir(dist);
 					File file = new File(dist, fileName);
-					if (file.exists()) {
-						file.delete();
-					}
+					Files.deleteIfExists(file.toPath());
 					FileUtils.writeByteArrayToFile(file, bytes);
 					LOGGER.print("upload resource {} success!", fileName);
 				} else {
@@ -418,132 +384,72 @@ public class NodeAgent extends Thread {
 		return result;
 	}
 
-	private String redeploy(String type, String name, byte[] bytes, boolean rebootApp) {
+	private String redeploy(String type, String name, File tempFile) {
 		String result = "success";
 		try {
 			LOGGER.print("redeploy:{}.", name);
 			switch (type) {
 			case "storeWar":
-				storeWar(name, bytes);
+				storeWar(name, tempFile);
 				break;
 			case "storeJar":
-				storeJar(name, bytes);
+				storeJar(name, tempFile);
 				break;
 			case "customWar":
-				customWar(name, bytes, rebootApp);
+				customWar(name, tempFile);
 				break;
 			case "customJar":
-				customJar(name, bytes, rebootApp);
+				customJar(name, tempFile);
 				break;
 			case "customZip":
-				customZip(name, bytes, rebootApp);
+				customZip(name, tempFile);
+				break;
+			case "serverZip":
+				serverZip(name, tempFile);
 				break;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 			result = e.getMessage();
 		}
 		return result;
 	}
 
-	private void storeWar(String simpleName, byte[] bytes) throws Exception {
+	private void storeWar(String simpleName, File tempFile) throws Exception {
 		File war = new File(Config.dir_store(), simpleName + ".war");
-		FileUtils.writeByteArrayToFile(war, bytes);
+		FileUtils.copyFile(tempFile, war);
 	}
 
-	private void storeJar(String simpleName, byte[] bytes) throws Exception {
+	private void storeJar(String simpleName, File tempFile) throws Exception {
 		File jar = new File(Config.dir_store_jars(true), simpleName + ".jar");
-		FileUtils.writeByteArrayToFile(jar, bytes, false);
-
+		FileUtils.copyFile(tempFile, jar);
 	}
 
-	private boolean customWarUninstall(String simpleName) throws Exception {
-		boolean stop = false;
+	private void customWar(String simpleName, File tempFile) throws Exception {
 		File war = new File(Config.dir_custom(true), simpleName + ".war");
-		// File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
-		if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.getApplicationServer().getHandler();
-			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-			for (Handler handler : hanlderList.getHandlers()) {
-				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
-					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (StringUtils.equals("/" + simpleName, app.getContextPath())) {
-						app.stop();
-						app.destroy();
-						stop = true;
-						war.delete();
-						LOGGER.print("{} need stop.", app.getDisplayName());
-					}
-				}
-			}
-		}
-		return stop;
+		FileUtils.copyFile(tempFile, war);
 	}
 
-	private void customWar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
-		File war = new File(Config.dir_custom(true), simpleName + ".war");
-		FileUtils.writeByteArrayToFile(war, bytes, false);
-	}
-
-//	private void customWarPublish(String name) throws Exception {
-//		File war = new File(Config.dir_custom(), name + ".war");
-//		File dir = new File(Config.dir_servers_applicationServer_work(), name);
-//		if (war.exists()) {
-//			modified(war, dir);
-//			String className = contextParamProject(dir);
-//			URLClassLoader classLoader = new URLClassLoader(
-//					new URL[] { new File(dir, "WEB-INF/classes").toURI().toURL() });
-//			Class<?> cls = classLoader.loadClass(className);
-//			QuickStartWebApp webApp = new QuickStartWebApp();
-//			webApp.setAutoPreconfigure(false);
-//			webApp.setDisplayName(name);
-//			webApp.setContextPath("/" + name);
-//			webApp.setResourceBase(dir.getAbsolutePath());
-//			webApp.setDescriptor(dir + "/WEB-INF/web.xml");
-//			webApp.setExtraClasspath(calculateExtraClassPath(cls));
-//			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-//			webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
-//			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-//
-//			/* stat */
-//			if (BooleanUtils.isTrue(Config.currentNode().getApplication().getStatEnable())) {
-//				FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-//				statFilterHolder.setInitParameter("exclusions",
-//						Config.currentNode().getApplication().getStatExclusions());
-//				webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
-//				ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
-//				statServletHolder.setInitParameter("sessionStatEnable", "false");
-//				webApp.addServlet(statServletHolder, "/druid/*");
-//			}
-//			/* stat end */
-//			logger.print("addHandler {} ", webApp.getDisplayName());
-//
-//			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
-//			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
-//			hanlderList.addHandler(webApp);
-//			webApp.stop();
-//			logger.print("{} need restart because {} redeployed.", webApp.getDisplayName(), name);
-//			webApp.start();
-//		}
-//	}
-
-	private void customJar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
+	private void customJar(String simpleName, File tempFile) throws Exception {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
-		FileUtils.writeByteArrayToFile(jar, bytes, false);
+		FileUtils.copyFile(tempFile, jar);
 	}
 
-	private void customZip(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
+	private void customZip(String simpleName, File zipFile) throws Exception {
 		LOGGER.print("start deploy customZip app {} ", simpleName);
-		File tempFile = new File(Config.base(), "local/temp/redeploy");
-		FileTools.forceMkdir(tempFile);
-		FileUtils.cleanDirectory(tempFile);
-
-		File zipFile = new File(tempFile.getAbsolutePath(), simpleName + ".zip");
-		FileUtils.writeByteArrayToFile(zipFile, bytes);
 		File dist = Config.dir_custom(true);
 		List<String> subs = new ArrayList<>();
 		ZipTools.unZip(zipFile, subs, dist, false, null);
-		FileUtils.cleanDirectory(tempFile);
+	}
+
+	private void serverZip(String simpleName, File tempFile) throws Exception {
+		LOGGER.print("start deploy serverZip {} ", simpleName);
+		File upFile = new File(Config.base(), "local/temp/deploy");
+		FileTools.forceMkdir(upFile);
+
+		File zipFile = new File(upFile.getAbsolutePath(), simpleName + ".zip");
+		FileUtils.copyFile(tempFile, zipFile);
+		Commands.execute("ctl -uf " + zipFile.getAbsolutePath());
 	}
 
 	protected static String calculateExtraClassPath(Class<?> cls, Path... paths) throws Exception {

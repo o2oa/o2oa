@@ -55,7 +55,7 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
             this.node.setAttribute('view-style', '');
         }
 
-        if (!this.isReadonly()){
+        if (!this.isReadonly() && this.isEditable){
             if (this.json.showMode === 'disabled') {
                 this.node.setAttribute('disabled', true);
             } else if (this.json.showMode === 'read') {
@@ -100,6 +100,25 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
         this.node.addEventListener('validity', (e) => {
             if (this.validationText) {
                 e.target.setCustomValidity(this.validationText);
+            }
+        });
+        this.node.addEventListener('invalid', (e)=>{
+            if (this.node._props.validity){
+                e.target.setCustomValidity(this.node._props.validity);
+            }else{
+                var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
+                const o = {
+                    valueMissing: MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
+                }
+                //通过 e.detail 获取 验证有效性状态对象：ValidityState
+                for (const k in o){
+                    if (e.detail[k]){
+                        if (o[k]){
+                            
+                            break;
+                        }
+                    }
+                }
             }
         });
 

@@ -7,7 +7,11 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         moduleEvents: ['load', 'queryLoad', 'postLoad'],
     },
     _loadNode: function () {
-        this._loadNodeEdit();
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            this._loadNodeEdit();
+        }
     },
     loadDescription: function () {
         this.node.setAttribute('placeholder', this.json.description || '');
@@ -67,7 +71,7 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         this.node.setAttribute('disabled', false);
         this.node.setAttribute('read', false);
 
-        if (!this.isReadonly()) {
+        if (!this.isReadonly() && this.isEditable) {
             if (this.json.showMode === 'readonlyMode') {
                 this.node.setAttribute('readonly', true);
                 this.node.setAttribute('read', true);
@@ -164,6 +168,29 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
                 e.target.setCustomValidity(this.validationText);
             }
         });
+
+        this.node.addEventListener('invalid', (e)=>{
+            if (this.node._props.validity){
+                e.target.setCustomValidity(this.node._props.validity);
+            }else{
+                var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
+                const o = {
+                    valueMissing: MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
+                }
+                //通过 e.detail 获取 验证有效性状态对象：ValidityState
+                for (const k in o){
+                    if (e.detail[k]){
+                        if (o[k]){
+                            
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        this.setRange();
+
     },
     createModelNode: function () {
         this.modelNode = new Element('div', {styles: this.form.css.modelNode}).inject(this.node, 'after');
@@ -203,4 +230,66 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         this.validationText = '';
         this.node.unInvalidStyle();
     },
+    setRange: function(){
+        var range, j = this.json;
+        switch ( j.rangeType ) {
+            case "dateTime":
+                var datetimeRangeScript = j.dateTimeRangeScript && j.dateTimeRangeScript.code;
+                if (datetimeRangeScript) {
+                    range = this.form.Macro.fire(datetimeRangeScript, this);
+                    o2.typeOf(range) === "array" && this.node.setDatetimeRange(range);
+                }
+                break;
+            case "dateAndTime":
+                var dateRangeScript = j.dateRangeScript && j.dateRangeScript.code;
+                if (dateRangeScript) {
+                    range = this.form.Macro.fire(dateRangeScript, this);
+                    o2.typeOf(range) === "array" && this.node.setDateRange(range);
+                }
+                var timeRangeScript = j.timeRangeScript && j.timeRangeScript.code;
+                if (timeRangeScript) {
+                    range = this.form.Macro.fire(timeRangeScript, this);
+                    o2.typeOf(range) === "array" && this.node.setTimeRange(range);
+                }
+                break;
+            case "other":
+                var enableYear = j.enableYear && j.enableYear.code;
+                if (!!enableYear) {
+                    this.node.setCustomRangeMethod('year', function (year) {
+                        return this.form.Macro.fire(enableYear, this, {year: year});
+                    }.bind(this));
+                }
+                var enableMonth = j.enableMonth && j.enableMonth.code;
+                if (!!enableMonth) {
+                    this.node.setCustomRangeMethod('month', function (month) {
+                        return this.form.Macro.fire(enableMonth, this, {month: month});
+                    }.bind(this));
+                }
+                var enableDate = j.enableDate && j.enableDate.code;
+                if (!!enableDate) {
+                    this.node.setCustomRangeMethod('date', function (date) {
+                        return this.form.Macro.fire(enableDate, this, {date: date});
+                    }.bind(this));
+                }
+                var enableHour = j.enableHour && j.enableHour.code;
+                if (enableHour) {
+                    this.node.setCustomRangeMethod('hour', function (date, hour) {
+                        return this.form.Macro.fire(enableHour, this, {date: date, hour: hour});
+                    }.bind(this));
+                }
+                var enableMinute = j.enableMinute && j.enableMinute.code;
+                if (enableMinute) {
+                    this.node.setCustomRangeMethod('minute', function (date, hour, minute) {
+                        return this.form.Macro.fire(enableMinute, this, {date: date, hour: hour, minute: minute});
+                    }.bind(this));
+                }
+                var enableSecond = j.enableSecond && j.enableSecond.code;
+                if (enableSecond) {
+                    this.node.setCustomRangeMethod('second', function (date, hour, minute, second) {
+                        return this.form.Macro.fire(enableSecond, this, {date: date, hour: hour, minute: minute, second:second});
+                    }.bind(this));
+                }
+                break;
+        }
+    }
 });

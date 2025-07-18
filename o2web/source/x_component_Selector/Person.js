@@ -131,7 +131,6 @@ MWF.xApplication.Selector.Person = new Class({
         this.className = "Person";
     },
     load: function(){
-        debugger;
         this.fireEvent("queryLoad",[this]);
         var ps = [
             this.loadItemHtml(),
@@ -328,9 +327,6 @@ MWF.xApplication.Selector.Person = new Class({
                     "keydown": function(e){e.stopPropagation();}
                 }
             });
-            if (options.style && options.style.startsWith("v10")){
-
-            }
 
             this.contentNode = new Element("div", {
                 "styles": this.css.contentNode_embedded ? this.css.contentNode_embedded : this.css.contentNode
@@ -499,7 +495,6 @@ MWF.xApplication.Selector.Person = new Class({
             });
             if( this.options.style === 'v10_mobile' ){
                 this.maskRelativeNode.get('mask').addEvent('click', function () {
-                    debugger;
                     if( this.selectedMode ){
                         this.switchSelectedMode();
                     }else{
@@ -853,7 +848,7 @@ MWF.xApplication.Selector.Person = new Class({
     loadSelectNodeHTML: function(contentNode){
         var size;
         var height;
-        debugger;
+
         if( contentNode ){
             size = contentNode.getSize();
             height = size.y;

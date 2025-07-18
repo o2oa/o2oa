@@ -165,6 +165,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadTextareaScript(v); break;
             case "OODatetime":
             case "OOInput":
+            case "OOCurrency":
+            case "OOAddress":
             case "Textfield":
                 this.loadTextfieldScript(v); break;
             case "Tree":

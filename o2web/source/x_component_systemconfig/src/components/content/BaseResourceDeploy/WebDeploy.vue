@@ -1,5 +1,5 @@
 <template xmlns="">
-  <div>
+  <div v-loading="loading" :element-loading-text="lp._resource.uploading">
     <div class="systemconfig_item_title">{{lp._resource.webResource}}</div>
     <div class="systemconfig_item_info">{{lp._resource.webResourceInfo}}</div>
 
@@ -19,6 +19,15 @@
       <BaseInput :label-style="labelStyle" :label="lp._resource.deployPath" v-model:value="deloyData.path"/>
       <div class="editorPathInfo">{{lp._resource.deployPathInfo}}</div>
 
+      <BaseInput :label-style="labelStyle" :label="lp._resource.title" v-model:value="deloyData.title"/>
+      <div class="editorPathInfo">{{lp._resource.titleInfo}}</div>
+
+      <BaseInput inputType="textarea" :label-style="labelStyle" :label="lp._resource.remark" v-model:value="deloyData.remark"/>
+      <div class="editorPathInfo">{{lp._resource.remarkInfo}}</div>
+
+      <BaseInput :label-style="labelStyle" :label="lp._resource.version" v-model:value="deloyData.version"/>
+      <div class="editorPathInfo">{{lp._resource.versionInfo}}</div>
+
       <button class="mainColor_bg" @click="deploy($event)">{{lp._resource.webResource}}</button>
     </div>
     <div class="systemconfig_item_info" v-else v-html="lp._resource.notWebResource"></div>
@@ -28,16 +37,21 @@
 
 <script setup>
 import {ref} from 'vue';
-import {component, lp} from '@o2oa/component';
+import {component, lp, layout} from '@o2oa/component';
 import {deployWebResource, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 import BaseRadio from '@/components/item/BaseRadio.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
 
+const loading = ref(false);
+
 const deloyData = ref({
   file: [],
   overwrite: 'false',
-  path: ''
+  path: '',
+  title: '',
+  version: layout.config.version,
+  remark: ''
 });
 const labelStyle = {
   fontWeight: 'bold',
@@ -54,20 +68,49 @@ async function deploy(e) {
     component.notice(lp._resource.noDeployFile, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
     return false;
   }
-  var p = [];
+  if (!deloyData.value.title.length) {
+    component.notice(lp._resource.noDeployTitle, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
+    return false;
+  }
+  loading.value = true;
+
+  let successCount = 0;
+  let failureCount = 0;
+  const checkUpload = ()=>{
+    if( deloyData.value.file.length !== successCount + failureCount )return;
+    if( successCount === deloyData.value.file.length ){
+      component.notice(lp._resource.deploySuccess, "success");
+    }else if( failureCount === deloyData.value.file.length ){
+      component.notice(lp._resource.deployFailure, "error");
+    }else{
+      component.notice(
+          lp._resource.deployNote.replace('{success}', successCount).replace('{failure}', failureCount),
+          "error"
+      );
+    }
+    deloyData.value.title = '';
+    deloyData.value.remark = '';
+    loading.value = false;
+  }
   deloyData.value.file.forEach((f)=>{
     const o = {
       file: [f],
       overwrite: deloyData.value.overwrite,
-      path: deloyData.value.path
+      path: deloyData.value.path,
+      title: deloyData.value.title,
+      version: deloyData.value.version,
+      remark: deloyData.value.remark
     }
-    p.push(deployWebResource(o));
-  });
-  // const data = await deployWebResource(deloyData.value);
-  Promise.all(p).then(()=>{
-    component.notice(lp._resource.deploySuccess, "success");
+    deployWebResource(o, ()=>{
+      successCount++;
+      checkUpload();
+    }, function (){
+      failureCount++;
+      checkUpload();
+    });
   });
 }
+
 
 const general = ref({});
 getConfigData('general').then((data)=>{

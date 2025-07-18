@@ -27,7 +27,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 			"x_component_cms_FormDesigner", "x_component_cms_Index", "x_component_cms_Module",
 			"x_component_cms_QueryViewDesigner", "x_component_cms_ScriptDesigner", "x_component_cms_ViewDesigner",
 			"x_component_cms_Xform", "x_component_Collect", "x_component_Common", "x_component_ConfigDesigner",
-			"x_component_Console", "x_component_ControlPanel", "x_component_CRM", "x_component_Deployment",
+			"x_component_Console", "x_component_ControlPanel", "x_component_Deployment",
 			"x_component_DesignCenter", "x_component_Empty", "x_component_FaceSet", "x_component_File",
 			"x_component_FindDesigner", "x_component_Forum", "x_component_ForumCategory", "x_component_ForumDocument",
 			"x_component_ForumPerson", "x_component_ForumSearch", "x_component_ForumSection", "x_component_ftsearch",

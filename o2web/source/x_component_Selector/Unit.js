@@ -255,8 +255,6 @@ MWF.xApplication.Selector.Unit = new Class({
         this.unitExcludedCount = {};
         this.unitSelectedCount = {};
 
-        debugger;
-
         var caculate = function () {
             if (unitLoaded && selectedUnitLoaded && excludeUnitLoaded) {
 
@@ -399,7 +397,6 @@ MWF.xApplication.Selector.Unit = new Class({
 MWF.xApplication.Selector.Unit.Item = new Class({
     Extends: MWF.xApplication.Selector.Identity.Item,
     load : function(){
-        debugger;
         if( this.selector.isFlatCategory ){
             if( !this.justItem && this.selector.options.expandSubEnable && this.data.subDirectUnitCount ){
                 this.loadCategoryForFlatCategory();

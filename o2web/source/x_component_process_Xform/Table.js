@@ -122,12 +122,6 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
  */
 MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
 	Extends: MWF.APP$Module,
-    _queryLoaded: function(){
-
-    },
-    _afterLoaded: function(){
-        //this.form._loadModules(this.node);
-    },
     _loadStyles: function(){
 
         var addStyles = {};

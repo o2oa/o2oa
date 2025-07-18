@@ -33,7 +33,7 @@
     "overflow": "auto",
     "background": "#F5F5F5",
     "position": "absolute",
-    "z-index":300
+    "z-index":500
   },
 
   "processNode_from": {

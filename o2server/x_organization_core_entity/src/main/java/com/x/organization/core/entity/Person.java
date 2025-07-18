@@ -537,11 +537,11 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String status;
 
-	public static final String lockTime_FIELDNAME = "lockTime";
+	public static final String lockExpireTime_FIELDNAME = "lockExpireTime";
 	@FieldDescribe("锁定到期时间.")
 	@Temporal(TemporalType.TIMESTAMP)
 	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + lockTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + lockExpireTime_FIELDNAME)
 	private Date lockExpireTime;
 
 	public static final String statusDes_FIELDNAME = "statusDes";

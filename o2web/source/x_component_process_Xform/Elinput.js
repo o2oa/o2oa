@@ -181,6 +181,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
             }
         },
     getValue: function(){
+        if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if( this.json.inputType === "number" ){

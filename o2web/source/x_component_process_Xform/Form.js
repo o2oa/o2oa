@@ -788,7 +788,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (callback) callback();
         } else {
             this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
-                debugger;
                 tools = json.filter( function (d) { return !d.hidden; } );
                 // this.json.multiTools = tools;
                 this.json.defaultTools = tools;
@@ -1443,6 +1442,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //var data = Object.clone(this.businessData.data);
         var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {
+
+            if (!module.isEditable) return;
 
             //对id类似于 xx..0..xx 的字段 不处理
             if( id.indexOf("..") > 0 )return;

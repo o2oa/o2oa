@@ -54,7 +54,7 @@ MWF.xApplication.Selector.PlatApp = new Class({
                 var category = this._newItemCategory(data, this, this.itemAreaNode);
                 if (data.appList && data.appList.length){
                     data.appList.each(function(d){
-                        debugger;
+    
                         d.moduleType = data.id;
                         if (d.moduleType=="cms") d.name = d.appName;
                         var item = this._newItem(d, this, category.children);
@@ -69,7 +69,6 @@ MWF.xApplication.Selector.PlatApp = new Class({
         return true;
     },
     _getChildrenItemIds: function(data){
-	    debugger;
         return data.appList || [];
     },
     _newItemCategory: function(data, selector, item, level){
@@ -181,7 +180,6 @@ MWF.xApplication.Selector.PlatApp.ItemSelected = new Class({
     check: function(){
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
-                debugger;
                 if( item.data.id && this.data.id){
                     return item.data.id === this.data.id;
                 }else{

@@ -31,9 +31,11 @@ public class AiConfig extends GsonPropertyObject {
     @FieldDescribe("主题功能描述.")
     private String desc = "";
 
-    public static final String knowledgeIndexAppList_FIELD = "knowledgeIndexAppList";
     @FieldDescribe("知识库索引应用列表.")
     private List<String> knowledgeIndexAppList = new ArrayList<>();
+
+    @FieldDescribe("问答库库索引应用列表.")
+    private List<String> questionsIndexAppList = new ArrayList<>();
 
     @FieldDescribe("o2智能体附件解析支持的文件类型.")
     private List<String> o2AiFileList = List.of("pdf", "docx", "doc", "txt", "md", "pptx", "ppt", "xlsx", "xls");
@@ -145,5 +147,13 @@ public class AiConfig extends GsonPropertyObject {
 
     public void setAliApiUrl(String aliApiUrl) {
         this.aliApiUrl = aliApiUrl;
+    }
+
+    public List<String> getQuestionsIndexAppList() {
+        return questionsIndexAppList;
+    }
+
+    public void setQuestionsIndexAppList(List<String> questionsIndexAppList) {
+        this.questionsIndexAppList = questionsIndexAppList;
     }
 }

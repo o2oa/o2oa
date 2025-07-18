@@ -65,8 +65,14 @@ MWF.xApplication.portal.PageDesigner.Module.OORadioGroup = MWF.PCOORadioGroup = 
 MWF.xApplication.portal.PageDesigner.Module.OOSelect = MWF.PCOOSelect = new Class({
     Extends: MWF.FCOOSelect,
 });
+MWF.xApplication.portal.PageDesigner.Module.OOAddress = MWF.PCOOAddress = new Class({
+    Extends: MWF.FCOOAddress,
+});
 MWF.xApplication.portal.PageDesigner.Module.OOTextarea = MWF.PCOOTextarea = new Class({
     Extends: MWF.FCOOTextarea,
+});
+MWF.xApplication.portal.PageDesigner.Module.OOCurrency = MWF.PCOOCurrency = new Class({
+    Extends: MWF.FCOOCurrency,
 });
 MWF.xApplication.portal.PageDesigner.Module.OOPagination = MWF.PCOOPagination = new Class({
     Extends: MWF.FCOOPagination,
@@ -82,6 +88,8 @@ MWF.PCOODatetime.templateJsonPath = '../x_component_process_FormDesigner/Module/
 MWF.PCOOOrg.templateJsonPath = '../x_component_process_FormDesigner/Module/';
 MWF.PCOORadioGroup.templateJsonPath = '../x_component_process_FormDesigner/Module/';
 MWF.PCOOSelect.templateJsonPath = '../x_component_process_FormDesigner/Module/';
+MWF.PCOOAddress.templateJsonPath = '../x_component_process_FormDesigner/Module/';
 MWF.PCOOTextarea.templateJsonPath = '../x_component_process_FormDesigner/Module/';
+MWF.PCOOCurrency.templateJsonPath = '../x_component_process_FormDesigner/Module/';
 MWF.PCOOPagination.templateJsonPath = '../x_component_process_FormDesigner/Module/';
 MWF.PCCodeeditor.templateJsonPath = '../x_component_process_FormDesigner/Module/';

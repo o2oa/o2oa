@@ -65,10 +65,14 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		this.fireEvent("postLoad");
 	},
     _loadNode: function(){
-        if (this.isReadonly()){
-            this._loadNodeRead();
+		if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
         }else{
-            this._loadNodeEdit();
+            if (this.isReadonly()){
+				this._loadNodeRead();
+			}else{
+				this._loadNodeEdit();
+			}
         }
     },
 	_loadMergeReadContentNode: function( contentNode, data ){

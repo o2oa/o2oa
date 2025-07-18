@@ -606,7 +606,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                     opinion = task.properties.opinion || "";
             }
 
-            html = html.replace(/\{person\}/g, person );
+            html = html.replace(/\{person\}/g, person ).replace(/{personDn}/g, task.person || '')
             html = html.replace(/\{department\}/g, (task.unit) ? task.unit.substring(0, task.unit.indexOf("@")) : "");
             html = html.replace(/\{route\}/g, o2.txt(router));
             html = html.replace(/\{time\}/g, task.recordTime);
@@ -681,6 +681,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         if (this.json.textTaskStyle){
             var html = this.json.textTaskStyle;
             html = html.replace(/{person}/g, person)
+            .replace(/{personDn}/g, task.person || '')
             .replace(/{department}/g, o2.name.cn(task.unit))
             .replace(/{activity}/g, task.fromActivityName)
             .replace(/{route}/g, MWF.xApplication.process.Xform.LP.processing + ' ...')
@@ -1827,7 +1828,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             if( task.processingType !== "empower" && task.empowerFromIdentity){
                 person = person+" 代 "+o2.name.cn(task.empowerFromIdentity||"");
             }
-            html = html.replace(/\{person\}/g, person );
+            html = html.replace(/\{person\}/g, person ).replace(/{personDn}/g, task.person || '');
             html = html.replace(/\{department\}/g, task.unit.substring(0, task.unit.indexOf("@")));
             html = html.replace(/\{route\}/g, o2.txt(task.routeName));
             html = html.replace(/\{time\}/g, task.completedTime);

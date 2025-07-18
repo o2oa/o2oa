@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs;
 
+import com.x.program.center.jaxrs.deploy.DeployAction;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -91,6 +92,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(TestAction.class);
 		classes.add(BarAction.class);
 		classes.add(FooAction.class);
+		classes.add(DeployAction.class);
 		return classes;
 	}
 }

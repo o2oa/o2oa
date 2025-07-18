@@ -1,0 +1,64 @@
+<div class="layout-wrap" data-o2-element="rootNode">
+    <div class="layout-left" data-o2-element="leftNode">
+        <div class="title">
+            <img src="{{$.config.appIconUrl}}">
+            <span>{{$.config.appName}}</span>
+        </div>
+        <div class="menu-item " data-o2-events="click:openIndex">
+            <div class="ooicon-a-home2"></div>
+            <div>{{$.lp.navi.index}}</div>
+        </div>
+        <div class="menu-item " data-o2-events="click:openMcp">
+            <div class="ooicon-m1"></div>
+            <div>{{$.lp.navi.mcp}}</div>
+        </div>
+        <div class="menu-item " data-o2-events="click:openModel">
+            <div class="ooicon-list-alt"></div>
+            <div>{{$.lp.navi.model}}</div>
+        </div>
+        <div class="menu-item   menu-item-c" data-o2-events="click:openKnowledge">
+            <div class="ooicon-canyue"></div>
+            <div>{{$.lp.navi.knowledge}}</div>
+        </div>
+        <div class="menu-item" data-o2-events="click:openSetting">
+            <div class="ooicon-config"></div>
+            <div>{{$.lp.navi.setting}}</div>
+        </div>
+    </div>
+    <div class="layout-right" data-o2-element="rightNode">
+        <div class="page contentList">
+            <div class="contentTitleArea">
+                <table>
+                    <colgroup>
+                        <col width="40%">
+                        <col width="15%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                    <tr class="listItem">
+                        <th><span style="margin-left: 10px">{{$.lp.knowledge.title}}</span></th>
+                        <th><span>{{$.lp.knowledge.category}}</span></th>
+                        <th><span>{{$.lp.knowledge.createPerson}}</span></th>
+                        <th><span>{{$.lp.knowledge.createTime}}</span></th>
+                        <th><span>{{$.lp.knowledge.remove}}</span></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div data-o2-element="listContentNode" style="flex:1;">
+
+            </div>
+            <div class="contentBottom" data-o2-element="listBottomNode">
+                <div class="contentPageArea">
+                    <div class="firstPage" data-o2-events="click:firstPage">{{$.lp.firstPage}}</div>
+                    <div class="prevPage ooicon-arrow_back" data-o2-events="click:prevPage"></div>
+                    <div class="lastPage" data-o2-events="click:lastPage">{{$.lp.lastPage}}</div>
+                    <div class="nextPage ooicon-arrow_forward" data-o2-events="click:nextPage"></div>
+                    <div class="pageNumberArea" data-o2-element="pageNumberAreaNode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

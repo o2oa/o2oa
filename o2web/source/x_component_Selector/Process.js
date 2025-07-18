@@ -105,7 +105,6 @@ MWF.xApplication.Selector.Process.Item = new Class({
 
         var selectedItem = this.selector.selectedItems.filter(function(item, index){
             //return (item.data.id === this.data.id);
-            debugger;
             if( item.data.id && this.data.id){
                 return item.data.id === this.data.id;
             }else{
@@ -132,7 +131,6 @@ MWF.xApplication.Selector.Process.ItemSelected = new Class({
     check: function(){
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
-                debugger;
                 if( item.data.id && this.data.id){
                     return item.data.id === this.data.id;
                 }else{

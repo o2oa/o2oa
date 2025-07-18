@@ -170,6 +170,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadQueryViewItem();
                     this.loadQueryStatementItem();
+                    this.loadCurrencyPreset();
 
                     this.loadHelp();
 
@@ -1350,6 +1351,41 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
 
+    loadCurrencyPreset: function (){
+        var nodes = this.propertyContent.getElements(".MWFCurrencySelect");
+        nodes.forEach(function(select){
+            var OOCurrency = window.customElements.get('oo-currency');
+
+            var name = select.get("name");
+            select.empty();
+            var map = {};
+            Object.each(OOCurrency.preset, function(preset, currency){
+                if( !map[preset.continent] ){
+                    map[preset.continent] = [];
+                }
+                map[preset.continent].push(preset);
+            }.bind(this));
+            Object.each(map, function(value, continent){
+                var optgroup = new Element('optgroup',{
+                    label: continent,
+                    styles: {
+                        "font-weight": "bold",
+                        "background-color": "#f1f1f1",
+                        "color": "#333"
+                    }
+                }).inject(select);
+                value.each(function(v){
+                   var iso = v.iso;
+                    var option = new Element("option", {
+                        "text": this.form.designer.lp.currency[iso] + "(" + iso + ")",
+                        "value": iso,
+                        "selected": (this.data[name]===iso)
+                    }).inject(select);
+                }.bind(this))
+            }.bind(this))
+        }.bind(this))
+    },
+
     loadImageFileSelect: function(){
         // var nodes = this.propertyContent.getElements(".MWFImageFileSelect");
         // if (nodes.length){
@@ -2295,10 +2331,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             processActivityNodes.each(function(node){
                 var d = this.data[node.get("name")];
                 var data = d || [];
+                debugger;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "ProcessActivity",
                     "names": data,
+                    "application": this.form.data.json.application,
                     "onChange": function(ids){
+                        debugger;
                         var values = [];
                         ids.each(function(id){
                             values.push(id.data);
@@ -2309,7 +2348,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         this.checkHistory(name, oldValue, this.data[name]);
                     }.bind(this)
                 });
-            });
+            }.bind(this));
 
             cmsFileNodes.each(function(node){
                 var d = this.data[node.get("name")];

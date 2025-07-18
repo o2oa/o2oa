@@ -406,9 +406,14 @@ public class HttpConnection {
     }
 
     public static void readResultString(HttpURLConnection connection,
-            HttpConnectionResponse response) throws Exception {
+            final HttpConnectionResponse response) throws Exception {
         int code = connection.getResponseCode();
         response.setResponseCode(code);
+        connection.getHeaderFields().forEach((key, value) -> {
+            if (null != key) {
+                response.getHeaders().put(key, StringUtils.join(value, ","));
+            }
+        });
         if (code == HttpURLConnection.HTTP_OK || code == HttpURLConnection.HTTP_CREATED
                 || code == HttpURLConnection.HTTP_ACCEPTED) {
             try (InputStream input = connection.getInputStream()) {

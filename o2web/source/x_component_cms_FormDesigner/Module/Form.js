@@ -11,7 +11,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			"Datatemplate", "Htmleditor", "TinyMCEEditor", "Number", "Currency", "Office", "Orgfield", "Personfield", "Readerfield", "Authorfield", "Org",
 			"Reader", "Author", "Radio", "Select", "Textarea", "Textfield", "Address","Combox",
 			"Elcascader","Elcheckbox","Elcolorpicker", "Eldate", "Eldatetime", "Elinput", "Elnumber", "Elradio", "Elrate", "Elselect", "Elslider", "Elswitch", "ElTime",
-			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup"
+			"OOInput", "OODatetime", "OOTextarea", "OOSelect", "OOCheckGroup", "OORadioGroup, OOCurrency, OOAddress"
 			],
 		"injectActions" : [
 			{

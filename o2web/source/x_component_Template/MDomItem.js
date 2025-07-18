@@ -3969,6 +3969,7 @@ MDomItem.OOSelect = new Class({
             // if( options.disabled ){
             //     optionNode.setAttribute('disabled', true);
             // }
+            optionNode.setAttribute('value', selectValues[i]);
             optionNode.setAttribute('text', selectTexts[i]);
             optionNode.inject(input);
         }
@@ -3989,6 +3990,7 @@ MDomItem.OOSelect = new Class({
                 if (options.disabled) {
                     optionNode.setAttribute('disabled', true);
                 }
+                optionNode.setAttribute('value', option[valueKey]);
                 optionNode.setAttribute('text', option[labelKey]);
                 optionNode.inject(groupNode);
             });

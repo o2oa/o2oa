@@ -44,6 +44,7 @@
 .form-content-area oo-checkbox-group,
 .form-content-area oo-select,
 .form-content-area oo-datetime,
+.form-content-area oo-currency,
 .form-content-area div[mwftype="OOCheckGroup"],
 .form-content-area div[mwftype="OORadioGroup"] {
     flex: 1 1 46%;

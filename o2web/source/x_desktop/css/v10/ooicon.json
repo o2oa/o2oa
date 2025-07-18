@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "44779699",
+      "name": "hopper",
+      "font_class": "hopper",
+      "unicode": "e783",
+      "unicode_decimal": 59267
+    },
+    {
       "icon_id": "44736653",
       "name": "jiekoupeizhi2",
       "font_class": "jiekoupeizhi21",

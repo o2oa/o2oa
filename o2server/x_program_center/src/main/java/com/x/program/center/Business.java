@@ -1,18 +1,5 @@
 package com.x.program.center;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
@@ -37,6 +24,17 @@ import com.x.program.center.factory.PersonFactory;
 import com.x.program.center.factory.RoleFactory;
 import com.x.program.center.factory.ScriptFactory;
 import com.x.program.center.factory.UnitFactory;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Business {
 
@@ -259,7 +257,6 @@ public class Business {
 		List<String> list = new ArrayList<>();
 		Nodes nodes = Config.nodes();
 		for (String node : nodes.keySet()){
-
 			try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
 				socket.setKeepAlive(true);
 				socket.setSoTimeout(10000);
@@ -280,7 +277,6 @@ public class Business {
 					dos.flush();
 					dos.writeInt(bytes.length);
 					dos.flush();
-
 					try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)){
 						byte[] onceBytes = new byte[1024];
 						int length = 0;
@@ -289,7 +285,7 @@ public class Business {
 							dos.flush();
 						}
 					}
-
+					socket.shutdownOutput();
 					String result = dis.readUTF();
 					logger.info("socket dispatch resource {} to {}:{} result={}", fileName, node, nodes.get(node).nodeAgentPort(), result);
 					if("success".equals(result)){

@@ -45,6 +45,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
             "moduleEvents": ["load", "queryLoad", "postLoad", "postLoadData", "postLoadLine"]
         },
         load: function(){
+            this._queryLoaded();
             this.node.empty();
             if (!this.json.isDelay){
                 this.active();

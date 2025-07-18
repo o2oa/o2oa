@@ -256,6 +256,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			return value || {};
 		},
 		getValue: function(){
+			if (!this.isReadable) return {};
 			return this._getValue();
 		},
 		_getDatagridTr: function(){

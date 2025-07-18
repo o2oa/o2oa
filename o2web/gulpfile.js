@@ -389,6 +389,7 @@ function createCMSXFormConcatTask(path, isMin, thisOptions) {
             'source/' + processPath + '/OODatetime.js',
             'source/' + processPath + '/OOButton.js',
             'source/' + processPath + '/OOTextarea.js',
+            'source/' + processPath + '/OOOrg.js',
             //'source/' + processPath + '/Tree.js',
             //'source/' + processPath + '/View.js',
             // 'source/x_component_process_Work/Processor.js',

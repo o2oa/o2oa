@@ -1,5 +1,6 @@
 package com.x.ai.assemble.control.bean;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import java.util.Date;
 import java.util.List;
@@ -10,18 +11,24 @@ import java.util.List;
  **/
 public class DocIndex extends GsonPropertyObject {
     private String catalogId;
+    @FieldDescribe("应用名称.")
     private String catalogName;
+    @FieldDescribe("关联文档ID.")
     private String referenceId;
     private String sourceType = "external";
+    @FieldDescribe("文档创建者.")
     private String referenceCreatorPerson;
     private String referenceCreatorUnit;
+    @FieldDescribe("文档创建时间.")
     private Date referenceCreateDateTime;
+    @FieldDescribe("标题.")
     private String title;
     private String content;
     private List<String> permissionList;
     private Boolean catalogEnable = true;
     private Boolean searchEnable = true;
     private Boolean embedEnable = true;
+    private Boolean questionEnable = false;
 
     public String getCatalogId() {
         return catalogId;
@@ -125,5 +132,13 @@ public class DocIndex extends GsonPropertyObject {
 
     public void setEmbedEnable(Boolean embedEnable) {
         this.embedEnable = embedEnable;
+    }
+
+    public Boolean getQuestionEnable() {
+        return questionEnable;
+    }
+
+    public void setQuestionEnable(Boolean questionEnable) {
+        this.questionEnable = questionEnable;
     }
 }

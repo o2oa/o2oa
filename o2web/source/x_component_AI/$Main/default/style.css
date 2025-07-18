@@ -1428,6 +1428,7 @@
     width: 85%;
     gap: 2em;
     margin-top:2em;
+    overflow:auto;
     flex-direction: column;
 }
 .model-category{

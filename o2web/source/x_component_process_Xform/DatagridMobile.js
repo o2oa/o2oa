@@ -182,6 +182,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         return value || [];
     },
     getValue: function(){
+        if (!this.isReadable) return [];
         return this._getValue();
     },
 

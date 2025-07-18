@@ -1442,6 +1442,14 @@ public class Config {
 		return path;
 	}
 
+	public static Path path_localSample(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCALSAMPLE);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
 	public static Path path_servers_webServer_x_desktop_res_config(boolean force) throws Exception {
 		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG);
 		if (!Files.exists(path) && force) {

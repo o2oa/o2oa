@@ -80,6 +80,7 @@ MWF.xApplication.process.Xform.Security = MWF.APPSecurity =  new Class(
 			}.bind(this));
 		},
 		_setBusinessData: function(v, id){
+			if (!this.isEditable) return;
 			var value = v.toInt();
 			this.setBusinessDataById(value, id);
 			// this.form.businessData.data.$work.objectSecurityClearance = value;

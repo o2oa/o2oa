@@ -91,9 +91,9 @@ public class Completion extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String person;
 
-	public static final String title_FIELDNAME = "title";
+	public static final String clueId_FIELDNAME = "clueId";
 	@FieldDescribe("线索ID")
-	@Column(length = length_255B, name = ColumnNamePrefix + title_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + clueId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String clueId;
 

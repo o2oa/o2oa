@@ -31,6 +31,8 @@ MWF.xApplication.Calendar.Main = new Class({
     },
     loadApplication: function(callback) {
         this.canlendarData = null;
+        this.content.style.setProperty('box-sizing', 'content-box', 'important');
+        this.content.loadCssText('.tooltipNode *{ box-sizing: content-box !important; }');
 
         // this.content.loadCss("../x_component_Calendar/$Main/default/style.css");
 

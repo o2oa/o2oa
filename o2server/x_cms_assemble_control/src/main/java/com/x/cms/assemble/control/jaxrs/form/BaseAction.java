@@ -21,7 +21,7 @@ public class BaseAction extends StandardJaxrsAction {
 
 	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Form.class, View.class, ViewFieldConfig.class, ViewCategory.class,
 			Script.class, com.x.processplatform.core.entity.element.Script.class, com.x.portal.core.entity.Script.class,
-			com.x.program.center.core.entity.Script.class);
+			com.x.program.center.core.entity.Script.class, com.x.processplatform.core.entity.element.Form.class);
 
 	protected LogService logService = new LogService();
 

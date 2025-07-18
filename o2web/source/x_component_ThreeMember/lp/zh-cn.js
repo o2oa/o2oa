@@ -21,6 +21,7 @@ MWF.xApplication.ThreeMember.LP = {
 	"lastPage": "最后一页",
 	"query": "搜索",
 	"reset": "重置",
+	"exportExcel": "导出",
 	"noItem": "当前条件下没有查询到数据",
 	"all": "所有日志",
 	"sendData": "请求数据",

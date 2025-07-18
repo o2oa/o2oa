@@ -35,10 +35,14 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             }
         },
         _loadNode: function () {
-            if (this.readonly) {
-                this._loadNodeRead();
-            } else {
-                this._loadNodeEdit();
+            if (!this.isReadable && !!this.isHideUnreadable){
+                this.node.setStyle('display', 'none');
+            }else{
+                if (this.readonly) {
+                    this._loadNodeRead();
+                } else {
+                    this._loadNodeEdit();
+                }
             }
         },
         _loadNodeRead: function () {
