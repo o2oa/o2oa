@@ -850,7 +850,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                         _type: 'app-category'
                     },
                     {
-                        componentName: 'process.ProcessManger',
+                        componentName: 'process.ProcessManager',
                         name: this.application.name,
                         id: this.processData.application,
                         _type: 'app'

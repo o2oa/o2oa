@@ -58,9 +58,7 @@ var o2DesignerBreadcrumb = new Class({
             var arr = cfg.children && cfg.children.filter((item)=>{
                 return item.componentName === componentNamePaths[i];
             });
-            if( arr && arr.length ){
-                cfg = arr[0];
-            }
+            cfg = arr && arr.length ? arr[0] : null;
         }
         return cfg;
     },
@@ -1659,7 +1657,7 @@ o2DB._config = {
                 label: '最近打开',
                 _type: 'designer',
                 handleClick: (item) => {
-                    o2DB._openApp(item.app, null, { id: item.id, application: {id: item.appid} });
+                    o2DB._openApp(item.componentName, null, { id: item.id, application: {id: item.appid} });
                 },
                 listAction: () => {
                     return o2.UD.getDataJson(o2DB._RECENTLY_DESIGNER_NAME).then((items) => {
