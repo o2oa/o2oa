@@ -40,7 +40,7 @@ class ActionProcessingSignal extends BaseAction {
 		}
 		Wo wo = new Wo();
 		optional.get().forEach(o -> {
-			if (((null != o.getManualExecute()) || (null != o.getSplitExecute()))
+			if (((null != o.getManualExecute()) || (null != o.getAgentExecute()) || (null != o.getSplitExecute()))
 					&& (!StringUtils.equals(activityToken, o.getActivityToken()))) {
 				wo.getSignalStack().add(o);
 			}
