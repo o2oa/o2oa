@@ -91,7 +91,7 @@ MWF.xApplication.Calendar.Main = new Class({
             }.bind(this))
         }
     },
-    getSelectedCalendarId : function(){
+    getSelectedCalendarId: function(){
         if( this.leftNavi ){
             return this.leftNavi.getSelectedCalendarId();
         }else{
