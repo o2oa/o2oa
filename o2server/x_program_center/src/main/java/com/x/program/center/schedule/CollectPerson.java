@@ -31,63 +31,71 @@ public class CollectPerson extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CollectPerson.class);
 
-	private static ReentrantLock lock = new ReentrantLock();
+	private static final ReentrantLock lock = new ReentrantLock();
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		lock.lock();
-		try {
-			if (pirmaryCenter() && BooleanUtils.isTrue(Config.collect().getEnable())) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					if (business.validateCollect()) {
-						List<String> mobiles = this.listMobile(emc);
-						Req req = new Req();
-						req.setTitle(Config.collect().getTitle());
-						req.setFooter(Config.collect().getFooter());
-						req.setName(Config.collect().getName());
-						req.setPassword(Config.collect().getPassword());
-						req.setSecret(Config.collect().getSecret());
-						req.setKey(Config.collect().getKey());
-						req.setMobileList(mobiles);
-						CenterServer centerServer = Config.nodes().centerServers().first().getValue();
-						req.setCenterProxyHost(centerServer.getProxyHost());
-						if (StringUtils.isEmpty(req.getCenterProxyHost())) {
-							/* 如果没有设置地址,那么使用远程得到的服务器地址 */
-							if (Host.ip(Config.node()) && (!Host.isRollback(Config.node()))
-									&& (!Host.innerIp(Config.node()))) {
-								/* 如果不是外网地址也不是回环地址,那么说明是一个公网地址 */
-								req.setCenterProxyHost(Config.node());
-							} else {
-								ActionResponse respIp = ConnectionAction
-										.get(Config.collect().url(ADDRESS_COLLECT_REMOTE_IP), null);
-								req.setCenterProxyHost(respIp.getData(WrapString.class).getValue());
+		if(lock.tryLock()) {
+			try {
+				if (pirmaryCenter() && BooleanUtils.isTrue(Config.collect().getEnable())) {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance()
+							.create()) {
+						Business business = new Business(emc);
+						if (business.validateCollect()) {
+							List<String> mobiles = this.listMobile(emc);
+							Req req = new Req();
+							req.setTitle(Config.collect().getTitle());
+							req.setFooter(Config.collect().getFooter());
+							req.setName(Config.collect().getName());
+							req.setPassword(Config.collect().getPassword());
+							req.setSecret(Config.collect().getSecret());
+							req.setKey(Config.collect().getKey());
+							req.setMobileList(mobiles);
+							CenterServer centerServer = Config.nodes().centerServers().first()
+									.getValue();
+							req.setCenterProxyHost(centerServer.getProxyHost());
+							if (StringUtils.isEmpty(req.getCenterProxyHost())) {
+								/* 如果没有设置地址,那么使用远程得到的服务器地址 */
+								if (Host.ip(Config.node()) && (!Host.isRollback(Config.node()))
+										&& (!Host.innerIp(Config.node()))) {
+									/* 如果不是外网地址也不是回环地址,那么说明是一个公网地址 */
+									req.setCenterProxyHost(Config.node());
+								} else {
+									ActionResponse respIp = ConnectionAction
+											.get(Config.collect().url(ADDRESS_COLLECT_REMOTE_IP),
+													null);
+									req.setCenterProxyHost(
+											respIp.getData(WrapString.class).getValue());
+								}
 							}
+							req.setCenterProxyPort(centerServer.getProxyPort());
+							req.setHttpProtocol(centerServer.getHttpProtocol());
+							if (null != Config.portal().getUrlMapping()) {
+								req.setUrlMapping(
+										XGsonBuilder.convert(Config.portal().getUrlMapping(),
+												JsonElement.class));
+							}
+							try {
+								ActionResponse response = ConnectionAction
+										.put(Config.collect().url(ADDRESS_COLLECT_TRANSMIT_RECEIVE),
+												null, req);
+								response.getData(WrapOutBoolean.class);
+							} catch (Exception e) {
+								LOGGER.warn("与云服务器连接错误:{}." + e.getMessage());
+							}
+						} else {
+							LOGGER.debug("无法登录到云服务器.");
 						}
-						req.setCenterProxyPort(centerServer.getProxyPort());
-						req.setHttpProtocol(centerServer.getHttpProtocol());
-						if(null != Config.portal().getUrlMapping()){
-							req.setUrlMapping(XGsonBuilder.convert(Config.portal().getUrlMapping(), JsonElement.class));
-						}
-						try {
-							ActionResponse response = ConnectionAction
-									.put(Config.collect().url(ADDRESS_COLLECT_TRANSMIT_RECEIVE), null, req);
-							response.getData(WrapOutBoolean.class);
-						} catch (Exception e) {
-							LOGGER.warn("与云服务器连接错误:{}." + e.getMessage());
-						}
-					} else {
-						LOGGER.debug("无法登录到云服务器.");
 					}
+				} else {
+					LOGGER.debug("系统没有启用O2云服务器连接.");
 				}
-			} else {
-				LOGGER.debug("系统没有启用O2云服务器连接.");
+			} catch (Exception e) {
+				LOGGER.error(e);
+				throw new JobExecutionException(e);
+			} finally {
+				lock.unlock();
 			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-			throw new JobExecutionException(e);
-		} finally {
-			lock.unlock();
 		}
 	}
 
