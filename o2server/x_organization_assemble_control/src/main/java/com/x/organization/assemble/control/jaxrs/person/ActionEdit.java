@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -45,10 +46,8 @@ class ActionEdit extends BaseAction {
             if (!this.editable(business, effectivePerson, person)) {
                 throw new ExceptionAccessDenied(effectivePerson);
             }
-            boolean isNameUpdate = false;
-            if (!person.getName().equals(wi.getName())) {
-                isNameUpdate = true;
-            }
+            boolean isNameUpdate = !Objects.equals(person.getName(), wi.getName());
+            boolean isMobileUpdate = !Objects.equals(person.getMobile(), wi.getMobile());
             Wi.copier.copy(wi, person);
             // 防止创建的时候加了空格
             person.setName(StringUtils.trim(person.getName()));
@@ -95,8 +94,10 @@ class ActionEdit extends BaseAction {
                 CacheManager.notify(Identity.class);
             }
             CacheManager.notify(Person.class);
-            // 通知x_collect_service_transmit同步数据到collect
-            business.instrument().collect().person();
+            if(isMobileUpdate) {
+                // 通知x_collect_service_transmit同步数据到collect
+                business.instrument().collect().person();
+            }
 
             Wo wo = new Wo();
             wo.setId(person.getId());
