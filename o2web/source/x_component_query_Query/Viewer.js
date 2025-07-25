@@ -803,7 +803,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.setOrderList(d);
 
                 this.lookupAction.bundleView(this.json.id, d, function(json){
-                    this.bundleItems = json.data.valueList;
+                    this.bundleItems = this.parseBudleItems(json.data.valueList);
                     this.bundleKey = json.data.key;
 
                     this._initPage();
@@ -849,6 +849,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }.bind(this));
             }
         }.bind(this));
+    },
+    parseBudleItems: function (bundleItems) {
+        if(this.options.defaultBundles){
+            var defaultBundles = this.options.defaultBundles;
+            for( var i= defaultBundles.length-1; i>=0; i-- ){
+                var bundle = defaultBundles[i];
+                if( bundleItems.contains(bundle) ){
+                    bundleItems.erase(bundle);
+                    bundleItems.unshift(bundle);
+                }
+            }
+        }
+        return bundleItems;
     },
     loadDefaultData: function( callback ){
         var d = {};
@@ -913,7 +926,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         //this.createLoadding();
 
         this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            this.viewData = json.data;
+            this.viewData = this.sortData(json.data);
 
             this.fireEvent("postLoadPageData");
 
@@ -939,6 +952,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             if(callback)callback();
         }.bind(this), null, async === false ? false : true );
+    },
+    sortData : function(data){
+        var defaultBundles = this.options.defaultBundles;
+        if( !this.viewJson.group.column && defaultBundles && defaultBundles.length > 0 ){
+            data.grid = data.grid.sort(function (a, b) {
+               var indexA = defaultBundles.indexOf(a.bundle);
+               var indexB = defaultBundles.indexOf(b.bundle);
+               if( indexA === -1)indexA = 999999;
+               if( indexB === -1)indexB = 999998;
+               return indexA - indexB;
+           });
+        }
+        return data;
     },
     showAssociatedDocumentResult: function(failureList, successList){
         var fL = [];
