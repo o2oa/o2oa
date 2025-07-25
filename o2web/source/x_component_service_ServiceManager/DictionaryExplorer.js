@@ -243,7 +243,22 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer = new Class({
 
 MWF.xApplication.service.ServiceManager.DictionaryExplorer.Dictionary = new Class({
 	Extends: MWF.xApplication.process.ProcessManager.DictionaryExplorer.Dictionary,
+    createActionNode: function(){
+        this.deleteActionNode = new Element("div", {
+            "styles": this.explorer.css.deleteActionNode
+        }).inject(this.node);
+        this.deleteActionNode.addEvent("click", function(e){
+            this.deleteItem(e);
+        }.bind(this));
 
+        // this.saveasActionNode = new Element("div", {
+        //     "styles": this.css.saveasActionNode,
+        //     "title": this.explorer.app.lp.copy
+        // }).inject(this.node);
+        // this.saveasActionNode.addEvent("click", function(e){
+        //     this.saveas(e);
+        // }.bind(this));
+    },
 	_open: function(e){
 
 		var _self = this;

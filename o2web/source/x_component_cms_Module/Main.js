@@ -831,7 +831,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 			delete doc.id;
 		}
 
-		delete doc.documentType;
+		//delete doc.documentType;
 		delete doc.appId;
 		delete doc.appName;
 		delete doc.appAlias;

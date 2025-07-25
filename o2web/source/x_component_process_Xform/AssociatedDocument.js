@@ -645,7 +645,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
             _self.fireEvent("deleteDocument", [d]);
 
-            var p = this._cancelAssociated([d.id]);
+            var p = _self._cancelAssociated([d.id]);
             p.then(function (json) {
                 itemNode.destroy();
                 _self.documentList.erase(d);
