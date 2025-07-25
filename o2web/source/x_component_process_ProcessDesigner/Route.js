@@ -1261,7 +1261,7 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
     checkTabShow: function () {
         var isFromManual = this.isFromManualActivity();
         var isshowed = false;
-        this.tabPages.each(
+        if(this.tabPages && this.tabPages.length > 0)this.tabPages.each(
             function (tabPage) {
                 var node = tabPage.contentNode;
                 var needShow = true;
