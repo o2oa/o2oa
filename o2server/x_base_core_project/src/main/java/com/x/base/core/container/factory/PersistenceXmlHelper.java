@@ -254,7 +254,6 @@ public class PersistenceXmlHelper {
 		properties.put("openjpa.BrokerFactory", "slice");
 		properties.put("openjpa.slice.Lenient", "false");
 		properties.put("openjpa.slice.DistributionPolicy", FactorDistributionPolicy.class.getName());
-		properties.put("openjpa.QueryCompilationCache", "false");
 		properties.put("openjpa.IgnoreChanges", "true");
 		properties.put("openjpa.QueryCache", "false");
 		properties.put("openjpa.QueryCompilationCache", "false");
