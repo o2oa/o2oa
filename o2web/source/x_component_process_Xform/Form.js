@@ -4590,21 +4590,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         window.open(downloadUrl);
     },
     monitor: function () {
-
         var node = new Element("div");
         var container = new Element("div").inject(node);
         var monitor;
         var monitorDlg = o2.DL.open({
+            "style":  this.json.dialogStyle || "user",
             "title": MWF.xApplication.process.Xform.LP.monitor,
-            "width": "1100",
-            "isResize" : true,
-            "height" : "720px",
-            "maxHeightPercent" : "98%",
+            "width": layout.mobile ? "100%" : "1100",
+            "isResize" : !layout.mobile,
+            "height" : layout.mobile ? "100%" : "720px",
+            "maxHeightPercent" : layout.mobile ? "100%" : "98%",
             "mask": true,
-            "isMax" : true,
+            "isMax" : !layout.mobile,
             "content": node,
-            "container": this.app.content,
-            "maskNode": this.app.content,
+            "container": layout.mobile ? $(document.body) : this.app.content,
+            "maskNode": layout.mobile ? $(document.body) : this.app.content,
             "onQueryClose": function(){
 
             }.bind(this),
@@ -4644,18 +4644,37 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 monitor = new MWF.xApplication.process.Xform.widget.Monitor(container, this.businessData.workLogList, this.businessData.recordList,process,{
                     onPostLoad : function(){
+                        if( !layout.mobile ){
+                            monitor.paperNode.setStyles({
+                                "box-shadow":"none",
+                                "margin-bottom" : "0px"
+                            });
+                            var logProcessChartNode =  monitor.logProcessChartNode;
+                            logProcessChartNode.setStyle("border","0px");
 
-                        monitor.paperNode.setStyles({
-                            "box-shadow":"none",
-                            "margin-bottom" : "0px"
-                        });
-                        var logProcessChartNode =  monitor.logProcessChartNode;
-                        logProcessChartNode.setStyle("border","0px");
-
-                        logProcessChartNode.setStyle("height",(size.y) +"px");
-                        monitor.paperNode.setStyle("height",(size.y-48)+"px");
-
-                    }.bind(this)
+                            logProcessChartNode.setStyle("height",(size.y) +"px");
+                            monitor.paperNode.setStyle("height",(size.y-48)+"px");
+                        }
+                    }.bind(this),
+                    onShowWorklog: function(logNode){
+                        if(layout.mobile){
+                            var pSize = this.paperNode.getSize();
+                            var bodySize =  dlg.content.getSize();
+                            if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
+                                dlg.content.setStyle("position", "relative");
+                                logNode.inject( dlg.content );
+                                logNode.setStyles({
+                                    "display": "block",
+                                    "position": "absolute",
+                                    "width": "calc( 100% - 28px )",
+                                    "max-width": "500px",
+                                    "bottom": "1px",
+                                    "left": "0px"
+                                });
+                                logNode.setStyle("left", (bodySize.x - logNode.getSize().x)/2 + "px");
+                            }
+                        }
+                    }
                 });
 
             }.bind(this)
