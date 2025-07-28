@@ -176,27 +176,33 @@
         <div id="text{$.pid}otherRangeArea" style="display: text{($.rangeType=='other')?'block':'none'};">
             <div style="line-height: 24px;padding:5px 0px;">
                 var date = this.event.date; //获取传入的日期<br/>
-                return date > new Date().clearTime();   //晚于当前日期，则可选
+                return date > new Date().clearTime();   //晚于当前日期，则可选;
             </div>
             <div class="MWFScriptArea" name="enableDate" title="{{$.lp.enableDate}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
                 //该脚本用于选择小时界面的判断<br/>
-                var {date, hour} = this.event; //获取传入的日期和小时<br/>
-                return hour >= 8 //每天8点之后可选
+                var {date, hour} = this.event; //获取传入的日期（日期类型，包括小时）和小时（数字类型）<br/>
+                return hour >= 8 //每天8点之后可选<br/>
+                /***早于当前日期和小时可选***/<br/>
+                return this.event.date <= new Date().setMinutes(0, 0, 0);
             </div>
             <div class="MWFScriptArea" name="enableHour" title="{{$.lp.enableHour}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
                 //该脚本用于选择分界面的判断<br/>
-                var {date, hour, minute} = this.event; //获取传入的日期、小时和分<br/>
-                return hour > 8 || (hour === 8 && minute >= 30); //每天8点30分之后可选
+                var {date, hour, minute} = this.event; //获取传入的日期（日期类型，包括小时和分）、小时和分（数字类型）<br/>
+                return hour > 8 || (hour === 8 && minute >= 30); //每天8点30分之后可选<br/>
+                /***早于当前日期、时分可选***/<br/>
+                return this.event.date <= new Date().setSeconds(0, 0);
             </div>
             <div class="MWFScriptArea" name="enableMinute" title="{{$.lp.enableMinute}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">
                 //该脚本用于选择秒界面的判断<br/>
-                var {date, hour, minute, second} = this.event; //获取传入的日期、时分秒<br/>
-                return hour > 8 ||
-                (hour === 8 && minute > 30) ||
-                (hour === 8 && minute === 30 && second >= 30) //每天8点30分30秒之后可选
+                var {date, hour, minute, second} = this.event; //获取传入的日期（日期类型，包括时分秒）、时分秒（数字类型）<br/>
+                return hour > 8 ||<br/>
+                (hour === 8 && minute > 30) ||<br/>
+                (hour === 8 && minute === 30 && second >= 30) //每天8点30分30秒之后可选<br/>
+                /***早于当前日期、时分秒可选***/<br/>
+                return this.event.date < new Date(endTime).setMilliseconds(0);
             </div>
             <div class="MWFScriptArea" name="enableSecond" title="{{$.lp.enableSecond}} (S)"></div>
             <div style="line-height: 24px;padding:5px 0px;">

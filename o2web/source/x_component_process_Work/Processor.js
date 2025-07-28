@@ -399,6 +399,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         //this.task.routeNameList.each(function(route, i){
         var isSelected = false;
         var isSelectedDefault = false;
+        var selecteRouteId;
         routeList.each(function (route, i) {
             if (route.hiddenScriptText && this.form && this.form.Macro) {
                 if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
@@ -429,10 +430,12 @@ MWF.xApplication.process.Work.Processor = new Class({
             });
 
             if( route.id === this.options.defaultRoute || route.name === this.options.defaultRoute) {
+                selecteRouteId = route.id;
                 this.selectRoute(routeNode);
                 isSelected = true;
                 isSelectedDefault = true;
             }else if ( !isSelectedDefault && (routeList.length == 1 || route.sole )) { //sole表示优先路由
+                selecteRouteId = route.id;
                 this.selectRoute(routeNode);
                 isSelected = true;
             }
@@ -441,7 +444,8 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.setSize(0);
             if( this.orgsArea )this.orgsArea.hide();
         }else{
-            this.setSize(0);
+            var dataVisable = this.getVisableOrgData(selecteRouteId);
+            this.setSize(dataVisable.length);
         }
     },
     overRoute: function (node) {
