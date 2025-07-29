@@ -3796,7 +3796,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     selectButton.addEvent("click", function () {
                         var value = input.get("value");
                         MWF.xDesktop.requireApp("Selector", "package", function () {
-                            new o2.O2Selector(_self.app.content, {
+                            var options = {
                                 "type": "",
                                 "count": 0,
                                 "values": (value) ? value.split(o2.splitStr) : [],
@@ -3808,7 +3808,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                     });
                                     input.set("value", v.join(", "));
                                 }
-                            });
+                            };
+                            if( _self.json.selectorStyle ){
+                                options = Object.assign({}, _self.json.selectorStyle, options);
+                            }
+                            new o2.O2Selector(_self.app.content, options);
                         }.bind(this));
                         //_self.selectSplitUnit(this);
                     }.bind(this));
@@ -4810,6 +4814,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if( exclude ){
             options.exclude = exclude;
         }
+        if( this.json.selectorStyle ){
+            options = Object.assign({}, this.json.selectorStyle, options);
+        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -4832,6 +4839,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 dlg.identityList = identityList;
             }.bind(this)
         };
+        if( this.json.selectorStyle ){
+            options = Object.assign({}, this.json.selectorStyle, options);
+        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -5250,6 +5260,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 dlg.identityList = identityList;
             }.bind(this)
         };
+        if( this.json.selectorStyle ){
+            options = Object.assign({}, this.json.selectorStyle, options);
+        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -6130,6 +6143,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 opt.identityList = identityList;
             }.bind(this)
         };
+        if( this.json.selectorStyle ){
+            options = Object.assign({}, this.json.selectorStyle, options);
+        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -6251,6 +6267,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 opt.personList = personList;
             }.bind(this)
         };
+        if( this.json.selectorStyle ){
+            options = Object.assign({}, this.json.selectorStyle, options);
+        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
