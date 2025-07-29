@@ -103,7 +103,7 @@ public class ThisApplication {
 			context().scheduleLocal(FireSchedule.class, 180, 120);
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);
 			context().scheduleLocal(Cleanup.class, 10, 60 * 30);
-			context().scheduleLocal(CollectPerson.class, 10, 60 * 30);
+			context().scheduleLocal(CollectPerson.class, 10, 60 * 60 * 2);
 			// 运行间隔由60秒缩减到30秒
 			context().scheduleLocal(TriggerAgent.class, 150, 30);
 			/* 行政区域每周更新一次 */

@@ -671,7 +671,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         this.currentWorklogNode.setStyle("display", !!this.currentWorklogNode.get("html") ? "block" : "none");
         this.setWorkLogPosition(activity, activity.worklogNode, offset, psize);
     },
-    setWorkLogPosition(activity, logNode, offset, psize){
+    setWorkLogPosition: function(activity, logNode, offset, psize){
         if( !logNode )logNode = activity.worklogNode;
         if( layout.mobile ){
             var pSize = this.paperNode.getSize();
@@ -704,6 +704,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             var p = this.getlogNodePosition(activity, logNode, offset, psize);
             logNode.setPosition({"x": p.x, "y": p.y});
         }
+        this.fireEvent('showWorklog', [logNode]);
     },
     hideCurrentWorklog: function(){
         if (this.currentWorklogNode){

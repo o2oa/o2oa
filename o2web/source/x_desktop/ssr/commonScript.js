@@ -3154,7 +3154,7 @@ const statement = {
         };
 
         return Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-            statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
+            encodeURIComponent(statement.name), statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
             callback
         );
     },
@@ -3330,7 +3330,7 @@ const view = {
     "lookup": function(view, callback){
         const filterList = {"filterList": (view.filter || null)};
 
-        const json = Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList);
+        const json = Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(encodeURIComponent(view.view), encodeURIComponent(view.application), filterList);
 
         const data = {
             "grid": json.data.grid || json.data.groupGrid,
