@@ -97,6 +97,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			jobView(effectivePerson, work.getJob());
 		} else if (null != workCompleted) {
 			CompletableFuture<Void> workCompletedJsonFuture = this.workCompletedJsonFuture(workCompleted, wo);
+			CompletableFuture<Void> activityFuture = this.activityFuture(workCompleted, wo);
 			CompletableFuture<Void> workCompletedDataFuture = this.workCompletedDataFuture(workCompleted, wo);
 			CompletableFuture<Void> readFuture = readFuture(effectivePerson, workCompleted.getJob(), wo);
 			CompletableFuture<Void> creatorIdentityFuture = creatorIdentityFuture(workCompleted.getCreatorIdentity(),
@@ -107,6 +108,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<Void> workCompletedRecordFuture = this.workCompletedRecordFuture(effectivePerson,
 					workCompleted, wo);
 			workCompletedJsonFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
+			activityFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 			workCompletedDataFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 			readFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 			creatorIdentityFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
@@ -258,6 +260,22 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 					if (Objects.equals(ActivityType.manual, activity.getActivityType())) {
 						wo.setRouteList(WoRoute.copier.copy(business.route().pick(((Manual) activity).getRouteList())));
 					}
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		}, ThisApplication.forkJoinPool());
+	}
+
+	private CompletableFuture<Void> activityFuture(WorkCompleted workCompleted, Wo wo) {
+		return CompletableFuture.runAsync(() -> {
+			WoActivity woActivity = new WoActivity();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Activity activity = business.getActivity(workCompleted.getActivity(), ActivityType.end);
+				if (null != activity) {
+					activity.copyTo(woActivity);
+					wo.setActivity(woActivity);
 				}
 			} catch (Exception e) {
 				LOGGER.error(e);
