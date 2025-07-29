@@ -369,7 +369,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_org": "personnel",
 		"oo_currency": "Currency",
 		"codeedit": "Script editor ",
-		"oo_pagination": "Page number"
+		"oo_pagination": "Page number",
+		"oo_files": "File upload"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1585,7 +1586,16 @@ MWF.xApplication.process.FormDesigner.LP={
 		"disableNegative": "Prohibition of negative numbers",
 		"round": "round off",
 		"precision2": "Number of decimal places",
-		"currencyInvalidOption": "Prefixes, suffixes, thousandths, and decimal points are not allowed to use signs or numbers"
+		"currencyInvalidOption": "Prefixes, suffixes, thousandths, and decimal points are not allowed to use signs or numbers",
+		"uploadMinCount": "Minimum upload quantity",
+		"uploadMinCountInfo": "'0' indicates that there is no limit to the number of uploads",
+		"uploadButtonTitle": "Button Title",
+		"uploadButtonStyle": "button",
+		"uploadButtonIcon": "Button icon",
+		"btnStyleDefault": "default",
+		"btnStyleSimple": "simple",
+		"btnStyleLight": "bright",
+		"btnStyleIcon": "Icon only"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

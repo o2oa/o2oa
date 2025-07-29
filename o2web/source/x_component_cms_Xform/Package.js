@@ -133,7 +133,10 @@ MWF.xDesktop.requireApp("process.Xform", "OOAddress", null, false);
 MWF.xApplication.cms.Xform.OOAddress = MWF.CMSOOAddress =  new Class({
     Extends: MWF.APPOOAddress
 });
-
+MWF.xDesktop.requireApp("process.Xform", "OOFiles", null, false);
+MWF.xApplication.cms.Xform.OOFiles = MWF.CMSOOFiles =  new Class({
+    Extends: MWF.APPOOFiles
+});
 
 MWF.xDesktop.requireApp("process.Xform", "OOOrg", null, false);
 MWF.xApplication.cms.Xform.OOOrg = MWF.CMSOOOrg =  new Class({

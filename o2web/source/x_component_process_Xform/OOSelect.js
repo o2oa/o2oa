@@ -180,6 +180,10 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			this.node.removeAttribute('allow-input');
 		}
 
+		if (this.json.innerHTML){
+			this.node.set("html", this.json.innerHTML);
+		}
+
         this.node.addEvent("change", function( ev ){
 			var v = this.getInputData("change");
 			this._setBusinessData(v);
@@ -347,3 +351,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		this.node.unInvalidStyle();
 	}
 });
+
+function mergeUniqueArrays(arr1, arr2) {
+	return Array.from(new Set([...arr1, ...arr2]));
+}

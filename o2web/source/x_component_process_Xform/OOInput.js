@@ -113,6 +113,8 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
 			this.node.set("html", this.json.innerHTML);
 		}
 
+        this._loadNodeOtherAttr()
+
         this.node.addEvent('change', function () {
             var v = this.getInputData('change');
             this.validationMode();
@@ -131,6 +133,7 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
             this.validationMode();
             this.validation();
         }.bind(this));
+        
         this.node.addEvent('keyup', function () {
             this.validationMode();
         }.bind(this));
@@ -160,6 +163,7 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
             }
         });
     },
+    _loadNodeOtherAttr: function(){},
     createModelNode: function () {
         // this.modelNode = new Element('div', {'styles': this.form.css.modelNode}).inject(this.node, 'after');
         // new Element('div', {

@@ -44,6 +44,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.Address,
     "className": "OOAddress"
   },
+  "OOFiles": {
+    "fontIcon": "ooicon-file_upload",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_files,
+    "className": "OOFiles"
+  },
   "OOCurrency": {
     "fontIcon": "ooicon-currency",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_currency,

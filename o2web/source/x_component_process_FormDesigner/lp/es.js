@@ -369,7 +369,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_org": "Personal",
 		"oo_currency": "Moneda",
 		"codeedit": "Editor de guiones",
-		"oo_pagination": "Número de página"
+		"oo_pagination": "Número de página",
+		"oo_files": "Carga de archivos"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1584,7 +1585,16 @@ MWF.xApplication.process.FormDesigner.LP={
 		"disableNegative": "Prohibición de números negativos",
 		"round": "Redondeo",
 		"precision2": "Número de decimales",
-		"currencyInvalidOption": "Prefijos, sufijos, milésimas, decimales no permitidos con números positivos y negativos"
+		"currencyInvalidOption": "Prefijos, sufijos, milésimas, decimales no permitidos con números positivos y negativos",
+		"uploadMinCount": "Número mínimo de subidas",
+		"uploadMinCountInfo": "\"0\" significa que no hay límite en el número de subidas",
+		"uploadButtonTitle": "Título del botón",
+		"uploadButtonStyle": "Estilo de botón",
+		"uploadButtonIcon": "Icono del botón",
+		"btnStyleDefault": "Predeterminado",
+		"btnStyleSimple": "Simple",
+		"btnStyleLight": "Brillante",
+		"btnStyleIcon": "Solo iconos"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

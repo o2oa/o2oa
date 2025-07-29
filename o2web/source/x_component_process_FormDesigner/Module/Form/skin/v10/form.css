@@ -1,4 +1,3 @@
-
 /* 操作条容器 */
 .form-toolbar-area {
     box-shadow: 0 2px 10px 0 var(--oo-color-gray-e1);
@@ -21,7 +20,7 @@
 .form-layout .form-content {
     box-sizing: border-box !important;
 }
-.form-layout .form-content>div {
+.form-layout .form-content > div {
     min-width: 42rem;
     max-width: 86rem;
 }
@@ -48,6 +47,7 @@
 
 .form-layout .form-content-area .content-item,
 .form-layout .form-content-area oo-input,
+.form-layout .form-content-area oo-files,
 .form-layout .form-content-area oo-selector,
 .form-layout .form-content-area oo-textarea,
 .form-layout .form-content-area oo-radio-group,
@@ -150,13 +150,13 @@
     width: 1em;
 }
 
-.form-layout div[mwftype='datatable']{
+.form-layout div[mwftype='datatable'] {
     padding-bottom: 0 !important;
     overflow: auto;
     /* position: relative; */
 }
 
-.form-layout div[mwftype='datatable'] th{
+.form-layout div[mwftype='datatable'] th {
     position: sticky;
     top: 0;
     z-index: 11;
@@ -165,7 +165,7 @@
     left: 0;
     z-index: 12;
 }
-.form-layout .form-datatable .mwf_editaction{
+.form-layout .form-datatable .mwf_editaction {
     position: sticky;
     left: 0;
     z-index: 10;
@@ -176,11 +176,12 @@
 .form-layout .form-datatable .delLineAction {
     background: none !important;
 }
-.form-layout .form-datatable .mwf_editaction, .form-layout .form-datatable .mwf_addlineaction {
+.form-layout .form-datatable .mwf_editaction,
+.form-layout .form-datatable .mwf_addlineaction {
     background-color: #f0f0f0 !important;
     border-right: 1px solid #dedede !important;
 }
-.form-layout .form-datatable .mwf_moveaction{
+.form-layout .form-datatable .mwf_moveaction {
     background-color: #f0f0f0 !important;
     border-left: 1px solid #dedede !important;
     position: sticky;
@@ -188,90 +189,126 @@
     z-index: 11;
 }
 
-.form-layout td[mwftype='datatable$Data'].mwf_origional>* {
+.form-layout td[mwftype='datatable$Data'].mwf_origional > * {
     width: 100% !important;
 }
 
 .form-layout div[mwftype='datatable']::-webkit-scrollbar {
-	width: 0.5rem;
-	height: 0.5rem;
-	border-radius: 0.2rem;
-	background-color: #dddddd;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 0.2rem;
+    background-color: #dddddd;
 }
-.form-layout div[mwftype='datatable']::-webkit-scrollbar-thumb{
-	width: 0.5rem;
-	border-radius: 0.2rem;
-	background-color: #bbbbbb;
-	cursor: pointer;
+.form-layout div[mwftype='datatable']::-webkit-scrollbar-thumb {
+    width: 0.5rem;
+    border-radius: 0.2rem;
+    background-color: #bbbbbb;
+    cursor: pointer;
 }
-.form-layout div[mwftype='datatable']::-webkit-scrollbar-thumb:hover{
-	background-color: #999999;
+.form-layout div[mwftype='datatable']::-webkit-scrollbar-thumb:hover {
+    background-color: #999999;
 }
-
 
 /* 意见区域 */
 /* 流程意见默认样式 */
-.form-layout div.form-log[mwftype='log'] {
-
-}
-
 .form-layout div.form-log[mwftype='log'] > div {
-    border-radius: var(--oo-default-radius);
-    border: 0 !important;
+    overflow: hidden;
+    margin: 0;
     padding: 0 !important;
-    /*box-shadow: var(--oo-shadow-border);*/
+    border: 0 !important;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
 }
 .form-layout div.form-log[mwftype='log'] > div > div {
-    padding: 0.5em;
-    border-bottom: 1px solid #dedede;
-    background-color: #ffffff !important;
-}
-.form-layout div.form-log[mwftype='log'] > div > div > div {
-    display: flex;
-    align-items: center;
-}
-.form-layout div.form-log[mwftype='log'] > div > div > div > div:nth-child(2) {
-    margin-left: 0 !important;
-    flex: 1;
-}
-
-.form-layout div.form-log[mwftype='log'] .logItem {
-    display: flex;
-    gap: 1em;
-    align-items: center;
-    line-height: 1.8em;
-}
-.form-layout div.form-log[mwftype='log'] .logItem img {
-    width: 11.85em;
-    font-size: 0.875rem;
-}
-.form-layout div.form-log[mwftype='log'] .logItemIcon {
-    width: 4em;
-    height: 4em;
-    background-size: 3em 3em;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.form-layout div.form-log > div > div {
-    padding: 0 !important;
-    border-bottom: 1px solid #dedede;
     background-color: transparent !important;
+    border-bottom: 1px solid #dedede;
 }
-.form-layout div.form-log > div > div:first-child > div {
-    float: none;
-    height: unset !important;
-    line-height: unset !important;
-    /* font-size: 0.875em !important; */
-    margin-right: 0 !important;
-    font-weight: normal;
+.form-layout div.form-log[mwftype='log'] > div > div > div > div:first-child {
+    /* display: none !important; */
+    margin-top: 0.8em;
+}
+
+.form-layout div.form-log[mwftype='log'] > div > div > div > div:last-child {
+    margin-left: 1em !important;
+    margin-right: 1em !important;
+}
+
+.form-layout div.form-log[mwftype='log'] div.logItem {
+    display: grid;
+    grid-template-columns: 3em auto auto;
+    grid-template-rows: auto auto auto;
+    gap: 0 1em;
+    margin: 0 0 0.5em 0;
+    font-size: 1rem;
+    /* grid-template:
+        "icon person activity"
+        "icon opinion img"
+        "icon opinion img" */
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-icon {
+    width: 3em;
+    height: 3em;
+    background-size: cover;
+    background-repeat: no-repeat;
+    grid-row: 1 / -1;
+    margin-top: 0.5em;
+}
+
+.form-layout div.form-log[mwftype='log'] div.logItem-person-route {
+    display: flex;
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-activity {
+    text-align: right;
+    font-weight: bold;
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-opinion {
+    grid-column: 2 / 3;
+    line-height: 1.7em;
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-time {
+    grid-column: 2 / 3;
+    color: #999999;
+    margin-top: 0.7em;
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-time::before {
+    margin-right: 0.5em;
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-img {
+    grid-column: 3 / 4;
+    grid-row: 2 / -1;
+    display: flex;
+    justify-content: flex-end;
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-img img {
+    width: 16em;
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-route {
+    color: var(--oo-color-main);
+}
+.form-layout div.form-log[mwftype='log'] div.logItem-person {
+    color: #ff5400;
 }
 
 .form-layout div.form-log-simple {
-    background-color: #f7f7f7;
-    padding: 1em;
+    background-color: #fcfcfc;
+    padding: 0;
     border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #dddddd;
+    height: 100%;
 }
+.form-layout div.form-log-simple > div {
+    margin-right: 0 !important;
+    color: var(--oo-color-main);
+    font-size: 1.125em;
+    padding: 0.5em 0;
+}
+.form-layout div.form-log-simple > div:nth-child(2n) {
+    background-color: var(--oo-color-hover);
+}
+/************************************************************/
 
 .form-layout .form-description {
     background-color: var(--oo-color-over);
@@ -365,7 +402,6 @@
     overflow: auto !important;
     padding: 1em;
     font-size: 1rem !important;
-
 }
 
 .form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(4) > div {
@@ -448,29 +484,29 @@
     background-color: var(--oo-color-hover) !important;
 }
 
-.form-layout .selector-area{
+.form-layout .selector-area {
     box-sizing: border-box !important;
 }
 
-.form-layout .selector-area *{
+.form-layout .selector-area * {
     box-sizing: border-box !important;
 }
-
 
 .form-layout .page-content-section div[mwftype='view'] .pagingBar > div,
-.form-layout .page-content-section div[mwftype='statement'] .pagingBar > div{
+.form-layout .page-content-section div[mwftype='statement'] .pagingBar > div {
     border-radius: var(--oo-default-radius) !important;
 }
 
 .form-layout .page-content-section div[mwftype='view'] .pagingBar .pageItem,
 .form-layout .page-content-section div[mwftype='view'] .pagingBar .currentPage,
 .form-layout .page-content-section div[mwftype='statement'] .pagingBar .pageItem,
-.form-layout .page-content-section div[mwftype='statement'] .pagingBar .currentPage{
+.form-layout .page-content-section div[mwftype='statement'] .pagingBar .currentPage {
     border-radius: var(--oo-default-radius) !important;
 }
 
 /* 视图选择按钮 */
-.form-layout .form-content-view-selector, .form-layout .form-content-button {
+.form-layout .form-content-view-selector,
+.form-layout .form-content-button {
     color: #ffffff !important;
     border-radius: var(--oo-default-radius) !important;
     border: 0 !important;
@@ -482,41 +518,45 @@
     height: unset !important;
     line-height: unset !important;
 }
-.form-layout .form-content-view-selector:hover, .form-layout .form-content-button:hover {
+.form-layout .form-content-view-selector:hover,
+.form-layout .form-content-button:hover {
     background-color: var(--oo-color-main-light) !important;
 }
-.form-layout .form-content-view-selector:focus, .form-layout .form-content-button:focus {
+.form-layout .form-content-view-selector:focus,
+.form-layout .form-content-button:focus {
     background-color: var(--oo-color-main-light) !important;
 }
-.form-layout .form-content-view-selector:active, .form-layout .form-content-button:active {
+.form-layout .form-content-view-selector:active,
+.form-layout .form-content-button:active {
     background-color: var(--oo-color-main-deep) !important;
 }
 
-.form-layout .v10_dialog{
+.form-layout .v10_dialog {
     box-sizing: content-box !important;
 }
-.form-layout .v10_dialog *{
+.form-layout .v10_dialog * {
     box-sizing: content-box !important;
 }
 
 /* 关联文档 */
-.form-layout .MWFADContent{
+.form-layout .MWFADContent {
 }
-.form-layout .MWFADContent .doc-icon{
+.form-layout .MWFADContent .doc-icon {
     color: #4590f8;
     text-align: center;
 }
-.form-layout .MWFADContent .process-icon{
+.form-layout .MWFADContent .process-icon {
     color: #1cc66d;
     text-align: center;
 }
-.form-layout .MWFADContent table{
+.form-layout .MWFADContent table {
     border-top: 1px solid rgb(222, 222, 222);
     border-left: 1px solid rgb(222, 222, 222);
     border-right: 1px solid rgb(222, 222, 222);
     border-radius: 4px;
 }
-.form-layout .MWFADContent table td, .form-layout .MWFADContent table th {
+.form-layout .MWFADContent table td,
+.form-layout .MWFADContent table th {
     color: var(--oo-color-text2);
     border-bottom: 1px solid #dfdfdf !important;
     transition: background-color 0.3s;
@@ -524,17 +564,17 @@
     line-height: 30px !important;
     padding: 6px 0;
 }
-.form-layout .MWFADContent table th{
+.form-layout .MWFADContent table th {
     text-align: left;
     background-color: #f7f7f7 !important;
 }
 .form-layout .MWFADContent tr:hover > td {
     background-color: var(--oo-color-hover) !important;
 }
-.form-layout .MWFADButtonArea{
+.form-layout .MWFADButtonArea {
     padding: 0.5rem 0;
 }
-.hide{
+.hide {
     display: none !important;
 }
 
@@ -551,10 +591,14 @@
         box-sizing: border-box !important;
         font-size: 16px !important;
     }
-    body *{
+    body * {
         box-sizing: border-box !important;
     }
-    oo-input, oo-select, oo-textarea, oo-datetime, oo-currency {
+    oo-input,
+    oo-select,
+    oo-textarea,
+    oo-datetime,
+    oo-currency {
         color: var(--oo-color-text);
     }
 
@@ -573,7 +617,7 @@
         width: unset !important;
         min-width: unset !important;
         gap: 0.625rem !important;
-        box-shadow: none !important
+        box-shadow: none !important;
     }
     .form-content-area oo-input {
         flex: 1 1 100%;
@@ -591,11 +635,11 @@
     .form-description {
         margin: 0;
     }
-    div[mwftype="actionbar"].form-toolbar-area {
+    div[mwftype='actionbar'].form-toolbar-area {
         display: none !important;
     }
-    .form-side-content{
-        position:sticky;
+    .form-side-content {
+        position: sticky;
         top: 0;
         overflow: auto;
         box-shadow: 0 2px 10px 0px #dddddd;
@@ -607,16 +651,15 @@
         border-radius: 0rem;
         display: none;
     }
-    .form-side-content::-webkit-scrollbar-thumb{
+    .form-side-content::-webkit-scrollbar-thumb {
         width: 0;
         display: none;
     }
-    .form-side-content::-webkit-scrollbar-thumb:hover{
+    .form-side-content::-webkit-scrollbar-thumb:hover {
         display: none;
     }
 
-
-    .form-side-bookmark-content{
+    .form-side-bookmark-content {
         display: flex;
         justify-content: space-around;
         font-size: 1.125rem;
@@ -636,13 +679,13 @@
         background-color: #ffffff;
         color: var(--oo-color-main);
     }
-    .form-side-top{
+    .form-side-top {
         display: none !important;
     }
-    .form-content-section{
-        border-left: 0 !important;;
+    .form-content-section {
+        border-left: 0 !important;
     }
-    .form-content-section:before{
+    .form-content-section:before {
         content: ' ';
         display: block;
         margin-right: 0.5em;
@@ -653,15 +696,29 @@
         float: left;
     }
 
-    .form-content > div.form-content-area{
+    .form-content-section-style {
+        border-left: 0 !important;
+    }
+    .form-content-section-style:before {
+        content: ' ';
+        display: block;
+        margin-right: 0.5em;
+        width: 0.375rem !important;
+        height: 1.25rem !important;
+        background-color: var(--oo-color-main) !important;
+        margin-top: 0.15em;
+        float: left;
+    }
+
+    .form-content > div.form-content-area {
         gap: 1em 2em !important;
     }
-    .form-content{
+    .form-content {
         padding: 0 !important;
         position: static !important;
     }
 
-    .form-title{
+    .form-title {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -671,7 +728,7 @@
         top: 0;
         /* z-index: 10000; */
     }
-    .form-title-text{
+    .form-title-text {
         font-weight: bold !important;
         color: var(--oo-color-main-deep);
         text-align: center;
@@ -686,32 +743,32 @@
         border: 1px solid blue;
     }*/
 
-    .mobileMoreArea{
+    .mobileMoreArea {
         width: 100% !important;
         bottom: 4em !important;
         z-index: 301 !important;
     }
-    .o2_form_mobile_actions{
+    .o2_form_mobile_actions {
         z-index: 301 !important;
     }
 
-    .ooui-select-visible .o2_form_mobile_actions{
+    .ooui-select-visible .o2_form_mobile_actions {
         position: static !important;
         display: none !important;
     }
-    .ooui-select-visible .form-side-content{
+    .ooui-select-visible .form-side-content {
         /* position: static !important; */
         pointer-events: none;
     }
 
-    div[mwftype='datatable'] tr:nth-child(odd){
-        background-color: #ffffff !important;;
+    div[mwftype='datatable'] tr:nth-child(odd) {
+        background-color: #ffffff !important;
     }
-    div[mwftype='datatable'] tr:nth-child(even){
-        background-color: #f7f7f7 !important;;
+    div[mwftype='datatable'] tr:nth-child(even) {
+        background-color: #f7f7f7 !important;
     }
 
-    div[mwftype='datatable'] td{
+    div[mwftype='datatable'] td {
         padding: 0 0 !important;
         /* font-size: 0.875em; */
         background-color: transparent !important;
@@ -736,36 +793,38 @@
     div[mwftype='datatable'] th {
         padding: 0 0.2em !important;
     }
-    div[mwftype='datatable']{
+    div[mwftype='datatable'] {
         background-color: #ffffff;
         transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s, bottom 0.3s;
     }
 
     /* .datatable_edit_mode */
-    .datatable_edit_mode{
+    .datatable_edit_mode {
         z-index: 301 !important;
     }
-    .datatable_edit_mode table, .datatable_edit_mode table tr, .datatable_edit_mode table td{
+    .datatable_edit_mode table,
+    .datatable_edit_mode table tr,
+    .datatable_edit_mode table td {
         display: block;
     }
-    .datatable_edit_mode table tbody{
+    .datatable_edit_mode table tbody {
         display: flex;
         flex-direction: column;
         gap: 1.5em;
     }
-    .datatable_edit_mode table tr:first-child{
+    .datatable_edit_mode table tr:first-child {
         display: none;
     }
-    .datatable_edit_mode{
+    .datatable_edit_mode {
         padding: 0em !important;
         position: absolute !important;
         overscroll-behavior: contain;
     }
-    .datatable_edit_mode table{
+    .datatable_edit_mode table {
         padding: 1em;
         min-height: 100%;
     }
-    .datatable_edit_mode table tr{
+    .datatable_edit_mode table tr {
         /* border: 1px solid #dedede !important; */
         border-radius: var(--oo-default-radius);
         overflow: hidden;
@@ -776,17 +835,17 @@
         grid-template-columns: 6em 1fr;
         transition: filter 0.5s;
     }
-    .datatable_edit_mode .mwf_origional{
+    .datatable_edit_mode .mwf_origional {
         display: flex !important;
         padding: 0.5em 0.5em !important;
         align-items: center;
         font-size: 1rem;
     }
-    .datatable_edit_mode .mwf_origional *{
+    .datatable_edit_mode .mwf_origional * {
         flex: 1;
     }
 
-    .datatable_edit_mode td.mwf_editaction{
+    .datatable_edit_mode td.mwf_editaction {
         background-color: #f3f3f3 !important;
         overflow: hidden;
         padding: 0.4em 0.5em !important;
@@ -794,7 +853,7 @@
         justify-content: flex-end;
         min-height: 2.2em;
     }
-    .datatable_edit_mode td.mwf_sequence{
+    .datatable_edit_mode td.mwf_sequence {
         border-bottom: 1px solid rgb(222, 222, 222);
         position: absolute;
         width: unset !important;
@@ -808,7 +867,7 @@
         font-weight: bold;
     }
     .datatable_edit_mode td.mwf_sequence::before {
-        content: "\e72c";
+        content: '\e72c';
         font-family: 'ooicon' !important;
         speak: never;
         font-style: normal;
@@ -822,39 +881,39 @@
     }
 
     div[mwftype='datatable'].datatable_edit_mode tr:nth-child(even) {
-        background-color: #FAFAFA !important;
+        background-color: #fafafa !important;
     }
-    div[mwftype='datatable'].datatable_edit_mode  tr:nth-child(even)>td:first-child{
-        background-color: #F0F0F0 !important;
+    div[mwftype='datatable'].datatable_edit_mode tr:nth-child(even) > td:first-child {
+        background-color: #f0f0f0 !important;
         margin-right: 0;
     }
-    div[mwftype='datatable'].datatable_edit_mode  tr:nth-child(odd){
+    div[mwftype='datatable'].datatable_edit_mode tr:nth-child(odd) {
         background-color: var(--oo-color-hover) !important;
     }
-    div[mwftype='datatable'].datatable_edit_mode  tr:nth-child(odd)>td:first-child{
+    div[mwftype='datatable'].datatable_edit_mode tr:nth-child(odd) > td:first-child {
         background-color: var(--oo-color-over) !important;
         margin-right: 0;
     }
 
-    .datatable_edit_mode table th{
+    .datatable_edit_mode table th {
         background-color: #ffffff;
         height: unset !important;
         align-items: center;
         background-color: transparent !important;
         margin-left: 0.5em;
     }
-    .datatable_edit_mode table td{
+    .datatable_edit_mode table td {
         margin-right: 0.5em;
     }
 
-     div[mwftype='datatable'].datatable_edit_mode oo-input,
-     div[mwftype='datatable'].datatable_edit_mode oo-selector,
-     div[mwftype='datatable'].datatable_edit_mode oo-textarea,
-     div[mwftype='datatable'].datatable_edit_mode oo-radio-group,
-     div[mwftype='datatable'].datatable_edit_mode oo-checkbox-group,
-     div[mwftype='datatable'].datatable_edit_mode oo-select,
-     div[mwftype='datatable'].datatable_edit_mode oo-currency,
-     div[mwftype='datatable'].datatable_edit_mode oo-datetime {
+    div[mwftype='datatable'].datatable_edit_mode oo-input,
+    div[mwftype='datatable'].datatable_edit_mode oo-selector,
+    div[mwftype='datatable'].datatable_edit_mode oo-textarea,
+    div[mwftype='datatable'].datatable_edit_mode oo-radio-group,
+    div[mwftype='datatable'].datatable_edit_mode oo-checkbox-group,
+    div[mwftype='datatable'].datatable_edit_mode oo-select,
+    div[mwftype='datatable'].datatable_edit_mode oo-currency,
+    div[mwftype='datatable'].datatable_edit_mode oo-datetime {
         white-space: normal !important;
     }
 
@@ -864,20 +923,23 @@
     div[mwftype='datatable'].datatable_edit_mode oo-select[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-currency[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-datetime[readmode='false'] {
-       background-color: #ffffff;
-   }
+        background-color: #ffffff;
+    }
 
-    div[mwftype='datatable'] .mwf_totaltr>td {
+    div[mwftype='datatable'] .mwf_totaltr > td {
         padding: 0.5em !important;
         border-bottom: 1px solid rgb(222, 222, 222);
     }
 
-    div[mwftype='datatable'].datatable_edit_mode .mwf_totaltr>td {
+    div[mwftype='datatable'].datatable_edit_mode .mwf_totaltr > td {
         padding: 0.7em 1.1em !important;
         border-bottom: 1px solid rgb(222, 222, 222);
     }
 
-    .datatable_edit_mode .addLineAction, .datatable_edit_mode .delLineAction, .datatable_edit_mode .completeLineAction, .datatable_edit_mode .cancelLineEditAction{
+    .datatable_edit_mode .addLineAction,
+    .datatable_edit_mode .delLineAction,
+    .datatable_edit_mode .completeLineAction,
+    .datatable_edit_mode .cancelLineEditAction {
         width: unset !important;
         height: unset !important;
         display: flex;
@@ -887,29 +949,28 @@
         margin-left: 0.5em;
         background-color: #ffffff;
     }
-    .datatable_edit_mode .addLineAction::after{
-        content: "添加";
+    .datatable_edit_mode .addLineAction::after {
+        content: '添加';
         display: block;
         margin-left: 0.3em;
     }
-    .datatable_edit_mode .delLineAction::after{
-        content: "删除";
+    .datatable_edit_mode .delLineAction::after {
+        content: '删除';
         display: block;
         margin-left: 0.3em;
     }
-    .datatable_edit_mode .completeLineAction::after{
-        content: "确定";
+    .datatable_edit_mode .completeLineAction::after {
+        content: '确定';
         display: block;
         margin-left: 0.3em;
     }
-    .datatable_edit_mode .cancelLineEditAction::after{
-        content: "取消";
+    .datatable_edit_mode .cancelLineEditAction::after {
+        content: '取消';
         display: block;
         margin-left: 0.3em;
     }
 
-
-    .datatable_edit_mode .mwf_moveaction{
+    .datatable_edit_mode .mwf_moveaction {
         width: unset !important;
         grid-column: 1 / -1;
         overflow: hidden;
@@ -922,7 +983,7 @@
         margin-right: 0;
         border-bottom: 0 !important;
     }
-    .datatable_edit_mode .mwf_moveaction>div{
+    .datatable_edit_mode .mwf_moveaction > div {
         width: unset !important;
         height: unset !important;
         display: flex !important;
@@ -945,34 +1006,34 @@
         line-height: 1;
         -webkit-font-smoothing: antialiased;
     } */
-    .datatable_edit_mode .mwf_moveaction>div::after{
-        content: "上移";
+    .datatable_edit_mode .mwf_moveaction > div::after {
+        content: '上移';
         display: block;
     }
-    .datatable_edit_mode .mwf_totaltr{
+    .datatable_edit_mode .mwf_totaltr {
         height: unset !important;
     }
-    .datatable_edit_mode .mwf_totaltr .mwf_moveaction{
+    .datatable_edit_mode .mwf_totaltr .mwf_moveaction {
         display: none !important;
     }
 
-    .datatable_edit_mode .mwf_totaltr .mwf_editaction{
+    .datatable_edit_mode .mwf_totaltr .mwf_editaction {
         justify-content: flex-start;
         padding: 0.7em 0.5em !important;
     }
 
-    .datatable_edit_mode .mwf_totaltr .mwf_editaction>span{
+    .datatable_edit_mode .mwf_totaltr .mwf_editaction > span {
         display: flex;
         justify-content: flex-start;
         align-items: center;
     }
 
-    .datatable_edit_mode .mwf_totaltr .mwf_editaction>span::before{
-        content: "合计";
+    .datatable_edit_mode .mwf_totaltr .mwf_editaction > span::before {
+        content: '合计';
         display: block;
     }
 
-    .datatable_edit_mode .mwf_mobile_actions{
+    .datatable_edit_mode .mwf_mobile_actions {
         /* border-top: 1px solid #999999; */
         box-shadow: 0 0 10px 0px #cccccc;
         position: sticky;
@@ -984,16 +1045,16 @@
         gap: 1em;
         padding: 0.5em 1em 2em 1em;
     }
-    .datatable_edit_mode .mwf_mobile_addAction{
+    .datatable_edit_mode .mwf_mobile_addAction {
         flex: 2;
         height: 2.75em;
     }
-    .datatable_edit_mode  .mwf_mobile_okAction{
+    .datatable_edit_mode .mwf_mobile_okAction {
         flex: 3;
         height: 2.75em;
     }
 
-    .datatable_edit_mode .mwf_datatable_mobile_title{
+    .datatable_edit_mode .mwf_datatable_mobile_title {
         padding: 0.75em;
         font-size: 1.125em;
         text-align: left;
@@ -1004,11 +1065,9 @@
         background-color: #ffffff;
         border-bottom: 1px solid #cccccc;
     }
-    .datatable_edit_mode .mwf_move_line{
+    .datatable_edit_mode .mwf_move_line {
         /* filter: invert(0.7); */
     }
-
-
 
     .mwf_selectView_node {
         position: fixed;
@@ -1019,7 +1078,7 @@
         top: 0;
         left: 0;
     }
-    .mwf_selectView_content{
+    .mwf_selectView_content {
         position: absolute;
         border: 1px solid var(--oo-color-gray-d);
         background-color: #ffffff;
@@ -1034,18 +1093,18 @@
         display: grid;
         grid-template-rows: auto 1fr auto;
     }
-    .mwf_selectView_content.visible{
+    .mwf_selectView_content.visible {
         transform: scale(1);
         opacity: 1;
     }
-    .mwf_selectView_content.invisible{
+    .mwf_selectView_content.invisible {
         transform: scale(1, 0.001);
-        opacity: 0
+        opacity: 0;
     }
-    .mwf_selectView_view{
+    .mwf_selectView_view {
         overflow: auto;
     }
-    .mwf_selectView_action{
+    .mwf_selectView_action {
         background-color: #ffffff;
         display: flex;
         justify-content: space-between;
@@ -1054,36 +1113,36 @@
         padding: 0.5em 1em 2em 1em;
         box-shadow: 0 0 10px 0px #cccccc;
     }
-    .mwf_selectView_action_ok{
+    .mwf_selectView_action_ok {
         flex: 3;
         height: 2.75em;
     }
-    .mwf_selectView_action_cancel{
+    .mwf_selectView_action_cancel {
         flex: 2;
         height: 2.75em;
     }
-    .mwf_selectView_action_close{
+    .mwf_selectView_action_close {
         flex: 100%;
         height: 2.75em;
     }
 
-    .form-content-view{
+    .form-content-view {
         display: flex;
         flex-direction: column;
     }
-    .form-content-view .viewAreaNode{
+    .form-content-view .viewAreaNode {
         flex: 1;
     }
-    .form-content-view .viewAreaNode td{
+    .form-content-view .viewAreaNode td {
         white-space: nowrap;
     }
-    .mwf_selectView_node .mwf_selectView_title{
+    .mwf_selectView_node .mwf_selectView_title {
         padding: 0.75em;
         font-size: 1.125em;
         font-weight: bold;
     }
 
-    .mwf_selectView_node .searchAreaNode>div{
+    .mwf_selectView_node .searchAreaNode > div {
         height: unset !important;
         border: 0 !important;
         margin: 0 !important;
@@ -1096,7 +1155,7 @@
         align-items: center;
         flex-direction: row-reverse;
     }
-    .mwf_selectView_node .searchAreaNode>div::after {
+    .mwf_selectView_node .searchAreaNode > div::after {
         /* display: block;
         content: '搜索';
         padding: 0.5em 1.5em;
@@ -1105,11 +1164,11 @@
         border-radius: var(--oo-default-radius); */
     }
 
-    .mwf_selectView_node .searchAreaNode>div>div:first-child{
+    .mwf_selectView_node .searchAreaNode > div > div:first-child {
         float: right;
         background-image: none !important;
         display: block;
-        content: "搜索";
+        content: '搜索';
         background-color: var(--oo-color-main) !important;
         color: rgb(255, 255, 255);
         padding: 0.5em 1.5em;
@@ -1119,11 +1178,11 @@
         height: unset !important;
         width: unset !important;
     }
-    .mwf_selectView_node .searchAreaNode>div>div:first-child::after{
-        content: "搜索";
+    .mwf_selectView_node .searchAreaNode > div > div:first-child::after {
+        content: '搜索';
     }
 
-    .mwf_selectView_node .searchAreaNode>div>div:last-child{
+    .mwf_selectView_node .searchAreaNode > div > div:last-child {
         margin-right: 0 !important;
         margin-left: 0 !important;
         height: unset !important;
@@ -1137,7 +1196,7 @@
         gap: 0.5em;
     }
 
-    .mwf_selectView_node .searchAreaNode>div>div:last-child::before{
+    .mwf_selectView_node .searchAreaNode > div > div:last-child::before {
         font-family: 'ooicon' !important;
         speak: never;
         font-style: normal;
@@ -1145,9 +1204,9 @@
         font-variant: normal;
         text-transform: none;
         line-height: 1;
-        content: "\e644";
+        content: '\e644';
     }
-    .mwf_selectView_node .searchAreaNode input{
+    .mwf_selectView_node .searchAreaNode input {
         width: 99%;
         height: unset !important;
         color: rgb(153, 153, 153);
@@ -1155,31 +1214,31 @@
         font-size: 1rem;
         background-color: transparent !important;
     }
-    .mwf_selectView_node .mwf_selectView_view .contentAreaNode{
+    .mwf_selectView_node .mwf_selectView_view .contentAreaNode {
         font-size: 1rem !important;
     }
-    .mwf_selectView_node .mwf_selectView_view .viewAreaNode{
+    .mwf_selectView_node .mwf_selectView_view .viewAreaNode {
         padding: 0.5em 1em !important;
         height: unset !important;
     }
-    .mwf_selectView_node .mwf_selectView_view table tr:first-child>td{
+    .mwf_selectView_node .mwf_selectView_view table tr:first-child > td {
         line-height: unset !important;
         height: 2.5em !important;
         background-color: var(--oo-color-gray-f0) !important;
     }
 
-    .mwf_selectView_view table tr:nth-child(odd)>td {
+    .mwf_selectView_view table tr:nth-child(odd) > td {
         height: 3.2em !important;
-        background-color: #F7F7F7 !important;
+        background-color: #f7f7f7 !important;
     }
-    .mwf_selectView_view table tr:nth-child(even)>td {
+    .mwf_selectView_view table tr:nth-child(even) > td {
         height: 3.2em !important;
-        background-color: #FFFFFF !important;
+        background-color: #ffffff !important;
     }
-    .mwf_selectView_view table tr>td{
+    .mwf_selectView_view table tr > td {
         border-bottom: 0 !important;
     }
-    .mwf_selectView_view table tr>td:first-child {
+    .mwf_selectView_view table tr > td:first-child {
         height: unset !important;
         line-height: unset !important;
         padding: 0 !important;
@@ -1188,10 +1247,10 @@
         position: sticky;
         left: 0;
         z-index: 10;
-        background-image: unset!important;
+        background-image: unset !important;
     }
-    .mwf_selectView_view table tr>td:first-child::before {
-        content: "\e67e";
+    .mwf_selectView_view table tr > td:first-child::before {
+        content: '\e67e';
         font-family: 'ooicon' !important;
         speak: never;
         font-style: normal;
@@ -1201,34 +1260,34 @@
         line-height: 1;
         -webkit-font-smoothing: antialiased;
     }
-    .mwf_selectView_view table tr:first-child>td:first-child::before {
-        content: "" !important;
+    .mwf_selectView_view table tr:first-child > td:first-child::before {
+        content: '' !important;
     }
 
-    .mwf_selectView_view table tr.selectedRow td{
+    .mwf_selectView_view table tr.selectedRow td {
         background-color: var(--oo-color-over) !important;
-
     }
-    .mwf_selectView_view table .selectedRow td:first-child::before{
-        content: "\e68b";
+    .mwf_selectView_view table .selectedRow td:first-child::before {
+        content: '\e68b';
     }
 
-    .mwf_selectView_view table .successRow td:first-child::before{
-        content: "\e68b";
+    .mwf_selectView_view table .successRow td:first-child::before {
+        content: '\e68b';
         color: var(--oo-color-success) !important;
     }
 
-    .mwf_selectView_view table .failRow td:first-child::before{
-        content: "\e748";
+    .mwf_selectView_view table .failRow td:first-child::before {
+        content: '\e748';
         color: var(--oo-color-error) !important;
     }
-    .mwf_selectView_view table .titleCell.associationResult{
-        position: sticky!important;
+    .mwf_selectView_view table .titleCell.associationResult {
+        position: sticky !important;
         right: 0;
         min-width: 2.5em !important;
         z-index: 10;
     }
-    .mwf_selectView_view table .successRow td:last-child, .mwf_selectView_view table .failRow td:last-child {
+    .mwf_selectView_view table .successRow td:last-child,
+    .mwf_selectView_view table .failRow td:last-child {
         height: unset !important;
         line-height: unset !important;
         padding: 0 !important;
@@ -1236,31 +1295,31 @@
         position: sticky;
         right: 0;
         z-index: 10;
-        background-image: unset!important;
+        background-image: unset !important;
     }
 
-    .mwf_selectView_view .pagingBarWraper div{
+    .mwf_selectView_view .pagingBarWraper div {
         border-radius: var(--oo-default-radius) !important;
         height: 1.6em !important;
     }
-    .mwf_selectView_view .pagingBarWraper .pagingBar{
+    .mwf_selectView_view .pagingBarWraper .pagingBar {
         display: flex;
         align-items: center;
     }
-    .mwf_selectView_view .tabTitleArea{
+    .mwf_selectView_view .tabTitleArea {
         display: block;
         height: 3.125rem;
         border-top: 1px solid #ccc;
         border-bottom: 0.625rem solid rgb(247, 247, 247);
-        background: #FFFFFF;
+        background: #ffffff;
     }
-    .mwf_selectView_view .tabContentArea{
-        height: calc( 100% - 2.5rem - 0.625rem - 1px);
+    .mwf_selectView_view .tabContentArea {
+        height: calc(100% - 2.5rem - 0.625rem - 1px);
     }
-    .mwf_selectView_view .tabContentArea > div{
+    .mwf_selectView_view .tabContentArea > div {
         height: 100%;
     }
-    .mwf_selectView_view .tabContentArea > div > div{
+    .mwf_selectView_view .tabContentArea > div > div {
         height: 100%;
     }
     .form-layout div[mwftype='AssociatedDocument'] {
@@ -1268,15 +1327,16 @@
         height: 100% !important;
         position: relative;
     }
-    .form-layout .MWFADContent{
+    .form-layout .MWFADContent {
         overflow: auto;
         width: 100%;
     }
-    .form-layout .MWFADContent table{
+    .form-layout .MWFADContent table {
         width: 100%;
         border: 0;
     }
-    .form-layout .MWFADContent table td, .form-layout .MWFADContent table th{
+    .form-layout .MWFADContent table td,
+    .form-layout .MWFADContent table th {
         white-space: nowrap;
         height: 3.2em !important;
         padding: 5px;
@@ -1289,20 +1349,20 @@
         background-color: #ffffff !important;
     }
     .form-layout .MWFADContent table th:last-child {
-         position: sticky;
-         right: 0;
-         z-index: 10;
-         min-width: 2.5em !important;
-         background-color: #f7f7f7 !important;
-     }
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        min-width: 2.5em !important;
+        background-color: #f7f7f7 !important;
+    }
 
-    .content-item.flex{
+    .content-item.flex {
         flex-direction: column;
         align-items: stretch !important;
         font-size: 1.125rem !important;
     }
 
-    .content-item .item-label{
+    .content-item .item-label {
         width: unset !important;
         min-width: unset !important;
         max-width: unset !important;
@@ -1311,15 +1371,15 @@
         color: var(--oo-color-text3) !important;
         font-size: 1rem !important;
     }
-    .flowNode_mobile{
+    .flowNode_mobile {
         z-index: 500 !important;
     }
-    .o2flow-handwriting-node{
+    .o2flow-handwriting-node {
         z-index: 501 !important;
     }
 
     /* 继续流转界面 **/
-    .flowNode_mobile div.o2flow-quick-select{
+    .flowNode_mobile div.o2flow-quick-select {
         border-radius: var(--oo-default-radius);
         /* box-shadow: var(--oo-shadow-border) !important; */
         padding: 0.5em;
@@ -1331,14 +1391,14 @@
         justify-content: space-between;
         align-items: center;
     }
-    .flowNode_mobile i.o2flow-quick-select-arrow{
+    .flowNode_mobile i.o2flow-quick-select-arrow {
         float: none;
         padding-top: 0;
         padding-right: 0;
     }
-    .flowNode_mobile .o2flow-quick-select > i.o2flow-quick-select-arrow::before{
-        content: "\e655";
-        font-family: "ooicon" !important;
+    .flowNode_mobile .o2flow-quick-select > i.o2flow-quick-select-arrow::before {
+        content: '\e655';
+        font-family: 'ooicon' !important;
         speak: never;
         font-style: normal;
         font-weight: normal;
@@ -1347,53 +1407,53 @@
         line-height: 1;
         -webkit-font-smoothing: antialiased;
     }
-    .flowNode_mobile .o2flow-quick-select > .o2flow-quick-select-text{
+    .flowNode_mobile .o2flow-quick-select > .o2flow-quick-select-text {
         padding-left: 10px;
     }
 
-    .flowNode_mobile div.o2flow-navi-node{
+    .flowNode_mobile div.o2flow-navi-node {
         border-radius: var(--oo-default-radius);
         padding: 0.2em;
         font-size: 1.125rem;
     }
-    .flowNode_mobile div.o2flow-navi-node div.o2flow-navi-item{
+    .flowNode_mobile div.o2flow-navi-node div.o2flow-navi-item {
         font-size: 1.125rem;
     }
-    .flowNode_mobile div.o2flow-route-wraper{
+    .flowNode_mobile div.o2flow-route-wraper {
         border-radius: var(--oo-default-radius);
         /* box-shadow: var(--oo-shadow-border) !important; */
         padding: 0.5em;
         font-size: 1.125rem;
     }
-    .flowNode_mobile div.o2flow-route-wraper div.o2flow-section-title{
+    .flowNode_mobile div.o2flow-route-wraper div.o2flow-section-title {
         font-size: 1.125rem;
     }
-    .flowNode_mobile div.o2flow-radio2-text{
+    .flowNode_mobile div.o2flow-radio2-text {
         font-size: 1.125rem;
     }
-    .flowNode_mobile div.o2flow-opinion-area{
+    .flowNode_mobile div.o2flow-opinion-area {
         border-radius: var(--oo-default-radius);
         padding: 0.5em;
         font-size: 1.125rem;
         /* box-shadow: var(--oo-shadow-border) !important; */
     }
-    .flowNode_mobile div.o2flow-section-title{
+    .flowNode_mobile div.o2flow-section-title {
         font-size: revert !important;
     }
-    .flowNode_mobile textarea.o2flow-opinion-textarea{
+    .flowNode_mobile textarea.o2flow-opinion-textarea {
         font-size: 1rem;
     }
-    .flowNode_mobile div.o2flow-handwriting-button{
+    .flowNode_mobile div.o2flow-handwriting-button {
         border-radius: var(--oo-default-radius);
         font-size: 0.875rem;
         bottom: 15px;
     }
-    .flowNode_mobile div.o2flow-orgs-wraper{
+    .flowNode_mobile div.o2flow-orgs-wraper {
         border-radius: var(--oo-default-radius);
         padding: 0.5em;
         font-size: 1.125rem;
     }
-    .flowNode_mobile div.o2flow-selector-title{
+    .flowNode_mobile div.o2flow-selector-title {
         padding-left: 0;
         font-size: 1rem;
         display: flex;
@@ -1401,12 +1461,12 @@
         justify-content: space-between;
     }
 
-    .flowNode_mobile div.o2flow-selector-icon{
+    .flowNode_mobile div.o2flow-selector-icon {
         height: 2rem;
         line-height: unset;
         border-radius: 100em;
-        border: 1px solid #FB4747;
-        color: #FB4747;
+        border: 1px solid #fb4747;
+        color: #fb4747;
         width: 2rem;
         text-align: center;
         font-size: 1.25rem;
@@ -1415,9 +1475,9 @@
         top: 0;
     }
 
-    .flowNode_mobile div.o2flow-selector-icon>i::before{
-        content: "\e667";
-        font-family: "ooicon" !important;
+    .flowNode_mobile div.o2flow-selector-icon > i::before {
+        content: '\e667';
+        font-family: 'ooicon' !important;
         speak: never;
         font-style: normal;
         font-weight: normal;
@@ -1427,42 +1487,155 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    .flowNode_mobile div.o2flow-section{
+    .flowNode_mobile div.o2flow-section {
         border-radius: var(--oo-default-radius);
         padding: 0.5em;
         font-size: 1.125rem;
     }
-    .flowNode_mobile div[data-o2-element="addTaskContentNode"] div[data-o2-element="orgNode"]{
+    .flowNode_mobile div[data-o2-element='addTaskContentNode'] div[data-o2-element='orgNode'] {
         margin-right: 10px;
         margin-left: 10px;
         margin-top: 5px;
     }
 
-    .flowNode_mobile div[data-o2-element="addTaskContentNode"] div[data-o2-element="orgNode"] div.o2flow-selector-titletext{
+    .flowNode_mobile div[data-o2-element='addTaskContentNode'] div[data-o2-element='orgNode'] div.o2flow-selector-titletext {
         font-size: 1.125rem;
     }
-    .flowNode_mobile div[data-o2-element="addTaskContentNode"] div[data-o2-element="orgNode"] div.o2flow-reset-selector-content{
+    .flowNode_mobile div[data-o2-element='addTaskContentNode'] div[data-o2-element='orgNode'] div.o2flow-reset-selector-content {
         margin-left: 0;
         margin-right: 0;
     }
-    .flowNode_mobile div.o2flow-reset-selector-content-info{
+    .flowNode_mobile div.o2flow-reset-selector-content-info {
         font-size: 1rem;
     }
 
-    .flowNode_mobile div[data-o2-element="resetContentNode"] div.o2flow-selector-titletext{
+    .flowNode_mobile div[data-o2-element='resetContentNode'] div.o2flow-selector-titletext {
         font-size: 1.125rem;
     }
-    .flowNode_mobile div[data-o2-element="resetContentNode"] div.o2flow-reset-selector-content{
+    .flowNode_mobile div[data-o2-element='resetContentNode'] div.o2flow-reset-selector-content {
         margin-left: 0;
         margin-right: 0;
     }
-    .flowNode_mobile div[data-o2-element="resetContentNode"] div[data-o2-element="orgNode"]{
+    .flowNode_mobile div[data-o2-element='resetContentNode'] div[data-o2-element='orgNode'] {
         margin-right: 10px;
         margin-left: 10px;
         margin-top: 5px;
     }
-}
 
+    .form-layout div.form-log-simple {
+        background-color: #f7f7f7;
+        padding: 0;
+        border-radius: 6px;
+        overflow: hidden;
+        min-height: 1.6em;
+        border: 0;
+        height: unset;
+    }
+    .form-layout div.form-log-simple > div {
+        margin-right: 0 !important;
+        color: var(--oo-color-main);
+        font-size: 1em;
+        padding: 0;
+    }
+    .form-layout div.form-log-simple > div:nth-child(2n) {
+        background-color: var(--oo-color-over);
+    }
+    .form-layout div.form-log-simple > div > div > div {
+        padding: 0.5em !important;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3em;
+    }
+
+
+
+
+    .form-layout div.form-log[mwftype='log'] > div {
+        overflow: hidden;
+        margin: 0;
+        padding: 0 !important;
+        border: 0 !important;
+        background-color: rgb(255, 255, 255);
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+    .form-layout div.form-log[mwftype='log'] > div > div {
+        background-color: transparent !important;
+        border-bottom: 0;
+    }
+    .form-layout div.form-log[mwftype='log'] > div > div > div > div:first-child {
+        display: none !important;
+    }
+
+    .form-layout div.form-log[mwftype='log'] > div > div > div > div:last-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .form-layout div.form-log[mwftype='log'] div.logItem {
+        display: grid;
+        grid-template-columns: 3em auto auto;
+        grid-template-rows: auto auto auto;
+        gap: 0 0.5em;
+        margin: 0 0 0.5em 0;
+        font-size: 1rem;
+        margin-bottom: 1em;
+        /* grid-template:
+        "icon person activity"
+        "icon opinion img"
+        "icon opinion img" */
+    }
+    .form-layout div.form-log[mwftype='log'] div.logItem-icon {
+        width: 3em;
+        height: 3em;
+        background-size: cover;
+        background-repeat: no-repeat;
+        grid-row: 1 / -1;
+        margin-top: 1em;
+    }
+
+    .form-layout div.form-log[mwftype='log'] div.logItem-person-route {
+        display: flex;
+        grid-column: 2 / -1;
+        padding: 0.5em 0;
+        background-color: #f7f7f7;
+        padding: 0.5em;
+    }
+    .form-layout div.form-log[mwftype='log'] div.logItem-current>div.logItem-person-route {
+        background-color: var(--oo-color-over);
+    }
+
+    .form-layout div.form-log[mwftype='log'] div.logItem-activity {
+        text-align: left;
+        grid-column: 2 / -1;
+        grid-row: 1 / 2;
+        padding: 0.5em 0;
+        font-size: 1.125em;
+    }
+    .form-layout div.form-log[mwftype='log'] div.logItem-opinion {
+        grid-column: 2 / -1;
+        line-height: 1.7em;
+        background-color: #f7f7f7;
+        padding: 0 0.5em;
+    }
+    .form-layout div.form-log[mwftype='log'] div.logItem-time {
+        grid-column: 2 / 3;
+        grid-row: 5 / 6;
+        color: #999999;
+        margin-top: 0.3em;
+        font-size: 0.875em;
+    }
+
+    .form-layout div.form-log[mwftype='log'] div.logItem-img {
+        grid-column: 2 / -1;
+        grid-row: 4 / 5;
+        display: flex;
+        justify-content: flex-end;
+        background-color: #f7f7f7;
+        padding:0.5em;
+    }
+}
 
 /* 平板电脑 */
 @media only screen and (min-width: 768px) and (max-width: 1279px) {
@@ -1477,4 +1650,5 @@
         display: flex !important;
     }
 }
-@media only screen and (min-width: 1280px) {}
+@media only screen and (min-width: 1280px) {
+}

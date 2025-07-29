@@ -1435,6 +1435,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
      * @return {Object}
      */
     getData: function (issubmit) {
+        debugger;
         //var data = Object.clone(this.businessData.data);
         var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {

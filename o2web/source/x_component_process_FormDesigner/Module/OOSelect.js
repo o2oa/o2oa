@@ -11,6 +11,9 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 	},
 	_loadNodeStyles: function(){
 		this.node.setAttribute('readonly', true);
+		if (this.json.innerHTML){
+			this.node.set("html", this.json.innerHTML);
+		}
 	},
 	_setEditStyle_custom: function(name){
 		if (name==="id") this.node.set("placeholder", this.json.id);
@@ -40,13 +43,24 @@ MWF.xApplication.process.FormDesigner.Module.OOSelect = MWF.FCOOSelect = new Cla
 			}
 		}
 
+		if (name==="innerHTML"){
+			this.node.set("html", this.json.innerHTML);
+		}
+
 		if (this.form.options.mode == "Mobile"){
 			if (!this.node.getParent('table.form-datatable')){
 				this.node.setAttribute("skin-mode", 'mobile');
 			}
 		}
-
 	},
+
+	_resetModuleDomNode: function(){
+        if (this.json.preprocessing){
+            this.node.empty();
+			if (this.json.innerHTML) this.node.set("html", this.json.innerHTML);
+        }
+    },
+	
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-select", {
 			"MWFType": "OOSelect",

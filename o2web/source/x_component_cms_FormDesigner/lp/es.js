@@ -369,7 +369,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"oo_org": "Personal",
 		"codeedit": "Editor de guiones",
 		"oo_pagination": "Número de página",
-		"oo_currency": "Moneda"
+		"oo_currency": "Moneda",
+		"oo_files": "Carga de archivos"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1570,7 +1571,9 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"editOrg": "Organización del personal",
 		"editScriptInfo": "Devuelve un valor booleano, true significa editable, false significa no editable",
 		"inherit": "Heredar el elemento padre",
-		"currencyInvalidOption": "Prefijos, sufijos, milésimas, decimales no permitidos con números positivos y negativos"
+		"currencyInvalidOption": "Prefijos, sufijos, milésimas, decimales no permitidos con números positivos y negativos",
+		"uploadMinCount": "Número mínimo de subidas",
+		"uploadMinCountInfo": "\"0\" significa que no hay límite en el número de subidas"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

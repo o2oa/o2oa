@@ -22,7 +22,9 @@ MWF.xScript.CMSEnvironment = function(ev){
     this.setData = function(data){
         this.data = getJSONData(data);
         this.data.save = function(callback){
-            _form.documentAction.saveData(function(json){if (callback) callback();}.bind(this), null, ev.document.id, data);
+            _form.documentAction.saveData(function(json){
+                if (callback) callback();
+            }.bind(this), null, ev.document.id, data);
         }
     };
     this.setData(_data);

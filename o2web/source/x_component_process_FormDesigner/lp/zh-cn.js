@@ -394,6 +394,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         oo_org: '人员',
         oo_pagination: '页码',
         oo_currency: '货币',
+        oo_files: '文件上传',
 
         importer: '数据导入',
         readLog: '阅读记录',
@@ -807,6 +808,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         uploadSizeInfo: '“0”表示上传大小没有限制',
         uploadCount: '允许上传数量',
         uploadCountInfo: '“0”表示上传数量没有限制',
+        uploadMinCount: '最小上传数量',
+        uploadMinCountInfo: '“0”表示上传数量没有限制',
         changeSize: '改变大小',
         useAttachmentStyle: '允许使用的附件样式',
         list: '列表',
@@ -1490,6 +1493,15 @@ MWF.xApplication.process.FormDesigner.LP = {
         showButton: '显示按钮',
         countPerline: '每行选项数',
         countPerlineNote: '0表示不限制',
+
+        uploadButtonTitle: "按钮标题",
+        uploadButtonStyle: "按钮样式",
+        uploadButtonIcon: "按钮图标",
+
+        btnStyleDefault: '默认',
+        btnStyleSimple: '简单',
+        btnStyleLight: '明亮',
+        btnStyleIcon: '仅图标',
 
         wps: {
             config: '配置',

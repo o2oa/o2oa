@@ -85,6 +85,7 @@ MWF.xDesktop.requireApp('process.FormDesigner', 'Module.Relatedlink', null, fals
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.AssociatedDocument', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.Security', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOInput', null, false);
+MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOFiles', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOButton', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OORadioGroup', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOCheckGroup', null, false);

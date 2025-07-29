@@ -369,7 +369,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"oo_org": "personnel",
 		"codeedit": "Script editor ",
 		"oo_pagination": "page number",
-		"oo_currency": "currency"
+		"oo_currency": "currency",
+		"oo_files": "File upload"
 	},
 	"propertyTemplate": {
 		"base": "Base",
@@ -1571,7 +1572,9 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"editOrg": "personnel organization",
 		"editScriptInfo": "Return a Boolean value, true indicates editable, false indicates non editable",
 		"inherit": "Inherit the parent element",
-		"currencyInvalidOption": "Prefixes, suffixes, thousandths, and decimal points are not allowed to use signs or numbers"
+		"currencyInvalidOption": "Prefixes, suffixes, thousandths, and decimal points are not allowed to use signs or numbers",
+		"uploadMinCount": "Minimum upload quantity",
+		"uploadMinCountInfo": "'0' indicates that there is no limit to the number of uploads"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
