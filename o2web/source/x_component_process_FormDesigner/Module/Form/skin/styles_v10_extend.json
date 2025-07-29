@@ -14,6 +14,10 @@
       "info" : "../x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
       "warn" : "../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
     },
+    "selectorStyle" : {
+      "style" : "v10",
+      "tabStyle" : "v10"
+    },
     "buttonStyle": {
       "color" : "#777",
       "border-radius": "4px",
