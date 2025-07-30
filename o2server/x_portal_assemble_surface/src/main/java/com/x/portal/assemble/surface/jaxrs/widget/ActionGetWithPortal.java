@@ -45,7 +45,7 @@ class ActionGetWithPortal extends BaseAction {
 					throw new ExceptionWidgetNotExist(flag);
 				}
 				wo = Wo.copier.copy(widget);
-				wo.setData(widget.getDataOrMobileData());
+				wo.setData(widget.getData());
 				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
