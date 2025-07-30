@@ -31,7 +31,7 @@ class ActionGet extends BaseAction {
 						portal.getId());
 			}
 			Wo wo = Wo.copier.copy(widget);
-			wo.setData(widget.getDataOrMobileData());
+			wo.setData(widget.getData());
 			result.setData(wo);
 			return result;
 		}
