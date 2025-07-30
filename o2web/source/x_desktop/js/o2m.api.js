@@ -68,7 +68,7 @@
                     }
                 }
             } else {
-                window.location.reload()
+                window.o2m.util.navigation.refresh()
             }
         },
         workClose: function () {
@@ -80,7 +80,7 @@
                     }
                 }
             } else {
-                window.location.reload()
+                window.o2m.util.navigation.refresh()
             }
         },
         documentClose: function () {
@@ -92,7 +92,7 @@
                     }
                 }
             } else {
-                window.location.reload()
+                window.o2m.util.navigation.refresh()
             }
         }
     }
@@ -1517,6 +1517,30 @@
      *});
      */
     this.o2m.util.navigation.share = _o2m_u_navigation_share;
+
+    //o2m.util.navigation.refresh 刷新
+    this.o2m.util.navigation.refreshSuccess = function (result) {
+        console.log("util navigation refresh back, result:" + result);
+    };
+    var _o2m_u_navigation_refresh = function (c) {
+        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        var onFail = c && c.onFail ? c.onFail : null;
+        var base64 = c && c.base64 ? c.base64 : "";
+        if (onSuccess && typeof onSuccess === "function") {
+            o2m.util.navigation.refreshSuccess = onSuccess;
+        }
+        var body = {
+            type: "navigation.refresh",
+            callback: "o2m.util.navigation.refreshSuccess",
+            data: {
+                base64: base64
+            }
+        };
+        _util_post(body, onFail);
+    };
+
+
+    this.o2m.util.navigation.refresh = _o2m_u_navigation_refresh;
 
 
     /** ***** BEGIN BIZ BLOCK *****
