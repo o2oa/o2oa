@@ -394,7 +394,7 @@
 
 .form-layout .index-start-app-children {
     padding: 1rem 0;
-    width: 80%;
+    width: 90%;
 }
 
 .form-layout .index-start-item {
@@ -455,6 +455,9 @@
 	justify-content: center;
 	align-items: center;
 }
+.index-create-process{
+    display: none;
+}
 
 /* 手机 */
 @media only screen and (max-width: 767px) {
@@ -484,14 +487,60 @@
     }
 
     .form-layout .index-logo-menu {
-        opacity: 0;
-        pointer-events: none;
-        display: none !important;
+        opacity: 1;
+        pointer-events: unset;
+        display: block !important;
+        position: absolute;
+        left: 0;
+        padding-left: 1em;
+        margin-left: 0;
+        z-index: 10000;
     }
 
     .form-layout .index-content-bottom.max-navi {
         display: grid !important;
         grid-template-columns: 1fr 0;
+    }
+    .index-navi{
+        /* position: absolute;
+        width: 100%;
+        height: calc(100% - 4.375rem);
+        z-index: 2000; */
+    }
+    .form-layout .index-start {
+        position: absolute;
+        width: 100%;
+        height: calc(100% - 4.375rem);
+        background-color: var(--oo-color-deep);
+        top: 4.375rem;
+        left: 0;
+        z-index: 20000;
+        opacity: 0.95;
+        transition: height 0.3s, scale 0.2s;
+        transform-origin: left top;
+        overflow: auto;
+        display: grid !important;
+        grid-template-rows: 1px 1fr;
+    }
+    .form-layout .index-start-content {
+        display: grid !important;
+        grid-template-columns: 0 1fr;
+    }
+    .form-layout .index-start-content>.index-start-app:first-child {
+        display: none;
+    }
+    .form-layout .index-start-app{
+        padding: 1em;
+    }
+    .form-layout .index-start-app-children{
+        width: 99%;
+    }
+    .index-create-process{
+        display: block;
+        position: absolute;
+        right: 1rem;
+        font-size: 1.25em;
+        cursor: pointer;
     }
 }
 

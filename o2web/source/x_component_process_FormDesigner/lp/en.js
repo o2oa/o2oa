@@ -1595,7 +1595,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"btnStyleDefault": "default",
 		"btnStyleSimple": "simple",
 		"btnStyleLight": "bright",
-		"btnStyleIcon": "Icon only"
+		"btnStyleIcon": "Icon only",
+		"fileCol": "Display column count",
+		"OOFilesSiteInfo": "Can display attachments from other sites, multiple sites separated by half width commas"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

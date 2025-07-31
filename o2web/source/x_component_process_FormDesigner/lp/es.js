@@ -1594,7 +1594,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"btnStyleDefault": "Predeterminado",
 		"btnStyleSimple": "Simple",
 		"btnStyleLight": "Brillante",
-		"btnStyleIcon": "Solo iconos"
+		"btnStyleIcon": "Solo iconos",
+		"fileCol": "Número de columnas mostradas",
+		"OOFilesSiteInfo": "Se pueden mostrar accesorios de otros sitios, varios sitios separados por comas de media esquina"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

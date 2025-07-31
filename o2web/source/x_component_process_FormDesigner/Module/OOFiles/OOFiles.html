@@ -71,6 +71,13 @@
                 </td>
             </tr>
 
+            <!-- <tr>
+                <td class="editTableTitle">{{$.lp.fileCol}}:</td>
+                <td class="editTableValue" id="text{$.pid}isTitleArea">
+                    <input type="number" name="fileCol" value="text{$.fileCol}" class="editTableInput"/>
+                </td>
+            </tr> -->
+
             <tr>
                 <td class="editTableTitle">{{$.lp.uploadType}}:</td>
                 <td class="editTableValue">
@@ -128,6 +135,15 @@
                     <input type="text" name="attachmentMinCount" value="text{$.attachmentMinCount}" class="editTableInput"/>
                     <br />
                     <div style="text-align:center">{{$.lp.uploadMinCountInfo}}</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="editTableTitle">{{$.lp.site}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="fileSite" value="text{$.fileSite}" class="editTableInput"/>
+                    <br />
+                    <div style="text-align:center">{{$.lp.OOFilesSiteInfo}}</div>
                 </td>
             </tr>
 

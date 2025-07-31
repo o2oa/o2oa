@@ -311,6 +311,9 @@
     color: var(--oo-color-gray-e);
 }
 
+.index-starter-buttons{
+    display: none;
+}
 
 /* 手机 */
 @media only screen and (max-width: 767px) {
@@ -358,19 +361,7 @@
         grid-column: 1 / -1;
     }
 
-    .form-layout .index-logo-menu {
-        cursor: pointer;
-        height: 1.25rem;
-        margin-left: 2.8em;
-    }
-
     .form-layout .index-top-content {
-        display: none !important;
-    }
-
-    .form-layout .index-logo-menu {
-        opacity: 0;
-        pointer-events: none;
         display: none !important;
     }
 
@@ -410,6 +401,47 @@
     .form-layout .page-index-content {
         padding: 0;
         background-color: transparent;
+    }
+
+    .index-starter-navi {
+        display: none !important;
+    }
+    .index-starter-process-area dl{
+        width: unset;
+    }
+    .index-starter-content{
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+    .index-starter-process-application {
+        flex: 1;
+    }
+    .index-starter-process-area {
+        display: grid;
+        gap: 1em;
+        grid-template-columns: 1fr 1fr;
+    }
+    .index-starter-search {
+        padding: 0 1em;
+    }
+
+    .index-starter-buttons{
+        padding: 1em 1em 0 1em;
+        display: flex;
+    }
+    .index-starter-buttons oo-button{
+        flex: 1;
+    }
+    .page-create-process-action{
+        /* pointer-events: auto;
+        height: 4.375rem !important;
+        font-size: 1.5rem !important;
+        position: fixed !important;
+        top: 36px;
+        right: 0;
+        color: #000000 !important;
+        border-radius: 100%; */
+        display: none;
     }
 }
 

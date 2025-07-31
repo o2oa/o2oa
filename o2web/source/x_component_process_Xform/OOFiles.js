@@ -37,7 +37,6 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         Object.defineProperties(this.node, {
             uploadFile: {
                 value: (file, fileNode) => {
-                    debugger;
                     this._appendPrograsseMethods(fileNode);
                     return this._uploadFile(fileNode);
                 },
@@ -49,18 +48,12 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
             },
         });
 
-        this.node.addEventListener('change', () => {
+        this.node.addEventListener('upload', () => {
             debugger;
-            if (this.env === 'process') {
-                this.form.saveFormData();
-            }
-            if (this.env === 'cms') {
-                var modifedData = {};
-                modifedData[this.json.id] = this.getData();
-                modifedData.id = this.form.businessData.document.id;
-                
-                this.form.documentAction.saveData(null, function(){return true}, this.form.businessData.document.id, modifedData, false);
-            }
+            this._saveDoc();
+        });
+        this.node.addEventListener('removefile', () => {
+            this._saveDoc();
         });
 
         this.env = this._fileInProcess() ? 'process' : this._fileInCms() ? 'cms' : '';
@@ -70,6 +63,18 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         this.node.setStyle('pointer-events', 'unset');
     },
 
+    _saveDoc(){
+        if (this.env === 'process') {
+            this.form.saveFormData();
+        }
+        if (this.env === 'cms') {
+            var modifedData = {};
+            modifedData[this.json.id] = this.getData();
+            modifedData.id = this.form.businessData.document.id;
+            
+            this.form.documentAction.saveData(null, function(){return true}, this.form.businessData.document.id, modifedData, false);
+        }
+    },
     _deleteFile: function (file, fileNode) {
         return new Promise((resolve, reject) => {
             try {
@@ -78,7 +83,6 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
                     async: true,
                     parameter: {id: file.id, workid: this.form.businessData.work?.id},
                     success: (json) => {
-                        debugger;
                         resolve({json, file});
                     },
                     failure: (xhr) => {
@@ -117,8 +121,6 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
                     node.setAttribute('url', url);
                     node.setAttribute('preview-url', previewUrl);
                     node.setAttribute('status', 'uploaded');
-
-                    this.form.saveFormData();
                 }
                 this.fireEvent('addfile', [{file, node}]);
                 return json;
@@ -230,12 +232,55 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
     getInputData: function () {
         return this.node.value;
     },
+
+    checkValue: function(value, att){
+        if (!value || !value.length){
+            return true;
+        }
+        const i = value.findIndex((v)=>{
+            v.id === att.id
+        });
+        return i===-1;
+    },
     getValue: function () {
         debugger;
         if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (o2.typeOf(value) === 'null' || value === '') value = this._computeValue();
+
+        //如果有设置 site，循环所有附件，将匹配site的附件添加进来。
+        debugger;
+        if (this.json.fileSite){
+            const siteList = this.json.fileSite.split(/.*,.*/g);
+            const addr = this.restfulActions.getAddress();
+            this.form.businessData.attachmentList.each(function (att) {
+                if (siteList.includes(att.site) && att.control.allowRead){
+                    if (this.checkValue(value, att)){
+                        const previewUrl =
+                            this.env === 'process'
+                                ? `${addr}/jaxrs/attachment/download/${att.id}`
+                                : `${addr}/jaxrs/fileinfo/download/document/${att.id}`;
+                        const url = `${previewUrl}/stream`;
+
+                        const file = {
+                            id: att.id,
+                            url: url,
+                            previewUrl: previewUrl,
+                            lastModified: att.lastUpdateTime,
+                            lastModifiedDate: att.lastUpdateTime,
+                            name: att.name,
+                            size: att.length,
+                            type: att.extension,
+                        }
+
+                        if (!value || !value.length) value = [];
+                        value.push(file);
+                    }
+                }
+            }.bind(this));
+        }
+
         return value ?? '';
     },
 });

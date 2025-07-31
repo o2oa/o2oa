@@ -1502,6 +1502,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         btnStyleSimple: '简单',
         btnStyleLight: '明亮',
         btnStyleIcon: '仅图标',
+        fileCol: "显示列数",
+
+        OOFilesSiteInfo: "可显示其它site的附件，多个site用半角逗号分隔",
 
         wps: {
             config: '配置',
