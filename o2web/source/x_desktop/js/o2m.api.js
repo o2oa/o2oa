@@ -108,7 +108,7 @@
      * @memberOf o2m
      * @static
      * @param {String} name 事件名称 (onReload, onWorkClose, onDocumentClose)
-     * @param {[Function]} events 执行方法
+     * @param {Function} events 执行方法
      * @example
      * o2m.addEvent("onReload", ()=> {
      *     // 执行的代码
