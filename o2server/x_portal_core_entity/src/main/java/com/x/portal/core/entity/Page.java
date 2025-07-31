@@ -11,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -84,19 +85,18 @@ public class Page extends SliceJpaObject {
 	public String getDataOrMobileData() {
 		if (StringUtils.isNotEmpty(this.getData())) {
 			return this.getData();
-		} else if (StringUtils.isNotEmpty(this.getMobileData())) {
+		} else if (BooleanUtils.isTrue(this.getHasMobile())) {
 			return this.getMobileData();
 		}
-		return null;
+		return this.getData();
 	}
 
 	public String getMobileDataOrData() {
-		if (StringUtils.isNotEmpty(this.getMobileData())) {
+		if (BooleanUtils.isTrue(this.getHasMobile())) {
 			return this.getMobileData();
-		} else if (StringUtils.isNotEmpty(this.getData())) {
+		} else {
 			return this.getData();
 		}
-		return null;
 	}
 
 	public static final String name_FIELDNAME = "name";

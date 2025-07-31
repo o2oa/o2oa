@@ -1,5 +1,7 @@
 package com.x.portal.assemble.surface.jaxrs.widget;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -30,7 +32,11 @@ class ActionGetMobile extends BaseAction {
 						portal.getId());
 			}
 			Wo wo = Wo.copier.copy(widget);
-			wo.setData(widget.getMobileDataOrData());
+			if (BooleanUtils.isTrue(widget.getHasMobile())) {
+				wo.setData(widget.getMobileData());
+			} else {
+				wo.setData(widget.getData());
+			}
 			result.setData(wo);
 			return result;
 		}
