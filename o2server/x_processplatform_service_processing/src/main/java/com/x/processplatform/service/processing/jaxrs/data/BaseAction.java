@@ -327,9 +327,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			projection(business, workCompleted, XGsonBuilder.convert(jsonObject, Data.class));
 			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
-
 		}
-
 	}
 
 	void createData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
