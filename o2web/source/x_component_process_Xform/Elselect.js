@@ -107,12 +107,13 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         if (this.json.multiple===true) if (!this.json[this.json.$id] || !this.json[this.json.$id].length) this.json[this.json.$id] = [];
 
         this.isSearching = false;
+        this.isFilted = false;
     },
     appendVueMethods: function(methods){
         if (this.json.filterMethod && this.json.filterMethod.code){
             var fn = this.form.Macro.exec(this.json.filterMethod.code, this);
             methods.$filterMethod = function(){
-                this.isSearching = true;
+                this.isFilted = true;
                 fn.apply(this, arguments);
             }.bind(this)
         }
@@ -411,7 +412,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
          * var texts = this.form.get('fieldId').getText(); //获取选中项的文本或数组
          */
         getText: function(){
-            if( this.isSearching ){
+            if( this.isSearching || this.isFilted ){
                 return this._getTextWhenSearch();
             }else{
                 var d = this.getTextData();
