@@ -1,28 +1,9 @@
 package com.x.organization.assemble.control;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.x.organization.core.entity.enums.PersonStatusEnum;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.set.ListOrderedSet;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.tuple.Quintuple;
 import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.instrument.Instrument;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -49,6 +30,21 @@ import com.x.organization.core.entity.Role_;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.enums.PersonStatusEnum;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.set.ListOrderedSet;
 
 public class Business {
 
