@@ -5,6 +5,7 @@ import com.x.base.core.project.Applications;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_processplatform_assemble_surface;
@@ -54,6 +55,9 @@ public class BaseAction extends StandardJaxrsAction {
 	protected DocumentQueryService documentQueryService = new DocumentQueryService();
 
 	protected boolean checkAllowVisitJob(String person, String job) throws Exception {
+		if(OrganizationDefinition.isSystemUser(person)){
+			return true;
+		}
 		WrapBoolean resp = ThisApplication.context().applications()
 				.getQuery(x_processplatform_assemble_surface.class,
 						Applications.joinQueryUri("job", job, "allow", "visit", "person", person))
@@ -62,6 +66,9 @@ public class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected boolean checkAllowVisitDoc(String person, String document) throws Exception {
+		if(OrganizationDefinition.isSystemUser(person)){
+			return true;
+		}
 		WrapBoolean resp = ThisApplication.context().applications().getQuery(x_cms_assemble_control.class,
 						Applications.joinQueryUri("document", "cipher", document, "permission", "read", "person", person))
 				.getData(WrapBoolean.class);
@@ -70,12 +77,12 @@ public class BaseAction extends StandardJaxrsAction {
 
 	protected List<Attachment> checkAttachment(List<WiAttachment> attList, String person, Business business) throws Exception{
 		EntityManagerContainer emc = business.entityManagerContainer();
-		EntityManager em = emc.get(FileInfo.class);
+		EntityManager em = emc.get(Attachment.class);
 		List<Attachment> attachmentList = new ArrayList<>();
 		if (ListTools.isNotEmpty(attList)) {
 			Set<String> jobs = new HashSet<>();
 			for (WiAttachment w : attList) {
-				Attachment o = emc.find(w.getId(), Attachment.class);
+				Attachment o = em.find(Attachment.class, w.getId());
 				if (null == o) {
 					throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
 				}
@@ -104,7 +111,7 @@ public class BaseAction extends StandardJaxrsAction {
 		if (ListTools.isNotEmpty(attList)) {
 			Set<String> docs = new HashSet<>();
 			for (WiAttachment w : attList) {
-				FileInfo o = emc.find(w.getId(), FileInfo.class);
+				FileInfo o = em.find(FileInfo.class, w.getId());
 				if (null == o) {
 					throw new ExceptionEntityNotExist(w.getId(), FileInfo.class);
 				}

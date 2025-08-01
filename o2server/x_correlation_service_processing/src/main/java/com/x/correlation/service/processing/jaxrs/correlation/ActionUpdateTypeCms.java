@@ -4,9 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.tuple.Pair;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -17,11 +15,7 @@ import com.x.correlation.core.express.service.processing.jaxrs.correlation.Actio
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.SiteTargetWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWo;
 import com.x.correlation.service.processing.Business;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 class ActionUpdateTypeCms extends BaseAction {
@@ -40,43 +34,30 @@ class ActionUpdateTypeCms extends BaseAction {
 			Wo wo = new Wo();
 			Business business = new Business(emc);
 			this.checkPermissionReadFromCms(wi.getPerson(), document);
-			for(SiteTargetWi updateTypeWi : wi.getSiteTargetList()) {
-				if(StringUtils.isEmpty(updateTypeWi.getSite())){
+			for(SiteTargetWi siteTargetWi : wi.getSiteTargetList()) {
+				if(StringUtils.isEmpty(siteTargetWi.getSite())){
 					continue;
 				}
-				updateTypeWi.getTargetList().forEach(o -> o.setSite(updateTypeWi.getSite()));
+				siteTargetWi.getTargetList().forEach(o -> o.setSite(siteTargetWi.getSite()));
 				Pair<List<Correlation>, List<TargetWo>> pair = this.readTarget(wi.getPerson(),
 						business,
-						updateTypeWi.getTargetList());
-				Map<String, Correlation> exists = this.exists(business, Correlation.TYPE_CMS,
-						document, updateTypeWi.getSite());
-				Set<String> updateKey = new HashSet<>();
+						siteTargetWi.getTargetList());
+				List<Correlation> list = emc .listEqualAndEqualAndEqual(Correlation.class, Correlation.FROMTYPE_FIELDNAME,
+						Correlation.TYPE_CMS, Correlation.FROMBUNDLE_FIELDNAME, document, Correlation.SITE_FIELDNAME, siteTargetWi.getSite());
 				emc.beginTransaction(Correlation.class);
-				pair.first().forEach(
-						o -> exists.compute(o.getTargetType() + o.getTargetBundle(), (k, v) -> {
-							try {
-								if (null == v) {
-									o.setFromType(Correlation.TYPE_CMS);
-									o.setFromBundle(document);
-									o.setPerson(wi.getPerson());
-									emc.persist(o, CheckPersistType.all);
-								} else {
-									v.setTargetTitle(o.getTargetTitle());
-									v.setSite(o.getSite());
-									v.setView(o.getView());
-									emc.check(v, CheckPersistType.all);
-								}
-								updateKey.add(o.getTargetType() + o.getTargetBundle());
-							} catch (Exception e) {
-								LOGGER.error(e);
-							}
-							return v;
-						}));
-				for (Entry<String, Correlation> entry : exists.entrySet()) {
-					if (!updateKey.contains(entry.getKey())) {
-						emc.remove(entry.getValue());
-					}
+				for (Correlation o : list){
+					emc.remove(o);
 				}
+				pair.first().forEach( o -> {
+					try {
+						o.setFromType(Correlation.TYPE_CMS);
+						o.setFromBundle(document);
+						o.setPerson(wi.getPerson());
+						emc.persist(o, CheckPersistType.all);
+					} catch (Exception e) {
+						LOGGER.error(e);
+					}
+				});
 				emc.commit();
 				wo.getSuccessList().addAll(pair.first());
 				wo.getFailureList().addAll(pair.second());
