@@ -448,9 +448,12 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         //     }
         // },
 
-        getExcelData: function(){
+        getExcelData: function(type){
             var data = this.json[this.json.$id];
             if( !data )return "";
+            if( type === 'value' ){
+                return typeOf(data) === "array" ? data.join(", ") : (data || "");
+            }
             if( !this.json.options )this._loadOptions();
             var text, opt = this.json.options;
             if( !opt )return "";

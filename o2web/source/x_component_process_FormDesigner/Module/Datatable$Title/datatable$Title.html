@@ -43,6 +43,14 @@
                     <input class="editTableRadio" name="isImpExp" text{($.isImpExp==false)?'checked':''} type="radio" value="false"/>{{$.lp.notAllow}} <br/>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.exportImportType}}:</td>
+                <td class="editTableValue">
+                    <div style="color:#999;padding:5px;">{{$.lp.exportImportTypeNote}}</div>
+                    <input class="editTableRadio" name="impExpType" text{($.impExpType!=='value')?'checked':''} type="radio" value="text"/>{{$.lp.text}} <br/>
+                    <input class="editTableRadio" name="impExpType" text{($.impExpType=='value')?'checked':''} type="radio" value="value"/>{{$.lp.value}} <br/>
+                </td>
+            </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>

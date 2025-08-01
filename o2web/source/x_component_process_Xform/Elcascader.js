@@ -403,7 +403,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         getExcelData: function( type ){
             var data = this.json[this.json.$id];
             if( !data )return "";
-		    if( type === "value" )return data;
+		    if( type === "value" )return typeOf(data) === "array" ? data.join(", ") : (data || "");
 
             var text = this._getText();
             return typeOf(text) === "array" ? text.join(", ") : (text || "");
