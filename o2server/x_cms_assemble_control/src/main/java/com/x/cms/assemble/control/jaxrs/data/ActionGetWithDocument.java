@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.jaxrs.data;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.assemble.control.Business;
@@ -17,6 +18,9 @@ class ActionGetWithDocument extends BaseAction {
 			Document document = emc.find(id, Document.class);
 			if (null == document) {
 				throw new ExceptionDocumentNotExists(id);
+			}
+			if (!business.isDocumentReader(effectivePerson, document)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			result.setData(this.getData(business, document.getId()));
 			return result;

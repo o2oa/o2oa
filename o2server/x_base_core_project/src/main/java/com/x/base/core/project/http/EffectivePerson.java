@@ -37,6 +37,7 @@ public class EffectivePerson extends GsonPropertyObject {
 
 	public static final String ANONYMOUS = "anonymous";
 	public static final String CIPHER = "cipher";
+	public static final String XADMIN = "xadmin";
 
 	private static final Pattern PERSON_DISTINGUISHEDNAME_PATTERN = Pattern.compile("^(\\S+)\\@(\\S+)\\@P$");
 
