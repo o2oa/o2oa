@@ -99,11 +99,6 @@
 
     /**
      * 添加事件
-     * @param name
-     * @param events
-     */
-    /**
-     * 添加事件
      * @method addEvent
      * @memberOf o2m
      * @static
@@ -121,7 +116,7 @@
         switch (name) {
             case "reload":
                 events.map((f) => {
-                    f.remove = function(){
+                    f.remove = function () {
                         o2m.events.onReload.splice(o2m.events.onReload.indexOf(this), 1);
                     }.bind(f);
                     o2m.events.onReload.push(f)
@@ -129,7 +124,7 @@
                 break;
             case "workClose":
                 events.map((f) => {
-                    f.remove = function(){
+                    f.remove = function () {
                         o2m.events.onWorkClose.splice(o2m.events.onWorkClose.indexOf(this), 1);
                     }.bind(f);
                     o2m.events.onWorkClose.push(f);
@@ -137,7 +132,7 @@
                 break;
             case "documentClose":
                 events.map((f) => {
-                    f.remove = function(){
+                    f.remove = function () {
                         o2m.events.onDocumentClose.splice(o2m.events.onDocumentClose.indexOf(this), 1);
                     }.bind(f);
                     o2m.events.onDocumentClose.push(f)
@@ -151,15 +146,15 @@
             case "reload":
                 events.map((f) => {
                     var index = o2m.events.onReload.indexOf(f);
-                    if( index === -1 ) {
+                    if (index > -1) {
                         o2m.events.onReload.splice(index, 1);
-        }
+                    }
                 });
                 break;
             case "workClose":
                 events.map((f) => {
                     var index = o2m.events.onWorkClose.indexOf(f);
-                    if( index === -1 ) {
+                    if (index > -1) {
                         o2m.events.onWorkClose.splice(index, 1);
                     }
                 });
@@ -167,9 +162,9 @@
             case "documentClose":
                 events.map((f) => {
                     var index = o2m.events.onDocumentClose.indexOf(f);
-                    if( index === -1 ) {
+                    if (index > -1) {
                         o2m.events.onDocumentClose.splice(index, 1);
-    }
+                    }
                 });
                 break;
         }
