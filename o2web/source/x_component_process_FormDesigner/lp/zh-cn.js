@@ -906,6 +906,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         allowAdd: '允许添加',
         allowSort: '允许排序',
         exportImport: '导出导入',
+        exportImportType: "导出导入类型",
+        exportImportTypeNote: '下拉、单选、多选等同时具有文本和值的组件有效',
         enabled: '启用',
         disabled: '禁用',
         onlyExport: '仅导出',

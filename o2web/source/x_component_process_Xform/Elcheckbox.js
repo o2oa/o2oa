@@ -384,7 +384,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
 
         getExcelData: function( type ){
             var value = this.getData();
-            if( type === "value" )return value;
+            if( type === "value" )return value.join(", ");
 
             var options = this.getOptionsObj();
             return Promise.resolve(options).then(function (opts) {
