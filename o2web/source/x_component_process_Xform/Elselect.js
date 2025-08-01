@@ -105,17 +105,21 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         this._loadOptions();
 
         if (this.json.multiple===true) if (!this.json[this.json.$id] || !this.json[this.json.$id].length) this.json[this.json.$id] = [];
+
+        this.isSearching = false;
     },
     appendVueMethods: function(methods){
         if (this.json.filterMethod && this.json.filterMethod.code){
             var fn = this.form.Macro.exec(this.json.filterMethod.code, this);
             methods.$filterMethod = function(){
+                this.isSearching = true;
                 fn.apply(this, arguments);
             }.bind(this)
         }
         if (this.json.remoteMethod && this.json.remoteMethod.code){
             var fn = this.form.Macro.exec(this.json.remoteMethod.code, this);
             methods.$remoteMethod = function(){
+                this.isSearching = true;
                 fn.apply(this, arguments);
             }.bind(this)
         }
@@ -314,10 +318,20 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                         }, 200);
                     }
                 }
+
                 if (this.json.events && this.json.events[k] && this.json.events[k].code){
                     this.form.Macro.fire(this.json.events[k].code, this, arguments);
                 }
                 if( flag )this.fireEvent(k, arguments);
+
+                if( k === 'change' ){
+                    this.isSearching = false;
+                }else if(k === 'visible-change'){
+                    var visible = arguments && arguments.length && arguments && arguments[0]
+                    if (!visible) {
+                        this.isSearching = false;
+                    }
+                }
             }.bind(this);
         },
         _afterLoaded: function (){
@@ -360,7 +374,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         var text = [];
         options.forEach(function(op){
             if (op.value){
-                if (values.indexOf(op.value)!=-1) text.push(op.label || op.value);
+                if (values.indexOf(op.value)!=-1) text.push(op.label || op.text || op.value);
             }else if (op.options && op.options.length){
                 text = text.concat(this.__getOptionsText(op.options, values));
             }
@@ -397,18 +411,26 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
          * var texts = this.form.get('fieldId').getText(); //获取选中项的文本或数组
          */
         getText: function(){
-            var d = this.getTextData();
-            if( typeOf(d.then) === "function" ){
-                return d.then(function( d1 ){
-                    var texts = d1.text;
+            if( this.isSearching ){
+                return this._getTextWhenSearch();
+            }else{
+                var d = this.getTextData();
+                if( typeOf(d.then) === "function" ){
+                    return d.then(function( d1 ){
+                        var texts = d1.text;
+                        var ts = (texts && texts.length) ? texts : [];
+                        return this.json.multiple ? ts : (ts[0] || "");
+                    }.bind(this));
+                }else{
+                    var texts = d.text;
                     var ts = (texts && texts.length) ? texts : [];
                     return this.json.multiple ? ts : (ts[0] || "");
-                }.bind(this));
-            }else{
-                var texts = d.text;
-                var ts = (texts && texts.length) ? texts : [];
-                return this.json.multiple ? ts : (ts[0] || "");
+                }
             }
+
+        },
+        _getTextWhenSearch: function(){
+            return this.__getOptionsText(this.vm.options, this._getBusinessData());
         },
 
         // getText: function(){
