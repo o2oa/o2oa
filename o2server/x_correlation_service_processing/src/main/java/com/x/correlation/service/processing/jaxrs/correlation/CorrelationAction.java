@@ -69,6 +69,43 @@ public class CorrelationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "替换指定流程工作的关联内容.", action = ActionUpdateTypeProcessPlatform.class)
+	@POST
+	@Path("update/type/processplatform/job/{job}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateTypeProcessPlatform(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("流程平台任务标识") @PathParam("job") String job,
+			JsonElement jsonElement) {
+		ActionResult<ActionUpdateTypeProcessPlatform.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateTypeProcessPlatform().execute(effectivePerson, job, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "替换指定内容管理文档的关联内容.", action = ActionUpdateTypeCms.class)
+	@POST
+	@Path("update/type/cms/document/{document}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateTypeCms(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("内容管理文档标识") @PathParam("document") String document, JsonElement jsonElement) {
+		ActionResult<ActionUpdateTypeCms.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateTypeCms().execute(effectivePerson, document, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据id删除多个流程平台关联内容.", action = ActionDeleteTypeProcessPlatform.class)
 	@POST
 	@Path("delete/type/processplatform/job/{job}")

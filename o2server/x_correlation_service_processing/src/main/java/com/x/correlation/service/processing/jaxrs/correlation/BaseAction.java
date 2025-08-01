@@ -55,6 +55,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 				.stream().collect(Collectors.toMap(o -> o.getTargetType() + o.getTargetBundle(), Function.identity()));
 	}
 
+	protected Map<String, Correlation> exists(Business business, String fromType, String fromBundle, String site) throws Exception {
+		return business.entityManagerContainer()
+				.listEqualAndEqualAndEqual(Correlation.class, Correlation.FROMTYPE_FIELDNAME, fromType,
+						Correlation.FROMTYPE_FIELDNAME, fromBundle, Correlation.SITE_FIELDNAME, site)
+				.stream().collect(Collectors.toMap(o -> o.getTargetType() + o.getTargetBundle(), Function.identity()));
+	}
+
 	protected Pair<List<Correlation>, List<TargetWo>> readTarget(String person, Business business,
 			List<TargetWi> targets) throws Exception {
 		List<Correlation> successList = new ArrayList<>();
