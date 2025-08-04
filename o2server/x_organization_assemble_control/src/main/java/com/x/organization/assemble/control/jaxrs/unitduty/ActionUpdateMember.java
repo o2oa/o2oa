@@ -42,6 +42,7 @@ class ActionUpdateMember extends BaseAction {
             Business business = new Business(emc);
             UnitDuty o = business.unitDuty().pick(wi.getUnitDuty());
             Unit unit;
+            boolean isSave = false;
             if (null == o) {
                 if(StringUtils.isBlank(wi.getUnit())){
                     throw new ExceptionFieldEmpty("unit");
@@ -52,7 +53,10 @@ class ActionUpdateMember extends BaseAction {
                 }
                 o = emc.firstEqualAndEqual(UnitDuty.class, UnitDuty.unit_FIELDNAME, unit.getId(), UnitDuty.name_FIELDNAME, wi.getUnitDuty());
                 if(o == null){
-                    throw new ExceptionUnitDutyNotExist(wi.getUnitDuty());
+                    o = new UnitDuty();
+                    o.setUnit(unit.getId());
+                    o.setName(wi.getUnitDuty());
+                    isSave = true;
                 }
             }else{
                 unit = business.unit().pick(o.getUnit());
@@ -63,14 +67,21 @@ class ActionUpdateMember extends BaseAction {
             if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
                 throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
             }
-            o = emc.find(o.getId(), UnitDuty.class);
+            if(!isSave) {
+                o = emc.find(o.getId(), UnitDuty.class);
+            }
             emc.beginTransaction(UnitDuty.class);
             o.setIdentityList(
                     ListTools.extractProperty(business.identity().pick(wi.getIdentityList()), JpaObject.id_FIELDNAME,
                             String.class, true, true));
-            emc.check(o, CheckPersistType.all);
+            if(isSave){
+                emc.persist(o, CheckPersistType.all);
+            }else {
+                emc.check(o, CheckPersistType.all);
+            }
             emc.commit();
             CacheManager.notify(UnitDuty.class);
+            CacheManager.notify(Unit.class);
 
             Wo wo = new Wo();
             wo.setId(o.getId());
