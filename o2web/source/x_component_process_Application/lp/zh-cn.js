@@ -37,7 +37,8 @@ MWF.xApplication.process.Application.LP = {
 		"add" : "新增",
 		"rollback" : "回溯",
 		"delSnap" : "彻底删除",
-		"restore" : "恢复"
+		"restore" : "恢复",
+		"adjustTime" : "修改时间"
  	},
 
 	"subject" : "标题",
