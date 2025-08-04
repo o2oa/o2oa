@@ -397,9 +397,32 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             var value = [];
             options.forEach(function(op){
                 if (op.value){
-                    if (texts.indexOf(op.label || op.value)!=-1) value.push(op.value);
+                    if (texts.indexOf(op.label || op.value || op.text )!=-1) value.push(op.value);
                 }else if (op.options && op.options.length){
                     value = value.concat(this._getDataByText(op.options, texts));
+                }
+            }.bind(this));
+            return value;
+        },
+
+        getDataByValue: function (value){
+            var opt = this.json.options;
+            if( !opt )return "";
+            if( o2.typeOf(opt.then)==="function" ){
+                return Promise.resolve(opt).then(function(options){
+                    return this._getDataByValue(options, value);
+                }.bind(this));
+            }else{
+                return this._getDataByValue(opt, value);
+            }
+        },
+        _getDataByValue: function(options, values){
+            var value = [];
+            options.forEach(function(op){
+                if (op.value){
+                    if (values.indexOf( op.value )!=-1) value.push(op.value);
+                }else if (op.options && op.options.length){
+                    value = value.concat(this._getDataByValue(op.options, values));
                 }
             }.bind(this));
             return value;
@@ -467,15 +490,15 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 return typeOf(text) === "array" ? text.join(", ") : (text || "");
             }
         },
-        setExcelData: function(d){
+        setExcelData: function(d, type){
             this._loadOptions();
-            this.moduleExcelAG = Promise.resolve( this.json.options || this.moduleSelectAG ).then(function(options){
+            this.moduleExcelAG = Promise.resolve( this.moduleSelectAG ).then(function(options){
                 var arr = this.stringToArray(d);
                 this.excelData = arr;
                 arr = arr.map(function (a) {
                     return a.contains("/") ? a.split("/") : a;
                 });
-                var data = this.getDataByText( arr );
+                var data = type === 'value' ? this.getDataByValue(arr) : this.getDataByText( arr );
                 this.setData( this.json.multiple ? data : data[0], true);
                 this.moduleExcelAG = null;
             }.bind(this))
