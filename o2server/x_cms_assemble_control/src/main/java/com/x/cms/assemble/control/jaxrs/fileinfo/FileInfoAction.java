@@ -1,7 +1,18 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.JaxrsDescribe;
+import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.HttpMediaType;
+import com.x.base.core.project.http.WrapOutString;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -16,27 +27,9 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.BooleanUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-
-import com.google.gson.JsonElement;
-import com.x.base.core.project.annotation.JaxrsDescribe;
-import com.x.base.core.project.annotation.JaxrsMethodDescribe;
-import com.x.base.core.project.annotation.JaxrsParameterDescribe;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.http.WrapOutString;
-import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("fileinfo")
 @JaxrsDescribe("附件信息管理")
@@ -493,6 +486,42 @@ public class FileInfoAction extends StandardJaxrsAction {
 			result = new ActionBatchDownload().execute(effectivePerson, docId, site, fileName, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "拷贝附件到指定的文档中.", action = ActionCopyToDoc.class)
+	@POST
+	@Path("copy/to/doc/{docId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void copyToDoc(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("文档标识") @PathParam("docId") String docId, JsonElement jsonElement) {
+		ActionResult<ActionCopyToDoc.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCopyToDoc().execute(effectivePerson, docId, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对文档指定site的附件进行替换，先删再增.", action = ActionReplaceToDoc.class)
+	@POST
+	@Path("replace/to/doc/{docId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void replaceToDoc(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("文档标识") @PathParam("docId") String docId, JsonElement jsonElement) {
+		ActionResult<ActionReplaceToDoc.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReplaceToDoc().execute(effectivePerson, docId, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

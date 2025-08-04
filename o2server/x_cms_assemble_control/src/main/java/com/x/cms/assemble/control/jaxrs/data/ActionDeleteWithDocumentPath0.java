@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.jaxrs.data;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -19,6 +20,9 @@ class ActionDeleteWithDocumentPath0 extends BaseAction {
 			if (null == document) {
 				throw new ExceptionDocumentNotExists(id);
 			}
+			if (!business.isDocumentEditor(effectivePerson, null, null, document)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			this.deleteData(business, document, path0);
 			emc.commit();
 			Wo wo = new Wo();
@@ -26,7 +30,7 @@ class ActionDeleteWithDocumentPath0 extends BaseAction {
 			result.setData(wo);
 
 			CacheManager.notify( Document.class );
-			
+
 			return result;
 		}
 	}

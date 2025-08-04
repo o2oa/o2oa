@@ -87,6 +87,24 @@ public class CorrelationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "替换文档指定site的关联文档数据.", action = ActionUpdateWithDocument.class)
+	@POST
+	@Path("update/doc/{docId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateWithDocument(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("文档标识") @PathParam("docId") String docId, JsonElement jsonElement) {
+		ActionResult<ActionUpdateWithDocument.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateWithDocument().execute(effectivePerson, docId, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除关联内容.", action = ActionDeleteWithDocument.class)
 	@POST
 	@Path("doc/{docId}/delete")

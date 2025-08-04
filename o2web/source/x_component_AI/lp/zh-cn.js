@@ -9,7 +9,7 @@ MWF.xApplication.AI.LP = {
 		"aidesc" : "功能描述",
 		"aiModel" : "模型名称",
 		"knowledge": "知识库",
-
+		"questions" : "问答",
 		"o2AiEnable": "是否启用O2智能体",
 		"o2AiBaseUrl": "o2智能体服务地址",
 		"o2AiToken": "o2智能体服务认证秘钥"
@@ -60,6 +60,7 @@ MWF.xApplication.AI.LP = {
 	},
 	"searchhistory" : "搜索历史记录",
 	"inputholder" : "请输入内容,Shift + Enter 换行",
+	"inputholderm" : "请输入内容",
 	"setting" : "系统设置",
 	"newmodule" : "新建模型",
 	"modifymodule" : "修改模型",

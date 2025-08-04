@@ -3856,6 +3856,7 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 					"thJson": thJson,
 					"title": th.get("text"),
 					"mJson" : mJson,
+					"dataType": thJson.impExpType,
 					"available": true
 				})
 			}
@@ -3876,7 +3877,7 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 				if ( column.mJson.type === "Label" && module.node) {
 					text = module.node.get("text");
 				}else{
-					text = module.getExcelData();
+					text = module.getExcelData( column.dataType );
 				}
 
 				if( !text && o2.typeOf(text) !== "number" ){
@@ -4213,6 +4214,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					"mJson" : mJson,
 					"field": mJson.id,
 					"index": idx,
+					"dataType": thJson.impExpType
 					// "module": this.importerLine.getModule(mJson.id)
 					// "module": this.simelateModuleMap[mJson.id]
 				});
@@ -4532,7 +4534,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 				}
 			}
 			if(!hasError){
-				module.setExcelData(parsedD);
+				module.setExcelData(parsedD, columnJson.dataType );
 				var ps = [];
 				if( module.moduleExcelAG )ps.push( module.moduleExcelAG );
 				if( module.moduleValueAG && !ps.contains(module.moduleValueAG) )ps.push( module.moduleValueAG );

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -23,11 +24,14 @@ class ActionCreateWithDocument extends BaseAction {
 			if (business.itemFactory().countWithDocmentWithPath(document.getId()) > 0) {
 				throw new ExceptionDataAlreadyExist(document.getTitle(), document.getId());
 			}
-			
+			if (!business.isDocumentEditor(effectivePerson, null, null, document)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
+
 			DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
 			documentDataHelper.update(jsonElement);
 			emc.commit();
-			
+
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);

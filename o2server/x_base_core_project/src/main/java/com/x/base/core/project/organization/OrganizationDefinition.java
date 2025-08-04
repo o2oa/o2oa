@@ -1,5 +1,6 @@
 package com.x.base.core.project.organization;
 
+import com.x.base.core.project.http.EffectivePerson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -127,6 +128,9 @@ public class OrganizationDefinition {
 			PortalManager, PortalCreator, BBSManager, CMSManager, CMSCreator, OKRManager, CRMManager, TeamWorkManager,
 			QueryManager, MessageManager, HotPictureManager, SearchPrivilege, FileManager, ServiceManager));
 
+	public static boolean isSystemUser(String name) {
+		return EffectivePerson.CIPHER.equalsIgnoreCase(name) || EffectivePerson.XADMIN.equalsIgnoreCase(name);
+	}
 	public static String toDistinguishedName(String name) {
 		if (!StringUtils.contains(name, NAME_JOIN_CHAR)) {
 			name = name + NAME_JOIN_CHAR + name + RoleDefinitionSuffix + "@R";

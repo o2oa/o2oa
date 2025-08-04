@@ -39,9 +39,7 @@ public class DocumentQueryService {
             return null;
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            return documentInfoService.get(emc, id);
-        } catch (Exception e) {
-            throw e;
+            return emc.find(id, Document.class);
         }
     }
 

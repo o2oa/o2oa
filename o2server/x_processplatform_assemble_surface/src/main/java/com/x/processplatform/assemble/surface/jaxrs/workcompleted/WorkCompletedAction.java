@@ -32,6 +32,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 @Tag(name = "WorkCompletedAction", description = "已完成工作接口.")
 @Path("workcompleted")
 @JaxrsDescribe("已完成工作接口.")
@@ -466,15 +467,34 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 	@Path("list/paging/{page}/size/{size}/application/{applicationFlag}/filter/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageListWithApplicationPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-								@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
-								@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
-								JsonElement jsonElement) {
+	public void manageListWithApplicationPaging(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+			JsonElement jsonElement) {
 		ActionResult<List<ActionManageListWithApplicationPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageListWithApplicationPaging().execute(effectivePerson, page, size, applicationFlag, jsonElement);
+			result = new ActionManageListWithApplicationPaging().execute(effectivePerson, page, size, applicationFlag,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "调整已完成工作时间", action = ActionShiftTime.class)
+	@POST
+	@Path("shift/time")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void shiftTime(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionShiftTime.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionShiftTime().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

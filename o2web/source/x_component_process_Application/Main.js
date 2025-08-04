@@ -1176,14 +1176,14 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 			"default":[
 				["delCompletedWork"],
 				["rollback","sendRead","addReview"],
-				["manage"]
+				["manage","adjustTime"]
 			],
 			"unSelect":[
 			],
 			"selected":[
 				["delCompletedWork"],
 				["rollback","sendRead","addReview"],
-				["manage"]
+				["manage","adjustTime"]
 			],
 			"mulSelect":[
 				["delCompletedWork"],
@@ -1445,6 +1445,11 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 			addReview :{
 				action : "addReview",
 				text : this.lp.actionList.addReview,
+				icon : "icon-upload"
+			},
+			adjustTime :{
+				action : "adjustTime",
+				text : this.lp.actionList.adjustTime,
 				icon : "icon-upload"
 			},
 			endWork :{
@@ -2050,6 +2055,20 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 			form = new MWF.xApplication.process.Application.ManageWorkForm({app: this.app}, this.explorer.selectedList[0] );
 		}
 		form.open();
+	},
+	adjustTime : function(){
+		var _self = this;
+		if (this.explorer.selectedList && this.explorer.selectedList.length){
+			var data = this.explorer.selectedList[0];
+			var form = new MWF.xApplication.process.Application.AdjustTimeForm(this.explorer, data, {
+			}, {
+				app: this.app
+			});
+			form.edit()
+		}else {
+			this.app.notice("请先选择文件","error");
+			return;
+		}
 	},
 	jump: function(){
 
@@ -2847,6 +2866,89 @@ MWF.xApplication.process.Application.AddSerSialForm = new Class({
 				"serial" : data.serial
 			}).then(function (){
 				this.app.notice("添加成功");
+				this.explorer.refresh();
+				this.close();
+			}.bind(this));
+		}
+	}
+});
+MWF.xApplication.process.Application.AdjustTimeForm = new Class({
+	Extends: MPopupForm,
+	Implements: [Options, Events],
+	options: {
+		"style": "attendanceV2",
+		"width": 500,
+		"height": 300,
+		"hasTop": true,
+		"hasIcon": false,
+		"draggable": true,
+		"title" : "调整流程发起时间",
+		"id" : ""
+	},
+	_createTableContent: function () {
+
+		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+			"<tr><td styles='formTableTitle' lable='startTime2' width='25%'></td>" +
+			"    <td styles='formTableValue14' item='startTime2' colspan='3'></td></tr>" +
+			"<tr><td styles='formTableTitle' width='25%'>备注：</td>" +
+			"    <td styles='formTableValue14'  colspan='3'>修改后会把跟流程所有相关的时间都会往前或者往后一起调整，包括流程记录等。</td></tr>" +
+			"</table>";
+		this.formTableArea.set("html", html);
+
+		this.form = new MForm(this.formTableArea, this.data || {}, {
+			isEdited: true,
+			style : "minder",
+			hasColon : true,
+			itemTemplate: {
+				startTime2: { text : "发起时间", notEmpty : true ,tType:"datetime"}
+			}
+		}, this.app);
+		this.form.load();
+
+	},
+	_createBottomContent: function () {
+
+		if (this.isNew || this.isEdited) {
+
+			this.okActionNode = new Element("button.inputOkButton", {
+				"styles": this.css.inputOkButton,
+				"text": "确定"
+			}).inject(this.formBottomNode);
+
+			this.okActionNode.addEvent("click", function (e) {
+				this.save(e);
+			}.bind(this));
+		}
+
+		this.cancelActionNode = new Element("button.inputCancelButton", {
+			"styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
+			"text": "关闭"
+		}).inject(this.formBottomNode);
+
+		this.cancelActionNode.addEvent("click", function (e) {
+			this.close(e);
+		}.bind(this));
+
+	},
+	save: function(){
+
+
+		var data = this.form.getResult(true,null,true,false,true);
+		if( data ){
+
+
+			const time1 = new Date(data.startTime);
+			const time2 = new Date(data.startTime2);
+			const timeDiffMs = time2 - time1;
+
+			const minutesDiff = parseInt(timeDiffMs / 1000 /60);
+
+
+			this.app.action.WorkCompletedAction.shiftTime({
+				"id" : data.id,
+				"adjustMinutes" : minutesDiff
+			}).then(function (){
+				this.app.notice("更新成功");
 				this.explorer.refresh();
 				this.close();
 			}.bind(this));

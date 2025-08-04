@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -33,6 +34,9 @@ class ActionUpdateWithDocument extends BaseAction {
 			Document document = emc.find(id, Document.class);
 			if (null == document) {
 				throw new ExceptionDocumentNotExists(id);
+			}
+			if (!business.isDocumentEditor(effectivePerson, null, null, document)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			JsonElement source = getData(business, id);
 			JsonElement merge = XGsonBuilder.merge(jsonElement, source);

@@ -1,8 +1,26 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.FileTools;
+import com.x.base.core.project.x_cms_assemble_control;
+import com.x.base.core.project.x_processplatform_assemble_surface;
+import com.x.cms.assemble.control.wrapin.WiAttachment;
+import com.x.processplatform.core.entity.content.Attachment;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
+import java.util.Set;
+import java.util.UUID;
+import javax.persistence.EntityManager;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -35,6 +53,108 @@ public class BaseAction extends StandardJaxrsAction {
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
 	protected DocumentQueryService documentQueryService = new DocumentQueryService();
+
+	protected boolean checkAllowVisitJob(String person, String job) throws Exception {
+		if(OrganizationDefinition.isSystemUser(person)){
+			return true;
+		}
+		WrapBoolean resp = ThisApplication.context().applications()
+				.getQuery(x_processplatform_assemble_surface.class,
+						Applications.joinQueryUri("job", job, "allow", "visit", "person", person))
+				.getData(WrapBoolean.class);
+		return resp.getValue();
+	}
+
+	protected boolean checkAllowVisitDoc(String person, String document) throws Exception {
+		if(OrganizationDefinition.isSystemUser(person)){
+			return true;
+		}
+		WrapBoolean resp = ThisApplication.context().applications().getQuery(x_cms_assemble_control.class,
+						Applications.joinQueryUri("document", "cipher", document, "permission", "read", "person", person))
+				.getData(WrapBoolean.class);
+		return resp.getValue();
+	}
+
+	protected List<Attachment> checkAttachment(List<WiAttachment> attList, String person, Business business) throws Exception{
+		EntityManagerContainer emc = business.entityManagerContainer();
+		EntityManager em = emc.get(Attachment.class);
+		List<Attachment> attachmentList = new ArrayList<>();
+		if (ListTools.isNotEmpty(attList)) {
+			Set<String> jobs = new HashSet<>();
+			for (WiAttachment w : attList) {
+				Attachment o = em.find(Attachment.class, w.getId());
+				if (null == o) {
+					throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
+				}
+				if(!jobs.contains(o.getJob()) && !checkAllowVisitJob(person,  o.getJob())){
+					throw new ExceptionAccessDenied(person, o.getId());
+				}
+				jobs.add(o.getJob());
+				em.detach(o);
+				if(StringUtils.isNotBlank(w.getName())){
+					FileTools.verifyConstraint(1, w.getName(), null);
+					o.setName(w.getName());
+				}
+				if(StringUtils.isNotBlank(w.getSite())){
+					o.setSite(w.getSite());
+				}
+				attachmentList.add(o);
+			}
+		}
+		return attachmentList;
+	}
+
+	protected List<FileInfo> checkFileInfo(List<WiAttachment> attList, String person, Business business) throws Exception{
+		EntityManagerContainer emc = business.entityManagerContainer();
+		EntityManager em = emc.get(FileInfo.class);
+		List<FileInfo> fileList = new ArrayList<>();
+		if (ListTools.isNotEmpty(attList)) {
+			Set<String> docs = new HashSet<>();
+			for (WiAttachment w : attList) {
+				FileInfo o = em.find(FileInfo.class, w.getId());
+				if (null == o) {
+					throw new ExceptionEntityNotExist(w.getId(), FileInfo.class);
+				}
+
+				if (!docs.contains(o.getDocumentId()) && !checkAllowVisitDoc(person,  o.getDocumentId())){
+					throw new ExceptionAccessDenied(person, o.getId());
+				}
+				docs.add(o.getDocumentId());
+				em.detach(o);
+				if(StringUtils.isNotBlank(w.getName())){
+					FileTools.verifyConstraint(1, w.getName(), null);
+					o.setName(w.getName());
+				}
+				if(StringUtils.isNotBlank(w.getSite())){
+					o.setSite(w.getSite());
+				}
+				fileList.add(o);
+			}
+		}
+		return fileList;
+	}
+
+	protected FileInfo creteFileInfo(String person, Document document, StorageMapping storage, String name,
+			String site) {
+		String fileName = UUID.randomUUID().toString();
+		String extension = FilenameUtils.getExtension(name);
+		FileInfo attachment = new FileInfo();
+		attachment.setCreateTime(new Date());
+		attachment.setLastUpdateTime(new Date());
+		attachment.setExtension(extension);
+		attachment.setName(name);
+		attachment.setFileName(fileName);
+		attachment.setStorage(storage.getName());
+		attachment.setAppId(document.getAppId());
+		attachment.setCategoryId(document.getCategoryId());
+		attachment.setDocumentId(document.getId());
+		attachment.setCreatorUid(person);
+		attachment.setSite(site);
+		attachment.setFileHost("");
+		attachment.setFilePath("");
+		attachment.setFileType("ATTACHMENT");
+		return attachment;
+	}
 
 	protected byte[] extensionService(EffectivePerson effectivePerson, FileInfo fileInfo, Cms.DocExtensionEvent event)
 			throws Exception {

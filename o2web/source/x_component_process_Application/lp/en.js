@@ -37,7 +37,8 @@ MWF.xApplication.process.Application.LP={
 		"add": "Add",
 		"rollback": "rollback",
 		"delSnap": "Delete completely",
-		"restore": "Restore"
+		"restore": "Restore",
+		"adjustTime" : "Adjust Time"
 	},
 	"subject": "Title",
 	"name": "name",

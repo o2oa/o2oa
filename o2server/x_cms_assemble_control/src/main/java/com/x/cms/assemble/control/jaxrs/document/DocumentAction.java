@@ -12,16 +12,20 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.queue.DataImportStatus;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Path("document")
 @JaxrsDescribe("信息发布信息文档管理")
@@ -1003,7 +1007,6 @@ public class DocumentAction extends StandardJaxrsAction {
             result.error(e);
             logger.error(e, effectivePerson, request, jsonElement);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -1022,7 +1025,24 @@ public class DocumentAction extends StandardJaxrsAction {
             result.error(e);
             logger.error(e, effectivePerson, request, jsonElement);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "更新文档信息。", action = ActionUpdateDocument.class)
+    @POST
+    @Path("{id}/update")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateDocument(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement) {
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        ActionResult<ActionUpdateDocument.Wo> result = new ActionResult<>();
+        try {
+            result = new ActionUpdateDocument().execute(effectivePerson, id, jsonElement);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, jsonElement);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 }
