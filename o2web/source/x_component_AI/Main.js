@@ -11,7 +11,18 @@ MWF.xApplication.AI.Main = new Class({
         "title": MWF.xApplication.AI.LP.title
     },
     onQueryLoad:  function () {
+
+    },
+    loadApplication: async function (callback) {
         this.lp = MWF.xApplication.AI.LP;
+
+        if(layout.mobile){
+            o2.requireApp("AI", "Chat", function(){
+                new MWF.xApplication.AI.Chat(this, this.content);
+            }.bind(this));
+
+            return;
+        }
 
         this.generateType = "auto";
         this.sessionId = "";
@@ -19,8 +30,6 @@ MWF.xApplication.AI.Main = new Class({
         this.isComposing = false;
         this.selectedFiles = {};
         o2.loadCss("../x_component_process_FormDesigner/Module/Form/skin/v10/form.css");
-    },
-    loadApplication: async function (callback) {
 
         const config = await this.action.ConfigAction.getBaseConfig();
         this.config = config.data;
@@ -125,6 +134,7 @@ MWF.xApplication.AI.Main = new Class({
         return categories;
     },
     loadHistory: function () {
+        if(!this.historyListNode) return;
         this.historyListNode.empty();
         const p = this.action.ChatAction.listPaging(1, 1000);
         const _this = this;

@@ -9,7 +9,7 @@ MWF.xApplication.AI.LP = {
 		"aidesc" : "Function Description",
 		"aiModel" : "Model Name",
 		"knowledge": "Knowledge Base",
-
+		"questions" : "Questions",
 		"o2AiEnable": "Enable O2 Agent",
 		"o2AiBaseUrl": "O2 Agent Service Address",
 		"o2AiToken": "O2 Agent Service Authentication Key"
@@ -59,6 +59,7 @@ MWF.xApplication.AI.LP = {
 	},
 	"searchhistory" : "Search History",
 	"inputholder" : "Enter content, Shift + Enter for new line",
+	"inputholderm" : "Enter content",
 	"setting" : "System Settings",
 	"newmodule" : "Create New Model",
 	"modifymodule" : "Modify Model",
