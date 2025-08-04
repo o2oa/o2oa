@@ -1159,8 +1159,8 @@ if (!window.o2) {
                     // }
                 }
             });
-
-            node.dispatchEvent(o2.customEventLoad);
+            node.dispatchEvent(new CustomEvent("o2load"));
+            // node.dispatchEvent(o2.customEventLoad);
 
         }
         var _bindToModule = function (m, node, name) {

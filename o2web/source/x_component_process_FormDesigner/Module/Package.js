@@ -96,6 +96,5 @@ MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOOrg', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOCurrency', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOAddress', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOLog', null, false);
-MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOActionbar', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.Codeeditor', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOPagination', null, false);
