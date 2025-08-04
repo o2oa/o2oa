@@ -29,6 +29,13 @@ MWF.xApplication.AI.Setting = new Class({
             return d.split("|")[1];
         }).join();
         this.config.knowledgeIndexAppValue = this.config.knowledgeIndexAppList.join();
+
+        this.config.questionsIndexApp = this.config.questionsIndexAppList.map((d)=>{
+            return d.split("|")[1];
+        }).join();
+        this.config.questionsIndexAppValue = this.config.questionsIndexAppList.join();
+
+
         this.container.loadHtml(this.viewPath, {"bind": {"lp": this.app.lp,"config":this.config}, "module": this}, function(){
 
         }.bind(this));
@@ -108,6 +115,7 @@ MWF.xApplication.AI.Setting = new Class({
         const desc = node.querySelector("[name='desc']");
         const appIconUrl = node.querySelector("[name='appIconUrl']");
         const knowledgeIndexAppList = node.querySelector("[name='knowledgeIndexAppList']");
+        const questionsIndexAppList = node.querySelector("[name='questionsIndexAppList']");
         const o2AiBaseUrl = node.querySelector("[name='o2AiBaseUrl']");
         const o2AiToken = node.querySelector("[name='o2AiToken']");
         const o2AiEnable = node.querySelector("[name='o2AiEnable']");
@@ -120,7 +128,8 @@ MWF.xApplication.AI.Setting = new Class({
             "o2AiBaseUrl" : o2AiBaseUrl.get("value"),
             "o2AiToken" : o2AiToken.get("value"),
             "o2AiEnable" : o2AiEnable.get("value"),
-            "knowledgeIndexAppList" :knowledgeIndexAppList.get("v")!==""?knowledgeIndexAppList.get("v").split(","):[]
+            "knowledgeIndexAppList" :knowledgeIndexAppList.get("v")!==""?knowledgeIndexAppList.get("v").split(","):[],
+            "questionsIndexAppList" :questionsIndexAppList.get("v")!==""?questionsIndexAppList.get("v").split(","):[]
         }, function( json ){
             $OOUI.notice.success(this.lp.common.tip, this.lp.common.savesuccess);
         }.bind(this));

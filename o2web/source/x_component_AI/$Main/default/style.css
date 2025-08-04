@@ -1378,19 +1378,26 @@
     gap:.5em;
     margin-bottom:.5rem;
 }
-.chat-att-item{
+.chat-att-item {
     align-items: center;
     display: flex;
     justify-content: flex-start;
-    width:30%;
+    width: 30%;
     border: 1px solid rgba(0, 0, 0, .08);
     border-radius: 8px;
     height: 3em;
     padding: .8em .6em;
     position: relative;
     background: #fff;
-    gap:.5em;
+    gap: .5em;
     cursor: pointer;
+}
+
+/* 当屏幕宽度小于或等于 768px 时，调整宽度为 80% */
+@media (max-width: 768px) {
+    .chat-att-item {
+        width: 80%;
+    }
 }
 .chat-att-item:hover{
     border: 1px solid rgba(0, 0, 0, .2);
@@ -1570,4 +1577,69 @@
 }
 .hide{
     display: none;
+}
+
+/*移动端*/
+.m-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.m-top {
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.m-top-l, .m-top-r {
+    width: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.m-top-c {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.m-bottom {
+    border-top: 1px solid #ddd;
+    padding: .5rem;
+}
+
+.m-bottom > .chat-wrap {
+    padding: 0;
+}
+
+.m-content {
+    flex: 1;
+    overflow: auto;
+    padding: .5rem;
+}
+.m-content>.history{
+    padding:0;
+}
+.m-content > .chat-list {
+    margin-top: 0;
+    width: 100%;
+}
+.m-content-chat{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 1rem;
+    height: 100%;
+}
+.m-content-chat>.chat-title{
+    font-size: 1.2rem;
+}
+.m-content-chat>.chat-desc{
+    font-size: 1rem;
 }

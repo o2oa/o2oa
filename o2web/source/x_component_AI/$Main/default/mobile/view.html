@@ -1,0 +1,51 @@
+<div class="m-layout">
+    <div class="m-top">
+        <div class="m-top-l ooicon-jiadian" data-o2-events="click:showHistory"></div>
+        <div class="m-top-c" data-o2-element="titleNode">新建会话</div>
+        <div class="m-top-r ooicon-create" data-o2-events="click:loadNew"></div>
+    </div>
+    <div class="m-content" data-o2-element="chatListWrapNode">
+        <div class="m-content-chat" data-o2-element="chatDescNode">
+            <div class="chat-title">
+                <div><img src="{{$.config.appIconUrl}}"></div>
+                <div>{{$.config.title}}</div>
+            </div>
+            <div class="chat-desc">{{$.config.desc}}</div>
+        </div>
+        <div class="chat-list" data-o2-element="chatListNode">
+        </div>
+    </div>
+    <div class="m-bottom">
+        <div class="chat-wrap">
+            <div class="chat-att" data-o2-element="attUplodListNode">
+            </div>
+            <div class="chat-input"><textarea style="height: 3rem;font-size: 1rem;" placeholder="{{$.lp.inputholderm}}" data-o2-element="chatNode"></textarea>
+            </div>
+            <div class="chat-tools" >
+                <div class="chat-tools-l" >
+                    <div data-o2-events="click:showGenerateType" data-o2-element="tool1Node" class="chat-tools-cur ooicon-networking_click"></div>
+                    <div data-o2-events="click:showGenerateType" data-o2-element="tool2Node" class="chat-tools-cur" style="cursor: pointer;">{{$.lp.types.auto}}
+                    </div>
+                    <div>｜</div>
+                    <div data-o2-element="tool3Node">{{$.lp.types.auto_text}}</div>
+                </div>
+                {{if $.config.o2AiEnable}}
+                <div class="ooicon-fujian" style="width: 2rem;font-size: 1.3rem;cursor: pointer;"
+                     data-o2-events="click:addAtt" data-o2-element="addAttNode"></div>
+                {{end if}}
+                <div data-o2-element="btnSendNode" data-o2-events="click:sendNew">
+                    <div class="btn" style="height: 1.7rem;width: 1.7rem;">
+                        <i class="ooicon-send1"></i>
+                    </div>
+                </div>
+                <div data-o2-element="btnCancelNode" data-o2-events="click:stop" style="display: none">
+                    <div class="btn" style="color: #fff;background: #2E82F7;">
+                        <i class="ooicon-stop1"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -28,7 +28,7 @@
     <div class="layout-right" data-o2-element="rightNode">
         <div class="page">
             <div class="chat-top" data-o2-element="titleNode">{{$.lp.navi.mcp}}</div>
-            <div class="form-layout">
+            <div class="form-layout" style="background: #fff;">
                 <div class="form-content">
                     <div class="form-content-area">
                         <oo-input required="true"
@@ -99,6 +99,17 @@
                                           value="{{$.config.knowledgeIndexApp}}"
                                           style="flex:100%"
                                           name="knowledgeIndexAppList"
+                                          label-style="width:6.2vw;"
+                                          label-Align="right">
+                                </oo-input>
+                                <oo-input data-o2-events="click:selectCMS"
+                                          v="{{$.config.questionsIndexAppValue}}"
+                                          required="true"
+                                          label="{{$.lp.config.questions}}"
+                                          readonly="true"
+                                          value="{{$.config.questionsIndexApp}}"
+                                          style="flex:100%"
+                                          name="questionsIndexAppList"
                                           label-style="width:6.2vw;"
                                           label-Align="right">
                                 </oo-input>
