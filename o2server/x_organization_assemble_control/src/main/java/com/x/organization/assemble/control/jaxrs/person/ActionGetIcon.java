@@ -77,7 +77,7 @@ class ActionGetIcon extends BaseAction {
 
 	private String generate(String name, int size, Color bgColor, Color fontColor) throws IOException {
 		// 只取姓
-		String firstChar = name.substring(0, 1);
+		String firstChar = name.substring(0, 1).toUpperCase();
 		BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = image.createGraphics();
 		// 开启多项抗锯齿和字体平滑
