@@ -45,6 +45,17 @@
     "-moz-user-select": "text",
     "margin": "0px 3px 3px 3px"
   },
+
+  "rootNameNode": {
+    "height": "40px",
+    "padding": "0 10px",
+    "line-height": "40px",
+    "font-weight": "bold",
+    "white-space": "nowrap",
+    "text-overflow": "ellipsis",
+    "overflow": "hidden"
+  },
+
   "toolbarNode": {
     "height": "40px",
     "background-color": "#F8F8F8",

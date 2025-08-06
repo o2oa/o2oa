@@ -3711,6 +3711,17 @@ if (!window.o2) {
             });
         }
 
+        o2.areArraysEqual = function (arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            const count = {};
+            for (const s of arr1) count[s] = (count[s] || 0) + 1;
+            for (const s of arr2) {
+                if (!count[s]) return false;
+                count[s]--;
+            }
+            return true;
+        }
+
 
         
 

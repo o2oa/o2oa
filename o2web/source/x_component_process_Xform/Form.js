@@ -2577,7 +2577,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 //     if (layout.app) layout.app.$openWithSelf = true;
                 //     layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
                 // }
-                this.app.options.action = action || "processTask";
+                // this.app.options.action = action || "processTask";
+                this.app.options.action = action || "flowTask";
                 this.app.reload();
 
                 //this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");

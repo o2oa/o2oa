@@ -63,7 +63,7 @@ MWF.xApplication.Org.$Explorer = new Class({
     },
 
     loadLayout: function(){
-        this.listAreaNode = new Element("div", {"styles": this.css.listAreaNode}).inject(this.node);
+        this.listAreaNode = new Element("div.MWF_listAreaNode", {"styles": this.css.listAreaNode}).inject(this.node);
         this.propertyAreaNode = new Element("div", {"styles": this.css.propertyAreaNode}).inject(this.node);
 
         this.resizeBarNode = new Element("div", {"styles": this.css.resizeBarNode}).inject(this.propertyAreaNode);
@@ -76,6 +76,14 @@ MWF.xApplication.Org.$Explorer = new Class({
             this.propertyContentNode.setStyle("-webkit-user-select", "text");
         }.bind(this));
 
+
+        this.rootNameNode = new Element("div.mainColor_bg", {"styles": this.css.rootNameNode, text: this.app.lp.title}).inject(this.listAreaNode);
+        o2.Actions.load('x_organization_assemble_control').UnitAction.getRoot().then(function(json){
+            if (json.data){
+                this.rootNameNode.textContent = json.data.name;
+                this.rootNameNode.title = json.data.name;
+            }
+        }.bind(this));
 
         this.toolbarNode = new Element("div", {"styles": this.css.toolbarNode}).inject(this.listAreaNode);
 
@@ -297,9 +305,14 @@ MWF.xApplication.Org.$Explorer = new Class({
         tSize = this.toolbarNode.getSize();
         mtt = this.toolbarNode.getStyle("margin-top").toFloat();
         mbt = this.toolbarNode.getStyle("margin-bottom").toFloat();
-        mtc = this.toolbarNode.getStyle("margin-top").toFloat();
-        mbc = this.toolbarNode.getStyle("margin-bottom").toFloat();
-        height = size.y-tSize.y-mtt-mbt-mtc-mbc;
+        // mtc = this.toolbarNode.getStyle("margin-top").toFloat();
+        // mbc = this.toolbarNode.getStyle("margin-bottom").toFloat();
+        height = size.y-tSize.y-mtt-mbt;
+
+        tSize = this.rootNameNode.getSize();
+        mtt = this.rootNameNode.getStyle("margin-top").toFloat();
+        mbt = this.rootNameNode.getStyle("margin-bottom").toFloat();
+        height = height-tSize.y-mtt-mbt;
         this.listScrollNode.setStyle("height", ""+height+"px");
 
         if (this.pingyinNode){

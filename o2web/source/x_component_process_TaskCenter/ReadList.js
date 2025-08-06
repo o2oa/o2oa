@@ -105,7 +105,12 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
 
         if (this.rightContentNode){
             this.rightContentNode.addEvent("click", function(e){
-                this.showTaskCompleted(e);
+                // this.showTaskCompleted(e);
+
+                this._getSimpleJobByTaskComplete(function(data){
+                    this.openWorkByTaskCompleted(e, data.workList[0].id);
+                }.bind(this));
+
             }.bind(this));
         }
     },

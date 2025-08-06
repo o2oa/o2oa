@@ -111,7 +111,13 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
 
         if (this.showTaskCompletedNode){
             this.showTaskCompletedNode.addEvent("click", function(e){
-                this.showTaskCompleted();
+                // this.showTaskCompleted();
+
+                this._getSimpleJobByTaskComplete(function(data){
+                    this.openWorkByTaskCompleted(e, data.workList[0].id);
+                }.bind(this));
+
+                
             }.bind(this));
         }
         if (this.closeTaskCompletedNode){
@@ -122,7 +128,12 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
 
         if (this.rightContentNode){
             this.rightContentNode.addEvent("click", function(e){
-                this.showTaskCompleted(e);
+                // this.showTaskCompleted(e);
+
+                this._getSimpleJobByTaskComplete(function(data){
+                    this.openWorkByTaskCompleted(e, data.workList[0].id);
+                }.bind(this));
+
             }.bind(this));
         }
     },

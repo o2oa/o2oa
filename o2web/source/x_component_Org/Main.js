@@ -38,12 +38,13 @@ MWF.xApplication.Org.Main = new Class({
 
 		this.menu = new MWF.xApplication.Org.Menu(this, this.startMenuNode, {
 			"onPostLoad": function(){
+				this.menu.doAction(this.menu.startNavis[this.status?.navi || 0]);
 
-				if (this.status){
-					if (this.status.navi!==null){
-						this.menu.doAction(this.menu.startNavis[this.status.navi]);
-					}
-				}
+				// if (this.status){
+				// 	if (this.status.navi!==null){
+				// 		this.menu.doAction(this.menu.startNavis[this.status.navi]);
+				// 	}
+				// }
 			}.bind(this)
 		});
 		this.addEvent("resize", function(){
@@ -370,20 +371,20 @@ MWF.xApplication.Org.Menu = new Class({
 	},
 	toNormal: function(){
 		var css = this.app.css.normalStartMenuNode;
-		if (!this.morph){
-			this.morph = new Fx.Morph(this.node, {duration: 50, link: "chain"});
-		}
         this.app.pingyinArea = new Element("div", {"styles": this.app.css.startMenuNaviLeftPingyinNode}).inject(this.node, "top");
-		this.morph.start(css).chain(function(){
-			this.node.setStyles(css);
-
-			// MWF.require("MWF.widget.ScrollBar", function(){
-			// 	new MWF.widget.ScrollBar(this.node, {
-			// 		"style":"xApp_ProcessManager_StartMenu", "distance": 100, "friction": 4,	"axis": {"x": false, "y": true}
-			// 	});
-			// }.bind(this));
-		}.bind(this));
+		this.node.setStyles(css);
 	},
+
+	// toNormal_bak: function(){
+	// 	var css = this.app.css.normalStartMenuNode;
+	// 	if (!this.morph){
+	// 		this.morph = new Fx.Morph(this.node, {duration: 50, link: "chain"});
+	// 	}
+    //     this.app.pingyinArea = new Element("div", {"styles": this.app.css.startMenuNaviLeftPingyinNode}).inject(this.node, "top");
+	// 	this.morph.start(css).chain(function(){
+	// 		this.node.setStyles(css);
+	// 	}.bind(this));
+	// },
 	setNodeCenter: function(node){
 		var size = node.getSize();
 		var contentSize = this.app.node.getSize();
