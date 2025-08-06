@@ -56,6 +56,9 @@ class ActionEdit extends BaseAction {
             group.setPersonList(
                     ListTools.extractProperty(business.person().pick(ListTools.trim(group.getPersonList(), true, true)),
                             JpaObject.id_FIELDNAME, String.class, true, true));
+            group.setUnitList(
+                    ListTools.extractProperty(business.unit().pick(ListTools.trim(group.getUnitList(), true, true)),
+                            JpaObject.id_FIELDNAME, String.class, true, true));
             group.setGroupList(
                     ListTools.extractProperty(business.group().pick(ListTools.trim(group.getGroupList(), true, true)),
                             JpaObject.id_FIELDNAME, String.class, true, true));
