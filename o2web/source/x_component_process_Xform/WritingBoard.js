@@ -32,6 +32,11 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             this.field = true;
             this.node.empty();
 
+            if (!this.isReadable){
+                this.node.setStyle('display', 'none');
+                return '';
+            }
+
             if ( this.isSectionMergeRead() ) { //区段合并显示
                 this._loadMergeReadNode();
             }else{

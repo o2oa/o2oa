@@ -28,6 +28,12 @@ MWF.xApplication.process.Xform.Foxit = MWF.APPFoxit =  new Class({
         this.node.empty();
     },
     _afterLoaded: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+        }
+
+        if (!this.isEditable) this.mode = 'read';
+
         if(this.mode !== "read"){
             this.createUpload();
         }

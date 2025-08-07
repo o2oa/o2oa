@@ -53,6 +53,11 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
         }.bind(this));
     },
     _loadUserInterface: function(){
+         if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.node.set("html", this._createElementHtml());
         //this._checkVueHtml();
         this._checkVmodel();

@@ -82,17 +82,24 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     },
 
     _loadUserInterface: function(){
-        this.node.appendHTML(this._createElementHtml(), "before");
-        var input = this.node.getPrevious();
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            var html = this._createElementHtml();
+            if (html){
+                this.node.appendHTML(this._createElementHtml(), "before");
+                var input = this.node.getPrevious();
 
-        this.node.destroy();
-        this.node = input;
-        this.node.set({
-            "id": this.json.id,
-            "MWFType": this.json.type
-        });
-        this.node.addClass("o2_vue");
-        this._createVueApp();
+                this.node.destroy();
+                this.node = input;
+                this.node.set({
+                    "id": this.json.id,
+                    "MWFType": this.json.type
+                });
+                this.node.addClass("o2_vue");
+                this._createVueApp();
+            }
+        }
     },
     _createVueApp: function(){
         if (this.json.vueSlot) this._checkVmodel(this.json.vueSlot);

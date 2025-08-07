@@ -104,6 +104,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		this.json = data.json;
 		this.html = data.html;
 		this.json.mode = this.options.mode;
+		this.json.appType = this.designer.options.name;
 		if (!this.json.css) this.json.css = {"code":""};
 
 		this.isNewPage = (this.json.id) ? false : true;

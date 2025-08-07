@@ -66,34 +66,39 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this._loadUserInterface();
     },
     _loadNode: function(){
-        this.node.empty();
-        if (this.isReadonly()){
-            this._loadNodeRead();
+         if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            debugger;
+            this.node.empty();
+            if (this.isReadonly()){
+                this._loadNodeRead();
 
-            if( this.json.elProperties ){
-                this.node.set(this.json.elProperties );
-            }
-            if (this.json.elStyles){
-                this.node.setStyles( this._parseStyles(this.json.elStyles) );
-            }
+                if( this.json.elProperties ){
+                    this.node.set(this.json.elProperties );
+                }
+                if (this.json.elStyles){
+                    this.node.setStyles( this._parseStyles(this.json.elStyles) );
+                }
 
-            if( !this.eventLoaded ){
-                this._loadDomEvents();
-                this.eventLoaded = true;
-            }
+                if( !this.eventLoaded ){
+                    this._loadDomEvents();
+                    this.eventLoaded = true;
+                }
 
-            this.fireEvent("postLoad");
-            if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
-                this.moduleSelectAG.then(function () {
+                this.fireEvent("postLoad");
+                if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
+                    this.moduleSelectAG.then(function () {
+                        this.fireEvent("load");
+                        this.isLoaded = true;
+                    }.bind(this));
+                }else{
                     this.fireEvent("load");
                     this.isLoaded = true;
-                }.bind(this));
+                }
             }else{
-                this.fireEvent("load");
-                this.isLoaded = true;
+                this._loadNodeEdit();
             }
-        }else{
-            this._loadNodeEdit();
         }
     },
     _resetNodeEdit: function(){
@@ -225,7 +230,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.moduleValueAG = null;
         this._setBusinessData(value);
         this.json[this.json.$id] = value;
-        if( this.isReadonly() ){
+        if( this.isReadonly() && this.isReadable ){
             var text = this.getText();
             this.node.set('text', text||value);
         }

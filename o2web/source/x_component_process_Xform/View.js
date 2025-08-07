@@ -53,10 +53,20 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
     },
 
     _loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         MWF.xDesktop.requireApp("query.Query", "Viewer", null, false);
         this.node.empty();
     },
     _afterLoaded: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         if(!!this.json.viewType){
             this.loadView();
         }else if (this.json.queryView){
@@ -91,6 +101,11 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
      * this.form.get("fieldId").active()
      */
     active: function( callback ){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         if (this.view){
             if (!this.view.loadingAreaNode) this.view.loadView( callback );
         }else{
@@ -114,6 +129,11 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
         return {appName: appName, viewName: viewName};
     },
     loadView: function( callback, force ){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         var viewObj = this.getViewName();
         var appName = viewObj.appName, viewName = viewObj.viewName;
         if( !appName || !viewName ){
@@ -186,6 +206,11 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
     },
 
     loadPrcessView: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
             filter = [];
@@ -216,6 +241,11 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
         }.bind(this));
     },
     loadCMSView: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+        
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
             filter = [];

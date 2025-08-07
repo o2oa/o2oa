@@ -103,6 +103,11 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
             "beforeImport", "validImport","afterImport", "beforeCreateRowData", "afterCreateRowData"]
     },
     _loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         var button = this.node.getElement("button");
         if (!button) button = new Element("button");
         button.inject(this.node, "after");

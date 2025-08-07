@@ -49,6 +49,12 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
 
 	_loadUserInterface: function(){
 		this.node.empty();
+
+        if (!this.isReadable){ 
+            this.node.setStyle('display', 'none');
+            return ''
+        }
+        
         if (this.isReadonly()){
             // this.node.set("html", this._getBusinessData());
             this.node.setStyles({

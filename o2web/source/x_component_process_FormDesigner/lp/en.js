@@ -1597,7 +1597,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"btnStyleLight": "bright",
 		"btnStyleIcon": "Icon only",
 		"fileCol": "Display column count",
-		"OOFilesSiteInfo": "Can display attachments from other sites, multiple sites separated by half width commas"
+		"OOFilesSiteInfo": "Can display attachments from other sites, multiple sites separated by half width commas",
+		"exportImportType": "Export Import Type",
+		"exportImportTypeNote": "Components with both text and values, such as dropdown, single selection, and multiple selection, are valid"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

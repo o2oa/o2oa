@@ -61,6 +61,11 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
     },
 
 	_loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+        
         var button = this.node.getElement("button");
 		if (!button) button = new Element("button");
 		button.inject(this.node, "after");

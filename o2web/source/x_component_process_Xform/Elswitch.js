@@ -50,6 +50,22 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
     //     if (this.isReadonly()) this.json.disabled = true;
     //     this._loadNodeEdit();
     // },
+    isReadonly : function(){
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
+    },
+    _loadNode: function(){
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+             if (this.isReadonly()){
+                this._loadNodeRead();
+            }else{
+                if (!this.isReadable) this.json.disabled = true;
+                this._loadNodeEdit();
+            }
+        }
+    },
+
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();

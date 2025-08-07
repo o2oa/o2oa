@@ -104,6 +104,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.json = data.json;
 		this.html = data.html;
 		this.json.mode = this.options.mode;
+		this.json.appType = this.designer.options.name;
 		if (!this.json.css) this.json.css = {"code":""};
 
 		this.loadMobileActionToos();

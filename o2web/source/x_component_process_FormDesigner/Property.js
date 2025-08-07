@@ -93,7 +93,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.ignoreSection = !!parentNode;
                         }
                     }
-                    this.htmlString = o2.bindJson(this.htmlString, {"lp": lp});
+                    this.htmlString = o2.bindJson(this.htmlString, {"lp": lp, appType: this.form.json.appType});
                     // this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
                     this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                     this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);

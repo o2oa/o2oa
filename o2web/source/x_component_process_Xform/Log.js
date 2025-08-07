@@ -45,6 +45,11 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
     },
 
 	_loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
 		this.node.empty();
         this.node.setStyle("-webkit-user-select", "text");
         if (this.form.businessData){

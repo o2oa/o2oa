@@ -41,6 +41,11 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
             "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
         },
     _loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+        
         this.node.setStyles(this.form.css.sidebar);
         this.node.setStyles({
            "min-width":"126px",

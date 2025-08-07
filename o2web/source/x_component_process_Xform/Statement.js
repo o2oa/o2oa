@@ -53,10 +53,19 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
     },
 
     _loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         MWF.xDesktop.requireApp("query.Query", "Statement", null, false);
         this.node.empty();
     },
     _afterLoaded: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         if(!!this.json.statementType){
             this.loadView();
         }else if (this.json.queryStatement){
@@ -82,6 +91,10 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
      * this.form.get("fieldId").active()
      */
     active: function( callback ){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         if (this.view){
             if (!this.view.loadingAreaNode) this.view.loadView( callback );
         }else{
@@ -108,6 +121,10 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
         return {appName: appName, statementName: statementName, statementId: statementId};
     },
     loadView: function( callback, force ){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         // if (!this.json.queryStatement) return "";
         var viewObj = this.getViewName();
         var appName = viewObj.appName, statementName = viewObj.statementName, statementId = viewObj.statementId;

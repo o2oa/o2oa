@@ -16,21 +16,27 @@ MWF.xApplication.process.Xform.Iframe = MWF.APPIframe =  new Class({
 	Extends: MWF.APP$Module,
 
 	_loadUserInterface: function(){
-		this.node.empty();
+		if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+        }else{
+			this.node.empty();
 
-        var src = this.json.src;
-        if (this.json.valueType=="script"){
-            src = this.form.Macro.exec(((this.json.script) ? this.json.script.code : ""), this);
-        }
+			var src = this.json.src;
+			if (this.json.valueType=="script"){
+				src = this.form.Macro.exec(((this.json.script) ? this.json.script.code : ""), this);
+			}
 
-		this.iframe = new Element("iframe", {
-			"src": src
-		}).inject(this.node, "after");
+			this.iframe = new Element("iframe", {
+				"src": src
+			}).inject(this.node, "after");
+			
+			this.node.destroy();
+			this.node = this.iframe.setStyles({
+				"width": "100%",
+				"border": "0"
+			});
+		}
+
 		
-		this.node.destroy();
-		this.node = this.iframe.setStyles({
-			"width": "100%",
-			"border": "0"
-		});
 	}
 }); 

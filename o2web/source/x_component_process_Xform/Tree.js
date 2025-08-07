@@ -91,6 +91,11 @@ MWF.xApplication.process.Xform.Tree = MWF.APPTree =  new Class(
 	_loadUserInterface: function(){
 		this.node.empty();
 
+		if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
 		MWF.require("MWF.widget.Tree", function(){
 			var options = {"style":"form"};
 			if( this.json.events && typeOf(this.json.events) === "object" ){

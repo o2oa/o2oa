@@ -54,6 +54,11 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
 
         this.node.empty();
 
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.modules = [];
         this.moduleList = {};
 
@@ -82,6 +87,11 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
      * })
      */
     active: function (callback) {
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         if (!this.loaded) {
             this.reload(callback)
         } else {
@@ -97,6 +107,11 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
      * })
      */
     reload: function (callback) {
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+        
         this.clean();
 
         this.getSubform(function () {

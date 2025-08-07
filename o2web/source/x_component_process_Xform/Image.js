@@ -16,6 +16,12 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class(
     {
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
+
         if (this.json.properties && this.json.properties["src"]){
             var value = this.json.properties["src"];
             if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1) && !value.includes("../")){

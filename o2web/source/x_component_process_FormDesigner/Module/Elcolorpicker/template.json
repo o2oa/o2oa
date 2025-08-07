@@ -13,6 +13,7 @@
 	"vueSlot": "",
 	"elProperties": {},
 	"elStyles": {},
+	"size" : "default",
 	"events": {
 	  "queryLoad": {
 		"code": "",

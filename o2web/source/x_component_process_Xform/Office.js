@@ -113,6 +113,13 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
     },
 	_loadUserInterface: function(){
 		this.node.empty();
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
+        if (!this.isEditable) this.readonly = true;
+
 		this.node.setStyles({
 			"min-height": "100px"
 		});
@@ -133,6 +140,13 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         //this.fireEvent("load");
 	},
     loadOffice: function(file){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
+        if (!this.isEditable) this.readonly = true;
+        
 	    if (!this.officeLoaded){
             if (!this.isActive){
                 this.loadOfficeNotActive();

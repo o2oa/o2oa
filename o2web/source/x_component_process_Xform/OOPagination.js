@@ -5,6 +5,11 @@ MWF.xApplication.process.Xform.OOPagination = MWF.APPOOPagination = new Class({
     iconStyle: 'textFieldIcon',
 
     _loadUserInterface: function () {
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+        
         this.node.set({
             id: this.json.id,
             MWFType: this.json.type,

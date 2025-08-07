@@ -310,11 +310,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_input,
     "className": "Elinput"
   },
-  "elautocomplete": {
-    "fontIcon": "el-icon-finished",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_autocomplete,
-    "className": "Elautocomplete"
-  },
+  // "elautocomplete": {
+  //   "fontIcon": "el-icon-finished",
+  //   "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_autocomplete,
+  //   "className": "Elautocomplete"
+  // },
   "elnumber": {
     "fontIcon": "el-icon-edit-outline",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_number,

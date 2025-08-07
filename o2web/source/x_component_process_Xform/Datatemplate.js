@@ -221,6 +221,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			// this.fireEvent("queryLoad");
 			this.loading = true;
 
+			if (!this.isReadable && !!this.isHideUnreadable){
+				this.node.setStyle('display', 'none');
+				return '';
+			}
+
 			if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
 				if( this.json.mergeTypeEdit === "script" ){
 					this._loadMergeEditNodeByScript();

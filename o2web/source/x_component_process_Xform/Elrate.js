@@ -31,6 +31,23 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
     //     if (this.isReadonly()) this.json.disabled = true;
     //     this._loadNodeEdit();
     // },
+
+     isReadonly : function(){
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.json.showMode==="read" || this.isSectionMergeRead());
+    },
+    _loadNode: function(){
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+             if (this.isReadonly()){
+                this._loadNodeRead();
+            }else{
+                if (!this.isReadable) this.json.disabled = true;
+                this._loadNodeEdit();
+            }
+        }
+    },
+
     _appendVueData: function(){
         if (!this.json.max) this.json.max = "";
         if (!this.json.isReadonly && !this.form.json.isReadonly) this.json.isReadonly = false;
@@ -68,6 +85,7 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
     //     }.bind(this);
     // },
     _createElementHtml: function(){
+
         var html = "<el-rate";
         html += " v-model=\""+this.json.$id+"\"";
         html += " :readonly=\"isReadonly\"";

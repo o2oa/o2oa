@@ -47,6 +47,12 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
     },
     _loadUserInterface: function(){
         this.node.empty();
+
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.node.setStyle("-webkit-user-select", "text");
 
         switch (this.json.activeType) {
@@ -90,6 +96,10 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
         }
     },
     loadContent: function( callback ){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         o2.Actions.load("x_query_assemble_surface").MoreLikeThisAction.post({
             flag: this.getFlag(),
             category: this.getCategory(),

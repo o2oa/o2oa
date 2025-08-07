@@ -135,7 +135,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			this.vm = new Vue(this.vueApp);
 			this.vm.$o2module = this;
 			this.vm.$o2callback = callback;
-
+debugger;
 			this.vm.$mount(this.node);
 		}catch(e){
 			this.node.store("module", this);
@@ -156,6 +156,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		return {
 			data: this._createVueData(),
 			mounted: function(){
+				debugger;
 				this.$nextTick(function(){
 					_self._afterMounted(this.$el, callback);
 				});

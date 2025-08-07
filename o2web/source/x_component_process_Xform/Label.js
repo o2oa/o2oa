@@ -19,6 +19,11 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
 	Extends: MWF.APP$Module,
 
 	_loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
 		if (this.json.valueType == "text"){
 			this.node.set("text", this.json.text || "");
 		}

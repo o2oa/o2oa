@@ -49,6 +49,10 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
         }
     },
     _loadNode: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         if (this.isReadonly()) this.json.disabled = true;
         this._loadNodeEdit();
     },

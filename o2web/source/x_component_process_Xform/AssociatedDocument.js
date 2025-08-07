@@ -81,6 +81,11 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     },
 	_loadUserInterface: function(){
 
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type

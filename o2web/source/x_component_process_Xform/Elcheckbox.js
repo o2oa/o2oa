@@ -63,11 +63,15 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         }
     },
     _loadNode: function(){
-        this.node.empty();
-        if (this.isReadonly()){
-            this._loadNodeRead();
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
         }else{
-            this._loadNodeEdit();
+            this.node.empty();
+            if (this.isReadonly()){
+                this._loadNodeRead();
+            }else{
+                this._loadNodeEdit();
+            }
         }
     },
     _loadMergeReadContentNode: function( contentNode, data ){

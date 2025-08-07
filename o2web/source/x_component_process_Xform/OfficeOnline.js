@@ -21,11 +21,22 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
     },
     _loadUserInterface: function(){
         this.node.empty();
+
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.node.setStyles({
             "min-height": "800px"
         });
     },
     _afterLoaded: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.fireEvent("queryLoad");
         if(!layout.serviceAddressList["x_officeonline_assemble_control"]){
             this.node.set("html","<h3><font color=red>"+MWF.xApplication.process.Xform.LP.officeonline.noInstall+"</font></h3>");
@@ -42,6 +53,7 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
                 }
             }
         }
+        if (!this.isEditable)  this.mode  = "view";
 
         if(this.mode !== "read" && this.json.allowUpload){
             this.createUpload();

@@ -15,21 +15,31 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Elcontainer = MWF.APPElcontainer =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
-        this.node.addClass("o2_vue");
-        var asides = this.node.getElements("aside");
-        var headers = this.node.getElements("header");
-        var mains = this.node.getElements("main");
-        var footers = this.node.getElements("footer");
+        debugger;
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            this.node.addClass("o2_vue");
+            var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
+            o2.loadAll({"css": elcssUrl}, { "sequence": true });
 
-        if (!this.asides || !this.asides.length) this.asides = [];
-        if (!this.headers || !this.headers.length) this.headers = [];
-        if (!this.mains || !this.mains.length) this.mains = [];
-        if (!this.footers || !this.footers.length) this.footers = [];
+            var asides = this.node.getElements("aside");
+            var headers = this.node.getElements("header");
+            var mains = this.node.getElements("main");
+            var footers = this.node.getElements("footer");
 
-        asides.each(function(aside){  this.asides.push(this._loadSubModule(aside)); }.bind(this));
-        headers.each(function(header){  this.headers.push(this._loadSubModule(header)); }.bind(this));
-        mains.each(function(main){  this.mains.push(this._loadSubModule(main)); }.bind(this));
-        footers.each(function(footer){  this.footers.push(this._loadSubModule(footer)); }.bind(this));
+            if (!this.asides || !this.asides.length) this.asides = [];
+            if (!this.headers || !this.headers.length) this.headers = [];
+            if (!this.mains || !this.mains.length) this.mains = [];
+            if (!this.footers || !this.footers.length) this.footers = [];
+
+            asides.each(function(aside){  this.asides.push(this._loadSubModule(aside)); }.bind(this));
+            headers.each(function(header){  this.headers.push(this._loadSubModule(header)); }.bind(this));
+            mains.each(function(main){  this.mains.push(this._loadSubModule(main)); }.bind(this));
+            footers.each(function(footer){  this.footers.push(this._loadSubModule(footer)); }.bind(this));
+        }
+
+        
     },
     _loadSubModule: function(node){
         var json = this.form._getDomjson(node);
@@ -50,6 +60,10 @@ MWF.xApplication.process.Xform.Elcontainer$Main = MWF.APPElcontainer$Main =  new
 MWF.xApplication.process.Xform.Elcontainer$Aside = MWF.APPElcontainer$Aside =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         var css = Object.clone(this.form.css["el-container-aside"]);
         if (this.json.recoveryStyles){
             var keys = Object.keys(css);
@@ -63,6 +77,10 @@ MWF.xApplication.process.Xform.Elcontainer$Aside = MWF.APPElcontainer$Aside =  n
 MWF.xApplication.process.Xform.Elcontainer$Header = MWF.APPElcontainer$Header =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         var css = Object.clone(this.form.css["el-container-header"]);
         if (this.json.recoveryStyles){
             var keys = Object.keys(css);
@@ -77,6 +95,10 @@ MWF.xApplication.process.Xform.Elcontainer$Header = MWF.APPElcontainer$Header = 
 MWF.xApplication.process.Xform.Elcontainer$Footer = MWF.APPElcontainer$Footer =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         var css = Object.clone(this.form.css["el-container-footer"]);
         if (this.json.recoveryStyles){
             var keys = Object.keys(css);

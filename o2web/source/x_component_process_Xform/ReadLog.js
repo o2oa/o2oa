@@ -47,6 +47,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
         load: function(){
             this._queryLoaded();
             this.node.empty();
+
             if (!this.json.isDelay){
                 this.active();
             }
@@ -57,6 +58,10 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
          * this.form.get("fieldId").active();
          */
         active: function(){
+            if (!this.isReadable){
+                this.node.setStyle('display', 'none');
+                return '';
+            }
             this._loadModuleEvents();
             if (this.fireEvent("queryLoad")){
                 this._queryLoaded();

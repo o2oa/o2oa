@@ -26,6 +26,11 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
         if (!this.json.elStyles) this.json.elStyles = {};
     },
     _createElementHtml: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        } 
+
         var html = "<i";
         html += " :class=\"icon\"";
 
@@ -41,111 +46,5 @@ MWF.xApplication.process.Xform.Elicon = MWF.APPElicon =  new Class(
         html += "></i>";
         return html;
     }
-    // _loadVue: function(callback){
-    //     if (!window.Vue){
-    //         var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
-    //         o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
-    //     }else{
-    //         if (callback) callback();
-    //     }
-    // },
-    // _queryLoaded: function(){
-    //     this._loadVue();
-    // },
-
-    // load: function(){
-    //     this._loadModuleEvents();
-    //     if (this.fireEvent("queryLoad")){
-    //         this._queryLoaded();
-    //         this._loadUserInterface();
-    //     }
-    // },
-    //
-    // _loadUserInterface: function(){
-    //     this.node.appendHTML(this._createElementHtml(), "before");
-    //     var icon = this.node.getPrevious();
-    //
-    //     this.node.destroy();
-    //     this.node = icon;
-    //     this.node.set({
-    //         "id": this.json.id,
-    //         "MWFType": this.json.type
-    //     });
-    //     this._createVueApp();
-    // },
-    // _createVueApp: function(){
-    //     if (!this.vm) this._loadVue(this._mountVueApp.bind(this));
-    // },
-    //
-    // _loadVue: function(callback){
-    //     if (!window.Vue){
-    //         o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": ["vue", "elementui"]}, { "sequence": true }, callback);
-    //     }else{
-    //         if (callback) callback();
-    //     }
-    // },
-    // _mountVueApp: function(){
-    //     if (!this.vueApp) this.vueApp = this._createVueExtend();
-    //
-    //     /**
-    //      * @summary Vue对象实例
-    //      * @see https://vuejs.org/
-    //      * @member {VueInstance}
-    //      */
-    //     this.vm = new Vue(this.vueApp).$mount(this.node);
-    // },
-    //
-    // _createVueExtend: function(){
-    //     var _self = this;
-    //     return {
-    //         data: this._createVueData(),
-    //         mounted: function(){
-    //             _self._afterMounted(this.$el);
-    //         }
-    //     };
-    // },
-    // _createVueData: function(){
-    //     return this.json;
-    // },
-    // _afterMounted: function(el){
-    //     this.node = el;
-    //     this.node.set({
-    //         "id": this.json.id,
-    //         "MWFType": this.json.type
-    //     });
-    //     this._loadDomEvents();
-    //     this._afterLoaded();
-    //     this.fireEvent("postLoad");
-    //     this.fireEvent("load");
-    // },
-    //     _createElementHtml: function(){
-    //         var html = "<i";
-    //         html += " :class=\"icon\"";
-    //
-    //         if (this.json.elProperties){
-    //             Object.keys(this.json.elProperties).forEach(function(k){
-    //                 if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
-    //             }, this);
-    //         }
-    //
-    //         // var styles = {};
-    //         // if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
-    //         // if (this.json.iconColor) styles["color"] = this.json.iconColor;
-    //         // styles = Object.merge(styles, this.json.elStyles);
-    //         //
-    //         // if (styles){
-    //         //     var style = "";
-    //         //     Object.keys(styles).forEach(function(k){
-    //         //         if (styles[k]) style += k+":"+styles[k]+";";
-    //         //     }, this);
-    //         //     html += " style=\""+style+"\"";
-    //         // }
-    //
-    //         html += " :style=\"[elStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
-    //
-    //
-    //         html += "></i>";
-    //         return html;
-    //     }
 
 }); 

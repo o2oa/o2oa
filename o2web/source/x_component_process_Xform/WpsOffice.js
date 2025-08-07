@@ -64,11 +64,20 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
         },
         _loadUserInterface: function(){
             this.node.empty();
+            if (!this.isReadable){
+                this.node.setStyle('display', 'none');
+                return '';
+            }
             this.node.setStyles({
                 "min-height": "700px"
             });
         },
         _afterLoaded: function(){
+            if (!this.isReadable){
+                this.node.setStyle('display', 'none');
+                return '';
+            }
+
             if(!layout.serviceAddressList["x_wpsfile_assemble_control"]){
                 this.node.set("html","<h3><font color=red>please install wps application</font></h3>");
                 return false;
@@ -128,6 +137,10 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
 
         },
         reload : function (){
+            if (!this.isReadable){
+                this.node.setStyle('display', 'none');
+                return '';
+            }
             this.setData();
             this.node.empty();
             this.createUpload();
@@ -171,7 +184,6 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             );
         },
         loadDocument: function () {
-
             o2.Actions.load(this.appToken).AttachmentAction.getOnlineInfo(this.documentId, function( json ){
 
                 this.documentData = json.data;

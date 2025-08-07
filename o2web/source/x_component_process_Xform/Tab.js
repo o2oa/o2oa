@@ -19,6 +19,11 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
 	Extends: MWF.APP$Module,
 
 	_loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.elements = [];
         this.containers = [];
 
@@ -74,6 +79,18 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
             this.tab.pages[0]._showTab();
         }
         this.loadSubModule();
+
+        this.elements.forEach((e)=>{
+            if (!e.isReadable){
+                const page = this.tab.pages.find((p)=>{
+                    return p.tabNode === e.node;
+                })
+                if (page){
+                    page.closeTab();
+                }
+            }
+        });
+
 	},
     loadSubModule: function(){
         this.tab.pages.each(function(page){
@@ -133,7 +150,10 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
 	}
 });
 MWF.xApplication.process.Xform.tab$Page = MWF.APPTab$Page =  new Class({
-    Extends: MWF.APP$Module
+    Extends: MWF.APP$Module,
+     _loadUserInterface: function(){
+        
+    },
 });
 MWF.xApplication.process.Xform.tab$Content = MWF.APPTab$Content =  new Class({
     Extends: MWF.APP$Module,

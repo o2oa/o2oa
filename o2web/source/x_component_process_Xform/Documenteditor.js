@@ -1164,6 +1164,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     _loadUserInterface: function(callback){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.node.empty();
         this.node.setStyles(this.form.css.documentEditorNode);
         this.pages = [];
@@ -1174,11 +1179,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.toolNode = new Element("div", {"styles": this.css.doc_toolbar}).inject(this.node);
         this.contentNode = new Element("div#doc_content", {"styles": this.css.doc_content}).inject(this.node);
 
-        if (!this.form.isLoaded){
-            this.form.addEvent("afterModulesLoad", function(){this.loadDocumentEditor(callback);}.bind(this));
-        }else{
-            this.loadDocumentEditor(callback);
-        }
+        // if (this.isReadable){
+            if (!this.form.isLoaded){
+                this.form.addEvent("afterModulesLoad", function(){this.loadDocumentEditor(callback);}.bind(this));
+            }else{
+                this.loadDocumentEditor(callback);
+            }
+        // }
+       
         o2.loadCss('../x_desktop/fonts/fonts.css');
     },
     loadDocumentEditor: function(callback){
@@ -1864,6 +1872,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 return !!this.form.Macro.exec(this.json.allowEditScript.code, this);
             }
         }
+        if (!this.isEditable) return false;
         return true;
     },
     _isAllowPrint: function(){

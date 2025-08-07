@@ -27,7 +27,11 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
         "elEvents": ["change"]
     },
     _loadNode: function(){
-        this._loadNodeEdit();
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+        }else{
+            this._loadNodeEdit();
+        }
     },
     _loadNodeEdit: function(){
         this._createElementHtml().then(function(html){

@@ -1596,7 +1596,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"btnStyleLight": "Brillante",
 		"btnStyleIcon": "Solo iconos",
 		"fileCol": "Número de columnas mostradas",
-		"OOFilesSiteInfo": "Se pueden mostrar accesorios de otros sitios, varios sitios separados por comas de media esquina"
+		"OOFilesSiteInfo": "Se pueden mostrar accesorios de otros sitios, varios sitios separados por comas de media esquina",
+		"exportImportType": "Exportar tipo de importación",
+		"exportImportTypeNote": "Los componentes con texto y valores simultáneos, como desplegable, selección única y selección múltiple, son válidos."
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

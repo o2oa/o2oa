@@ -17,6 +17,11 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
 {
 	Extends: MWF.APP$Module,
 	_afterLoaded: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         /**
          * @summary table，DOM对象
          * @member {Element} table

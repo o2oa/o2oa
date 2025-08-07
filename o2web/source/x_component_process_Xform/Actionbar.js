@@ -56,6 +56,12 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             // }else if (COMMON.Browser.Platform.isMobile){
             //     this.node.empty();
             // }else{
+            if (!this.isReadable){
+                this.node.setStyle('display', 'none');
+                return '';
+            }
+
+
             this.toolbarNode = this.node.getFirst("div");
             if(!this.toolbarNode)return;
 

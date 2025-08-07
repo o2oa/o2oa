@@ -221,6 +221,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
                 // }else{
 				//     this._loadUserInterface();
 			    // }
+				
+				if (!this.isReadable && !!this.isHideUnreadable){
+					this.node.setStyle('display', 'none');
+					return;
+				}
+				
 				this._loadUserInterface();
                 this._loadStyles();
                 this._loadDomEvents();
@@ -276,7 +282,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
-			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
+			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true)) && this.isEditable;
 			if( this.isMergeRead )this.editable = false;
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
@@ -2085,7 +2091,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					this.errNode = null;
 				}
 			}
-			this.lineList.each(function(line){
+			this.lineList?.each(function(line){
 				line.validationMode();
 			})
 		},

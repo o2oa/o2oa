@@ -21,18 +21,26 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     },
     _loadUserInterface: function(){
         this.node.empty();
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         this.node.setStyles({
             "min-height": "100px"
         });
     },
     _afterLoaded: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         this.fireEvent("queryLoad");
         if(!layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
             this.node.set("html","<h3><font color=red>"+MWF.xApplication.process.Xform.LP.onlyoffice.noInstall+"</font></h3>");
             return false;
         }
 
-
+        if (!this.isEditable)  this.mode  = "read";
         if(this.mode !== "read" && this.json.allowUpload){
             this.createUpload();
         }

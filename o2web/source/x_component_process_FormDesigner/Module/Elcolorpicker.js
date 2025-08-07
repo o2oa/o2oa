@@ -29,6 +29,8 @@ MWF.xApplication.process.FormDesigner.Module.Elcolorpicker = MWF.FCElcolorpicker
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-color-picker>";
 		return html;
+
+		// return "<el-color-picker></el-color-picker>";
 	},
 	_createCopyNode: function(){
 		this.copyNode = new Element("div", {

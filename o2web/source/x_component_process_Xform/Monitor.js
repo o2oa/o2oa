@@ -19,6 +19,11 @@ MWF.xApplication.process.Xform.Monitor = MWF.APPMonitor =  new Class(
     Extends: MWF.APP$Module,
 
     _loadUserInterface: function(){
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
+
         this.node.empty();
 
         MWF.xDesktop.requireApp("process.Xform", "widget.Monitor", function(){
