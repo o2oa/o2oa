@@ -8,12 +8,17 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionCreateWi;
 
@@ -33,11 +38,14 @@ class ActionCreate extends BaseCreateAction {
 		String identity = "";
 		Process process = null;
 		ActionResult<List<Wo>> result = new ActionResult<>();
+
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			identity = this.decideCreatorIdentity(business, effectivePerson, wi.getIdentity());
 			process = business.process().pick(processFlag);
+
 			if (null == process) {
 				throw new ExceptionProcessNotExist(processFlag);
 			}
@@ -61,9 +69,33 @@ class ActionCreate extends BaseCreateAction {
 		}
 		if (StringUtils.isEmpty(workId)) {
 			workId = this.createWork(process.getId(), wi.getData());
+			// 转换传递过来的附件,一般是在草稿情况下
+			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Work work = emc.find(workId, Work.class);
+					List<Attachment> attachments = emc.list(Attachment.class, wi.getAttachmentList());
+					if (ListTools.isNotEmpty(attachments)) {
+						emc.beginTransaction(Attachment.class);
+						for (Attachment attachment : attachments) {
+							attachment.setWorkCreateTime(work.getCreateTime());
+							attachment.setApplication(work.getApplication());
+							attachment.setProcess(work.getProcess());
+							attachment.setJob(work.getJob());
+							attachment.setWork(work.getId());
+							attachment.setActivity(work.getActivity());
+							attachment.setActivityName(work.getActivityName());
+							attachment.setActivityToken(work.getActivityToken());
+							attachment.setActivityType(work.getActivityType());
+							emc.check(attachment, CheckPersistType.all);
+						}
+						emc.commit();
+					}
+				}
+			}
 		}
+
 		// 设置Work信息
-		if(BooleanUtils.isTrue(wi.getSkipDraftCheck())){
+		if (BooleanUtils.isTrue(wi.getSkipDraftCheck())) {
 			this.updateWorkDraftCheck(workId);
 		}
 		if (BooleanUtils.isFalse(wi.getLatest()) || (StringUtils.isEmpty(lastestWorkId))) {

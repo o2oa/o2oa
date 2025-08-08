@@ -20,6 +20,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,33 +37,38 @@ class ActionGetWithWork extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
+			Draft draft = emc.find(workId, Draft.class);
+			Wo wo = null;
+			if (null != draft) {
+				Attachment attachment = emc.find(id, Attachment.class);
+				if (null == attachment) {
+					throw new ExceptionEntityNotExist(id, Attachment.class);
+				}
+				wo = Wo.copier.copy(attachment);
+			} else {
+				if (null == work) {
+					throw new ExceptionEntityNotExist(workId, Work.class);
+				}
+				Attachment attachment = emc.find(id, Attachment.class);
+				if (null == attachment) {
+					throw new ExceptionEntityNotExist(id, Attachment.class);
+				}
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+					throw new ExceptionAccessDenied(effectivePerson, work);
+				}
+				wo = Wo.copier.copy(attachment);
+				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+				boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
+				boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+				boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
+				if (canRead) {
+					wo.getControl().setAllowRead(true);
+					wo.getControl().setAllowEdit(canEdit);
+					wo.getControl().setAllowControl(canControl);
+				}
 			}
-			Attachment attachment = emc.find(id, Attachment.class);
-			if (null == attachment) {
-				throw new ExceptionEntityNotExist(id, Attachment.class);
-			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
-			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
-			}
-
-			Wo wo = Wo.copier.copy(attachment);
-
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-
-			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-
-			boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
-			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-			boolean canRead = this.read(attachment, effectivePerson, identities, units, business);
-			if (canRead) {
-				wo.getControl().setAllowRead(true);
-				wo.getControl().setAllowEdit(canEdit);
-				wo.getControl().setAllowControl(canControl);
-			}
-
 			result.setData(wo);
 			return result;
 		}

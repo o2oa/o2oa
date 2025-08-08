@@ -87,14 +87,14 @@ class ActionGetIcon extends BaseAction {
 		String[] fontNames = { "微软雅黑", "宋体", "黑体", "SimHei" };
 		Font font = null;
 		for (String fontName : fontNames) {
-			Font f = new Font(fontName, Font.BOLD, (int) (size * 0.6));
+			Font f = new Font(fontName, Font.PLAIN, (int) (size * 0.5));
 			if (f.canDisplay('汉')) {
 				font = f;
 				break;
 			}
 		}
 		if (font == null) {
-			font = new Font(Font.SANS_SERIF, Font.BOLD, (int) (size * 0.6));
+			font = new Font(Font.SANS_SERIF, Font.PLAIN, (int) (size * 0.5));
 		}
 		g.setFont(font);
 		// 计算文字大小，居中
