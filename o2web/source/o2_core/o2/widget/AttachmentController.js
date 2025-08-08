@@ -1026,7 +1026,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 });
 
                 var isContinue = true;
-                if (beforeUpload) isContinue = beforeUpload([inputNameNode.get("value")]);
+                if (beforeUpload) isContinue = beforeUpload([inputNameNode.get("value")], parameter);
                 if (isContinue){
                     messageItem = this.addUploadMessage(inputNameNode.get("value"));
                     formNode.submit();
@@ -1057,7 +1057,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 };
 
                 var isContinue = true;
-                if (beforeUpload) isContinue = beforeUpload(files);
+                if (beforeUpload) isContinue = beforeUpload(files, parameter);
                 if (isContinue){
                     var accepts = (accept) ? accept.split(o2.splitStr) : null;
 

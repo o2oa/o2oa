@@ -446,8 +446,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
                 var moduleAgList = [];
                 this.modules.each( function(module){
-                    if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
-                    if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
+                    if (module){
+                        if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
+                        if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
+                    }
                 });
 
 

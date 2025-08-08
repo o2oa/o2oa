@@ -5,7 +5,10 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
         this._loadUserInterface();
     },
     _loadUserInterface: function(){
-        debugger;
+        if (!this.isReadable){
+            this.node.setStyle('display', 'none');
+            return '';
+        }
         //if (this.form.json.mode == "Mobile"){
         //    this.node.empty();
         //}else if (COMMON.Browser.Platform.isMobile){

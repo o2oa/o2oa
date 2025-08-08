@@ -2625,6 +2625,40 @@ MWF.xScript.CMSEnvironment = function(ev){
         "getInquiredRouteList": function(){return null;}
     };
     this.workContent = this.workContext;
+    var _redefineWorkProperties = function(work){
+        if (work){
+            work.creatorPersonDn = work.creatorPerson ||"";
+            work.creatorUnitDn = work.creatorUnit ||"";
+            work.creatorUnitDnList = work.creatorUnitList ||"";
+            work.creatorIdentityDn = work.creatorIdentity ||"";
+            var o = {
+                "creatorPerson": {"get": function(){return this.creatorPersonDn.substring(0, this.creatorPersonDn.indexOf("@"));}},
+                "creatorUnit": {"get": function(){return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@"));}},
+                "creatorDepartment": {"get": function(){return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@"));}},
+                "creatorIdentity": {"get": function(){return this.creatorIdentityDn.substring(0, this.creatorIdentityDn.indexOf("@"));}},
+                // "creatorUnitList": {
+                //     "get": function(){
+                //         var v = [];
+                //         this.creatorUnitDnList.each(function(dn){
+                //             v.push(dn.substring(0, dn.indexOf("@")))
+                //         });
+                //         return v;
+                //     }
+                // },
+                "creatorCompany": {"get": function(){
+                        if (this.creatorUnitLevel || this.creatorUnitLevelName){
+                            var level = (this.creatorUnitLevel || this.creatorUnitLevelName).split("/");
+                            return level[0];
+                        }else{
+                            return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@"));
+                        }
+                    }}
+            };
+            MWF.defineProperties(work, o);
+        }
+        return work;
+    };
+    _redefineWorkProperties(this.workContext.getWork());
 };
 if( !MWF.xScript.createTable )MWF.xScript.createTable = function(){
     return function(name){

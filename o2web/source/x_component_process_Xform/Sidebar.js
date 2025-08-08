@@ -54,6 +54,7 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         });
         // this.node.setStyle("width", this.node.getSize().x+"px");
         this.toolbarNode = this.node.getFirst("div");
+        if(!this.toolbarNode)return;
         this.toolbarNode.empty();
 
         if (this.form.businessData.task){

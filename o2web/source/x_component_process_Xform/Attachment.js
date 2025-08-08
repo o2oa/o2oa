@@ -1634,10 +1634,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.node.setStyle('display', 'none');
         }else{
             this.node.empty();
-            if (this.form.businessData.work.startTime){
+            // if (this.form.businessData.work.startTime){
                 this.loadAttachmentController();
                 this.fireEvent("afterLoad");
-            }
+            // }
             this.fieldModuleLoaded = true;
         }
 
@@ -1737,6 +1737,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.fireEvent("postLoadController");
 
         if (this.isReadable){
+            debugger;
             this.form.businessData.attachmentList.each(function (att) {
                 //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
                 if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
@@ -1898,7 +1899,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 }
                 this.attachmentController.checkActions();
             }.bind(this),
-            function (files) {
+            function (files, parameter) {
                 if (files.length) {
                     if ((files.length + this.attachmentController.attachments.length > this.attachmentController.options.attachmentCount) && this.attachmentController.options.attachmentCount > 0) {
                         var content = MWF.xApplication.process.Xform.LP.uploadMore;
@@ -1917,6 +1918,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         return false;
                     }
                 }
+debugger;
+                if (!this.form.businessData.work.startTime){
+                    this.form.saveFormDataDraftSync();
+                    parameter.id = this.form.app.options.draftId
+                }
 
                 this.fireEvent("beforeUpload", [files]);
                 return true;
@@ -1934,6 +1940,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         );
     },
     uploadAttachment: function (e, node, files) {
+        debugger;
         if (window.o2android && window.o2android.postMessage) {
             var body = {
                 type: "uploadAttachment",
@@ -1947,8 +1954,19 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachment) {
             window.webkit.messageHandlers.uploadAttachment.postMessage({ "site": (this.json.site || this.json.id) });
         } else {
+            debugger;
+            // if (!this.form.businessData.work.startTime){
+            //     this.form.saveFormDataDraft(()=>{
+            //         console.log(this.form.businessData.work.id);
+            //         this.createUploadFileNode(files);
+            //     }, null, null, null, null, true);
+
+            // }else{
+                this.createUploadFileNode(files);
+            // }
+
             // if (!this.uploadFileAreaNode){
-            this.createUploadFileNode(files);
+            // this.createUploadFileNode(files);
             // }
             // this.fileUploadNode.click();
         }

@@ -190,7 +190,7 @@
 }
 
 .form-layout td[mwftype='datatable$Data'].mwf_origional > * {
-    width: 100% !important;
+    /* width: 100%; */
 }
 
 .form-layout div[mwftype='datatable']::-webkit-scrollbar {

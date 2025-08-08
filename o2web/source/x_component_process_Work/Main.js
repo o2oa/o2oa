@@ -142,7 +142,7 @@ MWF.xApplication.process.Work.Main = new Class({
         }else if (this.options.draftId || this.options.draftid){
             var draftId = this.options.draftId || this.options.draftid;
             MWF.Actions.get("x_processplatform_assemble_surface").getDraft(draftId, function(json){
-                this.loadWorkByDraft(json.data.work, json.data.data);
+                this.loadWorkByDraft(json.data.work, json.data.data, json.data.attachmentList);
             }.bind(this));
         }else if (this.options.draft){
             this.loadWorkByDraft(this.options.draft, this.options.draftData);
@@ -340,14 +340,15 @@ MWF.xApplication.process.Work.Main = new Class({
             }
         }.bind(this));
     },
-    loadWorkByDraft: function(work, data){
+    loadWorkByDraft: function(work, data, attData){
+        debugger;
         o2.Actions.invokeAsync([
             //{"action": this.action, "name": (layout.mobile) ? "getFormMobile": "getForm"}
             {"action": this.action, "name": (layout.mobile) ? "getFormV2Mobile": "getFormV2"}
         ], {"success": function(json_form){
             if (json_form){
                 var workData = {
-                    "activity": {},
+                    "activity": {id: 'draft-'+work.process},
                     "data": data || {},
                     "taskList": [],
                     "work": work
@@ -360,7 +361,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     "allowDelete": true
                 };
 
-                this.parseData(workData, control, json_form.data, [], [], []).then(function(){
+                this.parseData(workData, control, json_form.data, [], [], attData??[]).then(function(){
                     if (this.mask) this.mask.hide();
 
                     if (layout.session && layout.session.user){

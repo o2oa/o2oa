@@ -212,6 +212,10 @@ MWF.xApplication.Selector.ProcessActivity.ItemCategory = new Class({
                     processData.serviceList || [],
                     processData.endList || []
                 );
+                activityList.unshift({
+                    name: "草稿",
+                    id: 'draft-'+this.data.id
+                });
                 activityList.forEach(function(data){
                     var d = {
                         processName: this.data.name,

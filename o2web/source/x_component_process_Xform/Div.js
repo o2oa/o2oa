@@ -13,5 +13,11 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @hideconstructor
  */
 MWF.xApplication.process.Xform.Div = MWF.APPDiv =  new Class({
-    Extends: MWF.APP$Module
+    Extends: MWF.APP$Module,
+      _loadUserInterface: function(){
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node.remove();
+            // this.node.setStyle('display', 'none');
+        }
+    },
 });

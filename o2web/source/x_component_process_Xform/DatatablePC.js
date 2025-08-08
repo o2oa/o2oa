@@ -416,6 +416,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				th.addClass("mwf_origional");
 				if (json){
 					var module = this.form._loadModule(json, th);
+
 					this.form.modules.push(module);
 					if( json.isShow === false ){
 						th.hide(); //隐藏列
@@ -472,6 +473,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			// this.templateJson = {};
 
 			var trs = this.table.getElements("tr");
+
+			var ths = this.table.getElements("th");
 			this.templateTr = trs[trs.length-1];
 
 			this.templateNode = this.templateTr;
@@ -492,15 +495,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			//datatable$Data Module
 			tds.each(function(td, index){
 				var json = this.form._getDomjson(td);
+				var thjson = this.form._getDomjson(ths[index]);
 				td.store("dataTable", this);
 				td.addClass("mwf_origional");
 				if (json){
 					// var module = this.form._loadModule(json, td);
 					// this.form.modules.push(module);
 					if( json.cellType === "sequence" )td.addClass("mwf_sequence"); //序号列
-					if( json.isShow === false ){
+					if( thjson?.isShow === false ){
 						td.hide(); //隐藏列
-					}else if( this.reloading && json.isShow === true){
+					}else if( this.reloading && (!thjson.isShow || thjson.isShow === true)){
 						td.setStyle("display", "");
 					}
 				}
@@ -2315,6 +2319,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 	Extends: MWF.APP$Module,
 	_loadUserInterface: function(){
+		if (!this.isReadable){
+            this.json.isShow = false;
+			return '';
+        }
+
 		if(this.json.recoveryStyles){
 			this.node.setStyles(this.json.recoveryStyles);
 		}

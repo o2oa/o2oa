@@ -73,6 +73,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			this.templateJson = {};
 
 			var trs = this.table.getElements("tr");
+			var ths = this.table.getElements("th");
 			this.templateTr = trs[trs.length-1];
 
 			var tds = this.templateTr.getElements("td");
@@ -89,6 +90,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			var idx = 0;
 			tds.each(function(td, index){
 				var json = this.form._getDomjson(td);
+				var thjson = this.form._getDomjson(ths[index]);
 				// td.store("dataTable", this);
 				td.addClass("mwf_origional");
 				if (json){
@@ -96,7 +98,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 					// this.form.modules.push(module);
 					if( json.cellType === "sequence" )td.addClass("mwf_sequence"); //序号列
 
-					if( json.isShow === false ){
+					if( thjson?.isShow === false ){
 						td.hide(); //隐藏列
 					}else{
 						if ((idx%2)===0 && this.json.zebraColor){
@@ -149,6 +151,9 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 				var newTh = th.clone().inject(newTr);
 				newTh.set("html", th.get("html"));
 				newTh.set("MWFId",th.get("id"));
+
+				var module = this.form._loadModule(thJson, th);
+
 				if( thJson.isShow === false )newTr.hide();
 
 				var moduleJson;
@@ -371,6 +376,11 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 MWF.xApplication.process.Xform.DatatableMobile$Title = new Class({
 	Extends: MWF.APP$Module,
 	_loadUserInterface: function(){
+		if (!this.isReadable){
+            this.json.isShow = false;
+			return '';
+        }
+
 		if(this.json.recoveryStyles){
 			this.node.setStyles(this.json.recoveryStyles);
 		}

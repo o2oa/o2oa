@@ -457,6 +457,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     load: function (callback) {
 
+        debugger;
+
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
@@ -1371,6 +1373,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             jsons.push( json );
 
             var module = this._loadModule(json, node, beforeLoadModule, replace);
+            if (!module){
+                debugger;
+            }
             this.modules.push(module);
             modules.push( module );
         }.bind(this));
@@ -1771,6 +1776,29 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if(callback)callback();
             }.bind(this), failure, this.businessData.work.id, this.modifedData);
         }
+    },
+    saveFormDataDraftSync: function(){
+        this.saving = true;
+        if (this.officeList) {
+            this.officeList.each(function (module) {
+                module.save(history);
+            });
+        }
+        var data = data || this.getData();
+        var draft = {
+            "data": data,
+            "work": this.businessData.work,
+            "identity": this.businessData.work.creatorIdentityDn
+        }
+        var copyData = Object.clone(data);
+        this.workAction.saveDraft(draft, function (json) {
+            this.app.options.draftId = json.data.id;
+            this.businessData.originalData = null;
+            this.businessData.originalData = copyData;
+            this.businessData.work.id = json.data.id;
+        }.bind(this), null, false);
+
+
     },
     saveFormDataDraft: function (callback, failure, history, data, issubmit, isstart) {
         this.saving = true;
