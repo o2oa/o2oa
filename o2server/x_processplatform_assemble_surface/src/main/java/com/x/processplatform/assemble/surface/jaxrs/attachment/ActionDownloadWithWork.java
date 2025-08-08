@@ -23,6 +23,7 @@ import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,45 +38,63 @@ class ActionDownloadWithWork extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id, () -> workId);
 
 		ActionResult<Wo> result = new ActionResult<>();
-		Work work = null;
-		Attachment attachment = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			work = emc.find(workId, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
-			}
-			attachment = emc.find(id, Attachment.class);
-			if (null == attachment) {
-				throw new ExceptionEntityNotExist(id, Attachment.class);
-			}
-			// 生成当前用户针对work的权限控制,并判断是否可以访问
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
-			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
+			Draft draft = emc.find(workId, Draft.class);
+			if (null != draft) {
+				Attachment attachment = emc.find(id, Attachment.class);
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						attachment.getStorage());
+				if (StringUtils.isBlank(fileName)) {
+					fileName = attachment.getName();
+				} else {
+					String extension = FilenameUtils.getExtension(fileName);
+					if (StringUtils.isEmpty(extension)) {
+						fileName = fileName + "." + attachment.getExtension();
+					}
+				}
+				byte[] bytes = attachment.readContent(mapping);
+				Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
+				result.setData(wo);
+			} else {
+				Work work = emc.find(workId, Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(workId, Work.class);
+				}
+				Attachment attachment = emc.find(id, Attachment.class);
+				if (null == attachment) {
+					throw new ExceptionEntityNotExist(id, Attachment.class);
+				}
+				// 生成当前用户针对work的权限控制,并判断是否可以访问
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+					throw new ExceptionAccessDenied(effectivePerson, work);
+				}
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						attachment.getStorage());
+				if (StringUtils.isBlank(fileName)) {
+					fileName = attachment.getName();
+				} else {
+					String extension = FilenameUtils.getExtension(fileName);
+					if (StringUtils.isEmpty(extension)) {
+						fileName = fileName + "." + attachment.getExtension();
+					}
+				}
+				byte[] bytes = null;
+				Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents()
+						.getWorkAttachmentDownloadEvents()
+						.bind(work.getApplication(), work.getProcess(), work.getActivity());
+				if (event.isPresent()) {
+					bytes = this.extensionService(effectivePerson, attachment, event.get());
+				} else {
+					bytes = attachment.readContent(mapping);
+				}
+				Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
+				result.setData(wo);
 			}
 		}
-		StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-				attachment.getStorage());
-		if (StringUtils.isBlank(fileName)) {
-			fileName = attachment.getName();
-		} else {
-			String extension = FilenameUtils.getExtension(fileName);
-			if (StringUtils.isEmpty(extension)) {
-				fileName = fileName + "." + attachment.getExtension();
-			}
-		}
-		byte[] bytes = null;
-		Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents()
-				.getWorkAttachmentDownloadEvents().bind(work.getApplication(), work.getProcess(), work.getActivity());
-		if (event.isPresent()) {
-			bytes = this.extensionService(effectivePerson, attachment, event.get());
-		} else {
-			bytes = attachment.readContent(mapping);
-		}
-		Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
-		result.setData(wo);
+
 		return result;
 	}
 

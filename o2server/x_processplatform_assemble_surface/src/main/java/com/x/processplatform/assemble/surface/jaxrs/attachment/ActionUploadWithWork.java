@@ -23,6 +23,7 @@ import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionUploadWithWork extends BaseAction {
@@ -34,49 +35,31 @@ class ActionUploadWithWork extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			/* 后面要重新保存 */
-			Work work = emc.find(workId, Work.class);
-			/* 判断work是否存在 */
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
-			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
-			}
-
-			/* 天谷印章扩展 */
-			if (StringUtils.isNotEmpty(extraParam)) {
-				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
-				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
-					fileName = wiExtraParam.getFileName();
+			Attachment attachment = null;
+			Draft draft = emc.find(workId, Draft.class);
+			if (null != draft) {
+				attachment = createByDraft(business, effectivePerson, site, fileName, bytes, disposition, draft);
+			} else {
+				Work work = emc.find(workId, Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(workId, Work.class);
 				}
-				if (StringUtils.isNotEmpty(wiExtraParam.getSite())) {
-					site = wiExtraParam.getSite();
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
+				if (BooleanUtils.isNotTrue(control.getAllowSave())) {
+					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
+				/* 天谷印章扩展 */
+				if (StringUtils.isNotEmpty(extraParam)) {
+					WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
+					if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
+						fileName = wiExtraParam.getFileName();
+					}
+					if (StringUtils.isNotEmpty(wiExtraParam.getSite())) {
+						site = wiExtraParam.getSite();
+					}
+				}
+				attachment = createByWork(business, effectivePerson, site, fileName, bytes, disposition, work);
 			}
-
-			if (StringUtils.isEmpty(fileName)) {
-				fileName = this.fileName(disposition);
-			}
-			fileName = fileName.replace("\r", " ").replace("\n", " ");
-			/* 调整可能的附件名称 */
-			fileName = this.adjustFileName(business, work.getJob(), fileName);
-
-			this.verifyConstraint(bytes.length, fileName, null);
-
-			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
-			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
-			attachment.setType((new Tika()).detect(bytes, fileName));
-			LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
-			if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
-					&& ExtractTextTools.available(bytes)) {
-				attachment.setText(ExtractTextTools.image(bytes));
-				LOGGER.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
-						attachment.getText());
-			}
-
 			emc.beginTransaction(Attachment.class);
 			emc.persist(attachment, CheckPersistType.all);
 			emc.commit();
@@ -87,7 +70,50 @@ class ActionUploadWithWork extends BaseAction {
 		}
 	}
 
-	private Attachment concreteAttachment(Work work, EffectivePerson effectivePerson, String site) throws Exception {
+	private Attachment createByDraft(Business business, EffectivePerson effectivePerson, String site, String fileName,
+			byte[] bytes, FormDataContentDisposition disposition, Draft draft) throws Exception {
+		if (StringUtils.isEmpty(fileName)) {
+			fileName = this.fileName(disposition);
+		}
+		fileName = fileName.replace("\r", " ").replace("\n", " ");
+		/* 调整可能的附件名称 */
+		fileName = this.adjustFileName(business, draft.getId(), fileName);
+		this.verifyConstraint(bytes.length, fileName, null);
+		StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+		Attachment attachment = this.concreteAttachment(draft, effectivePerson, site);
+		attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
+		attachment.setType((new Tika()).detect(bytes, fileName));
+		LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+		return attachment;
+	}
+
+	private Attachment createByWork(Business business, EffectivePerson effectivePerson, String site, String fileName,
+			byte[] bytes, FormDataContentDisposition disposition, Work work) throws Exception {
+		if (StringUtils.isEmpty(fileName)) {
+			fileName = this.fileName(disposition);
+		}
+		fileName = fileName.replace("\r", " ").replace("\n", " ");
+		/* 调整可能的附件名称 */
+		fileName = this.adjustFileName(business, work.getJob(), fileName);
+
+		this.verifyConstraint(bytes.length, fileName, null);
+
+		StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+		Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
+		attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
+		attachment.setType((new Tika()).detect(bytes, fileName));
+		LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+		if (BooleanUtils.isTrue(Config.query().getExtractImage())
+				&& BooleanUtils.isTrue(ExtractTextTools.supportImage(attachment.getName()))
+				&& ExtractTextTools.available(bytes)) {
+			attachment.setText(ExtractTextTools.image(bytes));
+			LOGGER.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
+					attachment.getText());
+		}
+		return attachment;
+	}
+
+	private Attachment concreteAttachment(Work work, EffectivePerson effectivePerson, String site) {
 		Attachment attachment = new Attachment();
 		attachment.setCompleted(false);
 		attachment.setPerson(effectivePerson.getDistinguishedName());
@@ -102,6 +128,24 @@ class ActionUploadWithWork extends BaseAction {
 		attachment.setActivityName(work.getActivityName());
 		attachment.setActivityToken(work.getActivityToken());
 		attachment.setActivityType(work.getActivityType());
+		return attachment;
+	}
+
+	private Attachment concreteAttachment(Draft draft, EffectivePerson effectivePerson, String site) {
+		Attachment attachment = new Attachment();
+		attachment.setCompleted(false);
+		attachment.setPerson(effectivePerson.getDistinguishedName());
+		attachment.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+		attachment.setSite(site);
+		/** 用于判断目录的值 */
+		attachment.setWorkCreateTime(draft.getCreateTime());
+		attachment.setApplication(draft.getApplication());
+		attachment.setProcess(draft.getProcess());
+		attachment.setJob(draft.getId());
+		attachment.setActivity("");
+		attachment.setActivityName("");
+		attachment.setActivityToken("");
+		attachment.setActivityType(null);
 		return attachment;
 	}
 

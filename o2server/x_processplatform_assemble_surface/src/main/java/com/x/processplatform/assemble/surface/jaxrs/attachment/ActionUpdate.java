@@ -24,6 +24,7 @@ import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,58 +39,81 @@ class ActionUpdate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			// 后面要重新保存
-			Work work = emc.find(workId, Work.class);
-			// 判断work是否存在
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
-			}
-			Attachment attachment = emc.find(id, Attachment.class);
-			if (null == attachment) {
-				throw new ExceptionEntityNotExist(id, Attachment.class);
-			}
-			// 天谷印章扩展
-			if (StringUtils.isNotEmpty(extraParam)) {
-				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
-				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
-					fileName = wiExtraParam.getFileName();
+			Attachment attachment = null;
+			Draft draft = emc.find(workId, Draft.class);
+			if (null != draft) {
+				attachment = emc.find(id, Attachment.class);
+				if (null == attachment) {
+					throw new ExceptionEntityNotExist(id, Attachment.class);
 				}
-			}
+				if (StringUtils.isEmpty(fileName)) {
+					fileName = this.fileName(disposition);
+				}
+				if (!fileName.equalsIgnoreCase(attachment.getName())) {
+					fileName = this.adjustFileName(business, draft.getId(), fileName);
+				}
+				this.verifyConstraint(bytes.length, fileName, null);
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						attachment.getStorage());
+				emc.beginTransaction(Attachment.class);
+				attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
+				attachment.setType((new Tika()).detect(bytes, fileName));
+				LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+				emc.commit();
+			} else {
+				// 后面要重新保存
+				Work work = emc.find(workId, Work.class);
+				// 判断work是否存在
+				if (null == work) {
+					throw new ExceptionEntityNotExist(workId, Work.class);
+				}
+				attachment = emc.find(id, Attachment.class);
+				if (null == attachment) {
+					throw new ExceptionEntityNotExist(id, Attachment.class);
+				}
+				// 天谷印章扩展
+				if (StringUtils.isNotEmpty(extraParam)) {
+					WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
+					if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
+						fileName = wiExtraParam.getFileName();
+					}
+				}
 
-			if (StringUtils.isEmpty(fileName)) {
-				fileName = this.fileName(disposition);
-			}
-			if (!fileName.equalsIgnoreCase(attachment.getName())) {
-				fileName = this.adjustFileName(business, work.getJob(), fileName);
-			}
-			// 统计待办数量判断用户是否可以上传附件
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
-			}
+				if (StringUtils.isEmpty(fileName)) {
+					fileName = this.fileName(disposition);
+				}
+				if (!fileName.equalsIgnoreCase(attachment.getName())) {
+					fileName = this.adjustFileName(business, work.getJob(), fileName);
+				}
+				// 统计待办数量判断用户是否可以上传附件
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
+				if (BooleanUtils.isNotTrue(control.getAllowSave())) {
+					throw new ExceptionAccessDenied(effectivePerson, work);
+				}
 
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-			if (!canEdit) {
-				throw new ExceptionAccessDenied(effectivePerson, attachment);
-			}
+				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+				boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+				if (!canEdit) {
+					throw new ExceptionAccessDenied(effectivePerson, attachment);
+				}
 
-			this.verifyConstraint(bytes.length, fileName, null);
+				this.verifyConstraint(bytes.length, fileName, null);
 
-			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-					attachment.getStorage());
-			emc.beginTransaction(Attachment.class);
-			attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
-			attachment.setType((new Tika()).detect(bytes, fileName));
-			LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
-			if (BooleanUtils.isTrue(Config.query().getExtractImage())
-					&& ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
-				attachment.setText(ExtractTextTools.image(bytes));
-				LOGGER.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
-						attachment.getText());
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						attachment.getStorage());
+				emc.beginTransaction(Attachment.class);
+				attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
+				attachment.setType((new Tika()).detect(bytes, fileName));
+				LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+				if (BooleanUtils.isTrue(Config.query().getExtractImage())
+						&& ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
+					attachment.setText(ExtractTextTools.image(bytes));
+					LOGGER.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
+							attachment.getText());
+				}
+				emc.commit();
 			}
-			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(attachment.getId());
 			result.setData(wo);

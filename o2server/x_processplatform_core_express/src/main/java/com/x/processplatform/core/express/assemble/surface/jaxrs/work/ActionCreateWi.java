@@ -1,5 +1,8 @@
 package com.x.processplatform.core.express.assemble.surface.jaxrs.work;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -37,6 +40,18 @@ public class ActionCreateWi extends GsonPropertyObject {
 	@FieldDescribe("是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查).")
 	@Schema(description = "是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查).")
 	private Boolean skipDraftCheck = false;
+
+	@FieldDescribe("转换已存在的附件标识,一般是由草稿带过来")
+	@Schema(description = "转换已存在的附件标识,一般是由草稿带过来")
+	private List<String> attachmentList = new ArrayList<>();
+
+	public List<String> getAttachmentList() {
+		return attachmentList;
+	}
+
+	public void setAttachmentList(List<String> attachmentList) {
+		this.attachmentList = attachmentList;
+	}
 
 	public String getParentWork() {
 		return parentWork;
