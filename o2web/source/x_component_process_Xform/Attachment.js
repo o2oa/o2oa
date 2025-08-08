@@ -1776,11 +1776,16 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             }
             var modifedData = {};
             modifedData[ this.json.id ] = values;
-            this.form.workAction.saveData(function () {
+            if (this.form.businessData.work.startTime){
+                this.form.workAction.saveData(function () {
+                    if(this.form.businessData.originalData)this.form.businessData.originalData[this.json.id] = values;
+                }.bind(this), function(){
+                    return true;
+                }, this.form.businessData.work.id, modifedData, false);
+            }else{
+                this.form.saveFormDataDraftSync();
                 if(this.form.businessData.originalData)this.form.businessData.originalData[this.json.id] = values;
-            }.bind(this), function(){
-                return true;
-            }, this.form.businessData.work.id, modifedData, false);
+            }
         }
     },
 
