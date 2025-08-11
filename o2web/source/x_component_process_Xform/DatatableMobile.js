@@ -73,7 +73,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			this.templateJson = {};
 
 			var trs = this.table.getElements("tr");
-			var ths = this.table.getElements("th");
+			var ths = this.table.getElements("th.mwf_origional");
 			this.templateTr = trs[trs.length-1];
 
 			var tds = this.templateTr.getElements("td");
