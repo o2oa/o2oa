@@ -23,6 +23,7 @@ import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,22 +41,26 @@ class ActionDownloadWithWorkStream extends BaseAction {
 		Work work = null;
 		Attachment attachment = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
 			Business business = new Business(emc);
-			work = emc.find(workId, Work.class);
-			// 判断work是否存在
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
-			}
-			// 判断attachment是否存在
-			attachment = emc.find(id, Attachment.class);
-			if (null == attachment) {
-				throw new ExceptionEntityNotExist(id, Attachment.class);
-			}
-			// 生成当前用户针对work的权限控制,并判断是否可以访问
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
-			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
+			Draft draft = emc.find(workId, Draft.class);
+			if (null != draft) {
+				attachment = emc.find(id, Attachment.class);
+			} else {
+				work = emc.find(workId, Work.class);
+				// 判断work是否存在
+				if (null == work) {
+					throw new ExceptionEntityNotExist(workId, Work.class);
+				}
+				// 判断attachment是否存在
+				attachment = emc.find(id, Attachment.class);
+				if (null == attachment) {
+					throw new ExceptionEntityNotExist(id, Attachment.class);
+				}
+				// 生成当前用户针对work的权限控制,并判断是否可以访问
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+					throw new ExceptionAccessDenied(effectivePerson, work);
+				}
 			}
 		}
 		StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,

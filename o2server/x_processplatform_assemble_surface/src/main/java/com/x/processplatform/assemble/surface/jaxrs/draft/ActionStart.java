@@ -1,5 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.draft;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +21,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -34,14 +38,16 @@ class ActionStart extends BaseAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		Process process = null;
 		Draft draft = null;
+		List<String> attachmentList = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			draft = emc.find(id, Draft.class);
 			if (null == draft) {
 				throw new ExceptionEntityNotExist(id, Draft.class);
 			}
-			if ((!effectivePerson.isPerson(draft.getPerson())) && (!business
-					.ifPersonCanManageApplicationOrProcess(effectivePerson, draft.getApplication(), draft.getProcess()))) {
+			if ((!effectivePerson.isPerson(draft.getPerson()))
+					&& (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, draft.getApplication(),
+							draft.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson, draft);
 			}
 			Application application = business.application().pick(draft.getApplication());
@@ -55,7 +61,8 @@ class ActionStart extends BaseAction {
 			if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())) {
 				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
 			}
-
+			// 添加可能存在的附件
+			attachmentList = emc.idsEqual(Attachment.class, Attachment.job_FIELDNAME, draft.getId());
 		}
 		ActionCreateWi req = new ActionCreateWi();
 
@@ -63,6 +70,7 @@ class ActionStart extends BaseAction {
 		req.setIdentity(draft.getIdentity());
 		req.setLatest(false);
 		req.setTitle(draft.getTitle());
+		req.setAttachmentList(attachmentList);
 
 		// 创建工作
 		JsonElement jsonElement = ThisApplication.context().applications()
