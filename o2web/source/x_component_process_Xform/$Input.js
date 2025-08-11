@@ -91,6 +91,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             this.descriptionNode = null;
         }
         this.node.empty();
+        this._loadReadEditAbeld();
         this._beforeReloaded();
         this._loadUserInterface();
         this._loadStyles();
@@ -101,7 +102,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 
     _loadNode: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             if (this.isReadonly()){
                 this._loadNodeRead();

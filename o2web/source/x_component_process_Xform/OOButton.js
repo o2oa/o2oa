@@ -11,7 +11,7 @@ MWF.xApplication.process.Xform.OOButton = MWF.APPOOButton = new Class({
         // this.node = button;
 
         if (!this.isReadable || !this.isEditable) {
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         } else {
             this.node.set({
                 id: this.json.id,

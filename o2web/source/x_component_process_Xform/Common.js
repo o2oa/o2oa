@@ -16,7 +16,7 @@ MWF.xApplication.process.Xform.Common = MWF.APPCommon =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             if (this.json.innerHTML){
                 this.node.innerHTML = this.json.innerHTML;

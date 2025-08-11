@@ -22,6 +22,7 @@ Object.assign(o2.APP$Elinput.prototype, {
 
         this.vueApp = null;
 
+        this._loadReadEditAbeld();
         this._loadUserInterface();
     },
     __setValue: function(value){

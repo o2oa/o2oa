@@ -20,7 +20,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
     iconStyle: "numberIcon",
     _loadUserInterface: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             if ( this.isSectionMergeRead() ) { //区段合并显示
                 this.node.empty();

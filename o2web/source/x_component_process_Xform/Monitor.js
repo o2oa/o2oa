@@ -20,7 +20,7 @@ MWF.xApplication.process.Xform.Monitor = MWF.APPMonitor =  new Class(
 
     _loadUserInterface: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

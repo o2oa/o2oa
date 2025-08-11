@@ -17,7 +17,7 @@ MWF.xApplication.process.Xform.Iframe = MWF.APPIframe =  new Class({
 
 	_loadUserInterface: function(){
 		if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
 			this.node.empty();
 

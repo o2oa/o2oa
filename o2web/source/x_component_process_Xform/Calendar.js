@@ -48,7 +48,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
     },
     _loadNode: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             if (this.isReadonly()){
                 this._loadNodeRead();

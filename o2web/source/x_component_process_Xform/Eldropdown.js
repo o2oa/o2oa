@@ -50,7 +50,7 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
     },
     _loadNode: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         if (this.isReadonly()) this.json.disabled = true;

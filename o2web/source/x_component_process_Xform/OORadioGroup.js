@@ -13,7 +13,7 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
         //     this._loadNodeRead();
         // }else{
             if (!this.isReadable && !!this.isHideUnreadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
             }else{
                 this._loadNodeEdit();
             }

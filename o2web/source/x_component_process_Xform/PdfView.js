@@ -29,7 +29,7 @@ MWF.xApplication.process.Xform.PdfView = MWF.APPPdfView =  new Class({
     },
     _afterLoaded: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         if (!this.isEditable)  this.mode  = "read";

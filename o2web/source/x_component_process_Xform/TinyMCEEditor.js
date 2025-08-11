@@ -50,7 +50,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
         _loadUserInterface: function () {
             this.node.empty();
             if (!this.isReadable){ 
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
                 return ''
             }
             

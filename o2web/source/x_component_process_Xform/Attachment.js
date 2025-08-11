@@ -1631,7 +1631,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     _loadUserInterface: function () {
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             this.node.empty();
             // if (this.form.businessData.work.startTime){
@@ -1654,21 +1654,27 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      */
     reload: function( refresh, callback ){
         this.node.empty();
-        if (this.form.businessData.work.startTime){
-            if( refresh ){
-                var job = (this.form.businessData.work || this.form.businessData.workCompleted ).job;
-                o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.
-                    listWithJob(job, function(json){
-                        this.form.businessData.attachmentList = json.data;
-                        this.loadAttachmentController();
-                        if(callback)callback();
-                }.bind(this));
-            }else{
-                this.loadAttachmentController();
-                if(callback)callback();
+        this._loadReadEditAbeld();
+        if (!this.isReadable && !!this.isHideUnreadable){
+            this.node?.addClass('hide');
+            if(callback)callback();
+        }else{
+            if (this.form.businessData.work.startTime){
+                if( refresh ){
+                    var job = (this.form.businessData.work || this.form.businessData.workCompleted ).job;
+                    o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.
+                        listWithJob(job, function(json){
+                            this.form.businessData.attachmentList = json.data;
+                            this.loadAttachmentController();
+                            if(callback)callback();
+                    }.bind(this));
+                }else{
+                    this.loadAttachmentController();
+                    if(callback)callback();
+                }
             }
+            if(callback)callback();
         }
-        if(callback)callback();
     },
     getFlagDefaultFalse: function( key ){
         if( this.json[key] === "y" || this.json[key] === "true" )return true;

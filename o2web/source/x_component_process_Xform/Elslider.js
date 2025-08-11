@@ -52,7 +52,7 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
     },
     _loadNode: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
              if (this.isReadonly()){
                 this._loadNodeRead();

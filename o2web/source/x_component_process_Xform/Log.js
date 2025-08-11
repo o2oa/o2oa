@@ -46,7 +46,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
 
 	_loadUserInterface: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

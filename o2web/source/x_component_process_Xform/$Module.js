@@ -498,6 +498,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
     },
+    reload: function(){
+        this._loadReadEditAbeld();
+        this._loadUserInterface();
+    },
 
     _queryLoaded: function(){
         this._loadReadEditAbeld();
@@ -505,6 +509,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     _afterLoaded: function(){},
     
     _loadReadEditAbeld: function(){
+        this.node?.removeClass('hide');
         this._loadPoweer();
         this.isReadable = this._isReadable();
         this.isEditable = !this.isReadable ? false : this._isEditable();
@@ -593,6 +598,39 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     
     _loadUserInterface: function(){
         //	this.node = this.node;
+    },
+    addRelated: function(path){
+        if (!this.form.relatedModules) this.form.relatedModules = {};
+        if (!this.form.relatedModules[path]) this.form.relatedModules[path] = new Set();
+        this.form.relatedModules[path].add(this);
+    },
+    addRelatedDisplay: function(path, cb){
+        if (cb){
+            const ps = Array.isArray(path) ? path : [path];
+            ps.forEach((p)=>{
+                if (!this.form.relatedDisplayModules) this.form.relatedDisplayModules = {};
+                if (!this.form.relatedDisplayModules[p]) this.form.relatedDisplayModules[p] = new Set();
+                this.form.relatedDisplayModules[p].add({
+                    module: this,
+                    display: cb
+                });
+            }); 
+            this._checkDisplay(cb);
+        }
+    },
+    addRelatedValue: function(path, cb){
+        if (cb){
+            const ps = Array.isArray(path) ? path : [path];
+            ps.forEach((p)=>{
+                if (!this.form.relatedValueModules) this.form.relatedValueModules = {};
+                if (!this.form.relatedValueModules[p]) this.form.relatedValueModules[p] = new Set();
+                this.form.relatedValueModules[p].add({
+                    module: this,
+                    value: cb
+                });
+            }); 
+            this._checkValue(cb);
+        }
     },
 
     _loadStyles: function(){
@@ -876,6 +914,23 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return evdata;
     },
 
+    _checkDisplay: function(display){
+        debugger;
+        if (display){
+            return Promise.resolve(display(this)).then((dsp)=>{
+                dsp ? this.node.removeClass('hide') : this.node.addClass('hide');
+                return dsp;
+            });
+        }
+    },
+    _checkValue: function(value){
+        if (value){
+            return Promise.resolve(value(this)).then((value)=>{
+                this.setData?.(value);
+                return value;
+            });
+        }
+    },
     _setBusinessData: function(v, id){
         //if (o2.typeOf(v)==="string") v = o2.txt(v);
         if (!this.isEditable) return;
@@ -888,6 +943,21 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this.setBusinessDataById(v, id);
                 if (this.json.isTitle) this.form.businessData.data.$work.title = v;
             }
+        }
+        if (this.form.relatedModules && this.form.relatedModules[(id || this.json.id)]){
+            this.form.relatedModules[(id || this.json.id)].forEach((module)=>{
+                module?.reload();
+            })
+        }
+        if (this.form.relatedDisplayModules && this.form.relatedDisplayModules[(id || this.json.id)]){
+            this.form.relatedDisplayModules[(id || this.json.id)].forEach((o)=>{
+                o.module?._checkDisplay(o.display);
+            })
+        }
+        if (this.form.relatedValueModules && this.form.relatedValueModules[(id || this.json.id)]){
+            this.form.relatedValueModules[(id || this.json.id)].forEach((o)=>{
+                o.module?._checkValue(o.value);
+            })
         }
     },
     _setBusinessSectionData: function(v, id){

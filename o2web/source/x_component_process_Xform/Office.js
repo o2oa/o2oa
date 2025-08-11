@@ -114,7 +114,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 	_loadUserInterface: function(){
 		this.node.empty();
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 
@@ -141,7 +141,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 	},
     loadOffice: function(file){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

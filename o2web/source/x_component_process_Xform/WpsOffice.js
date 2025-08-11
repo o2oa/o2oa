@@ -65,7 +65,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
         _loadUserInterface: function(){
             this.node.empty();
             if (!this.isReadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
                 return '';
             }
             this.node.setStyles({
@@ -74,7 +74,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
         },
         _afterLoaded: function(){
             if (!this.isReadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
                 return '';
             }
 
@@ -138,7 +138,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
         },
         reload : function (){
             if (!this.isReadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
                 return '';
             }
             this.setData();

@@ -18,7 +18,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
 	Extends: MWF.APP$Module,
 	_afterLoaded: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

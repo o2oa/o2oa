@@ -35,6 +35,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
      */
     reload: function(){
         this.node.empty();
+        this._loadReadEditAbeld();
         this._loadUserInterface();
         this._loadStyles();
         this.fireEvent("postLoad");
@@ -42,7 +43,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
     _loadUserInterface: function(){
         debugger;
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

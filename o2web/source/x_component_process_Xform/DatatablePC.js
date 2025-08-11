@@ -223,7 +223,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			    // }
 				
 				if (!this.isReadable && !!this.isHideUnreadable){
-					this.node.setStyle('display', 'none');
+					this.node?.addClass('hide');
 					return;
 				}
 				
@@ -334,8 +334,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 *  this.form.get("fieldId").reload(); //重新加载
 		 */
 		reload: function(){
+			this._loadReadEditAbeld();
+
 			this.reloading = true;
 			this._removeEl();
+
+			if (!this.isReadable && !!this.isHideUnreadable){
+				this.node?.addClass('hide');
+				return;
+			}
 
 			// this.editModules = [];
 

@@ -37,7 +37,7 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class(
     },
     _afterLoaded: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 
@@ -46,18 +46,19 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class(
     },
     active: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         
         if (this.stat) this.stat.loadStatData();
     },
     reload: function(){
+        this._loadReadEditAbeld();
 	    this.active();
     },
     loadStat: function( json ){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

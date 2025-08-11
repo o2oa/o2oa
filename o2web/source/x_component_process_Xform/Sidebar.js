@@ -42,7 +42,7 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         },
     _loadUserInterface: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         

@@ -221,7 +221,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     },
     _loadNode: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             this.field = true;
             if (this.isReadonly()){

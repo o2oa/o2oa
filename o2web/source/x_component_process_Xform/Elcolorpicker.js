@@ -79,7 +79,7 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
     },
     _loadNode: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             if (this.isReadonly()) this.json.disabled = true;
             this._loadNodeEdit();

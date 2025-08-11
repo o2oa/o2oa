@@ -54,7 +54,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
 
     _loadUserInterface: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 
@@ -63,7 +63,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
     },
     _afterLoaded: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         if(!!this.json.statementType){
@@ -83,6 +83,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
             if (this.view.getViewRes && this.view.getViewRes.res) if (this.view.getViewRes.res.isRunning()) this.view.getViewRes.res.cancel();
         }
         this.node.empty();
+        this._loadReadEditAbeld();
         this.loadView( callback, true );
     },
     /**
@@ -92,7 +93,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
      */
     active: function( callback ){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         if (this.view){
@@ -122,7 +123,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
     },
     loadView: function( callback, force ){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         // if (!this.json.queryStatement) return "";

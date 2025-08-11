@@ -24,6 +24,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			this.areaNode = null;
 		}
 		this._beforeReloaded();
+		this._loadReadEditAbeld();
 		this._loadUserInterface();
 		this._loadStyles();
 		this._afterLoaded();
@@ -37,7 +38,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 
     _loadNode: function(){
 		if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             this._loadNodeEdit();
         }

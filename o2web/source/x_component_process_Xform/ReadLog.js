@@ -59,7 +59,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
          */
         active: function(){
             if (!this.isReadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
                 return '';
             }
             this._loadModuleEvents();

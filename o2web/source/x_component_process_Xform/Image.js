@@ -17,7 +17,7 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class(
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

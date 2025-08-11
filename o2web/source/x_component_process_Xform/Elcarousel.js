@@ -28,7 +28,7 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
     },
     _loadNode: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             this._loadNodeEdit();
         }

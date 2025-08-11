@@ -49,7 +49,7 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
         this.node.empty();
 
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 
@@ -97,7 +97,7 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
     },
     loadContent: function( callback ){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         o2.Actions.load("x_query_assemble_surface").MoreLikeThisAction.post({

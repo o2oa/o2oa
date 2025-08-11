@@ -17,7 +17,7 @@ MWF.xApplication.process.Xform.Elcontainer = MWF.APPElcontainer =  new Class({
     _loadUserInterface: function(){
         debugger;
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             this.node.addClass("o2_vue");
             var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
@@ -61,7 +61,7 @@ MWF.xApplication.process.Xform.Elcontainer$Aside = MWF.APPElcontainer$Aside =  n
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         var css = Object.clone(this.form.css["el-container-aside"]);
@@ -78,7 +78,7 @@ MWF.xApplication.process.Xform.Elcontainer$Header = MWF.APPElcontainer$Header = 
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         var css = Object.clone(this.form.css["el-container-header"]);
@@ -96,7 +96,7 @@ MWF.xApplication.process.Xform.Elcontainer$Footer = MWF.APPElcontainer$Footer = 
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         var css = Object.clone(this.form.css["el-container-footer"]);

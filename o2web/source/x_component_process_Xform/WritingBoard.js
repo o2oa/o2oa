@@ -33,7 +33,7 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             this.node.empty();
 
             if (!this.isReadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
                 return '';
             }
 

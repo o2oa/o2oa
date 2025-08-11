@@ -222,7 +222,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.loading = true;
 
 			if (!this.isReadable && !!this.isHideUnreadable){
-				this.node.setStyle('display', 'none');
+				this.node?.addClass('hide');
 				return '';
 			}
 
@@ -310,6 +310,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 *  this.form.get("fieldId").reload(); //重新加载
 		 */
 		reload: function( isReloadTemplate ){
+			this._loadReadEditAbeld();
+			
 			this.reloading = true;
 
 			// this.editModules = [];
@@ -319,6 +321,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.checkMerge( this.getValue() );
 
 			this.clearSubModules();
+
+			if (!this.isReadable && !!this.isHideUnreadable){
+				this.node?.addClass('hide');
+				return;
+			}
 
 			this._loadStyles();
 

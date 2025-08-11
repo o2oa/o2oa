@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
         this.node.empty();
 
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 
@@ -33,7 +33,7 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
     },
     _afterLoaded: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

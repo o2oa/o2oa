@@ -1168,7 +1168,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (!this.data) this.data = this._getDefaultData();
         
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 
@@ -3417,6 +3417,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * this.form.get("fieldId").reload();
      */
     reload: function(callback){
+        this._loadReadEditAbeld();
+        if (!this.isReadable){
+            this.contentNode?.empty();
+            this.node?.addClass('hide');
+            return;
+        }
+
         if (!this.isActive){
             this.active();
         }else{

@@ -31,7 +31,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         loadDescription: function(){},
         _loadNode: function(){
             if (!this.isReadable && !!this.isHideUnreadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
             }else{
                 if (this.isReadonly()){
                     this._loadNodeRead();

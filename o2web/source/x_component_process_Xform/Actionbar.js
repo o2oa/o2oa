@@ -57,7 +57,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             //     this.node.empty();
             // }else{
             if (!this.isReadable){
-                this.node.setStyle('display', 'none');
+                this.node?.addClass('hide');
                 return '';
             }
 

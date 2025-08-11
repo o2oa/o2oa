@@ -23,7 +23,18 @@ MWF.xScript.Environment = function(ev){
             while (p && !_forms[p.getKey()]) p = p.getParent();
             //if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
             var k = (p) ? p.getKey() : "";
-            if (k) if(_forms[k]) if(_forms[k].resetData) _forms[k].resetData();
+            if (k) if(_forms[k]){
+                if(_forms[k].resetData){
+                    _forms[k].resetData();
+                    if (_forms[k].form){
+                        if (_forms[k].form.relatedModules?.[_forms[k].json.id]){
+                            _forms[k].form.relatedModules?.[_forms[k].json.id].forEach((module)=>{
+                                module?.reload();
+                            })
+                        }
+                    }
+                }
+            } 
             //if(p) if(p.getKey()) if(_forms[p.getKey()]) if(_forms[p.getKey()].render) _forms[p.getKey()].render();
         }, "", null, _form);
     };
@@ -4686,6 +4697,12 @@ MWF.xScript.Environment = function(ev){
                     starter.load();
                 }
             });
+        },
+
+        addRelated: function(path, module){
+            if (!_form.relatedModules) _form.relatedModules = {};
+            if (!_form.relatedModules[path]) _form.relatedModules[path] = new Set();
+            _form.relatedModules[path].add(module);
         }
     };
 

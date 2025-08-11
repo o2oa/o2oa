@@ -20,7 +20,7 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
 
 	_loadUserInterface: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

@@ -22,7 +22,7 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
     _loadUserInterface: function(){
         this.node.empty();
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 
@@ -32,7 +32,7 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
     },
     _afterLoaded: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
         

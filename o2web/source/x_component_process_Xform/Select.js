@@ -58,6 +58,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			this.areaNode = null;
 		}
 		this._beforeReloaded();
+		this._loadReadEditAbeld();
 		this._loadUserInterface();
 		this._loadStyles();
 		this._afterLoaded();
@@ -66,7 +67,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	},
     _loadNode: function(){
 		if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             if (this.isReadonly()){
 				this._loadNodeRead();

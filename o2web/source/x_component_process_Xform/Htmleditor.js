@@ -51,7 +51,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
 		this.node.empty();
 
         if (!this.isReadable){ 
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return ''
         }
         

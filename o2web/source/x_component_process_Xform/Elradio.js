@@ -63,11 +63,12 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.vueApp = null;
 
         this._resetNodeEdit();
+        this._loadReadEditAbeld();
         this._loadUserInterface();
     },
     _loadNode: function(){
          if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             debugger;
             this.node.empty();

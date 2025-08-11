@@ -63,6 +63,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
 
         this.vueApp = null;
 
+        this._loadReadEditAbeld();
         this._loadUserInterface();
     },
     _checkVmodel: function(text){
@@ -83,7 +84,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
 
     _loadUserInterface: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             var html = this._createElementHtml();
             if (html){

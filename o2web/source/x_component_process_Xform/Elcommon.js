@@ -54,7 +54,7 @@ o2.xApplication.process.Xform.Elcommon = o2.APPElcommon =  new Class(
     },
     _loadUserInterface: function(){
          if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
             return '';
         }
 

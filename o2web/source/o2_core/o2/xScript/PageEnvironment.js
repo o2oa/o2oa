@@ -22,7 +22,18 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 };
                 while (p && !_forms[p.getKey()]) p = p.getParent();
                 var k = (p) ? p.getKey() : "";
-                if (k) if (_forms[k]) if (_forms[k].resetData) _forms[k].resetData();
+                if (k) if(_forms[k]){
+                    if(_forms[k].resetData){
+                        _forms[k].resetData();
+                        if (_forms[k].form){
+                            if (_forms[k].form.relatedModules?.[_forms[k].json.id]){
+                                _forms[k].form.relatedModules?.[_forms[k].json.id].forEach((module)=>{
+                                    module?.reload();
+                                })
+                            }
+                        }
+                    }
+                } 
                 //if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
             });
         };
@@ -2659,7 +2670,13 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 if (!this.widgetParameters) return null;
                 var pageId = currentTarget.widget.json.id;
                 return this.widgetParameters[pageId];
-            }.bind(this)
+            }.bind(this),
+
+            addRelated: function(path, module){
+                if (!_form.relatedModules) _form.relatedModules = {};
+                if (!_form.relatedModules[path]) _form.relatedModules[path] = new Set();
+                _form.relatedModules[path].add(module);
+            }
             //"app": _form.app
         };
         this.form.currentRouteName = _form.json.currentRouteName;

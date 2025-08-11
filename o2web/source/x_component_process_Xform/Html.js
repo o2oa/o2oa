@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.Html = MWF.APPHtml =  new Class({
     load: function(){
         this._queryLoaded();
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             this.node.insertAdjacentHTML("beforebegin", this.json.text);
             this.node.destroy();

@@ -29,7 +29,7 @@ MWF.xApplication.process.Xform.Foxit = MWF.APPFoxit =  new Class({
     },
     _afterLoaded: function(){
         if (!this.isReadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }
 
         if (!this.isEditable) this.mode = 'read';

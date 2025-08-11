@@ -27,7 +27,7 @@ MWF.xApplication.process.Xform.Codeeditor = MWF.APPCodeeditor =  new Class({
 
     _loadUserInterface: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
-            this.node.setStyle('display', 'none');
+            this.node?.addClass('hide');
         }else{
             this.node.empty();
             if (this.isReadonly() || !this.isEditable){
