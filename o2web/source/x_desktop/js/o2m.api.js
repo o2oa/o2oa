@@ -103,7 +103,7 @@
      * @memberOf o2m
      * @static
      * @param {String} name 事件名称 (reload, workClose, documentClose)
-     * @param {[Function]} events 执行方法
+     * @param {Function} events 执行方法
      * @example
      * var reloadFun = function(){
      *     //执行业务
