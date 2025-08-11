@@ -1164,6 +1164,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     _loadUserInterface: function(callback){
+        this.data = this._getBusinessData();
+        if (!this.data) this.data = this._getDefaultData();
+        
         if (!this.isReadable){
             this.node.setStyle('display', 'none');
             return '';
@@ -3138,6 +3141,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     _computeItemFieldData: function(name, dataItem, dataItemNode){
+        if (!this.data) return;
         var v = "";
         var module = (dataItemNode) ? this.form.all[dataItemNode] : this.form.all[this.json[dataItem]];
         if (module && module.getData) v = module.getData();
@@ -3270,6 +3274,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.setData(this.data);
     },
     _computeItemData: function(name, typeItem, dataItem, scriptItem, ev, dom){
+        if (!this.data) return;
         switch (this.json[typeItem]) {
             case "data":
                 if (this.json[dataItem]){
