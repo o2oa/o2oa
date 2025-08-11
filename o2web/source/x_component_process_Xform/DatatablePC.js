@@ -481,7 +481,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			var trs = this.table.getElements("tr");
 
-			var ths = this.table.getElements("th");
+			var ths = this.table.getElements("th.mwf_origional");
 			this.templateTr = trs[trs.length-1];
 
 			this.templateNode = this.templateTr;
