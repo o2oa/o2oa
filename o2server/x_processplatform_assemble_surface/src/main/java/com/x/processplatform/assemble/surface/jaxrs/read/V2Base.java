@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.read;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -32,6 +33,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.Application;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -201,13 +203,21 @@ abstract class V2Base extends StandardJaxrsAction {
 			this.endTime = endTime;
 		}
 
-		public String getTitle() { return title; }
+		public String getTitle() {
+			return title;
+		}
 
-		public void setTitle(String title) { this.title = title; }
+		public void setTitle(String title) {
+			this.title = title;
+		}
 
-		public List<String> getActivityNameList() { return activityNameList; }
+		public List<String> getActivityNameList() {
+			return activityNameList;
+		}
 
-		public void setActivityNameList(List<String> activityNameList) { this.activityNameList = activityNameList; }
+		public void setActivityNameList(List<String> activityNameList) {
+			this.activityNameList = activityNameList;
+		}
 
 		public List<String> getCreatorPersonList() {
 			return creatorPersonList;
@@ -427,7 +437,12 @@ abstract class V2Base extends StandardJaxrsAction {
 		Root<Read> root = cq.from(Read.class);
 		Predicate p = cb.equal(root.get(Read_.person), effectivePerson.getDistinguishedName());
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
+			List<Application> applications = business.entityManagerContainer().flag(wi.getApplicationList(),
+					Application.class);
+			if (ListTools.isNotEmpty(applications)) {
+				p = cb.and(p, root.get(Read_.application)
+						.in(applications.stream().map(JpaObject::getId).collect(Collectors.toList())));
+			}
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {

@@ -85,7 +85,11 @@ public class ActionSendMessage extends BaseAction {
         NotificationMessage.Android android = new NotificationMessage.Android();
         android.setAlert(wi.getMessage());
         android.setPriority(0);
-        android.setBadgeClass(JpushConst.launchActivity);
+        String badgeClass = Config.pushConfig().getBadgeClass();
+        if (StringUtils.isEmpty(badgeClass)) {
+            badgeClass = JpushConst.launchActivity;
+        }
+        android.setBadgeClass(badgeClass);
         android.setBadgeAddNumber(1);
         android.setChannelId(androidChannelId);
         NotificationMessage.IOS iOS = new NotificationMessage.IOS();
