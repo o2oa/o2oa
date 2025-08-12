@@ -309,6 +309,10 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     }.bind(this)
                 };
                 options.baseDate = this.getBaseDate();
+                if( this.json.weekBegin ){
+                    debugger;
+                    options.weekBegin = parseInt( this.json.weekBegin );
+                }
 
                 this.setRange( options );
                 /**
