@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.taskcompleted;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -30,8 +31,10 @@ import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
+import com.x.processplatform.core.entity.content.Task_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.Application;
 
 abstract class V2Base extends StandardJaxrsAction {
 
@@ -196,9 +199,13 @@ abstract class V2Base extends StandardJaxrsAction {
 			this.endTime = endTime;
 		}
 
-		public List<String> getActivityNameList() { return activityNameList; }
+		public List<String> getActivityNameList() {
+			return activityNameList;
+		}
 
-		public void setActivityNameList(List<String> activityNameList) { this.activityNameList = activityNameList; }
+		public void setActivityNameList(List<String> activityNameList) {
+			this.activityNameList = activityNameList;
+		}
 
 		public List<String> getCreatorPersonList() {
 			return creatorPersonList;
@@ -439,13 +446,19 @@ abstract class V2Base extends StandardJaxrsAction {
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
+			List<Application> applications = business.entityManagerContainer().flag(wi.getApplicationList(),
+					Application.class);
+			if (ListTools.isNotEmpty(applications)) {
+				p = cb.and(p, root.get(TaskCompleted_.application)
+						.in(applications.stream().map(JpaObject::getId).collect(Collectors.toList())));
+			}
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(TaskCompleted_.process).in(wi.getProcessList()));
-			}else{
-				p = cb.and(p, root.get(TaskCompleted_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			} else {
+				p = cb.and(p, root.get(TaskCompleted_.process)
+						.in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
 		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
