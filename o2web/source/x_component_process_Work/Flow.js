@@ -1701,7 +1701,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
                     // return false;
                 }
             }
-            if (this.ignoreOldData) {
+            if (this.ignoreOldData || this.json.resetValueWithDefault) {
                 identityOpt.values = this._computeValue() || [];
             } else {
                 identityOpt.values = this.getValue() || [];
@@ -1719,7 +1719,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
                     // return false;
                 }
             }
-            if (this.ignoreOldData) {
+            if (this.ignoreOldData || this.json.resetValueWithDefault) {
                 unitOpt.values = this._computeValue() || [];
             } else {
                 unitOpt.values = this.getValue() || [];
@@ -1730,7 +1730,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
         var groupOpt;
         if( this.groupOptions ){
             groupOpt = this.groupOptions.getOptions();
-            if (this.ignoreOldData) {
+            if (this.ignoreOldData || this.json.resetValueWithDefault) {
                 groupOpt.values = this._computeValue() || [];
             } else {
                 groupOpt.values = this.getValue() || [];

@@ -19,6 +19,14 @@
         <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.defaultValue}}: </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
+                <td class="editTableTitle">{{$.lp.resetDefault}}:</td>
+                <td class="editTableValue">
+                    <div style="padding:0 5px;color:#999;line-height: 20px;">{{$.lp.resetDefaultNote}}</div>
+                    <input type="radio" name="resetValueWithDefault" value="true" text{$.resetValueWithDefault?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="resetValueWithDefault" value="false" text{$.resetValueWithDefault?'':'checked'}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.identity}}:</td>
                 <td class="editTableValue">
                     <div class="MWFPersonIdentity" name="identityValue"></div>
