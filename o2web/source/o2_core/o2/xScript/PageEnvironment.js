@@ -2180,6 +2180,10 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 op.workCompletedId = completedId;
                 op.docTitle = title;
                 op.appId = "process.Work" + (op.workId || op.workCompletedId);
+                if (op.onAffterProcess){
+                    op.handleSubWindow = p.onAffterProcess;
+                }
+
                 return layout.desktop.openApplication(this.event, "process.Work", op);
             },
             /**使用流程的jobId打开工作

@@ -324,6 +324,13 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
         var _openApplicationPC = function (appNames, options, statusObj) {
             if (options) delete options.docTitle;
             var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
+            
+            if (options.handleSubWindow){
+                window.addEventListener('message', (e)=>{
+                    debugger;
+                }, {once: true})
+            }
+            
             switch (appNames) {
                 case "process.Work":
                     var url = "../x_desktop/work.html";

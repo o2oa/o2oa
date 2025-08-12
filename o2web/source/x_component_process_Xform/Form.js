@@ -456,9 +456,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
-
-        debugger;
-
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
@@ -2392,6 +2389,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.finishOnMobile();
         } else {
             if (this.app.inBrowser) {
+                if (this.app.options.onAfterProcess){
+                    window.postMessage(this.app.work.id, window.location);
+                }
+
                 if (this.mask) this.mask.hide();
                 if (this.json.isPrompt !== false) {
                     switch (type) {
