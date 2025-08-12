@@ -555,6 +555,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"titleInfo": "如：请选择部门经理",
 		"defaultValue": "默认值",
 		"defaultValueScript": "默认值脚本",
+		"resetDefault": "重新计算",
+		"resetDefaultNote": "每次打开提交界面根据默认值重新计算，无默认值则置空。",
 		"checkCount": "校验数量",
 		"checkCountInfo": "选择的个数不少于",
 		"verificationScript": "校验脚本",

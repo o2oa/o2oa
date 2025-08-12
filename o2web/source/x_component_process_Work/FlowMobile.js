@@ -1104,7 +1104,7 @@ MWF.ProcessFlow.Processor.OrgListMobile = new Class({
         container.addEvent("click", function () {
             org.load( quickOrgData );
         });
-        var defaultValue = quickOrgData || org.getValue();
+        var defaultValue = !!json.resetValueWithDefault ? org._computeValue() : (quickOrgData || org.getValue());
         org.loadOrgWidget(defaultValue, contentNode);
     },
     getSelectedData: function (filedName) {
