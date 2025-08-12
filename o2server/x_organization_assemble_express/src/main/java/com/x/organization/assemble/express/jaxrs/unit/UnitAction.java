@@ -637,6 +637,24 @@ public class UnitAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "校验组织是否包含指定组织.", action = ActionHasUnit.class)
+	@POST
+	@Path("check/unit/has/unit")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void checkHasUnit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionHasUnit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionHasUnit().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "批量查询指定组织类型的组织.", action = ActionListWithTypes.class)
 	@POST
 	@Path("list/types")
