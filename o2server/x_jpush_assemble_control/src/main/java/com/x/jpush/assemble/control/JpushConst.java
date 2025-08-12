@@ -6,8 +6,6 @@ package com.x.jpush.assemble.control;
  */
 public class JpushConst {
 
-    public static final String launchActivity = "net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.launch.LaunchActivity";
-
-
+    public static final String launchActivity = "net.zoneland.x.bpm.mobile.v1.zoneXBPM.MainActivity";
 
 }

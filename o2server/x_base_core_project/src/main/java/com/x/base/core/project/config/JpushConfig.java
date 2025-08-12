@@ -26,6 +26,7 @@ public class JpushConfig extends ConfigObject {
         this.appKey = O2_app_key_default;
         this.masterSecret = O2_master_secret_default;
         this.thirdPartyChannel = o2oaOfficialPushChannel();
+        this.badgeClass = ""; // 默认不设置
     }
 
 
@@ -38,6 +39,8 @@ public class JpushConfig extends ConfigObject {
     // "thirdPartyChannel": { "xiaomi": {"channel_id": ""}, "huawei": { "importance": "NORMAL", "category": "WORK" } }
     @FieldDescribe("第三方通道参数配置")
     private ThirdPartyChannel thirdPartyChannel;
+    @FieldDescribe("Android应用入口Activity类")
+    private String badgeClass;
 
 
 
@@ -75,6 +78,14 @@ public class JpushConfig extends ConfigObject {
         return config;
     }
 
+
+    public String getBadgeClass() {
+        return badgeClass;
+    }
+
+    public void setBadgeClass(String badgeClass) {
+        this.badgeClass = badgeClass;
+    }
 
     public Boolean getEnable() {
         return BooleanUtils.isTrue(this.enable);
