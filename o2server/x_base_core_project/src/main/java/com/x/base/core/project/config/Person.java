@@ -1,5 +1,6 @@
 package com.x.base.core.project.config;
 
+import com.x.base.core.project.gson.GsonPropertyObject;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ public class Person extends ConfigObject {
 
 	public static final String REGULAREXPRESSION_SCRIPT = "^\\((.+?)\\)$";
 
-	public static final String DEFAULT_PASSWORD = "(this.$pwd=function(){function n(n,r){for(var t=\"\",o=0;o<n;o++){t+=r[Math.floor(Math.random()*r.length)]}return t}return n(8,\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\")+n(4,\"(#?!@$%^&*-)\")};; return this.$pwd(); )";
+	public static final String DEFAULT_PASSWORD = "(return person.getMobile().slice(-6) + \"%o2\";)";
 	public static final Integer DEFAULT_PASSWORDPERIOD = 0;
 	public static final Integer DEFAULT_FAILUREINTERVAL = 10;
 	public static final Integer DEFAULT_FAILURECOUNT = 5;
