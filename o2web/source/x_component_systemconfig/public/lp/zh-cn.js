@@ -324,21 +324,23 @@ o2.xApplication.systemconfig.LP = {
         "newPersonPasswordInfo": "创建新建用户时，会按以下设定生成用户初始密码，用户可登录系统后自行修改",
         "initialPassword": "用户初始密码",
         "initialPasswordText": "输入初始密码",
+        "fixedPassword": "固定密码",
+        "fixedPasswordText": "输入固定密码",
         "initialPasswordTypeOptions": {
-            "mobile": "手机号码后六位",
-            "unique": "唯一编码后六位",
-            "employee": "人员工号",
-            "pinyin": "人员名称全拼",
+            "mobile": "手机号码后六位加固定口令",
+            "unique": "唯一编码后六位加固定口令",
+            "employee": "人员工号加固定口令",
+            // "pinyin": "人员名称全拼",
             "text": "固定口令",
             'script': "通过脚本自定义初始密码"
         },
         "initialPasswordType": {
-            "mobileScript": "return person.getMobile().slice(-6)",
-            "uniqueScript": "return person.getUnique().slice(-6)",
-            "employeeScript": "return person.getEmployee()",
-            "pinyinScript": "return person.getPinyin()",
+            "mobileScript": "return person.getMobile().slice(-6)+'{fixedPassword}'",
+            "uniqueScript": "return person.getUnique().slice(-6)+'{fixedPassword}'",
+            "employeeScript": "return person.getEmployee()+'{fixedPassword}'",
+            // "pinyinScript": "return person.getPinyin()",
             "textInfo": "在下面的输入框中输入的密码，将作为新创建用户的初始密码。",
-            'scriptInfo': "在下面的编辑器中输入脚本，返回一个字符串值，作为新创建用户的初始密码。您可以使用person对象获取人员相关信息。如将人员姓名全拼作为初始密码，可使用脚本：return person.getPinyin()"
+            'scriptInfo': "在下面的编辑器中输入脚本，返回一个字符串值，作为新创建用户的初始密码。您可以使用person对象获取人员相关信息。如将人员手机号码后六位作为密码，可使用脚本：return person.getMobile().slice(-6)。如将人员工号作为密码，可使用脚本：return person.getEmployee()。如将人员唯一编码后六位作为密码，可使用脚本：return person.getUnique().slice(-6)"
         },
 
         "passwordPeriod": "密码过期天数",

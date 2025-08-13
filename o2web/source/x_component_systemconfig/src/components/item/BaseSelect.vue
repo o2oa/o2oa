@@ -2,10 +2,10 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input">
-      <el-select v-if="arr && arr.length" v-model="ev" @change="changeValue" size="default" popper-class="systemconfig">
+      <el-select v-if="arr && arr.length" v-model="ev" @change="changeValue" size="default" popper-class="systemconfig" :style="selectStyle">
         <el-option v-for="k in arr" :key="k.label || k" :value="(k.value==null) ? k : k.value" :label="k.label || k"></el-option>
       </el-select>
-      <el-select v-else v-model="ev" @change="changeValue" size="default" popper-class="systemconfig">
+      <el-select v-else v-model="ev" @change="changeValue" size="default" popper-class="systemconfig" :style="selectStyle">
         <el-option v-for="k in Object.keys(options)" :key="k" :value="k" :label="options[k]"></el-option>
       </el-select>
     </div>
@@ -21,6 +21,10 @@ const props = defineProps({
   label: String,
   value: String,
   labelStyle: {
+    type: Object,
+    default: {}
+  },
+  selectStyle: {
     type: Object,
     default: {}
   },
