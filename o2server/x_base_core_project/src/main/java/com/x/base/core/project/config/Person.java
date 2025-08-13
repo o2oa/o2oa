@@ -45,7 +45,7 @@ public class Person extends ConfigObject {
 	public static final Integer DEFAULT_TOKENEXPIREDMINUTES = 60 * 24 * 15;
 	public static final Boolean DEFAULT_TOKENCOOKIEHTTPONLY = true;
 	public static final Boolean DEFAULT_TOKENCOOKIESECURE = false;
-	public static final Boolean DEFAULT_FIRSTLOGINMODIFYPWD = false;
+	public static final Boolean DEFAULT_FIRSTLOGINMODIFYPWD = true;
 
 	public static final String DEFAULT_PASSWORDREGEX = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "8位以上,包含数字、字母和特殊字符.";
@@ -106,7 +106,7 @@ public class Person extends ConfigObject {
 	@FieldDescribe("是否启用双因素认证登录,默认值:false.")
 	private Boolean twoFactorLogin;
 
-	@FieldDescribe("是否启用首次登陆修改密码,默认值:false")
+	@FieldDescribe("是否启用首次登陆修改密码,默认值:true")
 	private Boolean firstLoginModifyPwd;
 
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)
