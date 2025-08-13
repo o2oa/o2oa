@@ -818,6 +818,11 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             }.bind(this)
         });
 
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.enableAnonymous+":"}).inject(this.propertyContentArea);
+        this.propertyEnableAnonymousNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
+        new Element("option" , {  "value" : "true", "text" : this.lp.true  }).inject(this.propertyEnableAnonymousNode);
+        new Element("option" , {  "value" : "false", "text" : this.lp.false  }).inject(this.propertyEnableAnonymousNode);
+
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.isEnable+":"}).inject(this.propertyContentArea);
         this.propertyEnableNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
         new Element("option" , {  "value" : "true", "text" : this.lp.true  }).inject(this.propertyEnableNode);
@@ -1210,6 +1215,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 "enableToken" : true,
                 "enable" : true,
                 "remoteAddrRegex" : "",
+                "enableAnonymous" : false,
                 "lastStartTime" : "",
                 "lastEndTime" : ""
             };
@@ -1221,6 +1227,9 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 		this.actions.getInvoke(id, function(json){
 			if (json){
 				var data = json.data;
+                if( !data.hasOwnProperty('enableAnonymous') ){
+                    data.enableAnonymous = false;
+                }
 
                 if (!notSetTile){
                     this.setTitle(this.options.appTitle + "-"+data.name);

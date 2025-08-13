@@ -242,6 +242,8 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyEnableTokenNode.getElement("option[value='"+ this.data.enableToken +"']").set("selected", true );
         this.designer.propertyEnableNode.getElement("option[value='"+ this.data.enable +"']").set("selected", true );
 
+        this.designer.propertyEnableAnonymousNode.getElement("option[value='"+ this.data.enableAnonymous +"']").set("selected", true );
+
         this.designer.propertyRemoteAddrRegexNode.set("value", this.data.remoteAddrRegex || "");
 
         this.designer.propertyLastStartTimeNode.set("text", this.data.lastStartTime || "");
@@ -364,6 +366,13 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 }
             });
 
+            var enableAnonymous = false;
+            this.designer.propertyEnableAnonymousNode.getElements("option").each( function(option){
+                if( option.selected ){
+                    enableAnonymous =  (option.value == "true");
+                }
+            });
+
             var enableToken = true;
             this.designer.propertyEnableTokenNode.getElements("option").each( function(option){
                 if( option.selected ){
@@ -402,6 +411,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             this.data.text = this.editor.editor.getValue();
             this.data.enable = enable;
             this.data.enableToken = enableToken;
+            this.data.enableAnonymous = enableAnonymous;
             this.data.data = JSON.stringify({
                 requireBodyScript: requireBodyScript,
                 simulaToken: simulaToken
@@ -469,6 +479,13 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                     }
                 });
 
+                var enableAnonymous = true;
+                this.designer.propertyEnableAnonymousNode.getElements("option").each( function(option){
+                    if( option.selected ){
+                        enableAnonymous =  (option.value == "true");
+                    }
+                });
+
                 var requireBodyScript = "";
                 if(this.designer.propertyRequireBodyScriptArea){
                     requireBodyScript = this.designer.propertyRequireBodyScriptArea.toJson().code;
@@ -498,6 +515,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 this.data.remoteAddrRegex = remoteAddrRegex;
                 this.data.validated = validated;
                 this.data.enable = enable;
+                this.data.enableAnonymous = enableAnonymous;
 
                 this.data.data = JSON.stringify({
                     requireBodyScript: requireBodyScript,

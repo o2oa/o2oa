@@ -17,6 +17,7 @@ MWF.xApplication.service.InvokeDesigner.LP={
 	"remoteAddrRegex": "Allow access address expression",
 	"lastStartTime": "Last Start Time",
 	"lastEndTime": "Last EndTime",
+	"enableAnonymous": "Is anonymous user access allowed for the Service",
 	"true": "Yes",
 	"false": "No",
 	"enable": "Click to enable",
