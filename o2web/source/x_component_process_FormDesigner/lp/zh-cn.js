@@ -1093,7 +1093,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         collapseHtml: '折叠节点HTML',
         relativedLinkField: '可选字段：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score',
         documentListShow: '文档列表展现',
-        associatedDocumentField: '可选字段：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory',
+        associatedDocumentField: '可选字段：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory,通过属性data-o2-action="delete"标识删除节点',
         associatedDocumentScriptNote: '\n通过this.line可以获取当前条目数据',
 
         fileTemplate: '文件模板',
