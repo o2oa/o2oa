@@ -224,7 +224,6 @@ const savePasswordRuleConfig = async ()=>{
 const saveInitialPasswordConfig = async (type) => {
   initialPasswordType.value = type;
   personData.value.extension.initialPasswordType = type || initialPasswordType.value;
-  console.log( type, initialPasswordType.value );
   switch (initialPasswordType.value) {
     case 'text':
       personData.value.password = passwordText.value;
@@ -310,10 +309,8 @@ getConfigData('person').then((data)=>{
 
   if (personData.value.extension && personData.value.extension.initialPasswordType){
     initialPasswordType.value = personData.value.extension.initialPasswordType;
-    console.log(1, initialPasswordType.value);
   }else{
-    initialPasswordType.value = (data.password.startsWith('(')  && data.password.endsWith(')')) ? 'script' : 'text'
-    console.log(2, initialPasswordType.value);
+    initialPasswordType.value = (data.password.startsWith('(')  && data.password.endsWith(')')) ? 'script' : 'text';
   }
   passwordPeriod.value = data.passwordPeriod;
   getPasswordText(data);
