@@ -257,15 +257,15 @@ const getPasswordText = (data)=>{
     passwordText.value = data.extension && data.extension.password;
     fixedPasswordText.value = (data.extension && data.extension.fixedPassword) || '';
     passwordScript.value = (data.extension && data.extension.passwordScript) || '';
-    if( !fixedPasswordText.value || !passwordScript.value || !passwordText.value ){
+    if( !passwordScript.value || !passwordText.value ){
       const password = data.password;
       if (password.startsWith('(')  && password.endsWith(')')){
         if( !passwordText.value )passwordText.value = '000000';
-        if( !fixedPasswordText.value )fixedPasswordText.value = '000000';
+        // if( !fixedPasswordText.value )fixedPasswordText.value = '000000';
         if( !passwordScript.value )passwordScript.value = (password) ? password.substring(1, password.length-1) : lp._passwordConfig.initialPasswordType.mobileScript;
       }else{
         if( !passwordText.value )passwordText.value = password || '000000';
-        if( !fixedPasswordText.value )fixedPasswordText.value = password || '000000';
+        // if( !fixedPasswordText.value )fixedPasswordText.value = password || '000000';
         if( !passwordScript.value )passwordScript.value = lp._passwordConfig.initialPasswordType.mobileScript;
       }
     }
