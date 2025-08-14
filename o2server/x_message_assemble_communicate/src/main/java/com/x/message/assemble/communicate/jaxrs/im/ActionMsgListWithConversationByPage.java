@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import com.x.message.core.entity.IMConversation;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,6 +41,15 @@ public class ActionMsgListWithConversationByPage extends BaseAction {
 			}
 			if (wi.getConversationId() == null || wi.getConversationId().isEmpty()) {
 				throw new ExceptionMsgEmptyConversationId();
+			}
+			List<IMConversation> conversationList = business.imConversationFactory().listConversationWithPerson2(effectivePerson.getDistinguishedName());
+			if (conversationList == null || conversationList.isEmpty()) {
+				throw new ExceptionConversationCheckError("没有找到对应的会话信息，请检查会话ID是否正确.");
+			}
+			final String conversationId = wi.getConversationId();
+			Optional<IMConversation> conversation = conversationList.stream().filter( c -> c.getId().equals(conversationId)).findAny();
+			if (conversation.isEmpty()) {
+				throw new ExceptionConversationCheckError("没有找到对应的会话信息，请检查会话ID是否正确.");
 			}
 			IMConversationExt ext = business.imConversationFactory().getConversationExt(effectivePerson.getDistinguishedName(), wi.getConversationId());
 			Date lastDeleteTime = null;
