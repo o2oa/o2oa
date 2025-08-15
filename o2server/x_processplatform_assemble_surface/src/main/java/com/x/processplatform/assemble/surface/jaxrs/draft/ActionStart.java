@@ -1,18 +1,11 @@
 package com.x.processplatform.assemble.surface.jaxrs.draft;
 
-import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.WiAttachment;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_assemble_surface;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -20,13 +13,20 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.WiAttachment;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionCreateWi;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionStart extends BaseAction {
 
@@ -84,6 +84,21 @@ class ActionStart extends BaseAction {
 				.getData();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<Attachment> attachmentList = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, draft.getId());
+			if(ListTools.isNotEmpty(attachmentList)) {
+				emc.beginTransaction(Attachment.class);
+				for (Attachment obj : attachmentList) {
+					if (null != obj) {
+						StorageMapping mapping = ThisApplication.context().storageMappings()
+								.get(Attachment.class,
+										obj.getStorage());
+						if (null != mapping) {
+							obj.deleteContent(mapping);
+						}
+						emc.remove(obj);
+					}
+				}
+			}
 			draft = emc.find(id, Draft.class);
 			emc.beginTransaction(Draft.class);
 			emc.remove(draft, CheckRemoveType.all);
