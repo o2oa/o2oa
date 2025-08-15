@@ -1,13 +1,14 @@
 package com.x.processplatform.core.express.assemble.surface.jaxrs.work;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
-
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.WiAttachment;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionCreateWi extends GsonPropertyObject {
 
@@ -41,15 +42,22 @@ public class ActionCreateWi extends GsonPropertyObject {
 	@Schema(description = "是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查).")
 	private Boolean skipDraftCheck = false;
 
-	@FieldDescribe("转换已存在的附件标识,一般是由草稿带过来")
-	@Schema(description = "转换已存在的附件标识,一般是由草稿带过来")
-	private List<String> attachmentList = new ArrayList<>();
+	@FieldDescribe("附件列表")
+	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "WiAttachment",
+			fieldValue = "{'id':'附件id','name':'附件名称','site':'附件框分类','isSoftCopy':'是否软拷贝，默认false，true表示不拷贝真实存储附件，共用附件，仅支持流程附件','copyFrom':'附件来源(cms或processPlatform，默认为processPlatform)'}")
+	private List<WiAttachment> attachmentList = new ArrayList<>();
 
-	public List<String> getAttachmentList() {
+	@FieldDescribe("关联文档列表.")
+	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "TargetWi",
+			fieldValue = "{'type':'关联目标类型(cms或processPlatform)','bundle':'关联目标标识','site':'关联内容框标识','view':'来源视图'}")
+	private List<TargetWi> correlationTargetList;
+
+	public List<WiAttachment> getAttachmentList() {
 		return attachmentList;
 	}
 
-	public void setAttachmentList(List<String> attachmentList) {
+	public void setAttachmentList(
+			List<WiAttachment> attachmentList) {
 		this.attachmentList = attachmentList;
 	}
 
@@ -107,5 +115,14 @@ public class ActionCreateWi extends GsonPropertyObject {
 
 	public void setSkipDraftCheck(Boolean skipDraftCheck) {
 		this.skipDraftCheck = skipDraftCheck;
+	}
+
+	public List<TargetWi> getCorrelationTargetList() {
+		return correlationTargetList;
+	}
+
+	public void setCorrelationTargetList(
+			List<TargetWi> correlationTargetList) {
+		this.correlationTargetList = correlationTargetList;
 	}
 }
