@@ -560,7 +560,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     checkEditActionBox: function(){
         var isShowEdit = false;
-        ["isUpload", "isDelete", "isReplace", "isPreviewAtt", "isEditAtt"].each(function( key ){
+        ["isUpload", "isFromPan", "isDelete", "isReplace", "isPreviewAtt", "isEditAtt"].each(function( key ){
             if( key === "isReplace" && this.options.isReplaceHidden )return;
             if( key === "isPreviewAtt" && layout.mobile )return;
             if( this.options[key] !== "hidden" )isShowEdit = true;
@@ -594,7 +594,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if( this.min_closeOfficeAction ){
             isShowLeft = true;
         }else {
-            ["isUpload", "isDelete", "isReplace", "isDownload", "isDownloadBatch", "isOrder"].each(function (key) {
+            ["isUpload", "isFromPan", "isDelete", "isReplace", "isDownload", "isDownloadBatch", "isOrder"].each(function (key) {
                 if (key === "isReplace" && this.options.isReplaceHidden) return;
                 if (this.options[key] !== "hidden") isShowLeft = true;
             }.bind(this));
@@ -1696,6 +1696,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
             "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isFromPan": this.getFlagDefaultFalse("isFromPan"),
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
@@ -1964,6 +1965,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         } else {
             this.createUploadFileNode(files);
         }
+    },
+    copyFromPan: function () {
+
     },
     deleteAttachments: function (e, node, attachments) {
         var names = [];
@@ -3093,6 +3097,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
             "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isFromPan": this.getFlagDefaultFalse("isFromPan"),
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),

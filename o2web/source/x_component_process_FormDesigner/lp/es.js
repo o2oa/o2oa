@@ -709,6 +709,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"attDefaultStyle": "Estilo de adjuntos por defecto",
 		"readonlyMode": "Modo de solo lectura",
 		"allowUpload": "Permitir cargar",
+		"allowFromPan": "Permitir selección desde disco de red",
 		"allowPreview": "Permitir previsualización",
 		"allowDownload": "Permitir descarga",
 		"allowDownloadBatch": "Permitir descargas por lotes",

@@ -818,6 +818,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         attDefaultStyle: '默认附件样式',
         readonlyMode: '只读模式',
         allowUpload: '允许上载',
+        allowFromPan: '允许从网盘选择',
         allowPreview: '允许预览',
         allowDownload: '允许下载',
         allowDownloadBatch: '允许批量下载',

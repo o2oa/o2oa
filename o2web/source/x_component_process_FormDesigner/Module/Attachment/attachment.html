@@ -149,6 +149,14 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.allowFromPan}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isFromPan" text{($.isFromPan=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isFromPan" text{($.isFromPan=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isFromPan" text{($.isFromPan!=='y' && $.isFromPan!=='n')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.allowPreview}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
