@@ -62,7 +62,7 @@ class ActionUpdateWithJob extends BaseAction {
 		private static final long serialVersionUID = 8167538341492974963L;
 
 		@FieldDescribe("关联文档列表，替换文档指定site的关联文档数据，为空则不操作.")
-		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "SiteTargetWi", fieldValue = "{'site':'关联内容框标识','targetList':{'type':'关联目标类型(cms或processPlatform)','bundle':'关联目标标识','view':'来源视图'}}")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "SiteTargetWi", fieldValue = "{'site':'关联内容框标识','targetList':[{'type':'关联目标类型(cms或processPlatform)','bundle':'关联目标标识','view':'来源视图'}]}")
 		private List<SiteTargetWi> siteTargetList;
 
 		public List<SiteTargetWi> getSiteTargetList() {

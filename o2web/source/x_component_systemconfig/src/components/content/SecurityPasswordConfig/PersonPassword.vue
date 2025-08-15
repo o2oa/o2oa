@@ -4,7 +4,20 @@
       <div class="item_title">{{lp._passwordConfig.newPersonPassword}}</div>
       <div class="item_info">{{lp._passwordConfig.newPersonPasswordInfo}}</div>
 
-      <BaseSelect :label="lp._passwordConfig.initialPassword" :label-style="{width: '100px'}" @change="changePasswordType" v-model:value="initialPasswordType" :options="lp._passwordConfig.initialPasswordTypeOptions"></BaseSelect>
+      <BaseSelect :label="lp._passwordConfig.initialPassword" :label-style="{width: '100px'}" :selectStyle="{width: '230px'}" @change="changePasswordType"
+                  v-model:value="initialPasswordType" :options="lp._passwordConfig.initialPasswordTypeOptions"
+      ></BaseSelect>
+
+      <div ref="fixedPasswordNode" class="item_hide">
+<!--        <div class="item_info">{{lp._passwordConfig.fixedPassword}}</div>-->
+        <form>
+          <BaseInput :label="lp._passwordConfig.fixedPasswordText" :label-style="{width: '100px'}" input-type="password" :show-password="true" v-model:value="fixedPasswordText"></BaseInput>
+          <div class="item_info" style="padding-left: 20px">
+            <button class="mainColor_bg" style="width: 100px" @click="saveInitialPassword($event)">{{lp.operation.ok}}</button>
+          </div>
+        </form>
+
+      </div>
 
       <div ref="passwordNode" class="item_hide">
         <div class="item_info">{{lp._passwordConfig.initialPasswordType.textInfo}}</div>
@@ -119,10 +132,12 @@ const scriptNode = ref();
 const passwordNode = ref();
 const scriptEditor = ref();
 const passwordLengthNode = ref();
+const fixedPasswordNode = ref();
 
 const personData = ref();
 const passwordScript = ref('');
 const passwordText = ref('');
+const fixedPasswordText = ref('');
 const passwordPeriod = ref(0);
 const passwordLength = ref([8,30]);
 const passwordRuleValues = ref({
@@ -147,10 +162,12 @@ const recordPasswordLength = (e)=>{
 const checkInputNode = (type)=>{
   scriptNode.value.hide();
   passwordNode.value.hide();
+  fixedPasswordNode.value.hide();
 
   const t = type || initialPasswordType.value;
   if (t==='script') scriptNode.value.show();
   if (t==='text') passwordNode.value.show();
+  if(['mobile','employee','unique'].includes(t))fixedPasswordNode.value.show();
 }
 const changePasswordType = (type)=>{
   checkInputNode(type);
@@ -205,44 +222,65 @@ const savePasswordRuleConfig = async ()=>{
 }
 
 const saveInitialPasswordConfig = async (type) => {
-  debugger;
   initialPasswordType.value = type;
   personData.value.extension.initialPasswordType = type || initialPasswordType.value;
   switch (initialPasswordType.value) {
     case 'text':
       personData.value.password = passwordText.value;
-      personData.value.extension.password = '';
+      personData.value.extension.password = passwordText.value;
       break;
     case 'script':
       const code = await transformCode(passwordScript.value);
       personData.value.password = `(${code}; return this.$pwd(); )`;
-      personData.value.extension.password = passwordScript.value
+      personData.value.extension.passwordScript = passwordScript.value;
       break;
     default:
-      personData.value.password = '(' + lp._passwordConfig.initialPasswordType[initialPasswordType.value + 'Script'] + ')';
-      personData.value.extension.password = lp._passwordConfig.initialPasswordType[initialPasswordType.value + 'Script'];
+      personData.value.password = '(' + lp._passwordConfig.initialPasswordType[initialPasswordType.value + 'Script'].replace('{fixedPassword}', fixedPasswordText.value) + ')';
+      personData.value.extension.fixedPassword = fixedPasswordText.value;
+      // personData.value.extension.password = lp._passwordConfig.initialPasswordType[initialPasswordType.value + 'Script'].replace('{fixedPassword}', fixedPasswordText.value);
   }
+  personData.value.extension.version = 'v10';
   getPasswordText(personData.value);
 
   await saveConfigData('person', personData.value);
 }
 const saveInitialPassword = async (e, type) => {
+  if( !type )type = initialPasswordType.value;
   saveInitialPasswordConfig(type)
   component.notice(lp._passwordConfig.saveSuccess, "success");
   if (e) e.preventDefault();
 }
 
 const getPasswordText = (data)=>{
-  if (data.extension && data.extension.password){
-    passwordScript.value = data.extension.password;
+  debugger;
+  if( data.extension.version === 'v10' ){
+    passwordText.value = data.extension && data.extension.password;
+    fixedPasswordText.value = (data.extension && data.extension.fixedPassword) || '';
+    passwordScript.value = (data.extension && data.extension.passwordScript) || '';
+    if( !passwordScript.value || !passwordText.value ){
+      const password = data.password;
+      if (password.startsWith('(')  && password.endsWith(')')){
+        if( !passwordText.value )passwordText.value = '000000';
+        // if( !fixedPasswordText.value )fixedPasswordText.value = '000000';
+        if( !passwordScript.value )passwordScript.value = (password) ? password.substring(1, password.length-1) : lp._passwordConfig.initialPasswordType.mobileScript;
+      }else{
+        if( !passwordText.value )passwordText.value = password || '000000';
+        // if( !fixedPasswordText.value )fixedPasswordText.value = password || '000000';
+        if( !passwordScript.value )passwordScript.value = lp._passwordConfig.initialPasswordType.mobileScript;
+      }
+    }
   }else{
-    const password = data.password;
-    if (password.startsWith('(')  && password.endsWith(')')){
-      passwordScript.value = (password) ? password.substring(1, password.length-1) : lp._passwordConfig.initialPasswordType.mobileScript;
-      passwordText.value = '000000';
+    if (data.extension && data.extension.password){
+      passwordScript.value = data.extension.password;
     }else{
-      passwordText.value = password || '000000';
-      passwordScript.value = lp._passwordConfig.initialPasswordType.mobileScript;
+      const password = data.password;
+      if (password.startsWith('(')  && password.endsWith(')')){
+        passwordScript.value = (password) ? password.substring(1, password.length-1) : lp._passwordConfig.initialPasswordType.mobileScript;
+        passwordText.value = '000000';
+      }else{
+        passwordText.value = password || '000000';
+        passwordScript.value = lp._passwordConfig.initialPasswordType.mobileScript;
+      }
     }
   }
 }
@@ -272,7 +310,7 @@ getConfigData('person').then((data)=>{
   if (personData.value.extension && personData.value.extension.initialPasswordType){
     initialPasswordType.value = personData.value.extension.initialPasswordType;
   }else{
-    initialPasswordType.value = (data.password.startsWith('(')  && data.password.endsWith(')')) ? 'script' : 'text'
+    initialPasswordType.value = (data.password.startsWith('(')  && data.password.endsWith(')')) ? 'script' : 'text';
   }
   passwordPeriod.value = data.passwordPeriod;
   getPasswordText(data);

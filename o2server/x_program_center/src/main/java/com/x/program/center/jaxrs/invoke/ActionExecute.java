@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.invoke;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -36,6 +37,10 @@ class ActionExecute extends BaseAction {
 
 		if (BooleanUtils.isTrue(invoke.getEnableToken()) && effectivePerson.isAnonymous()) {
 			throw new ExceptionEnableToken(invoke.getName());
+		}
+
+		if(BooleanUtils.isFalse(invoke.getEnableAnonymous()) && effectivePerson.isAnonymous()){
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
 		if(effectivePerson.isNotManager()){

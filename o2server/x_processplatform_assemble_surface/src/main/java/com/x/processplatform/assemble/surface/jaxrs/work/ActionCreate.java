@@ -1,28 +1,35 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_correlation_service_processing;
+import com.x.base.core.project.x_processplatform_assemble_surface;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWi;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWo;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.WiAttachment;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionCreateWi;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseCreateAction {
 
@@ -69,29 +76,8 @@ class ActionCreate extends BaseCreateAction {
 		}
 		if (StringUtils.isEmpty(workId)) {
 			workId = this.createWork(process.getId(), wi.getData());
-			// 转换传递过来的附件,一般是在草稿情况下
-			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Work work = emc.find(workId, Work.class);
-					List<Attachment> attachments = emc.list(Attachment.class, wi.getAttachmentList());
-					if (ListTools.isNotEmpty(attachments)) {
-						emc.beginTransaction(Attachment.class);
-						for (Attachment attachment : attachments) {
-							attachment.setWorkCreateTime(work.getCreateTime());
-							attachment.setApplication(work.getApplication());
-							attachment.setProcess(work.getProcess());
-							attachment.setJob(work.getJob());
-							attachment.setWork(work.getId());
-							attachment.setActivity(work.getActivity());
-							attachment.setActivityName(work.getActivityName());
-							attachment.setActivityToken(work.getActivityToken());
-							attachment.setActivityType(work.getActivityType());
-							emc.check(attachment, CheckPersistType.all);
-						}
-						emc.commit();
-					}
-				}
-			}
+			this.createCorrelation(workId, wi.getCorrelationTargetList(), effectivePerson);
+			this.copyAttachment(workId, wi.getAttachmentList(), effectivePerson);
 		}
 
 		// 设置Work信息
@@ -109,6 +95,36 @@ class ActionCreate extends BaseCreateAction {
 		List<Wo> wos = assemble(effectivePerson, workId);
 		result.setData(wos);
 		return result;
+	}
+
+	private void copyAttachment(String workId, List<WiAttachment> attachmentList, EffectivePerson effectivePerson) throws Exception {
+		if(ListTools.isEmpty(attachmentList)){
+			return;
+		}
+		List<NameValuePair> headers = ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
+		String url = ThisApplication.context().applications().randomWithWeight(
+				x_processplatform_assemble_surface.class.getName()).getUrlJaxrsRoot();
+		url = url + Applications.joinQueryUri("attachment", "copy", "work", workId);
+		Map<String, Object> req = Map.of("attachmentList", attachmentList);
+		ConnectionAction.post(url, headers, req).getDataAsList(WoId.class);
+	}
+
+	private void createCorrelation(String workId, List<TargetWi> correlationTargetList, EffectivePerson effectivePerson) throws Exception {
+		if (ListTools.isEmpty(correlationTargetList)) {
+			return;
+		}
+		ActionCreateTypeProcessPlatformWi req = new ActionCreateTypeProcessPlatformWi();
+		req.setPerson(effectivePerson.getDistinguishedName());
+		String job = "";
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Work work = emc.find(workId, Work.class);
+			job = work.getJob();
+		}
+		req.setTargetList(correlationTargetList);
+		ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
+						Applications.joinQueryUri("correlation", "type", "processplatform", "job", job), req, job).getData(
+						ActionCreateTypeProcessPlatformWo.class);
 	}
 
 	@Schema(description = "com.x.processplatform.assemble.surface.jaxrs.work.ActionCreate$Wi")

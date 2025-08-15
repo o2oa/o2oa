@@ -1,16 +1,11 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -20,13 +15,15 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.WiAttachment;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCopyToWorkCompleted extends BaseAction {
 
@@ -42,7 +39,6 @@ class ActionCopyToWorkCompleted extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		WorkCompleted workCompleted = null;
-		Req req = new Req();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -55,31 +51,23 @@ class ActionCopyToWorkCompleted extends BaseAction {
 					workCompleted.getApplication(), workCompleted.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
-				for (WiAttachment w : wi.getAttachmentList()) {
-					Attachment o = emc.find(w.getId(), Attachment.class);
-					if (null == o) {
-						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
-					}
-					if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, o.getJob())
-							.enableAllowVisit().build().getAllowVisit())) {
-						throw new ExceptionAccessDenied(effectivePerson, o.getJob());
-					}
-					ReqAttachment q = new ReqAttachment();
-					q.setId(o.getId());
-					q.setName(w.getName());
-					q.setSite(w.getSite());
-					q.setSoftCopy(false);
-					req.getAttachmentList().add(q);
-				}
-			}
 		}
 
-		if (ListTools.isNotEmpty(req.getAttachmentList())) {
+		if (ListTools.isNotEmpty(wi.getAttachmentList())) {
+			for (WiAttachment w : wi.getAttachmentList()) {
+				OnlineInfo onlineInfo = this.getOnlineInfo(effectivePerson, w.getCopyFrom(), w.getId());
+				if(BooleanUtils.isNotTrue(onlineInfo.getCanRead())){
+					throw new ExceptionAccessDenied(effectivePerson, w.getId());
+				}
+				if(StringUtils.isNotBlank(w.getName())){
+					this.verifyConstraint(0, w.getName(), null);
+				}else{
+					w.setName(onlineInfo.getName());
+				}
+			}
 			wos = ThisApplication.context().applications()
 					.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							Applications.joinQueryUri("attachment", "copy", "workcompleted", workCompleted.getId()),
-							req, workCompleted.getJob())
+							Applications.joinQueryUri("attachment", "copy", "workcompleted", workCompleted.getId()), wi, workCompleted.getJob())
 					.getDataAsList(Wo.class);
 		}
 
@@ -87,28 +75,13 @@ class ActionCopyToWorkCompleted extends BaseAction {
 		return result;
 	}
 
-	public static class Req extends GsonPropertyObject {
-
-		private static final long serialVersionUID = -3546487034950391385L;
-
-		List<ReqAttachment> attachmentList = new ArrayList<>();
-
-		public List<ReqAttachment> getAttachmentList() {
-			return attachmentList;
-		}
-
-		public void setAttachmentList(List<ReqAttachment> attachmentList) {
-			this.attachmentList = attachmentList;
-		}
-
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$Wi")
 	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -455300115594765428L;
 
-		@FieldDescribe("附件对象")
+		@FieldDescribe("附件对象列表.")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "WiAttachment",
+				fieldValue = "{'id':'附件id','name':'附件名称','site':'附件框分类','copyFrom':'附件来源(cms|内容管理附件、processPlatform|流程平台附件、x_pan_assemble_control|企业网盘附件，默认为processPlatform)'}")
 		private List<WiAttachment> attachmentList = new ArrayList<>();
 
 		public List<WiAttachment> getAttachmentList() {
@@ -121,42 +94,6 @@ class ActionCopyToWorkCompleted extends BaseAction {
 
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$WiAttachment")
-	public static class WiAttachment extends GsonPropertyObject {
-
-		private static final long serialVersionUID = -308348301935328134L;
-
-		private String id;
-		private String name;
-		private String site;
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getSite() {
-			return site;
-		}
-
-		public void setSite(String site) {
-			this.site = site;
-		}
-
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = 6235554869680662821L;

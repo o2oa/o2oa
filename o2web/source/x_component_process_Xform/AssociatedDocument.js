@@ -616,16 +616,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }else{
             itemNode.addEvents({
                 "mouseover": function () {
-                    if(deleteNode)deleteNode.show();
+                    if(deleteNode && !this.isReadonly())deleteNode.show();
                     itemNode.setStyles( this.form.css.associatedDocumentItem_over )
                 }.bind(this),
                 "mouseout": function () {
-                    if(deleteNode)deleteNode.hide();
+                    if(deleteNode && !this.isReadonly())deleteNode.hide();
                     itemNode.setStyles( this.form.css.associatedDocumentItem )
                 }.bind(this),
                 "click": function (e) {
                     this.openDoc(e, d);
-                }.bind(this),
+                }.bind(this)
             });
         }
         if( deleteNode ){

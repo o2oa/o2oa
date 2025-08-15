@@ -1,5 +1,6 @@
 package com.x.base.core.project.config;
 
+import com.x.base.core.project.gson.GsonPropertyObject;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,14 +38,14 @@ public class Person extends ConfigObject {
 
 	public static final String REGULAREXPRESSION_SCRIPT = "^\\((.+?)\\)$";
 
-	public static final String DEFAULT_PASSWORD = "(this.$pwd=function(){function n(n,r){for(var t=\"\",o=0;o<n;o++){t+=r[Math.floor(Math.random()*r.length)]}return t}return n(8,\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\")+n(4,\"(#?!@$%^&*-)\")};; return this.$pwd(); )";
+	public static final String DEFAULT_PASSWORD = "(return person.getMobile().slice(-6) + \"%o2\";)";
 	public static final Integer DEFAULT_PASSWORDPERIOD = 0;
 	public static final Integer DEFAULT_FAILUREINTERVAL = 10;
 	public static final Integer DEFAULT_FAILURECOUNT = 5;
 	public static final Integer DEFAULT_TOKENEXPIREDMINUTES = 60 * 24 * 15;
 	public static final Boolean DEFAULT_TOKENCOOKIEHTTPONLY = true;
 	public static final Boolean DEFAULT_TOKENCOOKIESECURE = false;
-	public static final Boolean DEFAULT_FIRSTLOGINMODIFYPWD = false;
+	public static final Boolean DEFAULT_FIRSTLOGINMODIFYPWD = true;
 
 	public static final String DEFAULT_PASSWORDREGEX = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "8位以上,包含数字、字母和特殊字符.";
@@ -105,7 +106,7 @@ public class Person extends ConfigObject {
 	@FieldDescribe("是否启用双因素认证登录,默认值:false.")
 	private Boolean twoFactorLogin;
 
-	@FieldDescribe("是否启用首次登陆修改密码,默认值:false")
+	@FieldDescribe("是否启用首次登陆修改密码,默认值:true")
 	private Boolean firstLoginModifyPwd;
 
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)

@@ -573,6 +573,9 @@ MWF.ProcessFlow.Reset = new Class({
             defaultOpt = Object.merge(Object.clone(this.form.json.selectorStyle), defaultOpt);
             if (this.form.json.selectorStyle.style) defaultOpt.style = this.form.json.selectorStyle.style;
         }
+        if( this.form.json.flowStyle ){
+            defaultOpt.style = this.form.json.flowStyle+"_flow";
+        }
         return defaultOpt;
     },
     getSelOrgData: function () {
@@ -1771,6 +1774,9 @@ MWF.ProcessFlow.Processor.Org = new Class({
         if (this.form.json.selectorStyle) {
             defaultOpt = Object.merge(Object.clone(this.form.json.selectorStyle), defaultOpt);
             if (this.form.json.selectorStyle.style) defaultOpt.style = this.form.json.selectorStyle.style;
+        }
+        if( this.form.json.flowStyle ){
+            defaultOpt.style = this.form.json.flowStyle+"_flow";
         }
 
         var events = this.getOptionEvents();

@@ -17,6 +17,7 @@ MWF.xApplication.service.InvokeDesigner.LP={
 	"remoteAddrRegex": "Expresión para direcciones permitidas",
 	"lastStartTime": "Última hora de inicio",
 	"lastEndTime": "Última hora de finalización",
+	"enableAnonymous": "¿Se permite el acceso anónimo a la API?",
 	"true": "Sí",
 	"false": "No",
 	"enable": "Habilitar haciendo clic aquí",

@@ -15,6 +15,7 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "remoteAddrRegex" : "允许访问的地址表达式",
     "lastStartTime" : "最近开始时间",
     "lastEndTime" : "最近结束时间",
+    "enableAnonymous": "是否允许匿名用户访问接口",
     "true" : "是",
     "false" : "否",
     "enable" : "点击启用",

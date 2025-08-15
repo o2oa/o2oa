@@ -396,7 +396,7 @@ public class Attachment extends StorageObject {
 
 	public static final String site_FIELDNAME = "site";
 	@FieldDescribe("附件框分类.")
-	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + site_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + site_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String site;
 
