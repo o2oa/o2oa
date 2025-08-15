@@ -459,7 +459,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
-                debugger;
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
                     this.data = JSON.parse(data);
@@ -739,7 +738,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this._loadMobileActions(node, callback);
             } else {
                 if (callback) callback();
-                //console.log("没有找到移动端底部操作栏！")
             }
         } else {
             if (callback) callback();
@@ -755,7 +753,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         if (!this.isAllSubformLoaded) return;
         if (this.isLoaded)return;
-        //console.log( "checkSubformLoaded this.subformCount="+ this.subformCount + " this.subformLoadedCount="+this.subformLoadedCount );
         if ((!this.subformCount || this.subformCount === this.subformLoadedCount) &&
             (!this.subpageCount || this.subpageCount === this.subpageLoadedCount) &&
             (!this.widgetCount || this.widgetCount === this.widgetLoadedCount)
@@ -1371,9 +1368,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             jsons.push( json );
 
             var module = this._loadModule(json, node, beforeLoadModule, replace);
-            if (!module){
-                debugger;
-            }
+
             this.modules.push(module);
             modules.push( module );
         }.bind(this));
@@ -1381,11 +1376,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     _loadModule: function (json, node, beforeLoad, replace) {
         if( !json )return null;
-        //console.log( json.id );
         if (json.type === "Subform" || json.moduleName === "subform") this.subformCount++;
-        //if( json.type === "Subform" || json.moduleName === "subform" ){
-        //    console.log( "add subformcount ， this.subformCount = " + this.subformCount );
-        //}
+
         if (json.type === "Subpage" || json.moduleName === "subpage") this.subpageCount++;
         if (json.type === "Widget" || json.moduleName === "widget") this.widgetCount++;
         if (!MWF["APP" + json.type]) {
@@ -1442,7 +1434,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
      * @return {Object}
      */
     getData: function (issubmit) {
-        debugger;
         //var data = Object.clone(this.businessData.data);
         var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {
@@ -2378,8 +2369,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
 
+    _postWindowMessage: function(type){
+        var o = window.opener ?? layout;
+        o.postMessage({
+            type, id: this.app.work.id
+        }, window.location.origin);
+    },
 
     finishOnFlow: function(type, data, notCloseWindow){
+        this._postWindowMessage('onAfterProcess');
+
         if (this.closeImmediatelyOnProcess && !notCloseWindow) {
             this.app.close();
         } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
@@ -2389,10 +2388,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.finishOnMobile();
         } else {
             if (this.app.inBrowser) {
-                if (this.app.options.onAfterProcess){
-                    window.postMessage(this.app.work.id, window.location);
-                }
-
                 if (this.mask) this.mask.hide();
                 if (this.json.isPrompt !== false) {
                     switch (type) {
@@ -5038,7 +5033,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             // if (window.confirm(MWF.xApplication.process.Xform.LP.retractText)) {
 
             var p = MWF.getCenterPosition(document.body, 300, 150);
-            console.log("position x:" + p.x + " , y:" + p.y);
+
             var x = p.x;
             if (p.x < 20) {
                 x = 20;
@@ -5126,6 +5121,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+
+                        _self._postWindowMessage('onAfterRetract');
+
                         _self.app.reload();
                         //}, null, _self.businessData.work.id);
                         this.close();
@@ -5397,7 +5395,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     addRerouteMessage: function (data) {
-
+        this._postWindowMessage('onAfterReroute');
         if (layout.desktop.message) {
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.workReroute,
@@ -5416,7 +5414,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var _self = this;
         if (this.json.mode === "Mobile") {
             var p = MWF.getCenterPosition(document.body, 300, 150);
-            console.log("position x:" + p.x + " , y:" + p.y);
+
             var x = p.x;
             if (p.x < 20) {
                 x = 20;

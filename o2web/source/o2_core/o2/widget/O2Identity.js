@@ -258,8 +258,6 @@ o2.widget.O2Identity = new Class({
 //     }
 // });
 
-console.log('load o2.widget.O2Identity ..............');
-
 o2.widget.O2Person = new Class({
     Extends: o2.widget.O2Identity,
     options: {

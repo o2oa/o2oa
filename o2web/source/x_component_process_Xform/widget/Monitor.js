@@ -243,36 +243,6 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         var scrollBottom = scrollSize.y + scrollTop;
         var scrollRight = scrollSize.x + scrollLeft;
 
-        // console.log(JSON.stringify({
-        //     rectTop: rectTop,
-        //     rectLeft: rectLeft,
-        //     rectRight: rectRight,
-        //     rectBottom: rectBottom,
-        //     rectHeight: rectHeight,
-        //     rectWidth: rectWidth,
-        //     scrollTop: scrollTop,
-        //     scrollLeft:scrollLeft,
-        //     scrollBottom: scrollBottom,
-        //     scrollRight:scrollRight,
-        //     scrollSizeX: scrollSize.x,
-        //     scrollSizeY: scrollSize.y
-        // }, null, 2));
-
-        if( layout.mobile ){
-            // rectTop = rectTop / this.mobileScale;
-            // rectLeft = rectLeft / this.mobileScale;
-            // rectHeight = rectHeight / this.mobileScale;
-            // rectWidth = rectWidth / this.mobileScale;
-            // rectBottom = (rectTop + rectHeight) / this.mobileScale;
-            // rectRight = (rectLeft + rectWidth) / this.mobileScale;
-            // scrollTop = scrollTop / this.mobileScale;
-            // scrollLeft = scrollLeft / this.mobileScale;
-            // scrollBottom = scrollBottom / this.mobileScale;
-            // scrollRight = scrollRight / this.mobileScale;
-            // scrollSize.x = scrollSize.x * this.mobileScale;
-            // scrollSize.y = scrollSize.y * this.mobileScale;
-        }
-
         // 检查是否需要垂直滚动
         if (rectTop < scrollTop) {
             // 矩形顶部在视口上方，需要向上滚动

@@ -1944,6 +1944,10 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             this.target.event_resolve = null;
         };
 
+        this.invoke = function(name, data){
+            return this.Actions.load('x_program_center').InvokeAction.execute(name, data);
+        }
+        
         //仅前台对象-----------------------------------------
         //form
         /**
@@ -2180,10 +2184,6 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 op.workCompletedId = completedId;
                 op.docTitle = title;
                 op.appId = "process.Work" + (op.workId || op.workCompletedId);
-                if (op.onAffterProcess){
-                    op.handleSubWindow = p.onAffterProcess;
-                }
-
                 return layout.desktop.openApplication(this.event, "process.Work", op);
             },
             /**使用流程的jobId打开工作

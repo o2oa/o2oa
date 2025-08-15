@@ -70,9 +70,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
             data[thisId+"$text"] = text;
             this._checkEvdata(evdata, thisId, v);
             this._checkEvdata(evdata, thisId+"$text", text);
-
-            //console.log(thisId)
-            //this.form.businessData.data[this.json.id] = v;
         }else{
 
             var idList = thisId.split("..");

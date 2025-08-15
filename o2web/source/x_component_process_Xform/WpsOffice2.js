@@ -284,16 +284,16 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
         }.bind(this));
 
         this.wpsOffice.on('fullscreenChange', function(result) {
-            console.log(JSON.stringify(result))
+            // console.log(JSON.stringify(result))
         });
         this.wpsOffice.on('previewLimit', function(result) {
-            console.log(JSON.stringify(result))
+            // console.log(JSON.stringify(result))
         });
         this.wpsOffice.on('tabSwitch', function(result) {
-            console.log(JSON.stringify(result))
+            // console.log(JSON.stringify(result))
         });
         this.wpsOffice.on('error', function(result) {
-            console.log(JSON.stringify(result))
+            // console.log(JSON.stringify(result))
         });
         //是否显示评论
         if(this.json.isShowComment){
@@ -334,7 +334,6 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
     save: function(callback){
         var promise =  this.wpsOffice.save();
         promise.then(function(){
-            console.log("save success");
             if(callback) callback();
         });
     },

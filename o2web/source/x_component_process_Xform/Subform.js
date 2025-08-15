@@ -304,7 +304,6 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
             }
             this.form.checkSubformLoaded();
         }
-        //console.log( "add subformLoadedCount , this.form.subformLoadedCount = "+ this.form.subformLoadedCount)
 
         /**
          * @summary 表单是否加载（激活）过。

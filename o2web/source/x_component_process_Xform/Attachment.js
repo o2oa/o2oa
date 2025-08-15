@@ -1743,7 +1743,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.fireEvent("postLoadController");
 
         if (this.isReadable){
-            debugger;
             this.form.businessData.attachmentList.each(function (att) {
                 //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
                 if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
@@ -1929,7 +1928,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         return false;
                     }
                 }
-debugger;
                 if (!this.form.businessData.work.startTime){
                     this.form.saveFormDataDraftSync();
                     parameter.id = this.form.app.options.draftId
@@ -1951,7 +1949,6 @@ debugger;
         );
     },
     uploadAttachment: function (e, node, files) {
-        debugger;
         if (window.o2android && window.o2android.postMessage) {
             var body = {
                 type: "uploadAttachment",
@@ -1965,21 +1962,7 @@ debugger;
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachment) {
             window.webkit.messageHandlers.uploadAttachment.postMessage({ "site": (this.json.site || this.json.id) });
         } else {
-            debugger;
-            // if (!this.form.businessData.work.startTime){
-            //     this.form.saveFormDataDraft(()=>{
-            //         console.log(this.form.businessData.work.id);
-            //         this.createUploadFileNode(files);
-            //     }, null, null, null, null, true);
-
-            // }else{
-                this.createUploadFileNode(files);
-            // }
-
-            // if (!this.uploadFileAreaNode){
-            // this.createUploadFileNode(files);
-            // }
-            // this.fileUploadNode.click();
+            this.createUploadFileNode(files);
         }
     },
     deleteAttachments: function (e, node, attachments) {
@@ -1987,35 +1970,6 @@ debugger;
         attachments.each(function (attachment) {
             names.push(attachment.data.name);
         }.bind(this));
-
-        // if ((window.o2 && window.o2.replaceAttachment) || (window.webkit && window.webkit.messageHandlers)){
-        //     if (window.confirm(MWF.xApplication.process.Xform.LP.deleteAttachment+"( "+names.join(", ")+" )")){
-        //         while (attachments.length){
-        //             attachment = attachments.shift();
-        //             this.deleteAttachment(attachment);
-        //         }
-        //     }
-        // }else {
-        // var tmpNode = new Element("div", {
-        //     "styles": {
-        //         "background-color": "#0000ff",
-        //         "border-style": "solid",
-        //         "border-color": "#fff",
-        //         "border-width": "1",
-        //         "box-shadow": "0px 0px 20px #999",
-        //         "z-index": "20000",
-        //         "overflow": "hidden",
-        //         "font-size": "14px",
-        //         "height": "160px",
-        //         "padding": "0px",
-        //         "width": "300px",
-        //         "position": "absolute",
-        //         "top": "50px",
-        //         "left": "20px",
-        //         "opacity": 1,
-        //         "border-radius": "5px"
-        //     }
-        // }).inject(this.form.app.content);
 
         var _self = this;
         this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.deleteAttachmentTitle, MWF.xApplication.process.Xform.LP.deleteAttachment + "( " + o2.txt(names.join(", ")) + " )", 300, 120, function () {
@@ -2375,7 +2329,7 @@ debugger;
         }
 
         var client = this.getDownloadAttachmentClientType();
-        console.log(client+" 客户端");
+
         attachments.each(function (att) {
             if( !this.queryDownload( att ) )return;
 
@@ -2461,7 +2415,6 @@ debugger;
         }
 
         var client = this.getDownloadAttachmentClientType();
-        console.log(client+" 客户端");
 
         attachments.each(function (att) {
             if( !this.queryOpen( att ) )return;

@@ -210,17 +210,13 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
 
             var WOPISrc = this.WOPISrc +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
 
-            console.log(WOPISrc);
-
             WOPISrc = WOPISrc + "&appToken=" + this.appToken;
 
             this.action.ConfigAction.getOfficeOnlineUrl().then(function (json){
-                console.log(json)
+  
                 this.officeOnlineUrl = json.data.value;
 
                 this.fileUrl = this.officeOnlineUrl + this.officeAPI[extension][this.mode] + "&WOPISrc=" + encodeURIComponent(WOPISrc);
-                console.log(WOPISrc);
-                console.log(this.fileUrl );
                 if (callback) callback();
             }.bind(this));
 

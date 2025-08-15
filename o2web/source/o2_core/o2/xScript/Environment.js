@@ -3050,6 +3050,20 @@ MWF.xScript.Environment = function(ev){
     }
 
 
+    /**
+     * 调用服务接口。
+     * @module exec()
+     * @o2category server.common
+     * @o2ordernumber 151
+     * @o2cn 方法定义
+     * @param name {String} 要调用的服务名称
+     * @param data {Object} 调用的服务的请求数据
+     * @returns {promise} 调用结果
+     */
+    this.invoke = function(name, data){
+        return this.Actions.load('x_program_center').InvokeAction.execute(name, data);
+    }
+
     //仅前台对象-----------------------------------------
     //form
 

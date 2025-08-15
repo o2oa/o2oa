@@ -423,7 +423,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                     config.url = this.wpsUrl+ "&_w_tokentype=1";
 
                 }.bind(this),null,false);
-                // console.log(this.wpsUrl)
+    
                 this.wpsOffice = OpenSDK.config(config);
                 this.wpsOffice.setToken({
                     token: layout.session.token,
@@ -438,7 +438,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                     config.url = this.wpsUrl;
 
                 }.bind(this),null,false);
-                // console.log(this.wpsUrl)
+    
                 this.wpsOffice = WebOfficeSDK.config(config);
                 this.wpsOffice.setToken({
                     token: layout.session.token,
@@ -457,16 +457,16 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             }.bind(this));
 
             this.wpsOffice.on('fullscreenChange', function(result) {
-                console.log(JSON.stringify(result))
+                // console.log(JSON.stringify(result))
             });
             this.wpsOffice.on('previewLimit', function(result) {
-                console.log(JSON.stringify(result))
+                // console.log(JSON.stringify(result))
             });
             this.wpsOffice.on('tabSwitch', function(result) {
-                console.log(JSON.stringify(result))
+                // console.log(JSON.stringify(result))
             });
             this.wpsOffice.on('error', function(result) {
-                console.log(JSON.stringify(result))
+                // console.log(JSON.stringify(result))
             });
             //是否显示评论
             if(this.json.isShowComment){
@@ -522,7 +522,6 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
         save: function(callback){
             var promise =  this.wpsOffice.save();
             promise.then(function(){
-                console.log("save success");
                 if(callback) callback();
             });
         },
@@ -550,8 +549,6 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             await this.wpsOffice.ready();
             const app = this.wpsOffice.Application;
             const totalPages = await app.ActiveDocument.Range.Information(app.Enum.WdInformation.wdNumberOfPagesInDocument);
-
-            console.log(totalPages)
             return totalPages;
         },
         /**
@@ -566,7 +563,6 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             const currentPage = await app.ActiveDocument.ActiveWindow.Selection.Information(
                 app.Enum.WdInformation.wdActiveEndPageNumber
             )
-            console.log(currentPage)
             return currentPage;
         },
         /**

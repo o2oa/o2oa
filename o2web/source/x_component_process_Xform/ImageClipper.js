@@ -41,7 +41,6 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         this.fireEvent("postLoad");
     },
     _loadUserInterface: function(){
-        debugger;
         if (!this.isReadable){
             this.node?.addClass('hide');
             return '';

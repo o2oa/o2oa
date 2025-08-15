@@ -70,7 +70,6 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
          if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
         }else{
-            debugger;
             this.node.empty();
             if (this.isReadonly()){
                 this._loadNodeRead();

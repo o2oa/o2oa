@@ -295,7 +295,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			//允许导入
 			this.importenable  = this.editable && (this.json.impexpType === "impexp" || this.json.impexpType === "imp");
 			//允许导出
-			this.exportenable  = this.json.impexpType === "impexp" || this.json.impexpType === "exp";
+			this.exportenable  = this.isReadable && this.json.impexpType === "impexp" || this.json.impexpType === "exp";
 
 			//是否多行同时编辑
 			this.multiEditMode = this.json.editMode === "multi";
@@ -2200,6 +2200,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			// 		return false;
 			// 	}
 			// }
+			if (!this.isReadable || !this.isEditable) return true;
 			let validationFlag = '';
 			if (!this.validationConfig(routeName, opinion))  return false;
 

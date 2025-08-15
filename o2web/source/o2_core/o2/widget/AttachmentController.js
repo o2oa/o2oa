@@ -1099,14 +1099,14 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                                     var chunks = Math.ceil(file.size / chunkSize), currentChunk = 0, spark = new SparkMD5();
 
                                     fileReader.onload = function(e) {
-                                        console.log("read chunk nr", currentChunk + 1, "of", chunks);
+                                        // console.log("read chunk nr", currentChunk + 1, "of", chunks);
                                         spark.appendBinary(e.target.result);
                                         currentChunk++;
 
                                         if (currentChunk < chunks) {
                                             loadNext();
                                         } else {
-                                            console.log("finished loading");
+                                            // console.log("finished loading");
                                             var fileMd5 = spark.end();
 
                                             restActions.invoke({

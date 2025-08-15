@@ -49,7 +49,6 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         });
 
         this.node.addEventListener('upload', () => {
-            debugger;
             this._saveDoc();
         });
         this.node.addEventListener('removefile', () => {
@@ -126,7 +125,6 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
                 return json;
             })
             .catch((xhr) => {
-                debugger;
                 var json = JSON.decode(xhr.responseText);
                 this.fireEvent('addfileerror', [{file, node}]);
                 throw json && json.message ? new Error(json.message) : xhr;
@@ -222,7 +220,6 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
             return {
                 data: {},
                 updateProgress: (percent) => {
-                    debugger;
                     node.setAttribute('progress', percent);
                 },
             };
@@ -243,14 +240,12 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         return i===-1;
     },
     getValue: function () {
-        debugger;
         if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (o2.typeOf(value) === 'null' || value === '') value = this._computeValue();
 
         //如果有设置 site，循环所有附件，将匹配site的附件添加进来。
-        debugger;
         if (this.json.fileSite){
             const siteList = this.json.fileSite.split(/.*,.*/g);
             const addr = this.restfulActions.getAddress();

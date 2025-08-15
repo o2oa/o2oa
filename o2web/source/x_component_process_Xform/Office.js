@@ -991,9 +991,6 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
                 }
 
                 this.doOfficeOCXEvents();
-                // this.officeOCX.addEventListener('DocumentOpened', function(){
-                //     console.log('OnDocumentOpened ...')
-                // })
             }
         }
 

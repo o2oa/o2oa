@@ -2055,6 +2055,10 @@ MWF.xScript.CMSEnvironment = function(ev){
         this.target.event_resolve = null;
     };
 
+    this.invoke = function(name, data){
+        return this.Actions.load('x_program_center').InvokeAction.execute(name, data);
+    }
+
     //仅前台对象-----------------------------------------
     //form
     this.form = {

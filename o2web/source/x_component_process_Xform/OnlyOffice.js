@@ -205,8 +205,8 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         var docEditor;
         var _self = this;
         var innerAlert = function (message) {
-            if (console && console.log)
-                console.log(message);
+            // if (console && console.log)
+            //     console.log(message);
         };
         var onAppReady = function () {
             innerAlert("Document editor ready");
@@ -270,10 +270,10 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             location.reload(true);
         };
         var onDocumentReady= function() {
-            console.log("Document is loaded");
+            // console.log("Document is loaded");
         }.bind(this);
         var onPluginsReady= function() {
-            console.log("Plugins is loaded");
+            // console.log("Plugins is loaded");
             this.fireEvent("afterOpen");
         }.bind(this);
 
@@ -441,14 +441,18 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 aSearch = oRangeParagraph.Search(oRange.GetText());
                 aSearch[0].AddBookmark(Asc.scope.name);
             }
-        }, function() { console.log("callback command"); });
+        }, function() { 
+            // console.log("callback command"); 
+        });
         connector.disconnect();
     },
     save : function (){
         var connector = this.onlyOffice.createConnector();
         connector.callCommand(function() {
             Api.Save();
-        }, function() { console.log("callback command"); });
+        }, function() { 
+            // console.log("callback command"); 
+        });
         connector.disconnect();
     },
     startRevisions : function (){
@@ -457,7 +461,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         connector.callCommand(function() {
             var oDocument = Api.GetDocument();
             oDocument.SetTrackRevisions(true);
-        }, function() { console.log("callback command"); });
+        }, function() { 
+            // console.log("callback command"); 
+        });
         connector.disconnect();
     },
     stopRevisions : function (){
@@ -466,7 +472,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         connector.callCommand(function() {
             var oDocument = Api.GetDocument();
             oDocument.SetTrackRevisions(false);
-        }, function() { console.log("callback command"); });
+        }, function() { 
+            // console.log("callback command"); 
+        });
         connector.disconnect();
     },
     acceptAllRevisions : function (){
@@ -474,7 +482,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         connector.callCommand(function() {
             var oDocument = Api.GetDocument();
             oDocument.AcceptAllRevisionChanges();
-        }, function() { console.log("callback command"); });
+        }, function() { 
+            // console.log("callback command"); 
+        });
         connector.disconnect();
 
     },
@@ -483,7 +493,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         connector.callCommand(function() {
             var oDocument = Api.GetDocument();
             oDocument.RejectAllRevisionChanges();
-        }, function() { console.log("callback command"); });
+        }, function() { 
+            // console.log("callback command"); 
+        });
         connector.disconnect();
     },
 });

@@ -1270,7 +1270,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                                 var pp = this.getOrgAction()[this.getValueMethod(dd)](function(json){
                                     return MWF.org.parseOrgData(json.data, true, simple);
                                 }.bind(this), null, dd, true).catch(function(e){
-                                    console.log("error:" + e);
+                                    // console.log("error:" + e);
                                     console.log(e);
                                 });
                                 ags.push(pp);

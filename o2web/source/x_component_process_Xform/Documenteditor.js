@@ -2748,7 +2748,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 } else if (nodeType == Node.TEXT_NODE) {
                     var nextPageTextNode = nextPageNode.insertBefore(document.createTextNode(""), nextPageNode.firstChild);
                     while ((contentNode.getSize().y > this.options.docPageHeight) && lnode.textContent) {
-                        //console.log(contentNode.getSize().y);
                         this._splitFiletextNodeOneWord(lnode, nextPageTextNode)
                     }
                     if (!lnode.textContent) if (lnode.parentNode) lnode.parentNode.removeChild(lnode); //lnode.remove();

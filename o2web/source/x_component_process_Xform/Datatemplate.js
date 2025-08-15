@@ -715,11 +715,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						this._injectLineNode( sectionLine.node, beforeNode );
 					}
 					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
-					//console.log("setIndex", sectionLine);
 				}else{
 					var div = this._injectLineNode( new Element("div"), beforeNode );
 					sectionLine = this._loadSectionLine_EditSection(div, data, idx, isEdited, isNew );
-					//console.log("_loadSectionLine_EditSection", sectionLine);
 				}
 				if( this.sectionBy && this.sectionBy === data.sectionKey ){
 					this.sectionLineEdited = sectionLine;
@@ -758,13 +756,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					if( !operation || operation === "moveUpList"){
 						this._injectLineNode( sectionLine.node, beforeNode );
 					}
-					//console.log("setIndex", sectionLine);
 					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
 				}else {
-					//var div = new Element("div").inject(this.node);
 					var div = this._injectLineNode( new Element("div"), beforeNode );
 					sectionLine = this._loadSectionLine(div, data, idx, isEdited, isNew );
-					//console.log("_loadSectionLine", sectionLine);
 				}
 				this.sectionlineList.push(sectionLine);
 			}.bind(this))
@@ -797,13 +792,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					if( !operation || operation === "moveUpList" ){
 						this._injectLineNode( map[idxStr].node, beforeNode );
 					}
-					//console.log("inject", map[idxStr]);
 					this.lineList.push( map[idxStr] );
 				}else{
 					var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
 					var div = this._injectLineNode( new Element("div"), beforeNode );
 					var line = this._loadLine(div, data, idx, isNew);
-					//console.log("_loadLine", line);
 					this.lineList.push(line);
 				}
 			}.bind(this));
@@ -1879,7 +1872,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 					if( !operation || operation === "moveUpList" ){
 						this._injectLineNode( map[idxStr].node, beforeNode )
 					}
-					//console.log("inject", map[idxStr]);
 					this.lineList.push( map[idxStr] );
 					this.template.lineList.push(map[idxStr]);
 				}else{
@@ -1893,7 +1885,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 						dt.newLineIndex = null;
 					}
 					var line = this._loadLine( node, d, idx, isEdited, isNew );
-					//console.log("_loadLine", line);
 					this.lineList.push(line);
 					this.template.lineList.push(line);
 				}

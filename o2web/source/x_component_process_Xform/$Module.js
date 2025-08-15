@@ -915,7 +915,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     _checkDisplay: function(display){
-        debugger;
         if (display){
             return Promise.resolve(display(this)).then((dsp)=>{
                 dsp ? this.node.removeClass('hide') : this.node.addClass('hide');

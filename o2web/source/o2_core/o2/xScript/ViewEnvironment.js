@@ -4176,6 +4176,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
         }
     }
 
+    this.invoke = function(name, data){
+        return this.Actions.load('x_program_center').InvokeAction.execute(name, data);
+    }
+
 
     //仅前台对象-----------------------------------------
     //form

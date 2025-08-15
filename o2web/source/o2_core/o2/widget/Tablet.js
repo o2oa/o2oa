@@ -2723,13 +2723,6 @@ o2.widget.Tablet.Input = new Class({
         }else if( coordinates.bottom > containerSize.y ){
             this.node.setStyle("top", containerSize.y - coordinates.height );
         }
-        // if( this.isChecking )return;
-        // this.isChecking = true;
-        // window.setTimeout(function () {
-        //     var coordinates = this.editarea.getCoordinates( this.canvasWrap );
-        //     console.log(coordinates);
-        //     this.isChecking = false;
-        // }.bind(this), 100)
     },
     setColor: function( color ){
         this.color = color;

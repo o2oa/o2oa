@@ -103,8 +103,6 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         }
 
         this.node.addEvent('change', function () {
-
-            debugger;
             var v = this.getInputData('change');
             this.validationMode();
             this.validation();
@@ -252,7 +250,6 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         this._setBusinessData(data);
         this.node.value = data;
         if (fireChange && old!==data){
-            debugger;
             this.fireEvent("change");
         }
         this.moduleValueAG = null;

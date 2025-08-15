@@ -15,7 +15,6 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Elcontainer = MWF.APPElcontainer =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
-        debugger;
         if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
         }else{

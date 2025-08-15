@@ -126,18 +126,18 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 	},
 	handleSuccess: function (stream) {
 		this.recordButton.disabled = false;
-		console.log('getUserMedia() got stream: ', stream);
+		// console.log('getUserMedia() got stream: ', stream);
 		this.stream = stream;
 		this.activeFlag = true;
 		this.gumVideo.srcObject = stream;
 	},
 	handleError: function (error) {
-		console.log('navigator.getUserMedia error: ', error);
+		// console.log('navigator.getUserMedia error: ', error);
 	},
 	handleSourceOpen: function (event) {
-		console.log('MediaSource opened');
+		// console.log('MediaSource opened');
 		this.sourceBuffer = this.mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
-		console.log('Source buffer: ', this.sourceBuffer);
+		// console.log('Source buffer: ', this.sourceBuffer);
 	},
 	handleDataAvailable : function (event) {
 		if (event.data && event.data.size > 0) {
@@ -145,7 +145,7 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 		}
 	},
 	handleStop: function (event) {
-		console.log('Recorder stopped: ', event);
+		// console.log('Recorder stopped: ', event);
 	},
 	toggleRecording: function () {
 		if ( this.isRecording ) {
@@ -164,13 +164,13 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 		this.recordedBlobs = [];
 		var options = {mimeType: 'video/webm;codecs=vp9'};
 		if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-			console.log(options.mimeType + ' is not Supported');
+			// console.log(options.mimeType + ' is not Supported');
 			options = {mimeType: 'video/webm;codecs=vp8'};
 			if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-				console.log(options.mimeType + ' is not Supported');
+				// console.log(options.mimeType + ' is not Supported');
 				options = {mimeType: 'video/webm'};
 				if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-					console.log(options.mimeType + ' is not Supported');
+					// console.log(options.mimeType + ' is not Supported');
 					options = {mimeType: ''};
 				}
 			}
@@ -183,18 +183,18 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 				+ e + '. mimeType: ' + options.mimeType);
 			return;
 		}
-		console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+		// console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
 		this.recordButton.textContent = 'Stop Recording';
 		this.playButton.disabled = true;
 		this.downloadButton.disabled = true;
 		mediaRecorder.onstop = this.handleStop.bind(this);
 		mediaRecorder.ondataavailable = this.handleDataAvailable.bind(this);
 		mediaRecorder.start(10); // collect 10ms of data
-		console.log('MediaRecorder started', mediaRecorder);
+		// console.log('MediaRecorder started', mediaRecorder);
 	},
 	stopRecording : function () {
 		this.mediaRecorder.stop();
-		console.log('Recorded Blobs: ', this.recordedBlobs);
+		// console.log('Recorded Blobs: ', this.recordedBlobs);
 		this.recordedVideo.controls = true;
 	},
 	play: function () {
