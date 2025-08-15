@@ -1,18 +1,10 @@
 package com.x.processplatform.service.processing.jaxrs.attachment;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
@@ -24,10 +16,19 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.cms.core.entity.FileInfo;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.WiAttachment;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.ThisApplication;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -65,9 +66,9 @@ class ActionCopyToWorkCompleted extends BaseAction {
 			this.workCompletedId = workCompletedId;
 		}
 
-		private Wi wi;
-		private EffectivePerson effectivePerson;
-		private String workCompletedId;
+		private final Wi wi;
+		private final EffectivePerson effectivePerson;
+		private final String workCompletedId;
 
 		public ActionResult<List<Wo>> call() throws Exception {
 			List<Wo> wos = new ArrayList<>();
@@ -79,30 +80,7 @@ class ActionCopyToWorkCompleted extends BaseAction {
 				}
 				List<Attachment> adds = new ArrayList<>();
 				for (WiAttachment w : ListTools.trim(wi.getAttachmentList(), true, true)) {
-					Attachment o = emc.find(w.getId(), Attachment.class);
-					if (null == o) {
-						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
-					}
-					StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-					Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(), w.getSite());
-					attachment.setBusinessId(o.getBusinessId());
-					if (BooleanUtils.isTrue(w.getSoftCopy())) {
-						attachment.setName(o.getName());
-						attachment.setDeepPath(mapping.getDeepPath());
-						attachment
-								.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
-						attachment.setLength(o.getLength());
-						attachment.setStorage(o.getStorage());
-						attachment.setLastUpdateTime(new Date());
-						attachment.setFromJob(o.getJob());
-						attachment.setFromId(o.getId());
-						attachment.setFromPath(o.path());
-					} else {
-						StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
-								.get(Attachment.class, o.getStorage());
-						byte[] bs = o.readContent(fromStorageMapping);
-						attachment.saveContent(mapping, bs, w.getName(), Config.general().getStorageEncrypt());
-					}
+					Attachment attachment = this.joinAttachment(effectivePerson.getDistinguishedName(), work, w, emc);
 					adds.add(attachment);
 				}
 				if (!adds.isEmpty()) {
@@ -119,6 +97,62 @@ class ActionCopyToWorkCompleted extends BaseAction {
 
 			result.setData(wos);
 			return result;
+		}
+
+		private Attachment joinAttachment(String person, WorkCompleted work, WiAttachment w, EntityManagerContainer emc) throws Exception {
+			Attachment o = emc.find(w.getId(), Attachment.class);
+			Attachment attachment = new Attachment(work, person, w.getSite());
+			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+			if (BooleanUtils.isTrue(w.getSoftCopy()) && o != null) {
+				attachment.setName(o.getName());
+				attachment.setDeepPath(mapping.getDeepPath());
+				attachment
+						.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(o.getName(), ".")));
+				attachment.setLength(o.getLength());
+				attachment.setStorage(o.getStorage());
+				attachment.setLastUpdateTime(new Date());
+				attachment.setFromJob(o.getJob());
+				attachment.setFromId(o.getId());
+				attachment.setFromPath(o.path());
+				if(StringUtils.isBlank(attachment.getSite())){
+					attachment.setSite(o.getSite());
+				}
+			} else {
+				byte[] bs;
+				if(WiAttachment.COPY_FROM_CMS.equals(w.getCopyFrom())) {
+					FileInfo fileInfo = emc.find(w.getId(), FileInfo.class);
+					if(fileInfo == null){
+						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
+					}
+					if(StringUtils.isBlank(attachment.getSite())){
+						attachment.setSite(fileInfo.getSite());
+					}
+					StorageMapping fromStorageMapping = ThisApplication.context()
+							.storageMappings()
+							.get(FileInfo.class, fileInfo.getStorage());
+					bs = fileInfo.readContent(fromStorageMapping);
+				}else if(WiAttachment.COPY_FROM_PAN.equals(w.getCopyFrom())){
+					String className = ThisApplication.context().applications().findApplicationName(WiAttachment.COPY_FROM_PAN);
+					String downLoadUrl = Applications.joinQueryUri("attachment3", w.getId(), "download");
+					bs = ThisApplication.context().applications().getQueryBinary(className, downLoadUrl);
+					if(StringUtils.isBlank(attachment.getSite())){
+						attachment.setSite("attachment");
+					}
+				}else{
+					if(o == null){
+						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
+					}
+					if(StringUtils.isBlank(attachment.getSite())){
+						attachment.setSite(o.getSite());
+					}
+					StorageMapping fromStorageMapping = ThisApplication.context()
+							.storageMappings()
+							.get(Attachment.class, o.getStorage());
+					bs = o.readContent(fromStorageMapping);
+				}
+				attachment.saveContent(mapping, bs, w.getName(), Config.general().getStorageEncrypt());
+			}
+			return attachment;
 		}
 	}
 
@@ -137,22 +171,6 @@ class ActionCopyToWorkCompleted extends BaseAction {
 			this.attachmentList = attachmentList;
 		}
 
-	}
-
-	public static class WiAttachment extends Attachment {
-
-		private static final long serialVersionUID = 5623475924507252797L;
-
-		@FieldDescribe("true表示不拷贝真实存储附件，只拷贝路径，共用附件.")
-		private Boolean isSoftCopy;
-
-		public Boolean getSoftCopy() {
-			return isSoftCopy;
-		}
-
-		public void setSoftCopy(Boolean softCopy) {
-			isSoftCopy = softCopy;
-		}
 	}
 
 	public static class Wo extends WoId {

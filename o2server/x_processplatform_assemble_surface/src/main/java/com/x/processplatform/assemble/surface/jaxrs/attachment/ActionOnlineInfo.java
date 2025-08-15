@@ -35,20 +35,26 @@ class ActionOnlineInfo extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
-					effectivePerson.getDistinguishedName(), attachment.getJob())
-					|| business.ifPersonCanManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
-							attachment.getProcess())) {
-				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-				boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-				wo.setCanEdit(canEdit);
+			if(effectivePerson.isManager()){
+				wo.setCanEdit(true);
 				wo.setCanRead(true);
-			} else {
-				wo.setCanRead(new JobControlBuilder(effectivePerson, business, attachment.getJob()).enableAllowVisit()
-						.build().getAllowVisit());
+			}else {
+				if (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+						effectivePerson.getDistinguishedName(), attachment.getJob())
+						|| business.ifPersonCanManageApplicationOrProcess(effectivePerson,
+						attachment.getApplication(), attachment.getProcess())) {
+					List<String> identities = business.organization().identity()
+							.listWithPerson(effectivePerson);
+					List<String> units = business.organization().unit()
+							.listWithPerson(effectivePerson);
+					boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
+					wo.setCanEdit(canEdit);
+					wo.setCanRead(true);
+				} else {
+					wo.setCanRead(new JobControlBuilder(effectivePerson, business,
+							attachment.getJob()).enableAllowVisit().build().getAllowVisit());
+				}
 			}
-
 			if (BooleanUtils.isTrue(wo.getCanRead())) {
 				attachment.copyTo(wo);
 				wo.setOwnerId(attachment.getPerson());

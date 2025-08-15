@@ -1,28 +1,15 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.ProcessPlatform;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionFileNameInvalid;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
@@ -31,6 +18,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
+import com.x.base.core.project.x_cms_assemble_control;
+import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
@@ -39,6 +28,22 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Attachment_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.WiAttachment;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -49,6 +54,26 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected static final String SITE_SEPARATOR = "~";
 
 	protected static final String FILE_SEPARATOR = ",";
+
+	protected OnlineInfo getOnlineInfo(EffectivePerson effectivePerson, String from, String attachmentId)
+			throws Exception {
+		List<NameValuePair> headers = ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
+		String url = "";
+		String onlinePath = "online";
+		if(WiAttachment.COPY_FROM_CMS.equals(from)) {
+			url = ThisApplication.context().applications().randomWithWeight(x_cms_assemble_control.class.getName()).getUrlJaxrsRoot();
+			url = url + Applications.joinQueryUri("fileinfo", attachmentId, onlinePath, "info");
+		}else if(WiAttachment.COPY_FROM_PAN.equals(from)) {
+			String className = ThisApplication.context().applications().findApplicationName("x_pan_assemble_control");
+			url = ThisApplication.context().applications().randomWithWeight(className).getUrlJaxrsRoot();
+			url = url + Applications.joinQueryUri("attachment3", attachmentId, onlinePath, "info");
+		}else{
+			url = ThisApplication.context().applications().randomWithWeight(x_processplatform_assemble_surface.class.getName()).getUrlJaxrsRoot();
+			url = url + Applications.joinQueryUri("attachment", attachmentId, onlinePath, "info");
+		}
+		return ConnectionAction.get(url, headers).getData(OnlineInfo.class);
+	}
+
 
 	public static class WiExtraParam {
 		private String site;
@@ -462,6 +487,130 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setFileBase64(String fileBase64) {
 			this.fileBase64 = fileBase64;
+		}
+	}
+
+	public static class OnlineInfo extends GsonPropertyObject {
+
+		@FieldDescribe("附件ID.")
+		private String id;
+		@FieldDescribe("任务.")
+		private String job;
+		@FieldDescribe("附件名称.")
+		private String name;
+		@FieldDescribe("附件大小.")
+		private Long length;
+		@FieldDescribe("创建用户ID.")
+		private String ownerId;
+		@FieldDescribe("创建用户名称.")
+		private String ownerName;
+		@FieldDescribe("当前用户ID.")
+		private String userId;
+		@FieldDescribe("当前用户名称.")
+		private String userName;
+		@FieldDescribe("创建时间.")
+		private Date createTime;
+		@FieldDescribe("最后更新时间.")
+		private Date lastUpdateTime;
+		@FieldDescribe("当前用户是否可编辑.")
+		private Boolean canEdit;
+		@FieldDescribe("当前用户是否可阅读.")
+		private Boolean canRead;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getJob() {
+			return job;
+		}
+
+		public void setJob(String job) {
+			this.job = job;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public Long getLength() {
+			return length;
+		}
+
+		public void setLength(Long length) {
+			this.length = length;
+		}
+
+		public String getOwnerId() {
+			return ownerId;
+		}
+
+		public void setOwnerId(String ownerId) {
+			this.ownerId = ownerId;
+		}
+
+		public String getOwnerName() {
+			return ownerName;
+		}
+
+		public void setOwnerName(String ownerName) {
+			this.ownerName = ownerName;
+		}
+
+		public String getUserId() {
+			return userId;
+		}
+
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
+		public String getUserName() {
+			return userName;
+		}
+
+		public void setUserName(String userName) {
+			this.userName = userName;
+		}
+
+		public Date getCreateTime() {
+			return createTime;
+		}
+
+		public void setCreateTime(Date createTime) {
+			this.createTime = createTime;
+		}
+
+		public Boolean getCanEdit() {
+			return canEdit;
+		}
+
+		public void setCanEdit(Boolean canEdit) {
+			this.canEdit = canEdit;
+		}
+
+		public Boolean getCanRead() {
+			return canRead;
+		}
+
+		public void setCanRead(Boolean canRead) {
+			this.canRead = canRead;
+		}
+
+		public Date getLastUpdateTime() {
+			return lastUpdateTime;
+		}
+
+		public void setLastUpdateTime(Date lastUpdateTime) {
+			this.lastUpdateTime = lastUpdateTime;
 		}
 	}
 }
