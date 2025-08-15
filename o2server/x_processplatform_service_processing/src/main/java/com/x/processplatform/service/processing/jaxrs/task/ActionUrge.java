@@ -72,10 +72,13 @@ class ActionUrge extends BaseAction {
 					throw new ExceptionEntityNotExist(WorkLog.class);
 				}
 				emc.beginTransaction(Task.class);
-				emc.beginTransaction(Record.class);
+				/*
+				 * 催办不再产生record
+				 */
+				// emc.beginTransaction(Record.class);
 				task.setUrged(true);
-				Record rec = rec(workLog, task);
-				emc.persist(rec, CheckPersistType.all);
+				// Record rec = rec(workLog, task);
+				// emc.persist(rec, CheckPersistType.all);
 				emc.commit();
 				Wo wo = new Wo();
 				wo.setId(task.getId());
@@ -89,11 +92,11 @@ class ActionUrge extends BaseAction {
 			return result;
 		}
 
-		private Record rec(WorkLog workLog, Task task) {
-			Record rec = new Record(workLog, task);
-			rec.setType(Record.TYPE_URGE);
-			return rec;
-		}
+//		private Record rec(WorkLog workLog, Task task) {
+//			Record rec = new Record(workLog, task);
+//			rec.setType(Record.TYPE_URGE);
+//			return rec;
+//		}
 	}
 
 	public static class Wo extends ActionUrgeWo {
