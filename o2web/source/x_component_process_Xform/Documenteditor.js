@@ -3972,6 +3972,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return true;
     },
     validation: function(routeName, opinion){
+        if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+        
         if (!this.validationConfig(routeName, opinion))  return false;
 
         if (!this.json.validation) return true;

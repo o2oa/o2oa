@@ -22,8 +22,8 @@
     font-family: 'ooicon';
     src:
             url('./ooicon.ttf') format('truetype'),
-            url('.ooicon.woff') format('woff'),
-            url('.ooicon.svg') format('svg');
+            url('./ooicon.woff') format('woff'),
+            url('./ooicon.svg') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -253,10 +253,6 @@ oo-notice.fixed {
 
 oo-notice.transition {
     transition: top 0.3s, left 0.3s, bottom 0.3s, right 0.3s, opacity 0.3s;
-}
-
-.hide {
-    display: none !important;
 }
 
 oo-tabs {
@@ -1948,4 +1944,3 @@ oo-nav{
 .ooicon-anliku:before {
   content: "\e701";
 }
-

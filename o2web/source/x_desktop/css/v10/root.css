@@ -229,3 +229,13 @@
         font-size: 24px;
     }
 }
+
+
+* .hide {
+    display: none !important;
+}
+div .hide {
+    display: none !important;
+}
+
+

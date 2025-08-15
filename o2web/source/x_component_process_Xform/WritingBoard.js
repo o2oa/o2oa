@@ -448,6 +448,8 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             return true;
         },
         validation: function (routeName, opinion) {
+            if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+            
             if( !this.isReadonly() ){
                 if (!this.validationConfig(routeName, opinion)) return false;
 

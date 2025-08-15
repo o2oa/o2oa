@@ -2224,6 +2224,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 		},
 		validation: function(routeName, opinion){
+			if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+
 			const flag = this._validation(routeName, opinion);
 			this.fireEvent("validation", [flag]);
 			return flag;
@@ -3272,6 +3274,8 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		return true;
 	},
 	validation: function(){
+		if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+		
 		const flag = this._validation();
 		this.datatable.fireEvent("validationLine", [this, flag]);
 		return flag

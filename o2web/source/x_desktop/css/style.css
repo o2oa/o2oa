@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-@font-face {
+/* @font-face {
     font-family: 'ooicon';
     src:
             url('./ooicon.ttf') format('truetype'),
@@ -9,7 +9,7 @@
     font-weight: normal;
     font-style: normal;
     font-display: block;
-}
+} */
 html{
 	overflow: hidden;
 	height: 100%;

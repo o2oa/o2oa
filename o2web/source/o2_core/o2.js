@@ -3386,6 +3386,23 @@ if (!window.o2) {
                     };
                 }
                 return position;
+            },
+            isDisplayNone: function() {
+                // 获取元素的计算样式
+                const computedStyle = window.getComputedStyle(this);
+
+                // 如果 display 为 'none'，则该元素不可见
+                if (computedStyle.display === 'none') {
+                    return true;
+                }
+
+                // 递归检查父元素
+                const parent = this.parentElement;
+                if (parent) {
+                    return parent.isDisplayNone();
+                }
+                // 如果所有父元素都没有 display: 'none'，则返回 false
+                return false;
             }
         });
 

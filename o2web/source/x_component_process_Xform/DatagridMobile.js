@@ -1842,6 +1842,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         return true;
     },
     validation: function(routeName, opinion){
+        if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+        
         if (this.isEdit){
             if (!this.editValidation()){
                 return false;
