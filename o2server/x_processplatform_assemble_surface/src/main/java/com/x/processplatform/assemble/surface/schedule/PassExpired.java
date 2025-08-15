@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -74,15 +75,17 @@ public class PassExpired extends AbstractJob {
 
 	private void execute(Task task) throws Exception {
 		try {
-			this.passExpired(task.getId(), task.getJob());
-			this.taskTriggerProcessing(task.getId(), task.getJob());
+			ActionPassExpiredWo wo = this.passExpired(task.getId(), task.getJob());
+			if (BooleanUtils.isTrue(wo.getValue())) {
+				this.taskTriggerProcessing(task.getId(), task.getJob());
+			}
 		} catch (Exception e) {
 			LOGGER.error(new ExceptionPassExpired(e, task.getId(), task.getTitle()));
 		}
 	}
 
-	private void passExpired(String id, String job) throws Exception {
-		ThisApplication.context().applications()
+	private ActionPassExpiredWo passExpired(String id, String job) throws Exception {
+		return ThisApplication.context().applications()
 				.getQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("task", id, "pass", "expired"), job)
 				.getData(ActionPassExpiredWo.class);
