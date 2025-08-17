@@ -1,7 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
-MWF.xDesktop.requireApp("Selector", "Person", null, false);
+MWF.xDesktop.requireApp("Selector", "Identity", null, false);
 MWF.xApplication.Selector.PanFile = new Class({
-	Extends: MWF.xApplication.Selector.Person,
+	Extends: MWF.xApplication.Selector.Identity,
     options: {
         "style": "default",
         "count": 0,
@@ -25,15 +25,15 @@ MWF.xApplication.Selector.PanFile = new Class({
 	    if( this.options.allowPersonFile ){
             category = this._newItemCategory({
                 root: true,
-                type: 'personFile',
-                text: MWF.xApplication.Selector.LP.personFile
+                _type: 'personFile',
+                name: MWF.xApplication.Selector.LP.personFile
             }, this, this.itemAreaNode);
         }
         if( this.options.allowUnitFile ){
             category = this._newItemCategory({
                 root: true,
-                type: 'unitFile',
-                text: MWF.xApplication.Selector.LP.unitFile
+                _type: 'unitFile',
+                name: MWF.xApplication.Selector.LP.unitFile
             }, this, this.itemAreaNode);
         }
         // this.queryAction.listApplication(function(json){
@@ -86,9 +86,9 @@ MWF.xApplication.Selector.PanFile = new Class({
     }
 });
 MWF.xApplication.Selector.PanFile.Item = new Class({
-	Extends: MWF.xApplication.Selector.Person.Item,
+	Extends: MWF.xApplication.Selector.Identity.Item,
     _getShowName: function(){
-        return this.data.name;
+        return this.data.name || this.data.text;
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/category.png)");
@@ -134,7 +134,7 @@ MWF.xApplication.Selector.PanFile.Item = new Class({
 });
 
 MWF.xApplication.Selector.PanFile.ItemSelected = new Class({
-	Extends: MWF.xApplication.Selector.Person.ItemSelected,
+	Extends: MWF.xApplication.Selector.Identity.ItemSelected,
     _getShowName: function(){
         return this.data.name;
     },
@@ -163,9 +163,9 @@ MWF.xApplication.Selector.PanFile.ItemSelected = new Class({
 });
 
 MWF.xApplication.Selector.PanFile.ItemCategory = new Class({
-    Extends: MWF.xApplication.Selector.Person.ItemCategory,
+    Extends: MWF.xApplication.Selector.Identity.ItemCategory,
     _getShowName: function(){
-        return this.data.name;
+        return this.data.name || this.data.text;
     },
     createNode: function(){
         this.node = new Element("div", {
@@ -176,7 +176,77 @@ MWF.xApplication.Selector.PanFile.ItemCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     _hasChild: function(){
-        return (this.data.statementList && this.data.statementList.length);
+        return true;
+    },
+    loadSub: function(callback){
+        debugger;
+        if (!this.loaded){
+            var actions = o2.Actions.load('x_pan_assemble_control');
+            var categoryPromise, filePromise;
+            var addType = function (promise, type){
+                return promise.then( function(json){
+                    json.data.each(function (d){ d._type = type; });
+                    return json.data;
+                });
+            };
+            switch (this.data._type){
+                case "personFile":
+                    categoryPromise = addType(
+                        actions.Folder2Action.listTop('updateTime', true),
+                        'person_folder_normal'
+                    );
+                    filePromise = addType(
+                        actions.actions.Attachment2Action.listTop('updateTime', true),
+                        'person_file'
+                    );
+                    break;
+                case "person_folder_normal":
+                    categoryPromise = addType(
+                        actions.Folder2Action.listWithFolder(this.data.id, 'updateTime', true),
+                        'person_folder_normal'
+                    );
+                    filePromise = addType(
+                        actions.Attachment2Action.listWithFolder(this.data.id, 'updateTime', true),
+                        'person_file'
+                    );
+                    break;
+                case "unitFile":
+                    categoryPromise = addType(
+                        actions.ZoneAction.list(),
+                        'unit_zone'
+                    );
+                    break;
+                case 'unit_zone':
+                    categoryPromise = addType(
+                        actions.Folder3Action.listWithFolder(this.data.id, 'updateTime', true),
+                        'person_folder_normal'
+                    );
+                    filePromise = addType(
+                        actions.Attachment3Action.listWithFolder(this.data.id, 'updateTime', true),
+                        'person_file'
+                    );
+                    break;
+            }
+            Promise.all([categoryPromise, filePromise]).then(function(arr){
+                var categorys = arr[0] || [];
+                var attachments = arr[1] || [];
+
+                categorys.data.each(function(subData){
+                    var category = this.selector._newItemCategory(subData, this.selector, this.children, this.level + 1);
+                    // this.subCategorys.push( category );
+                }.bind(this));
+
+                attachments.data.each(function(subData){
+                    var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                    this.selector.items.push( category );
+                }.bind(this));
+
+                this.loaded = true;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
     },
     check: function(){}
 });
