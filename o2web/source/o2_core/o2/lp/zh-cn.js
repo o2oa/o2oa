@@ -336,6 +336,7 @@ o2.LP.widget = {
     "editAtt" : "编辑",
     "replace": "替换",
     "select": "选择",
+    "selectFromDriver": '从企业网盘选择',
 
     "download": "下载",
     "share": "分享",

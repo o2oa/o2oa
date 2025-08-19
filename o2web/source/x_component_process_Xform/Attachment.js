@@ -560,7 +560,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     checkEditActionBox: function(){
         var isShowEdit = false;
-        ["isUpload", "isFromPan", "isDelete", "isReplace", "isPreviewAtt", "isEditAtt"].each(function( key ){
+        ["isUpload", "isFromDriver", "isDelete", "isReplace", "isPreviewAtt", "isEditAtt"].each(function( key ){
             if( key === "isReplace" && this.options.isReplaceHidden )return;
             if( key === "isPreviewAtt" && layout.mobile )return;
             if( this.options[key] !== "hidden" )isShowEdit = true;
@@ -594,7 +594,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if( this.min_closeOfficeAction ){
             isShowLeft = true;
         }else {
-            ["isUpload", "isFromPan", "isDelete", "isReplace", "isDownload", "isDownloadBatch", "isOrder"].each(function (key) {
+            ["isUpload", "isFromDriver", "isDelete", "isReplace", "isDownload", "isDownloadBatch", "isOrder"].each(function (key) {
                 if (key === "isReplace" && this.options.isReplaceHidden) return;
                 if (this.options[key] !== "hidden") isShowLeft = true;
             }.bind(this));
@@ -1571,6 +1571,20 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "afterUpload",
 
             /**
+             * 从网盘拷贝之前触发。本事件中可以通过this.event获取拷贝的附件数组
+             * @event MWF.xApplication.process.Xform.Attachment#copy
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "copy",
+
+            /**
+             * 从网盘拷贝后触发。this.event为本次拷贝的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#afterUpload
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterCopy",
+
+            /**
              * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
              * @event MWF.xApplication.process.Xform.Attachment#delete
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -1696,7 +1710,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
             "isUpload": this.getFlagDefaultFalse("isUpload"),
-            "isFromPan": this.getFlagDefaultFalse("isFromPan"),
+            "isFromDriver": this.getFlagDefaultFalse("isFromDriver"),
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
@@ -1966,8 +1980,51 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.createUploadFileNode(files);
         }
     },
-    copyFromPan: function () {
+    openDriver: function () {
+        o2.xDesktop.requireApp('Selector', 'package', function () {
+            new MWF.O2Selector( layout.mobile ? $(document.body) : this.form.app.content, Object.assign( {
+                type: 'PanFile',
+                onComplete: function ( selectedItemList ) {
+                    var files = selectedItemList.map( function(item){
+                        return item.data;
+                    });
+                    this._copyFromPan(files);
+                }
+            }, this.form.json.selectorStyle || {}));
+        });
+    },
+    _copyFromPan: function (files) {
+        var method = 33
 
+        var data = this.form.businessData;
+        var isWorkCompleted = data.work && data.work.completedTime;
+
+        var workId = data.work.id;
+        var method = 'copyToWork';
+
+        if (isWorkCompleted){
+            workId = (data.workCompleted) ? data.workCompleted.id : workId;
+            method = "copyToWorkCompleted";
+        }
+        var arr = files.map( function (file) {
+            return {
+                id: file.id,
+                name: file.name,
+                site: this.json.site || this.json.id,
+                copyFrom:'x_pan_assemble_control'
+            };
+        }.bind(this));
+
+        this.fireEvent("copy", [arr]);
+
+        var p = o2.Actions.load('x_processplatform_assemble_surface').AttachmentAction[method](workId, arr);
+        p.then(function (result) {
+            this.reload( true, function(){
+
+                //this.fireEvent("afterCopy", []);
+
+            }.bind(this));
+        }.bind(this))
     },
     deleteAttachments: function (e, node, attachments) {
         var names = [];
@@ -3097,7 +3154,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
             "isUpload": this.getFlagDefaultFalse("isUpload"),
-            "isFromPan": this.getFlagDefaultFalse("isFromPan"),
+            "isFromDriver": this.getFlagDefaultFalse("isFromDriver"),
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
