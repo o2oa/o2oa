@@ -710,6 +710,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"attDefaultStyle": "Default style",
 		"readonlyMode": "Readonly Mode",
 		"allowUpload": "Allow Upload",
+		"allowFromPan": "Allow selection from network disk",
 		"allowPreview": "Allow Preview",
 		"allowDownload": "Allow Download",
 		"allowDownloadBatch": "Allow Download Batch",

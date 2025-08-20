@@ -24,6 +24,10 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectDictionary" : "选择数据字典",
     "selectImportModel": "选择导入模型",
     "selectFieldProperty": "选择字段属性",
+    "selectPanFile": "选择网盘文件",
+
+    "personFile": "个人文件",
+    "unitFile": "企业文件",
 
     "searchDescription" : "搜索内容",
     "searchDescriptionFieldProperty": "展开过的表单可以搜索组件",

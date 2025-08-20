@@ -12,7 +12,7 @@
 
         {{if !$._hasAvatar}}
         <div data-o2-element="iconNode" class="MWF_selector_item_iconNode">
-            <i class="{{$._selectType==='group' ? 'ooicon-group' : 'ooicon-a-treeorg'}} mainColor_color"></i>
+            <i class="{{ $._icon || ($._selectType==='group' ? 'ooicon-group' : 'ooicon-a-treeorg')}} mainColor_color"></i>
         </div>
         {{end if}}
     <div class="MWF_selector_item_contentNode" title="{{$._title}}">

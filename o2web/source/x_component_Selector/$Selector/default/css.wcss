@@ -400,6 +400,10 @@
 		"overflow": "hidden",
 		"height": "338px"
 	},
+	"itemAreaScrollNode_noLetter":{
+	    "overflow": "hidden",
+        "height": "378px"
+	},
 	"itemAreaNode": {
 		"overflow": "hidden"
 	},
