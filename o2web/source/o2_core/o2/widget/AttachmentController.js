@@ -197,6 +197,10 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 this.uploadAttachment(e, node);
             }.bind(this));
 
+            this.min_openDriverAction = this.createAction(this.minActionAreaNode, "drive", o2.LP.widget.selectFromDriver, function (e, node) {
+                this.openDriver(e, node);
+            }.bind(this));
+
             this.min_deleteAction = this.createAction(this.minActionAreaNode, "delete", o2.LP.widget["delete"], function (e, node) {
                 this.deleteAttachment(e, node);
             }.bind(this));
@@ -427,7 +431,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.uploadAttachment(e, node);
         }.bind(this));
 
-        this.openDriverAction = this.createAction(this.editActionsGroupNode, "driver", o2.LP.widget.selectFromDriver, function(e, node){
+        this.openDriverAction = this.createAction(this.editActionsGroupNode, "drive", o2.LP.widget.selectFromDriver, function(e, node){
             this.openDriver(e, node);
         }.bind(this));
 
@@ -542,6 +546,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     //        this.setReadonly();
     //    }else{
             this.checkUploadAction();
+            this.checkOpenDriverAction();
             this.checkDeleteAction();
 
             this.checkReplaceAction();

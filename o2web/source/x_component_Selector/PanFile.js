@@ -8,8 +8,9 @@ MWF.xApplication.Selector.PanFile = new Class({
         "title": "",
         "values": [],
         "names": [],
+        "hasLetter": false,
         "expand": false,
-        "forceSearchInItem" : true,
+        "forceSearchInItem" : false,
         "allowPersonFile": true, //显示个人文件
         "allowUnitFile": true //显示企业文件
     },
@@ -21,6 +22,7 @@ MWF.xApplication.Selector.PanFile = new Class({
         this.className = "panFile";
     },
     loadSelectItems: function(addToNext){
+        if( this.selectAllNode )this.selectAllNode.hide();
         var category;
 	    if( this.options.allowPersonFile ){
             category = this._newItemCategory({
@@ -28,6 +30,7 @@ MWF.xApplication.Selector.PanFile = new Class({
                 _type: 'person_root',
                 name: MWF.xApplication.Selector.LP.personFile
             }, this, this.itemAreaNode);
+            this.subCategorys.push(category);
         }
         if( this.options.allowUnitFile ){
             category = this._newItemCategory({
@@ -35,6 +38,7 @@ MWF.xApplication.Selector.PanFile = new Class({
                 _type: 'unit_root',
                 name: MWF.xApplication.Selector.LP.unitFile
             }, this, this.itemAreaNode);
+            this.subCategorys.push(category);
         }
         // this.queryAction.listApplication(function(json){
         //     if (json.data.length){
@@ -68,7 +72,40 @@ MWF.xApplication.Selector.PanFile = new Class({
     },
 
     _listItemByKey: function(callback, failure, key){
-        return false;
+        this._listItem( "key", callback, failure, key );
+    },
+
+    _listItemByPinyin: function(callback, failure, key){
+        this._listItem( "pinyin", callback, failure, key );
+    },
+
+    _listItem : function( filterType, callback, failure, key ){
+        var ps = [];
+        var action = o2.Actions.load('x_pan_assemble_control');
+        var p1, p2;
+        if( this.options.allowPersonFile ){
+            p1 = action.Attachment2Action.listWithFilter(key).then(function(json){
+                json.data.each(function (d) { d._type = 'person_file'; });
+                return json;
+            });
+            ps.push( p1 );
+        }
+        if( this.options.allowUnitFile ){
+            p2 = action.Attachment3Action.listWithFilter(key).then(function(json){
+                json.data.each(function (d) { d._type = 'unit_file'; });
+                return json;
+            });
+            ps.push( p2 );
+        }
+        if(ps.length){
+            Promise.all(ps).then(function(arr){
+                var result = {data: []};
+                arr.each(function(json){
+                    result.data = result.data.concat(json.data);
+                });
+                if (callback) callback.apply(this, [result]);
+            });
+        }
     },
     _getItem: function(callback, failure, id, async){
         this.queryAction.getStatement(function(json){
@@ -78,9 +115,6 @@ MWF.xApplication.Selector.PanFile = new Class({
     _newItemSelected: function(data, selector, item){
         return new MWF.xApplication.Selector.PanFile.ItemSelected(data, selector, item)
     },
-    _listItemByPinyin: function(callback, failure, key){
-        return false;
-    },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.PanFile.Item(data, selector, container, level);
     }
@@ -89,6 +123,9 @@ MWF.xApplication.Selector.PanFile.Item = new Class({
 	Extends: MWF.xApplication.Selector.Identity.Item,
     _getShowName: function(){
         return this.data.name || this.data.text;
+    },
+    _getOOIcon: function (){
+        return 'ooicon-doc-cooperation';
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+this.selector.options.style+"/icon/file.png)");
@@ -130,6 +167,48 @@ MWF.xApplication.Selector.PanFile.Item = new Class({
             this.selectedItem = selectedItem[0];
             this.setSelected();
         }
+    },
+    setEvent: function(){
+        // var url = MWF.xDesktop.getPortalFileUr(this.data.id, this.data.portal);
+        // this.data.url = url;
+        this.node.addEvents({
+            "mouseover": function(){
+                this.overItem();
+                if (!this.previewNode){
+                    if (["png","jpg","bmp","gif","jpeg","jpe"].indexOf(this.data.extension)!==-1){
+                        this.previewNode = new Element("div", {"styles": this.selector.css.filePreviewNode});
+
+                        var action = o2.Actions.load('x_pan_assemble_control');
+                        var host = o2.Actions.getHost('x_pan_assemble_control');
+                        var url;
+                        if( this.data._type === 'unit_file' ){
+                            url = host + "/x_pan_assemble_control" + action.Attachment3Action.action.actions.downloadStream.uri.replace('{id}', this.data.id);
+                        }else{
+                            url = host + "/x_pan_assemble_control" + action.Attachment2Action.action.actions.downloadStream.uri.replace('{id}', this.data.id);
+                        }
+
+                        var img = new Element("img", {"src": url, "styles": this.selector.css.filePreviewNode}).inject(this.previewNode);
+                        this.tooltip = new mBox.Tooltip({
+                            content: this.previewNode,
+                            setStyles: {content: {padding: 15, lineHeight: 20}},
+                            attach: this.node,
+                            position: {
+                                y: ['center'],
+                                x: ['right', 'outside']
+                            },
+                            transition: 'flyin'
+                        });
+                    }
+                }
+            }.bind(this),
+            "mouseout": function(){
+                this.outItem();
+            }.bind(this),
+            "click": function(){
+                this.clickItem();
+            }.bind(this)
+        });
+
     }
 });
 
@@ -137,6 +216,9 @@ MWF.xApplication.Selector.PanFile.ItemSelected = new Class({
 	Extends: MWF.xApplication.Selector.Identity.ItemSelected,
     _getShowName: function(){
         return this.data.name;
+    },
+    _getOOIcon: function (){
+        return 'ooicon-doc-cooperation';
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+this.selector.options.style+"/icon/file.png)");
@@ -166,6 +248,9 @@ MWF.xApplication.Selector.PanFile.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Identity.ItemCategory,
     _getShowName: function(){
         return this.data.name || this.data.text;
+    },
+    _getOOIcon: function (){
+        return 'ooicon-files';
     },
     createNode: function(){
         this.node = new Element("div", {
@@ -237,11 +322,12 @@ MWF.xApplication.Selector.PanFile.ItemCategory = new Class({
 
                 categorys.each(function(subData){
                     var category = this.selector._newItemCategory(subData, this.selector, this.children, this.level + 1);
-                    // this.subCategorys.push( category );
+                    this.subCategorys.push( category );
                 }.bind(this));
 
                 attachments.each(function(subData){
                     var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                    this.subItems.push( category );
                     this.selector.items.push( category );
                 }.bind(this));
 

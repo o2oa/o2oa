@@ -38,7 +38,7 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
         }
         //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
         this.loading = true;
-        if (!options.title) options.title = MWF.xApplication.Selector.LP.multiSelectTitle;
+        // if (!options.title) options.title = MWF.xApplication.Selector.LP.multiSelectTitle;
         this.setOptions(options);
         this.container = container;
 

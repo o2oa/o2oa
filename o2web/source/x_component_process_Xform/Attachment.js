@@ -532,6 +532,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         //        this.setReadonly();
         //    }else{
         this.checkUploadAction();
+        this.checkOpenDriverAction();
         this.checkDeleteAction();
         this.checkReplaceAction();
         this.checkPreviewAttAction();
@@ -699,6 +700,10 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.uploadAttachment(e, node);
         }.bind(this));
 
+        this.openDriverAction = this.createAction(this.editActionsGroupNode, "drive", o2.LP.widget.selectFromDriver, function(e, node){
+            this.openDriver(e, node);
+        }.bind(this));
+
         this.deleteAction = this.createAction(this.editActionsGroupNode, "delete", o2.LP.widget["delete"], function (e, node) {
             this.deleteAttachment(e, node);
         }.bind(this));
@@ -766,6 +771,10 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (!hiddenGroup.contains("edit")) {
             this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function (e, node) {
                 this.uploadAttachment(e, node);
+            }.bind(this));
+
+            this.min_openDriverAction = this.createAction(this.minActionAreaNode, "drive", o2.LP.widget.selectFromDriver, function (e, node) {
+                this.openDriver(e, node);
             }.bind(this));
 
             this.min_deleteAction = this.createAction(this.minActionAreaNode, "delete", MWF.LP.widget["delete"], function (e, node) {
@@ -1667,6 +1676,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
      *  this.form.get("fieldId").reload( true ); //重新从后台获取附件并重新加载
      */
     reload: function( refresh, callback ){
+        debugger;
         this.node.empty();
         this._loadReadEditAbeld();
         if (!this.isReadable && !!this.isHideUnreadable){
@@ -1674,16 +1684,20 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             if(callback)callback();
         }else{
             if (this.form.businessData.work.startTime){
+                var opts = !!this.attachmentController ? {
+                    size: this.attachmentController.options.size,
+                    listStyle: this.attachmentController.options.listStyle
+                } : {};
                 if( refresh ){
                     var job = (this.form.businessData.work || this.form.businessData.workCompleted ).job;
                     o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.
                         listWithJob(job, function(json){
                             this.form.businessData.attachmentList = json.data;
-                            this.loadAttachmentController();
+                            this.loadAttachmentController(opts);
                             if(callback)callback();
                     }.bind(this));
                 }else{
-                    this.loadAttachmentController();
+                    this.loadAttachmentController(opts);
                     if(callback)callback();
                 }
             }
@@ -1700,7 +1714,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         if( this.json[key] === "hidden" )return "hidden";
         return true;
     },
-    loadAttachmentController: function () {
+    loadAttachmentController: function (opts) {
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
@@ -1735,6 +1749,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         if (this.readonly) options.readonly = true;
         if (this.form.json.attachmentStyle) {
             options = Object.merge(options, this.form.json.attachmentStyle);
+        }
+        if(opts){
+            options = Object.merge(options, opts);
         }
         //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
@@ -1983,19 +2000,18 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     openDriver: function () {
         o2.xDesktop.requireApp('Selector', 'package', function () {
             new MWF.O2Selector( layout.mobile ? $(document.body) : this.form.app.content, Object.assign( {
+                title: "",
                 type: 'PanFile',
                 onComplete: function ( selectedItemList ) {
                     var files = selectedItemList.map( function(item){
                         return item.data;
                     });
                     this._copyFromPan(files);
-                }
+                }.bind(this)
             }, this.form.json.selectorStyle || {}));
-        });
+        }.bind(this));
     },
     _copyFromPan: function (files) {
-        var method = 33
-
         var data = this.form.businessData;
         var isWorkCompleted = data.work && data.work.completedTime;
 
@@ -2017,7 +2033,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
         this.fireEvent("copy", [arr]);
 
-        var p = o2.Actions.load('x_processplatform_assemble_surface').AttachmentAction[method](workId, arr);
+        var p = o2.Actions.load('x_processplatform_assemble_surface').AttachmentAction[method](workId, {
+            attachmentList: arr
+        });
         p.then(function (result) {
             this.reload( true, function(){
 
@@ -3179,6 +3197,9 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if (this.readonly) options.readonly = true;
         if (this.form.json.attachmentStyle) {
             options = Object.merge(options, this.form.json.attachmentStyle);
+        }
+        if(opts){
+            options = Object.merge(options, opts);
         }
 
         this.fireEvent("queryLoadController", [options]);
