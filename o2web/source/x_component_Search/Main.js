@@ -255,23 +255,23 @@ MWF.xApplication.Search.ResaultItem = new Class({
     loadInfor: function(){
         var html = "";
         if (this.data.applicationName){
-            html+="<span style='color:#006d21'>"+this.lp.processApplication+"</span><span>"+this.data.applicationName+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+            html+="<span style='color:#006d21'>"+this.lp.processApplication+"</span><span>"+o2.txt(this.data.applicationName)+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
         }
         if (this.data.processName){
-            html+="<span style='color:#006d21'>"+this.lp.process+"</span><span>"+this.data.processName+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+            html+="<span style='color:#006d21'>"+this.lp.process+"</span><span>"+o2.txt(this.data.processName)+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
         }
         if (this.data.appName){
-            html+="<span style='color:#006d21'>"+this.lp.cmsApplication+"</span><span>"+this.data.appName+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+            html+="<span style='color:#006d21'>"+this.lp.cmsApplication+"</span><span>"+o2.txt(this.data.appName)+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
         }
         if (this.data.categoryName){
-            html+="<span style='color:#006d21'>"+this.lp.category+"</span><span>"+this.data.categoryName+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+            html+="<span style='color:#006d21'>"+this.lp.category+"</span><span>"+o2.txt(this.data.categoryName)+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
         }
 
         if (this.data.creatorPerson){
-            html+="<span style='color:#006d21'>"+this.lp.creatorPerson+"</span><span>"+MWF.name.cn(this.data.creatorPerson)+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+            html+="<span style='color:#006d21'>"+this.lp.creatorPerson+"</span><span>"+o2.txt(MWF.name.cn(this.data.creatorPerson))+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
         }
         if (this.data.creatorUnit){
-            html+="<span style='color:#006d21'>"+this.lp.unit+"</span><span>"+MWF.name.cn(this.data.creatorUnit)+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+            html+="<span style='color:#006d21'>"+this.lp.unit+"</span><span>"+o2.txt(MWF.name.cn(this.data.creatorUnit))+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
         }
         if (this.data.type==="workCompleted"){
             html+="<span style='color: #f27b5f'>"+this.lp.completed+"</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>";

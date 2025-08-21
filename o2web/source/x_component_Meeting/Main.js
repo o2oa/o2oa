@@ -978,7 +978,7 @@ MWF.xApplication.Meeting.Config = new Class({
                 "   <div class='onlineConfigArea' style='display: "+( d.onlineProduct === "好视通" ? "" : "none" )+"'>"+
                 "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.hstUrl +"</div>" +
                 "       <div style='"+ viewStyle2 +"'>" +
-                "           <input type='text' name='hstUrl' value='" + (d.onlineConfig.hstUrl || "") + "' style='width:calc(100% - 10px); border:1px solid #ccc'>"+
+                "           <input type='text' name='hstUrl' value='" + o2.txt(d.onlineConfig.hstUrl || "") + "' style='width:calc(100% - 10px); border:1px solid #ccc'>"+
                 "       </div>"+
 
                 "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.hstKey +"</div>" +

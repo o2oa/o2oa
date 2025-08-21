@@ -384,8 +384,8 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
     loadHotpic: function(doc, html, i){
         var picNode = new Element("div.o2_homepage_infor_hotpicNode").inject(this.hotpicDocArea, "top");
         var bind = {
-            "title": doc.title,
-            "summary": doc.summary || doc.title,
+            "title": o2.txt(doc.title),
+            "summary": o2.txt(doc.summary || doc.title),
             "createTime": doc.createTime.toString().substr(0, 10),
             "url": MWF.xDesktop.getImageSrc(doc.picId)
         }

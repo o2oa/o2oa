@@ -108,7 +108,7 @@ o2.widget.JsonTemplate = new Class({
         var f = eval("(x = function($){\n return "+text+";\n})");
         returnValue = f.apply(json, [$]);
         if (returnValue===undefined || returnValue===null) returnValue="";
-        returnValue = returnValue.toString();
+        returnValue = o2.txt(returnValue.toString());
         return returnValue || "";
 	},
     getJsonFunContent: function(json, text){

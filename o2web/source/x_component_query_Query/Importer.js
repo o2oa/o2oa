@@ -393,7 +393,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                     var vaildTitleStyles = this.objectToString( this.css.vaildTitleStyles, "style" );
                     htmlArray.push( "<tr>" );
                     this.json.data.columnList.each( function (columnJson, i) {
-                        htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
+                        htmlArray.push( "<th style='"+titleStyle+"'>"+o2.txt(columnJson.displayName)+"</th>" );
                     });
                     htmlArray.push( "<th style='"+vaildTitleStyles+"'> "+this.lp.validationInfor +"</th>" );
                     htmlArray.push( "</tr>" );
@@ -415,7 +415,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                         this.json.data.columnList.each( function (columnJson, i) {
                             var d = lineData[ i ];
                             var text = typeOf(d) === "string" ? ( d || '' ).replace(/&#10;/g,"<br/>") : d;
-                            htmlArray.push( "<td style='"+contentStyle+"'>"+ text +"</td>" ); //换行符&#10;
+                            htmlArray.push( "<td style='"+contentStyle+"'>"+ o2.txt(text) +"</td>" ); //换行符&#10;
                         });
                         htmlArray.push( "<td style='"+validContentStyles+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
                         htmlArray.push( "</tr>" );

@@ -745,10 +745,10 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
             style: 'display: grid; grid-template-columns: 60px auto; line-height:20px;'
         }).inject(this.inforNode);
         var html = "<div style='grid-column: 1 / -1; font-weight: bold'>"+this.data.name+"</div>";
-        html += "<div style='font-weight: bold'>"+lp.alias+": </div><div style='margin-left:10px'>"+( this.data.alias || "" )+"</div>";
-        html += "<div style='font-weight: bold'>"+lp.createTime+": </div><div style='margin-left:10px'>"+(this.data.createTime || "")+"</div>";
-        html += "<div style='font-weight: bold'>"+lp.updateTime+": </div><div style='float:left; margin-left:10px'>"+(this.data.updateTime||"")+"</div>";
-        html += "<div style='font-weight: bold'>"+lp.description+": </div><div style='float:left; margin-left:10px'>"+(this.data.description||"")+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.alias+": </div><div style='margin-left:10px'>"+o2.txt( this.data.alias || "" )+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.createTime+": </div><div style='margin-left:10px'>"+o2.txt(this.data.createTime || "")+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.updateTime+": </div><div style='float:left; margin-left:10px'>"+o2.txt(this.data.updateTime||"")+"</div>";
+        html += "<div style='font-weight: bold'>"+lp.description+": </div><div style='float:left; margin-left:10px'>"+o2.txt(this.data.description||"")+"</div>";
         wrapNode.set("html", html);
 
         this.tooltip = new MWF.xApplication.cms.ColumnManager.Explorer.Item.Tooltip(this.explorer.app.content, this.node, this.explorer.app, {}, {
