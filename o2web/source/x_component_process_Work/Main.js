@@ -33,6 +33,7 @@ MWF.xApplication.process.Work.Main = new Class({
             "title": MWF.xApplication.process.Work.LP.title
         });
 		this.lp = MWF.xApplication.process.Work.LP;
+        console.log( 'this.status', this.status, 'this.options', this.options );
         if (!this.status) {
             if( this.options.readonly === "true" )this.options.readonly=true;
         } else {
@@ -46,6 +47,8 @@ MWF.xApplication.process.Work.Main = new Class({
             this.options.formid = this.status.formid;
             if( this.status.form && this.status.form.id )this.options.form = this.status.form;
             this.options.readonly = (this.status.readonly === true || this.status.readonly === "true");
+            this.options.draft = this.status.draft;
+            this.options.draftData = this.status.draftData;
         }
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},
@@ -145,6 +148,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.loadWorkByDraft(json.data.work, json.data.data, json.data.attachmentList);
             }.bind(this));
         }else if (this.options.draft){
+            this.draft = typeOf(this.options.draft)==='string' ? this.options.draft : Object.clone(this.options.draft);
             this.loadWorkByDraft(this.options.draft, this.options.draftData);
         }else if (this.options.jobId || this.options.jobid || this.options.job){
             var jobId = this.options.jobId || this.options.jobid || this.options.job;
@@ -753,7 +757,9 @@ MWF.xApplication.process.Work.Main = new Class({
             "jobId": this.options.jobId,
             "draftId": this.options.draftId,
             "priorityWork": this.options.priorityWork,
-            "readonly": this.readonly
+            "readonly": this.readonly,
+            "draft": this.draft,
+            "draftData": this.options.draftData
         };
         if( this.options.formid )status.formid = this.options.formid;
         if( this.options.form && this.options.form.id )status.form = this.options.form;

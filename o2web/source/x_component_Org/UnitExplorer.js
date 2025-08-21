@@ -501,10 +501,6 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             this.attributeContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
             this.attributePage = this.propertyTab.addTab(this.attributeContentNode, this.explorer.app.lp.unitAttribute);
         }
-
-        // if( !this.data || !this.data.id ){
-        //     this.propertyTab.tabNodeContainer.hide()
-        // }
     },
     _loadContent: function(){
         this._listBaseInfor();
@@ -1437,7 +1433,6 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         });
 
         this.saveUnit(function(){
-            // this.content.propertyTab.tabNodeContainer.show();
             this.cancel(  null,true );
             this.content.propertyContentScrollNode.unmask();
         }.bind(this), function(xhr, text, error){
