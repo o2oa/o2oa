@@ -748,6 +748,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                         router = log.properties.routeName || "";
                         opinion = log.properties.opinion || "";
                 }
+                if( !log.person )log.person = '';
                 if (log.type==="currentTask"){
                     var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
                     var html = "<div style='font-weight: bold; color: red'>"+log.person.substring(0, log.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
@@ -782,6 +783,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                     }
                 }else{
                     log.taskCompletedList.each(function(task){
+                        if( !task.person )task.person = '';
                         var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
                         var html = "<div style='font-weight: bold'>"+task.person.substring(0, task.person.indexOf("@"))+": </div>";
                         html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+o2.txt(task.opinion)+"</div>";
@@ -790,6 +792,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                     }.bind(this));
 
                     log.taskList.each(function(task){
+                        if( !task.person )task.person = '';
                         var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
                         var html = "<div style='font-weight: bold; color: red'>"+task.person.substring(0, task.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
                         taskNode.set("html", html);
