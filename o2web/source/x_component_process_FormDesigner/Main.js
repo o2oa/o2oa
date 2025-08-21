@@ -1828,7 +1828,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             "<input type=\"text\" style=\"width: 68%; height: 22px; border: 1px solid #cccccc\"/>"+"</td></tr>" +
 
             "<tr><td style=\"height: 40px;\">" +this.lp.templateDescription+"</td><td>"+
-            "<textarea type=\"text\" style=\"width: 98%; height: 44px; border: 1px solid #cccccc\">"+this.pcForm.json.description+"</textarea>"+"</td></tr>" +
+            "<textarea type=\"text\" style=\"width: 98%; height: 44px; border: 1px solid #cccccc\">"+o2.txt(this.pcForm.json.description)+"</textarea>"+"</td></tr>" +
 
             "<tr><td colSpan=\"2\" id=\"form_templatePreview\">" +
             "<div style=\"position: relative; width: 180px; height: 180px; margin: 20px auto 0px auto;  overflow: hidden\"></div>" +

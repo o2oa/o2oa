@@ -136,11 +136,11 @@ MWF.xApplication.Homepage.MeetingContent.MeetingInvited = new Class({
         var completed = (new Date()).parse(d.completedTime);
         var startStr = start.format("%Y-%m-%d %H:%M");
         var completedStr = completed.format("%H:%M");
-        timeNode.set("html", this.app.lp.meetingTime+": <span style='color: #999999'>"+startStr+" - "+completedStr+"<span>");
+        timeNode.set("html", this.app.lp.meetingTime+": <span style='color: #999999'>"+o2.txt(startStr+" - "+completedStr)+"<span>");
 
         var locationNode = new Element("div.o2_homepage_meeting_item_location").inject(inforArea);
         if(d.woRoom ){
-            locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+d.woRoom.name+"<span>");
+            locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+o2.txt(d.woRoom.name)+"<span>");
         }else if(d.roomId){
             locationNode.set("html", this.app.lp.meetingNumber+": <span style='color: #999999'>"+d.roomId+"<a>");
         }
@@ -261,7 +261,7 @@ MWF.xApplication.Homepage.MeetingContent.Meeting = new Class({
 
         var locationNode = new Element("div.o2_homepage_meeting_item_location").inject(inforArea);
         if( d.woRoom ){
-            locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+d.woRoom.name+"<span>");
+            locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+o2.txt(d.woRoom.name)+"<span>");
         }else if(d.roomId){
             locationNode.set("html", this.app.lp.meetingNumber+": <span style='color: #999999'>"+d.roomId+"<a>");
         }

@@ -545,21 +545,21 @@ MWF.xApplication.process.Work.Main = new Class({
                     "                        src=\""+layout.session.user.iconUrl+"\">\n" +
                     "                    </div>\n" +
                     "                    <div\n" +
-                    "                        style=\"height: 40px; line-height: 40px; overflow: hidden; float: left; margin-left: 10px; margin-right: 30px; width: 150px; color: rgb(51, 51, 51); font-size: 16px; text-align: left;\">"+id.name+"\n" +
+                    "                        style=\"height: 40px; line-height: 40px; overflow: hidden; float: left; margin-left: 10px; margin-right: 30px; width: 150px; color: rgb(51, 51, 51); font-size: 16px; text-align: left;\">"+o2.txt(id.name)+"\n" +
                     "                    </div>\n" +
                     "                </div>\n" +
                     "                <div style=\"height: 36px; line-height: 40px; overflow: hidden; font-size: 14px;\">\n" +
                     "                    <div style=\"color: rgb(0, 0, 0); width: 40px; float: left;\">"+this.lp.org+"</div>\n" +
                     "                    <div title=\""+id.unitLevelName+"\"\n" +
-                    "                         style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+id.unitLevelName+"\n" +
+                    "                         style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+o2.txt(id.unitLevelName)+"\n" +
                     "                    </div>\n" +
                     "                </div>\n" +
                     "                <div style=\"height: 36px; line-height: 40px; overflow: hidden; font-size: 14px;\">\n" +
                     "                    <div style=\"color: rgb(0, 0, 0); width: 40px; float: left;\">"+this.lp.duty+"</div>\n" +
-                    "                    <div title=\""+duty+"\" style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+duty+"</div>\n" +
+                    "                    <div title=\""+duty+"\" style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+o2.txt(duty)+"</div>\n" +
                     "                </div>\n" +
                     "                <div class=\"mainColor_color\"\n" +
-                    "                     style=\"position: absolute; float: right; top: 14px; right: 14px;\">【"+id.unitName+"】\n" +
+                    "                     style=\"position: absolute; float: right; top: 14px; right: 14px;\">【"+o2.txt(id.unitName)+"】\n" +
                     "                </div>";
                 idNode.set("html", html);
 

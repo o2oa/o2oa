@@ -1436,7 +1436,7 @@ MWF.xApplication.query.ViewDesigner.Property.Filter = new Class({
             "<td style='padding:3px;border-right:1px solid #CCC;border-bottom:1px solid #999; width:60px'>" + this.data.logic + "</td>" +
             "<td style='padding:3px;border-right:1px solid #CCC;border-bottom:1px solid #999; width:30px'>"+lp.columnValue+"</td>" +
             "<td style='padding:3px;border-right:1px solid #CCC;border-bottom:1px solid #999;'>" + this.data.comparison + "</td>" +
-            "<td style='padding:3px;border-bottom:1px solid #999;'>" + this.data.value + "</td>";
+            "<td style='padding:3px;border-bottom:1px solid #999;'>" + o2.txt(this.data.value) + "</td>";
         this.node.set("html", html);
         var tds = this.node.getElements("td");
 
