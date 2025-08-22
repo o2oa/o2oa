@@ -1584,7 +1584,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"btnStyleLight": "Brillante",
 		"btnStyleIcon": "Solo iconos",
 		"fileCol": "Número de columnas mostradas",
-		"OOFilesSiteInfo": "Se pueden mostrar accesorios de otros sitios, varios sitios separados por comas de media esquina"
+		"OOFilesSiteInfo": "Se pueden mostrar accesorios de otros sitios, varios sitios separados por comas de media esquina",
+		"allowFromPan": "Permitir la selección desde el disco de red"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

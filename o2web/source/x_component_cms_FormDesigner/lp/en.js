@@ -1585,7 +1585,8 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"btnStyleLight": "bright",
 		"btnStyleIcon": "Icon only",
 		"fileCol": "Display column count",
-		"OOFilesSiteInfo": "Can display attachments from other sites, multiple sites separated by half width commas"
+		"OOFilesSiteInfo": "Can display attachments from other sites, multiple sites separated by half width commas",
+		"allowFromPan": "Allow selection from cloud storage"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",
