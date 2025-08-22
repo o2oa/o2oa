@@ -23,6 +23,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			this.areaNode.empty();
 			this.areaNode = null;
 		}
+		this.node.empty();
 		this._beforeReloaded();
 		this._loadReadEditAbeld();
 		this._loadUserInterface();

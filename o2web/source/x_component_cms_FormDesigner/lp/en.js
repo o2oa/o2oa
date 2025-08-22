@@ -1574,7 +1574,19 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"inherit": "Inherit the parent element",
 		"currencyInvalidOption": "Prefixes, suffixes, thousandths, and decimal points are not allowed to use signs or numbers",
 		"uploadMinCount": "Minimum upload quantity",
-		"uploadMinCountInfo": "'0' indicates that there is no limit to the number of uploads"
+		"uploadMinCountInfo": "'0' indicates that there is no limit to the number of uploads",
+		"exportImportType": "Export Import Type",
+		"exportImportTypeNote": "Components with both text and values, such as dropdown, single selection, and multiple selection, are valid",
+		"uploadButtonTitle": "Button Title",
+		"uploadButtonStyle": "button",
+		"uploadButtonIcon": "Button icon",
+		"btnStyleDefault": "default",
+		"btnStyleSimple": "simple",
+		"btnStyleLight": "bright",
+		"btnStyleIcon": "Icon only",
+		"fileCol": "Display column count",
+		"OOFilesSiteInfo": "Can display attachments from other sites, multiple sites separated by half width commas",
+		"allowFromPan": "Allow selection from cloud storage"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

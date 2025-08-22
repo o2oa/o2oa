@@ -1754,6 +1754,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     this.businessData.originalData = null;
                     this.businessData.originalData = copyData;
                     if(callback)callback();
+
+                    this._postWindowMessage('onAfterSave', this.app.work.id);
+
                     this.saving = false;
                 }.bind(this), failure, this.businessData.work.id, this.modifedData);
             }.bind(this));
@@ -1827,8 +1830,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         layout.desktop.apps = {};
                     }
                     layout.desktop.apps[this.app.appId] = this.app;
-
                     if (callback) callback();
+
+                    this._postWindowMessage('onAfterSave', this.app.work.id);
+
                     this.saving = false;
 
                     if (!isstart) this.app.reload();
@@ -2369,15 +2374,23 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
 
-    _postWindowMessage: function(type){
-        var o = window.opener ?? layout;
-        o.postMessage({
-            type, id: this.app.work.id
-        }, window.location.origin);
+    _postWindowMessage: function(type, id){
+        if (!this.postWindowMessageFun) this.postWindowMessageFun = {};
+        if (this.postWindowMessageFun[type]){
+            window.clearTimeout(this.postWindowMessageFun[type])
+            this.postWindowMessageFun[type] = null;
+        }
+        this.postWindowMessageFun[type] = window.setTimeout(()=>{
+            var o = window.opener ?? layout;
+            o.postMessage({
+                type, id
+            }, window.location.origin);
+            if (this.postWindowMessageFun) this.postWindowMessageFun[type] = null;
+        }, 1000);
     },
 
     finishOnFlow: function(type, data, notCloseWindow){
-        this._postWindowMessage('onAfterProcess');
+        this._postWindowMessage('onAfterProcess', this.app.work.id);
 
         if (this.closeImmediatelyOnProcess && !notCloseWindow) {
             this.app.close();
@@ -5122,7 +5135,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.app.content.unmask();
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
 
-                        _self._postWindowMessage('onAfterRetract');
+                        _self._postWindowMessage('onAfterRetract', _self.app.work.id);
 
                         _self.app.reload();
                         //}, null, _self.businessData.work.id);
@@ -5395,7 +5408,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     addRerouteMessage: function (data) {
-        this._postWindowMessage('onAfterReroute');
+        this._postWindowMessage('onAfterReroute', this.app.work.id);
         if (layout.desktop.message) {
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.workReroute,

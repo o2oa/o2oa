@@ -248,7 +248,7 @@ o2.widget.Paging = new Class({
         return pageTurnNode;
     },
     createPrevBatch : function( min ){
-        this.preBatchPage = new Element("div.prePage", {
+        this.preBatchPage = new Element("div.preBatchPage", {
             styles: this.css.preBatchPage
         }).inject(this.node);
         if (this.options.text.preBatchTuring ) this.preBatchPage.set("text", this.options.text.preBatchTuring);
@@ -274,7 +274,7 @@ o2.widget.Paging = new Class({
         });
     },
     createNextBatch : function( max ){
-        this.nextBatchPage = new Element("div.prePage", {
+        this.nextBatchPage = new Element("div.nextBatchPage", {
             styles: this.css.nextBatchPage
         }).inject(this.node);
         if (this.options.text.nextBatchTuring ) this.nextBatchPage.set("text", this.options.text.nextBatchTuring);

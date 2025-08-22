@@ -714,14 +714,17 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         return oo_p;
     },
     getTableTblW: function(table){
+        debugger;
         var type = "dxa";
-        var w = table.style.width;
+        var w = this.getMsoStyle(table)["mso-width"];
+
+        if (!w) w = table.style.width;
         if (!w){
             w = table.get("width");
         }
-        if (!w){
-            w = this.getMsoStyle(table)["mso-width"];
-        }
+        // if (!w){
+        //     w = this.getMsoStyle(table)["mso-width"];
+        // }
 
         if (w && o2.typeOf(w)==="string"){
             var u = w.substring(w.length-1, w.length);

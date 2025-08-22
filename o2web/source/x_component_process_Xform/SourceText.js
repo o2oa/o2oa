@@ -24,6 +24,10 @@ MWF.xApplication.process.Xform.SourceText = MWF.APPSourceText =  new Class({
          * @member parentLine
          * @memberOf MWF.xApplication.process.Xform.SourceText#
          */
+        if (!this.isReadable){
+            this.node?.addClass('hide');
+            return '';
+        }
         this._loadJsonData();
 	},
     _getSource: function(){

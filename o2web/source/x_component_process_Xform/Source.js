@@ -32,6 +32,11 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource = new Class(
         },
 
         _loadUserInterface: function () {
+            if (!this.isReadable && !!this.isHideUnreadable){
+                this.node?.addClass('hide');
+                return;
+            }
+
             this.currentPage = 1;
             this.data = null;
             if (this.json.path) {

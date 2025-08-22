@@ -34,7 +34,116 @@
         <div class="MWFMaplist" name="tabCurrentStyles" collapse="true" title="{{$.lp.currentTabStyle}}"></div>
         <div class="MWFMaplist" name="tabTextCurrentStyles" collapse="true" title="{{$.lp.currentTabSpanStyle}}"></div>
     </div>
+	<div title="{{$.lp.power}}"  class="MWFTab">
+        <!-- 可阅读配置 -->
+        <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.readConfig}}</div>
+        <div style="padding: 5px; color: #999999; ">{{$.lp.readConfigInfo}}</div>
+        
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9; display: {{($.appType && ($.appType==='process.FormDesigner' || $.appType==='cms.FormDesigner'))?'block':'none'}}">
+            <label><input name="readByActivity" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}readByActivityArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}readByActivityArea').setStyle('display', 'none');
+            }" text{($.readByActivity && $.readByActivity.indexOf('true')!=-1)?'checked':''} />{{$.lp.readConfig_activity}}</label>
+        </div>
+        <table id="text{$.pid}readByActivityArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.readByActivity && $.readByActivity=='true')?'block':'none'}">
+            <tr>
+                <td class="editTableTitle">{{$.lp.readActivity}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFProcessActivitySelect" name="readByActivityValue"></div>
+                </td>
+            </tr>
+        </table>
 
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9;">
+            <label><input name="readByOrg" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}readByOrgArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}readByOrgArea').setStyle('display', 'none');
+            }" text{($.readByOrg && $.readByOrg.indexOf('true')!=-1)?'checked':''} />{{$.lp.readConfig_org}}</label>
+        </div>
+        <table id="text{$.pid}readByOrgArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.readByOrg && $.readByOrg=='true')?'block':'none'}">
+            <tr>
+                <td class="editTableTitle">{{$.lp.readOrg}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonMultiple" name="readByOrgValue" data-types="unit,group,person,role"></div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9;">
+            <label><input name="readByScript" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}readByScriptArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}readByScriptArea').setStyle('display', 'none');
+            }" text{($.readByScript && $.readByScript.indexOf('true')!=-1)?'checked':''} />{{$.lp.readConfig_script}}</label>
+        </div>
+        <div id="text{$.pid}readByScriptArea" style="display: text{($.readByScript && $.readByScript=='true')?'block':'none'}">
+            <div class="MWFScriptArea" name="readByScriptValue" title="{{$.lp.readScript}} (S)"></div>
+            <div style="padding: 5px; color: #999999;">{{$.lp.readScriptInfo}}</div>
+        </div>
+
+        <div style="border-top: 1px solid #999;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td colspan="2" class="editTableValue">
+                        <b>{{$.lp.hideCannotRead}}:</b>
+                        <input type="radio" name="hideCannotRead" value="yes" text{($.hideCannotRead=='yes')?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="hideCannotRead" value="no" text{($.hideCannotRead=='no')?'checked':''}/>{{$.lp.no}}
+                        <input type="radio" name="hideCannotRead" value="inherit" text{($.hideCannotRead!=='yes' && $.hideCannotRead!=='no')?'checked':''}/>{{$.lp.inherit}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- 可编辑配置 -->
+        <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.editConfig}}</div>
+        <div style="padding: 5px; color: #999999; ">{{$.lp.editConfigInfo}}</div>
+
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9; display: {{($.appType && ($.appType==='process.FormDesigner' || $.appType==='cms.FormDesigner'))?'block':'none'}}">
+            <label><input name="editByActivity" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}editByActivityArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}editByActivityArea').setStyle('display', 'none');
+            }" text{($.editByActivity && $.editByActivity.indexOf('true')!=-1)?'checked':''} />{{$.lp.editConfig_activity}}</label>
+        </div>
+        <table id="text{$.pid}editByActivityArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.editByActivity && $.editByActivity=='true')?'block':'none'}">
+            <tr>
+                <td class="editTableTitle">{{$.lp.editActivity}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFProcessActivitySelect" name="editByActivityValue"></div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9;">
+            <label><input name="editByOrg" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}editByOrgArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}editByOrgArea').setStyle('display', 'none');
+            }" text{($.editByOrg && $.editByOrg.indexOf('true')!=-1)?'checked':''} />{{$.lp.editConfig_org}}</label>
+        </div>
+        <table id="text{$.pid}editByOrgArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.editByOrg && $.editByOrg=='true')?'block':'none'}">
+            <tr>
+                <td class="editTableTitle">{{$.lp.readOrg}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonMultiple" name="editByOrgValue" data-types="unit,group,person,role"></div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9;">
+            <label><input name="editByScript" type="checkbox" value="true" onclick="if (this.checked){
+                $('text{$.pid}editByScriptArea').setStyle('display', 'block');
+            } else {
+                $('text{$.pid}editByScriptArea').setStyle('display', 'none');
+            }" text{($.editByScript && $.editByScript.indexOf('true')!=-1)?'checked':''} />{{$.lp.editConfig_script}}</label>
+        </div>
+        <div id="text{$.pid}editByScriptArea" style="display: text{($.editByScript && $.editByScript=='true')?'block':'none'}">
+            <div class="MWFScriptArea" name="editByScriptValue" title="{{$.lp.editScript}} (S)"></div>
+            <div style="padding: 5px; color: #999999;">{{$.lp.editScriptInfo}}</div>
+        </div>
+    </div>
 	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>

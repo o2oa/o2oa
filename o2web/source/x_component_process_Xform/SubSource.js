@@ -47,6 +47,11 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource = new Class(
             this._afterLoaded();
         },
         _loadUserInterface: function () {
+            if (!this.isReadable && !!this.isHideUnreadable){
+                this.node?.addClass('hide');
+                return;
+            }
+
             this.loopNodes = [];
             this.subSourceItems = [];
             var node = new Element('div.subsource').inject(this.node, 'before');

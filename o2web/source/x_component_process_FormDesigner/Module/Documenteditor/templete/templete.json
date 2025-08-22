@@ -11,14 +11,8 @@
     "layouts": {
     }
   },
-  "party-meeting": {
-    "name": "党委纪要类",
-    "file": "party-meeting.html",
-    "layouts": {
-    }
-  },
   "letter": {
-    "name": "函类",
+    "name": "信函类",
     "file": "letter.html",
     "layouts": {
     }
@@ -35,9 +29,9 @@
     "layouts": {
     }
   },
-  "combine": {
-    "name": "联合发文类",
-    "file": "combine.html",
+  "party-meeting": {
+    "name": "党委纪要类",
+    "file": "party-meeting.html",
     "layouts": {
     }
   },

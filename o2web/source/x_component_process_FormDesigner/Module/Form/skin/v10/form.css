@@ -59,6 +59,13 @@
     box-sizing: content-box !important;
 }
 
+.form-layout div.o2-documentEditor-toolbar{
+    box-sizing: content-box !important;
+}
+.form-layout div.o2-documentEditor-toolbar *{
+    box-sizing: content-box !important;
+}
+
 .form-layout .form-content-area .content-item,
 .form-layout .form-content-area oo-input,
 .form-layout .form-content-area oo-files,
@@ -486,6 +493,8 @@
     color: var(--oo-color-text2);
     border-bottom: 1px solid #dfdfdf !important;
     transition: background-color 0.3s;
+    background: none !important;
+    background-image: none !important;
 }
 
 .form-layout .page-content-section div[mwftype='view'] table tr:nth-child(1) td {

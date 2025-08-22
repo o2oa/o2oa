@@ -574,9 +574,14 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
         if (hasByActivity || hasByOrg || hasByScript){
             if (hasByActivity){
-                if (this.form.businessData.activity && this.form.businessData.activity.id){
-                    const i = this.json[activityValue].findIndex((act)=>{
-                        return act.id === this.form.businessData.activity?.id;
+                debugger;
+                let activityId = this.form.businessData.activity && this.form.businessData.activity.id;
+                if (!activityId){
+                    activityId = this.form.businessData.document && this.form.businessData.document.docStatus;
+                }
+                if (activityId){
+                    const i = this.json[activityValue].findIndex((act)=>{                      
+                        return o2.typeOf(act)==="object" ? act.id === activityId : act === activityId;
                     });
                     if (i!==-1) return 'yes';
                 }

@@ -103,7 +103,7 @@
         <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.readConfig}}</div>
         <div style="padding: 5px; color: #999999; ">{{$.lp.readConfigInfo}}</div>
         
-        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9; display: {{($.appType && $.appType==='process.FormDesigner')?'block':'none'}}">
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9; display: {{($.appType && ($.appType==='process.FormDesigner' || $.appType==='cms.FormDesigner'))?'block':'none'}}">
             <label><input name="readByActivity" type="checkbox" value="true" onclick="if (this.checked){
                 $('text{$.pid}readByActivityArea').setStyle('display', 'block');
             } else {
@@ -130,7 +130,7 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.readOrg}}:</td>
                 <td class="editTableValue">
-                    <div class="MWFPersonMultiple" name="readByOrgValue" data-types="unit,group,person"></div>
+                    <div class="MWFPersonMultiple" name="readByOrgValue" data-types="unit,group,person,role"></div>
                 </td>
             </tr>
         </table>
@@ -164,7 +164,7 @@
         <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.editConfig}}</div>
         <div style="padding: 5px; color: #999999; ">{{$.lp.editConfigInfo}}</div>
 
-        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9; display: {{($.appType && $.appType==='process.FormDesigner')?'block':'none'}}">
+        <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9; display: {{($.appType && ($.appType==='process.FormDesigner' || $.appType==='cms.FormDesigner'))?'block':'none'}}">
             <label><input name="editByActivity" type="checkbox" value="true" onclick="if (this.checked){
                 $('text{$.pid}editByActivityArea').setStyle('display', 'block');
             } else {
@@ -191,7 +191,7 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.readOrg}}:</td>
                 <td class="editTableValue">
-                    <div class="MWFPersonMultiple" name="editByOrgValue" data-types="unit,group,person"></div>
+                    <div class="MWFPersonMultiple" name="editByOrgValue" data-types="unit,group,person,role"></div>
                 </td>
             </tr>
         </table>

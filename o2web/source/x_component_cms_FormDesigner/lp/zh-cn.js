@@ -64,7 +64,10 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "blankToAllNotify": "读者（发布范围）为空时通知阅读范围",
         "blankNotToAllNotify": "读者（发布范围）为空时不通知",
         "specificValue": "指定",
-        "formField": "表单字段"
+        "formField": "表单字段",
+
+        "draft": "草稿",
+        "published": "已发布",
     },
     "actionBar": {
         "close":"关闭",

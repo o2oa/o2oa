@@ -2329,23 +2329,64 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }.bind(this));
 
             processActivityNodes.each(function(node){
-                var d = this.data[node.get("name")];
-                var data = d || [];
-                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
-                    "type": "ProcessActivity",
-                    "names": data,
-                    "application": this.form.data.json.application,
-                    "onChange": function(ids){
-                        var values = [];
-                        ids.each(function(id){
-                            values.push(id.data);
-                        }.bind(this));
-                        var name = node.get("name");
-                        var oldValue = this.data[name];
-                        this.data[name] = values;
-                        this.checkHistory(name, oldValue, this.data[name]);
-                    }.bind(this)
-                });
+                const appName = this.form.designer.options.name;
+                if (["portal.WidgetDesigner", "portal.PageDesigner"].includes(appName)) {
+                    //如果是门户设计器，则不加载活动选择器
+                    //因为门户设计器没有活动，只有页面
+
+                    node.textContent = "门户中无活动";
+                }else if (["cms.FormDesigner"].includes(appName)){
+                    //如果是CMS设计器，只有已发布或未发布
+                    var property = this;
+                    var jsondata = node.get("name");
+                    var name = this.data.pid+jsondata;
+                    var lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
+                    [{v:"draft", t: lp.draft}, {v:"published", t: lp.published}].forEach((a)=>{
+                        var label = new Element("label").inject(node);
+                        var input = new Element("input", {
+                            "type": "checkbox",
+                            "name": name,
+                            "value": a.v,
+                            "checked": (this.data[name] && this.data[name].includes(a.v))
+                        }).inject(label);
+                        new Element("span", {"text": a.t}).inject(label);
+
+
+                        input.addEvent("change", function(e){
+                            property.setCheckboxValue(jsondata, this, true);
+                        });
+                        input.addEvent("click", function(e){
+                            property.setCheckboxValue(jsondata, this);
+                        });
+                        input.addEvent("keydown", function(e){
+                            e.stopPropagation();
+                        });
+                    });
+
+                    
+
+                }else{
+                    //如果是流程设计器，则加载活动选择器
+                    var d = this.data[node.get("name")];
+                    var data = d || [];
+                    new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                        "type": "ProcessActivity",
+                        "names": data,
+                        "application": this.form.data.json.application,
+                        "onChange": function(ids){
+                            var values = [];
+                            ids.each(function(id){
+                                values.push(id.data);
+                            }.bind(this));
+                            var name = node.get("name");
+                            var oldValue = this.data[name];
+                            this.data[name] = values;
+                            this.checkHistory(name, oldValue, this.data[name]);
+                        }.bind(this)
+                    });
+                }
+
+                
             }.bind(this));
 
             cmsFileNodes.each(function(node){

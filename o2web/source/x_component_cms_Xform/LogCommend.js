@@ -21,6 +21,10 @@ MWF.xApplication.cms.Xform.LogCommend = MWF.CMSLogCommend =  new Class(
 	_loadUserInterface: function(){
 		this.node.empty();
         this.node.setStyle("-webkit-user-select", "text");
+        if (!this.isReadable){ 
+            this.node?.addClass('hide');
+            return ''
+        }
         /**
          * @summary log组件使用this.log实现功能
          * @member {MWF.xApplication.cms.Xform.widget.Log}
