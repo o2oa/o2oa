@@ -670,13 +670,13 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         var contentStyle = "width:120px; float:left; margin-left:10px";
         if( d.targetType === "processPlatform" ){
             html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.documentType+": </div><div style='"+contentStyle+"'>"+lp.work+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.processName+": </div><div style='"+contentStyle+"'>"+d.targetCategory+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.draftPerson +": </div><div style='"+contentStyle+"'>"+d.targetCreatorPersonCn+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.processName+": </div><div style='"+contentStyle+"'>"+o2.txt(d.targetCategory)+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.draftPerson +": </div><div style='"+contentStyle+"'>"+o2.txt(d.targetCreatorPersonCn)+"</div></div>";
             html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.draftTime +": </div><div style='"+contentStyle+"'>"+d.targetStartTime+"</div></div>";
         }else{
             html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.documentType+": </div><div style='"+contentStyle+"'>"+lp.document+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.categoryName+": </div><div style='"+contentStyle+"'>"+d.targetCategory+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.publishPerson+": </div><div style='"+contentStyle+"'>"+d.targetCreatorPersonCn+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.categoryName+": </div><div style='"+contentStyle+"'>"+o2.txt(d.targetCategory)+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.publishPerson+": </div><div style='"+contentStyle+"'>"+o2.txt(d.targetCreatorPersonCn)+"</div></div>";
             html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.publishTime+": </div><div style='"+contentStyle+"'>"+d.targetStartTime+"</div></div>";
         }
 

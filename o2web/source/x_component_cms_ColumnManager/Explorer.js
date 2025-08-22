@@ -744,7 +744,7 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
         var wrapNode = new Element("div", {
             style: 'display: grid; grid-template-columns: 60px auto; line-height:20px;'
         }).inject(this.inforNode);
-        var html = "<div style='grid-column: 1 / -1; font-weight: bold'>"+this.data.name+"</div>";
+        var html = "<div style='grid-column: 1 / -1; font-weight: bold'>"+o2.txt(this.data.name)+"</div>";
         html += "<div style='font-weight: bold'>"+lp.alias+": </div><div style='margin-left:10px'>"+o2.txt( this.data.alias || "" )+"</div>";
         html += "<div style='font-weight: bold'>"+lp.createTime+": </div><div style='margin-left:10px'>"+o2.txt(this.data.createTime || "")+"</div>";
         html += "<div style='font-weight: bold'>"+lp.updateTime+": </div><div style='float:left; margin-left:10px'>"+o2.txt(this.data.updateTime||"")+"</div>";
