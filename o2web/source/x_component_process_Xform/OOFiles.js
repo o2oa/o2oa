@@ -240,41 +240,58 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         return i===-1;
     },
     getValue: function () {
+        debugger;
         if (!this.isReadable) return '';
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
         if (o2.typeOf(value) === 'null' || value === '') value = this._computeValue();
 
-        //如果有设置 site，循环所有附件，将匹配site的附件添加进来。
-        if (this.json.fileSite){
-            const siteList = this.json.fileSite.split(/.*,.*/g);
-            const addr = this.restfulActions.getAddress();
-            this.form.businessData.attachmentList.each(function (att) {
-                if (siteList.includes(att.site) && att.control.allowRead){
-                    if (this.checkValue(value, att)){
-                        const previewUrl =
-                            this.env === 'process'
-                                ? `${addr}/jaxrs/attachment/download/${att.id}`
-                                : `${addr}/jaxrs/fileinfo/download/document/${att.id}`;
-                        const url = `${previewUrl}/stream`;
-
-                        const file = {
-                            id: att.id,
-                            url: url,
-                            previewUrl: previewUrl,
-                            lastModified: att.lastUpdateTime,
-                            lastModifiedDate: att.lastUpdateTime,
-                            name: att.name,
-                            size: att.length,
-                            type: att.extension,
-                        }
-
-                        if (!value || !value.length) value = [];
-                        value.push(file);
-                    }
+        // const v = [];
+        if (value && value.length){
+            const values = value.reduce((acc, v)=>{
+                const i = acc.findIndex((a)=>{
+                    return a.id === v.id;
+                });
+                if (i === -1){
+                    acc.push(v);
                 }
-            }.bind(this));
+                return acc;
+            }, []);
+
+            return values;
         }
+
+
+        // //如果有设置 site，循环所有附件，将匹配site的附件添加进来。
+        // if (this.json.fileSite && this.json.fileSite!==this.json.id){
+        //     const siteList = this.json.fileSite.split(/.*,.*/g);
+        //     const addr = this.restfulActions.getAddress();
+        //     this.form.businessData.attachmentList.each(function (att) {
+        //         if (siteList.includes(att.site) && att.control.allowRead){
+        //             if (this.checkValue(value, att)){
+        //                 const previewUrl =
+        //                     this.env === 'process'
+        //                         ? `${addr}/jaxrs/attachment/download/${att.id}`
+        //                         : `${addr}/jaxrs/fileinfo/download/document/${att.id}`;
+        //                 const url = `${previewUrl}/stream`;
+
+        //                 const file = {
+        //                     id: att.id,
+        //                     url: url,
+        //                     previewUrl: previewUrl,
+        //                     lastModified: att.lastUpdateTime,
+        //                     lastModifiedDate: att.lastUpdateTime,
+        //                     name: att.name,
+        //                     size: att.length,
+        //                     type: att.extension,
+        //                 }
+
+        //                 if (!value || !value.length) value = [];
+        //                 value.push(file);
+        //             }
+        //         }
+        //     }.bind(this));
+        // }
 
         return value ?? '';
     },

@@ -625,6 +625,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 });
             }
             this.getSealData();
+
+            this.validationMode();
         }
     },
     _loadMeeting: function(){
@@ -1955,7 +1957,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // if (this.json.fullWidth=="y"){
         //     html += "<span style='line-height: 26px; color: #999999; font-size: 12px'>已启用半角空格自动转换为全角空格，如需输入半角空格，请使用：SHIFT+空格</span>"
         // }
-        this.toolbarNode = new Element("div", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
+        this.toolbarNode = new Element("div.o2-documentEditor-toolbar", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
         this.toolbarNode.set("html", html);
 
         MWF.require("MWF.widget.Toolbar", function() {
@@ -1965,11 +1967,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         if (!layout.mobile){
             window.setTimeout(function(){
-                this.scrollNode = this.toolbarNode.getParentSrcollNode()|| this.node.getParent();;
-                if (this.scrollNode){
-                    this.scrollNode.addEvent("scroll", function(){
-                        this.resetToolbarEvent();
-                    }.bind(this));
+                if (this.toolbarNode){
+                    this.scrollNode = this.toolbarNode?.getParentSrcollNode()|| this.node.getParent();;
+                    if (this.scrollNode){
+                        this.scrollNode.addEvent("scroll", function(){
+                            this.resetToolbarEvent();
+                        }.bind(this));
+                    }
                 }
             }.bind(this), 1000)
         }
@@ -3533,6 +3537,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
 
         //}
+        this.validationMode();
         return this.data;
     },
     getAttachmentTextData: function(){
@@ -3553,6 +3558,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.data.seals.push(seal.get("src"));
             }.bind(this));
         }
+        this._setBusinessData(this.data);
     },
     setAttachmentData: function(){
         if (!this.attachmentTemplete){
@@ -3836,8 +3842,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     createErrorNode: function(text){
+        const size = this.node.getSize();
+        const top = 0 - size.y +40;
         node = new Element("div", {styles:{
-            "margin-top": "0.3em"  
+            "position": "relative",
+            "top": top+'px',
+            "display": "flex",
+            "justify-content": "center",
+            "font-size": "1.25rem",
+            "background-color": "#ffcdcd99",
+            "height": "40px",
+            "align-items": "center"
         }});
         var iconNode = new Element("div.ooicon-error", {
             "styles": {
@@ -3855,7 +3870,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             "styles": {
                 "height": "auto",
                 "line-height": "1.2em",
-                "margin-left": "20px",
+                "margin-left": "5px",
                 "color": "red",
                 "word-break": "keep-all"
             },
@@ -3872,6 +3887,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             this.errNode = this.createErrorNode(text).inject(this.node, "after");
             this.showNotValidationMode(this.node);
+
+            this.node.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
         }
     },
     showNotValidationMode: function(node){
@@ -3972,7 +3989,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return true;
     },
     validation: function(routeName, opinion){
-        if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+
+        if (this.isReadonly() || this.node?.isDisplayNone() || !this.isEditable) return true;
         
         if (!this.validationConfig(routeName, opinion))  return false;
 

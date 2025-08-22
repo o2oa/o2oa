@@ -1573,7 +1573,18 @@ MWF.xApplication.cms.FormDesigner.LP={
 		"inherit": "Heredar el elemento padre",
 		"currencyInvalidOption": "Prefijos, sufijos, milésimas, decimales no permitidos con números positivos y negativos",
 		"uploadMinCount": "Número mínimo de subidas",
-		"uploadMinCountInfo": "\"0\" significa que no hay límite en el número de subidas"
+		"uploadMinCountInfo": "\"0\" significa que no hay límite en el número de subidas",
+		"exportImportType": "Exportar tipo de importación",
+		"exportImportTypeNote": "Los componentes con texto y valores simultáneos, como desplegable, selección única y selección múltiple, son válidos.",
+		"uploadButtonTitle": "Título del botón",
+		"uploadButtonStyle": "Estilo de botón",
+		"uploadButtonIcon": "Icono del botón",
+		"btnStyleDefault": "Predeterminado",
+		"btnStyleSimple": "Simple",
+		"btnStyleLight": "Brillante",
+		"btnStyleIcon": "Solo iconos",
+		"fileCol": "Número de columnas mostradas",
+		"OOFilesSiteInfo": "Se pueden mostrar accesorios de otros sitios, varios sitios separados por comas de media esquina"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

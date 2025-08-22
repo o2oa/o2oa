@@ -11,7 +11,8 @@
 		"overflow": "hidden",
 		"height": "30px",
 		"display":"block",
-		"font-size": "14px"
+		"font-size": "14px",
+		"box-sizing": "content-box !important",
 	},
 	"toolbarSeparator": {
 		"display":"block",
