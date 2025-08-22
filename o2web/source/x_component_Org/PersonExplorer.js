@@ -105,7 +105,7 @@ MWF.xApplication.Org.PersonExplorer.Person = new Class({
         this.content = new MWF.xApplication.Org.PersonExplorer.PersonContent(this);
     },
     _loadTextNode: function(){
-        var html = "<div style='float:left; height:50px; overflow:hidden'>"+this.data.name+"</div>";
+        var html = "<div style='float:left; height:50px; overflow:hidden'>"+o2.txt(this.data.name)+"</div>";
         html += "<div style='float: right; overflow:hidden; font-size: 12px; color: #aaaaaa;'>"+(this.data.mobile || "")+"</div>";
         this.textNode.set({"html": html});
     },
