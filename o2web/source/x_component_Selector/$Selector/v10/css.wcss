@@ -237,6 +237,14 @@
     	"overflow": "hidden",
 		"grid-template-rows": "2.14286rem 3.3rem auto"
 	},
+	"selectNode_noLetter": {
+        "flex": 1,
+        "border": "1px solid #999",
+        "border-radius": "var(--oo-default-radius)",
+        "display": "grid",
+        "overflow": "hidden",
+        "grid-template-rows": "2.14286rem auto"
+    },
 	"selectNodeSingle": {
 		"flex": 1,
 		

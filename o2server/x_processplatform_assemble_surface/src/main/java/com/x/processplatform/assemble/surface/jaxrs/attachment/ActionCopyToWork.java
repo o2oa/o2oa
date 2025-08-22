@@ -64,6 +64,7 @@ class ActionCopyToWork extends BaseAction {
 				}else{
 					w.setName(onlineInfo.getName());
 				}
+				w.setName(this.checkName(work.getJob(), w.getName()));
 			}
 			wos = ThisApplication.context().applications()
 					.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
@@ -73,6 +74,13 @@ class ActionCopyToWork extends BaseAction {
 
 		result.setData(wos);
 		return result;
+	}
+
+	private String checkName(String job, String fileName) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			return this.adjustFileName(business, job, fileName);
+		}
 	}
 
 	public static class Wi extends GsonPropertyObject {

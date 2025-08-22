@@ -1101,10 +1101,10 @@ MWF.xApplication.process.ProcessDesigner.Route.List = new Class({
         this.paper = this.route.paper;
     },
     load: function () {
-        var routeName = this.route.data.name || MWF.APPPD.LP.unnamed;
+        var routeName = o2.txt(this.route.data.name) || MWF.APPPD.LP.unnamed;
         var name = '';
         if (this.route.toActivity) {
-            name = this.route.toActivity.data.name;
+            name = o2.txt(this.route.toActivity.data.name);
             if (!name) name = MWF.APPPD.LP.unnamed;
         } else {
             name = MWF.APPPD.LP.unknow;

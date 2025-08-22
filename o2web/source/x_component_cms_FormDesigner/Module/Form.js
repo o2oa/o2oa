@@ -318,7 +318,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			this.versionList.each(function (version,index) {
 				var node = new Element("tr").inject(this.versionTable);
 				var html = "<td>"+(index+1)+"</td>" +
-					"<td>"+version.person+"</td>" +
+					"<td>"+o2.txt(version.person)+"</td>" +
 					"<td>"+version.updateTime+"</td>" +
 					"<td></td>";
 				node.set("html", html);

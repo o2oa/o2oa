@@ -107,7 +107,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                 this.node.setStyle("background-color", "#eee");
             }
         }
-        var status = this.getComponentStatus() || {};
+        var status = this.getComponentStatus() || null;
         var options = this.getComponentOptions() || {};
         this.getComponentPath(function (componentPath) {
             if( componentPath && componentPath.indexOf("@url:") === 0 ){
@@ -148,8 +148,9 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
     /**
      * @summary 加载系统组件
      * @param {String} path 组件的路径，如'Calendar'
-     * @param {Object} [status] 组件的状态
-     * @param {Object} [options] 组件的选项
+     * @param {Object|null} [status] 组件的状态
+     * @param {Object|null} [options] 组件的选项
+     * @param {Function} [callback] 加载后的回调
      * @example
      * this.form.get("fieldId").clean(); //清除当前嵌入的对象
      * this.form.get("fieldId").loadComponent('Calendar'); //加载日程安排
@@ -171,7 +172,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         var _load = function () {
             if( clazz.Main ){
                 var opt = options || {};
-                var stt = status || {};
+                // var stt = status || {};
                 opt.embededParent = this.node;
 
                 /**
@@ -188,7 +189,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                  * app.addEvent(type, fun); //为应用绑定一个事件
                  */
                 this.component = new clazz.Main(this.form.app.desktop, opt);
-                this.component.status = stt;
+                this.component.status = status;
                 this.fireEvent("queryLoadApplication", this.component);
                 this.component.load();
                 this.component.setEventTarget(this.form.app);

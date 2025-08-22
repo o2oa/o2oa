@@ -504,10 +504,13 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
     },
     _loadContent: function(){
         this._listBaseInfor();
-        this.loadListCount();
-        this._listIdentityMembers();
-        this._listDutys();
-        if (this.data.control.allowEdit) this._listAttributes();
+        if( this.data && this.data.id ){
+            this.loadListCount();
+            this._listIdentityMembers();
+            this._listDutys();
+            if (this.data.control.allowEdit) this._listAttributes();
+        }
+
         //var _self = this;
         // this.personMemberList = this._listMembers("personList", "woSubDirectIdentityList", this.personMemberContentNode, [{
         //     "get": function(){
@@ -528,6 +531,12 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
         //     {"style": "width: 40%", "text": this.explorer.app.lp.groupDn},
         //     {"style": "", "text": this.explorer.app.lp.groupDescription}
         // ], this.addGroupMember.bind(this), "groupCountNode");
+    },
+    loadList: function (){
+        this.loadListCount();
+        this._listIdentityMembers();
+        this._listDutys();
+        if (this.data.control.allowEdit) this._listAttributes();
     },
     loadListCount: function(){
         var identityCount = this.data.woSubDirectIdentityList.length;
@@ -1457,6 +1466,9 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
                     this.item.data = this.data;
                     this.item.refresh();
                     if (this.item.parent) this.item.parent.subUnits.push(this.item);
+
+                    this.content.loadList();
+
                     if (callback) callback();
                 }.bind(this), null, json.data.id);
             }

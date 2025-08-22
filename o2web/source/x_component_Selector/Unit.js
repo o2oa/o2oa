@@ -440,6 +440,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 _description: this._getDescription(),
                 _title: this._getTtiteText(),
                 _selectType: this.selector.selectType,
+                _icon: this._getOOIcon(),
                 _hasAvatar: false
             }
         });
@@ -493,6 +494,9 @@ MWF.xApplication.Selector.Unit.Item = new Class({
     },
     _getTtiteText: function(){
         return this.data.levelName || this.data.name;
+    },
+    _getOOIcon: function(){
+        return '';
     },
     _setIcon: function(){
         var style = this.selector.options.style;

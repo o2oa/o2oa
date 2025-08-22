@@ -1021,7 +1021,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.name+"</td><td id='formApplicationName'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sign+"</td><td id='formApplicationAlias'></td></tr>"; //"+(this.data.alias||this.data.appAlias||'')+"
         html += "<tr><td class='formTitle'>"+this.app.lp.application.appType+"</td><td id='formApplicationAppType'></td></tr>";
-        html += "<tr><td class='formTitle'>"+this.app.lp.application.documentType+"</td><td id='formApplicationType' class='formValue'>"+(this.data.documentType || lp.documentTypeSelectText[0] )+"</td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.documentType+"</td><td id='formApplicationType' class='formValue'>"+o2.txt(this.data.documentType || lp.documentTypeSelectText[0] )+"</td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.description+"</td><td id='formApplicationDescription'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sort+"</td><td id='formApplicationSort'></td></tr>";
         var flag = typeOf(this.config.ignoreTitle) === "boolean" ? this.config.ignoreTitle : false;

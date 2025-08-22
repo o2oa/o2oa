@@ -455,7 +455,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		var o = {
 			"expand": true,
 			"title": this.json.id,
-			"text": "<"+this.json.type+"> "+this.json.name+" ["+this.options.mode+"] ",
+			"text": "<"+this.json.type+"> "+o2.txt(this.json.name)+" ["+this.options.mode+"] ",
 			"icon": (this.options.mode=="Mobile") ? "mobile.png": "pc.png"
 		};
 		o.action = function(){

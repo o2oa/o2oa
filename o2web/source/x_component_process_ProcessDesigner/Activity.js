@@ -1156,7 +1156,7 @@ MWF.xApplication.process.ProcessDesigner.Activity.List = new Class({
                     }
                 },
                 {
-                    "content": this.activity.data.name,
+                    "content": o2.txt(this.activity.data.name),
                     "properties": {
                         "styles": this.process.css.list.listText
                     }

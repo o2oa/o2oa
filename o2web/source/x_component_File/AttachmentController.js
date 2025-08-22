@@ -237,7 +237,7 @@ MWF.xApplication.File.AttachmentController.Attachment = new Class({
         var editorList = (this.data.editorList) ? this.data.editorList.map(function(item){return item.substring(0, item.indexOf("@"));}).join(",") : "";
         this.inforNode = new Element("div", {"styles": this.css.attachmentInforNode});
         var html = "<div style='overflow:hidden; font-weight: bold'>"+this.data.name+"</div>";
-        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+MWF.LP.widget.uploader+": </div><div style='width:120px; float:left; margin-left:10px'>"+MWF.name.cn(this.data.person)+"</div></div>";
+        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+MWF.LP.widget.uploader+": </div><div style='width:120px; float:left; margin-left:10px'>"+o2.txt(MWF.name.cn(this.data.person))+"</div></div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+MWF.LP.widget.uploadTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.createTime+"</div></div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+MWF.LP.widget.modifyTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.lastUpdateTime+"</div></div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+MWF.LP.widget.size+": </div><div style='width:120px; float:left; margin-left:10px'>"+size+"</div></div>";

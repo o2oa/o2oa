@@ -10,6 +10,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "resize": true,
         "attachmentCount": 0,
         "isUpload": true,
+        "isFromDriver": true,
         "isDelete": true,
         "isReplace": true,
         "isDownload": true,
@@ -194,6 +195,10 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
             this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", o2.LP.widget.upload, function (e, node) {
                 this.uploadAttachment(e, node);
+            }.bind(this));
+
+            this.min_openDriverAction = this.createAction(this.minActionAreaNode, "drive", o2.LP.widget.selectFromDriver, function (e, node) {
+                this.openDriver(e, node);
             }.bind(this));
 
             this.min_deleteAction = this.createAction(this.minActionAreaNode, "delete", o2.LP.widget["delete"], function (e, node) {
@@ -426,6 +431,10 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.uploadAttachment(e, node);
         }.bind(this));
 
+        this.openDriverAction = this.createAction(this.editActionsGroupNode, "drive", o2.LP.widget.selectFromDriver, function(e, node){
+            this.openDriver(e, node);
+        }.bind(this));
+
         this.deleteAction = this.createAction(this.editActionsGroupNode, "delete", o2.LP.widget["delete"], function(e, node){
             this.deleteAttachment(e, node);
         }.bind(this));
@@ -537,6 +546,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     //        this.setReadonly();
     //    }else{
             this.checkUploadAction();
+            this.checkOpenDriverAction();
             this.checkDeleteAction();
 
             this.checkReplaceAction();
@@ -554,7 +564,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
     checkEditActionBox: function(){
         var isShowEdit = false;
-        ["isUpload", "isDelete", "isReplace"].each(function( key ){
+        ["isUpload", "isFromDriver", "isDelete", "isReplace"].each(function( key ){
             if( key === "isReplace" && this.options.isReplaceHidden )return;
             if( this.options[key] !== "hidden" )isShowEdit = true;
         }.bind(this));
@@ -596,6 +606,38 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             }else{
                 this.setActionEnabled(this.uploadAction);
                 this.setActionEnabled(this.min_uploadAction);
+            }
+        }
+    },
+    checkOpenDriverAction: function(){
+        if (this.options.readonly) {
+            if (this.options.isFromDriver === "hidden") {
+                this.setActionHidden(this.openDriverAction);
+                this.setActionHidden(this.min_openDriverAction);
+            } else {
+                this.setActionDisabled(this.openDriverAction);
+                this.setActionDisabled(this.min_openDriverAction);
+            }
+            return false;
+        }
+        if (this.options.isFromDriver === "hidden" ){
+            this.setActionHidden(this.openDriverAction);
+            this.setActionHidden(this.min_openDriverAction);
+        }else if (!this.options.isFromDriver){
+            this.setActionDisabled(this.openDriverAction);
+            this.setActionDisabled(this.min_openDriverAction);
+        }else{
+            if (this.options.attachmentCount.toInt() > 0){
+                if (this.attachments.length>=this.options.attachmentCount.toInt()){
+                    this.setActionDisabled(this.openDriverAction);
+                    this.setActionDisabled(this.min_openDriverAction);
+                }else{
+                    this.setActionEnabled(this.openDriverAction);
+                    this.setActionEnabled(this.min_openDriverAction);
+                }
+            }else{
+                this.setActionEnabled(this.openDriverAction);
+                this.setActionEnabled(this.min_openDriverAction);
             }
         }
     },
@@ -867,6 +909,21 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
         }
     },
+    openDriver: function(e, node, files){
+        this.module.openDriver(e, node, files);
+    },
+    // doSelectDriverAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files){
+    //     if ( !this.options.readonly && ( this.options.isUpload && this.options.isUpload !== "hidden") ){
+    //         if (FormData.expiredIE){
+    //             this.doInputUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery);
+    //         }else{
+    //             this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size, failureEvery, files);
+    //         }
+    //     }else{
+    //         var text = o2.LP.widget.notUploadNotice;
+    //         if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("info", {"x": "right", "y": "top"}, text, this.node);
+    //     }
+    // },
     orderAttachments: function (attDataList){
         var preNode;
         var attachments = [];

@@ -236,7 +236,7 @@ MWF.xApplication.cms.Xform.widget.LogCommend = new Class({
     loadItemNodeText: function(data, textStyle){
         var itemNode =  new Element("div",{ "styles" : this.css.defaultItemNode  }).inject(this.contentWrapNode);
         var html = textStyle || this.options.textStyle;
-        html = html.replace(/\{person\}/g, this.getShortName( data.commendPerson));
+        html = html.replace(/\{person\}/g, o2.txt(this.getShortName( data.commendPerson)));
         html = html.replace(/\{date\}/g, data.createTime);
 
         itemNode.set("html", html);

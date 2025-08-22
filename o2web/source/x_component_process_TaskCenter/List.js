@@ -1246,7 +1246,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
 
     setContent: function(){
         this.applicationTitleNode.set("text", this.data.applicationName);
-        this.titleNode.set("html", "<font style=\"color: #333;\">["+this.data.processName+"]&nbsp;&nbsp;</font>"+o2.txt(this.data.title || ""));
+        this.titleNode.set("html", "<font style=\"color: #333;\">["+o2.txt(this.data.processName)+"]&nbsp;&nbsp;</font>"+o2.txt(this.data.title || ""));
         this.titleNode.set("title", this.data.title);
         this.activityNode.set("text", "( "+(this.data.activityName || this.list.app.lp.completed)+" )");
 

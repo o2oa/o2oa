@@ -259,9 +259,9 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
     loadItemNodeText: function(data, textStyle){
         var itemNode =  new Element("div",{ "styles" : this.css.defaultItemNode  }).inject(this.contentWrapNode);
         var html = textStyle || this.options.textStyle;
-        html = html.replace(/\{person\}/g, this.getShortName( data.viewerName));
-        html = html.replace(/\{unitName\}/g, this.getShortName( data.viewerUnitName ) || "");
-        html = html.replace(/\{topUnitName\}/g, this.getShortName( data.viewerTopUnitName ) || "");
+        html = html.replace(/\{person\}/g, o2.txt(this.getShortName( data.viewerName)));
+        html = html.replace(/\{unitName\}/g, o2.txt(this.getShortName( data.viewerUnitName ) || ""));
+        html = html.replace(/\{topUnitName\}/g, o2.txt(this.getShortName( data.viewerTopUnitName ) || ""));
         html = html.replace(/\{firstDate\}/g, data.createTime);
         html = html.replace(/\{date\}/g, data.lastViewTime);
         html = html.replace(/\{count\}/g, data.viewCount);

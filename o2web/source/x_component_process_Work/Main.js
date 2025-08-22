@@ -33,6 +33,7 @@ MWF.xApplication.process.Work.Main = new Class({
             "title": MWF.xApplication.process.Work.LP.title
         });
 		this.lp = MWF.xApplication.process.Work.LP;
+        console.log( 'this.status', this.status, 'this.options', this.options );
         if (!this.status) {
             if( this.options.readonly === "true" )this.options.readonly=true;
         } else {
@@ -46,6 +47,8 @@ MWF.xApplication.process.Work.Main = new Class({
             this.options.formid = this.status.formid;
             if( this.status.form && this.status.form.id )this.options.form = this.status.form;
             this.options.readonly = (this.status.readonly === true || this.status.readonly === "true");
+            this.options.draft = this.status.draft;
+            this.options.draftData = this.status.draftData;
         }
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},
@@ -145,6 +148,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.loadWorkByDraft(json.data.work, json.data.data, json.data.attachmentList);
             }.bind(this));
         }else if (this.options.draft){
+            this.draft = typeOf(this.options.draft)==='string' ? this.options.draft : Object.clone(this.options.draft);
             this.loadWorkByDraft(this.options.draft, this.options.draftData);
         }else if (this.options.jobId || this.options.jobid || this.options.job){
             var jobId = this.options.jobId || this.options.jobid || this.options.job;
@@ -541,21 +545,21 @@ MWF.xApplication.process.Work.Main = new Class({
                     "                        src=\""+layout.session.user.iconUrl+"\">\n" +
                     "                    </div>\n" +
                     "                    <div\n" +
-                    "                        style=\"height: 40px; line-height: 40px; overflow: hidden; float: left; margin-left: 10px; margin-right: 30px; width: 150px; color: rgb(51, 51, 51); font-size: 16px; text-align: left;\">"+id.name+"\n" +
+                    "                        style=\"height: 40px; line-height: 40px; overflow: hidden; float: left; margin-left: 10px; margin-right: 30px; width: 150px; color: rgb(51, 51, 51); font-size: 16px; text-align: left;\">"+o2.txt(id.name)+"\n" +
                     "                    </div>\n" +
                     "                </div>\n" +
                     "                <div style=\"height: 36px; line-height: 40px; overflow: hidden; font-size: 14px;\">\n" +
                     "                    <div style=\"color: rgb(0, 0, 0); width: 40px; float: left;\">"+this.lp.org+"</div>\n" +
                     "                    <div title=\""+id.unitLevelName+"\"\n" +
-                    "                         style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+id.unitLevelName+"\n" +
+                    "                         style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+o2.txt(id.unitLevelName)+"\n" +
                     "                    </div>\n" +
                     "                </div>\n" +
                     "                <div style=\"height: 36px; line-height: 40px; overflow: hidden; font-size: 14px;\">\n" +
                     "                    <div style=\"color: rgb(0, 0, 0); width: 40px; float: left;\">"+this.lp.duty+"</div>\n" +
-                    "                    <div title=\""+duty+"\" style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+duty+"</div>\n" +
+                    "                    <div title=\""+duty+"\" style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+o2.txt(duty)+"</div>\n" +
                     "                </div>\n" +
                     "                <div class=\"mainColor_color\"\n" +
-                    "                     style=\"position: absolute; float: right; top: 14px; right: 14px;\">【"+id.unitName+"】\n" +
+                    "                     style=\"position: absolute; float: right; top: 14px; right: 14px;\">【"+o2.txt(id.unitName)+"】\n" +
                     "                </div>";
                 idNode.set("html", html);
 
@@ -753,7 +757,9 @@ MWF.xApplication.process.Work.Main = new Class({
             "jobId": this.options.jobId,
             "draftId": this.options.draftId,
             "priorityWork": this.options.priorityWork,
-            "readonly": this.readonly
+            "readonly": this.readonly,
+            "draft": this.draft,
+            "draftData": this.options.draftData
         };
         if( this.options.formid )status.formid = this.options.formid;
         if( this.options.form && this.options.form.id )status.form = this.options.form;

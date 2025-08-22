@@ -1144,6 +1144,9 @@ MWF.xApplication.Selector.Person = new Class({
         this.selectNode = new Element("div.selectNode", {
             "styles": this.css.selectNode //(this.options.count.toInt()===1) ? this.css.selectNodeSingle : this.css.selectNode
         }).inject(this.contentNode);
+        if( this.options.style === 'v10' && !this.options.hasLetter ){
+            this.selectNode.setStyles(this.css.selectNode_noLetter);
+        }
 
         if( this.options.hasTop ){ //if( this.options.embedded && this.options.count.toInt()!==1 ){
             this.selectTopNode = new Element("div.selectTopNode",{
@@ -1188,6 +1191,9 @@ MWF.xApplication.Selector.Person = new Class({
         this.itemAreaScrollNode = new Element("div", {
             "styles": this.css.itemAreaScrollNode
         }).inject(this.selectNode);
+        if( !this.options.hasLetter && this.css.itemAreaScrollNode_noLetter ){
+            this.itemAreaScrollNode.setStyles( this.css.itemAreaScrollNode_noLetter );
+        }
 
         this.itemAreaNode = new Element("div", {
             "styles": this.css.itemAreaNode
@@ -2410,12 +2416,16 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 _description: this._getDescription(),
                 _title: this._getTtiteText(),
                 _selectType: this.selector.selectType,
+                _icon: this._getOOIcon(),
                 _hasAvatar: ["identity","person"].contains(this.selector.selectType)
             }
         });
         this.node = node.getFirst();
         this.node.inject(this.container);
         node.destroy();
+    },
+    _getOOIcon: function(){
+        return '';
     },
     _setAvatar: function (e){
         if( this.selector.selectType === "identity" || this.selector.selectType === "person" ) {
@@ -3285,6 +3295,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 _text: this._getShowName(),
                 _hasChild: this._hasChild(),
                 _title: this._getTtiteText(),
+                _icon: this._getOOIcon(),
                 _selectType: this.selector.selectType
             }
         });
@@ -3358,6 +3369,9 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
 
         this.afterLoad();
         this.selector.fireEvent("postLoadCategory",[this]);
+    },
+    _getOOIcon: function(){
+        return '';
     },
     handleSelectAllClick: function (ev){
         if( this.isSelectedAll ){

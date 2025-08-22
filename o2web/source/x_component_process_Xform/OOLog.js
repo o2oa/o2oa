@@ -33,9 +33,9 @@ MWF.xApplication.process.Xform.OOLog = MWF.APPOOLog =  new Class({
             person = person + " " + MWF.xApplication.process.Xform.LP.replace + " " + ep;
         }
         var html = this.getRecordTaskLineTextStyle();
-        html = html.replace(/{person}/g, person)
+        html = html.replace(/{person}/g, o2.txt(person))
         .replace(/{department}/g, o2.name.cn(task.unit))
-        .replace(/{activity}/g, task.fromActivityName)
+        .replace(/{activity}/g, o2.txt(task.fromActivityName))
         .replace(/{route}/g, MWF.xApplication.process.Xform.LP.processing+' ...')
         .replace(/{img}/g, '')
         .replace(/{time}/g, task.properties.startTime)

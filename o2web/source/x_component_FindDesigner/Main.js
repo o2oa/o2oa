@@ -975,7 +975,7 @@ MWF.xApplication.FindDesigner.Main = new Class({
 			});
 		},
 		load : function(title){
-			this.container.set("html", title).inject(this.node);
+			this.container.set("html", o2.txt(title)).inject(this.node);
 		},
 		destroy: function(){
 			this.fireEvent("destroy");
