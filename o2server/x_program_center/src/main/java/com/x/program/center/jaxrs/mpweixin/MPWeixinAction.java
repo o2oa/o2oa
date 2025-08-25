@@ -78,6 +78,20 @@ public class MPWeixinAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "发送微信公众号模板消息.", action = ActionSendTemplateMessage.class)
+	@POST
+	@Path("message/template/send")
+	public void sendMsg(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionSendTemplateMessage.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionSendTemplateMessage().execute(jsonElement);
+		} catch (Exception e) {
+			logger.error(e);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	// ///////       media  素材  /////////////////////
 
 	@JaxrsMethodDescribe(value = "上传永久素材到微信服务器.", action = ActionUploadMediaForever.class)

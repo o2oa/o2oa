@@ -53,8 +53,12 @@ public class ActionLoginWithCode extends BaseAction {
 			Business business = new Business(emc);
 			// openid 查询用户
 			String personId = business.person().getWithCredential(resp.getOpenid());
-			if (StringUtils.isEmpty(personId)) {
-				throw new ExceptionPersonNotExist();
+			if (StringUtils.isEmpty(personId)) { // 未绑定用户
+				Wo wo = new Wo();
+				wo.setUnbind(true);
+				wo.setMpwxopenId(resp.getOpenid());
+				result.setData(wo);
+				return result;
 			}
 			Person person = emc.find(personId, Person.class);
 			Wo wo = Wo.copier.copy(person);
@@ -83,6 +87,17 @@ public class ActionLoginWithCode extends BaseAction {
 
 		@FieldDescribe("登录token")
 		private String token;
+
+		@FieldDescribe("未绑定标识， 如果是 true，前端需要获取对象中的mpwxopenId字段，进行绑定操作")
+		private Boolean unbind;
+
+		public Boolean getUnbind() {
+			return unbind;
+		}
+
+		public void setUnbind(Boolean unbind) {
+			this.unbind = unbind;
+		}
 
 		private List<String> roleList;
 
