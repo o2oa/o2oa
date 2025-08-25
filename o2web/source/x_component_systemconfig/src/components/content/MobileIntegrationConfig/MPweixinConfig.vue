@@ -37,6 +37,14 @@
       <BaseSelect :label="lp._integrationConfig.mpweixinText.portalId" v-model:value="mPweixinData.portalId"
                   :label-style="labelStyle" :options="portalList"></BaseSelect>
       <div class="item_el_info">{{lp._integrationConfig.mpweixinText.portalIdInfo}}</div>
+      <!--   绑定用户地址   -->
+      <div class="item">
+        <label class="item_label" :style="labelStyle">{{lp._integrationConfig.mpweixinText.copyUrl}}</label>
+        <div class="item_input_area">
+          <button class="mainColor_bg"   @click="copyBindUrl">{{lp._integrationConfig.mpweixinText.copyUrlBtn}}</button>
+        </div>
+      </div>
+      <div class="item_el_info">{{lp._integrationConfig.mpweixinText.copyUrlInfo}}</div>
 
       <BaseSelect :label="lp._integrationConfig.mpweixinText.scriptId" v-model:value="mPweixinData.scriptId"
                   :label-style="labelStyle" :options="invokeList"></BaseSelect>
@@ -93,6 +101,31 @@ const labelStyle={
   minWidth: '180px',
   textAlign: 'right',
   fontWeight: 'bold'
+}
+
+const copyBindUrl = () => {
+  if (!mPweixinData.value.appid) {
+    component.notice(lp._integrationConfig.mpweixinText.appidNotEmpty, 'error');
+    return;
+  }
+  if (!mPweixinData.value.portalId) {
+    component.notice(lp._integrationConfig.mpweixinText.portalIdNotEmpty, 'error');
+    return;
+  }
+  if (!mPweixinData.value.workUrl) {
+    component.notice(lp._integrationConfig.mpweixinText.workUrlNotEmpty, 'error');
+    return;
+  }
+  // https://open.weixin.qq.com/connect/oauth2/authorize?appid=【wx1c0c41e607a8b6fe】&redirect_uri=【https】%3A%2F%2F【sample.o2oa.net】%2Fx_desktop%2Fmpweixinsso.html%3Ftype%3Dbind&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+  const redirectUrl = encodeURIComponent( 'portalmobile.html?id=' + mPweixinData.value.portalId);
+  const o2oaUrl = encodeURIComponent(mPweixinData.value.workUrl + 'mpweixinsso.html?type=login&redirect='+redirectUrl);
+  const ssoUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='+mPweixinData.value.appid+'&redirect_uri='+o2oaUrl+'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+  copyText(ssoUrl);
+}
+
+const  copyText = async (text) => {
+  await navigator.clipboard.writeText(text);
+  component.notice(lp._integrationConfig.mpweixinText.copyUrlSuccess, 'success');
 }
 
 const checkAddLine = ()=>{

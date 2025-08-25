@@ -1088,8 +1088,15 @@ MWF.xApplication.systemconfig.LP={
 			"fieldListInfo": "This is the correspondence between the business fields in the content of the template, Currently O2OA provides the following business fields: creatorPerson, activityName, processName, startTime, title.",
 			"saveMpweixin": "Save WeChat official account config",
 			"saveMpweixinSuccess": "The WeChat official account configuration is saved successfully.",
-			"workUrl": "URL of WeChat official account message opening",
-			"workUrlInfo": "URL address of WeChat official account message opening, such as: https://sample.o2oa.net/x_desktop/"
+			"workUrl": "WeChat public account message access O2OA basic address",
+			"workUrlInfo": "URL address of WeChat official account message opening, such as: https://sample.o2oa.net/x_desktop/",
+			"copyUrl": "Generate Single Sign-On URL",
+			"copyUrlBtn": "Click to generate",
+			"copyUrlInfo": "After copying the address of 'single sign on', it can be configured in the menu of official account or in the following message of official account, which can be provided to users for binding WeChat openId to O2OA account and realizing single sign on",
+			"appidNotEmpty": "Please fill in your WeChat Appid first",
+			"portalIdNotEmpty": "Please select the portal to jump to after successful login",
+			"workUrlNotEmpty": "Please fill in the WeChat official account message to access the O2OA basic address first",
+			"copyUrlSuccess": "Copy successful!",
 		},
 		"qywenxinText": {
 			"enable": "Whether to enable",

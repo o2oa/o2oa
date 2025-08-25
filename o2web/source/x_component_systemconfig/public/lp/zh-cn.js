@@ -1327,7 +1327,9 @@ o2.xApplication.systemconfig.LP = {
             "token": "微信Token",
             "encodingAesKey": "微信encodingAesKey",
             "portalId": "处理完成后跳转到门户",
-            "workUrl": "微信公众号消息打开工作的URL",
+            "workUrl": "微信公众号消息访问O2OA基础地址",
+            "copyUrl": "生成单点登录URL",
+            "copyUrlBtn": "点击生成",
             "scriptId": "执行服务脚本",
             "messageEnable": "启用模版消息",
             "tempMessageId": "公众号模版消息id",
@@ -1335,13 +1337,19 @@ o2.xApplication.systemconfig.LP = {
             "tempName": "模版字段",
             "name": "业务字段",
 
-            "workUrlInfo": "微信公众号消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/",
+            "workUrlInfo": "微信公众号消息访问O2OA基础地址，如：https://sample.o2oa.net/x_desktop/",
             "enableInfo": "O2OA支持微信公众号的集成，用户可以通过关注微信公众号进行工作处理。并且支持待办工作的消息提醒。(需要重启服务器)",
             "enableInfo2": "更多O2OA与微信公众号的内容，请查看：<a href='https://www.o2oa.net/search.html?q=%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7' target='_blank'>微信公众号</a>",
             "enablePublishInfo": "启用菜单发布后，可已将在O2OA中配置好的菜单功能，发布到微信公众号。可在 APP工具-公众号菜单配置 中配置微信公众号菜单",
             "portalIdInfo": "当消息处理完成后，可指定跳转到特定的门户页面",
             "scriptIdInfo": "当从公众号接收到文本消息时，可执行平台服务管理中的接口，在此处指定要执行的接口",
             "fieldListInfo": "这个是模版的内容中业务字段的对应关系，目前O2OA提供了这几个业务字段 【creatorPerson:创建人,  activityName: 当前节点,  processName: 流程名称, startTime: 开始时间, title 标题】",
+            "copyUrlInfo": "复制‘单点登录’这个地址后可配置到公众号菜单中或者配置到公众号关注消息里面，可以提供给用户用于将微信 openId 绑定到O2OA账号上并实现单点登录",
+
+            "appidNotEmpty": "请先填写微信Appid",
+            "portalIdNotEmpty": "请先选择登录成功后要跳转的门户",
+            "workUrlNotEmpty": "请先填写微信公众号消息访问O2OA基础地址",
+            "copyUrlSuccess": "复制成功！",
 
             "saveMpweixin": "保存微信公众号配置",
             "saveMpweixinSuccess": "微信公众号配置保存成功"
