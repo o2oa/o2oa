@@ -3356,6 +3356,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         }).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
+        this.selectTd.setStyles(this.css.viewSelectTdNode);
 
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
