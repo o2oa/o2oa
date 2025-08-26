@@ -942,9 +942,35 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         // this.setPropertiesOrStyles("properties");
         this.setCustomStyles();
         this.reloadMaplist();
+        this.reloadStyleMaplist();
     },
     reloadMaplist: function(){
-        if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
+        if (this.property) Object.each(this.property.maplists, function(map, name){
+            var json = this.getDataByPath(this.json, name);
+            map.reload(json);
+        }.bind(this));
+    },
+    reloadStyleMaplist: function(){
+        if (this.property) Object.each(this.property.styleMaplists, function(map, name){
+            map.reload(this.json.data.viewStyles[name]);
+        }.bind(this));
+    },
+    getDataByPath: function (obj, path) {
+        var pathList = path.split(".");
+        for (var i = 0; i < pathList.length; i++) {
+            var p = pathList[i];
+            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+            if (obj[p]) {
+                obj = obj[p];
+            } else if(obj[p] === undefined || obj[p] === null) {
+                obj = "";
+                break;
+            } else {
+                obj = obj[p];
+                break;
+            }
+        }
+        return obj
     },
     // setPropertiesOrStyles: function(name){
     //     if (name=="styles"){

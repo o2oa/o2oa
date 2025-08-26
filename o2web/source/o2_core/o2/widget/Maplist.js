@@ -162,6 +162,7 @@ o2.widget.Maplist = new Class({
 		}
 	},
     reload: function(json){
+		this.items = [];
         if (!this.isShowCode){
             this.contentItemsNode.empty();
             this.loadContent(json);
