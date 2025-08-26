@@ -1,5 +1,5 @@
 o2.widget = o2.widget || {};
-o2.widget.  Maplist = new Class({
+o2.widget.Maplist = new Class({
 	Implements: [Options, Events],
 	Extends: o2.widget.Common,
 	options: {
