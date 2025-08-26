@@ -1,5 +1,5 @@
 o2.widget = o2.widget || {};
-o2.widget.Maplist = new Class({
+o2.widget.  Maplist = new Class({
 	Implements: [Options, Events],
 	Extends: o2.widget.Common,
 	options: {
@@ -162,6 +162,7 @@ o2.widget.Maplist = new Class({
 		}
 	},
     reload: function(json){
+		this.items = [];
         if (!this.isShowCode){
             this.contentItemsNode.empty();
             this.loadContent(json);

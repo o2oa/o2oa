@@ -23,6 +23,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         }
 
         this.maplists = {};
+        this.styleMaplists = {};
 
         this.designer = designer;
 
@@ -945,6 +946,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     });
                     maps.push({"key": k, "map": maplist});
                     maplist.load(v);
+                    this.styleMaplists[k] = maplist;
                 }.bind(this));
             }.bind(this));
 
@@ -953,7 +955,6 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
     },
     loadMaplist: function(){
         var maplists = this.propertyContent.getElements(".MWFMaplist");
-        debugger;
         maplists.each(function(node){
             var title = node.get("title");
             var name = node.get("name");
