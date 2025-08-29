@@ -476,7 +476,7 @@ public class AeiObjects extends GsonPropertyObject {
 		for (Review o : this.getCreateReviews()) {
 			if (StringUtils.equals(review.getPerson(), o.getPerson())
 					&& StringUtils.equals(review.getJob(), o.getJob())) {
-				break;
+				return;
 			}
 		}
 		this.getCreateReviews().add(review);
