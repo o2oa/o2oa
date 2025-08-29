@@ -91,317 +91,141 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             }.bind(this));
         }
     },
-    setTouceEvent3: function (){
-        // const svgContainer = document.getElementById('svgContainer');
-        // const svg = document.getElementById('mainSvg');
-        // const zoomInBtn = document.getElementById('zoomIn');
-        // const zoomOutBtn = document.getElementById('zoomOut');
-        // const resetBtn = document.getElementById('reset');
-        // const viewBoxInfo = document.getElementById('viewBoxInfo');
-        // const scaleInfo = document.getElementById('scaleInfo');
+    setTouchEvent: function (){
+        if( !layout.mobile )return;
+        if( this.isUserScalableEnabled() )return;
+        //手势缩放
+        // 获取目标元素
+        var div = this.paperInNode;
+        var container = div.getParent();
 
-        const svgContainer = this.paperInNode;
-        const svg = this.paperInNode.getElement('svg');
+        // 初始化变量
+        var initialDistance = 0;
+        var currentScale = 1;
+        var startScrollLeft = 0;
+        var startScrollTop = 0;
+        var startCenterX = 0;
+        var startCenterY = 0;
 
-        // 初始viewBox值
-        // const initialViewBox = {
-        //     x: 0,
-        //     y: 0,
-        //     width: 15939,
-        //     height: 3440
-        // };
+        var containerOffsetX = 0;
+        var containerOffsetY = 0;
 
-        const viewBox = svg.get('viewBox').split(' ');
-        const initialViewBox = {
-            x: viewBox[0].toFloat(),
-            y: viewBox[1].toFloat(),
-            width: viewBox[2].toFloat(),
-            height: viewBox[3].toFloat()
-        };
-
-        console.log('initialViewBox', initialViewBox);
-
-
-        let currentViewBox = {...initialViewBox};
-        let currentScale = 1;
-
-        //更新viewBox显示
-        function updateViewBoxInfo() {
-            var msg1 = `ViewBox: ${currentViewBox.x.toFixed(2)} ${currentViewBox.y.toFixed(2)} ${currentViewBox.width.toFixed(2)} ${currentViewBox.height.toFixed(2)}`;
-            var msg2 = `缩放比例: ${currentScale.toFixed(2)}x`;
-            console.log(msg1, msg2);
-        }
-
-        // 缩放函数
-        function zoom(factor, centerX, centerY) {
-            // 计算新的viewBox尺寸
-            const newWidth = currentViewBox.width / factor;
-            const newHeight = currentViewBox.height / factor;
-
-            // 计算保持中心点不变的新viewBox位置
-            const dx = (currentViewBox.width - newWidth) * (centerX / svgContainer.clientWidth);
-            const dy = (currentViewBox.height - newHeight) * (centerY / svgContainer.clientHeight);
-
-            // 更新viewBox
-            currentViewBox.x += dx;
-            currentViewBox.y += dy;
-            currentViewBox.width = newWidth;
-            currentViewBox.height = newHeight;
-
-            console.log(`${currentViewBox.x} ${currentViewBox.y} ${currentViewBox.width} ${currentViewBox.height}`)
-            //updateViewBoxInfo();
-
-            // 应用新的viewBox
-            svg.setAttribute('viewBox', `${currentViewBox.x} ${currentViewBox.y} ${currentViewBox.width} ${currentViewBox.height}`);
-
-            // 更新缩放比例
-            currentScale *= factor;
-
-            // 更新显示信息
-            updateViewBoxInfo();
-        }
-
-        // // 重置函数
-        // function resetZoom() {
-        //     currentViewBox = {...initialViewBox};
-        //     svg.setAttribute('viewBox', `${currentViewBox.x} ${currentViewBox.y} ${currentViewBox.width} ${currentViewBox.height}`);
-        //     currentScale = 1;
-        //     updateViewBoxInfo();
-        // }
-        //
-        // // 按钮事件监听
-        // zoomInBtn.addEventListener('click', () => {
-        //     const centerX = svgContainer.clientWidth / 2;
-        //     const centerY = svgContainer.clientHeight / 2;
-        //     zoom(1.2, centerX, centerY);
-        // });
-        //
-        // zoomOutBtn.addEventListener('click', () => {
-        //     const centerX = svgContainer.clientWidth / 2;
-        //     const centerY = svgContainer.clientHeight / 2;
-        //     zoom(0.8, centerX, centerY);
-        // });
-        //
-        // resetBtn.addEventListener('click', resetZoom);
-
-        // 鼠标滚轮事件
-        svgContainer.addEventListener('wheel', function(e) {
-            e.preventDefault();
-
-            // 确定缩放方向和中心点
-            const delta = e.deltaY < 0 ? 1.2 : 0.8;
-            const rect = svgContainer.getBoundingClientRect();
-            const centerX = e.clientX - rect.left;
-            const centerY = e.clientY - rect.top;
-
-            zoom(delta, centerX, centerY);
-        });
-
-        // 触摸事件处理
-        let initialDistance = null;
-        let initialCenter = null;
-
-        svgContainer.addEventListener('touchstart', function(e) {
+        // 处理触摸开始事件
+        div.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                e.preventDefault();
 
-                // 计算初始两指距离和中心点
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
+                var coords = container.getCoordinates(document.body);
+                containerOffsetX = coords.left;
+                containerOffsetY = coords.top;
 
-                initialDistance = Math.sqrt(
-                    Math.pow(touch2.clientX - touch1.clientX, 2) +
-                    Math.pow(touch2.clientY - touch1.clientY, 2)
+                // 计算初始两点距离
+                var touch1 = e.touches[0];
+                var touch2 = e.touches[1];
+                initialDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
                 );
 
-                const rect = svgContainer.getBoundingClientRect();
-                initialCenter = {
-                    x: ((touch1.clientX + touch2.clientX) / 2) - rect.left,
-                    y: ((touch1.clientY + touch2.clientY) / 2) - rect.top
-                };
+                // 记录初始滚动位置
+                startScrollLeft = container.scrollLeft;
+                startScrollTop = container.scrollTop;
+
+                // 计算中心点相对于div的位置
+                var centerX = (touch1.clientX + touch2.clientX) / 2;
+                var centerY = (touch1.clientY + touch2.clientY) / 2;
+
+                // 转换为相对于div内容的坐标
+                startCenterX = centerX + startScrollLeft - containerOffsetX;
+                startCenterY = centerY + startScrollTop - containerOffsetY;
+
+                // 阻止默认行为防止页面滚动
+                e.preventDefault();
             }
         });
 
-        svgContainer.addEventListener('touchmove', function(e) {
+        // 处理触摸移动事件
+        div.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2) {
-                e.preventDefault();
-
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-
-                // 计算当前两指距离
-                const currentDistance = Math.sqrt(
-                    Math.pow(touch2.clientX - touch1.clientX, 2) +
-                    Math.pow(touch2.clientY - touch1.clientY, 2)
+                // 计算当前两点距离
+                var touch1 = e.touches[0];
+                var touch2 = e.touches[1];
+                var currentDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
                 );
 
-                if (initialDistance && initialCenter) {
-                    // 计算缩放因子
-                    const factor = currentDistance / initialDistance;
+                // 计算缩放比例
+                var newScale = currentDistance / initialDistance * currentScale;
 
-                    // 应用缩放
-                    zoom(factor, initialCenter.x, initialCenter.y);
+                // 应用缩放
+                div.style.transform = `scale(${newScale})`;
+                div.style.transformOrigin = 'left top';
 
-                    // 重置初始值以便下次计算
-                    initialDistance = currentDistance;
+                // 计算新的中心点位置
+                var centerX = (touch1.clientX + touch2.clientX) / 2;
+                var centerY = (touch1.clientY + touch2.clientY) / 2;
+
+                // 计算新的滚动位置以保持中心点不变
+                var scaleChange = newScale / currentScale;
+
+                var newScrollLeft = startCenterX * scaleChange - (centerX - containerOffsetX);
+                var newScrollTop = startCenterY * scaleChange - (centerY - containerOffsetY);
+
+                // 应用滚动位置
+                container.scrollLeft = newScrollLeft;
+                container.scrollTop = newScrollTop;
+
+                // 阻止默认行为防止页面滚动
+                e.preventDefault();
+            }
+        });
+
+        // 处理触摸结束事件
+        div.addEventListener('touchend', () => {
+            if (div.style.transform) {
+                // 更新当前缩放比例
+                var match = div.style.transform.match(/scale\(([^)]+)\)/);
+                if (match) {
+                    currentScale = parseFloat(match[1]);
                 }
             }
         });
-
-        svgContainer.addEventListener('touchend', function() {
-            initialDistance = null;
-            initialCenter = null;
-        });
     },
-    setTouceEvent2: function (){
-        const container = this.paperInNode;
-        const zoomableSvg = this.paperInNode.getElement('svg');
+    isUserScalableEnabled: function () {
+        //html是否默认启用缩放
+        try {
+            // 获取viewport meta标签
+            var metaViewport = document.querySelector('meta[name="viewport"]');
 
-        let initialDistance = 0;  // 初始触摸距离
-        let initialScale = this.mobileScale;     // 初始缩放比例
-        let currentScale = 1;     // 当前缩放比例
-        let initialCenter = { x: 0, y: 0 }; // 初始缩放中心点
-        const scaleFactor = 0.003;  // 控制缩放变化的平滑因子，数值越小变化越慢
-        const minScale = 0.95;     // 最小缩放比例
-        const maxScale = 1.1;       // 最大缩放比例
-
-        container.addEventListener('touchstart', (e) => {
-            if (e.touches.length == 2) {
-                // 计算两个触摸点的初始距离
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-                initialDistance = getDistance(touch1, touch2);
-
-                // 计算缩放中心点
-                initialCenter.x = (touch1.clientX + touch2.clientX) / 2;
-                initialCenter.y = (touch1.clientY + touch2.clientY) / 2;
+            // 如果没有viewport meta标签，返回默认状态
+            if (!metaViewport) {
+                return true;
             }
-        });
 
-        container.addEventListener('touchmove', (e) => {
-            if (e.touches.length == 2) {
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-                const newDistance = getDistance(touch1, touch2);
+            var content = metaViewport.getAttribute('content') || '';
+            var params = new URLSearchParams(content.replace(/,/g, '&'));
 
-                // 计算缩放比例的变化
-                const scaleChange = (newDistance / initialDistance);
-                let newScale = initialScale * scaleChange;
-
-                // 限制缩放比例的最大和最小值
-                newScale = Math.max(minScale, Math.min(maxScale, newScale));
-
-                // 平滑缩放
-                const smoothScale = currentScale + (newScale - currentScale) * scaleFactor;
-
-                // 更新当前缩放比例
-                currentScale = smoothScale;
-
-                // 更新SVG的viewBox属性
-                updateViewBox(currentScale);
+            // 检查user-scalable参数
+            if (params.has('user-scalable')) {
+                var value = params.get('user-scalable').toLowerCase();
+                return value === 'yes' || value === '1';
             }
-        });
 
-        container.addEventListener('touchend', () => {
-            // 触摸结束时更新初始缩放比例
-            initialScale = currentScale;
-        });
+            // 检查minimum-scale和maximum-scale参数
+            if (params.has('minimum-scale') && params.has('maximum-scale')) {
+                var minScale = parseFloat(params.get('minimum-scale'));
+                var maxScale = parseFloat(params.get('maximum-scale'));
 
-        // 计算两点之间的距离
-        function getDistance(touch1, touch2) {
-            const dx = touch2.clientX - touch1.clientX;
-            const dy = touch2.clientY - touch1.clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
+                if (minScale >= maxScale) {
+                    return false;
+                }
+            }
 
-        // 更新viewBox，确保保持中心点不变
-        function updateViewBox(scale) {
-            const originalViewBox = zoomableSvg.getAttribute('viewBox').split(' ');
-            const originalWidth = parseFloat(originalViewBox[2]);
-            const originalHeight = parseFloat(originalViewBox[3]);
-
-            // 计算新的视口大小
-            const newWidth = originalWidth / scale;
-            const newHeight = originalHeight / scale;
-
-            // 计算新的viewBox坐标（保持中心不变）
-            const newX = (originalWidth - newWidth) / 2;
-            const newY = (originalHeight - newHeight) / 2;
-
-            zoomableSvg.setAttribute('viewBox', `${newX} ${newY} ${newWidth} ${newHeight}`);
+            return true;
+        } catch (error) {
+            return true;
         }
     },
-    setTouceEvent: function(){
-        debugger;
-
-        var svg = this.paperInNode.getElement('svg');
-        svg.setAttribute('viewBox', ``);
-        svg.setAttribute('preserveAspectRatio', ``);
-
-        var zoomable = this.paperInNode;
-        let initialDistance = 0;  // 初始距离
-        let initialScale = 1 / this.mobileScale;     // 初始缩放比例
-        let initialCenter = { x: 0, y: 0 }; // 缩放中心点
-
-        zoomable.addEventListener('touchstart', (e) => {
-
-            if (e.touches.length == 2) {
-                // 获取两个触摸点的初始距离
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-                initialDistance = getDistance(touch1, touch2);
-
-                // 计算中心点位置
-                initialCenter.x = (touch1.clientX + touch2.clientX) / 2;
-                initialCenter.y = (touch1.clientY + touch2.clientY) / 2;
-            }
-        });
-
-        zoomable.addEventListener('touchmove', (e) => {
-            if (e.touches.length == 2) {
-                const touch1 = e.touches[0];
-                const touch2 = e.touches[1];
-                const newDistance = getDistance(touch1, touch2);
-
-                // 计算缩放比例
-                const scale = (newDistance / initialDistance) * initialScale;
-
-                // 获取当前缩放比例
-                const deltaX = (touch1.clientX + touch2.clientX) / 2 - initialCenter.x;
-                const deltaY = (touch1.clientY + touch2.clientY) / 2 - initialCenter.y;
-
-                // 应用缩放和移动
-                zoomable.style.transform = `scale(${scale}) translate(${deltaX}px, ${deltaY}px)`;
-                console.log('zoomable.style.transform', `scale(${scale}) translate(${deltaX}px, ${deltaY}px)`);
-            }
-        });
-
-        zoomable.addEventListener('touchend', (e) => {
-            if (e.touches.length < 2) {
-                // 触摸结束时，更新初始值
-                initialScale = getScale(zoomable);
-            }
-        });
-
-        // 计算两点之间的距离
-        function getDistance(touch1, touch2) {
-            const dx = touch2.clientX - touch1.clientX;
-            const dy = touch2.clientY - touch1.clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
-        // 获取当前的缩放比例
-        function getScale(element) {
-            const style = window.getComputedStyle(element);
-            const transform = style.transform;
-            if (transform !== 'none') {
-                const matrix = new DOMMatrix(transform);
-                return matrix.a;  // 获取缩放比例
-            }
-            return 1 / this.mobileScale;  // 默认缩放比例为1
-        }
-    },
-
     loadToolbar: function(){
         MWF.require("MWF.widget.Toolbar", function(){
             this.toolbarNode = new Element("div").inject(this.logProcessChartNode);
@@ -653,7 +477,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                         this.loadWorkLog();
 
 
-                        this.setTouceEvent3();
+                        this.setTouchEvent();
 
                         this.fireEvent("postLoad");
                     }.bind(this)
