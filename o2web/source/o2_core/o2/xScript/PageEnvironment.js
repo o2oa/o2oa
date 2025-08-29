@@ -31,6 +31,16 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                     module?.reload();
                                 })
                             }
+                            if (_forms[k].form.relatedDisplayModules && _forms[k].form.relatedDisplayModules[(_forms[k].json.id)]){
+                                _forms[k].form.relatedDisplayModules[(_forms[k].json.id)].forEach((o)=>{
+                                    o.module?._checkDisplay(o.display);
+                                })
+                            }
+                            if (_forms[k].form.relatedValueModules && _forms[k].form.relatedValueModules[(_forms[k].json.id)]){
+                                _forms[k].form.relatedValueModules[(_forms[k].json.id)].forEach((o)=>{
+                                    o.module?._checkValue(o.value);
+                                })
+                            }
                         }
                     }
                 } 
@@ -2389,6 +2399,39 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     }
 
                 });
+            },
+            /**打开一个门户页面
+             * @method loadPortal
+             * @static
+             * @see module:form.loadPortal
+             */
+            "loadPortal": function (content, portal, page, data, par) {
+                const app = new MWF.xApplication.portal.Portal.Main(layout.desktop, {
+                    portalId: portal,
+                    pageId: page,
+                    data: data,
+                    parameters: par
+                });
+                app.viewMode="Default";
+                app.windowNode = content;
+                app.setCurrent = function(){
+                    this.window.setCurrent();
+                }
+                app.setUncurrent = function(){
+                    this.window.setUncurrent();
+                }
+                app.close = function(){
+                    this.fireAppEvent("queryClose");
+                    this.window.close(function () {
+                        this.window = null;
+                        this.taskitem = null;
+                        this.fireAppEvent("postClose");
+                        o2.release(this);
+                    }.bind(this));
+                }
+                app.load(true, content);
+
+                return app;
             },
             /**打开一个内容管理栏目（应用）
              * @method openCMS

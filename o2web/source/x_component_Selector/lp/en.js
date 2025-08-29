@@ -77,6 +77,9 @@ MWF.xApplication.Selector.LP={
 	"agent": "Agent",
 	"selectFieldProperty": "Select field attributes",
 	"searchDescriptionFieldProperty": "Expanded forms can search for components",
-	"currentForm": "Current form"
+	"currentForm": "Current form",
+	"selectPanFile": "Select cloud storage files",
+	"personFile": "personal documents",
+	"unitFile": "Enterprise files"
 }
 MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP

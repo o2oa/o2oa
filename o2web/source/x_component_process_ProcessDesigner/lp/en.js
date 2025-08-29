@@ -604,7 +604,9 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"cmsCreatorId": "Publisher Identification",
 		"specifyCmsCreator": "Specify a publisher",
 		"useScript": "Using scripts",
-		"cmsCreatorScript": "Publisher script"
+		"cmsCreatorScript": "Publisher script",
+		"resetDefault": "Recalculate",
+		"resetDefaultNote": "Every time you open the submission interface, recalculate based on the default value. If there is no default value, leave it blank."
 	}
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

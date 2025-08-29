@@ -277,12 +277,34 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
     },
 
     _setValue: function(value){
-        var flag = false;
+        var values = [];
         if (typeOf(value)!=="array") value = (!!value) ? [value] : [];
-
-        this.__setValue(value);
-        return value;
+        if (value.some(function(e){ return (e && o2.typeOf(e.then)=="function") }) || this.json.asyncMode==="yes"){
+            return Promise.all(value).then(function(d){
+                var vIds = d.flat(Infinity).map(dd=>(dd?.distinguishedName || (dd || '')));
+                this.__setValue(vIds);
+                return vIds;
+            }.bind(this), function(){});
+        }else{
+            var vIds = value.flat(Infinity).map(dd=>(dd.distinguishedName || dd));
+            this.__setValue(vIds);
+            return vIds;
+        }
     },
+    // _setValue: function(value){
+    //     debugger;
+    //     if (!!value && o2.typeOf(value.then)=="function"){
+    //         var p = Promise.resolve(value).then(function(v){
+    //             if (typeOf(v)!=="array") v = (!!v) ? [v] : [];
+    //             this.__setValue(v);
+    //         }.bind(this), function(){});
+    //         this.moduleValueAG = p;
+    //     }else{
+    //         this.moduleValueAG = null;
+    //         if (typeOf(value)!=="array") value = (!!value) ? [value] : [];
+    //         this.__setValue(value);
+    //     }
+    // },
     isReadonly : function(){
         var readonly = !!(!this.isEditable || this.readonly || this.form.json.isReadonly || this.json.showMode==="read");
         if( readonly )return readonly;

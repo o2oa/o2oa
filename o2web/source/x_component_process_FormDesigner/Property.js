@@ -2095,10 +2095,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }.bind(this));
 
             scriptNodes.each(function(node){
+                debugger;
+                const nameFilter = node.dataset["nameFilter"] || null;
                 var ps = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Script",
                     "count": node.dataset["count"] || 1,
                     "names": (!node.dataset["count"] || node.dataset["count"].toInt()==1) ? [this.data[node.get("name")]] : this.data[node.get("name")],
+                    "selectorOptions": nameFilter && {"nameFilter": nameFilter},
                     "onChange": function(ids){
                         this.saveScriptSelectItem(node, ids);
                     }.bind(this)

@@ -20,6 +20,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "isControl": false,
         "taskObject": null,
         "parameters": "",
+        "data": null,
         "isLoginPage": false,
         "readonly": false
     },
@@ -269,7 +270,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
                         "allowSave": true
                     },
                     "pageInfor": this.pageInfor,
-                    "data": {}
+                    "data": this.options.data ?? {}
                 };
 
 

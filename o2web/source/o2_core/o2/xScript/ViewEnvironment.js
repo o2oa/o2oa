@@ -5045,6 +5045,30 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
             });
         },
+        /**打开一个门户页面
+         * @method loadPortal
+         * @static
+         * @see module:form.loadPortal
+         */
+        "loadPortal": function (content, portal, page, data, par) {
+            const app = new MWF.xApplication.portal.Portal.Main(layout.desktop, {
+                portalId: portal,
+                pageId: page,
+                data: data,
+                parameters: par
+            });
+            app.viewMode="Default";
+            app.windowNode = content;
+            app.setCurrent = function(){
+                this.window.setCurrent();
+            }
+            app.setUncurrent = function(){
+                this.window.setUncurrent();
+            }
+            app.load(true, content);
+
+            return app;
+        },
 
         /**打开一个内容管理栏目。
          * @method openCMS

@@ -111,7 +111,7 @@ MWF.xApplication.Common.Main = new Class({
 		if( this.embeded ){
 			this.loadEmbeded();
 		}else if (!this.inBrowser) {
-			if (layout.viewMode==="Default"){
+			if (layout.viewMode==="Default" || this.viewMode==="Default"){
 				this.loadWindowFlat(isCurrent);
 			}else{
 				this.loadWindow(isCurrent);
@@ -255,7 +255,7 @@ MWF.xApplication.Common.Main = new Class({
 		//this.window.setUncurrent();
 
 		this.resizeFun = function(){
-			this.fireAppEvent("resize");
+			this.fireAppEvent?.("resize");
 		}.bind(this);
 
 		layout.desktop.addEvent("resize", this.resizeFun);

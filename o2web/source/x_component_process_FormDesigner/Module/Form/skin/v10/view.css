@@ -20,6 +20,7 @@
     padding: 1em;
     overflow: hidden;
     display: grid !important;
+    grid-template-rows: 100%;
 }
 .form-layout .page-content-area {
     display: flex !important;
@@ -37,6 +38,7 @@
     gap: 0.5em 1em;
     flex-wrap: wrap;
     overflow: hidden;
+    overflow: auto;
 }
 
 .form-layout .page-nav-title {

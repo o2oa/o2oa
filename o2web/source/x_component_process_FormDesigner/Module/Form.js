@@ -1525,7 +1525,35 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             }
 			this.container.addClass(className);
         }
-		if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
+		if (this.json.cssUrl){
+			if (this.cssUrlStyleNode) this.cssUrlStyleNode.remove();
+			this.container.loadCss(this.json.cssUrl, {reload: true}, function(o){
+				this.cssUrlStyleNode = o.style;
+			});
+		} 
+		if (this.json.cssScript){
+			if (this.cssScriptStyleNodes){
+				this.cssScriptStyleNodes.forEach(function(n){ n.remove(); });
+				this.cssScriptStyleNodes = [];
+			}
+
+			const actions = {
+				'portal': o2.Actions.load("x_portal_assemble_designer").ScriptAction,
+				'process': o2.Actions.load("x_processplatform_assemble_designer").ScriptAction,
+				'cms': o2.Actions.load("x_cms_assemble_control").ScriptAction,
+				'service': o2.Actions.load("x_program_center").ScriptAction
+			}
+
+			this.json.cssScript.forEach((s)=>{
+				var action = actions[s.appType];
+				action.get(s.id).then((json)=>{
+					this.container.loadCssText(json.data.text, null, (style)=>{
+						if (!this.cssScriptStyleNodes) this.cssScriptStyleNodes = [];
+						this.cssScriptStyleNodes.push(style);
+					});
+				});
+			});
+		} 
     },
     setAllStyles: function(){
         this.setPropertiesOrStyles("styles");

@@ -10,6 +10,9 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
         // if (this.isReadonly() || this.json.showMode==="read"){
         //     this._loadNodeRead();
         // }else{
+        if (this.json.id==='personAttributeList..data..0..attrName'){
+            debugger;
+        }
         if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
         }else{

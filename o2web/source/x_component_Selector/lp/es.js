@@ -77,6 +77,9 @@ MWF.xApplication.Selector.LP={
 	"agent": "Agente",
 	"selectFieldProperty": "Seleccionar atributos de campo",
 	"searchDescriptionFieldProperty": "El formulario ampliado puede buscar componentes",
-	"currentForm": "Formulario actual"
+	"currentForm": "Formulario actual",
+	"selectPanFile": "Seleccionar archivo de disco de red",
+	"personFile": "Documentos personales",
+	"unitFile": "Documentos empresariales"
 }
 MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP

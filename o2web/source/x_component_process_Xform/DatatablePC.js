@@ -221,7 +221,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
                 // }else{
 				//     this._loadUserInterface();
 			    // }
-				
+				debugger;
 				if (!this.isReadable && !!this.isHideUnreadable){
 					this.node?.addClass('hide');
 					return;
@@ -3274,7 +3274,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		return true;
 	},
 	validation: function(){
-		if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+		// if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 		
 		const flag = this._validation();
 		this.datatable.fireEvent("validationLine", [this, flag]);

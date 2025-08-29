@@ -32,6 +32,16 @@ MWF.xScript.Environment = function(ev){
                                 module?.reload();
                             })
                         }
+                        if (_forms[k].form.relatedDisplayModules && _forms[k].form.relatedDisplayModules[(_forms[k].json.id)]){
+                            _forms[k].form.relatedDisplayModules[(_forms[k].json.id)].forEach((o)=>{
+                                o.module?._checkDisplay(o.display);
+                            })
+                        }
+                        if (_forms[k].form.relatedValueModules && _forms[k].form.relatedValueModules[(_forms[k].json.id)]){
+                            _forms[k].form.relatedValueModules[(_forms[k].json.id)].forEach((o)=>{
+                                o.module?._checkValue(o.value);
+                            })
+                        }
                     }
                 }
             } 
@@ -4416,6 +4426,46 @@ MWF.xScript.Environment = function(ev){
                 }
 
             });
+        },
+
+        /**在指定dom元素中打开一个门户页面。<br/>
+         * @method loadPortal
+         * @static
+         * @param {Element} content - 一个DOM元素，门户页面在此dom元素中加载。
+         * @param {String} portal - 要打开的门户应用名称、别名或ID。
+         * @param {String} [page] - 要打开的页面名称、别名或ID。如果忽略，则打开门户的默认首页
+         * @param {Object} [data] - 门户的业务数据，在门户中可用this.data访问。
+         * @param {Object} [par] - 打开页面可以传入参数。<br>在被打开的页面中，可以通过脚本this.page.parameters访问到此参数。
+         * @example
+         this.form.openPortal(id, "", {"type": "my type"});
+         */
+        "loadPortal": function (content, portal, page, data, par) {
+            const app = new MWF.xApplication.portal.Portal.Main(layout.desktop, {
+                portalId: portal,
+                pageId: page,
+                data: data,
+                parameters: par
+            });
+            app.viewMode="Default";
+            app.windowNode = content;
+            app.setCurrent = function(){
+                this.window.setCurrent();
+            }
+            app.setUncurrent = function(){
+                this.window.setUncurrent();
+            }
+            app.close = function(){
+                this.fireAppEvent("queryClose");
+                this.window.close(function () {
+                    this.window = null;
+                    this.taskitem = null;
+                    this.fireAppEvent("postClose");
+                    o2.release(this);
+                }.bind(this));
+            }
+            app.load(true, content);
+
+            return app;
         },
 
 

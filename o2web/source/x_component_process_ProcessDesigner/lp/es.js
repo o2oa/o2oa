@@ -607,7 +607,9 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"cmsCreatorId": "Identificación del editor",
 		"specifyCmsCreator": "Especificar un editor",
 		"useScript": "Usar guiones",
-		"cmsCreatorScript": "Guión del editor"
+		"cmsCreatorScript": "Guión del editor",
+		"resetDefault": "Volver a calcular",
+		"resetDefaultNote": "Cada vez que se abre la interfaz de envío, se vuelve a calcular de acuerdo con el valor predeterminado, y si no hay valor predeterminado, está vacío."
 	}
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

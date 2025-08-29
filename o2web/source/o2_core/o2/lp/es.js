@@ -465,7 +465,8 @@ o2.LP={
 		},
 		"unit": "Organización",
 		"duty": "Cargo",
-		"selectIdentity": "Elegir identidad"
+		"selectIdentity": "Elegir identidad",
+		"selectFromDriver": "Selección del disco de red de la empresa"
 	},
 	"authentication": {
 		"LoginFormTitle": "Bienvenido al inicio de sesión",

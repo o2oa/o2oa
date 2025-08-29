@@ -64,6 +64,13 @@
                 <td class="editTableTitle">CSS Url:</td>
                 <td class="editTableValue"><input type="text" name="cssUrl" value="text{$.cssUrl}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">CSS Script:</td>
+                <td class="editTableValue">
+                    <div class="MWFScriptSelect" data-name-filter=".*\.css$" data-count=0 name="cssScript"></div>
+                    <div class="MWFScriptSelectAction"><div style="color: #0b58a2; cursor: pointer; float: left">{{$.lp.copy}}</div><div style="color: #0b58a2; cursor: pointer; float: left; margin-left:10px">{{$.lp.paste}}</div></div>
+                </td>
+            </tr>
         </table>
 
         <div class="MWFCssArea" name="css" title="CSS"></div>

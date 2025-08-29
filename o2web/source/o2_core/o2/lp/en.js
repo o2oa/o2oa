@@ -465,7 +465,8 @@ o2.LP={
 		"notUploadNotice": "The current status does not allow uploading attachments",
 		"unit": "organization",
 		"duty": "post",
-		"selectIdentity": "Choose Identity"
+		"selectIdentity": "Choose Identity",
+		"selectFromDriver": "Choose from enterprise cloud storage"
 	},
 	"authentication": {
 		"LoginFormTitle": "Welcome",

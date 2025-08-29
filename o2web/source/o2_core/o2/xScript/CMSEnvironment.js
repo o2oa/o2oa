@@ -12,11 +12,34 @@ MWF.xScript.CMSEnvironment = function(ev){
 
     //data
     var getJSONData = function(jData){
-        return new MWF.xScript.CMSJSONData(jData, function(data, key, _self){
+        return new MWF.xScript.JSONData(jData, function(data, key, _self){
             var p = {"getKey": function(){return key;}, "getParent": function(){return _self;}};
             while (p && !_forms[p.getKey()]) p = p.getParent();
+            //if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
             var k = (p) ? p.getKey() : "";
-            if (k) if(_forms[k]) if(_forms[k].resetData) _forms[k].resetData();
+            if (k) if(_forms[k]){
+                if(_forms[k].resetData){
+                    _forms[k].resetData();
+                    if (_forms[k].form){
+                        if (_forms[k].form.relatedModules?.[_forms[k].json.id]){
+                            _forms[k].form.relatedModules?.[_forms[k].json.id].forEach((module)=>{
+                                module?.reload();
+                            })
+                        }
+                        if (_forms[k].form.relatedDisplayModules && _forms[k].form.relatedDisplayModules[(_forms[k].json.id)]){
+                            _forms[k].form.relatedDisplayModules[(_forms[k].json.id)].forEach((o)=>{
+                                o.module?._checkDisplay(o.display);
+                            })
+                        }
+                        if (_forms[k].form.relatedValueModules && _forms[k].form.relatedValueModules[(_forms[k].json.id)]){
+                            _forms[k].form.relatedValueModules[(_forms[k].json.id)].forEach((o)=>{
+                                o.module?._checkValue(o.value);
+                            })
+                        }
+                    }
+                }
+            } 
+            //if(p) if(p.getKey()) if(_forms[p.getKey()]) if(_forms[p.getKey()].render) _forms[p.getKey()].render();
         }, "", null, _form);
     };
     this.setData = function(data){
@@ -2362,6 +2385,25 @@ MWF.xScript.CMSEnvironment = function(ev){
                 }
 
             });
+        },
+        "loadPortal": function (content, portal, page, data, par) {
+            const app = new MWF.xApplication.portal.Portal.Main(layout.desktop, {
+                portalId: portal,
+                pageId: page,
+                data: data,
+                parameters: par
+            });
+            app.viewMode="Default";
+            app.windowNode = content;
+            app.setCurrent = function(){
+                this.window.setCurrent();
+            }
+            app.setUncurrent = function(){
+                this.window.setUncurrent();
+            }
+            app.load(true, content);
+
+            return app;
         },
         "openCMS": function(name){
             var action = MWF.Actions.get("x_cms_assemble_control");

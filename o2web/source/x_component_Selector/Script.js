@@ -8,6 +8,7 @@ MWF.xApplication.Selector.Script = new Class({
         "values": [],
         "names": [],
         "appType" : ["service","process","portal","cms"],
+        "nameFilter": "",
         "applications": [],
         "expand": false,
         "forceSearchInItem" : true
@@ -39,6 +40,10 @@ MWF.xApplication.Selector.Script = new Class({
             var array = [];
             action(1, 1000, {}, function( scriptJson ) {
                 scriptJson.data.each(function (script) {
+                    if (this.options.nameFilter){
+                       var reg = new RegExp(this.options.nameFilter, "i");
+                          if( !reg.test( script.name ) && !reg.test( script.alias ) ) return;
+                    }
                     var appName, appId;
                     if( type === "service" ){
                         appName = "service";
@@ -76,6 +81,8 @@ MWF.xApplication.Selector.Script = new Class({
                         array.push(json[application]);
                     }
                 }
+                if (!array.length) return;
+                
                 array.sort( function (a, b) {
                     return (a.name||"").localeCompare((b.name||""));
                 });
