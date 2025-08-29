@@ -54,6 +54,25 @@ public class MPweixinAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "绑定微信公众号openid到当前登录用户.", action = ActionBindOpenId.class)
+    @GET
+    @Path("bind/openid/{openid}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void bindOpenId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @Context HttpServletResponse response, @JaxrsParameterDescribe("微信公众号用户的openId") @PathParam("openid") String openid) {
+
+        ActionResult<ActionBindOpenId.Wo> result = new ActionResult<>();
+        try {
+            EffectivePerson effectivePerson = this.effectivePerson(request);
+            result = new ActionBindOpenId().execute(effectivePerson, openid);
+        } catch (Exception e) {
+            logger.error(e);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "绑定微信公众号openid到当前登录用户.", action = ActionBindWithCode.class)
     @GET
     @Path("bind/code/{code}")

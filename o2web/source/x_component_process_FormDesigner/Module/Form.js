@@ -1065,7 +1065,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         var html = copy.outerHTML;
 		copy.destroy();
 
-		this._clearNoDomModule();
+		// this._clearNoDomModule();
 
 		this.data.json.mode = this.options.mode;
 		this.data.html = html;

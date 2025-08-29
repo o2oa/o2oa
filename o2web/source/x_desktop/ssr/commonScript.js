@@ -4334,7 +4334,7 @@ const headers = {
 /**
  * 调用接口时传入的请求消息体的文本内容。
  * @o2range 服务管理-接口
- * @module server.requestText
+ * @module server.service.requestText
  * @o2cn 传入的服务消息体文本
  * @o2category server.service
  * @o2ordernumber 250
@@ -4371,7 +4371,7 @@ const requestDescriptor = {
             /**
              * 调用接口时传入的请求对象。java的 request（java.net.http.HttpRequest）对象。
              * @o2range 服务管理-接口
-             * @module server.request
+             * @module server.service.request
              * @o2cn 传入的服务消息体文本
              * @o2category server.service
              * @o2ordernumber 250

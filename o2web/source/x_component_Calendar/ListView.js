@@ -412,14 +412,14 @@ MWF.xApplication.Calendar.ListView.View.Line = new Class({
 
         if( this.isWholeday ){
             this.node = new Element("tr",{
-                "html": "<td width='30'><div></div></td><td width='100'>"+this.app.lp.allDay+"</td><td>"+o2.common.encodeHtml(this.data.data.title) +"</td><td>"+ (this.data.data.locationName || "") +"</td>"
+                "html": "<td width='30'><div></div></td><td width='100'>"+this.app.lp.allDay+"</td><td>"+o2.common.encodeHtml(this.data.data.title) +"</td><td>"+ o2.txt(this.data.data.locationName || "") +"</td>"
             }).inject(this.container);
         }else{
             var bdate = this.data.start;
             var edate = this.data.end;
 
             this.node = new Element("tr",{
-                "html": "<td width='30'><div></div></td><td>"+bdate+"  -  "+edate+"</td><td>"+o2.common.encodeHtml(this.data.data.title) +"</td><td>"+(this.data.data.locationName || "")  +"</td>"
+                "html": "<td width='30'><div></div></td><td>"+bdate+"  -  "+edate+"</td><td>"+o2.common.encodeHtml(this.data.data.title) +"</td><td>"+o2.txt(this.data.data.locationName || "")  +"</td>"
             }).inject(this.container);
         }
         if( this.day.isToday ){

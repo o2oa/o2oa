@@ -433,6 +433,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 "styles": viewTitleCellNode
             }).inject(this.viewTitleLine);
             this.selectTitleCell.setStyle("width", "10px");
+            this.selectTitleCell.setStyle("text-align", "center");
             if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
             if( this.isSelectTdHidden() ){
@@ -3226,9 +3227,10 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }
         debugger;
         var viewStyles = this.view.viewJson.viewStyles;
-        // if( this.view.viewJson.selectBoxShow !=="always" ){
-        //     this.selectTd.setStyles({"background": "transparent"});
-        // }else{
+        if( this.view.viewJson.selectBoxShow !=="always" ){
+            this.selectTd.removeClass( viewStyles["checkedCheckboxNode"].className );
+            this.selectTd.setStyles({"background": "transparent"});
+        }else{
             this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
                 this.selectTd.removeClass( viewStyles["checkedCheckboxNode"].className );
@@ -3242,7 +3244,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             }else{
                 this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/checkbox.png) center center no-repeat"});
             }
-        // }
+        }
         if( viewStyles ){
             this.node.setStyles( viewStyles["contentTr"] );
         }else{
@@ -3356,6 +3358,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         }).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
+        this.selectTd.setStyles(this.css.viewSelectTdNode);
 
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
 
