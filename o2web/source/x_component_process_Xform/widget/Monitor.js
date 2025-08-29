@@ -29,7 +29,6 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     load: function(){
         this.logProcessChartNode = new Element("div", {"styles": this.css.logProcessChartNode}).inject(this.container);
         this.logPathChartNode = new Element("div", {"styles": this.css.logPathChartNode}).inject(this.container);
-
         this.checkMonitorOpen();
     },
 
@@ -90,6 +89,141 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 this.loadPaper();
                 this.bindTabEvent();
             }.bind(this));
+        }
+    },
+    setTouchEvent: function (){
+        if( !layout.mobile )return;
+        if( this.isUserScalableEnabled() )return;
+        //手势缩放
+        // 获取目标元素
+        var div = this.paperInNode;
+        var container = div.getParent();
+
+        // 初始化变量
+        var initialDistance = 0;
+        var currentScale = 1;
+        var startScrollLeft = 0;
+        var startScrollTop = 0;
+        var startCenterX = 0;
+        var startCenterY = 0;
+
+        var containerOffsetX = 0;
+        var containerOffsetY = 0;
+
+        // 处理触摸开始事件
+        div.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+
+                var coords = container.getCoordinates(document.body);
+                containerOffsetX = coords.left;
+                containerOffsetY = coords.top;
+
+                // 计算初始两点距离
+                var touch1 = e.touches[0];
+                var touch2 = e.touches[1];
+                initialDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+
+                // 记录初始滚动位置
+                startScrollLeft = container.scrollLeft;
+                startScrollTop = container.scrollTop;
+
+                // 计算中心点相对于div的位置
+                var centerX = (touch1.clientX + touch2.clientX) / 2;
+                var centerY = (touch1.clientY + touch2.clientY) / 2;
+
+                // 转换为相对于div内容的坐标
+                startCenterX = centerX + startScrollLeft - containerOffsetX;
+                startCenterY = centerY + startScrollTop - containerOffsetY;
+
+                // 阻止默认行为防止页面滚动
+                e.preventDefault();
+            }
+        });
+
+        // 处理触摸移动事件
+        div.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2) {
+                // 计算当前两点距离
+                var touch1 = e.touches[0];
+                var touch2 = e.touches[1];
+                var currentDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+
+                // 计算缩放比例
+                var newScale = currentDistance / initialDistance * currentScale;
+
+                // 应用缩放
+                div.style.transform = `scale(${newScale})`;
+                div.style.transformOrigin = 'left top';
+
+                // 计算新的中心点位置
+                var centerX = (touch1.clientX + touch2.clientX) / 2;
+                var centerY = (touch1.clientY + touch2.clientY) / 2;
+
+                // 计算新的滚动位置以保持中心点不变
+                var scaleChange = newScale / currentScale;
+
+                var newScrollLeft = startCenterX * scaleChange - (centerX - containerOffsetX);
+                var newScrollTop = startCenterY * scaleChange - (centerY - containerOffsetY);
+
+                // 应用滚动位置
+                container.scrollLeft = newScrollLeft;
+                container.scrollTop = newScrollTop;
+
+                // 阻止默认行为防止页面滚动
+                e.preventDefault();
+            }
+        });
+
+        // 处理触摸结束事件
+        div.addEventListener('touchend', () => {
+            if (div.style.transform) {
+                // 更新当前缩放比例
+                var match = div.style.transform.match(/scale\(([^)]+)\)/);
+                if (match) {
+                    currentScale = parseFloat(match[1]);
+                }
+            }
+        });
+    },
+    isUserScalableEnabled: function () {
+        //html是否默认启用缩放
+        try {
+            // 获取viewport meta标签
+            var metaViewport = document.querySelector('meta[name="viewport"]');
+
+            // 如果没有viewport meta标签，返回默认状态
+            if (!metaViewport) {
+                return true;
+            }
+
+            var content = metaViewport.getAttribute('content') || '';
+            var params = new URLSearchParams(content.replace(/,/g, '&'));
+
+            // 检查user-scalable参数
+            if (params.has('user-scalable')) {
+                var value = params.get('user-scalable').toLowerCase();
+                return value === 'yes' || value === '1';
+            }
+
+            // 检查minimum-scale和maximum-scale参数
+            if (params.has('minimum-scale') && params.has('maximum-scale')) {
+                var minScale = parseFloat(params.get('minimum-scale'));
+                var maxScale = parseFloat(params.get('maximum-scale'));
+
+                if (minScale >= maxScale) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (error) {
+            return true;
         }
     },
     loadToolbar: function(){
@@ -341,6 +475,10 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                         }
 
                         this.loadWorkLog();
+
+
+                        this.setTouchEvent();
+
                         this.fireEvent("postLoad");
                     }.bind(this)
                 });
