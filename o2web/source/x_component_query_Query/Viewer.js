@@ -3225,7 +3225,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                 break;
             }
         }
-        debugger;
         var viewStyles = this.view.viewJson.viewStyles;
         if( this.view.viewJson.selectBoxShow !=="always" ){
             this.selectTd.removeClass( viewStyles["checkedCheckboxNode"].className );
@@ -3307,6 +3306,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         var viewStyles = this.view.viewJson.viewStyles;
         if( this.view.viewJson.selectBoxShow !=="always" ){
             this.selectTd.setStyles({"background": "transparent"});
+            if (viewStyles) {
+                this.selectTd.removeClass(viewStyles["checkedRadioNode"].className);
+            }
         }else{
             this.selectTd.setStyles({opacity: 1});
             if (viewStyles) {
