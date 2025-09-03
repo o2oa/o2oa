@@ -11,6 +11,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.ItemAccess;
 import java.util.List;
@@ -26,13 +27,14 @@ class ActionListWithPath extends BaseAction {
         LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<List<Wo>> result = new ActionResult<>();
-
+            Business business = new Business(emc);
             List<ItemAccess> itemAccessList = emc.listEqual(ItemAccess.class,
                     ItemAccess.path_FIELDNAME, path);
             List<Wo> wos = Wo.copier.copy(itemAccessList);
             for (Wo wo : wos) {
-                Process process = emc.find(wo.getItemCategoryId(), Process.class);
+                Process process = getEnabledProcess(business, wo.getItemCategoryId());
                 if (null != process) {
+                    wo.setItemCategoryId(process.getId());
                     wo.setProcessName(process.getName());
                 }
             }

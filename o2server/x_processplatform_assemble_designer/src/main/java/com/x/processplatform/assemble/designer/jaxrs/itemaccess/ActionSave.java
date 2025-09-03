@@ -66,6 +66,7 @@ class ActionSave extends BaseAction {
             }
 
             Wi.copier.copy(wi, itemAccess);
+            itemAccess.setAppId(process.getApplication());
             itemAccess.setItemCategory(ItemCategory.pp);
             itemAccess.getProperties().setReadActivityIdList(
                     ListTools.extractField(itemAccess.getReaderList(), "activity", String.class,
@@ -96,9 +97,9 @@ class ActionSave extends BaseAction {
 
         private static final long serialVersionUID = -5237741099036357033L;
 
-        static WrapCopier<Wi, ItemAccess> copier = WrapCopierFactory.wi(Wi.class, ItemAccess.class,
-                null,
-                ListTools.toList(FieldsUnmodifyIncludePorperties));
+        static WrapCopier<Wi, ItemAccess> copier = WrapCopierFactory.wi(Wi.class, ItemAccess.class, null,
+                ListTools.toList(FieldsUnmodifyIncludePorperties, ItemAccess.appId_FIELDNAME,
+                        ItemAccess.itemCategory_FIELDNAME));
 
     }
 }

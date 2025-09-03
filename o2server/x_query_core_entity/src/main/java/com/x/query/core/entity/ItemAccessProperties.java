@@ -29,6 +29,8 @@ public class ItemAccessProperties extends JsonProperties {
 
 	private List<String> editActivityIdList;
 
+	private String processId;
+
 	public List<String> getReaderList() {
 		return readerList == null ? Collections.emptyList() : readerList;
 	}
