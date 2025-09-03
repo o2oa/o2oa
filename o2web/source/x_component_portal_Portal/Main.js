@@ -68,6 +68,23 @@ MWF.xApplication.portal.Portal.Main = new Class({
     //    //this.parseData(data);
     //    this.openPortal();
     //},
+     reload: function(data, cb){
+        if (this.appForm){
+            this.formNode.empty();
+            MWF.release(this.appForm);
+            this.appForm = null;
+            this.form = null;
+            this.$events = {};
+        }
+        if (data){
+            this.parseData(data).then(function(){
+                this.openPortal(this.options.parameters, cb);
+            }.bind(this));
+        }else{
+            this.loadPortal(this.options.parameters, cb);
+        }
+    },
+
     toPortal: function(portal, page, par, nohis){
         this.options.portalId = portal;
         this.options.pageId = page;
@@ -272,6 +289,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     "pageInfor": this.pageInfor,
                     "data": this.options.data ?? {}
                 };
+                this.appForm.businessData.originalData = Object.clone(this.appForm.businessData.data);
 
 
                 this.appForm.workAction = this.action;

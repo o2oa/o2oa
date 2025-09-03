@@ -45,7 +45,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     }
                 } 
                 //if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
-            });
+            }, '', null, _form);
         };
         this.setData = function (data) {
             this.data = getJSONData(data);
@@ -2802,7 +2802,7 @@ if (!MWF.xScript.createTable) MWF.xScript.createTable = function(){
 if (!MWF.xScript.JSONData) {
     var getArrayJSONData = function (jData, p, _form) {
         return new MWF.xScript.JSONData(jData, function (data, key, _self) {
-            var p = {
+            var p = { 
                 "getKey": function () {
                     return key;
                 }, "getParent": function () {
