@@ -634,11 +634,11 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                     })
                 }
 
-                this.createViewNode({"filterList": filterData});
+                this.createViewNode({"filterList": filterData}, null, true);
             }else{
                 this.filterItems = [];
                 var filterData = this.json.filter ? this.json.filter.clone() : [];
-                this.createViewNode( {"filterList": filterData} );
+                this.createViewNode( {"filterList": filterData}, null, true );
             }
         }
     },
@@ -735,15 +735,16 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
      * @param {(ViewFilter[]|ViewFilter|Null)} [filter] 过滤条件
      * @param {StatementParameter} [parameter] 过滤条件。
      * @param {Function} callback 过滤完成并重新加载数据后的回调方法。
+     * @param {Boolean} [keepSelected] 可选,是否保留选择结果
      */
-    setFilter: function (filter, parameter, callback) {
+    setFilter: function (filter, parameter, callback, keepSelected) {
         if (this.lookuping || this.pageloading) return;
         if (!filter) filter = [];
         if (!parameter) parameter = {};
         this.json.filter = filter;
         this.json.parameter = parameter;
         if (this.viewAreaNode) {
-            this.createViewNode({"filterList": this.json.filter.clone()}, callback);
+            this.createViewNode({"filterList": this.json.filter.clone()}, callback, keepSelected);
         }
     },
 
