@@ -396,10 +396,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.createExportNode();
         }
     },
-    createViewNode: function(data, callback){
+    createViewNode: function(data, callback, keepSelected){
         this.viewAreaNode.empty();
 
-        this.selectedItems = [];
+        if( !keepSelected )this.selectedItems = [];
 
         var viewStyles = this.viewJson.viewStyles;
 
@@ -555,7 +555,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 if(column.orderByCurrent)clearOtherOrder();
                 break;
         }
-        this.createViewNode(this.requestBody);
+        this.createViewNode(this.requestBody, null, true);
         // this.setOrderStyle(column, node);
     },
     getOrderType: function (column){
@@ -1318,10 +1318,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     /**
      * @summary 刷新视图。
      *  @param {Function} [callback] - 可选，刷新视图后的回调.
+     *  @param {Boolean} [keepSelected] - 可选，是否保留选择结果.
      *  @example
      *  this.target.reload();
      */
-    reload: function( callback ){
+    reload: function( callback, keepSelected ){
         if( this.lookuping || this.pageloading )return;
         this.node.setStyle("display", "block");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
@@ -1336,7 +1337,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.closeCustomSearch();
 
         this.viewAreaNode.empty();
-        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, callback);
+        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, callback, keepSelected);
     },
     getFilter: function(){
         var filterData = [];
@@ -1546,11 +1547,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     })
                 }
 
-                this.createViewNode({"filterList": filterData});
+                this.createViewNode({"filterList": filterData}, null, true);
             }else{
                 this.filterItems = [];
                 var filterData = this.json.filter ? this.json.filter.clone() : [];
-                this.createViewNode( {"filterList": filterData} );
+                this.createViewNode( {"filterList": filterData}, null, true );
             }
         }
     },
@@ -1561,9 +1562,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 filterData.push(filter.data);
             }.bind(this));
 
-            this.createViewNode({"filterList": filterData});
+            this.createViewNode({"filterList": filterData}, null, true);
         }else{
-            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
+            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
         }
     },
     loadCustomSearch: function(){
@@ -1833,7 +1834,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this));
             this.lastFilterItems = this.filterItems;
-            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
+            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
         }
     },
     viewSearchCustomAddToFilter: function(){
@@ -2195,15 +2196,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
      * @summary 设置视图的过滤条件，该方法不能修改视图中默认的过滤条件（在开发视图的时候添加的过滤条件），而是在这上面新增。
      * @see {@link module:queryView.setFilter|详情查看 this.queryViewer.setFilter}
      * @param {(ViewFilter[]|ViewFilter|Null)} [filter] 过滤条件
-     * @param {Function} callback 过滤完成并重新加载数据后的回调方法。
+     * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
+     * @param {Boolean} [keepSelected] 可选,是否保留选择结果
      */
-    setFilter : function( filter, callback ){
+    setFilter : function( filter, callback, keepSelected ){
         if( this.lookuping || this.pageloading )return;
         if( !filter )filter = [];
         if( typeOf( filter ) === "object" )filter = [ filter ];
         this.json.filter = filter;
         if( this.viewAreaNode ){
-            this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback);
+            this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback, keepSelected);
         }
     },
     /**
