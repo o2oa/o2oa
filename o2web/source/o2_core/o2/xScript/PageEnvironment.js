@@ -2625,8 +2625,25 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", null, false);
                 var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function (json) {
                     if (json.data) {
+                    var attachmentList = [];
+                    var correlationTargetList = [];
+                    if( data.$attachmentList && o2.typeOf(data.$attachmentList) === 'array' ){
+                        attachmentList = data.$attachmentList.filter(function(d){
+                            return !!d.copyFrom;
+                        });
+                        data.$attachmentList = data.$attachmentList.filter(function(d){
+                            return !d.copyFrom;
+                        });
+                        if( !data.$attachmentList.length )delete data.$attachmentList;
+                    }
+                    if( data.$correlationTargetList && o2.typeOf(data.$correlationTargetList) === 'array' ){
+                        correlationTargetList = data.$correlationTargetList;
+                        delete data.$correlationTargetList;
+                    }
                         var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
                             "workData": data,
+                            "attachmentList": attachmentList,
+                            "correlationTargetList": correlationTargetList,
                             "identity": identity,
                             "latest": latest,
                             "skipDraftCheck": skipDraftCheck,

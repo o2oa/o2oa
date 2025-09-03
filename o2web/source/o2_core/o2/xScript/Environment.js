@@ -4639,7 +4639,28 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String|Array} [app]  - 流程应用的名称、别名或ID。
          * @param {String} [process]  - 要启动的流程的名称、别名或ID。
-         * @param {Object} [data]   - 流程启动时默认的业务数据。
+         * @param {Object} [data]   - 流程启动时默认的业务数据。如果需要传递附件可以添加 $attachmentList, 如果需要传递关联文档可以添加 $correlationTargetList
+         * <pre><code class='language-js'>{
+         *      "subject": "某某标题",  //业务数据字段
+         *      "count": 123,		//业务数据字段
+         *      "$attachmentList": [ //传递$attachmentList，会把附件拷贝到新工作，不会放在业务数据中。（没有copyFrom则放在业务数据中）
+         *          {
+         *              'id':'源附件id',
+         *              'name':'附件名称',
+         *              'site':'附件组件的site',
+         *              'isSoftCopy':'是否软拷贝，默认false，true表示不拷贝真实存储附件，共用附件，仅支持流程附件',
+         *              'copyFrom':'附件来源(cms或processPlatform)'
+         *          }
+         *      ],
+         *      "$correlationTargetList": [ //传递$correlationTargetList，会把文档关联到新工作，不会放在业务数据中
+         *          {
+         *              'type':'关联目标类型(cms或processPlatform)',
+         *              'bundle':'关联目标标识',
+         *              'site':'关联文档组件的site',
+         *              'view':'来源视图'
+         *          }
+         *      ]
+         * }</code></pre>
          * @param {String | Array} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框;如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数，可以获取到启动的数据。
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
@@ -4721,8 +4742,25 @@ MWF.xScript.Environment = function(ev){
             MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", null, false);
             var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function(json){
                 if (json.data){
+                    var attachmentList = [];
+                    var correlationTargetList = [];
+                    if( data.$attachmentList && o2.typeOf(data.$attachmentList) === 'array' ){
+                        attachmentList = data.$attachmentList.filter(function(d){
+                            return !!d.copyFrom;
+                        });
+                        data.$attachmentList = data.$attachmentList.filter(function(d){
+                            return !d.copyFrom;
+                        });
+                        if( !data.$attachmentList.length )delete data.$attachmentList;
+                    }
+                    if( data.$correlationTargetList && o2.typeOf(data.$correlationTargetList) === 'array' ){
+                        correlationTargetList = data.$correlationTargetList;
+                        delete data.$correlationTargetList;
+                    }
                     var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, _form.app, {
                         "workData": data,
+                        "attachmentList": attachmentList,
+                        "correlationTargetList": correlationTargetList,
                         "identity": identity,
                         "latest": latest,
                         "skipDraftCheck": skipDraftCheck,

@@ -10,7 +10,9 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
         "workData" : null,
         "identity": null,
         "latest": false,
-        "skipDraftCheck": null
+        "skipDraftCheck": null,
+        "correlationTargetList": null,
+        "attachmentList": null
 	},
     initialize: function(data, app, options){
         this.setOptions(options);
@@ -59,6 +61,12 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                                 if( this.options.workData ){
                                     data.data = this.options.workData;
                                     if (data.data.title || data.data.subject) data.title = data.data.title || data.data.subject;
+                                }
+                                if( this.options.attachmentList ){
+                                    data.attachmentList = this.options.attachmentList;
+                                }
+                                if( this.options.correlationTargetList ){
+                                    data.correlationTargetList = this.options.correlationTargetList;
                                 }
 
                                 this.mask = new MWF.widget.Mask({"style": "desktop"});
@@ -284,6 +292,12 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
         if( this.options.workData ){
             data.data = this.options.workData;
             if (data.data.title || data.data.subject) data.title = data.data.title || data.data.subject;
+        }
+        if( this.options.attachmentList ){
+            data.attachmentList = this.options.attachmentList;
+        }
+        if( this.options.correlationTargetList ){
+            data.correlationTargetList = this.options.correlationTargetList;
         }
 
         if (!data.identity){
