@@ -83,6 +83,15 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
         public static final String table = "QRY_ITEM";
     }
 
+    public static class ItemAccess {
+
+        private ItemAccess() {
+            // nothing
+        }
+
+        public static final String table = "QRY_ITEM_ACCESS";
+    }
+
     public static class Schema {
 
         private Schema() {

@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs;
 
+import com.x.processplatform.assemble.designer.jaxrs.itemaccess.ItemAccessAction;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -48,6 +49,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(WorkCompletedAction.class);
 		classes.add(DesignerAction.class);
 		classes.add(MergeItemPlanAction.class);
+		classes.add(ItemAccessAction.class);
 		return classes;
 	}
 

@@ -31,6 +31,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.Route", "com.x.processplatform.core.entity.element.Script",
 		"com.x.processplatform.core.entity.element.Service", "com.x.processplatform.core.entity.element.Split",
 		"com.x.processplatform.core.entity.element.Mapping", "com.x.query.core.entity.Item",
+		"com.x.query.core.entity.ItemAccess",
 		"com.x.cms.core.entity.Document", "com.x.cms.core.entity.Review", "com.x.cms.core.entity.element.Script",
 		"com.x.portal.core.entity.Script", "com.x.program.center.core.entity.Script",
 		"com.x.general.core.entity.GeneralFile", "com.x.general.core.entity.Invoice" }, storageTypes = { StorageType.processPlatform,
