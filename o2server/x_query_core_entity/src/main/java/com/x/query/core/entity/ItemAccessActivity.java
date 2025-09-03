@@ -11,7 +11,7 @@ public class ItemAccessActivity extends JsonProperties {
 
     private static final long serialVersionUID = -2826601221045816580L;
 
-    @FieldDescribe("活动ID.")
+    @FieldDescribe("活动编码.")
     private String activity;
 
     @FieldDescribe("活动名称.")

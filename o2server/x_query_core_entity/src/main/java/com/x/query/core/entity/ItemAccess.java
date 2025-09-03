@@ -67,6 +67,13 @@ public class ItemAccess extends SliceJpaObject {
 		}
 	}
 
+	public static final String appId_FIELDNAME = "appId";
+	@FieldDescribe("应用ID.")
+	@Column(length = length_255B, name = ColumnNamePrefix + appId_FIELDNAME)
+	@Index(name = TABLE + ColumnNamePrefix + appId_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String appId;
+
 	public static final String itemCategoryId_FIELDNAME = "itemCategoryId";
 	@FieldDescribe("流程ID或者内容管理分类ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + itemCategoryId_FIELDNAME)
@@ -74,6 +81,7 @@ public class ItemAccess extends SliceJpaObject {
 	private String itemCategoryId;
 
 	public static final String itemCategory_FIELDNAME = "itemCategory";
+	@FieldDescribe("字段所属业务：流程为pp，内容管理为cms.")
 	@Enumerated(EnumType.STRING)
 	@Column(length = ItemCategory.length, name = ColumnNamePrefix + itemCategory_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
@@ -85,6 +93,14 @@ public class ItemAccess extends SliceJpaObject {
 	@Index(name = TABLE + ColumnNamePrefix + path_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String path;
+
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 
 	public String getItemCategoryId() {
 		return itemCategoryId;
@@ -136,7 +152,7 @@ public class ItemAccess extends SliceJpaObject {
 
 	@FieldDescribe("可查看流程活动列表.")
 	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
-			fieldValue = "{'activity':'活动ID','activityName':'活动名称','activityAlias':'活动别名','activityType':'活动类型'}")
+			fieldValue = "{'activity':'活动编码','activityName':'活动名称','activityAlias':'活动别名','activityType':'活动类型'}")
 	@Transient
 	private List<ItemAccessActivity> readActivityList;
 
@@ -146,7 +162,7 @@ public class ItemAccess extends SliceJpaObject {
 
 	@FieldDescribe("可编辑流程活动列表.")
 	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
-			fieldValue = "{'activity':'活动ID','activityName':'活动名称','activityAlias':'活动别名','activityType':'活动类型'}")
+			fieldValue = "{'activity':'活动编码','activityName':'活动名称','activityAlias':'活动别名','activityType':'活动类型'}")
 	@Transient
 	private List<ItemAccessActivity> editActivityList;
 
