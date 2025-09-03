@@ -84,30 +84,37 @@ class ActionGetIcon extends BaseAction {
 		g.setColor(bgColor);
 		g.fillRect(0, 0, size, size);
 		// 建议选用本地安装的中文字体，字体不存在时会降级
-		String[] fontNames = { "微软雅黑", "宋体", "黑体", "SimHei" };
-		Font font = null;
-		for (String fontName : fontNames) {
-			Font f = new Font(fontName, Font.PLAIN, (int) (size * 0.5));
-			if (f.canDisplay('汉')) {
-				font = f;
-				break;
-			}
-		}
-		if (font == null) {
-			font = new Font(Font.SANS_SERIF, Font.PLAIN, (int) (size * 0.5));
-		}
-		g.setFont(font);
-		// 计算文字大小，居中
-		FontMetrics fm = g.getFontMetrics();
-		int x = (size - fm.stringWidth(firstChar)) / 2;
-		int y = (size - fm.getHeight()) / 2 + fm.getAscent();
-		g.setColor(fontColor);
-		g.drawString(firstChar, x, y);
-		g.dispose();
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Font font = this.pickFont((int) (size * 0.5));
+			g.setFont(font);
+			// 计算文字大小，居中
+			FontMetrics fm = g.getFontMetrics();
+			int x = (size - fm.stringWidth(firstChar)) / 2;
+			int y = (size - fm.getHeight()) / 2 + fm.getAscent();
+			g.setColor(fontColor);
+			g.drawString(firstChar, x, y);
+			g.dispose();
+
 			ImageIO.write(image, "png", baos);
 			return Base64.encodeBase64String(baos.toByteArray());
+		} catch (Throwable ignore) {
+			return com.x.base.core.project.config.Person.ICON_UNKOWN;
 		}
+	}
+
+	private Font pickFont(int pixel) {
+		// 尝试常见中文家族名，但不做任何 canDisplay 检测；失败也会映射到逻辑字体
+		String[] families = { "微软雅黑", "宋体", "黑体", "SimHei", "Noto Sans CJK SC", "Source Han Sans SC", // 宿主机装了更好
+				"Microsoft YaHei", "PingFang SC", "WenQuanYi Zen Hei", "SimHei", Font.SANS_SERIF, "Dialog" // 逻辑字体兜底
+		};
+		for (String fam : families) {
+			try {
+				return new Font(fam, Font.PLAIN, pixel);
+			} catch (Exception ignore) {
+				// 保守：new Font 基本不会抛，但这里仍然兜底
+			}
+		}
+		return new Font(Font.SANS_SERIF, Font.PLAIN, pixel);
 	}
 
 	public static class Wo extends WoFile {
