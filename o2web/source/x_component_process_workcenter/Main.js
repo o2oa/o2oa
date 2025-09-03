@@ -680,7 +680,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var work = data.work;
 		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false,
 			"onPostClose": function(){
-				if (this.currentList.refresh) this.currentList.refresh();
+				try{
+					if (this.currentList.refresh) this.currentList.refresh();
+				}catch (e) {
+					
+				}
 			}.bind(this)
 		};
 		this.desktop.openApplication(null, "process.Work", options);
@@ -696,7 +700,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		if (currentTask.length===1){
 			var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0],
 				"onPostClose": function(){
-					if (this.currentList.refresh) this.currentList.refresh();
+					try{
+						if (this.currentList.refresh) this.currentList.refresh();
+					}catch (e) {
+						
+					}
 				}.bind(this)
 			};
 			this.desktop.openApplication(null, "process.Work", options);
@@ -747,7 +755,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		node.addEvent("click", function(e){
 			var options = {"taskId": this.get("value"), "appId": this.get("value"),
 				"onPostClose": function(){
-					if (_self.currentList.refresh) _self.currentList.refresh();
+					try{
+						if (_self.currentList.refresh) _self.currentList.refresh();
+					}catch (e) {
+						
+					}
 				}
 			};
 			_self.app.desktop.openApplication(e, "process.Work", options);
@@ -935,7 +947,11 @@ MWF.xApplication.process.workcenter.List = new Class({
 		o2.api.form.openWork(data.work, "", data.title, {
 			"taskId": data.id,
 			"onPostClose": function(){
-				if (this.refresh) this.refresh();
+				try{
+					if (this.refresh) this.refresh();
+				}catch (e) {
+					
+				}
 			}.bind(this)
 		});
 	},
@@ -1750,7 +1766,11 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 	openTask: function(e, data){
 		var options = {"draftId": data.id, "appId": "process.Work"+data.id,
 			"onPostClose": function(){
-				if (this.refresh) this.refresh();
+				try{
+					if (this.refresh) this.refresh();
+				}catch (e) {
+					
+				}
 			}.bind(this)
 		};
 		this.app.desktop.openApplication(e, "process.Work", options);
@@ -1775,7 +1795,9 @@ MWF.xApplication.process.workcenter.ReviewList = new Class({
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
 			"onPostClose": function(){
-				if (this.refresh) this.refresh();
+				try{
+					if (this.refresh) this.refresh();
+				}catch (e) {}
 			}.bind(this)
 		});
 	},
@@ -1817,7 +1839,9 @@ MWF.xApplication.process.workcenter.MyCreatedList = new Class({
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
 			"onPostClose": function(){
-				if (this.refresh) this.refresh();
+				try {
+					if (this.refresh) this.refresh();
+				}catch (e) {}
 			}.bind(this)
 		});
 	}
