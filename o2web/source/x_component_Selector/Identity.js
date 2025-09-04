@@ -840,6 +840,12 @@ MWF.xApplication.Selector.Identity.Item = new Class({
 
 MWF.xApplication.Selector.Identity.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Identity.Item,
+    _getItemTextCss: function(item){
+        return this.selector.css.selectorItemTextNode_search || this.selector.css.selectorItemTextNode;
+    },
+    _getSelectedItemTextCss: function (){
+        return this.selector.css.selectorItemTextNode_search_selected || this.selector.css.selectorItemTextNode_selected;
+    },
     _init: function (){
         this.clazz = "SearchItem";
     },

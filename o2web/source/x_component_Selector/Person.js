@@ -2195,7 +2195,7 @@ MWF.xApplication.Selector.Person = new Class({
                 this.shuttleInnerNode.setStyle("margin-top", (selectNodeHeight-shuttleInnerHieght)/2 +"px" )
             }
 
-            var itemAreaScrollNodeHeight = selectNodeHeight - getOffsetY( this.searchInputDiv ) - this.searchInputDiv.getStyle("height").toInt();
+            var itemAreaScrollNodeHeight = selectNodeHeight - getOffsetY( this.searchInputDiv ) - this.searchInputDiv.getSize().y;
             if( !this.options.searchbarInTopNode && this.selectTopNode ){
                 itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.selectTopNode ) - this.selectTopNode.getStyle("height").toInt();
             }
@@ -2470,7 +2470,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
 
         this.textNode = new Element("div", {
-            "styles": this.selector.css.selectorItemTextNode,
+            "styles": this._getItemTextCss(),
             "text": this._getShowName(),
             "title": this._getTtiteText()
         }).inject(this.node);
@@ -2484,6 +2484,12 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 "min-width" : this.selector.options.identityItemWidth + "px"
             })
         }
+    },
+    _getItemTextCss: function (){
+        return this.selector.css.selectorItemTextNode;
+    },
+    _getSelectedItemTextCss: function (){
+        return this.selector.css.selectorItemTextNode_selected;
     },
     loadSubItem: function(){},
     disable : function(){
@@ -2531,11 +2537,12 @@ MWF.xApplication.Selector.Person.Item = new Class({
     setSelected: function(){
         this.isSelected = true;
         if(this.node) {
+
             this.node.addClass('selected');
             this.node.setStyles(this.selector.css.selectorItem_selected);
 
-            this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
-            this.checkTextNodeIndent(this.textNode, this.selector.css.selectorItemTextNode_selected);
+            this.textNode.setStyles(this._getSelectedItemTextCss());
+            this.checkTextNodeIndent(this.textNode, this._getSelectedItemTextCss());
 
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
             if( this.selector.options.style === 'flow' ){
@@ -2630,8 +2637,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
                 this.node.setStyles(this.selector.css.selectorItem_selected);
 
-                this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
-                this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
+                this.textNode.setStyles(this._getSelectedItemTextCss());
+                this.checkTextNodeIndent( this.textNode, this._getSelectedItemTextCss() );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
                 if( this.selector.options.style === 'flow' ){
@@ -2663,8 +2670,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
         this.node.removeClass('selected');
 
-        this.textNode.setStyles(this.selector.css.selectorItemTextNode);
-        this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
+        this.textNode.setStyles(this._getItemTextCss());
+        this.checkTextNodeIndent( this.textNode, this._getItemTextCss() );
 
         this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
         if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
@@ -2687,8 +2694,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
                 this.node.setStyles(this.selector.css.selectorItem_selected);
 
-                this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
-                this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
+                this.textNode.setStyles(this._getSelectedItemTextCss());
+                this.checkTextNodeIndent( this.textNode, this._getSelectedItemTextCss() );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
                 if( this.selector.options.style === 'flow' ){
@@ -2723,8 +2730,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
             this.node.removeClass('selected');
 
-            this.textNode.setStyles(this.selector.css.selectorItemTextNode);
-            this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
+            this.textNode.setStyles(this._getItemTextCss());
+            this.checkTextNodeIndent( this.textNode, this._getItemTextCss() );
 
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
             if( this.selector.options.style === 'flow' ){
@@ -2754,8 +2761,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     itemSearch.isSelected = false;
                     itemSearch.node.setStyles(this.selector.css.selectorItem);
 
-                    itemSearch.textNode.setStyles(this.selector.css.selectorItemTextNode);
-                    this.checkTextNodeIndent( itemSearch.textNode, this.selector.css.selectorItemTextNode );
+                    itemSearch.textNode.setStyles(this._getItemTextCss());
+                    this.checkTextNodeIndent( itemSearch.textNode, this._getItemTextCss() );
 
                     itemSearch.actionNode.setStyles(this.selector.css.selectorItemActionNode);
                     if( this.selector.options.style === 'flow' ){
@@ -2795,8 +2802,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     item.isSelected = false;
                     item.node.setStyles(this.selector.css.selectorItem);
 
-                    item.textNode.setStyles(this.selector.css.selectorItemTextNode);
-                    this.checkTextNodeIndent( item.textNode, this.selector.css.selectorItemTextNode );
+                    item.textNode.setStyles(this._getItemTextCss());
+                    this.checkTextNodeIndent( item.textNode, this._getItemTextCss() );
 
                     item.actionNode.setStyles(this.selector.css.selectorItemActionNode);
                     if( this.selector.options.style === 'flow' ){

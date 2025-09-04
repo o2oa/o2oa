@@ -421,7 +421,7 @@
 		"opacity": 0.6
 	},
 	"selectorItem": {
-		"height": "2rem",
+		"min-height": "2rem",
 		"line-height": "2rem",
 		"padding": "0 0.714rem",
 		"overflow": "hidden",
@@ -568,6 +568,19 @@
 		"margin-left": "2rem",
 //		"color": "#FFF"
 	},
+		"selectorItemTextNode_search": {
+            "min-height": "1.6rem",
+            "line-height": "1.6rem",
+            "padding": "0.2rem 0",
+            "margin": "0 2rem",
+            "word-wrap": "break-word",
+            "color": "#000"
+        },
+        "selectorItemTextNode_search_selected": {
+            "min-height": "1.6rem",
+            "margin-left": "2rem",
+            "color": "#000"
+        },
 
 	"selectorItemCategoryChildrenNode": {
 	    "overflow": "hidden",
