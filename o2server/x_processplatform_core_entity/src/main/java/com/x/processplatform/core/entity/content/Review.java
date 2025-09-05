@@ -124,6 +124,7 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.activityUnique = work.getActivityUnique();
 		this.copyProjectionFields(work);
 	}
 
@@ -286,6 +287,13 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String person;
+
+	public static final String activityUnique_FIELDNAME = "activityUnique";
+	@Schema(description = "活动环节唯一标识")
+	@FieldDescribe("活动环节唯一标识")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + activityUnique_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String activityUnique;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建人")
@@ -555,6 +563,14 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + timeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
+
+	public String getActivityUnique() {
+		return activityUnique;
+	}
+
+	public void setActivityUnique(String activityUnique) {
+		this.activityUnique = activityUnique;
+	}
 
 	public Boolean getPermissionWrite() {
 		return permissionWrite;

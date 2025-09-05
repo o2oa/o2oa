@@ -142,6 +142,11 @@ public class Service extends Activity {
 	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String alias;
 
+	@FieldDescribe("节点唯一标识")
+	@Column(length = length_64B, name = ColumnNamePrefix + unique_FIELDNAME)
+	@CheckPersist(allowEmpty = true, simplyString = false)
+	private String unique = createId();
+
 	@FieldDescribe("描述.")
 	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -799,6 +804,14 @@ public class Service extends Activity {
 
 	public void setEdition(String edition) {
 		this.edition = edition;
+	}
+
+	public String getUnique() {
+		return unique;
+	}
+
+	public void setUnique(String unique) {
+		this.unique = unique;
 	}
 
 }
