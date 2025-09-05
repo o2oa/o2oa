@@ -530,6 +530,13 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = false)
 	private String activityToken;
 
+	public static final String activityUnique_FIELDNAME = "activityUnique";
+	@Schema(description = "活动环节唯一标识")
+	@FieldDescribe("活动环节唯一标识")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + activityUnique_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String activityUnique;
+
 	public static final String activityArrivedTime_FIELDNAME = "activityArrivedTime";
 	@FieldDescribe("活动到达时间")
 	@Column(name = ColumnNamePrefix + activityArrivedTime_FIELDNAME)
@@ -1452,6 +1459,14 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setWorkCreateType(String workCreateType) {
 		this.workCreateType = workCreateType;
+	}
+
+	public String getActivityUnique() {
+		return activityUnique;
+	}
+
+	public void setActivityUnique(String activityUnique) {
+		this.activityUnique = activityUnique;
 	}
 
 }
