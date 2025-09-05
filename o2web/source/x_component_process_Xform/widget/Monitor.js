@@ -94,6 +94,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     setTouchEvent: function (){
         if( !layout.mobile )return;
         if( this.isUserScalableEnabled() )return;
+        const MIN_SCALE = 0.4;
+        const MAX_SCALE = 4;
         //手势缩放
         // 获取目标元素
         var div = this.paperInNode;
@@ -156,6 +158,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
                 // 计算缩放比例
                 var newScale = currentDistance / initialDistance * currentScale;
+
+                newScale = Math.max( MIN_SCALE, Math.min(newScale, MAX_SCALE));
 
                 // 应用缩放
                 div.style.transform = `scale(${newScale})`;
@@ -594,7 +598,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 if (this.process.selectedActivitys.length){
                     if (!this.noselected){
                         this.selected();
-                        _self.showWorklog(this, offset, size);
+                        _self.showWorklog(this, offset, size, e);
                     }
                     this.noselected = false;
                 }
@@ -606,26 +610,32 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             if (!_self.isPlaying) {
                 if (!this.process.selectedActivitys.length) {
                     this.selected();
-                    _self.showWorklog(this, offset, size);
+                    _self.showWorklog(this, offset, size, e);
                 }
                 if (this.countSet) this.countSet.toFront();
             }
             e.stopPropagation();
         }.bind(activity));
 
-        this.paper.canvas.addEvent("click", function(e){
-            if (!_self.isPlaying) {
-                if (this.unSelectedEvent) {
-                    if (this.currentSelected || this.selectedActivitys.length) {
-                        this.unSelected(e);
+        this.paper.canvas.addEvent("click", this.checkUnselectedAndHide.bind(this) );
+    },
+    checkUnselectedAndHide: function(e){
+        debugger;
+        if(this.maskNode){
+            this.maskNode.destroy();
+            this.maskNode = null;
+        }
+        if (!this.isPlaying) {
+            if (this.process.unSelectedEvent) {
+                if (this.process.currentSelected || this.process.selectedActivitys.length) {
+                    this.process.unSelected(e);
 
-                        _self.hideCurrentWorklog();
-                    }
-                } else {
-                    this.unSelectedEvent = true;
+                    this.hideCurrentWorklog();
                 }
+            } else {
+                this.process.unSelectedEvent = true;
             }
-        }.bind(this.process));
+        }
     },
     getlogNodePosition : function(activity, node, offset, psize){
         var targetCoondinates = {
@@ -770,30 +780,60 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
         return {"x": x, "y": y};
     },
-    showWorklog: function(activity, offset, psize){
+    showWorklog: function(activity, offset, psize, event){
         this.hideCurrentWorklog();
 
         if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs, activity);
 
         this.currentWorklogNode = activity.worklogNode;
         this.currentWorklogNode.setStyle("display", !!this.currentWorklogNode.get("html") ? "block" : "none");
-        this.setWorkLogPosition(activity, activity.worklogNode, offset, psize);
+        this.setWorkLogPosition(activity, activity.worklogNode, offset, psize, event);
     },
-    setWorkLogPosition: function(activity, logNode, offset, psize){
+    setWorkLogPosition: function(activity, logNode, offset, psize, event){
         if( !logNode )logNode = activity.worklogNode;
         if( layout.mobile ){
             var pSize = this.paperNode.getSize();
             var bodySize =  $(document.body).getSize();
+
+            if( !this.isPlaying ){
+                this.maskNode = new Element('div', {
+                    styles: {
+                        "background-color": "transparent",
+                        "position": "absolute",
+                        "opacity": 0,
+                        "height": "100%",
+                        "width": "100%",
+                        "left": 0,
+                        "top": 0
+                    }
+                }).inject(document.body);
+
+                this.maskNode.addEvent('touchstart', function(e){
+                    if( !logNode.offsetParent )return;
+                    if(this.maskNode){
+                        this.maskNode.destroy();
+                        this.maskNode = null;
+                    }
+                    this.checkUnselectedAndHide(e);
+                    e.stopPropagation();
+                    e.preventDefault();
+                }.bind(this));
+            }
+
             if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
                 var mobileActionNode = document.body.getElement(".o2_form_mobile_actions");
                 logNode.inject( $(document.body) );
+                var bottomY = mobileActionNode ? mobileActionNode.getSize().y+1 : 1;
                 logNode.setStyles({
                     "display": "block",
                     "position": "absolute",
                     "width": "calc( 100% - 4px )",
                     "max-width": "500px",
-                    "bottom": mobileActionNode ? (mobileActionNode.getSize().y+1+"px") : "1px",
-                    "left": "0px"
+                    "max-height": "calc( 90% - "+bottomY+"px )",
+                    "overflow": "auto",
+                    "bottom": bottomY+"px",
+                    "left": "0px",
+                    "z-index": 1
                 });
                 logNode.setStyle("left", (bodySize.x - logNode.getSize().x)/2 + "px");
             }else{
@@ -803,8 +843,11 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                     "position": "absolute",
                     "width": "calc( 100% - 4px )",
                     "max-width": "500px",
+                    "max-height": "90%",
+                    "overflow": "auto",
                     "bottom": "1px",
-                    "left": "0px"
+                    "left": "0px",
+                    "z-index": 1
                 });
                 logNode.setStyle("left", (pSize.x - logNode.getSize().x)/2 + "px");
             }
@@ -818,6 +861,10 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         if (this.currentWorklogNode){
             this.currentWorklogNode.setStyle("display", "none");
             this.currentWorklogNode = null;
+        }
+        if(this.maskNode){
+            this.maskNode.destroy();
+            this.maskNode = null;
         }
     },
     bindTabEvent: function(){

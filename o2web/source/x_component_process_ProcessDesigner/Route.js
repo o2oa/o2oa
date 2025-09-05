@@ -298,6 +298,8 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
         this.setEvent();
     },
     setEvent: function () {
+        if( this.process.options.isView )return;
+
         if (this.set) {
             if (!this.isSetEvent) {
                 this.set.mousedown(
