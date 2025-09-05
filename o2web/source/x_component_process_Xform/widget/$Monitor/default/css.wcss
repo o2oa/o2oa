@@ -57,7 +57,8 @@
     },
     "workLogNode": {
         "width": "280px",
-        "overflow": "hidden",
+        "max-height": "99%",
+        "overflow": "auto",
         "border": "1px solid #666",
         "border-radius": "8px",
         "position": "absolute",
