@@ -795,7 +795,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             var pSize = this.paperNode.getSize();
             var bodySize =  $(document.body).getSize();
 
-            if( !this.isPlaying ){
+            if( !this.isPlaying && !this.inDialog() ){
                 this.maskNode = new Element('div', {
                     styles: {
                         "background-color": "transparent",
@@ -820,7 +820,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 }.bind(this));
             }
 
-            if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
+             // if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
                 var mobileActionNode = document.body.getElement(".o2_form_mobile_actions");
                 logNode.inject( $(document.body) );
                 var bottomY = mobileActionNode ? mobileActionNode.getSize().y+1 : 1;
@@ -833,29 +833,52 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                     "overflow": "auto",
                     "bottom": bottomY+"px",
                     "left": "0px",
-                    "z-index": 1
+                    "z-index": this.getZindex()
                 });
-                logNode.setStyle("left", (bodySize.x - logNode.getSize().x)/2 + "px");
-            }else{
-                logNode.inject( this.paperNode );
-                logNode.setStyles({
-                    "display": "block",
-                    "position": "absolute",
-                    "width": "calc( 100% - 4px )",
-                    "max-width": "500px",
-                    "max-height": "90%",
-                    "overflow": "auto",
-                    "bottom": "1px",
-                    "left": "0px",
-                    "z-index": 1
-                });
-                logNode.setStyle("left", (pSize.x - logNode.getSize().x)/2 + "px");
-            }
+                logNode.setStyle("left", 0);
+                //logNode.setStyle("left", (bodySize.x - logNode.getSize().x)/2 + "px");
+            // }else{
+            //     logNode.inject( this.paperNode );
+            //     logNode.setStyles({
+            //         "display": "block",
+            //         "position": "absolute",
+            //         "width": "calc( 100% - 4px )",
+            //         "max-width": "500px",
+            //         "max-height": "90%",
+            //         "overflow": "auto",
+            //         "bottom": "1px",
+            //         "left": "0px",
+            //         "z-index": this.getZindex()
+            //     });
+            //     logNode.setStyle("left", (pSize.x - logNode.getSize().x)/2 + "px");
+            // }
         }else{
             var p = this.getlogNodePosition(activity, logNode, offset, psize);
             logNode.setPosition({"x": p.x, "y": p.y});
         }
         this.fireEvent('showWorklog', [logNode]);
+    },
+    inDialog: function (){
+        var parent = this.paperNode;
+        while (parent){
+            if( parent.hasClass('MWF_dialod_content') ){
+                return true;
+            }
+            parent = parent.getParent();
+        }
+        return false;
+    },
+    getZindex: function () {
+        var parent = this.paperNode;
+        var zindex = 1;
+        while (parent){
+            var zIndex = parent.getStyle('z-index');
+            if( zIndex ){
+                zindex = Math.max(zindex, zIndex.toFloat()+1);
+            }
+            parent = parent.getParent();
+        }
+        return zindex;
     },
     hideCurrentWorklog: function(){
         if (this.currentWorklogNode){
