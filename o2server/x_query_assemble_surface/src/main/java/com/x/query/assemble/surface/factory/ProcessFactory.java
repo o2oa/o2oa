@@ -51,6 +51,17 @@ public class ProcessFactory extends AbstractFactory {
         return em.createQuery(cq).getResultList();
     }
 
+    public List<Process> listObjectWithApp(List<String> appIdList) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(Process.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Process> cq = cb.createQuery(Process.class);
+        Root<Process> root = cq.from(Process.class);
+        Predicate p = cb.conjunction();
+        p = cb.and(p, root.get(Process_.application).in(appIdList));
+        cq.select(root).where(p);
+        return em.createQuery(cq).getResultList();
+    }
+
     public Optional<Process> get(String id) {
         CacheCategory cacheCategory = new CacheCategory(Process.class);
         CacheKey cacheKey = new CacheKey(id);

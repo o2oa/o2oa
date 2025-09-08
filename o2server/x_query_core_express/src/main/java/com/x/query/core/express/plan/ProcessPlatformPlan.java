@@ -87,21 +87,7 @@ public class ProcessPlatformPlan extends Plan {
 
 	@Override
 	List<String> listBundle() throws Exception {
-		List<String> jobs;
-		switch (StringUtils.trim(this.where.scope)) {
-		case (SCOPE_ALL):
-			jobs = ListUtils.union(this.listBundleWorkCompleted(), this.listBundleWork());
-			break;
-		case (SCOPE_WORKCOMPLETED):
-			jobs = this.listBundleWorkCompleted();
-			break;
-		default:
-			jobs = this.listBundleWork();
-			break;
-		}
-		if (BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(runtime.person))) {
-			jobs = this.listBundleAccessible(jobs, runtime.person, threadPool);
-		}
+		List<String> jobs = listBundleByReview();
 		// 针对DataItem进行判断
 		List<FilterEntry> filterEntries = new TreeList<>();
 		for (FilterEntry o : ListTools.trim(this.filterList, true, true)) {
@@ -122,6 +108,27 @@ public class ProcessPlatformPlan extends Plan {
 			jobs = listBundleFilterEntry(jobs, filterEntries, threadPool);
 		}
 		return jobs;
+	}
+
+	private List<String> listBundleByReview() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(Review.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<Review> root = cq.from(Review.class);
+			Predicate p = this.where.reviewPredicate(cb, root);
+			if(BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(this.runtime.person))){
+				p = cb.and(p, cb.equal(root.get(Review_.person), this.runtime.person));
+			}
+			if(this.where.scope.equals(SCOPE_WORK)){
+				p = cb.and(p, cb.isFalse(root.get(Review_.completed)));
+			}else if(this.where.scope.equals(SCOPE_WORKCOMPLETED)){
+				p = cb.and(p, cb.isTrue(root.get(Review_.completed)));
+			}
+			cq.select(root.get(Review_.job)).where(p);
+			cq.orderBy(cb.desc(root.get(Review_.startTime)));
+			return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
+		}
 	}
 
 	private List<String> listBundleWork() throws Exception {
@@ -270,6 +277,8 @@ public class ProcessPlatformPlan extends Plan {
 
 			public String id;
 
+			public String edition;
+
 		}
 
 		public static class CreatorUnitEntry {
@@ -294,6 +303,18 @@ public class ProcessPlatformPlan extends Plan {
 
 			public String id;
 
+		}
+
+		private Predicate reviewPredicate(CriteriaBuilder cb, Root<Review> root) throws Exception {
+			List<Predicate> ps = new TreeList<>();
+			ps.add(this.reviewPredicateProcess(root));
+			ps.add(this.reviewPredicateCreator(cb, root));
+			ps.add(this.reviewPredicateDate(cb, root));
+			ps = ListTools.trim(ps, true, false);
+			if (ps.isEmpty()) {
+				throw new IllegalAccessException("where is empty.");
+			}
+			return cb.and(ps.toArray(new Predicate[] {}));
 		}
 
 		private Predicate workPredicate(CriteriaBuilder cb, Root<Work> root) throws Exception {
@@ -321,6 +342,16 @@ public class ProcessPlatformPlan extends Plan {
 			return cb.and(ps.toArray(new Predicate[] {}));
 		}
 
+		private Predicate reviewPredicateProcess(Root<Review> root) throws Exception {
+			List<String> processIds = ListTools.extractField(this.processList, JpaObject.id_FIELDNAME, String.class,
+					true, true);
+			processIds = processIds.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			if (processIds.isEmpty()) {
+				return null;
+			}
+			return root.get(Review_.process).in(processIds);
+		}
+
 		private Predicate workPredicateApplication(CriteriaBuilder cb, Root<Work> root) throws Exception {
 			List<String> applicationIds = ListTools.extractField(this.applicationList, JpaObject.id_FIELDNAME,
 					String.class, true, true);
@@ -337,6 +368,28 @@ public class ProcessPlatformPlan extends Plan {
 			}
 			if (!processIds.isEmpty()) {
 				p = cb.or(p, root.get(Work_.process).in(processIds));
+			}
+			return p;
+		}
+
+		private Predicate reviewPredicateCreator(CriteriaBuilder cb, Root<Review> root) throws Exception {
+			List<String> creatorUnits = ListTools.extractField(this.creatorUnitList, "name", String.class, true, true);
+			List<String> creatorPersons = ListTools.extractField(this.creatorPersonList, "name", String.class, true,
+					true);
+			List<String> creatorIdentitys = ListTools.extractField(this.creatorIdentityList, "name", String.class, true,
+					true);
+			if (creatorUnits.isEmpty() && creatorPersons.isEmpty() && creatorIdentitys.isEmpty()) {
+				return null;
+			}
+			Predicate p = cb.disjunction();
+			if (!creatorUnits.isEmpty()) {
+				p = cb.or(p, root.get(Review_.creatorUnit).in(creatorUnits));
+			}
+			if (!creatorPersons.isEmpty()) {
+				p = cb.or(p, root.get(Review_.creatorPerson).in(creatorPersons));
+			}
+			if (!creatorIdentitys.isEmpty()) {
+				p = cb.or(p, root.get(Review_.creatorIdentity).in(creatorIdentitys));
 			}
 			return p;
 		}
@@ -363,7 +416,20 @@ public class ProcessPlatformPlan extends Plan {
 			return p;
 		}
 
-		private Predicate workPredicateDate(CriteriaBuilder cb, Root<Work> root) throws Exception {
+		private Predicate reviewPredicateDate(CriteriaBuilder cb, Root<Review> root) {
+			if (null == this.dateRange || (!this.dateRange.available())) {
+				return null;
+			}
+			if (null == this.dateRange.start) {
+				return cb.lessThanOrEqualTo(root.get(Review_.startTime), this.dateRange.completed);
+			} else if (null == this.dateRange.completed) {
+				return cb.greaterThanOrEqualTo(root.get(Review_.startTime), this.dateRange.start);
+			} else {
+				return cb.between(root.get(Review_.startTime), this.dateRange.start, this.dateRange.completed);
+			}
+		}
+
+		private Predicate workPredicateDate(CriteriaBuilder cb, Root<Work> root) {
 			if (null == this.dateRange || (!this.dateRange.available())) {
 				return null;
 			}
