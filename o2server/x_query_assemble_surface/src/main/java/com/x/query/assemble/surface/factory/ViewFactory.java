@@ -77,23 +77,23 @@ public class ViewFactory extends AbstractFactory {
 		}
 	}
 
-//	public View getWithQueryObject(String flag, Query query) throws Exception {
-//		if (StringUtils.isEmpty(flag)) {
-//			return null;
-//		}
-//		EntityManager em = this.entityManagerContainer().get(View.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<View> cq = cb.createQuery(View.class);
-//		Root<View> root = cq.from(View.class);
-//		Predicate p = cb.equal(root.get(View_.query), query.getId());
-//		p = cb.and(p, cb.or(cb.equal(root.get(View_.name), flag), cb.equal(root.get(View_.id), flag),
-//				cb.equal(root.get(View_.alias), flag)));
-//		List<View> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
-//		if (os.isEmpty()) {
-//			return null;
-//		} else {
-//			return os.get(0);
-//		}
-//	}
+	public View getWithQueryObject(String flag, Query query) throws Exception {
+		if (StringUtils.isEmpty(flag)) {
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get(View.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<View> cq = cb.createQuery(View.class);
+		Root<View> root = cq.from(View.class);
+		Predicate p = cb.equal(root.get(View_.query), query.getId());
+		p = cb.and(p, cb.or(cb.equal(root.get(View_.name), flag), cb.equal(root.get(View_.id), flag),
+				cb.equal(root.get(View_.alias), flag)));
+		List<View> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
+		if (os.isEmpty()) {
+			return null;
+		} else {
+			return os.get(0);
+		}
+	}
 
 }

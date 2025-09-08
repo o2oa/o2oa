@@ -33,8 +33,7 @@ class ActionGetWithQuery extends BaseAction {
 			if (optional.isPresent()) {
 				view = (View) optional.get();
 			} else {
-				String id = business.view().getWithQuery(flag, query);
-				view = business.pick(id, View.class);
+				view = business.view().getWithQueryObject(flag, query);
 				if (null != view) {
 					business.entityManagerContainer().get(View.class).detach(view);
 					CacheManager.put(business.cache(), cacheKey, view);

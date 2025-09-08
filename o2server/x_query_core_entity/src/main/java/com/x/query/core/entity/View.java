@@ -111,6 +111,7 @@ public class View extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = false, citationNotExists =
 	/* 验证不可重名 */
 	@CitationNotExist(fields = { "name", "id",
@@ -121,6 +122,7 @@ public class View extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists =
 	/* 验证不可重名 */
 	@CitationNotExist(fields = { "name", "id",
