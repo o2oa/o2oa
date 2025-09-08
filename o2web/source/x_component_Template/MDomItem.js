@@ -337,6 +337,11 @@ var MDomItem = new Class({
         if (clazzName) {
             this.dom = new MDomItem[clazzName](this);
             this.dom.load();
+
+            if( this.isOO() ){
+                this.addOOEvent();
+            }
+
         }
         return this.container;
     },
@@ -414,6 +419,39 @@ var MDomItem = new Class({
             item.setStyles(styles)
         })
     },
+    isOO: function () {
+        return this.options.type.toLowerCase().startsWith('oo-');
+    },
+    addOOEvent: function (){
+        var items = this.getElements();
+        if( items.length ){
+            var node = items[0];
+            node.addEventListener('validity', (e) => {
+                if (this.validationText) {
+                    e.target.setCustomValidity(this.validationText);
+                }
+            });
+            node.addEventListener('invalid', (e) => {
+                if (node._props.validity){
+                    e.target.setCustomValidity(node._props.validity);
+                }else{
+                    var label = this.options.text ? `“${this.options.text.replace(/　/g, '')}”` :  '该字段';
+                    const o = {
+                        valueMissing: `{label}不能为空`.replace('{label}', label)
+                    }
+                    //通过 e.detail 获取 验证有效性状态对象：ValidityState
+                    for (const k in o){
+                        if (e.detail[k]){
+                            if (o[k]){
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    },
     getElements: function () {
         if (this.options.disable) return null;
         return this.mElement.getElements("[name='" + this.options.name + "']");
@@ -448,6 +486,7 @@ var MDomItem = new Class({
     },
     checkNotEmpty: function (isShowWarning) {
         if (this.options.disable) return true;
+
         var value = this.getValue();
         var isEmpty = (typeOf(value) === "array" ? (value.length == 0) : (value == "" || value == " "));
         if (!isEmpty && this.options.defaultValueAsEmpty) {
@@ -459,45 +498,33 @@ var MDomItem = new Class({
         }
         if (!isShowWarning) return false;
         var text = this.options.text || this.options.label;
-        var items = this.mElement.getElements("[name='" + this.options.name + "']");
+        //var items = this.mElement.getElements("[name='" + this.options.name + "']");
         var warningText = "";
-        var focus = false;
-        try {
-            warningText = this.options.emptyTip || (this.dom && this.dom.getErrorText()) || MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}", text);
-            if (this.options.warningType == "batch") {
-                this.setWarning(warningText, "empty");
-            } else if (this.options.warningType == "single") {
-                this.setWarning(warningText, "empty");
-            } else {
-                if (this.app && this.app.notice) {
-
-                    if (!this.container.isIntoView()) {
-                        var pNode = this.container.getParent();
-                        while (pNode && ((pNode.getScrollSize().y - (pNode.getComputedSize().height + 1) <= 0) || pNode.getStyle("overflow") === "visible")) pNode = pNode.getParent();
-                        if (!pNode) pNode = document.body;
-                        pNode.scrollToNode(this.container, "bottom");
-                    }
-                    var y = this.container.getSize().y;
-                    this.app.notice(warningText, "error", this.container, {"x": "right", "y": "top"}, {x: 10, y: y});
-                }
-                if (!this.options.validImmediately) {
-                    if (["text", "password", "textarea", "select", "multiselect"].contains(this.options.type)) {
-                        items[0].focus();
-                    }
-                }
-            }
-            this.fireEvent("empty", this);
-        } catch (e) {
-        }
+        //var focus = false;
+        warningText = this.options.emptyTip || (this.dom && this.dom.getErrorText()) || MWF.xApplication.Template.LP.MDomItem.emptyTip.replace("{text}", text);
+        this.showWarning(warningText, 'empty');
+        this.fireEvent("empty", this);
         return false;
     },
-    clearWarning: function (type) {
+    clearWarning: function (type){
+        if( this.isOO() ){
+            var items = this.mElement.getElements("[name='" + this.options.name + "']");
+            if( items.length > 0 ){
+                this.validationText = '';
+                items[0].unInvalidStyle();
+            }
+            this.fireEvent("unempty", this);
+        }else{
+            this._clearWarning(type);
+        }
+    },
+    _clearWarning: function (type) {
         if (this.tipNode && this.setedEmpty) {
             this.fireEvent("unempty", this);
             this.tipNode.empty();
             this.setedEmpty = false;
         }
-        if (type == "empty") {
+        if (type === "empty") {
             if (this.warningEmptyNode) {
                 this.fireEvent("unempty", this);
                 this.warningEmptyNode.destroy();
@@ -512,9 +539,50 @@ var MDomItem = new Class({
         }
         this.warningStatus = false;
     },
-    setWarning: function (msg, type) {
+    showWarning: function(warningText, type) {
+        switch (this.options.warningType) {
+            case 'batch':
+            case 'single':
+                this.setWarning(warningText, type);
+                break;
+            default:
+                if (this.app && this.app.notice) {
+                    if (!this.container.isIntoView()) {
+                        var pNode = this.container.getParent();
+                        while (pNode && ((pNode.getScrollSize().y - (pNode.getComputedSize().height + 1) <= 0) || pNode.getStyle("overflow") === "visible")) pNode = pNode.getParent();
+                        if (!pNode) pNode = document.body;
+                        pNode.scrollToNode(this.container, "bottom");
+                    }
+                    var y = this.container.getSize().y;
+                    this.app.notice(
+                        o2.typeOf(warningText) === 'array' ? warningText.join("\n") : warningText,
+                        "error",
+                        this.container,
+                        {"x": "right", "y": "top"},
+                        {x: 10, y: y}
+                    );
+                }
+                if (!this.options.validImmediately) {
+                    if (["text", "password", "textarea", "select", "multiselect"].contains(this.options.type)) {
+                        items[0].focus();
+                    }
+                }
+        }
+    },
+    setWarning: function (msg, type){
+        if( this.options.type.toLowerCase().startsWith('oo-') ){
+            var items = this.mElement.getElements("[name='" + this.options.name + "']");
+            if( items.length > 0 ){
+                this.validationText = msg;
+                items[0].checkValidity();
+            }
+        }else{
+            this._setWarning(msg, type);
+        }
+    },
+    _setWarning: function (msg, type) {
         var div;
-        if (type == "empty") {
+        if (type === "empty") {
             if (this.tipNode) {
                 this.setedEmpty = true;
                 div = this.tipNode;
@@ -609,25 +677,7 @@ var MDomItem = new Class({
         //}
 
         if (msgs.length > 0) {
-            if (this.options.warningType == "batch") {
-                this.setWarning(msgs, "invaild");
-            } else if (this.options.warningType == "single") {
-                this.setWarning(msgs, "invaild");
-            } else {
-                if (this.app && this.app.notice) {
-                    if (!this.container.isIntoView()) {
-                        var pNode = this.container.getParent();
-                        while (pNode && ((pNode.getScrollSize().y - (pNode.getComputedSize().height + 1) <= 0) || pNode.getStyle("overflow") === "visible")) pNode = pNode.getParent();
-                        if (!pNode) pNode = document.body;
-                        pNode.scrollToNode(this.container, "bottom");
-                    }
-                    var y = this.container.getSize().y;
-                    this.app.notice(msgs.join("\n"), "error", this.container, {"x": "right", "y": "top"}, {
-                        x: 10,
-                        y: y
-                    });
-                }
-            }
+            this.showWarning(msgs, "invaild");
             this.fireEvent("empty", this);
         } else {
             if (this.warningInvalidNode) {

@@ -4662,6 +4662,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "height" : layout.mobile ? "100%" : "720px",
             "maxHeightPercent" : layout.mobile ? "100%" : "98%",
             "mask": true,
+            "isTitle": !layout.mobile,
             "isMax" : !layout.mobile,
             "content": node,
             "container": layout.mobile ? $(document.body) : this.app.content,
@@ -4724,10 +4725,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
                                 dlg.content.setStyle("position", "relative");
                                 logNode.inject( dlg.content );
+                                var left = (dlg.content.getStyle("padding-left") || '0').toFloat();
+                                var right = (dlg.content.getStyle("padding-right") || '0').toFloat();
+                                var widthOffset = left + right + 2;
                                 logNode.setStyles({
                                     "display": "block",
                                     "position": "absolute",
-                                    "width": "calc( 100% - 28px )",
+                                    "width": "calc( 100% - "+widthOffset+"px )",
                                     "max-width": "500px",
                                     "bottom": "1px",
                                     "left": "0px"
