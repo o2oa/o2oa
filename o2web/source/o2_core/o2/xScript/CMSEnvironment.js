@@ -2531,7 +2531,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                 if (json.data){
                     var attachmentList = [];
                     var correlationTargetList = [];
-                    if( data.$attachmentList && o2.typeOf(data.$attachmentList) === 'array' ){
+                    if( data && data.$attachmentList && o2.typeOf(data.$attachmentList) === 'array' ){
                         attachmentList = data.$attachmentList.filter(function(d){
                             return !!d.copyFrom;
                         });
@@ -2540,7 +2540,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                         });
                         if( !data.$attachmentList.length )delete data.$attachmentList;
                     }
-                    if( data.$correlationTargetList && o2.typeOf(data.$correlationTargetList) === 'array' ){
+                    if( data && data.$correlationTargetList && o2.typeOf(data.$correlationTargetList) === 'array' ){
                         correlationTargetList = data.$correlationTargetList;
                         delete data.$correlationTargetList;
                     }
