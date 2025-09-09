@@ -35,7 +35,11 @@ class ActionGetWithWork extends BaseAction {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}
-			result.setData(this.getData(business, work.getJob()));
+			JsonElement data = this.getData(business, work.getJob());
+			business.itemAccess().convert(data, work.getProcess(),
+					work.getApplication(), work.getActivity(),
+					effectivePerson);
+			result.setData(data);
 			return result;
 		}
 	}

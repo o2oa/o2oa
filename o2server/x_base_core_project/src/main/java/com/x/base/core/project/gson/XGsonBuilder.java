@@ -1,14 +1,22 @@
 package com.x.base.core.project.gson;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.x.base.core.project.tools.DateTools;
-import org.apache.commons.lang3.StringUtils;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 public class XGsonBuilder {
 
@@ -330,6 +338,75 @@ public class XGsonBuilder {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 递归查找指定path下的元素并删除
+	 * @param data
+	 * @param path
+	 */
+	public static void removeWithPath(JsonElement data, String path){
+		if (data == null) {
+			return;
+		}
+		if (!data.isJsonObject()) {
+			return;
+		}
+		if(StringUtils.isBlank(path)){
+			return;
+		}
+		List<String> pathParts = Arrays.asList(StringUtils.split(path, PATH_DOT));
+		processJsonElement(data, pathParts, 0);
+	}
+
+	private static void processJsonElement(JsonElement element, List<String> pathParts, int currentIndex){
+		if(element == null || currentIndex >= pathParts.size()){
+			return;
+		}
+		String currentPart = pathParts.get(currentIndex).trim();
+		if(StringUtils.isBlank(currentPart)){
+			return;
+		}
+		boolean isLastPart = (currentIndex == pathParts.size() - 1);
+
+		if (element.isJsonObject()) {
+			JsonObject jsonObject = element.getAsJsonObject();
+			if ("*".equals(currentPart)) {
+				for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+					if (!isLastPart) {
+						processJsonElement(entry.getValue(), pathParts, currentIndex + 1);
+					}
+				}
+			} else if (jsonObject.has(currentPart)) {
+				if (isLastPart) {
+					jsonObject.remove(currentPart);
+				} else {
+					processJsonElement(jsonObject.get(currentPart), pathParts, currentIndex + 1);
+				}
+			}
+		} else if (element.isJsonArray()) {
+			JsonArray jsonArray = element.getAsJsonArray();
+			if ("*".equals(currentPart)) {
+				for (JsonElement arrayElement : jsonArray) {
+					if (!isLastPart) {
+						processJsonElement(arrayElement, pathParts, currentIndex + 1);
+					}
+				}
+			} else {
+				try {
+					int index = Integer.parseInt(currentPart);
+					if (index >= 0 && index < jsonArray.size()) {
+						if (isLastPart) {
+							jsonArray.set(index, JsonNull.INSTANCE);
+						} else {
+							processJsonElement(jsonArray.get(index), pathParts, currentIndex + 1);
+						}
+					}
+				} catch (NumberFormatException e) {
+					// 当前部分不是数字，也不是通配符，无法处理数组
+				}
+			}
+		}
 	}
 
 }

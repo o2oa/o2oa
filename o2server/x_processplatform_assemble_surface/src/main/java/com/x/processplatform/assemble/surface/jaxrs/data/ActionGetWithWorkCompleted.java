@@ -42,6 +42,9 @@ class ActionGetWithWorkCompleted extends BaseAction {
 			} else {
 				result.setData(this.getData(business, workCompleted.getJob()));
 			}
+			business.itemAccess().convert(result.getData(), workCompleted.getProcess(),
+					workCompleted.getApplication(), workCompleted.getActivity(),
+					effectivePerson);
 			return result;
 		}
 	}

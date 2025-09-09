@@ -29,7 +29,8 @@ public class ItemAccessProperties extends JsonProperties {
 
 	private List<String> editActivityIdList;
 
-	private String processId;
+	@FieldDescribe("扩展信息.")
+	private String extension;
 
 	public List<String> getReaderList() {
 		return readerList == null ? Collections.emptyList() : readerList;
@@ -79,5 +80,13 @@ public class ItemAccessProperties extends JsonProperties {
 
 	public void setEditActivityIdList(List<String> editActivityIdList) {
 		this.editActivityIdList = editActivityIdList;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
 	}
 }
