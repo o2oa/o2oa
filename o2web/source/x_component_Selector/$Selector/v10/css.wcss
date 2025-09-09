@@ -2,7 +2,8 @@
 	"maskNode": {
 		"background-color": "#666",
 		"opacity": 0.4,
-		"z-index":1000
+		"z-index":1000,
+		"top": 0
 	},
 	"containerNode": {
 		"height": "37.142857rem",

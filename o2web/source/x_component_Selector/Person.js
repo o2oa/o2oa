@@ -351,7 +351,7 @@ MWF.xApplication.Selector.Person = new Class({
                 "onShow": function () {
                     this.shim.shim.setStyles({
                         "opacity": 0,
-                        "top": "" + position.y + "px",
+                        "top": "" + (position.y || 0) + "px",
                         "left": "" + position.x + "px"
                     });
                 }

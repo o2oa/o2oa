@@ -17,6 +17,7 @@ MWF.xApplication.process.Xform.Div = MWF.APPDiv =  new Class({
       _loadUserInterface: function(){
         if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
+            this.node.style.display = 'none !important';
             // this.node.setStyle('display', 'none');
         }/*  */
     },

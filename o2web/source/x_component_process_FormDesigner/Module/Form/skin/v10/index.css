@@ -141,7 +141,7 @@
 .form-layout .index-navi {
     background-color: #ffffff;
     display: grid !important;
-    grid-template-rows: 3.85rem 1px 1fr 1px 3.85rem;
+    grid-template-rows: 3.85rem 1px 1fr  3.5rem;
     overflow: hidden;
     border-right: 0.0625rem solid #dddddd;
 }

@@ -1691,3 +1691,9 @@
 .form-layout .hide{
     display: none !important;
 }
+.form-layout .page-content-section.hide{
+    display: none !important;
+}
+.form-layout div.hide{
+    display: none !important;
+}

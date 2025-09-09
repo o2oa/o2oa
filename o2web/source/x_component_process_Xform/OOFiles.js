@@ -262,36 +262,38 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         }
 
 
-        // //如果有设置 site，循环所有附件，将匹配site的附件添加进来。
-        // if (this.json.fileSite && this.json.fileSite!==this.json.id){
-        //     const siteList = this.json.fileSite.split(/.*,.*/g);
-        //     const addr = this.restfulActions.getAddress();
-        //     this.form.businessData.attachmentList.each(function (att) {
-        //         if (siteList.includes(att.site) && att.control.allowRead){
-        //             if (this.checkValue(value, att)){
-        //                 const previewUrl =
-        //                     this.env === 'process'
-        //                         ? `${addr}/jaxrs/attachment/download/${att.id}`
-        //                         : `${addr}/jaxrs/fileinfo/download/document/${att.id}`;
-        //                 const url = `${previewUrl}/stream`;
+        debugger;
+        if (!this.json.fileSite) this.json.fileSite = this.json.id;
+        //如果有设置 site，循环所有附件，将匹配site的附件添加进来。
+        if (this.json.fileSite){
+            const siteList = this.json.fileSite.split(/.*,.*/g);
+            const addr = this.restfulActions.getAddress();
+            this.form.businessData.attachmentList.each(function (att) {
+                if (siteList.includes(att.site) && att.control.allowRead){
+                    if (this.checkValue(value, att)){
+                        const previewUrl =
+                            this.env === 'process'
+                                ? `${addr}/jaxrs/attachment/download/${att.id}`
+                                : `${addr}/jaxrs/fileinfo/download/document/${att.id}`;
+                        const url = `${previewUrl}/stream`;
 
-        //                 const file = {
-        //                     id: att.id,
-        //                     url: url,
-        //                     previewUrl: previewUrl,
-        //                     lastModified: att.lastUpdateTime,
-        //                     lastModifiedDate: att.lastUpdateTime,
-        //                     name: att.name,
-        //                     size: att.length,
-        //                     type: att.extension,
-        //                 }
+                        const file = {
+                            id: att.id,
+                            url: url,
+                            previewUrl: previewUrl,
+                            lastModified: att.lastUpdateTime,
+                            lastModifiedDate: att.lastUpdateTime,
+                            name: att.name,
+                            size: att.length,
+                            type: att.extension,
+                        }
 
-        //                 if (!value || !value.length) value = [];
-        //                 value.push(file);
-        //             }
-        //         }
-        //     }.bind(this));
-        // }
+                        if (!value || !value.length) value = [];
+                        value.push(file);
+                    }
+                }
+            }.bind(this));
+        }
 
         return value ?? '';
     },

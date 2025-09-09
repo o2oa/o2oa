@@ -80,6 +80,7 @@ MWF.xApplication.Selector.LP={
 	"currentForm": "Current form",
 	"selectPanFile": "Select cloud storage files",
 	"personFile": "personal documents",
-	"unitFile": "Enterprise files"
+	"unitFile": "Enterprise files",
+	"selectWidget": "Select components"
 }
 MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP
