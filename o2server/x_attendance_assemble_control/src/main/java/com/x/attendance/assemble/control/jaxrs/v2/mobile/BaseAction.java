@@ -18,6 +18,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -71,7 +72,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                             .listRecordWithPersonAndDate(person, yesterdayString);
                     if (yesterdayRecordList == null || yesterdayRecordList.isEmpty()) {
                         if (shift != null) {
-                            yesterdayRecordList = dealShiftForRecord(shift, emc, person,
+                            yesterdayRecordList = dealShiftForRecord(shift, emc, business, person,
                                     group, yesterday, yesterdayString, null);
                         }
                     }
@@ -101,7 +102,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     }
                 }
                 if (shift != null) {
-                    recordList = dealShiftForRecord(shift, emc, person, group,
+                    recordList = dealShiftForRecord(shift, emc, business, person, group,
                             checkInDate, today, recordList);
                 }
                 // 如果没有数据，可能是自由工时 或者 休息日没有班次信息的情况下 只需要生成一条上班一条下班的打卡记录
@@ -396,7 +397,6 @@ abstract class BaseAction extends StandardJaxrsAction {
      *
      * @param shift
      * @param emc
-     * @param business
      * @param person
      * @param group
      * @param nowDate
@@ -406,6 +406,7 @@ abstract class BaseAction extends StandardJaxrsAction {
      */
     private List<AttendanceV2CheckInRecord> dealShiftForRecord(AttendanceV2Shift shift,
             EntityManagerContainer emc,
+            Business business,
             String person, AttendanceV2Group group, Date nowDate, String today,
             List<AttendanceV2CheckInRecord> recordList) throws Exception {
         List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
@@ -416,54 +417,32 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
         // 如果没有数据，先根据班次打卡信息 预存打卡数据
         if (recordList == null) {
-            recordList = new ArrayList<>();
-            for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
-                // 上班打卡
-                AttendanceV2CheckInRecord onDutyRecord = savePreCheckInRecord(emc, person,
-                        AttendanceV2CheckInRecord.OnDuty, group, shift, today,
-                        shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(),
-                        shiftCheckTime.getOnDutyTimeAfterLimit(), false);
-                recordList.add(onDutyRecord);
-                // 下班打卡
-
-                AttendanceV2CheckInRecord offDutyRecord = savePreCheckInRecord(emc, person,
-                        AttendanceV2CheckInRecord.OffDuty, group, shift, today,
-                        shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(),
-                        shiftCheckTime.getOffDutyTimeAfterLimit(),
-                        BooleanUtils.isTrue(shiftCheckTime.getOffDutyNextDay()));
-                recordList.add(offDutyRecord);
-            }
-
+            recordList = createNewRecordList(shift, emc, person, group, today, timeList);
         } else if (recordList.size() < (timeList.size() * 2)) {
             // 这里是为了处理异常数据，生成recordList的逻辑在上面，但是有可能有异常导致recordList数据保存不全，比如数据库异常
-            List<AttendanceV2CheckInRecord> recordListNew = new ArrayList<>(recordList);
-            for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
-                // 上班打卡
-                AttendanceV2CheckInRecord onDutyRecord = findRecordByExist(recordListNew,
-                        AttendanceV2CheckInRecord.OnDuty, today,
-                        shiftCheckTime.getOnDutyTime());
-                if (onDutyRecord == null) {
-                    onDutyRecord = savePreCheckInRecord(emc, person,
-                            AttendanceV2CheckInRecord.OnDuty, group, shift, today,
-                            shiftCheckTime.getOnDutyTime(),
-                            shiftCheckTime.getOnDutyTimeBeforeLimit(),
-                            shiftCheckTime.getOnDutyTimeAfterLimit(), false);
-                    recordListNew.add(onDutyRecord);
-                }
-                // 下班打卡
-                AttendanceV2CheckInRecord offDutyRecord = findRecordByExist(recordListNew,
-                        AttendanceV2CheckInRecord.OffDuty, today,
-                        shiftCheckTime.getOffDutyTime());
-                if (offDutyRecord == null) {
-                    offDutyRecord = savePreCheckInRecord(emc, person,
-                            AttendanceV2CheckInRecord.OffDuty, group, shift, today,
-                            shiftCheckTime.getOffDutyTime(),
-                            shiftCheckTime.getOffDutyTimeBeforeLimit(),
-                            shiftCheckTime.getOffDutyTimeAfterLimit(),
-                            BooleanUtils.isTrue(shiftCheckTime.getOffDutyNextDay()));
-                    recordListNew.add(offDutyRecord);
+            List<AttendanceV2CheckInRecord> recordListNew = createNewRecordList(shift, emc, person, group, today, timeList);
+            for (AttendanceV2CheckInRecord newRecord :  recordListNew) {
+                AttendanceV2CheckInRecord oldOnDutyRecord = findRecordByExist(recordList,
+                        newRecord.getCheckInType(), today,
+                        newRecord.getPreDutyTime());
+                if (oldOnDutyRecord != null) {
+                    emc.beginTransaction(AttendanceV2CheckInRecord.class);
+                    newRecord.setCheckInResult(oldOnDutyRecord.getCheckInResult());
+                    newRecord.setRecordDate(oldOnDutyRecord.getRecordDate());
+                    newRecord.setLatitude(oldOnDutyRecord.getLatitude());
+                    newRecord.setLongitude(oldOnDutyRecord.getLongitude());
+                    newRecord.setSourceDevice(oldOnDutyRecord.getSourceDevice());
+                    newRecord.setSourceType(oldOnDutyRecord.getSourceType());
+                    newRecord.setAppealId(oldOnDutyRecord.getAppealId());
+                    newRecord.setRecordAddress(oldOnDutyRecord.getRecordAddress());
+                    newRecord.setWorkPlaceId(oldOnDutyRecord.getWorkPlaceId());
+                    newRecord.setPlaceName(oldOnDutyRecord.getPlaceName());
+                    emc.persist(newRecord, CheckPersistType.all);
+                    emc.commit();
                 }
             }
+            // 删除老的数据
+            deleteOldRecordList(recordList, emc, business);
             // 自动处理 已经过来的打卡记录 记录为未打卡
             dealWithOvertimeRecord(emc, nowDate, today, recordListNew);
             return recordListNew;
@@ -472,6 +451,60 @@ abstract class BaseAction extends StandardJaxrsAction {
         dealWithOvertimeRecord(emc, nowDate, today, recordList);
         return recordList;
     }
+
+    private void deleteOldRecordList(List<AttendanceV2CheckInRecord> oldRecordList, EntityManagerContainer emc, Business business) throws Exception {
+        List<String> deleteIds = new ArrayList<>();
+        String personDn = "";
+        String date = "";
+        for (AttendanceV2CheckInRecord record : oldRecordList) {
+            if (StringUtils.isEmpty(personDn)) {
+                personDn = record.getUserId();
+            }
+            if (StringUtils.isEmpty(date)) {
+                date = record.getRecordDateString();
+            }
+            deleteIds.add(record.getId());
+            // 如果有异常数据也必须一起删除
+            List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
+            if (appealList != null && !appealList.isEmpty()) {
+                List<String> appealListDeleteIds = new ArrayList<>();
+                for (AttendanceV2AppealInfo appealInfo : appealList) {
+                    appealListDeleteIds.add(appealInfo.getId());
+                }
+                emc.beginTransaction(AttendanceV2AppealInfo.class);
+                emc.delete(AttendanceV2AppealInfo.class, appealListDeleteIds);
+                emc.commit();
+            }
+        }
+        emc.beginTransaction(AttendanceV2CheckInRecord.class);
+        emc.delete(AttendanceV2CheckInRecord.class, deleteIds);
+        emc.commit();
+        LOGGER.info("打卡记录删除：{}, {}, {} ", personDn, date, ListTools.toStringJoin(deleteIds));
+    }
+
+    private List<AttendanceV2CheckInRecord> createNewRecordList(AttendanceV2Shift shift,
+            EntityManagerContainer emc, String person, AttendanceV2Group group, String today,
+            List<AttendanceV2ShiftCheckTime> timeList) throws Exception {
+        List<AttendanceV2CheckInRecord>  recordList = new ArrayList<>();
+        for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
+            // 上班打卡
+            AttendanceV2CheckInRecord onDutyRecord = savePreCheckInRecord(emc, person,
+                    AttendanceV2CheckInRecord.OnDuty, group, shift, today,
+                    shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(),
+                    shiftCheckTime.getOnDutyTimeAfterLimit(), false);
+            recordList.add(onDutyRecord);
+            // 下班打卡
+
+            AttendanceV2CheckInRecord offDutyRecord = savePreCheckInRecord(emc, person,
+                    AttendanceV2CheckInRecord.OffDuty, group, shift, today,
+                    shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(),
+                    shiftCheckTime.getOffDutyTimeAfterLimit(),
+                    BooleanUtils.isTrue(shiftCheckTime.getOffDutyNextDay()));
+            recordList.add(offDutyRecord);
+        }
+        return recordList;
+    }
+
     /**
      * 查找已经存在的打卡记录
      */

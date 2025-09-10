@@ -16,6 +16,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +63,12 @@ public class ActionPreCheck extends BaseAction {
                 result.setData(cannotCheckIn("没有对应的上下班打卡时间"));
                 return result;
             }
+            // 排序
+            recordList = new ArrayList<>(recordList);
+            recordList.sort(
+                    Comparator.comparing(AttendanceV2CheckInRecord::getRecordDate, Comparator.nullsFirst(
+                            Comparator.naturalOrder()))
+            );
             Wo wo = new Wo();
             wo.setCanCheckIn(true);
             wo.setAllowFieldWork(group.getAllowFieldWork());
