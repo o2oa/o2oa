@@ -29,25 +29,26 @@ import com.x.query.core.express.plan.Runtime;
 
 class ActionBundle extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBundle.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionBundle.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		logger.debug("receive:{}.", jsonElement);
+		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Runtime runtime;
+		View view;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			View view = emc.find(id, View.class);
+			view = emc.find(id, View.class);
 			if (null == view) {
 				throw new ExceptionViewNotExist(id);
 			}
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), true);
 
-			List<String> os = null;
-			switch (StringUtils.trimToEmpty(view.getType())) {
-
+		}
+		List<String> os = null;
+		switch (StringUtils.trimToEmpty(view.getType())) {
 			case View.TYPE_CMS:
 				CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
 				cmsPlan.init(runtime, ThisApplication.forkJoinPool());
@@ -56,19 +57,18 @@ class ActionBundle extends BaseAction {
 			case View.TYPE_PROCESSPLATFORM:
 				ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
 				processPlatformPlan.init(runtime, ThisApplication.forkJoinPool());
-				this.setProcessEdition(business, processPlatformPlan);
+				this.setProcessEdition(processPlatformPlan);
 				processPlatformPlan.runtime = runtime;
 				os = processPlatformPlan.fetchBundles();
 				break;
 			default:
 				break;
-			}
-			Wo wo = new Wo();
-			wo.setValueList(os);
-			wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher()));
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = new Wo();
+		wo.setValueList(os);
+		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher()));
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {

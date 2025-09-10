@@ -157,7 +157,7 @@ public class ItemAccess extends SliceJpaObject {
 
 	@FieldDescribe("可查看流程活动列表.")
 	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
-			fieldValue = "{'activity':'活动编码','activityName':'活动名称','activityAlias':'活动别名','activityType':'活动类型'}")
+			fieldValue = "{'unique':'活动唯一编码','name':'活动名称','alias':'活动别名','type':'活动类型','process':'流程标志'}")
 	@Transient
 	private List<ItemAccessActivity> readActivityList;
 
@@ -167,7 +167,7 @@ public class ItemAccess extends SliceJpaObject {
 
 	@FieldDescribe("可编辑流程活动列表.")
 	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
-			fieldValue = "{'activity':'活动编码','activityName':'活动名称','activityAlias':'活动别名','activityType':'活动类型'}")
+			fieldValue = "{'unique':'活动唯一编码','name':'活动名称','alias':'活动别名','type':'活动类型','process':'流程标志'}")
 	@Transient
 	private List<ItemAccessActivity> editActivityList;
 

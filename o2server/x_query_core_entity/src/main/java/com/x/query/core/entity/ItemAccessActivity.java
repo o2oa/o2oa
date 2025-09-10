@@ -11,47 +11,58 @@ public class ItemAccessActivity extends JsonProperties {
 
     private static final long serialVersionUID = -2826601221045816580L;
 
-    @FieldDescribe("活动编码.")
-    private String activity;
+    @FieldDescribe("活动唯一编码.")
+    private String unique;
 
     @FieldDescribe("活动名称.")
-    private String activityName;
+    private String name;
 
     @FieldDescribe("活动别名.")
-    private String activityAlias;
+    private String alias;
+
+    @FieldDescribe("流程标识.")
+    private String process;
 
     @FieldDescribe("活动类型.")
-    private String activityType;
+    private String type;
 
-    public String getActivity() {
-        return activity;
+    public String getUnique() {
+        return unique;
     }
 
-    public void setActivity(String activity) {
-        this.activity = activity;
+    public void setUnique(String unique) {
+        this.unique = unique;
     }
 
-    public String getActivityName() {
-        return activityName;
+    public String getName() {
+        return name;
     }
 
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getActivityAlias() {
-        return activityAlias;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setActivityAlias(String activityAlias) {
-        this.activityAlias = activityAlias;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
-    public String getActivityType() {
-        return activityType;
+    public String getType() {
+        return type;
     }
 
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
     }
 }
