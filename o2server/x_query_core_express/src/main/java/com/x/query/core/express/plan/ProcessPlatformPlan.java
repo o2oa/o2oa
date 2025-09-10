@@ -1,6 +1,8 @@
 package com.x.query.core.express.plan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -87,36 +89,39 @@ public class ProcessPlatformPlan extends Plan {
 
 	@Override
 	List<String> listBundle() throws Exception {
-		List<String> jobs = listBundleByReview();
-		// 针对DataItem进行判断
+		List<String> pathList = new ArrayList<>();
 		List<FilterEntry> filterEntries = new TreeList<>();
 		for (FilterEntry o : ListTools.trim(this.filterList, true, true)) {
 			if (BooleanUtils.isTrue(o.available())) {
 				filterEntries.add(o);
+				pathList.add(o.path);
 			}
 		}
-		if (!filterEntries.isEmpty()) {
-			jobs = listBundleFilterEntry(jobs, filterEntries, threadPool);
-		}
-		filterEntries.clear();
+		List<FilterEntry> runtimeFilterEntries = new TreeList<>();
 		for (FilterEntry o : ListTools.trim(this.runtime.filterList, true, true)) {
 			if (BooleanUtils.isTrue(o.available())) {
-				filterEntries.add(o);
+				runtimeFilterEntries.add(o);
+				pathList.add(o.path);
 			}
 		}
+		pathList = pathList.stream().distinct().sorted().collect(Collectors.toList());
+		List<String> jobs = listBundleByReview(pathList);
 		if (!filterEntries.isEmpty()) {
 			jobs = listBundleFilterEntry(jobs, filterEntries, threadPool);
+		}
+		if (!runtimeFilterEntries.isEmpty()) {
+			jobs = listBundleFilterEntry(jobs, runtimeFilterEntries, threadPool);
 		}
 		return jobs;
 	}
 
-	private List<String> listBundleByReview() throws Exception {
+	private List<String> listBundleByReview(List<String> pathList) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			EntityManager em = emc.get(Review.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Review> root = cq.from(Review.class);
-			Predicate p = this.where.reviewPredicate(cb, root);
+			Predicate p = this.where.reviewPredicate(cb, root, pathList);
 			if(BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(this.runtime.person))){
 				p = cb.and(p, cb.equal(root.get(Review_.person), this.runtime.person));
 			}
@@ -305,7 +310,7 @@ public class ProcessPlatformPlan extends Plan {
 
 		}
 
-		private Predicate reviewPredicate(CriteriaBuilder cb, Root<Review> root) throws Exception {
+		private Predicate reviewPredicate(CriteriaBuilder cb, Root<Review> root, List<String> pathList) throws Exception {
 			List<Predicate> ps = new TreeList<>();
 			ps.add(this.reviewPredicateProcess(root));
 			ps.add(this.reviewPredicateCreator(cb, root));
