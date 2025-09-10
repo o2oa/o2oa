@@ -75,11 +75,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 			runtime.unitAllList = cacheRuntime.unitAllList;
 			runtime.groupList = cacheRuntime.groupList;
 			runtime.roleList = cacheRuntime.roleList;
+			runtime.authList = cacheRuntime.authList;
 		}else {
+			runtime.authList.add(effectivePerson.getDistinguishedName());
 			runtime.identityList = business.organization().identity()
 					.listWithPerson(effectivePerson);
+			runtime.authList.addAll(runtime.identityList);
 			List<String> list = new ArrayList<>();
-			if (runtime.identityList != null && View.TYPE_CMS.equals(view.getType())) {
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String identity : runtime.identityList) {
 					if (identity.contains("@")) {
 						list.add(StringUtils.substringAfter(identity, "@"));
@@ -89,7 +92,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				list.clear();
 			}
 			runtime.unitList = business.organization().unit().listWithPerson(effectivePerson);
-			if (runtime.unitList != null && View.TYPE_CMS.equals(view.getType())) {
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.unitList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -100,7 +103,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 			runtime.unitAllList = business.organization().unit()
 					.listWithPersonSupNested(effectivePerson);
-			if (runtime.unitAllList != null && View.TYPE_CMS.equals(view.getType())) {
+			runtime.authList.addAll(runtime.unitAllList);
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.unitAllList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -113,7 +117,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 					.listWithPersonReference(
 							ListTools.toList(effectivePerson.getDistinguishedName()), true, true,
 							true);
-			if (runtime.groupList != null && View.TYPE_CMS.equals(view.getType())) {
+			runtime.authList.addAll(runtime.groupList);
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.groupList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -123,7 +128,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 				list.clear();
 			}
 			runtime.roleList = business.organization().role().listWithPerson(effectivePerson);
-			if (runtime.roleList != null && View.TYPE_CMS.equals(view.getType())) {
+			runtime.authList.addAll(runtime.roleList);
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.roleList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -132,7 +138,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 				runtime.roleList.addAll(list);
 				list.clear();
 			}
-
 			CacheManager.put(userCache, cacheKey, runtime);
 		}
 		runtime.parameter = parameter;

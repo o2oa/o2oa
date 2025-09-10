@@ -1,5 +1,6 @@
 package com.x.query.core.express.plan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,9 @@ public class Runtime extends GsonPropertyObject {
 
 	@FieldDescribe("身份")
 	public List<String> identityList = new TreeList<>();
+
+	@FieldDescribe("所有权限集合")
+	public List<String> authList = new ArrayList<>();
 
 	@FieldDescribe("过滤")
 	public List<FilterEntry> filterList = new TreeList<>();
