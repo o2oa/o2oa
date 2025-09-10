@@ -1,6 +1,8 @@
 package com.x.query.assemble.designer.jaxrs.view;
 
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -151,22 +154,29 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected void setProcessEdition(Business business, ProcessPlatformPlan processPlatformPlan) throws Exception {
+	protected void setProcessEdition(ProcessPlatformPlan processPlatformPlan) throws Exception {
+		List<Process> processList = new ArrayList<>();
 		if (!processPlatformPlan.where.processList.isEmpty()) {
 			List<String> processIds = ListTools.extractField(processPlatformPlan.where.processList,
 					JpaObject.id_FIELDNAME, String.class, true, true);
-			List<Process> processList = business.process().listObjectWithProcess(processIds, true);
-			processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
-					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
-					}.getType());
-		}else if(!processPlatformPlan.where.applicationList.isEmpty()){
+
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				processList.addAll(business.process().listObjectWithProcess(processIds, true));
+			}
+		}
+		if(!processPlatformPlan.where.applicationList.isEmpty()){
 			List<String> appIds = ListTools.extractField(processPlatformPlan.where.applicationList,
 					JpaObject.id_FIELDNAME, String.class, true, true);
-			List<Process> processList = business.process().listObjectWithApp(appIds);
-			processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
-					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
-					}.getType());
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				processList.addAll(business.process().listObjectWithApp(appIds));
+			}
 		}
+		processList = processList.stream().distinct().collect(Collectors.toList());
+		processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
+				new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
+				}.getType());
 
 	}
 

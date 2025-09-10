@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -85,32 +86,31 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	private void setProcessEdition(ProcessPlatformPlan processPlatformPlan) throws Exception {
+		List<Process> processList = new ArrayList<>();
 		if (!processPlatformPlan.where.processList.isEmpty()) {
 			List<String> processIds = ListTools.extractField(processPlatformPlan.where.processList,
 					JpaObject.id_FIELDNAME, String.class, true, true);
-			List<Process> processList;
+
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				processList = business.process().listObjectWithProcess(processIds, true);
+				processList.addAll(business.process().listObjectWithProcess(processIds, true));
 			}
-            processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
-					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
-					}.getType());
-		}else if(!processPlatformPlan.where.applicationList.isEmpty()){
+		}
+		if(!processPlatformPlan.where.applicationList.isEmpty()){
 			List<String> appIds = ListTools.extractField(processPlatformPlan.where.applicationList,
 					JpaObject.id_FIELDNAME, String.class, true, true);
-			List<Process> processList;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				processList = business.process().listObjectWithApp(appIds);
+				processList.addAll(business.process().listObjectWithApp(appIds));
 			}
-			processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
-					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
-					}.getType());
 		}
+		processList = processList.stream().distinct().collect(Collectors.toList());
+		processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
+				new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
+				}.getType());
 	}
 
-	private List<String> dealBundle(Business business, View view, Runtime runtime, ExecutorService threadPool)
+	private List<String> dealBundle(View view, Runtime runtime, ExecutorService threadPool)
 			throws Exception {
 		List<String> os = null;
 		switch (StringUtils.trimToEmpty(view.getType())) {
@@ -138,11 +138,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			if (optional.isPresent()) {
 				os = (List<String>) optional.get();
 			} else {
-				os = this.dealBundle(business, view, runtime, threadPool);
+				os = this.dealBundle(view, runtime, threadPool);
 				CacheManager.put(business.cache(), cacheKey, os);
 			}
 		} else {
-			os = this.dealBundle(business, view, runtime, threadPool);
+			os = this.dealBundle(view, runtime, threadPool);
 		}
 		return os;
 	}

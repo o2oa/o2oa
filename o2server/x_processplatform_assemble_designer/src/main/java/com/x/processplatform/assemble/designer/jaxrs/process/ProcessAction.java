@@ -1,7 +1,17 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.JaxrsDescribe;
+import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.HttpMediaType;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -16,18 +26,6 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.google.gson.JsonElement;
-import com.x.base.core.project.annotation.JaxrsDescribe;
-import com.x.base.core.project.annotation.JaxrsMethodDescribe;
-import com.x.base.core.project.annotation.JaxrsParameterDescribe;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-
 /**
  * @author sword
  */
@@ -35,7 +33,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("流程")
 public class ProcessAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ProcessAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessAction.class);
 
 	@JaxrsMethodDescribe(value = "获取流程内容.含所有节点和路由信息", action = ActionGet.class)
 	@GET
@@ -373,6 +371,25 @@ public class ProcessAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListWithForm().execute(effectivePerson, formId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据活动标识和活动类型获取流程活动信息.", action = ActionGetActivity.class)
+	@GET
+	@Path("activity/{flag}/activityType/{activityType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getActivity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("活动ID或者活动唯一编码") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("活动类型") @PathParam("activityType") String activityType) {
+		ActionResult<ActionGetActivity.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetActivity().execute(effectivePerson, flag, activityType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -17,6 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.ItemAccess;
@@ -71,10 +72,10 @@ class ActionSave extends BaseAction {
             itemAccess.setAppId(appId);
             itemAccess.setItemCategory(ItemCategory.pp);
             itemAccess.getProperties().setReadActivityIdList(
-                    ListTools.extractField(itemAccess.getReaderList(), "activity", String.class,
+                    ListTools.extractField(itemAccess.getReaderList(), Activity.unique_FIELDNAME, String.class,
                             true, true));
             itemAccess.getProperties().setEditActivityIdList(
-                    ListTools.extractField(itemAccess.getEditorList(), "activity", String.class,
+                    ListTools.extractField(itemAccess.getEditorList(), Activity.unique_FIELDNAME, String.class,
                             true, true));
             itemAccess.setUpdateTime(new Date());
             if (update) {
