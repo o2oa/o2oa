@@ -1,13 +1,27 @@
 package com.x.processplatform.core.entity.element;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.SliceJpaObject;
+import javax.persistence.Transient;
 
 public abstract class Activity extends SliceJpaObject {
 
 	private static final long serialVersionUID = 4981905102396583697L;
+
+	@FieldDescribe("节点类型.")
+	@Transient
+	private ActivityType type;
+
+	public ActivityType getType() {
+		return type;
+	}
+
+	public void setType(ActivityType type) {
+		this.type = type;
+	}
 
 	public abstract String getName();
 

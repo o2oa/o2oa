@@ -12,27 +12,22 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.query.core.entity.Item;
 import com.x.query.core.entity.ItemAccess;
 import com.x.query.core.entity.ItemAccess_;
-import com.x.query.core.entity.Item_;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.StringUtils;
 
 public class ItemAccessFactory extends AbstractFactory {
 
-    private CacheCategory cacheCategory = new CacheCategory(ItemAccess.class);
+    private final CacheCategory cacheCategory = new CacheCategory(ItemAccess.class);
 
     public ItemAccessFactory(Business abstractBusiness) throws Exception {
         super(abstractBusiness);
@@ -59,7 +54,7 @@ public class ItemAccessFactory extends AbstractFactory {
     }
 
     public List<ItemAccess> listObjectWithCategoryId(String categoryId) throws Exception {
-        EntityManager em = this.entityManagerContainer().get(Item.class);
+        EntityManager em = this.entityManagerContainer().get(ItemAccess.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ItemAccess> cq = cb.createQuery(ItemAccess.class);
         Root<ItemAccess> root = cq.from(ItemAccess.class);
@@ -73,6 +68,9 @@ public class ItemAccessFactory extends AbstractFactory {
 
     public void convert(JsonElement data, String processId, String appId, String activity,
             EffectivePerson effectivePerson) throws Exception {
+        if(StringUtils.isEmpty(activity)){
+            return;
+        }
         List<ItemAccess> itemAccessList = this.listWithProcessOrApp(processId, appId);
         if (ListTools.isEmpty(itemAccessList) || this.business()
                 .ifPersonCanManageApplicationOrProcess(effectivePerson, appId, processId)) {

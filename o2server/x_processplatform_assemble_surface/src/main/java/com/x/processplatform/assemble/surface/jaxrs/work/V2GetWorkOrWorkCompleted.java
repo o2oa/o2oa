@@ -698,6 +698,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
         private String alias;
 
+        private String unique;
+
         private String position;
 
         private String resetRange;
@@ -733,6 +735,14 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getUnique() {
+            return unique;
+        }
+
+        public void setUnique(String unique) {
+            this.unique = unique;
         }
 
         public String getDescription() {
