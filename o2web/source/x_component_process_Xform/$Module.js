@@ -945,7 +945,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this._setBusinessSectionDataByPerson(v, id);
             }else{
                 this.setBusinessDataById(v, id);
-                if (this.json.isTitle) this.form.businessData.data.$work.title = v;
+                if (this.json.isTitle && this.json.moduleName !== "associatedDocument") this.form.businessData.data.$work.title = v;
             }
         }
         if (this.form.relatedModules && this.form.relatedModules[(id || this.json.id)]){
