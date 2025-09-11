@@ -122,7 +122,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             methods.$remoteMethod = function(){
                 this.isSearching = true;
                 fn.apply(this, arguments);
-            }.bind(this)
+            }.bind(this);
         }
     },
 
@@ -328,9 +328,16 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 if( k === 'change' ){
                     this.isSearching = false;
                 }else if(k === 'visible-change'){
-                    var visible = arguments && arguments.length && arguments && arguments[0]
+                    var visible = arguments && arguments.length && arguments && arguments[0];
                     if (!visible) {
                         this.isSearching = false;
+
+                        var input = this.node.getElement('.el-input__inner');
+                        if( input ){
+                            window.setTimeout(function(){
+                                input.blur();
+                            }, 100);
+                        }
                     }
                 }
             }.bind(this);
