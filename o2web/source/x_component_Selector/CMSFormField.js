@@ -23,13 +23,14 @@ MWF.xApplication.Selector.CMSFormField = new Class({
     },
     getFields : function(){
         var dataTypes = {
-            "string": ["htmledit", "radio", "select", "textarea", "textfield","OOInput","OORadioGroup","OOSelect","OOTextarea","Elautocomplete","Elinput","Elradio", "Elselect"],
-            "person": ["personfield","org","orgfield","reader","author","OOOrg"],
-            "date": ["calender","OODatetime","Eldate","Eldatetime"],
-            "number": ["number","OOCurrency","Currency","Elnumber"],
-            "array": ["OOAddress", "Address","checkbox","OOCheckbox","Elcascader","Elcheckbox"]
+            "string": ["htmledit", "radio", "select", "textarea", "textfield","ooinput","ooradioGroup","ooselect","ootextarea","elautocomplete","elinput","elradio", "elselect"],
+            "person": ["personfield","org","orgfield","reader","author","ooorg"],
+            "date": ["calender","oodatetime","eldate","eldatetime"],
+            "number": ["number","oocurrency","currency","elnumber"],
+            "array": ["ooaddress", "dddress","checkbox","oocheckbox","elcascader","elcheckbox"]
         };
         fieldList = [];
+        debugger;
         Object.each( this.relativeFormData.json.moduleList, function(moudle){
             var key = "";
             for (k in dataTypes){
