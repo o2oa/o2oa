@@ -1,5 +1,12 @@
 package com.x.program.center;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
@@ -8,6 +15,7 @@ import com.x.program.center.schedule.Area;
 import com.x.program.center.schedule.Cleanup;
 import com.x.program.center.schedule.CleanupCode;
 import com.x.program.center.schedule.CollectPerson;
+import com.x.program.center.schedule.CreateActivityUnique;
 import com.x.program.center.schedule.DingdingSyncOrganization;
 import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
 import com.x.program.center.schedule.FireSchedule;
@@ -18,11 +26,6 @@ import com.x.program.center.schedule.WeLinkSyncOrganization;
 import com.x.program.center.schedule.WeLinkSyncOrganizationTrigger;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class ThisApplication {
 
@@ -108,6 +111,8 @@ public class ThisApplication {
 			context().scheduleLocal(TriggerAgent.class, 150, 30);
 			/* 行政区域每周更新一次 */
 			context().scheduleLocal(Area.class, 300, 60 * 60 * 24 * 7);
+			// 升级更新,补充activity的unique值
+			context.scheduleLocal(CreateActivityUnique.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
