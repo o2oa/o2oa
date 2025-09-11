@@ -38,24 +38,25 @@ class ActionCreateTypeProcessPlatform extends BaseAction {
 					wi.getTargetList());
 			Map<String, Correlation> exists = this.exists(business, Correlation.TYPE_PROCESSPLATFORM, job);
 			emc.beginTransaction(Correlation.class);
-			pair.first().stream().forEach(o -> exists.compute(o.getTargetType() + o.getTargetBundle(), (k, v) -> {
-				try {
-					if (null == v) {
-						o.setFromType(Correlation.TYPE_PROCESSPLATFORM);
-						o.setFromBundle(job);
-						o.setPerson(wi.getPerson());
-						emc.persist(o, CheckPersistType.all);
-					} else {
-						v.setTargetTitle(o.getTargetTitle());
-						v.setSite(o.getSite());
-						v.setView(o.getView());
-						emc.check(v, CheckPersistType.all);
-					}
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
-				return v;
-			}));
+			pair.first().stream()
+					.forEach(o -> exists.compute(o.getTargetType() + o.getTargetBundle() + o.getSite(), (k, v) -> {
+						try {
+							if (null == v) {
+								o.setFromType(Correlation.TYPE_PROCESSPLATFORM);
+								o.setFromBundle(job);
+								o.setPerson(wi.getPerson());
+								emc.persist(o, CheckPersistType.all);
+							} else {
+								v.setTargetTitle(o.getTargetTitle());
+								v.setSite(o.getSite());
+								v.setView(o.getView());
+								emc.check(v, CheckPersistType.all);
+							}
+						} catch (Exception e) {
+							LOGGER.error(e);
+						}
+						return v;
+					}));
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setSuccessList(pair.first());
