@@ -103,7 +103,7 @@ public class Business {
 
 	/**
 	 * 获取包含自定义jar包的ClassLoader
-	 * 
+	 *
 	 * @param refresh
 	 * @return
 	 * @throws Exception
@@ -363,6 +363,20 @@ public class Business {
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
+	}
+
+	public boolean isProcessManager(EffectivePerson effectivePerson) throws Exception {
+		return effectivePerson.isManager() || (BooleanUtils.isTrue(
+				this.organization().person().hasRole(effectivePerson,
+						OrganizationDefinition.ProcessPlatformManager,
+						OrganizationDefinition.Manager)));
+	}
+
+	public boolean isCmsManager(EffectivePerson effectivePerson) throws Exception {
+		return effectivePerson.isManager() || (BooleanUtils.isTrue(
+				this.organization().person().hasRole(effectivePerson,
+						OrganizationDefinition.CMSManager,
+						OrganizationDefinition.Manager)));
 	}
 
 }

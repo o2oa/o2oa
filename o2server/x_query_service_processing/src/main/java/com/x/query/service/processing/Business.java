@@ -105,47 +105,37 @@ public class Business {
 	}
 
 	public boolean isManager(EffectivePerson effectivePerson) throws Exception {
-		if (effectivePerson.isManager() || (BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.QueryManager, OrganizationDefinition.Manager)))) {
-			return true;
-		}
-		return false;
-	}
+        return effectivePerson.isManager() || (BooleanUtils.isTrue(
+                this.organization().person().hasRole(effectivePerson,
+                        OrganizationDefinition.QueryManager, OrganizationDefinition.Manager)));
+    }
 
 	public boolean isProcessManager(EffectivePerson effectivePerson) throws Exception {
-		if (effectivePerson.isManager() || (BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.ProcessPlatformManager, OrganizationDefinition.Manager)))) {
-			return true;
-		}
-		return false;
-	}
+        return effectivePerson.isManager() || (BooleanUtils.isTrue(
+                this.organization().person().hasRole(effectivePerson,
+                        OrganizationDefinition.ProcessPlatformManager,
+                        OrganizationDefinition.Manager)));
+    }
 
 	public boolean isServiceManager(EffectivePerson effectivePerson) throws Exception {
-		if (effectivePerson.isManager() || (BooleanUtils.isTrue(this.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.ServiceManager, OrganizationDefinition.Manager)))) {
-			return true;
-		}
-		return false;
-	}
+        return effectivePerson.isManager() || (BooleanUtils.isTrue(
+                this.organization().person().hasRole(effectivePerson,
+                        OrganizationDefinition.ServiceManager, OrganizationDefinition.Manager)));
+    }
 
 	public boolean isCmsManager(EffectivePerson effectivePerson) throws Exception {
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.CMSManager,
-				OrganizationDefinition.Manager)) {
-			return true;
-		}
-		return false;
+		return effectivePerson.isManager() || (BooleanUtils.isTrue(
+				this.organization().person().hasRole(effectivePerson,
+						OrganizationDefinition.CMSManager,
+						OrganizationDefinition.Manager)));
 	}
 
 	public boolean isPortalManager(EffectivePerson effectivePerson) throws Exception {
-		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.PortalManager, OrganizationDefinition.Manager))) {
-			return true;
-		}
-		return false;
-	}
+		return effectivePerson.isManager() || (BooleanUtils.isTrue(
+				this.organization().person().hasRole(effectivePerson,
+						OrganizationDefinition.PortalManager,
+						OrganizationDefinition.Manager)));
+    }
 
 	private ProcessFactory process;
 

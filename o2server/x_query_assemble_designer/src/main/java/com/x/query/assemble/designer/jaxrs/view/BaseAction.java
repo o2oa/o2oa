@@ -1,6 +1,8 @@
 package com.x.query.assemble.designer.jaxrs.view;
 
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -72,11 +75,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 			runtime.unitAllList = cacheRuntime.unitAllList;
 			runtime.groupList = cacheRuntime.groupList;
 			runtime.roleList = cacheRuntime.roleList;
+			runtime.authList = cacheRuntime.authList;
 		}else {
+			runtime.authList.add(effectivePerson.getDistinguishedName());
 			runtime.identityList = business.organization().identity()
 					.listWithPerson(effectivePerson);
+			runtime.authList.addAll(runtime.identityList);
 			List<String> list = new ArrayList<>();
-			if (runtime.identityList != null && View.TYPE_CMS.equals(view.getType())) {
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String identity : runtime.identityList) {
 					if (identity.contains("@")) {
 						list.add(StringUtils.substringAfter(identity, "@"));
@@ -86,7 +92,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				list.clear();
 			}
 			runtime.unitList = business.organization().unit().listWithPerson(effectivePerson);
-			if (runtime.unitList != null && View.TYPE_CMS.equals(view.getType())) {
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.unitList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -97,7 +103,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 			runtime.unitAllList = business.organization().unit()
 					.listWithPersonSupNested(effectivePerson);
-			if (runtime.unitAllList != null && View.TYPE_CMS.equals(view.getType())) {
+			runtime.authList.addAll(runtime.unitAllList);
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.unitAllList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -110,7 +117,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 					.listWithPersonReference(
 							ListTools.toList(effectivePerson.getDistinguishedName()), true, true,
 							true);
-			if (runtime.groupList != null && View.TYPE_CMS.equals(view.getType())) {
+			runtime.authList.addAll(runtime.groupList);
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.groupList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -120,7 +128,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 				list.clear();
 			}
 			runtime.roleList = business.organization().role().listWithPerson(effectivePerson);
-			if (runtime.roleList != null && View.TYPE_CMS.equals(view.getType())) {
+			runtime.authList.addAll(runtime.roleList);
+			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.roleList) {
 					if (item.contains("@")) {
 						list.add(StringUtils.substringAfter(item, "@"));
@@ -129,7 +138,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 				runtime.roleList.addAll(list);
 				list.clear();
 			}
-
 			CacheManager.put(userCache, cacheKey, runtime);
 		}
 		runtime.parameter = parameter;
@@ -151,22 +159,29 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected void setProcessEdition(Business business, ProcessPlatformPlan processPlatformPlan) throws Exception {
+	protected void setProcessEdition(ProcessPlatformPlan processPlatformPlan) throws Exception {
+		List<Process> processList = new ArrayList<>();
 		if (!processPlatformPlan.where.processList.isEmpty()) {
 			List<String> processIds = ListTools.extractField(processPlatformPlan.where.processList,
 					JpaObject.id_FIELDNAME, String.class, true, true);
-			List<Process> processList = business.process().listObjectWithProcess(processIds, true);
-			processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
-					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
-					}.getType());
-		}else if(!processPlatformPlan.where.applicationList.isEmpty()){
+
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				processList.addAll(business.process().listObjectWithProcess(processIds, true));
+			}
+		}
+		if(!processPlatformPlan.where.applicationList.isEmpty()){
 			List<String> appIds = ListTools.extractField(processPlatformPlan.where.applicationList,
 					JpaObject.id_FIELDNAME, String.class, true, true);
-			List<Process> processList = business.process().listObjectWithApp(appIds);
-			processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
-					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
-					}.getType());
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				processList.addAll(business.process().listObjectWithApp(appIds));
+			}
 		}
+		processList = processList.stream().distinct().collect(Collectors.toList());
+		processPlatformPlan.where.processList = gson.fromJson(gson.toJson(processList),
+				new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
+				}.getType());
 
 	}
 

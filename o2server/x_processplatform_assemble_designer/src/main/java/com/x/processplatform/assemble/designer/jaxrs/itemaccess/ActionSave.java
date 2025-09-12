@@ -8,6 +8,7 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,6 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.ItemAccess;
@@ -40,21 +42,22 @@ class ActionSave extends BaseAction {
                 throw new ExceptionFieldEmpty("path");
             }
             Business business = new Business(emc);
+            String appId = wi.getItemCategoryId();
             Process process = emc.find(wi.getItemCategoryId(), Process.class);
-            if (process == null) {
-                throw new ExceptionProcessNotExisted(wi.getItemCategoryId());
+            if (process != null) {
+                wi.setItemCategoryId(
+                        StringUtils.isNoneEmpty(process.getEdition()) ? process.getEdition()
+                                : process.getId());
+                appId = process.getApplication();
             }
-            Application application = emc.find(process.getApplication(), Application.class);
+            Application application = emc.find(appId, Application.class);
             if (null == application) {
-                throw new ExceptionApplicationNotExist(process.getApplication());
+                throw new ExceptionEntityNotExist(appId);
             }
             if (!business.editable(effectivePerson, application)) {
                 throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
                         application.getName(), application.getId());
             }
-            wi.setItemCategoryId(
-                    StringUtils.isNoneEmpty(process.getEdition()) ? process.getEdition()
-                            : process.getId());
             ItemAccess itemAccess = emc.firstEqualAndEqual(ItemAccess.class,
                     ItemAccess.itemCategoryId_FIELDNAME, wi.getItemCategoryId(),
                     ItemAccess.path_FIELDNAME, wi.getPath());
@@ -66,14 +69,8 @@ class ActionSave extends BaseAction {
             }
 
             Wi.copier.copy(wi, itemAccess);
-            itemAccess.setAppId(process.getApplication());
+            itemAccess.setAppId(appId);
             itemAccess.setItemCategory(ItemCategory.pp);
-            itemAccess.getProperties().setReadActivityIdList(
-                    ListTools.extractField(itemAccess.getReaderList(), "activity", String.class,
-                            true, true));
-            itemAccess.getProperties().setEditActivityIdList(
-                    ListTools.extractField(itemAccess.getEditorList(), "activity", String.class,
-                            true, true));
             itemAccess.setUpdateTime(new Date());
             if (update) {
                 emc.check(itemAccess, CheckPersistType.all);
@@ -81,7 +78,7 @@ class ActionSave extends BaseAction {
                 emc.persist(itemAccess, CheckPersistType.all);
             }
             emc.commit();
-            CacheManager.notify(Process.class);
+            CacheManager.notify(ItemAccess.class);
             Wo wo = new Wo();
             wo.setId(itemAccess.getId());
             result.setData(wo);
