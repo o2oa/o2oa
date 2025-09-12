@@ -54,13 +54,17 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "unit" : "组织",
     "unitDuty" : "组织职务",
     "systemList" : "系统列表",
+    "processActivity" : "流程活动",
+    "activity" : "流程活动",
 
     "quantifier": {
         "person": "个人",
         "identity": "身份",
         "unit": "组织",
         "group": "群组",
-        "role": "角色"
+        "role": "角色",
+        "processActivity" : "流程活动",
+        "activity" : "流程活动",
     },
 
     "appType" : {

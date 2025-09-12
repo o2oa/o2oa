@@ -354,6 +354,10 @@ MWF.xApplication.Selector.Person = new Class({
                         "top": "" + (position.y || 0) + "px",
                         "left": "" + position.x + "px"
                     });
+                    this.element.setStyles({
+                        "top": "" + (position.y || 0) + "px",
+                        "left": "" + position.x + "px"
+                    });
                 }
                 //
                 // "destroyOnHide": true,

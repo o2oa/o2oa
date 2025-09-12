@@ -18,7 +18,7 @@ MWF.xApplication.Selector.Portal = new Class({
         this.className = "Portal";
     },
     loadSelectItems: function(addToNext){
-        this.portalDesignerAction.listApplication(function(json){
+        this.portalAction.listApplication(function(json){
             json.data.each(function(data){
                 var category = this._newItem(data, this, this.itemAreaNode);
                 this.items.push( category );
@@ -37,7 +37,7 @@ MWF.xApplication.Selector.Portal = new Class({
         return false;
     },
     _getItem: function(callback, failure, id, async){
-        this.portalDesignerAction.getApplications(function(json){
+        this.portalAction.getApplication(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.id), async);
     },

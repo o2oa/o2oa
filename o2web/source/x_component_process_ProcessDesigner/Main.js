@@ -648,6 +648,11 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
 
             this.processEditionNode = toolbarNode.getElement(".processEdition");
             this.processEditionInforNode = toolbarNode.getElement(".processEditionInfor");
+
+            toolbarNode.querySelector('oo-button.fieldPermissionsButton')?.addEventListener('click', function(e){
+                this.process.openFieldPermissions(e);
+            }.bind(this));
+
         }.bind(this));
     },
     getProcessToolbarHTML: function(callback){

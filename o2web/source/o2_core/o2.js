@@ -1112,7 +1112,7 @@ if (!window.o2) {
                 if (el.hasAttribute("data-o2-events")) {
 
                     var events = el.getAttribute("data-o2-events").toString();
-                    if (events) _bindToEvents(op.module, el, events, bindDataId);
+                    if (events) _bindToEvents(op.module, el, events, bindDataId, op.bind);
                     el.removeAttribute("data-o2-events");
                 }
             }
@@ -1129,7 +1129,7 @@ if (!window.o2) {
             }
         };
 
-        var _bindToEvents = function (m, node, events, bindDataId) {
+        var _bindToEvents = function (m, node, events, bindDataId, bind) {
             var p = node.getParent("div[data-o2-binddataid]");
             var data = null;
             if (p){
@@ -1154,7 +1154,7 @@ if (!window.o2) {
                     //     if (m[method]) m[method].apply(m, evs.concat([new PointerEvent("o2load"), data]));
                     // }else{
                     node.addEventListener(event, function (e) {
-                        if (m[method]) m[method].apply(m, evs.concat([e, data]));
+                        if (m[method]) m[method].apply(m, evs.concat([e, data||bind]));
                     }, false);
                     // }
                 }

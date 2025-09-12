@@ -65,11 +65,19 @@ body {
 .table-tr-selected {
 	background-color: #FFFFDD;
 }*/
-
 input,button,select,textarea{outline:none}
 
 select.script::-ms-expand { display: none; }
 ::-ms-clear, ::-ms-reveal{display: none;}
+
+
+span[mwfnodetype="MWFToolBarButton"]{
+	display: flex;
+    align-items: baseline;
+    margin: 4px;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
 
 /*.WordSection1 table{*/
 /*	border: 0 !important;*/
