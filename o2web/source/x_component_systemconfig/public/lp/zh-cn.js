@@ -1222,6 +1222,7 @@ o2.xApplication.systemconfig.LP = {
 
         "mobileHomePageLayout": "主页布局",
         "mobileHomePageLayoutInfo": "主页是否开启高级布局",
+        "mobileHomePageLayoutOperationInfo": "通过底部菜单栏可以切换页面，对每个页面都可以操作[修改]和[删除]功能",
 
         "mobileIndex": "移动端首页配置",
         "mobileIndexInfo": "您可以配置移动端的首页为默认APP样式，或指定一个门户页面",

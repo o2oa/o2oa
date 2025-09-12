@@ -93,7 +93,8 @@ const deletePageItem = (e) => {
     if (!currentItem.value) {
         return
     }
-    component.confirm("warn", e, "删除页面", "确定要删除这个页面吗？", 380, 120, (dlg) => {
+    const msg = `确定要删除【${currentItem.value.name}】这个页面吗？`
+    component.confirm("warn", e, "删除页面", msg, 380, 120, (dlg) => {
         _realDeletePage();
         dlg.close();
     }, dlg => dlg.close());

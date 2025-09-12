@@ -30,6 +30,7 @@
             saveAppStyle(appStyle);
         }
         "></AppLayout>
+      <div class="item_info" v-html="lp._appConfig.mobileHomePageLayoutOperationInfo"></div>
       <!-- 老版首页配置 -->
       <div v-if="!enableHomePageLayout">
         <BaseItem :title="lp._appConfig.mobileIndex" :info="lp._appConfig.mobileIndexInfo" :config="mobileIndex"
