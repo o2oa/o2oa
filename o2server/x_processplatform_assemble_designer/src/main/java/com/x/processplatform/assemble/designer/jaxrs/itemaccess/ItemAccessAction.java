@@ -126,7 +126,7 @@ public class ItemAccessAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "删除字段权限配置", action = ActionDeleteWithProcessWithPath.class)
 	@DELETE
-	@Path("/delete/process/{processId}/path/{path}")
+	@Path("delete/process/{processId}/path/{path}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteWithProcessWithPath(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
