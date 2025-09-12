@@ -377,6 +377,26 @@ oo-nav{
     -moz-osx-font-smoothing: grayscale;
 }
 
+.ooicon-finger2:before {
+  content: "\e797";
+}
+
+.ooicon-click:before {
+  content: "\e798";
+}
+
+.ooicon-click2:before {
+  content: "\e796";
+}
+
+.ooicon-hand_point:before {
+  content: "\e789";
+}
+
+.ooicon-finger:before {
+  content: "\e795";
+}
+
 .ooicon-hopper:before {
   content: "\e783";
 }
@@ -1944,3 +1964,4 @@ oo-nav{
 .ooicon-anliku:before {
   content: "\e701";
 }
+

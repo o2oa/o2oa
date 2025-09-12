@@ -1,0 +1,26 @@
+<div class="fieldPermissions-content" data-o2-element="contentNode">
+    <div class="fieldPermissions-content-desc" data-o2-element="descNode">
+        <oo-select data-o2-element="selectProcessNode" style="font-weight: bold; font-size: 1.125rem;" data-o2-events="change:changeProcess">
+            <div slot="before-outer">{{$.lp.fieldPermissionsSelectProcessBefore}}</div>
+            <div slot="after-outer" style="margin-left: 0.5em">{{$.lp.fieldPermissionsSelectProcessAfter}}</div>
+        </oo-select>
+        <div data-o2-element="descNode" style="padding-top: 0.5em;">{{$.lp.fieldPermissionsDesc}}</div>
+    </div>
+    <!-- <div class="fieldPermissions-content-actionArea">
+        <oo-button type="light" left-icon="finger" data-o2-element="selectPathButton" data-o2-events="click:selectPath"></oo-button>
+    </div> -->
+    <div class="fieldPermissions-header" data-o2-element="headerNode">
+        <div class="fieldPermissions-body-titleArea">
+            <div class="fieldPermissions-body-title" style="padding: 0.5rem;"><oo-button type="icon-light" left-icon="finger" title="{{$.lp.fieldPermissionsSelectPath}}" data-o2-events="click:selectPath"></oo-button></div>
+            <div class="fieldPermissions-body-title">{{$.lp.fieldPermissionsPath}}</div>
+            <div class="fieldPermissions-body-title">{{$.lp.fieldPermissionsReaderList}}</div>
+            <div class="fieldPermissions-body-title">{{$.lp.fieldPermissionsEditorList}}</div>
+            <div class="fieldPermissions-body-title" style="padding: 0.5rem;"><oo-button type="icon-light" left-icon="create" title="{{$.lp.fieldPermissionsAddPath}}" data-o2-events="click:addPath"></oo-button></div>
+        </div>
+    </div>
+    <div  class="fieldPermissions-body-scroll">
+        <div class="fieldPermissions-body" data-o2-element="bodyNode">
+
+        </div>
+    </div>
+</div> 

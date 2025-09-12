@@ -144,6 +144,25 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"upgradeInfor": "<div style='overflow: hidden; line-height: 26px'>您是否确定要将当前流程保存为新版?<br/>选中\"同时启用新版本\"在保存完成之后,会将新版本设置为启用版本.</div><div style='margin-top:10px'><input type='checkbox' checked>同时启用新版本</div>",
 	"inputDiscription": "请先输入版本描述",
 
+	"fieldPermissions": "数据权限设置",
+	"fieldPermissionsPath": "数据路径",
+	"fieldPermissionsReaderList": "可读活动或组织",
+	"fieldPermissionsReadActivityList": "可读活动",
+	"fieldPermissionsEditorList": "可编辑活动或组织",
+	"fieldPermissionsEditActivityList": "可编辑活动",
+	"fieldPermissionsSelectPath": "选择数据路径",
+	"fieldPermissionsAddPath": "添加数据路径",
+	"fieldPermissionsSelectProcessBefore": "正在为流程：",
+	"fieldPermissionsSelectProcessAfter": " 设置数据权限",
+	"inputPath": "输入数据路径",
+	"deletePathTitle": "删除数据确认",
+	"deletePathInfo": "您确定要删除数据“{path}”的权限配置吗？",
+
+	"fieldPermissionsDesc": "请为流程的数据路径设置读写权限，读权限控制哪些活动或组织可以查看此数据，写权限控制哪些活动或组织可以修改此数据。如果不设置任何数据权限，则表示所有活动和组织均可读写此数据。",
+
+	"selectDataPath": "选择数据路径",
+	"selectPermissions": "选择数据权限",
+
 	"edition_list":{
 		"editionList": "查看流程版本",
 		"number": "版本号",

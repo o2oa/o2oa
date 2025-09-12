@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "45220461",
+      "name": "finger2",
+      "font_class": "finger2",
+      "unicode": "e797",
+      "unicode_decimal": 59287
+    },
+    {
+      "icon_id": "45220459",
+      "name": "click",
+      "font_class": "click",
+      "unicode": "e798",
+      "unicode_decimal": 59288
+    },
+    {
+      "icon_id": "45220460",
+      "name": "click2",
+      "font_class": "click2",
+      "unicode": "e796",
+      "unicode_decimal": 59286
+    },
+    {
+      "icon_id": "45218380",
+      "name": "hand_point",
+      "font_class": "hand_point",
+      "unicode": "e789",
+      "unicode_decimal": 59273
+    },
+    {
+      "icon_id": "45218379",
+      "name": "finger",
+      "font_class": "finger",
+      "unicode": "e795",
+      "unicode_decimal": 59285
+    },
+    {
       "icon_id": "44779699",
       "name": "hopper",
       "font_class": "hopper",

@@ -50,7 +50,9 @@ MWF.xApplication.Selector.LP={
 		"identity": "identity",
 		"unit": "unit",
 		"group": "group",
-		"role": "role"
+		"role": "role",
+		"processActivity": "Process activities",
+		"activity": "Process activities"
 	},
 	"appType": {
 		"process": "Process",
@@ -80,6 +82,8 @@ MWF.xApplication.Selector.LP={
 	"currentForm": "Current form",
 	"selectPanFile": "Select cloud storage files",
 	"personFile": "personal documents",
-	"unitFile": "Enterprise files"
+	"unitFile": "Enterprise files",
+	"processActivity": "Process activities",
+	"activity": "Process activities"
 }
 MWF.xApplication.Selector["lp."+o2.language] = MWF.xApplication.Selector.LP
