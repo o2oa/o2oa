@@ -4,6 +4,7 @@ import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 扩展配置
@@ -19,15 +20,11 @@ public class ItemAccessProperties extends JsonProperties {
 	@FieldDescribe("可查看流程活动列表.")
 	private List<ItemAccessActivity> readActivityList;
 
-	private List<String> readActivityIdList;
-
 	@FieldDescribe("可编辑对象DN列表：人员、组织、群组、角色.")
 	private List<String> editorList;
 
 	@FieldDescribe("可编辑流程活动列表.")
 	private List<ItemAccessActivity> editActivityList;
-
-	private List<String> editActivityIdList;
 
 	@FieldDescribe("扩展信息.")
 	private String extension;
@@ -50,11 +47,8 @@ public class ItemAccessProperties extends JsonProperties {
 	}
 
 	public List<String> getReadActivityIdList() {
-		return readActivityIdList == null ? Collections.emptyList() : readActivityIdList;
-	}
-
-	public void setReadActivityIdList(List<String> readActivityIdList) {
-		this.readActivityIdList = readActivityIdList;
+		return getReadActivityList().stream().map(ItemAccessActivity::getUnique).distinct().collect(
+				Collectors.toList());
 	}
 
 	public List<String> getEditorList() {
@@ -72,14 +66,6 @@ public class ItemAccessProperties extends JsonProperties {
 	public void setEditActivityList(
 			List<ItemAccessActivity> editActivityList) {
 		this.editActivityList = editActivityList;
-	}
-
-	public List<String> getEditActivityIdList() {
-		return editActivityIdList == null ? Collections.emptyList() : editActivityIdList;
-	}
-
-	public void setEditActivityIdList(List<String> editActivityIdList) {
-		this.editActivityIdList = editActivityIdList;
 	}
 
 	public String getExtension() {

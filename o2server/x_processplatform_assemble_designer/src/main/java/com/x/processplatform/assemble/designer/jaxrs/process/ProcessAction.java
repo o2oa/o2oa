@@ -11,6 +11,7 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.core.entity.element.Activity;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -386,7 +387,7 @@ public class ProcessAction extends StandardJaxrsAction {
 	public void getActivity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("活动ID或者活动唯一编码") @PathParam("flag") String flag,
 			@JaxrsParameterDescribe("活动类型") @PathParam("activityType") String activityType) {
-		ActionResult<ActionGetActivity.Wo> result = new ActionResult<>();
+		ActionResult<Activity> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetActivity().execute(effectivePerson, flag, activityType);

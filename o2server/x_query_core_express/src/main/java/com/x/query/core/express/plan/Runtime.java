@@ -1,15 +1,12 @@
 package com.x.query.core.express.plan;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.collections4.list.TreeList;
-
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.cms.core.entity.query.OrderEntry;
 
 public class Runtime extends GsonPropertyObject {
 
@@ -48,5 +45,7 @@ public class Runtime extends GsonPropertyObject {
 
 	@FieldDescribe("限定结果集")
 	public List<String> bundleList = new TreeList<>();
+
+	public boolean isManager = false;
 
 }

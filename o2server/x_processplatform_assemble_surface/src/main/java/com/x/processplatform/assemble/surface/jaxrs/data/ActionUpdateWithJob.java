@@ -15,6 +15,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.BooleanUtils;
@@ -36,6 +37,12 @@ class ActionUpdateWithJob extends BaseAction {
 			Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build();
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, job);
+			}
+			Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), job);
+			if(review != null) {
+				business.itemAccess().convert(jsonElement, review.getProcess(),
+						review.getApplication(), review.getActivityUnique(),
+						effectivePerson);
 			}
 		}
 		if(jsonElement.getAsJsonObject().size() == 0){

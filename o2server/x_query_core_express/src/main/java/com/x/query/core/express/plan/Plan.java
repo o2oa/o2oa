@@ -1,10 +1,20 @@
 package com.x.query.core.express.plan;
 
+import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.query.core.entity.ItemAccess;
+import com.x.query.core.entity.ItemAccess_;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -27,6 +38,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +70,8 @@ public abstract class Plan extends GsonPropertyObject {
 	private static final long serialVersionUID = -4281507899642115426L;
 
 	private static final Collator COLLATOR = Collator.getInstance(Locale.CHINESE);
+
+	private static final CacheCategory itemCache = new CacheCategory(ItemAccess.class);
 
 	public static final String SCOPE_WORK = "work";
 	public static final String SCOPE_CMS_INFO = "cms_info";
@@ -176,6 +190,53 @@ public abstract class Plan extends GsonPropertyObject {
 
 	abstract List<String> listBundle() throws Exception;
 
+	abstract Map<String, Pair<List<ItemAccess>, String>> listBundleItemAccess(List<String> bundles) throws Exception;
+
+	/**
+	 * 获取可访问路径的文档列表
+	 * @param bundles
+	 * @param viewMap
+	 * @param path
+	 * @return
+	 */
+	public List<String> filterEntryPermission(List<String> bundles, Map<String, Pair<List<ItemAccess>, String>> viewMap, String path) {
+		if(StringUtils.isEmpty(path) || viewMap.isEmpty() || ListTools.isEmpty(this.runtime.authList)){
+			return bundles;
+		}
+		List<String> newBundles = new ArrayList<>();
+		bundles.forEach(bundle -> {
+			Pair<List<ItemAccess>, String> pair = viewMap.get(bundle);
+			boolean flag = true;
+			if(pair!=null && ListTools.isNotEmpty(pair.first())){
+				for (ItemAccess itemAccess : pair.first()) {
+					flag = checkPathReadable(path, itemAccess, pair.second());
+					if(!flag){
+						break;
+					}
+				}
+			}
+			if(flag){
+				newBundles.add(bundle);
+			}
+		});
+		return newBundles;
+	}
+
+	private boolean checkPathReadable(String path, ItemAccess itemAccess, String activityUnique) {
+		boolean flag = true;
+		if(path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(itemAccess.getPath() + ".")){
+			List<String> readerList = itemAccess.getProperties().getReaderList();
+			List<String> readActivityIdList = itemAccess.getProperties()
+					.getReadActivityIdList();
+			if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(
+					readActivityIdList)) {
+				flag = readActivityIdList.contains(activityUnique)
+						|| CollectionUtils.containsAny(readerList, this.runtime.authList);
+			}
+		}
+		return flag;
+	}
+
 	// 先获取所有记录对应的job值作为返回的结果集
 	public void access() throws Exception {
 		// 先进行字段调整
@@ -196,10 +257,12 @@ public abstract class Plan extends GsonPropertyObject {
 		final Table fillTable = this.concreteTable(bundles);
 		List<CompletableFuture<Void>> futures = new TreeList<>();
 		for (List<String> _part_bundles : ListTools.batch(bundles, 500)) {
+			Map<String, Pair<List<ItemAccess>, String>> viewMap = this.listBundleItemAccess(_part_bundles);
 			for (SelectEntry selectEntry : this.selectList) {
 				CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
 					try {
-						this.fillSelectEntry(_part_bundles, selectEntry, fillTable);
+						List<String> filterBundles = this.filterEntryPermission(_part_bundles, viewMap, selectEntry.path);
+						this.fillSelectEntry(filterBundles, selectEntry, fillTable);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -213,9 +276,6 @@ public abstract class Plan extends GsonPropertyObject {
 		Table table = this.order(fillTable);
 		if (BooleanUtils.isFalse(this.selectList.emptyColumnCode())) {
 			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
-			// ScriptContext scriptContext =
-			// ScriptingFactory.scriptContextEvalInitialScript();
-			// scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("gird", table);
 			bindings.putMember("gird", table);
 			for (SelectEntry selectEntry : this.selectList) {
 				if (StringTools.ifScriptHasEffectiveCode(selectEntry.code)) {
@@ -374,6 +434,30 @@ public abstract class Plan extends GsonPropertyObject {
 			table.add(row);
 		}
 		return table;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ItemAccess> listItemAccess(EntityManagerContainer emc, String categoryId) throws Exception {
+		if(StringUtils.isEmpty(categoryId)){
+			return Collections.emptyList();
+		}
+		CacheKey cacheKey = new CacheKey(ItemAccess.class, categoryId);
+		Optional<?> optional = CacheManager.get(itemCache, cacheKey);
+		if (optional.isPresent()) {
+			return (List<ItemAccess>) optional.get();
+		}else {
+			EntityManager em = emc.get(ItemAccess.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<ItemAccess> cq = cb.createQuery(ItemAccess.class);
+			Root<ItemAccess> root = cq.from(ItemAccess.class);
+			Predicate p = cb.equal(root.get(ItemAccess_.itemCategoryId), categoryId);
+			p = cb.and(p, cb.equal(root.get(ItemAccess_.itemCategory), ItemCategory.pp));
+			cq.select(root).where(p).orderBy(cb.asc(root.get(ItemAccess_.path)));
+			List<ItemAccess> list = em.createQuery(cq).getResultList();
+			list.forEach(em::detach);
+			CacheManager.put(itemCache, cacheKey, list);
+			return list;
+		}
 	}
 
 	private void fillSelectEntry(List<String> bundles, SelectEntry selectEntry, Table table) throws Exception {

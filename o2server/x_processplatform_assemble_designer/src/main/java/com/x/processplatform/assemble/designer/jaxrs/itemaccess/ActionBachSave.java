@@ -15,14 +15,11 @@ import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.jaxrs.WrapIdList;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.ItemAccess;
@@ -78,14 +75,6 @@ class ActionBachSave extends BaseAction {
                 WiItemAccess.copier.copy(wiItemAccess, itemAccess);
                 itemAccess.setAppId(appId);
                 itemAccess.setItemCategory(ItemCategory.pp);
-                itemAccess.getProperties().setReadActivityIdList(
-                        ListTools.extractField(itemAccess.getReaderList(),
-                                Activity.unique_FIELDNAME, String.class,
-                                true, true));
-                itemAccess.getProperties().setEditActivityIdList(
-                        ListTools.extractField(itemAccess.getEditorList(),
-                                Activity.unique_FIELDNAME, String.class,
-                                true, true));
                 itemAccess.setUpdateTime(new Date());
                 if (update) {
                     emc.check(itemAccess, CheckPersistType.all);
