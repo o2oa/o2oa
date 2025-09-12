@@ -428,4 +428,18 @@ public class Business {
         return result;
     }
 
+    public boolean isProcessManager(EffectivePerson effectivePerson) throws Exception {
+        return effectivePerson.isManager() || (BooleanUtils.isTrue(
+                this.organization().person().hasRole(effectivePerson,
+                        OrganizationDefinition.ProcessPlatformManager,
+                        OrganizationDefinition.Manager)));
+    }
+
+    public boolean isCmsManager(EffectivePerson effectivePerson) throws Exception {
+        return effectivePerson.isManager() || (BooleanUtils.isTrue(
+                this.organization().person().hasRole(effectivePerson,
+                        OrganizationDefinition.CMSManager,
+                        OrganizationDefinition.Manager)));
+    }
+
 }

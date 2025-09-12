@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.processplatform.core.entity.content.Review;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -206,8 +207,10 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
                     // 必须是Object对象
                     if (jsonElement.isJsonObject()) {
                         Business business = new Business(emc);
+                        Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
+                        String activity = review == null ? "" : review.getActivityUnique();
                         business.itemAccess().convert(jsonElement, work.getProcess(),
-                                work.getApplication(), work.getActivity(),
+                                work.getApplication(), activity,
                                 effectivePerson);
                         wo.setData(gson.fromJson(jsonElement, Data.class));
                     }

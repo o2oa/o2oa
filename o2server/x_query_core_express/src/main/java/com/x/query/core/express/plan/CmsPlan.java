@@ -1,9 +1,12 @@
 package com.x.query.core.express.plan;
 
+import com.x.base.core.project.bean.tuple.Pair;
+import com.x.query.core.entity.ItemAccess;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +49,18 @@ public class CmsPlan extends Plan {
 	}
 
 	public WhereEntry where = new WhereEntry();
+
+	/**
+	 * 获取文档的路径访问权限
+	 * @param bundles
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Map<String, Pair<List<ItemAccess>, String>> listBundleItemAccess(List<String> bundles)
+			throws Exception {
+		return new HashMap<>();
+	}
 
 	@Override
 	void adjust() throws Exception {

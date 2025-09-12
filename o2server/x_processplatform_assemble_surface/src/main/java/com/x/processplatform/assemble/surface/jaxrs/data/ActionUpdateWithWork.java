@@ -15,6 +15,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
+import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -45,6 +46,11 @@ class ActionUpdateWithWork extends BaseAction {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}
+			Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
+			String activity = review == null ? "" : review.getActivityUnique();
+			business.itemAccess().convert(jsonElement, work.getProcess(),
+					work.getApplication(), activity,
+					effectivePerson);
 		}
 		if(jsonElement.getAsJsonObject().size() == 0){
 			Wo wo = new Wo();

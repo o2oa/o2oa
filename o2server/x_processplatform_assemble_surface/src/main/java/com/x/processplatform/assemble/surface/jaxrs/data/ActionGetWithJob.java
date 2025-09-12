@@ -10,6 +10,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
+import com.x.processplatform.core.entity.content.Review;
 import org.apache.commons.lang3.BooleanUtils;
 
 class ActionGetWithJob extends BaseAction {
@@ -27,7 +28,14 @@ class ActionGetWithJob extends BaseAction {
 					new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
-			result.setData(this.getData(business, job));
+			JsonElement data = this.getData(business, job);
+			Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), job);
+			if(review != null){
+				business.itemAccess().convert(result.getData(), review.getProcess(),
+						review.getApplication(), review.getActivityUnique(),
+						effectivePerson);
+			}
+			result.setData(data);
 			return result;
 		}
 	}

@@ -7,6 +7,8 @@ import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
@@ -26,6 +28,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 public class ItemAccessFactory extends AbstractFactory {
+    private static final Logger logger = LoggerFactory.getLogger(ItemAccessFactory.class);
 
     private final CacheCategory cacheCategory = new CacheCategory(ItemAccess.class);
 
@@ -68,7 +71,7 @@ public class ItemAccessFactory extends AbstractFactory {
 
     public void convert(JsonElement data, String processId, String appId, String activity,
             EffectivePerson effectivePerson) throws Exception {
-        if(StringUtils.isEmpty(activity)){
+        if(StringUtils.isEmpty(processId) && StringUtils.isEmpty(appId)){
             return;
         }
         List<ItemAccess> itemAccessList = this.listWithProcessOrApp(processId, appId);
@@ -80,6 +83,7 @@ public class ItemAccessFactory extends AbstractFactory {
         for (ItemAccess itemAccess : itemAccessList) {
             List<String> readerList = itemAccess.getProperties().getReaderList();
             List<String> readActivityIdList = itemAccess.getProperties().getReadActivityIdList();
+            logger.debug("processId:{},path:{},readerList:{},readActivityIdList:{}",processId, itemAccess.getPath(), readerList, readActivityIdList);
             if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(readActivityIdList)) {
                 if (readActivityIdList.contains(activity)
                         || ListTools.containsAny(readerList, authList)) {

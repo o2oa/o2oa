@@ -18,13 +18,13 @@ class ActionGetActivity extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetActivity.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String activityType) throws Exception {
+	ActionResult<Activity> execute(EffectivePerson effectivePerson, String id, String activityType) throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}, activityType:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> activityType);
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
+			ActionResult<Activity> result = new ActionResult<>();
 			Class<? extends Activity> cls = ActivityType.getClassOfActivityType(ActivityType.valueOf(activityType));
 			if(cls == null){
 				throw new ExceptionEntityNotExist(id);
@@ -47,10 +47,8 @@ class ActionGetActivity extends BaseAction {
 			if (null == activity) {
 				throw new ExceptionEntityNotExist(id);
 			}
-			Wo wo = new Wo();
-			wo.setActivityType(activityType);
-			wo.setActivity(activity);
-			result.setData(wo);
+			activity.setType(ActivityType.valueOf(activityType));
+			result.setData(activity);
 			return result;
 		}
 	}
@@ -59,24 +57,5 @@ class ActionGetActivity extends BaseAction {
 
 		private static final long serialVersionUID = 7277488664634240645L;
 
-		private String activityType;
-
-		private Activity activity;
-
-		public String getActivityType() {
-			return activityType;
-		}
-
-		public void setActivityType(String activityType) {
-			this.activityType = activityType;
-		}
-
-		public Activity getActivity() {
-			return activity;
-		}
-
-		public void setActivity(Activity activity) {
-			this.activity = activity;
-		}
 	}
 }
