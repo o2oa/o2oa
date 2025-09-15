@@ -44,7 +44,7 @@ MWF.xApplication.Profile.Main = new Class({
         }else{
             this.action.getPerson(function(json){
                 this.personData = json.data;
-                this.personData.personIcon = this.action.getPersonIcon();
+                this.personData.personIcon = this.action.getIcon(json.data.id);
 
                 if(this.isSystemmanager){
                     var user = layout.desktop.session.user;
@@ -927,8 +927,8 @@ MWF.xApplication.Profile.Main = new Class({
                                 _self.image.uploadImage( function( json ){
                                     _self.action.getPerson(function(json){
                                         if (json.data){
-                                            this.personData = json.data;
-                                            _self.contentImgNode.set("src", _self.action.getPersonIcon());
+                                            // this.personData = json.data;
+                                            _self.contentImgNode.set("src", _self.action.getIcon(json.data.id));
                                         }
                                         this.close();
                                     }.bind(this));
