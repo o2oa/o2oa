@@ -3,8 +3,8 @@ package com.x.query.core.express.plan;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -18,9 +18,7 @@ import com.x.processplatform.core.entity.content.Review_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.ItemAccess;
-import com.x.query.core.entity.ItemAccess_;
 import com.x.query.core.entity.Item_;
-import com.x.query.core.entity.View;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,6 +93,7 @@ public class ProcessPlatformPlan extends Plan {
 
     /**
      * 获取文档的路径访问权限
+     *
      * @param bundles
      * @return
      * @throws Exception
@@ -116,9 +115,11 @@ public class ProcessPlatformPlan extends Plan {
                     .collect(Collectors.toList());
             Map<String, List<ItemAccess>> processMap = new HashMap<>();
             for (String processId : processList) {
-                processMap.put(processId, this.listItemAccess(emc, this.getProcessEdition(emc, processId)));
+                processMap.put(processId,
+                        this.listItemAccess(emc, this.getProcessEdition(emc, processId)));
             }
-            reviewList.forEach(o -> map.put(o.getJob(), Pair.of(processMap.get(o.getProcess()), o.getActivityUnique())));
+            reviewList.forEach(o -> map.put(o.getJob(),
+                    Pair.of(processMap.get(o.getProcess()), o.getActivityUnique())));
         }
         return map;
     }
@@ -134,13 +135,13 @@ public class ProcessPlatformPlan extends Plan {
                 Optional<String> editionOpt = this.where.processList.stream()
                         .filter(o -> StringUtils.equals(o.id, processId)).map(o -> o.edition)
                         .findFirst();
-                if(editionOpt.isPresent()){
+                if (editionOpt.isPresent()) {
                     CacheManager.put(processCache, cacheKey, editionOpt.get());
                     return editionOpt.get();
                 }
             }
             Process process = emc.find(processId, Process.class);
-            if(process != null){
+            if (process != null) {
                 CacheManager.put(processCache, cacheKey, process.getEdition());
                 return process.getEdition();
             }
@@ -150,33 +151,35 @@ public class ProcessPlatformPlan extends Plan {
 
     @Override
     List<String> listBundle() throws Exception {
-        List<String> pathList = new ArrayList<>();
+        List<FilterEntry> pathList = new ArrayList<>();
         List<FilterEntry> filterEntries = new TreeList<>();
         for (FilterEntry o : ListTools.trim(this.filterList, true, true)) {
             if (BooleanUtils.isTrue(o.available())) {
                 filterEntries.add(o);
-                pathList.add(o.path);
+                pathList.add(o);
             }
         }
         List<FilterEntry> runtimeFilterEntries = new TreeList<>();
         for (FilterEntry o : ListTools.trim(this.runtime.filterList, true, true)) {
             if (BooleanUtils.isTrue(o.available())) {
                 runtimeFilterEntries.add(o);
-                pathList.add(o.path);
+                pathList.add(o);
             }
         }
-        pathList = pathList.stream().distinct().sorted().collect(Collectors.toList());
         List<String> jobs = listBundleByReview(pathList);
+        LOGGER.info("listBundleByReview1:{}", jobs.size());
         if (!filterEntries.isEmpty()) {
             jobs = listBundleFilterEntry(jobs, filterEntries, threadPool);
         }
+        LOGGER.info("listBundleByReview2:{}", jobs.size());
         if (!runtimeFilterEntries.isEmpty()) {
             jobs = listBundleFilterEntry(jobs, runtimeFilterEntries, threadPool);
         }
+        LOGGER.info("listBundleByReview3:{}", jobs.size());
         return jobs;
     }
 
-    private List<String> listBundleByReview(List<String> pathList) throws Exception {
+    private List<String> listBundleByReview(List<FilterEntry> pathList) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             EntityManager em = emc.get(Review.class);
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -186,7 +189,7 @@ public class ProcessPlatformPlan extends Plan {
             if (BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(
                     this.runtime.person))) {
                 p = cb.and(p, cb.equal(root.get(Review_.person), this.runtime.person));
-                Predicate accessPredicate = this.accessPredicate(emc, root, pathList, this.runtime);
+                Predicate accessPredicate = this.accessPredicate(emc, cb, root, pathList, this.runtime);
                 if (accessPredicate != null) {
                     p = cb.and(p, accessPredicate);
                 }
@@ -198,6 +201,7 @@ public class ProcessPlatformPlan extends Plan {
             }
             cq.select(root.get(Review_.job)).where(p);
             cq.orderBy(cb.desc(root.get(Review_.startTime)));
+            LOGGER.debug("listBundleByReview filter:{}", cq.toString());
             return em.createQuery(cq).getResultList().stream().distinct()
                     .collect(Collectors.toList());
         }
@@ -205,7 +209,9 @@ public class ProcessPlatformPlan extends Plan {
 
     /**
      * 过滤字段权限列表，返回有权限的活动列表
-     *
+     * 一个流程中存在一个字段不可查，则限制这个流程查询
+     * 一个流程中多个限制字段的活动列表取交集，取交集后值为空则限制这个字段查询
+     * 多个流程之间字段权限互不干扰
      * @param emc
      * @param root
      * @param pathList
@@ -213,8 +219,11 @@ public class ProcessPlatformPlan extends Plan {
      * @return
      * @throws Exception
      */
-    private Predicate accessPredicate(EntityManagerContainer emc, Root<Review> root,
-            List<String> pathList, Runtime runtime) throws Exception {
+    private Predicate accessPredicate(EntityManagerContainer emc, CriteriaBuilder cb, Root<Review> root,
+            List<FilterEntry> pathList, Runtime runtime) throws Exception {
+        if(runtime.isManager){
+            return null;
+        }
         List<String> processIds = ListTools.extractField(this.where.processList,
                 Process.edition_FIELDNAME, String.class,
                 true, true);
@@ -224,49 +233,102 @@ public class ProcessPlatformPlan extends Plan {
                 runtime.authList)) {
             return null;
         }
-        Set<String> activitySet = new HashSet<>();
+        Predicate p = cb.disjunction();
+        boolean allFlag = false;
         for (String processId : processIds) {
+            boolean flag = true;
             List<ItemAccess> accessList = new ArrayList<>(this.listItemAccess(emc, processId));
             if (ListTools.isNotEmpty(accessList)) {
+                List<Triple<FilterEntry, Boolean, List<String>>> activityFilterList = new ArrayList<>();
                 SortTools.desc(accessList, ItemAccess.path_FIELDNAME);
-                this.dearPathAccess(activitySet, accessList, pathList, runtime);
-            }
-        }
-        if (activitySet.isEmpty()) {
-            return null;
-        } else {
-            return root.get(Review_.activityUnique).in(activitySet);
-        }
-    }
+                this.dearPathAccess(activityFilterList, accessList, pathList, runtime);
 
-    private void dearPathAccess(Set<String> activitySet, List<ItemAccess> accessList,
-            List<String> pathList, Runtime runtime) throws Exception {
-        for (String path : pathList) {
-            List<List<String>> list = new ArrayList<>();
-            boolean flag = true;
-            for (ItemAccess itemAccess : accessList) {
-                if (path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(itemAccess.getPath() + ".")) {
-                    if (ListTools.isEmpty(itemAccess.getProperties().getReaderAndEditorList())) {
-                        list.add(itemAccess.getProperties().getReadActivityIdList());
-                    } else if (ListTools.containsAny(itemAccess.getProperties().getReaderAndEditorList(),
-                            runtime.authList)) {
-                        list.add(itemAccess.getProperties().getReadActivityIdList());
-                    } else {
+                if (!activityFilterList.isEmpty()) {
+                    Optional<FilterEntry> optional = activityFilterList.stream()
+                            .filter(o -> BooleanUtils.isFalse(o.second())).map((Triple::first)).findFirst();
+                    if(optional.isPresent()){
+                        LOGGER.info("person {} no access to process{} path:{}",runtime.person,processId, optional.get().path);
+                        Predicate predicate = cb.and(cb.equal(root.get(Review_.process), processId),
+                                cb.equal(root.get(Review_.activityUnique), "nothing"));
+                        p = cb.or(p, predicate);
+                        allFlag = true;
                         flag = false;
-                        break;
+                    }else{
+                        List<List<String>> list = activityFilterList.stream().map((Triple::third)).filter(ListTools::isNotEmpty).collect(
+                                Collectors.toList());
+                        if(!list.isEmpty()){
+                            Set<String> activitySet = new HashSet<>(
+                                    list.stream().filter(ListTools::isNotEmpty).reduce((list1, list2) -> {
+                                                List<String> result = new ArrayList<>(list1);
+                                                result.retainAll(list2);
+                                                return result;
+                                            })
+                                            .orElse(new ArrayList<>()));
+                            Predicate predicate;
+                            if(activitySet.isEmpty()){
+                                predicate = cb.and(cb.equal(root.get(Review_.process), processId),
+                                        cb.equal(root.get(Review_.activityUnique), "nothing"));
+                            }else{
+                                predicate = cb.and(cb.equal(root.get(Review_.process), processId),
+                                        root.get(Review_.activityUnique).in(activitySet));
+                            }
+                            LOGGER.debug("person {} access to process{} filter:{}",runtime.person,processId, predicate.toString());
+                            p = cb.or(p, predicate);
+                            allFlag = true;
+                            flag = false;
+                        }
                     }
                 }
             }
-            if (flag) {
-                //取活动交集
-                activitySet.addAll(
-                        list.stream().filter(ListTools::isNotEmpty).reduce((list1, list2) -> {
-                                    List<String> result = new ArrayList<>(list1);
-                                    result.retainAll(list2);
-                                    return result;
-                                })
-                                .orElse(new ArrayList<>()));
+            if(flag){
+                p = cb.or(p, cb.equal(root.get(Review_.process), processId));
             }
+        }
+        return allFlag ? p : null;
+    }
+
+    private void dearPathAccess(List<Triple<FilterEntry, Boolean, List<String>>> activityList,
+            List<ItemAccess> accessList,
+            List<FilterEntry> pathList, Runtime runtime) throws Exception {
+        for (FilterEntry filter : pathList) {
+            String path = filter.path;
+            List<String> list = new ArrayList<>();
+            boolean flag = true;
+            int i = 0;
+            for (ItemAccess itemAccess : accessList) {
+                if (path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(
+                        itemAccess.getPath() + ".")) {
+                    List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
+                    List<String> readActivityIdList = itemAccess.getProperties()
+                            .getReadActivityIdList();
+                    if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(
+                            readActivityIdList)) {
+                        if (ListTools.isEmpty(readerList)) {
+                            if (i == 0) {
+                                list.addAll(readActivityIdList);
+                            } else {
+                                list.retainAll(readActivityIdList);
+                            }
+                        } else if (ListTools.containsAny(readerList, runtime.authList)) {
+                            ListTools.add(list, true, true, readActivityIdList);
+                        } else if (ListTools.isEmpty(readActivityIdList)) {
+                            flag = false;
+                            break;
+                        } else {
+                            if (i == 0) {
+                                list.addAll(readActivityIdList);
+                            } else {
+                                list.retainAll(readActivityIdList);
+                            }
+                        }
+                        i++;
+                    }
+                }
+            }
+            if (i > 0 && list.isEmpty()) {
+                flag = false;
+            }
+            activityList.add(Triple.of(filter, flag, list));
         }
     }
 
@@ -291,7 +353,8 @@ public class ProcessPlatformPlan extends Plan {
                         p = f.toPredicate(cb, root, this.runtime, p);
                         cq.select(root.get(Item_.bundle)).where(p);
                         List<String> parts = em.createQuery(cq).getResultList();
-                        return parts.stream().distinct().collect(Collectors.toList());
+                        _batch.retainAll(parts.stream().distinct().collect(Collectors.toList()));
+                        return _batch;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
