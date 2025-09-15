@@ -225,7 +225,7 @@ public abstract class Plan extends GsonPropertyObject {
 	private boolean checkPathReadable(String path, ItemAccess itemAccess, String activityUnique) {
 		boolean flag = true;
 		if(path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(itemAccess.getPath() + ".")){
-			List<String> readerList = itemAccess.getProperties().getReaderList();
+			List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
 			List<String> readActivityIdList = itemAccess.getProperties()
 					.getReadActivityIdList();
 			if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(

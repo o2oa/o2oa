@@ -246,9 +246,9 @@ public class ProcessPlatformPlan extends Plan {
             boolean flag = true;
             for (ItemAccess itemAccess : accessList) {
                 if (path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(itemAccess.getPath() + ".")) {
-                    if (ListTools.isEmpty(itemAccess.getReaderList())) {
+                    if (ListTools.isEmpty(itemAccess.getProperties().getReaderAndEditorList())) {
                         list.add(itemAccess.getProperties().getReadActivityIdList());
-                    } else if (ListTools.containsAny(itemAccess.getReaderList(),
+                    } else if (ListTools.containsAny(itemAccess.getProperties().getReaderAndEditorList(),
                             runtime.authList)) {
                         list.add(itemAccess.getProperties().getReadActivityIdList());
                     } else {

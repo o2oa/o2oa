@@ -202,6 +202,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			List<FilterEntry> filterList, List<SelectEntry> orderList, Map<String, String> parameter, Integer count,
 			boolean isBundle) throws Exception {
 		Runtime runtime = new Runtime();
+		if(View.TYPE_CMS.equals(view.getType())){
+			runtime.isManager = business.isCmsManager(effectivePerson);
+		}else{
+			runtime.isManager = business.isProcessManager(effectivePerson);
+		}
 		runtime.person = effectivePerson.getDistinguishedName();
 		CacheKey cacheKey = new CacheKey("runtime_person", effectivePerson.getDistinguishedName());
 		Optional<?> optional = CacheManager.get(userCache, cacheKey);

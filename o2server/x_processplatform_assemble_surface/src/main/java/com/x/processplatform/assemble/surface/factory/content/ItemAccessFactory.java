@@ -81,7 +81,7 @@ public class ItemAccessFactory extends AbstractFactory {
         }
         List<String> authList = getPersonAuth(effectivePerson.getDistinguishedName());
         for (ItemAccess itemAccess : itemAccessList) {
-            List<String> readerList = itemAccess.getProperties().getReaderList();
+            List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
             List<String> readActivityIdList = itemAccess.getProperties().getReadActivityIdList();
             logger.debug("processId:{},path:{},readerList:{},readActivityIdList:{}",processId, itemAccess.getPath(), readerList, readActivityIdList);
             if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(readActivityIdList)) {
