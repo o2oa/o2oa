@@ -44,7 +44,8 @@ MWF.xApplication.Profile.Main = new Class({
         }else{
             this.action.getPerson(function(json){
                 this.personData = json.data;
-                this.personData.personIcon = this.action.getIcon(json.data.id);
+
+                this.personData.personIcon = this.getIcon(json.data.id);
 
                 if(this.isSystemmanager){
                     var user = layout.desktop.session.user;
@@ -67,6 +68,11 @@ MWF.xApplication.Profile.Main = new Class({
             // this.loadContent();
             if (callback) callback();
         }
+    },
+    getIcon: function(personFlag){
+        var action = o2.Actions.load('x_organization_assemble_control').PersonAction;
+        var url = action.action.actions.getIconWithPerson.uri.replace('{flag}', personFlag);
+        return o2.Actions.getHost('x_organization_assemble_control') + '/x_organization_assemble_control' + url;
     },
     isThreeManager: function(){
         if( typeOf(this.threeManagerFlag) === "boolean" )return this.threeManagerFlag;
@@ -226,6 +232,8 @@ MWF.xApplication.Profile.Main = new Class({
         this.content.getElement(".o2_profile_inforIconChange").addClass("mainColor_color mainColor_border").addEvent("click", function(){
             this.changeIcon();
         }.bind(this));
+
+        this.content.getElement(".o2_profile_inforIconChange").hide();
 
         var inputs = this.tab.pages[0].contentNode.getElements("input");
         inputs.addEvent("focus",function(){
@@ -928,7 +936,7 @@ MWF.xApplication.Profile.Main = new Class({
                                     _self.action.getPerson(function(json){
                                         if (json.data){
                                             // this.personData = json.data;
-                                            _self.contentImgNode.set("src", _self.action.getIcon(json.data.id));
+                                            _self.contentImgNode.set("src", _self.getIcon(json.data.id));
                                         }
                                         this.close();
                                     }.bind(this));
