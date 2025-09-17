@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
+import com.x.query.core.entity.ItemAccess;
 import java.util.List;
 
 import com.x.processplatform.core.entity.element.*;
@@ -39,7 +40,7 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}
-			if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isTrue(process.getEditionEnable())) {
+			if (BooleanUtils.isTrue(process.getEditionEnable())) {
 				List<String> list = business.process().listProcessEdition(process.getApplication(),
 						process.getEdition());
 				if (list.size() > 1) {
@@ -80,7 +81,11 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);
+			emc.beginTransaction(ItemAccess.class);
 
+			if (BooleanUtils.isTrue(process.getEditionEnable())) {
+				this.deleteItemAccess(business, process);
+			}
 			this.deleteAgent(business, process);
 			this.deleteBegin(business, process);
 			this.deleteCancel(business, process);

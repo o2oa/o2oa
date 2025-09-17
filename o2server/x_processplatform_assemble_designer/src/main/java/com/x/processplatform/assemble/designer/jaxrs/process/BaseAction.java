@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
+import com.x.query.core.entity.ItemAccess;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -862,6 +863,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Split o = business.entityManagerContainer().find(str, Split.class);
 			business.entityManagerContainer().remove(o);
 		}
+	}
+
+	void deleteItemAccess(Business business, Process process) throws Exception {
+		business.entityManagerContainer().deleteEqual(ItemAccess.class, ItemAccess.itemCategoryId_FIELDNAME, process.getEdition());
 	}
 
 	void cacheNotify() {

@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.designer.jaxrs.output;
 
+import com.x.query.core.entity.ItemAccess;
+import com.x.query.core.entity.wrap.WrapItemAccess;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,6 +125,9 @@ class ActionSelect extends BaseAction {
 					Split.process_FIELDNAME, process.getId())));
 			wo.setRouteList(WrapRoute.outCopier.copy(business.entityManagerContainer().listEqual(Route.class,
 					Route.process_FIELDNAME, process.getId())));
+
+			wo.setItemAccessList(WrapItemAccess.outCopier.copy(business.entityManagerContainer().listEqual(
+					ItemAccess.class, ItemAccess.itemCategoryId_FIELDNAME, process.getEdition())));
 			wos.add(wo);
 		}
 		return wos;
