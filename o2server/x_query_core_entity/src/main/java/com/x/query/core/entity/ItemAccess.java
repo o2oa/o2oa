@@ -26,7 +26,7 @@ import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Schema(name = "ItemAccess", description = "业务字段可见配置.")
 @Entity
-@ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.soft)
+@ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.ItemAccess.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.ItemAccess.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.ColumnNamePrefix + ItemAccess.itemCategoryId_FIELDNAME,

@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
+import com.x.query.core.entity.ItemAccess;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +78,9 @@ class ActionDeleteEdition extends BaseAction {
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);
+			emc.beginTransaction(ItemAccess.class);
+
+			this.deleteItemAccess(business, editionProcess);
 			for (Process process : list) {
 				this.deleteAgent(business, process);
 				this.deleteBegin(business, process);
