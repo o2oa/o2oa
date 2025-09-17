@@ -233,8 +233,6 @@ MWF.xApplication.Profile.Main = new Class({
             this.changeIcon();
         }.bind(this));
 
-        this.content.getElement(".o2_profile_inforIconChange").hide();
-
         var inputs = this.tab.pages[0].contentNode.getElements("input");
         inputs.addEvent("focus",function(){
             this.addClass("mainColor_border mainColor_color");
