@@ -34,6 +34,24 @@ public class ItemAccessAction extends StandardJaxrsAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(ItemAccessAction.class);
 
+	@JaxrsMethodDescribe(value = "根据ID获取字段权限配置", action = ActionGet.class)
+	@GET
+	@Path("{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("字段配置ID") @PathParam("id") String id) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGet().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取字段权限配置", action = ActionGetWithProcessWithPath.class)
 	@GET
 	@Path("process/{processId}/path/{path}")
@@ -126,7 +144,7 @@ public class ItemAccessAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "删除字段权限配置", action = ActionDeleteWithProcessWithPath.class)
 	@DELETE
-	@Path("/delete/process/{processId}/path/{path}")
+	@Path("delete/process/{processId}/path/{path}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteWithProcessWithPath(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

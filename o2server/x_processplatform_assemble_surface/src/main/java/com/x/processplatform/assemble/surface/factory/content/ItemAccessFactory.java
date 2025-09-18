@@ -17,6 +17,7 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.ItemAccess;
 import com.x.query.core.entity.ItemAccess_;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +40,9 @@ public class ItemAccessFactory extends AbstractFactory {
 
     @SuppressWarnings("unchecked")
     public List<ItemAccess> listWithProcessOrApp(String processId, String appId) throws Exception {
+        if(StringUtils.isEmpty(processId)){
+            return Collections.emptyList();
+        }
         CacheKey cacheKey = new CacheKey(ItemAccess.class, processId);
         Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
         if (optional.isPresent()) {
@@ -81,7 +85,7 @@ public class ItemAccessFactory extends AbstractFactory {
         }
         List<String> authList = getPersonAuth(effectivePerson.getDistinguishedName());
         for (ItemAccess itemAccess : itemAccessList) {
-            List<String> readerList = itemAccess.getProperties().getReaderList();
+            List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
             List<String> readActivityIdList = itemAccess.getProperties().getReadActivityIdList();
             logger.debug("processId:{},path:{},readerList:{},readActivityIdList:{}",processId, itemAccess.getPath(), readerList, readActivityIdList);
             if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(readActivityIdList)) {

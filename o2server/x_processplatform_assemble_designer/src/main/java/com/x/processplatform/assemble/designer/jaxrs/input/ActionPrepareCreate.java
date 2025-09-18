@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.designer.jaxrs.input;
 
+import com.x.query.core.entity.ItemAccess;
+import com.x.query.core.entity.wrap.WrapItemAccess;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,6 +165,12 @@ class ActionPrepareCreate extends BaseAction {
 			for (WrapRoute wrap : wrapProcess.getRouteList()) {
 				Route exist_route = business.entityManagerContainer().find(wrap.getId(), Route.class);
 				if (null != exist_route) {
+					wos.add(new Wo(wrap.getId(), JpaObject.createId()));
+				}
+			}
+			for (WrapItemAccess wrap : wrapProcess.getItemAccessList()) {
+				ItemAccess exist_itemAccess = business.entityManagerContainer().find(wrap.getId(), ItemAccess.class);
+				if (null != exist_itemAccess) {
 					wos.add(new Wo(wrap.getId(), JpaObject.createId()));
 				}
 			}
