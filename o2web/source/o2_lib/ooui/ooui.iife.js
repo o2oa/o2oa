@@ -697,6 +697,11 @@ div.text{\r
         <div class="description"></div>
     </div>
 </div>
+`,A_html:`
+<div class="content">
+    <div class="name"></div>
+    <div class="description"></div>
+</div>
 `,other_html:`
 <div class="content">
     <div class="name"></div>
@@ -2014,11 +2019,19 @@ div.invalidHint.show::before {\r
     font-size: 1em;\r
     cursor: pointer;\r
     transition: background-color 0.3s, color 0.3s;\r
-    margin-right: 0.5em;\r
+    /* margin-right: 0.5em; */\r
 }\r
 .content:hover{\r
     background-color: var(--hover-bg);\r
     color: var(--hover-color);\r
+}\r
+.border.content{\r
+    background-color: var(--oo-color-hover);\r
+    padding: 0.2em 0.5em;\r
+    box-shadow: var(--oo-shadow-border);\r
+}\r
+.border.content:hover{\r
+    box-shadow: var(--oo-shadow-border-focus);\r
 }\r
 \r
 .icon{\r
@@ -2463,6 +2476,7 @@ input:focus, textarea:focus {\r
     flex-wrap: wrap;\r
     align-items: center;\r
     padding: 0.051em;\r
+    gap: 0.3em;\r
 }\r
 .item{\r
     padding: 0.15em 0.3em;\r

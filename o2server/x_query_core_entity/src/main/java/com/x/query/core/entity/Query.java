@@ -35,7 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 数据中心应用
- * 
+ *
  * @author sword
  */
 @Schema(name = "Query", description = "数据中心应用.")
@@ -98,6 +98,7 @@ public class Query extends SliceJpaObject {
     @Flag
     @FieldDescribe("应用别名,如果有必须唯一.")
     @Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
     @CheckPersist(allowEmpty = true, simplyString = true, citationNotExists = @CitationNotExist(type = Query.class, fields = {
             "name", "alias" }))
     private String alias;

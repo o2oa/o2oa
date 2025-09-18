@@ -1,7 +1,16 @@
 package com.x.processplatform.core.entity.content;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.StringTools;
+import com.x.processplatform.core.entity.PersistenceProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,40 +21,29 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.apache.openjpa.persistence.jdbc.Strategy;
-
-import com.x.base.core.entity.AbstractPersistenceProperties;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.annotation.CheckPersist;
-import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.StringTools;
-import com.x.processplatform.core.entity.PersistenceProperties;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "Review", description = "流程平台参阅.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Review.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.Review.table + JpaObject.IndexNameMiddle
-				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }),
-		@UniqueConstraint(name = PersistenceProperties.Content.Review.table + JpaObject.IndexNameMiddle
 				+ "JP", columnNames = { JpaObject.ColumnNamePrefix + Review.job_FIELDNAME,
-						JpaObject.ColumnNamePrefix + Review.person_FIELDNAME }) })
+						JpaObject.ColumnNamePrefix + Review.person_FIELDNAME }) },
+		indexes = {@javax.persistence.Index(name = Review.TABLE + JpaObject.IndexNameMiddle + Review.process_FIELDNAME+"_UN",
+				columnList = JpaObject.ColumnNamePrefix + Review.process_FIELDNAME+","+
+						JpaObject.ColumnNamePrefix + Review.startTime_FIELDNAME)
+
+})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Review extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = -570048661936488247L;
 
-	private static final String TABLE = PersistenceProperties.Content.Review.table;
+	public static final String TABLE = PersistenceProperties.Content.Review.table;
 
 	public String getId() {
 		return id;
@@ -124,6 +122,7 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.activityUnique = work.getActivityUnique();
 		this.copyProjectionFields(work);
 	}
 
@@ -166,7 +165,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("任务.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + job_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String job;
 
@@ -261,7 +259,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	public static final String process_FIELDNAME = "process";
 	@FieldDescribe("流程ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + process_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + process_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String process;
 
@@ -286,6 +283,14 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String person;
+
+	public static final String activityUnique_FIELDNAME = "activityUnique";
+	@Schema(description = "活动环节唯一标识")
+	@FieldDescribe("活动环节唯一标识")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + activityUnique_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + activityUnique_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String activityUnique;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建人")
@@ -356,49 +361,42 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	public static final String stringValue04_FIELDNAME = "stringValue04";
 	@FieldDescribe("业务数据String值04.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue04_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue04;
 
 	public static final String stringValue05_FIELDNAME = "stringValue05";
 	@FieldDescribe("业务数据String值05.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue05_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue05_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue05;
 
 	public static final String stringValue06_FIELDNAME = "stringValue06";
 	@FieldDescribe("业务数据String值06.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue06_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue06_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue06;
 
 	public static final String stringValue07_FIELDNAME = "stringValue07";
 	@FieldDescribe("业务数据String值07.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue07_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue07_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue07;
 
 	public static final String stringValue08_FIELDNAME = "stringValue08";
 	@FieldDescribe("业务数据String值08.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue08_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue08_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue08;
 
 	public static final String stringValue09_FIELDNAME = "stringValue09";
 	@FieldDescribe("业务数据String值09.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue09_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue09_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue09;
 
 	public static final String stringValue10_FIELDNAME = "stringValue10";
 	@FieldDescribe("业务数据String值10.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue10_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue10_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue10;
 
@@ -424,28 +422,24 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	public static final String doubleValue02_FIELDNAME = "doubleValue02";
 	@FieldDescribe("业务数据Double值02.")
 	@Column(name = ColumnNamePrefix + doubleValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + doubleValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue02;
 
 	public static final String doubleValue03_FIELDNAME = "doubleValue03";
 	@FieldDescribe("业务数据Double值03.")
 	@Column(name = ColumnNamePrefix + doubleValue03_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + doubleValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue03;
 
 	public static final String doubleValue04_FIELDNAME = "doubleValue04";
 	@FieldDescribe("业务数据Double值04.")
 	@Column(name = ColumnNamePrefix + doubleValue04_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + doubleValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue04;
 
 	public static final String doubleValue05_FIELDNAME = "doubleValue05";
 	@FieldDescribe("业务数据Double值05.")
 	@Column(name = ColumnNamePrefix + doubleValue05_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + doubleValue05_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue05;
 
@@ -459,28 +453,24 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	public static final String longValue02_FIELDNAME = "longValue02";
 	@FieldDescribe("业务数据Long值02.")
 	@Column(name = ColumnNamePrefix + longValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + longValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue02;
 
 	public static final String longValue03_FIELDNAME = "longValue03";
 	@FieldDescribe("业务数据Long值03.")
 	@Column(name = ColumnNamePrefix + longValue03_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + longValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue03;
 
 	public static final String longValue04_FIELDNAME = "longValue04";
 	@FieldDescribe("业务数据Long值04.")
 	@Column(name = ColumnNamePrefix + longValue04_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + longValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue04;
 
 	public static final String longValue05_FIELDNAME = "longValue05";
 	@FieldDescribe("业务数据Long值05.")
 	@Column(name = ColumnNamePrefix + longValue05_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + longValue05_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue05;
 
@@ -504,7 +494,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值03.")
 	@Column(name = ColumnNamePrefix + dateTimeValue03_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateTimeValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue03;
 
@@ -512,7 +501,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值04.")
 	@Column(name = ColumnNamePrefix + dateTimeValue04_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateTimeValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue04;
 
@@ -520,7 +508,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值05.")
 	@Column(name = ColumnNamePrefix + dateTimeValue05_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateTimeValue05_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue05;
 
@@ -528,7 +515,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Temporal(TemporalType.DATE)
 	@FieldDescribe("业务数据Date值01.")
 	@Column(name = ColumnNamePrefix + dateValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateValue01;
 
@@ -536,7 +522,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Temporal(TemporalType.DATE)
 	@FieldDescribe("业务数据Date值02.")
 	@Column(name = ColumnNamePrefix + dateValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateValue02;
 
@@ -544,7 +529,6 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Temporal(TemporalType.TIME)
 	@FieldDescribe("业务数据Time值01.")
 	@Column(name = ColumnNamePrefix + timeValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + timeValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue01;
 
@@ -552,9 +536,16 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Temporal(TemporalType.TIME)
 	@FieldDescribe("业务数据Time值02.")
 	@Column(name = ColumnNamePrefix + timeValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + timeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
+
+	public String getActivityUnique() {
+		return activityUnique;
+	}
+
+	public void setActivityUnique(String activityUnique) {
+		this.activityUnique = activityUnique;
+	}
 
 	public Boolean getPermissionWrite() {
 		return permissionWrite;

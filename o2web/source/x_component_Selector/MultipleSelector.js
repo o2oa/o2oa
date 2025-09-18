@@ -965,6 +965,9 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     case "r":
                         if( type == "role" )result.push( data );
                         break;
+                    case "a":
+                        if( type == "processactivity" || type == "activity" )result.push( data );
+                        break;
                     default:
                         if( type == "person" )result.push( data );
                         break;

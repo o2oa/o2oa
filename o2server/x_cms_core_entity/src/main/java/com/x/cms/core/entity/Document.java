@@ -88,7 +88,7 @@ public class Document extends SliceJpaObject {
 	@FieldDescribe("文档标题")
 	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + title_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	private String title;
 
 	public static final String documentType_FIELDNAME = "documentType";

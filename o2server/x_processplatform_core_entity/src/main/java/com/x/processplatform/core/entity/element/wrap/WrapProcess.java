@@ -1,5 +1,7 @@
 package com.x.processplatform.core.entity.element.wrap;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.query.core.entity.wrap.WrapItemAccess;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,9 @@ public class WrapProcess extends Process {
 	private List<WrapPublish> publishList = new ArrayList<>();
 	private List<WrapService> serviceList = new ArrayList<>();
 	private List<WrapSplit> splitList = new ArrayList<>();
+
+	@FieldDescribe("流程业务字段权限配置")
+	private List<WrapItemAccess> itemAccessList = new ArrayList<>();
 
 	public List<WrapAgent> getAgentList() {
 		return agentList;
@@ -155,5 +160,13 @@ public class WrapProcess extends Process {
 
 	public void setPublishList(List<WrapPublish> publishList) {
 		this.publishList = publishList;
+	}
+
+	public List<WrapItemAccess> getItemAccessList() {
+		return itemAccessList;
+	}
+
+	public void setItemAccessList(List<WrapItemAccess> itemAccessList) {
+		this.itemAccessList = itemAccessList;
 	}
 }

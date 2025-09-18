@@ -1,0 +1,69 @@
+<div class="fieldPermissions-item process-item">
+    <div class="fieldPermissions-item-title process-title">
+        <div>{{$.data.processName}}</div>
+        <div><oo-button data-o2-events="click:deleteItem" type="light" left-icon="delete" text="{{$.lp.formAction.delete}}" style="color: #333333"></oo-button></div>
+    </div>
+    <div class="fieldPermissions-desc">{{$.lp.formPermissionsProcesstDesc.replace('{process}', $.data.processName)}}</div>
+
+    <!-- 可读配置 -->
+    <div class="fieldPermissions-item-section">{{$.lp.propertyTemplate.readConfig}}</div>
+    <div class="fieldPermissions-body-item" style="display: block">
+        <oo-selector
+            data-o2-events="click:selectActivitys:readActivityList:process"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.readActivity}}"
+            item-type="border"
+            value="{{(()=>{
+                return $.data.readActivityList.map((d)=>{
+                    const {name, id, unique, process, type} = d;
+                    return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+                });
+            })()}}"
+        ></oo-selector>
+    </div>
+
+    
+    <div class="fieldPermissions-body-item" style="display: block; margin-bottom: 0.5rem;">
+        <oo-selector
+            data-o2-events="click:selectOrgs:readByOrgValue:process"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.readOrg}}"
+            item-type="border"
+            value="{{$.data.readerList}}"
+        ></oo-selector>
+    </div>
+
+    <!-- 可编辑配置 -->
+    <div class="fieldPermissions-item-section" style="border-top: 1px solid #999">{{$.lp.propertyTemplate.editConfig}}</div>
+
+    
+    <div class="fieldPermissions-body-item" style="display: block">
+        <oo-selector
+            data-o2-events="click:selectActivitys:editActivityList:process"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.editActivity}}"
+            item-type="border"
+            value="{{(()=>{
+                return $.data.editActivityList.map((d)=>{
+                    const {name, id, unique, process, type} = d;
+                    return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+                });
+            })()}}"
+        ></oo-selector>
+    </div>
+
+    
+    <div class="fieldPermissions-body-item" style="display:block; margin-bottom: 0.5rem;">
+        <oo-selector
+            data-o2-events="click:selectOrgs:editByOrgValue:process"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.editOrg}}"
+            item-type="border"
+            value="{{$m.getActivityDn($.data.editByOrgValue)}}"
+        ></oo-selector>
+    </div>
+</div>

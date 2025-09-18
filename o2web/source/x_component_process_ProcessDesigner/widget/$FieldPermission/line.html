@@ -1,0 +1,15 @@
+<div class="fieldPermissions-body-line">
+    <div class="fieldPermissions-body-item"></div>
+    <div class="fieldPermissions-body-item">
+        <oo-input style="width: 100%;" value="{{$.path}}" readmode="true"></oo-input>
+    </div>
+    <div class="fieldPermissions-body-item">
+        <oo-selector item-type="border" value="{{$.readList}}" data-o2-events="click:selectPermissions:read"></oo-selector>
+    </div>
+    <div class="fieldPermissions-body-item">
+        <oo-selector item-type="border" value="{{$.editList}}" data-o2-events="click:selectPermissions:edit"></oo-selector>
+    </div>
+    <div class="fieldPermissions-body-item" style="padding: 0.5rem;">
+        <oo-button type="icon-light" left-icon="delete" data-o2-events="click:deletePath"></oo-button>
+    </div>
+</div>

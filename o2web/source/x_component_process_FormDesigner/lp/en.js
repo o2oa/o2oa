@@ -1735,6 +1735,30 @@ MWF.xApplication.process.FormDesigner.LP={
 		"GHS": "Ghana Seti",
 		"MAD": "Moroccan Dirham",
 		"TZS": "TSh"
-	}
+	},
+	"fieldPermissions": "Data permission settings",
+	"fieldPermissionsPath": "data path",
+	"fieldPermissionsReaderList": "Readable activities or organizations",
+	"fieldPermissionsReadActivityList": "Readable activities",
+	"fieldPermissionsEditorList": "Editable activities or organizations",
+	"fieldPermissionsEditActivityList": "Editable activity",
+	"fieldPermissionsSelectPath": "Select data path",
+	"fieldPermissionsAddPath": "Add data path",
+	"fieldPermissionsSelectProcessBefore": "Currently working on the process:",
+	"fieldPermissionsSelectProcessAfter": "Set data permissions",
+	"inputPath": "Input data path",
+	"deletePathTitle": "Delete data confirmation",
+	"deletePathInfo": "Are you sure you want to delete the permission configuration for data '{path}'?",
+	"fieldPermissionsDesc": "Please set read-write permissions for the data path of the process. Read permissions control which activities or organizations can view this data, and write permissions control which activities or organizations can modify this data. If no data permissions are set, it means that all activities and organizations can read and write this data.",
+	"selectDataPath": "Select data path",
+	"selectPermissions": "Select data permissions",
+	"noFieldPermissions": "{process} 'does not have data path permission configuration yet",
+	"FieldPermissionsSelectProcess": "Please first select the process to configure permissions for",
+	"formPermissionsDesc": "",
+	"formPermissionsDefaultDesc": "The default data permission configuration only applies to forms and does not control the service segment query permission for data. You do not apply this setting when exporting data through views or. If you want to control the server permissions for data, please add the corresponding process data permissions.",
+	"formPermissionsDefault": "Default data permission configuration",
+	"addFormPermissionsProcess": "Add process data permission configuration",
+	"formPermissionsProcesstDesc": "Configure data permissions for process' {process} ',",
+	"deletePathProcessInfo": "Are you sure you want to delete the permission configuration for process' {process} '?"
 }
 MWF.xApplication.process.FormDesigner["lp."+o2.language] = MWF.xApplication.process.FormDesigner.LP

@@ -18,6 +18,7 @@ import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.factory.cms.CmsFactory;
 import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
 import com.x.processplatform.assemble.surface.factory.content.DraftFactory;
+import com.x.processplatform.assemble.surface.factory.content.ItemAccessFactory;
 import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
 import com.x.processplatform.assemble.surface.factory.content.JobFactory;
 import com.x.processplatform.assemble.surface.factory.content.ReadCompletedFactory;
@@ -134,6 +135,15 @@ public class Business {
             this.item = new ItemFactory(this);
         }
         return item;
+    }
+
+    private ItemAccessFactory itemAccess;
+
+    public ItemAccessFactory itemAccess() throws Exception {
+        if (null == this.itemAccess) {
+            this.itemAccess = new ItemAccessFactory(this);
+        }
+        return itemAccess;
     }
 
     private JobFactory job;

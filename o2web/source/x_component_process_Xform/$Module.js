@@ -562,41 +562,88 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         this.readable = this.editable==='yes' ? 'yes' : this._checkReadAbled();
     },
     _checkReadAbled: function () {
-        return this._checkpowerAbled('readByActivity', 'readByOrg', 'readByScript', 'readByActivityValue', 'readByOrgValue', 'readByScriptValue');
+        return this._checkpowerAbled('readByActivity', 'readByOrg', 'readByScript', 'readByActivityValue', 'readByOrgValue', 'readByScriptValue', 'readActivityList', 'readerList');
     },
     _checkEditAbled: function () {
-        return this._checkpowerAbled('editByActivity', 'editByOrg', 'editByScript', 'editByActivityValue', 'editByOrgValue', 'editByScriptValue');
+        return this._checkpowerAbled('editByActivity', 'editByOrg', 'editByScript', 'editByActivityValue', 'editByOrgValue', 'editByScriptValue', 'editActivityList', 'editorList');
     },
-    _checkpowerAbled: function (activity, org, script, activityValue, orgValue, scriptValue) {
-        const hasByActivity = this.json[activity] && this.json[activity].includes('true') && this.json[activityValue] && this.json[activityValue].length;
-        const hasByOrg = this.json[org] && this.json[org].includes('true') && this.json[orgValue] && this.json[orgValue].length;
-        const hasByScript = this.json[script] && this.json[script].includes('true') && this.json[scriptValue] && this.json[scriptValue].code;
+    _checkpowerAbled: function (activity, org, script, activityValue, orgValue, scriptValue, processActivity, processOrg) {
+        const accessList = this.form.businessData?.control?.itemAccessList;
+        const id = this.json.id.replace(/\.\./g, '.');
+        if (id==='contactPhone'){
+            debugger;
+        }
+        const access = accessList?.find((acc)=>{
+            return acc.path === id;
+        });
+        
+        
+        if (access){
+            const hasByActivity = (access[processActivity] && access[processActivity].length);
+            const hasByOrg = (access[processOrg] && access[processOrg].length);
+            const hasByScript = this.json[script] && this.json[script].includes('true') && this.json[scriptValue] && this.json[scriptValue].code;
 
-        if (hasByActivity || hasByOrg || hasByScript){
-            if (hasByActivity){
-                debugger;
-                let activityId = this.form.businessData.activity && this.form.businessData.activity.id;
-                if (!activityId){
-                    activityId = this.form.businessData.document && this.form.businessData.document.docStatus;
+            if (hasByActivity || hasByOrg || hasByScript){
+                if (hasByActivity){
+                    let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
+                    let aid = this.form.businessData.activity && this.form.businessData.activity.id;
+                    // if (activityId){
+                        const i = access[processActivity].findIndex((act)=>{                      
+                            return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
+                        });
+                        if (i!==-1) return 'yes';
+                    // }
                 }
-                if (activityId){
-                    const i = this.json[activityValue].findIndex((act)=>{                      
-                        return o2.typeOf(act)==="object" ? act.id === activityId : act === activityId;
+
+                if (hasByOrg){
+                    const i = access[processOrg].findIndex((org)=>{
+                        const dn = org.distinguishedName || org;
+                        return layout.session.userDetail.distinguishedName === dn || layout.session.userDetail.list.includes(dn);
                     });
                     if (i!==-1) return 'yes';
                 }
+
+                
+                if (hasByScript){
+                    var flag = this.form.Macro.exec(this.json[scriptValue].code, this);
+                    return !!flag ? 'yes' : 'no';
+                }
+                return 'no';
             }
-            if (hasByOrg){
-                const i = this.json[orgValue].findIndex((org)=>{
-                    return layout.session.userDetail.distinguishedName === org.distinguishedName || layout.session.userDetail.list.includes(org.distinguishedName);
-                });
-                if (i!==-1) return 'yes';
+
+        }else{
+            const hasByActivity = this.json[activity] && this.json[activity].includes('true') && this.json[activityValue] && this.json[activityValue].length;
+            const hasByOrg = this.json[org] && this.json[org].includes('true') && this.json[orgValue] && this.json[orgValue].length;
+            const hasByScript = this.json[script] && this.json[script].includes('true') && this.json[scriptValue] && this.json[scriptValue].code;
+
+            if (hasByActivity || hasByOrg || hasByScript){
+                if (hasByActivity){
+                    let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
+                    let aid = this.form.businessData.activity && this.form.businessData.activity.id;
+                    if (!uid){
+                        uid = this.form.businessData.document && this.form.businessData.document.docStatus;
+                    }
+                    // if (activityId){
+                        const i = this.json[activityValue].findIndex((act)=>{                      
+                            return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
+                        });
+                        if (i!==-1) return 'yes';
+                    // }
+                }
+                if (hasByOrg){
+                    debugger;
+                    const i = this.json[orgValue].findIndex((org)=>{
+                        const dn = org.distinguishedName || org;
+                        return layout.session.userDetail.distinguishedName === dn || layout.session.userDetail.list.includes(dn);
+                    });
+                    if (i!==-1) return 'yes';
+                }
+                if (hasByScript){
+                    var flag = this.form.Macro.exec(this.json[scriptValue].code, this);
+                    return !!flag ? 'yes' : 'no';
+                }
+                return 'no';
             }
-            if (hasByScript){
-                var flag = this.form.Macro.exec(this.json[scriptValue].code, this);
-                return !!flag ? 'yes' : 'no';
-            }
-            return 'no';
         }
         return 'unset'
     },

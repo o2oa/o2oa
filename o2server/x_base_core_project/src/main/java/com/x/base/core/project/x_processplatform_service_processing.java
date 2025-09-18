@@ -34,6 +34,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.message.Event",
 		"com.x.processplatform.core.entity.message.WorkCompletedEvent",
 		"com.x.processplatform.core.entity.message.WorkEvent", "com.x.query.core.entity.Item",
+		"com.x.query.core.entity.ItemAccess",
 		"com.x.processplatform.core.entity.log.MergeItemPlan" }, storageTypes = {
 				StorageType.processPlatform, StorageType.cms }, storeJars = { "x_organization_core_entity",
 						"x_organization_core_express", "x_processplatform_core_entity",

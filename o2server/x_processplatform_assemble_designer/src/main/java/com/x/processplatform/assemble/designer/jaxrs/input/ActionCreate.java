@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.designer.jaxrs.input;
 
+import com.x.query.core.entity.ItemAccess;
+import com.x.query.core.entity.wrap.WrapItemAccess;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -310,6 +312,16 @@ class ActionCreate extends BaseAction {
                 obj.setProcess(process.getId());
                 persistObjects.add(obj);
             }
+            for (WrapItemAccess _o : wrapProcess.getItemAccessList()) {
+                ItemAccess obj = business.entityManagerContainer().find(_o.getId(), ItemAccess.class);
+                if (null != obj) {
+                    throw new ExceptionEntityExistForCreate(_o.getId(), WrapItemAccess.class);
+                }
+                obj = WrapItemAccess.inCopier.copy(_o);
+                obj.setItemCategoryId(process.getEdition());
+                obj.setAppId(process.getApplication());
+                persistObjects.add(obj);
+            }
         }
 
         for (JpaObject o : persistObjects) {
@@ -338,12 +350,14 @@ class ActionCreate extends BaseAction {
         business.entityManagerContainer().beginTransaction(Service.class);
         business.entityManagerContainer().beginTransaction(Split.class);
         business.entityManagerContainer().beginTransaction(Route.class);
+        business.entityManagerContainer().beginTransaction(ItemAccess.class);
         business.entityManagerContainer().commit();
         CacheManager.notify(ApplicationDictItem.class);
         CacheManager.notify(ApplicationDict.class);
         CacheManager.notify(FormField.class);
         CacheManager.notify(Form.class);
         CacheManager.notify(Script.class);
+        CacheManager.notify(ItemAccess.class);
         CacheManager.notify(Process.class);
         CacheManager.notify(Application.class);
         return application;

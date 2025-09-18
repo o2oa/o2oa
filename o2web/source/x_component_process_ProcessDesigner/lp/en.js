@@ -607,6 +607,25 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"cmsCreatorScript": "Publisher script",
 		"resetDefault": "Recalculate",
 		"resetDefaultNote": "Every time you open the submission interface, recalculate based on the default value. If there is no default value, leave it blank."
-	}
+	},
+	"fieldPermissions": "Field permission settings",
+	"fieldPermissionsPath": "data path",
+	"fieldPermissionsReaderList": "Readable organization",
+	"fieldPermissionsReadActivityList": "Readable activities",
+	"fieldPermissionsEditorList": "Editable organization",
+	"fieldPermissionsEditActivityList": "Editable activity",
+	"fieldPermissionsAddPath": "Add field",
+	"fieldPermissionsSelectPath": "Select data path",
+	"selectDataPath": "Select data path",
+	"selectPermissions": "Select data permissions",
+	"fieldPermissionsDesc": "Please set read-write permissions for the data path of process {select}. Read permissions control which activities or organizations can view this data, and write permissions control which activities or organizations can modify this data. <br>If no data permissions are set, it means that all activities and organizations can read and write this data.",
+	"fieldPermissionsSelectProcess": "",
+	"fieldPermissionsSelectProcessBefore": "Currently working on the process:",
+	"fieldPermissionsSelectProcessAfter": "Set data permissions",
+	"inputPath": "Input data path",
+	"deletePathTitle": "Delete data confirmation",
+	"deletePathInfo": "Are you sure you want to delete the permission configuration for data '{field}'?",
+	"noFieldPermissions": "Process {process} does not have data path permission configuration yet",
+	"FieldPermissionsSelectProcess": "Please first select the process to configure permissions for"
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

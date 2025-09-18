@@ -1735,6 +1735,30 @@ MWF.xApplication.process.FormDesigner.LP={
 		"GHS": "Ghana sedi",
 		"MAD": "Dirham marroquí",
 		"TZS": "Chelín tanzano"
-	}
+	},
+	"fieldPermissions": "Configuración de permisos de datos",
+	"fieldPermissionsPath": "Ruta de datos",
+	"fieldPermissionsReaderList": "Actividades u organizaciones legibles",
+	"fieldPermissionsReadActivityList": "Actividades legibles",
+	"fieldPermissionsEditorList": "Actividades u organizaciones editables",
+	"fieldPermissionsEditActivityList": "Actividades editables",
+	"fieldPermissionsSelectPath": "Seleccionar ruta de datos",
+	"fieldPermissionsAddPath": "Añadir ruta de datos",
+	"fieldPermissionsSelectProcessBefore": "Se está trabajando para el proceso:",
+	"fieldPermissionsSelectProcessAfter": "Establecer permisos de datos",
+	"inputPath": "Ruta de datos de entrada",
+	"deletePathTitle": "Eliminar la confirmación de datos",
+	"deletePathInfo": "¿¿ está seguro de que quiere eliminar la configuración de permisos de los datos \"(...)?",
+	"fieldPermissionsDesc": "Establezca los permisos de lectura y escritura para la ruta de datos del proceso, qué actividades u organizaciones pueden ver estos datos bajo el control de los permisos de lectura, y qué actividades u organizaciones pueden modificar estos datos bajo el control de los permisos de escritura. Si no se establecen permisos de datos, significa que todas las actividades y organizaciones pueden leer y escribir estos datos.",
+	"selectDataPath": "Seleccionar ruta de datos",
+	"selectPermissions": "Seleccionar permisos de datos",
+	"noFieldPermissions": "\"(') procesos') aún no se ha configurado el permiso de ruta de datos",
+	"FieldPermissionsSelectProcess": "Primero seleccione el proceso para configurar los permisos",
+	"formPermissionsDesc": "",
+	"formPermissionsDefaultDesc": "La configuración predeterminada de permisos de datos solo se aplica al formulario, no controla los permisos de consulta del segmento de servicio de los datos, no se aplica esta configuración cuando se exporta a través de la vista o los datos. Si desea controlar los permisos del lado del servidor de los datos, agregue los permisos de datos del proceso correspondientes.",
+	"formPermissionsDefault": "Configuración predeterminada de permisos de datos",
+	"addFormPermissionsProcess": "Añadir configuración de permisos de datos de proceso",
+	"formPermissionsProcesstDesc": "Configurar los permisos de datos para el proceso \"(')\".",
+	"deletePathProcessInfo": "¿¿ está seguro de que quiere eliminar la configuración de permisos para el proceso \"(')?"
 }
 MWF.xApplication.process.FormDesigner["lp."+o2.language] = MWF.xApplication.process.FormDesigner.LP

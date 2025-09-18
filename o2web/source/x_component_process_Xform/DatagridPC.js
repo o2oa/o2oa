@@ -2482,6 +2482,7 @@ MWF.xApplication.process.Xform.DatagridPC$Title =  new Class({
 MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 	Extends: MWF.APP$Module,
 	_afterLoaded: function(){
+		debugger;
 		//this.form._loadModules(this.node);
 		this.dataGrid = this.node.retrieve("dataGrid");
 

@@ -610,6 +610,25 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"cmsCreatorScript": "Guión del editor",
 		"resetDefault": "Volver a calcular",
 		"resetDefaultNote": "Cada vez que se abre la interfaz de envío, se vuelve a calcular de acuerdo con el valor predeterminado, y si no hay valor predeterminado, está vacío."
-	}
+	},
+	"fieldPermissions": "Configuración de permisos de campo",
+	"fieldPermissionsPath": "Ruta de datos",
+	"fieldPermissionsReaderList": "Organización legible",
+	"fieldPermissionsReadActivityList": "Actividades legibles",
+	"fieldPermissionsEditorList": "Organización editable",
+	"fieldPermissionsEditActivityList": "Actividades editables",
+	"fieldPermissionsAddPath": "Añadir campos",
+	"fieldPermissionsSelectPath": "Seleccionar ruta de datos",
+	"selectDataPath": "Seleccionar ruta de datos",
+	"selectPermissions": "Seleccionar permisos de datos",
+	"fieldPermissionsDesc": "Establezca los permisos de lectura y escritura para la ruta de datos del proceso (...). los permisos de lectura controlan qué actividades u organizaciones pueden ver estos datos y los permisos de escritura controlan qué actividades u organizaciones pueden modificar estos datos. Si no se establecen permisos de datos, significa que todas las actividades y organizaciones pueden leer y escribir estos datos.",
+	"fieldPermissionsSelectProcess": "",
+	"fieldPermissionsSelectProcessBefore": "Se está trabajando para el proceso:",
+	"fieldPermissionsSelectProcessAfter": "Establecer permisos de datos",
+	"inputPath": "Ruta de datos de entrada",
+	"deletePathTitle": "Eliminar la confirmación de datos",
+	"deletePathInfo": "¿¿ está seguro de que quiere eliminar la configuración de permisos de los datos \"(...)?",
+	"noFieldPermissions": "Proceso (...) todavía no se ha configurado el permiso de ruta de datos",
+	"FieldPermissionsSelectProcess": "Primero seleccione el proceso para configurar los permisos"
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

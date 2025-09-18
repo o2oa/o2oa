@@ -134,6 +134,11 @@ public class Publish extends Activity {
 	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String alias;
 
+	@FieldDescribe("节点唯一标识")
+	@Column(length = length_64B, name = ColumnNamePrefix + unique_FIELDNAME)
+	@CheckPersist(allowEmpty = true, simplyString = false)
+	private String unique = createId();
+
 	@FieldDescribe("描述.")
 	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -1033,8 +1038,7 @@ public class Publish extends Activity {
 		return cmsCreatorType;
 	}
 
-	public void setCmsCreatorType(
-			PublishCmsCreatorType cmsCreatorType) {
+	public void setCmsCreatorType(PublishCmsCreatorType cmsCreatorType) {
 		this.cmsCreatorType = cmsCreatorType;
 	}
 
@@ -1053,4 +1057,13 @@ public class Publish extends Activity {
 	public void setCmsCreatorScriptText(String cmsCreatorScriptText) {
 		this.cmsCreatorScriptText = cmsCreatorScriptText;
 	}
+
+	public String getUnique() {
+		return unique;
+	}
+
+	public void setUnique(String unique) {
+		this.unique = unique;
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import com.x.processplatform.core.entity.content.Review;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -35,7 +36,13 @@ class ActionGetWithWork extends BaseAction {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}
-			result.setData(this.getData(business, work.getJob()));
+			JsonElement data = this.getData(business, work.getJob());
+			Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
+			String activity = review == null ? "" : review.getActivityUnique();
+			business.itemAccess().convert(data, work.getProcess(),
+					work.getApplication(), activity,
+					effectivePerson);
+			result.setData(data);
 			return result;
 		}
 	}

@@ -540,6 +540,52 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//unrealized
 		this.designer.alert("error", e, "", MWF.APPPD.LP.unrealized, 220, 100);
 	},
+
+	openFieldPermissions: function(e){
+		const content = new Element("div.FieldPermission", {"styles": {"height": "100%"}});
+		MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.FieldPermission", ()=>{
+			this.fieldPermission = new o2.xApplication.process.ProcessDesigner.widget.FieldPermission(content, this, {application: this.process.application});
+		});
+
+		$OOUI.dialog(this.designer.lp.fieldPermissions, content, document.body, {
+			height: '80%',
+			width: '80%',
+			modal: true,
+			zIndex: 1000,
+            events: {
+                ok: (e)=>{
+					this.fieldPermission.save().then(()=>{
+						e.target.close();
+					});
+                }
+            }
+        });
+
+
+		// var _self = this;
+		// this.fieldPermission.dlg = o2.DL.open({
+		// 	"content": content,
+		// 	"title": this.designer.lp.fieldPermissions,
+		// 	"height": '80%',
+		// 	"width": '80%',
+		// 	"buttonList": [{
+		// 		"type": "ok",
+		// 		"text": this.designer.lp.ok,
+		// 		"action": function(){
+		// 			_self.fieldPermission.save().then(()=>{
+		// 				this.close();
+		// 			});
+		// 		}
+		// 	},{
+		// 		"type": "cancel",
+		// 		"text": this.designer.lp.cancel,
+		// 		"action": function(){
+		// 			this.close();
+		// 		}
+		// 	}]
+		// });
+	},
+
 	saveNewEdition: function(e){
 		if (this.process.isNewProcess){
 			this.save();

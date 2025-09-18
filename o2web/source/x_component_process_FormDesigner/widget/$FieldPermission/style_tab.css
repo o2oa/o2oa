@@ -1,0 +1,82 @@
+/* 流程数据权限配置样式 */
+* {
+    box-sizing: border-box !important;
+}
+.fieldPermissions-desc {
+    padding: 0.5rem;
+    /* border-bottom: 1px solid #999999; */
+    font-size: 1rem;
+    color: var(--oo-color-text2);
+} 
+
+.fieldPermissions-Actions {
+    margin-top: 0.5rem;
+    padding: 1rem 2rem;
+}
+.fieldPermissions-desc oo-button, .fieldPermissions-Actions oo-button {
+    display: block;
+    font-size: 1rem;
+}
+
+
+
+.fieldPermissions-item-title {
+    padding: 0.5rem;
+    /* text-align: center; */
+    background-color: var(--oo-color-over);
+    /* color: #ffffff; */
+    /* border-bottom: 1px solid #999; */
+    font-weight: bold;
+    font-size: 1.125rem;
+}
+.fieldPermissions-item-title.process-title{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.fieldPermissions-item-title oo-button{
+    color: #333333;
+    font-size: 1rem;
+    font-weight: normal;
+}   
+
+.fieldPermissions-body {
+    /* padding: 0.5rem; */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.fieldPermissions-item{
+    /* border-radius: 4px; */
+    overflow: hidden;
+    /* border: 1px solid #aaaaaa; */
+}
+
+.fieldPermissions-item.deleting{
+    background-color: var(--oo-color-error-border) !important;
+}
+
+
+.fieldPermissions-item-section {
+    padding: 0.5rem;
+    /* background-color: #eee; */
+    /* border-bottom: 1px solid #999; */
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.fieldPermissions-body-check {
+    padding: 0.5rem;
+    /* border-top: 1px solid #999; */
+    font-weight: bold;
+    /* background-color: #f9f9f9; */
+}
+.fieldPermissions-body-item {
+    padding: 0.5rem;
+    display: none;
+}
+.fieldPermissions-body-radio{
+    padding: 0.5rem;
+    /* border-top: 1px solid #999; */
+}

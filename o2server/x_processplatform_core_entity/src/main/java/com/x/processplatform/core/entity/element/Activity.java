@@ -1,13 +1,27 @@
 package com.x.processplatform.core.entity.element;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.SliceJpaObject;
+import javax.persistence.Transient;
 
 public abstract class Activity extends SliceJpaObject {
 
 	private static final long serialVersionUID = 4981905102396583697L;
+
+	@FieldDescribe("节点类型.")
+	@Transient
+	private ActivityType type;
+
+	public ActivityType getType() {
+		return type;
+	}
+
+	public void setType(ActivityType type) {
+		this.type = type;
+	}
 
 	public abstract String getName();
 
@@ -19,6 +33,8 @@ public abstract class Activity extends SliceJpaObject {
 
 	public abstract String getPosition();
 
+	public abstract String getUnique();
+
 	public abstract void setName(String str);
 
 	public abstract void setDescription(String str);
@@ -28,6 +44,8 @@ public abstract class Activity extends SliceJpaObject {
 	public abstract void setAlias(String str);
 
 	public abstract void setPosition(String str);
+
+	public abstract void setUnique(String unique);
 
 	public abstract String getForm();
 
@@ -155,6 +173,7 @@ public abstract class Activity extends SliceJpaObject {
 	public static final String group_FIELDNAME = "group";
 	public static final String opinionGroup_FIELDNAME = "opinionGroup";
 	public static final String name_FIELDNAME = "name";
+	public static final String unique_FIELDNAME = "unique";
 	public static final String alias_FIELDNAME = "alias";
 	public static final String description_FIELDNAME = "description";
 	public static final String process_FIELDNAME = "process";

@@ -1,0 +1,76 @@
+/* 流程数据权限配置样式 */
+*{
+    box-sizing: border-box!important;
+}
+.fieldPermissions-content{
+	padding: 1rem;
+	display: grid;
+	grid-template-rows: auto auto auto 1fr;
+    height: 100%;
+    position: relative;
+}
+.fieldPermissions-content-desc{
+    color: #666;
+    font-size: 0.9rem;
+    padding-bottom: 1rem;
+}
+.fieldPermissions-content-actionArea{
+    padding-bottom: 1rem;
+}
+.fieldPermissions-content-actionArea oo-button{
+	margin: 0.5rem 0.5rem 0 0;
+}
+
+.fieldPermissions-body, .fieldPermissions-header{
+	display: grid;
+	grid-template-columns: 3rem 1fr 2fr 2fr 3rem;
+}
+   
+.fieldPermissions-body-scroll {
+	flex: 1;
+    overflow: auto;
+}
+
+.fieldPermissions-body-titleArea{
+	display: contents;
+}
+.fieldPermissions-body-title{
+	padding: 0.5rem 1rem;
+	background-color: #f3f3f3;
+	font-weight: bold;
+}
+
+.fieldPermissions-body-line{
+	display: contents;
+}
+.fieldPermissions-body-item{
+	border-bottom: 1px solid #dedede;
+    padding: 0.5em;
+    display: grid;
+    align-items: center;
+    word-break: break-all;
+    transition: background-color 0.3s ease;
+}
+
+.fieldPermissions-body-line.newLine .fieldPermissions-body-item{
+    background-color: var(--oo-color-warn-bg) !important;
+}
+.fieldPermissions-body-line.deleting .fieldPermissions-body-item{
+    background-color: var(--oo-color-error-border) !important;
+}
+
+.fieldPermissions-body-empty{
+    display: flex;
+    padding: 2rem;
+    font-size: 1.125rem;
+    grid-column: 1 / -1;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    color: var(--oo-color-gray1);
+    gap: 0.5rem;
+}
+.fieldPermissions-body-empty>.ooempty-wushuju{
+    font-size: 6rem;
+    color: var(--oo-color-gray-e);
+}

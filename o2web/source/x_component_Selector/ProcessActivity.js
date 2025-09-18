@@ -217,12 +217,16 @@ MWF.xApplication.Selector.ProcessActivity.ItemCategory = new Class({
                     id: 'draft-'+this.data.id
                 });
                 activityList.forEach(function(data){
+                    debugger;
                     var d = {
                         processName: this.data.name,
                         id: data.id,
                         name: data.name,
                         alias: data.alias,
-                        distinguishedName: data.name+'@'+data.id+'@A'
+                        type: data.type,
+                        unique: data.unique,
+                        distinguishedName: data.name+'@'+data.id+'@'+data.unique+'@'+data.process+'@'+data.type+'@A',
+                        // uniqueName: data.name+'@'+data.unique+'@'+data.process+'@'+data.type+'@A',
                     }
                     var item = this.selector._newItem(d, this.selector, this.children);
                     this.selector.items.push(item);

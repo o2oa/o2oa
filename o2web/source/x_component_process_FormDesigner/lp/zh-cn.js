@@ -14,6 +14,38 @@ MWF.xApplication.process.FormDesigner.LP = {
     componentTree: '组件树',
     invalidElementUIId: '由于Element组件的数据需要做双向绑定，标识请不要和配置项重名，如下：',
 
+    "fieldPermissions": "数据权限设置",
+	"fieldPermissionsPath": "数据路径",
+	"fieldPermissionsReaderList": "可读活动或组织",
+	"fieldPermissionsReadActivityList": "可读活动",
+	"fieldPermissionsEditorList": "可编辑活动或组织",
+	"fieldPermissionsEditActivityList": "可编辑活动",
+	"fieldPermissionsSelectPath": "选择数据路径",
+	"fieldPermissionsAddPath": "添加数据路径",
+	"fieldPermissionsSelectProcessBefore": "正在为流程：",
+	"fieldPermissionsSelectProcessAfter": " 设置数据权限",
+	"inputPath": "输入数据路径",
+	"deletePathTitle": "删除数据确认",
+	"deletePathInfo": "您确定要删除数据“{path}”的权限配置吗？",
+
+    "deletePathProcessInfo": "您确定要删除对于流程“{process}”的权限配置吗？",
+
+	"fieldPermissionsDesc": "请为流程的数据路径设置读写权限，读权限控制哪些活动或组织可以查看此数据，写权限控制哪些活动或组织可以修改此数据。如果不设置任何数据权限，则表示所有活动和组织均可读写此数据。",
+
+	"selectDataPath": "选择数据路径",
+	"selectPermissions": "选择数据权限",
+
+    "noFieldPermissions": "“{process}”还没有数据路径权限配置", 
+	"FieldPermissionsSelectProcess": "请先选择要配置权限的流程", 
+
+    "formPermissionsDefaultDesc": "默认数据权限配置仅应用于表单，它不会控制数据的服务段查询权限，您通过视图或进行数据导出时不应用此设置。如果您想控制数据的服务端权限，请添加对应的流程数据权限。",
+    "formPermissionsDefault": "默认数据权限配置",
+
+    "addFormPermissionsProcess": "添加流程数据权限配置",
+
+    "formPermissionsProcesstDesc": "为流程“{process}”配置数据权限，",
+    
+
     button: {
         ok: '确定',
         cancel: '取消',
@@ -1679,7 +1711,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "editConfig_activity": "指定活动时可编辑",
         "editConfig_org": "指定的人或组织可编辑",
         "editConfig_script": "通过脚本判断可编辑",
-        "editActivity": "可编辑活动",
+        "editActivity": "编辑活动",
         "editOrg": "人员组织",
         "editScript": "可编辑脚本",
         "editScriptInfo": '返回一个布尔值，true表示可编辑，false表示不可编辑',

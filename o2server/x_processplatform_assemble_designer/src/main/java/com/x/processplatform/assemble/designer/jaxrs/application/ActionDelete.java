@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.application;
 
+import com.x.query.core.entity.ItemAccess;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +119,9 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Script.class);
 			emc.beginTransaction(SerialNumber.class);
 			emc.beginTransaction(File.class);
+			emc.beginTransaction(ItemAccess.class);
+
+			this.deleteItemAccess(business, application);
 			for (String str : business.process().listWithApplication(id, false)) {
 				/** 流程 1种 */
 				Process process = emc.find(str, Process.class);
@@ -289,6 +293,10 @@ class ActionDelete extends BaseAction {
 			Split o = business.entityManagerContainer().find(str, Split.class);
 			business.entityManagerContainer().remove(o);
 		}
+	}
+
+	void deleteItemAccess(Business business, Application application) throws Exception {
+		business.entityManagerContainer().deleteEqual(ItemAccess.class, ItemAccess.appId_FIELDNAME, application.getId());
 	}
 
 	private void deleteForm(Business business, Application application) throws Exception {

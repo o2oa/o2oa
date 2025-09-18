@@ -133,6 +133,11 @@ public class Choice extends Activity {
 	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String alias;
 
+	@FieldDescribe("节点唯一标识")
+	@Column(length = length_64B, name = ColumnNamePrefix + unique_FIELDNAME)
+	@CheckPersist(allowEmpty = true, simplyString = false)
+	private String unique = createId();
+
 	@FieldDescribe("描述.")
 	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -391,7 +396,7 @@ public class Choice extends Activity {
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + routeList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + routeList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
-	private List<String> routeList = new ArrayList<String>();
+	private List<String> routeList = new ArrayList<>();
 
 	@IdReference(Script.class)
 	@FieldDescribe("生成displayLog脚本.")
@@ -745,6 +750,14 @@ public class Choice extends Activity {
 
 	public void setEdition(String edition) {
 		this.edition = edition;
+	}
+
+	public String getUnique() {
+		return unique;
+	}
+
+	public void setUnique(String unique) {
+		this.unique = unique;
 	}
 
 }
