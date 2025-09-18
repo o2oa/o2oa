@@ -590,7 +590,7 @@ if (!window.o2) {
                 if (!_loadingModules[key].callbacks) _loadingModules[key].callbacks = [];
                 _loadingModules[key].callbacks.push(callback);
             } else {
-                _loadingModules[key] = {callbacks: [callback]};
+                // _loadingModules[key] = {callbacks: [callback]};
 
                 var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
                 var s = op.doc.createElement('script');
@@ -609,15 +609,22 @@ if (!window.o2) {
                         if (!isAbort || err) {
                             if (err) {
                                 if (s) head.removeChild(s);
-                                while (_loadingModules[key].callbacks.length) {
-                                    (_loadingModules[key].callbacks.shift())();
+                                if (callback) callback();
+                                if (_loadingModules[key]){
+                                    while (_loadingModules[key].callbacks.length) {
+                                        (_loadingModules[key].callbacks.shift())();
+                                    }
+                                    delete _loadingModules[key];
                                 }
-                                delete _loadingModules[key];
+                                
                                 //if (callback)callback();
                             } else {
                                 //head.removeChild(s);
-                                while (_loadingModules[key].callbacks.length) {
-                                    (_loadingModules[key].callbacks.shift())(scriptObj);
+                                if (callback) callback();
+                                if (_loadingModules[key]){
+                                    while (_loadingModules[key]?.callbacks.length) {
+                                        (_loadingModules[key].callbacks.shift())(scriptObj);
+                                    }
                                 }
                                 delete _loadingModules[key];
                                 //if (callback)callback(scriptObj);

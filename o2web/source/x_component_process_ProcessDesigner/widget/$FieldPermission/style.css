@@ -7,6 +7,7 @@
 	display: grid;
 	grid-template-rows: auto auto auto 1fr;
     height: 100%;
+    position: relative;
 }
 .fieldPermissions-content-desc{
     color: #666;
@@ -56,4 +57,20 @@
 }
 .fieldPermissions-body-line.deleting .fieldPermissions-body-item{
     background-color: var(--oo-color-error-border) !important;
+}
+
+.fieldPermissions-body-empty{
+    display: flex;
+    padding: 2rem;
+    font-size: 1.125rem;
+    grid-column: 1 / -1;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    color: var(--oo-color-gray1);
+    gap: 0.5rem;
+}
+.fieldPermissions-body-empty>.ooempty-wushuju{
+    font-size: 6rem;
+    color: var(--oo-color-gray-e);
 }

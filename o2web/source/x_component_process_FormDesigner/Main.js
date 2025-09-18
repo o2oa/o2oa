@@ -433,6 +433,10 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         }.bind(this));
 
         this.formToolbarNode.setStyles({"position":"relative"});
+
+        this.formToolbarNode.querySelector('oo-button.fieldPermissionsButton')?.addEventListener('click', function(e){
+            this.form.openFieldPermissions(e);
+        }.bind(this));
     },
     changeDesignerModeToPC: function(){
         this.pcDesignerActionNode.setStyles(this.css.designerActionNode_current);
@@ -1726,6 +1730,11 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		//	this.options.desktopReload = true;
 		//	this.options.id = this.form.json.id;
 		//}.bind(this));
+	},
+
+    openFieldPermissions: function(){
+        debugger;
+		this.form.openFieldPermissions();
 	},
 	previewForm: function(){
 		this.form.preview();
