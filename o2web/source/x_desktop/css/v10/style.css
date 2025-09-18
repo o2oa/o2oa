@@ -361,6 +361,67 @@ oo-nav{
   animation: circle infinite 0.75s linear;
 }
 
+
+
+@font-face {
+  font-family: 'ooempty';
+  src:  url('./ooempty.eot');
+  src:  url('./ooempty.eot') format('embedded-opentype'),
+    url('./ooempty.ttf') format('truetype'),
+    url('./ooempty.woff') format('woff'),
+    url('./ooempty.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="ooempty-"], [class*=" ooempty-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'ooempty' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ooempty-wushuju:before {
+  content: "\e900";
+}
+.ooempty-zwbq:before {
+  content: "\e901";
+}
+.ooempty-xmzwxx:before {
+  content: "\e902";
+}
+.ooempty-wuricheng:before {
+  content: "\e903";
+}
+.ooempty-wuwenjian:before {
+  content: "\e906";
+}
+.ooempty-wuhuiyi:before {
+  content: "\e907";
+}
+.ooempty-wugongzuo:before {
+  content: "\e908";
+}
+.ooempty-wudaiban:before {
+  content: "\e909";
+}
+.ooempty-wuxiaoxi:before {
+  content: "\e90a";
+}
+.ooempty-wuweituo:before {
+  content: "\e90b";
+}
+
+
 [class^="ooicon-"],
 [class*=" ooicon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */

@@ -624,6 +624,8 @@ MWF.xApplication.process.ProcessDesigner.LP={
 	"fieldPermissionsSelectProcessAfter": "Set data permissions",
 	"inputPath": "Input data path",
 	"deletePathTitle": "Delete data confirmation",
-	"deletePathInfo": "Are you sure you want to delete the permission configuration for data '{field}'?"
+	"deletePathInfo": "Are you sure you want to delete the permission configuration for data '{field}'?",
+	"noFieldPermissions": "Process {process} does not have data path permission configuration yet",
+	"FieldPermissionsSelectProcess": "Please first select the process to configure permissions for"
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

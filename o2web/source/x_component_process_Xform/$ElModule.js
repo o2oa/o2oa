@@ -108,16 +108,23 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     },
 
     _loadVue: function(callback){
-        var flag = (o2.session.isDebugger && this.form.app.inBrowser);
-        var vue = flag ? "vue_develop" : "vue";
+        // var flag = (o2.session.isDebugger && this.form.app.inBrowser);
+        // var vue = flag ? "vue_develop" : "vue";
+
         //var vueName = flag ? "Vue" : "Cn";
         // if (!window.Vue || window.Vue.name!==vueName){
         //     o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
         // }else{
         //     if (callback) callback();
         // }
-        var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
-        o2.loadAll({"css": elcssUrl, "js": [vue, "elementui"]}, { "sequence": true }, callback);
+        if (!window.Vue || window.Vue.name!=='Vue'){
+            var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
+            o2.loadAll({"css": elcssUrl, "js": ['vue', "elementui"]}, { "sequence": true, reload: true }, callback);
+        }else{
+            if (callback) callback();
+        }
+        // var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
+        // o2.loadAll({"css": elcssUrl, "js": [vue, "elementui"]}, { "sequence": true }, callback);
     },
     _mountVueApp: function(){
         if (!this.vueApp) this.vueApp = this._createVueExtend();

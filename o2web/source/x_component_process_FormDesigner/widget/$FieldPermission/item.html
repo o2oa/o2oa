@@ -1,0 +1,152 @@
+<div class="fieldPermissions-item">
+    <div class="fieldPermissions-item-title">{{$.lp.formPermissionsDefault}}</div>
+    <div class="fieldPermissions-desc">{{$.lp.formPermissionsDefaultDesc}}</div>
+
+    <!-- 可读配置 -->
+    <div class="fieldPermissions-item-section">{{$.lp.propertyTemplate.readConfig}}</div>
+    
+    {{if ($.isProcess || $.isCms)}}
+    <div class="fieldPermissions-body-check">
+        <oo-checkbox checked="{{!!$.data.readByActivity}}" value="true" data-o2-events="change:changeCheck:readByActivity"
+            >{{$.lp.propertyTemplate.readConfig_activity}}</oo-checkbox
+        >
+    </div>
+
+    {{if ($.isProcess)}}
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByActivity ? 'block' : 'none'}}">
+        <oo-selector
+            data-o2-events="click:selectActivitys:readByActivityValue:default"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.readActivity}}"
+            item-type="border"
+            value="{{(()=>{
+                return $.data.readByActivityValue.map((d)=>{
+                    const {name, id, unique, process, type} = d;
+                    return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+                });
+            })()}}"
+        ></oo-selector>
+    </div>
+    {{end if}} 
+    
+    {{if ($.isCms)}}
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByActivity ? 'block' : 'none'}}">
+        <oo-checkbox-group
+            label="{{$.lp.propertyTemplate.readActivity}}"
+            label-style="font-weight:bold"
+            data-o2-events="change:changeActivitys:readByActivityValue"
+        >
+            <oo-checkbox value="draft" text="草稿"></oo-checkbox>
+            <oo-checkbox value="published" text="已发布"></oo-checkbox>
+        </oo-checkbox-group>
+    </div>
+    {{end if}} 
+    
+    {{end if}}
+
+    <div class="fieldPermissions-body-check">
+        <oo-checkbox checked="{{!!$.data.readByOrg}}" data-o2-events="change:changeCheck:readByOrg"
+            >{{$.lp.propertyTemplate.readConfig_org}}</oo-checkbox
+        >
+    </div>
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByOrg ? 'block' : 'none'}}">
+        <oo-selector
+            data-o2-events="click:selectOrgs:readByOrgValue:default"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.readOrg}}"
+            item-type="border"
+            value="{{$.data.readByOrgValue}}"
+        ></oo-selector>
+    </div>
+
+    <div class="fieldPermissions-body-check">
+        <oo-checkbox checked="{{!!$.data.readByScript}}" data-o2-events="change:changeCheck:readByScript"
+            >{{$.lp.propertyTemplate.readConfig_script}}</oo-checkbox
+        >
+    </div>
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByScript ? 'block' : 'none'}}">
+        <div data-o2-events="o2load:loadScriptEditor:readByScriptValue"></div>
+    </div>
+
+    <div class="fieldPermissions-body-radio">
+        <oo-radio-group
+            label-style="font-weight:bold"
+            data-o2-events="change:checkHideCannotRead:hideCannotRead"
+            label="{{$.lp.propertyTemplate.hideCannotRead}}"
+            value="{{$.data.hideCannotRead||'inherit'}}"
+        >
+            <oo-radio value="yes">{{$.lp.propertyTemplate.yes}}</oo-radio>
+            <oo-radio value="no">{{$.lp.propertyTemplate.no}}</oo-radio>
+            <oo-radio value="inherit">{{$.lp.propertyTemplate.inherit}}</oo-radio>
+        </oo-radio-group>
+    </div>
+
+    <!-- 可编辑配置 -->
+    <div class="fieldPermissions-item-section">{{$.lp.propertyTemplate.editConfig}}</div>
+
+    {{if ($.isProcess || $.isCms)}}
+    <div class="fieldPermissions-body-check">
+        <oo-checkbox checked="{{!!$.data.editByActivity}}" data-o2-events="change:changeCheck:editByActivity"
+            >{{$.lp.propertyTemplate.editConfig_activity}}</oo-checkbox
+        >
+    </div>
+    {{if ($.isProcess)}}
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.editByActivity ? 'block' : 'none'}}">
+        <oo-selector
+            data-o2-events="click:selectActivitys:editByActivityValue:default"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.editActivity}}"
+            item-type="border"
+            value="{{(()=>{
+                return $.data.editByActivityValue.map((d)=>{
+                    const {name, id, unique, process, type} = d;
+                    return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+                });
+            })()}}"
+        ></oo-selector>
+    </div>
+    {{end if}}
+
+    {{if ($.isCms)}}
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByActivity ? 'block' : 'none'}}">
+        <oo-checkbox-group
+            label="{{$.lp.propertyTemplate.readActivity}}"
+            label-style="font-weight:bold"
+            data-o2-events="change:changeActivitys:editByActivityValue"
+        >
+            <oo-checkbox value="draft" text="草稿"></oo-checkbox>
+            <oo-checkbox value="published" text="已发布"></oo-checkbox>
+        </oo-checkbox-group>
+    </div>
+    {{end if}}
+
+    {{end if}}
+
+    <div class="fieldPermissions-body-check">
+        <oo-checkbox checked="{{!!$.data.editByOrg}}" data-o2-events="change:changeCheck:editByOrg"
+            >{{$.lp.propertyTemplate.editConfig_org}}</oo-checkbox
+        >
+    </div>
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.editByOrg ? 'block' : 'none'}}">
+        <oo-selector
+            data-o2-events="click:selectOrgs:editByOrgValue:default"
+            label-style="font-weight:bold"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.editOrg}}"
+            item-type="border"
+            value="{{$m.getActivityDn($.data.editByOrgValue)}}"
+        ></oo-selector>
+    </div>
+
+    <div class="fieldPermissions-body-check">
+        <oo-checkbox checked="{{!!$.data.editByScript}}" data-o2-events="change:changeCheck:editByScript"
+            >{{$.lp.propertyTemplate.editConfig_script}}</oo-checkbox
+        >
+    </div>
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.editByScript ? 'block' : 'none'}}">
+        <div data-o2-events="o2load:loadScriptEditor:editByScriptValue"></div>
+    </div>
+</div>

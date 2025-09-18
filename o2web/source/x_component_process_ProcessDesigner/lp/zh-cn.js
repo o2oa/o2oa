@@ -163,6 +163,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"selectDataPath": "选择数据路径",
 	"selectPermissions": "选择数据权限",
 
+	"noFieldPermissions": "“{process}”还没有数据路径权限配置", 
+	"FieldPermissionsSelectProcess": "请先选择要配置权限的流程", 
+
 	"edition_list":{
 		"editionList": "查看流程版本",
 		"number": "版本号",

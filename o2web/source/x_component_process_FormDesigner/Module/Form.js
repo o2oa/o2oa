@@ -1222,6 +1222,52 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     //         this.designer.notice(this.designer.lp.implodeEmpty, "error");
     //     }
     // },
+
+	openFieldPermissions: function(e){
+		const content = new Element("div", {"styles": {"height": "100%", "position": "relative"}});
+		MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.FieldPermission", ()=>{
+			this.fieldPermission = new o2.xApplication.process.ProcessDesigner.widget.FieldPermission(content, this, {application: this.data.json.application});
+		});
+
+		$OOUI.dialog(this.designer.lp.fieldPermissions, content, document.body, {
+			height: '80%',
+			width: '80%',
+			modal: true,
+			zIndex: 1000,
+            events: {
+                ok: (e)=>{
+					this.fieldPermission.save().then(()=>{
+						e.target.close();
+					});
+                }
+            }
+        });
+
+		// var _self = this;
+		// o2.DL.open({
+		// 	"content": content,
+		// 	"title": this.designer.lp.fieldPermissions,
+		// 	"height": '80%',
+		// 	"width": '80%',
+		// 	"buttonList": [{
+		// 		"type": "ok",
+		// 		"text": this.designer.lp.button.ok,
+		// 		"action": function(){
+		// 			_self.fieldPermission.save().then(()=>{
+		// 				this.close();
+		// 			});
+		// 		}
+		// 	},{
+		// 		"type": "cancel",
+		// 		"text": this.designer.lp.button.cancel,
+		// 		"action": function(){
+		// 			this.close();
+		// 		}
+		// 	}]
+		// });
+	},
+
+
     implodeHTML: function(){
         MWF.xDesktop.requireApp("portal.PageDesigner", "Import", function(){
             MWF.FormImport.create("html", this, {"type": "process"});

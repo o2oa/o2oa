@@ -2,12 +2,7 @@ MWF.xApplication.process.ProcessDesigner.widget = MWF.xApplication.process.Proce
 MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
     Implements: [Options, Events],
     options: {
-        "style": "default",
-        "maskNode": $(document.body),
-        "height": null,
-        "maxObj": null,
-        "forceType": null,
-        "type": "service"   //web or service
+        application: ''
     },
     initialize: function(node, app, options){
         this.setOptions(options);
@@ -15,7 +10,7 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
         this.app = app;
         this.pathData = {};
 
-        this.currentProcess = this.app.process;
+        this.currentProcess = this.app?.process;
     
         this.path = "../x_component_process_ProcessDesigner/widget/$FieldPermission/";
         this.load();
@@ -37,14 +32,20 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
     },
 
     initEvents: function(){;
-        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listWithApplication(this.currentProcess.application, (json)=>{
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listWithApplication(this.options.application, (json)=>{
             json.data.forEach((d)=>{
                 const op = new Element('oo-option');
                 op.setAttribute("value", d.id);
                 op.setAttribute("text", d.name);
                 this.selectProcessNode.appendChild(op);
             });
-            this.selectProcessNode.value = this.currentProcess.id;
+            if (this.currentProcess){
+                this.selectProcessNode.value = this.currentProcess.id;
+            }else{
+                this.selectProcessNode.value = json.data[0].id;
+                this.bodyNode.appendChild(this.emptyNode);
+                this.emptyNode.lastElementChild.textContent = this.app.designer.lp.FieldPermissionsSelectProcess;
+            } 
         });
 
         // this.selectPathButton.addEventListener("click", this.selectPath.bind(this));
@@ -61,7 +62,7 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
         data.editList = (data.editActivityList?.map((a)=>{
             const {unique, id, name, type, process} = a;
             return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
-        }) || []).concat(data.editoryList || []);
+        }) || []).concat(data.editorList || []);
 
         this.bodyNode.loadHtmlText(this.lineHTML, {bind: data,  module: this});
         this.pathData[data.path] = data;
@@ -76,7 +77,7 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
             readerList: null,
             readActivityList: null,
             editActivityList: null,
-            editoryList: null
+            editorList: null
         }
     },
     _scrollToNode: function(node){
@@ -88,6 +89,10 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
         o2.xhr_get(this.path+"line.html", ({responseText})=>{
             this.lineHTML = responseText;
             o2.Actions.load("x_processplatform_assemble_designer").ItemAccessAction.listWithProcess(this.currentProcess.id, (json)=>{
+                if (!json.data.length){
+                    this.bodyNode.appendChild(this.emptyNode);
+                    this.emptyNode.lastElementChild.textContent = this.app.designer.lp.noFieldPermissions.replace('{process}', this.currentProcess.name);
+                }
                 json.data.forEach((d)=>{
                     const {unique, id, name, alias, type, process} = d;
                     const a = {
@@ -107,11 +112,11 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
     },
 
     selectPath: function(){
-        new o2.O2Selector(this.node, {
+        new o2.O2Selector(document.body, {
             "title": this.app.designer.lp.selectDataPath,
             "values": Object.keys(this.pathData),
             "type": "formField",
-            "application": this.currentProcess.application,
+            "application": this.options.application,
             "style": "v10",
             "count": 0,
             "onComplete": function (items) {
@@ -142,12 +147,13 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
     },
 
     selectPermissions: function(type, e, item){
-        new o2.O2Selector(this.node, {
+        const p = this.app.designer.content;
+        new o2.O2Selector(document.body, {
             "title": this.app.designer.lp.selectPermissions,
             "values": e.target.value,
             "types": ['activity', 'unit', 'group', 'identity', 'role'],
             // "type": 'processActivity',
-            "application": this.currentProcess.application,
+            "application": this.options.application,
             "process": this.currentProcess.id,
             "style": "v10",
             "count": 0,
@@ -173,8 +179,19 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
                         item.readActivityList = activitys;
                     }
                     if (type==='edit'){
-                        item.editoryList = orgs;
+                        item.editorList = orgs;
                         item.editActivityList = activitys;
+                    }
+                }else{
+                    e.target.value = ''
+                    e.target.object = null;
+                    if (type==='read'){
+                        item.readerList = [];
+                        item.readActivityList = [];
+                    }
+                    if (type==='edit'){
+                        item.editorList = [];
+                        item.editActivityList = [];
                     }
                 }
             }.bind(this)
@@ -200,6 +217,7 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
             if (status === 'ok') {
                 if (item.id){
                     o2.Actions.load("x_processplatform_assemble_designer").ItemAccessAction.deleteWithProcessWithPath(item.itemCategoryId, item.path).then(()=>{
+                        delete this.pathData[item.path];
                         line.remove();
                     });
                 }else{

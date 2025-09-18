@@ -627,6 +627,8 @@ MWF.xApplication.process.ProcessDesigner.LP={
 	"fieldPermissionsSelectProcessAfter": "Establecer permisos de datos",
 	"inputPath": "Ruta de datos de entrada",
 	"deletePathTitle": "Eliminar la confirmación de datos",
-	"deletePathInfo": "¿¿ está seguro de que quiere eliminar la configuración de permisos de los datos \"(...)?"
+	"deletePathInfo": "¿¿ está seguro de que quiere eliminar la configuración de permisos de los datos \"(...)?",
+	"noFieldPermissions": "Proceso (...) todavía no se ha configurado el permiso de ruta de datos",
+	"FieldPermissionsSelectProcess": "Primero seleccione el proceso para configurar los permisos"
 }
 MWF.xApplication.process.ProcessDesigner["lp."+o2.language] = MWF.xApplication.process.ProcessDesigner.LP

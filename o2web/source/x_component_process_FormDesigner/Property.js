@@ -123,7 +123,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadTreeData();
                     this.loadArrayList();
                     this.loadEventsEditor();
-                    debugger;
                     this.loadActionArea();
                     this.loadActionStylesArea();
                     this.loadHTMLArea();
@@ -171,6 +170,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadQueryViewItem();
                     this.loadQueryStatementItem();
                     this.loadCurrencyPreset();
+
+                    this.loadFieldPermission();
 
                     this.loadHelp();
 
@@ -1384,6 +1385,19 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }.bind(this))
             }.bind(this))
         }.bind(this))
+    },
+
+
+    loadFieldPermission: function(){
+        var node = this.propertyContent.getElement(".MWFFieldPermission");
+        
+        if (node){
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.FieldPermission", function(){
+                var fieldPermission = new MWF.xApplication.process.FormDesigner.widget.FieldPermission(node, this);
+                // eventsEditor.load(eventsObj, this.data, name);
+            }.bind(this));
+        }
+        
     },
 
     loadImageFileSelect: function(){
