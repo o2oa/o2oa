@@ -342,6 +342,7 @@ MWF.xApplication.Selector.Person = new Class({
         } else {
             this.css.maskNode["z-index"] = this.options.zIndex;
             var position = this.container.getPosition(this.container.getOffsetParent());
+            debugger;
             this.mask = new Mask(this.container, {
                 "destroyOnHide": true,
                 "style": this.css.maskNode,
@@ -349,6 +350,7 @@ MWF.xApplication.Selector.Person = new Class({
                 "iframeShimOptions": {"browsers": true},
                 "inject": {"where":"bottom"},
                 "onShow": function () {
+                    debugger;
                     this.shim.shim.setStyles({
                         "opacity": 0,
                         "top": "" + (position.y || 0) + "px",
