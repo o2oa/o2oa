@@ -293,7 +293,10 @@ MWF.xApplication.Org.PrivateConfig.ConfigContent = new Class({
     },
     save: function(){
         //this.data.genderType = gender;
-        debugger;
+        if( this.saving ){
+            return;
+        }
+        this.saving = true;
         var tdContents = this.editContentNode.getElements("td.inforContent");
         this.data["explain"]=tdContents[4].getElements(".inputNode")[0].get("value");
         /*
@@ -310,8 +313,11 @@ MWF.xApplication.Org.PrivateConfig.ConfigContent = new Class({
                     function( json ){ 
                         data = json.data;
                         this.cancel();
+                        this.saving = true;
                         //this.content.propertyContentScrollNode.unmask();
-                    }.bind(this),null,false);
+                    }.bind(this),function (){
+                       this.saving = false;
+                   }.bind(this),false);
         }else{
             this.restLoadActions.PermissionSettingAction.update(
                 this.data.id,
@@ -319,8 +325,11 @@ MWF.xApplication.Org.PrivateConfig.ConfigContent = new Class({
                 function( json ){ 
                     data = json.data;
                     this.cancel();
+                    this.saving = true;
                     //this.content.propertyContentScrollNode.unmask();
-                }.bind(this),null,false);
+                }.bind(this),function (){
+                    this.saving = false;
+                }.bind(this),false);
         }
         debugger;
     },

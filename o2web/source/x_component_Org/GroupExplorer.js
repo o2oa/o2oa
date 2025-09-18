@@ -593,6 +593,9 @@ MWF.xApplication.Org.GroupExplorer.GroupContent.BaseInfor = new Class({
         this.cancelNode.setStyle("display", "block");
     },
     save: function(){
+        if( this.saving ){
+            return;
+        }
         if (!this.nameInputNode.get("value")){
             this.explorer.app.notice(this.explorer.app.lp.inputGroupInfor, "error", this.explorer.propertyContentNode);
             return false;
@@ -605,13 +608,15 @@ MWF.xApplication.Org.GroupExplorer.GroupContent.BaseInfor = new Class({
                 "background-color": "#999"
             }
         });
-
+        this.saving = true;
         this.saveGroup(function(){
             this.cancel();
             this.content.propertyContentScrollNode.unmask();
+            this.saving = false;
         }.bind(this), function(xhr, text, error){
             this.explorer.app.notice((JSON.decode(xhr.responseText).message.trim() || "request json error"), "error");
             this.content.propertyContentScrollNode.unmask();
+            this.saving = false;
         }.bind(this));
     },
     saveGroup: function(callback, cancel){

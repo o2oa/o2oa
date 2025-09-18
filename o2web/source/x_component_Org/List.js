@@ -320,13 +320,19 @@ MWF.xApplication.Org.List.Item = new Class({
     },
 
     save: function(td){
+        if( this.saving ){
+            return;
+        }
+        this.saving = true;
         this.list.content.explorer.actions[this.list.options.saveAction](this.data, function(json){
             this.list.fireEvent("postSave", [this, json.data.id]);
             this.data.id = json.data.id;
+            this.saving = false;
         }.bind(this), function(xhr, text, error){
             td.set("text", "");
             this.edit(td);
             this.list.content.explorer.app.notice((JSON.decode(xhr.responseText).message.trim() || "request json error"), "error");
+            this.saving = false;
         }.bind(this));
     },
 

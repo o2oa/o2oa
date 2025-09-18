@@ -1173,6 +1173,10 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.cancelNode.setStyle("display", "block");
     },
     save: function(){
+        if( this.saving ){
+            return;
+        }
+        this.saving = true;
         var tdContents = this.editContentNode.getElements("td.inforContent");
         var gender = "";
         var radios = tdContents[4].getElements("input");
@@ -1188,11 +1192,13 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
                 var label = this.securityLabelSelectNode.options[this.securityLabelSelectNode.selectedIndex].value;
                 if (!label || !this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
                     this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor2, "error", this.explorer.propertyContentNode);
+                    this.saving = false;
                     return false;
                 }
             }else{
                 if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
                     this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
+                    this.saving = false;
                     return false;
                 }
             }
@@ -1208,6 +1214,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             this.savePerson(function(){
                 this.cancel();
                 this.content.propertyContentScrollNode.unmask();
+                this.saving = false;
             }.bind(this), function(xhr, text, error){
                 var errorText = error;
                 if (xhr){
@@ -1220,6 +1227,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
                 }
                 MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
                 this.content.propertyContentScrollNode.unmask();
+                this.saving = false;
             }.bind(this));
         }.bind(this));
     },

@@ -510,8 +510,13 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
         this.cancelNode.setStyle("display", "block");
     },
     save: function(callback){
+        if( this.saving ){
+            return;
+        }
+        this.saving = true;
         if (!this.nameInputNode.get("value")){
             this.explorer.app.notice(this.explorer.app.lp.inputRoleInfor, "error", this.explorer.propertyContentNode);
+            this.saving = false;
             return false;
         }
         //this.data.genderType = gender;
@@ -526,10 +531,12 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
         this.saveRole(function(){
             this.cancel();
             this.content.propertyContentScrollNode.unmask();
+            this.saving = false;
             if (callback) callback();
         }.bind(this), function(xhr, text, error){
             this.explorer.app.notice((JSON.decode(xhr.responseText).message.trim() || "request json error"), "error");
             this.content.propertyContentScrollNode.unmask();
+            this.saving = false;
         }.bind(this));
     },
     saveRole: function(callback, cancel){
