@@ -1418,9 +1418,14 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
     },
 
     save: function(){
+        if( this.saving ){
+            return;
+        }
+        this.saving = true;
         var tdContents = this.editContentNode.getElements("td.inforContent");
         if (!this.nameInputNode.get("value") || !this.uniqueInputNode.get("value")){
             this.explorer.app.notice(this.explorer.app.lp.inputUnitInfor, "error", this.explorer.propertyContentNode);
+            this.saving = false;
             return false;
         }
         //this.data.genderType = gender;
@@ -1435,11 +1440,13 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         this.saveUnit(function(){
             this.cancel(  null,true );
             this.content.propertyContentScrollNode.unmask();
+            this.saving = false;
         }.bind(this), function(xhr, text, error){
             var errorText = error;
             if (xhr) errorText = xhr.responseText;
             this.explorer.app.notice("request json error: "+errorText, "error");
             this.content.propertyContentScrollNode.unmask();
+            this.saving = false;
         }.bind(this));
     },
     saveUnit: function(callback, cancel){
