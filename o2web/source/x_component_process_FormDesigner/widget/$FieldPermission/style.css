@@ -52,10 +52,6 @@
     border-bottom: 1px solid #999999;
 }
 
-.fieldPermissions-item.deleting{
-    background-color: var(--oo-color-error-border) !important;
-}
-
 
 .fieldPermissions-item-section {
     padding: 0.5rem;
@@ -83,4 +79,8 @@
 
 .fieldPermissions-body-radio{
     padding: 0.5rem;
+}
+
+.fieldPermissions-item.deleting, .fieldPermissions-item.deleting .fieldPermissions-item-section, .fieldPermissions-item.deleting .fieldPermissions-item-title{
+    background-color: var(--oo-color-error-border) !important;
 }

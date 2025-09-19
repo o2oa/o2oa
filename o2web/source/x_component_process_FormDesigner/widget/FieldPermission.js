@@ -93,36 +93,39 @@ MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
 					if (data.editActivityList && data.editActivityList.length){
 						data.editByActivity = true;
 					}
-
 					this.bodyNode.loadHtmlText(this.processHTML, {bind: {data: data, lp: this.property.designer.lp},  module: this});
 				});
 			});
 		});
 	},
 
-	loadScriptEditor: function(name, e, item){
+	loadScriptEditor: function(name, e, d, item){
 		MWF.require("MWF.widget.ScriptArea", () => {
+			const _self = this;
 			this.editor = new MWF.widget.ScriptArea(e.target, {
 				"isbind": false,
 				"mode": "javascript",
 				"maxObj": this.property.designer.content,
 				"maxPosition": "absolute",
-				"style": "v10"
+				"style": "v10",
+				"onChange": function () {
+					item.data[name] = this.getData();
+				},
 			});
-			this.editor.load({ code: item[name] });
+			this.editor.load({ code: item.data[name] });
 		});
 	},
 
-	changeCheck: function(name, e, item){
+	changeCheck: function(name, e, d, item){
 		const show = e.target.checked ? 'block' : 'none';
 		e.target.parentElement.nextElementSibling.style.display = show;
-		item[name] = e.target.checked ? ['true'] : null;
+		item.data[name] = e.target.checked ? ['true'] : null;
 	},
-	checkHideCannotRead: function(name, e, item){
-		item[name] = e.target.value;
+	checkHideCannotRead: function(name, e, d, item){
+		item.data[name] = e.target.value;
 	},
-	selectActivitys: function(name, type, e, item){
-		const process = (type==='process') ? item.itemCategoryId : ''
+	selectActivitys: function(name, type, e, d, item){
+		const process = (type==='process') ? item.data.itemCategoryId : ''
         new o2.O2Selector(this.property.designer.content, {
             "title": this.property.designer.lp.selectPermissions,
             "values": e.target.value,
@@ -134,31 +137,31 @@ MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
             "onComplete": function (items) {
                 if (items.length) {
                     const v = items.map(item=>item.data.uniqueName || item.data.distinguishedName);
-					item[name] =  items.map(item=>{
+					item.data[name] =  items.map(item=>{
 						const {unique, id, name, alias, type, process} = item.data
 						return {unique, id, name, alias, type, process};
 					});
                     e.target.value = v;
                 }else{
                     e.target.value = ''
-                    item[name] = [];
+                    item.data[name] = [];
                 }
 				if ((type==='process')){
 					//需要直接保存
-					this.saveProcessConfig(item)
+					this.saveProcessConfig(item.data)
 				}
             }.bind(this)
         });
 	},
-	changeActivitys: function(name, e ,item){
-		item[name] = e.currentTarget.value;
+	changeActivitys: function(name, e, d, item){
+		item.data[name] = e.currentTarget.value;
 	},
 
 	saveProcessConfig: function(data){
         return o2.Actions.load("x_processplatform_assemble_designer").ItemAccessAction.save(data);
     },
 
-	selectOrgs: function(name, type, e, item){
+	selectOrgs: function(name, type, e, d, item){
 		new o2.O2Selector(this.property.designer.content, {
             "title": this.property.designer.lp.selectPermissions,
             "values": e.target.value,
@@ -168,16 +171,16 @@ MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
             "onComplete": function (items) {
                 if (items.length) {
                     const v = items.map(item=>item.data.uniqueName || item.data.distinguishedName);
-					item[name] =  v;
+					item.data[name] =  v;
                     e.target.value = v;
                     
                 }else{
                     e.target.value = '';
-                    item[name] = [];
+                    item.data[name] = [];
                 }
 				if ((type==='process')){
 					//需要直接保存
-					this.saveProcessConfig(item)
+					this.saveProcessConfig(item.data)
 				}
             }.bind(this)
         });
@@ -258,15 +261,16 @@ MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
 		});
 	},
 
-	deleteItem: function(e, item){
-		const info = this.property.designer.lp.deletePathProcessInfo.replace('{process}', item.processName);
+	deleteItem: function(e, d, item){
+		debugger;
+		const info = this.property.designer.lp.deletePathProcessInfo.replace('{process}', item.data.processName);
         const line = e.target.closest('.fieldPermissions-item');
         line.addClass('deleting');
         $OOUI.confirm.warn(this.property.designer.lp.deletePathTitle, info, this.property.propertyNode, e.target).then(({ dlg, status }) => {
             line.removeClass('deleting');
             if (status === 'ok') {
-                if (item.id){
-                    o2.Actions.load("x_processplatform_assemble_designer").ItemAccessAction.deleteWithProcessWithPath(item.itemCategoryId, item.path).then(()=>{
+                if (item.data.id){
+                    o2.Actions.load("x_processplatform_assemble_designer").ItemAccessAction.deleteWithProcessWithPath(item.data.itemCategoryId, item.data.path).then(()=>{
                         line.remove();
                     });
                 }else{

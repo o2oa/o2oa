@@ -146,7 +146,7 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
         });
     },
 
-    selectPermissions: function(type, e, item){
+    selectPermissions: function(type, e, d, item){
         const p = this.app.designer.content;
         new o2.O2Selector(document.body, {
             "title": this.app.designer.lp.selectPermissions,
@@ -208,7 +208,7 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
         });
     },
 
-    deletePath: function(e, item){
+    deletePath: function(e, d, item){
         const info = this.app.designer.lp.deletePathInfo.replace('{path}', item.path);
         const line = e.target.closest('.fieldPermissions-body-line');
         line.addClass('deleting');
