@@ -199,6 +199,13 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
     private CompletableFuture<Void> dataFuture(Work work, Wo wo, EffectivePerson effectivePerson) {
         return CompletableFuture.runAsync(() -> {
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Business business = new Business(emc);
+                Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
+                String activity = "";
+                if(review != null){
+                    activity = review.getActivityUnique();
+                    wo.setReview(WoReview.copier.copy(review));
+                }
                 List<Item> list = emc.listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME,
                         work.getJob(),
                         DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
@@ -206,9 +213,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
                     JsonElement jsonElement = itemConverter.assemble(list);
                     // 必须是Object对象
                     if (jsonElement.isJsonObject()) {
-                        Business business = new Business(emc);
-                        Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
-                        String activity = review == null ? "" : review.getActivityUnique();
                         business.itemAccess().convert(jsonElement, work.getProcess(),
                                 work.getApplication(), activity,
                                 effectivePerson);
@@ -417,6 +421,18 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
     private CompletableFuture<Void> workCompletedDataFuture(WorkCompleted workCompleted, Wo wo, EffectivePerson effectivePerson) {
         return CompletableFuture.runAsync(() -> {
+            String activity = "";
+            try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Business business = new Business(emc);
+                Review review = business.review()
+                        .getWithPersonAndJob(effectivePerson.getDistinguishedName(), workCompleted.getJob());
+                if (review != null) {
+                    activity = review.getActivityUnique();
+                    wo.setReview(WoReview.copier.copy(review));
+                }
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
             if (BooleanUtils.isTrue(workCompleted.getMerged())) {
                 wo.setData(workCompleted.getData());
             } else {
@@ -431,7 +447,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
                         if (jsonElement.isJsonObject()) {
                             Business business = new Business(emc);
                             business.itemAccess().convert(jsonElement, workCompleted.getProcess(),
-                                    workCompleted.getApplication(), workCompleted.getActivity(),
+                                    workCompleted.getApplication(), activity,
                                     effectivePerson);
                             wo.setData(gson.fromJson(jsonElement, Data.class));
                         }
@@ -539,6 +555,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
         // 只有work有
         private List<WoRoute> routeList;
 
+        // work和workCompleted都有
+        private WoReview review;
+
         public JsonElement getWork() {
             return work;
         }
@@ -643,6 +662,14 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
             this.recordList = recordList;
         }
 
+        public WoReview getReview() {
+            return review;
+        }
+
+        public void setReview(
+                WoReview review) {
+            this.review = review;
+        }
     }
 
     public static class WoWork extends Work {
@@ -681,6 +708,16 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
         static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
                 null,
                 JpaObject.FieldsInvisible);
+
+    }
+
+    public static class WoReview extends Review {
+
+        private static final long serialVersionUID = 8925088183074565889L;
+
+        static WrapCopier<Review, WoReview> copier = WrapCopierFactory.wo(Review.class, WoReview.class,
+                null,
+                JpaObject.FieldsInvisibleIncludeProperites);
 
     }
 
