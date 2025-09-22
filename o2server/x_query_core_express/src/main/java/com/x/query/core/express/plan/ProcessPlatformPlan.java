@@ -11,6 +11,7 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.core.entity.content.Review;
@@ -185,7 +186,7 @@ public class ProcessPlatformPlan extends Plan {
             Root<Review> root = cq.from(Review.class);
             Predicate p = this.where.reviewPredicate(cb, root);
             if (BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(
-                    this.runtime.person))) {
+                    this.runtime.person) && !OrganizationDefinition.isSystemUser(this.runtime.person))) {
                 p = cb.and(p, cb.equal(root.get(Review_.person), this.runtime.person));
                 Predicate accessPredicate = this.accessPredicate(emc, cb, root, pathList);
                 if (accessPredicate != null) {
