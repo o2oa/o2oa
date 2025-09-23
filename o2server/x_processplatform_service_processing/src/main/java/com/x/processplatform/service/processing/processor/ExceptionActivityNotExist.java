@@ -8,7 +8,7 @@ class ExceptionActivityNotExist extends RunningException {
 	private static final long serialVersionUID = 9085364457175859374L;
 
 	ExceptionActivityNotExist(String title, String id, ActivityType activityType, String activityId) {
-		super("destinationActivity not exist work title{}, id:{}, actvity type:{}, id:{}.", title, id, activityType,
+		super("activity not exist work title{}, id:{}, actvity type:{}, id:{}.", title, id, activityType,
 				activityId);
 	}
 
