@@ -331,6 +331,8 @@ MWF.xApplication.process.Xform.LP={
 		"excludeBranches": "Excluir ramas existentes",
 		"yes": "Sí",
 		"no": "No",
+		"printWork": "Vista previa de impresión",
+		"printWorkInfo": "No se ha configurado ningún formulario de impresión. Se usará el formulario original para abrir.",
 		"readIdentity": "Persona para leer",
 		"sendReadNotify": "Enviar notificación de lectura pendiente",
 		"reviewIdentity": "Lector",

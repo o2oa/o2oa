@@ -352,7 +352,7 @@ MWF.xApplication.process.Xform.LP = {
         "deleteTitle": "删除文件",
         "terminate": "终止文件",
         "terminateTitle": "结束文件流转",
-        "print": "打印",
+        "print": "打印预览",
         "printTitle": "打印文档",
         "press": "催促办理",
         "pressTitle": "催促办理",
@@ -392,6 +392,9 @@ MWF.xApplication.process.Xform.LP = {
         "excludeBranches": "排除已有分支",
         "yes": "是",
         "no": "否",
+
+        "printWork": "打印预览",
+        "printWorkInfo": "未设置打印表单，将使用原表单打开。",
 
         "readIdentity": "待阅人",
         "sendReadNotify": "发送待阅通知",
