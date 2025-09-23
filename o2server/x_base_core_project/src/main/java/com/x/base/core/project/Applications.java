@@ -20,14 +20,19 @@ import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.connection.FilePart;
 import com.x.base.core.project.connection.FormField;
 import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.HttpToken;
+import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -741,6 +746,67 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			urlDescribeApiJson = application.getUrlDescribeApiJson();
 		}
 		return HttpConnection.getAsString(urlDescribeApiJson, null);
+	}
+
+	public ActionResponse authorizedGetQuery(String applicationName, String uri, String person) throws Exception {
+		String addr = url(applicationName, uri);
+		return ConnectionAction.get(addr, authorizedHeads(person));
+	}
+
+	public ActionResponse authorizedDeleteQuery(String applicationName, String uri, String person) throws Exception {
+		String addr = url(applicationName, uri);
+		return ConnectionAction.delete(addr, authorizedHeads(person));
+	}
+
+	public ActionResponse authorizedPostQuery(String applicationName, String uri, Object body, String person)
+			throws Exception {
+		String addr = url(applicationName, uri);
+		return ConnectionAction.post(addr, authorizedHeads(person), body);
+	}
+
+	public ActionResponse authorizedPutQuery(String applicationName, String uri, Object body, String person)
+			throws Exception {
+		String addr = url(applicationName, uri);
+		return ConnectionAction.put(addr, authorizedHeads(person), body);
+	}
+
+	private String url(String applicationName, String uri) throws Exception {
+		String prefix = "";
+		if (applicationName.equalsIgnoreCase(x_program_center.class.getSimpleName())
+				|| applicationName.equalsIgnoreCase(x_program_center.class.getName())) {
+			final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
+			if (null != node) {
+				prefix = urlPrefixOfCenterServer(Config.resource_node_centersPirmaryNode(), node.getCenter());
+			}
+		} else {
+			String name = this.findApplicationName(applicationName);
+			if (StringUtils.isEmpty(name)) {
+				throw new ExceptionFindApplicationName(applicationName);
+			}
+			Application application = null;
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
+			prefix = application.getUrlJaxrsRoot();
+		}
+		return prefix + CipherConnectionAction.trim(uri);
+	}
+
+	private List<NameValuePair> authorizedHeads(String person) throws Exception {
+		return ListTools.toList(new NameValuePair(Config.person().getTokenName(), createToken(person)));
+	}
+
+	private static String createToken(String person) throws Exception {
+		EffectivePerson effectivePerson = null;
+		if (StringUtils.isNotBlank(person)) {
+			effectivePerson = new EffectivePerson(person, TokenType.user, HttpToken.CLIENT_H5,
+					Config.token().getCipher(), Config.person().getEncryptType());
+		} else {
+			effectivePerson = new EffectivePerson(EffectivePerson.CIPHER, TokenType.cipher, HttpToken.CLIENT_H5,
+					Config.token().getCipher(), Config.person().getEncryptType());
+		}
+		return effectivePerson.getToken();
 	}
 
 }
