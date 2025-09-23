@@ -20,8 +20,22 @@ import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Begin;
+import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Choice;
+import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Invoke;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Merge;
+import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Publish;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.SerialBuilder;
@@ -292,8 +306,8 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			Activity activity = this.business().element().get(work.getActivity(),
 					ActivityType.getClassOfActivityType(activityType));
 			if (null == activity) {
-				throw new ExceptionActivityNotExist(work.getTitle(), work.getId(), work.getActivityType(),
-						work.getActivity());
+				// 如果当前活动被删除,根据work创建一个虚拟活动;
+				activity = this.createVirtualActivity(work);
 			}
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
@@ -337,6 +351,66 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			LOGGER.error(e);
 		}
 		return results;
+	}
+
+	/**
+	 * 如果活动不存在,那么创建一个临时活动替代
+	 * 
+	 * @param work
+	 * @return
+	 */
+	private Activity createVirtualActivity(Work work) {
+		Activity activity = null;
+		switch (work.getActivityType()) {
+		case agent:
+			activity = new Agent();
+		case begin:
+			activity = new Begin();
+			break;
+		case cancel:
+			activity = new Cancel();
+			break;
+		case choice:
+			activity = new Choice();
+			break;
+		case delay:
+			activity = new Delay();
+			break;
+		case end:
+			activity = new End();
+			break;
+		case embed:
+			activity = new Embed();
+			break;
+		case invoke:
+			activity = new Invoke();
+			break;
+		case manual:
+			activity = new Manual();
+			break;
+		case merge:
+			activity = new Merge();
+			break;
+		case parallel:
+			activity = new Parallel();
+			break;
+		case publish:
+			activity = new Publish();
+			break;
+		case service:
+			activity = new Service();
+			break;
+		case split:
+			activity = new Split();
+			break;
+		default:
+			activity = new Begin();
+		}
+		activity.setId(work.getActivity());
+		activity.setType(work.getActivityType());
+		activity.setAlias(work.getActivityAlias());
+		activity.setName(work.getActivityName());
+		return activity;
 	}
 
 	private void callBeforeInquireScript(AeiObjects aeiObjects) throws Exception {
