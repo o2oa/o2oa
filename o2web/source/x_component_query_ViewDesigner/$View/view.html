@@ -783,14 +783,35 @@
                                 <input class="editTableRadio" onclick="
                                 if (this.checked){
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
+                                    $('text{$.id}viewCustomFilterValueOrgArea').setStyle('display', 'none');
                                 }" name="viewCustomFilterValueType" checked type="radio" value="input"/>{{$.lp.input}}
                                 <input class="editTableRadio" onclick="
                                 if (this.checked){
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'block');
+                                    $('text{$.id}viewCustomFilterValueOrgArea').setStyle('display', 'none');
                                 }" name="viewCustomFilterValueType" type="radio" value="script"/>{{$.lp.selectable}}
+
+                                <input class="editTableRadio" onclick="
+                                if (this.checked){
+                                    $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
+                                    $('text{$.id}viewCustomFilterValueOrgArea').setStyle('display', 'block');
+                                }" name="viewCustomFilterValueType" type="radio" value="org"/>{{$.lp.org}} 
                             </td>
                         </tr>
                     </table>
+                    <table style="display:none" id="text{$.id}viewCustomFilterValueOrgArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.orgRange}}:</td>
+                            <td class="editTableValue">
+                                <label><input class="editTableRadio" name="viewCustomFilterValueOrgType" checked type="checkbox" value="unit"/>{{$.lp.org_unit}}</label>
+                                <label><input class="editTableRadio" name="viewCustomFilterValueOrgType" type="checkbox" value="person"/>{{$.lp.org_person}}</label>
+                                <label><input class="editTableRadio" name="viewCustomFilterValueOrgType" type="checkbox" value="identity"/>{{$.lp.org_identity}}</label>
+                                <label><input class="editTableRadio" name="viewCustomFilterValueOrgType" type="checkbox" value="group"/>{{$.lp.org_group}}</label>
+                                <label><input class="editTableRadio" name="viewCustomFilterValueOrgType" type="checkbox" value="role"/>{{$.lp.org_role}}</label>
+                            </td>
+                        </tr>
+                    </table>
+
                     <div style="display:none" id="text{$.id}viewCustomFilterValueScriptDiv">
                         <div style="padding: 5px">{{$.lp.selectOptionScriptNotice}}</div>
                         <div name="text{$.id}viewCustomFilterValueScript" title="{{$.lp.selectOptionScript}}"></div>

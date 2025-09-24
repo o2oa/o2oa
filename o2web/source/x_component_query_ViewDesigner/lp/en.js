@@ -333,7 +333,13 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"headStyle": "Table header style",
 		"columnTitleStyle": "Column header style",
 		"columnContentStyle": "Column Content Style",
-		"exportNotice": "Up to 2000 items can be found everywhere at once"
+		"exportNotice": "Up to 2000 items can be found everywhere at once",
+		"orgRange": "selection range",
+		"org_unit": "organization",
+		"org_person": "personnel",
+		"org_identity": "identity",
+		"org_role": "role",
+		"org_group": "group"
 	},
 	"viewStyle": {
 		"default": "Default",

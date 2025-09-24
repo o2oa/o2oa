@@ -469,6 +469,7 @@ MWF.xApplication.process.Work.Main = new Class({
         this.taskList = workData.taskList;
         this.readList = workData.readList;
         this.routeList = workData.routeList;
+        this.review = workData.review;
         this.work = workData.work;
         this.workCompleted = (workData.work.completedTime) ? workData.work : null;
 
@@ -693,6 +694,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     "control": this.control,
                     "activity": this.activity,
                     "task": this.currentTask,
+                    "review": this.review,
                     "workLogList": this.workLogList,
                     "recordList": this.recordList,
                     "routeList" : this.routeList,

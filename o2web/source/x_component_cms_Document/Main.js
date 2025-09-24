@@ -127,7 +127,6 @@ MWF.xApplication.cms.Document.Main = new Class({
     },
 
     loadDocumentV2 : function( callback ){
-        debugger;
 
         this.loadFormFlag = false;
         this.loadDocumentFlag = false;
@@ -447,7 +446,6 @@ MWF.xApplication.cms.Document.Main = new Class({
             }
         }
 
-        debugger;
         var formId;
         if( this.readonly === true ){
             formId = this.options.forceFormId || this.options.printFormId  || this.options.readFormId;
@@ -535,210 +533,6 @@ MWF.xApplication.cms.Document.Main = new Class({
         return true;
     },
 
-    // getDocument : function( callback ){
-    //     var id = this.options.documentId;
-    //
-    //     var documentMethod = "getDocument";
-    //     if( this.options.anonymousAccess ){
-    //         documentMethod = "getDocumentByAnonymous"
-    //     }else if( this.options.readonly && !this.options.printFormId){
-    //         documentMethod = "viewDocument";
-    //     }
-    //
-    //     var attachmentMethod = "listAttachment";
-    //     if( this.options.anonymousAccess ){
-    //         attachmentMethod = "listAttachmentByAnonymous"
-    //     }
-    //
-    //     o2.Actions.invokeAsync([
-    //         {"action": this.action, "name": documentMethod},
-    //         {"action": this.action, "name": attachmentMethod }
-    //     ], {"success": function(json_document, json_att){
-    //         if (json_document ){
-    //             if( json_att && typeOf( json_att.data ) === "array" ){
-    //                 json_document.data.attachmentList = json_att.data ;
-    //             }else{
-    //                 json_document.data.attachmentList = [];
-    //             }
-    //             callback(json_document)
-    //         }else{
-    //             this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
-    //             this.close();
-    //         }
-    //     }.bind(this), "failure": function(){
-    //         this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
-    //         this.close();
-    //     }.bind(this)}, id);
-    // },
-    // loadDocument: function(){
-    //     this.getDocument( function(json){
-    //         json.data = json.data || [];
-    //         this.parseData(json.data);
-    //         this.loadForm( this.formId );
-    //     }.bind(this) );
-    // },
-    // errorDocument: function(){
-    //     if (this.mask) this.mask.hide();
-    //     this.node.set("text", "openError");
-    // },
-    // loadForm : function( formId, flag ){
-    //     var success = function(json){
-    //         if (json.form){
-    //             this.form = (json.form.data) ? JSON.decode(MWF.decodeJsonString(json.form.data)): null;
-    //             this.relatedFormMap = json.relatedFormMap;
-    //             this.relatedScriptMap = json.relatedScriptMap;
-    //             if( json.form.data )delete json.form.data;
-    //             this.formInfor = json.form;
-    //         }else{
-    //             if( layout.mobile ){
-    //                 this.form = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)): null;
-    //                 if( !this.form ){
-    //                     this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
-    //                 }
-    //             }else{
-    //                 this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
-    //             }
-    //             if( json.data.data )delete json.data.data;
-    //             if( json.data.mobileData )delete json.data.mobileData;
-    //             this.formInfor = json.form;
-    //         }
-    //         //this.listAttachment();
-    //         this.openDocument();
-    //         if (this.mask) this.mask.hide();
-    //     }.bind(this);
-    //     var failure = function(error){
-    //         //没有表单，重新获取分类表单
-    //         if( !flag ){
-    //             this.action.getCategory( this.document.categoryId, function(json){
-    //                 var d = json.data;
-    //                 this.formId = d.formId || d.readFormId;
-    //                 if( this.readonly == true && d.readFormId && d.readFormId != "" ){
-    //                     this.formId  = d.readFormId;
-    //                 }
-    //                 this.loadForm( this.formId, true );
-    //             }.bind(this));
-    //         }else{
-    //             this.notice(  this.lp.formGettedError + ":" + error.responseText , "error");
-    //             this.close();
-    //         }
-    //     }.bind(this);
-    //     if( this.options.printFormId){
-    //         this.action.getForm(this.options.printFormId, function( json ){
-    //             success(json);
-    //         }.bind(this), function(error){
-    //             failure(error)
-    //         }.bind(this));
-    //     }else{
-    //         if( this.options.anonymousAccess ){
-    //             this.action.getFormByAnonymous(formId, function( json ){
-    //                 success(json);
-    //             }.bind(this), function(error){
-    //                 failure(error)
-    //             }.bind(this));
-    //         }else{
-    //             this.action.getForm(formId, function( json ){
-    //                 success(json);
-    //             }.bind(this), function(error){
-    //                 failure(error)
-    //             }.bind(this));
-    //         }
-    //     }
-    // },
-    // parseData: function(data){
-    //
-    //     var title = "";
-    //     title = data.document.title;
-    //
-    //     this.setTitle(title);
-    //
-    //     data.document.subject = data.document.title;
-    //
-    //     this.data =  data.data;
-    //
-    //     this.attachmentList = data.attachmentList || [];
-    //     this.attachmentList.each(function(att){
-    //         att.lastUpdateTime = att.updateTime;
-    //         att.person = att.creatorUid;
-    //     });
-    //
-    //     if( this.isEmptyObject(this.data) ){
-    //         this.data.isNew = true;
-    //     }else{
-    //         this.data.isNew = false;
-    //     }
-    //
-    //     this.document = data.document;
-    //
-    //     var isAdmin = false;
-    //
-    //     if( MWF.AC.isCMSManager() ){
-    //         this.options.isControl = true;
-    //         isAdmin = true;
-    //     }
-    //
-    //     if( data.isAppAdmin ){
-    //         this.options.isControl = true;
-    //         isAdmin = true;
-    //     }
-    //     if( data.isCategoryAdmin ){
-    //         this.options.isControl = true;
-    //         isAdmin = true;
-    //     }
-    //     if( data.isManager ){
-    //         this.options.isControl = true;
-    //         isAdmin = true;
-    //     }
-    //     this.isAdmin = isAdmin;
-    //
-    //     //文档创建人
-    //     if( data.isCreator || this.desktop.session.user.distinguishedName==this.document.creatorPerson ){
-    //         this.options.isControl = true;
-    //     }
-    //
-    //     if( data.isEditor ){ //作者权限
-    //         this.options.isControl = true;
-    //     }
-    //
-    //     if( this.options.readonly ){ //强制只读
-    //         this.readonly = true;
-    //     }else{
-    //         this.readonly = true;
-    //         if(this.options.isControl && this.document.docStatus != "archived"){
-    //             this.readonly = false;
-    //         }
-    //     }
-    //
-    //     this.formId = this.document.form || this.document.readFormId;
-    //     if( this.readonly == true && this.document.readFormId && this.document.readFormId != "" ){
-    //         this.formId  = this.document.readFormId;
-    //         if(this.options.formId){
-    //             this.formId = this.options.formId
-    //         }
-    //     }else {
-    //         if(this.options.formEditId){
-    //             this.formId = this.options.formEditId
-    //         }
-    //     }
-    //
-    //     if(this.readonly || this.document.docStatus == "published"){
-    //         this.options.autoSave = false;
-    //         this.options.saveOnClose = false;
-    //     }
-    //
-    //     //this.attachmentList = data.attachmentList;
-    //
-    //     //this.inheritedAttachmentList = data.inheritedAttachmentList;
-    //     var isControl = this.options.isControl;
-    //     this.control = data.control ||  {
-    //             "allowRead": true,
-    //             "allowPublishDocument": isControl && this.document.docStatus == "draft",
-    //             "allowSave": isControl && this.document.docStatus == "published",
-    //             "allowPopularDocument": MWF.AC.isHotPictureManager() && this.document.docStatus == "published",
-    //             "allowEditDocument":  isControl && !this.document.wf_workId,
-    //             "allowDeleteDocument":  isControl && !this.document.wf_workId
-    //         };
-    // },
-
     setPopularDocument: function(){
         MWF.xDesktop.requireApp("cms.Document", "HotLinkForm", null, false);
         var form = new MWF.xApplication.cms.Document.HotLinkForm(this, this.document, {
@@ -753,7 +547,6 @@ MWF.xApplication.cms.Document.Main = new Class({
         form.create();
     },
     openDocument: function(){
-        debugger;
         if (this.form){
             // MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
             MWF.xDesktop.requireApp("cms.Xform", "$all", function(){

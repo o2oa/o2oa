@@ -567,16 +567,29 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     _checkEditAbled: function () {
         return this._checkpowerAbled('editByActivity', 'editByOrg', 'editByScript', 'editByActivityValue', 'editByOrgValue', 'editByScriptValue', 'editActivityList', 'editorList');
     },
+    /**
+     * 判断一个字符串是否可以转换为一个整数
+     * @param {string} str
+     * @returns {boolean}
+     */
+    _isIntegerString: function(str) {
+        return typeof str === "string" && /^-?\d+$/.test(str);
+    },
+
+    _getActivityId: function(){
+        if (this.form.businessData.review){
+            return {uid: this.form.businessData.reviewactivityUnique}
+        }else{
+            return {uid: this.form.businessData.activity?.unique, aid: this.form.businessData.activity?.id}
+        }
+    },
     _checkpowerAbled: function (activity, org, script, activityValue, orgValue, scriptValue, processActivity, processOrg) {
         const accessList = this.form.businessData?.control?.itemAccessList;
-        const id = this.json.id.replace(/\.\./g, '.');
-        if (id==='contactPhone'){
-            debugger;
-        }
+        const ids = this.json.id.split(/\.\./g);
+        const id = ids.map(i=> (/^-?\d+$/.test(i) ? '*' : i) ).join('.')
         const access = accessList?.find((acc)=>{
             return acc.path === id;
         });
-        
         
         if (access){
             const hasByActivity = (access[processActivity] && access[processActivity].length);
@@ -585,8 +598,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
             if (hasByActivity || hasByOrg || hasByScript){
                 if (hasByActivity){
-                    let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
-                    let aid = this.form.businessData.activity && this.form.businessData.activity.id;
+                    const {uid, aid} = this._getActivityId();
+                    // let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
+                    // let aid = this.form.businessData.activity && this.form.businessData.activity.id;
                     // if (activityId){
                         const i = access[processActivity].findIndex((act)=>{                      
                             return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
@@ -618,8 +632,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
             if (hasByActivity || hasByOrg || hasByScript){
                 if (hasByActivity){
-                    let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
-                    let aid = this.form.businessData.activity && this.form.businessData.activity.id;
+                    let {uid, aid} = this._getActivityId();
+                    // let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
+                    // let aid = this.form.businessData.activity && this.form.businessData.activity.id;
                     if (!uid){
                         uid = this.form.businessData.document && this.form.businessData.document.docStatus;
                     }
@@ -631,7 +646,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                     // }
                 }
                 if (hasByOrg){
-                    debugger;
                     const i = this.json[orgValue].findIndex((org)=>{
                         const dn = org.distinguishedName || org;
                         return layout.session.userDetail.distinguishedName === dn || layout.session.userDetail.list.includes(dn);

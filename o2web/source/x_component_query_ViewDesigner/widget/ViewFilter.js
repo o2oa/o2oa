@@ -157,6 +157,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         if( this.app.view ){
             var dataId = this.app.view.data.id;
             this.customFilterValueTypes = this.inputAreaNode.getElements("[name='"+dataId+"viewCustomFilterValueType']");
+            this.viewCustomFilterValueOrgTypes = this.inputAreaNode.getElements("[name='"+dataId+"viewCustomFilterValueOrgType']");
+
+            this.customFilterValueOrgArea = this.inputAreaNode.getElement("#"+dataId+"viewCustomFilterValueOrgArea");
 
             this.customFilterValueScriptDiv = this.inputAreaNode.getElement("#"+dataId+"viewCustomFilterValueScriptDiv");
             this.customFilterValueScript = this.inputAreaNode.getElement("[name='"+dataId+"viewCustomFilterValueScript']");
@@ -1000,6 +1003,11 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.customFilterValueTypes.each( function (radio) {
                 if( radio.get("checked") )valueType = radio.get("value");
             });
+            
+            var orgTypes = [];
+            this.viewCustomFilterValueOrgTypes.map( function (check) {
+                if( check.get("checked") )orgTypes.push(check.get("value"));
+            });
             return {
                 "logic": logic,
                 "path": path,
@@ -1011,7 +1019,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 "otherValue": value2,
                 "code": this.scriptData,
                 "valueType" : valueType,
-                "valueScript" : this.customFilterValueScriptData
+                "valueScript" : this.customFilterValueScriptData,
+                "orgTypes": orgTypes
             };
         }
     },
@@ -1112,16 +1121,31 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                     if( "input" === radio.get("value") )radio.set("checked", true);
                 }
             });
+
+            this.viewCustomFilterValueOrgTypes.map( function (check) {
+                if( data.orgTypes ){
+                    if( data.orgTypes.includes(check.get("value")) )check.set("checked", true);
+                }else{
+                    if( "input" === check.get("value") )check.set("checked", true);
+                }
+            });
+
             if ( this.customFilterValueScriptArea ){
                 if( !data.valueType || data.valueType === "input" ){
                     this.customFilterValueScriptDiv.hide();
                     this.customFilterValueScriptData = "";
+                    this.customFilterValueOrgArea.hide();
                     //this.customFilterValueScriptArea.editor.setValue( "" );
                     this.customFilterValueScriptArea.setData( "" , true);
-                }else{
+                }else if( data.valueType === "script" ){
                     this.customFilterValueScriptDiv.show();
+                    this.customFilterValueOrgArea.hide();
                     this.customFilterValueScriptData = data.valueScript;
                     this.customFilterValueScriptArea.setData( data.valueScript ? data.valueScript.code : "", true );
+                }else if( data.valueType === "org" ){
+                    this.customFilterValueScriptDiv.hide();
+                    this.customFilterValueScriptData = "";
+                    this.customFilterValueOrgArea.show();
                 }
             }
         }

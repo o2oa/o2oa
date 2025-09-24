@@ -216,6 +216,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }else{
             this.getView(callback);
         }
+        o2.loadCss('../x_component_process_FormDesigner/Module/Form/skin/v10/view.css');
     },
     load: function( callback ){
         this.loadResource(function () {
@@ -1478,7 +1479,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             //if (this.viewPageAreaNode) this.viewPageAreaNode.hide();
         }
     },
-    loadFilterSearch: function(){
+    loadFilterSearchNode: function(){
         if( !layout.mobile ){
             this.viewSearchCustomActionNode = new Element("div", {"styles": this.css.viewFilterSearchCustomActionNode, "text": this.lp.customSearch}).inject(this.searchAreaNode);
         }
@@ -1505,6 +1506,267 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 "click": function(){this.loadCustomSearch();}.bind(this)
             });
         }
+    },
+
+    createSearchTextInputNode: function(filter){
+        const div = new Element("div.search-item");
+        if (filter.valueType==='script' ){
+            if( filter.valueScript && filter.valueScript.code ){
+                const result = this.Macro.exec(filter.valueScript.code, this);
+                const arr = typeOf( result ) === "array" ? result : [result];
+                const node = new Element("oo-select");
+                node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+                node.setAttribute('label', filter.title);
+                arr.forEach( (item)=>{
+                    const v = item.split(/\s*\|\s*/);
+                    const option = new Element("oo-option");
+                    option.setAttribute('value', v[1] || v[0]);
+                    option.setAttribute('text', v[0]);
+                    node.appendChild(option);
+                });
+                div.appendChild(node);
+                return div;
+            }
+        }
+        if (filter.valueType==='org'){
+            const node = new Element("oo-selector");
+            node.setAttribute('right-icon', "person");
+            node.setAttribute('data-select-types', filter.orgTypes.join(','));
+            node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+            node.setAttribute('label', filter.title);
+            div.appendChild(node);
+            return div;
+        }
+        const input = new Element("oo-input");
+        input.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+        input.setAttribute('label', filter.title);
+        div.appendChild(input);
+        return div;
+    },
+
+    createSearchDatetimeNode: function(filter, mode){
+        const div = new Element("div.search-item");
+
+        const title = new Element("div.search-item-title");
+        title.textContent = filter.title;
+        const dateTimeInputL = new Element("oo-datetime");
+        const toNode = new Element("div.search-item-flag");
+        toNode.textContent = '-';
+        const dateTimeInputU = new Element("oo-datetime");
+        if (mode){
+            dateTimeInputL.setAttribute('mode', mode);
+            dateTimeInputU.setAttribute('mode', mode);
+        }
+
+        div.append(title, dateTimeInputL, toNode, dateTimeInputU)
+        return div;
+    },
+    createSearchNumberNode: function(filter){
+        const div = new Element("div.search-item");
+
+        const title = new Element("div.search-item-title");
+        title.textContent = filter.title;
+        const numberL = new Element("oo-input");
+
+        const toNode = new Element("div.search-item-flag");
+        toNode.textContent = '-';
+
+        const numberU = new Element("oo-input");
+        numberL.setAttribute('type', "number");
+        numberU.setAttribute('type', "number");
+
+        div.append(title, numberL, toNode, numberU)
+        return div;
+    },
+    createSearchBooleanNode: function(filter){
+        const div = new Element("div.search-item");
+
+        const booleanSelect = new Element("oo-select");
+        booleanSelect.setAttribute('data-filter', '');
+        booleanSelect.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+        booleanSelect.setAttribute('label', filter.title);
+
+        booleanSelect.innerHTML = `
+            <oo-option value="" text=""></oo-option>
+            <oo-option value="true" text="${this.lp.yes}"></oo-option>
+            <oo-option value="false" text="${this.lp.no}"></oo-option>  
+        `;
+        div.appendChild(booleanSelect);
+
+        return div
+    },
+
+    createSearchInputNode: function(filter){
+        switch (filter.formatType) {
+            case "textValue":
+                return this.createSearchTextInputNode(filter);
+
+            case "dateTimeValue":
+                return this.createSearchDatetimeNode(filter);
+
+            case "dateValue":
+                return this.createSearchDatetimeNode(filter, 'date');
+
+            case "timeValue":
+                return this.createSearchDatetimeNode(filter, 'time');
+
+            case "numberValue":
+                return this.createSearchNumberNode(filter);
+
+            case "booleanValue":
+                return this.createSearchBooleanNode(filter);
+
+            default:
+                return this.createSearchTextInputNode(filter);
+        }
+    },
+
+    _filterData: function(data, value, comparison, logic='and'){
+        const filterData = value ? {
+            "logic": logic,
+            "path": data.path,
+            "title": data.title,
+            "comparison": comparison,
+            "comparisonTitle": '',
+            "value": value,
+            "formatType": (data.formatType=="datetimeValue") ? "dateTimeValue": data.formatType
+        } : null;
+        if (filterData) this.customFilterListData.push(filterData);
+    },
+    getFilterData: function(node){
+        const data = node.filterData;
+        if (data){
+            const path = data.path;
+            let comparison = '';
+            let value = '';
+
+            switch (data.formatType) {
+                case "textValue":
+                    comparison = 'like';
+                    if (data.valueType==='input' || data.valueType==='script'){
+                        const input = node.querySelector("oo-input, oo-select");
+                        value = input ? input.value : '';
+                    }
+                    if (data.valueType==='org'){
+                        const org = node.querySelector("oo-selector");
+                        value = org ? org.value.join(',') : '';
+                    }
+                    this._filterData(data, value, comparison);
+                    break;
+                case "dateTimeValue":
+                case "dateValue":
+                case "timeValue":
+                case "numberValue":
+                    const inputs = node.querySelectorAll("oo-datetime, oo-input");
+                    const inputL = inputs[0];
+                    const inputU = inputs[1];
+                    if (inputL && inputL.value){
+                        comparison = 'greaterThanOrEqualTo';
+                        value = inputL.value;
+                        this._filterData(data, value, comparison)
+                    }
+                    if (inputU && inputU.value){
+                        comparison = 'lessThanOrEqualTo';
+                        value = inputU.value;
+                        this._filterData(data, value, comparison)
+                    }
+                    break;
+
+                case "booleanValue":
+                    comparison = 'equals';
+                    const select = node.querySelector("oo-select");
+                    value = select ? select.value : '';
+                    value = (value==='true') ? true : (value==='false' ? false : value);
+                    this._filterData(data, value, comparison);
+                    break;
+            }
+        }
+
+        return null;
+    },
+
+    loadFilterSearchNodeV10: function(){
+        this.viewSearchAreaNode = new Element("div.page-content-section.search-area").inject(this.searchAreaNode);
+        this.viewSearchFieldArea = new Element("div.page-content-search-fields").inject(this.viewSearchAreaNode);
+        this.viewSearchActionArea = new Element("div.page-content-search-actions").inject(this.viewSearchAreaNode);
+        this.viewJson.customFilterList.each(function(filter){
+            const node = this.createSearchInputNode(filter);
+            node.filterData = filter;
+            this.viewSearchFieldArea.insertAdjacentElement("beforeend", node);
+        }.bind(this));
+
+        this.viewSearchFieldArea.querySelectorAll("oo-selector").forEach( (node)=>{
+            node.addEventListener("click", (ev)=>{
+                const types = ev.target.dataset.selectTypes.split(",");
+                const options = {
+                    "title": "",
+                    "values": ev.target.value,
+                    "types": types,
+                    "style": "v10",
+                    "count": 0,
+                    "onComplete": function (items) {
+                        if (items.length) {
+                            ev.target.value = items.map(i => i.data.distinguishedName)
+                        } else {
+                            ev.target.value = '';
+                        }
+                    }.bind(this)
+                }
+                if (types.length > 1) {
+                    options.types = types
+                }else{
+                    options.type = types[0]
+                }
+                MWF.xDesktop.requireApp("Selector", "package", ()=>{
+                    new o2.O2Selector(this.app.content, options);
+                });
+            });
+
+        });
+    
+        const buttonHtml = `
+            <oo-button class="button-ok" style="width: 6rem"  text="查询" left-icon="search"></oo-button>
+            <oo-button class="button-cancel" type="cancel" text="重置" left-icon="process-cancel"></oo-button>
+        `;
+        this.viewSearchActionArea.insertAdjacentHTML("beforeend", buttonHtml);
+
+        const searchButton = this.viewSearchActionArea.querySelector("oo-button.button-ok");
+        const cancelButton = this.viewSearchActionArea.querySelector("oo-button.button-cancel");
+
+        searchButton.addEventListener("click", (ev)=>{
+            debugger;
+            if (!this.customFilterListData) this.customFilterListData = [];
+            this.searchAreaNode.querySelectorAll(".search-item").forEach( (node)=>{
+                this.getFilterData(node);
+            });
+            const filterData = this.json.filter ? this.json.filter.clone() : [];
+            const filter = [...filterData, ...this.customFilterListData];
+            this.createViewNode({"filterList": filter}, null, true);
+        });
+        cancelButton.addEventListener("click", (ev)=>{
+            this.searchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
+                node.value = "";
+                this.customFilterListData = [];
+                this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
+            });
+        });
+
+
+
+    },
+    loadFilterSearch: function(){
+        debugger;
+        o2.JSON.get(`../x_component_query_ViewDesigner/$View/skin/styles_${this.viewJson.viewStyleType}.json`, {
+            'onSuccess': (json)=>{
+                if (json.filterSkin==='v10'){
+                    this.loadFilterSearchNodeV10();
+                }else{
+                    this.loadFilterSearchNode();
+                }
+            },
+            'onRequestFailure': ()=>{this.loadFilterSearchNode();},
+            'onError': ()=>{this.loadFilterSearchNode();},
+        });
     },
     searchView: function(){
         debugger;

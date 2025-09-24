@@ -55,7 +55,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
             this._saveDoc();
         });
 
-        this.env = this._fileInProcess() ? 'process' : this._fileInCms() ? 'cms' : '';
+        this.env = this._fileInCms() ? 'cms' : (this._fileInProcess() ? 'process' : '');
         this.restfulActions =
             this.env === 'process' ? this.form.workAction.action : this.env === 'cms' ? this.form.documentAction.action : null;
 

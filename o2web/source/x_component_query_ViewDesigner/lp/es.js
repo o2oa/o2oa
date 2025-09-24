@@ -330,7 +330,13 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"headStyle": "Estilo de encabezado",
 		"columnTitleStyle": "Estilo de título de columna",
 		"columnContentStyle": "Estilo de contenido de columna",
-		"exportNotice": "Hasta 2.000 artículos en todas partes a la vez"
+		"exportNotice": "Hasta 2.000 artículos en todas partes a la vez",
+		"orgRange": "Rango de selección",
+		"org_unit": "Organización",
+		"org_person": "Personal",
+		"org_identity": "Identidad",
+		"org_role": "Personajes",
+		"org_group": "Grupo"
 	},
 	"viewStyle": {
 		"default": "Estilo predeterminado",
