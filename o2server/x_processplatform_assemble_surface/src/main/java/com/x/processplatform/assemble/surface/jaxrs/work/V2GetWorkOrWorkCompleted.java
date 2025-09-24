@@ -1,20 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.processplatform.core.entity.content.Review;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,7 +7,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
@@ -36,12 +21,14 @@ import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -51,6 +38,17 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.query.core.entity.Item;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class V2GetWorkOrWorkCompleted extends BaseAction {
 
@@ -163,7 +161,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
      * 通过接口标志待办待阅已读,viewTime标志为当前时间
      *
      * @param effectivePerson
-     * @param work
+     * @param job
      * @throws Exception
      */
     private void jobView(EffectivePerson effectivePerson, String job) throws Exception {
@@ -199,6 +197,13 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
     private CompletableFuture<Void> dataFuture(Work work, Wo wo, EffectivePerson effectivePerson) {
         return CompletableFuture.runAsync(() -> {
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Business business = new Business(emc);
+                Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
+                String activity = "";
+                if(review != null){
+                    activity = review.getActivityUnique();
+                    wo.setReview(WoReview.copier.copy(review));
+                }
                 List<Item> list = emc.listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME,
                         work.getJob(),
                         DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
@@ -206,9 +211,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
                     JsonElement jsonElement = itemConverter.assemble(list);
                     // 必须是Object对象
                     if (jsonElement.isJsonObject()) {
-                        Business business = new Business(emc);
-                        Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
-                        String activity = review == null ? "" : review.getActivityUnique();
                         business.itemAccess().convert(jsonElement, work.getProcess(),
                                 work.getApplication(), activity,
                                 effectivePerson);
@@ -313,6 +315,13 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
                         wo.setRouteList(WoRoute.copier.copy(
                                 business.route().pick(((Manual) activity).getRouteList())));
                     }
+                }else{
+                    woActivity.setId(work.getActivity());
+                    woActivity.setName(work.getActivityName());
+                    woActivity.setAlias(work.getActivityAlias());
+                    woActivity.setUnique(work.getActivityUnique());
+                    woActivity.setDescription(work.getActivityDescription());
+                    wo.setActivity(woActivity);
                 }
             } catch (Exception e) {
                 LOGGER.error(e);
@@ -417,6 +426,18 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
     private CompletableFuture<Void> workCompletedDataFuture(WorkCompleted workCompleted, Wo wo, EffectivePerson effectivePerson) {
         return CompletableFuture.runAsync(() -> {
+            String activity = "";
+            try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Business business = new Business(emc);
+                Review review = business.review()
+                        .getWithPersonAndJob(effectivePerson.getDistinguishedName(), workCompleted.getJob());
+                if (review != null) {
+                    activity = review.getActivityUnique();
+                    wo.setReview(WoReview.copier.copy(review));
+                }
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
             if (BooleanUtils.isTrue(workCompleted.getMerged())) {
                 wo.setData(workCompleted.getData());
             } else {
@@ -431,7 +452,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
                         if (jsonElement.isJsonObject()) {
                             Business business = new Business(emc);
                             business.itemAccess().convert(jsonElement, workCompleted.getProcess(),
-                                    workCompleted.getApplication(), workCompleted.getActivity(),
+                                    workCompleted.getApplication(), activity,
                                     effectivePerson);
                             wo.setData(gson.fromJson(jsonElement, Data.class));
                         }
@@ -539,6 +560,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
         // 只有work有
         private List<WoRoute> routeList;
 
+        // work和workCompleted都有
+        private WoReview review;
+
         public JsonElement getWork() {
             return work;
         }
@@ -643,6 +667,14 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
             this.recordList = recordList;
         }
 
+        public WoReview getReview() {
+            return review;
+        }
+
+        public void setReview(
+                WoReview review) {
+            this.review = review;
+        }
     }
 
     public static class WoWork extends Work {
@@ -681,6 +713,16 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
         static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
                 null,
                 JpaObject.FieldsInvisible);
+
+    }
+
+    public static class WoReview extends Review {
+
+        private static final long serialVersionUID = 8925088183074565889L;
+
+        static WrapCopier<Review, WoReview> copier = WrapCopierFactory.wo(Review.class, WoReview.class,
+                null,
+                JpaObject.FieldsInvisibleIncludeProperites);
 
     }
 

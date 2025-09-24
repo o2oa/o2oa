@@ -16,6 +16,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Route;
@@ -269,6 +270,22 @@ public class MergeProcessor extends AbstractMergeProcessor {
 	protected Optional<Route> inquiring(AeiObjects aeiObjects, Merge merge) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.mergeInquire(aeiObjects.getWork().getActivityToken(), merge));
+		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
+				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())
+				&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
+			Activity activity = aeiObjects.business().element()
+					.getActivity(aeiObjects.getWork().getDestinationActivity());
+			if (null != activity) {
+				Route route = new Route();
+				route.setActivity(activity.getId());
+				route.setActivityType(activity.getActivityType());
+				// 清理掉goBackStore
+				aeiObjects.getWork().setGoBackStore(null);
+				// 清理掉退回到的activityToken标志
+				aeiObjects.getWork().setGoBackActivityToken(null);
+				return Optional.of(route);
+			}
+		}
 		return aeiObjects.getRoutes().stream().findFirst();
 	}
 

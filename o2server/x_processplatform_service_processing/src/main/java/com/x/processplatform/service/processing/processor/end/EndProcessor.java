@@ -20,6 +20,7 @@ import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.End;
@@ -280,6 +281,22 @@ public class EndProcessor extends AbstractEndProcessor {
 	protected Optional<Route> inquiring(AeiObjects aeiObjects, End end) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.endInquire(aeiObjects.getWork().getActivityToken(), end));
+		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
+				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())
+				&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
+			Activity activity = aeiObjects.business().element()
+					.getActivity(aeiObjects.getWork().getDestinationActivity());
+			if (null != activity) {
+				Route route = new Route();
+				route.setActivity(activity.getId());
+				route.setActivityType(activity.getActivityType());
+				// 清理掉goBackStore
+				aeiObjects.getWork().setGoBackStore(null);
+				// 清理掉退回到的activityToken标志
+				aeiObjects.getWork().setGoBackActivityToken(null);
+				return Optional.of(route);
+			}
+		}
 		return Optional.empty();
 	}
 

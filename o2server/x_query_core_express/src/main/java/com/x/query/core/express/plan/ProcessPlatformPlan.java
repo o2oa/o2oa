@@ -11,6 +11,7 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.core.entity.content.Review;
@@ -168,15 +169,12 @@ public class ProcessPlatformPlan extends Plan {
             }
         }
         List<String> jobs = listBundleByReview(pathList);
-        LOGGER.info("listBundleByReview1:{}", jobs.size());
         if (!filterEntries.isEmpty()) {
             jobs = listBundleFilterEntry(jobs, filterEntries, threadPool);
         }
-        LOGGER.info("listBundleByReview2:{}", jobs.size());
         if (!runtimeFilterEntries.isEmpty()) {
             jobs = listBundleFilterEntry(jobs, runtimeFilterEntries, threadPool);
         }
-        LOGGER.info("listBundleByReview3:{}", jobs.size());
         return jobs;
     }
 
@@ -188,7 +186,7 @@ public class ProcessPlatformPlan extends Plan {
             Root<Review> root = cq.from(Review.class);
             Predicate p = this.where.reviewPredicate(cb, root);
             if (BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(
-                    this.runtime.person))) {
+                    this.runtime.person) && !OrganizationDefinition.isSystemUser(this.runtime.person))) {
                 p = cb.and(p, cb.equal(root.get(Review_.person), this.runtime.person));
                 Predicate accessPredicate = this.accessPredicate(emc, cb, root, pathList);
                 if (accessPredicate != null) {
@@ -453,7 +451,7 @@ public class ProcessPlatformPlan extends Plan {
 
         private Predicate reviewPredicate(CriteriaBuilder cb, Root<Review> root) throws Exception {
             List<Predicate> ps = new TreeList<>();
-            ps.add(this.reviewPredicateProcess(root));
+            ps.add(this.reviewPredicateProcess(cb, root));
             ps.add(this.reviewPredicateCreator(cb, root));
             ps.add(this.reviewPredicateDate(cb, root));
             ps = ListTools.trim(ps, true, false);
@@ -463,16 +461,25 @@ public class ProcessPlatformPlan extends Plan {
             return cb.and(ps.toArray(new Predicate[]{}));
         }
 
-        private Predicate reviewPredicateProcess(Root<Review> root) throws Exception {
+        private Predicate reviewPredicateProcess(CriteriaBuilder cb, Root<Review> root) throws Exception {
+            List<String> applicationIds = ListTools.extractField(this.applicationList, JpaObject.id_FIELDNAME,
+                    String.class, true, true);
             List<String> processIds = ListTools.extractField(this.processList,
                     JpaObject.id_FIELDNAME, String.class,
                     true, true);
             processIds = processIds.stream().filter(StringUtils::isNotEmpty)
                     .collect(Collectors.toList());
-            if (processIds.isEmpty()) {
+            if (applicationIds.isEmpty() && processIds.isEmpty()) {
                 return null;
             }
-            return root.get(Review_.process).in(processIds);
+            Predicate p = cb.disjunction();
+            if (!applicationIds.isEmpty()) {
+                p = cb.or(p, root.get(Review_.application).in(applicationIds));
+            }
+            if (!processIds.isEmpty()) {
+                p = cb.or(p, root.get(Review_.process).in(processIds));
+            }
+            return p;
         }
 
         private Predicate reviewPredicateCreator(CriteriaBuilder cb, Root<Review> root)

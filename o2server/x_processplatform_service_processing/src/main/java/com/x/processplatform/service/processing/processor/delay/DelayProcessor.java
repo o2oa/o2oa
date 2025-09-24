@@ -19,6 +19,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Delay;
 import com.x.processplatform.core.entity.element.DelayType;
 import com.x.processplatform.core.entity.element.Route;
@@ -139,6 +140,22 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	protected Optional<Route> inquiring(AeiObjects aeiObjects, Delay delay) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.delayInquire(aeiObjects.getWork().getActivityToken(), delay));
+		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
+				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())
+				&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
+			Activity activity = aeiObjects.business().element()
+					.getActivity(aeiObjects.getWork().getDestinationActivity());
+			if (null != activity) {
+				Route route = new Route();
+				route.setActivity(activity.getId());
+				route.setActivityType(activity.getActivityType());
+				// 清理掉goBackStore
+				aeiObjects.getWork().setGoBackStore(null);
+				// 清理掉退回到的activityToken标志
+				aeiObjects.getWork().setGoBackActivityToken(null);
+				return Optional.of(route);
+			}
+		}
 		return aeiObjects.getRoutes().stream().findFirst();
 	}
 

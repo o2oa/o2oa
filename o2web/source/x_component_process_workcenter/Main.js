@@ -9,7 +9,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		"name": "process.workcenter",
 		"mvcStyle": "style.css",
 		"icon": "icon.png",
-		"title": MWF.xApplication.process.workcenter.LP.title
+		"title": MWF.xApplication.process.workcenter.LP.title,
+		"startProcess": false
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.workcenter.LP;
@@ -21,7 +22,12 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.setLayout();
 			this.loadCount();
 			var list = (this.status) ? (this.status.navi || "task") : "task";
-			this.loadList(list, null, callback);
+			this.loadList(list, null, function(){
+				if (callback) callback();
+				if( this.options.startProcess || this.status?.startProcess ){
+					this.startProcess();
+				}
+			}.bind(this));
 			// if (callback) callback();
 		}.bind(this));
 	},

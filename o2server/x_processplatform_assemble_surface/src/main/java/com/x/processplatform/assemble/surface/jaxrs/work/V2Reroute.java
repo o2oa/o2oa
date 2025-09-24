@@ -18,6 +18,7 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -129,6 +130,7 @@ class V2Reroute extends BaseAction {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_REROUTE);
 		req.setSeries(param.series);
+		req.setForceJoinAtInquire(true);
 		ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", param.work.getId(), "processing"), req, param.work.getJob())
