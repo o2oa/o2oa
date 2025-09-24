@@ -2,14 +2,17 @@ package com.x.processplatform.service.processing.processor.choice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Choice;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
@@ -54,6 +57,22 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.choiceInquire(aeiObjects.getWork().getActivityToken(), choice));
+		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
+				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())
+				&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
+			Activity activity = aeiObjects.business().element()
+					.getActivity(aeiObjects.getWork().getDestinationActivity());
+			if (null != activity) {
+				Route route = new Route();
+				route.setActivity(activity.getId());
+				route.setActivityType(activity.getActivityType());
+				// 清理掉goBackStore
+				aeiObjects.getWork().setGoBackStore(null);
+				// 清理掉退回到的activityToken标志
+				aeiObjects.getWork().setGoBackActivityToken(null);
+				return Optional.of(route);
+			}
+		}
 		// 多条路由进行判断
 		for (Route o : aeiObjects.getRoutes()) {
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), o,

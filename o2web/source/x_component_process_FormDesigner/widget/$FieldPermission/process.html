@@ -26,7 +26,7 @@
     
     <div class="fieldPermissions-body-item" style="display: block; margin-bottom: 0.5rem;">
         <oo-selector
-            data-o2-events="click:selectOrgs:readByOrgValue:process"
+            data-o2-events="click:selectOrgs:readerList:process"
             label-style="font-weight:bold"
             right-icon="create"
             label="{{$.lp.propertyTemplate.readOrg}}"
@@ -58,12 +58,12 @@
     
     <div class="fieldPermissions-body-item" style="display:block; margin-bottom: 0.5rem;">
         <oo-selector
-            data-o2-events="click:selectOrgs:editByOrgValue:process"
+            data-o2-events="click:selectOrgs:editorList:process"
             label-style="font-weight:bold"
             right-icon="create"
             label="{{$.lp.propertyTemplate.editOrg}}"
             item-type="border"
-            value="{{$m.getActivityDn($.data.editByOrgValue)}}"
+            value="{{$.data.editorList}}"
         ></oo-selector>
     </div>
 </div>

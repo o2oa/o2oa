@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.embed;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -17,6 +18,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.EmbedCreatorType;
 import com.x.processplatform.core.entity.element.Route;
@@ -173,6 +175,22 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	protected Optional<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedInquire(aeiObjects.getWork().getActivityToken(), embed));
+		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
+				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())
+				&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
+			Activity activity = aeiObjects.business().element()
+					.getActivity(aeiObjects.getWork().getDestinationActivity());
+			if (null != activity) {
+				Route route = new Route();
+				route.setActivity(activity.getId());
+				route.setActivityType(activity.getActivityType());
+				// 清理掉goBackStore
+				aeiObjects.getWork().setGoBackStore(null);
+				// 清理掉退回到的activityToken标志
+				aeiObjects.getWork().setGoBackActivityToken(null);
+				return Optional.of(route);
+			}
+		}
 		return aeiObjects.getRoutes().stream().findFirst();
 	}
 

@@ -187,11 +187,13 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         oldIds.push(process.id);
 
         var checkActivity = function(a) {
+            if (a.unique) oldIds.push(a.unique);
             oldIds.push(a.id);
             if(a.form && !isSameApp)a.form="";
         };
 
         if (process.begin) {
+            if (process.begin.unique) oldIds.push(process.begin.unique);
             oldIds.push(process.begin.id);
             if(process.begin.form && !isSameApp)process.begin.form="";
         }
@@ -453,11 +455,13 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer.Process = new Class({
                 oldIds.push(process.id);
 
                 var checkActivity = function(a) {
+                    if (a.unique) oldIds.push(a.unique);
                     oldIds.push(a.id);
                     if(a.form && !isSameApp)a.form="";
                 };
 
                 if (process.begin) {
+                    if (process.begin.unique) oldIds.push(process.begin.id);
                     oldIds.push(process.begin.id);
                     if(process.begin.form && !isSameApp)process.begin.form="";
                 }
