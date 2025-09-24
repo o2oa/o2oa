@@ -63,30 +63,34 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 				throw new ExceptionApplicationNotExist(applicationFlag);
 			}
 			Predicate p = this.predicateApplication(application, workCriteria);
-			// p = predicateWorkThroughManualWorkCreateTypeWorkStatus(wi, p, workCriteria);
 			p = predicateStringValue(wi, p, workCriteria);
 			p = predicateWorkJob(wi, p, workCriteria);
 			p = predicateStartTimeEndTime(wi, p, workCriteria);
 			p = predicateCreatorPersonCreatorUnitActivityName(business, wi, p, workCriteria);
 			p = predicateTitle(wi, p, workCriteria);
-			List<String> processes = business.process().listWithApplication(application);
-			if (ListTools.isNotEmpty(wi.getProcessList())) {
-				processes = ListUtils.intersection(wi.getProcessList(), processes);
-			}
-			List<String> controllableProcesses = ListUtils.intersection(processes,
-					business.process().listControllableProcess(effectivePerson, application));
-			List<String> uncontrollableProcesses = ListUtils.subtract(processes, controllableProcesses);
-			if (BooleanUtils.isTrue(wi.getRelateEditionProcess())) {
-				controllableProcesses = business.process().listEditionProcess(controllableProcesses);
-				uncontrollableProcesses = business.process().listEditionProcess(uncontrollableProcesses);
-			}
-
-			if (ListTools.isNotEmpty(uncontrollableProcesses)) {
-				this.fetch(effectivePerson, this.adjustPage(page), this.adjustSize(size), workCriteria, countCriteria,
-						reviewCriteria, p, controllableProcesses, uncontrollableProcesses, result);
+			if (!business.application().allowControl(effectivePerson, application)) {
+				// 如果没有应用管理权限,需要通过process 的 contrl进行判断.
+				List<String> processes = business.process().listWithApplication(application);
+				if (ListTools.isNotEmpty(wi.getProcessList())) {
+					processes = ListUtils.intersection(wi.getProcessList(), processes);
+				}
+				List<String> controllableProcesses = ListUtils.intersection(processes,
+						business.process().listControllableProcess(effectivePerson, application));
+				List<String> uncontrollableProcesses = ListUtils.subtract(processes, controllableProcesses);
+				if (BooleanUtils.isTrue(wi.getRelateEditionProcess())) {
+					controllableProcesses = business.process().listEditionProcess(controllableProcesses);
+					uncontrollableProcesses = business.process().listEditionProcess(uncontrollableProcesses);
+				}
+				if (ListTools.isNotEmpty(uncontrollableProcesses)) {
+					this.fetch(effectivePerson, this.adjustPage(page), this.adjustSize(size), workCriteria,
+							countCriteria, reviewCriteria, p, controllableProcesses, uncontrollableProcesses, result);
+				} else {
+					this.fetch(business, this.adjustPage(page), this.adjustSize(size), p, workCriteria,
+							controllableProcesses, result);
+				}
 			} else {
-				this.fetch(business, this.adjustPage(page), this.adjustSize(size), p, workCriteria,
-						controllableProcesses, result);
+				// 有管理权限直接检索应用
+				this.fetch(business, this.adjustPage(page), this.adjustSize(size), p, workCriteria, List.of(), result);
 			}
 			return result;
 		}
