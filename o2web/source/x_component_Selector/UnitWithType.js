@@ -160,9 +160,9 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
     },
     loadSubItem: function(){
         if( !this.selector.options.expandSubEnable )return;
-        this.isExpand = (this.selector.options.expand);
+        this.isExpand = (this.selector.options.expand && !this.selector.options.useBreadcrumbs);
         if (this.data.woSubDirectUnitList && this.data.woSubDirectUnitList.length){
-            if (this.selector.options.expand){
+            if (this.selector.options.expand && !this.selector.options.useBreadcrumbs){
                 if (this.level===1){
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
                     this.loadSubItems();
@@ -192,7 +192,10 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 this.selectAllNode = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
                     "title" : MWF.SelectorLP.selectChildren
-                }).inject(this.textNode, "before");
+                }).inject(
+                    this.selector.options.style.endsWith("flow") ? this.iconNode : this.textNode,
+                    "before"
+                );
                 //this.selectAllNode.addEvent( "click", function(ev){
                 //    this.selectAll(ev);
                 //    ev.stopPropagation();
@@ -220,8 +223,12 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
             if (!this.children){
                 this.children = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryChildrenNode
-                }).inject(this.node, "after");
+                });
             }
+            this.children.inject(
+                this.selector.options.useBreadcrumbs ? this.selector.itemAreaNode : this.node,
+                this.selector.options.useBreadcrumbs ? "bottom" : "after"
+            );
             this.children.setStyle("display", "block");
             ( this.data.woSubDirectUnitList || [] ).each(function(subData){
                 if( !this.selector.isExcluded( subData ) ) {
@@ -248,6 +255,10 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
     },
     postLoad : function(){
     },
+    _hasChild : function () {
+        return ( this.data.woSubDirectUnitList || [] ).length;
+    },
+
 
     //for flat category start
     loadCategoryChildren : function( callback ){
@@ -349,8 +360,12 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        unit.isItem = true;
+                        unit.isCategory = true;
                         this.selector.items.push( unit );
                         if(this.subItems)this.subItems.push( unit );
+                        this.subCategorys.push( unit );
+                        this.subCategoryMap[subData.levelName] = unit;
                     }else{
                         if (subData.woSubDirectUnitList.length){
                             var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
