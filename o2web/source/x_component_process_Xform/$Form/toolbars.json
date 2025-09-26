@@ -90,7 +90,7 @@
         "img": "print.png",
         "title": "打印文件",
         "action": "printWork",
-        "text": "打印",
+        "text": "打印预览",
         "id": "action_print",
         "control": "",
         "condition": "reutrn this.power.isPront",

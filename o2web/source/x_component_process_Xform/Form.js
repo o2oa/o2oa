@@ -5684,29 +5684,45 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     //    }
     //    window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     //},
-    printWork: function (app, form) {
-        var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
-        var form = form;
+    printWork: function (app, form, editMode) {
+        // var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
+        // var form = form;
+
         if (!form || form === "none") {
-            form = this.json.id;
-            if (this.json.printForm && this.json.printForm!=="none" ) form = this.json.printForm;
+            if (this.json.printForm && this.json.printForm!=="none" ){
+                form = this.json.printForm;
+            }
         }
+
+        if( form ){
+            this._printWork(app, form, editMode);
+        }else{
+            var _self = this;
+            var lp = o2.xApplication.process.Xform.LP.form;
+            this.app.alert("infor", "center", lp.printWork, lp.printWorkInfo, 450, 120, function () {
+                _self._printWork(app, _self.json.id, editMode);
+                //this.close();
+            });
+        }
+    },
+    _printWork: function (app, form, editMode) {
+        var editPar = !editMode ? '&readonly=true' : '';
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
+            var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form + editPar);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
-            window.open(url);
+            window.open(url, '_blank');
         } else {
             var application = app || this.businessData.work.application;
-            var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
+            var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form + editPar);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
-            window.open(url);
+            window.open(url, '_blank');
         }
     },
     /**
