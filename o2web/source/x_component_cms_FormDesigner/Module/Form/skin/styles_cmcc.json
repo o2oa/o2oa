@@ -1,0 +1,654 @@
+{
+  "name": "集团样式",
+  "form": {
+    "styles":{
+      "background-color": "#f0f0f0"
+    }
+  },
+  "label": {
+    "banner": {
+      "name": "横幅",
+      "styles": {
+        "background-color": "#3c76b7",
+        "height": "40px",
+        "line-height": "40px",
+        "color": "#ffffff",
+        "font-size": "18px",
+        "padding": "0px 10px",
+        "font-weight": "bold"
+      }
+    },
+
+    "title": {
+      "name": "标题",
+      "styles": {
+        "text-align": "center",
+        "font-size": "36px",
+        "line-height": "100px",
+        "font-weight": "bold",
+        "color": "#f81313",
+        "height": "100px"
+      }
+    },
+
+    "section": {
+      "name": "区段标题",
+      "styles": {
+        "background-color": "#f7f7f7",
+        "height": "35px",
+        "font-size" : "16px",
+        "line-height": "35px",
+        "padding": "0px 10px",
+        "font-weight": "normal",
+        "color": "#555",
+        "border-bottom": "0px"
+      }
+    }
+  },
+
+  "div": {
+    "banner": {
+      "name": "横幅",
+      "styles": {
+        "background-color": "#3c76b7",
+        "height": "40px",
+        "line-height": "40px",
+        "color": "#ffffff",
+        "font-size": "18px",
+        "padding": "0px 10px",
+        "font-weight": "bold"
+      }
+    },
+
+    "title": {
+      "name": "标题",
+      "styles": {
+        "text-align": "center",
+        "font-size": "24px",
+        "line-height": "60px",
+        "font-weight": "bold",
+        "color": "#3c76b7",
+        "height": "60px"
+      }
+    },
+    "section": {
+      "name": "区段标题",
+      "styles": {
+        "background-color": "#f7f7f7",
+        "height": "35px",
+        "font-size" : "16px",
+        "line-height": "35px",
+        "padding": "0px 10px",
+        "font-weight": "normal",
+        "color": "#555",
+        "border-bottom": "0px"
+      }
+    }
+  },
+
+  "tab": {
+    "styles": {},
+    "tabAreaStyles": {
+      "height": "40px",
+      "border-bottom": "2px solid #3c76b7"
+    },
+    "contentAreaStyles": {
+      "line-height": "normal",
+      "clear": "both",
+      "overflow": "hidden"
+    },
+    "tabStyles": {
+      "position": "relative",
+      "margin-left": "4px",
+      "margin-top": "0px",
+      "margin-right": "0px",
+      "float": "left",
+      "height": "40px",
+      "cursor": "pointer",
+      "min-width": "100px",
+      "background": "transparent ",
+      "border-top-left-radius": "5px",
+      "border-top-right-radius": "5px",
+      "border": "0px solid #f0f0f0",
+      "border-bottom": "1px solid #3c76b7"
+    },
+    "tabTextStyles": {
+      "color": "#666",
+      "font-weight": "bold",
+      "line-height": "40px",
+      "text-align": "center",
+      "margin-right": "8px",
+      "margin-top": "0px",
+      "margin-left": "8px"
+    },
+    "tabCurrentStyles": {
+      "position": "relative",
+      "margin-top": "0px",
+      "margin-left": "2px",
+      "margin-right": "0px",
+      "float": "left",
+      "height": "40px",
+      "min-width": "100px",
+      "background": "#3c76b7",
+      "border-top-left-radius": "5px",
+      "border-top-right-radius": "5px",
+      "border-top": "0px solid #f0f0f0",
+      "border-left": "0px solid #f0f0f0",
+      "border-right": "0px solid #f0f0f0",
+      "border-bottom": "1px solid #3c76b7"
+    },
+    "tabCurrentTextStyles": {
+      "color": "#FFF",
+      "font-weight": "bold",
+      "line-height": "40px",
+      "text-align": "center",
+      "margin-right": "8px",
+      "margin-left": "8px",
+      "margin-top": "0px"
+    }
+  },
+  "tab$Content": {
+    "styles": {
+      "padding": "20px 0px"
+    }
+  },
+  "table": {
+    "styles": {
+      "background-color": "#FFF",
+      "margin": "10px 10px",
+      "border" : "1px solid #e1e1e1"
+    },
+    "titleStyles":{
+      "background-color": "#f7f7f7",
+      "color": "#333",
+      "font-weight": "bold",
+      "height": "30px",
+      "line-height": "30px",
+      "text-align": "center"
+    },
+    "contentStyles": {
+      "background-color": "#FFFFFF",
+      "color": "#333"
+    },
+    "layoutStyles": {},
+    "properties": {
+      "width": "100%",
+      "border": "0",
+      "cellpadding": "3",
+      "cellspacing": "5",
+      "align": "center"
+    }
+  },
+  "datagrid": {
+    "styles": {},
+    "tableStyles": {
+      "border": "1px solid #cccccc"
+    },
+    "titleStyles": {
+      "height": "28px",
+      "cursor": "pointer",
+      "line-height": "28px",
+      "overflow": "hidden",
+      "opacity": 1,
+      "border-bottom": "1px solid #ccc",
+      "background-color": "#f0f0f0"
+    },
+    "contentStyles": {
+      "text-align": "center",
+      "height": "30px",
+      "line-height": "30px",
+      "color": "#666"
+    },
+    "actionStyles": {
+      "background-color": "#f7f7f7"
+    },
+    "editStyles": {
+      "background-color": "#fff6f6",
+      "text-align": "center",
+      "height": "30px",
+      "line-height": "30px"
+    },
+    "amountStyles": {
+      "border-top": "1px solid #ccc",
+      "font-weight": "bold",
+      "height": "30px",
+      "line-height": "30px",
+      "text-align": "center",
+      "background-color": "#f0f0f0"
+    },
+    "itemTitleStyles": {
+      "height": "40px",
+      "background-color": "#ffffff",
+      "line-height": "30px",
+      "padding": "0px 15px",
+      "color": "#fb4747",
+      "font-size": "18px",
+      "font-weight": "bold",
+      "border-bottom": "0px solid #cccccc"
+    },
+    "importActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "exportActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "properties": {
+      "border": "0",
+      "cellpadding": "3",
+      "cellspacing": "0",
+      "align": "center"
+    }
+  },
+  "datagrid$Title": {
+    "styles": {
+      "background-color": "#f0f0f0"
+    }
+  },
+  "datatable": {
+    "styles": {},
+    "tableStyles": {
+      "border": "1px solid #cccccc",
+      "width": "calc(100% - 2px)"
+    },
+    "titleStyles": {
+      "height": "28px",
+      "cursor": "pointer",
+      "line-height": "28px",
+      "overflow": "hidden",
+      "opacity": 1,
+      "border-bottom": "1px solid #ccc",
+      "background-color": "#f0f0f0"
+    },
+    "contentStyles": {
+      "text-align": "center",
+      "height": "30px",
+      "line-height": "30px",
+      "color": "#666"
+    },
+    "actionStyles": {
+      "background-color": "#f7f7f7"
+    },
+    "editStyles": {
+      "background-color": "#fff6f6",
+      "text-align": "center",
+      "height": "30px",
+      "line-height": "30px"
+    },
+    "amountStyles": {
+      "border-top": "1px solid #ccc",
+      "font-weight": "bold",
+      "height": "30px",
+      "line-height": "30px",
+      "text-align": "center",
+      "background-color": "#f0f0f0"
+    },
+    "sectionAmountStyles": {
+      "font-weight": "bold",
+      "height": "30px",
+      "line-height": "30px",
+      "text-align": "center",
+      "background-color": "#fafafa"
+    },
+    "itemTitleStyles": {
+      "height": "40px",
+      "background-color": "#ffffff",
+      "line-height": "30px",
+      "padding": "0px 15px",
+      "color": "#fb4747",
+      "font-size": "18px",
+      "font-weight": "bold",
+      "border-bottom": "0px solid #cccccc"
+    },
+    "importActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "exportActionStyles" : {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "float" : "left",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px"
+    },
+    "sectionKeyStyles": {
+    },
+    "properties": {
+      "border": "0",
+      "cellpadding": "3",
+      "cellspacing": "0",
+      "align": "center"
+    }
+  },
+  "datatable$Title": {
+    "styles": {
+      "background-color": "#f0f0f0"
+    }
+  },
+  "address": {
+    "styles": {
+      "border-bottom": "1px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "height": "30px",
+      "color": "#666",
+      "border": "0px solid #ccc"
+    }
+  },
+  "combox": {
+    "styles": {
+      "border-bottom": "1px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "height": "30px",
+      "color": "#666",
+      "border": "0px solid #ccc"
+    }
+  },
+  "textfield": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "calendar": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "number": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "currency": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    },
+    "symbolStyles": {
+      "padding-left": "2px",
+      "line-height": "34px"
+    }
+  },
+  "personfield": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "30px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "min-height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "orgfield": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "30px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "min-height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "org": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "30px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "min-height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "reader": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "30px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "min-height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "author": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "30px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "min-height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "select": {
+    "styles": {
+      "border-bottom": "0px solid #999",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "margin-top": "5px",
+      "color": "#666"
+    },
+    "inputStyles": {
+      "height": "30px",
+      "font-size": "100%"
+    }
+  },
+  "textarea": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc",
+      "color": "#666"
+    }
+  },
+  "actionbar": {
+    "style": "xform_blue_simple",
+    "customIconStyle" : "blue",
+    "customIconOverStyle" : "white"
+  },
+  "attachment" : {
+    "style" : "cmcc"
+  },
+  "writingBoard": {
+    "styles": {
+      "overflow": "hidden"
+    },
+    "actionStyles": {
+      "float": "right",
+      "border": "1px solid #6681a5",
+      "border-radius": "3px",
+      "cursor": "pointer",
+      "height": "25px",
+      "line-height": "25px",
+      "min-width": "30px",
+      "padding-left": "24px",
+      "padding-right": "5px",
+      "margin-left": "5px",
+      "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+    },
+    "imageStyles": {
+
+    }
+  },
+  "relatedlink": {
+    "buttonStyles": {
+      "border-radius": "10px",
+      "height": "30px",
+      "line-height": "30px",
+      "padding-left": "34px",
+      "padding-right": "5px",
+      "cursor": "pointer",
+      "border": "1px solid #6681a5",
+      "margin": "10px auto",
+      "background": "url(../x_component_process_FormDesigner/Module/Relatedlink/default/icon/down_blue.png) no-repeat 15px center",
+      "width": "70px"
+    },
+    "tableStyles": {
+      "border-top": "1px solid #CCC",
+      "font-size": "12px"
+    },
+    "tableTitleCellStyles": {
+      "text-align": "center",
+      "font-weight": "bold",
+      "line-height": "28px",
+      "border-bottom": "1px solid #CCC",
+      "background": "#edf3f9"
+    },
+    "tableContentLineStyles": {
+      "background": "#ffffff"
+    },
+    "tableContentLineStyles_over": {
+      "background": "#f6f6f6"
+    },
+    "tableContentCellStyles": {
+      "line-height": "28px",
+      "border-bottom": "1px solid #CCC"
+    },
+    "tableContentCellStyles_title": {
+      "font-size": "14px"
+    }
+  },
+  "associatedDocument": {
+    "styles": {
+      "border": "1px solid #ccc",
+      "padding": "5px"
+    },
+    "buttonStyles": {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px",
+      "display": "inline-block"
+    }
+  }
+}
