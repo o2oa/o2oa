@@ -31,7 +31,7 @@ import com.x.base.core.project.tools.StringTools;
 public class ConnectionAction {
 
 	private static final int DEFAULT_CONNECTTIMEOUT = 2000;
-	private static final int DEFAULT_READTIMEOUT = 5 * 60 * 1000;
+	private static final int DEFAULT_READTIMEOUT = 30 * 60 * 1000;
 
 	private ConnectionAction() {
 	}

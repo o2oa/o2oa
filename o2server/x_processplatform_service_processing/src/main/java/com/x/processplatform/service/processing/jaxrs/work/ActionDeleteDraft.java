@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -42,7 +43,8 @@ class ActionDeleteDraft extends BaseAction {
 
 		CallableImpl impl = new CallableImpl(id);
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(impl)
+				.get(Config.processPlatform().getProcessingTimeout(), TimeUnit.SECONDS);
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {

@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -49,8 +50,8 @@ class ActionProcessing extends BaseAction {
 
 		try {
 			open(id, wi);
-			Wo wo = ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get(300,
-					TimeUnit.SECONDS);
+			Wo wo = ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(new CallableExecute(wi, id))
+					.get(Config.processPlatform().getProcessingTimeout(), TimeUnit.SECONDS);
 			result.setData(wo);
 			return result;
 		} finally {

@@ -40,8 +40,8 @@ class V2Terminate extends BaseAction {
 
 		Param param = this.init(id);
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(new CallableImpl(param.id)).get(300,
-				TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(new CallableImpl(param.id))
+				.get(Config.processPlatform().getProcessingTimeout(), TimeUnit.SECONDS);
 	}
 
 	private Param init(String id) throws Exception {
