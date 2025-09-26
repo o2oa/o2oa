@@ -394,7 +394,7 @@ MWF.xApplication.process.Xform.LP = {
         "no": "否",
 
         "printWork": "打印预览",
-        "printWorkInfo": "未设置打印表单，将使用原表单打开。",
+        "printWorkInfo": "您好，该表单未设置打印表单，将使用原表单打开。",
 
         "readIdentity": "待阅人",
         "sendReadNotify": "发送待阅通知",
