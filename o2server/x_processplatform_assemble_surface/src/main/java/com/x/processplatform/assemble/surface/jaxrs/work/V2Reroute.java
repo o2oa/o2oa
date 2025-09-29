@@ -18,7 +18,6 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -53,7 +52,10 @@ class V2Reroute extends BaseAction {
 		reroute(param);
 		processing(param);
 		Record rec = this.recordWorkProcessing(Record.TYPE_REROUTE, param.routeName, param.opinion, param.work.getJob(),
-				param.workLog.getId(), param.identity, param.series);
+				param.workLog.getId(),
+				// record一定记录一个处理人
+				StringUtils.isEmpty(param.identity) ? effectivePerson.getDistinguishedName() : param.identity,
+				param.series);
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
 		return result;
