@@ -642,7 +642,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                     var flag = this.form.Macro.exec((this.json[scriptValue]?.code || this.json[scriptValue]), this);
                     return !!flag ? 'script_yes' : 'no';
                 }
-                return 'no';
+                return (!access[processActivity]?.length && !access[processOrg]?.length) ? 'unset' : 'no';
             }
 
         }else{
