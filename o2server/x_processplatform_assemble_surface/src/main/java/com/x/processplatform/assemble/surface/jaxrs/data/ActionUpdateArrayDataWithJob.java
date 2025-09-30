@@ -47,8 +47,8 @@ class ActionUpdateArrayDataWithJob extends BaseAction {
 		if(StringUtils.isEmpty(wi.getPath())){
 			throw new ExceptionFieldEmpty("path");
 		}
-		if(StringUtils.isEmpty(wi.getOperator())){
-			throw new ExceptionFieldEmpty("operator");
+		if(StringUtils.isEmpty(wi.getMethod())){
+			throw new ExceptionFieldEmpty("method");
 		}
 		JsonElement data;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -73,7 +73,7 @@ class ActionUpdateArrayDataWithJob extends BaseAction {
 			throw new ExceptionCustom("指定的path路径数据不是数组对象");
 		}
 		JsonArray arrayData = oldData == null ? new JsonArray() : oldData.getAsJsonArray();
-		switch (wi.getOperator()) {
+		switch (wi.getMethod()) {
 		case OPERATE_ADD:
 			arrayData = JsonArrayOperator.insert(arrayData, wi.getIndex(), wi.getData().getAsJsonObject());
 			break;
@@ -84,7 +84,7 @@ class ActionUpdateArrayDataWithJob extends BaseAction {
 			arrayData = JsonArrayOperator.move(arrayData, wi.getIndex(), wi.getToIndex());
 			break;
 		default:
-			throw new ExceptionCustom("操作类型不匹配：" + wi.getOperator());
+			throw new ExceptionCustom("操作类型不匹配：" + wi.getMethod());
 		}
 		JsonObject newData = new JsonObject();
 		this.addJsonToPath(newData, wi.getPath(), arrayData);
@@ -108,7 +108,7 @@ class ActionUpdateArrayDataWithJob extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 		@FieldDescribe("数组操作方法：add|delete|move")
-		private String operator;
+		private String method;
 		@FieldDescribe("新增的数组下标或删除的数组下标或者移动的起始下标")
 		private Integer index;
 		@FieldDescribe("移动的目标下标")
@@ -119,12 +119,12 @@ class ActionUpdateArrayDataWithJob extends BaseAction {
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "JsonElement", fieldValue = "{}")
 		private JsonElement data;
 
-		public String getOperator() {
-			return operator;
+		public String getMethod() {
+			return method;
 		}
 
-		public void setOperator(String operator) {
-			this.operator = operator;
+		public void setMethod(String method) {
+			this.method = method;
 		}
 
 		public Integer getIndex() {
