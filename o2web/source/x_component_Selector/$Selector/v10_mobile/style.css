@@ -255,6 +255,10 @@
   box-shadow: inset 0 -1px 0 0 #DAE1EC;
   gap: 0.625rem;
 }
+.MWF_selector_itemNode.selected_item, .MWF_selector_categoryNode.selected_item, .MWF_selector_categoryitemNode.selected_item{
+  height: auto;
+  min-height: 3.125rem;
+}
 .MWF_selector_category_childrenNode{
 
 }

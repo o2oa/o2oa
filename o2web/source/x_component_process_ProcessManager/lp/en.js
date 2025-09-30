@@ -184,6 +184,7 @@ MWF.xApplication.process.ProcessManager.LP={
 	"updateTime": "Update time",
 	"asc": "positive sequence",
 	"desc": "Reverse order",
-	"searchPlacholder": "Enter name/alias/id search"
+	"searchPlacholder": "Enter name/alias/id search",
+	"formV10": "Concise form template"
 }
 MWF.xApplication.process.ProcessManager["lp."+o2.language] = MWF.xApplication.process.ProcessManager.LP

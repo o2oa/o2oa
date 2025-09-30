@@ -205,6 +205,7 @@ MWF.xApplication.process.ProcessManager.LP = {
 
     "emptyForm": "空白表单",
     "commonForm": "通用表单模板",
+    "formV10": "简洁表单模板",
     "blueForm": "标准表单样式(蓝色)",
     "redForm": "标准表单样式(红色)",
     "greenForm": "标准表单样式(绿色)",

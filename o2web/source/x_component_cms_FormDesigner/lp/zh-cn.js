@@ -34,7 +34,9 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "banner": "横幅",
         "title": "标题",
         "sectionTitle": "区段标题",
-        "section": "区段"
+        "section": "区段",
+        "cmcc": "集团样式",
+        "blueFlat": "蓝白扁平"
     },
     "propertyTemplate": {
         "setPopular": "设置热点操作",

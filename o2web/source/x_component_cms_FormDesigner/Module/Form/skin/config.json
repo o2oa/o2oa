@@ -6,6 +6,15 @@
       "pc"
     ]
   },
+  "v10": {
+    "name": "V10",
+    "file": "styles_v10.json",
+    "extendFile": "styles_v10_extend.json",
+    "mode": [
+      "pc",
+      "mobile"
+    ]
+  },
   "default": {
     "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.defaultStyle,
     "file": "styles_default.json",
@@ -27,9 +36,32 @@
       "pc"
     ]
   },
-  "green-flat": {
-    "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.greenFlat,
-    "file": "styles_green-flat.json",
+  "official": {
+    "name": "公文样式",
+    "file": "styles_official.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "official-border": {
+    "name": "公文样式_边框",
+    "file": "styles_official_border.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "cmcc": {
+    "name": "集团样式",
+    "file": "styles_cmcc.json",
+    "extendFile": "styles_cmcc_extend.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "blue-flat": {
+    "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.blueFlat,
+    "file": "styles_blue-flat.json",
+    "extendFile": "styles_blue-flat_extend.json",
     "mode": [
       "pc"
     ]
@@ -42,13 +74,11 @@
       "pc"
     ]
   },
-  "v10": {
-    "name": "V10",
-    "file": "styles_v10.json",
-    "extendFile": "styles_v10_extend.json",
+  "green-flat": {
+    "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.greenFlat,
+    "file": "styles_green-flat.json",
     "mode": [
-      "pc",
-      "mobile"
+      "pc"
     ]
   },
   "defaultMobile": {

@@ -184,6 +184,7 @@ MWF.xApplication.process.ProcessManager.LP={
 	"updateTime": "Tiempo de actualización",
 	"asc": "Orden positivo",
 	"desc": "Orden inverso",
-	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id"
+	"searchPlacholder": "Introduzca nombre / alias / búsqueda de Id",
+	"formV10": "Plantilla de formulario concisa"
 }
 MWF.xApplication.process.ProcessManager["lp."+o2.language] = MWF.xApplication.process.ProcessManager.LP

@@ -4,6 +4,13 @@
     "title": MWF.xApplication.process.ProcessManager.LP.emptyForm,
     "icon": "form.png"
   },
+
+  {
+    "name": "form_v10.json",
+    "title": MWF.xApplication.process.ProcessManager.LP.formV10,
+    "icon": "form_v10.png"
+  },
+
   {
     "name": "form_common.json",
     "title": MWF.xApplication.process.ProcessManager.LP.commonForm,

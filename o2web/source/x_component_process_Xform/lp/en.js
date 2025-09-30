@@ -332,6 +332,8 @@ MWF.xApplication.process.Xform.LP={
 		"excludeBranches": "Exclude existing branches",
 		"yes": "Yes",
 		"no": "No",
+		"printWork": "Print Preview",
+		"printWorkInfo": "No print form is set. The original form will be used to open.",
 		"readIdentity": "Identity",
 		"sendReadNotify": "Send a pending notification",
 		"reviewIdentity": "Identity",

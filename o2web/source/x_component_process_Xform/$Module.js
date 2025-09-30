@@ -690,6 +690,19 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         if (!this.form.relatedModules[path]) this.form.relatedModules[path] = new Set();
         this.form.relatedModules[path].add(this);
     },
+
+    /**
+         * 给当前组件增加一个显示关联数据，当这个数据改变时，刷新当前组件的可见状态.
+         * @param {String|Array<String>} [path] 要关联的数据路径。
+         * @param {Function} [cb] 提供一个返回布尔值的函数，用于检查当前组件是否可显示，返回true表示当前组件可见，返回false则隐藏当前组件
+         * @example
+         * //在组件的load事件中，添加下面的代码：
+         * this.target.addRelatedDisplay('dataType', ()=>{
+         *  return this.data.dataType==='1'
+         * });
+         * 
+         * //加入以上代码后，只要 “dataType” 的值改变，就会检查当前组件是否隐藏或显示。当 dataType 值为 “1” 时，当前组件显示，否则隐藏当前组件。
+         */
     addRelatedDisplay: function(path, cb){
         if (cb){
             const ps = Array.isArray(path) ? path : [path];
@@ -704,6 +717,19 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             this._checkDisplay(cb);
         }
     },
+
+    /**
+         * 给当前组件增加一个值关联数据，当这个数据改变时，刷新当前组件的值.
+         * @param {String|Array<String>} [path] 要关联的数据路径。
+         * @param {Function} [cb] 提供一个函数，当关联数据发生改变时，执行此函数，返回的值更新为当前组件的值。
+         * @example
+         * //在field类的组件（如文本框）的load事件中，添加下面的代码：
+         * this.target.addRelatedValue(['price', 'count'], ()=>{
+         *  return this.data.price * this.data.count;
+         * });
+         * 
+         * //加入以上代码后，只要 price 或 count 的值改变，就会计算当前组件的值，其值是 price 乘以 count。
+         */
     addRelatedValue: function(path, cb){
         if (cb){
             const ps = Array.isArray(path) ? path : [path];
@@ -1017,6 +1043,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     _setBusinessData: function(v, id){
+        debugger;
         //if (o2.typeOf(v)==="string") v = o2.txt(v);
         if (!this.isEditable) return;
         if (this.json.section=="yes"){
@@ -1029,18 +1056,25 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if (this.json.isTitle && this.json.moduleName !== "associatedDocument") this.form.businessData.data.$work.title = v;
             }
         }
-        if (this.form.relatedModules && this.form.relatedModules[(id || this.json.id)]){
-            this.form.relatedModules[(id || this.json.id)].forEach((module)=>{
+
+        const mid = (id || this.json.id);
+        // const dataId = mid.split('..').map((s)=>{
+        //     return /^\d+$/.test(s) ? '*' : s
+        // }).join('.');
+        const dataId = mid.split('..').join('.');
+
+        if (this.form.relatedModules && this.form.relatedModules[dataId]){
+            this.form.relatedModules[dataId].forEach((module)=>{
                 module?.reload();
             })
         }
-        if (this.form.relatedDisplayModules && this.form.relatedDisplayModules[(id || this.json.id)]){
-            this.form.relatedDisplayModules[(id || this.json.id)].forEach((o)=>{
+        if (this.form.relatedDisplayModules && this.form.relatedDisplayModules[dataId]){
+            this.form.relatedDisplayModules[dataId].forEach((o)=>{
                 o.module?._checkDisplay(o.display);
             })
         }
-        if (this.form.relatedValueModules && this.form.relatedValueModules[(id || this.json.id)]){
-            this.form.relatedValueModules[(id || this.json.id)].forEach((o)=>{
+        if (this.form.relatedValueModules && this.form.relatedValueModules[dataId]){
+            this.form.relatedValueModules[dataId].forEach((o)=>{
                 o.module?._checkValue(o.value);
             })
         }
