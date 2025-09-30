@@ -748,6 +748,24 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据任务标识更新指定路径的数组数据.", action = ActionUpdateArrayDataWithJob.class)
+	@POST
+	@Path("job/{job}/array/data")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateArrayDataWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("job标识") @PathParam("job") String job, JsonElement jsonElement) {
+		ActionResult<ActionUpdateArrayDataWithJob.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateArrayDataWithJob().execute(effectivePerson, job, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@Operation(summary = "根据任务标识更新业务数据.", operationId = OPERATIONID_PREFIX + "updateWithJob", responses = {
 			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
 	@JaxrsMethodDescribe(value = "根据任务标识更新业务数据.", action = ActionUpdateWithJob.class)
