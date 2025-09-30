@@ -122,7 +122,11 @@ public class Tasks {
 				expireAppoint(manual, task);
 				break;
 			case script:
-				expireScript(aeiObjects, manual, task);
+				if (StringUtils.isNotEmpty(manual.getTaskExpireScript())
+						|| StringUtils.isNotEmpty(manual.getTaskExpireScriptText())) {
+					// 有设置的脚本再执行,对应前端选中了用脚本计算但是没有输入内容
+					expireScript(aeiObjects, manual, task);
+				}
 				break;
 			default:
 				break;
