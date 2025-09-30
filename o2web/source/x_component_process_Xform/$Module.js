@@ -1023,6 +1023,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     _setBusinessData: function(v, id){
+        debugger;
         //if (o2.typeOf(v)==="string") v = o2.txt(v);
         if (!this.isEditable) return;
         if (this.json.section=="yes"){
@@ -1035,18 +1036,25 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if (this.json.isTitle && this.json.moduleName !== "associatedDocument") this.form.businessData.data.$work.title = v;
             }
         }
-        if (this.form.relatedModules && this.form.relatedModules[(id || this.json.id)]){
-            this.form.relatedModules[(id || this.json.id)].forEach((module)=>{
+
+        const mid = (id || this.json.id);
+        // const dataId = mid.split('..').map((s)=>{
+        //     return /^\d+$/.test(s) ? '*' : s
+        // }).join('.');
+        const dataId = mid.split('..').join('.');
+
+        if (this.form.relatedModules && this.form.relatedModules[dataId]){
+            this.form.relatedModules[dataId].forEach((module)=>{
                 module?.reload();
             })
         }
-        if (this.form.relatedDisplayModules && this.form.relatedDisplayModules[(id || this.json.id)]){
-            this.form.relatedDisplayModules[(id || this.json.id)].forEach((o)=>{
+        if (this.form.relatedDisplayModules && this.form.relatedDisplayModules[dataId]){
+            this.form.relatedDisplayModules[dataId].forEach((o)=>{
                 o.module?._checkDisplay(o.display);
             })
         }
-        if (this.form.relatedValueModules && this.form.relatedValueModules[(id || this.json.id)]){
-            this.form.relatedValueModules[(id || this.json.id)].forEach((o)=>{
+        if (this.form.relatedValueModules && this.form.relatedValueModules[dataId]){
+            this.form.relatedValueModules[dataId].forEach((o)=>{
                 o.module?._checkValue(o.value);
             })
         }

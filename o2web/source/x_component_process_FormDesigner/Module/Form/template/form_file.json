@@ -1758,7 +1758,7 @@
         "html": ""
       },
       "submitScript":{
-        "code":"layout.mobile ? this.popupProcessorMobile() : this.popupProcessor();",
+        "code":"",
         "html": ""
       },
       "events": {
