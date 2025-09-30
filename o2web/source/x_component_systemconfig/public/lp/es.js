@@ -179,11 +179,10 @@ MWF.xApplication.systemconfig.LP={
 		"serviceResource": "Desplegar servicios personalizados",
 		"serviceResourceInfo": "Puede desplegar aquí su proyecto personalizado desarrollado, cargando un archivo jar compilado o un archivo war. Después de desplegar, debe reiniciar el servidor.",
 		"deployLog": "Registro de implementación",
-		"deployLogInfo": "Muestra registros de implementación de recursos web, servicios personalizados y servidores O2 actualizados." ,
+		"deployLogInfo": "Muestra registros de implementación de recursos web, servicios personalizados y servidores O2 actualizados.",
 		"o2ServerResource": "Actualizar el servidor O2",
 		"o2ServerResourceInfo": "Puede cargar aquí el paquete de instalación del servidor para actualizar el servidor O2.",
 		"o2ServerResourceNote": "Después de la actualización, debes reiniciar el servidor o2 para que tenga efecto",
-
 		"componentResource": "Desplegar componentes",
 		"componentResourceInfo": "Puede desplegar componentes O2OA personalizados que haya desarrollado o que haya obtenido oficialmente desde aquí. Los componentes de O2OA son carpetas o archivos zip llamados 'x_component_{nombre del componente}'. Para obtener más información, consulte la <a href='https://www.o2oa.net/develop.html' target='_blank'>comunidad oficial de O2OA</a>.",
 		"upload": "Cargar recursos",
@@ -195,16 +194,13 @@ MWF.xApplication.systemconfig.LP={
 		"deployPath": "Ruta de despliegue",
 		"deployPathInfo": "Si carga un archivo ZIP, la ruta puede estar vacía; si carga un archivo individual, debe especificar una ruta de despliegue. Ejemplo: /myWebResource/subPath",
 		"title": "Título",
-		"titleInfo": "Se requiere una breve descripción de esta implementación." ,
-
+		"titleInfo": "Se requiere una breve descripción de esta implementación.",
 		"remark": "Actualizar descripción",
 		"remarkInfo": "Descripción detallada de esta implementación.",
 		"noRemark": "No completado",
-
 		"versión": "Versión",
 		"versionInfo": "La versión del programa implementada esta vez.",
 		"o2VersionInfo": "La versión del servidor de esta implementación.",
-
 		"tipo": "Tipo",
 		"fileName": "Archivo de implementación",
 		"installPerson": "Personal de implementación",
@@ -218,12 +214,21 @@ MWF.xApplication.systemconfig.LP={
 		"noDeployTitle": "Primero, complete el título de esta implementación",
 		"deploySuccess": "Despliegue de recursos exitoso.",
 		"noO2ServerFile": "Seleccione el paquete de instalación del servidor que se implementará (formato zip)",
-
 		"serverRes": "Servicio personalizado",
 		"webRes": "Recursos web",
 		"o2server": "Actualizar el servidor o2",
 		"notWebResource": "<span style='color: red'>El servidor actual no permite el despliegue de recursos web en el frontend. Puede habilitar esta función en Configurar servidor - Tareas del servidor.</span>",
-		"notServiceResource": "<span style='color: red'>El servidor actual no permite el despliegue de servicios personalizados en el frontend. Puede habilitar esta función en Configurar servidor - Tareas del servidor.</span>"
+		"notServiceResource": "<span style='color: red'>El servidor actual no permite el despliegue de servicios personalizados en el frontend. Puede habilitar esta función en Configurar servidor - Tareas del servidor.</span>",
+		"sequence": "Número de serie",
+		"o2ServerUploadWarn": "Cargar el paquete zip de instalación del servidor a desplegar",
+		"version": "Versión",
+		"type": "Tipo",
+		"operations": "Operación",
+		"detail": "Detalles",
+		"loading": "Cargado. ......",
+		"uploading": "Se están desplegando recursos, por favor espere pacientemente. ......",
+		"deployFailure": "Falló el despliegue de recursos",
+		"deployNote": "Se completó el despliegue, (...) los archivos fueron exitosos y (...) los archivos fueron exitosos."
 	},
 	"_uiConfig": {
 		"baseConfig": "Configuración básica",
@@ -287,7 +292,6 @@ MWF.xApplication.systemconfig.LP={
 			"mobile": "Últimos 6 dígitos del número de teléfono móvil + contraseña fija",
 			"unique": "Últimos 6 dígitos del código único + contraseña fija",
 			"employee": "Número de empleado + contraseña fija",
-			// "pinyin": "Nombre completo del empleado transcrito a pinyin",
 			"text": "Contraseña fija",
 			"script": "Personalizar mediante script"
 		},
@@ -295,7 +299,6 @@ MWF.xApplication.systemconfig.LP={
 			"mobileScript": "return person.getMobile().slice(-6)+'{fixedPassword}'",
 			"uniqueScript": "return person.getUnique().slice(-6)+'{fixedPassword}'",
 			"employeeScript": "return person.getEmployee()+'{fixedPassword}'",
-			// "pinyinScript": "return person.getPinyin()",
 			"textInfo": "La contraseña que ingrese en el cuadro de texto será utilizada como la contraseña inicial para los nuevos usuarios creados.",
 			"scriptInfo": "Ingrese el script de JavaScript a continuación, que devuelve una cadena para ser utilizada como la contraseña inicial para los nuevos usuarios creados. Puede utilizar el objeto 'person' para obtener información relacionada con el usuario. Por ejemplo, para usar el nombre completo del usuario transcrito a pinyin como contraseña inicial, puede usar el siguiente script: return person.getPinyin()"
 		},
@@ -1027,7 +1030,10 @@ MWF.xApplication.systemconfig.LP={
 		"changeImage": "Cambiar imagen",
 		"defaultImage": "Imagen predeterminada",
 		"defaultImageTitle": "Confirmación de imagen predeterminada",
-		"defaultImageInfo": "¿Está seguro de que desea reemplazar {name} con la imagen predeterminada?"
+		"defaultImageInfo": "¿Está seguro de que desea reemplazar {name} con la imagen predeterminada?",
+		"mobileHomePageLayout": "Diseño de la página principal",
+		"mobileHomePageLayoutInfo": "Si la página de inicio abre un diseño avanzado",
+		"mobileHomePageLayoutOperationInfo": "Se puede cambiar la página a través de la barra de menú inferior, y se pueden operar las funciones [modificar] y [eliminar] para cada página."
 	},
 	"_integrationConfig": {
 		"title": "Integración de aplicaciones móviles",
@@ -1093,7 +1099,7 @@ MWF.xApplication.systemconfig.LP={
 			"appidNotEmpty": "Por favor, complete primero el ID de la aplicación WeChat",
 			"portalIdNotEmpty": "Seleccione el portal al que desea acceder después de iniciar sesión correctamente.",
 			"workUrlNotEmpty": "Complete el mensaje de la cuenta pública de WeChat para acceder a la dirección básica de O2OA",
-			"copyUrlSuccess": "¡Copia realizada con éxito!",
+			"copyUrlSuccess": "¡Copia realizada con éxito!"
 		},
 		"qywenxinText": {
 			"enable": "¿Habilitar?",

@@ -215,7 +215,8 @@ const addStore = (type)=>{
   // saveStoreData(type);
 }
 const deleteStore = (type, scope)=>{
-  storageData.value[type].splice(scope.$index,1)
+  storageData.value[type].splice(scope.$index,1);
+  saveStoreData(type);
 }
 
 const openEditDlg = (data, node, cb, width, height)=>{

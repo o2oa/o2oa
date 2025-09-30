@@ -53,16 +53,25 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
 
     _addPath: function(data, isNew=true){
         if (this.pathData[data.path]) return false;
-        const readList = [];
         data.readList = (data.readActivityList?.map((a)=>{
             const {unique, id, name, type, process} = a;
             return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
         }) || []).concat(data.readerList || []);
 
+        data.unreadList = (data.excludeReadActivityList?.map((a)=>{
+            const {unique, id, name, type, process} = a;
+            return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+        }) || []).concat(data.excludeReaderList || []);
+
         data.editList = (data.editActivityList?.map((a)=>{
             const {unique, id, name, type, process} = a;
             return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
         }) || []).concat(data.editorList || []);
+
+        data.uneditList = (data.excludeEditActivityList?.map((a)=>{
+            const {unique, id, name, type, process} = a;
+            return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+        }) || []).concat(data.excludeEditorList || []);
 
         this.bodyNode.loadHtmlText(this.lineHTML, {bind: data,  module: this});
         this.pathData[data.path] = data;
@@ -178,9 +187,17 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
                         item.readerList = orgs;
                         item.readActivityList = activitys;
                     }
+                    if (type==='unread'){
+                        item.excludeReaderList = orgs;
+                        item.excludeReadActivityList = activitys;
+                    }
                     if (type==='edit'){
                         item.editorList = orgs;
                         item.editActivityList = activitys;
+                    }
+                    if (type==='unedit'){
+                        item.excludeEditorList = orgs;
+                        item.excludeEditActivityList = activitys;
                     }
                 }else{
                     e.target.value = ''
@@ -189,9 +206,17 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
                         item.readerList = [];
                         item.readActivityList = [];
                     }
+                    if (type==='unread'){
+                        item.excludeReaderList = [];
+                        item.excludeReadActivityList = [];
+                    }
                     if (type==='edit'){
                         item.editorList = [];
                         item.editActivityList = [];
+                    }
+                    if (type==='unedit'){
+                        item.excludeEditorList = [];
+                        item.excludeEditActivityList = [];
                     }
                 }
             }.bind(this)

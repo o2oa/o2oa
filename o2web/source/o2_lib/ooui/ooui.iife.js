@@ -2299,7 +2299,7 @@ div.invalidHint.show::before {\r
     --input: var(--oo-color-text);\r
     --placeholder: var(--oo-color-text4);\r
     --disabled: var(--oo-color-gray2);\r
-    --bg:  var(--oo-color-bg-white);\r
+    --bg:  transparent;\r
     --shadow: var(--oo-shadow-border);\r
     --shadow-focus: var(--oo-shadow-border-focus)\r
 }\r
@@ -2338,7 +2338,7 @@ div.invalidHint.show::before {\r
     align-items: center;\r
     height: 100%;\r
     width: 100%;\r
-    /* background: var(--bg); */\r
+    background: var(--bg);\r
     transition: border-color 0.2s, box-shadow 0.2s;\r
     cursor: pointer;\r
 }\r

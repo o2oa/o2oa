@@ -149,6 +149,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"fieldPermissionsReaderList": "可读活动或组织",
 	"fieldPermissionsReadActivityList": "可读活动",
 	"fieldPermissionsEditorList": "可编辑活动或组织",
+	"fieldPermissionsUnreaderList": "不可读活动或组织",
+	"fieldPermissionsUneditorList": "不可编辑活动或组织",	
 	"fieldPermissionsEditActivityList": "可编辑活动",
 	"fieldPermissionsSelectPath": "选择数据路径",
 	"fieldPermissionsAddPath": "添加数据路径",

@@ -23,8 +23,12 @@
 
 .fieldPermissions-body, .fieldPermissions-header{
 	display: grid;
-	grid-template-columns: 3rem 1fr 2fr 2fr 3rem;
+	grid-template-columns: 3rem 2fr 5fr 5fr 5fr 5fr 3rem;
 }
+
+/* .fieldPermissions-body .fieldPermissions-body-line:nth-child(2n) .fieldPermissions-body-item{
+    background-color: var(--oo-color-hover);
+} */
    
 .fieldPermissions-body-scroll {
 	flex: 1;
@@ -50,6 +54,7 @@
     align-items: center;
     word-break: break-all;
     transition: background-color 0.3s ease;
+    gap: 0.5rem;
 }
 
 .fieldPermissions-body-line.newLine .fieldPermissions-body-item{

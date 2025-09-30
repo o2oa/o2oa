@@ -1599,7 +1599,11 @@ MWF.xApplication.process.FormDesigner.LP={
 		"fileCol": "Número de columnas mostradas",
 		"OOFilesSiteInfo": "Se pueden mostrar accesorios de otros sitios, varios sitios separados por comas de media esquina",
 		"exportImportType": "Exportar tipo de importación",
-		"exportImportTypeNote": "Los componentes con texto y valores simultáneos, como desplegable, selección única y selección múltiple, son válidos."
+		"exportImportTypeNote": "Los componentes con texto y valores simultáneos, como desplegable, selección única y selección múltiple, son válidos.",
+		"unreadActivity": "Actividad ilegible",
+		"unreadOrg": "Organización ilegible",
+		"uneditActivity": "Actividades no editables",
+		"uneditOrg": "Organización no editable"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

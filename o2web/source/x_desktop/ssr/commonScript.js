@@ -323,8 +323,9 @@ const Action = function(root, json){
                 success = pars.shift();
                 failure = pars.shift();
             }
+            const person = pars.shift();
 
-            return _self.invoke({name, data, parameter, success, failure});
+            return _self.invoke({name, data, parameter, success, failure, person});
         };
     };
     var createMethod = function(service, key){
@@ -345,22 +346,24 @@ const Action = function(root, json){
                 });
             }
             let res = null;
+            const person = option.person || null;
+
             try{
                 switch (method.toLowerCase()){
                     case "get":
-                        res = globalThis.applications.getQuery(this.root, uri);
+                        res = globalThis.applications[!!person ? 'authorizedGetQuery' : 'getQuery'](this.root, uri, person);
                         break;
                     case "post":
-                        res = globalThis.applications.postQuery(this.root, uri, JSON.stringify(option.data));
+                        res = globalThis.applications[!!person ? 'authorizedPostQuery' : 'postQuery'](this.root, uri, JSON.stringify(option.data), person);
                         break;
                     case "put":
-                        res = globalThis.applications.putQuery(this.root, uri, JSON.stringify(option.data));
+                        res = globalThis.applications[!!person ? 'authorizedPutQuery' : 'putQuery'](this.root, uri, JSON.stringify(option.data), person);
                         break;
                     case "delete":
-                        res = globalThis.applications.deleteQuery(this.root, uri);
+                        res = globalThis.applications[!!person ? 'authorizedDeleteQuery' : 'deleteQuery'](this.root, uri, person);
                         break;
                     default:
-                        res = globalThis.applications.getQuery(this.root, uri);
+                        res = globalThis.applications[!!person ? 'authorizedGetQuery' : 'getQuery'](this.root, uri, person);
                 }
                 if (res && res.getType().toString()==="success"){
                     const json = JSON.parse(res.toString());

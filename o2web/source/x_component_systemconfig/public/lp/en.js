@@ -183,31 +183,25 @@ MWF.xApplication.systemconfig.LP={
 		"o2ServerResource": "Upgrade o2 servers",
 		"o2ServerResourceInfo": "You can upload server installation packages here to upgrade O2 servers.",
 		"o2ServerResourceNote": "After the upgrade, you need to restart the o2 server to take effect!",
-
 		"componentResource": "Deploy Components",
 		"componentResourceInfo": "The O2OA components that you custom develop, or obtain components from the official, can be deployed here. O2OA components are folders or zip files named 'x_component_{component name}'. For more detailed information, please refer to: <a href='https://www.o2oa.net/develop.html' target='_blank'>O2OA official community.</a>",
 		"upload": "Upload",
 		"webUploadWarn": "Upload the static resource file to be deployed, and the zip package will be automatically decompressed.",
 		"serviceUploadWarn": "Upload the jar package or war package to be deployed.",
 		"o2ServerUploadWarn": "Upload the server installation zip package to be deployed",
-
 		"overwrite": "Deployment Method",
 		"overwriteFalse": "Upload after deletion: delete files and folders with the same name and upload them.",
 		"overwriteTrue": "Overwrite: Directly overwrite files and folders with the same name.",
 		"deployPath": "Deploy Path",
 		"deployPathInfo": "If deploying a zip package, the path can be empty; for single file deployment, the deployment path must be specified. Such as: /myWebResource/subPath .",
-
 		"title": "Title",
 		"titleInfo": "A brief description of this deployment, required.",
-
 		"remark": "Update description",
 		"remarkInfo": "Detailed description of this deployment.",
 		"noRemark": "Not filled in",
-
 		"version": "Version",
 		"versionInfo": "The version of the program deployed this time.",
 		"o2VersionInfo": "The server version of this deployment.",
-
 		"type": "Type",
 		"fileName": "Deployment file",
 		"installPerson": "Deployer",
@@ -221,12 +215,15 @@ MWF.xApplication.systemconfig.LP={
 		"noDeployTitle": "Please fill in the title of this deployment first",
 		"deploySuccess": "Resources deployed successfully",
 		"noO2ServerFile": "Please select the server installation package to be deployed (zip format)",
-
 		"serverRes": "Custom service",
 		"webRes": "Web resource",
 		"o2server": "Upgrade o2 server",
 		"notWebResource": "<span style='color: red'>The current server does not allow front-end deployment of web resources, you can enable this function in the server task of the server configuration.</span>",
-		"notServiceResource": "<span style='color: red'>The current server does not allow front-end deployment of custom services, you can enable this function in the server task of the server configuration.</span>"
+		"notServiceResource": "<span style='color: red'>The current server does not allow front-end deployment of custom services, you can enable this function in the server task of the server configuration.</span>",
+		"sequence": "serial number",
+		"uploading": "Deploying resources, please be patient ..",
+		"deployFailure": "Deployment of resources failed",
+		"deployNote": "Deployment completed, {success} files successful, {failure} files successful"
 	},
 	"_uiConfig": {
 		"baseConfig": "Base Config",
@@ -290,7 +287,6 @@ MWF.xApplication.systemconfig.LP={
 			"mobile": "The last six digits of the mobile phone number + fixed password",
 			"unique": "The last six digits of the unique code + fixed password",
 			"employee": "User ID + fixed password",
-			// "pinyin": "Full spelling of user name",
 			"text": "fixed password",
 			"script": "Customize the initial password through script"
 		},
@@ -298,7 +294,6 @@ MWF.xApplication.systemconfig.LP={
 			"mobileScript": "return person.getMobile().slice(-6)+'{fixedPassword}'",
 			"uniqueScript": "return person.getunique().slice(-6)+'{fixedPassword}'",
 			"employeeScript": "return person.getEmployee()+'{fixedPassword}'",
-			// "pinyinScript": "return person.getPinyin()",
 			"textInfo": "The password entered in the input box below will be used as the initial password of the newly created user.",
 			"scriptInfo": "Enter the script in the editor below to return a string value as the initial password for the newly created user. You can use the person object to get information about a person. If you use the full spelling of the person's name as the initial password, you can use the script: return person.getPinyin()"
 		},
@@ -1030,7 +1025,10 @@ MWF.xApplication.systemconfig.LP={
 		"defaultImageInfo": "Are you sure you want to replace {name}, with the default image?",
 		"systemMessageCanClickInfo": "Can mobile app system notifications be clicked to open",
 		"appExitAlert": "App exit prompt",
-		"appExitAlertInfo": "When the app exits, the prompt for a pop-up window will not pop up if it is empty"
+		"appExitAlertInfo": "When the app exits, the prompt for a pop-up window will not pop up if it is empty",
+		"mobileHomePageLayout": "Home page layout",
+		"mobileHomePageLayoutInfo": "Does the homepage enable advanced layout",
+		"mobileHomePageLayoutOperationInfo": "You can switch pages through the bottom menu bar and operate the [modify] and [delete] functions for each page"
 	},
 	"_integrationConfig": {
 		"title": "Mobile application integration",
@@ -1096,7 +1094,7 @@ MWF.xApplication.systemconfig.LP={
 			"appidNotEmpty": "Please fill in your WeChat Appid first",
 			"portalIdNotEmpty": "Please select the portal to jump to after successful login",
 			"workUrlNotEmpty": "Please fill in the WeChat official account message to access the O2OA basic address first",
-			"copyUrlSuccess": "Copy successful!",
+			"copyUrlSuccess": "Copy successful!"
 		},
 		"qywenxinText": {
 			"enable": "Whether to enable",

@@ -558,14 +558,20 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _loadPoweer: function () {
         this.editable = this._checkEditAbled();
-        //如果可编辑已设置，并判断为yes，则readable一定为yes，忽略可读配置。
-        this.readable = this.editable==='yes' ? 'yes' : this._checkReadAbled();
+        if (this.editable==='yes'){
+            //如果可编辑已设置，并判断为yes，则readable一定为yes，忽略可读配置。
+            this.readable = 'yes';
+        }else{
+            this.readable = this._checkReadAbled();
+            //如果可编辑已设置，并判断为script_yes，则readable为yes，才可编辑。
+            this.editable = (this.editable==='script_yes' && this.readable==='no') ? 'no' : 'yes';
+        }
     },
     _checkReadAbled: function () {
-        return this._checkpowerAbled('readByActivity', 'readByOrg', 'readByScript', 'readByActivityValue', 'readByOrgValue', 'readByScriptValue', 'readActivityList', 'readerList');
+        return this._checkpowerAbled('readByActivity', 'readByOrg', 'readByScript', 'readByActivityValue', 'readByOrgValue', 'readByScriptValue', 'readActivityList', 'readerList', 'excludeReadActivityList', 'excludeReaderList');
     },
     _checkEditAbled: function () {
-        return this._checkpowerAbled('editByActivity', 'editByOrg', 'editByScript', 'editByActivityValue', 'editByOrgValue', 'editByScriptValue', 'editActivityList', 'editorList');
+        return this._checkpowerAbled('editByActivity', 'editByOrg', 'editByScript', 'editByActivityValue', 'editByOrgValue', 'editByScriptValue', 'editActivityList', 'editorList', 'excludeEditActivityList', 'excludeEditorList');
     },
     /**
      * 判断一个字符串是否可以转换为一个整数
@@ -583,7 +589,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             return {uid: this.form.businessData.activity?.unique, aid: this.form.businessData.activity?.id}
         }
     },
-    _checkpowerAbled: function (activity, org, script, activityValue, orgValue, scriptValue, processActivity, processOrg) {
+    _checkpowerAbled: function (activity, org, script, activityValue, orgValue, scriptValue, processActivity, processOrg, unProcessActivity, unProcessOrg) {
         const accessList = this.form.businessData?.control?.itemAccessList;
         const ids = this.json.id.split(/\.\./g);
         const id = ids.map(i=> (/^-?\d+$/.test(i) ? '*' : i) ).join('.')
@@ -592,16 +598,24 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         });
         
         if (access){
-            const hasByActivity = (access[processActivity] && access[processActivity].length);
-            const hasByOrg = (access[processOrg] && access[processOrg].length);
-            const hasByScript = this.json[script] && this.json[script].includes('true') && this.json[scriptValue] && this.json[scriptValue].code;
+            const hasByActivity = (access[processActivity] && access[processActivity].length) || (access[unProcessActivity] && access[unProcessActivity].length);
+            const hasByOrg = (access[processOrg] && access[processOrg].length) || (access[unProcessOrg] && access[unProcessOrg].length);
+            const hasByScript = this.json[script] && this.json[script].includes('true') && (this.json[scriptValue]?.code || this.json[scriptValue]);
 
+            if (this.json.id==='OOInput_3'){
+                debugger;
+            }
             if (hasByActivity || hasByOrg || hasByScript){
                 if (hasByActivity){
                     const {uid, aid} = this._getActivityId();
                     // let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
                     // let aid = this.form.businessData.activity && this.form.businessData.activity.id;
                     // if (activityId){
+                        const n = access[unProcessActivity].findIndex((act)=>{                      
+                            return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
+                        });
+                        if (n!==-1) return 'no';
+
                         const i = access[processActivity].findIndex((act)=>{                      
                             return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
                         });
@@ -610,6 +624,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 }
 
                 if (hasByOrg){
+                    const n = access[unProcessOrg].findIndex((org)=>{
+                        const dn = org.distinguishedName || org;
+                        return layout.session.userDetail.distinguishedName === dn || layout.session.userDetail.list.includes(dn);
+                    });
+                    if (n!==-1) return 'no';
+
                     const i = access[processOrg].findIndex((org)=>{
                         const dn = org.distinguishedName || org;
                         return layout.session.userDetail.distinguishedName === dn || layout.session.userDetail.list.includes(dn);
@@ -619,8 +639,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
                 
                 if (hasByScript){
-                    var flag = this.form.Macro.exec(this.json[scriptValue].code, this);
-                    return !!flag ? 'yes' : 'no';
+                    var flag = this.form.Macro.exec((this.json[scriptValue]?.code || this.json[scriptValue]), this);
+                    return !!flag ? 'script_yes' : 'no';
                 }
                 return 'no';
             }
@@ -628,7 +648,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }else{
             const hasByActivity = this.json[activity] && this.json[activity].includes('true') && this.json[activityValue] && this.json[activityValue].length;
             const hasByOrg = this.json[org] && this.json[org].includes('true') && this.json[orgValue] && this.json[orgValue].length;
-            const hasByScript = this.json[script] && this.json[script].includes('true') && this.json[scriptValue] && this.json[scriptValue].code;
+            const hasByScript = this.json[script] && this.json[script].includes('true') && (this.json[scriptValue]?.code || this.json[scriptValue]);
 
             if (hasByActivity || hasByOrg || hasByScript){
                 if (hasByActivity){
@@ -653,7 +673,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                     if (i!==-1) return 'yes';
                 }
                 if (hasByScript){
-                    var flag = this.form.Macro.exec(this.json[scriptValue].code, this);
+                    var flag = this.form.Macro.exec((this.json[scriptValue]?.code || this.json[scriptValue]), this);
                     return !!flag ? 'yes' : 'no';
                 }
                 return 'no';

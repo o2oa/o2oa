@@ -22,6 +22,22 @@
             })()}}"
         ></oo-selector>
     </div>
+    <div class="fieldPermissions-body-item" style="display: block">
+        <oo-selector
+            data-o2-events="click:selectActivitys:excludeReadActivityList:process"
+            label-style="font-weight:bold; color: var(--oo-color-error);"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.unreadActivity}}"
+            item-type="border"
+            skin="bg: var(--oo-color-error-bg)"
+            value="{{(()=>{
+                return $.data.excludeReadActivityList.map((d)=>{
+                    const {name, id, unique, process, type} = d;
+                    return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+                });
+            })()}}"
+        ></oo-selector>
+    </div>
 
     
     <div class="fieldPermissions-body-item" style="display: block; margin-bottom: 0.5rem;">
@@ -32,6 +48,18 @@
             label="{{$.lp.propertyTemplate.readOrg}}"
             item-type="border"
             value="{{$.data.readerList}}"
+        ></oo-selector>
+    </div>
+
+    <div class="fieldPermissions-body-item" style="display: block; margin-bottom: 0.5rem;">
+        <oo-selector
+            data-o2-events="click:selectOrgs:excludeReaderList:process"
+            label-style="font-weight:bold; color: var(--oo-color-error);"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.unreadOrg}}"
+            item-type="border"
+            skin="bg: var(--oo-color-error-bg)"
+            value="{{$.data.excludeReaderList}}"
         ></oo-selector>
     </div>
 
@@ -55,6 +83,23 @@
         ></oo-selector>
     </div>
 
+    <div class="fieldPermissions-body-item" style="display: block">
+        <oo-selector
+            data-o2-events="click:selectActivitys:excludeEditActivityList:process"
+            label-style="font-weight:bold; color: var(--oo-color-error);"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.uneditActivity}}"
+            item-type="border"
+            skin="bg: var(--oo-color-error-bg)"
+            value="{{(()=>{
+                return $.data.excludeEditActivityList.map((d)=>{
+                    const {name, id, unique, process, type} = d;
+                    return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
+                });
+            })()}}"
+        ></oo-selector>
+    </div>
+
     
     <div class="fieldPermissions-body-item" style="display:block; margin-bottom: 0.5rem;">
         <oo-selector
@@ -64,6 +109,18 @@
             label="{{$.lp.propertyTemplate.editOrg}}"
             item-type="border"
             value="{{$.data.editorList}}"
+        ></oo-selector>
+    </div>
+
+    <div class="fieldPermissions-body-item" style="display:block; margin-bottom: 0.5rem;">
+        <oo-selector
+            data-o2-events="click:selectOrgs:excludeEditorList:process"
+            label-style="font-weight:bold; color: var(--oo-color-error);"
+            right-icon="create"
+            label="{{$.lp.propertyTemplate.uneditOrg}}"
+            item-type="border"
+            value="{{$.data.excludeEditorList}}"
+            skin="bg: var(--oo-color-error-bg)"
         ></oo-selector>
     </div>
 </div>
