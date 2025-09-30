@@ -48,7 +48,7 @@ class ActionUpdateWithWork extends BaseAction {
 			}
 			Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), work.getJob());
 			String activity = review == null ? "" : review.getActivityUnique();
-			business.itemAccess().convert(jsonElement, work.getProcess(),
+			business.itemAccess().editConvert(jsonElement, work.getJob(), work.getProcess(),
 					work.getApplication(), activity,
 					effectivePerson);
 		}

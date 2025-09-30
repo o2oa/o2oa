@@ -341,6 +341,84 @@ public class XGsonBuilder {
 	}
 
 	/**
+	 * 递归查找指定path下的元素，path只有一层则删除，path有多层则替换
+	 * @param data
+	 * @param fromData
+	 * @param path
+	 */
+	public static void replaceWithPath(JsonElement data, JsonElement fromData, String path){
+		if (data == null) {
+			return;
+		}
+		if (!data.isJsonObject()) {
+			return;
+		}
+		if (!fromData.isJsonObject()) {
+			return;
+		}
+		if(StringUtils.isBlank(path)){
+			return;
+		}
+		List<String> pathParts = Arrays.asList(StringUtils.split(path, PATH_DOT));
+		if(pathParts.size() == 1) {
+			processJsonElement(data, pathParts, 0);
+		}else{
+			processJsonElement(data, fromData, pathParts, 0);
+		}
+	}
+
+	private static void processJsonElement(JsonElement element, JsonElement fromData, List<String> pathParts, int currentIndex){
+		if(element == null || fromData == null || currentIndex >= pathParts.size()){
+			return;
+		}
+		String currentPart = pathParts.get(currentIndex).trim();
+		if(StringUtils.isBlank(currentPart)){
+			return;
+		}
+		boolean isLastPart = (currentIndex == pathParts.size() - 1);
+		if (element.isJsonObject()) {
+			if(!fromData.isJsonObject()){
+				return;
+			}
+			JsonObject jsonObject = element.getAsJsonObject();
+			JsonObject fromObject = fromData.getAsJsonObject();
+			if (jsonObject.has(currentPart)) {
+				if (isLastPart) {
+					jsonObject.add(currentPart, fromObject.get(currentPart));
+				} else {
+					processJsonElement(jsonObject.get(currentPart), fromObject.get(currentPart), pathParts, currentIndex + 1);
+				}
+			}
+		} else if (element.isJsonArray()) {
+			if(!fromData.isJsonArray()){
+				return;
+			}
+			JsonArray jsonArray = element.getAsJsonArray();
+			JsonArray fromArray = fromData.getAsJsonArray();
+			if ("*".equals(currentPart)) {
+				for (int i = 0; i<jsonArray.size(); i++) {
+					if (!isLastPart && i < fromArray.size()) {
+						processJsonElement(jsonArray.get(i), fromArray.get(i), pathParts, currentIndex + 1);
+					}
+				}
+			} else {
+				try {
+					int index = Integer.parseInt(currentPart);
+					if (index >= 0 && index < jsonArray.size() && index < fromArray.size()) {
+						if (isLastPart) {
+							jsonArray.set(index, fromArray.get(index));
+						} else {
+							processJsonElement(jsonArray.get(index), fromArray.get(index), pathParts, currentIndex + 1);
+						}
+					}
+				} catch (NumberFormatException e) {
+					// 当前部分不是数字，也不是通配符，无法处理数组
+				}
+			}
+		}
+	}
+
+	/**
 	 * 递归查找指定path下的元素并删除
 	 * @param data
 	 * @param path
@@ -371,13 +449,7 @@ public class XGsonBuilder {
 
 		if (element.isJsonObject()) {
 			JsonObject jsonObject = element.getAsJsonObject();
-			if ("*".equals(currentPart)) {
-				for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-					if (!isLastPart) {
-						processJsonElement(entry.getValue(), pathParts, currentIndex + 1);
-					}
-				}
-			} else if (jsonObject.has(currentPart)) {
+			if (jsonObject.has(currentPart)) {
 				if (isLastPart) {
 					jsonObject.remove(currentPart);
 				} else {
