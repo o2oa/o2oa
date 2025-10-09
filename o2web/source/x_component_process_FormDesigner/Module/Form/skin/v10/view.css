@@ -34,7 +34,7 @@
     background-color: #ffffff;
     border-radius: var(--oo-default-radius);
     padding: 1em;
-    display: flex !important;
+    display: grid !important;
     gap: 0.5em 1em;
     flex-wrap: wrap;
     overflow: hidden;
@@ -145,7 +145,7 @@
 .search-item{
     display: flex;
     align-items: center;
-    min-width: 24rem;
+    /* min-width: 24rem; */
 }
 
 .search-item oo-input,

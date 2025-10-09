@@ -20,7 +20,7 @@ MWF.xApplication.process.Application.LP={
 	"workdelete": "Trabajos eliminados",
 	"dict": "Config. de datos",
 	"serial": "Config. numérica",
-	"archive" : "Config Archive",
+	"archive": "Config Archive",
 	"startProcess": "Crear tarea",
 	"query": "Buscar",
 	"reset": "Reiniciar",
@@ -38,7 +38,8 @@ MWF.xApplication.process.Application.LP={
 		"rollback": "Retroceder",
 		"delSnap": "Eliminar definitivamente",
 		"restore": "Restaurar",
-		"ajustarTiempo" : "Ajustar hora"
+		"ajustarTiempo": "Ajustar hora",
+		"adjustTime": "fecha de modificación"
 	},
 	"subject": "Asunto",
 	"name": "Nombre",

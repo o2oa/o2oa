@@ -20,7 +20,7 @@ MWF.xApplication.process.Application.LP={
 	"workdelete": "Work deleted",
 	"dict": "Data configuration",
 	"serial": "Numbering configuration",
-	"archive" : "Archive Config",
+	"archive": "Archive Config",
 	"startProcess": "Start Process",
 	"query": "Search",
 	"reset": "Reset",
@@ -38,7 +38,7 @@ MWF.xApplication.process.Application.LP={
 		"rollback": "rollback",
 		"delSnap": "Delete completely",
 		"restore": "Restore",
-		"adjustTime" : "Adjust Time"
+		"adjustTime": "Adjust Time"
 	},
 	"subject": "Title",
 	"name": "name",

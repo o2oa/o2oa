@@ -564,7 +564,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }else{
             this.readable = this._checkReadAbled();
             //如果可编辑已设置，并判断为script_yes，则readable为yes，才可编辑。
-            this.editable = (this.editable==='script_yes' && this.readable==='no') ? 'no' : 'yes';
+            if (this.editable==='script_yes'){
+                this.editable = (this.readable==='no') ? 'no' : 'yes';
+            }
+            // this.editable = (this.editable==='script_yes' && this.readable==='no') ? 'no' : 'yes';
         }
     },
     _checkReadAbled: function () {
@@ -602,34 +605,34 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             const hasByOrg = (access[processOrg] && access[processOrg].length) || (access[unProcessOrg] && access[unProcessOrg].length);
             const hasByScript = this.json[script] && this.json[script].includes('true') && (this.json[scriptValue]?.code || this.json[scriptValue]);
 
-            if (this.json.id==='OOInput_3'){
+            if (this.json.id==='datatable'){
                 debugger;
             }
             if (hasByActivity || hasByOrg || hasByScript){
-                if (hasByActivity){
-                    const {uid, aid} = this._getActivityId();
-                    // let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
-                    // let aid = this.form.businessData.activity && this.form.businessData.activity.id;
-                    // if (activityId){
-                        const n = access[unProcessActivity].findIndex((act)=>{                      
-                            return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
-                        });
-                        if (n!==-1) return 'no';
-
-                        const i = access[processActivity].findIndex((act)=>{                      
-                            return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
-                        });
-                        if (i!==-1) return 'yes';
-                    // }
+                const {uid, aid} = this._getActivityId();
+                if (hasByActivity && access[unProcessActivity]?.length){
+                    const n = access[unProcessActivity].findIndex((act)=>{                      
+                        return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
+                    });
+                    if (n!==-1) return 'no';
                 }
-
-                if (hasByOrg){
+                if (hasByOrg && access[unProcessOrg]?.length){
                     const n = access[unProcessOrg].findIndex((org)=>{
                         const dn = org.distinguishedName || org;
                         return layout.session.userDetail.distinguishedName === dn || layout.session.userDetail.list.includes(dn);
                     });
                     if (n!==-1) return 'no';
+                }
 
+
+                if (hasByActivity){
+                    const i = access[processActivity].findIndex((act)=>{                      
+                        return o2.typeOf(act)==="object" ? (act.unique === uid || act.id === aid) : act === uid;
+                    });
+                    if (i!==-1) return 'yes';
+                }
+
+                if (hasByOrg){
                     const i = access[processOrg].findIndex((org)=>{
                         const dn = org.distinguishedName || org;
                         return layout.session.userDetail.distinguishedName === dn || layout.session.userDetail.list.includes(dn);
@@ -637,7 +640,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                     if (i!==-1) return 'yes';
                 }
 
-                
                 if (hasByScript){
                     var flag = this.form.Macro.exec((this.json[scriptValue]?.code || this.json[scriptValue]), this);
                     return !!flag ? 'script_yes' : 'no';
