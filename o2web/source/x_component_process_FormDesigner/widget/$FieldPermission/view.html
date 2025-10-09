@@ -1,5 +1,5 @@
 <div class="fieldPermissions-content" data-o2-element="contentNode">
-    {{if ($.isProcess)}}
+    {{if ($.isProcess && $.isField)}}
     <div class="fieldPermissions-Actions">
         <oo-button text="{{$.lp.addFormPermissionsProcess}}" left-icon="create" data-o2-events="click:addPermissionsProcess"></oo-button>
     </div>
@@ -8,7 +8,7 @@
 
     </div>
     <div class="fieldPermissions-Actions">
-        {{if ($.isProcess)}}
+        {{if ($.isProcess && $.isField)}}
         <oo-button text="{{$.lp.addFormPermissionsProcess}}" left-icon="create" data-o2-events="click:addPermissionsProcess"></oo-button>
         {{end if}}
     </div>

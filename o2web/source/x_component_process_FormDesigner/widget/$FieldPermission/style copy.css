@@ -54,27 +54,18 @@
 
 
 .fieldPermissions-item-section {
-    /* padding: 0.5rem;
+    padding: 0.5rem;
     background-color: var(--oo-color-gray-f3);
+    /* border-bottom: 1px solid #999; */
     font-weight: bold;
-    font-size: 1rem; */
-    height: 26px;
-    text-align: center;
-    line-height: 26px;
-    background-color: #EEE;
-    border-top: 1px solid #999;
-    border-bottom: 1px solid #999;
-    font-weight: bold;
+    font-size: 1rem;
 }
 
 .fieldPermissions-body-check {
-    /* padding: 0.5rem;
-    font-weight: bold; */
-    padding: 5px;
-    border-top: 1px solid #999;
+    padding: 0.5rem;
+    /* border-top: 1px solid #999; */
     font-weight: bold;
-    background-color: #f9f9f9;
-    display: block;
+    /* background-color: #f9f9f9; */
 }
 .fieldPermissions-body-item {
     padding: 0.5rem;
@@ -87,9 +78,7 @@
 
 
 .fieldPermissions-body-radio{
-    /* padding: 0.5rem; */
-    border-bottom: 1px dashed rgb(204, 204, 204);
-    border-top: 1px solid #999;
+    padding: 0.5rem;
 }
 
 .fieldPermissions-item.deleting, .fieldPermissions-item.deleting .fieldPermissions-item-section, .fieldPermissions-item.deleting .fieldPermissions-item-title{

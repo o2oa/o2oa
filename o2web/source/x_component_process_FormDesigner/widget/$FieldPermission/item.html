@@ -1,9 +1,10 @@
 <div class="fieldPermissions-item">
-    <div class="fieldPermissions-item-title">{{$.lp.formPermissionsDefault}}</div>
-    <div class="fieldPermissions-desc">{{$.lp.formPermissionsDefaultDesc}}</div>
+    <!-- <div class="fieldPermissions-item-title">{{$.lp.formPermissionsDefault}}</div>
+    <div class="fieldPermissions-desc">{{$.lp.formPermissionsDefaultDesc}}</div> -->
 
     <!-- 可读配置 -->
     <div class="fieldPermissions-item-section">{{$.lp.propertyTemplate.readConfig}}</div>
+    <div style="padding: 5px; color: #999999; ">{{$.lp.propertyTemplate.readConfigInfo}}</div>
     
     {{if ($.isProcess || $.isCms)}}
     <div class="fieldPermissions-body-check">
@@ -50,7 +51,7 @@
             >{{$.lp.propertyTemplate.readConfig_org}}</oo-checkbox
         >
     </div>
-    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByOrg ? 'block' : 'none'}}">
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByOrg ? 'block' : 'none'}};">
         <oo-selector
             data-o2-events="click:selectOrgs:readByOrgValue:default"
             label-style="font-weight:bold"
@@ -66,7 +67,7 @@
             >{{$.lp.propertyTemplate.readConfig_script}}</oo-checkbox
         >
     </div>
-    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByScript ? 'block' : 'none'}}">
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.readByScript ? 'block' : 'none'}}; padding: 0;">
         <div data-o2-events="o2load:loadScriptEditor:readByScriptValue"></div>
     </div>
 
@@ -85,6 +86,7 @@
 
     <!-- 可编辑配置 -->
     <div class="fieldPermissions-item-section">{{$.lp.propertyTemplate.editConfig}}</div>
+    <div style="padding: 5px; color: #999999; ">{{$.lp.propertyTemplate.editConfigInfo}}</div>
 
     {{if ($.isProcess || $.isCms)}}
     <div class="fieldPermissions-body-check">
@@ -146,7 +148,7 @@
             >{{$.lp.propertyTemplate.editConfig_script}}</oo-checkbox
         >
     </div>
-    <div class="fieldPermissions-body-item" style="display: {{!!$.data.editByScript ? 'block' : 'none'}}">
+    <div class="fieldPermissions-body-item" style="display: {{!!$.data.editByScript ? 'block' : 'none'}}; padding: 0;">
         <div data-o2-events="o2load:loadScriptEditor:editByScriptValue"></div>
     </div>
 </div>

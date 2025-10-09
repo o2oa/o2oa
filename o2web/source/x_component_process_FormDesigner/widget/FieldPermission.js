@@ -5,7 +5,7 @@ MWF.require("MWF.widget.ScriptArea", null, false);
 MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
 	Implements: [Options, Events],
 	options: {
-
+		isField: false
 	},
 	initialize: function(node, property, options){
 		this.setOptions(options);
@@ -33,12 +33,13 @@ MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
 		this.load();
 	},
 	load: function(){
+		this.isField = this.options.isField;
 		this.isProcess = this.property.designer.options.name==='process.FormDesigner';
 		this.isCms = this.property.designer.options.name==='cms.FormDesigner';
 		this.node.loadAll({
             html: [this.path+"view.html"],
             css: [this.path+"style.css"]
-        }, {bind: {lp: this.property.designer.lp, isProcess: this.isProcess}, module: this}, () => {
+        }, {bind: {lp: this.property.designer.lp, isProcess: this.isProcess, isField: this.isField}, module: this}, () => {
             this.loadConfig();
             // this.loadPermission();
         });
@@ -47,7 +48,7 @@ MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
 		//加载表单默认配值
 		this.loadDefaultConfig();
 		
-		if (this.isProcess){
+		if (this.isProcess && this.isField){
 			//获取当前字段的流程数据权限配置
 			const path = this._getModulePath();
 
