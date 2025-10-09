@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.factory.content;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -14,6 +15,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.query.core.entity.Item;
 import com.x.query.core.entity.ItemAccess;
 import com.x.query.core.entity.ItemAccess_;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ItemAccessFactory extends AbstractFactory {
@@ -86,14 +89,79 @@ public class ItemAccessFactory extends AbstractFactory {
         List<String> authList = getPersonAuth(effectivePerson.getDistinguishedName());
         for (ItemAccess itemAccess : itemAccessList) {
             List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
+            List<String> excludeReaderList = itemAccess.getProperties().getExcludeReaderListExcludeEditor();
             List<String> readActivityIdList = itemAccess.getProperties().getReadActivityIdList();
+            List<String> excludeReadActivityIdList = itemAccess.getProperties().getExcludeReadActivityIdList();
             logger.debug("processId:{},path:{},readerList:{},readActivityIdList:{}",processId, itemAccess.getPath(), readerList, readActivityIdList);
-            if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(readActivityIdList)) {
-                if (readActivityIdList.contains(activity)
-                        || ListTools.containsAny(readerList, authList)) {
-                    continue;
-                }
+            boolean remove = excludeReadActivityIdList.contains(activity) || ListTools.containsAny(excludeReaderList, authList);
+            if(!remove){
+                remove = (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(readActivityIdList))
+                                && (!readActivityIdList.contains(activity) && !ListTools.containsAny(
+                                readerList, authList));
+            }
+            if (remove) {
                 XGsonBuilder.removeWithPath(data, itemAccess.getPath());
+            }
+        }
+    }
+
+    /**
+     * 保存数据的时候对不可编辑的字段用源数据覆盖
+     * @param data
+     * @param job
+     * @param processId
+     * @param appId
+     * @param activity
+     * @param effectivePerson
+     * @throws Exception
+     */
+    public void editConvert(JsonElement data, String job, String processId, String appId, String activity,
+            EffectivePerson effectivePerson) throws Exception {
+        if(StringUtils.isEmpty(processId) && StringUtils.isEmpty(appId)){
+            return;
+        }
+        List<ItemAccess> itemAccessList = this.listWithProcessOrApp(processId, appId);
+        if (ListTools.isEmpty(itemAccessList) || this.business()
+                .ifPersonCanManageApplicationOrProcess(effectivePerson, appId, processId)) {
+            return;
+        }
+        List<Item> list = this.business().item().listWithJobWithPath(job);
+        DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
+        JsonElement oldData = converter.assemble(list);
+
+        List<String> authList = getPersonAuth(effectivePerson.getDistinguishedName());
+        for (ItemAccess itemAccess : itemAccessList) {
+            List<String> editorList = itemAccess.getProperties().getEditorList();
+            List<String> excludeEditorList = itemAccess.getProperties().getExcludeEditorList();
+            List<String> editActivityIdList = itemAccess.getProperties().getEditActivityIdList();
+            List<String> excludeEditActivityIdList = itemAccess.getProperties().getExcludeEditActivityIdList();
+            boolean remove = excludeEditActivityIdList.contains(activity) || ListTools.containsAny(excludeEditorList, authList);
+            if(!remove){
+                if(ListTools.isNotEmpty(editorList) || ListTools.isNotEmpty(editActivityIdList)){
+                    remove = !editActivityIdList.contains(activity) && !ListTools.containsAny(editorList, authList);
+                }else {
+                    List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
+                    List<String> excludeReaderList = itemAccess.getProperties()
+                            .getExcludeReaderListExcludeEditor();
+                    List<String> readActivityIdList = itemAccess.getProperties()
+                            .getReadActivityIdList();
+                    List<String> excludeReadActivityIdList = itemAccess.getProperties()
+                            .getExcludeReadActivityIdList();
+                    logger.debug("processId:{},path:{},readerList:{},readActivityIdList:{}",
+                            processId, itemAccess.getPath(), readerList, readActivityIdList);
+                    remove = excludeReadActivityIdList.contains(activity) || ListTools.containsAny(
+                            excludeReaderList, authList);
+                    if (!remove) {
+                        remove = (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(
+                                readActivityIdList))
+                                && (!readActivityIdList.contains(activity)
+                                && !ListTools.containsAny(
+                                readerList, authList));
+                    }
+                }
+            }
+            if (remove) {
+                XGsonBuilder.replaceWithPath(data, oldData, itemAccess.getPath());
             }
         }
     }

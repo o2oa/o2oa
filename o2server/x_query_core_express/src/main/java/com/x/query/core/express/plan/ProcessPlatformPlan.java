@@ -288,40 +288,51 @@ public class ProcessPlatformPlan extends Plan {
         for (FilterEntry filter : pathList) {
             String path = filter.path;
             List<String> list = new ArrayList<>();
+            List<String> excludeList = new ArrayList<>();
             boolean flag = true;
             int i = 0;
             for (ItemAccess itemAccess : accessList) {
                 if (path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(
                         itemAccess.getPath() + ".")) {
-                    List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
-                    List<String> readActivityIdList = itemAccess.getProperties()
-                            .getReadActivityIdList();
-                    if ((ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(
-                            readActivityIdList)) && !ListTools.containsAny(readerList,
-                            this.runtime.authList)) {
-                        if (ListTools.isEmpty(readerList)) {
-                            if (i == 0) {
-                                list.addAll(readActivityIdList);
+                    List<String> excludeReaderList = itemAccess.getProperties().getExcludeReaderListExcludeEditor();
+                    if(ListTools.containsAny(excludeReaderList, this.runtime.authList)){
+                        flag = false;
+                    }else {
+                        List<String> readerList = itemAccess.getProperties()
+                                .getReaderAndEditorList();
+                        List<String> readActivityIdList = itemAccess.getProperties()
+                                .getReadActivityIdList();
+                        excludeList.addAll(itemAccess.getProperties().getExcludeReadActivityIdList());
+                        if ((ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(
+                                readActivityIdList)) && !ListTools.containsAny(readerList,
+                                this.runtime.authList)) {
+                            if (ListTools.isEmpty(readerList)) {
+                                if (i == 0) {
+                                    list.addAll(readActivityIdList);
+                                } else {
+                                    list.retainAll(readActivityIdList);
+                                }
+                            } else if (ListTools.isEmpty(readActivityIdList)) {
+                                flag = false;
                             } else {
-                                list.retainAll(readActivityIdList);
+                                if (i == 0) {
+                                    list.addAll(readActivityIdList);
+                                } else {
+                                    list.retainAll(readActivityIdList);
+                                }
                             }
-                        } else if (ListTools.isEmpty(readActivityIdList)) {
-                            flag = false;
-                            break;
-                        } else {
-                            if (i == 0) {
-                                list.addAll(readActivityIdList);
-                            } else {
-                                list.retainAll(readActivityIdList);
-                            }
+                            i++;
                         }
-                        i++;
+                    }
+                    if(!flag){
+                        break;
                     }
                 }
             }
             if (i > 0 && list.isEmpty()) {
                 flag = false;
             }
+            list.removeAll(excludeList);
             activityList.add(Triple.of(filter, flag, list));
         }
         return activityList;

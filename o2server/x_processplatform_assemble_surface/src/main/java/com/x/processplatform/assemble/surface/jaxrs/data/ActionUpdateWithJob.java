@@ -40,7 +40,7 @@ class ActionUpdateWithJob extends BaseAction {
 			}
 			Review review = business.review().getWithPersonAndJob(effectivePerson.getDistinguishedName(), job);
 			if(review != null) {
-				business.itemAccess().convert(jsonElement, review.getProcess(),
+				business.itemAccess().editConvert(jsonElement, review.getJob(), review.getProcess(),
 						review.getApplication(), review.getActivityUnique(),
 						effectivePerson);
 			}

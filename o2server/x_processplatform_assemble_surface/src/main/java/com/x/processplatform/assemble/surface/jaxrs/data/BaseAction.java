@@ -44,6 +44,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private static final String subject_path = "subject";
 
+	protected static final String PATH_DOT = ".";
+
 	protected Gson gson = XGsonBuilder.instance();
 
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
@@ -338,7 +340,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	String joinPath(String... paths){
-		return StringUtils.join(paths, ".");
+		return StringUtils.join(paths, PATH_DOT);
 	}
 
 }

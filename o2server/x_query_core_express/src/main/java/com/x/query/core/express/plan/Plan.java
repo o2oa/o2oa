@@ -221,12 +221,16 @@ public abstract class Plan extends GsonPropertyObject {
 		boolean flag = true;
 		if(path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(itemAccess.getPath() + ".")){
 			List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
-			List<String> readActivityIdList = itemAccess.getProperties()
-					.getReadActivityIdList();
+			List<String> readActivityIdList = itemAccess.getProperties().getReadActivityIdList();
 			if (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(
 					readActivityIdList)) {
 				flag = readActivityIdList.contains(activityUnique)
 						|| CollectionUtils.containsAny(readerList, this.runtime.authList);
+			}
+			if(flag){
+				List<String> excludeReaderList = itemAccess.getProperties().getExcludeReaderListExcludeEditor();
+				List<String> excludeReadActivityIdList = itemAccess.getProperties().getExcludeReadActivityIdList();
+				flag = !excludeReadActivityIdList.contains(activityUnique) && !CollectionUtils.containsAny(excludeReaderList, this.runtime.authList);
 			}
 		}
 		return flag;

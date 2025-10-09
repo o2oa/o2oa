@@ -24,7 +24,7 @@ import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.apache.openjpa.persistence.jdbc.Strategy;
 
-@Schema(name = "ItemAccess", description = "业务字段可见配置.")
+@Schema(name = "ItemAccess", description = "业务字段访问权限配置.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.ItemAccess.table, uniqueConstraints = {
@@ -65,6 +65,10 @@ public class ItemAccess extends SliceJpaObject {
 			this.readerList = this.properties.getReaderList();
 			this.editorList = this.properties.getEditorList();
 			this.extension = this.properties.getExtension();
+			this.excludeReaderList = this.properties.getExcludeReaderList();
+			this.excludeReadActivityList = this.properties.getExcludeReadActivityList();
+			this.excludeEditorList = this.properties.getExcludeEditorList();
+			this.excludeEditActivityList = this.properties.getExcludeEditActivityList();
 		}
 	}
 
@@ -155,21 +159,41 @@ public class ItemAccess extends SliceJpaObject {
 	@Transient
 	private List<String> readerList;
 
+	@FieldDescribe("不可查看对象DN列表：人员、组织、群组、角色.")
+	@Transient
+	private List<String> excludeReaderList;
+
 	@FieldDescribe("可查看流程活动列表.")
 	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
 			fieldValue = "{'unique':'活动唯一编码','name':'活动名称','alias':'活动别名','type':'活动类型','process':'流程标志'}")
 	@Transient
 	private List<ItemAccessActivity> readActivityList;
 
+	@FieldDescribe("不可查看流程活动列表.")
+	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
+			fieldValue = "{'unique':'活动唯一编码','name':'活动名称','alias':'活动别名','type':'活动类型','process':'流程标志'}")
+	@Transient
+	private List<ItemAccessActivity> excludeReadActivityList;
+
 	@FieldDescribe("可编辑对象DN列表：人员、组织、群组、角色.")
 	@Transient
 	private List<String> editorList;
+
+	@FieldDescribe("不可编辑对象DN列表：人员、组织、群组、角色.")
+	@Transient
+	private List<String> excludeEditorList;
 
 	@FieldDescribe("可编辑流程活动列表.")
 	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
 			fieldValue = "{'unique':'活动唯一编码','name':'活动名称','alias':'活动别名','type':'活动类型','process':'流程标志'}")
 	@Transient
 	private List<ItemAccessActivity> editActivityList;
+
+	@FieldDescribe("不可编辑流程活动列表.")
+	@FieldTypeDescribe(fieldType = "class", fieldTypeName = "ItemAccessActivity",
+			fieldValue = "{'unique':'活动唯一编码','name':'活动名称','alias':'活动别名','type':'活动类型','process':'流程标志'}")
+	@Transient
+	private List<ItemAccessActivity> excludeEditActivityList;
 
 	public List<String> getReaderList() {
 		if ((null == this.readerList) && (null != this.properties)) {
@@ -231,5 +255,55 @@ public class ItemAccess extends SliceJpaObject {
 	public void setExtension(String extension) {
 		this.extension = extension;
 		this.getProperties().setExtension(extension);
+	}
+
+	public List<String> getExcludeReaderList() {
+		if ((null == this.excludeReaderList) && (null != this.properties)) {
+			this.excludeReaderList = this.properties.getExcludeReaderList();
+		}
+		return excludeReaderList;
+	}
+
+	public void setExcludeReaderList(List<String> excludeReaderList) {
+		this.excludeReaderList = excludeReaderList;
+		this.getProperties().setExcludeReaderList(excludeReaderList);
+	}
+
+	public List<ItemAccessActivity> getExcludeReadActivityList() {
+		if ((null == this.excludeReadActivityList) && (null != this.properties)) {
+			this.excludeReadActivityList = this.properties.getExcludeReadActivityList();
+		}
+		return excludeReadActivityList;
+	}
+
+	public void setExcludeReadActivityList(
+			List<ItemAccessActivity> excludeReadActivityList) {
+		this.excludeReadActivityList = excludeReadActivityList;
+		this.getProperties().setExcludeReadActivityList(excludeReadActivityList);
+	}
+
+	public List<String> getExcludeEditorList() {
+		if ((null == this.excludeEditorList) && (null != this.properties)) {
+			this.excludeEditorList = this.properties.getExcludeEditorList();
+		}
+		return excludeEditorList;
+	}
+
+	public void setExcludeEditorList(List<String> excludeEditorList) {
+		this.excludeEditorList = excludeEditorList;
+		this.getProperties().setExcludeEditorList(excludeEditorList);
+	}
+
+	public List<ItemAccessActivity> getExcludeEditActivityList() {
+		if ((null == this.excludeEditActivityList) && (null != this.properties)) {
+			this.excludeEditActivityList = this.properties.getExcludeEditActivityList();
+		}
+		return excludeEditActivityList;
+	}
+
+	public void setExcludeEditActivityList(
+			List<ItemAccessActivity> excludeEditActivityList) {
+		this.excludeEditActivityList = excludeEditActivityList;
+		this.getProperties().setExcludeEditActivityList(excludeEditActivityList);
 	}
 }
