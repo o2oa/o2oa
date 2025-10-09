@@ -237,7 +237,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("document/{id}/array/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateArrayDataWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void updateArrayDataWithDocument(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionUpdateArrayDataWithDocument.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
