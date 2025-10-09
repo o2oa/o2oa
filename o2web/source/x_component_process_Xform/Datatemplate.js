@@ -870,7 +870,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return false;
 			}
 
-			var data, index, newLine;
+			var data, index, newLine, changedData;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -878,20 +878,30 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					sdata = data[ this.sectionBy ] = [];
 				}
 
-				sdata.push(d||{});
+				changedData = d||{};
+				sdata.push(changedData);
 				index = sdata.length - 1;
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data , false, "addLine");
 				newLine = this.sectionLineEdited.lineList[index];
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.'+this.sectionBy, data: changedData
+				});
 			}else{
 				data = this.getInputData();
 
-				data.push(d || {});
+				changedData = d || {};
+				data.push(changedData);
 				index = data.length-1;
 				this.newLineIndex = index;
 				this.setData( data, false, "addLine" );
 				newLine = this.getLine(index);
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id, data: changedData
+				});
 			}
 
 			this.validationMode();
@@ -907,7 +917,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 
 			//使用数据驱动
-			var data, index, newLine;
+			var data, index, newLine, changedData;
 			if( this.isShowAllSection ){
 				index = beforeLine.options.indexInSectionLine + 1;
 
@@ -916,18 +926,29 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( !sdata ){
 					sdata = data[ this.sectionBy ] = [];
 				}
-				sdata.splice(index, 0, {});
+				changedData = {};
+				sdata.splice(index, 0, changedData);
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data , false, "insertLine");
 				newLine = this.sectionLineEdited.lineList[index];
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.'+this.sectionBy, data: changedData
+				});
 			}else {
 				index = beforeLine.options.index+1;
 				data = this.getInputData();
-				data.splice(index, 0, {});
+
+				changedData = {};
+				data.splice(index, 0, changedData);
 				this.newLineIndex = index;
 				this.setData( data, false, "insertLine" );
 				newLine = this.getLine( index );
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id, data: changedData
+				});
 			}
 
 			this.validationMode();
@@ -942,7 +963,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return false;
 			}
 			//使用数据驱动
-			var data, newLine;
+			var data, newLine, changedData;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -950,18 +971,28 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					sdata = data[ this.sectionBy ] = [];
 				}
 				if (sdata.length < index) return null;
-				sdata.splice(index, 0, d || {});
+				changedData = d || {};
+				sdata.splice(index, 0, changedData);
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data , false, "insertLine");
-				line = this.sectionLineEdited.lineList[index];
+				newLine = this.sectionLineEdited.lineList[index];
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.'+this.sectionBy, data: changedData
+				});
 			}else {
 				data = this.getInputData();
 				if(data.length < index )return null;
-				data.splice(index, 0, d||{});
+				var changedData = d||{};
+				data.splice(index, 0, changedData);
 				this.newLineIndex = index;
 				this.setData( data , false, "insertLine");
 				newLine = this.getLine( index );
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id, data: changedData
+				});
 			}
 
 			this.validationMode();
@@ -1023,9 +1054,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					var d = data[ line.sectionLine.sectionKey ];
 					if( d ){
 						d.splice(line.options.indexInSectionLine, 1);
+
+						_self.saveData({
+							method: 'delete', index: line.options.indexInSectionLine,
+							path: this.json.id +'.'+line.sectionLine.sectionKey
+						});
 					}
 				}else {
 					data.splice(line.options.index, 1);
+
+					_self.saveData({
+						method: 'delete', index: line.options.index,
+						path: this.json.id
+					});
 				}
 
 				_self.fireEvent("afterDeleteLine");
@@ -1068,10 +1109,18 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( d ){
 					d.splice(line.options.indexInSectionLine, 1);
 				}
+				this.saveData({
+					method: 'delete', index: line.options.indexInSectionLine,
+					path: this.json.id +'.'+line.sectionLine.sectionKey
+				});
 				this.setAllSectionData( data, false, "deleteLine" );
 			}else{
 				data = this.getInputData();
 				data.splice(line.options.index, 1);
+				this.saveData({
+					method: 'delete', index: line.options.index,
+					path: this.json.id
+				});
 				this.setData( data , false, "deleteLine");
 			}
 
@@ -2481,6 +2530,36 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			}
 		}
 		return saveFlag;
+	},
+	saveData: function(body){
+		if( this.isMergeRead ){ //合并且只读，不处理
+			return;
+		}
+		var bundle = this.form.businessData.work.job;
+		o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(bundle, body, null, null, false);
+		this.updateOriginalData();
+	},
+	saveFullData: function(data){
+		if( this.isMergeRead ){ //合并且只读，不处理
+			return;
+		}
+		var bundle = this.form.businessData.work.job;
+		o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob(bundle, data, null, null, false);
+		this.updateOriginalData();
+	},
+	updateOriginalData: function(data){
+		if( this.isMergeRead ){ //合并且只读，不处理
+			return;
+		}
+		var _update = function(){
+			var data = this.getBusinessDataById();
+			this.form.updateOriginalData(this.json.id, data)
+		}.bind(this);
+		if (this.moduleValueAG) {
+			this.moduleValueAG.then(_update);
+		}else{
+			_update();
+		}
 	},
 	saveValidation: function(){
 		if( !this.options.isEdited )return true;

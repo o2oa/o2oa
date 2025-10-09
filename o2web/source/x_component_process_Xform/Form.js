@@ -1740,6 +1740,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
+    updateOriginalData(path, data){
+        var d;
+        switch(typeOf(data)){
+            case 'object': d = Object.clone(data); break;
+            case 'array': d = Array.clone(data); break;
+            default: d = data; break;
+        }
+        this.businessData.originalData[path] = d;
+    },
 
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {

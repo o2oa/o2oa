@@ -1186,7 +1186,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return false;
 			}
 
-			var data, index, line;
+			var data, index, line, changedData;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -1197,22 +1197,33 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 				// if( d && !d.sectionKey )d.sectionKey = this.sectionBy;
 				// sectionKey: this.sectionBy
-				sdata.data.push(d||{});
+				changedData = d||{};
+				sdata.data.push(changedData);
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data, false, "addLine");
 				line = this.sectionLineEdited.lineList[index];
 				line.isNewAdd = true;
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.data.'+this.sectionBy, data: changedData
+				});
+
 			}else{
 				index = this.lineList.length;
 				data = this.getInputData();
 
-				data.data.push(d||{});
+				changedData = d||{};
+				data.data.push(changedData);
 				this.newLineIndex = index;
 
 				this.setData( data , false, "addLine");
 				line = this.getLine(index);
 				line.isNewAdd = true;
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.data', data: changedData
+				});
 			}
 
 
@@ -1247,6 +1258,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.setAllSectionData( data, false, "insertLine");
 				line = this.sectionLineEdited.lineList[index];
 				line.isNewAdd = true;
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.data.'+this.sectionBy, data: {}
+				});
 			}else {
 				index = beforeLine.options.index + 1;
 
@@ -1256,6 +1271,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.setData(data, false, "insertLine");
 				line = this.getLine(index);
 				line.isNewAdd = true;
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.data', data: {}
+				});
 			}
 
 			this.validationMode();
@@ -1271,7 +1290,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return false;
 			}
 
-			var data, line;
+			var data, line, changedData;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -1279,21 +1298,31 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					sdata = data[ this.sectionBy ] = { data: [] };
 				}
 				if (sdata.data.length < index) return null;
-				sdata.data.splice(index, 0, d || {});
+				changedData = d || {};
+				sdata.data.splice(index, 0, changedData);
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data , false, "insertLine" );
 				line = this.sectionLineEdited.lineList[index];
 				line.isNewAdd = true;
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.data.'+this.sectionBy, data: changedData
+				});
 			}else {
 				//使用数据驱动
 				data = this.getInputData();
 				if (data.data.length < index) return null;
-				data.data.splice(index, 0, d || {});
+				changedData = d || {};
+				data.data.splice(index, 0, changedData);
 				this.newLineIndex = index;
 				this.setData(data, false, "insertLine");
 				line = this.getLine(index);
 				line.isNewAdd = true;
+
+				this.saveData({
+					method: 'add', index: index, path: this.json.id +'.data', data: changedData
+				});
 			}
 
 			this.validationMode();
@@ -1348,10 +1377,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					if( d && d.data ){
 						d.data.splice(line.options.indexInSectionLine, 1);
 						if(this.currentEditedLine === line)this.currentEditedLine = null;
+						_self.saveData({
+							method: 'delete', index: line.options.indexInSectionLine,
+							path: this.json.id +'.data.'+line.sectionLine.sectionKey
+						});
 					}
 				}else {
 					data.data.splice(line.options.index, 1);
 					if (this.currentEditedLine === line) this.currentEditedLine = null;
+					_self.saveData({
+						method: 'delete', index: line.options.index, path: this.json.id +'.data'
+					});
 				}
 
 				_self.fireEvent("afterDeleteLine");
@@ -1394,14 +1430,20 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var d = data[ line.sectionLine.sectionKey ];
 				if( d && d.data ){
 					d.data.splice(line.options.indexInSectionLine, 1);
+					this.saveData({
+						method: 'delete', index: line.options.indexInSectionLine,
+						path: this.json.id +'.data.'+line.sectionLine.sectionKey
+					});
 				}
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
 				this.setAllSectionData( data, false, "deleteLine" );
 			}else{
 				data = this.getInputData();
 				data.data.splice(line.options.index, 1);
-
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
+				this.saveData({
+					method: 'delete', index: line.options.index, path: this.json.id +'.data'
+				});
 				this.setData( data , false, "deleteLine");
 			}
 
@@ -1484,6 +1526,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				sdata.data[line.options.indexInSectionLine] = upData;
 				sdata.data[line.options.indexInSectionLine - 1] = curData;
 
+				this.saveData({
+					method: 'move', path: this.json.id +'.data.' + this.sectionBy,
+					index: line.options.indexInSectionLine, toIndex: line.options.indexInSectionLine - 1
+				});
+
 				this.setAllSectionData( data, false, "moveUpList" );
 			}else {
 				if (line.options.index === 0) return;
@@ -1493,6 +1540,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				curData = data.data[line.options.index];
 				data.data[line.options.index] = upData;
 				data.data[line.options.index - 1] = curData;
+
+				this.saveData({
+					method: 'move', path: this.json.id +'.data',
+					index: line.options.index, toIndex: line.options.index - 1
+				});
+
 				this.setData(data, false, "moveUpList");
 			}
 			this.fireEvent("change", [{lines: this.lineList, "type":"move", line: line}]);
@@ -1617,6 +1670,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this._setUnchangedLineMap(data, operation);
 
+			if( !operation ){
+				var obj = {};
+				obj[this.json.id] = data;
+				this.saveFullData(obj);
+			}
+
             this._setBusinessData(data);
 
 			this.data = data;
@@ -1640,6 +1699,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var d = this.getBusinessDataById();
 				d[ this.sectionBy ] = data || { data: [] };
 				this.setAllSectionData( d, fireChange , operation);
+
+				var obj = {};
+				obj[this.json.id] = {};
+				obj[this.json.id][this.sectionBy] = d[ this.sectionBy ];
+				this.saveFullData(obj);
 			}
 		},
 		deleteAttachment: function( attId ){
@@ -1647,6 +1711,36 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		saveFormData: function(){
 			this.form.saveFormData();
+		},
+		saveData: function(body){
+			if( this.isMergeRead ){ //合并且只读，不处理
+				return;
+			}
+			var bundle = this.form.businessData.work.job;
+			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(bundle, body, null, null, false);
+			this.updateOriginalData();
+		},
+		saveFullData: function(data){
+			if( this.isMergeRead ){ //合并且只读，不处理
+				return;
+			}
+			var bundle = this.form.businessData.work.job;
+			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob(bundle, data, null, null, false);
+			this.updateOriginalData();
+		},
+		updateOriginalData: function(data){
+			if( this.isMergeRead ){ //合并且只读，不处理
+				return;
+			}
+			var _update = function(){
+				var data = this.getBusinessDataById();
+				this.form.updateOriginalData(this.json.id, data)
+			}.bind(this);
+			if (this.moduleValueAG) {
+				this.moduleValueAG.then(_update);
+			}else{
+				_update();
+			}
 		},
 		/**
 		 * @summary 当数据表格设置为区段合并展现、区段合并编辑时，可以使用本方法设置所有区段数据。
