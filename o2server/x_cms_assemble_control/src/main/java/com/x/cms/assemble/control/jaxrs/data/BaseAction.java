@@ -32,6 +32,7 @@ import com.x.query.core.entity.Item;
 public class BaseAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
+	protected static final String PATH_DOT = ".";
 	protected static final String title_path = "title";
 	protected static final String subject_path = "subject";
 	protected static final String objectSecurityClearance_path = "objectSecurityClearance";
