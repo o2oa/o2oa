@@ -1276,6 +1276,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this._setUnchangedLineMap(data, operation);
 
+			if( !operation ){
+				var obj = {};
+				obj[this.json.id] = data;
+				this.saveFullData(obj);
+			}
+
 			this._setBusinessData(data);
 			this.data = data;
 
@@ -1302,6 +1308,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				var d = this.getBusinessDataById();
 				d[ this.sectionBy ] = data || { data: [] };
 				this.setAllSectionData( d, fireChange , operation);
+
+				var obj = {};
+				obj[this.json.id] = {};
+				obj[this.json.id][this.sectionBy] = d[ this.sectionBy ];
+				this.saveFullData(obj);
 			}
 		},
 		/**
