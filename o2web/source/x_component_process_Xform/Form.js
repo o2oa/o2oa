@@ -524,7 +524,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                 this.container.loadCssText(json.data.text);
                             });
                         });
-                    } 
+                    }
 
                     if (this.json.cssLink){
                         cssPromise.push(new Promise(function(resolve){
@@ -1739,15 +1739,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
         }
         return true;
-    },
-    updateOriginalData: function(path, data){
-        var d;
-        switch(typeOf(data)){
-            case 'object': d = Object.clone(data); break;
-            case 'array': d = Array.clone(data); break;
-            default: d = data; break;
-        }
-        this.businessData.originalData[path] = d;
     },
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {
