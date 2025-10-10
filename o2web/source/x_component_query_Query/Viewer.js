@@ -348,10 +348,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     setContentHeight: function(){
         var size;
-        if( !this.node.offsetParent === null ){
-            size = this.node.getStyle("height");
+        var height = this.node.getStyle("height");
+        if( this.node.offsetParent === null ){
+            size = {y: height.toInt()}
         }else{
-            size = this.node.getSize()
+            size = this.node.getSize();
+            if( height && height.toString().endsWith('%') ){
+                this.node.setStyle("height", size.y+'px');
+            }
         }
         var searchSize = this.searchAreaNode.getComputedSize();
         var h = size.y-searchSize.totalHeight;
@@ -1763,6 +1767,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }else{
                     this.loadFilterSearchNode();
                 }
+                this.setContentHeight();
             },
             'onRequestFailure': ()=>{this.loadFilterSearchNode();},
             'onError': ()=>{this.loadFilterSearchNode();},

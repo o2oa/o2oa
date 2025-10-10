@@ -40,6 +40,12 @@
     overflow: hidden;
     overflow: auto;
 }
+.v10_dialog_content.page-content-section .tabContentArea{
+    display: contents;
+}
+.v10_dialog_content.page-content-section .tabContentArea [name='MWFcontentNodeContainer']{
+    display: contents;
+}
 
 .page-nav-title {
     margin: 0.625em;
