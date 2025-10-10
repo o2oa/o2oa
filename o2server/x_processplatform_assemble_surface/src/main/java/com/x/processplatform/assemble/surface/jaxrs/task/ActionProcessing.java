@@ -22,6 +22,8 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.bean.tuple.Triple;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.ProcessPlatform.HandoverConfig;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -107,7 +109,7 @@ class ActionProcessing extends BaseAction {
 
 		startSignalThreadIfAsyncSupported(param, id, responeQueue);
 
-		Wo wo = responeQueue.poll(300, TimeUnit.SECONDS);
+		Wo wo = responeQueue.poll(Config.processPlatform().getProcessingTimeout(), TimeUnit.SECONDS);
 
 		result.setData(wo);
 		return result;

@@ -58,6 +58,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static final Integer DEFAULT_ASYNCHRONOUSTIMEOUT = 60;
 
+	public static final Integer DEFAULT_PROCESSINGTIMEOUT = 5 * 60;
+
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
 	}
@@ -84,6 +86,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.handoverConfig = new HandoverConfig();
 		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
 		this.asynchronousTimeout = DEFAULT_ASYNCHRONOUSTIMEOUT;
+		this.processingTimeout = DEFAULT_PROCESSINGTIMEOUT;
 	}
 
 	public Integer getExecutorCount() {
@@ -198,6 +201,16 @@ public class ProcessPlatform extends ConfigObject {
 			this.asynchronousTimeout = DEFAULT_ASYNCHRONOUSTIMEOUT;
 		}
 		return asynchronousTimeout;
+	}
+
+	@FieldDescribe("流转超时")
+	private Integer processingTimeout;
+
+	public Integer getProcessingTimeout() {
+		if ((processingTimeout == null) || (processingTimeout < 1)) {
+			this.processingTimeout = DEFAULT_PROCESSINGTIMEOUT;
+		}
+		return processingTimeout;
 	}
 
 	public Boolean getProcessingSignalPersistEnable() {
