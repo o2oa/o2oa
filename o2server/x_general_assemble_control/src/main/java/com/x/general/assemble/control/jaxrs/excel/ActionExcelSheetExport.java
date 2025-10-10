@@ -19,6 +19,7 @@ import com.x.general.core.entity.GeneralFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -53,8 +54,10 @@ class ActionExcelSheetExport extends BaseAction {
 
 			// 遍历每一个 WiSheet，创建对应的 sheet
 			for (WiSheet sheetItem : wi.getSheetList()) {
-				String sheetName = StringUtils.defaultIfEmpty(sheetItem.getSheetName(), "Sheet");
-				XSSFSheet sheet = workbook.createSheet(sheetName); // 创建 sheet
+				String safeSheetName = WorkbookUtil.createSafeSheetName(
+						StringUtils.defaultIfEmpty(sheetItem.getSheetName(), "Sheet")
+				);
+				XSSFSheet sheet = workbook.createSheet(safeSheetName); // 创建 sheet
 
 				List<List<String>> dataList = sheetItem.getDataList();
 				if (ListTools.isEmpty(dataList)) {
@@ -78,16 +81,19 @@ class ActionExcelSheetExport extends BaseAction {
 		}
 
 		Business business;
+		GeneralFile generalFile;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+
+			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+			generalFile = new GeneralFile(gfMapping.getName(), excelName,
+					effectivePerson.getDistinguishedName());
+			generalFile.saveContent(gfMapping, bytes, excelName);
+			business.entityManagerContainer().beginTransaction(GeneralFile.class);
+			business.entityManagerContainer().persist(generalFile, CheckPersistType.all);
+			business.entityManagerContainer().commit();
 		}
-		StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
-		GeneralFile generalFile = new GeneralFile(gfMapping.getName(), excelName,
-				effectivePerson.getDistinguishedName());
-		generalFile.saveContent(gfMapping, bytes, excelName);
-		business.entityManagerContainer().beginTransaction(GeneralFile.class);
-		business.entityManagerContainer().persist(generalFile, CheckPersistType.all);
-		business.entityManagerContainer().commit();
+
 
 		Wo wo = new Wo();
 		wo.setId(generalFile.getId());
