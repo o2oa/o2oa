@@ -1740,7 +1740,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
-    updateOriginalData(path, data){
+    updateOriginalData: function(path, data){
         var d;
         switch(typeOf(data)){
             case 'object': d = Object.clone(data); break;
@@ -1749,7 +1749,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         this.businessData.originalData[path] = d;
     },
-
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);
@@ -2223,10 +2222,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var modules = this.modules;
         for (var i = 0; i < modules.length; i++) {
             var module = modules[i];
-            var moduleName = module.json.moduleName;
-            if (!moduleName) moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
-            if (moduleName === "org") {
-                check(module)
+            if( module && module.json ){
+                var moduleName = module.json.moduleName;
+                if (!moduleName) moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+                if (moduleName === "org") {
+                    check(module)
+                }
             }
         }
         if (processorOrgList && processorOrgList.length > 0) {
