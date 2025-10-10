@@ -153,6 +153,7 @@ public class ActionUploadExcel extends BaseAction {
                         return "";
                 }
             } catch (Exception e) {
+                LOGGER.warn("公式计算失败,错误：{}", e.getMessage());
                 return ""; // 公式错误返回空
             }
         }
