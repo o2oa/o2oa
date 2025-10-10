@@ -587,7 +587,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
     _getActivityId: function(){
         if (this.form.businessData.review){
-            return {uid: this.form.businessData.reviewactivityUnique}
+            return {uid: this.form.businessData.review.activityUnique}
         }else{
             return {uid: this.form.businessData.activity?.unique, aid: this.form.businessData.activity?.id}
         }
@@ -605,9 +605,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             const hasByOrg = (access[processOrg] && access[processOrg].length) || (access[unProcessOrg] && access[unProcessOrg].length);
             const hasByScript = this.json[script] && this.json[script].includes('true') && (this.json[scriptValue]?.code || this.json[scriptValue]);
 
-            if (this.json.id==='datatable'){
-                debugger;
-            }
             if (hasByActivity || hasByOrg || hasByScript){
                 const {uid, aid} = this._getActivityId();
                 if (hasByActivity && access[unProcessActivity]?.length){
