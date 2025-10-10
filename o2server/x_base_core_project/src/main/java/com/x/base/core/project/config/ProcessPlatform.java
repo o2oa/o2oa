@@ -58,7 +58,7 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static final Integer DEFAULT_ASYNCHRONOUSTIMEOUT = 60;
 
-	public static final Integer DEFAULT_PROCESSINGTIMEOUT = 5 * 60;
+	public static final Integer DEFAULT_PROCESSINGTIMEOUT = 15 * 60;
 
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
