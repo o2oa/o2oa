@@ -796,6 +796,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     pageViewNode.setStyle("height", '100%');
                 }else{
                     var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
+                    if( o2.version.dev === 10 ){
+                        viewHeight = viewHeight - 24;
+                    }
                     pageViewNode.setStyle("height", viewHeight);
                 }
 
