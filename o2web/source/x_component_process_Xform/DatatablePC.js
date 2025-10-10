@@ -1728,13 +1728,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob(bundle, data, null, null, false);
 			this.updateOriginalData();
 		},
-		updateOriginalData: function(data){
+		updateOriginalData: function(path, data){
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
 			}
 			var _update = function(){
-				var data = this.getBusinessDataById();
-				this.form.updateOriginalData(this.json.id, data)
+				var d = data || this.getBusinessDataById();
+				this.form.updateOriginalData(path || this.json.id, d);
 			}.bind(this);
 			if (this.moduleValueAG) {
 				this.moduleValueAG.then(_update);

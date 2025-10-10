@@ -1858,6 +1858,36 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		getAttachmentRandomSite: function(){
 			var i = (new Date()).getTime();
 			return this.json.id+i;
+		},
+		saveData: function(body){
+			if( this.isMergeRead ){ //合并且只读，不处理
+				return;
+			}
+			var bundle = this.form.businessData.work.job;
+			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(bundle, body, null, null, false);
+			//this.updateOriginalData();
+		},
+		saveFullData: function(data){
+			if( this.isMergeRead ){ //合并且只读，不处理
+				return;
+			}
+			var bundle = this.form.businessData.work.job;
+			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob(bundle, data, null, null, false);
+			//this.updateOriginalData();
+		},
+		updateOriginalData: function(data){
+			if( this.isMergeRead ){ //合并且只读，不处理
+				return;
+			}
+			var _update = function(){
+				var data = this.getBusinessDataById();
+				this.form.updateOriginalData(this.json.id, data)
+			}.bind(this);
+			if (this.moduleValueAG) {
+				this.moduleValueAG.then(_update);
+			}else{
+				_update();
+			}
 		}
 	});
 
@@ -2541,36 +2571,6 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			}
 		}
 		return saveFlag;
-	},
-	saveData: function(body){
-		if( this.isMergeRead ){ //合并且只读，不处理
-			return;
-		}
-		var bundle = this.form.businessData.work.job;
-		o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(bundle, body, null, null, false);
-		this.updateOriginalData();
-	},
-	saveFullData: function(data){
-		if( this.isMergeRead ){ //合并且只读，不处理
-			return;
-		}
-		var bundle = this.form.businessData.work.job;
-		o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob(bundle, data, null, null, false);
-		this.updateOriginalData();
-	},
-	updateOriginalData: function(data){
-		if( this.isMergeRead ){ //合并且只读，不处理
-			return;
-		}
-		var _update = function(){
-			var data = this.getBusinessDataById();
-			this.form.updateOriginalData(this.json.id, data)
-		}.bind(this);
-		if (this.moduleValueAG) {
-			this.moduleValueAG.then(_update);
-		}else{
-			_update();
-		}
 	},
 	saveValidation: function(){
 		if( !this.options.isEdited )return true;
