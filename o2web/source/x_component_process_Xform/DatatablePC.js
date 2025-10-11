@@ -1687,6 +1687,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			var method = ['insertLine','addLine'].contains(type) ? 'add' : type;
 
+			debugger;
+
 			var originalData = this.getOriginalDataById();
 			if( !originalData ){
 				if( method === 'add' ){
