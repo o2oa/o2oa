@@ -7,20 +7,6 @@ MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
     saveFormData: function(){
         this.form.saveFormData();
     },
-    saveData: function(body){
-        if( this.isMergeRead ){ //合并且只读，不处理
-            return;
-        }
-        var bundle = this.form.businessData.document.id;
-        o2.Actions.load('x_cms_assemble_control').DataAction.updateArrayDataWithDocument(bundle, body, null, null, false);
-    },
-    saveFullData: function(data){
-        if( this.isMergeRead ){ //合并且只读，不处理
-            return;
-        }
-        var bundle = this.form.businessData.document.id;
-        o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument(bundle, data, null, null, false);
-    },
     saveArrayData: function(type, index, toIndex, data){
         if( this.isMergeRead ){ //合并且只读，不处理
             return;
