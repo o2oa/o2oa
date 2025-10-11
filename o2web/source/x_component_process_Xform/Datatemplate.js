@@ -886,9 +886,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setAllSectionData( data , false, "addLine");
 				newLine = this.sectionLineEdited.lineList[index];
 
-				this.saveData({
-					method: 'add', index: index, path: this.json.id +'.'+this.sectionBy, data: changedData
-				});
+				this.saveArrayData('addLine', index, null, changedData, this.sectionBy);
 			}else{
 				data = this.getInputData();
 
@@ -899,9 +897,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setData( data, false, "addLine" );
 				newLine = this.getLine(index);
 
-				this.saveData({
-					method: 'add', index: index, path: this.json.id, data: changedData
-				});
+				this.saveArrayData('addLine', index, null, changedData);
 			}
 
 			this.validationMode();
@@ -933,9 +929,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setAllSectionData( data , false, "insertLine");
 				newLine = this.sectionLineEdited.lineList[index];
 
-				this.saveData({
-					method: 'add', index: index, path: this.json.id +'.'+this.sectionBy, data: changedData
-				});
+				this.saveArrayData('insertLine', index, null, changedData, this.sectionBy);
 			}else {
 				index = beforeLine.options.index+1;
 				data = this.getInputData();
@@ -946,9 +940,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setData( data, false, "insertLine" );
 				newLine = this.getLine( index );
 
-				this.saveData({
-					method: 'add', index: index, path: this.json.id, data: changedData
-				});
+				this.saveArrayData('insertLine', index, null, changedData);
 			}
 
 			this.validationMode();
@@ -978,9 +970,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setAllSectionData( data , false, "insertLine");
 				newLine = this.sectionLineEdited.lineList[index];
 
-				this.saveData({
-					method: 'add', index: index, path: this.json.id +'.'+this.sectionBy, data: changedData
-				});
+				this.saveArrayData('insertLine', index, null, changedData, this.sectionBy);
 			}else {
 				data = this.getInputData();
 				if(data.length < index )return null;
@@ -990,9 +980,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setData( data , false, "insertLine");
 				newLine = this.getLine( index );
 
-				this.saveData({
-					method: 'add', index: index, path: this.json.id, data: changedData
-				});
+				this.saveArrayData('insertLine', index, null, changedData);
 			}
 
 			this.validationMode();
@@ -1053,20 +1041,15 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( line.sectionLine ){
 					var d = data[ line.sectionLine.sectionKey ];
 					if( d ){
-						d.splice(line.options.indexInSectionLine, 1);
+						var index = line.options.indexInSectionLine;
+						d.splice(index, 1);
 
-						_self.saveData({
-							method: 'delete', index: line.options.indexInSectionLine,
-							path: this.json.id +'.'+line.sectionLine.sectionKey
-						});
+						_self.saveArrayData('delete', index, null, null, line.sectionLine.sectionKey);
 					}
 				}else {
-					data.splice(line.options.index, 1);
-
-					_self.saveData({
-						method: 'delete', index: line.options.index,
-						path: this.json.id
-					});
+					var index = line.options.index;
+					data.splice(index, 1);
+					_self.saveArrayData('delete', index);
 				}
 
 				_self.fireEvent("afterDeleteLine");
@@ -1107,20 +1090,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				var data = this.getBusinessDataById();
 				var d = data[ line.sectionLine.sectionKey ];
 				if( d ){
-					d.splice(line.options.indexInSectionLine, 1);
+					var index = line.options.indexInSectionLine;
+					d.splice(index, 1);
+					this.saveArrayData('delete', index, null, null, line.sectionLine.sectionKey);
 				}
-				this.saveData({
-					method: 'delete', index: line.options.indexInSectionLine,
-					path: this.json.id +'.'+line.sectionLine.sectionKey
-				});
 				this.setAllSectionData( data, false, "deleteLine" );
 			}else{
 				data = this.getInputData();
-				data.splice(line.options.index, 1);
-				this.saveData({
-					method: 'delete', index: line.options.index,
-					path: this.json.id
-				});
+				var index = line.options.index;
+				data.splice(index, 1);
+				this.saveArrayData('delete', index );
 				this.setData( data , false, "deleteLine");
 			}
 
@@ -1859,34 +1838,49 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var i = (new Date()).getTime();
 			return this.json.id+i;
 		},
-		saveData: function(body){
+		saveArrayData: function(type, index, toIndex, data, sectionBy){
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
 			}
-			var bundle = this.form.businessData.work.job;
-			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(bundle, body, null, null, false);
-			//this.updateOriginalData();
-		},
-		saveFullData: function(data){
-			if( this.isMergeRead ){ //合并且只读，不处理
+			var method = ['insertLine','addLine'].contains(type) ? 'add' : type;
+
+			var originalData = this.getOriginalDataById();
+			if( !originalData ){
+				if( method === 'add' ){
+					this.saveFormData();
+				}
 				return;
 			}
-			var bundle = this.form.businessData.work.job;
-			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob(bundle, data, null, null, false);
-			//this.updateOriginalData();
-		},
-		updateOriginalData: function(data){
-			if( this.isMergeRead ){ //合并且只读，不处理
+
+			var oData = !!sectionBy ? originalData[ sectionBy ] : originalData;
+			if( !oData ){
+				if(method === 'add'){
+					this.saveFormData();
+				}
 				return;
 			}
-			var _update = function(){
-				var data = this.getBusinessDataById();
-				this.form.updateOriginalData(this.json.id, data)
-			}.bind(this);
-			if (this.moduleValueAG) {
-				this.moduleValueAG.then(_update);
-			}else{
-				_update();
+
+			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(
+				this.form.businessData.work.job,
+				{
+					method: method,
+					index: index,
+					toIndex: toIndex,
+					data: data,
+					path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' )
+				}, null, null, false
+			);
+
+			switch (type){
+				case 'addLine':
+					oData.push(Object.clone(data));
+					break;
+				case 'insertLine':
+					oData.splice(index, 0, Object.clone(data));
+					break;
+				case 'delete':
+					oData.splice(index, 1);
+					break;
 			}
 		}
 	});

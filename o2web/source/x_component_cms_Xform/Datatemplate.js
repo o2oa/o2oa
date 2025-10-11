@@ -1,19 +1,43 @@
 MWF.xDesktop.requireApp("process.Xform", "Datatemplate", null, false);
 MWF.xApplication.cms.Xform.Datatemplate = MWF.CMSDatatemplate =  new Class({
     Extends: MWF.APPDatatemplate,
-    saveData: function(body){
+    saveArrayData: function(type, index, toIndex, data){
         if( this.isMergeRead ){ //合并且只读，不处理
             return;
         }
-        var bundle = this.form.businessData.document.id;
-        o2.Actions.load('x_cms_assemble_control').DataAction.updateArrayDataWithDocument(bundle, body, null, null, false);
-    },
-    saveFullData: function(data){
-        if( this.isMergeRead ){ //合并且只读，不处理
+        var method = ['insertLine','addLine'].contains(type) ? 'add' : type;
+
+        var originalData = this.getOriginalDataById();
+        if( !originalData ){
+            if( method === 'add' ){
+                this.saveFormData();
+            }
             return;
         }
-        var bundle = this.form.businessData.document.id;
-        o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument(bundle, data, null, null, false);
+
+        o2.Actions.load('x_cms_assemble_control').DataAction.updateArrayDataWithDocument(
+            this.form.businessData.document.id,
+            {
+                method: method,
+                index: index,
+                toIndex: toIndex,
+                data: data,
+                path: this.json.id.split('..').join('.')
+            },
+            null, null, false
+        );
+
+        switch (type){
+            case 'addLine':
+                originalData.push(Object.clone(data));
+                break;
+            case 'insertLine':
+                originalData.splice(index, 0, Object.clone(data));
+                break;
+            case 'delete':
+                originalData.splice(index, 1);
+                break;
+        }
     },
     validationConfigItem: function(routeName, data){
         var flag = (data.status=="all") ? true: (routeName == "publ" || routeName == "publish");

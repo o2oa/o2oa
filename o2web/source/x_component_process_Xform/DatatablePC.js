@@ -1695,57 +1695,42 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return;
 			}
 
-			var hasTarget = true;
-			if( !!sectionBy ){
-				// var sdata = originalData[ sectionBy ];
-				// if( !sdata ){
-				// 	hasTarget = false;
-					// if( method === 'add' ){
-					// 	originalData[ sectionBy ] = { data: [] };
-					// }
-				// }
-				hasTarget = !!(originalData[ sectionBy ] && originalData[ sectionBy ].data);
-			}else if( !originalData.data ){
-				hasTarget = false;
-				// if( method === 'add' ){
-				// 	originalData.data = [];
-				// }
-			}
-			if( !hasTarget ){
+			var oData = !!sectionBy ? (originalData[ sectionBy ] && originalData[ sectionBy ].data) : originalData.data;
+			if( !oData ){
 				if(method === 'add'){
 					this.saveFormData();
 				}
 				return;
 			}
 
-			var bundle = this.form.businessData.work.job;
+			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(
+				this.form.businessData.work.job,
+				{
+					method: method,
+					index: index,
+					toIndex: toIndex,
+					data: data,
+					path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' ) +'.data'
+				},
+				null, null, false
+			);
 
-			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(bundle, {
-				method: method,
-				index: index,
-				toIndex: toIndex,
-				data: data,
-				path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' ) +'.data'
-			}, null, null, false);
-
-			if( originalData && originalData.data ){
-				switch (type){
-					case 'addLine':
-						originalData.data.push(Object.clone(data));
-						break;
-					case 'insertLine':
-						originalData.data.splice(index, 0, Object.clone(data));
-						break;
-					case 'delete':
-						originalData.data.splice(index, 1);
-						break;
-					case 'move':
-						var upData = originalData.data[toIndex];
-						var curData = originalData.data[index];
-						originalData.data[index] = upData;
-						originalData.data[toIndex] = curData;
-						break;
-				}
+			switch (type){
+				case 'addLine':
+					oData.push(Object.clone(data));
+					break;
+				case 'insertLine':
+					oData.splice(index, 0, Object.clone(data));
+					break;
+				case 'delete':
+					oData.splice(index, 1);
+					break;
+				case 'move':
+					var upData = oData[toIndex];
+					var curData = oData[index];
+					oData[index] = upData;
+					oData[toIndex] = curData;
+					break;
 			}
 		},
 		/**
