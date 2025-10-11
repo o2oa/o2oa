@@ -67,7 +67,7 @@ public class DataItemConverter<T extends DataItem> {
     /**
      * 对root进行检查<br>
      * 1.检查是否使用了纯数字作为key
-     * 
+     *
      * @param jsonElement
      * @throws RunningException
      */
@@ -123,7 +123,7 @@ public class DataItemConverter<T extends DataItem> {
             if (t.getItemType() == ItemType.o && iterator.hasNext()) {
                 T next = iterator.next();
                 // 是一个数字的值,说明是数组中的一个
-                if (StringUtils.isNumeric(next.paths().get(next.paths().size() - 1))) {
+                if (next.paths().size() > t.paths().size() && StringUtils.isNumeric(next.paths().get(next.paths().size() - 1))) {
                     // 说明上一个T应该是一个Array
                     t.setItemType(ItemType.a);
                 }
@@ -209,7 +209,7 @@ public class DataItemConverter<T extends DataItem> {
 
     /**
      * 将8层以上的对象或者Array直接以jsonElement的toString进行保存,不再进行递归解析
-     * 
+     *
      * @param t
      * @param root
      */
@@ -269,7 +269,7 @@ public class DataItemConverter<T extends DataItem> {
 
     /**
      * 将子元素加入到父元素中
-     * 
+     *
      * @param parent
      * @param name
      * @param sub
@@ -287,7 +287,7 @@ public class DataItemConverter<T extends DataItem> {
 
     /**
      * 将T转换成一个独立的jsonElement
-     * 
+     *
      * @param t
      * @return
      */
@@ -509,7 +509,7 @@ public class DataItemConverter<T extends DataItem> {
 
     /**
      * 提取DataItem纯文本辅助类
-     * 
+     *
      * @author ray
      *
      */
@@ -557,7 +557,7 @@ public class DataItemConverter<T extends DataItem> {
 
         /**
          * 提取DataItem中的文本,拼接成String
-         * 
+         *
          * @param items
          * @param escapeNumber
          * @param escapeBoolean
