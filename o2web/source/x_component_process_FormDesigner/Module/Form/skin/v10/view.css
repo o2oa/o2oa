@@ -125,6 +125,7 @@
 
 .search-area{
     flex-wrap: nowrap !important;
+    display: flex !important;
 }
 
 .page-content-search-fields{
@@ -142,11 +143,12 @@
 }
 
 .page-content-search-actions{
-    flex: 0 0 12.5rem;
+    flex: 0 0 5rem;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
     gap: 1rem;
+    display: grid;
 }
 .search-item{
     display: flex;
