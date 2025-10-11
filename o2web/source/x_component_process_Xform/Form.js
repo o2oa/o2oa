@@ -512,15 +512,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                     if (this.json.cssScript){
                         const actions = {
-                            'portal': o2.Actions.load("x_portal_assemble_designer").ScriptAction,
-                            'process': o2.Actions.load("x_processplatform_assemble_designer").ScriptAction,
+                            'portal': o2.Actions.load("x_portal_assemble_surface").ScriptAction,
+                            'process': o2.Actions.load("x_processplatform_assemble_surface").ScriptAction,
                             'cms': o2.Actions.load("x_cms_assemble_control").ScriptAction,
                             'service': o2.Actions.load("x_program_center").ScriptAction
                         }
 
                         this.json.cssScript.forEach((s)=>{
                             var action = actions[s.appType];
-                            action.get(s.id).then((json)=>{
+                            var p = s.appType === 'process' ? action.getImported(s.id, s.application || s.appId) : action.get(s.id);
+                            p.then((json)=>{
                                 this.container.loadCssText(json.data.text);
                             });
                         });
