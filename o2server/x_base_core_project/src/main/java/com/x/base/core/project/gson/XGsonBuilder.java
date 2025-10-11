@@ -22,7 +22,7 @@ public class XGsonBuilder {
 
 	private static Gson INSTANCE;
 	private static Gson COMPACTINSTANCE;
-	private static final String PATH_DOT = ".";
+	public static final String PATH_DOT = ".";
 
 	public static Gson instance() {
 		if (null == INSTANCE) {
@@ -141,20 +141,27 @@ public class XGsonBuilder {
 		return list;
 	}
 
-	public static JsonElement extract(JsonElement jsonElement, String name) {
-		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {
-			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if (StringUtils.contains(name, ".")) {
-				String prefix = StringUtils.substringBefore(name, ".");
-				String surfix = StringUtils.substringAfter(name, ".");
-				if (jsonObject.has(prefix)) {
-					return extract(jsonObject.get(prefix), surfix);
-				}
-			} else {
-				if (jsonObject.has(name)) {
-					return jsonObject.get(name);
-				}
+	public static JsonElement extract(JsonElement jsonElement, String path) {
+		if (null == jsonElement || StringUtils.isEmpty(path)) {
+			return null;
+		}
+
+		String name = path;
+		boolean hasDot = false;
+		if (StringUtils.contains(path, PATH_DOT)) {
+			name = StringUtils.substringBefore(path, PATH_DOT);
+			path = StringUtils.substringAfter(path, PATH_DOT);
+			hasDot = true;
+		}
+		if(StringUtils.isNumeric(name) && jsonElement.isJsonArray()){
+			int index = Integer.parseInt(name);
+			JsonArray jsonArray = jsonElement.getAsJsonArray();
+			if(jsonArray.size() > index && index > -1){
+				return hasDot ? extract(jsonArray.get(index), path) : jsonArray.get(index);
 			}
+		}else if(jsonElement.isJsonObject()){
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			return hasDot ? extract(jsonObject.get(name), path) : jsonObject.get(name);
 		}
 		return null;
 	}
@@ -165,6 +172,67 @@ public class XGsonBuilder {
 			return defaultValue;
 		}
 		return instance().fromJson(element, cls);
+	}
+
+	public static void setValueToPath(JsonElement jsonElement, String path, JsonElement value) {
+		if(jsonElement == null || value == null || StringUtils.isBlank(path)){
+			return;
+		}
+		String[] paths = StringUtils.split(path, PATH_DOT);
+		for (int i=0;i<paths.length;i++){
+			String name = paths[i];
+			if(StringUtils.isBlank(name)){
+				return;
+			}
+			if(i == paths.length-1){
+				if(jsonElement.isJsonObject()){
+					jsonElement.getAsJsonObject().add(name, value);
+				}
+				return;
+			}
+			if(StringUtils.isNumeric(name)){
+				jsonElement = setValueHandleJsonArray(jsonElement, name);
+            }else{
+				jsonElement = setValueHandleJsonObject(jsonElement, name, paths[i+1]);
+            }
+            if(jsonElement == null){
+                return;
+            }
+        }
+	}
+
+	private static JsonElement setValueHandleJsonArray(JsonElement jsonElement, String name) {
+		JsonElement je = null;
+		if(jsonElement.isJsonArray()){
+			JsonArray jsonArray = jsonElement.getAsJsonArray();
+			int index = Integer.parseInt(name);
+			if(jsonArray.size() > index && index > -1){
+				je = jsonArray.get(index);
+			}else if(jsonArray.isEmpty() && index == 0){
+				JsonObject jsonObject = new JsonObject();
+				jsonArray.add(jsonObject);
+				je = jsonObject;
+			}
+		}
+		return je;
+	}
+
+	private static JsonElement setValueHandleJsonObject(JsonElement jsonElement, String name, String nextName) {
+		JsonElement result = null;
+		if(jsonElement.isJsonObject()){
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if(jsonObject.has(name)){
+				result = jsonObject.get(name);
+			}else{
+				JsonElement je = new JsonObject();
+				if(StringUtils.isNumeric(nextName)){
+					je = new JsonArray();
+				}
+				jsonObject.add(name, je);
+				result = je;
+			}
+		}
+		return result;
 	}
 
 	public static boolean isJsonObject(String json) {

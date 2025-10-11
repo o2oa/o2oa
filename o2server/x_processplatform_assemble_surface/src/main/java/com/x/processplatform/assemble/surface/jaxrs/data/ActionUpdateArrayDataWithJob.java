@@ -12,6 +12,7 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.JsonArrayOperator;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -68,7 +69,8 @@ class ActionUpdateArrayDataWithJob extends BaseAction {
 	}
 
 	private JsonElement convert(Business business, String job, Wi wi) throws Exception {
-		JsonElement oldData = this.getData(business, job, StringUtils.split(wi.getPath(), PATH_DOT));
+		JsonElement data = this.getData(business, job);
+		JsonElement oldData = XGsonBuilder.extract(data, wi.getPath());
 		if(oldData!=null && !oldData.isJsonArray()){
 			throw new ExceptionCustom("指定的path路径数据不是数组对象");
 		}
@@ -87,23 +89,14 @@ class ActionUpdateArrayDataWithJob extends BaseAction {
 			throw new ExceptionCustom("操作类型不匹配：" + wi.getMethod());
 		}
 		JsonObject newData = new JsonObject();
-		this.addJsonToPath(newData, wi.getPath(), arrayData);
+		this.addJsonToPath(newData, data, wi.getPath(), arrayData);
 		return newData;
 	}
 
-	private void addJsonToPath(JsonObject root, String path, JsonElement value) {
+	private void addJsonToPath(JsonObject root, JsonElement data, String path, JsonElement value) {
+		XGsonBuilder.setValueToPath(data, path, value);
 		String[] pathParts = StringUtils.split(path, PATH_DOT);
-		JsonObject current = root;
-
-		for (int i = 0; i < pathParts.length - 1; i++) {
-			String part = pathParts[i];
-			if (!current.has(part)) {
-				current.add(part, new JsonObject());
-			}
-			current = current.getAsJsonObject(part);
-		}
-
-		current.add(pathParts[pathParts.length - 1], value);
+		root.add(pathParts[0], XGsonBuilder.extract(data, pathParts[0]));
 	}
 
 	public static class Wi extends GsonPropertyObject {
