@@ -1739,7 +1739,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         searchButton.addEventListener("click", (ev)=>{
             debugger;
-            this.customFilterListData = [];
+                this.customFilterListData = [];
             this.searchAreaNode.querySelectorAll(".search-item").forEach( (node)=>{
                 this.getFilterData(node);
             });
@@ -2302,15 +2302,15 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     setSelectAllStyle : function () {
         if(!this.selectAllNode)return;
-        var viewStyles = this.viewJson.viewStyles;
-        if( viewStyles && viewStyles["checkedCheckboxNode"] ){
-            this.selectAllNode.setStyles( viewStyles["checkedCheckboxNode"] );
-            if( viewStyles["checkedCheckboxNode"].className ){
-                this.selectAllNode.addClass(viewStyles["checkedCheckboxNode"].className);
-            }
-            if( viewStyles["checkboxNode"] && viewStyles["checkboxNode"].className ){
-                this.selectAllNode.removeClass(viewStyles["checkboxNode"].className);
-            }
+            var viewStyles = this.viewJson.viewStyles;
+            if( viewStyles && viewStyles["checkedCheckboxNode"] ){
+                this.selectAllNode.setStyles( viewStyles["checkedCheckboxNode"] );
+                if( viewStyles["checkedCheckboxNode"].className ){
+                    this.selectAllNode.addClass(viewStyles["checkedCheckboxNode"].className);
+                }
+                if( viewStyles["checkboxNode"] && viewStyles["checkboxNode"].className ){
+                    this.selectAllNode.removeClass(viewStyles["checkboxNode"].className);
+                }
         }else {
             this.selectAllNode.getElement("img").set("src",
                 '../x_component_query_Query/$Viewer/" + this.options.style + "/icon/checkbox_checked.png' )
@@ -2318,13 +2318,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     setUnSelectAllStyle : function () {
         if(!this.selectAllNode)return;
-        var viewStyles = this.viewJson.viewStyles;
-        if( viewStyles && viewStyles["checkboxNode"] ){
-            if (viewStyles["checkboxNode"].className){
-                this.selectAllNode.addClass(viewStyles["checkboxNode"].className);
-            }
-            if( viewStyles["checkedCheckboxNode"].className ){
-                this.selectAllNode.removeClass(viewStyles["checkedCheckboxNode"].className);
+            var viewStyles = this.viewJson.viewStyles;
+            if( viewStyles && viewStyles["checkboxNode"] ){
+                if (viewStyles["checkboxNode"].className){
+                    this.selectAllNode.addClass(viewStyles["checkboxNode"].className);
+                }
+                if( viewStyles["checkedCheckboxNode"].className ){
+                    this.selectAllNode.removeClass(viewStyles["checkedCheckboxNode"].className);
             }
             this.selectAllNode.setStyles( this.viewJson.viewStyles["checkboxNode"] );
         }else {

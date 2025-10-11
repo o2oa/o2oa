@@ -513,19 +513,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     if (this.json.cssScript){
                         const actions = {
                             'portal': o2.Actions.load("x_portal_assemble_surface").ScriptAction,
-                            'process': o2.Actions.load("x_processplatform_assemble_surface").ScriptAction,
+                             'process': o2.Actions.load("x_processplatform_assemble_surface").ScriptAction,
                             'cms': o2.Actions.load("x_cms_assemble_control").ScriptAction,
                             'service': o2.Actions.load("x_program_center").ScriptAction
                         }
 
                         this.json.cssScript.forEach((s)=>{
                             var action = actions[s.appType];
-                            var p = s.appType === 'process' ? action.getImported(s.id, s.application || s.appId) : action.get(s.id);
-                            p.then((json)=>{
+                                var p = s.appType === 'process' ? action.getImported(s.id, s.application || s.appId) : action.get(s.id);
+                                p.then((json)=>{
                                 this.container.loadCssText(json.data.text);
                             });
                         });
-                    }
+                    } 
 
                     if (this.json.cssLink){
                         cssPromise.push(new Promise(function(resolve){
@@ -1741,6 +1741,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
+
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);
@@ -2215,9 +2216,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         for (var i = 0; i < modules.length; i++) {
             var module = modules[i];
             if( module && module.json ){
-                var moduleName = module.json.moduleName;
-                if (!moduleName) moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
-                if (moduleName === "org") {
+                 var moduleName = module.json.moduleName;
+                 if (!moduleName) moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+                 if (moduleName === "org") {
                     check(module)
                 }
             }

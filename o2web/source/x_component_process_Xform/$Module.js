@@ -372,9 +372,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _loadMergeReadNode: function(keepHtml, position) {
         if( this.json.type.startsWith('OO')){
-            var node = new Element('div').inject(this.node, 'before');
+            var node = new Element('div', {
+                styles: this.form.css.mergedReadOOModule
+            }).inject(this.node, 'before');
             this.node.destroy();
             this.node = node;
+            this.node.setStyles( this._parseStyles( this.json.styles ) );
+            this.node.setStyles( this._parseStyles( this.json.recoveryStyles ) );
         }
         if (!keepHtml) {
             this.node.empty();
@@ -383,22 +387,47 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 "MWFType": this.json.type
             });
         }
+        var contentNode;
+        if( this.json.type.startsWith('OO')){
+            var labelNode = new Element('div', {
+                text: this.json.label || '',
+                styles: this.form.css.mergedReadOOModuleLabel
+            }).inject(this.node);
+            contentNode = new Element('div',
+                { styles: this.form.css.mergedReadOOModuleContent }
+            ).inject(this.node);
+
+
+            var styleText, properties = this.json.properties;
+            if( properties['label-Align'] || properties['label-align'] ){
+                styleText = labelNode.getAttribute('style');
+                labelNode.setAttribute( 'style', styleText + ";" + (properties['label-Align'] || properties['label-align']) );
+            }
+            if( properties['label-style'] ){
+                styleText = labelNode.getAttribute('style');
+                labelNode.setAttribute('style', styleText + ";" + properties['label-style']);
+            }
+            if( properties['view-style'] ){
+                styleText = contentNode.getAttribute('style');
+                contentNode.setAttribute('style', styleText + ";" + properties['view-style']);
+            }
+        }
         switch (this.json.mergeTypeRead) {
             case "htmlScript":
-                this._loadMergeReadNodeByHtml();
+                this._loadMergeReadNodeByHtml(contentNode);
                 break;
             case "dataScript":
-                this._loadMergeReadNodeByData();
+                this._loadMergeReadNodeByData(contentNode);
                 break;
             default:
-                this._loadMergeReadNodeByDefault(position);
+                this._loadMergeReadNodeByDefault(position, contentNode);
                 break;
         }
     },
-    _loadMergeReadNodeByHtml: function(){
+    _loadMergeReadNodeByHtml: function(content){
         if (this.json.sectionMergeReadHtmlScript && this.json.sectionMergeReadHtmlScript.code) {
             var html = this.form.Macro.exec(this.json.sectionMergeReadHtmlScript.code, this);
-            this.node.set("html", html);
+            (content || this.node).set("html", html);
         }
     },
     _loadMergeReadNodeByData: function(){
@@ -407,7 +436,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
         }
     },
-    _loadMergeReadNodeByDefault: function( position ){
+    _loadMergeReadNodeByDefault: function( position, content ){
         var data = this.getSortedSectionData();
         var sectionNodeStyles = this._parseStyles(this.json.sectionNodeStyles);
         var sectionKeyStyles = this._parseStyles(this.json.sectionKeyStyles);
@@ -415,7 +444,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         data.each(function(d){
             var node = new Element("div.mwf_sectionnode", {
                 styles : sectionNodeStyles
-            }).inject(this.node, position || "bottom");
+            }).inject(content || this.node, position || "bottom");
 
             if( this.json.showSectionKey ){
                 var keyNode = new Element("div.mwf_sectionkey", {
@@ -1220,34 +1249,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
         return evdata;
-    },
-
-    getOriginalDataById: function(d, id){
-        var data = d || this.form.businessData.originalData;
-        var thisId = id || this.json.id;
-        //对id类似于 xx..0..xx 的字段进行拆分
-        if(thisId.indexOf("..") < 1){
-            return data[thisId];
-        }else{
-            var idList = thisId.split("..");
-            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
-
-            var lastIndex = idList.length - 1;
-
-            for(var i=0; i<=lastIndex; i++){
-                var id = idList[i];
-                if( !id && id !== 0 )return null;
-                if( ["object","array"].contains(o2.typeOf(data)) ){
-                    if( i === lastIndex ){
-                        return data[id];
-                    }else{
-                        data = data[id];
-                    }
-                }else{
-                    return null;
-                }
-            }
-        }
     },
 
     setValue: function(){
