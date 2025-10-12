@@ -870,7 +870,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return false;
 			}
 
-			var data, index, newLine;
+			var data, index, newLine, changedData;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -878,20 +878,26 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					sdata = data[ this.sectionBy ] = [];
 				}
 
-				sdata.push(d||{});
+				changedData = d||{};
+				sdata.push(changedData);
 				index = sdata.length - 1;
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data , false, "addLine");
 				newLine = this.sectionLineEdited.lineList[index];
+
+				this.saveArrayData('addLine', index, null, changedData, this.sectionBy);
 			}else{
 				data = this.getInputData();
 
-				data.push(d || {});
+				changedData = d || {};
+				data.push(changedData);
 				index = data.length-1;
 				this.newLineIndex = index;
 				this.setData( data, false, "addLine" );
 				newLine = this.getLine(index);
+
+				this.saveArrayData('addLine', index, null, changedData);
 			}
 
 			this.validationMode();
@@ -907,7 +913,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 
 			//使用数据驱动
-			var data, index, newLine;
+			var data, index, newLine, changedData;
 			if( this.isShowAllSection ){
 				index = beforeLine.options.indexInSectionLine + 1;
 
@@ -916,18 +922,25 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( !sdata ){
 					sdata = data[ this.sectionBy ] = [];
 				}
-				sdata.splice(index, 0, {});
+				changedData = {};
+				sdata.splice(index, 0, changedData);
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data , false, "insertLine");
 				newLine = this.sectionLineEdited.lineList[index];
+
+				this.saveArrayData('insertLine', index, null, changedData, this.sectionBy);
 			}else {
 				index = beforeLine.options.index+1;
 				data = this.getInputData();
-				data.splice(index, 0, {});
+
+				changedData = {};
+				data.splice(index, 0, changedData);
 				this.newLineIndex = index;
 				this.setData( data, false, "insertLine" );
 				newLine = this.getLine( index );
+
+				this.saveArrayData('insertLine', index, null, changedData);
 			}
 
 			this.validationMode();
@@ -942,7 +955,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return false;
 			}
 			//使用数据驱动
-			var data, newLine;
+			var data, newLine, changedData;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -950,18 +963,24 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					sdata = data[ this.sectionBy ] = [];
 				}
 				if (sdata.length < index) return null;
-				sdata.splice(index, 0, d || {});
+				changedData = d || {};
+				sdata.splice(index, 0, changedData);
 				this.newLineIndex = index;
 
 				this.setAllSectionData( data , false, "insertLine");
-				line = this.sectionLineEdited.lineList[index];
+				newLine = this.sectionLineEdited.lineList[index];
+
+				this.saveArrayData('insertLine', index, null, changedData, this.sectionBy);
 			}else {
 				data = this.getInputData();
 				if(data.length < index )return null;
-				data.splice(index, 0, d||{});
+				var changedData = d||{};
+				data.splice(index, 0, changedData);
 				this.newLineIndex = index;
 				this.setData( data , false, "insertLine");
 				newLine = this.getLine( index );
+
+				this.saveArrayData('insertLine', index, null, changedData);
 			}
 
 			this.validationMode();
@@ -1022,10 +1041,15 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( line.sectionLine ){
 					var d = data[ line.sectionLine.sectionKey ];
 					if( d ){
-						d.splice(line.options.indexInSectionLine, 1);
+						var index = line.options.indexInSectionLine;
+						d.splice(index, 1);
+
+						_self.saveArrayData('delete', index, null, null, line.sectionLine.sectionKey);
 					}
 				}else {
-					data.splice(line.options.index, 1);
+					var index = line.options.index;
+					data.splice(index, 1);
+					_self.saveArrayData('delete', index);
 				}
 
 				_self.fireEvent("afterDeleteLine");
@@ -1066,12 +1090,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				var data = this.getBusinessDataById();
 				var d = data[ line.sectionLine.sectionKey ];
 				if( d ){
-					d.splice(line.options.indexInSectionLine, 1);
+					var index = line.options.indexInSectionLine;
+					d.splice(index, 1);
+					this.saveArrayData('delete', index, null, null, line.sectionLine.sectionKey);
 				}
 				this.setAllSectionData( data, false, "deleteLine" );
 			}else{
 				data = this.getInputData();
-				data.splice(line.options.index, 1);
+				var index = line.options.index;
+				data.splice(index, 1);
+				this.saveArrayData('delete', index );
 				this.setData( data , false, "deleteLine");
 			}
 
@@ -1227,6 +1255,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this._setUnchangedLineMap(data, operation);
 
+			if( !operation ){
+				var obj = {};
+				obj[this.json.id] = data;
+				this.saveFullData(obj);
+			}
+
 			this._setBusinessData(data);
 			this.data = data;
 
@@ -1253,6 +1287,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				var d = this.getBusinessDataById();
 				d[ this.sectionBy ] = data || { data: [] };
 				this.setAllSectionData( d, fireChange , operation);
+
+				var obj = {};
+				obj[this.json.id] = {};
+				obj[this.json.id][this.sectionBy] = d[ this.sectionBy ];
+				this.saveFullData(obj);
 			}
 		},
 		/**
@@ -1798,6 +1837,51 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		getAttachmentRandomSite: function(){
 			var i = (new Date()).getTime();
 			return this.json.id+i;
+		},
+		saveArrayData: function(type, index, toIndex, data, sectionBy){
+			if( this.isMergeRead ){ //合并且只读，不处理
+				return;
+			}
+			var method = ['insertLine','addLine'].contains(type) ? 'add' : type;
+
+			var originalData = this.getOriginalDataById();
+			if( !originalData ){
+				if( method === 'add' ){
+					this.saveFormData();
+				}
+				return;
+			}
+
+			var oData = !!sectionBy ? originalData[ sectionBy ] : originalData;
+			if( !oData ){
+				if(method === 'add'){
+					this.saveFormData();
+				}
+				return;
+			}
+
+			o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateArrayDataWithJob(
+				this.form.businessData.work.job,
+				{
+					method: method,
+					index: index,
+					toIndex: toIndex,
+					data: data,
+					path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' )
+				}, null, null, false
+			);
+
+			switch (type){
+				case 'addLine':
+					oData.push(Object.clone(data));
+					break;
+				case 'insertLine':
+					oData.splice(index, 0, Object.clone(data));
+					break;
+				case 'delete':
+					oData.splice(index, 1);
+					break;
+			}
 		}
 	});
 

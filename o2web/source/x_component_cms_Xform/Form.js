@@ -1064,8 +1064,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     module.save();
                 });
             }
+            var copyData = Object.clone(data);
             this.documentAction.saveDocument(documentData, function () {
                 this.businessData.data.isNew = false;
+                this.businessData.originalData = null;
+                this.businessData.originalData = copyData;
                 this.saving = false;
                 if (callback && typeof callback === "function") callback();
             }.bind(this), null, !sync);
@@ -1108,10 +1111,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     module.save();
                 });
             }
+            var copyData = Object.clone(data);
             this.documentAction.saveDocument(documentData, function () {
                 //this.documentAction.saveData(function(json){
                 if(!silent)this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
                 this.businessData.data.isNew = false;
+                this.businessData.originalData = null;
+                this.businessData.originalData = copyData;
                 this.fireEvent("afterSave", [this, documentData]);
                 if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterSave",[this, documentData]);
                 if (callback && typeof callback === "function") callback();
@@ -1253,10 +1259,12 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     module.save();
                 });
             }
-
+            var copyData = Object.clone(data);
             this.documentAction.publishDocumentComplex(documentData, function (json) {
 
                 this.businessData.data.isNew = false;
+                this.businessData.originalData = null;
+                this.businessData.originalData = copyData;
                 this.fireEvent("afterWaitPublish", [this, json.data]);
                 if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterWaitPublish",[this, json.data]);
                 this.saving = false;
@@ -1351,11 +1359,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 });
             }
 
+            var copyData = Object.clone(data);
             this.documentAction.publishDocumentComplex(documentData, function (json) {
 
                 this.sendNotice(function () {
 
                     this.businessData.data.isNew = false;
+                    this.businessData.originalData = null;
+                    this.businessData.originalData = copyData;
                     this.fireEvent("afterPublish", [this, json.data]);
                     if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish",[this, json.data]);
                     if (o2.typeOf(callback) === "function") callback(json); // 传进来不是function

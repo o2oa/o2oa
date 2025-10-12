@@ -1251,7 +1251,36 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return evdata;
     },
 
-    setValue: function(){
+    getOriginalDataById: function(d, id){
+        var data = d || this.form.businessData.originalData;
+        var thisId = id || this.json.id;
+        //对id类似于 xx..0..xx 的字段进行拆分
+        if(thisId.indexOf("..") < 1){
+            return data[thisId];
+        }else{
+            var idList = thisId.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var lastIndex = idList.length - 1;
+
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return null;
+                if( ["object","array"].contains(o2.typeOf(data)) ){
+                    if( i === lastIndex ){
+                        return data[id];
+                    }else{
+                        data = data[id];
+                    }
+                }else{
+                    return null;
+                }
+            }
+        }
+    },
+
+
+        setValue: function(){
     },
     focus: function(){
         this.node.focus();
