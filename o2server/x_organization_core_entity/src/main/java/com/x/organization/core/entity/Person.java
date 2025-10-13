@@ -140,10 +140,10 @@ public class Person extends SliceJpaObject {
 
 	@PostLoad
 	public void postLoad() {
-		if (this.getName().startsWith(ENCRYPT)) {
+		if (StringUtils.isNotBlank(this.getName()) && this.getName().startsWith(ENCRYPT)) {
 			this.setName(Crypto.base64Decode(this.getName().substring(ENCRYPT.length())));
 		}
-		if (this.getMobile().startsWith(ENCRYPT)) {
+		if (StringUtils.isNotBlank(this.getMobile()) && this.getMobile().startsWith(ENCRYPT)) {
 			this.setMobile(Crypto.base64Decode(this.getMobile().substring(ENCRYPT.length())));
 		}
 	}
