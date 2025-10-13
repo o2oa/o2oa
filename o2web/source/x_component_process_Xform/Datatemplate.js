@@ -1839,6 +1839,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return this.json.id+i;
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
+			return;
+
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
 			}

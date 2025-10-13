@@ -8,6 +8,8 @@ MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
         this.form.saveFormData();
     },
     saveArrayData: function(type, index, toIndex, data){
+        return;
+
         if( this.isMergeRead ){ //合并且只读，不处理
             return;
         }
