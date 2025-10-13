@@ -27,7 +27,7 @@ abstract class AbstractJaxrsAction {
 
 	protected static Gson gson = XGsonBuilder.instance();
 
-	protected static String[] IMAGE_EXTENSIONS = new String[] { "jpg", "png", "bmp", "gif" };
+	protected static String[] IMAGE_EXTENSIONS = new String[] { "jpeg", "jpg", "png", "bmp", "gif" };
 
 	protected final static String FILE_FIELD = "file";
 	protected final static String FILENAME_FIELD = "fileName";
