@@ -2,6 +2,8 @@ MWF.xDesktop.requireApp("process.Xform", "Datatemplate", null, false);
 MWF.xApplication.cms.Xform.Datatemplate = MWF.CMSDatatemplate =  new Class({
     Extends: MWF.APPDatatemplate,
     saveArrayData: function(type, index, toIndex, data){
+        return;
+
         if( this.isMergeRead ){ //合并且只读，不处理
             return;
         }
