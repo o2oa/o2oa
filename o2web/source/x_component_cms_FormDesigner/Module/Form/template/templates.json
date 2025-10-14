@@ -17,6 +17,18 @@
     "defaultReadForm": true
   },
   {
+    "name": "form_publish_edit_v10.json",
+    "title": MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.publishEditTidy : MWF.xApplication.cms.FormDesigner.LP.formType.publishEditTidy,
+    "icon": "form_publish_edit_v10.png",
+    "defaultEditForm": true
+  },
+  {
+    "name": "form_publish_read_v10.json",
+    "title":MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.publishReadTidy : MWF.xApplication.cms.FormDesigner.LP.formType.publishReadTidy,
+    "icon": "form_publish_read_v10.png",
+    "defaultReadForm": true
+  },
+  {
     "name": "form_publish_edit_green.json",
     "title": MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.publishEditGreen : MWF.xApplication.cms.FormDesigner.LP.formType.publishEditGreen,
     "icon": "form_publish_edit_green.png"
@@ -30,5 +42,10 @@
     "name": "form_input.json",
     "title":MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.dataInput : MWF.xApplication.cms.FormDesigner.LP.formType.dataInput,
     "icon": "form_input.png"
+  },
+  {
+    "name": "form_input_v10.json",
+    "title":MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.dataInputTidy : MWF.xApplication.cms.FormDesigner.LP.formType.dataInputTidy,
+    "icon": "form_input_v10.png"
   }
 ]

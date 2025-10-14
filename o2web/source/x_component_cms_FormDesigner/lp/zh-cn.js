@@ -7,9 +7,12 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "empty": "空白表单",
         "publishEdit": "发布类编辑表单",
         "publishRead": "发布类阅读表单",
+        "publishEditTidy": "发布类编辑表单(简洁)",
+        "publishReadTidy": "发布类阅读表单(简洁)",
         "publishEditGreen": "发布类编辑表单(绿色)",
         "publishReadGreen": "发布类阅读表单(绿色)",
-        "dataInput": "数据录入类表单"
+        "dataInput": "数据录入类表单",
+        "dataInputTidy": "数据录入类表单(简洁)"
     },
     "validation" : {
         "publish" : "发布时"
