@@ -8,6 +8,8 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
@@ -33,6 +35,8 @@ import com.x.organization.core.entity.Person;
 class ActionGetIcon extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetIcon.class);
+
+	private static Font notoSc = null;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -88,7 +92,7 @@ class ActionGetIcon extends BaseAction {
 		g.fillRect(0, 0, size, size);
 		// 建议选用本地安装的中文字体，字体不存在时会降级
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			Font font = this.pickFont((int) (size * 0.5));
+			Font font = this.font((int) (size * 0.5));
 			g.setFont(font);
 			// 计算文字大小，居中
 			FontMetrics fm = g.getFontMetrics();
@@ -97,7 +101,6 @@ class ActionGetIcon extends BaseAction {
 			g.setColor(fontColor);
 			g.drawString(firstChar, x, y);
 			g.dispose();
-
 			ImageIO.write(image, "png", baos);
 			return Base64.encodeBase64String(baos.toByteArray());
 		} catch (Throwable ignore) {
@@ -105,19 +108,23 @@ class ActionGetIcon extends BaseAction {
 		}
 	}
 
-	private Font pickFont(int pixel) {
-		// 尝试常见中文家族名，但不做任何 canDisplay 检测；失败也会映射到逻辑字体
-		String[] families = { "微软雅黑", "宋体", "黑体", "SimHei", "Noto Sans CJK SC", "Source Han Sans SC", // 宿主机装了更好
-				"Microsoft YaHei", "PingFang SC", "WenQuanYi Zen Hei", "SimHei", Font.SANS_SERIF, "Dialog" // 逻辑字体兜底
-		};
-		for (String fam : families) {
-			try {
-				return new Font(fam, Font.PLAIN, pixel);
-			} catch (Exception ignore) {
-				// 保守：new Font 基本不会抛，但这里仍然兜底
+	private Font font(int pixel) throws Exception {
+		if (notoSc == null) {
+			synchronized (ActionGetIcon.class) {
+				if (null == notoSc) {
+					var path = Config.dir_commons_fonts().resolve("NotoSansCJKsc-Regular.otf");
+					if (Files.exists(path)) {
+						try (InputStream is = Files.newInputStream(path)) {
+							notoSc = Font.createFont(Font.TRUETYPE_FONT, is);
+						}
+					}
+				}
+				if (null == notoSc) {
+					notoSc = new Font(Font.SANS_SERIF, Font.PLAIN, pixel);
+				}
 			}
 		}
-		return new Font(Font.SANS_SERIF, Font.PLAIN, pixel);
+		return notoSc.deriveFont(Font.PLAIN, pixel);
 	}
 
 	public static class Wo extends WoFile {
