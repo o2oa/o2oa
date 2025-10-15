@@ -136,11 +136,13 @@ MWF.xApplication.query.Query.LP={
 	"firstPage": "First Page",
 	"lastPage": "Last Page",
 	"viewExport": {
+		"exportByPaging": "Export by paging",
+		"exportAll": "Export all",
+		"description": "Note: There are {count} matching data items. The maximum number of items that can be exported by paging is 2000 at a time.",
 		"exportRange": "Export Range",
 		"fileName": "File Name",
 		"to": "To",
 		"item": "item",
-		"description": "Note: There are {count} items of data that meet the conditions.",
 		"inputIntegerNotice": "Please enter a positive integer for both the opening and closing entries",
 		"startLargetThanEndNotice": "The start entry cannot be greater than the end entry"
 	},

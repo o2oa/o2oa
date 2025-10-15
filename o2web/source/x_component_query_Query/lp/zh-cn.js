@@ -157,11 +157,13 @@ MWF.xApplication.query.Query.LP = {
     "firstPage": "第一页",
     "lastPage": "最后一页",
     "viewExport" : {
+        "exportByPaging": "按分页导出",
+        "exportAll": "导出全部",
+        "description" : "注：有{count}条符合条件的数据，分页导出每次最多2000条。",
         "exportRange" : "导出范围",
         "fileName": "文件名",
         "to" : "到",
         "item" : "条",
-        "description" : "注：有{count}条符合条件的数据。",
         "inputIntegerNotice" : "开始和结束条目都请输入正整数",
         "startLargetThanEndNotice" : "开始条目不能大于结束条目"
     },
