@@ -58,6 +58,9 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
         }
     },
+    getText: function(){
+        return null;
+    },
     setBusinessDataById: function(v, id ){
         //对id类似于 xx..0..xx 的字段进行拆分
         var evdata = this.form.Macro.environment.data;
