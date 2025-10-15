@@ -1076,7 +1076,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     _setBusinessData: function(v, id){
-        debugger;
         //if (o2.typeOf(v)==="string") v = o2.txt(v);
         if (!this.isEditable) return;
         if (this.json.section=="yes"){
