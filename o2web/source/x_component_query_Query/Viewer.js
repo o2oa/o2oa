@@ -2699,6 +2699,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
 
 
+            debugger;
+
             var dlg = o2.DL.open({
                 "title": this.lp.exportExcel,
                 "style": "user",
@@ -2709,7 +2711,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 "buttonList": [
                     {
                         "type": "ok",
-                        "text": MWF.LP.process.button.ok,
+                        "text": lp.exportAll,
+                        "action": function (d, e) {
+                            var filename = node.getElement(".filename").get("value");
+                            this._exportViewAll(filename, dlg);
+                        }.bind(this)
+                    },{
+                        "type": "ok",
+                        "text": lp.exportByPaging,
                         "action": function (d, e) {
                             var start = node.getElement(".start").get("value");
                             var end = node.getElement(".end").get("value");
@@ -2729,8 +2738,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                             this._exportView(start, end, filename);
                             dlg.close();
                         }.bind(this)
-                    },
-                    {
+                    },{
                         "type": "cancel",
                         "text": MWF.LP.process.button.cancel,
                         "action": function () { dlg.close(); }
@@ -2738,32 +2746,60 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 ]
             });
         },
-        // _exportView: function(start, end, filename){
-        //
-        //     var bundleList = this.bundleItems.slice(start-1, end);
-        //     var excelName = filename || (this.json.name + "(" + start + "-" + end + ").xlsx");
-        //
-        //     var action = MWF.Actions.get("x_query_assemble_surface");
-        //
-        //     var filterData = this.json.filter ? this.json.filter.clone() : [];
-        //     if (this.filterItems.length){
-        //         this.filterItems.each(function(filter){
-        //             filterData.push(filter.data);
-        //         }.bind(this));
-        //     }
-        //     var data = {"filterList": filterData};
-        //     if( bundleList )data.bundleList = bundleList;
-        //     if( excelName )data.excelName = excelName;
-        //     data.key = this.bundleKey;
-        //     action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
-        //         var uri = action.action.actions.getViewExcel.uri;
-        //         uri = uri.replace("{flag}", json.data.id);
-        //         uri = o2.filterUrl( action.action.address+uri );
-        //         var a = new Element("a", {"href": uri, "target":"_blank"});
-        //         a.click();
-        //         a.destroy();
-        //     }.bind(this));
-        // },
+        _exportViewAll: function (filename, dlg){
+            MWF.require("MWF.widget.Mask", null, false);
+            var mask = new MWF.widget.Mask({"style": "desktop", "loading": true});
+            mask.loadNode(dlg.node);
+
+            var action = MWF.Actions.get("x_query_assemble_surface");
+
+            var filterData = this.json.filter ? this.json.filter.clone() : [];
+            if (this.filterItems.length){
+                this.filterItems.each(function(filter){
+                    filterData.push(filter.data);
+                }.bind(this));
+            }
+            var data = {"filterList": filterData};
+            data.excelName = filename || this.json.name;
+            action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
+                var uri = action.action.actions.getViewExcel.uri;
+                uri = uri.replace("{flag}", json.data.id);
+                uri = o2.filterUrl( action.action.address+uri );
+                // var a = new Element("a", {"href": uri, "target":"_blank"});
+                // a.click();
+                // a.destroy();
+                new MWF.xApplication.query.Query.Viewer.ExcelUtils({})._openDownloadDialog(uri, data.excelName, function (){
+                    mask.hide()
+                    if(dlg)dlg.close();
+                })
+            }.bind(this));
+        },
+        _exportViewBg: function(start, end, filename){
+
+            var bundleList = this.bundleItems.slice(start-1, end);
+            var excelName = filename || (this.json.name + "(" + start + "-" + end + ").xlsx");
+
+            var action = MWF.Actions.get("x_query_assemble_surface");
+
+            var filterData = this.json.filter ? this.json.filter.clone() : [];
+            if (this.filterItems.length){
+                this.filterItems.each(function(filter){
+                    filterData.push(filter.data);
+                }.bind(this));
+            }
+            var data = {"filterList": filterData};
+            if( bundleList )data.bundleList = bundleList;
+            if( excelName )data.excelName = excelName;
+            data.key = this.bundleKey;
+            action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
+                var uri = action.action.actions.getViewExcel.uri;
+                uri = uri.replace("{flag}", json.data.id);
+                uri = o2.filterUrl( action.action.address+uri );
+                var a = new Element("a", {"href": uri, "target":"_blank"});
+                a.click();
+                a.destroy();
+            }.bind(this));
+        },
         _exportView: function(start, end, filename){
             var excelName = filename || (this.json.name + "(" + start + "-" + end + ").xlsx");
 

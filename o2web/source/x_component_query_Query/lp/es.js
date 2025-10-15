@@ -136,11 +136,13 @@ MWF.xApplication.query.Query.LP={
 	"firstPage": "Primera",
 	"lastPage": "Última",
 	"viewExport": {
+		"exportByPaging": "Exportar por paginación",
+		"exportAll": "Exportar todo",
+		"description": "Nota: Hay {count} elementos de datos coincidentes. El número máximo de elementos que se pueden exportar por paginación es de 2000 a la vez.",
 		"exportRange": "Rango de exportación",
 		"fileName": "Nombre del archivo",
 		"to": "a",
 		"item": "elementos",
-		"description": "Nota: Hay {count} elementos que cumplen con los criterios.",
 		"inputIntegerNotice": "Ingrese números enteros positivos para comenzar y terminar los elementos",
 		"startLargetThanEndNotice": "El elemento de inicio no puede ser mayor que el elemento final"
 	},
