@@ -1445,9 +1445,16 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			var formData = JSON.parse(json.data.data);
 			//this.action.FormAction.update(version.form, formData,function( json ){
 			this.designer.notice(MWF.APPPOD.LP.version["resumeSuccess"]);
-			var data = JSON.decode(MWF.decodeJsonString(formData.data));
-			data.isNewForm = false;
-			this.reload(data);
+			this.designer.pageData = JSON.decode(MWF.decodeJsonString(formData.data));
+			this.designer.pageData.isNewForm = false;
+			if(this.designer.pcPage)this.designer.pcPage.reload(this.designer.pageData);
+
+			if (formData.mobileData){
+				this.designer.pageMobileData = JSON.decode(MWF.decodeJsonString(formData.mobileData));
+				this.designer.pageMobileData.isNewForm = false;
+				if(this.designer.mobilePage)this.designer.mobilePage.reload(this.designer.pageMobileData);
+			}
+
 			this.dlg.close();
 			//}.bind(this), null, false);
 		}.bind(this), null, false);
