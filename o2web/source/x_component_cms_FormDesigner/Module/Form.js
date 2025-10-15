@@ -352,9 +352,16 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			var formData = JSON.parse(json.data.data);
 			//this.action.FormAction.update(version.form, formData,function( json ){
 			this.designer.notice(MWF.CMSFD.LP.version["resumeSuccess"]);
-			var data = JSON.decode(MWF.decodeJsonString(formData.data));
-			data.isNewForm = false;
-			this.reload(data);
+			this.designer.formData = JSON.decode(MWF.decodeJsonString(formData.data));
+			this.designer.formData.isNewForm = false;
+			if(this.designer.pcForm)this.designer.pcForm.reload(this.designer.formData);
+
+			if (formData.mobileData){
+				this.designer.formMobileData = JSON.decode(MWF.decodeJsonString(formData.mobileData));
+				this.designer.formMobileData.isNewForm = false;
+				if(this.designer.mobileForm)this.designer.mobileForm.reload(this.designer.formMobileData);
+			}
+
 			this.dlg.close();
 			//}.bind(this), null, false);
 		}.bind(this), null, false);
