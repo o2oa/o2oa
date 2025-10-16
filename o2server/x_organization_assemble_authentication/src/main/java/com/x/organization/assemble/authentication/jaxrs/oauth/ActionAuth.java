@@ -22,7 +22,7 @@ import com.x.base.core.project.tools.DefaultCharset;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.OauthCode;
 
-class ActionAuth extends StandardJaxrsAction {
+class ActionAuth extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionAuth.class);
 
@@ -87,22 +87,6 @@ class ActionAuth extends StandardJaxrsAction {
 			return Config.token().initialManagerInstance().getId();
 		} else {
 			return business.person().getWithCredential(effectivePerson.getDistinguishedName());
-		}
-	}
-
-	private String getScope(Oauth oauth, String scope) throws Exception {
-		if (StringUtils.isEmpty(scope)) {
-			return StringUtils.join(oauth.getMapping().keySet(), ",");
-		} else {
-			List<String> os = new ArrayList<>();
-			for (String o : StringUtils.split(scope, ",")) {
-				if (StringUtils.isNotEmpty(oauth.getMapping().get(o))) {
-					os.add(o);
-				} else {
-					throw new ExceptionScopeNotExist(o);
-				}
-			}
-			return StringUtils.join(os, ",");
 		}
 	}
 }
