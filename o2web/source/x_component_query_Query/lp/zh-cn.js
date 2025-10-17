@@ -18,6 +18,8 @@ MWF.xApplication.query.Query.LP = {
     "no": "否",
     "and": "并且",
     "or": "或者",
+    "searchNavTitle": "请输入关键字搜索",
+    "searchNavPlaceholder": "请输入关键字搜索",
     "form": {
         "exportExcel": "导出Excel"
     },

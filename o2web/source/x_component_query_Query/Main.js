@@ -100,6 +100,8 @@ MWF.xApplication.query.Query.Main = new Class({
         this.naviTitleNode = new Element("div", {"styles": this.css.naviTitleNode}).inject(this.naviNode);
         this.naviContentNode = new Element("div", {"styles": this.css.naviContentNode}).inject(this.naviNode);
 
+        this.createNavSearchNode();
+
         var lp = this.lp;
 
         var data = this.interfaceData;
@@ -245,6 +247,64 @@ MWF.xApplication.query.Query.Main = new Class({
             importerLoaded = true;
             callback();
         }.bind(this));
+    },
+    createNavSearchNode: function (){
+        this.searchNode = new Element("div.searchNode", {
+            "styles": this.css.navSearch
+        }).inject(this.naviContentNode);
+
+        this.searchInput = new Element("input.searchInput", {
+            "styles": this.css.navSearchInput,
+            "placeholder": this.lp.searchNavPlaceholder,
+            "title": this.lp.searchNavTitle
+        }).inject(this.searchNode);
+
+        this.searchButton = new Element("i.ooicon-search", {
+            "styles": this.css.navSearchButton
+        }).inject(this.searchNode);
+
+        this.searchInput.addEvents({
+            focus: function(){
+                this.searchNode.addClass("mainColor_border");
+                this.searchButton.addClass("mainColor_color");
+            }.bind(this),
+            blur: function () {
+                this.searchNode.removeClass("mainColor_border");
+                this.searchButton.removeClass("mainColor_color");
+            }.bind(this),
+            keydown: function (e) {
+                if( (e.keyCode || e.code) === 13 ){
+                    this.searchNav();
+                }
+            }.bind(this)
+        });
+
+        this.searchButton.addEvent("click", function (e) {
+            this.searchNav();
+        }.bind(this));
+    },
+    searchNav: function(){
+        var key = this.searchInput.get("value");
+
+        var check = (item)=>{
+            var isShow = !key ? true : item.node.get('text').contains(key);
+            isShow ? item.node.show() : item.node.hide();
+            return isShow;
+        };
+
+        var matches;
+
+        matches= this.viewItems.filter((item)=>{ return check(item); });
+        matches.length > 0 ? this.naviViewTitleNode.show() : this.naviViewTitleNode.hide();
+
+        matches= this.statItems.filter((item)=>{ return check(item); });
+        matches.length > 0 ? this.naviStatTitleNode.show() : this.naviStatTitleNode.hide();
+
+        matches= this.statementItems.filter((item)=>{ return check(item); });
+        matches.length > 0 ? this.naviStatementTitleNode.show() : this.naviStatementTitleNode.hide();
+
+        matches= this.importerItems.filter((item)=>{ return check(item); });
+        matches.length > 0 ? this.naviImporterTitleNode.show() : this.naviImporterTitleNode.hide();
     },
     createViewNavi: function( callback ){
         var data = this.interfaceData;
@@ -418,7 +478,7 @@ MWF.xApplication.query.Query.ViewItem = new Class({
         return this.app.contentNode;
     },
     load: function(){
-        this.node = new Element("div", {
+        this.node = new Element("div.navItem", {
             "styles": this.css.naviContentItemNode,
             "text": this.view.name,
             "title": this.view.name
