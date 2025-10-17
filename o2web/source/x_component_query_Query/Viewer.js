@@ -1693,6 +1693,32 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.viewSearchAreaNode = new Element("div.page-content-section.search-area").inject(this.searchAreaNode);
         this.viewSearchFieldArea = new Element("div.page-content-search-fields").inject(this.viewSearchAreaNode);
         this.viewSearchActionArea = new Element("div.page-content-search-actions").inject(this.viewSearchAreaNode);
+        const count = this.viewJson.customFilterList.length;
+        if (count<3){
+            this.viewSearchActionArea.addClass("field-count-2");
+        }
+        if (count===3){
+            this.viewSearchActionArea.addClass("field-count-3");
+        }
+        if (count===4){
+            this.viewSearchActionArea.addClass("field-count-4");
+        }
+        if (count>4){
+            this.viewSearchActionArea.addClass("field-count-5");
+        }
+
+        const size = this.searchAreaNode.getSize();
+        debugger;
+        if (size.x<1366){
+            this.viewSearchAreaNode.addClass("column-count-2");
+        }
+        if (size.x>=1366 && size.x<=1600){
+            this.viewSearchAreaNode.addClass("column-count-3");
+        }
+        if (size.x>1600){
+            this.viewSearchAreaNode.addClass("column-count-4");
+        }
+
         this.viewJson.customFilterList.each(function(filter){
             const node = this.createSearchInputNode(filter);
             node.filterData = filter;

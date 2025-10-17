@@ -626,8 +626,8 @@
     }
 
     .form-layout {
-        width: 99%;
-        min-width: 99%;
+        /* width: 99%;
+        min-width: 99%; */
         margin: auto;
     }
 
@@ -646,9 +646,9 @@
         flex: 1 1 100%;
     }
     .form-toolbar {
-        width: 99% !important;
+        /* width: 99% !important; */
         margin: auto !important;
-        min-width: 99%;
+        /* min-width: 99%; */
         max-width: unset !important;
     }
     .form-content-area {
@@ -1668,6 +1668,10 @@
     }
     .form-layout .form-content-work-status>div>div:nth-child(2) {
         display: none !important;
+    }
+
+    .appContent{
+        height: 100%;
     }
 }
 

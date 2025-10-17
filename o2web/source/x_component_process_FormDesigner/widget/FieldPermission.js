@@ -5,7 +5,7 @@ MWF.require("MWF.widget.ScriptArea", null, false);
 MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
 	Implements: [Options, Events],
 	options: {
-		isField: false
+		isField: true
 	},
 	initialize: function(node, property, options){
 		this.setOptions(options);
