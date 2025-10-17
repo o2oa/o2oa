@@ -11,7 +11,7 @@
     "exportGrid": true,
     "exportGoupGrid": true,
     "where": {
-      "accessible": false,
+      "accessible": true,
       "scope": "work",
       "applicationList": [],
       "processList": [],
