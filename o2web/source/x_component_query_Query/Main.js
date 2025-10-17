@@ -478,7 +478,7 @@ MWF.xApplication.query.Query.ViewItem = new Class({
         return this.app.contentNode;
     },
     load: function(){
-        this.node = new Element("div.navItem", {
+        this.node = new Element("div", {
             "styles": this.css.naviContentItemNode,
             "text": this.view.name,
             "title": this.view.name
