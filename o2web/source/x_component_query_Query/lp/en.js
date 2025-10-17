@@ -21,6 +21,8 @@ MWF.xApplication.query.Query.LP={
 	"no": "No",
 	"and": "and",
 	"or": "Or",
+	"searchNavTitle": "Please enter a keyword to search",
+	"searchNavPlaceholder": "Please enter a keyword to search",
 	"form": {
 		"exportExcel": "Export Excel"
 	},

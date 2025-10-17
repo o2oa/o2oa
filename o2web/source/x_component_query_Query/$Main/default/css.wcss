@@ -196,5 +196,32 @@
     },
     "routeSelectorArea": {
         "overflow": "hidden"
-    }
+    },
+    "navSearch":{
+            "width": "calc( 100% - 40px )",
+            "display": "flex",
+            "border": "1px solid #DDDDDD",
+            "border-radius": "20px",
+            "margin": "12px 10px 0 15px",
+            "padding": "0 0 0 10px",
+            "overflow": "hidden"
+        },
+        "navSearchInput": {
+            "width": "calc( 100% - 26px )",
+            "height": "24px",
+            "line-height": "24px",
+            "font-size": "13px",
+            "color": "#666",
+            "border": "0",
+            "flex": "1",
+            "background": "inherit"
+        },
+        "navSearchButton":{
+            "cursor": "pointer",
+            "line-height": "20px",
+            "font-size": "13px",
+            "color": "#ccc",
+            "margin-top": "3px",
+            "margin-right": "8px"
+        },
 }
