@@ -1,6 +1,6 @@
 {
 	"maskNode": {
-		"background-color": "#cccccc33",
+		"background-color": "#cccccc50",
 		"z-index":1000
 	},
 	"containerNodeMobile": {

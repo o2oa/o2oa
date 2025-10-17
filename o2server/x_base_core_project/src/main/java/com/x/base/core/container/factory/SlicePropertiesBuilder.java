@@ -23,20 +23,20 @@ public class SlicePropertiesBuilder {
 	public static String driver_oscar = "com.oscar.Driver";
 	public static String driver_vastbase = "cn.com.vastbase.Driver";
 	/* 避免db2在aix版本和lwl版本字段长度不一致的问题 */
-	public static String dictionary_db2 = "db2(characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
-	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=-1,maxEmbeddedBlobSize=-1)";
-	public static String dictionary_mysql = "mysql(clobTypeName=LONGTEXT,blobTypeName=LONGBLOB,maxIndexesPerTable=64)";
-	public static String dictionary_postgresql = "postgres";
+	public static String dictionary_db2 = "db2(characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,batchLimit=50)";
+	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=-1,maxEmbeddedBlobSize=-1,batchLimit=50)";
+	public static String dictionary_mysql = "mysql(clobTypeName=LONGTEXT,blobTypeName=LONGBLOB,maxIndexesPerTable=64,batchLimit=50)";
+	public static String dictionary_postgresql = "postgres(batchLimit=50)";
 	public static String dictionary_informix = "informix";
 	public static String dictionary_h2 = "org.apache.openjpa.jdbc.sql.H2Dictionary";
-	public static String dictionary_dm = "com.x.base.core.openjpa.jdbc.sql.DMDictionary";
-	public static String dictionary_sqlserver = "sqlserver(schemaCase=preserve)";
-	public static String dictionary_gbase = "com.x.base.core.openjpa.jdbc.sql.GBaseDictionary";
-	public static String dictionary_gbasemysql = "com.x.base.core.openjpa.jdbc.sql.GBaseMySQLDictionary";
-	public static String dictionary_kingbase = "com.x.base.core.openjpa.jdbc.sql.KingbaseDictionary";
-	public static String dictionary_kingbase8 = "com.x.base.core.openjpa.jdbc.sql.Kingbase8Dictionary";
-	public static String dictionary_oscar = "com.x.base.core.openjpa.jdbc.sql.OscarDictionary";
-	public static String dictionary_vastbase = "com.x.base.core.openjpa.jdbc.sql.VastbaseDictionary";
+	public static String dictionary_dm = "com.x.base.core.openjpa.jdbc.sql.DMDictionary(batchLimit=50)";
+	public static String dictionary_sqlserver = "sqlserver(schemaCase=preserve,batchLimit=50)";
+	public static String dictionary_gbase = "com.x.base.core.openjpa.jdbc.sql.GBaseDictionary(batchLimit=50)";
+	public static String dictionary_gbasemysql = "com.x.base.core.openjpa.jdbc.sql.GBaseMySQLDictionary(batchLimit=50)";
+	public static String dictionary_kingbase = "com.x.base.core.openjpa.jdbc.sql.KingbaseDictionary(batchLimit=50)";
+	public static String dictionary_kingbase8 = "com.x.base.core.openjpa.jdbc.sql.Kingbase8Dictionary(batchLimit=50)";
+	public static String dictionary_oscar = "com.x.base.core.openjpa.jdbc.sql.OscarDictionary(batchLimit=50)";
+	public static String dictionary_vastbase = "com.x.base.core.openjpa.jdbc.sql.VastbaseDictionary(batchLimit=50)";
 
 //	public static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
 //	public static String validationQuery_oracle = "select 1 from dual";

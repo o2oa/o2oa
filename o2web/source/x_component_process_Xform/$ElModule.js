@@ -119,7 +119,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         // }
         if (!window.Vue || window.Vue.name!=='Vue'){
             var elcssUrl = this.form.json.elementCssUrl || "../o2_lib/vue/element/index.css";
-            o2.loadAll({"css": elcssUrl, "js": ['vue', "elementui"]}, { "sequence": true, reload: true }, callback);
+            o2.loadAll({"css": elcssUrl, "js": ['vue', "elementui"]}, { "sequence": true }, callback);
         }else{
             if (callback) callback();
         }

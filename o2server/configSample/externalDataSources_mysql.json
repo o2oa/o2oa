@@ -1,10 +1,10 @@
 [
 	{
-		"url":"jdbc:mysql://127.0.0.1:3306/X?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8",      
-		"username" : "root",
-		"password" :"password",
+		"url": "jdbc:mysql://127.0.0.1:3306/X?sslMode=PREFERRED&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&connectTimeout=5000&socketTimeout=180000&rewriteBatchedStatements=true&createDatabaseIfNotExist=true",
+		"username": "root",
+		"password": "password",
 		"includes": [],
 		"excludes": [],
-		"enable" : true
+		"enable": true
 	}
 ]

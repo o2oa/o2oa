@@ -112,6 +112,11 @@ MWF.xApplication.process.FormDesigner.widget.FieldPermission = new Class({
 				"onChange": function () {
 					item.data[name] = this.getData();
 				},
+				"onSave": function(){
+					if(this.property.designer?.saveForm){
+						this.property.designer.saveForm();
+					}
+				}.bind(this),
 			});
 			this.editor.load({ code: item.data[name] });
 		});

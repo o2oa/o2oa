@@ -200,5 +200,37 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
                 return (o2.typeOf(value)!=="null") ? value : "";
             }
         }
+    },
+    __setReadonly: function(data){
+        if (this.isReadonly()) {
+            this.node.set("text", data);
+            if( this.json.inputType === "textarea"){
+                this.node.setStyle('white-space', 'pre');
+            }
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
+
+            if( !this.eventLoaded ){
+                this._loadDomEvents();
+                this.eventLoaded = true;
+            }
+
+
+            this.fireEvent("postLoad");
+            if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
+                this.moduleSelectAG.then(function () {
+                    this.fireEvent("load");
+                    this.isLoaded = true;
+                }.bind(this));
+            }else{
+                this.fireEvent("load");
+                this.isLoaded = true;
+            }
+
+        }
     }
 });

@@ -1161,7 +1161,6 @@ if (!window.o2) {
                     //     if (m[method]) m[method].apply(m, evs.concat([new PointerEvent("o2load"), data]));
                     // }else{
                     node.addEventListener(event, function (e) {
-                        debugger;
                         if (m[method]) m[method].apply(m, evs.concat([e, data, bind]));
                     }, false);
                     // }

@@ -112,12 +112,15 @@ public class ItemAccessProperties extends JsonProperties {
         return excludeReaderList == null ? Collections.emptyList() : excludeReaderList;
     }
 
-    public List<String> getExcludeReaderListExcludeEditor() {
+    public List<String> getExcludeReaderListExcludeEditor(List<String> authList) {
         if(CollectionUtils.isNotEmpty(excludeReaderList)){
-            List<String> editorList2 = new ArrayList<>(getEditorList());
-            editorList2.removeAll(getExcludeEditorList());
-            return excludeReaderList.stream().filter(o -> !editorList2.contains(o))
-                    .distinct().collect(Collectors.toList());
+            if(CollectionUtils.containsAny(getExcludeEditorList(), authList)){
+                return getExcludeReaderList();
+            }
+            if(CollectionUtils.containsAny(getEditorList(), authList)){
+                return Collections.emptyList();
+            }
+            return getExcludeReaderList();
         }
         return Collections.emptyList();
     }
@@ -169,5 +172,32 @@ public class ItemAccessProperties extends JsonProperties {
     public void setExcludeEditActivityList(
             List<ItemAccessActivity> excludeEditActivityList) {
         this.excludeEditActivityList = excludeEditActivityList;
+    }
+
+    public List<String> getReadConfigList() {
+        List<String> readConfigList = Stream.concat(getReaderList().stream(),
+                        getReadActivityIdList().stream())
+                .distinct().collect(Collectors.toCollection(ArrayList::new));
+        if(!readConfigList.isEmpty()){
+            readConfigList.addAll(getEditorList());
+            readConfigList.addAll(getEditActivityIdList());
+            return readConfigList;
+        }
+        return Collections.emptyList();
+    }
+
+    public List<String> getExcludeListForRead(List<String> authList) {
+        List<String> excludeList = Stream.concat(getExcludeReaderList().stream(), getExcludeReadActivityIdList().stream())
+                .distinct().collect(Collectors.toList());
+        if(CollectionUtils.isNotEmpty(excludeList)){
+            if(CollectionUtils.containsAny(getExcludeEditorList(), authList)){
+                return excludeList;
+            }
+            if(CollectionUtils.containsAny(getEditorList(), authList)){
+                return Collections.emptyList();
+            }
+            return excludeList;
+        }
+        return Collections.emptyList();
     }
 }

@@ -564,6 +564,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 
                 this.appForm.businessData = {
                     "data": this.data,
+                    "originalData" : Object.clone( this.data ),
                     "document": this.document,
                     "extend" : this.extend,
                     "work": this.data.$work || {}, //兼用流程发布到内容管理

@@ -135,7 +135,8 @@
     flex-wrap: wrap;
     overflow: hidden;
     overflow: auto;
-    grid-template-columns: 1fr 1fr 1fr;
+    /*grid-template-columns: 1fr 1fr 1fr;*/
+    grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
     box-sizing: border-box !important;
 }
 .page-content-search-fields *{

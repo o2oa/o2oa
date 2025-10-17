@@ -28,7 +28,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ItemAccessFactory extends AbstractFactory {
@@ -76,6 +75,19 @@ public class ItemAccessFactory extends AbstractFactory {
         return list;
     }
 
+    /**
+     * 删除业务数据中不可读的字段
+     * 可读的规则：
+     * 1、没有配置字段的访问权限
+     * 2、有配置字段的编辑权限：当前用户在可编辑配置中但不在不可编辑配置中则用户有可读权限
+     * 3、有配置字段的只读权限：当前用户不在不可读配置中且用户在可读配置中或者可读权限未配置则用户有可读权限
+     * @param data 业务数据
+     * @param processId 流程ID
+     * @param appId 应用ID
+     * @param activity 活动唯一ID
+     * @param effectivePerson 当前用户
+     * @throws Exception 异常
+     */
     public void convert(JsonElement data, String processId, String appId, String activity,
             EffectivePerson effectivePerson) throws Exception {
         if(StringUtils.isEmpty(processId) && StringUtils.isEmpty(appId)){
@@ -88,17 +100,15 @@ public class ItemAccessFactory extends AbstractFactory {
         }
         List<String> authList = getPersonAuth(effectivePerson.getDistinguishedName());
         for (ItemAccess itemAccess : itemAccessList) {
-            List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
-            List<String> excludeReaderList = itemAccess.getProperties().getExcludeReaderListExcludeEditor();
-            List<String> readActivityIdList = itemAccess.getProperties().getReadActivityIdList();
-            List<String> excludeReadActivityIdList = itemAccess.getProperties().getExcludeReadActivityIdList();
-            logger.debug("processId:{},path:{},readerList:{},readActivityIdList:{}",processId, itemAccess.getPath(), readerList, readActivityIdList);
-            boolean remove = excludeReadActivityIdList.contains(activity) || ListTools.containsAny(excludeReaderList, authList);
+            List<String> readerConfigList = itemAccess.getProperties().getReadConfigList();
+            List<String> excludeList = itemAccess.getProperties().getExcludeListForRead(authList);
+            boolean remove = excludeList.contains(activity) || ListTools.containsAny(excludeList, authList);
             if(!remove){
-                remove = (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(readActivityIdList))
-                                && (!readActivityIdList.contains(activity) && !ListTools.containsAny(
-                                readerList, authList));
+                remove = ListTools.isNotEmpty(readerConfigList)
+                                && (!readerConfigList.contains(activity) && !ListTools.containsAny(
+                        readerConfigList, authList));
             }
+            logger.debug("processId:{},path:{},readConfigList:{},authList:{},remove:{}",processId, itemAccess.getPath(), readerConfigList, authList, remove);
             if (remove) {
                 XGsonBuilder.removeWithPath(data, itemAccess.getPath());
             }
@@ -106,14 +116,18 @@ public class ItemAccessFactory extends AbstractFactory {
     }
 
     /**
-     * 保存数据的时候对不可编辑的字段用源数据覆盖
-     * @param data
-     * @param job
-     * @param processId
-     * @param appId
-     * @param activity
-     * @param effectivePerson
-     * @throws Exception
+     * 保存业务数据的时候对不可编辑的字段用源数据覆盖
+     * 可编辑的规则：
+     * 1、没有配置字段的访问权限
+     * 2、有配置字段的编辑权限：当前用户在可编辑配置中但不在不可编辑配置中则用户有可编辑权限
+     * 3、当没有配置可编辑权限时，判断用户是否有可读权限，如果不可读则没有编辑权限，如果可读则有可编辑权限
+     * @param data 业务数据
+     * @param job 工作的job
+     * @param processId 流程ID
+     * @param appId 应用ID
+     * @param activity 活动唯一ID
+     * @param effectivePerson 当前用户
+     * @throws Exception 异常
      */
     public void editConvert(JsonElement data, String job, String processId, String appId, String activity,
             EffectivePerson effectivePerson) throws Exception {
@@ -140,23 +154,17 @@ public class ItemAccessFactory extends AbstractFactory {
                 if(ListTools.isNotEmpty(editorList) || ListTools.isNotEmpty(editActivityIdList)){
                     remove = !editActivityIdList.contains(activity) && !ListTools.containsAny(editorList, authList);
                 }else {
-                    List<String> readerList = itemAccess.getProperties().getReaderAndEditorList();
-                    List<String> excludeReaderList = itemAccess.getProperties()
-                            .getExcludeReaderListExcludeEditor();
-                    List<String> readActivityIdList = itemAccess.getProperties()
-                            .getReadActivityIdList();
-                    List<String> excludeReadActivityIdList = itemAccess.getProperties()
-                            .getExcludeReadActivityIdList();
-                    logger.debug("processId:{},path:{},readerList:{},readActivityIdList:{}",
-                            processId, itemAccess.getPath(), readerList, readActivityIdList);
-                    remove = excludeReadActivityIdList.contains(activity) || ListTools.containsAny(
-                            excludeReaderList, authList);
+                    List<String> readerConfigList = itemAccess.getProperties().getReadConfigList();
+                    List<String> excludeList = itemAccess.getProperties()
+                            .getExcludeListForRead(authList);
+                    logger.debug("processId:{},path:{},readerConfigList:{},excludeList:{}",
+                            processId, itemAccess.getPath(), readerConfigList, excludeList);
+                    remove = excludeList.contains(activity) || ListTools.containsAny(
+                            excludeList, authList);
                     if (!remove) {
-                        remove = (ListTools.isNotEmpty(readerList) || ListTools.isNotEmpty(
-                                readActivityIdList))
-                                && (!readActivityIdList.contains(activity)
-                                && !ListTools.containsAny(
-                                readerList, authList));
+                        remove = ListTools.isNotEmpty(readerConfigList)
+                                && (!readerConfigList.contains(activity)
+                                && !ListTools.containsAny(readerConfigList, authList));
                     }
                 }
             }

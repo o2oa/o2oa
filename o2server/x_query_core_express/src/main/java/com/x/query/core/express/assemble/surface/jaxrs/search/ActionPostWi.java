@@ -6,6 +6,7 @@ import java.util.List;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.query.core.express.index.Filter;
+import com.x.query.core.express.index.Sort;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

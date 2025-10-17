@@ -1,0 +1,1512 @@
+{
+  "pcData": {
+    "json": {
+      "id": "",
+      "name": "阅读表单(简洁)",
+      "type": "Form",
+      "mode": "PC",
+      "application": "",
+      "styles": {
+        "background-color": "#f7f7f7",
+        "height": "100%"
+      },
+      "properties": {
+        "class": "form-layout"
+      },
+      "cssLinks": [],
+      "scriptSrc": [],
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "class": "form-content-area"
+          },
+          "moduleName": "div",
+          "recoveryStyles": {
+            "padding": "2em 3em",
+            "display": "flex",
+            "background-color": "#ffffff",
+            "gap": "1em 2em",
+            "flex-wrap": "wrap",
+            "position": "relative"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div",
+          "templateType": "section",
+          "preprocessing": "y"
+        },
+        "label": {
+          "id": "label",
+          "type": "Label",
+          "valueType": "script",
+          "moduleName": "label",
+          "templateType": "title",
+          "script": {
+            "code": "return this.data.subject || this.documentContext.getDocument().title;",
+            "html": "return this.data.subject || this.documentContext.getDocument().title;"
+          },
+          "recoveryStyles": {
+            "font-weight": "900",
+            "color": "var(--oo-color-main-deep)",
+            "font-size": "2.25em",
+            "line-height": "36px",
+            "text-align": "center",
+            "padding": "0.7em",
+            "flex": "100%"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47label",
+          "preprocessing": "y"
+        },
+        "table": {
+          "id": "table",
+          "type": "Table",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "width": "100%",
+            "border": "0",
+            "cellpadding": "3",
+            "cellspacing": "5",
+            "align": "center"
+          },
+          "titleTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#fff",
+            "color": "#333",
+            "text-align": "right",
+            "font-weight": "bold",
+            "width": "20%",
+            "height": "30px",
+            "line-height": "30px"
+          },
+          "contentTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#FFFFFF",
+            "color": "#333",
+            "min-width": "140px"
+          },
+          "moduleName": "table",
+          "recoveryStyles": {
+            "color": "#555",
+            "min-height": "32px",
+            "line-height": "32px",
+            "margin-bottom": "30px",
+            "flex": "100%"
+          },
+          "initialized": "yes",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47table",
+          "preprocessing": "y"
+        },
+        "table_table$Td_1": {
+          "id": "table_table$Td_1",
+          "type": "Table$Td",
+          "cellType": "layout",
+          "moduleName": "table$Td",
+          "recoveryStyles": {
+            "display": "block",
+            "text-align": "right",
+            "font-size": "14px",
+            "padding-top": "10px",
+            "padding-bottom": "10px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47table_table$Td_1",
+          "preprocessing": "y"
+        },
+        "label_2": {
+          "id": "label_2",
+          "type": "Label",
+          "valueType": "text",
+          "text": "创建人：",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort",
+            "html": "return this.documentContext.getDocument().creatorPersonShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_1": {
+          "id": "label_1",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort",
+            "html": "return this.documentContext.getDocument().creatorPersonShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "15px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_4": {
+          "id": "label_4",
+          "type": "Label",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "创建部门：",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_2_1": {
+          "id": "label_2_1",
+          "type": "Label",
+          "valueType": "script",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorUnitNameShort",
+            "html": "return this.documentContext.getDocument().creatorUnitNameShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "15px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_5": {
+          "id": "label_5",
+          "type": "Label",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "创建时间：",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_3": {
+          "id": "label_3",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.documentContext.getDocument().createTime",
+            "html": "return this.documentContext.getDocument().createTime"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "10px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "table_table$Td_2": {
+          "id": "table_table$Td_2",
+          "type": "Table$Td",
+          "events": {
+            "load": {
+              "code": "if( !this.data.explain || this.data.explain === '' ){ this.target.node.setStyle('display','none') }"
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "cellType": "layout",
+          "moduleName": "table$Td",
+          "recoveryStyles": {
+            "background-color": "var(--oo-color-hover)",
+            "border": "1px solid #ddd",
+            "font-size": "1.142857em",
+            "color": "#777777",
+            "line-height": "1.7em",
+            "padding": "1em"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47table_table$Td_2",
+          "preprocessing": "y"
+        },
+        "label_6": {
+          "id": "label_6",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.data.explain",
+            "html": "return this.data.explain"
+          },
+          "moduleName": "label",
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "htmleditor": {
+          "id": "htmleditor",
+          "type": "Htmleditor",
+          "editorProperties": {
+            "autoGrow_maxHeight": 400,
+            "autoGrow_minHeight": 300,
+            "resize_enabled": true,
+            "resize_maxHeight": "3000",
+            "resize_minHeight": "200",
+            "autoParagraph": true,
+            "autoUpdateElement": true,
+            "enterMode": 1,
+            "height": "200",
+            "readOnly": false
+          },
+          "moduleName": "htmleditor",
+          "preprocessing": "y",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47htmleditor",
+          "isReadonly": false,
+          "ecnet": "n",
+          "base64Encode": "n",
+          "enablePreview": "y"
+        },
+        "attachment": {
+          "id": "attachment",
+          "type": "Attachment",
+          "size": "min",
+          "isSizeChange": "n",
+          "attachmentCount": "0",
+          "resize": "n",
+          "listStyle": "list",
+          "readonly": "false",
+          "isUpload": "y",
+          "isDelete": "y",
+          "isReplace": "y",
+          "isDownload": "y",
+          "toolbarGroupHidden": [
+            "edit",
+            "read",
+            "list",
+            "config",
+            "view"
+          ],
+          "moduleName": "attachment",
+          "isPreviewAtt": "n",
+          "isEditAtt": "n",
+          "availableListStyles": [
+            "seq"
+          ],
+          "$inDatatable": false,
+          "recoveryStyles": {
+            "flex": "100%"
+          },
+          "style": "v10",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47attachment",
+          "isOpenInOffice": false,
+          "dblclick": "open",
+          "isConfig": "y",
+          "isOrder": "y",
+          "dg_size": "min",
+          "dg_isSizeChange": "n",
+          "dg_resize": "n",
+          "dg_listStyle": "sequence",
+          "preprocessing": "y"
+        },
+        "log": {
+          "id": "log",
+          "type": "Log",
+          "filterActivity": [],
+          "filterPerson": [],
+          "filterRoute": [],
+          "mode": "table",
+          "textStyle": "<font style='color:#00F;'>{person}</font>（{unitName}） 阅于<font style='color:#00F'>{date}</font>，首次于<font style='color:#00F'>{firstDate}</font>，共<font style='color:#00F'>{count}</font>次",
+          "isTask": "true",
+          "moduleName": "log",
+          "recoveryStyles": {
+            "margin-top": "10px",
+            "flex": "100%"
+          },
+          "isSaved": true,
+          "preprocessing": "y",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47log"
+        },
+        "div_1": {
+          "id": "div_1",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "class": "form-content"
+          },
+          "recoveryStyles": {
+            "overflow": "auto",
+            "position": "relative",
+            "padding": "2em 0 3em 0"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_1",
+          "templateType": "layout",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_2": {
+          "id": "div_2",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "width": "80%",
+            "margin": "auto",
+            "min-width": "42em",
+            "display": "flex",
+            "flex-direction": "column",
+            "gap": "2em",
+            "max-width": "1200px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_2",
+          "templateType": "formArea",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_3": {
+          "id": "div_3",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "class": "form-content-area"
+          },
+          "recoveryStyles": {
+            "padding": "2em 3em",
+            "display": "flex",
+            "background-color": "#ffffff",
+            "gap": "1em 2em",
+            "flex-wrap": "wrap",
+            "position": "relative"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_3",
+          "templateType": "section",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_4": {
+          "id": "div_4",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "class": "form-content-area"
+          },
+          "recoveryStyles": {
+            "padding": "2em 3em",
+            "display": "flex",
+            "background-color": "#ffffff",
+            "gap": "1em 2em",
+            "flex-wrap": "wrap",
+            "position": "relative"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_4",
+          "templateType": "section",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_5": {
+          "id": "div_5",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "flex": "100%",
+            "font-size": "1.142857em",
+            "padding": "1em",
+            "line-height": "1.7em"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_5",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "actionbar_1": {
+          "id": "actionbar_1",
+          "type": "Actionbar",
+          "tools": [],
+          "style": "v10",
+          "hideSetPopularDocumentTool": false,
+          "hideSystemTools": false,
+          "iconType": "font",
+          "multiTools": [
+            {
+              "type": "MWFToolBarButton",
+              "img": "close.png",
+              "img_over": "close_over.png",
+              "title": "{{$.lp.closeTitle}}",
+              "action": "closeDocument",
+              "text": "{{$.lp.close}}",
+              "id": "action_close",
+              "icon": "close",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "edit.png",
+              "img_over": "edit_over.png",
+              "title": "{{$.lp.editTitle}}",
+              "action": "editDocument",
+              "id": "action_edit",
+              "text": "{{$.lp.edit}}",
+              "control": "allowEditDocument",
+              "icon": "edit",
+              "read": true,
+              "edit": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "img_over": "save_over.png",
+              "title": "{{$.lp.saveTitle}}",
+              "action": "saveDocument",
+              "text": "{{$.lp.save}}",
+              "id": "action_saveData",
+              "control": "allowSave",
+              "icon": "save",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "submit.png",
+              "img_over": "submit_over.png",
+              "title": "{{$.lp.publishTitle}}",
+              "action": "publishDocument",
+              "text": "{{$.lp.publish}}",
+              "id": "action_publishDocument",
+              "control": "allowPublishDocument",
+              "icon": "publish",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "submitDelayed.png",
+              "img_over": "submitDelayed_over.png",
+              "title": "{{$.lp.publishDelayedTitle}}",
+              "action": "publishDocumentDelayed",
+              "text": "{{$.lp.publishDelayed}}",
+              "id": "action_publishDocumentDelayed",
+              "control": "allowPublishDocumentDelayed",
+              "icon": "clock",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "img_over": "save_over.png",
+              "title": "{{$.lp.saveDraftTitle}}",
+              "action": "saveDraftDocument",
+              "text": "{{$.lp.saveDraft}}",
+              "id": "action_saveDraftDocument",
+              "control": "allowPublishDocument",
+              "icon": "save",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "popular.png",
+              "img_over": "popular_over.png",
+              "title": "{{$.lp.popularTitle}}",
+              "action": "setPopularDocument",
+              "id": "action_popular",
+              "text": "{{$.lp.popular}}",
+              "control": "allowPopularDocument",
+              "icon": "hot-article",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "del.png",
+              "img_over": "del_over.png",
+              "title": "{{$.lp.deleteTitle}}",
+              "action": "deleteDocument",
+              "text": "{{$.lp.delete}}",
+              "id": "action_delete",
+              "control": "allowDeleteDocument",
+              "icon": "delete",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "print.png",
+              "img_over": "print_over.png",
+              "title": "{{$.lp.printTitle}}",
+              "action": "printDocument",
+              "text": "{{$.lp.print}}",
+              "id": "action_print",
+              "icon": "print",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "top.png",
+              "img_over": "top_over.png",
+              "title": "{{$.lp.setTopTitle}}",
+              "action": "setTop",
+              "text": "{{$.lp.setTop}}",
+              "id": "action_setTop",
+              "icon": "update",
+              "read": true,
+              "edit": true,
+              "control": "allowSetTop",
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "topcancel.png",
+              "img_over": "topcancel_over.png",
+              "title": "{{$.lp.cancelTopTitle}}",
+              "action": "cancelTop",
+              "text": "{{$.lp.cancelTop}}",
+              "id": "action_cancelTop",
+              "icon": "process-cancel",
+              "read": true,
+              "edit": true,
+              "control": "allowCancelTop",
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "downloadAll.png",
+              "img_over": "downloadAll_over.png",
+              "title": "{{$.lp.downloadAllTitle}}",
+              "action": "downloadAll",
+              "text": "{{$.lp.downloadAll}}",
+              "id": "action_downloadAll",
+              "control": "",
+              "condition": "",
+              "icon": "file_download",
+              "read": true,
+              "edit": true,
+              "system": true
+            }
+          ],
+          "actionStyles": {
+            "container": {
+              "background-color": "#ffffff",
+              "padding-top": "0",
+              "word-wrap": "normal",
+              "word-break": "keep-all",
+              "cursor": "pointer",
+              "height": "auto",
+              "display": "flex",
+              "font-size": "1em",
+              "margin": "0px auto",
+              "padding-bottom": "0",
+              "padding-left": "1em",
+              "padding-right": "1em",
+              "border-top": "0",
+              "border-bottom": "0",
+              "flex-wrap": "wrap",
+              "gap": "0.5em 0.3em",
+              "border-radius": "3px",
+              "border": "0px",
+              "overflow": "hidden",
+              "max-width": "1200px"
+            },
+            "button": {
+              "display": "flex",
+              "position": "static",
+              "float": "left",
+              "border": "0.071em solid #cccccc",
+              "color": "inherit",
+              "background-color": "#FFFFFF",
+              "height": "2.3em",
+              "padding-left": "0.5em",
+              "padding-right": "0.5em",
+              "cursor": "pointer",
+              "border-radius": "0.2em",
+              "transition1": "background-color 0.3s, color 0.3s",
+              "align-items": "baseline",
+              "box-shadow": "rgb(230, 230, 230) 0px 0px 0px 0px"
+            },
+            "buttonImgDiv": {
+              "display": "block",
+              "float": "left",
+              "padding-top": "0.5em",
+              "padding-bottom": "0.071em",
+              "padding-left": "0.071em",
+              "padding-right": "0.071em",
+              "cursor": "pointer",
+              "margin-right": "3px"
+            },
+            "buttonImg": {
+              "height": "1em",
+              "width": "1em",
+              "cursor": "pointer",
+              "margin-top": "0",
+              "display": "none"
+            },
+            "buttonIcon": {
+              "display": "block"
+            },
+            "buttonTextDiv": {
+              "display": "block",
+              "float": "left",
+              "height": "2.3em",
+              "padding-left": "0.142em",
+              "padding-right": "0.142em",
+              "line-height": "2.3em",
+              "cursor": "pointer"
+            },
+            "buttonDisable": {
+              "color": "#ffffff"
+            },
+            "buttonImgDivDisable": {
+              "color": "#999"
+            },
+            "buttonTextDivDisable": {
+              "color": "#999"
+            },
+            "buttonOver": {
+              "color": "#ffffff",
+              "background-color": "var(--oo-color-main)",
+              "border": "1px solid var(--oo-color-main)",
+              "box-shadow": "#cccccc 0px 0px 10px 1px"
+            },
+            "buttonOut": {
+              "color": "inherit",
+              "background-color": "#FFFFFF",
+              "border": "1px solid #cccccc",
+              "box-shadow": "none"
+            },
+            "buttonDown": {
+              "color": "#ffffff",
+              "background-color": "var(--oo-color-main-deep)",
+              "border": "1px solid var(--oo-color-main-deep)",
+              "box-shadow": "none"
+            },
+            "buttonUp": {
+              "color": "#ffffff",
+              "background-color": "var(--oo-color-main)",
+              "border": "1px solid var(--oo-color-main)",
+              "box-shadow": "#cccccc 0px 0px 10px 1px"
+            }
+          },
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47actionbar_1",
+          "preprocessing": "y",
+          "moduleName": "actionbar"
+        }
+      },
+      "formStyleType": "v10",
+      "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee477f4c6b6c-ff14-4d2f-a33a-727cb42aee47",
+      "isReadonly": false,
+      "languageType": "none",
+      "noticeType": "reader",
+      "blankToAllNotify": "yes",
+      "notifyCreatePerson": "yes",
+      "cssLink": "/x_component_process_FormDesigner/Module/Form/skin/styles_v10.css",
+      "styleConfig": {
+        "name": "V10",
+        "file": "styles_v10.json",
+        "extendFile": "styles_v10_extend.json",
+        "mode": [
+          "pc"
+        ]
+      },
+      "subformList": [],
+      "textareaDisableResize": true,
+      "confirmStyle": "v10_confirm",
+      "dialogStyle": "v10",
+      "nodeStyleWithhideModuleIcon": {
+        "margin-right": "0px"
+      },
+      "confirmIcon": {
+        "success": "../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
+        "error": "../x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
+        "info": "../x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
+        "warn": "../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
+      },
+      "buttonStyle": {
+        "color": "#777",
+        "border-radius": "4px",
+        "border": "1px solid #DCDFE6",
+        "cursor": "pointer",
+        "height": "36px",
+        "line-height": "36px",
+        "padding": "0px 15px",
+        "background-color": "#f4f7f6"
+      },
+      "errorStyle": {
+        "node": {
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error_v10.png) no-repeat 0px center",
+          "color": "var(--oo-color-error)",
+          "min-height": "30px",
+          "padding-left": "20px",
+          "padding-right": "30px",
+          "line-height": "30px",
+          "background-color": "initial",
+          "border": "none",
+          "border-radius": "",
+          "position": "relative",
+          "display": "flex"
+        },
+        "close": ""
+      },
+      "$version": "5.2",
+      "flowStyle": "v10"
+    },
+    "html": "<div mwftype=\"form\" id=\"7f4c6b6c-ff14-4d2f-a33a-727cb42aee47\" class=\"form-layout\" style=\"\"><div id=\"actionbar_1\" mwftype=\"actionbar\" class=\"form-toolbar-area\" style=\"\"><div class=\"form-toolbar\" style=\"background-color: rgb(255, 255, 255); padding: 0px 1em; overflow-wrap: normal; word-break: keep-all; cursor: pointer; height: auto; display: flex; font-size: 1em; margin: 0px auto; border: 0px; flex-wrap: wrap; gap: 0.5em 0.3em; border-radius: 3px; overflow: hidden; max-width: 1200px;\"><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"close\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/close_over.png\" title=\"关闭文档\" mwfbuttonaction=\"closeDocument\" mwfbuttontext=\"关闭\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-close\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"edit\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/edit_over.png\" title=\"编辑文档\" mwfbuttonaction=\"editDocument\" mwfbuttontext=\"编辑\" style=\"display: flex; position: static; float: left; border: 1px solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: none;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-edit\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">编辑</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"save\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/save_over.png\" title=\"保存文档\" mwfbuttonaction=\"saveDocument\" mwfbuttontext=\"保存\" style=\"display: flex; position: static; float: left; border: 1px solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: none;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-save\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"publish\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/submit_over.png\" title=\"发布文档\" mwfbuttonaction=\"publishDocument\" mwfbuttontext=\"发布\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-publish\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">发布</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"clock\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/submitDelayed_over.png\" title=\"定时发布文档\" mwfbuttonaction=\"publishDocumentDelayed\" mwfbuttontext=\"定时发布\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-clock\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">定时发布</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"save\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/save_over.png\" title=\"保存草稿\" mwfbuttonaction=\"saveDraftDocument\" mwfbuttontext=\"保存草稿\" style=\"display: flex; position: static; float: left; border: 1px solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: none;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-save\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">保存草稿</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"hot-article\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/popular_over.png\" title=\"设置热点\" mwfbuttonaction=\"setPopularDocument\" mwfbuttontext=\"设置热点\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-hot-article\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">设置热点</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"delete\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/del_over.png\" title=\"删除文档\" mwfbuttonaction=\"deleteDocument\" mwfbuttontext=\"删除\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-delete\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">删除</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"print\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/print_over.png\" title=\"打印文档\" mwfbuttonaction=\"printDocument\" mwfbuttontext=\"打印\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-print\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">打印</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"update\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/top_over.png\" title=\"对文档置顶\" mwfbuttonaction=\"setTop\" mwfbuttontext=\"置顶\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-update\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">置顶</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"process-cancel\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/topcancel_over.png\" title=\"取消对文档的置顶\" mwfbuttonaction=\"cancelTop\" mwfbuttontext=\"取消置顶\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-process-cancel\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">取消置顶</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"\" mwfbuttonicon=\"file_download\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/v10/downloadAll_over.png\" title=\"一键下载\" mwfbuttonaction=\"downloadAll\" mwfbuttontext=\"一键下载\" style=\"display: flex; position: static; float: left; border: 0.071em solid rgb(204, 204, 204); color: inherit; background-color: rgb(255, 255, 255); height: 2.3em; padding-left: 0.5em; padding-right: 0.5em; cursor: pointer; border-radius: 0.2em; align-items: baseline; box-shadow: rgb(230, 230, 230) 0px 0px 0px 0px;\"><span style=\"display: block; float: left; padding: 0.5em 0.071em 0.071em; cursor: pointer; margin-right: 3px;\"><span class=\"ooicon-file_download\" style=\"display: block;\"></span></span><span style=\"display: block; float: left; height: 2.3em; padding-left: 0.142em; padding-right: 0.142em; line-height: 2.3em; cursor: pointer;\">一键下载</span></div></div></div><div mwftype=\"div\" id=\"div_1\" style=\"overflow: auto; position: relative; padding: 2em 0px 3em;\" class=\"form-content\"><div mwftype=\"div\" id=\"div_2\" style=\"width: 80%; margin: auto; min-width: 42em; display: flex; flex-direction: column; gap: 2em; max-width: 1200px;\"><div id=\"div\" mwftype=\"div\" style=\"padding: 2em 3em; display: flex; background-color: rgb(255, 255, 255); gap: 1em 2em; flex-wrap: wrap; position: relative;\" class=\"form-content-area\"><div id=\"label\" mwftype=\"label\" style=\"font-weight: 900; color: var(--oo-color-main-deep); font-size: 2.25em; line-height: 36px; text-align: center; padding: 0.7em; flex: 1 1 100%;\"></div><div id=\"table\" mwftype=\"table\" style=\"color: rgb(85, 85, 85); min-height: 32px; line-height: 32px; margin-bottom: 30px; flex: 1 1 100%;\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"5\" cellpadding=\"3\" style=\"\"><tbody style=\"\"><tr style=\"\"><td id=\"table_table$Td_1\" mwftype=\"table$Td\" style=\"display: block; text-align: right; font-size: 14px; padding-top: 10px; padding-bottom: 10px;\"><div id=\"label_2\" mwftype=\"label\" style=\"display: inline;\">创建人：</div><div id=\"label_1\" mwftype=\"label\" style=\"display: inline; margin-right: 15px;\"></div><div id=\"label_4\" mwftype=\"label\" style=\"display: inline;\">创建部门：</div><div id=\"label_2_1\" mwftype=\"label\" style=\"display: inline; margin-right: 15px;\"></div><div id=\"label_5\" mwftype=\"label\" style=\"display: inline;\">创建时间：</div><div id=\"label_3\" mwftype=\"label\" style=\"display: inline; margin-right: 10px;\"></div></td></tr><tr style=\"\"><td id=\"table_table$Td_2\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\" style=\"background-color: var(--oo-color-hover); border: 1px solid rgb(221, 221, 221); font-size: 1.14286em; color: rgb(119, 119, 119); line-height: 1.7em; padding: 1em;\"><div id=\"label_6\" mwftype=\"label\" style=\"\"></div></td></tr></tbody></table></div><div mwftype=\"div\" id=\"div_5\" style=\"flex: 1 1 100%; font-size: 1.14286em; padding: 1em; line-height: 1.7em;\"><div id=\"htmleditor\" mwftype=\"itmleditor\" style=\"\"></div></div></div><div mwftype=\"div\" id=\"div_3\" style=\"padding: 2em 3em; display: flex; background-color: rgb(255, 255, 255); gap: 1em 2em; flex-wrap: wrap; position: relative;\" class=\"form-content-area\"><div id=\"attachment\" mwftype=\"itmleditor\" data-mwf-el-type=\"MWFFormDesignerAttachment\" style=\"flex: 1 1 100%;\"><div style=\"border: 0px solid rgb(182, 182, 182); min-height: 40px; overflow: hidden; background: transparent; height: auto;\"><div style=\"float: right; height: 26px; margin: 2px; border: 1px solid rgb(222, 222, 222); border-radius: 2px; background-color: rgb(247, 247, 247); display: none;\"></div><div style=\"min-height: 40px; overflow: hidden; clear: both;\"></div></div></div></div><div mwftype=\"div\" id=\"div_4\" style=\"padding: 2em 3em; display: flex; background-color: rgb(255, 255, 255); gap: 1em 2em; flex-wrap: wrap; position: relative;\" class=\"form-content-area\"><div id=\"log\" mwftype=\"log\" data-mwf-el-type=\"MWFFormDesignerLog\" style=\"margin-top: 10px; flex: 1 1 100%;\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></div></div></div></div>",
+    "id": "",
+    "isNewForm": false
+  },
+  "mobileData": {
+    "json": {
+      "id": "",
+      "name": "阅读表单(简洁)",
+      "type": "Form",
+      "mode": "Mobile",
+      "application": "",
+      "styles": {
+        "background-color": "#f0f0f0"
+      },
+      "cssLinks": [],
+      "scriptSrc": [],
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "moduleName": "div",
+          "recoveryStyles": {
+            "margin": "20px auto",
+            "background-color": "#ffffff",
+            "padding": "10px 0px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div",
+          "templateType": "section",
+          "preprocessing": "y"
+        },
+        "label": {
+          "id": "label",
+          "type": "Label",
+          "valueType": "script",
+          "moduleName": "label",
+          "templateType": "title",
+          "script": {
+            "code": "return this.data.subject || this.documentContext.getDocument().title;",
+            "html": "return this.data.subject || this.documentContext.getDocument().title;"
+          },
+          "recoveryStyles": {
+            "font-weight": "bold",
+            "line-height": "36px",
+            "padding": "0.7em",
+            "flex": "100%",
+            "text-align": "center",
+            "font-size": "24px",
+            "color": "#fb4747",
+            "min-height": "50px",
+            "margin-bottom": "20px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47label",
+          "preprocessing": "y"
+        },
+        "table": {
+          "id": "table",
+          "type": "Table",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "width": "100%",
+            "border": "0",
+            "cellpadding": "5",
+            "cellspacing": "0",
+            "align": "center"
+          },
+          "titleTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#ffffff",
+            "color": "#333",
+            "text-align": "left",
+            "font-weight": "bold",
+            "width": "30%",
+            "height": "36px",
+            "line-height": "36px",
+            "border-bottom": "1px solid #cccccc",
+            "font-size": "16px"
+          },
+          "contentTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#FFFFFF",
+            "color": "#666",
+            "min-width": "140px",
+            "font-size": "18px",
+            "border-bottom": "1px solid #cccccc",
+            "text-align": "right"
+          },
+          "moduleName": "table",
+          "recoveryStyles": {
+            "color": "#555",
+            "min-height": "32px",
+            "line-height": "32px",
+            "margin-bottom": "10px",
+            "flex": "100%",
+            "margin-top": "10px"
+          },
+          "initialized": "yes",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47table",
+          "preprocessing": "y"
+        },
+        "table_table$Td_1": {
+          "id": "table_table$Td_1",
+          "type": "Table$Td",
+          "cellType": "layout",
+          "moduleName": "table$Td",
+          "recoveryStyles": {
+            "display": "block",
+            "text-align": "right",
+            "font-size": "14px",
+            "padding-top": "10px",
+            "padding-bottom": "10px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47table_table$Td_1",
+          "preprocessing": "y"
+        },
+        "label_2": {
+          "id": "label_2",
+          "type": "Label",
+          "valueType": "text",
+          "text": "创建人：",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort",
+            "html": "return this.documentContext.getDocument().creatorPersonShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_1": {
+          "id": "label_1",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort",
+            "html": "return this.documentContext.getDocument().creatorPersonShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "15px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_4": {
+          "id": "label_4",
+          "type": "Label",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "创建部门：",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_2_1": {
+          "id": "label_2_1",
+          "type": "Label",
+          "valueType": "script",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorUnitNameShort",
+            "html": "return this.documentContext.getDocument().creatorUnitNameShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "15px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_5": {
+          "id": "label_5",
+          "type": "Label",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "创建时间：",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_3": {
+          "id": "label_3",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.documentContext.getDocument().createTime",
+            "html": "return this.documentContext.getDocument().createTime"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "10px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "table_table$Td_2": {
+          "id": "table_table$Td_2",
+          "type": "Table$Td",
+          "events": {
+            "load": {
+              "code": "if( !this.data.explain || this.data.explain === '' ){ this.target.node.setStyle('display','none') }"
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "cellType": "layout",
+          "moduleName": "table$Td",
+          "recoveryStyles": {
+            "background-color": "var(--oo-color-hover)",
+            "border": "1px solid #ddd",
+            "font-size": "1.142857em",
+            "color": "#777777",
+            "line-height": "1.7em",
+            "padding": "1em"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47table_table$Td_2",
+          "preprocessing": "y"
+        },
+        "label_6": {
+          "id": "label_6",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.data.explain",
+            "html": "return this.data.explain"
+          },
+          "moduleName": "label",
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "htmleditor": {
+          "id": "htmleditor",
+          "type": "Htmleditor",
+          "editorProperties": {
+            "autoGrow_maxHeight": 400,
+            "autoGrow_minHeight": 300,
+            "resize_enabled": true,
+            "resize_maxHeight": "3000",
+            "resize_minHeight": "200",
+            "autoParagraph": true,
+            "autoUpdateElement": true,
+            "enterMode": 1,
+            "height": "200",
+            "readOnly": false
+          },
+          "moduleName": "htmleditor",
+          "preprocessing": "y",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47htmleditor",
+          "isReadonly": false,
+          "ecnet": "n",
+          "base64Encode": "n",
+          "enablePreview": "y"
+        },
+        "attachment": {
+          "id": "attachment",
+          "type": "Attachment",
+          "size": "min",
+          "isSizeChange": "n",
+          "attachmentCount": "0",
+          "resize": "n",
+          "listStyle": "list",
+          "readonly": "false",
+          "isUpload": "y",
+          "isDelete": "y",
+          "isReplace": "y",
+          "isDownload": "y",
+          "toolbarGroupHidden": [
+            "edit",
+            "read",
+            "list",
+            "config",
+            "view"
+          ],
+          "moduleName": "attachment",
+          "isPreviewAtt": "n",
+          "isEditAtt": "n",
+          "availableListStyles": [
+            "seq"
+          ],
+          "$inDatatable": false,
+          "recoveryStyles": {
+            "flex": "100%"
+          },
+          "style": "default",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47attachment",
+          "isOpenInOffice": false,
+          "dblclick": "open",
+          "isConfig": "y",
+          "isOrder": "y",
+          "dg_size": "min",
+          "dg_isSizeChange": "n",
+          "dg_resize": "n",
+          "dg_listStyle": "sequence",
+          "preprocessing": "y"
+        },
+        "log": {
+          "id": "log",
+          "type": "Log",
+          "filterActivity": [],
+          "filterPerson": [],
+          "filterRoute": [],
+          "mode": "table",
+          "textStyle": "<font style='color:#00F;'>{person}</font>（{unitName}） 阅于<font style='color:#00F'>{date}</font>，首次于<font style='color:#00F'>{firstDate}</font>，共<font style='color:#00F'>{count}</font>次",
+          "isTask": "true",
+          "moduleName": "log",
+          "recoveryStyles": {
+            "margin-top": "10px",
+            "flex": "100%"
+          },
+          "isSaved": true,
+          "preprocessing": "y",
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47log"
+        },
+        "div_1": {
+          "id": "div_1",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_1",
+          "templateType": "layout",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_2": {
+          "id": "div_2",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "max-width": "1200px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_2",
+          "templateType": "formArea",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_3": {
+          "id": "div_3",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "margin": "20px auto",
+            "background-color": "#ffffff",
+            "padding": "10px 0px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_3",
+          "templateType": "section",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_4": {
+          "id": "div_4",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "margin": "20px auto",
+            "background-color": "#ffffff",
+            "padding": "10px 0px"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_4",
+          "templateType": "section",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "div_5": {
+          "id": "div_5",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "flex": "100%",
+            "font-size": "1.142857em",
+            "padding": "1em",
+            "line-height": "1.7em"
+          },
+          "isSaved": true,
+          "pid": "PC7f4c6b6c-ff14-4d2f-a33a-727cb42aee47div_5",
+          "preprocessing": "y",
+          "moduleName": "div"
+        }
+      },
+      "formStyleType": "defaultMobile",
+      "pid": "Mobile7f4c6b6c-ff14-4d2f-a33a-727cb42aee477f4c6b6c-ff14-4d2f-a33a-727cb42aee47",
+      "isReadonly": false,
+      "languageType": "none",
+      "noticeType": "reader",
+      "blankToAllNotify": "yes",
+      "notifyCreatePerson": "yes",
+      "styleConfig": {
+        "name": "手机样式",
+        "file": "styles_defaultMobile.json",
+        "extendFile": "styles_defaultMobile_extend.json",
+        "mode": [
+          "pc",
+          "mobile"
+        ]
+      },
+      "subformList": [],
+      "textareaDisableResize": true,
+      "$version": "5.2",
+      "defaultTools": [
+        {
+          "type": "MWFToolBarButton",
+          "img": "close.png",
+          "img_over": "close_over.png",
+          "title": "{{$.lp.closeTitle}}",
+          "action": "closeDocument",
+          "text": "{{$.lp.close}}",
+          "id": "action_close",
+          "read": true,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "edit.png",
+          "img_over": "edit_over.png",
+          "title": "{{$.lp.editTitle}}",
+          "action": "editDocument",
+          "id": "action_edit",
+          "text": "{{$.lp.edit}}",
+          "control": "allowEditDocument",
+          "read": true,
+          "edit": false
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "save.png",
+          "img_over": "save_over.png",
+          "title": "{{$.lp.saveTitle}}",
+          "action": "saveDocument",
+          "text": "{{$.lp.save}}",
+          "id": "action_saveData",
+          "control": "allowSave",
+          "read": false,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "submit.png",
+          "img_over": "submit_over.png",
+          "title": "{{$.lp.publishTitle}}",
+          "action": "publishDocument",
+          "text": "{{$.lp.publish}}",
+          "id": "action_publishDocument",
+          "control": "allowPublishDocument",
+          "read": false,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "submitDelayed.png",
+          "img_over": "submitDelayed_over.png",
+          "title": "{{$.lp.publishDelayedTitle}}",
+          "action": "publishDocumentDelayed",
+          "text": "{{$.lp.publishDelayed}}",
+          "id": "action_publishDocumentDelayed",
+          "control": "allowPublishDocumentDelayed",
+          "read": false,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "save.png",
+          "img_over": "save_over.png",
+          "title": "{{$.lp.saveDraftTitle}}",
+          "action": "saveDraftDocument",
+          "text": "{{$.lp.saveDraft}}",
+          "id": "action_saveDraftDocument",
+          "control": "allowPublishDocument",
+          "read": false,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "popular.png",
+          "img_over": "popular_over.png",
+          "title": "{{$.lp.popularTitle}}",
+          "action": "setPopularDocument",
+          "id": "action_popular",
+          "text": "{{$.lp.popular}}",
+          "control": "allowPopularDocument",
+          "read": true,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "del.png",
+          "img_over": "del_over.png",
+          "title": "{{$.lp.deleteTitle}}",
+          "action": "deleteDocument",
+          "text": "{{$.lp.delete}}",
+          "id": "action_delete",
+          "control": "allowDeleteDocument",
+          "read": true,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "print.png",
+          "img_over": "print_over.png",
+          "title": "{{$.lp.printTitle}}",
+          "action": "printDocument",
+          "text": "{{$.lp.print}}",
+          "id": "action_print",
+          "read": true,
+          "edit": true
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "top.png",
+          "img_over": "top_over.png",
+          "title": "{{$.lp.setTopTitle}}",
+          "action": "setTop",
+          "text": "{{$.lp.setTop}}",
+          "id": "action_setTop",
+          "read": true,
+          "edit": true,
+          "control": "allowSetTop"
+        },
+        {
+          "type": "MWFToolBarButton",
+          "img": "topcancel.png",
+          "img_over": "topcancel_over.png",
+          "title": "{{$.lp.cancelTopTitle}}",
+          "action": "cancelTop",
+          "text": "{{$.lp.cancelTop}}",
+          "id": "action_cancelTop",
+          "read": true,
+          "edit": true,
+          "control": "allowCancelTop"
+        }
+      ],
+      "tools": [],
+      "addressStyle": {
+        "style": "blueMobile",
+        "positionX": "right"
+      },
+      "comboxStyle": {
+        "style": "mobile",
+        "positionX": "right"
+      },
+      "description": "",
+      "applicationName": "",
+      "properties": {},
+      "jsheader": {
+        "code": "",
+        "html": ""
+      },
+      "events": {
+        "queryLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeModulesLoad": {
+          "code": "",
+          "html": ""
+        },
+        "afterModulesLoad": {
+          "code": "",
+          "html": ""
+        },
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "afterLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeSave": {
+          "code": "",
+          "html": ""
+        },
+        "postSave": {
+          "code": "",
+          "html": ""
+        },
+        "afterSave": {
+          "code": "",
+          "html": ""
+        },
+        "beforeClose": {
+          "code": "",
+          "html": ""
+        },
+        "beforePublish": {
+          "code": "",
+          "html": ""
+        },
+        "postPublish": {
+          "code": "",
+          "html": ""
+        },
+        "afterPublish": {
+          "code": "",
+          "html": ""
+        },
+        "beforeDelete": {
+          "code": "",
+          "html": ""
+        },
+        "afterDelete": {
+          "code": "",
+          "html": ""
+        },
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+      },
+      "fieldList": {}
+    },
+    "html": "<div mwftype=\"form\" id=\"7f4c6b6c-ff14-4d2f-a33a-727cb42aee47\" class=\"form-layout\" style=\"\"><div mwftype=\"div\" id=\"div_1\" style=\"\" class=\"form-content\"><div mwftype=\"div\" id=\"div_2\" style=\"max-width: 1200px;\"><div id=\"div\" mwftype=\"div\" style=\"margin: 20px auto; background-color: rgb(255, 255, 255); padding: 10px 0px;\" class=\"form-content-area\"><div id=\"label\" mwftype=\"label\" style=\"font-weight: bold; line-height: 36px; padding: 0.7em; flex: 1 1 100%; text-align: center; font-size: 24px; color: rgb(251, 71, 71); min-height: 50px; margin-bottom: 20px;\"></div><div id=\"table\" mwftype=\"table\" style=\"color: rgb(85, 85, 85); min-height: 32px; line-height: 32px; margin-bottom: 10px; flex: 1 1 100%; margin-top: 10px;\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"5\" style=\"\"><tbody style=\"\"><tr style=\"\"><td id=\"table_table$Td_1\" mwftype=\"table$Td\" style=\"display: block; text-align: right; font-size: 14px; padding-top: 10px; padding-bottom: 10px;\"><div id=\"label_2\" mwftype=\"label\" style=\"display: inline;\">创建人：</div><div id=\"label_1\" mwftype=\"label\" style=\"display: inline; margin-right: 15px;\"></div><div id=\"label_4\" mwftype=\"label\" style=\"display: inline;\">创建部门：</div><div id=\"label_2_1\" mwftype=\"label\" style=\"display: inline; margin-right: 15px;\"></div><div id=\"label_5\" mwftype=\"label\" style=\"display: inline;\">创建时间：</div><div id=\"label_3\" mwftype=\"label\" style=\"display: inline; margin-right: 10px;\"></div></td></tr><tr style=\"\"><td id=\"table_table$Td_2\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\" style=\"background-color: var(--oo-color-hover); border: 1px solid rgb(221, 221, 221); font-size: 1.14286em; color: rgb(119, 119, 119); line-height: 1.7em; padding: 1em;\"><div id=\"label_6\" mwftype=\"label\" style=\"\"></div></td></tr></tbody></table></div><div mwftype=\"div\" id=\"div_5\" style=\"flex: 1 1 100%; font-size: 1.14286em; padding: 1em; line-height: 1.7em;\"><div id=\"htmleditor\" mwftype=\"itmleditor\" style=\"\"></div></div></div><div mwftype=\"div\" id=\"div_3\" style=\"margin: 20px auto; background-color: rgb(255, 255, 255); padding: 10px 0px;\" class=\"form-content-area\"><div id=\"attachment\" mwftype=\"itmleditor\" data-mwf-el-type=\"MWFFormDesignerAttachment\" style=\"flex: 1 1 100%;\"><div style=\"border: 0px solid rgb(182, 182, 182); min-height: 40px; overflow: hidden; background: transparent; height: auto;\"><div style=\"float: right; height: 26px; margin: 2px; border: 1px solid rgb(222, 222, 222); border-radius: 2px; background-color: rgb(247, 247, 247); display: none;\"></div><div style=\"min-height: 40px; overflow: hidden; clear: both;\"></div></div></div></div><div mwftype=\"div\" id=\"div_4\" style=\"margin: 20px auto; background-color: rgb(255, 255, 255); padding: 10px 0px;\" class=\"form-content-area\"><div id=\"log\" mwftype=\"log\" data-mwf-el-type=\"MWFFormDesignerLog\" style=\"margin-top: 10px; flex: 1 1 100%;\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></div></div></div></div>",
+    "id": "",
+    "isNewForm": false
+  }
+}

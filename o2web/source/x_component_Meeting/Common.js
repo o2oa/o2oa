@@ -23,6 +23,7 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
         "scrollType": "window"
     },
     _createTableContent: function () {
+        this.formAreaNode.setStyle('z-index', '100');
         this.formTopTextNode.set( "text", this.lp.editBuilding );
         var html = `<div class='formTable'>
             <div item='name'></div>

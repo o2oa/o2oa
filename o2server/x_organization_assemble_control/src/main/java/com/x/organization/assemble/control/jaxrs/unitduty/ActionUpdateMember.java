@@ -16,8 +16,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +42,14 @@ class ActionUpdateMember extends BaseAction {
                 throw new ExceptionFieldEmpty("identityList");
             }
             Business business = new Business(emc);
+            List<Identity> identityList = new ArrayList<>();
+            for(String identityFlag : wi.getIdentityList()){
+                Identity identity = business.identity().pick(identityFlag);
+                if(identity == null){
+                    throw new ExceptionIdentityNotExist(identityFlag);
+                }
+                identityList.add(identity);
+            }
             UnitDuty o = business.unitDuty().pick(wi.getUnitDuty());
             Unit unit;
             boolean isSave = false;
@@ -72,7 +82,7 @@ class ActionUpdateMember extends BaseAction {
             }
             emc.beginTransaction(UnitDuty.class);
             o.setIdentityList(
-                    ListTools.extractProperty(business.identity().pick(wi.getIdentityList()), JpaObject.id_FIELDNAME,
+                    ListTools.extractProperty(identityList, JpaObject.id_FIELDNAME,
                             String.class, true, true));
             if(isSave){
                 emc.persist(o, CheckPersistType.all);

@@ -56,9 +56,8 @@ class ActionUpdateArrayDataWithDocument extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			JsonElement source = getData(business, id);
-			JsonElement data = this.convert(source, wi);
-			JsonElement merge = XGsonBuilder.merge(data, source);
-			this.updateData(business, document, merge);
+			this.convert(source, wi);
+			this.updateData(business, document, source);
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);
@@ -67,7 +66,8 @@ class ActionUpdateArrayDataWithDocument extends BaseAction {
 		return result;
 	}
 
-	private JsonElement convert(JsonElement oldData, Wi wi) throws Exception {
+	private void convert(JsonElement data, Wi wi) throws ExceptionCustom {
+		JsonElement oldData = XGsonBuilder.extract(data, wi.getPath());
 		if(oldData!=null && !oldData.isJsonArray()){
 			throw new ExceptionCustom("指定的path路径数据不是数组对象");
 		}
@@ -85,24 +85,7 @@ class ActionUpdateArrayDataWithDocument extends BaseAction {
 		default:
 			throw new ExceptionCustom("操作类型不匹配：" + wi.getMethod());
 		}
-		JsonObject newData = new JsonObject();
-		this.addJsonToPath(newData, wi.getPath(), arrayData);
-		return newData;
-	}
-
-	private void addJsonToPath(JsonObject root, String path, JsonElement value) {
-		String[] pathParts = StringUtils.split(path, PATH_DOT);
-		JsonObject current = root;
-
-		for (int i = 0; i < pathParts.length - 1; i++) {
-			String part = pathParts[i];
-			if (!current.has(part)) {
-				current.add(part, new JsonObject());
-			}
-			current = current.getAsJsonObject(part);
-		}
-
-		current.add(pathParts[pathParts.length - 1], value);
+		XGsonBuilder.setValueToPath(data, wi.getPath(), arrayData);
 	}
 
 	public static class Wi extends GsonPropertyObject {

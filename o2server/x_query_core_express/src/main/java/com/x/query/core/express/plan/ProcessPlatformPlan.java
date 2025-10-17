@@ -294,7 +294,7 @@ public class ProcessPlatformPlan extends Plan {
             for (ItemAccess itemAccess : accessList) {
                 if (path.equalsIgnoreCase(itemAccess.getPath()) || path.startsWith(
                         itemAccess.getPath() + ".")) {
-                    List<String> excludeReaderList = itemAccess.getProperties().getExcludeReaderListExcludeEditor();
+                    List<String> excludeReaderList = itemAccess.getProperties().getExcludeReaderListExcludeEditor(this.runtime.authList);
                     if(ListTools.containsAny(excludeReaderList, this.runtime.authList)){
                         flag = false;
                     }else {

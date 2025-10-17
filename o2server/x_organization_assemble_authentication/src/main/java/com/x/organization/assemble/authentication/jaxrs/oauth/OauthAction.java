@@ -1,5 +1,6 @@
 package com.x.organization.assemble.authentication.jaxrs.oauth;
 
+import com.google.gson.JsonElement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -29,7 +30,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("Oauth2点单登录")
 public class OauthAction extends StandardJaxrsAction {
 
-    private static Logger logger = LoggerFactory.getLogger(OauthAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(OauthAction.class);
 
     @JaxrsMethodDescribe(value = "GET方法实现oauth认证auth方法", action = ActionAuth.class)
     @GET
@@ -52,12 +53,32 @@ public class OauthAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "管理员生成指定用户的oauth单点code.", action = ActionAuthCode.class)
+    @POST
+    @Path("generate/code")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void generateCode(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @Context HttpServletResponse response, JsonElement jsonElement) {
+        ActionResult<ActionAuthCode.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionAuthCode().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "POST方法实现oauth认证token方法", action = ActionToken.class)
     @POST
     @Path("token")
     @Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
     public void postToken(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
             @Context HttpServletResponse response,
+            @JaxrsParameterDescribe("客户端ID") @FormParam("client_id") String client_id,
+            @JaxrsParameterDescribe("客户端秘钥") @FormParam("client_secret") String client_secret,
             @JaxrsParameterDescribe("码") @FormParam("code") String code,
             @JaxrsParameterDescribe("授权类型") @FormParam("grant_type") String grant_type,
             @JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @FormParam("contentType") String contentType) {
@@ -95,7 +116,10 @@ public class OauthAction extends StandardJaxrsAction {
     @GET
     @Path("token")
     public void getToken(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-            @Context HttpServletResponse response, @JaxrsParameterDescribe("code") @QueryParam("code") String code,
+            @Context HttpServletResponse response,
+            @JaxrsParameterDescribe("客户端ID") @QueryParam("client_id") String client_id,
+            @JaxrsParameterDescribe("客户端秘钥") @QueryParam("client_secret") String client_secret,
+            @JaxrsParameterDescribe("code") @QueryParam("code") String code,
             @JaxrsParameterDescribe("grant_type") @QueryParam("grant_type") String grant_type,
             @JaxrsParameterDescribe("response CONTENT_TYPE 设置 默认为text/plain; charset=UTF-8") @QueryParam("contentType") String contentType) {
         ActionResult<ActionToken.Wo> result = new ActionResult<>();
