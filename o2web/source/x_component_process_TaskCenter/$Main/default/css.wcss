@@ -89,7 +89,7 @@
         "color": "#666"
     },
     "tabAreaNode": {
-        "height": "40px",
+        "min-height": "40px",
         "overflow": "hidden",
         "border-bottom": "1px solid #dedede",
         "background-color": "#FFF"
