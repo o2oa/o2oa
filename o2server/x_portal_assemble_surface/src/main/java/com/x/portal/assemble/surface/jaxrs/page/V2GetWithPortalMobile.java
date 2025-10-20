@@ -105,7 +105,7 @@ class V2GetWithPortalMobile extends BaseAction {
 					for (String wid : properties.getMobileRelatedWidgetList()) {
 						w = bus.widget().pick(wid);
 						if (null != w) {
-							map.put(wid, new RelatedWidget(w, w.getMobileData()));
+							map.put(wid, new RelatedWidget(w, BooleanUtils.isFalse(w.getHasMobile()) ? w.getData() : w.getMobileData()));
 							list.add(w.getId() + w.getUpdateTime().getTime());
 						}
 					}
