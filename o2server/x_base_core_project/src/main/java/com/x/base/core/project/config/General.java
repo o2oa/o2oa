@@ -19,290 +19,289 @@ import org.apache.commons.lang3.StringUtils;
 
 public class General extends ConfigObject {
 
-    private static final long serialVersionUID = 4393280516414081348L;
-    private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
-    private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
-    private static final Set<String> DEFAULT_SCRIPTINGALLOWEDCLASSES = new HashSet<>(
-            Arrays.asList(String.class.getName(), List.class.getName(), ArrayList.class.getName(),
-                    Arrays.class.getName()));
-    private static final Set<String> DEFAULT_ACCESSDENYURIS = Set.of(
-            "/jaxrs/application.wadl"
-    );
-    private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
-    private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
-    private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
+	private static final long serialVersionUID = 4393280516414081348L;
+	private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
+	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
+	private static final Set<String> DEFAULT_SCRIPTINGALLOWEDCLASSES = new HashSet<>(Arrays
+			.asList(String.class.getName(), List.class.getName(), ArrayList.class.getName(), Arrays.class.getName()));
+	private static final Set<String> DEFAULT_ACCESSDENYURIS = Set.of("/jaxrs/application.wadl");
+	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
+	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
+	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
 
-    private static final Boolean DEFAULT_DEPLOYRESOURCEENABLE = false;
-    private static final Boolean DEFAULT_DEPLOYWARENABLE = false;
+	private static final Boolean DEFAULT_DEPLOYRESOURCEENABLE = false;
+	private static final Boolean DEFAULT_DEPLOYWARENABLE = false;
 
-    private static final Boolean DEFAULT_STATENABLE = false;
-    private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
-    private static final Boolean DEFAULT_EXPOSEJEST = false;
-    private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
-    private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
-    private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
-    private static final String DEFAULT_HTTP_WHITE = "*";
-    private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
-    private static final Integer DEFAULT_STORAGEENCRYPT = 0;
-    private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 0;
-    private static final Map<String, String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN",
-            "简体中文", "en", "English");
-    private static final Boolean DEFAULT_GRAALVMEVALASPROMISE = true;
+	private static final Boolean DEFAULT_STATENABLE = false;
+	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
+	private static final Boolean DEFAULT_EXPOSEJEST = false;
+	private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
+	private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
+	private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
+	private static final String DEFAULT_HTTP_WHITE = "*";
+	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
+	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
+	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 0;
+	private static final Map<String, String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN", "简体中文", "en", "English");
+	private static final Boolean DEFAULT_GRAALVMEVALASPROMISE = true;
+	private static final Boolean DEFAULT_TABLEROWSELECTENABLE = true;
 
-    public static General defaultInstance() {
-        General o = new General();
-        o.webSocketEnable = DEFAULT_WEBSOCKETENABLE;
-        o.configApiEnable = DEFAULT_CONFIGAPIENABLE;
-        o.scriptingAllowedClasses = DEFAULT_SCRIPTINGALLOWEDCLASSES;
-        o.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
-        o.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
-        o.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
-        o.deployResourceEnable = DEFAULT_DEPLOYRESOURCEENABLE;
-        o.deployWarEnable = DEFAULT_DEPLOYWARENABLE;
-        o.statEnable = DEFAULT_STATENABLE;
-        o.statExclusions = DEFAULT_STATEXCLUSIONS;
-        o.exposeJest = DEFAULT_EXPOSEJEST;
-        o.refererHeadCheckRegular = DEFAULT_REFERERHEADCHECKREGULAR;
-        o.accessControlAllowOrigin = DEFAULT_ACCESSCONTROLALLOWORIGIN;
-        o.idFormatCheckRegular = DEFAULT_IDFORMATCHECKREGULAR;
-        o.httpWhiteList = DEFAULT_HTTPWHITELIST;
-        o.attachmentConfig = new AttachmentConfig();
-        o.storageEncrypt = DEFAULT_STORAGEENCRYPT;
-        o.webServerCacheControlMaxAge = DEFAULT_WEBSERVERCACHECONTROLMAXAGE;
-        o.supportedLanguages = DEFAULT_SUPPORTED_LANGUAGES;
-        o.graalvmEvalAsPromise = DEFAULT_GRAALVMEVALASPROMISE;
-        o.accessDenyUris = DEFAULT_ACCESSDENYURIS;
-        return o;
-    }
+	public static General defaultInstance() {
+		General o = new General();
+		o.webSocketEnable = DEFAULT_WEBSOCKETENABLE;
+		o.configApiEnable = DEFAULT_CONFIGAPIENABLE;
+		o.scriptingAllowedClasses = DEFAULT_SCRIPTINGALLOWEDCLASSES;
+		o.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
+		o.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
+		o.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
+		o.deployResourceEnable = DEFAULT_DEPLOYRESOURCEENABLE;
+		o.deployWarEnable = DEFAULT_DEPLOYWARENABLE;
+		o.statEnable = DEFAULT_STATENABLE;
+		o.statExclusions = DEFAULT_STATEXCLUSIONS;
+		o.exposeJest = DEFAULT_EXPOSEJEST;
+		o.refererHeadCheckRegular = DEFAULT_REFERERHEADCHECKREGULAR;
+		o.accessControlAllowOrigin = DEFAULT_ACCESSCONTROLALLOWORIGIN;
+		o.idFormatCheckRegular = DEFAULT_IDFORMATCHECKREGULAR;
+		o.httpWhiteList = DEFAULT_HTTPWHITELIST;
+		o.attachmentConfig = new AttachmentConfig();
+		o.storageEncrypt = DEFAULT_STORAGEENCRYPT;
+		o.webServerCacheControlMaxAge = DEFAULT_WEBSERVERCACHECONTROLMAXAGE;
+		o.supportedLanguages = DEFAULT_SUPPORTED_LANGUAGES;
+		o.graalvmEvalAsPromise = DEFAULT_GRAALVMEVALASPROMISE;
+		o.accessDenyUris = DEFAULT_ACCESSDENYURIS;
+		return o;
+	}
 
-    @FieldDescribe("启用访问日志功能.")
-    private Boolean requestLogEnable;
+	@FieldDescribe("启用访问日志功能.")
+	private Boolean requestLogEnable;
 
-    @FieldDescribe("访问日志记录天数,默认7天.")
-    private Integer requestLogRetainDays;
+	@FieldDescribe("访问日志记录天数,默认7天.")
+	private Integer requestLogRetainDays;
 
-    @FieldDescribe("访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.")
-    private Boolean requestLogBodyEnable;
+	@FieldDescribe("访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.")
+	private Boolean requestLogBodyEnable;
 
-    @FieldDescribe("是否启用webSocket链接.")
-    private Boolean webSocketEnable;
+	@FieldDescribe("是否启用webSocket链接.")
+	private Boolean webSocketEnable;
 
-    @FieldDescribe("允许通过接口修改系统配置.")
-    private Boolean configApiEnable;
+	@FieldDescribe("允许通过接口修改系统配置.")
+	private Boolean configApiEnable;
 
-    @FieldDescribe("是否允许部署war包.")
-    private Boolean deployWarEnable;
+	@FieldDescribe("是否允许部署war包.")
+	private Boolean deployWarEnable;
 
-    @FieldDescribe("是否允许部署静态资源.")
-    private Boolean deployResourceEnable;
+	@FieldDescribe("是否允许部署静态资源.")
+	private Boolean deployResourceEnable;
 
-    @FieldDescribe("启用统计,默认启用统计.")
-    private Boolean statEnable;
+	@FieldDescribe("启用统计,默认启用统计.")
+	private Boolean statEnable;
 
-    @FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
-    private String statExclusions;
+	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
+	private String statExclusions;
 
-    @FieldDescribe("暴露jest接口.")
-    private Boolean exposeJest;
+	@FieldDescribe("暴露jest接口.")
+	private Boolean exposeJest;
 
-    @FieldDescribe("脚本中可加载的类(默认已加载平台com.x.base和com.x.organization开头的类).")
-    private Set<String> scriptingAllowedClasses;
+	@FieldDescribe("脚本中可加载的类(默认已加载平台com.x.base和com.x.organization开头的类).")
+	private Set<String> scriptingAllowedClasses;
 
-    @FieldDescribe("http referer 校验正则表达式,可以对CSRF攻击进行防护校验,样例:(.+?)o2oa.net(.+?)")
-    private String refererHeadCheckRegular = "";
+	@FieldDescribe("http referer 校验正则表达式,可以对CSRF攻击进行防护校验,样例:(.+?)o2oa.net(.+?)")
+	private String refererHeadCheckRegular = "";
 
-    @FieldDescribe("跨源资源共享许可,设置http返回的Access-Control-Allow-Origin标识,可以用于CORS攻击防护,样例:https://www.o2oa.net")
-    private String accessControlAllowOrigin = "";
+	@FieldDescribe("跨源资源共享许可,设置http返回的Access-Control-Allow-Origin标识,可以用于CORS攻击防护,样例:https://www.o2oa.net")
+	private String accessControlAllowOrigin = "";
 
-    @FieldDescribe("内容安全策略(CSP)")
-    private String contentSecurityPolicy = "";
+	@FieldDescribe("内容安全策略(CSP)")
+	private String contentSecurityPolicy = "";
 
-    @FieldDescribe("附件上传限制大小或者类型.")
-    private AttachmentConfig attachmentConfig;
+	@FieldDescribe("附件上传限制大小或者类型.")
+	private AttachmentConfig attachmentConfig;
 
-    @FieldDescribe("对象id格式校验正则表达式.")
-    private String idFormatCheckRegular = "";
+	@FieldDescribe("对象id格式校验正则表达式.")
+	private String idFormatCheckRegular = "";
 
-    @FieldDescribe("外部http接口服务地址白名单，*代表不限制.")
-    private List<String> httpWhiteList;
+	@FieldDescribe("外部http接口服务地址白名单，*代表不限制.")
+	private List<String> httpWhiteList;
 
-    @FieldDescribe("存储加密.1:AES,2:AES/GCM/NoPadding,空或者其他值不加密.")
-    private Integer storageEncrypt;
+	@FieldDescribe("存储加密.1:AES,2:AES/GCM/NoPadding,空或者其他值不加密.")
+	private Integer storageEncrypt;
 
-    @FieldDescribe("web服务器Cache-Control max-age头设置,0表示不设置Cache-Control.")
-    private Integer webServerCacheControlMaxAge;
+	@FieldDescribe("web服务器Cache-Control max-age头设置,0表示不设置Cache-Control.")
+	private Integer webServerCacheControlMaxAge;
 
-    @FieldDescribe("多语言配置，默认支持中文和英文.")
-    private Map<String, String> supportedLanguages;
+	@FieldDescribe("多语言配置，默认支持中文和英文.")
+	private Map<String, String> supportedLanguages;
 
-    @FieldDescribe("graalvm执行脚本包装为promise.")
-    private Boolean graalvmEvalAsPromise;
+	@FieldDescribe("graalvm执行脚本包装为promise.")
+	private Boolean graalvmEvalAsPromise;
 
-    @FieldDescribe("限制访问的uri地址.")
-    private Set<String> accessDenyUris;
+	@FieldDescribe("限制访问的uri地址.")
+	private Set<String> accessDenyUris;
 
-    public Set<String> getAccessDenyUris() {
-        return (null == this.accessDenyUris) ? DEFAULT_ACCESSDENYURIS
-                : this.accessDenyUris;
-    }
+	@FieldDescribe("限制访问的uri地址.")
+	private Boolean disableExportEnable;
 
-    public void setAccessDenyUris(Set<String> accessDenyUris) {
-        this.accessDenyUris = accessDenyUris;
-    }
+	@FieldDescribe("是否启用x_query_assemble_surface模块中listRowSelect,rowCountWhere接口")
+	private Boolean tableRowSelectEnable = DEFAULT_TABLEROWSELECTENABLE;
 
-    public Boolean getGraalvmEvalAsPromise() {
-        return BooleanUtils.isNotFalse(this.graalvmEvalAsPromise);
-    }
+	public Boolean getTableRowSelectEnable() {
+		return (null == this.tableRowSelectEnable) ? DEFAULT_TABLEROWSELECTENABLE : this.tableRowSelectEnable;
+	}
 
-    public Integer getWebServerCacheControlMaxAge() {
-        return NumberTools.nullOrLessThan(this.webServerCacheControlMaxAge, 0)
-                ? DEFAULT_WEBSERVERCACHECONTROLMAXAGE
-                : this.webServerCacheControlMaxAge;
-    }
+	public Set<String> getAccessDenyUris() {
+		return (null == this.accessDenyUris) ? DEFAULT_ACCESSDENYURIS : this.accessDenyUris;
+	}
 
-    public Integer getStorageEncrypt() {
-        if (this.storageEncrypt == null || this.storageEncrypt < 0 || this.storageEncrypt > 2) {
-            return DEFAULT_STORAGEENCRYPT;
-        } else {
-            return this.storageEncrypt;
-        }
-    }
+	public void setAccessDenyUris(Set<String> accessDenyUris) {
+		this.accessDenyUris = accessDenyUris;
+	}
 
-    public String getIdFormatCheckRegular() {
-        return this.idFormatCheckRegular;
-    }
+	public Boolean getGraalvmEvalAsPromise() {
+		return BooleanUtils.isNotFalse(this.graalvmEvalAsPromise);
+	}
 
-    public String getContentSecurityPolicy() {
-        return contentSecurityPolicy;
-    }
+	public Integer getWebServerCacheControlMaxAge() {
+		return NumberTools.nullOrLessThan(this.webServerCacheControlMaxAge, 0) ? DEFAULT_WEBSERVERCACHECONTROLMAXAGE
+				: this.webServerCacheControlMaxAge;
+	}
 
-    public String getRefererHeadCheckRegular() {
-        return (StringUtils.isBlank(refererHeadCheckRegular) ? DEFAULT_REFERERHEADCHECKREGULAR
-                : this.refererHeadCheckRegular);
-    }
+	public Integer getStorageEncrypt() {
+		if (this.storageEncrypt == null || this.storageEncrypt < 0 || this.storageEncrypt > 2) {
+			return DEFAULT_STORAGEENCRYPT;
+		} else {
+			return this.storageEncrypt;
+		}
+	}
 
-    public String getAccessControlAllowOrigin() {
-        return (StringUtils.isBlank(accessControlAllowOrigin) ? DEFAULT_ACCESSCONTROLALLOWORIGIN
-                : this.accessControlAllowOrigin);
-    }
+	public String getIdFormatCheckRegular() {
+		return this.idFormatCheckRegular;
+	}
 
-    public Boolean getExposeJest() {
-        return BooleanUtils.isNotFalse(this.exposeJest);
-    }
+	public String getContentSecurityPolicy() {
+		return contentSecurityPolicy;
+	}
 
-    public String getStatExclusions() {
-        return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions)
-                + ",/druid/*";
-    }
+	public String getRefererHeadCheckRegular() {
+		return (StringUtils.isBlank(refererHeadCheckRegular) ? DEFAULT_REFERERHEADCHECKREGULAR
+				: this.refererHeadCheckRegular);
+	}
 
-    public Boolean getStatEnable() {
-        return BooleanUtils.isNotFalse(statEnable);
-    }
+	public String getAccessControlAllowOrigin() {
+		return (StringUtils.isBlank(accessControlAllowOrigin) ? DEFAULT_ACCESSCONTROLALLOWORIGIN
+				: this.accessControlAllowOrigin);
+	}
 
-    public Boolean getRequestLogEnable() {
-        return BooleanUtils.isTrue(this.requestLogEnable);
-    }
+	public Boolean getExposeJest() {
+		return BooleanUtils.isNotFalse(this.exposeJest);
+	}
 
-    public Integer getRequestLogRetainDays() {
-        return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1)
-                ? DEFAULT_REQUESTLOGRETAINDAYS
-                : this.requestLogRetainDays;
-    }
+	public String getStatExclusions() {
+		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
+	}
 
-    public Boolean getRequestLogBodyEnable() {
-        return BooleanUtils.isTrue(this.requestLogBodyEnable);
-    }
+	public Boolean getStatEnable() {
+		return BooleanUtils.isNotFalse(statEnable);
+	}
 
-    public Set<String> getScriptingAllowedClasses() {
-        return (null == this.scriptingAllowedClasses) ? DEFAULT_SCRIPTINGALLOWEDCLASSES
-                : this.scriptingAllowedClasses;
-    }
+	public Boolean getRequestLogEnable() {
+		return BooleanUtils.isTrue(this.requestLogEnable);
+	}
 
-    public Boolean getWebSocketEnable() {
-        return null == this.webSocketEnable ? DEFAULT_WEBSOCKETENABLE : this.webSocketEnable;
-    }
+	public Integer getRequestLogRetainDays() {
+		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
+				: this.requestLogRetainDays;
+	}
 
-    public Boolean getConfigApiEnable() {
-        return null == this.configApiEnable ? DEFAULT_CONFIGAPIENABLE : this.configApiEnable;
-    }
+	public Boolean getRequestLogBodyEnable() {
+		return BooleanUtils.isTrue(this.requestLogBodyEnable);
+	}
 
-    public Boolean getDeployWarEnable() {
+	public Set<String> getScriptingAllowedClasses() {
+		return (null == this.scriptingAllowedClasses) ? DEFAULT_SCRIPTINGALLOWEDCLASSES : this.scriptingAllowedClasses;
+	}
 
-        return null == this.deployWarEnable ? DEFAULT_DEPLOYWARENABLE : this.deployWarEnable;
-    }
+	public Boolean getWebSocketEnable() {
+		return null == this.webSocketEnable ? DEFAULT_WEBSOCKETENABLE : this.webSocketEnable;
+	}
 
-    public Boolean getDeployResourceEnable() {
+	public Boolean getConfigApiEnable() {
+		return null == this.configApiEnable ? DEFAULT_CONFIGAPIENABLE : this.configApiEnable;
+	}
 
-        return null == this.deployResourceEnable ? DEFAULT_DEPLOYRESOURCEENABLE
-                : this.deployResourceEnable;
-    }
+	public Boolean getDeployWarEnable() {
 
-    public Map<String, String> getSupportedLanguages() {
-        return supportedLanguages == null || supportedLanguages.isEmpty()
-                ? DEFAULT_SUPPORTED_LANGUAGES
-                : supportedLanguages;
-    }
+		return null == this.deployWarEnable ? DEFAULT_DEPLOYWARENABLE : this.deployWarEnable;
+	}
 
-    public List<String> getHttpWhiteList() {
-        Set<String> httpWhiteSet = httpWhiteList == null ? new HashSet<>(DEFAULT_HTTPWHITELIST)
-                : new HashSet<>(httpWhiteList);
-        if (httpWhiteSet.isEmpty() || httpWhiteSet.contains(DEFAULT_HTTP_WHITE)) {
-            return new ArrayList<>();
-        }
-        httpWhiteSet.add(Host.ROLLBACK_IPV4);
-        httpWhiteSet.add(Collect.Default_server);
-        httpWhiteSet.add(Collect.Default_appPackServerHost);
-        try {
-            Config.nodes().entrySet().stream().forEach(n -> httpWhiteSet.add(n.getKey()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>(httpWhiteSet);
-    }
+	public Boolean getDeployResourceEnable() {
 
-    public AttachmentConfig getAttachmentConfig() {
-        return this.attachmentConfig == null ? new AttachmentConfig() : attachmentConfig;
-    }
+		return null == this.deployResourceEnable ? DEFAULT_DEPLOYRESOURCEENABLE : this.deployResourceEnable;
+	}
 
-    public static class AttachmentConfig extends ConfigObject {
+	public Map<String, String> getSupportedLanguages() {
+		return supportedLanguages == null || supportedLanguages.isEmpty() ? DEFAULT_SUPPORTED_LANGUAGES
+				: supportedLanguages;
+	}
 
-        private static final long serialVersionUID = -5672631798073576284L;
+	public List<String> getHttpWhiteList() {
+		Set<String> httpWhiteSet = httpWhiteList == null ? new HashSet<>(DEFAULT_HTTPWHITELIST)
+				: new HashSet<>(httpWhiteList);
+		if (httpWhiteSet.isEmpty() || httpWhiteSet.contains(DEFAULT_HTTP_WHITE)) {
+			return new ArrayList<>();
+		}
+		httpWhiteSet.add(Host.ROLLBACK_IPV4);
+		httpWhiteSet.add(Collect.Default_server);
+		httpWhiteSet.add(Collect.Default_appPackServerHost);
+		try {
+			Config.nodes().entrySet().stream().forEach(n -> httpWhiteSet.add(n.getKey()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<>(httpWhiteSet);
+	}
 
-        public static AttachmentConfig defaultInstance() {
-            return new AttachmentConfig();
-        }
+	public AttachmentConfig getAttachmentConfig() {
+		return this.attachmentConfig == null ? new AttachmentConfig() : attachmentConfig;
+	}
 
-        public static final Integer DEFAULT_FILE_SIZE = 2047;
+	public static class AttachmentConfig extends ConfigObject {
 
-        @FieldDescribe("附件大小限制（单位M，最大2048M）.")
-        private Integer fileSize = DEFAULT_FILE_SIZE;
+		private static final long serialVersionUID = -5672631798073576284L;
 
-        @FieldDescribe("只允许上传的文件后缀")
-        private List<String> fileTypeIncludes = Arrays.asList("doc", "docx", "xls", "xlsx", "ppt",
-                "pptx", "pdf",
-                "xapp", "text", "zip", "rar", "mp3", "mp4", "png", "jpg", "gif");
+		public static AttachmentConfig defaultInstance() {
+			return new AttachmentConfig();
+		}
 
-        @FieldDescribe("不允许上传的文件后缀")
-        private List<String> fileTypeExcludes = new ArrayList<>();
+		public static final Integer DEFAULT_FILE_SIZE = 2047;
 
-        public Integer getFileSize() {
-            return fileSize;
-        }
+		@FieldDescribe("附件大小限制（单位M，最大2048M）.")
+		private Integer fileSize = DEFAULT_FILE_SIZE;
 
-        public List<String> getFileTypeIncludes() {
-            return fileTypeIncludes;
-        }
+		@FieldDescribe("只允许上传的文件后缀")
+		private List<String> fileTypeIncludes = Arrays.asList("doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf",
+				"xapp", "text", "zip", "rar", "mp3", "mp4", "png", "jpg", "gif");
 
-        public List<String> getFileTypeExcludes() {
-            return fileTypeExcludes;
-        }
+		@FieldDescribe("不允许上传的文件后缀")
+		private List<String> fileTypeExcludes = new ArrayList<>();
 
-    }
+		public Integer getFileSize() {
+			return fileSize;
+		}
 
-    public void save() throws Exception {
-        File file = new File(Config.base(), Config.PATH_CONFIG_GENERAL);
-        FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
-        BaseTools.executeSyncFile(Config.PATH_CONFIG_GENERAL);
-    }
+		public List<String> getFileTypeIncludes() {
+			return fileTypeIncludes;
+		}
+
+		public List<String> getFileTypeExcludes() {
+			return fileTypeExcludes;
+		}
+
+	}
+
+	public void save() throws Exception {
+		File file = new File(Config.base(), Config.PATH_CONFIG_GENERAL);
+		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		BaseTools.executeSyncFile(Config.PATH_CONFIG_GENERAL);
+	}
 
 }
