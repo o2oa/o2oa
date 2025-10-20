@@ -1278,8 +1278,48 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
 
+    _saveBusinessDataById: function (data){
+        this.workAction.saveData(function () {
+            this.businessData.originalData = null;
+            this.businessData.originalData = copyData;
+            if(callback)callback();
+        }.bind(this), null, this.form.businessData.work.id, data);
+    },
+    saveBusinessDataById: function(v, id){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        var data = this.form.businessData.data;
+        var thisId = id || this.json.id;
+        var value;
+        if(thisId.indexOf("..") < 1){
+            value = {};
+            value[thisId] = v;
+            this._saveBusinessDataById(value);
+        }else{
+            var nextValue, nextId;
 
-        setValue: function(){
+            var idList = thisId.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var lastIndex = idList.length - 1;
+
+            value = o2.typeOf(idList[0]) === "number" ? [] : {};
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return;
+
+                if( i === lastIndex ){
+                    nextValue[id] = v;
+                    this._saveBusinessDataById(value);
+                }else{
+                    nextId = idList[i+1];
+                    nextValue[id] = o2.typeOf(nextId) === "number" ? [] : {};
+                    nextValue = nextValue[id];
+                }
+            }
+        }
+    },
+
+    setValue: function(){
     },
     focus: function(){
         this.node.focus();
