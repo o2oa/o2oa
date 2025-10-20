@@ -22,23 +22,19 @@ MWF.xApplication.process.FormDesigner.Module.Div = MWF.FCDiv = new Class({
 		this.form = form;
 	},
     clearTemplateStyles: function(styles){
-        if (this.json.templateType){
-            if (styles){
-                if (styles[this.json.templateType]){
-                    if (styles[this.json.templateType].styles) this.removeStyles(styles[this.json.templateType].styles, "styles");
-                    if (styles[this.json.templateType].inputStyles) this.removeStyles(styles[this.json.templateType].inputStyles, "inputStyles");
-                    if (styles[this.json.templateType].properties) this.removeStyles(styles[this.json.templateType].properties, "properties");
-                }
-            }
+        var templateType = this.json.templateType || 'default';
+        if (styles && styles[templateType]){
+            if (styles[templateType].styles) this.removeStyles(styles[templateType].styles, "styles");
+            if (styles[templateType].inputStyles) this.removeStyles(styles[templateType].inputStyles, "inputStyles");
+            if (styles[templateType].properties) this.removeStyles(styles[templateType].properties, "properties");
         }
     },
 
     setTemplateStyles: function(styles){
-        if (this.json.templateType){
-            if (styles[this.json.templateType]){
-                if (styles[this.json.templateType].styles) this.copyStyles(styles[this.json.templateType].styles, "styles");
-                if (styles[this.json.templateType].properties) this.copyStyles(styles[this.json.templateType].properties, "properties");
-            }
+        var templateType = this.json.templateType || 'default';
+        if (styles && styles[templateType]){
+            if (styles[templateType].styles) this.copyStyles(styles[templateType].styles, "styles");
+            if (styles[templateType].properties) this.copyStyles(styles[templateType].properties, "properties");
         }
     },
 	
