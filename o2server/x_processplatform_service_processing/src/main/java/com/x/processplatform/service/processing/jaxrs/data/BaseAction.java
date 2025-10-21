@@ -254,8 +254,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	void updateData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
-		JsonObject jsonObject = jsonElement.getAsJsonObject();
 		if (paths.length == 0) {
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
 			DataWork dataWork = DataWork.workCopier.copy(work);
 			dataWork.setWorkId(work.getId());
 			dataWork.setWorkCompletedId("");
@@ -266,7 +266,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		List<Item> exists = business.item().listWithJobWithPath(work.getJob(), paths);
-		List<Item> currents = converter.disassemble(jsonObject, paths);
+		List<Item> currents = converter.disassemble(jsonElement, paths);
 		List<Item> removes = converter.subtract(exists, currents);
 		List<Item> adds = converter.subtract(currents, exists);
 		if ((!removes.isEmpty()) || (!adds.isEmpty())) {
@@ -286,7 +286,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			business.entityManagerContainer().beginTransaction(Read.class);
 			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
 			business.entityManagerContainer().beginTransaction(Review.class);
-			projection(business, work, XGsonBuilder.convert(jsonObject, Data.class));
+			if (paths.length == 0) {
+				projection(business, work, XGsonBuilder.convert(jsonElement, Data.class));
+			}
 			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 		}
@@ -331,7 +333,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	void createData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
-		if (jsonElement.isJsonObject()) {
+		if (paths.length == 0) {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
 
 			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(Data.DataWork.workCopier.copy(work)));
@@ -388,7 +390,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		business.entityManagerContainer().beginTransaction(Read.class);
 		business.entityManagerContainer().beginTransaction(ReadCompleted.class);
 		business.entityManagerContainer().beginTransaction(Review.class);
-		projection(business, work, XGsonBuilder.convert(jsonElement, Data.class));
 		business.entityManagerContainer().commit();
 	}
 
@@ -538,7 +539,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	/**
 	 * 记录业务数据变更信息
-	 * 
+	 *
 	 * @param business
 	 * @param wi
 	 * @throws Exception

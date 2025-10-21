@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
+import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +58,9 @@ class ActionUpdateWithJobPath extends BaseAction {
 						updateData(business, workCompletedList.get(0), wi.getJsonElement(), paths);
 
 						wi.init(workCompletedList.get(0));
-						wi.setJsonElement(getDataWithPath(business, wi.getJob(), paths[0]));
+						JsonObject jsonObject = new JsonObject();
+						jsonObject.add(paths[0], getDataWithPath(business, wi.getJob(), paths[0]));
+						wi.setJsonElement(jsonObject);
 						createDataRecord(business, wi);
 					}
 				}
