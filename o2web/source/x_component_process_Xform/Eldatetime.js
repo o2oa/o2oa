@@ -95,6 +95,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.description) this.json.description = "";
         if (!this.json.arrowControl) this.json.arrowControl = false;
+        if (!this.json.popperClass) this.json.popperClass = "";
         this.json.pickerOptions = {
             firstDayOfWeek: this.json.firstDayOfWeek.toInt()
         }
@@ -106,6 +107,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         // if(this.json.selectableRange && this.json.selectableRange.code){
         //     this.json.pickerOptions.selectableRange = this.form.Macro.fire(this.json.selectableRange.code, this);
         // }
+        this._setPopperClass();
     },
     _createElementHtml: function() {
         var html = "<el-date-picker";
@@ -124,6 +126,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         html += " :format=\"format\"";
         html += " :picker-options=\"pickerOptions\"";
         html += " :arrow-control=\"arrowControl\"";
+        html += " :popper-class=\"popperClass\"";
         // html += " :picker-options=\"{" +
             // ":firstDayOfWeek=firstDayOfWeek," +
             // ":disabledDate=\"disabledDateFun\""+
