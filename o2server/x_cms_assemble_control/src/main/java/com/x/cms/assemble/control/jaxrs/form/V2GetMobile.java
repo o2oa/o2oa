@@ -1,17 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -27,6 +15,17 @@ import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.FormProperties;
 import com.x.cms.core.entity.element.Script;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class V2GetMobile extends BaseAction {
 
@@ -52,7 +51,7 @@ class V2GetMobile extends BaseAction {
 			final FormProperties properties = form.getProperties();
 			final List<String> list = new CopyOnWriteArrayList<>();
 			wo.setForm(new RelatedForm(form, form.getMobileDataOrData()));
-			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties,
+			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(form,
 					list);
 			CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
 					.getRelatedScriptFuture(properties, list);
@@ -70,14 +69,17 @@ class V2GetMobile extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture(FormProperties properties,
+	private CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture(Form form,
 			final List<String> list) {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedForm> map = new TreeMap<>();
-			if (ListTools.isNotEmpty(properties.getMobileRelatedFormList())) {
+			FormProperties properties = form.getProperties();
+			boolean hasMobile = BooleanUtils.isTrue(form.getHasMobile());
+			List<String> formList = hasMobile ? properties.getMobileRelatedFormList() : properties.getRelatedFormList();
+			if (ListTools.isNotEmpty(formList)) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business bus = new Business(emc);
-					for (String id : properties.getMobileRelatedFormList()) {
+					for (String id : formList) {
 						Form f = bus.getFormFactory().pick(id);
 						if (null != f) {
 							map.put(id, new RelatedForm(f, f.getMobileDataOrData()));
