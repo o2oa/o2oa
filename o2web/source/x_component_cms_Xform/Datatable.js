@@ -18,7 +18,8 @@ MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
         var originalData = this.getOriginalDataById();
         if( !originalData || !originalData.data){
             if( method === 'add' ){
-                this.saveFormData();
+                //this.saveFormData();
+                this.saveDataById();
             }
             return;
         }

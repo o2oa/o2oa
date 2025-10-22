@@ -1256,9 +1256,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this._setUnchangedLineMap(data, operation);
 
 			if( !operation ){
-				var obj = {};
-				obj[this.json.id] = data;
-				this.saveFullData(obj);
+				if( this.sectionBy ){
+					this.saveDataById(this.json.id + '..' + this.sectionBy, this._getBusinessData());
+				}else{
+					this.saveDataById();
+				}
 			}
 
 			this._setBusinessData(data);
@@ -1287,11 +1289,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				var d = this.getBusinessDataById();
 				d[ this.sectionBy ] = data || { data: [] };
 				this.setAllSectionData( d, fireChange , operation);
-
-				var obj = {};
-				obj[this.json.id] = {};
-				obj[this.json.id][this.sectionBy] = d[ this.sectionBy ];
-				this.saveFullData(obj);
 			}
 		},
 		/**
@@ -1337,6 +1334,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 
 			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
+
+			if( !operation ){
+				//this.saveFormData();
+				this.saveDataById();
+			}
 
 			this.lineList = [];
 			this.sectionlineList = [];
@@ -1839,7 +1841,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return this.json.id+i;
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
-			return;
 
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
@@ -1849,7 +1850,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var originalData = this.getOriginalDataById();
 			if( !originalData ){
 				if( method === 'add' ){
-					this.saveFormData();
+					//this.saveFormData();
+					this.saveDataById();
 				}
 				return;
 			}
@@ -1857,7 +1859,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var oData = !!sectionBy ? originalData[ sectionBy ] : originalData;
 			if( !oData ){
 				if(method === 'add'){
-					this.saveFormData();
+					//this.saveFormData();
+					this.saveDataById();
 				}
 				return;
 			}
@@ -2303,6 +2306,10 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 						}.bind(this))
 					}else if( json.type==="Datatemplate" ){
 						this.subDatatemplateModuleList.push(module);
+					}else if( module.field && json.type!=="Datatable" ){
+						module.addEvent("change", function(){
+							this.saveDataById();
+						});
 					}
 
 					this.form.modules.push(module);

@@ -12,7 +12,8 @@ MWF.xApplication.cms.Xform.Datatemplate = MWF.CMSDatatemplate =  new Class({
         var originalData = this.getOriginalDataById();
         if( !originalData ){
             if( method === 'add' ){
-                this.saveFormData();
+                //this.saveFormData();
+                this.saveDataById();
             }
             return;
         }

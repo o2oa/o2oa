@@ -1250,6 +1250,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return evdata;
     },
 
+
     getOriginalDataById: function(d, id){
         var data = d || this.form.businessData.originalData;
         var thisId = id || this.json.id;
@@ -1277,46 +1278,107 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
     },
-
-    _saveBusinessDataById: function (data){
-        this.workAction.saveData(function () {
-            this.businessData.originalData = null;
-            this.businessData.originalData = copyData;
-            if(callback)callback();
-        }.bind(this), null, this.form.businessData.work.id, data);
-    },
-    saveBusinessDataById: function(v, id){
+    setOriginalDataById: function(v, id){
         //对id类似于 xx..0..xx 的字段进行拆分
-        var data = this.form.businessData.data;
+        var data = this.form.businessData.originalData;
         var thisId = id || this.json.id;
-        var value;
         if(thisId.indexOf("..") < 1){
-            value = {};
-            value[thisId] = v;
-            this._saveBusinessDataById(value);
+            data[thisId] = v;
         }else{
-            var nextValue, nextId;
-
             var idList = thisId.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
+            //var data = this.form.businessData.data;
             var lastIndex = idList.length - 1;
 
-            value = o2.typeOf(idList[0]) === "number" ? [] : {};
             for(var i=0; i<=lastIndex; i++){
                 var id = idList[i];
                 if( !id && id !== 0 )return;
 
                 if( i === lastIndex ){
-                    nextValue[id] = v;
-                    this._saveBusinessDataById(value);
+                    data[id] = v;
                 }else{
-                    nextId = idList[i+1];
-                    nextValue[id] = o2.typeOf(nextId) === "number" ? [] : {};
-                    nextValue = nextValue[id];
+                    var nexId = idList[i+1];
+                    if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
+                        if( !data[id] && o2.typeOf(data[id]) !== "array" ){
+                            data[id] = [];
+                        }
+                        if( nexId > data[id].length ){ //超过了最大下标，丢弃
+                            return;
+                        }
+                    }else{ //下一个ID是字符串
+                        if( !data[id] || o2.typeOf(data[id]) !== "object"){
+                            data[id] = {};
+                        }
+                    }
+                    data = data[id];
                 }
             }
         }
+    },
+
+    saveDataById: function(id, data){
+
+        debugger;
+
+        var originalData = this.form.businessData.originalData || {};
+        var thisId = id || this.json.id;
+        if(o2.typeOf(data) === "null"){
+            data = this.getBusinessDataById();
+        }
+        if(thisId.indexOf("..") < 1){
+            this._saveDataWithPath([thisId], data);
+            originalData[thisId] = data;
+        }else{
+            var idList = thisId.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var lastIndex = idList.length - 1;
+            var preOriginalData;
+
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return;
+
+                var exist = originalData && originalData.hasOwnProperty(id);
+                if( !exist || i === 8 ) { //originalData不包含中间路径，且路径长多最多支持8，多余的获取后续整体数据进行保存
+                    var paths = idList.slice(0, i);
+                    var pathData = this.getBusinessDataById(null, paths.join('..'));
+                    this._saveDataWithPath(paths, pathData);
+                    !!preOriginalData && (preOriginalData[idList[i-1]] = pathData);
+                    return;
+                }else if( i === lastIndex ) {
+                    this._saveDataWithPath(idList, data);
+                    originalData[id] = data;
+                }else{
+                    preOriginalData = originalData;
+                    originalData = originalData[id];
+                }
+            }
+        }
+    },
+    _saveDataWithPath: function(paths, data){
+        var action = o2.Actions.load('x_processplatform_assemble_surface').DataAction;
+
+        paths = paths.map(p => p.toString());
+
+        if (paths.length > 8) {
+            throw new Error(`路径层级超过限制(8级)，当前: ${paths.length}`);
+        }
+
+        var hasPath = paths.length > 0;
+
+        var methodName = hasPath
+            ? `updateWithWorkPath${paths.length-1}`
+            : 'updateWithWork';
+
+        var args = [this.form.businessData.work.id];
+        if (hasPath) {
+            args = args.concat(paths);
+        }
+        args = args.concat([data, null, null, false]);
+
+        return action[methodName](...args);
     },
 
     setValue: function(){
