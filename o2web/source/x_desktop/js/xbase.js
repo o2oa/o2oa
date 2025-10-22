@@ -239,6 +239,39 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         }
     };
 
+    var _openPortal = function (appNames, options, statusObj) {
+        if (window.o2m) {
+            o2m.util.navigation.openInnerApp({
+                appKey : 'portal',
+                portalFlag: options.portalId,
+                portalPage: options.pageId,
+            });
+        } else if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+            const body = {
+                type: "navigation.openInnerApp",
+                data: {
+                    appKey: 'portal',
+                    portalFlag: options.portalId,
+                    portalPage: options.pageId,
+                }
+            }
+            window.flutter_inappwebview.callHandler('o2mUtil', JSON.stringify(body));
+        } else if (window.o2mUtil && window.o2mUtil.postMessage) {
+            const body = {
+                type: "navigation.openInnerApp",
+                data: {
+                    appKey: 'portal',
+                    portalFlag: options.portalId,
+                    portalPage: options.pageId,
+                }
+            }
+            window.o2mUtil.postMessage(JSON.stringify(body));
+        } else {
+            var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
+        }
+    };
+
     var _openApplicationMobile = function (appNames, options, statusObj) {
         switch (appNames) {
             case "process.Work":
@@ -258,6 +291,9 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 break;
             case "process.TaskCenter":
                 _openTaskCenter(appNames, options, statusObj);
+                break;
+            case "portal.Portal":
+                _openPortal(appNames, options, statusObj);
                 break;
             default:
                 var optionsStr, statusStr;
