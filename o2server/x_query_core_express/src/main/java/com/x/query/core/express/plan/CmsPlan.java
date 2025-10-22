@@ -1,6 +1,10 @@
 package com.x.query.core.express.plan;
 
+import com.x.base.core.entity.ApplicationBaseEntity;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.query.core.entity.ItemAccess;
 import java.util.ArrayList;
@@ -20,6 +24,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import javax.persistence.criteria.Subquery;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
@@ -99,6 +104,10 @@ public class CmsPlan extends Plan {
         this.selectList = list;
     }
 
+    Pair<List<String>, Long> listBundlePaging() throws Exception {
+        return Pair.of(this.listBundle(), 0L);
+    }
+
     @Override
     List<String> listBundle() throws Exception {
         // 根据where条件查询符合条件的所有文档ID列表
@@ -138,12 +147,12 @@ public class CmsPlan extends Plan {
      */
     private List<String> listBundleDocument() throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            EntityManager em = emc.get(Document.class);
+            EntityManager em = emc.get(ApplicationBaseEntity.class);
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<String> cq = cb.createQuery(String.class);
             Root<Document> root = cq.from(Document.class);
             cq.select(root.get(Document_.id))
-                    .where(this.where.documentPredicate(cb, root, this.runtime, this.filterList));
+                    .where(this.where.documentPredicate(cb, root, cq, this.runtime, this.filterList));
             List<String> docIds = em.createQuery(cq).getResultList();
             return docIds.stream().distinct().collect(Collectors.toList());
         }
@@ -277,14 +286,11 @@ public class CmsPlan extends Plan {
          * @throws Exception
          */
         private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root,
-                Runtime runtime,
-                List<FilterEntry> filterList) throws Exception {
+                CriteriaQuery<String> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception {
             List<Predicate> ps = new TreeList<>();
             ps.add(this.documentPredicateCreator(cb, root));
             ps.add(this.documentPredicateAppInfo(cb, root));
             ps.add(this.documentPredicateDate(cb, root));
-            ps.add(this.documentPredicateFilterOr(cb, root, runtime, filterList));
-            ps.add(this.documentPredicateFilterAnd(cb, root, runtime, filterList));
             ps.add(this.documentPredicateDraft(cb, root));
 
             Predicate predicate = this.documentPredicateTypeScope(cb, root);
@@ -296,17 +302,37 @@ public class CmsPlan extends Plan {
             if (ps.isEmpty()) {
                 throw new Exception("where is empty.");
             }
-            cb.and(ps.toArray(new Predicate[]{}));
             return cb.and(ps.toArray(new Predicate[]{}));
+        }
+
+        private Predicate assembleFilterPredicate(CriteriaBuilder cb, Root<? extends JpaObject> root,
+                CriteriaQuery<String> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception{
+            List<Predicate> existsPredicates = new ArrayList<>();
+            for (FilterEntry f : filterList) {
+                if(StringUtils.isEmpty(f.path)){
+                    continue;
+                }
+                Subquery<Long> subquery = cq.subquery(Long.class);
+                Root<Item> itemRoot = subquery.from(Item.class);
+                Predicate subPredicate = cb.equal(itemRoot.get(Item_.bundle), root.get(JpaObject.id_FIELDNAME));
+                subPredicate = f.toPredicate(cb, itemRoot, runtime, subPredicate);
+                subquery.select(cb.literal(1L)).where(subPredicate);
+                Predicate existsP = cb.exists(subquery);
+                if (Comparison.isNotEquals(f.comparison)) {
+                    existsP = cb.not(existsP);
+                }
+                existsPredicates.add(existsP);
+            }
+            return null;
         }
 
         private Predicate documentPredicateAppInfo(CriteriaBuilder cb, Root<Document> root)
                 throws Exception {
-            List<String> appInfoIds = ListTools.extractField(this.appInfoList, AppInfo.id_FIELDNAME,
+            List<String> appInfoIds = ListTools.extractField(this.appInfoList, JpaObject.id_FIELDNAME,
                     String.class, true,
                     true);
             List<String> categoryInfoIds = ListTools.extractField(this.categoryInfoList,
-                    CategoryInfo.id_FIELDNAME,
+                    JpaObject.id_FIELDNAME,
                     String.class, true, true);
             appInfoIds = appInfoIds.stream().filter(StringUtils::isNotEmpty)
                     .collect(Collectors.toList());
@@ -333,8 +359,7 @@ public class CmsPlan extends Plan {
             return p;
         }
 
-        private Predicate documentPredicateCreator(CriteriaBuilder cb, Root<Document> root)
-                throws Exception {
+        private Predicate documentPredicateCreator(CriteriaBuilder cb, Root<Document> root) {
             List<String> creatorUnits = ListTools.trim(this.creatorUnitList, true, true);
             List<String> creatorPersons = ListTools.trim(this.creatorPersonList, true, true);
             List<String> creatorIdentitys = ListTools.trim(this.creatorIdentityList, true, true);
@@ -369,14 +394,13 @@ public class CmsPlan extends Plan {
             return p;
         }
 
-        private Predicate documentPredicateDate(CriteriaBuilder cb, Root<Document> root)
-                throws Exception {
+        private Predicate documentPredicateDate(CriteriaBuilder cb, Root<Document> root) {
             if (null == this.dateRange || (!this.dateRange.available())) {
                 return null;
             }
             Expression<Date> var1 = root.get(Document_.publishTime);
             if (BooleanUtils.isTrue(this.draft)) {
-                var1 = root.get(Document_.updateTime);
+                var1 = root.get(JpaObject_.createTime);
             }
             if (null == this.dateRange.start) {
                 return cb.lessThanOrEqualTo(var1, this.dateRange.completed);
@@ -401,83 +425,6 @@ public class CmsPlan extends Plan {
                 return cb.equal(root.get(Document_.docStatus), "published");
             }
             return null;
-        }
-
-        private Predicate documentPredicateFilterOr(CriteriaBuilder cb, Root<Document> root,
-                Runtime runtime,
-                List<FilterEntry> filterList) throws Exception {
-            boolean flag = true;
-            Predicate p = cb.disjunction();
-            List<FilterEntry> list = new ArrayList<>();
-            list.addAll(filterList);
-            if (runtime.filterList != null) {
-                list.addAll(runtime.filterList);
-            }
-            for (FilterEntry filterEntry : list) {
-                if (filterEntry.path.indexOf("(") > -1 && filterEntry.path.indexOf(")") > -1) {
-                    String path = StringUtils.substringBetween(filterEntry.path, "(", ")").trim();
-                    if ("readPersonList".equals(path)) {
-                        flag = false;
-                        p = cb.or(p, cb.isMember("所有人", root.get(Document_.readPersonList)));
-                        p = cb.or(p,
-                                cb.isMember(runtime.person, root.get(Document_.readPersonList)));
-                        if (runtime.person.indexOf("@") > -1) {
-                            p = cb.or(p,
-                                    cb.isMember(StringUtils.substringAfter(runtime.person, "@"),
-                                            root.get(Document_.readPersonList)));
-                        }
-                    } else if ("readUnitList".equals(path)) {
-                        flag = false;
-                        if (ListTools.isNotEmpty(runtime.unitAllList)) {
-                            p = cb.or(p, root.get(Document_.readUnitList).in(runtime.unitAllList));
-                        }
-                    } else if ("readGroupList".equals(path)) {
-                        flag = false;
-                        if (ListTools.isNotEmpty(runtime.groupList)) {
-                            p = cb.or(p, root.get(Document_.readGroupList).in(runtime.groupList));
-                        }
-                    } else {
-                        if (!StringUtils.equals("and", filterEntry.logic)) {
-                            Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime,
-                                    path);
-                            flag = false;
-                            p = cb.or(p, fp);
-                        }
-                    }
-                }
-            }
-            if (flag) {
-                return null;
-            }
-            return p;
-        }
-
-        private Predicate documentPredicateFilterAnd(CriteriaBuilder cb, Root<Document> root,
-                Runtime runtime,
-                List<FilterEntry> filterList) throws Exception {
-            boolean flag = true;
-            Predicate p = cb.conjunction();
-            List<FilterEntry> list = new ArrayList<>();
-            list.addAll(filterList);
-            if (runtime.filterList != null) {
-                list.addAll(runtime.filterList);
-            }
-            for (FilterEntry filterEntry : list) {
-                if (filterEntry.path.indexOf("(") > -1 && filterEntry.path.indexOf(")") > -1) {
-                    String path = StringUtils.substringBetween(filterEntry.path, "(", ")").trim();
-                    if (!"readPersonList".equals(path) && !"readUnitList".equals(path)
-                            && (!"readGroupList".equals(path)) && (StringUtils.equals("and",
-                            filterEntry.logic))) {
-                        Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime, path);
-                        flag = false;
-                        p = cb.and(p, fp);
-                    }
-                }
-            }
-            if (flag) {
-                return null;
-            }
-            return p;
         }
     }
 }
