@@ -92,11 +92,15 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
             this._checkMobileTr(line.node, ths);
         });
 
+        debugger;
+
         //插入行后处理
         this.addEvent("addLine",(o)=>{
             const ths = this._getHeadThs();
             this._checkMobileTr(o.line.node, ths);
-            o.line.node.scrollIntoView({behavior: 'smooth'});
+            o.line.node.scrollIntoViewIfNeeded ?
+                o.line.node.scrollIntoViewIfNeeded(false) :
+                o.line.node.scrollIntoView({behavior: 'smooth', block: "nearest", inline: "nearest"});
         });
         this.addEvent("editLine",(line)=>{
             const ths = this._getHeadThs();
@@ -108,7 +112,7 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
         });
         this.addEvent("change",(o)=>{
             if (o.type==='move'){
-                o.line.node.scrollIntoView({behavior: 'smooth'});
+                o.line.node.scrollIntoView({behavior: 'smooth', block: "nearest", inline: "nearest"});
                 o.line.node.addClass('mwf_move_line');
                 window.setTimeout(() => {
                     o.line.node.removeClass('mwf_move_line');
@@ -119,7 +123,7 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
         //验证后处理
         this.addEvent("validationLine",(line, flag)=>{
             if (!flag) {
-                if (!line.node.isIntoView()) line.node.scrollIntoView({behavior: 'smooth'});
+                if (!line.node.isIntoView()) line.node.scrollIntoView({behavior: 'smooth', block: "nearest", inline: "nearest"});
             }
         });
         
