@@ -1318,17 +1318,22 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     saveDataById: function(id, data){
-
-        debugger;
-
+        var appName = this.form.app.options.name;
+        if( !['process.Work', 'cms.Document'].includes(appName) ){
+            return;
+        }
+        if(appName === 'process.Work' && this.form.isDraftWork()){
+            return;
+        }
         var originalData = this.form.businessData.originalData || {};
         var thisId = id || this.json.id;
         if(o2.typeOf(data) === "null"){
             data = this.getBusinessDataById();
         }
         if(thisId.indexOf("..") < 1){
-            this._saveDataWithPath([thisId], data);
-            originalData[thisId] = data;
+            this._saveDataByPath([thisId], data, ()=>{
+                originalData[thisId] = data;
+            });
         }else{
             var idList = thisId.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
@@ -1344,12 +1349,14 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !exist || i === 8 ) { //originalData不包含中间路径，且路径长多最多支持8，多余的获取后续整体数据进行保存
                     var paths = idList.slice(0, i);
                     var pathData = this.getBusinessDataById(null, paths.join('..'));
-                    this._saveDataWithPath(paths, pathData);
-                    !!preOriginalData && (preOriginalData[idList[i-1]] = pathData);
+                    this._saveDataByPath(paths, pathData, ()=>{
+                        !!preOriginalData && (preOriginalData[idList[i-1]] = pathData);
+                    });
                     return;
                 }else if( i === lastIndex ) {
-                    this._saveDataWithPath(idList, data);
-                    originalData[id] = data;
+                    this._saveDataByPath(idList, data, ()=>{
+                        originalData[id] = data;
+                    });
                 }else{
                     preOriginalData = originalData;
                     originalData = originalData[id];
@@ -1357,26 +1364,32 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
     },
-    _saveDataWithPath: function(paths, data){
-        var action = o2.Actions.load('x_processplatform_assemble_surface').DataAction;
-
-        paths = paths.map(p => p.toString());
-
+    _saveDataByPath: function(paths, data, success){
         if (paths.length > 8) {
             throw new Error(`路径层级超过限制(8级)，当前: ${paths.length}`);
         }
-
         var hasPath = paths.length > 0;
+        var action, methodName, args;
+        switch (this.form.app.options.name){
+            case 'process.Work':
+                action = o2.Actions.load('x_processplatform_assemble_surface').DataAction;
+                methodName = hasPath ? `updateWithWorkPath${paths.length-1}` : 'updateWithWork';
+                args = [this.form.businessData.work.id];
+                break;
+            case 'cms.Document':
+                action = o2.Actions.load('x_cms_assemble_control').DataAction;
+                methodName = hasPath ? `updateWithDocumentWithPath${paths.length-1}` : 'updateWithDocument';
+                args = [this.form.businessData.document.id];
+                break;
+            default:
+                return;
+        }
+        paths = paths.map(p => p.toString());
 
-        var methodName = hasPath
-            ? `updateWithWorkPath${paths.length-1}`
-            : 'updateWithWork';
-
-        var args = [this.form.businessData.work.id];
         if (hasPath) {
             args = args.concat(paths);
         }
-        args = args.concat([data, null, null, false]);
+        args = args.concat([data, success, null, false]);
 
         return action[methodName](...args);
     },

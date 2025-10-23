@@ -161,7 +161,6 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
                     var tmps = item.split("|");
                     var text = tmps[0];
                     var value = tmps[1] || text;
-                    var value = tmps[1] || text;
 
                     var radio = new Element(this.options.itemTag, {
                         "type": "radio",
@@ -208,7 +207,7 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
     },
 
     getText: function(){
-        return this.node.text;
+        return this.node.text || '';
     },
     getInputData: function(){
         return this.node.value;

@@ -1841,7 +1841,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return this.json.id+i;
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
-
+			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork()){
+				return;
+			}
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
 			}
@@ -1873,20 +1875,20 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					toIndex: toIndex,
 					data: data,
 					path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' )
-				}, null, null, false
+				}, ()=>{
+					switch (type){
+						case 'addLine':
+							oData.push(Object.clone(data));
+							break;
+						case 'insertLine':
+							oData.splice(index, 0, Object.clone(data));
+							break;
+						case 'delete':
+							oData.splice(index, 1);
+							break;
+					}
+				}, null, false
 			);
-
-			switch (type){
-				case 'addLine':
-					oData.push(Object.clone(data));
-					break;
-				case 'insertLine':
-					oData.splice(index, 0, Object.clone(data));
-					break;
-				case 'delete':
-					oData.splice(index, 1);
-					break;
-			}
 		}
 	});
 

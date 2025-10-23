@@ -1691,7 +1691,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
 			//return;
-
+			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork()){
+				return;
+			}
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
 			}
@@ -1726,26 +1728,26 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					data: data,
 					path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' ) +'.data'
 				},
-				null, null, false
+				()=>{
+					switch (type){
+						case 'addLine':
+							oData.push(Object.clone(data));
+							break;
+						case 'insertLine':
+							oData.splice(index, 0, Object.clone(data));
+							break;
+						case 'delete':
+							oData.splice(index, 1);
+							break;
+						case 'move':
+							var upData = oData[toIndex];
+							var curData = oData[index];
+							oData[index] = upData;
+							oData[toIndex] = curData;
+							break;
+					}
+				}, null, false
 			);
-
-			switch (type){
-				case 'addLine':
-					oData.push(Object.clone(data));
-					break;
-				case 'insertLine':
-					oData.splice(index, 0, Object.clone(data));
-					break;
-				case 'delete':
-					oData.splice(index, 1);
-					break;
-				case 'move':
-					var upData = oData[toIndex];
-					var curData = oData[index];
-					oData[index] = upData;
-					oData[toIndex] = curData;
-					break;
-			}
 		},
 		/**
 		 * @summary 当数据表格设置为区段合并展现、区段合并编辑时，可以使用本方法设置所有区段数据。

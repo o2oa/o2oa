@@ -8,8 +8,6 @@ MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
         this.form.saveFormData();
     },
     saveArrayData: function(type, index, toIndex, data){
-        return;
-
         if( this.isMergeRead ){ //合并且只读，不处理
             return;
         }
@@ -33,26 +31,26 @@ MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
                 data: data,
                 path: this.json.id.split('..').join('.') +'.data'
             },
-            null, null, false
+            ()=>{
+                switch (type){
+                    case 'addLine':
+                        originalData.data.push(Object.clone(data));
+                        break;
+                    case 'insertLine':
+                        originalData.data.splice(index, 0, Object.clone(data));
+                        break;
+                    case 'delete':
+                        originalData.data.splice(index, 1);
+                        break;
+                    case 'move':
+                        var upData = originalData.data[toIndex];
+                        var curData = originalData.data[index];
+                        originalData.data[index] = upData;
+                        originalData.data[toIndex] = curData;
+                        break;
+                }
+            }, null, false
         );
-
-        switch (type){
-            case 'addLine':
-                originalData.data.push(Object.clone(data));
-                break;
-            case 'insertLine':
-                originalData.data.splice(index, 0, Object.clone(data));
-                break;
-            case 'delete':
-                originalData.data.splice(index, 1);
-                break;
-            case 'move':
-                var upData = originalData.data[toIndex];
-                var curData = originalData.data[index];
-                originalData.data[index] = upData;
-                originalData.data[toIndex] = curData;
-                break;
-        }
     },
     validationConfigItem: function(routeName, data){
         var flag = (data.status=="all") ? true: (routeName == "publ" || routeName == "publish");
