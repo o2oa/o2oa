@@ -1263,4 +1263,7 @@
     .contentPageArea {
         height: 1.25rem;
     }
+    .contentBottom{
+        display: none;
+    }
 }
