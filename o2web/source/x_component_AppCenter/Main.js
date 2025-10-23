@@ -20,26 +20,34 @@ MWF.xApplication.AppCenter.Main = new Class({
     loadApplication: function(callback){
         this.components = [];
         //this.node = new Element("div", {"styles": {"width": "100%", "height": "100%", "overflow": "hidden"}}).inject(this.content);
-        this.loadTitle();
+        o2.Actions.load('x_program_center').ConfigOpenAction.getDisableExportEnable().then((json)=>{
+            this.cannotExport = (json.data && json.data.value);
 
-        this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
-        this.contentModuleArea = new Element("div", {"styles": this.css.contentModuleArea}).inject(this.contentNode);
-        this.setContentSize();
-        this.addEvent("resize", this.setContentSize);
+            this.loadTitle();
 
-        this.loadModuleContent();
+            this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
+            this.contentModuleArea = new Element("div", {"styles": this.css.contentModuleArea}).inject(this.contentNode);
+            this.setContentSize();
+            this.addEvent("resize", this.setContentSize);
+
+            this.loadModuleContent();
+        });
+
+        
     },
     loadTitle: function(){
         this.titleBar = new Element("div", {"styles": this.css.titleBar}).inject(this.content);
 
         if (MWF.AC.isProcessPlatformCreator()){
-            this.createApplicationNode = new Element("div", {
-                "styles": this.css.createApplicationNode,
-                "title": this.lp.export
-            }).inject(this.titleBar);
-            this.createApplicationNode.addEvent("click", function(){
-                this.createApplication();
-            }.bind(this));
+            if (!this.cannotExport){
+                this.createApplicationNode = new Element("div", {
+                    "styles": this.css.createApplicationNode,
+                    "title": this.lp.export
+                }).inject(this.titleBar);
+                this.createApplicationNode.addEvent("click", function(){
+                    this.createApplication();
+                }.bind(this));
+            }
 
             this.importApplicationNode = new Element("div", {
                 "styles": this.css.setupApplicationNode,
@@ -48,8 +56,6 @@ MWF.xApplication.AppCenter.Main = new Class({
             this.importApplicationNode.addEvent("click", function(){
                 this.implodeLocal();
             }.bind(this));
-
-
         }
         this.taskTitleTextNode = new Element("div", {"styles": this.css.titleTextNode,"text": this.lp.title}).inject(this.titleBar);
     },
@@ -207,6 +213,12 @@ MWF.xApplication.AppCenter.Module = new Class({
         this.viewActionNode.set("text", this.lp.outputView);
         this.viewActionNode.setStyle("margin-left", "10px");
         this.loadEvent();
+
+        if (this.app.cannotExport){
+            this.actionNode.remove();
+            this.viewActionNode.remove();
+            this.deleteActionNode.setStyle("margin-left", "0");
+        }
     },
     loadEvent: function(){
         this.actionNode.addEvent("click", function(e){
