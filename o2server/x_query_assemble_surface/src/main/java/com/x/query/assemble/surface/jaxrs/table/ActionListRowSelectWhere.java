@@ -4,12 +4,14 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dynamic.DynamicEntity;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -27,6 +29,9 @@ class ActionListRowSelectWhere extends BaseAction {
 
 		LOGGER.debug("execute:{}, table:{}, where:{}.", effectivePerson::getDistinguishedName, () -> tableFlag,
 				() -> where);
+		if (BooleanUtils.isNotTrue(Config.general().getTableRowSelectEnable())) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

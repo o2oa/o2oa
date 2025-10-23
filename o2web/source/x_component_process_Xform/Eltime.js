@@ -57,6 +57,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
         if (!this.json.description) this.json.description = "";
         if (!this.json.arrowControl) this.json.arrowControl = false;
+        if (!this.json.popperClass) this.json.popperClass = "";
         if (this.json.timeSelectType === "select"){
             this.json.pickerOptions = {
                 "start": this.json.start,
@@ -71,6 +72,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
                 this.json.pickerOptions.selectableRange = this.form.Macro.fire(this.json.selectableRange.code, this);
             }
         }
+        this._setPopperClass();
     },
     _createElementHtml: function() {
         if (this.json.timeSelectType === "select"){
@@ -92,6 +94,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
 		html += " :clearable=\"clearable\"";
         html += " :size=\"size\"";
         html += " :prefix-icon=\"prefixIcon\"";
+        html += " :popper-class=\"popperClass\"";
 
         this.options.elEvents.forEach(function(k){
             html += " @"+k+"=\"$loadElEvent_"+k.camelCase()+"\"";

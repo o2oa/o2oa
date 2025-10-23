@@ -1980,11 +1980,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }).inject(node);
                 if (keys.length){
                     keys.each(function(k){
-                        new Element("option", {
-                            "text": styles[k].name,
-                            "value": k,
-                            "selected": (this.data.templateType==k)
-                        }).inject(node)
+                        if( k !== 'default' ){
+                            new Element("option", {
+                                "text": styles[k].name,
+                                "value": k,
+                                "selected": (this.data.templateType==k)
+                            }).inject(node);
+                        }
                     }.bind(this));
                 }else{
                     node.getParent("tr").setStyle("display", "none");

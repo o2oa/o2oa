@@ -105,7 +105,7 @@
      * @param {String} name 事件名称 (reload, workClose, documentClose)
      * @param {Function} events 执行方法
      * @example
-     * var reloadFun = function(){
+     * const reloadFun = function(){
      *     //执行业务
      * }
      * o2m.addEvent("reload", reloadFun ); //添加事件
@@ -145,7 +145,7 @@
         switch (name) {
             case "reload":
                 events.map((f) => {
-                    var index = o2m.events.onReload.indexOf(f);
+                    const index = o2m.events.onReload.indexOf(f);
                     if (index > -1) {
                         o2m.events.onReload.splice(index, 1);
                     }
@@ -153,7 +153,7 @@
                 break;
             case "workClose":
                 events.map((f) => {
-                    var index = o2m.events.onWorkClose.indexOf(f);
+                    const index = o2m.events.onWorkClose.indexOf(f);
                     if (index > -1) {
                         o2m.events.onWorkClose.splice(index, 1);
                     }
@@ -161,7 +161,7 @@
                 break;
             case "documentClose":
                 events.map((f) => {
-                    var index = o2m.events.onDocumentClose.indexOf(f);
+                    const index = o2m.events.onDocumentClose.indexOf(f);
                     if (index > -1) {
                         o2m.events.onDocumentClose.splice(index, 1);
                     }
@@ -169,6 +169,39 @@
                 break;
         }
     };
+
+    /**
+     * 门户加载完成执行
+     * @method portalLoaded
+     * @memberOf o2m
+     * @static
+     * @param {String} callback 操作按钮点击执行函数
+     * @param {String} iconClassName 操作按钮 icon className
+     * @example
+     * window.o2m.portalLoaded('callbackName'); //添加操作按钮
+     */
+    this.o2m.portalLoaded = function (callback, iconClassName) {
+        if (!callback) {
+            return;
+        }
+        if (!window.o2f) {
+            console.error('没有正确加载 o2f , 确定是在 App 环境中吗？')
+            return;
+        }
+        window.o2f.addReady(()=> {
+            const body = {
+                type: 'portalLoaded',
+                data: {
+                    rightActionCallback: callback
+                }
+            };
+            if (iconClassName) {
+                body.data.rightActionIcon = iconClassName;
+            }
+            window.o2android.postMessage(JSON.stringify(body));
+            console.debug('portalLoaded loaded =============== ');
+        });
+    }
 
     /** ***** BEGIN NOTIFICATION BLOCK *****
      @ignore
@@ -185,14 +218,14 @@
 
     this.o2m.notification = {};
 
-    var _notification_post = function (body, onFail) {
+    const _notification_post = function (body, onFail) {
         if (body == null) {
             if (onFail && typeof onFail === "function") {
                 onFail("参数异常！");
                 return
             }
         }
-        var message = JSON.stringify(body);
+        const message = JSON.stringify(body);
         if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
             window.flutter_inappwebview.callHandler('o2mNotification', message);
         } else if (window.o2mNotification && window.o2mNotification.postMessage) {
@@ -202,7 +235,6 @@
         } else {
             if (onFail && typeof onFail === "function") {
                 onFail("请在O2OA移动端使用！");
-                return
             }
         }
     };
@@ -211,12 +243,12 @@
     this.o2m.notification.alertSuccess = function () {
         console.log("notification alert back");
     };
-    var _o2m_n_alert = function (alert) {
-        var message = alert && alert.message ? alert.message : "";
-        var title = alert && alert.title ? alert.title : "";
-        var buttonName = alert && alert.buttonName ? alert.buttonName : "";
-        var onSuccess = alert && alert.onSuccess ? alert.onSuccess : null;
-        var onFail = alert && alert.onFail ? alert.onFail : null;
+    const _o2m_n_alert = function (alert) {
+        const message = alert && alert.message ? alert.message : "";
+        const title = alert && alert.title ? alert.title : "";
+        const buttonName = alert && alert.buttonName ? alert.buttonName : "";
+        const onSuccess = alert && alert.onSuccess ? alert.onSuccess : null;
+        const onFail = alert && alert.onFail ? alert.onFail : null;
         if (message === "") {
             if (typeof onFail === "function") {
                 onFail("消息内容不能为空！");
@@ -226,7 +258,7 @@
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.alertSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "alert",
             callback: "o2m.notification.alertSuccess",
             data: {
@@ -271,12 +303,12 @@
     this.o2m.notification.confirmSuccess = function (index) {
         console.log("notification confirm back, click button index: " + index);
     };
-    var _o2m_n_confirm = function (c) {
-        var buttonLabels = c && c.buttonLabels ? c.buttonLabels : ["确定", "取消"];
-        var message = c && c.message ? c.message : "";
-        var title = c && c.title ? c.title : "";
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_n_confirm = function (c) {
+        const buttonLabels = c && c.buttonLabels ? c.buttonLabels : ["确定", "取消"];
+        const message = c && c.message ? c.message : "";
+        const title = c && c.title ? c.title : "";
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (message === "") {
             if (typeof onFail === "function") {
                 onFail("消息内容message不能为空！");
@@ -292,7 +324,7 @@
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.confirmSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "confirm",
             callback: "o2m.notification.confirmSuccess",
             data: {
@@ -340,12 +372,12 @@
     this.o2m.notification.promptSuccess = function (result) {
         console.log("notification prompt back, click button result: " + result);
     };
-    var _o2m_n_prompt = function (c) {
-        var buttonLabels = c && c.buttonLabels ? c.buttonLabels : ["确定", "取消"];
-        var message = c && c.message ? c.message : "";
-        var title = c && c.title ? c.title : "";
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_n_prompt = function (c) {
+        const buttonLabels = c && c.buttonLabels ? c.buttonLabels : ["确定", "取消"];
+        const message = c && c.message ? c.message : "";
+        const title = c && c.title ? c.title : "";
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (message === "") {
             if (typeof onFail === "function") {
                 onFail("消息内容message不能为空！");
@@ -361,7 +393,7 @@
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.promptSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "prompt",
             callback: "o2m.notification.promptSuccess",
             data: {
@@ -413,15 +445,15 @@
     this.o2m.notification.vibrateSuccess = function () {
         console.log("notification vibrate back, click button");
     };
-    var _o2m_n_vibrate = function (c) {
-        var duration = c && c.duration ? c.duration : 300;
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_n_vibrate = function (c) {
+        const duration = c && c.duration ? c.duration : 300;
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
 
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.vibrateSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "vibrate",
             callback: "o2m.notification.vibrateSuccess",
             data: {
@@ -458,11 +490,11 @@
     this.o2m.notification.toastSuccess = function () {
         console.log("notification toast back, click button");
     };
-    var _o2m_n_toast = function (c) {
-        var duration = c && c.duration ? c.duration : 300;
-        var message = c && c.message ? c.message : "";
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_n_toast = function (c) {
+        const duration = c && c.duration ? c.duration : 300;
+        const message = c && c.message ? c.message : "";
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (message === "") {
             if (typeof onFail === "function") {
                 onFail("消息内容message不能为空！");
@@ -472,7 +504,7 @@
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.toastSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "toast",
             callback: "o2m.notification.toastSuccess",
             data: {
@@ -510,13 +542,13 @@
     this.o2m.notification.actionSheetSuccess = function (buttonIndex) {
         console.log("notification actionSheet back, click button:" + buttonIndex);
     };
-    var _o2m_n_actionSheet = function (c) {
-        var title = c && c.title ? c.title : "";
-        var cancelButton = c && c.cancelButton ? c.cancelButton : "取消";
-        var otherButtons = c && c.otherButtons ? c.otherButtons : [];
-        var tooManyButtons = c && c.tooManyButtons ? c.tooManyButtons : false;
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_n_actionSheet = function (c) {
+        const title = c && c.title ? c.title : "";
+        const cancelButton = c && c.cancelButton ? c.cancelButton : "取消";
+        const otherButtons = c && c.otherButtons ? c.otherButtons : [];
+        const tooManyButtons = c && c.tooManyButtons ? c.tooManyButtons : false;
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (otherButtons.length < 1) {
             if (typeof onFail === "function") {
                 onFail("其他按钮列表不能为空！");
@@ -526,7 +558,7 @@
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.actionSheetSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "actionSheet",
             callback: "o2m.notification.actionSheetSuccess",
             data: {
@@ -574,14 +606,14 @@
     this.o2m.notification.showLoadingSuccess = function () {
         console.log("notification showLoading back");
     };
-    var _o2m_n_showLoading = function (c) {
-        var text = c && c.text ? c.text : "";
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_n_showLoading = function (c) {
+        const text = c && c.text ? c.text : "";
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.showLoadingSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "showLoading",
             callback: "o2m.notification.showLoadingSuccess",
             data: {
@@ -621,13 +653,13 @@
     this.o2m.notification.hideLoadingSuccess = function () {
         console.log("notification hideLoading back");
     };
-    var _o2m_n_hideLoading = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_n_hideLoading = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.notification.hideLoadingSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "hideLoading",
             callback: "o2m.notification.hideLoadingSuccess",
             data: {}
@@ -691,14 +723,14 @@
         navigation: {}
     };
 
-    var _util_post = function (body, onFail) {
+    const _util_post = function (body, onFail) {
         if (body == null) {
             if (onFail && typeof onFail === "function") {
                 onFail("参数异常！");
                 return;
             }
         }
-        var message = JSON.stringify(body);
+        const message = JSON.stringify(body);
         if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
             window.flutter_inappwebview.callHandler('o2mUtil', message);
         } else if (window.o2mUtil && window.o2mUtil.postMessage) {
@@ -716,14 +748,14 @@
     this.o2m.util.date.datePickerSuccess = function (result) {
         console.log("util date datePicker back, result:" + result);
     };
-    var _o2m_u_date_datePicker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var value = c && c.value ? c.value : "";
+    const _o2m_u_date_datePicker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const value = c && c.value ? c.value : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.date.datePickerSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "date.datePicker",
             callback: "o2m.util.date.datePickerSuccess",
             data: {
@@ -767,14 +799,14 @@
     this.o2m.util.date.timePickerSuccess = function (result) {
         console.log("util date timePicker back, result:" + result);
     };
-    var _o2m_u_date_timePicker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var value = c && c.value ? c.value : "";
+    const _o2m_u_date_timePicker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const value = c && c.value ? c.value : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.date.timePickerSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "date.timePicker",
             callback: "o2m.util.date.timePickerSuccess",
             data: {
@@ -818,14 +850,14 @@
     this.o2m.util.date.dateTimePickerSuccess = function (result) {
         console.log("util date dateTimePicker back, result:" + result);
     };
-    var _o2m_u_date_dateTimePicker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var value = c && c.value ? c.value : "";
+    const _o2m_u_date_dateTimePicker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const value = c && c.value ? c.value : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.date.dateTimePickerSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "date.dateTimePicker",
             callback: "o2m.util.date.dateTimePickerSuccess",
             data: {
@@ -869,14 +901,14 @@
     this.o2m.util.calendar.chooseOneDaySuccess = function (result) {
         console.log("util calendar chooseOneDay back, result:" + result);
     };
-    var _o2m_u_calendar_chooseOneDay = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var value = c && c.value ? c.value : "";
+    const _o2m_u_calendar_chooseOneDay = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const value = c && c.value ? c.value : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.calendar.chooseOneDaySuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "calendar.chooseOneDay",
             callback: "o2m.util.calendar.chooseOneDaySuccess",
             data: {
@@ -920,14 +952,14 @@
     this.o2m.util.calendar.chooseDateTimeSuccess = function (result) {
         console.log("util calendar chooseDateTime back, result:" + result);
     };
-    var _o2m_u_calendar_chooseDateTime = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var value = c && c.value ? c.value : "";
+    const _o2m_u_calendar_chooseDateTime = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const value = c && c.value ? c.value : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.calendar.chooseDateTimeSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "calendar.chooseDateTime",
             callback: "o2m.util.calendar.chooseDateTimeSuccess",
             data: {
@@ -971,15 +1003,15 @@
     this.o2m.util.calendar.chooseIntervalSuccess = function (result) {
         console.log("util calendar chooseInterval back, result:" + result);
     };
-    var _o2m_u_calendar_chooseInterval = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var startDate = c && c.startDate ? c.startDate : "";
-        var endDate = c && c.endDate ? c.endDate : "";
+    const _o2m_u_calendar_chooseInterval = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const startDate = c && c.startDate ? c.startDate : "";
+        const endDate = c && c.endDate ? c.endDate : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.calendar.chooseIntervalSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "calendar.chooseInterval",
             callback: "o2m.util.calendar.chooseIntervalSuccess",
             data: {
@@ -1027,13 +1059,13 @@
     this.o2m.util.device.getPhoneInfoSuccess = function (result) {
         console.log("util calendar chooseInterval back, result:" + result);
     };
-    var _o2m_u_device_getPhoneInfo = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_device_getPhoneInfo = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.device.getPhoneInfoSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "device.getPhoneInfo",
             callback: "o2m.util.device.getPhoneInfoSuccess",
             data: {}
@@ -1074,13 +1106,13 @@
     this.o2m.util.device.rotateSuccess = function (result) {
         console.log("util device rotate back, result:" + result);
     };
-    var _o2m_u_device_rotate = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_device_rotate = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.device.rotateSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "device.rotate",
             callback: "o2m.util.device.rotateSuccess",
             data: {}
@@ -1112,13 +1144,13 @@
     this.o2m.util.device.scanSuccess = function (result) {
         console.log("util device scan back, result:" + result);
     };
-    var _o2m_u_device_scan = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_device_scan = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.device.scanSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "device.scan",
             callback: "o2m.util.device.scanSuccess",
             data: {}
@@ -1151,13 +1183,13 @@
     this.o2m.util.device.locationSuccess = function (result) {
         console.log("util device location back, result:" + result);
     };
-    var _o2m_u_device_location = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_device_location = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.device.locationSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "device.location",
             callback: "o2m.util.device.locationSuccess",
             data: {}
@@ -1218,12 +1250,12 @@
      *});
      */
     this.o2m.util.device.localAuth = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.device.localAuthSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "device.localAuth",
             callback: "o2m.util.device.localAuthSuccess",
             data: {}
@@ -1236,14 +1268,14 @@
     this.o2m.util.navigation.setTitleSuccess = function (result) {
         console.log("util calendar chooseInterval back, result:" + result);
     };
-    var _o2m_u_navigation_setTitle = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var title = c && c.title ? c.title : "";
+    const _o2m_u_navigation_setTitle = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const title = c && c.title ? c.title : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.setTitleSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "navigation.setTitle",
             callback: "o2m.util.navigation.setTitleSuccess",
             data: {
@@ -1279,13 +1311,13 @@
     this.o2m.util.navigation.closeSuccess = function (result) {
         console.log("util calendar chooseInterval back, result:" + result);
     };
-    var _o2m_u_navigation_close = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_navigation_close = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.closeSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "navigation.close",
             callback: "o2m.util.navigation.closeSuccess",
             data: {}
@@ -1308,13 +1340,13 @@
     this.o2m.util.navigation.goBackSuccess = function (result) {
         console.log("util calendar chooseInterval back, result:" + result);
     };
-    var _o2m_u_navigation_goBack = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_navigation_goBack = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.goBackSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "navigation.goBack",
             callback: "o2m.util.navigation.goBackSuccess",
             data: {}
@@ -1337,18 +1369,18 @@
     this.o2m.util.navigation.openInnerAppSuccess = function (result) {
         console.log("util navigation openInnerApp back, result:" + result);
     };
-    var _o2m_u_navigation_openInnerApp = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_navigation_openInnerApp = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.openInnerAppSuccess = onSuccess;
         }
-        var appKey = c && c.appKey ? c.appKey : "";
-        var portalFlag = c && c.portalFlag ? c.portalFlag : "";
-        var portalTitle = c && c.portalTitle ? c.portalTitle : "";
-        var portalPage = c && c.portalPage ? c.portalPage : "";
-        var parameters = c && c.parameters ? c.parameters : {};
-        var body = {
+        const appKey = c && c.appKey ? c.appKey : "";
+        const portalFlag = c && c.portalFlag ? c.portalFlag : "";
+        const portalTitle = c && c.portalTitle ? c.portalTitle : "";
+        const portalPage = c && c.portalPage ? c.portalPage : "";
+        const parameters = c && c.parameters ? c.parameters : {};
+        const body = {
             type: "navigation.openInnerApp",
             callback: "o2m.util.navigation.openInnerAppSuccess",
             data: {
@@ -1391,14 +1423,14 @@
     this.o2m.util.navigation.openOtherAppSuccess = function (result) {
         console.log("util navigation openOtherApp back, result:" + result);
     };
-    var _o2m_u_navigation_openOtherApp = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_navigation_openOtherApp = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.openOtherAppSuccess = onSuccess;
         }
-        var schema = c && c.schema ? c.schema : "";
-        var body = {
+        const schema = c && c.schema ? c.schema : "";
+        const body = {
             type: "navigation.openOtherApp",
             callback: "o2m.util.navigation.openOtherAppSuccess",
             data: {
@@ -1414,14 +1446,14 @@
     this.o2m.util.navigation.openWindowSuccess = function (result) {
         console.log("util navigation openWindow back, result:" + result);
     };
-    var _o2m_u_navigation_openWindow = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_navigation_openWindow = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.openWindowSuccess = onSuccess;
         }
-        var url = c && c.url ? c.url : "";
-        var body = {
+        const url = c && c.url ? c.url : "";
+        const body = {
             type: "navigation.openWindow",
             callback: "o2m.util.navigation.openWindowSuccess",
             data: {
@@ -1458,13 +1490,13 @@
     this.o2m.util.navigation.openInBrowserSuccess = function (result) {
         console.log("util navigation openInBrowser back, result:" + result);
     };
-    var _o2m_u_navigation_openInBrowser = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_navigation_openInBrowser = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.openInBrowserSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "navigation.openInBrowser",
             callback: "o2m.util.navigation.openInBrowserSuccess",
             data: {}
@@ -1492,13 +1524,13 @@
     this.o2m.util.navigation.clearCacheSuccess = function (result) {
         console.log("util navigation clearCache back, result:" + result);
     };
-    var _o2m_u_navigation_clearCache = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_u_navigation_clearCache = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.clearCacheSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "navigation.clearCache",
             callback: "o2m.util.navigation.clearCacheSuccess",
             data: {}
@@ -1526,14 +1558,14 @@
     this.o2m.util.navigation.shareSuccess = function (result) {
         console.log("util navigation share back, result:" + result);
     };
-    var _o2m_u_navigation_share = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var base64 = c && c.base64 ? c.base64 : "";
+    const _o2m_u_navigation_share = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const base64 = c && c.base64 ? c.base64 : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.shareSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "navigation.share",
             callback: "o2m.util.navigation.shareSuccess",
             data: {
@@ -1563,14 +1595,14 @@
     this.o2m.util.navigation.refreshSuccess = function (result) {
         console.log("util navigation refresh back, result:" + result);
     };
-    var _o2m_u_navigation_refresh = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
-        var base64 = c && c.base64 ? c.base64 : "";
+    const _o2m_u_navigation_refresh = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
+        const base64 = c && c.base64 ? c.base64 : "";
         if (onSuccess && typeof onSuccess === "function") {
             o2m.util.navigation.refreshSuccess = onSuccess;
         }
-        var body = {
+        const body = {
             type: "navigation.refresh",
             callback: "o2m.util.navigation.refreshSuccess",
             data: {
@@ -1603,14 +1635,14 @@
         file: {}
     };
 
-    var _biz_post = function (body, onFail) {
+    const _biz_post = function (body, onFail) {
         if (body == null) {
             if (onFail && typeof onFail === "function") {
                 onFail("参数异常！");
                 return;
             }
         }
-        var message = JSON.stringify(body);
+        const message = JSON.stringify(body);
         if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
             window.flutter_inappwebview.callHandler('o2mBiz', message);
         } else if (window.o2mBiz && window.o2mBiz.postMessage) {
@@ -1625,11 +1657,11 @@
     };
 
     //o2m.biz.workClose()
-    var _o2m_b_work_close = function () {
+    const _o2m_b_work_close = function () {
         if (window.o2android && window.o2android.closeWork) {
             window.o2android.closeWork("");
         } else if (window.o2android && window.o2android.postMessage) {
-            var body = {
+            const body = {
                 type: "closeWork"
             };
             window.o2android.postMessage(JSON.stringify(body));
@@ -1655,18 +1687,18 @@
     this.o2m.biz.contact.departmentsPickerSuccess = function (result) {
         console.log("biz contact departmentsPicker back, result:" + result);
     };
-    var _o2m_b_contact_department_picker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_b_contact_department_picker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.biz.contact.departmentsPickerSuccess = onSuccess;
         }
-        var topList = c && c.topList ? c.topList : [];
-        var orgType = c && c.orgType ? c.orgType : "";
-        var multiple = c && c.multiple ? c.multiple : false;
-        var maxNumber = c && c.maxNumber ? c.maxNumber : 0;
-        var pickedDepartments = c && c.pickedDepartments ? c.pickedDepartments : [];
-        var body = {
+        const topList = c && c.topList ? c.topList : [];
+        const orgType = c && c.orgType ? c.orgType : "";
+        const multiple = c && c.multiple ? c.multiple : false;
+        const maxNumber = c && c.maxNumber ? c.maxNumber : 0;
+        const pickedDepartments = c && c.pickedDepartments ? c.pickedDepartments : [];
+        const body = {
             type: "contact.departmentPicker",
             callback: "o2m.biz.contact.departmentsPickerSuccess",
             data: {
@@ -1732,18 +1764,18 @@
     this.o2m.biz.contact.IdentityPickerSuccess = function (result) {
         console.log("biz contact IdentityPicker back, result:" + result);
     };
-    var _o2m_b_contact_identity_picker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_b_contact_identity_picker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.biz.contact.IdentityPickerSuccess = onSuccess;
         }
-        var topList = c && c.topList ? c.topList : [];
-        var multiple = c && c.multiple ? c.multiple : false;
-        var maxNumber = c && c.maxNumber ? c.maxNumber : 0;
-        var pickedIdentities = c && c.pickedIdentities ? c.pickedIdentities : [];
-        var duty = c && c.duty ? c.duty : [];
-        var body = {
+        const topList = c && c.topList ? c.topList : [];
+        const multiple = c && c.multiple ? c.multiple : false;
+        const maxNumber = c && c.maxNumber ? c.maxNumber : 0;
+        const pickedIdentities = c && c.pickedIdentities ? c.pickedIdentities : [];
+        const duty = c && c.duty ? c.duty : [];
+        const body = {
             type: "contact.identityPicker",
             callback: "o2m.biz.contact.IdentityPickerSuccess",
             data: {
@@ -1813,16 +1845,16 @@
     this.o2m.biz.contact.GroupPickerSuccess = function (result) {
         console.log("biz contact GroupPicker back, result:" + result);
     };
-    var _o2m_b_contact_group_picker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_b_contact_group_picker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.biz.contact.GroupPickerSuccess = onSuccess;
         }
-        var multiple = c && c.multiple ? c.multiple : false;
-        var maxNumber = c && c.maxNumber ? c.maxNumber : 0;
-        var pickedGroups = c && c.pickedGroups ? c.pickedGroups : [];
-        var body = {
+        const multiple = c && c.multiple ? c.multiple : false;
+        const maxNumber = c && c.maxNumber ? c.maxNumber : 0;
+        const pickedGroups = c && c.pickedGroups ? c.pickedGroups : [];
+        const body = {
             type: "contact.groupPicker",
             callback: "o2m.biz.contact.GroupPickerSuccess",
             data: {
@@ -1878,16 +1910,16 @@
     this.o2m.biz.contact.PersonPickerSuccess = function (result) {
         console.log("biz contact PersonPicker back, result:" + result);
     };
-    var _o2m_b_contact_person_picker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_b_contact_person_picker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.biz.contact.PersonPickerSuccess = onSuccess;
         }
-        var multiple = c && c.multiple ? c.multiple : false;
-        var maxNumber = c && c.maxNumber ? c.maxNumber : 0;
-        var pickedUsers = c && c.pickedUsers ? c.pickedUsers : [];
-        var body = {
+        const multiple = c && c.multiple ? c.multiple : false;
+        const maxNumber = c && c.maxNumber ? c.maxNumber : 0;
+        const pickedUsers = c && c.pickedUsers ? c.pickedUsers : [];
+        const body = {
             type: "contact.personPicker",
             callback: "o2m.biz.contact.PersonPickerSuccess",
             data: {
@@ -1950,23 +1982,23 @@
     this.o2m.biz.contact.ComplexPickerSuccess = function (result) {
         console.log("biz contact ComplexPicker back, result:" + result);
     };
-    var _o2m_b_contact_complex_picker = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_b_contact_complex_picker = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.biz.contact.ComplexPickerSuccess = onSuccess;
         }
-        var pickMode = c && c.pickMode ? c.pickMode : [];
-        var multiple = c && c.multiple ? c.multiple : false;
-        var maxNumber = c && c.maxNumber ? c.maxNumber : 0;
-        var topList = c && c.topList ? c.topList : [];
-        var orgType = c && c.orgType ? c.orgType : "";
-        var duty = c && c.duty ? c.duty : [];
-        var pickedGroups = c && c.pickedGroups ? c.pickedGroups : [];
-        var pickedUsers = c && c.pickedUsers ? c.pickedUsers : [];
-        var pickedIdentities = c && c.pickedIdentities ? c.pickedIdentities : [];
-        var pickedDepartments = c && c.pickedDepartments ? c.pickedDepartments : [];
-        var body = {
+        const pickMode = c && c.pickMode ? c.pickMode : [];
+        const multiple = c && c.multiple ? c.multiple : false;
+        const maxNumber = c && c.maxNumber ? c.maxNumber : 0;
+        const topList = c && c.topList ? c.topList : [];
+        const orgType = c && c.orgType ? c.orgType : "";
+        const duty = c && c.duty ? c.duty : [];
+        const pickedGroups = c && c.pickedGroups ? c.pickedGroups : [];
+        const pickedUsers = c && c.pickedUsers ? c.pickedUsers : [];
+        const pickedIdentities = c && c.pickedIdentities ? c.pickedIdentities : [];
+        const pickedDepartments = c && c.pickedDepartments ? c.pickedDepartments : [];
+        const body = {
             type: "contact.complexPicker",
             callback: "o2m.biz.contact.ComplexPickerSuccess",
             data: {
@@ -2078,16 +2110,16 @@
     this.o2m.biz.file.PreviewDocSuccess = function (result) {
         console.log("biz file preview doc back, result:" + result);
     };
-    var _o2m_b_file_preview = function (c) {
-        var onSuccess = c && c.onSuccess ? c.onSuccess : null;
-        var onFail = c && c.onFail ? c.onFail : null;
+    const _o2m_b_file_preview = function (c) {
+        const onSuccess = c && c.onSuccess ? c.onSuccess : null;
+        const onFail = c && c.onFail ? c.onFail : null;
         if (onSuccess && typeof onSuccess === "function") {
             o2m.biz.file.PreviewDocSuccess = onSuccess;
         }
-        var fileUrl = c && c.url ? c.url : "";
-        var fileName = c && c.fileName ? c.fileName : "";
+        const fileUrl = c && c.url ? c.url : "";
+        const fileName = c && c.fileName ? c.fileName : "";
 
-        var body = {
+        const body = {
             type: "file.previewDoc",
             callback: "o2m.biz.file.PreviewDocSuccess ",
             data: {
