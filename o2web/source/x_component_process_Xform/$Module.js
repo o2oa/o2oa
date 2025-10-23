@@ -1250,6 +1250,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return evdata;
     },
 
+
     getOriginalDataById: function(d, id){
         var data = d || this.form.businessData.originalData;
         var thisId = id || this.json.id;
@@ -1277,9 +1278,123 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
     },
+    setOriginalDataById: function(v, id){
+        //对id类似于 xx..0..xx 的字段进行拆分
+        var data = this.form.businessData.originalData;
+        var thisId = id || this.json.id;
+        if(thisId.indexOf("..") < 1){
+            data[thisId] = v;
+        }else{
+            var idList = thisId.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
+            //var data = this.form.businessData.data;
+            var lastIndex = idList.length - 1;
 
-        setValue: function(){
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return;
+
+                if( i === lastIndex ){
+                    data[id] = v;
+                }else{
+                    var nexId = idList[i+1];
+                    if(o2.typeOf(nexId) === "number"){ //下一个ID是数字
+                        if( !data[id] && o2.typeOf(data[id]) !== "array" ){
+                            data[id] = [];
+                        }
+                        if( nexId > data[id].length ){ //超过了最大下标，丢弃
+                            return;
+                        }
+                    }else{ //下一个ID是字符串
+                        if( !data[id] || o2.typeOf(data[id]) !== "object"){
+                            data[id] = {};
+                        }
+                    }
+                    data = data[id];
+                }
+            }
+        }
+    },
+
+    saveDataById: function(id, data){
+        var appName = this.form.app.options.name;
+        if( !['process.Work', 'cms.Document'].includes(appName) ){
+            return;
+        }
+        if(appName === 'process.Work' && this.form.isDraftWork()){
+            return;
+        }
+        var originalData = this.form.businessData.originalData || {};
+        var thisId = id || this.json.id;
+        if(o2.typeOf(data) === "null"){
+            data = this.getBusinessDataById();
+        }
+        if(thisId.indexOf("..") < 1){
+            this._saveDataByPath([thisId], data, ()=>{
+                originalData[thisId] = data;
+            });
+        }else{
+            var idList = thisId.split("..");
+            idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
+
+            var lastIndex = idList.length - 1;
+            var preOriginalData;
+
+            for(var i=0; i<=lastIndex; i++){
+                var id = idList[i];
+                if( !id && id !== 0 )return;
+
+                var exist = originalData && originalData.hasOwnProperty(id);
+                if( !exist || i === 8 ) { //originalData不包含中间路径，且路径长多最多支持8，多余的获取后续整体数据进行保存
+                    var paths = idList.slice(0, i);
+                    var pathData = this.getBusinessDataById(null, paths.join('..'));
+                    this._saveDataByPath(paths, pathData, ()=>{
+                        !!preOriginalData && (preOriginalData[idList[i-1]] = pathData);
+                    });
+                    return;
+                }else if( i === lastIndex ) {
+                    this._saveDataByPath(idList, data, ()=>{
+                        originalData[id] = data;
+                    });
+                }else{
+                    preOriginalData = originalData;
+                    originalData = originalData[id];
+                }
+            }
+        }
+    },
+    _saveDataByPath: function(paths, data, success){
+        if (paths.length > 8) {
+            throw new Error(`路径层级超过限制(8级)，当前: ${paths.length}`);
+        }
+        var hasPath = paths.length > 0;
+        var action, methodName, args;
+        switch (this.form.app.options.name){
+            case 'process.Work':
+                action = o2.Actions.load('x_processplatform_assemble_surface').DataAction;
+                methodName = hasPath ? `updateWithWorkPath${paths.length-1}` : 'updateWithWork';
+                args = [this.form.businessData.work.id];
+                break;
+            case 'cms.Document':
+                action = o2.Actions.load('x_cms_assemble_control').DataAction;
+                methodName = hasPath ? `updateWithDocumentWithPath${paths.length-1}` : 'updateWithDocument';
+                args = [this.form.businessData.document.id];
+                break;
+            default:
+                return;
+        }
+        paths = paths.map(p => p.toString());
+
+        if (hasPath) {
+            args = args.concat(paths);
+        }
+        args = args.concat([data, success, null, false]);
+
+        return action[methodName](...args);
+    },
+
+    setValue: function(){
     },
     focus: function(){
         this.node.focus();

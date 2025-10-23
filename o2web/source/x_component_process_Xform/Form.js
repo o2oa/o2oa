@@ -1741,7 +1741,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
-
+    isDraftWork: function (){
+      return !this.businessData.work.startTime;
+    },
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);
