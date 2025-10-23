@@ -226,6 +226,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var closeFilterDlg = function(){
 			_self.filterDlg.close();
 		}
+
+		var isMobile = o2.isMediaMobile();
 		this.filterDlg = o2.DL.open({
 			"container": this.content,
 			"mask": false,
@@ -240,8 +242,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			"left": x,
 			"fromTop": y,
 			"fromLeft": fx,
-			"width": 600,
-			"height": 550,
+			"width": isMobile ? '100%' : 600,
+			"height": isMobile ? '100%' : 550,
 			"duration": 100,
 			// "onQueryClose": function(){
 			// 	document.body.removeEvent("mousedown", closeFilterDlg);
@@ -774,6 +776,24 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	recordStatus: function(){
 		return {"navi": this.currentList.options.type};
 	},
+
+	checkMobileMenuTransition: function(cb){
+		if (!this.menuItemAreaNode.hasClass("transition")){
+			this.menuItemAreaNode.addClass("transition");
+			window.setTimeout(cb,10);
+		}else{
+			cb?.();
+		}
+	},
+	showMobileMenu: function(){
+		this.checkMobileMenuTransition(()=>{
+			if (this.menuItemAreaNode.hasClass("show")){
+				this.menuItemAreaNode.removeClass("show");
+				return;
+			}
+			this.menuItemAreaNode.addClass("show");
+		});
+	}
 });
 
 MWF.xApplication.process.workcenter.List = new Class({
@@ -792,7 +812,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 		this.filterNode = app.filterItemArea;
 		this.lp = this.app.lp;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
-		this.init();
+		// this.init();
 		//this.load();
 	},
 	init: function(){
@@ -810,17 +830,20 @@ MWF.xApplication.process.workcenter.List = new Class({
 
 	},
 	load: function(callback){
-		this.total = null;
-		var _self = this;
-		this.loadFilterFlag();
-		this.app.filterActionNode.show();
-		this.selectedTaskList = [];
-		this.loadData().then(function(data){
-			_self.hide();
-			_self.loadPage();
-			_self.loadItems(data);
-			if(callback)callback();
-		});
+		window.setTimeout(()=>{
+			this.init();
+			this.total = null;
+			var _self = this;
+			this.loadFilterFlag();
+			this.app.filterActionNode.show();
+			this.selectedTaskList = [];
+			this.loadData().then(function(data){
+				_self.hide();
+				_self.loadPage();
+				_self.loadItems(data);
+				if(callback)callback();
+			});
+		}, 10);
 	},
 	refresh: function(){
 		this.hide();
@@ -869,6 +892,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	hide: function(){
 		if (this.node) this.node.destroy();
 	},
+
 	loadPage: function(){
 		var totalCount = this.total || this.app.countData[this.options.type];
 		var pages = totalCount/this.size;
@@ -876,8 +900,9 @@ MWF.xApplication.process.workcenter.List = new Class({
 		if (pages !== pageCount) pageCount = pageCount+1;
 		this.pageCount = pageCount;
 
+		var isMobile = o2.isMediaMobile();
 		var size = this.bottomNode.getSize();
-		var maxPageSize = size.x*0.8;
+		var maxPageSize = size.x*(isMobile ? 0.9 : 0.8);
 		maxPageSize = maxPageSize - 80*2-24*2-10*3;
 		var maxPageCount = (maxPageSize/34).toInt();
 

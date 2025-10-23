@@ -29,11 +29,25 @@
     overflow: hidden;
     gap: 1em;
 }
+
+.page-content-section .form-content-view .searchAreaNode{
+    overflow: hidden;
+    padding: 0 1rem;
+}
+.page-content-section .form-content-view .actionbarAreaNode{
+    padding: 1rem 0 0 0;
+    box-shadow: 0 0 5px 0px #cccccc;
+    margin-bottom: 1rem;
+}
+.page-content-section .form-content-view .actionbarAreaNode>div{
+    margin: 0!important;
+}
+
 .page-content-area > div,
 .page-content-section {
     background-color: #ffffff;
     border-radius: var(--oo-default-radius);
-    padding: 1em;
+    padding: 0;
     display: flex !important;
     gap: 0.5em 1em;
     flex-wrap: wrap;
@@ -66,6 +80,15 @@
 }
 .page-nav-title-text {
     padding: 0 1em 0 0.3em;
+}
+
+.page-nav-title-create{
+    font-size:1rem; 
+    margin: 0 0.625em 0.625em 0.625em;
+    height: auto; 
+    background-color:transparent;
+    color: #ffffff;
+   
 }
 
 .page-content-section oo-input,
@@ -304,7 +327,10 @@
 @media only screen and (max-width: 767px) {
     .page-nav-content{
         grid-template-columns: auto;
-        grid-template-rows: 3.5rem calc(100% - 3.5rem);
+        grid-template-rows: 3rem calc(100% - 3rem);
+    }
+    .page-nav-content.show-navi{
+        grid-template-rows: 100%;
     }
     .form-layout>div[mwftype="widget"]{
         height: 100%;
@@ -312,13 +338,22 @@
     .page-nav{
         overflow: hidden;
         box-shadow: var(--oo-color-gray-d) 0 1px 1px 0;
-        background-color: var(--oo-color-main);
+        /* background-color: var(--oo-color-main); */
     }
+    .page-nav.show{
+        position: absolute;
+        z-index: 100;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+
+
     .page-content{
         padding: 0;
     }
     .page-nav-title {
-        margin: 0.35rem;
+        margin: 0;
         border-radius: 0;
         justify-content: center;
         height: 2.6em;
@@ -332,7 +367,7 @@
     }
     .page-nav-title::before {
         font-family: 'ooicon' !important;
-        content: "\e651";
+        content: "\e68a";
         font-style: normal;
         font-weight: normal;
         font-variant: normal;
@@ -343,5 +378,94 @@
         position: absolute;
         /* top: 0; */
         left: 1rem;
+    }
+    .page-nav-title-create{
+        /* position: absolute;
+        right: 0;
+        top: 0.8em; */
+        font-size: 1.125rem;
+        margin: 0;
+    }
+    .page-nav-title-search{
+        /* position: absolute;
+        right: 0;
+        top: 0.8em; */
+        margin: 0;
+        font-size: 1.125rem;
+        color: #ffffff;
+    }
+    .page-content-section-menu{
+        position: absolute;
+        right: 0;
+        top: 0.5em;
+        /* margin: 0; */
+        font-size: 1.125rem;
+        color: #ffffff;
+        display: flex;
+        margin-right: 0.5rem;
+    }
+
+    .form-layout .page-content-section div[mwftype='view'] div.viewAreaNode>div.contentAreaNode{
+        padding: 0;
+    }
+    .form-layout .page-content-section div[mwftype='statement'] div.viewAreaNode>div.contentAreaNode{
+        padding: 0;
+    }
+    .page-content-area .page-content-section-search{
+        display: none !important;
+        height: 0;
+        padding: 0;
+        overflow: hidden !important;
+        transition: height 0.3s;
+    }
+    .page-content-area .page-content-section-search.show{
+        display: grid !important;
+        height: auto;
+        padding: 0.6rem;
+        position: absolute;
+        top: 0;
+        z-index: 1000;
+        width: 100%;
+        box-shadow: 0 0 10px 0 #dedede;
+        border-radius: 0;
+        overflow: visible;
+    }
+    .page-content-area > div, .page-content-section {
+        padding: 0;
+        left: 0;
+    }
+
+    .viewTable>tr:first-child{
+        position: sticky;
+        top: 0;
+    }
+    .page-nav-config{
+        display: none;
+    }
+    .page-content-section.search-area{
+        display: none !important;
+    }
+    .page-content-section.search-area.show{
+        position: absolute;
+        top: 0;
+        z-index: 1000;
+        width: 100%;
+        display: grid !important;
+        padding: 0.5rem;
+        box-shadow: 0 0 10px 0 #dedede;
+    }
+    .page-content-section.search-area.show .page-content-search-fields{
+        grid-template-columns: auto !important;
+    }
+    .page-content-section.search-area.show .page-content-search-actions{
+        display: flex !important;
+    }
+    .page-content-section .form-content-view .actionbarAreaNode{
+        font-size: 0.875rem;
+    }
+    .page-content-section .form-content-view .actionbarAreaNode {
+        padding: 0.5rem 0 0.3rem 0;
+        box-shadow: 0 0 5px 0px #cccccc;
+        margin-bottom: 0.5rem;
     }
 }
