@@ -29,13 +29,16 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 	loadApplication: function(callback){
 		this.loadControl();
 		this.content.loadHtml(this.viewPath, {"bind": {"lp": this.lp, "control": this.control}}, function(){
-			if (!this.options.isRefresh){
-				this.maxSize(function(){
+			o2.Actions.load('x_program_center').ConfigOpenAction.getDisableExportEnable().then((json)=>{
+				this.cannotExport = (json.data && json.data.value);
+				if (!this.options.isRefresh){
+					this.maxSize(function(){
+						this.loadApp(callback);
+					}.bind(this));
+				}else{
 					this.loadApp(callback);
-				}.bind(this));
-			}else{
-				this.loadApp(callback);
-			}
+				}
+			});
 		}.bind(this));
 	},
 	loadApp: function(callback){
@@ -884,6 +887,10 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 		this.actionExport = this.node.getElement(".o2_process_AppExp_item_Action_export");
 
 		if (this.actionArea) this.setActionEvent();
+
+		if (this.app.cannotExport){
+			this.actionExport.setStyle("display", "none");
+		}
 	},
 
 	setActionEvent: function(){

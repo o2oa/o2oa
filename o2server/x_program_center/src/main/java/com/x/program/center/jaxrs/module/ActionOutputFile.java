@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.module;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 
@@ -18,12 +20,16 @@ import com.x.base.core.project.tools.DefaultCharset;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
 import com.x.program.center.core.entity.Structure;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class ActionOutputFile extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionOutputFile.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getDisableExportEnable())) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;

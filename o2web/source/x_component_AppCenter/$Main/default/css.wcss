@@ -57,7 +57,7 @@
         "width": "100px",
         "height": "100px",
         "float": "left",
-        "background": "url(../x_component_AppMarket/$Main/default/icon/default.png) center center no-repeat"
+        "background": "url(../x_component_AppCenter/$Main/default/icon/default.png) center center no-repeat"
     },
     "moduleSetupContentNode": {
         "width": "90%",
@@ -306,10 +306,15 @@
     },
 
     "moduleNode": {
-        "width": "300px",
-        "height": "100px",
+        "width": "278px",
+        "height": "124px",
         "float": "left",
-        "margin": "20px 10px"
+        "margin": "20px 10px",
+        "border": "1px solid #dedede",
+        "padding": "10px",
+        "overflow": "hidden",
+        "border-radius": "8px",
+        "box-shadow": "0 0 10px 0 #cccccc"
     },
     "moduleContentNode": {
         "margin-left": "110px",
@@ -318,7 +323,7 @@
         "height": "96px"
     },
     "moduleNameNode": {
-        "height": "24px",
+        "height": "48px",
         "line-height": "24px",
         "font-size": "14px",
         "font-weight": "bold",

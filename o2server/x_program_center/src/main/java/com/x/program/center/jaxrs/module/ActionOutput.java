@@ -6,6 +6,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
@@ -33,6 +34,7 @@ import com.x.program.center.WrapModule;
 import com.x.program.center.core.entity.Structure;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
+import org.apache.commons.lang3.BooleanUtils;
 
 
 public class ActionOutput extends BaseAction {
@@ -40,6 +42,9 @@ public class ActionOutput extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionOutput.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getDisableExportEnable())) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<Wo> result = new ActionResult<>();

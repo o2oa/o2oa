@@ -69,6 +69,7 @@ public class General extends ConfigObject {
 		o.supportedLanguages = DEFAULT_SUPPORTED_LANGUAGES;
 		o.graalvmEvalAsPromise = DEFAULT_GRAALVMEVALASPROMISE;
 		o.accessDenyUris = DEFAULT_ACCESSDENYURIS;
+		o.disableExportEnable = true;
 		return o;
 	}
 
@@ -143,6 +144,14 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("是否启用x_query_assemble_surface模块中listRowSelect,rowCountWhere接口")
 	private Boolean tableRowSelectEnable = DEFAULT_TABLEROWSELECTENABLE;
+
+	public Boolean getDisableExportEnable() {
+		return disableExportEnable == null || disableExportEnable;
+	}
+
+	public void setDisableExportEnable(Boolean disableExportEnable) {
+		this.disableExportEnable = disableExportEnable;
+	}
 
 	public Boolean getTableRowSelectEnable() {
 		return (null == this.tableRowSelectEnable) ? DEFAULT_TABLEROWSELECTENABLE : this.tableRowSelectEnable;

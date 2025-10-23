@@ -1,6 +1,7 @@
 package com.x.program.center.jaxrs.module;
 
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
@@ -18,12 +19,16 @@ import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class ActionOutputStructure extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionOutputStructure.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getDisableExportEnable())) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setProcessPlatformList(ThisApplication.context().applications()
