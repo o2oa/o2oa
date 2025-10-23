@@ -2083,6 +2083,12 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this._load()
         }
     },
+    reload: function(){
+        debugger;
+        this.node.destroy();
+        this.load();
+        if(this.property)this.property.reload();
+    },
     _load : function(){
         this.json.moduleName = this.moduleName;
         this._createNode();
@@ -2119,6 +2125,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.json.customIconOverStyle = styles.customIconOverStyle || "";
         this.json.forceStyles = styles.forceStyles || "";
         this.json.iconType = styles.iconType || "";
+        this.json.styles = styles.styles || "";
     },
     clearTemplateStyles: function(styles){
         this.json.style = "form";
@@ -2128,8 +2135,10 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.json.customIconOverStyle = "";
         this.json.iconType = "";
         this.json.forceStyles = "";
+        this.json.styles = "";
     },
     setAllStyles: function(){
+        this.json.actionStyles = null;
         this._resetActionbar();
         this.destroyProperty();
     },
@@ -2348,18 +2357,29 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         }.bind(this));
     },
     setToolbars: function(tools, node){
-        debugger;
+        var imgUrl, overImgUrl;
+        var path = "";
+        if( this.json.customIconStyle ){
+            path = this.json.customIconStyle+ "/";
+        }
         tools.each(function(tool){
+            if( tool.customImg ){
+                imgUrl =  this.imagePath_custom+""+this.options.customImageStyle +"/custom/"+path+tool.img;
+                overImgUrl = this.imagePath_custom+""+this.options.customImageStyle +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img;
+            }else{
+                imgUrl = this.imagePath_default+""+this.options.style+"/actionbar/"+( this.json.iconStyle || "default" )+"/"+tool.img;
+                overImgUrl = this.imagePath_default+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img;
+            }
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.json.iconType==="font" ? "" : (this.imagePath_default+""+this.options.style+"/actionbar/"+( this.json.iconStyle || "default" )+"/"+tool.img),
+                "MWFButtonImage": this.json.iconType==="font" ? "" : imgUrl,
                 "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
             }).inject(node);
             if( this.json.iconOverStyle ){
-                actionNode.set("MWFButtonImageOver" , this.imagePath_default+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img );
+                actionNode.set("MWFButtonImageOver" , overImgUrl );
             }
             this.systemTools.push(actionNode);
             if (tool.sub){
