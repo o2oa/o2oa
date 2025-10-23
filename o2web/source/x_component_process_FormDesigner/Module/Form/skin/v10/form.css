@@ -1673,6 +1673,23 @@
     .appContent{
         height: 100%;
     }
+
+    .form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(4) > div {
+        height: 2em !important;
+        margin-top: 1em !important;
+        margin-bottom: 1rem;
+    }
+
+    .form-layout .page-content-section div[mwftype='view'] .pagingBar > div.lastPage, 
+    .form-layout .page-content-section div[mwftype='statement'] .pagingBar > div.lastPage,
+    .form-layout .page-content-section div[mwftype='view'] .pagingBar > div.firstPage, 
+    .form-layout .page-content-section div[mwftype='statement'] .pagingBar > div.firstPage,
+    .form-layout .page-content-section div[mwftype='view'] .pagingBar > input.pageJumper, 
+    .form-layout .page-content-section div[mwftype='statement'] .pagingBar > input.pageJumper,
+    .form-layout .page-content-section div[mwftype='view'] .pagingBar > div.pageText, 
+    .form-layout .page-content-section div[mwftype='statement'] .pagingBar > div.pageText {
+        display: none;
+    }
 }
 
 /* 平板电脑 */

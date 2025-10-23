@@ -120,7 +120,9 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.showSkeleton();
 		this._loadListContent(type, callback);
 		this.loadCount();
-		//if (this.currentList) this.currentList.loadPage();
+		this.hideMobileMenu();
+
+		if (o2.isMediaMobile()) this.menuTitleTextNode.textContent = this.lp[type];
 	},
 	showSkeleton: function(){
 		if (this.skeletonNode) this.skeletonNode.inject(this.listContentNode);
@@ -226,6 +228,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var closeFilterDlg = function(){
 			_self.filterDlg.close();
 		}
+
+		var isMobile = o2.isMediaMobile();
 		this.filterDlg = o2.DL.open({
 			"container": this.content,
 			"mask": false,
@@ -240,8 +244,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			"left": x,
 			"fromTop": y,
 			"fromLeft": fx,
-			"width": 600,
-			"height": 550,
+			"width": isMobile ? '100%' : 600,
+			"height": isMobile ? '100%' : 550,
 			"duration": 100,
 			// "onQueryClose": function(){
 			// 	document.body.removeEvent("mousedown", closeFilterDlg);
@@ -774,6 +778,28 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	recordStatus: function(){
 		return {"navi": this.currentList.options.type};
 	},
+
+	checkMobileMenuTransition: function(cb){
+		if (!this.menuItemAreaNode.hasClass("transition")){
+			this.menuItemAreaNode.addClass("transition");
+			window.setTimeout(cb,10);
+		}else{
+			cb?.();
+		}
+	},
+	showMobileMenu: function(){
+		this.checkMobileMenuTransition(()=>{
+			if (this.menuItemAreaNode.hasClass("show")){
+				this.menuItemAreaNode.removeClass("show");
+				return;
+			}
+			this.menuItemAreaNode.addClass("show");
+		});
+	},
+	hideMobileMenu: function(){
+		this.menuItemAreaNode.removeClass("show");
+	}
+
 });
 
 MWF.xApplication.process.workcenter.List = new Class({
@@ -796,12 +822,14 @@ MWF.xApplication.process.workcenter.List = new Class({
 		//this.load();
 	},
 	init: function(){
-		this.listHeight = this.content.getSize().y;
-		this.size = (this.listHeight/this.options.itemHeight).toInt()
 		this.page = 1;
 		this.totalCount = this.app.countData.task;
 		this.filterList = {};
 		this.filterNameList = {};
+	},
+	initSize: function(){
+		this.listHeight = this.content.getSize().y;
+		this.size = (this.listHeight/this.options.itemHeight).toInt()
 	},
 	startProcess: function(){
 		this.app.startProcess();
@@ -809,18 +837,21 @@ MWF.xApplication.process.workcenter.List = new Class({
 	setLayout: function(){
 
 	},
-	load: function(callback){
-		this.total = null;
-		var _self = this;
-		this.loadFilterFlag();
-		this.app.filterActionNode.show();
-		this.selectedTaskList = [];
-		this.loadData().then(function(data){
-			_self.hide();
-			_self.loadPage();
-			_self.loadItems(data);
-			if(callback)callback();
-		});
+	load: function(callback, notHide){
+		window.setTimeout(()=>{
+			this.initSize();
+			this.total = null;
+			var _self = this;
+			this.loadFilterFlag();
+			this.app.filterActionNode.show();
+			this.selectedTaskList = [];
+			this.loadData().then(function(data){
+				if (!notHide) _self.hide();
+				_self.loadPage();
+				_self.loadItems(data);
+				if(callback)callback();
+			});
+		}, 10);
 	},
 	refresh: function(){
 		this.hide();
@@ -867,8 +898,10 @@ MWF.xApplication.process.workcenter.List = new Class({
 		}
 	},
 	hide: function(){
-		if (this.node) this.node.destroy();
+		// if (this.node) this.node.destroy();
+		this.content?.empty();
 	},
+
 	loadPage: function(){
 		var totalCount = this.total || this.app.countData[this.options.type];
 		var pages = totalCount/this.size;
@@ -876,8 +909,9 @@ MWF.xApplication.process.workcenter.List = new Class({
 		if (pages !== pageCount) pageCount = pageCount+1;
 		this.pageCount = pageCount;
 
+		var isMobile = o2.isMediaMobile();
 		var size = this.bottomNode.getSize();
-		var maxPageSize = size.x*0.8;
+		var maxPageSize = size.x*(isMobile ? 0.9 : 0.8);
 		maxPageSize = maxPageSize - 80*2-24*2-10*3;
 		var maxPageCount = (maxPageSize/34).toInt();
 
@@ -903,10 +937,10 @@ MWF.xApplication.process.workcenter.List = new Class({
 			if (i==this.page) node.addClass("mainColor_bg");
 		}
 	},
-	nextPage: function(){
+	nextPage: function(notHide){
 		this.page++;
 		if (this.page>this.pageCount) this.page = this.pageCount;
-		this.gotoPage(this.page);
+		this.gotoPage(this.page, notHide);
 	},
 	prevPage: function(){
 		this.page--;
@@ -919,11 +953,11 @@ MWF.xApplication.process.workcenter.List = new Class({
 	lastPage: function(){
 		this.gotoPage(this.pageCount);
 	},
-	gotoPage: function(page){
+	gotoPage: function(page, notHide){
 		this.page = page;
 		this.hide();
 		this.app.showSkeleton();
-		this.load();
+		this.load(null, notHide);
 		//this.loadPage();
 	},
 
@@ -940,8 +974,33 @@ MWF.xApplication.process.workcenter.List = new Class({
 		var url = this.app.path+this.app.options.style+"/view/"+this.options.view;
 		this.content.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this}, function(){
 			this.node = this.content.getFirst();
+			if (o2.isMediaMobile()){
+				this.mobile_loadCheckFun = this.mobile_loadCheck.bind(this);
+				this.app.listContentNode.addEvent("scroll", ()=>{
+					o2.defer(this.mobile_loadCheckFun)	
+				});
+				this.mobile_loadCheck();
+			}
+			
 		}.bind(this));
 	},
+
+	mobile_loadCheck: function(){
+		const size = this.app.listContentNode.getSize();
+		const scroll = this.app.listContentNode.getScroll();
+		const scrollSize = this.app.listContentNode.getScrollSize();
+		if (scrollSize.y - scroll.y - size.y < 40){
+			if (this.page<this.pageCount){
+				//载入下一页
+				this.mobile_loadNextPage();
+			}
+		}
+	},
+	mobile_loadNextPage: function(){
+		this.nextPage(true);
+	},
+
+
 
 	overTaskItem: function(e){
 		e.currentTarget.addClass("listItem_over");

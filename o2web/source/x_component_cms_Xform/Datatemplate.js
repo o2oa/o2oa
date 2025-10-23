@@ -2,8 +2,6 @@ MWF.xDesktop.requireApp("process.Xform", "Datatemplate", null, false);
 MWF.xApplication.cms.Xform.Datatemplate = MWF.CMSDatatemplate =  new Class({
     Extends: MWF.APPDatatemplate,
     saveArrayData: function(type, index, toIndex, data){
-        return;
-
         if( this.isMergeRead ){ //合并且只读，不处理
             return;
         }
@@ -12,7 +10,8 @@ MWF.xApplication.cms.Xform.Datatemplate = MWF.CMSDatatemplate =  new Class({
         var originalData = this.getOriginalDataById();
         if( !originalData ){
             if( method === 'add' ){
-                this.saveFormData();
+                //this.saveFormData();
+                this.saveDataById();
             }
             return;
         }
@@ -26,20 +25,20 @@ MWF.xApplication.cms.Xform.Datatemplate = MWF.CMSDatatemplate =  new Class({
                 data: data,
                 path: this.json.id.split('..').join('.')
             },
-            null, null, false
+            ()=>{
+                switch (type){
+                    case 'addLine':
+                        originalData.push(Object.clone(data));
+                        break;
+                    case 'insertLine':
+                        originalData.splice(index, 0, Object.clone(data));
+                        break;
+                    case 'delete':
+                        originalData.splice(index, 1);
+                        break;
+                }
+            }, null, false
         );
-
-        switch (type){
-            case 'addLine':
-                originalData.push(Object.clone(data));
-                break;
-            case 'insertLine':
-                originalData.splice(index, 0, Object.clone(data));
-                break;
-            case 'delete':
-                originalData.splice(index, 1);
-                break;
-        }
     },
     validationConfigItem: function(routeName, data){
         var flag = (data.status=="all") ? true: (routeName == "publ" || routeName == "publish");

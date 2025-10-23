@@ -1068,3 +1068,202 @@
 .o2icon-layout:before {
   content: "\e996";
 }
+
+/* 手机 */
+@media only screen and (max-width: 767px) {
+    .appNode{
+        display: grid;
+        grid-template-rows: 3rem calc(100% - 3rem);
+        grid-template-columns: 100%;
+    }
+    .menuArea{
+        width: 100%;
+        max-width: unset;
+        min-width: unset;
+        color: #ffffff;
+    }
+    .menuTitle{
+        font-size: 1rem;
+        margin: 0;
+        padding: 0 20px;
+        height: 3rem;
+        line-height: 3rem;
+        color: #ffffff;
+        border-bottom: 0;
+        background-color: var(--oo-color-main);
+        display: flex;
+        align-items: center;
+    }
+    .appContent{
+        height: 100%;
+    }
+    .menuTitleText {
+        flex: 100%;
+        text-align: center;
+    }
+    .menuTitleAction {
+        text-align: right;
+        width: unset;
+        float: none;
+        cursor: pointer;
+        flex: 2rem;
+        color: #ffffff;
+        height: 3rem;
+    }
+    .o2icon-zengjia.mainColor_color{
+        color: #ffffff !important;
+        font-family: 'ooicon' !important;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .o2icon-zengjia.mainColor_color::before {
+        content: "\e6a8";
+    }
+
+    .content{
+        margin: 0;
+    }
+    .contentTitleActionArea{
+        display: none !important;
+    }
+    .contentTitleFilterArea, .contentTitleArea, .contentTitle{
+        min-height: unset !important;
+    }
+    .contentTitle {
+        padding: 0;
+    }
+    .menuItemArea{
+        height: 18rem;
+        width: 100%;
+        border-bottom: 1px solid #dedede;
+        box-shadow: 0 0 16px 0 #cccccc;
+        background-color: #ffffff;
+        overflow: hidden;
+        position: absolute;
+        z-index: 1000;
+        scale: 0 0;
+        transform-origin: top left;
+        /* opacity: 0; */
+    }
+    .menuItemArea.transition{
+        transition: scale 0.2s ease-in-out; 
+    }
+
+    .menuItemArea.show{
+        scale: 1 1;
+        /* height: 21em; */
+    }
+    .contentTitleFilterArea{
+        display: flex;
+        white-space: nowrap;
+        overflow: auto;
+        padding: 0.5rem;
+    }
+    .ft_filterItem {
+        display: flex;
+    }
+    .contentList {
+        padding: 0;
+    }
+    .listItemFlag {
+        position: absolute;
+        right: 0.5rem;
+    }
+
+    .listItem {
+        height: unset;
+        background: #FFFFFF;
+        border-bottom: 1px solid #cccccc;
+        display: grid;
+        grid-template-columns: 1rem auto auto auto auto;
+        grid-template-rows: auto auto;
+        gap: 0.5em;
+        border-radius: 0;
+        padding: 0.5rem 1rem;
+    }
+    .selectFlag {
+        display: none;
+    }
+    .listItemApplication {
+        height: unset;
+        width: unset;
+        float: none;
+        grid-column: 1 / 3;
+        grid-row: 2 / 3;
+    }
+    .listItemApplicationIcon {
+        width: 32px;
+        height: 32px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 24px 24px;
+    }
+    .listItemApplicationText {
+        max-height: unset;
+        width: unset;
+        overflow: hidden;
+        font-size: inherit;
+        color: #666666;
+        line-height: unset;
+        padding-right: 0
+    }
+    .listItemLine {
+        display: none;
+    }
+    .listItemDate {
+        height: unset;
+        min-width: unset;
+        width: unset;
+        justify-content: flex-end;
+        grid-column: 4 / 6;
+        grid-row: 2 / 3;
+        color: #999999;
+    }
+    .listItemActivity {
+        display: none;
+    }
+    .listItemUnit {
+        display: none;
+    }
+    .listItemTitle {
+        height: unset;
+        grid-column: 1 / -1;
+        grid-row: 1 / 1;
+        display: flex;
+        align-items: flex-start;
+        overflow: hidden;
+        font-size: 1rem;
+    }
+    .listItemTitleProcess {
+        padding: 0;
+        max-width: unset;
+        height: unset;
+        display: flex;
+        align-items: center;
+    }
+    .listItemTitleProcessText {
+        float: none;
+        font-size: unset;
+        color: #999999;
+        height: unset;
+    }
+    .listItemTitleSubject {
+        height: unset;
+        display: block;
+        align-items: center;
+    }
+    .contentBottom {
+        height: 3.75rem;
+    }
+    .contentPageArea {
+        height: 1.25rem;
+    }
+    .contentBottom{
+        display: none;
+    }
+}

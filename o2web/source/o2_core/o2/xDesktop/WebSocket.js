@@ -17,7 +17,7 @@ MWF.xDesktop.WebSocket = new Class({
 
         this.reConnect = true;
         this.checking = false;
-        this.heartTimeout = 30000;
+        this.heartTimeout = 20000;
         this.checkingTimeout = 4000;
         this.heartMsg = "heartbeat";
         this.maxErrorCount = 10;

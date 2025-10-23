@@ -456,6 +456,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
+        this.checkDatatableClass();
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
@@ -567,6 +568,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             }.bind(this));
         }.bind(this));
+    },
+    checkDatatableClass: function (){
+        if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
+            MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = MWF.xApplication.process.Xform.DatatableV10;
+            MWF.xApplication.process.Xform.Datatable$Title = MWF.APPDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
+            MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
+        }
     },
     loadLanguage: function(callback){
         if (this.json.languageType!=="script" && this.json.languageType!=="default" && this.json.languageType!=="lib" && this.json.languageType!=="dict"){
@@ -1741,7 +1749,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
-
+    isDraftWork: function (){
+      return !this.businessData.work.startTime;
+    },
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);

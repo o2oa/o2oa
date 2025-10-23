@@ -320,7 +320,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		return {"value": this.node.value , "text": this.node.text};
 	},
 	getText: function(){
-		return this.node.text;
+		return this.node.text || '';
 	},
     getInputData: function(){
 		return this.node.value;

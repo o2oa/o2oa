@@ -1490,6 +1490,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( fireChange && originalDataStr !== dataStr ){
 				this.fireEvent("change", [{"lines":[line], "type":"editcomplete"}]);
 			}
+
+			this.saveDataById(line.getId() ,line.data);
+
 			return true;
 		},
 		_moveUpLine: function(ev, line){
@@ -1503,7 +1506,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var sdata = data[ this.sectionBy ];
 				if( !sdata )return;
 
-				var index = line.options.indexInSectionLine
+				var index = line.options.indexInSectionLine;
 
 				upData = sdata.data[ index - 1];
 				curData = sdata.data[index];
@@ -1651,7 +1654,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.data = data;
 
 			if( !operation ){
-				this.saveFormData();
+				//this.saveFormData();
+				if( this.sectionBy ){
+					this.saveDataById(this.json.id + '..' + this.sectionBy, this._getBusinessData());
+				}else{
+					this.saveDataById();
+				}
 			}
 
             if (this.data){
@@ -1682,8 +1690,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.form.saveFormData();
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
-			return;
-
+			//return;
+			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork()){
+				return;
+			}
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
 			}
@@ -1694,7 +1704,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var originalData = this.getOriginalDataById();
 			if( !originalData ){
 				if( method === 'add' ){
-					this.saveFormData();
+					//this.saveFormData();
+					this.saveDataById();
 				}
 				return;
 			}
@@ -1702,7 +1713,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var oData = !!sectionBy ? (originalData[ sectionBy ] && originalData[ sectionBy ].data) : originalData.data;
 			if( !oData ){
 				if(method === 'add'){
-					this.saveFormData();
+					//this.saveFormData();
+					this.saveDataById();
 				}
 				return;
 			}
@@ -1716,26 +1728,26 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					data: data,
 					path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' ) +'.data'
 				},
-				null, null, false
+				()=>{
+					switch (type){
+						case 'addLine':
+							oData.push(Object.clone(data));
+							break;
+						case 'insertLine':
+							oData.splice(index, 0, Object.clone(data));
+							break;
+						case 'delete':
+							oData.splice(index, 1);
+							break;
+						case 'move':
+							var upData = oData[toIndex];
+							var curData = oData[index];
+							oData[index] = upData;
+							oData[toIndex] = curData;
+							break;
+					}
+				}, null, false
 			);
-
-			switch (type){
-				case 'addLine':
-					oData.push(Object.clone(data));
-					break;
-				case 'insertLine':
-					oData.splice(index, 0, Object.clone(data));
-					break;
-				case 'delete':
-					oData.splice(index, 1);
-					break;
-				case 'move':
-					var upData = oData[toIndex];
-					var curData = oData[index];
-					oData[index] = upData;
-					oData[toIndex] = curData;
-					break;
-			}
 		},
 		/**
 		 * @summary 当数据表格设置为区段合并展现、区段合并编辑时，可以使用本方法设置所有区段数据。
@@ -1795,7 +1807,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 
 			if( !operation ){
-				this.saveFormData();
+				//this.saveFormData();
+				this.saveDataById();
 			}
 
 			this.lineList = [];
@@ -2879,6 +2892,16 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	resetId: function(){
 		this.setIndex();
 	},
+	getId: function(){
+		var sectionKey = this.options.sectionKey || this.datatable.sectionBy;
+		if( this.datatable.isShowAllSection ){
+			return this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine;
+		}else if( sectionKey ){
+			return this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.index;
+		}else{
+			return this.datatable.json.id + "..data.." + this.options.index;
+		}
+	},
 	setIndex: function(index, indexInSectionLine){
 		var hasIndexArg = typeOf(index) !== "null";
 		var hasIndexInSectionLineArg = typeOf(indexInSectionLine) !== "null";
@@ -3049,7 +3072,11 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 						}else{
 							_self.attachmentChangeFlag = true;
 						}
-					}.bind(this))
+					}.bind(this));
+				}else if( this.datatable.multiEditMode && module.field ){
+					module.addEvent("change", function(){
+						this.saveDataById();
+					});
 				}
 
 				this.form.modules.push(module);

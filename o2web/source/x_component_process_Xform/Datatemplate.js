@@ -1256,9 +1256,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this._setUnchangedLineMap(data, operation);
 
 			if( !operation ){
-				var obj = {};
-				obj[this.json.id] = data;
-				this.saveFullData(obj);
+				if( this.sectionBy ){
+					this.saveDataById(this.json.id + '..' + this.sectionBy, this._getBusinessData());
+				}else{
+					this.saveDataById();
+				}
 			}
 
 			this._setBusinessData(data);
@@ -1287,11 +1289,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				var d = this.getBusinessDataById();
 				d[ this.sectionBy ] = data || { data: [] };
 				this.setAllSectionData( d, fireChange , operation);
-
-				var obj = {};
-				obj[this.json.id] = {};
-				obj[this.json.id][this.sectionBy] = d[ this.sectionBy ];
-				this.saveFullData(obj);
 			}
 		},
 		/**
@@ -1337,6 +1334,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 
 			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
+
+			if( !operation ){
+				//this.saveFormData();
+				this.saveDataById();
+			}
 
 			this.lineList = [];
 			this.sectionlineList = [];
@@ -1839,8 +1841,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return this.json.id+i;
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
-			return;
-
+			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork()){
+				return;
+			}
 			if( this.isMergeRead ){ //合并且只读，不处理
 				return;
 			}
@@ -1849,7 +1852,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var originalData = this.getOriginalDataById();
 			if( !originalData ){
 				if( method === 'add' ){
-					this.saveFormData();
+					//this.saveFormData();
+					this.saveDataById();
 				}
 				return;
 			}
@@ -1857,7 +1861,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var oData = !!sectionBy ? originalData[ sectionBy ] : originalData;
 			if( !oData ){
 				if(method === 'add'){
-					this.saveFormData();
+					//this.saveFormData();
+					this.saveDataById();
 				}
 				return;
 			}
@@ -1870,20 +1875,20 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					toIndex: toIndex,
 					data: data,
 					path: this.json.id.split('..').join('.') + ( sectionBy ? ('.'+ sectionBy) : '' )
-				}, null, null, false
+				}, ()=>{
+					switch (type){
+						case 'addLine':
+							oData.push(Object.clone(data));
+							break;
+						case 'insertLine':
+							oData.splice(index, 0, Object.clone(data));
+							break;
+						case 'delete':
+							oData.splice(index, 1);
+							break;
+					}
+				}, null, false
 			);
-
-			switch (type){
-				case 'addLine':
-					oData.push(Object.clone(data));
-					break;
-				case 'insertLine':
-					oData.splice(index, 0, Object.clone(data));
-					break;
-				case 'delete':
-					oData.splice(index, 1);
-					break;
-			}
 		}
 	});
 
@@ -2303,6 +2308,10 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 						}.bind(this))
 					}else if( json.type==="Datatemplate" ){
 						this.subDatatemplateModuleList.push(module);
+					}else if( module.field && json.type!=="Datatable" ){
+						module.addEvent("change", function(){
+							this.saveDataById();
+						});
 					}
 
 					this.form.modules.push(module);
