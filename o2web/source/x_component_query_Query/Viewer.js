@@ -4309,20 +4309,32 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
             flag = flag && (!hideFlag);
         }
         if (readonly) if (!tool.read) flag = false;
+
+        var imgUrl, overImgUrl;
+        if( tool.customImg ){
+            var customPath = "../x_component_process_FormDesigner/Module/Actionbar/";
+            var customIconPath = this.json.customIconStyle ? (this.json.customIconStyle+ "/") : "";
+            imgUrl =  customPath+""+this.options.style+"/custom/"+customIconPath+tool.img;
+            overImgUrl = customPath+""+this.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img;
+        }else{
+            imgUrl = path+this.options.style+"/actionbar/"+ ( this.json.iconStyle || "default" ) +"/"+tool.img;
+            overImgUrl = path+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img;
+        }
+
         if (flag){
             var actionNode = new Element("div", {
                 "id": tool.id,
                 "MWFnodetype": tool.type,
                 //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
                 //"MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
-                "MWFButtonImage": this.json.iconType==="font" ? "" :  (path+this.options.style+"/actionbar/"+ ( this.json.iconStyle || "default" ) +"/"+tool.img),
+                "MWFButtonImage": this.json.iconType==="font" ? "" :  imgUrl,
                 "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
             }).inject(node);
             if( this.json.iconOverStyle ){
-                actionNode.set("MWFButtonImageOver" , path+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img );
+                actionNode.set("MWFButtonImageOver" , overImgUrl );
                 //actionNode.set("MWFButtonImageOver" , path+""+(this.options.style||"default")+"/tools/"+( this.json.iconOverStyle || "default" )+"/"+tool.img );
             }
             if( tool.properties ){

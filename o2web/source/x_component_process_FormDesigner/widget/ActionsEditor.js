@@ -399,6 +399,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
                         var icon = this.item.iconName;
                         _self.iconNode.set("class", "ooicon-"+icon);
                         _self.data.icon = icon;
+                        _self.iconNode.setStyle("background-image", "none");
                         _self.editor.fireEvent("change", [{
                             compareName: "."+icon + ".icon"
                         }]);
@@ -421,6 +422,12 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
                     var src = this.item.getElement("img").get("src");
                     _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
                     _self.data.customImg = true;
+                    if(_self.data.icon){
+                        if(_self.iconNode.hasClass(_self.data.icon)){
+                            _self.iconNode.removeClass(_self.data.icon);
+                        }
+                        delete _self.data.icon;
+                    }
                     _self.iconNode.setStyle("background-image", "url("+src+")");
                     _self.editor.fireEvent("change", [{
                         compareName: "."+_self.getName() + ".img"
