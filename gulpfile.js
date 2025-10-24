@@ -42,8 +42,9 @@ function check_language_pack(token){
 
 var downloadHost = "g.o2oa.net";
 var protocol = "https";
-// var commonUrl = "/o2oa/evn-o2server-commons/-/archive/9.3/evn-o2server-commons-9.2.tar.gz?path=commons";
+// var commonUrl = "/o2oa/evn-o2server-commons/-/archive/9.2/evn-o2server-commons-9.2.tar.gz?path=commons";
 var commonUrl = "/o2oa/evn-o2server-commons/-/archive/9.3-pro/evn-o2server-commons-9.3-pro.tar.gz?path=commons";
+                "/o2oa/evn-o2server-commons/-/archive/9.3-pro/evn-o2server-commons-9.3-pro.tar.gz?path=commons"
 var jvmUrls = {
     "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
     "linux_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux_java11",
@@ -292,7 +293,7 @@ function move_commons(){
     console.log(`---------------------------------------------------------------------
   . move commons files to o2server/commons ...
 ---------------------------------------------------------------------`);
-    return gulp.src("o2server/tmp/evn-o2server-commons-9.2-commons/commons/**/*")
+    return gulp.src("o2server/tmp/evn-o2server-commons-9.3-pro-commons/commons/**/*")
         .pipe(gulp.dest("o2server/commons/"));
 }
 function move_jvm(){
@@ -309,7 +310,7 @@ function move_jvm(){
         .pipe(gulp.dest("o2server/jvm/"));
 }
 async function clear_commons_git(cb) {
-    var dest = ['o2server/tmp/evn-o2server-commons-9.2-commons/', 'o2server/commons_git.tar.gz'];
+    var dest = ['o2server/tmp/evn-o2server-commons-9.3-pro-commons/', 'o2server/commons_git.tar.gz'];
     await del(dest, {force: true});
     cb();
 }
