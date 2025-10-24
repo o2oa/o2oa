@@ -1,12 +1,21 @@
 package com.x.query.core.express.plan;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.ApplicationBaseEntity;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.bean.tuple.Pair;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
+import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.Document_;
+import com.x.cms.core.entity.Review;
+import com.x.cms.core.entity.Review_;
+import com.x.query.core.entity.Item;
 import com.x.query.core.entity.ItemAccess;
+import com.x.query.core.entity.Item_;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,32 +25,18 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
 import javax.persistence.criteria.Subquery;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.tools.ListTools;
-import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.Document_;
-import com.x.cms.core.entity.Review;
-import com.x.cms.core.entity.Review_;
-import com.x.query.core.entity.Item;
-import com.x.query.core.entity.Item_;
 
 public class CmsPlan extends Plan {
 
@@ -104,8 +99,28 @@ public class CmsPlan extends Plan {
         this.selectList = list;
     }
 
-    Pair<List<String>, Long> listBundlePaging() throws Exception {
-        return Pair.of(this.listBundle(), 0L);
+    public Pair<List<String>, Long> listBundlePaging() throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            EntityManager em = emc.get(ApplicationBaseEntity.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<String> cq = cb.createQuery(String.class);
+            Root<Document> root = cq.from(Document.class);
+            cq.select(root.get(Document_.id))
+                    .where(this.where.documentPredicateV2(cb, root, cq, this.runtime, this.filterList));
+            Order order = cb.desc(root.get(Document_.publishTime));
+            if(BooleanUtils.isTrue(where.draft)){
+                order = cb.desc(root.get(JpaObject_.createTime));
+            }
+            cq.orderBy(order);
+            List<String> docIdList = em.createQuery(cq).setMaxResults(20).getResultList();
+
+            CriteriaQuery<Long> cq2 = cb.createQuery(Long.class);
+            Root<Document> root2 = cq2.from(Document.class);
+            cq2.select(cb.count(root2.get(Document_.id)))
+                    .where(this.where.documentPredicateV2(cb, root2, cq2, this.runtime, this.filterList));
+            Long count = em.createQuery(cq2).getSingleResult();
+            return Pair.of(docIdList, count);
+        }
     }
 
     @Override
@@ -152,7 +167,7 @@ public class CmsPlan extends Plan {
             CriteriaQuery<String> cq = cb.createQuery(String.class);
             Root<Document> root = cq.from(Document.class);
             cq.select(root.get(Document_.id))
-                    .where(this.where.documentPredicate(cb, root, cq, this.runtime, this.filterList));
+                    .where(this.where.documentPredicate(cb, root));
             List<String> docIds = em.createQuery(cq).getResultList();
             return docIds.stream().distinct().collect(Collectors.toList());
         }
@@ -285,8 +300,7 @@ public class CmsPlan extends Plan {
          * @return
          * @throws Exception
          */
-        private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root,
-                CriteriaQuery<String> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception {
+        private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root) throws Exception {
             List<Predicate> ps = new TreeList<>();
             ps.add(this.documentPredicateCreator(cb, root));
             ps.add(this.documentPredicateAppInfo(cb, root));
@@ -305,8 +319,34 @@ public class CmsPlan extends Plan {
             return cb.and(ps.toArray(new Predicate[]{}));
         }
 
+        private Predicate documentPredicateV2(CriteriaBuilder cb, Root<Document> root,
+                CriteriaQuery<?> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception {
+            List<Predicate> ps = new TreeList<>();
+            ps.add(this.documentPredicateCreator(cb, root));
+            ps.add(this.documentPredicateAppInfo(cb, root));
+            ps.add(this.documentPredicateDate(cb, root));
+            ps.add(this.documentPredicateDraft(cb, root));
+
+            Predicate predicate = this.documentPredicateTypeScope(cb, root);
+            if (predicate != null) {
+                ps.add(predicate);
+            }
+
+            ps = ListTools.trim(ps, true, false);
+            if (ps.isEmpty()) {
+                throw new Exception("where is empty.");
+            }
+            ps.add(this.assembleFilterPredicate(cb, root, cq, runtime, filterList));
+            ps.add(this.assembleFilterPredicate(cb, root, cq, runtime, runtime.filterList));
+            ps = ListTools.trim(ps, true, false);
+            return cb.and(ps.toArray(new Predicate[]{}));
+        }
+
         private Predicate assembleFilterPredicate(CriteriaBuilder cb, Root<? extends JpaObject> root,
-                CriteriaQuery<String> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception{
+                CriteriaQuery<?> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception{
+            if(ListTools.isEmpty(filterList)){
+                return null;
+            }
             List<Predicate> existsPredicates = new ArrayList<>();
             for (FilterEntry f : filterList) {
                 if(StringUtils.isEmpty(f.path)){
@@ -323,7 +363,7 @@ public class CmsPlan extends Plan {
                 }
                 existsPredicates.add(existsP);
             }
-            return null;
+            return cb.and(existsPredicates.toArray(new Predicate[0]));
         }
 
         private Predicate documentPredicateAppInfo(CriteriaBuilder cb, Root<Document> root)

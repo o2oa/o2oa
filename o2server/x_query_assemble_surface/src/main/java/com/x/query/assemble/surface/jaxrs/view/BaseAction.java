@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Person;
@@ -145,6 +146,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 			os = this.dealBundle(view, runtime, threadPool);
 		}
 		return os;
+	}
+
+	private Pair<List<String>, Long> dealBundleV2(View view, Runtime runtime, ExecutorService threadPool)
+			throws Exception {
+		CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+		cmsPlan.init(runtime, threadPool);
+		return cmsPlan.listBundlePaging();
+	}
+
+	protected Pair<List<String>, Long> fetchBundleV2(Business business, View view, Runtime runtime, ExecutorService threadPool)
+			throws Exception {
+		return this.dealBundleV2(view, runtime, threadPool);
 	}
 
 	public static class ExcelResultObject extends GsonPropertyObject {

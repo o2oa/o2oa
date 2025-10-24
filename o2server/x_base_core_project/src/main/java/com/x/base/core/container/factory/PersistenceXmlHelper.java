@@ -2,6 +2,7 @@ package com.x.base.core.container.factory;
 
 import com.x.base.core.entity.ApplicationBaseEntity;
 import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.StorageObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
@@ -169,13 +170,16 @@ public class PersistenceXmlHelper {
 			Element persistence = createPersistenceElement(document);
 			ClassLoader cl = (null == classLoader) ? Thread.currentThread().getContextClassLoader() : classLoader;
 
-			Element sliceUnit = persistence.addElement("persistence-unit");
-			sliceUnit.addAttribute("name", ApplicationBaseEntity.class.getName());
-			sliceUnit.addAttribute("transaction-type", "RESOURCE_LOCAL");
-			Element sliceProvider = sliceUnit.addElement("provider");
-			sliceProvider.addText(PersistenceProviderImpl.class.getName());
+			Element appUnit = persistence.addElement("persistence-unit");
+			appUnit.addAttribute("name", ApplicationBaseEntity.class.getName());
+			appUnit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+			Element appProvider = appUnit.addElement("provider");
+			appProvider.addText(PersistenceProviderImpl.class.getName());
+			appUnit.addElement("class").addText(StorageObject.class.getName());
+			appUnit.addElement("class").addText(JpaObject.class.getName());
+			appUnit.addElement("class").addText(SliceJpaObject.class.getName());
 			for (String className : names) {
-				sliceUnit.addElement("class").addText(className);
+				appUnit.addElement("class").addText(className);
 				name = className;
 				Class<? extends JpaObject> clazz = (Class<JpaObject>) cl.loadClass(className);
 				Element unit = persistence.addElement("persistence-unit");
@@ -186,9 +190,6 @@ public class PersistenceXmlHelper {
 				for (Class<?> o : JpaObjectTools.scanMappedSuperclass(clazz)) {
 					unit.addElement("class").addText(o.getName());
 				}
-			}
-			for (Class<?> o : JpaObjectTools.scanMappedSuperclass(ApplicationBaseEntity.class)) {
-				sliceUnit.addElement("class").addText(o.getName());
 			}
 			if (loadDynamicEntityClass) {
 				names.addAll(addDynamicClassCreateCombineUnit(persistence, cl));
