@@ -69,7 +69,7 @@ public class General extends ConfigObject {
 		o.supportedLanguages = DEFAULT_SUPPORTED_LANGUAGES;
 		o.graalvmEvalAsPromise = DEFAULT_GRAALVMEVALASPROMISE;
 		o.accessDenyUris = DEFAULT_ACCESSDENYURIS;
-		o.disableExportEnable = true;
+		o.disableExportEnable = false;
 		return o;
 	}
 
@@ -146,7 +146,7 @@ public class General extends ConfigObject {
 	private Boolean tableRowSelectEnable = DEFAULT_TABLEROWSELECTENABLE;
 
 	public Boolean getDisableExportEnable() {
-		return disableExportEnable == null || disableExportEnable;
+		return disableExportEnable != null && disableExportEnable;
 	}
 
 	public void setDisableExportEnable(Boolean disableExportEnable) {
