@@ -1648,27 +1648,34 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		});
 	},
 	openWorkInfo: function(e, data){
-		// var p = e.target.getPosition(this.app.content);
-		var infoContent = new Element("div");
-		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
-		var _self = this;
-		this.getReference(data).then(function(data){
-			//data.workLog = json.data;
-			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
-		});
-		this.infoDlg = o2.DL.open({
-			// "top": p.y,
-			// "left": p.x,
-			"container": this.app.content,
-			"title": this.lp.processInfo,
-			"style": "user",
-			"isResize": true,
-			"content": infoContent,
-			"maskNode": this.app.content,
-			"width": 800,
-			"height": 720
-		});
+		if (o2.isMediaMobile()){
+			debugger;
+			o2.api.form.openJob(data.job, true);
+		}else{
+			// var p = e.target.getPosition(this.app.content);
+			var infoContent = new Element("div");
+			var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
+
+			var _self = this;
+			this.getReference(data).then(function(data){
+				//data.workLog = json.data;
+				infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
+			});
+			this.infoDlg = o2.DL.open({
+				// "top": p.y,
+				// "left": p.x,
+				"container": this.app.content,
+				"title": this.lp.processInfo,
+				"style": "user",
+				"isResize": true,
+				"content": infoContent,
+				"maskNode": this.app.content,
+				"width": 800,
+				"height": 720
+			});
+		}
+		
 	},
 	attachShowPersonLog: function(e, data){
 		var inforNode = new Element("div.pf_workLogInfor");
@@ -1702,7 +1709,6 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		o2.api.form.openWork(data.id, "", data.title);
 	},
 	openJob: function(e, data){
-		debugger;
 		o2.api.form.openJob(data.item.job);
 	},
 	closeMoerLogPanel: function(logNode){

@@ -41,6 +41,7 @@ MWF.xDesktop.WebSocket = new Class({
         //this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
 
         this.connect();
+        debugger;
     },
 
     connect: function(){
@@ -245,7 +246,8 @@ MWF.xDesktop.WebSocket = new Class({
             this.webSocket.send(msg);
             this.checkRetry();
         }catch(e){
-            //console.log("send heartbeat error !!!");
+            console.log("send heartbeat error !!!");
+            console.log(e);
             if (this.serverCheck) window.clearTimeout(this.serverCheck);
             this.retry();
             //this.initialize();
