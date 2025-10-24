@@ -51,6 +51,12 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             if (callback) callback();
         }
     },
+    reload: function (){
+        this.maplists = {};
+        this.styleMaplists = {};
+        this.propertyContent.empty();
+        this.load();
+    },
     show: function () {
         if (!this.propertyContent) {
             this.getHtmlString(function () {

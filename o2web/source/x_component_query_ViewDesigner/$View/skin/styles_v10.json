@@ -103,7 +103,12 @@
     "styles": {
       "background-color": "#ffffff"
     },
-    "customIconStyle": ""
+    "customIconStyle": "",
+    "forceStyles" : {
+      "container" : {
+        "margin" : "0"
+      }
+    }
   },
   "paging" : {
     "style" : "v10",
