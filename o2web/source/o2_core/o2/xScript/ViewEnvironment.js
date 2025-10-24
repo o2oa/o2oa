@@ -4877,7 +4877,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 var len = workData.workList.length + workData.workCompletedList.length;
                 if (len){
                     if (len>1 && choice){
-                        var node = new Element("div", {"styles": {"padding": "20px", "width": "500px"}}).inject(_form.node);
+                        var node = new Element("div", {"styles": {"padding": "20px", "width": "500px"}}).inject(_form.node || _form.app.contentNode);
                         workData.workList.each(function(work){
                             var workNode = new Element("div", {
                                 "styles": {

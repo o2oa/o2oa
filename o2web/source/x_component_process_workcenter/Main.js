@@ -339,6 +339,10 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.appNode.show();
 	},
 	startProcess: function(){
+		if (o2.isMediaMobile()){
+			layout.startProcess();
+			return;
+		}
 		var startContent = new Element("div.st_area");
 		var url = this.path+this.options.style+"/view/dlg/start.html";
 		this.getStartData().then(function(data){
@@ -955,7 +959,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	gotoPage: function(page, notHide){
 		this.page = page;
-		this.hide();
+		if (!notHide) this.hide();
 		this.app.showSkeleton();
 		this.load(null, notHide);
 		//this.loadPage();
@@ -979,7 +983,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 				this.app.listContentNode.addEvent("scroll", ()=>{
 					o2.defer(this.mobile_loadCheckFun)	
 				});
-				this.mobile_loadCheck();
+				// this.mobile_loadCheck();
 			}
 			
 		}.bind(this));
@@ -1651,7 +1655,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 
 		if (o2.isMediaMobile()){
 			debugger;
-			o2.api.form.openJob(data.job, true);
+			o2.api.form.openJob(data.job);
 		}else{
 			// var p = e.target.getPosition(this.app.content);
 			var infoContent = new Element("div");

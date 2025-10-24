@@ -1264,6 +1264,6 @@
         height: 1.25rem;
     }
     .contentBottom{
-        display: none;
+        /* display: none; */
     }
 }
