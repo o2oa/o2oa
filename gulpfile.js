@@ -42,7 +42,7 @@ function check_language_pack(token){
 
 var downloadHost = "g.o2oa.net";
 var protocol = "https";
-var commonUrl = "/o2oa/evn-o2server-commons/-/archive/9.2/evn-o2server-commons-9.2.tar.gz?path=commons";
+var commonUrl = "/o2oa/evn-o2server-commons/-/archive/9.3/evn-o2server-commons-9.3.tar.gz?path=commons";
 var jvmUrls = {
     "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
     "linux_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux_java11",
