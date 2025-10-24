@@ -727,3 +727,213 @@ o2.openWindow = function(url){
     a.click();
     a.destroy();
 }
+
+
+function getStartableProcess(app) {
+    const client = layout.mobile ? 'mobile' : 'client';
+    return o2.Actions.load('x_processplatform_assemble_surface').ApplicationAction.listWithPersonAndTerminal(client).then((json) => {
+        if (app) {
+            const apps = Array.isArray(app) ? app : [app];
+            json.data = json.data.filter((a) => {
+                return (apps.includes(a.name) || apps.includes(a.id) || apps.includes(a.alias))
+            });
+        }
+        return json;
+    });
+}
+
+function getNaviData(data) {
+    const menu = [];
+    let n = 0;
+    data.forEach((app) => {
+        const categoryName = app.applicationCategory || '未分类';
+        let category = menu.find((m) => {
+            return m.text === categoryName
+        });
+        if (!category) {
+            category = {
+                type: 'category',
+                name: categoryName,
+                title: categoryName,
+                text: categoryName,
+                count: 0,
+                expanded: true,
+                selectable: 'yes',
+                children: []
+            }
+            menu.push(category);
+        }
+        category.count += app.processList.length;
+
+
+        category.children.push({
+            "name": app.id,
+            "img": app.icon ? `data:image/png;base64,${app.icon}` : `../x_component_process_ApplicationExplorer/$Main/default/icon/application.png`,
+            "title": app.name,
+            "text": app.name,
+            "count": app.processList.length
+        });
+        n += app.processList.length;
+    });
+    menu.unshift({
+        "img": `../x_component_process_ApplicationExplorer/$Main/default/icon/application.png`,
+        "title": '全部',
+        "text": '全部',
+        "selected": true,
+        "count": n
+    });
+
+    return menu;
+}
+
+function setNaviAction(navi, processArea, processData, input, dlg) {
+    navi.addEventListener('active', (e) => {
+        if (input.value) {
+            input.value = '';
+            createStartableProcess(processData, processArea, dlg);
+        }
+
+        const data = e.detail.data;
+
+        if (!data.name) {
+            const nodes = processArea.getElements('.index-starter-process-application');
+            nodes.setStyle('display', 'block');
+        } else {
+            const nodes = processArea.getElements('.index-starter-process-application');
+            nodes.setStyle('display', 'none');
+
+            if (data.type === 'category') {
+                const nodes = processArea.getElements(`.index-starter-process-application[data-category-name="${data.name}"]`);
+                nodes.setStyle('display', 'block');
+            } else {
+                const nodes = processArea.getElements(`.index-starter-process-application[data-application-name="${data.name}"]`);
+                nodes.setStyle('display', 'block');
+            }
+        }
+    })
+}
+
+function createStartableProcess(data, node, options, dlg) {
+    node.empty();
+    data.forEach((app) => {
+        let processHtml = '';
+
+        app.processList.forEach((process) => {
+            processHtml += `
+                <dl data-process-id="${process.id}" data-application-id="${process.application}" data-title="${process.name}">
+                    <dt><div>${process.name}</div><div class="ooicon-arrow_forward"></div></dt>
+                    <dd>${process.description || '此流程没有描述'}</dd>
+                </dl>
+            `
+        });
+
+        const html = `
+            <div class="index-starter-process-application" data-application-name="${app.id}" data-category-name="${app.applicationCategory || '未分类'}">
+                <div class="index-starter-process-application-title">${app.name}</div>
+                <div class="index-starter-process-area">
+                    ${processHtml}
+                </div>
+            </div>
+        `
+        node.insertAdjacentHTML('beforeend', html);
+        const currentNode = node.getLast();
+        const dls = currentNode.getElements('dl');
+        dls.forEach((dl) => {
+            $OOUI.tooltip(dl.dataset.title, dl);
+            dl.addEvent('click', (e) => {
+                dlg.close();
+                const id = e.event.currentTarget.dataset.processId;
+                const app = e.event.currentTarget.dataset.applicationId;
+                if (id) {
+                    let { data, identity, callback, target, latest, afterCreated, skipDraftCheck } = options;
+                    o2.api.page.startProcess(app, id, data, identity, callback, target, latest, afterCreated, skipDraftCheck)
+                }
+            });
+        });
+    });
+}
+function searchProcess(key, processData, processArea, options, dlg, app) {
+    if (key) {
+        const keyWord = key.toString().toLowerCase();
+        const searchData = [{
+            name: '“' + key + '” 的搜索结果',
+            processList: []
+        }];
+        processData.forEach((app) => {
+            app.processList.forEach((process) => {
+                if (process.name.toLowerCase().includes(keyWord)) {
+                    searchData[0].processList.push(process);
+                }
+            });
+        });
+        createStartableProcess(searchData, processArea, options, dlg);
+    }else{
+        getStartableProcess(app).then((json) => {
+            createStartableProcess(json.data, processArea, options, dlg);
+        });
+    }
+}
+
+layout.startProcess = function (app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck) {
+    const options = { app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck };
+
+    if (app && process) {
+        o2.api.page.startProcess(app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck);
+    } else {
+        const content = new Element('div.index-process-starter');
+        const html = `
+        <div class="index-starter-navi">
+            <oo-nav searchable="false"></oo-nav>
+        </div>
+        <div class="index-starter-area">
+            <div class="index-starter-search">
+                <oo-input type="search" left-icon="search" style="width:100%" placeholder="输入关键字，搜索可启动流程"></oo-input>
+            </div>
+            <div class="index-starter-content"></div>
+            <div class="index-starter-buttons">
+                <oo-button type="cancel" text="取消"></oo-button>
+            </div>
+        </div>
+    `;
+        content.innerHTML = html;
+
+        const p = $OOUI.dialog('', content, 
+            o2.isMediaMobile() ? null : (layout.desktop.currentApp || layout.desktop.app).node, 
+            {
+                buttons: '',
+                skin: 'body-padding: 1em 0',
+                width: o2.isMediaMobile() ? '100%' : '72em',
+                height: o2.isMediaMobile() ? '100%' : '46em',
+                canResize: true,
+                canClose: false,
+                closeOnModalClick: true
+            }
+        );
+
+        const cancelButton = content.querySelector('.index-starter-buttons>oo-button')
+        cancelButton.addEvent('click', ()=>{
+             p.dlg.close();
+        });
+
+        getStartableProcess(app).then((json) => {
+            const processData = json.data;
+
+            const menu = getNaviData(json.data);
+            const navi = content.querySelector('oo-nav');
+            navi.setMenu(menu);
+
+            const processArea = content.querySelector('.index-starter-content');
+            createStartableProcess(json.data, processArea, options, p.dlg);
+
+            //搜索
+            const input = content.querySelector('oo-input');
+            input.addEvent('keydown', (e) => {
+                if (e.key === 'enter') {
+                    searchProcess(e.target.value, processData, processArea, options, p.dlg, app);
+                }
+            })
+
+            setNaviAction(navi, processArea, processData, input, p.dlg);
+        });
+    }
+}
