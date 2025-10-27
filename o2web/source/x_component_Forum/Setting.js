@@ -547,9 +547,11 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
 
         this.app.restActions.saveCategory( data, function(json){
             this.saveRole( json.data.id, function(){
-                if( callback )callback(json);
-                this.fireEvent("postOk")
-            }.bind(this))
+                this.app.reloadController(function(){
+                    if( callback )callback(json);
+                    this.fireEvent("postOk");
+                }.bind(this));
+            }.bind(this));
         }.bind(this));
     },
     saveRole : function( id, callback ){
@@ -1541,15 +1543,22 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             if( this.formData ){
                 this.saveIcon( json.data.id, function(){
                     this.saveRole( json.data.id, function( data ){
-                        if( callback )callback(json);
+                        this.app.reloadController(function(){
+                            if( callback )callback(json);
+                            this.fireEvent("postOk")
+                        }.bind(this));
                     }.bind(this) )
                 }.bind(this) );
             }else{
                 this.saveRole( json.data.id, function( data ){
-                    if( callback )callback(json);
+                    //if( callback )callback(json);
+                    this.app.reloadController(function(){
+                        if( callback )callback(json);
+                        this.fireEvent("postOk")
+                    }.bind(this));
                 }.bind(this) )
             }
-            this.fireEvent("postOk")
+            // this.fireEvent("postOk")
         }.bind(this));
     },
     setFormNodeSize: function (width, height, top, left) {

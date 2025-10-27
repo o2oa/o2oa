@@ -6,7 +6,7 @@ MWF.xDesktop.requireApp("Calendar", "Common", null, false);
 MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
 MWF.xApplication.Calendar.options.multitask = false;
 MWFCalendar.LeftNaviWidth = 250;
-MWF.xApplication.Calendar.Main = new Class({
+MWF.xApplication.Calendar.MainPc = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
 
@@ -693,6 +693,110 @@ MWF.xApplication.Calendar.Main = new Class({
         return false;
     }
 });
+const O2_CALENDAR_FORMAT_DATE = '%Y-%m-%d';
+MWF.xApplication.Calendar.MainMobile = new Class({
+    Extends: MWF.xApplication.Calendar.MainPc,
+    options: {
+        "style": "mobile"
+    },
+    createNode: function (){},
+    loadLayout: function( data ){
+        this.content.setStyle("overflow", "hidden");
+        this.node = new Element("div", {
+            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+        }).inject(this.content);
+        this.node.loadCss(`/x_component_Calendar/$Main/${this.options.style}/style.css`)
+        this.node.loadHtml(
+            `/x_component_Calendar/$Main/${this.options.style}/main.html`,
+            {
+                module: this,
+                bind: {
+                    lp: this.lp
+                }
+            },
+            ()=>{
+                this.loadCalendar();
+            }
+        );
+    },
+    loadCalendar: function(){
+        this.calendarArea.loadHtml(
+            `/x_component_Calendar/$Main/${this.options.style}/calendar.html`,
+            {
+                module: this,
+                bind: {
+                    lp: this.lp,
+                    weekBegin: this.calendarConfig.weekBegin
+                }
+            },
+            ()=>{
+                this.listMonthView()
+            }
+        );
+    },
+    listMonthView: function( callback ){
+        const {myCalendars, unitCalendars, followCalendars} =  this.canlendarData;
+        const range = this.getCalendarRange();
+        return this.actions.listEventWithFilter( {
+            calendarIds : [...myCalendars, ...unitCalendars, ...followCalendars].map(c=>{return c.id;}),
+            startTime : range.startTime,
+            endTime : range.endTime,
+        }, function(json){
+            const data = json.data;
+
+            if (data.wholeDayEvents && data.wholeDayEvents.length) {
+                const first = new Date(range.startTime).clearTime();
+                const last = new Date(range.endTime).clearTime();
+
+                data.wholeDayEvents.forEach((ev) => {
+                    const start = new Date(ev.startTime).clearTime();
+                    const end = new Date(ev.endTime).clearTime();
+                    let d = (start > first) ? start.clone() : first.clone();
+
+                    while (d <= end && d <= last) {
+                        //在日历上标记日程标识
+                        this.setCalenderFlag(d.format( O2_CALENDAR_FORMAT_DATE ));
+                        d.increment('day', 1);
+                    }
+                });
+            }
+            if (data.inOneDayEvents && data.inOneDayEvents.length) {
+                data.inOneDayEvents.forEach(function (e) {
+                    if (e.inOneDayEvents && e.inOneDayEvents.length) {
+                        this.setCalenderFlag(new Date(e.eventDate).format( O2_CALENDAR_FORMAT_DATE ));
+                    }
+                }.bind(this));
+            }
+            if(callback)callback();
+        }.bind(this));
+    },
+    getCalendarRange: function () {
+        //获取当前日历的时间范围
+        const firstDayTd = this.calendar.shadowRoot.querySelector('table.dateContent td[data-date-value]');
+        const date = new Date(firstDayTd.dataset.dateValue).clearTime();
+        const startTime = date.format('db');
+
+        date.increment('day', 41);
+        date.setHours(23);
+        date.setMinutes(59);
+        date.setSeconds(59);
+        const endTime = date.format('db');
+        return { startTime, endTime }
+    },
+    setCalenderFlag: function (name) {
+        const flat = this.calendar.querySelector('div[slot="' + name + '"]');
+        if (!flat) {
+            const point = new Element('div.ooicon-pentagram_fill', { 'slot': name });
+            this.calendar.appendChild(point);
+        }
+    }
+});
+
+if ((layout.mobile || COMMON.Browser.Platform.isMobile)){
+    MWF.xApplication.Calendar.Main = MWF.xApplication.Calendar.MainMobile;
+}else{
+    MWF.xApplication.Calendar.Main = MWF.xApplication.Calendar.MainPc;
+}
 
 MWF.xApplication.Calendar.Navi = new Class({
     Implements: [Options, Events],
