@@ -47,7 +47,6 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         this.json.customIconOverStyle = "";
     },
     setAllStyles: function(){
-        debugger;
         this.json.actionStyles = {};
         this._resetActionbar();
         if(this.property){
