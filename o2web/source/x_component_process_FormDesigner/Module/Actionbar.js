@@ -34,7 +34,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 	},
     setTemplateStyles: function(styles){
         this.json.style = styles.style;
-        this.json.iconType = styles.iconType;
+        this.json.iconType = styles.iconType || "";
         this.json.iconOverStyle = styles.iconOverStyle || "";
         this.json.customIconStyle = styles.customIconStyle;
         this.json.customIconOverStyle = styles.customIconOverStyle || "";
@@ -47,7 +47,12 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         this.json.customIconOverStyle = "";
     },
     setAllStyles: function(){
+        debugger;
+        this.json.actionStyles = {};
         this._resetActionbar();
+        if(this.property){
+            this.property.reset();
+        }
     },
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
