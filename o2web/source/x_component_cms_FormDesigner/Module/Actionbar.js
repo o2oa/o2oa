@@ -79,8 +79,12 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		this.json.customIconOverStyle = "white";
 	},
 	setAllStyles: function(){
+		this.json.actionStyles = {};
 		//this._refreshActionbar();
 		this._resetActionbar();
+		if(this.property){
+			this.property.reset();
+		}
 	},
 	_createNode: function(callback){
 		this.node = new Element("div.form-toolbar-area", {
