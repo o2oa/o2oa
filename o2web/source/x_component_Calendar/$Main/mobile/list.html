@@ -1,0 +1,35 @@
+<div>
+  {{if $.data.length === 0}}
+  <div class="empty">
+    <div class="ooempty-wuricheng empty-icon"></div>
+    <div>{{$.lp.noEvent}}</div>
+  </div>
+  {{end if}}
+
+  {{if $.data.length > 0}}
+    <div class="info">
+        蔡祥熠，您好！当日有
+        <div class="info-count">{{$.data.length}}</div>
+        个日程！
+    </div>
+    <div>
+      {{each $.data}}
+      <div class="item">
+        <div class="item-line">
+          <div class="item-flag" style="background-color: {{$.color}}"></div>
+          <div class="item-line-text">{{$.title}}</div>
+        </div>
+        <div style="justify-content: space-between;" class="item-line">
+          <div class="item-time">{{$.range.start}} - {{$.range.end}}</div>
+          <div class="item-status" style="background-color: {{$.statusColor}}">
+            {{$.status}}
+          </div>
+        </div>
+        <div >
+          <div>{{$.locationName || $.lp.noAddress}}</div>
+        </div>
+      </div>
+      {{end each}}
+    </div>
+  {{end if}}
+</div>

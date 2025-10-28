@@ -1,8 +1,16 @@
 <header>
-    <div class="ooicon-back"></div>
+    <div class="ooicon-process-goback header-icon"></div>
     <div class="header-title">{{$.lp.title}}</div>
     <div class="header-create">{{$.lp.addEvent}}</div>
     <div class="header-calendar">{{$.lp.calendar}}</div>
 </header>
-<div data-o2-element="calendarArea">
+<div data-o2-element="calendarArea" class="calendar-area">
+    <oo-calendar
+            mode="date"
+            value="{{$.defaultDate}}"
+            week-begin="{{$.weekBegin}}"
+            data-o2-element="calendar"
+            data-o2-events="viewchange:handleViewChange;change:handleValueChange">
+    </oo-calendar>
 </div>
+<div data-o2-element="eventArea"></div>

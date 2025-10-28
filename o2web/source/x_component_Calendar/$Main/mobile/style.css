@@ -1,4 +1,114 @@
 header{
     display: flex;
     gap: 1rem;
+    align-items: center;
+    height: 3.5rem;
+    background-color: var(--oo-color-main);
+    color: var(--oo-color-text-white);
+    box-shadow: var(--oo-menu-shadow);
+}
+.header-icon{
+    font-size: var(--oo-font-size-large);
+    padding: 0 1rem;
+}
+.header-title{
+    font-size: var(--oo-font-size-larger);
+    flex: 1;
+    text-align: center;
+}
+.header-create{
+    font-size: var(--oo-font-size-large);
+    padding-right: 1rem;
+}
+.header-calendar{
+    font-size: var(--oo-font-size-large);
+    padding-right: 1rem;
+}
+.ooicon-pentagram_fill {
+    position: absolute;
+    font-size: 0.3rem;
+    margin-top: 8em;
+    color: red;
+}
+.calendar-area{
+    font-size: var(--oo-font-size-default);
+}
+oo-calendar{
+    width: calc(100% - 1rem);
+    box-shadow: none;
+}
+
+.info{
+    padding: 0 1em 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+.info-count{
+    height: 1.5em;
+    width: 1.5em;
+    background-color: var(--oo-color-highlight);
+    color: #ffffff;
+    text-align: center;
+    border-radius: 100%;
+    line-height: 1.5em;
+}
+
+.item{
+    padding: 1.25em;
+    background-color: #f9f9f9;
+    border-radius: var(--oo-default-radius);
+    margin-bottom: 1em;
+    cursor: pointer;
+}
+.item-line{
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.item-line-text{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 1;
+    font-size: 1.125rem;
+}
+.item-flag {
+    width: 1em;
+    height: 1em;
+    flex: 0 0 1em;
+    border-radius: var(--oo-default-radius);
+}
+.item-time {
+    font-family: D-DIN-PRO, 华文中宋;
+    font-weight: 800;
+    font-size: 1.75em;
+    text-align: left;
+    padding: 0.5em 0;
+}
+.item-status{
+    padding: 0.3em 0.5em;
+    border-radius: var(--oo-default-radius);
+    color: rgb(255, 255, 255);
+    background-color: var(--oo-color-success);
+}
+
+.empty{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 2rem;
+    color: var(--oo-color-gray1);
+}
+.empty-icon{
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    font-size: 6em;
+    line-height: 1;
+    color: var(--oo-color-gray-e);
 }

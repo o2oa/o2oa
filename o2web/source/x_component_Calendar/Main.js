@@ -694,13 +694,18 @@ MWF.xApplication.Calendar.MainPc = new Class({
     }
 });
 const O2_CALENDAR_FORMAT_DATE = '%Y-%m-%d';
+const O2_CALENDAR_FORMAT_TIME = '%H:%M';
 MWF.xApplication.Calendar.MainMobile = new Class({
     Extends: MWF.xApplication.Calendar.MainPc,
     options: {
-        "style": "mobile"
+        "style": "mobile",
+        "baseDate": ''
     },
     createNode: function (){},
     loadLayout: function( data ){
+        if( !this.options.baseDate ){
+            this.options.baseDate = new Date().format(O2_CALENDAR_FORMAT_DATE);
+        }
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div", {
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
@@ -711,32 +716,30 @@ MWF.xApplication.Calendar.MainMobile = new Class({
             {
                 module: this,
                 bind: {
-                    lp: this.lp
-                }
-            },
-            ()=>{
-                this.loadCalendar();
-            }
-        );
-    },
-    loadCalendar: function(){
-        this.calendarArea.loadHtml(
-            `/x_component_Calendar/$Main/${this.options.style}/calendar.html`,
-            {
-                module: this,
-                bind: {
                     lp: this.lp,
-                    weekBegin: this.calendarConfig.weekBegin
+                    weekBegin: this.calendarConfig.weekBegin || 1,
+                    defaultDate: this.options.baseDate
                 }
             },
             ()=>{
-                this.listMonthView()
+                this.loadFlags();
+                this.loadEvents(this.options.baseDate);
             }
         );
     },
-    listMonthView: function( callback ){
+    handleViewChange: function(e){
+        const detail = e.detail;
+        if( detail.view === 'date'){
+            const els = this.calendar.querySelectorAll('.event-flag');
+            els.forEach(el=>el.destroy());
+            this.loadFlags(null, {
+                startTime: `${detail.range[0]} 00:00:00`,
+                endTime: `${detail.range[1]} 23:59:59`
+            })
+        }
+    },
+    loadFlags: function( callback, range = this.getRange() ){
         const {myCalendars, unitCalendars, followCalendars} =  this.canlendarData;
-        const range = this.getCalendarRange();
         return this.actions.listEventWithFilter( {
             calendarIds : [...myCalendars, ...unitCalendars, ...followCalendars].map(c=>{return c.id;}),
             startTime : range.startTime,
@@ -755,7 +758,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
 
                     while (d <= end && d <= last) {
                         //在日历上标记日程标识
-                        this.setCalenderFlag(d.format( O2_CALENDAR_FORMAT_DATE ));
+                        this.setFlag(d.format( O2_CALENDAR_FORMAT_DATE ));
                         d.increment('day', 1);
                     }
                 });
@@ -763,32 +766,70 @@ MWF.xApplication.Calendar.MainMobile = new Class({
             if (data.inOneDayEvents && data.inOneDayEvents.length) {
                 data.inOneDayEvents.forEach(function (e) {
                     if (e.inOneDayEvents && e.inOneDayEvents.length) {
-                        this.setCalenderFlag(new Date(e.eventDate).format( O2_CALENDAR_FORMAT_DATE ));
+                        this.setFlag(new Date(e.eventDate).format( O2_CALENDAR_FORMAT_DATE ));
                     }
                 }.bind(this));
             }
             if(callback)callback();
         }.bind(this));
     },
-    getCalendarRange: function () {
-        //获取当前日历的时间范围
-        const firstDayTd = this.calendar.shadowRoot.querySelector('table.dateContent td[data-date-value]');
-        const date = new Date(firstDayTd.dataset.dateValue).clearTime();
-        const startTime = date.format('db');
-
-        date.increment('day', 41);
-        date.setHours(23);
-        date.setMinutes(59);
-        date.setSeconds(59);
-        const endTime = date.format('db');
-        return { startTime, endTime }
+    getRange: function () {
+        const detail = this.calendar.viewStatus;
+        return {
+            startTime: `${detail.range[0]} 00:00:00`,
+            endTime: `${detail.range[1]} 23:59:59`
+        }
     },
-    setCalenderFlag: function (name) {
+    setFlag: function (name) {
         const flat = this.calendar.querySelector('div[slot="' + name + '"]');
         if (!flat) {
-            const point = new Element('div.ooicon-pentagram_fill', { 'slot': name });
+            const point = new Element('div.ooicon-pentagram_fill.event-flag', { 'slot': name });
             this.calendar.appendChild(point);
         }
+    },
+    handleValueChange: function (e){
+        this.loadEvents(e.detail.value);
+    },
+    loadEvents: function( dateString ){
+        const p = o2.Actions.load('x_calendar_assemble_control').Calendar_EventAction.listWithFilterSample({
+            startTime: `${dateString} 00:00:00`,
+            endTime: `${dateString} 23:59:59`
+        }).then((json)=>{
+            json.data = json.data.map((d)=>{
+                const start = new Date(d.startTime);
+                const end = new Date(d.endTime);
+                d.range = {
+                    start: start.format(O2_CALENDAR_FORMAT_TIME),
+                    end: end.format(O2_CALENDAR_FORMAT_TIME),
+                }
+                const now = new Date();
+                if (start > now) {
+                    d.statusColor='var(--oo-color-success)';
+                    d.status = this.lp.status.wait;
+                }else if (start <= now && now <= end) {
+                    d.statusColor=='var(--oo-color-main)';
+                    d.status = this.lp.status.doing;
+                }else if (end < now) {
+                    d.statusColor='var(--oo-color-gray-9)';
+                    d.status = this.lp.status.finish;
+                }
+                return d;
+            })
+            return json;
+        })
+        p.then( (json) => {
+            this.eventArea.empty();
+            this.eventArea.loadHtml(
+                `/x_component_Calendar/$Main/${this.options.style}/list.html`,
+                {
+                    module: this,
+                    bind: {
+                        lp: this.lp,
+                        data: json.data
+                    }
+                }
+            );
+        })
     }
 });
 
