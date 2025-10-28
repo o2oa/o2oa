@@ -155,7 +155,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return cmsPlan.listBundlePaging();
 	}
 
-	protected Pair<List<String>, Long> fetchBundleV2(Business business, View view, Runtime runtime, ExecutorService threadPool)
+	protected Pair<List<String>, Long> fetchBundleV2(View view, Runtime runtime, ExecutorService threadPool)
 			throws Exception {
 		return this.dealBundleV2(view, runtime, threadPool);
 	}

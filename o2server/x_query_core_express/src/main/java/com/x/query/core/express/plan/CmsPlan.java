@@ -5,8 +5,12 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.ApplicationBaseEntity;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.JpaObject_;
+import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
@@ -41,6 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 public class CmsPlan extends Plan {
 
     private static final long serialVersionUID = -752841556895959631L;
+    private static final Logger logger = LoggerFactory.getLogger(CmsPlan.class);
 
     public CmsPlan() {
         this.selectList = new SelectEntries();
@@ -107,19 +112,50 @@ public class CmsPlan extends Plan {
             Root<Document> root = cq.from(Document.class);
             cq.select(root.get(Document_.id))
                     .where(this.where.documentPredicateV2(cb, root, cq, this.runtime, this.filterList));
-            Order order = cb.desc(root.get(Document_.publishTime));
-            if(BooleanUtils.isTrue(where.draft)){
-                order = cb.desc(root.get(JpaObject_.createTime));
+            List<Order> orderList = new TreeList<>();
+            this.joinPagingOrder(orderList, cb, root, cq);
+            if(orderList.isEmpty()) {
+                Order order = cb.desc(root.get(Document_.publishTime));
+                if (BooleanUtils.isTrue(where.draft)) {
+                    order = cb.desc(root.get(JpaObject_.createTime));
+                }
+                orderList.add(order);
             }
-            cq.orderBy(order);
-            List<String> docIdList = em.createQuery(cq).setMaxResults(20).getResultList();
+            cq.orderBy(orderList.toArray(new Order[0]));
+            int startPosition = (this.runtime.page == null || this.runtime.page < 1) ? 0 : (this.runtime.page - 1) * this.runtime.count;
+            long start = System.currentTimeMillis();
+            List<String> docIdList = em.createQuery(cq).setFirstResult(startPosition).setMaxResults(this.runtime.count).getResultList();
+            logger.info("listBundlePaging cost:{}", System.currentTimeMillis() - start);
 
             CriteriaQuery<Long> cq2 = cb.createQuery(Long.class);
             Root<Document> root2 = cq2.from(Document.class);
             cq2.select(cb.count(root2.get(Document_.id)))
                     .where(this.where.documentPredicateV2(cb, root2, cq2, this.runtime, this.filterList));
+            start = System.currentTimeMillis();
             Long count = em.createQuery(cq2).getSingleResult();
+            logger.info("listBundlePaging count cost:{}", System.currentTimeMillis() - start);
             return Pair.of(docIdList, count);
+        }
+    }
+
+    private void joinPagingOrder(List<Order> orderList, CriteriaBuilder cb, Root<? extends JpaObject> root, CriteriaQuery<?> cq){
+        this.orderList = this.listOrderSelectEntry();
+        for (SelectEntry selectEntry : this.orderList) {
+            if (StringUtils.isBlank(selectEntry.path)) {
+                continue;
+            }
+            String[] paths = StringUtils.split(selectEntry.path, XGsonBuilder.PATH_DOT);
+            Subquery<String> sortSubquery = cq.subquery(String.class);
+            Root<Item> sortRoot = sortSubquery.from(Item.class);
+            Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME), root.get(JpaObject.id_FIELDNAME));
+            for (int i = 0; i < paths.length; i++) {
+                if(StringUtils.isNotBlank(paths[i]) && !FilterEntry.WILDCARD.equals(paths[i])) {
+                    p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));
+                }
+            }
+            sortSubquery.select(sortRoot.get(DataItem.stringShortValue_FIELDNAME)).where(p);
+            Order order = StringUtils.equals(SelectEntry.ORDER_ASC, selectEntry.orderType) ? cb.asc(sortSubquery) : cb.desc(sortSubquery);
+            orderList.add(order);
         }
     }
 
@@ -336,9 +372,21 @@ public class CmsPlan extends Plan {
             if (ps.isEmpty()) {
                 throw new Exception("where is empty.");
             }
+            //业务字段过滤
             ps.add(this.assembleFilterPredicate(cb, root, cq, runtime, filterList));
             ps.add(this.assembleFilterPredicate(cb, root, cq, runtime, runtime.filterList));
             ps = ListTools.trim(ps, true, false);
+            //权限过滤
+            if (BooleanUtils.isTrue(this.accessible) && StringUtils.isNotEmpty(runtime.person)
+                    && !OrganizationDefinition.isSystemUser(runtime.person)) {
+                Subquery<Long> subquery = cq.subquery(Long.class);
+                Root<Review> itemRoot = subquery.from(Review.class);
+                Predicate subP = cb.equal(itemRoot.get(Review_.docId), root.get(JpaObject.id_FIELDNAME));
+                subP = cb.and(subP, cb.or(cb.equal(itemRoot.get(Review_.permissionObj), runtime.person),
+                        cb.equal(itemRoot.get(Review_.permissionObj), "*")));
+                subquery.select(cb.literal(1L)).where(subP);
+                ps.add(cb.exists(subquery));
+            }
             return cb.and(ps.toArray(new Predicate[]{}));
         }
 

@@ -240,7 +240,7 @@ public abstract class Plan extends GsonPropertyObject {
 		this.group = this.findGroupSelectEntry();
 		this.orderList = this.listOrderSelectEntry();
 		List<String> bundles = null;
-		if ((null != this.runtime) && (ListTools.isNotEmpty(runtime.bundleList))) {
+		if (null != this.runtime && (ListTools.isNotEmpty(this.runtime.bundleList) || this.runtime.hasBundle)) {
 			bundles = this.runtime.bundleList;
 		} else {
 			bundles = this.listBundle();
@@ -399,7 +399,7 @@ public abstract class Plan extends GsonPropertyObject {
 		return null;
 	}
 
-	private List<SelectEntry> listOrderSelectEntry() {
+	protected List<SelectEntry> listOrderSelectEntry() {
 		List<SelectEntry> list = new TreeList<>();
 		if ((null != runtime.orderList) && (!runtime.orderList.isEmpty())) {
 			list.addAll(runtime.orderList);
