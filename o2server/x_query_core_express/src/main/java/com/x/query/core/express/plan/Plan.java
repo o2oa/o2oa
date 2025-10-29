@@ -2,6 +2,8 @@ package com.x.query.core.express.plan;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemPrimitiveType;
 import com.x.base.core.entity.dataitem.ItemStringValueType;
@@ -11,6 +13,7 @@ import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -49,6 +52,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
@@ -184,6 +188,8 @@ public abstract class Plan extends GsonPropertyObject {
 	abstract void adjust() throws Exception;
 
 	abstract List<String> listBundle() throws Exception;
+
+	public abstract Pair<List<String>, Long> listBundlePaging() throws Exception;
 
 	abstract Map<String, Pair<List<ItemAccess>, String>> listBundleItemAccess(List<String> bundles) throws Exception;
 
@@ -453,6 +459,27 @@ public abstract class Plan extends GsonPropertyObject {
 			list.forEach(em::detach);
 			CacheManager.put(itemCache, cacheKey, list);
 			return list;
+		}
+	}
+
+	protected void joinPagingOrder(List<Order> orderList, CriteriaBuilder cb, Root<? extends JpaObject> root, CriteriaQuery<?> cq){
+		this.orderList = this.listOrderSelectEntry();
+		for (SelectEntry selectEntry : this.orderList) {
+			if (StringUtils.isBlank(selectEntry.path)) {
+				continue;
+			}
+			String[] paths = StringUtils.split(selectEntry.path, XGsonBuilder.PATH_DOT);
+			Subquery<String> sortSubquery = cq.subquery(String.class);
+			Root<Item> sortRoot = sortSubquery.from(Item.class);
+			Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME), root.get(JpaObject.id_FIELDNAME));
+			for (int i = 0; i < paths.length; i++) {
+				if(StringUtils.isNotBlank(paths[i]) && !FilterEntry.WILDCARD.equals(paths[i])) {
+					p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));
+				}
+			}
+			sortSubquery.select(sortRoot.get(DataItem.stringShortValue_FIELDNAME)).where(p);
+			Order order = StringUtils.equals(SelectEntry.ORDER_ASC, selectEntry.orderType) ? cb.asc(sortSubquery) : cb.desc(sortSubquery);
+			orderList.add(order);
 		}
 	}
 

@@ -150,9 +150,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private Pair<List<String>, Long> dealBundleV2(View view, Runtime runtime, ExecutorService threadPool)
 			throws Exception {
-		CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-		cmsPlan.init(runtime, threadPool);
-		return cmsPlan.listBundlePaging();
+		Plan plan;
+        if (StringUtils.trimToEmpty(view.getType()).equals(View.TYPE_CMS)) {
+            CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+            cmsPlan.init(runtime, threadPool);
+            plan = cmsPlan;
+        } else {
+            ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(),
+                    ProcessPlatformPlan.class);
+            this.setProcessEdition(processPlatformPlan);
+            processPlatformPlan.init(runtime, threadPool);
+            plan = processPlatformPlan;
+        }
+		return plan.listBundlePaging();
 	}
 
 	protected Pair<List<String>, Long> fetchBundleV2(View view, Runtime runtime, ExecutorService threadPool)

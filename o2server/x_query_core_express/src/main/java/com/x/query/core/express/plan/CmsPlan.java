@@ -104,6 +104,7 @@ public class CmsPlan extends Plan {
         this.selectList = list;
     }
 
+    @Override
     public Pair<List<String>, Long> listBundlePaging() throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             EntityManager em = emc.get(ApplicationBaseEntity.class);
@@ -135,27 +136,6 @@ public class CmsPlan extends Plan {
             Long count = em.createQuery(cq2).getSingleResult();
             logger.info("listBundlePaging count cost:{}", System.currentTimeMillis() - start);
             return Pair.of(docIdList, count);
-        }
-    }
-
-    private void joinPagingOrder(List<Order> orderList, CriteriaBuilder cb, Root<? extends JpaObject> root, CriteriaQuery<?> cq){
-        this.orderList = this.listOrderSelectEntry();
-        for (SelectEntry selectEntry : this.orderList) {
-            if (StringUtils.isBlank(selectEntry.path)) {
-                continue;
-            }
-            String[] paths = StringUtils.split(selectEntry.path, XGsonBuilder.PATH_DOT);
-            Subquery<String> sortSubquery = cq.subquery(String.class);
-            Root<Item> sortRoot = sortSubquery.from(Item.class);
-            Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME), root.get(JpaObject.id_FIELDNAME));
-            for (int i = 0; i < paths.length; i++) {
-                if(StringUtils.isNotBlank(paths[i]) && !FilterEntry.WILDCARD.equals(paths[i])) {
-                    p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));
-                }
-            }
-            sortSubquery.select(sortRoot.get(DataItem.stringShortValue_FIELDNAME)).where(p);
-            Order order = StringUtils.equals(SelectEntry.ORDER_ASC, selectEntry.orderType) ? cb.asc(sortSubquery) : cb.desc(sortSubquery);
-            orderList.add(order);
         }
     }
 
