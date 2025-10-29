@@ -139,15 +139,16 @@ class ActionUpdateExtraDocument extends BaseAction {
 	}
 
 	private void update(Directory directory, Doc doc) {
-		Analyzer analyzer = new HanLPAnalyzer();
-		IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-		try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
-			LOGGER.debug("update extra, directory:{}.", directory.toString());
-			indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
-			Document document = doc.toDocument(false);
-			indexWriter.updateDocument(new Term(Indexs.FIELD_ID, document.get(Indexs.FIELD_ID)), document);
-			clean(indexWriter);
-			indexWriter.commit();
+		try (directory; Analyzer analyzer = new HanLPAnalyzer()) {
+			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+			try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
+				LOGGER.debug("update extra, directory:{}.", directory.toString());
+				indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
+				Document document = doc.toDocument(false);
+				indexWriter.updateDocument(new Term(Indexs.FIELD_ID, document.get(Indexs.FIELD_ID)), document);
+				clean(indexWriter);
+				indexWriter.commit();
+			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

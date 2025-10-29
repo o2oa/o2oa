@@ -1,13 +1,5 @@
 package com.x.query.core.express.index;
 
-import com.x.base.core.project.bean.tuple.Triple;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Query;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.NumberTools;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -23,12 +15,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.document.LongPoint;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -37,6 +28,15 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.NumericUtils;
+
+import com.x.base.core.project.bean.tuple.Triple;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Query;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.NumberTools;
 
 public class Indexs {
 
@@ -65,6 +65,8 @@ public class Indexs {
 	public static final String FIELD_TITLE = "title";
 	public static final String FIELD_SUMMARY = "summary";
 	public static final String FIELD_BODY = "body";
+	public static final String FIELD_ITEMLIST = "itemList";
+	public static final String FIELD_REVERSEDITEMLIST = "reversedItemList";
 	public static final String FIELD_ATTACHMENT = "attachment";
 	public static final String FIELD_CREATETIME = "createTime";
 	public static final String FIELD_UPDATETIME = "updateTime";
@@ -577,22 +579,22 @@ public class Indexs {
 		return ListTools.trim(woFields, true, true);
 	}
 
-	/**
-	 * 根据directory对象获取reader
-	 *
-	 * @param dirs
-	 * @return
-	 */
-	public static IndexReader[] indexReaders(List<com.x.query.core.express.index.Directory> dirs) {
-		return dirs.stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true)).filter(Optional::isPresent)
-				.map(Optional::get).map(o -> {
-					try {
-						return DirectoryReader.open(o);
-					} catch (IOException e) {
-						LOGGER.error(e);
-					}
-					return null;
-				}).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
-	}
+//	/**
+//	 * 根据directory对象获取reader
+//	 *
+//	 * @param dirs
+//	 * @return
+//	 */
+//	public static IndexReader[] indexReaders(List<com.x.query.core.express.index.Directory> dirs) {
+//		return dirs.stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true)).filter(Optional::isPresent)
+//				.map(Optional::get).map(o -> {
+//					try {
+//						return DirectoryReader.open(o);
+//					} catch (IOException e) {
+//						LOGGER.error(e);
+//					}
+//					return null;
+//				}).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
+//	}
 
 }

@@ -1,11 +1,8 @@
 package com.x.query.service.processing;
 
-import java.util.concurrent.ForkJoinPool;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
