@@ -57,8 +57,10 @@ public class HstService {
             if(StringUtils.isNotBlank(res)){
                 ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
                 if(SUCCESS_CODE.equals(resObj.getCode())){
-                    String roomId = resObj.getData(HstMeeting.class).getRoomId();
+                    HstMeeting hstMeeting = resObj.getData(HstMeeting.class);
+                    String roomId = hstMeeting.getRoomId();
                     meeting.setRoomId(roomId);
+                    meeting.setRoomInviteCode(hstMeeting.getInviteCode());
                     if(BooleanUtils.isTrue(config.getOnlineConfig().getHstAuth())) {
                         meeting.setRoomLink(config.getOnlineConfig().getHstUrl() + MEETING_WEB_URL + roomId);
                     }else{
@@ -292,6 +294,7 @@ public class HstService {
 
     public static class HstMeeting{
         private String roomId;
+        private String inviteCode;
 
         public String getRoomId() {
             return roomId;
@@ -299,6 +302,14 @@ public class HstService {
 
         public void setRoomId(String roomId) {
             this.roomId = roomId;
+        }
+
+        public String getInviteCode() {
+            return inviteCode;
+        }
+
+        public void setInviteCode(String inviteCode) {
+            this.inviteCode = inviteCode;
         }
     }
 
