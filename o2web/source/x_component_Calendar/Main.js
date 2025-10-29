@@ -702,7 +702,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
         "baseDate": ''
     },
     createNode: function (){},
-    loadLayout: function( data ){
+    loadLayout: function(){
         if( !this.options.baseDate ){
             this.options.baseDate = new Date().format(O2_CALENDAR_FORMAT_DATE);
         }
@@ -711,6 +711,13 @@ MWF.xApplication.Calendar.MainMobile = new Class({
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
         }).inject(this.content);
         this.node.loadCss(`/x_component_Calendar/$Main/${this.options.style}/style.css`)
+        this.loadView();
+    },
+    reload: function(){
+        this.node.empty();
+        this.loadView();
+    },
+    loadView: function(){
         this.node.loadHtml(
             `/x_component_Calendar/$Main/${this.options.style}/main.html`,
             {
@@ -718,7 +725,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
                 bind: {
                     lp: this.lp,
                     weekBegin: this.calendarConfig.weekBegin || 1,
-                    defaultDate: this.options.baseDate
+                    defaultDate: this.currentDate || this.options.baseDate
                 }
             },
             ()=>{
@@ -787,7 +794,8 @@ MWF.xApplication.Calendar.MainMobile = new Class({
             this.calendar.appendChild(point);
         }
     },
-    handleValueChange: function (e){
+    handleDateChange: function (e){
+        this.currentDate = e.detail.value;
         this.loadEvents(e.detail.value);
     },
     loadEvents: function( dateString ){
@@ -830,7 +838,40 @@ MWF.xApplication.Calendar.MainMobile = new Class({
                 }
             );
         })
-    }
+    },
+    createEvent: function (e) {
+        const date = this.currentDate || this.options.baseDate;
+        this.openEvent(e, {}, true, {
+            startTime : Date.parse( date + " 08:00") ,
+            endTime : Date.parse( date + " 09:00")
+        });
+    },
+    handleEventClick: function (e, eventData){
+        this.openEvent(e, eventData, false);
+    },
+    openEvent: function (e, eventData, create, options={}){
+        var form = new MWFCalendar.EventForm(this, eventData, {
+            ...options,
+            style: 'v10_mobile',
+            hasTop: false,
+            isFull : true,
+            height: '100%',
+            width: '100%'
+        }, {
+            app: this,
+            container: $(document.body)
+        });
+        form.view = this;
+        !!create ?
+            form.create() :
+            (this.isEventEditable() ? form.edit() : form.open());
+    },
+    isEventEditable: function(eventData){
+        if( MWF.AC.isAdministrator() )return true;
+        if( (eventData.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+        if( eventData.createPerson === layout.desktop.session.user.distinguishedName )return true;
+        return false;
+    },
 });
 
 if ((layout.mobile || COMMON.Browser.Platform.isMobile)){

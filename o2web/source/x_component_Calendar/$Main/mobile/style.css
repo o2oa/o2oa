@@ -7,10 +7,6 @@ header{
     color: var(--oo-color-text-white);
     box-shadow: var(--oo-menu-shadow);
 }
-.header-icon{
-    font-size: var(--oo-font-size-large);
-    padding: 0 1rem;
-}
 .header-title{
     font-size: var(--oo-font-size-larger);
     flex: 1;

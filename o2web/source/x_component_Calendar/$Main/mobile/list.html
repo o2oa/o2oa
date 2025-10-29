@@ -8,13 +8,13 @@
 
   {{if $.data.length > 0}}
     <div class="info">
-        蔡祥熠，您好！当日有
+        {{layout.session.user.name}}，您好！当日有
         <div class="info-count">{{$.data.length}}</div>
         个日程！
     </div>
     <div>
       {{each $.data}}
-      <div class="item">
+      <div class="item" data-o2-events="click:handleEventClick">
         <div class="item-line">
           <div class="item-flag" style="background-color: {{$.color}}"></div>
           <div class="item-line-text">{{$.title}}</div>
@@ -25,8 +25,8 @@
             {{$.status}}
           </div>
         </div>
-        <div >
-          <div>{{$.locationName || $.lp.noAddress}}</div>
+        <div>
+          <div>{{$.locationName || $._.lp.noAddress}}</div>
         </div>
       </div>
       {{end each}}
