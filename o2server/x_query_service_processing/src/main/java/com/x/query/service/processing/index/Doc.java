@@ -3,9 +3,11 @@ package com.x.query.service.processing.index;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +20,6 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.util.BytesRef;
 
-import com.x.base.core.project.config.Query.Index;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.query.core.express.index.Indexs;
 
@@ -261,15 +262,20 @@ public class Doc extends GsonPropertyObject {
 		addDate(document, Indexs.FIELD_INDEXTIME, new Date());
 		addDate(document, Indexs.FIELD_CREATETIME, this.getCreateTime());
 		addDate(document, Indexs.FIELD_UPDATETIME, this.getUpdateTime());
-		this.stringRepo.entrySet().stream().filter(o -> null != o.getValue()).forEach(o -> {
-			addString(document, Indexs.FIELD_ITEMLIST, o.getValue());
-			addString(document, Indexs.FIELD_REVERSEDITEMLIST, new StringBuilder(o.getValue()).reverse().toString());
-		});
-		this.stringsRepo.entrySet().stream().filter(o -> null != o.getValue())
-				.forEach(o -> o.getValue().stream().filter(StringUtils::isNotBlank).forEach(p -> {
-					addString(document, Indexs.FIELD_ITEMLIST, p);
-					addString(document, Indexs.FIELD_REVERSEDITEMLIST, new StringBuilder(p).reverse().toString());
-				}));
+		Set<String> items = new HashSet<>();
+		if (StringUtils.isNotBlank(this.getTitle())) {// 将title加入到items
+			items.add(this.getTitle());
+		}
+		this.stringRepo.entrySet().stream()
+				.filter(o -> Objects.nonNull(o.getValue()) && StringUtils.isNotBlank(o.getValue()))
+				.forEach(o -> items.add(o.getValue()));
+		this.stringsRepo.entrySet().stream().filter(o -> Objects.nonNull(o.getValue()))
+				.forEach(o -> o.getValue().stream().filter(StringUtils::isNotBlank).forEach(items::add));
+		for (String str : items) {
+			document.add(new StringField(Indexs.FIELD_ITEMLIST, str, Field.Store.YES));
+			document.add(new StringField(Indexs.FIELD_REVERSEDITEMLIST, new StringBuilder(str).reverse().toString(),
+					Field.Store.YES));
+		}
 		if (convertData) {
 			this.stringRepo.entrySet().stream().filter(o -> null != o.getValue())
 					.forEach(o -> addString(document, o.getKey(), o.getValue()));

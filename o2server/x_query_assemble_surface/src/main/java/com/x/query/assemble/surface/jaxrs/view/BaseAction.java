@@ -45,8 +45,8 @@ import com.x.query.core.express.plan.SelectEntry;
 abstract class BaseAction extends StandardJaxrsAction {
 
 	private static final String EXCEL_EXTENSION = ".xlsx";
-	private static final CacheCategory userCache = new CacheCategory(View.class, Person.class, Unit.class,
-			Group.class, Role.class);
+	private static final CacheCategory userCache = new CacheCategory(View.class, Person.class, Unit.class, Group.class,
+			Role.class);
 
 	protected Plan accessPlan(Business business, View view, Runtime runtime, ExecutorService threadPool)
 			throws Exception {
@@ -86,7 +86,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return plan;
 	}
 
-	private void setProcessEdition(ProcessPlatformPlan processPlatformPlan) throws Exception {
+	protected void setProcessEdition(ProcessPlatformPlan processPlatformPlan) throws Exception {
 		List<Process> processList = new ArrayList<>();
 		if (!processPlatformPlan.where.processList.isEmpty()) {
 			List<String> processIds = ListTools.extractField(processPlatformPlan.where.processList,
@@ -97,7 +97,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				processList.addAll(business.process().listObjectWithProcess(processIds, true));
 			}
 		}
-		if(!processPlatformPlan.where.applicationList.isEmpty()){
+		if (!processPlatformPlan.where.applicationList.isEmpty()) {
 			List<String> appIds = ListTools.extractField(processPlatformPlan.where.applicationList,
 					JpaObject.id_FIELDNAME, String.class, true, true);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -111,8 +111,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				}.getType());
 	}
 
-	private List<String> dealBundle(View view, Runtime runtime, ExecutorService threadPool)
-			throws Exception {
+	private List<String> dealBundle(View view, Runtime runtime, ExecutorService threadPool) throws Exception {
 		List<String> os = null;
 		switch (StringUtils.trimToEmpty(view.getType())) {
 		case View.TYPE_CMS:
@@ -151,17 +150,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private Pair<List<String>, Long> dealBundleV2(View view, Runtime runtime, ExecutorService threadPool)
 			throws Exception {
 		Plan plan;
-        if (StringUtils.trimToEmpty(view.getType()).equals(View.TYPE_CMS)) {
-            CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-            cmsPlan.init(runtime, threadPool);
-            plan = cmsPlan;
-        } else {
-            ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(),
-                    ProcessPlatformPlan.class);
-            this.setProcessEdition(processPlatformPlan);
-            processPlatformPlan.init(runtime, threadPool);
-            plan = processPlatformPlan;
-        }
+		if (StringUtils.trimToEmpty(view.getType()).equals(View.TYPE_CMS)) {
+			CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+			cmsPlan.init(runtime, threadPool);
+			plan = cmsPlan;
+		} else {
+			ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+			this.setProcessEdition(processPlatformPlan);
+			processPlatformPlan.init(runtime, threadPool);
+			plan = processPlatformPlan;
+		}
 		return plan.listBundlePaging();
 	}
 
@@ -225,9 +223,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			List<FilterEntry> filterList, List<SelectEntry> orderList, Map<String, String> parameter, Integer count,
 			boolean isBundle) throws Exception {
 		Runtime runtime = new Runtime();
-		if(View.TYPE_CMS.equals(view.getType())){
+		if (View.TYPE_CMS.equals(view.getType())) {
 			runtime.isManager = business.isCmsManager(effectivePerson);
-		}else{
+		} else {
 			runtime.isManager = business.isProcessManager(effectivePerson);
 		}
 		runtime.person = effectivePerson.getDistinguishedName();
@@ -241,10 +239,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			runtime.groupList = cacheRuntime.groupList;
 			runtime.roleList = cacheRuntime.roleList;
 			runtime.authList = cacheRuntime.authList;
-		}else {
+		} else {
 			runtime.authList.add(effectivePerson.getDistinguishedName());
-			runtime.identityList = business.organization().identity()
-					.listWithPerson(effectivePerson);
+			runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
 			runtime.authList.addAll(runtime.identityList);
 			List<String> list = new ArrayList<>();
 			if (View.TYPE_CMS.equals(view.getType())) {
@@ -266,8 +263,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				runtime.unitList.addAll(list);
 				list.clear();
 			}
-			runtime.unitAllList = business.organization().unit()
-					.listWithPersonSupNested(effectivePerson);
+			runtime.unitAllList = business.organization().unit().listWithPersonSupNested(effectivePerson);
 			runtime.authList.addAll(runtime.unitAllList);
 			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.unitAllList) {
@@ -278,10 +274,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 				runtime.unitAllList.addAll(list);
 				list.clear();
 			}
-			runtime.groupList = business.organization().group()
-					.listWithPersonReference(
-							ListTools.toList(effectivePerson.getDistinguishedName()), true, true,
-							true);
+			runtime.groupList = business.organization().group().listWithPersonReference(
+					ListTools.toList(effectivePerson.getDistinguishedName()), true, true, true);
 			runtime.authList.addAll(runtime.groupList);
 			if (View.TYPE_CMS.equals(view.getType())) {
 				for (String item : runtime.groupList) {

@@ -1,6 +1,5 @@
 package com.x.query.service.processing.index;
 
-import com.x.cms.core.entity.CategoryInfo;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.tuple.Pair;
-import com.x.base.core.project.bean.tuple.Sextuple;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -35,6 +33,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -282,9 +281,6 @@ public class DocFunction {
 			items = business.entityManagerContainer().listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME,
 					work.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
 			if (!ListTools.isEmpty(items)) {
-				JsonElement jsonElement = CONVERTER.assemble(items);
-				var dataSextuple = XGsonBuilder.separate("", jsonElement);
-
 				wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
 				wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
 				if (BooleanUtils.isTrue((Config.query().index().getWorkIndexAttachment()))) {
