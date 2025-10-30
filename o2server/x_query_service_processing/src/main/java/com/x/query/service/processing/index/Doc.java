@@ -268,9 +268,9 @@ public class Doc extends GsonPropertyObject {
 		}
 		this.stringRepo.entrySet().stream()
 				.filter(o -> Objects.nonNull(o.getValue()) && StringUtils.isNotBlank(o.getValue()))
-				.forEach(o -> items.add(o.getValue()));
-		this.stringsRepo.entrySet().stream().filter(o -> Objects.nonNull(o.getValue()))
-				.forEach(o -> o.getValue().stream().filter(StringUtils::isNotBlank).forEach(items::add));
+				.forEach(o -> items.add(o.getValue().toLowerCase()));
+		this.stringsRepo.entrySet().stream().filter(o -> Objects.nonNull(o.getValue())).forEach(
+				o -> o.getValue().stream().filter(StringUtils::isNotBlank).forEach(p -> items.add(p.toLowerCase())));
 		for (String str : items) {
 			document.add(new StringField(Indexs.FIELD_ITEMLIST, str, Field.Store.YES));
 			document.add(new StringField(Indexs.FIELD_REVERSEDITEMLIST, new StringBuilder(str).reverse().toString(),
