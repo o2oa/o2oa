@@ -1,7 +1,15 @@
 <script setup>
 import {ref, watch, nextTick, useTemplateRef, onMounted, onUnmounted, inject} from 'vue';
 import {lp} from '@o2oa/component';
-import {chooseSingleFile, conversationPicker, createContextMenu, formatPersonName, toDate, ymdhms} from '../utils/common.js';
+import {
+  chooseSingleFile,
+  conversationPicker,
+  createContextMenu,
+  formatPersonName,
+  isHttpUrl,
+  toDate,
+  ymdhms
+} from '../utils/common.js';
 import {imAction} from '../utils/actions.js';
 import ChatMsg from './ChatMsg.vue';
 import ChatInfo from './ChatInfo.vue';
@@ -274,7 +282,12 @@ const clickSendMsg = () => {
         return;
     }
     const time = ymdhms(new Date());
-    const body = {body: text, type: 'text'};
+    let body;
+    if (isHttpUrl(text)) {
+      body = {body: lp.msgTypeLink, type: 'link', title: text, linkUrl: text};
+    } else {
+      body = {body: text, type: 'text'};
+    }
     const bodyJson = JSON.stringify(body);
 
     const textMessage = {
