@@ -940,6 +940,9 @@ MWF.xApplication.Calendar.CalendarListMobile = new Class({
         if( (data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
         if( data.createPerson === layout.desktop.session.user.distinguishedName )return true;
         return false;
+    },
+    toMain: function (){
+        this.app.reload();
     }
 })
 
