@@ -105,7 +105,7 @@ public class ViewAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "执行view，分页获取数据", action = ActionExecute.class)
+	@JaxrsMethodDescribe(value = "执行view，分页获取数据", action = ActionExecuteV2.class)
 	@POST
 	@Path("{id}/execute/v2/page/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -118,7 +118,7 @@ public class ViewAction extends StandardJaxrsAction {
 		ActionResult<Plan> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionExecute().execute(effectivePerson, id, jsonElement);
+			result = new ActionExecuteV2().execute(effectivePerson, id, page, size, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

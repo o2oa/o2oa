@@ -167,7 +167,7 @@ public class ProcessPlatformPlan extends Plan {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<String> cq = cb.createQuery(String.class);
             Root<Review> root = cq.from(Review.class);
-            cq.select(root.get(Review_.id))
+            cq.select(root.get(Review_.job))
                     .where(this.reviewPredicate(emc, cb, root, cq));
             List<Order> orderList = new TreeList<>();
             this.joinPagingOrder(orderList, cb, root, cq);
@@ -555,7 +555,7 @@ public class ProcessPlatformPlan extends Plan {
                 }
                 Subquery<Long> subquery = cq.subquery(Long.class);
                 Root<Item> itemRoot = subquery.from(Item.class);
-                Predicate subPredicate = cb.equal(itemRoot.get(Item_.bundle), root.get(JpaObject.id_FIELDNAME));
+                Predicate subPredicate = cb.equal(itemRoot.get(Item_.bundle), root.get(Review.job_FIELDNAME));
                 subPredicate = f.toPredicate(cb, itemRoot, runtime, subPredicate);
                 subquery.select(cb.literal(1L)).where(subPredicate);
                 Predicate existsP = cb.exists(subquery);

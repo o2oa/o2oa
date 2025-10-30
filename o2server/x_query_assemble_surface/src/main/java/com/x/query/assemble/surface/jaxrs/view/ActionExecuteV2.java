@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionExecuteV2 extends BaseAction {
 
@@ -37,7 +38,8 @@ class ActionExecuteV2 extends BaseAction {
 	ActionResult<Plan> execute(EffectivePerson effectivePerson, String id, Integer page, Integer size, JsonElement jsonElement) throws Exception {
 		logger.debug("jsonElement:{}.", jsonElement);
 		ActionResult<Plan> result = new ActionResult<>();
-		page = (page == null || page < 0) ? 0 : page;
+		page = (page == null || page < 1) ? 1 : page;
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		View view;
 		Runtime runtime;
 		Business business;
@@ -54,16 +56,19 @@ class ActionExecuteV2 extends BaseAction {
 			if (!business.readable(effectivePerson, view)) {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			if (null == wi) {
-				wi = new Wi();
-			}
 			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(), wi.getParameter(),
 					size, false);
 			runtime.page = page;
 			runtime.hasBundle = true;
 		}
-		Pair<List<String>, Long> pair = this.fetchBundleV2(view, runtime, ThisApplication.forkJoinPool());
+		Pair<List<String>, Long> pair;
+		if(StringUtils.isBlank(wi.getSearchKey())) {
+			pair = this.fetchBundleV2(view, runtime,
+					ThisApplication.forkJoinPool());
+		}else{
+			ExecuteV2Search search = new ExecuteV2Search();
+			pair = search.search(view, runtime, wi.getSearchKey(), page, size);
+		}
 		runtime.bundleList = pair.first();
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
 		result.setData(plan);
@@ -74,7 +79,7 @@ class ActionExecuteV2 extends BaseAction {
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("前端指定排序列")
-		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "SelectEntry", fieldValue = "{}")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "SelectEntry", fieldValue = "{\"orderType\": \"\",\"column\": \"\",\"displayName\": \"\",\"path\": \"\"}")
 		private List<SelectEntry> orderList = new TreeList<>();
 
 		@FieldDescribe("过滤")
