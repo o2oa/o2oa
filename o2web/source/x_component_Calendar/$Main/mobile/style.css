@@ -33,6 +33,8 @@ header{
 }
 .calendar-area{
     font-size: var(--oo-font-size-default);
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1em;
 }
 oo-calendar{
     width: calc(100% - 1rem);
