@@ -4,7 +4,7 @@ MWF.xDesktop.requireApp("Meeting", "MeetingView", null, false);
 MWF.xDesktop.requireApp("Meeting", "Common", null, false);
 MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
 MWF.xApplication.Meeting.options.multitask = false;
-MWF.xApplication.Meeting.Main = new Class({
+MWF.xApplication.Meeting.MainPc = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
 
@@ -772,8 +772,274 @@ MWF.xApplication.Meeting.Main = new Class({
 
     }
 });
+const O2_MEETING_FORMAT_DATE = '%Y-%m-%d';
+const O2_MEETING_FORMAT_MONTH = '%Y-%m';
+const O2_MEETING_FORMAT_TIME = '%H:%M';
+MWF.xApplication.Meeting.MainMobile = new Class({
+    Extends: MWF.xApplication.Meeting.MainPc,
+    options: {
+        "style": "mobile",
+        "baseDate": ''
+    },
+    createNode: function (){},
+    loadLayout: function(){
+        if( !this.options.baseDate ){
+            this.options.baseDate = new Date().format(O2_MEETING_FORMAT_DATE);
+        }
+        this.content.setStyle("overflow", "hidden");
+        this.node = new Element("div", {
+            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+        }).inject(this.content);
+        this.node.loadCss(`/x_component_Meeting/$Main/${this.options.style}/style.css`)
+        this.loadView();
+    },
+    reload: function(){
+        this.node.empty();
+        this.loadView();
+    },
+    loadView: function (){
+        this.isMeetingViewer( (isAll )=>{
+            this._isMeetingViewer = isAll;
+            this._loadView();
+        });
+    },
+    _loadView: function(){
+        this.node.loadHtml(
+            `/x_component_Meeting/$Main/${this.options.style}/main.html`,
+            {
+                module: this,
+                bind: {
+                    lp: this.lp,
+                    weekBegin: this.meetingConfig.weekBegin || 1,
+                    defaultDate: this.currentDate || this.options.baseDate
+                }
+            },
+            ()=>{
+                this.loadFlags();
+                this.loadEvents(this.currentDate || this.options.baseDate);
+            }
+        );
+    },
+    handleViewChange: function(e){
+        const detail = e.detail;
+        if( detail.view === 'date'){
+            const els = this.calendar.querySelectorAll('.event-flag');
+            els.forEach(el=>el.destroy());
+            this.loadFlags(null, e);
+        }
+    },
+    loadFlags: function( callback, e ){
+        var range = e ? e.detail.range : this.calendar.viewStatus.range;
+        var method = o2.Actions.load('x_meeting_assemble_control').MeetingAction[ this._isMeetingViewer ? 'listOnMonthAll' : 'listOnMonth'];
+        var ps = this.getMonthRange(e).map((obj)=>{
+            return method(obj.year, obj.month);
+        });
+        return Promise.all(ps).then(function(result){
+           const data = [];
+           result.forEach(json=>data.push(...json.data));
 
+            const first = new Date(range.startTime).clearTime();
+            const last = new Date(range.endTime).clearTime();
 
+            result.forEach((ev) => {
+                const start = new Date(ev.startTime).clearTime();
+                const end = new Date(ev.completedTime).clearTime();
+                let d = (start > first) ? start.clone() : first.clone();
+
+                while (d <= end && d <= last) {
+                    //在日历上标记日程标识
+                    this.setFlag(d.format( O2_MEETING_FORMAT_DATE ));
+                    d.increment('day', 1);
+                }
+            });
+
+        });
+    },
+    getMonthRange: function (e) {
+        const detail = e ? e.detail : this.calendar.viewStatus;
+        const months = [];
+        let date = new Date(`${detail.year}-${detail.month}-01`);
+
+        const getObj = (date)=>{
+            return {
+                year: date.getFullYear(),
+                month: date.getMonth()+1
+            };
+        };
+
+        date.increment('month', -1); //上月
+        months.push( getObj(date) );
+        date.increment('month', 1); //本月
+        months.push( getObj(date) );
+        date.increment('month', 1); //下月
+        months.push( getObj(date) );
+
+        return months;
+    },
+    setFlag: function (name) {
+        const flat = this.calendar.querySelector('div[slot="' + name + '"]');
+        if (!flat) {
+            const point = new Element('div.ooicon-pentagram_fill.event-flag', { 'slot': name });
+            this.calendar.appendChild(point);
+        }
+    },
+    handleDateChange: function (e){
+        this.currentDate = e.detail.value;
+        this.loadEvents(e.detail.value);
+    },
+    loadEvents: function( dateString ){
+        return ;
+
+        const method = o2.Actions.load('x_meeting_assemble_control').MeetingAction[this._isMeetingViewer ? 'listOnDayAll' : 'listOnDay'];
+        const [y, m, d] = dateString.split('-');
+        const p = method(y, m, d).then((json)=>{
+            json.data = json.data.map((d)=>{
+                // const start = new Date(d.startTime);
+                // const end = new Date(d.completedTime);
+                // d.range = {
+                //     start: start.format(O2_MEETING_FORMAT_TIME),
+                //     end: end.format(O2_MEETING_FORMAT_TIME),
+                // };
+                // const now = new Date();
+                // if (start > now) {
+                //     d.statusColor='var(--oo-color-success)';
+                //     d.status = this.lp.status.wait;
+                // }else if (start <= now && now <= end) {
+                //     d.statusColor=='var(--oo-color-main)';
+                //     d.status = this.lp.status.doing;
+                // }else if (end < now) {
+                //     d.statusColor='var(--oo-color-gray-9)';
+                //     d.status = this.lp.status.finish;
+                // }
+                // return d;
+            });
+            return json;
+        });
+        p.then( (json) => {
+            this.eventArea.empty();
+            this.eventArea.loadHtml(
+                `/x_component_Meeting/$Main/${this.options.style}/list.html`,
+                {
+                    module: this,
+                    bind: {
+                        lp: this.lp,
+                        data: json.data
+                    }
+                }
+            );
+        })
+    },
+    createEvent: function (e) {
+        const date = this.currentDate || this.options.baseDate;
+        this.openEvent(e, {}, true, {
+            startTime : Date.parse( date + " 08:00") ,
+            endTime : Date.parse( date + " 09:00")
+        });
+    },
+    handleEventClick: function (e, eventData){
+        this.actions.getEvent( eventData.id, function (json) {
+            this.openEvent(e, json.data, false);
+        }.bind(this))
+    },
+    openEvent: function (e, eventData, create, options={}){
+        var form = new MWFCalendar.EventForm(this, eventData, {
+            ...options,
+            style: 'v10_mobile',
+            hasTop: false,
+            isFull : true,
+            height: '100%',
+            width: '100%'
+        }, {
+            app: this,
+            container: $(document.body)
+        });
+        form.view = this;
+        !!create ?
+            form.create() :
+            (this.isEventEditable() ? form.edit() : form.open());
+    },
+    isEventEditable: function(eventData){
+        if( MWF.AC.isAdministrator() )return true;
+        if( (eventData.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+        if( eventData.createPerson === layout.desktop.session.user.distinguishedName )return true;
+        return false;
+    },
+    loadCalendarList: function (e){
+        this.node.empty();
+        var calendarList = new MWF.xApplication.Calendar.CalendarListMobile(this, this.node);
+        calendarList.load();
+    }
+});
+
+// MWF.xApplication.Meeting.RoomListMobile = new Class({
+//     Implements: [Options, Events],
+//     options : {
+//         style: 'mobile'
+//     },
+//     initialize: function(app, node, options){
+//         this.setOptions(options);
+//         this.app = app;
+//         this.lp = this.app.lp;
+//         this.node = $(node);
+//     },
+//     load: function(){
+//         this.app.listCalendar((data)=>{
+//             this.node.loadHtml(
+//                 `/x_component_Meeting/$Main/${this.options.style}/calendarList.html`,
+//                 {
+//                     module: this,
+//                     bind: {
+//                         lp: this.lp,
+//                         data: data
+//                     }
+//                 }
+//             );
+//         }, true);
+//     },
+//     reload: function (){
+//         this.node.empty();
+//         this.load();
+//     },
+//     handleItemClick: function (e, calendarData){
+//         this.app.actions.getCalendar( calendarData.id, function( json ){
+//             this.openCalendar(e, json.data, false);
+//         }.bind(this))
+//     },
+//     createCalendar: function (e){
+//         this.openCalendar(e, {}, true);
+//     },
+//     openCalendar: function (e, calendarData, create, options={}){
+//         var form = new MWFCalendar.CalendarForm(this, calendarData, {
+//             ...options,
+//             hasTop: false,
+//             style: 'v10_mobile',
+//             height: '100%',
+//             width: '100%'
+//         }, {
+//             app: this.app,
+//             container: $(document.body)
+//         });
+//         form.view = this;
+//         !!create ?
+//             form.create() :
+//             (this.isCalendarEditable() ? form.edit() : form.open());
+//     },
+//     isCalendarEditable: function (data) {
+//         if( MWF.AC.isAdministrator() )return true;
+//         if( (data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+//         if( data.createPerson === layout.desktop.session.user.distinguishedName )return true;
+//         return false;
+//     },
+//     toMain: function (){
+//         this.app.reload();
+//     }
+// });
+
+if ((layout.mobile || COMMON.Browser.Platform.isMobile)){
+    MWF.xApplication.Meeting.Main = MWF.xApplication.Meeting.MainMobile;
+}else{
+    MWF.xApplication.Meeting.Main = MWF.xApplication.Meeting.MainPc;
+}
 
 MWF.xApplication.Meeting.Config = new Class({
     Implements: [Events],
