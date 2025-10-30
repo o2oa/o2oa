@@ -22,6 +22,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermInSetQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
@@ -139,13 +140,13 @@ public class ExecuteV2Search extends BaseAction {
 	private static TopDocs page(IndexSearcher searcher, Query q, int page, int size) throws IOException {
 		ScoreDoc last = null;
 		for (int i = 1; i < page; i++) {
-			TopDocs td = searcher.searchAfter(last, q, size);
+			TopDocs td = searcher.searchAfter(last, q, size, Sort.RELEVANCE);
 			if (td.scoreDocs.length == 0) {
 				return emptyTopDocs();
 			}
 			last = td.scoreDocs[td.scoreDocs.length - 1];
 		}
-		return searcher.searchAfter(last, q, size);
+		return searcher.searchAfter(last, q, size, Sort.RELEVANCE);
 	}
 
 	private static Query termInSet(String field, List<String> values) {
