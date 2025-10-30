@@ -76,7 +76,9 @@ public class ExecuteV2Search extends BaseAction {
 			BooleanQuery query = qb.add(bodyQuery, BooleanClause.Occur.SHOULD)
 					.add(attachmentQuery, BooleanClause.Occur.SHOULD).add(itemQuery, BooleanClause.Occur.SHOULD)
 					.add(recencyQuery, BooleanClause.Occur.SHOULD).setMinimumNumberShouldMatch(1).build();
-
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!query");
+			System.out.println(query.toString());
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!query");
 			// Page with searchAfter
 			TopDocs pageDocs = page(searcher, query, page, size);
 			for (ScoreDoc sd : pageDocs.scoreDocs) {
@@ -84,6 +86,9 @@ public class ExecuteV2Search extends BaseAction {
 				list.add(document.getField(Indexs.FIELD_ID).stringValue());
 			}
 			long total = pageDocs.totalHits == null ? list.size() : pageDocs.totalHits.value;
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(XGsonBuilder.toJson(list));
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return Pair.of(list, total);
 		} catch (Exception e) {
 			LOGGER.error(e);

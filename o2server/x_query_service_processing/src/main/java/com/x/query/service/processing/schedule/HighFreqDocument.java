@@ -63,9 +63,6 @@ public class HighFreqDocument extends HighFreq {
 							optional.get().getValue().stream().map(Pair::first).collect(Collectors.toList()));
 				}
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update high freq document");
-					System.out.println(XGsonBuilder.toJson(state));
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update high freq document");
 					new Business(emc).state().updateState(state);
 				}
 				count += list.size();
@@ -110,7 +107,7 @@ public class HighFreqDocument extends HighFreq {
 						ThisApplication.indexWriteQueue
 								.send(new IndexWriteQueue.UpdateMessage(docs, Indexs.CATEGORY_CMS, o.getKey(), true));
 						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
+								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true));
 						indexCount.addAndGet(map.entrySet().size());
 					} catch (Exception e) {
 						LOGGER.error(e);

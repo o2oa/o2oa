@@ -116,7 +116,7 @@ public class HighFreqWork extends HighFreq {
 						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
 								Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), true));
 						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
+								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true));
 						indexCount.addAndGet(map.entrySet().size());
 					} catch (Exception e) {
 						LOGGER.error(e);

@@ -262,6 +262,7 @@ public class Doc extends GsonPropertyObject {
 		addDate(document, Indexs.FIELD_INDEXTIME, new Date());
 		addDate(document, Indexs.FIELD_CREATETIME, this.getCreateTime());
 		addDate(document, Indexs.FIELD_UPDATETIME, this.getUpdateTime());
+
 		Set<String> items = new HashSet<>();
 		if (StringUtils.isNotBlank(this.getTitle())) {// 将title加入到items
 			items.add(this.getTitle());

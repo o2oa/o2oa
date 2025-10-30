@@ -88,12 +88,12 @@ public class Indexs {
 	public static final String FIELD_EXPIRETIME = "expireTime";
 	public static final String FIELD_COMPLETED = "processPlatform_boolean_completed";
 
-	public static final String FIELD_APPID = "appId";
+	public static final String FIELD_APPID = "cms_string_appId";
 	public static final String FIELD_APPNAME = "cms_string_appName";
-	public static final String FIELD_APPALIAS = "appAlias";
-	public static final String FIELD_CATEGORYID = "categoryId";
+	public static final String FIELD_APPALIAS = "cms_string_appAlias";
+	public static final String FIELD_CATEGORYID = "cms_string_categoryId";
 	public static final String FIELD_CATEGORYNAME = "cms_string_categoryName";
-	public static final String FIELD_CATEGORYALIAS = "categoryAlias";
+	public static final String FIELD_CATEGORYALIAS = "cms_string_categoryAlias";
 	public static final String FIELD_DESCRIPTION = "description";
 	public static final String FIELD_PUBLISHTIME = "publishTime";
 	public static final String FIELD_MODIFYTIME = "modifyTime";
