@@ -1,0 +1,15 @@
+<header>
+    <div class="header-title">{{$.lp.title}}</div>
+    <div class="header-create" data-o2-events="click:createEvent;">{{$.lp.addEvent}}</div>
+    <div class="header-calendar" data-o2-events="click:loadCalendarList;">{{$.lp.calendar}}</div>
+</header>
+<div data-o2-element="calendarArea" class="calendar-area">
+    <oo-calendar
+            mode="date"
+            value="{{$.defaultDate}}"
+            week-begin="{{$.weekBegin}}"
+            data-o2-element="calendar"
+            data-o2-events="viewchange:handleViewChange;change:handleDateChange">
+    </oo-calendar>
+</div>
+<div data-o2-element="eventArea"></div>

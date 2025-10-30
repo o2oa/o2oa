@@ -483,7 +483,7 @@ MWF.xApplication.ForumSection.Main = new Class({
 	recordStatus: function(){
 		return {
 			sectionId : this.options.sectionId,
-			viewPageNum : this.explorer.view.getCurrentPageNum(),
+			viewPageNum : (this.explorer && this.explorer.view) ? this.explorer.view.getCurrentPageNum() : 1,
 			noteHidden : this.noteNodeHidden
 		};
 	},

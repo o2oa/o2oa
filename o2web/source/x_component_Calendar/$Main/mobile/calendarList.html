@@ -1,0 +1,47 @@
+<header>
+    <div class="calendar-header-title" style="margin-left:4em;">{{$.lp.calendar}}</div>
+    <div class="header-create" data-o2-events="click:createCalendar;">{{$.lp.createCalendar}}</div>
+</header>
+<div data-o2-element="calendarList" class="calendar">
+    {{if $.data.myCalendars.length>0}}
+    <div class="list-title">
+        <i class="ooicon-person"></i>{{$.lp.myCalendar}}
+    </div>
+    {{end if}}
+    {{each $.data.myCalendars}}
+    <div class="list-item" data-o2-events="click:handleItemClick">
+        <div class="item-line">
+            <div class="item-flag" style="background-color: {{$.color}}"></div>
+            <div class="item-line-text">{{$.name}}</div>
+        </div>
+    </div>
+    {{end each}}
+
+    {{if $.data.unitCalendars.length>0}}
+    <div class="list-title">
+        <i class="ooicon-department"></i>{{$.lp.unitCalendar}}
+    </div>
+    {{end if}}
+    {{each $.data.unitCalendars}}
+    <div class="list-item" data-o2-events="click:handleItemClick">
+        <div class="item-line">
+            <div class="item-flag" style="background-color: {{$.color}}"></div>
+            <div class="item-line-text">{{$.name}}</div>
+        </div>
+    </div>
+    {{end each}}
+
+    {{if $.data.followCalendars.length>0}}
+    <div class="list-title">
+        <i class="ooicon-process-add-task-person"></i>{{$.lp.myFollowCalendar}}
+    </div>
+    {{end if}}
+    {{each $.data.followCalendars}}
+    <div class="list-item" data-o2-events="click:handleItemClick">
+        <div class="item-line">
+            <div class="item-flag" style="background-color: {{$.color}}"></div>
+            <div class="item-line-text">{{$.name}}</div>
+        </div>
+    </div>
+    {{end each}}
+</div>
