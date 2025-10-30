@@ -10,6 +10,11 @@ header{
 .header-title{
     font-size: var(--oo-font-size-larger);
     flex: 1;
+    padding-left: 1rem;
+}
+.calendar-header-title{
+    font-size: var(--oo-font-size-larger);
+    flex: 1;
     text-align: center;
 }
 .header-create{
@@ -64,9 +69,6 @@ oo-calendar{
     gap: 0.5em;
 }
 .item-line-text{
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
     flex: 1;
     font-size: 1.125rem;
 }
@@ -89,6 +91,22 @@ oo-calendar{
     color: rgb(255, 255, 255);
     background-color: var(--oo-color-success);
 }
+
+.calendar .list-title{
+    font-size: 1.25em;
+    padding: 1.5em 1em 0.5em 1em;
+    color: #666;
+}
+.calendar .list-title i{
+    padding-right: 0.5em;
+}
+.calendar .list-item{
+    margin-bottom: 0;
+    margin-left: 2em;
+    background-color: transparent;
+    padding: 0.626em;
+}
+
 
 .empty{
     display: flex;

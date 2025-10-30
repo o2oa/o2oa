@@ -750,7 +750,6 @@ MWFCalendar.EventForm = new Class({
             }, this.app);
             form.load();
             if(layout.mobile){
-                debugger;
                 this.formatMobileButton(this.formBottomNode.getFirst(), this.formAreaNode);
             }
         }.bind(this), true);
@@ -1158,8 +1157,10 @@ MWFCalendar.CalendarForm = new Class({
         var editEnable = this.editEnable = ( !this.isEdited && !this.isNew && this.data.manageable );
         this.userName = ( layout.desktop.session.user || layout.user ).distinguishedName;
         this.userId = ( layout.desktop.session.user || layout.user ).id;
-        if( data.type === "UNIT" ){
-            this.options.height = "650";
+        if( !layout.mobile ){
+            if( data.type === "UNIT" ){
+                this.options.height = "650";
+            }
         }
         if( this.isNew ){
             this.formTopTextNode?.set( "text", this.lp.createCalendar );
@@ -1173,7 +1174,15 @@ MWFCalendar.CalendarForm = new Class({
 
         debugger;
 
-        this.formTableContainer.setStyle("width","80%");
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                "width" : "auto",
+                "padding-left" : "20px",
+                "padding-right" : "20px"
+            });
+        }else{
+            this.formTableContainer.setStyle("width","80%");
+        }
 
         this.colorItem = this.formTableArea.getElement("[item='color']");
 
@@ -1181,7 +1190,8 @@ MWFCalendar.CalendarForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10", mvcStyle: "v10",
+                style : "v10",
+                mvcStyle: "v10",
                 hasColon : true,
                 itemTemplate: {
                     name: { type:'oo-input', text : this.lp.calendarName, notEmpty : true },
@@ -1226,10 +1236,14 @@ MWFCalendar.CalendarForm = new Class({
                         <div class="formLabel">${this.lp.color}</div>
                         <div class='formValue' item='color' style='overflow: hidden;'></div>
                     </div>
-                    <div style="display: flex;">
-                       <div item='type' style="flex: 1;"></div>
-                       <div item='isPublic' style="flex: 1;"></div>
-                    </div>   
+                    ${
+                        layout.mobile ?
+                            `<div item='type'></div><div item='isPublic'></div>` :
+                            `<div style='display: flex;'>
+                                <div item='type' style="flex: 1;"></div>
+                                <div item='isPublic' style="flex: 1;"></div>
+                            </div>`
+                    }  
                     <div item='description'></div>
                     <div ${targetStyle} item='target'></div>
                     <div ${permissionStyle} item='manageablePersonList'></div>
@@ -1243,8 +1257,12 @@ MWFCalendar.CalendarForm = new Class({
         changeItemName.each( function(name){
             this.formTableArea.getElement("[item='"+name+"']").setStyle("display",type === "UNIT" ? "" : "none");
         }.bind(this));
-        this.options.height = type === "UNIT" ? "650" : "500";
-        this.setFormNodeSize();
+        if( !layout.mobile ){
+            this.options.height = type === "UNIT" ? "650" : "500";
+            this.setFormNodeSize();
+        }else{
+
+        }
     },
     loadColor : function(){
         if( this.isEdited || this.isNew ){
@@ -1290,7 +1308,13 @@ MWFCalendar.CalendarForm = new Class({
         }.bind(this))
     },
     _createBottomContent : function(){
-        var html = `<div style='${layout.mobile ? "display:contents":"padding-top: 15px; display:flex; justify-content: center;"}'>
+        var html = layout.mobile ? `<div style='display:contents'>
+               <div item='cancelAction' style='display:contents'></div>
+               <div item='saveAction' style='float:left;display:${(this.isEdited || this.isNew) ? "contents" : "none"}'></div>
+               <div item='editAction' style='float:left;display:${this.editEnable ? "contents" : "none"};'></div>
+               <div item='removeAction' style='float:left;display:${this.isEdited ? "contents" : "none"};'></div>
+            </div>` :
+            `<div style='padding-top: 15px; display:flex; justify-content: center;'>
                <div item='saveAction' style='float:left;display:${(this.isEdited || this.isNew) ? "" : "none"}'></div>
                <div item='editAction' style='float:left;display:${this.editEnable ? "" : "none"};'></div>
                <div item='removeAction' style='float:left;display:${this.isEdited ? "" : "none"};'></div>
@@ -1300,7 +1324,7 @@ MWFCalendar.CalendarForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             var form = new MForm(this.formBottomNode, {}, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10",
+                style : layout.mobile ? "v10_mobile" : "v10",
                 hasColon : true,
                 itemTemplate: {
                     saveAction : { type : "oo-button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.save, event : {
@@ -1318,6 +1342,9 @@ MWFCalendar.CalendarForm = new Class({
                 }
             }, this.app);
             form.load();
+            if(layout.mobile){
+                this.formatMobileButton(this.formBottomNode.getFirst(), this.formAreaNode);
+            }
         }.bind(this), true);
     },
     deleteCalendar : function( e ){
@@ -1326,7 +1353,7 @@ MWFCalendar.CalendarForm = new Class({
             _self.app.actions.deleteCalendar( _self.data.id, function( json ){
                 _self.close();
                 _self.app.notice( _self.lp.deleteSuccess );
-                _self.app.leftNavi.reload();
+                (_self.view || _self.app.leftNavi).reload();
             }.bind(this));
             this.close();
         }, function(){

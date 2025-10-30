@@ -73,11 +73,12 @@ MWF.xApplication.Calendar.MainPc = new Class({
             }.bind(this));
         }.bind(this));
     },
-    listCalendar : function( callback ){
-        if( this.canlendarData ){
+    listCalendar : function( callback, refresh ){
+        if( !refresh && this.canlendarData ){
             if(callback)callback( this.canlendarData )
+            return this.canlendarData;
         }else{
-            this.actions.listMyCalendar( function( json ){
+            return this.actions.listMyCalendar( function( json ){
                 if( ( json.data.myCalendars || [] ).length == 0 ){
                     this.createDefaultCalendar(function(){
                         if(callback)callback( json.data )
@@ -730,7 +731,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
             },
             ()=>{
                 this.loadFlags();
-                this.loadEvents(this.options.baseDate);
+                this.loadEvents(this.currentDate || this.options.baseDate);
             }
         );
     },
@@ -847,7 +848,9 @@ MWF.xApplication.Calendar.MainMobile = new Class({
         });
     },
     handleEventClick: function (e, eventData){
-        this.openEvent(e, eventData, false);
+        this.actions.getEvent( eventData.id, function (json) {
+            this.openEvent(e, json.data, false);
+        }.bind(this))
     },
     openEvent: function (e, eventData, create, options={}){
         var form = new MWFCalendar.EventForm(this, eventData, {
@@ -872,7 +875,73 @@ MWF.xApplication.Calendar.MainMobile = new Class({
         if( eventData.createPerson === layout.desktop.session.user.distinguishedName )return true;
         return false;
     },
+    loadCalendarList: function (e){
+        this.node.empty();
+        var calendarList = new MWF.xApplication.Calendar.CalendarListMobile(this, this.node);
+        calendarList.load();
+    }
 });
+
+MWF.xApplication.Calendar.CalendarListMobile = new Class({
+    Implements: [Options, Events],
+    options : {
+        style: 'mobile'
+    },
+    initialize: function(app, node, options){
+        this.setOptions(options);
+        this.app = app;
+        this.lp = this.app.lp;
+        this.node = $(node);
+    },
+    load: function(){
+        this.app.listCalendar((data)=>{
+            this.node.loadHtml(
+                `/x_component_Calendar/$Main/${this.options.style}/calendarList.html`,
+                {
+                    module: this,
+                    bind: {
+                        lp: this.lp,
+                        data: data
+                    }
+                }
+            );
+        }, true);
+    },
+    reload: function (){
+        this.node.empty();
+        this.load();
+    },
+    handleItemClick: function (e, calendarData){
+        this.app.actions.getCalendar( calendarData.id, function( json ){
+            this.openCalendar(e, json.data, false);
+        }.bind(this))
+    },
+    createCalendar: function (e){
+        this.openCalendar(e, {}, true);
+    },
+    openCalendar: function (e, calendarData, create, options={}){
+        var form = new MWFCalendar.CalendarForm(this, calendarData, {
+            ...options,
+            hasTop: false,
+            style: 'v10_mobile',
+            height: '100%',
+            width: '100%'
+        }, {
+            app: this.app,
+            container: $(document.body)
+        });
+        form.view = this;
+        !!create ?
+            form.create() :
+            (this.isCalendarEditable() ? form.edit() : form.open());
+    },
+    isCalendarEditable: function (data) {
+        if( MWF.AC.isAdministrator() )return true;
+        if( (data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
+        if( data.createPerson === layout.desktop.session.user.distinguishedName )return true;
+        return false;
+    }
+})
 
 if ((layout.mobile || COMMON.Browser.Platform.isMobile)){
     MWF.xApplication.Calendar.Main = MWF.xApplication.Calendar.MainMobile;

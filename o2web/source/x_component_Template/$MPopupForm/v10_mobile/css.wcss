@@ -12,7 +12,8 @@
     "position": "absolute",
     "border-radius": "4px",
     "opacity": 0,
-    "top": "0px"
+    "top": "0px",
+    "font-size": "16px"
   },
   "formNode": {
     "background-color": "#fff",
@@ -108,7 +109,7 @@
     "border": "0px solid #666",
     "width": "100%",
     "margin": "auto",
-    "font-size": "14px",
+    "font-size": "16px",
     "color": "#666",
     "font-family": "Microsoft YaHei",
     "position": "relative"

@@ -210,7 +210,7 @@
     "border": "0px",
     "color": "#fff",
     "cursor": "pointer",
-    "font-size": "14px"
+    "font-size": "1em"
   },
   "inputCancelButton": {
     "background": "#f0f0f0",
@@ -219,7 +219,7 @@
     "height": "36px",
     "color": "#666",
     "border": "0px",
-    "font-size": "14px",
+    "font-size": "1em",
     "cursor": "pointer"
   },
   "inputA": {
