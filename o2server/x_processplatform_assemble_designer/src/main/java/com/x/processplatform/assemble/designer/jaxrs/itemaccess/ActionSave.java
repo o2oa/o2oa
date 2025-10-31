@@ -17,7 +17,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.ItemAccess;
@@ -49,6 +48,11 @@ class ActionSave extends BaseAction {
                         StringUtils.isNoneEmpty(process.getEdition()) ? process.getEdition()
                                 : process.getId());
                 appId = process.getApplication();
+            }else{
+                process = business.process().getEnabledProcess("", wi.getItemCategoryId());
+                if(process != null){
+                    appId = process.getApplication();
+                }
             }
             Application application = emc.find(appId, Application.class);
             if (null == application) {
