@@ -1,5 +1,7 @@
 package com.x.server.console.action;
 
+import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.Host;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -44,6 +46,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_EN = "en";
 	private static final String CMD_DE = "de";
 	private static final String CMD_GC = "gc";
+	private static final String CMD_HOST = "host";
 	private static final String CMD_INITRESOURCEFACTORY = "initResourceFactory";
 	private static final String CMD_FLUSHCONFIG = "flushConfig";
 	private static final String CMD_REGENERATECONFIG = "regenerateConfig";
@@ -81,6 +84,8 @@ public class ActionControl extends ActionBase {
 				sc(cmd);
 			} else if (cmd.hasOption(CMD_EN)) {
 				en(cmd);
+			} else if (cmd.hasOption(CMD_HOST)) {
+				host();
 			} else if (cmd.hasOption(CMD_DE)) {
 				de(cmd);
 			} else if (cmd.hasOption(CMD_GC)) {
@@ -111,6 +116,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(rdOption());
 		options.addOption(clh2Option());
 		options.addOption(ufOption());
+		options.addOption(hostOption());
 		options.addOption(ddlOption());
 		options.addOption(rstOption());
 		options.addOption(scOption());
@@ -134,6 +140,7 @@ public class ActionControl extends ActionBase {
 		displayOptions.addOption(rdOption());
 		displayOptions.addOption(clh2Option());
 		displayOptions.addOption(ufOption());
+		displayOptions.addOption(hostOption());
 		displayOptions.addOption(ddlOption());
 		displayOptions.addOption(rstOption());
 		displayOptions.addOption(scOption());
@@ -181,6 +188,10 @@ public class ActionControl extends ActionBase {
 
 	private static Option ufOption() {
 		return Option.builder(CMD_UF).longOpt("updateFile").argName("path").hasArg().desc("升级服务器,升级前请注意备份.").build();
+	}
+
+	private static Option hostOption() {
+		return Option.builder(CMD_HOST).longOpt("host").hasArg(false).desc("生成机器码.").build();
 	}
 
 	private static Option ddlOption() {
@@ -328,6 +339,10 @@ public class ActionControl extends ActionBase {
 		String text = Objects.toString(cmd.getOptionValue(CMD_EN), "");
 		Encrypt en = new Encrypt();
 		en.execute(text);
+	}
+
+	private void host() {
+		logger.print("机器码:{}", Host.generateMachineCode());
 	}
 
 	private void de(CommandLine cmd) throws Exception {
