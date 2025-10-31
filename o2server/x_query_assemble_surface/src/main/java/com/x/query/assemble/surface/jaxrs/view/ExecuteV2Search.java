@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.DirectoryReader;
@@ -18,6 +19,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.DisjunctionMaxQuery;
+import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
@@ -69,26 +71,33 @@ public class ExecuteV2Search extends BaseAction {
 			Query itemQuery = this.itemQuery(search);
 			Query recencyQuery = this.recencyQuery();
 
-			BooleanQuery.Builder qb = new BooleanQuery.Builder();
-			qb.add(permissionFilter, BooleanClause.Occur.FILTER); // 不参与打分
-			qb.add(scopeFilter, BooleanClause.Occur.FILTER); // 不参与打分
+			// 1) 关键词子查询：至少一个字段要命中
+			BooleanQuery.Builder keywordShoulds = new BooleanQuery.Builder();
+			keywordShoulds.add(bodyQuery, BooleanClause.Occur.SHOULD);
+			keywordShoulds.add(attachmentQuery, BooleanClause.Occur.SHOULD);
+			keywordShoulds.add(itemQuery, BooleanClause.Occur.SHOULD);
+			keywordShoulds.setMinimumNumberShouldMatch(1);
 
-			BooleanQuery query = qb.add(bodyQuery, BooleanClause.Occur.SHOULD)
-					.add(attachmentQuery, BooleanClause.Occur.SHOULD).add(itemQuery, BooleanClause.Occur.SHOULD)
-					.add(recencyQuery, BooleanClause.Occur.SHOULD).setMinimumNumberShouldMatch(1).build();
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!query");
-			System.out.println(query.toString());
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!query");
+			// 2) 外层 Query：权限/范围做 FILTER，关键词子查询做 MUST，时间加分做 SHOULD
+			BooleanQuery.Builder qb = new BooleanQuery.Builder();
+			qb.add(permissionFilter, BooleanClause.Occur.FILTER); // 不计分
+			qb.add(scopeFilter, BooleanClause.Occur.FILTER); // 不计分
+			qb.add(keywordShoulds.build(), BooleanClause.Occur.MUST); // 👈 必须至少有一个关键词命中
+			qb.add(recencyQuery, BooleanClause.Occur.SHOULD); // 👈 只加分，不影响是否命中
+
+			BooleanQuery query = qb.build();
+
 			// Page with searchAfter
 			TopDocs pageDocs = page(searcher, query, page, size);
 			for (ScoreDoc sd : pageDocs.scoreDocs) {
 				Document document = searcher.doc(sd.doc);
 				list.add(document.getField(Indexs.FIELD_ID).stringValue());
+				if (LOGGER.isDebugEnabled()) {
+					Explanation exp = searcher.explain(query, sd.doc);
+					LOGGER.debug("id={}, explain:{}", document.get(Indexs.FIELD_ID), exp.toString());
+				}
 			}
 			long total = pageDocs.totalHits == null ? list.size() : pageDocs.totalHits.value;
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(XGsonBuilder.toJson(list));
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return Pair.of(list, total);
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -168,24 +177,27 @@ public class ExecuteV2Search extends BaseAction {
 
 	private Query recencyQuery() {
 		long now = System.currentTimeMillis();
-		long pivot = TimeUnit.DAYS.toMillis(7); // “半衰期”：与 now 相差 7 天时拿到一半加分
-		return LongPoint.newDistanceFeatureQuery(Indexs.FIELD_UPDATETIME, 10f, now, pivot);
+		long pivot = TimeUnit.DAYS.toMillis(21); // “半衰期”：与 now 相差 n 天时拿到一半加分
+		return LongPoint.newDistanceFeatureQuery(Indexs.FIELD_UPDATETIME, 5f, now, pivot);
 	}
 
-	private Query bodyQuery(String search, HanLPAnalyzer analyzer) throws ParseException {
+	private Query bodyQuery(String search, Analyzer analyzer) throws ParseException {
 		QueryParser bodyParser = new QueryParser(Indexs.FIELD_BODY, analyzer);
-		return new BoostQuery(bodyParser.parse(QueryParserBase.escape(search)), 10f);
+		return new BoostQuery(bodyParser.parse(QueryParserBase.escape(search)), 5f);
 	}
 
-	private Query attachmentQuery(String search, HanLPAnalyzer analyzer) throws ParseException {
+	private Query attachmentQuery(String search, Analyzer analyzer) throws ParseException {
 		QueryParser attachmentParser = new QueryParser(Indexs.FIELD_ATTACHMENT, analyzer);
-		return new BoostQuery(attachmentParser.parse(QueryParserBase.escape(search)), 5f);
+		return new BoostQuery(attachmentParser.parse(QueryParserBase.escape(search)), 3f);
 	}
 
 	private Query itemQuery(String search) {
-		Query exactItemQuery = new BoostQuery(new TermQuery(new Term(Indexs.FIELD_ITEMLIST, search)), 20f);
-		Query prefixItemQuery = new BoostQuery(new PrefixQuery(new Term(Indexs.FIELD_ITEMLIST, search)), 15f);
-		return new DisjunctionMaxQuery(Arrays.asList(exactItemQuery, prefixItemQuery), /* tieBreaker */ 0.0f);
+		Query exactItemQuery = new BoostQuery(new TermQuery(new Term(Indexs.FIELD_ITEMLIST, search)), 10f);
+		Query prefixItemQuery = new BoostQuery(new PrefixQuery(new Term(Indexs.FIELD_ITEMLIST, search)), 5f);
+		Query suffixItemQuery = new BoostQuery(new PrefixQuery(
+				new Term(Indexs.FIELD_REVERSEDITEMLIST, new StringBuilder(search).reverse().toString())), 5f);
+		return new DisjunctionMaxQuery(Arrays.asList(exactItemQuery, prefixItemQuery, suffixItemQuery),
+				/* tieBreaker */ 0.0f);
 	}
 
 }
