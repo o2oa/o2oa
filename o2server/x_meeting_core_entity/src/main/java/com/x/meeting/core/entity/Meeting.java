@@ -300,6 +300,13 @@ public class Meeting extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String roomLink;
 
+	public static final String roomInviteCode_FIELDNAME = "roomInviteCode";
+	@FieldDescribe("线上会议的会议邀请码")
+	@Column(length = length_255B, name = ColumnNamePrefix + roomInviteCode_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + roomInviteCode_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String roomInviteCode;
+
 	public static final String externalPerson_FIELDNAME = "externalPerson";
 	@FieldDescribe("外部参会人员")
 	@Column(length = 500, name = ColumnNamePrefix + externalPerson_FIELDNAME)
@@ -538,6 +545,14 @@ public class Meeting extends SliceJpaObject {
 
 	public void setRoomLink(String roomLink) {
 		this.roomLink = roomLink;
+	}
+
+	public String getRoomInviteCode() {
+		return roomInviteCode;
+	}
+
+	public void setRoomInviteCode(String roomInviteCode) {
+		this.roomInviteCode = roomInviteCode;
 	}
 
 	public String getExternalPerson() {

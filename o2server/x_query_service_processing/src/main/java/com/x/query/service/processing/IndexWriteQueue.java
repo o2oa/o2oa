@@ -21,7 +21,6 @@ import org.apache.lucene.store.Directory;
 import com.hankcs.lucene.HanLPAnalyzer;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
@@ -57,19 +56,20 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 	}
 
 	private void update(Directory directory, List<Doc> list, boolean convertData) {
-		Analyzer analyzer = new HanLPAnalyzer();
-		IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-		try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
-			LOGGER.debug("update index, directory:{}, size:{}.", directory.toString(), list.size());
-			indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
-			list.stream().map(o -> o.toDocument(convertData)).forEach(o -> {
-				try {
-					indexWriter.updateDocument(new Term(Indexs.FIELD_ID, o.get(Indexs.FIELD_ID)), o);
-				} catch (IOException e) {
-					LOGGER.error(e);
-				}
-			});
-			indexWriter.commit();
+		try (directory; Analyzer analyzer = new HanLPAnalyzer()) {
+			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+			try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
+				LOGGER.debug("update index, directory:{}, size:{}.", directory.toString(), list.size());
+				indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
+				list.stream().map(o -> o.toDocument(convertData)).forEach(o -> {
+					try {
+						indexWriter.updateDocument(new Term(Indexs.FIELD_ID, o.get(Indexs.FIELD_ID)), o);
+					} catch (IOException e) {
+						LOGGER.error(e);
+					}
+				});
+				indexWriter.commit();
+			}
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}
@@ -83,7 +83,7 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 	}
 
 	private void clean(Directory directory, Date threshold) {
-		try {
+		try (directory) {
 			IndexWriterConfig indexWriterConfig = new IndexWriterConfig();
 			indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
 			try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
@@ -138,41 +138,43 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 	}
 
 	private void delete(Directory directory, List<String> ids, Query query) {
-		Analyzer analyzer = new HanLPAnalyzer();
-		IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-		try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
-			indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
-			ids.stream().forEach(o -> {
-				try {
-					BooleanQuery.Builder builder = new BooleanQuery.Builder();
-					Query idQuery = new TermQuery(new Term(Indexs.FIELD_ID, o));
-					builder.add(query, BooleanClause.Occur.MUST);
-					builder.add(idQuery, BooleanClause.Occur.MUST);
-					BooleanQuery q = builder.build();
-					indexWriter.deleteDocuments(q);
-				} catch (IOException e) {
-					LOGGER.error(e);
-				}
-			});
-			indexWriter.commit();
+		try (directory; Analyzer analyzer = new HanLPAnalyzer()) {
+			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+			try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
+				indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
+				ids.stream().forEach(o -> {
+					try {
+						BooleanQuery.Builder builder = new BooleanQuery.Builder();
+						Query idQuery = new TermQuery(new Term(Indexs.FIELD_ID, o));
+						builder.add(query, BooleanClause.Occur.MUST);
+						builder.add(idQuery, BooleanClause.Occur.MUST);
+						BooleanQuery q = builder.build();
+						indexWriter.deleteDocuments(q);
+					} catch (IOException e) {
+						LOGGER.error(e);
+					}
+				});
+				indexWriter.commit();
+			}
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}
 	}
 
 	private void delete(Directory directory, List<String> ids) {
-		Analyzer analyzer = new HanLPAnalyzer();
-		IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-		try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
-			indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
-			ids.stream().forEach(o -> {
-				try {
-					indexWriter.deleteDocuments(new Term(Indexs.FIELD_ID, o));
-				} catch (IOException e) {
-					LOGGER.error(e);
-				}
-			});
-			indexWriter.commit();
+		try (directory; Analyzer analyzer = new HanLPAnalyzer()) {
+			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+			try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
+				indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
+				ids.stream().forEach(o -> {
+					try {
+						indexWriter.deleteDocuments(new Term(Indexs.FIELD_ID, o));
+					} catch (IOException e) {
+						LOGGER.error(e);
+					}
+				});
+				indexWriter.commit();
+			}
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}
@@ -186,10 +188,11 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 	}
 
 	private void merge(Directory directory, Integer maxSegments) {
-		Analyzer analyzer = new HanLPAnalyzer();
-		IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-		try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
-			indexWriter.forceMerge(maxSegments);
+		try (directory; Analyzer analyzer = new HanLPAnalyzer()) {
+			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+			try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
+				indexWriter.forceMerge(maxSegments);
+			}
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}
