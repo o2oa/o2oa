@@ -703,7 +703,7 @@
         "background": "#ffffff",
         "border": "2px solid #999",
         "border-radius": "8px",
-        "box-shadow": "0px 0px 10px #666",
+        "box-shadow": "0px 0px 10px #666"
     },
     "handwritingActionNode": {
         "height": "30px",
@@ -1016,7 +1016,7 @@
         "margin-right": "10px"
     },
     "rollbackItemActivityNode_current": {
-        "color": "#ffffff",
+        "color": "#ffffff"
     },
     "rollbackItemTimeNode": {
         "height": "26px",
@@ -1188,7 +1188,7 @@
         "bottom": "50px",
         "z-index": 301,
         "padding": "0px 20px",
-        "border-top": "1px solid #dfdfdf",
+        "border-top": "1px solid #dfdfdf"
     },
     "html5ActionOtherButton": {
         "height": "50px",
@@ -1430,7 +1430,30 @@
     "background-size": "16px 16px",
     "float": "right"
   },
-     "mergedReadOOModule": {
+  "associatedDocumentSelectedArea": {
+    "background-color": "var(--oo-color-bg-white)"
+  },
+  "associatedDocumentSelectedTitleNode": {
+    "height": "2.25rem",
+    "background": "#f7f7f7",
+    "display": "flex",
+    "justify-content": "space-between",
+    "align-items": "center"
+  },
+  "associatedDocumentSelectedCountNode": {
+    "font-size": "14px",
+    "color": "var(--oo-color-main)",
+    "line-height": "2.25rem",
+    "font-style": "normal",
+    "margin": "0 1rem"
+  },
+  "associatedDocumentSelectedCancelAllNode": {
+    "font-size": "14px",
+    "color": "#2D2D33",
+    "line-height": "2.25rem",
+    "margin": "0 1rem"
+  },
+  "mergedReadOOModule": {
          "display":"flex",
          "align-items": "center",
          "flex": "1 1 46%"

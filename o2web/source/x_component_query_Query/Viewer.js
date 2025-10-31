@@ -38,7 +38,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         "isloadSearchbar": true,
         "export": false,
         "lazy": false,
-        "defaultBundles": [],
         "moduleEvents": [
             /**
              * 加载前触发。可通过this.target获取当前对象。
@@ -346,33 +345,45 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
 
     },
-    setContentHeight: function(){
+    setContentHeight: function() {
+        var getMarginHeight = (el) => {
+            var top = el.getStyle("margin-top").toFloat() || 0;
+            var bottom = el.getStyle("margin-bottom").toFloat() || 0;
+            return top + bottom;
+        }
         var size;
         var height = this.node.getStyle("height");
-        if( this.node.offsetParent === null ){
+        if (this.node.offsetParent === null) {
             size = {y: height.toInt()}
-        }else{
+        } else {
             size = this.node.getSize();
-            if( height && height.toString().endsWith('%') ){
-                this.node.setStyle("height", size.y+'px');
+            if (height && height.toString().endsWith('%')) {
+                this.node.setStyle("height", size.y + 'px');
             }
         }
-        var searchSize = this.searchAreaNode.getComputedSize();
-        var h = size.y-searchSize.totalHeight;
+
+        if (this.searchAreaNode?.offsetParent) {
+            var searchSize = this.searchAreaNode.getComputedSize();
+            var h = size.y - searchSize.totalHeight - getMarginHeight(this.searchAreaNode);
+        }
+
         //if (this.exportAreaNode){
         //    var exportSize = this.exportAreaNode.getComputedSize();
         //    h = h-exportSize.totalHeight;
         //}
-        if( this.actionbarAreaNode ){
+        if (this.actionbarAreaNode?.offsetParent) {
             var exportSize = this.actionbarAreaNode.getComputedSize();
-            h = h-exportSize.totalHeight;
+            h = h - exportSize.totalHeight - getMarginHeight(this.actionbarAreaNode);
         }
-        var pageSize = this.viewPageAreaNode.getComputedSize();
-        h = h-pageSize.totalHeight;
+
+        if (this.viewPageAreaNode?.offsetParent){
+            var pageSize = this.viewPageAreaNode.getComputedSize();
+            h = h - pageSize.totalHeight - getMarginHeight(this.viewPageAreaNode);
+        }
 
         var paddingTop = (this.viewAreaNode.getStyle("padding-top") || "0").toInt();
         var paddingBottom = (this.viewAreaNode.getStyle("padding-bottom") || "0").toInt();
-        h = h - paddingTop - paddingBottom;
+        h = h - paddingTop - paddingBottom - getMarginHeight(this.viewAreaNode);
 
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
@@ -386,9 +397,15 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     createActionbarNode : function(){
         this.actionbarAreaNode.empty();
-        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true )return;
+        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true ){
+            this.actionbarAreaNode.hide();
+            return;
+        }
         if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
-            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
+            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length ){
+                this.actionbarAreaNode.hide();
+                return;
+            }
             /**
              * @summary 视图的操作条对象.
              * @member {Object}
@@ -809,27 +826,17 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.setOrderList(d);
 
                 this.lookupAction.bundleView(this.json.id, d, function(json){
-                    this.bundleItems = this.parseBudleItems(json.data.valueList);
+                    this.bundleItems = json.data.valueList;
                     this.bundleKey = json.data.key;
 
                     this._initPage();
                     if (this.bundleItems.length){
                         if( this.noDataTextNode )this.noDataTextNode.destroy();
-                            if( this.options.defaultBundles.length && !this.isDefaultDataLoaded ){
-                                this.loadDefaultData(function () {
-                                    this.loadCurrentPageData( function () {
-                                        this.fireEvent("postLoad"); //用户配置的事件
-                                        this.lookuping = false;
-                                        if(callback)callback(this);
-                                    }.bind(this));
-                                }.bind(this))
-                            }else{
-                                this.loadCurrentPageData( function () {
-                                    this.fireEvent("postLoad"); //用户配置的事件
-                                    this.lookuping = false;
-                                    if(callback)callback(this);
-                                }.bind(this));
-                            }
+                        this.loadCurrentPageData( function () {
+                            this.fireEvent("postLoad"); //用户配置的事件
+                            this.lookuping = false;
+                            if(callback)callback(this);
+                        }.bind(this));
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();
@@ -855,48 +862,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }.bind(this));
             }
         }.bind(this));
-    },
-    parseBudleItems: function (bundleItems) {
-        if(this.options.defaultBundles){
-            var defaultBundles = this.options.defaultBundles;
-            for( var i= defaultBundles.length-1; i>=0; i-- ){
-                var bundle = defaultBundles[i];
-                if( bundleItems.contains(bundle) ){
-                    bundleItems.erase(bundle);
-                    bundleItems.unshift(bundle);
-                }
-            }
-        }
-        return bundleItems;
-    },
-    loadDefaultData: function( callback ){
-        var d = {};
-        d.bundleList = this.options.defaultBundles;
-        d.key = this.bundleKey;
-        this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            var resultJson, viewData = json.data;
-
-            if (this.viewJson.group.column){
-                resultJson = [];
-                json.data.groupGrid.each(function (g) {
-                    resultJson = resultJson.concat( g.list );
-                })
-            }else{
-                resultJson = json.data.grid;
-            }
-
-            resultJson.each(function (data) {
-                this.selectedItems.push({
-                    data: data
-                })
-            }.bind(this));
-
-            this.isDefaultDataLoaded = true;
-            if(callback)callback();
-        }.bind(this), function () {
-            this.isDefaultDataLoaded = true;
-            if(callback)callback();
-        }, true );
     },
     loadCurrentPageData: function( callback, async ){
         //是否需要在翻页的时候清空之前的items ?
@@ -932,7 +897,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         //this.createLoadding();
 
         this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            this.viewData = this.sortData(json.data);
+            this.viewData = json.data;
 
             this.fireEvent("postLoadPageData");
 
@@ -958,19 +923,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             if(callback)callback();
         }.bind(this), null, async === false ? false : true );
-    },
-    sortData : function(data){
-        var defaultBundles = this.options.defaultBundles;
-        if( !this.viewJson.group.column && defaultBundles && defaultBundles.length > 0 ){
-            data.grid = data.grid.sort(function (a, b) {
-               var indexA = defaultBundles.indexOf(a.bundle);
-               var indexB = defaultBundles.indexOf(b.bundle);
-               if( indexA === -1)indexA = 999999;
-               if( indexB === -1)indexB = 999998;
-               return indexA - indexB;
-           });
-        }
-        return data;
     },
     showAssociatedDocumentResult: function(failureList, successList){
         var fL = [];
@@ -1384,6 +1336,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
         }
         return (filterData.length) ? filterData : null;
+    },
+    cancelSelected: function(bundles){
+        var array = this.selectedItems.filter((item)=>{
+            return (bundles || []).contains(item.data.bundle);
+        });
+        array.forEach(function(item){
+            item.unSelected();
+        });
     },
     getData: function(){
         if (this.selectedItems.length){

@@ -484,6 +484,9 @@ MWF.xApplication.process.Xform.LP = {
     "selectDocNote": "请先选择文档",
     "associatedDocument": "关联文档",
     "docDeleted": "文档已经被删除或您没有权限打开此文档。",
+    "empty": "清空",
+    "associatedCount": "已关联{count}条",
+    "associatedDocumentCompleted": "关联完成",
 
     "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。",
 

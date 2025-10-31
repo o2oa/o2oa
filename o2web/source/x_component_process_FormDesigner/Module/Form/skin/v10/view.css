@@ -272,6 +272,40 @@
     align-content: center;
 }
 
+/* 关联文档 */
+.MWFADContent {
+}
+.MWFADContent .doc-icon {
+    color: #4590f8;
+    text-align: center;
+}
+.MWFADContent .process-icon {
+    color: #1cc66d;
+    text-align: center;
+}
+.MWFADContent table {
+    border-top: 1px solid rgb(222, 222, 222);
+    /*border-left: 1px solid rgb(222, 222, 222);*/
+    /*border-right: 1px solid rgb(222, 222, 222);*/
+    border-radius: 4px;
+}
+.MWFADContent table td,
+.MWFADContent table th {
+    color: var(--oo-color-text2);
+    border-bottom: 1px solid #dfdfdf !important;
+    transition: background-color 0.3s;
+    height: 30px !important;
+    line-height: 30px !important;
+    padding: 6px 0;
+}
+.MWFADContent table th {
+    text-align: left;
+    /*background-color: #f7f7f7 !important;*/
+}
+.MWFADContent tr:hover > td {
+    background-color: var(--oo-color-hover) !important;
+}
+
 
 /* 分辨率小于 1600px */
 /* @media only screen and (min-width: 768px) and (max-width: 1599px) {
