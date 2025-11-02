@@ -1433,25 +1433,35 @@
   "associatedDocumentSelectedArea": {
     "background-color": "var(--oo-color-bg-white)"
   },
+  "associatedDocumentSelectedContentNodeMobile": {
+      "position": "absolute",
+      "bottom": "7.125rem",
+      "left": "0",
+      "width": "100%",
+      "height": "calc(100% - 7.125rem)",
+      "border-radius": "0.25rem",
+      "background": "#FFF",
+      "z-index": 1003
+    },
   "associatedDocumentSelectedTitleNode": {
     "height": "2.25rem",
     "background": "#f7f7f7",
     "display": "flex",
     "justify-content": "space-between",
-    "align-items": "center"
+    "align-items": "center",
+    "font-size": "1rem"
   },
   "associatedDocumentSelectedCountNode": {
-    "font-size": "14px",
-    "color": "var(--oo-color-main)",
+    "color": "#2D2D33",
     "line-height": "2.25rem",
     "font-style": "normal",
     "margin": "0 1rem"
   },
   "associatedDocumentSelectedCancelAllNode": {
-    "font-size": "14px",
-    "color": "#2D2D33",
+    "color": "var(--oo-color-main)",
     "line-height": "2.25rem",
-    "margin": "0 1rem"
+    "margin": "0 1rem",
+    "cursor": "pointer"
   },
   "mergedReadOOModule": {
          "display":"flex",

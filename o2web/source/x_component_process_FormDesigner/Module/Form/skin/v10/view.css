@@ -83,12 +83,12 @@
 }
 
 .page-nav-title-create{
-    font-size:1rem; 
+    font-size:1rem;
     margin: 0 0.625em 0.625em 0.625em;
-    height: auto; 
+    height: auto;
     background-color:transparent;
     color: #ffffff;
-   
+
 }
 
 .page-content-section oo-input,
@@ -214,8 +214,8 @@
 }
 
 .search-item-title{
-    width: 6rem; 
-    min-width:4.3em; 
+    width: 6rem;
+    min-width:4.3em;
     max-width:9em;
     display: flex;
     align-items: center;
@@ -621,5 +621,34 @@
     }
     .index-starter-buttons oo-button{
         flex: 1;
+    }
+
+    .MWFADContent {
+        overflow: auto;
+        width: 100%;
+    }
+    .MWFADContent table {
+        width: 100%;
+        border: 0;
+    }
+    .MWFADContent table td,
+    .MWFADContent table th {
+        white-space: nowrap;
+        height: 3.2em !important;
+        padding: 5px;
+    }
+    .MWFADContent table td:last-child {
+        position: sticky;
+        right: -3px;
+        z-index: 10;
+        min-width: 2.5em !important;
+        background-color: #ffffff !important;
+    }
+    .MWFADContent table th:last-child {
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        min-width: 2.5em !important;
+        background-color: #f7f7f7 !important;
     }
 }

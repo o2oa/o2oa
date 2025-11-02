@@ -78,6 +78,19 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         //只是为了校验
         this.field = true;
         this.fieldModuleLoaded = false;
+
+        this.MIN_VIEW_CONTENT_HEIGHT = 300;
+        this.MIN_SELECTED_AREA_HEIGHT = 200;
+        switch (this.json.mode) {
+            case "text":
+            case "script":
+                this.MIN_SELECTED_AREA_WIDTH = 500;
+                break;
+            case "default":
+            default:
+                this.MIN_SELECTED_AREA_WIDTH = this.json.style === 'v10' ?  760 : 500;
+                break;
+        }
     },
 	_loadUserInterface: function(){
 
@@ -558,31 +571,41 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     "cellPadding": "2",
                     "cellSpacing": "0"
                 }).inject(node || this.documentListNode);
+            }
 
-                var lp = MWF.xApplication.process.Xform.LP;
+            var lp = MWF.xApplication.process.Xform.LP;
 
-                var hasCMS = this.documentList.some(function (d) { return d.targetType !== "processPlatform"; });
-                var hasProcess = this.documentList.some(function (d) { return d.targetType === "processPlatform"; });
+            var hasCMS = this.documentList.some(function (d) { return d.targetType !== "processPlatform"; });
+            var hasProcess = this.documentList.some(function (d) { return d.targetType === "processPlatform"; });
 
-                var headerNode = new Element("tr").inject(this.table);
-                var titles = [];
-                var titlesWidth = ['', '', '', '6rem', '6rem', '20rem', ''];
-                if( hasCMS && hasProcess ){
-                    titles = ['', lp.title, lp.documentType,
-                        lp.processName+"/"+lp.categoryName,
-                        lp.draftPerson+"/"+lp.publishPerson,
-                        lp.draftTime+"/"+lp.publishTime, '' ];
-                }else if(hasCMS){
+            var headerNode = new Element("tr.title");
+            var titles = [];
+            var titlesWidth = [];
+            if( hasCMS && hasProcess ){
+                titles = ['', lp.title, lp.documentType,
+                    lp.processName+"/"+lp.categoryName,
+                    lp.draftPerson+"/"+lp.publishPerson,
+                    lp.draftTime+"/"+lp.publishTime, '' ];
+            }else{
+                titlesWidth = ['', '', '', '6rem', '6rem', '11rem', '2rem']
+                if(hasCMS){
                     titles = ['', lp.title, lp.categoryName, lp.documentType, lp.publishPerson, lp.publishTime, '' ];
                 }else if( hasProcess ){
                     titles = ['', lp.title, lp.processName, lp.documentType, lp.draftPerson, lp.draftTime, ''];
                 }
-                titles.each(function (title, i){
-                    var th = new Element("th", {text: title}).inject(headerNode);
-                    if( titlesWidth[i] ){
-                        th.setStyle('width', titlesWidth[i]);
-                    }
-                })
+            }
+            titles.each(function (title, i){
+                var th = new Element("th", {text: title}).inject(headerNode);
+                if( titlesWidth[i] ){
+                    th.setStyle('width', titlesWidth[i]);
+                }
+            })
+            var titleTr = this.table.getElement('.title');
+            if( titleTr ){
+                headerNode.inject(titleTr, 'after');
+                titleTr.destroy();
+            }else{
+                headerNode.inject(this.table);
             }
 
             (array || this.documentList).each(function (d) {
@@ -750,8 +773,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                         return view.json.id === d.view;
                     });
                     if(vw.length){
-                        vw[0].cancelSelected([d.targetBundle]);
+                        vw[0].cancelSelected([d.targetBundle], false);
                     }
+                    _self.refreshSelectedCount();
                 }
                 _self.fireEvent("afterDeleteDocument", [d]);
                 dlg?.close();
@@ -901,16 +925,17 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 if( layout.mobile && o2.version.dev === 10 ){
                     pageViewNode.setStyle("height", '100%');
                 }else{
-                    debugger;
                     var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
-                    if( o2.version.dev === 10 ){
+                    if( this.json.style === 'v10' ){
                         viewHeight = viewHeight - 24;
                     }
-                    // if( this.form.app.content.getSize().x < 1400 ){
-                         viewHeight = viewHeight - 200;
-                    // }
-                    if( viewHeight < 200 ){
-                        viewHeight = 200;
+                    if(this.selectedAreaDirection === 'vertical'){
+                        viewHeight = viewHeight - this.selectedAreaHeight;
+                    }else{
+
+                    }
+                    if( viewHeight < this.MIN_VIEW_CONTENT_HEIGHT ){
+                        viewHeight = this.MIN_VIEW_CONTENT_HEIGHT;
                     }
                     pageViewNode.setStyle("height", viewHeight);
                 }
@@ -943,9 +968,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                             "bundle": item.data.bundle
                         };
                         var selectFlag = item.view.getSelectFlag();
-                        if( selectFlag === 'single' ){
+                        if( selectFlag === 'single' || this.documentList.length === 0 ){
+                            this.selectedContentNode.empty();
                             this.set([data], ()=>{
-                                //this.addDocumentInDialog();
                                 this.refreshSelectedCount();
                                 this.selectedContentNode.empty();
                                 this.showDocumentList(this.documentList, this.selectedContentNode);
@@ -964,7 +989,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     }.bind(this),
                     "onUnselect": function(item){
                         selectedBundles.erase( item.data.bundle );
-                        debugger;
                         this.cancel([item.data.bundle], ()=>{
                             //this.cancelDocumentInDialog();
                             this.refreshSelectedCount();
@@ -1017,16 +1041,30 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         var width = this.json.DialogWidth || "850";
         var height = this.json.DialogHeight || "900";
 
+        width = width.toInt();
+        height = height.toInt();
+
+        var size = this.form.app.content.getSize();
         if (layout.mobile){
             var size = document.body.getSize();
             width = size.x;
             height = size.y;
             options.style = "viewmobile";
+        }else{
+            debugger;
+            this.selectedAreaDirection = (size.x < width + this.MIN_SELECTED_AREA_WIDTH) ? "vertical" : "horizontal";
+            if (this.selectedAreaDirection === "horizontal") {
+                this.viewWidth = width;
+                width = width + this.MIN_SELECTED_AREA_WIDTH;
+            }else if(size.y > height + this.MIN_SELECTED_AREA_HEIGHT){
+                this.selectedAreaHeight = this.MIN_SELECTED_AREA_HEIGHT;
+                height = height + this.MIN_SELECTED_AREA_HEIGHT;
+            }else{
+                this.selectedAreaHeight = this.MIN_SELECTED_AREA_HEIGHT;
+                height = size.y;
+            }
         }
-        width = width.toInt();
-        height = height.toInt();
 
-        var size = this.form.app.content.getSize();
         var x = (size.x-width)/2;
         var y = (size.y-height)/2;
         if (x<0) x = 0;
@@ -1074,11 +1112,36 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     this.dlg = null;
                 }.bind(this),
                 "onPostShow": function(){
+                    var viewNode = new Element('div').inject(dlg.content);
+                    this.selectedArea = new Element("div.associatedDocumentSelectedArea").inject(dlg.content);
+
                     if(layout.mobile){
                         dlg.node.setStyle("z-index",200);
+                    }else{
+                        dlg.content.setStyle('display', 'flex');
+                        if( this.selectedAreaDirection === 'horizontal' ){
+                            viewNode.setStyles({
+                                'flex-shrink': "0",
+                                'width': this.viewWidth + 'px'
+                            });
+                            this.selectedArea.setStyles({
+                                'flex': 1,
+                                'height': 'calc( 100% - 20px )',
+                                'overflow': 'auto'
+                            })
+                        }else{
+                            dlg.content.setStyles({
+                                'flex-direction': 'column',
+                                'flex-wrap': 'nowrap'
+                            });
+                            this.selectedArea.setStyles({
+                                'height': this.selectedAreaHeight + 'px',
+                                'overflow': 'auto'
+                            })
+                        }
                     }
-                    this.loadViewers(dlg.content, dlg);
-                    this.loadSelectedArea(dlg.content, dlg);
+                    this.loadViewers(viewNode, dlg);
+                    this.loadSelectedArea(this.selectedArea, dlg);
                 }.bind(this)
             });
             this.dlg = dlg;
@@ -1106,29 +1169,42 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         _renderViewContainerMobile(
             this.json.title || MWF.xApplication.process.Xform.LP.associatedDocument,
             (viewNode, o)=>{
-                this.loadViewers(viewNode);
+
+                o._selectCancel = o.selectCancel;
+                o.selectCancel = ()=>{
+                    if( !this.selectedContentNode.offsetParent ){
+                        o._selectCancel();
+                    }else{
+                        this.selectedContentNode.hide();
+                        this.showSelectedContentNode.show();
+                        this.hideSelectedContentNode.hide();
+                    }
+                }
+
+                this.selectMode = true;
+                window.setTimeout(
+                    ()=>{
+                        this.loadViewers(viewNode);;
+                    },
+                    100
+                )
+                this.selectedArea = new Element("div.associatedDocumentSelectedArea").inject(viewNode, 'after');
+                this.loadSelectedAreaMobile(this.selectedArea, o);
                 this.dlg_mobile = o;
-                // MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
-                //     viewer = new MWF.xApplication.query.Query.Viewer(viewNode, viewJson, viewOptions, _form.app, _form.Macro);
-                //     viewer.addEvent('selectRow', (row)=>{
-                //         row.node.addClass('selectedRow');
-                //     });
-                //     viewer.addEvent('unselectRow', (row)=>{
-                //         row.node.removeClass('selectedRow');
-                //     });
-                // });
+
+                o.contentNode.querySelector('.mwf_selectView_action_cancel').hide();
+                o.contentNode.querySelector('.mwf_selectView_action_ok').set('text', MWF.xApplication.process.Xform.LP.associatedDocumentCompleted);
+
             },
             ()=>{
                 this.afterSelectView( callback );
+                this.selectMode = false;
             },
-            true
+            false
         );
     },
     loadSelectedArea: function(container, dialog){
         var lp = MWF.xApplication.process.Xform.LP;
-        this.selectedArea = new Element("div.associatedDocumentSelectedArea", {
-            style: 'height:200px;'
-        }).inject(container);
         this.selectedArea.setStyles(this.form.css.associatedDocumentSelectedArea);
 
         this.selectedTitleNode = new Element("div", {
@@ -1142,8 +1218,54 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             styles: this.form.css.associatedDocumentSelectedCancelAllNode,
             text: lp.empty
         }).inject(this.selectedTitleNode);
+        this.cancelAllNode.addEvent('click', (e)=>{
+            this.selectedContentNode.empty();
+            this.viewList.forEach((view)=>{
+                view.cancelSelectedAll(false);
+            })
+            this.set([], ()=>{
+                this.refreshSelectedCount();
+                this.selectedContentNode.empty();
+                this.showDocumentList(this.documentList, this.selectedContentNode);
+            }, false);
+        })
 
         this.selectedContentNode = new Element("div.MWFADContent", {}).inject(this.selectedArea);
+        this.showDocumentList(this.documentList, this.selectedContentNode);
+    },
+    loadSelectedAreaMobile: function(container, dialog){
+        var lp = MWF.xApplication.process.Xform.LP;
+        this.selectedArea.setStyles(this.form.css.associatedDocumentSelectedArea);
+
+        this.selectedTitleNode = new Element("div", {
+            styles: this.form.css.associatedDocumentSelectedTitleNode
+        }).inject(this.selectedArea);
+        this.selectedTitleNode.addEvent('click', ()=>{
+            if( !this.selectedContentNode.offsetParent ){
+                this.selectedContentNode.show();
+                // this.selectedMaskNode.show();
+                this.showSelectedContentNode.hide();
+                this.hideSelectedContentNode.show();
+            }else{
+                this.selectedContentNode.hide();
+                this.showSelectedContentNode.show();
+                this.hideSelectedContentNode.hide();
+            }
+        })
+        this.selectedCountNode = new Element("div", {
+            styles: this.form.css.associatedDocumentSelectedCountNode,
+            text: lp.associatedCount.replace('{count}', this.documentList.length)
+        }).inject(this.selectedTitleNode);
+
+        this.showSelectedContentNode = new Element('i.ooicon-icon_arrow_up.mainColor_color').inject(this.selectedTitleNode);
+        this.showSelectedContentNode.setStyles(this.form.css.associatedDocumentSelectedCancelAllNode);
+        this.hideSelectedContentNode = new Element('i.ooicon-drop_down.mainColor_color').inject(this.selectedTitleNode);
+        this.hideSelectedContentNode.setStyles(this.form.css.associatedDocumentSelectedCancelAllNode);
+        this.hideSelectedContentNode.hide();
+
+        this.selectedContentNode = new Element("div.MWFADContent", {}).inject(this.selectedArea);
+        this.selectedContentNode.setStyles(this.form.css.associatedDocumentSelectedContentNodeMobile);
+        this.selectedContentNode.hide();
         this.showDocumentList(this.documentList, this.selectedContentNode);
     },
     refreshSelectedCount: function(){

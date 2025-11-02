@@ -398,12 +398,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     createActionbarNode : function(){
         this.actionbarAreaNode.empty();
         if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true ){
-            this.actionbarAreaNode.hide();
+            // this.actionbarAreaNode.hide();
             return;
         }
         if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
             if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length ){
-                this.actionbarAreaNode.hide();
+                // this.actionbarAreaNode.hide();
                 return;
             }
             /**
@@ -1337,12 +1337,17 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
         return (filterData.length) ? filterData : null;
     },
-    cancelSelected: function(bundles){
+    cancelSelectedAll: function(isFire){
+        while( this.selectedItems.length ){
+            this.selectedItems[0].unSelected(null, isFire)
+        }
+    },
+    cancelSelected: function(bundles, isFire){
         var array = this.selectedItems.filter((item)=>{
             return (bundles || []).contains(item.data.bundle);
         });
         array.forEach(function(item){
-            item.unSelected();
+            item.unSelected(null, isFire);
         });
     },
     getData: function(){
@@ -1713,7 +1718,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             });
 
         });
-    
+
         const buttonHtml = `
             <oo-button class="button-ok" style="width: 6rem"  text="查询" left-icon="search"></oo-button>
             <oo-button class="button-cancel" type="cancel" text="重置" left-icon="process-cancel"></oo-button>
@@ -3519,7 +3524,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
      *  item = this.target.items[0];
      *  item.unSelected();
      */
-    unSelected: function( from ){
+    unSelected: function( from, isFire ){
         for(var i=0; i<this.view.selectedItems.length; i++){
             var item = this.view.selectedItems[i];
             if( item.data.bundle === this.data.bundle ){
@@ -3557,11 +3562,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("unselect", [{
-            "selected": false,
-            "item": this,
-            "data": this.data
-        }]); //options 传入的事件
+        if( isFire !== false ){
+            this.view.fireEvent("unselect", [{
+                "selected": false,
+                "item": this,
+                "data": this.data
+            }]); //options 传入的事件
+        }
     },
 
     /**
