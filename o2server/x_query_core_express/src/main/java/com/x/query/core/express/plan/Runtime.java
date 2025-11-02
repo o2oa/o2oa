@@ -40,11 +40,16 @@ public class Runtime extends GsonPropertyObject {
 	@FieldDescribe("参数")
 	public Map<String, String> parameter = new HashMap<>();
 
-	@FieldDescribe("数量")
+	@FieldDescribe("每页数量")
 	public Integer count = 0;
+
+	@FieldDescribe("第几页")
+	public Integer page = 0;
 
 	@FieldDescribe("限定结果集")
 	public List<String> bundleList = new TreeList<>();
+
+	public boolean hasBundle = false;
 
 	public boolean isManager = false;
 
