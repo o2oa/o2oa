@@ -34,6 +34,7 @@ import org.apache.lucene.util.BytesRef;
 
 import com.google.gson.Gson;
 import com.hankcs.lucene.HanLPAnalyzer;
+import com.rometools.utils.Strings;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -55,6 +56,10 @@ public class ExecuteV2Search extends BaseAction {
 			throws Exception {
 		List<String> list = new ArrayList<>();
 		Optional<Directory> opt = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
+		if (Strings.isBlank(search)) {
+			LOGGER.warn("search query string is empty.");
+			return Pair.of(list, 0L);
+		}
 		if (opt.isEmpty()) {
 			LOGGER.warn("search directory not exist.");
 			return Pair.of(list, 0L);
