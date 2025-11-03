@@ -80,7 +80,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         this.fieldModuleLoaded = false;
 
         this.MIN_VIEW_CONTENT_HEIGHT = 300;
-        this.MIN_SELECTED_AREA_HEIGHT = 200;
+        this.MIN_SELECTED_AREA_HEIGHT = this.json.select === 'multi' ? 200 : 140;
         switch (this.json.mode) {
             case "text":
             case "script":
@@ -88,7 +88,8 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 break;
             case "default":
             default:
-                this.MIN_SELECTED_AREA_WIDTH = this.json.style === 'v10' ?  760 : 500;
+                if( this.json.style !== 'v10' )this.MIN_SELECTED_AREA_HEIGHT = 130;
+                this.MIN_SELECTED_AREA_WIDTH = this.json.style === 'v10' ?  410 : 400;
                 break;
         }
     },
@@ -564,6 +565,27 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     },
     loadDocumentListDefault: function(array, node, isAdd){
         if( this.json.style === 'v10' ){
+            debugger;
+            var availableIndex = [];
+            if( node && node === this.selectedContentNode ){
+                var size = node.getSize();
+                var arr = [
+                    {width: 700, index:[0, 1, 2, 3, 4, 5, 6]},
+                    {width: 636, index:[0, 1, 3, 4, 5, 6]},
+                    {width: 572, index:[0, 1, 4, 5, 6]},
+                    {width: 476, index:[0, 1, 5, 6]},
+                    {width: 300, index:[0, 1, 6]}
+                ];
+                for( var i = 0; i<arr.length; i++ ) {
+                    if( size.x > arr[i].width ){
+                        availableIndex = arr[i].index;
+                        break;
+                    }
+                }
+            }else{
+                availableIndex = [0, 1, 2, 3, 4, 5, 6 ];
+            }
+
             if( !isAdd || !this.table ){
                 this.table = new Element('table', {
                     "style": "width: 100%;border-collapse:collapse;",
@@ -597,6 +619,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 }
             }
             titles.each(function (title, i){
+                if( !availableIndex.contains(i) )return;
                 var th = new Element("th", {text: title}).inject(headerNode);
                 if( titlesWidth[i] ){
                     th.setStyle('width', titlesWidth[i]);
@@ -613,7 +636,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }
 
             (array || this.documentList).each(function (d) {
-                this.loadDocumentListDefault_V10(d, node ? node.getElement('table') : this.table);
+                this.loadDocumentListDefault_V10(d, node ? node.getElement('table') : this.table, availableIndex);
             }.bind(this));
         }else{
             (array || this.documentList).each(function (d) {
@@ -640,26 +663,26 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this))
         }
     },
-    loadDocumentListDefault_V10: function (d, node){
+    loadDocumentListDefault_V10: function (d, node, availableIndex){
         var lp = MWF.xApplication.process.Xform.LP;
         var itemNode = new Element("tr").inject( node || this.table );
         itemNode.set('data-o2-bundle', d.targetBundle);
-        var iconNode, textNode ,typeNode, categoryNode, personNode, timeNode;
+        //var iconNode, textNode ,typeNode, categoryNode, personNode, timeNode;
 
         if( d.targetType === "processPlatform" ){
-             iconNode = new Element("td.process-icon.ooicon-liucheng").inject(itemNode);
-             textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
-             categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
-             typeNode = new Element("td", {text: lp.work}).inject(itemNode);
-             personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
-             timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
+            availableIndex.contains(0) && new Element("td.process-icon.ooicon-liucheng").inject(itemNode);
+            availableIndex.contains(1) && new Element("td", {text: d.targetTitle}).inject(itemNode);
+            availableIndex.contains(2) && new Element("td", {text: d.targetCategory}).inject(itemNode);
+            availableIndex.contains(3) && new Element("td", {text: lp.work}).inject(itemNode);
+            availableIndex.contains(4) && new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
+            availableIndex.contains(5) && new Element("td", {text: d.targetStartTime}).inject(itemNode);
         }else{
-            iconNode = new Element("td.doc-icon.ooicon-doc-cooperation").inject(itemNode);
-            textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
-            categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
-            typeNode = new Element("td", {text: lp.document}).inject(itemNode);
-            personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
-            timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
+            availableIndex.contains(0) && new Element("td.doc-icon.ooicon-doc-cooperation").inject(itemNode);
+            availableIndex.contains(1) && new Element("td", {text: d.targetTitle}).inject(itemNode);
+            availableIndex.contains(2) && new Element("td", {text: d.targetCategory}).inject(itemNode);
+            availableIndex.contains(3) && new Element("td", {text: lp.document}).inject(itemNode);
+            availableIndex.contains(4) && new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
+            availableIndex.contains(5) && new Element("td", {text: d.targetStartTime}).inject(itemNode);
         }
         var deleteNode = new Element("td.ooicon-delete").inject(itemNode);
         if( !this.isReadonly() ){
@@ -1065,10 +1088,15 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             options.style = "viewmobile";
         }else{
             debugger;
-            this.selectedAreaDirection = (size.x < width + this.MIN_SELECTED_AREA_WIDTH) ? "vertical" : "horizontal";
+            this.selectedAreaDirection = (size.x < width + this.MIN_SELECTED_AREA_WIDTH + 60) ? "vertical" : "horizontal";
             if (this.selectedAreaDirection === "horizontal") {
                 this.viewWidth = width;
-                width = width + this.MIN_SELECTED_AREA_WIDTH;
+                var remain = size.x - width;
+                if( remain > 760 ){
+                    width = width + 760;
+                }else{
+                    width = width + remain - 60;
+                }
             }else if(size.y > height + this.MIN_SELECTED_AREA_HEIGHT){
                 this.selectedAreaHeight = this.MIN_SELECTED_AREA_HEIGHT;
                 height = height + this.MIN_SELECTED_AREA_HEIGHT;
