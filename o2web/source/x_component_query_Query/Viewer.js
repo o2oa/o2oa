@@ -38,7 +38,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         "isloadSearchbar": true,
         "export": false,
         "lazy": false,
-        "defaultBundles": [],
         "moduleEvents": [
             /**
              * 加载前触发。可通过this.target获取当前对象。
@@ -346,33 +345,45 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
 
     },
-    setContentHeight: function(){
+    setContentHeight: function() {
+        var getMarginHeight = (el) => {
+            var top = el.getStyle("margin-top").toFloat() || 0;
+            var bottom = el.getStyle("margin-bottom").toFloat() || 0;
+            return top + bottom;
+        }
         var size;
         var height = this.node.getStyle("height");
-        if( this.node.offsetParent === null ){
+        if (this.node.offsetParent === null) {
             size = {y: height.toInt()}
-        }else{
+        } else {
             size = this.node.getSize();
-            if( height && height.toString().endsWith('%') ){
-                this.node.setStyle("height", size.y+'px');
+            if (height && height.toString().endsWith('%')) {
+                this.node.setStyle("height", size.y + 'px');
             }
         }
-        var searchSize = this.searchAreaNode.getComputedSize();
-        var h = size.y-searchSize.totalHeight;
+
+        if (this.searchAreaNode?.offsetParent) {
+            var searchSize = this.searchAreaNode.getComputedSize();
+            var h = size.y - searchSize.totalHeight - getMarginHeight(this.searchAreaNode);
+        }
+
         //if (this.exportAreaNode){
         //    var exportSize = this.exportAreaNode.getComputedSize();
         //    h = h-exportSize.totalHeight;
         //}
-        if( this.actionbarAreaNode ){
+        if (this.actionbarAreaNode?.offsetParent) {
             var exportSize = this.actionbarAreaNode.getComputedSize();
-            h = h-exportSize.totalHeight;
+            h = h - exportSize.totalHeight - getMarginHeight(this.actionbarAreaNode);
         }
-        var pageSize = this.viewPageAreaNode.getComputedSize();
-        h = h-pageSize.totalHeight;
+
+        if (this.viewPageAreaNode?.offsetParent){
+            var pageSize = this.viewPageAreaNode.getComputedSize();
+            h = h - pageSize.totalHeight - getMarginHeight(this.viewPageAreaNode);
+        }
 
         var paddingTop = (this.viewAreaNode.getStyle("padding-top") || "0").toInt();
         var paddingBottom = (this.viewAreaNode.getStyle("padding-bottom") || "0").toInt();
-        h = h - paddingTop - paddingBottom;
+        h = h - paddingTop - paddingBottom - getMarginHeight(this.viewAreaNode);
 
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
@@ -386,9 +397,15 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     createActionbarNode : function(){
         this.actionbarAreaNode.empty();
-        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true )return;
+        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true ){
+            // this.actionbarAreaNode.hide();
+            return;
+        }
         if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
-            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
+            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length ){
+                // this.actionbarAreaNode.hide();
+                return;
+            }
             /**
              * @summary 视图的操作条对象.
              * @member {Object}
@@ -809,27 +826,17 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.setOrderList(d);
 
                 this.lookupAction.bundleView(this.json.id, d, function(json){
-                    this.bundleItems = this.parseBudleItems(json.data.valueList);
+                    this.bundleItems = json.data.valueList;
                     this.bundleKey = json.data.key;
 
                     this._initPage();
                     if (this.bundleItems.length){
                         if( this.noDataTextNode )this.noDataTextNode.destroy();
-                            if( this.options.defaultBundles.length && !this.isDefaultDataLoaded ){
-                                this.loadDefaultData(function () {
-                                    this.loadCurrentPageData( function () {
-                                        this.fireEvent("postLoad"); //用户配置的事件
-                                        this.lookuping = false;
-                                        if(callback)callback(this);
-                                    }.bind(this));
-                                }.bind(this))
-                            }else{
-                                this.loadCurrentPageData( function () {
-                                    this.fireEvent("postLoad"); //用户配置的事件
-                                    this.lookuping = false;
-                                    if(callback)callback(this);
-                                }.bind(this));
-                            }
+                        this.loadCurrentPageData( function () {
+                            this.fireEvent("postLoad"); //用户配置的事件
+                            this.lookuping = false;
+                            if(callback)callback(this);
+                        }.bind(this));
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();
@@ -855,48 +862,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }.bind(this));
             }
         }.bind(this));
-    },
-    parseBudleItems: function (bundleItems) {
-        if(this.options.defaultBundles){
-            var defaultBundles = this.options.defaultBundles;
-            for( var i= defaultBundles.length-1; i>=0; i-- ){
-                var bundle = defaultBundles[i];
-                if( bundleItems.contains(bundle) ){
-                    bundleItems.erase(bundle);
-                    bundleItems.unshift(bundle);
-                }
-            }
-        }
-        return bundleItems;
-    },
-    loadDefaultData: function( callback ){
-        var d = {};
-        d.bundleList = this.options.defaultBundles;
-        d.key = this.bundleKey;
-        this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            var resultJson, viewData = json.data;
-
-            if (this.viewJson.group.column){
-                resultJson = [];
-                json.data.groupGrid.each(function (g) {
-                    resultJson = resultJson.concat( g.list );
-                })
-            }else{
-                resultJson = json.data.grid;
-            }
-
-            resultJson.each(function (data) {
-                this.selectedItems.push({
-                    data: data
-                })
-            }.bind(this));
-
-            this.isDefaultDataLoaded = true;
-            if(callback)callback();
-        }.bind(this), function () {
-            this.isDefaultDataLoaded = true;
-            if(callback)callback();
-        }, true );
     },
     loadCurrentPageData: function( callback, async ){
         //是否需要在翻页的时候清空之前的items ?
@@ -932,7 +897,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         //this.createLoadding();
 
         this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            this.viewData = this.sortData(json.data);
+            this.viewData = json.data;
 
             this.fireEvent("postLoadPageData");
 
@@ -958,127 +923,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             if(callback)callback();
         }.bind(this), null, async === false ? false : true );
-    },
-    sortData : function(data){
-        var defaultBundles = this.options.defaultBundles;
-        if( !this.viewJson.group.column && defaultBundles && defaultBundles.length > 0 ){
-            data.grid = data.grid.sort(function (a, b) {
-               var indexA = defaultBundles.indexOf(a.bundle);
-               var indexB = defaultBundles.indexOf(b.bundle);
-               if( indexA === -1)indexA = 999999;
-               if( indexB === -1)indexB = 999998;
-               return indexA - indexB;
-           });
-        }
-        return data;
-    },
-    showAssociatedDocumentResult: function(failureList, successList){
-        var fL = [];
-        failureList.each(function( f ){
-            if( f.properties.view === this.json.id )fL.push( f.targetBundle );
-        }.bind(this));
-
-        var sl = [];
-        successList.each(function( f ){
-            if( f.properties.view === this.json.id )sl.push( f.targetBundle );
-        }.bind(this));
-
-        var d = {};
-        d.bundleList = fL.concat( sl );
-        d.key = this.bundleKey;
-
-        if( d.bundleList.length ){
-            this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-                var resultJson, viewData = json.data;
-
-                if (this.viewJson.group.column){
-                    resultJson = [];
-                    json.data.groupGrid.each(function (g) {
-                        resultJson = resultJson.concat( g.list );
-                    })
-                }else{
-                    resultJson = json.data.grid;
-                }
-
-                this._showAssociatedDocumentResult( resultJson, failureList, successList );
-
-            }.bind(this), null, true );
-        }else{
-            this._showAssociatedDocumentResult( [], failureList, successList );
-        }
-
-    },
-    _showAssociatedDocumentResult: function(resultJson, failureList, successList){
-        this.entries.$result = {
-            "id": "$result",
-            "column": "$result",
-            "events": {},
-            "allowOpen": false,
-            "numberOrder": false,
-            "groupEntry": false,
-            "hideColumn": false,
-            "isName": false,
-            "isHtml": false,
-            "path": "$result"
-        };
-
-        var viewStyles = this.viewJson.viewStyles;
-        if (this.options.isloadTitle && this.selectTitleCell){
-            //if (this.json.select==="single" || this.json.select==="multi") {
-            var titleCell = new Element("td.titleCell.associationResult", {
-                "styles": (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode,
-                "text": this.lp.associationResult
-            }).inject(this.viewTitleLine);
-            if (this.json.titleStyles) titleCell.setStyles(this.json.titleStyles);
-        }
-
-        if(this.expandAllNode){
-            this.expandAllNode.hide();
-        }
-
-        while (this.viewTable.rows.length>1){
-            this.viewTable.deleteRow(-1);
-        }
-        if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
-            this.viewTable.deleteRow(0);
-        }
-
-        this.contentAreaNode.scrollTo(0, 0);
-
-        this.gridJson = resultJson.map(function (item) {
-            var flag = true;
-            if( !item.data )item.data = {};
-            failureList.each(function (d) {
-                if( item.bundle === d.bundle ){
-                    item.$failure = true;
-                    item.data.$result = d.$result || this.lp.noPermission;
-                    flag = false;
-                }
-            }.bind(this));
-            if( flag ){
-                item.data.$result = this.lp.associationSuccess;
-            }
-            item.$selectedEnable = false;
-            return item;
-        }.bind(this));
-        //if( this.paging )this.paging.hide();
-        if(this.actionbarAreaNode)this.actionbarAreaNode.hide();
-        if(this.searchAreaNode)this.searchAreaNode.hide();
-        if(this.viewPageAreaNode)this.viewPageAreaNode.hide();
-
-        //this.selectedItems = [];
-
-        if(this.selectAllNode){
-            this.clearSelectAllStyle();
-        }
-
-        if (this.gridJson.length){
-            this.gridJson.each(function(line, i){
-                new MWF.xApplication.query.Query.Viewer.AssociatedResultItem(this, line, null, i, null, false);
-            }.bind(this));
-        }else{
-            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
-        }
     },
     setSelectedableFlag : function(){
         this.viewSelectedEnable = false;
@@ -1384,6 +1228,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
         }
         return (filterData.length) ? filterData : null;
+    },
+    cancelSelectedAll: function(isFire){
+        while( this.selectedItems.length ){
+            this.selectedItems[0].unSelected(null, isFire)
+        }
+    },
+    cancelSelected: function(bundles, isFire){
+        var array = this.selectedItems.filter((item)=>{
+            return (bundles || []).contains(item.data.bundle);
+        });
+        array.forEach(function(item){
+            item.unSelected(null, isFire);
+        });
     },
     getData: function(){
         if (this.selectedItems.length){
@@ -1753,7 +1610,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             });
 
         });
-    
+
         const buttonHtml = `
             <oo-button class="button-ok" style="width: 6rem"  text="查询" left-icon="search"></oo-button>
             <oo-button class="button-cancel" type="cancel" text="重置" left-icon="process-cancel"></oo-button>
@@ -3559,7 +3416,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
      *  item = this.target.items[0];
      *  item.unSelected();
      */
-    unSelected: function( from ){
+    unSelected: function( from, isFire ){
         for(var i=0; i<this.view.selectedItems.length; i++){
             var item = this.view.selectedItems[i];
             if( item.data.bundle === this.data.bundle ){
@@ -3597,11 +3454,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("unselect", [{
-            "selected": false,
-            "item": this,
-            "data": this.data
-        }]); //options 传入的事件
+        if( isFire !== false ){
+            this.view.fireEvent("unselect", [{
+                "selected": false,
+                "item": this,
+                "data": this.data
+            }]); //options 传入的事件
+        }
     },
 
     /**
@@ -4599,106 +4458,6 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class(
         this.paging.load();
     }
 });
-
-
-MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
-    Extends: MWF.xApplication.query.Query.Viewer.Item,
-    _load: function(){
-        this.loading = true;
-
-        if(!this.node)this.view.fireEvent("queryLoadItemRow", [this]);
-
-        var viewStyles = this.view.viewJson.viewStyles;
-        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
-
-        if(!this.node)this.loadNode();
-
-        //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
-        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
-        this.selectTd.setStyles({"cursor": "default"});
-        if( this.data.$failure ){
-            this.node.removeClass('selectedRow').addClass('successRow');
-            this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + "error" + ".png) center center no-repeat"});
-        }else{
-            this.node.removeClass('selectedRow').addClass('successRow');
-            this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + "success" + ".png) center center no-repeat"});
-        }
-
-        //序号
-        var sequence = 1+this.idx;
-        this.data["$sequence"] = sequence;
-        if (this.view.viewJson.isSequence==="yes"){
-            this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-            this.sequenceTd.setStyles({
-                "width": "30px",
-                "text-align": "center"
-            });
-            this.sequenceTd.set("text", sequence);
-        }
-
-        Object.each(this.view.entries, function(c, k){
-            var cell = this.data.data[k];
-            if (cell === undefined) cell = "";
-            //if (cell){
-            if (this.view.hideColumns.indexOf(k)===-1){
-                var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-                //if (k!== this.view.viewJson.group.column){
-                    var v = cell;
-                    if (c.isHtml){
-                        td.set("html", v);
-                    }else{
-                        td.set("text", v);
-                    }
-                    if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                    if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
-                // }else{
-                //     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                // }
-
-                if (this.view.openColumns.indexOf(k)!==-1){
-                    this.setOpenWork(td, c)
-                }
-
-                if (k!== this.view.viewJson.group.column){
-                    Object.each( c.events || {}, function (e , key) {
-                        if(e.code){
-                            if( key === "loadContent" ){
-                                this.view.Macro.fire( e.code,
-                                    {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this});
-                            }else if( key !== "loadTitle" ){
-                                td.addEvent(key, function(event){
-                                    return this.view.Macro.fire(
-                                        e.code,
-                                        {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this},
-                                        event
-                                    );
-                                }.bind(this));
-                            }
-                        }
-                    }.bind(this));
-                }
-            }
-            //}
-        }.bind(this));
-
-        if(this.placeholderTd){
-            this.placeholderTd.destroy();
-            this.placeholderTd = null;
-        }
-
-        //默认选中
-        //判断是不是在selectedItems中，用户手工选择
-
-        this.setEvent();
-
-        this.view.fireEvent("postLoadItemRow", [this]);
-
-        this.loading = false;
-        this.loaded = true;
-    },
-})
 
 
 MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);

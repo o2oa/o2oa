@@ -1267,8 +1267,8 @@
         padding: 0 !important;
         min-width: 2.5em !important;
         font-size: 1.25em;
-        position: sticky;
-        left: 0;
+        /*position: sticky;*/
+        /*left: 0;*/
         z-index: 10;
         background-image: unset !important;
     }

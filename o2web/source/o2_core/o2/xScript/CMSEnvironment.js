@@ -1271,13 +1271,13 @@ MWF.xScript.CMSEnvironment = function(ev){
                             </div>
                           </div>`;
         const o = {
-            selectOk: function(){
+            selectOk: function(e){
                 okCallback && okCallback();
                 if( !notCloseOnOK ){
-                    this.selectCancel();
+                    this.selectCancel(e);
                 }
             },
-            selectCancel: function(){
+            selectCancel: function(e){
                 this.contentNode.removeClass('visible');
                 this.contentNode.addClass('invisible');
                 window.setTimeout(()=>{
@@ -1304,10 +1304,10 @@ MWF.xScript.CMSEnvironment = function(ev){
             o.contentNode.addClass('visible');
         });
         o.contentNode.addEventListener('click', (e)=>{
-            e.stopPropagation();
+            e.stopPropagation(e);
         });
-        node.addEventListener('click', ()=>{
-            o.selectCancel();
+        node.addEventListener('click', (e)=>{
+            o.selectCancel(e);
         });
     }
     this._renderViewContainerMobile = _renderViewContainerMobile;
