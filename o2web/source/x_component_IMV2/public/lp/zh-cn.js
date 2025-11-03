@@ -81,6 +81,7 @@ MWF.xApplication.IMV2.LP = {
     "msgTypeImage": "[图片]",
     "msgTypeEmoji": "[表情]",
     "file": "[文件]",
+    "msgTypeLink": "[链接]",
 
     "msgMenuItemRevokeMemberMsg": "撤回成员消息",
     "msgMenuItemRevokeMsg": "撤回",

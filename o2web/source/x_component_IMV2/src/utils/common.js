@@ -3,6 +3,20 @@ import { lp } from "@o2oa/component";
 import {EventName} from "./eventBus.js";
 
 /**
+ * 是否是正确的 url
+ * @param input
+ * @returns {boolean}
+ */
+const isHttpUrl = (input) => {
+  try {
+    const u = new URL(input);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+/**
  * 是否为空
  * 数字0也是不为空
  * @param {*} data
@@ -612,5 +626,6 @@ export {
   createContextMenu,
   conversationPicker,
   fileExtIcon,
-  canUseWebP
+  canUseWebP,
+  isHttpUrl
 };
