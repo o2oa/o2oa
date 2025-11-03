@@ -2189,6 +2189,17 @@ MWF.xScript.CMSEnvironment = function(ev){
             return new MWF.O2Selector(container, options, delayLoad);
         },
         "addEvent": function(e, f){_form.addEvent(e, f);},
+        /**分享当前文档到IM聊天会话中
+         * @method shareToIMChat
+         * @static
+         *
+         * @example
+         //不带参数
+         this.form.shareToIMChat();
+         */
+        "shareToIMChat": function(){
+            _form.shareToIMChat();
+        },
         "openWork": function(id, completedId, title, options){
             var op = options || {};
             op.workId = id;

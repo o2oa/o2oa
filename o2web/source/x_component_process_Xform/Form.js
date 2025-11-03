@@ -6020,44 +6020,165 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         // app端 分享到聊天
         if (window.o2android && window.o2android.postMessage) {
             var body = {
-                type: "shareToIMChat",
+                type: "shareToIM",
             }
             window.o2android.postMessage(JSON.stringify(body));
         } else {
-            var imJson = {}
-            if (this.businessData.workCompleted) {
-                imJson = {
-                    type: "process",
-                    title: this.businessData.workCompleted.title,
-                    work: this.businessData.workCompleted.id,
-                    process: this.businessData.workCompleted.process,
-                    processName: this.businessData.workCompleted.processName,
-                    application: this.businessData.workCompleted.application,
-                    applicationName: this.businessData.workCompleted.applicationName,
-                    job: this.businessData.workCompleted.job,
-                }
-            } else if (this.businessData.work) {
-                imJson = {
-                    type: "process",
-                    title: this.businessData.work.title,
-                    work: this.businessData.work.id,
-                    process: this.businessData.work.process,
-                    processName: this.businessData.work.processName,
-                    application: this.businessData.work.application,
-                    applicationName: this.businessData.work.applicationName,
-                    job: this.businessData.work.job,
-                }
-            } else {
-                this.app.notice(o2.txt(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted), "error")
-                return
-            }
-            MWF.xDesktop.requireApp("IMV2", "Starter", function () {
-                var share = new MWF.xApplication.IMV2.ShareToConversation({
-                    msgBody: imJson
-                }, this.app);
-                share.load();
-            }.bind(this));
+            this._shareToIMOnPc()
         }
+    },
+    // 把当前工作分享到聊天会话中
+    _shareToIMOnPc: async function () {
+        let workOrWorkcompleted;
+        if (this.businessData.workCompleted) {
+            workOrWorkcompleted = this.businessData.workCompleted
+        } else {
+            workOrWorkcompleted = this.businessData.work
+        }
+        if (!workOrWorkcompleted) {
+            console.error('工作对象不存在！！！！！！')
+            this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "warn");
+            return
+        }
+        const jsonBody = {
+            type: 'process',
+            work: workOrWorkcompleted.id,
+            job: workOrWorkcompleted.job,
+            processName: workOrWorkcompleted.processName,
+            application: workOrWorkcompleted.application,
+            applicationName: workOrWorkcompleted.applicationName,
+            process: workOrWorkcompleted.process,
+            title: workOrWorkcompleted.title,
+            body: JSON.stringify(workOrWorkcompleted)
+        };
+        console.log('发送的消息体', jsonBody)
+        this._imSendMessage(jsonBody);
+
+    },
+    _imSendMessage: function(jsonBody) {
+        this._imConversationPicker((conv) => {
+            console.debug('选择了', conv)
+            if (conv) {
+                const date = new Date();
+                const pad = (n) => n.toString().padStart(2, '0');
+                const time = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+                const shareMessage = {
+                    conversationId: conv.id,
+                    body: JSON.stringify(jsonBody),
+                    createPerson: layout.session.user.distinguishedName,
+                    createTime: time,
+                    sendStatus: 1,
+                }
+                console.debug('发送消息', shareMessage)
+                o2.Actions.load('x_message_assemble_communicate').ImAction.msgCreate(shareMessage,   (json) =>{
+                    console.log('发送消息成功', json);
+                    this._imDialogOpen()
+                }, (err) => {
+                    console.error('发送消息失败', err)
+                });
+            }
+        })
+    },
+    _imDialogOpen: function() {
+        var dialog = o2.DL.open({
+            "style" : "o2",
+            "title": "提示",
+            "width": "400",
+            "height" : "200",
+            "isMax": false,
+            "isClose": true,
+            "isResize": true,
+            "isMove": true,
+            "isTitle": true,
+            "offset": {"x":-200, "y": -100},
+            "mask": true,
+            "text": "是否要打开聊天窗口？",
+            "container": this.app.content,
+            "duration": 200,
+            "buttonList": [
+                {
+                    "text": "确定",
+                    "action": function(){
+                        layout.openApplication(null, 'IMV2')
+                        dialog.close();
+                    }.bind(this)
+                },
+                {
+                    "text": "取消",
+                    "action": function(){
+                        dialog.close();
+                    }.bind(this)
+                }
+            ],
+        })
+    },
+    // 选择会话
+    _imConversationPicker: async function(callback) {
+        const json = await o2.Actions.load('x_message_assemble_communicate').ImAction.myConversationList();
+        console.log('myConversationList', json);
+        debugger;
+        if (json && json.data) {
+            let dataArr = [];
+            for (let i = 0; i < json.data.length; i++) {
+                const conv = json.data[i];
+                let dataBody = {};
+                dataBody.data = conv;
+                dataBody.isItem = true;
+                dataBody.id = conv.id;
+                if (conv.type === "single" && conv.personList) {
+                    const p = conv.personList.find((s) => s !== layout.session.user.distinguishedName)
+                    dataBody.name = p.split("@")[0]
+                } else {
+                    dataBody.name = conv.title
+                }
+                dataArr.push(dataBody);
+            }
+            console.debug('dddd', dataArr)
+            // 选择会话
+            MWF.xDesktop.requireApp("Template", "Selector.Custom", null, false); //加载资源
+            //第一个参数是选择器的父DOM对象
+            const selector = new MWF.xApplication.Template.Selector.Custom(this.app.content, {
+                "style": "v10", //选择框样式
+                "count": 1, //允许选择个数
+                "title": "会话选择", //选择框标题
+                "hasLetter" : false, //是否点击字母搜索
+                "hasTop" : true, //可选、已选的标题
+                "level1Indent" : 0, //第一层的缩进
+                "indent" : 36, //第二层及以上的缩进
+                "width" : "500px", //选中框宽度
+                "height" :"400px", //选中框高度
+                "values": [], //默认选中的项目
+                "category": true, //按分类选择
+                "expand": true, //默认是否展开
+                "hasShuttle" : false, //是否有穿梭按钮，blue_flat下才有效
+                "noSelectedContainer" : true, //是否隐藏右侧已选区域
+                "categorySelectable" : true, //分类是否可以被选择，如果可以被选择那么执行的是item的事件
+                "uniqueFlag" : "id", //项目匹配（是否选中）关键字
+                "defaultExpandLevel" : 1, //默认展开项目，0表示折叠所有分类
+                "onComplete" : function( selectedItemList ){
+                    //selectedItemList为选中的item对象，下面的selectedDataList为选中的数据
+                    console.log('onComplete', selectedItemList);
+                    if (selectedItemList.length > 0) {
+                        const conv = selectedItemList[0].data;
+                        if (conv) {
+                            callback(conv)
+                            return
+                        }
+                    }
+                    callback();
+                },
+                "onSelectItem" : function(item){
+                    //选择项目事件, item 为 项目对象, this为选择器
+                    //如果可以被选择那么执行的是item的事件，如果不能被选择下面的代码放在onSelectCategory中
+                    console.log('onSelectItem', item);
+                },
+                "selectableItems": dataArr //
+            });
+            selector.load();
+        } else {
+            callback();
+        }
+
     },
 
     //移动端页面 工作处理完成后

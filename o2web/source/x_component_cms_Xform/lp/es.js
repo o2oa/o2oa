@@ -273,6 +273,7 @@ MWF.xApplication.cms.Xform.LP={
 	"importTooManyNotice": "En esta ocasión ha importado {n1} datos, se permiten importar como máximo {n2} datos",
 	"importTooFewNotice": "En esta ocasión ha importado {n1} datos, es necesario conservar al menos {n2} datos",
 	"pleaseSelect": "Seleccione por favor",
+	"noPermissionOrDocumentNotExisted": "No tienes permiso o el documento no existe.",
 	"form": {
 		"close": "Cerrar",
 		"closeTitle": "Cerrar el documento",

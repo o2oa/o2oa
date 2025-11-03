@@ -1834,7 +1834,42 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 window.open(downloadUrl);
             }.bind(this));
         },
-
+        // 分享到IM聊天
+        shareToIMChat: function() {
+            // app端 分享到聊天
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "shareToIM",
+                }
+                window.o2android.postMessage(JSON.stringify(body));
+            } else {
+                this._shareToIMOnPc()
+            }
+        },
+        // override _shareToIM 给shareToIMChat函数使用
+        // 把当前文档分享到聊天会话中
+        _shareToIMOnPc: async function () {
+            const document = this.businessData.document
+            if (!document) {
+                console.error('文档对象不存在！！！！！！')
+                this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrDocumentNotExisted, "warn");
+                return
+            }
+            const jsonBody = {
+                type: 'cms',
+                title: document.title,
+                docId: document.id, // cms 文档id
+                appId: document.appId, // cms 应用id
+                appName: document.appName, // cms 应用名称
+                appAlias: document.appAlias, // cms 应用别名
+                categoryId: document.categoryId, // cms 分类id
+                categoryName: document.categoryName, // cms 分类名称
+                categoryAlias: document.categoryAlias, // cms 分类别名
+                body: JSON.stringify(document)
+            };
+            console.log('发送的消息体', jsonBody)
+            this._imSendMessage(jsonBody);
+        },
         /**
          * 移动端处理关闭
          */
