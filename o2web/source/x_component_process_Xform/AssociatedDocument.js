@@ -431,51 +431,51 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     getData: function(){
         return this.documentList;
     },
-    selectDocument: function(data){
-        this.cancelAllAssociated( function () {
-            if( data && data.length ){
-                var p = this._createAssociation(data);
-                p.then(function (json){
-                    this.status = "showResult";
-                    if( this.dlg ){
-                        if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
-                        if( layout.mobile ){
-                            var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
-                            if (okAction) okAction.hide();
-                        }else{
-                            var okNode = this.dlg.button.getFirst();
-                            if(okNode){
-                                okNode.hide();
-                                var cancelButton = okNode.getNext();
-                                if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
-                            }
-                        }
-                    }else if(this.dlg_mobile){
-                        var toolbar = this.dlg_mobile.contentNode.querySelector('.mwf_selectView_action');
-                        if(toolbar){
-                            toolbar.querySelectorAll('oo-button').forEach((btn)=> !btn.hasClass('hide') && btn.addClass('hide'));
-                            toolbar.querySelector('.mwf_selectView_action_close').removeClass('hide');
-                        }
-                    }
-
-                    if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
-                        this.showCreateResult(json.data.failureList, json.data.successList);
-                    }
-                    this.loadAssociatedDocument(function () {
-                        this.fireEvent("afterSelectResult", [this.documentList]);
-                        this.validationMode();
-                    }.bind(this));
-                }.bind(this));
-            }else{
-                this.status = "showResult";
-                this.loadAssociatedDocument(function () {
-                    this.fireEvent("afterSelectResult", [this.documentList]);
-                    this.validationMode();
-                }.bind(this));
-                if( this.dlg )this.dlg.close();
-            }
-        }.bind(this));
-    },
+    // selectDocument: function(data){
+    //     this.cancelAllAssociated( function () {
+    //         if( data && data.length ){
+    //             var p = this._createAssociation(data);
+    //             p.then(function (json){
+    //                 this.status = "showResult";
+    //                 if( this.dlg ){
+    //                     if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
+    //                     if( layout.mobile ){
+    //                         var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
+    //                         if (okAction) okAction.hide();
+    //                     }else{
+    //                         var okNode = this.dlg.button.getFirst();
+    //                         if(okNode){
+    //                             okNode.hide();
+    //                             var cancelButton = okNode.getNext();
+    //                             if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+    //                         }
+    //                     }
+    //                 }else if(this.dlg_mobile){
+    //                     var toolbar = this.dlg_mobile.contentNode.querySelector('.mwf_selectView_action');
+    //                     if(toolbar){
+    //                         toolbar.querySelectorAll('oo-button').forEach((btn)=> !btn.hasClass('hide') && btn.addClass('hide'));
+    //                         toolbar.querySelector('.mwf_selectView_action_close').removeClass('hide');
+    //                     }
+    //                 }
+    //
+    //                 if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
+    //                     this.showCreateResult(json.data.failureList, json.data.successList);
+    //                 }
+    //                 this.loadAssociatedDocument(function () {
+    //                     this.fireEvent("afterSelectResult", [this.documentList]);
+    //                     this.validationMode();
+    //                 }.bind(this));
+    //             }.bind(this));
+    //         }else{
+    //             this.status = "showResult";
+    //             this.loadAssociatedDocument(function () {
+    //                 this.fireEvent("afterSelectResult", [this.documentList]);
+    //                 this.validationMode();
+    //             }.bind(this));
+    //             if( this.dlg )this.dlg.close();
+    //         }
+    //     }.bind(this));
+    // },
     cancelAllAssociated: function( callback, async, force ){
 	    var _self = this;
 	    if( this.documentList.length ){
@@ -526,11 +526,11 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this));
         }
     },
-    showCreateResult: function(failureList, successList){
-	    this.viewList.each(function (view) {
-            view.showAssociatedDocumentResult(failureList, successList);
-        });
-    },
+    // showCreateResult: function(failureList, successList){
+	//     this.viewList.each(function (view) {
+    //         view.showAssociatedDocumentResult(failureList, successList);
+    //     });
+    // },
     // showDocumentList: function(array){
     //     this.documentList.each(function(d){
     //         if(d.targetCreatorPerson)d.targetCreatorPersonCn = d.targetCreatorPerson.split("@")[0];
