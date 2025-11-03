@@ -1433,18 +1433,31 @@
   "associatedDocumentSelectedArea": {
     "background-color": "var(--oo-color-bg-white)"
   },
-  "associatedDocumentSelectedContentNodeMobile": {
+  "associatedDocumentSelectedContentNodeMobileV10": {
       "position": "absolute",
-      "bottom": "7.125rem",
+      "bottom": "8.125rem",
       "left": "0",
       "width": "100%",
-      "height": "calc(100% - 7.125rem)",
+      "height": "calc(100% - 8.125rem)",
       "border-radius": "0.25rem",
       "background": "#FFF",
       "z-index": 1003
     },
+  "associatedDocumentSelectedContentNodeMobile": {
+    "position": "absolute",
+    "bottom": "4rem",
+    "left": "0",
+    "padding": "0.5rem",
+    "width": "calc( 100% - 1rem )",
+    "height": "calc(100% - 5rem)",
+    "border-radius": "0.25rem",
+    "background": "#FFF",
+    "font-size": "1rem",
+    "z-index": 1003
+  },
   "associatedDocumentSelectedTitleNode": {
-    "height": "2.25rem",
+    "height": "3rem",
+    "line-height": "3rem",
     "background": "#f7f7f7",
     "display": "flex",
     "justify-content": "space-between",
@@ -1453,7 +1466,6 @@
   },
   "associatedDocumentSelectedCountNode": {
     "color": "#2D2D33",
-    "line-height": "2.25rem",
     "font-style": "normal",
     "margin": "0 1rem"
   },

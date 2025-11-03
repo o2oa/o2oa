@@ -469,8 +469,8 @@ MWF.xApplication.process.Xform.LP = {
     "score": "关联度",
     "updateTime": "更新时间",
 
-    "documentType": "文档类型",
-    "processName": "流程名称",
+    "documentType": "类型",
+    "processName": "流程",
     "draftTime": "拟稿时间",
     "draftPerson": "拟稿人",
     "categoryName": "分类",

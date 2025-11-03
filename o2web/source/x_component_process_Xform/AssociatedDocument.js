@@ -582,12 +582,14 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             var titles = [];
             var titlesWidth = [];
             if( hasCMS && hasProcess ){
-                titles = ['', lp.title, lp.documentType,
+                titlesWidth = ['', '', '', '4rem', '6rem', '13rem', '2rem'];
+                titles = ['', lp.title,
                     lp.processName+"/"+lp.categoryName,
-                    lp.draftPerson+"/"+lp.publishPerson,
+                    lp.documentType,
+                    lp.creatorPerson,
                     lp.draftTime+"/"+lp.publishTime, '' ];
             }else{
-                titlesWidth = ['', '', '', '6rem', '6rem', '11rem', '2rem']
+                titlesWidth = ['', '', '', '4rem', '6rem', '13rem', '2rem'];
                 if(hasCMS){
                     titles = ['', lp.title, lp.categoryName, lp.documentType, lp.publishPerson, lp.publishTime, '' ];
                 }else if( hasProcess ){
@@ -598,6 +600,8 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 var th = new Element("th", {text: title}).inject(headerNode);
                 if( titlesWidth[i] ){
                     th.setStyle('width', titlesWidth[i]);
+                }else if(i > 0){
+                    th.setStyle('min-width', '4rem');
                 }
             })
             var titleTr = this.table.getElement('.title');
@@ -880,7 +884,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this));
             this.fireEvent("beforeLoadView", [viewDataList]);
 
-            if (layout.mobile && o2.version.dev===10){
+            debugger;
+
+            if (layout.mobile && this.json.style === 'v10'){
                 this.selectViewMobile(callback);
             }else{
                 this.selectViewPc(callback);
@@ -922,14 +928,21 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
 
                 var selectedBundles = this.selectedBundleMap[ viewJson.viewId ] || [];
-                if( layout.mobile && o2.version.dev === 10 ){
-                    pageViewNode.setStyle("height", '100%');
+
+                if( layout.mobile  ){
+                    if( this.json.style === 'v10' ){
+                        pageViewNode.setStyle("height", '100%');
+                    }else{
+                        var selectedHeight = !!this.selectedArea.offsetParent ? this.selectedArea.getSize().y : 48;
+                        var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - selectedHeight;
+                        pageViewNode.setStyle("height", viewHeight);
+                    }
                 }else{
                     var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
                     if( this.json.style === 'v10' ){
                         viewHeight = viewHeight - 24;
                     }
-                    if(this.selectedAreaDirection === 'vertical'){
+                    if(this.selectedAreaDirection === 'vertical' || layout.mobile ){
                         viewHeight = viewHeight - this.selectedAreaHeight;
                     }else{
 
@@ -1007,7 +1020,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     }.bind(this)
                 }, this.form.app, this.form.Macro);
 
-                if( layout.mobile && o2.version.dev === 10 ){
+                if( layout.mobile && this.json.style === 'v10' ){
                     view.addEvent('selectRow', (row)=>{
                         row.node.addClass('selectedRow');
                     });
@@ -1112,36 +1125,49 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     this.dlg = null;
                 }.bind(this),
                 "onPostShow": function(){
-                    var viewNode = new Element('div').inject(dlg.content);
-                    this.selectedArea = new Element("div.associatedDocumentSelectedArea").inject(dlg.content);
-
+                    this.selectedArea = new Element("div.associatedDocumentSelectedArea");
+                    var viewNode;
                     if(layout.mobile){
-                        dlg.node.setStyle("z-index",200);
+                        viewNode = dlg.content;
+                        dlg.node.setStyle("z-index",400);
                     }else{
+                        viewNode = new Element('div').inject(dlg.content);
                         dlg.content.setStyle('display', 'flex');
                         if( this.selectedAreaDirection === 'horizontal' ){
                             viewNode.setStyles({
                                 'flex-shrink': "0",
-                                'width': this.viewWidth + 'px'
+                                'width': this.viewWidth + 'px',
+                                'display': 'flex',
+                                'flex-direction': 'column'
                             });
                             this.selectedArea.setStyles({
                                 'flex': 1,
                                 'height': 'calc( 100% - 20px )',
                                 'overflow': 'auto'
-                            })
+                            });
                         }else{
                             dlg.content.setStyles({
                                 'flex-direction': 'column',
                                 'flex-wrap': 'nowrap'
                             });
+                            viewNode.setStyles({
+                                'display': 'flex',
+                                'flex-direction': 'column'
+                            });
                             this.selectedArea.setStyles({
                                 'height': this.selectedAreaHeight + 'px',
                                 'overflow': 'auto'
-                            })
+                            });
                         }
                     }
                     this.loadViewers(viewNode, dlg);
-                    this.loadSelectedArea(this.selectedArea, dlg);
+                    if( layout.mobile ){
+                        this.selectedArea.inject(dlg.content);
+                        this.loadSelectedAreaMobile(this.selectedArea, dlg);
+                    }else{
+                        this.selectedArea.inject(dlg.content);
+                        this.loadSelectedArea(this.selectedArea, dlg);
+                    }
                 }.bind(this)
             });
             this.dlg = dlg;
@@ -1152,14 +1178,19 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 if(dlg.title)dlg.title.addClass("mainColor_color");
                 var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
                 var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                if (backAction) backAction.addEvent("click", function(e){
-                    dlg.close();
-                }.bind(this));
-                if (okAction) okAction.addEvent("click", function(e){
-                    //if (callback) callback(this.view.getData());
-                    _self.afterSelectView( callback, dlg );
-                    //dlg.close();
-                }.bind(this));
+                if (backAction) {
+                    backAction.set('text', MWF.xApplication.process.Xform.LP.completedEdit );
+                    backAction.addEvent("click", function(e){
+                        _self.afterSelectView( callback, dlg );
+                        dlg.close();
+                    }.bind(this));
+                }
+                if (okAction) {
+                    okAction.hide();
+                    // okAction.addEvent("click", function(e){
+                    //     _self.afterSelectView( callback, dlg );
+                    // }.bind(this));
+                }
             }
         }.bind(this));
     },
@@ -1171,23 +1202,27 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             (viewNode, o)=>{
 
                 o._selectCancel = o.selectCancel;
-                o.selectCancel = ()=>{
-                    if( !this.selectedContentNode.offsetParent ){
-                        o._selectCancel();
+                o.selectCancel = (e)=>{
+                    if( e.target.tagName.toLowerCase() === 'oo-button'){
+                        o._selectCancel(e);
                     }else{
-                        this.selectedContentNode.hide();
-                        this.showSelectedContentNode.show();
-                        this.hideSelectedContentNode.hide();
+                        if( !this.selectedContentNode.offsetParent ){
+                            o._selectCancel();
+                        }else{
+                            this.selectedContentNode.hide();
+                            this.showSelectedContentNode.show();
+                            this.hideSelectedContentNode.hide();
+                        }
                     }
-                }
+                };
 
                 this.selectMode = true;
                 window.setTimeout(
                     ()=>{
-                        this.loadViewers(viewNode);;
+                        this.loadViewers(viewNode);
                     },
-                    100
-                )
+                    200
+                );
                 this.selectedArea = new Element("div.associatedDocumentSelectedArea").inject(viewNode, 'after');
                 this.loadSelectedAreaMobile(this.selectedArea, o);
                 this.dlg_mobile = o;
@@ -1264,7 +1299,11 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         this.hideSelectedContentNode.hide();
 
         this.selectedContentNode = new Element("div.MWFADContent", {}).inject(this.selectedArea);
-        this.selectedContentNode.setStyles(this.form.css.associatedDocumentSelectedContentNodeMobile);
+        if( this.json.style === 'v10' ){
+            this.selectedContentNode.setStyles(this.form.css.associatedDocumentSelectedContentNodeMobileV10);
+        }else{
+            this.selectedContentNode.setStyles(this.form.css.associatedDocumentSelectedContentNodeMobile);
+        }
         this.selectedContentNode.hide();
         this.showDocumentList(this.documentList, this.selectedContentNode);
     },
