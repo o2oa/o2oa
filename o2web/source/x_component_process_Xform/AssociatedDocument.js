@@ -344,7 +344,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
      *  })
      */
     add: function(data, toTop, keepOrder, callback, async){
-        debugger;
         var execute = function(){
             data = this._parseData(data);
             var remains = this.documentList.map(function(d){
