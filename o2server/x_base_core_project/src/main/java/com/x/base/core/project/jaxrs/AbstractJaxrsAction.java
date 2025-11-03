@@ -61,10 +61,12 @@ abstract class AbstractJaxrsAction {
 
 	protected String contentDisposition(Boolean stream, String fileName) throws Exception {
 		String encode = URLEncoder.encode(fileName, DefaultCharset.name).replaceAll("\\+", "%20");
+		String extension = FilenameUtils.getExtension(fileName);
+		String ascii = "file" + (StringUtils.isBlank(extension) ? "" : "." + extension);
 		if (BooleanUtils.isTrue(stream)) {
-			return "attachment; filename=\"" + fileName + "\"; filename*=UTF-8''" + encode;
+			return "attachment; filename=\"" + ascii + "\"; filename*=UTF-8''" + encode;
 		} else {
-			return "inline; filename=\"" + fileName + "\"; filename*=UTF-8''" + encode;
+			return "inline; filename=\"" + ascii + "\"; filename*=UTF-8''" + encode;
 		}
 	}
 
