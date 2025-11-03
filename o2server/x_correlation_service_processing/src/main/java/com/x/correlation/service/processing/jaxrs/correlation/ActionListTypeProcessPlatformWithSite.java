@@ -1,5 +1,6 @@
 package com.x.correlation.service.processing.jaxrs.correlation;
 
+import com.x.base.core.project.tools.SortTools;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,7 @@ class ActionListTypeProcessPlatformWithSite extends BaseAction {
 			List<Correlation> os = emc.listEqualAndEqualAndEqual(Correlation.class, Correlation.FROMTYPE_FIELDNAME,
 					Correlation.TYPE_PROCESSPLATFORM, Correlation.FROMBUNDLE_FIELDNAME, job, Correlation.SITE_FIELDNAME,
 					site);
+			SortTools.asc(os, JpaObject.createTime_FIELDNAME, Correlation.orderNumber_FIELDNAME);
 			wos = Wo.copier.copy(os);
 			result.setData(wos);
 			return result;

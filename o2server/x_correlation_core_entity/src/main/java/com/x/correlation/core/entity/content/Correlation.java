@@ -198,6 +198,11 @@ public class Correlation extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + SITE_FIELDNAME)
 	private String site;
 
+	public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,升序排列,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	private Integer orderNumber;
+
 	public static final String PROPERTIES_FIELDNAME = "properties";
 	@Schema(description = "属性存储字段.")
 	@FieldDescribe("属性存储字段.")
@@ -255,4 +260,11 @@ public class Correlation extends SliceJpaObject {
 		this.person = person;
 	}
 
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 }
