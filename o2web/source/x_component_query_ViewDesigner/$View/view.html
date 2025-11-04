@@ -39,6 +39,14 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.fulltextSearch}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.isFulltextSearch" text{($.data.isFulltextSearch==='yes')?'checked':''} type="radio" value="yes"/>{{$.lp.enabled}}
+                    <input class="editTableRadio" name="data.isFulltextSearch" text{($.data.isFulltextSearch!=='yes')?'checked':''} type="radio" value="no"/>{{$.lp.disabled}}
+                </td>
+            </tr>
+
+            <tr>
                 <td class="editTableTitle">{{$.lp.expandView}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>{{$.lp.yes}}

@@ -336,7 +336,10 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"org_person": "Personal",
 		"org_identity": "Identidad",
 		"org_role": "Personajes",
-		"org_group": "Grupo"
+		"org_group": "Grupo",
+		"fulltextSearch": "Activar la recuperación de texto completo",
+		"enabled": "Habilitar",
+		"disabled": "Desactivado"
 	},
 	"viewStyle": {
 		"default": "Estilo predeterminado",
