@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.LongPoint;
@@ -34,7 +35,6 @@ import org.apache.lucene.util.BytesRef;
 
 import com.google.gson.Gson;
 import com.hankcs.lucene.HanLPAnalyzer;
-import com.rometools.utils.Strings;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -56,7 +56,7 @@ public class ExecuteV2Search extends BaseAction {
 			throws Exception {
 		List<String> list = new ArrayList<>();
 		Optional<Directory> opt = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
-		if (Strings.isBlank(search)) {
+		if (StringUtils.isBlank(search)) {
 			LOGGER.warn("search query string is empty.");
 			return Pair.of(list, 0L);
 		}
