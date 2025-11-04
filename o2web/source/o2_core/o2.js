@@ -612,7 +612,6 @@ if (!window.o2) {
                                 if (s) head.removeChild(s);
                                 if (callback) callback();
                                 if (_loadingModules[key]){
-                                    debugger;
                                     while (_loadingModules[key].callbacks.length) {
                                         (_loadingModules[key].callbacks.shift())();
                                     }
@@ -624,7 +623,6 @@ if (!window.o2) {
                                 //head.removeChild(s);
                                 if (callback) callback();
                                 if (_loadingModules[key]){
-                                    debugger;
                                     while (_loadingModules[key]?.callbacks.length) {
                                         (_loadingModules[key].callbacks.shift())(scriptObj);
                                     }
