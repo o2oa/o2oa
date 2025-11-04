@@ -808,6 +808,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
                 this.setOrderList(d);
 
+                debugger; 
+                
                 this.lookupAction.bundleView(this.json.id, d, function(json){
                     this.bundleItems = this.parseBudleItems(json.data.valueList);
                     this.bundleKey = json.data.key;
@@ -815,21 +817,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     this._initPage();
                     if (this.bundleItems.length){
                         if( this.noDataTextNode )this.noDataTextNode.destroy();
-                            if( this.options.defaultBundles.length && !this.isDefaultDataLoaded ){
-                                this.loadDefaultData(function () {
-                                    this.loadCurrentPageData( function () {
-                                        this.fireEvent("postLoad"); //用户配置的事件
-                                        this.lookuping = false;
-                                        if(callback)callback(this);
-                                    }.bind(this));
-                                }.bind(this))
-                            }else{
+                        if( this.options.defaultBundles.length && !this.isDefaultDataLoaded ){
+                            this.loadDefaultData(function () {
                                 this.loadCurrentPageData( function () {
                                     this.fireEvent("postLoad"); //用户配置的事件
                                     this.lookuping = false;
                                     if(callback)callback(this);
                                 }.bind(this));
-                            }
+                            }.bind(this))
+                        }else{
+                            this.loadCurrentPageData( function () {
+                                this.fireEvent("postLoad"); //用户配置的事件
+                                this.lookuping = false;
+                                if(callback)callback(this);
+                            }.bind(this));
+                        }
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();

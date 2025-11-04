@@ -168,15 +168,11 @@
 }
 .o2_profile_saveInforAction {
     height: 40px;
-    line-height: 40px;
-    text-align: center;
     width: 300px;
     cursor: pointer;
     margin: 10px auto;
-    background: #F0F0F0;
-    border-radius: var(--oo-default-radius);
     font-size: 18px;
-    color: #666666;
+    display: block;
 }
 .o2_profile_savePasswordAction {
     height: 40px;
@@ -613,4 +609,93 @@ label.o2_profile_empower_radio input[type=radio]{
 }
 .pagination>div{
     display: inline-block;
+}
+
+@media only screen and (max-width: 767px) {
+    .appContent * {
+        box-sizing: border-box !important;
+    }
+    .o2_profile_contentNode>div{
+        width: unset;
+        height: unset !important;
+        margin: 0 !important;
+        overflow: auto;
+    }
+    .o2_profile_contentNode>div:first-child{
+        overflow-y: hidden;
+    }
+    .o2_profile_contentNode>div:last-child>div{
+        height: 100%;
+    }
+    .o2_profile_contentNode{
+        display: grid;
+        grid-template-rows: 3.125rem calc(100% - 3.125rem);
+    }
+    .tabNodeContainerArea{
+        display: flex;
+    }
+    .o2_profile_inforContentInput{
+        min-width: unset;
+        width: 92%;
+    }
+    .o2_profile_signature{
+        min-width: unset;
+        width: 92%;
+    }
+    .o2_profile_inforConfigArea{
+        min-width: unset;
+        width: 100%;
+        padding: 2rem 0;
+        margin: 0;
+        overflow: auto;
+
+    }
+    .o2_profile_saveInforAction{
+        width: unset;
+        margin: 0 3rem;
+        font-size: 1rem;
+    }
+    .o2_profile_inforTitle{
+        min-width: 6rem;
+    }
+    .o2_profile_configNode{
+        display: grid;
+        grid-template-rows: 1fr 4rem;
+        grid-template-columns: 1fr;
+        height: 100%;
+        gap: 1rem;
+        overflow: hidden;
+        min-height: unset !important;
+    }
+    .o2_profile_ideasArea{
+        width: unset;
+        margin: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+    }
+    .o2_profile_ideasAreaNode{
+        padding: 1rem;
+    }
+    .o2_profile_ideasActionArea{
+        display: flex;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+    .o2_profile_ideasSave {
+        min-width: unset;
+        margin: 0;
+        flex: 1;
+        background-color: var(--oo-color-main);
+        color: #ffffff;
+    }
+    .o2_profile_passwordConfigArea {
+        min-width: unset;
+        width: unset;
+    }
+    .o2_profile_savePasswordAction {
+        width: unset;
+        margin: 0 3rem;
+        display: block;
+    }
 }

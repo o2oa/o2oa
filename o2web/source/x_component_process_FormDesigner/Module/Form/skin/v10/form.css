@@ -1690,6 +1690,10 @@
     .form-layout .page-content-section div[mwftype='statement'] .pagingBar > div.pageText {
         display: none;
     }
+
+    .actionbarAreaNode:empty{
+        display: none !important;
+    }
 }
 
 /* 平板电脑 */

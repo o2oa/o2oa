@@ -211,7 +211,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var x = p.x-600+size.x;
 		var fx = p.x+size.x;
 
-		var filterContent = new Element("div");
+		var filterContent = new Element("div.ft_filterContent");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
 			if (data.completedList) {

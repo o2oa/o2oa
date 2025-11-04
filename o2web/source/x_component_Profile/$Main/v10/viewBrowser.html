@@ -63,17 +63,9 @@
             <div class="o2_profile_inforLine">
                 <div class="o2_profile_inforTitle">{{ $.lp.signature }}</div>
                 <div class="o2_profile_inforContent o2_profile_inforContent_signature">
-                    <!--<input class="o2_profile_inforContentInput o2_profile_signature" value="{{$.data.signature}}"/>-->
                     <textarea class="o2_profile_signature">{{$.data.signature}}</textarea>
                 </div>
             </div>
-
-<!--            <div class="o2_profile_inforLine">-->
-<!--                <div class="o2_profile_inforTitle">{{ $.lp.ipAddress }}</div>-->
-<!--                <div class="o2_profile_inforContent">-->
-<!--                    <input class="o2_profile_inforContentInput" value="{{$.data.ipAddress}}" placeholder="{{$.lp.ipAddressPlaceHolder}}"/>-->
-<!--                </div>-->
-<!--            </div>-->
 
             <div class="o2_profile_inforLine">
                 <div class="o2_profile_inforTitle">{{ $.lp.language }}</div>
@@ -83,37 +75,40 @@
                     </select>
                 </div>
             </div>
-
-            <div class="o2_profile_inforLine">
-                <div class="o2_profile_saveInforAction">{{ $.lp.saveInfor }}</div>
-            </div>
-
+        </div>
+        <div class="o2_profile_inforLine">
+            <oo-button class="o2_profile_saveInforAction" text="{{ $.lp.saveInfor }}"></oo-button>
+            <!-- <div class="o2_profile_saveInforAction">{{ $.lp.saveInfor }}</div> -->
         </div>
     </div>
 
 
     <div class="o2_profile_configNode" title="{{$.lp.ideaConfig}}">
-        <textarea class="o2_profile_ideasArea"></textarea>
-        <div class="o2_profile_ideasSave">{{ $.lp.saveIdea }}</div>
+        <div class="o2_profile_ideasAreaNode">
+            <textarea class="o2_profile_ideasArea"></textarea>
+        </div>
+        <div class="o2_profile_ideasActionArea">
+            <div class="o2_profile_ideasSave" data-o2-element="ideasSaveAction">{{ $.lp.saveIdea }}</div>
 
-        {{if MWF.AC.isAdministrator() }}
-        <div class="o2_profile_ideasSave">{{ $.lp.saveIdeaDefault }}</div>
-        {{ end if }}
+            {{if MWF.AC.isAdministrator() }}
+            <div class="o2_profile_ideasSave" data-o2-element="ideasSaveDefaultAction">{{ $.lp.saveIdeaDefault }}</div>
+            {{ end if }}
+        </div>
 
     </div>
 
-
-        <div class="o2_profile_configNode" data-o2-type="empower"  title="{{$.lp.emPowerConfig}}">
-            <div class="o2_profile_emPower_content">
-                <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPower }}"></div>
-                <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPower }}"></div>
-                <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPowerLog }}"></div>
-                <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPowerLog }}"></div>
-            </div>
+{{if !o2.isMediaMobile()}}
+    <div class="o2_profile_configNode" data-o2-type="empower" data-o2-element="empowerConfigNode"  title="{{$.lp.emPowerConfig}}">
+        <div class="o2_profile_emPower_content">
+            <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPower }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPower }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPowerLog }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPowerLog }}"></div>
         </div>
+    </div>
+    {{ end if }}
 
-
-    <div class="o2_profile_configNode" data-o2-type="password" title="{{$.lp.passwordConfig}}">
+    <div class="o2_profile_configNode" data-o2-type="password" data-o2-element="passwordConfigNode" title="{{$.lp.passwordConfig}}">
         <div class="o2_profile_passwordConfigArea">
             <div class="o2_profile_inforLine">
                 <div class="o2_profile_inforTitle">{{ $.lp.oldPassword }}</div>
@@ -154,23 +149,18 @@
                     <input type="password" class="o2_profile_inforContentInput" />
                 </div>
             </div>
-
-            <div class="o2_profile_inforLine">
-                <div class="o2_profile_savePasswordAction">{{ $.lp.passwordConfig }}</div>
-            </div>
-
+        </div>
+        <div class="o2_profile_inforLine">
+            <!-- <div class="o2_profile_savePasswordAction">{{ $.lp.passwordConfig }}</div> -->
+            <oo-button class="o2_profile_savePasswordAction" text="{{ $.lp.passwordConfig }}"></oo-button>
         </div>
     </div>
 
-
-    <div class="o2_profile_configNode" title="{{$.lp.ssoConfig}}">
+    {{if !o2.isMediaMobile()}}
+    <div class="o2_profile_configNode" data-o2-type="sso" data-o2-element="ssoConfigNode" title="{{$.lp.ssoConfig}}">
         <div class="o2_profile_ssoConfigTitle">{{ $.lp.bindOauth }}</div>
         <div class="o2_profile_ssoConfigArea">
-            <!--<a class="o2_profile_ssoItemLink" target="_blank" href="../x_desktop/oauth.html?oauth=eachText{encodeURIComponent($.name)}&redirect=&method=oauthBind">{{$.displayName}}</a>-->
         </div>
     </div>
-
-<!--    <div class="o2_profile_configNode" data-o2-element="faceloginNode" title="{{$.lp.facelogin}}">-->
-<!--        <div class="o2_profile_facesetButton" data-o2-element="faceloginbutton" data-o2-events="click:openFaceSet">{{ $.lp.openFaceSet }}</div>-->
-<!--    </div>-->
+    {{ end if }}
 </div>
