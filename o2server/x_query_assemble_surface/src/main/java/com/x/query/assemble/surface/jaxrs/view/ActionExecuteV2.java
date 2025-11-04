@@ -76,11 +76,11 @@ class ActionExecuteV2 extends BaseAction {
 
 		@FieldDescribe("前端指定排序列")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "SelectEntry", fieldValue = "{\"orderType\": \"\",\"column\": \"\",\"displayName\": \"\",\"path\": \"\"}")
-		private List<SelectEntry> orderList = new TreeList<>();
+		private List<SelectEntry> orderList;
 
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
-		private List<FilterEntry> filterList = new TreeList<>();
+		private List<FilterEntry> filterList;
 
 		@FieldDescribe("参数")
 		private Map<String, String> parameter = new HashMap<>();
@@ -89,7 +89,7 @@ class ActionExecuteV2 extends BaseAction {
 		private String searchKey;
 
 		public List<FilterEntry> getFilterList() {
-			return filterList;
+			return filterList == null ? new TreeList<>() : filterList;
 		}
 
 		public void setFilterList(List<FilterEntry> filterList) {
@@ -113,7 +113,7 @@ class ActionExecuteV2 extends BaseAction {
 		}
 
 		public List<SelectEntry> getOrderList() {
-			return orderList;
+			return orderList == null ? new TreeList<>() : orderList;
 		}
 
 		public void setOrderList(List<SelectEntry> orderList) {
