@@ -70,16 +70,19 @@ public class ActionMyConversationList extends BaseAction {
 				// 单聊没有聊天消息就不展现
 				return (woMsg != null);
 			}).filter(Objects::nonNull).sorted((a, b)-> {
-				if (a.getLastMessage() == null || b.getLastMessage() == null) {
+				if (a.getLastMessage() == null && b.getLastMessage() == null) {
 					return 0;
+				} else if (a.getLastMessage() == null) {
+					return 1;
+				} else if (b.getLastMessage() == null) {
+					return -1;
 				}
 				Date aC = a.getLastMessage().getCreateTime();
 				Date bC = b.getLastMessage().getCreateTime();
-				if (aC != null  && bC != null ) {
-					return aC.getTime() > bC.getTime() ? -1 : 1;
-				} else {
-					return 0;
-				}
+				if (aC == null && bC == null) return 0;
+				if (aC == null) return 1;
+				if (bC == null) return -1;
+				return Long.compare(bC.getTime(), aC.getTime());
 			}).collect(Collectors.toList());
 			result.setData(trueWos);
 			return result;

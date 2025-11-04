@@ -1,5 +1,17 @@
 package com.x.base.core.project.gson;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -9,14 +21,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.x.base.core.project.bean.tuple.Sextuple;
 import com.x.base.core.project.tools.DateTools;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 
 public class XGsonBuilder {
 
@@ -548,5 +554,72 @@ public class XGsonBuilder {
 			}
 		}
 	}
+	
+	 /**
+     * 将 JsonElement 对象拆分成六个 Map，分别存储字符串、数字、布尔、字符串列表、数字列表、布尔列表。
+     * 
+     * @param prefix
+     * @param jsonElement
+     * @return
+     */
+    public static Sextuple<Map<String, String>, Map<String, Number>, Map<String, Boolean>, Map<String, List<String>>, Map<String, List<Number>>, Map<String, List<Boolean>>> separate(
+                    String prefix, JsonElement jsonElement) {
+        Sextuple<Map<String, String>, Map<String, Number>, Map<String, Boolean>, Map<String, List<String>>, Map<String, List<Number>>, Map<String, List<Boolean>>> sextuple =
+                        Sextuple.of(new LinkedHashMap<>(), new LinkedHashMap<>(),
+                                        new LinkedHashMap<>(), new LinkedHashMap<>(),
+                                        new LinkedHashMap<>(), new LinkedHashMap<>());
+        if (Objects.nonNull(jsonElement) && (!jsonElement.isJsonNull())) {
+            separate(jsonElement, Objects.toString(prefix, ""), sextuple);
+        }
+        return sextuple;
+    }
+
+    private static void separate(JsonElement jsonElement, String name,
+                    Sextuple<Map<String, String>, Map<String, Number>, Map<String, Boolean>, Map<String, List<String>>, Map<String, List<Number>>, Map<String, List<Boolean>>> sextuple) {
+        if (jsonElement.isJsonPrimitive()) {
+            separatePrimitive(jsonElement.getAsJsonPrimitive(), name, sextuple);
+        } else if (jsonElement.isJsonArray()) {
+            separateArray(jsonElement.getAsJsonArray(), name, sextuple);
+        } else if (jsonElement.isJsonObject()) {
+            jsonElement.getAsJsonObject().entrySet().stream().forEach(o -> separate(o.getValue(),
+                            StringUtils.isBlank(name) ? o.getKey() : (name + "." + o.getKey()),
+                            sextuple));
+        }
+    }
+
+    private static void separatePrimitive(JsonPrimitive jsonPrimitive, String name,
+                    Sextuple<Map<String, String>, Map<String, Number>, Map<String, Boolean>, Map<String, List<String>>, Map<String, List<Number>>, Map<String, List<Boolean>>> sextuple) {
+        if (jsonPrimitive.isString()) {
+            sextuple.first().put(name, jsonPrimitive.getAsString());
+        } else if (jsonPrimitive.isNumber()) {
+            sextuple.second().put(name, jsonPrimitive.getAsNumber());
+        } else if (jsonPrimitive.isBoolean()) {
+            sextuple.third().put(name, jsonPrimitive.getAsBoolean());
+        }
+    }
+
+    private static void separateArray(JsonArray jsonArray, String name,
+                    Sextuple<Map<String, String>, Map<String, Number>, Map<String, Boolean>, Map<String, List<String>>, Map<String, List<Number>>, Map<String, List<Boolean>>> sextuple) {
+        List<JsonPrimitive> list = new ArrayList<>();
+        jsonArray.forEach(o -> {
+            if (o.isJsonObject()) {
+                separate(o, name, sextuple);
+            } else if (o.isJsonPrimitive()) {
+                list.add(o.getAsJsonPrimitive());
+            }
+        });
+        if (!list.isEmpty()) {
+            if (list.stream().map(JsonPrimitive::isString).reduce(true, (a, b) -> a && b)
+                            .booleanValue()) {
+                sextuple.fourth().put(name, list.stream().map(JsonPrimitive::getAsString).collect(Collectors.toList()));
+            } else if (list.stream().map(JsonPrimitive::isNumber).reduce(true, (a, b) -> a && b)
+                            .booleanValue()) {
+                sextuple.fifth().put(name, list.stream().map(JsonPrimitive::getAsNumber).collect(Collectors.toList()));
+            } else if (list.stream().map(JsonPrimitive::isBoolean).reduce(true, (a, b) -> a && b)
+                            .booleanValue()) {
+                sextuple.sixth().put(name, list.stream().map(JsonPrimitive::getAsBoolean).collect(Collectors.toList()));
+            }
+        }
+    }
 
 }

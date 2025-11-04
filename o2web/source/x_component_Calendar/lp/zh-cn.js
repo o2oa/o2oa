@@ -172,7 +172,7 @@ MWF.xApplication.Calendar.LP = {
 
     "noTask": "今日无日程安排",
     "noEvent": "当日无日程",
-    "noAddress" : "未填写地址",
+    "noAddress" : "未标注地点",
     "noEventCurMonth" : "该月无日程安排",
     "weeklyViewTitle" : "{month}，第{week}周",
 
@@ -227,5 +227,10 @@ MWF.xApplication.Calendar.LP = {
 	    "noEvent": "当天您没有议程",
         "current": "当前您有",
         "someEvent": "项议程！"
+    },
+    "status": {
+        'wait': '暂未开始',
+        'finish': '已经结束',
+        'doing': '正在进行中'
     }
 };

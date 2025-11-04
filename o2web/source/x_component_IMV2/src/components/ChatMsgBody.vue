@@ -43,6 +43,30 @@ const escapeSymbol = (content) => {
 const locationPng = () => {
  return new URL( "../assets/location.png", import.meta.url).href
 }
+const cmsCategoryTitle = (msgBody) => {
+  if (!msgBody) {
+    return ''
+  }
+  if (msgBody.categoryAlias) {
+    return msgBody.categoryAlias
+  }
+  if (msgBody.categoryName) {
+    return msgBody.categoryName
+  }
+  return ''
+}
+const cmsAppTitle = (msgBody) => {
+  if (!msgBody) {
+    return ''
+  }
+  if (msgBody.appAlias) {
+    return msgBody.appAlias
+  }
+  if (msgBody.appName) {
+    return msgBody.appName
+  }
+  return ''
+}
 </script>
 
 <template>
@@ -87,8 +111,18 @@ const locationPng = () => {
         <div class="chat-card-bottom-name">{{ msgBody.applicationName }}</div>
       </div>
     </div>
+    <!-- cms -->
+    <div v-if="msgBody.type === 'cms'" class="chat-card">
+      <div class="chat-card-type">{{ `【${cmsCategoryTitle(msgBody)}】` }}</div>
+      <div class="chat-card-body">{{ msgBody.title ? msgBody.title : `${lp.noTitle}` }}</div>
+      <div class="chat-card-bottom">
+        <div class="chat-card-bottom-name">{{ cmsAppTitle(msgBody) }}</div>
+      </div>
+    </div>
     <!-- text -->
     <span style="word-break: break-all;" v-if="msgBody.type === 'text'">{{ escapeSymbol(msgBody.body) }}</span>
+    <!--    link-->
+    <span style="word-break: break-all;text-decoration: underline; font-weight: 500;" v-if="msgBody.type === 'link'">{{ msgBody.title === msgBody.linkUrl ? msgBody.linkUrl :  `[${msgBody.title}]${msgBody.linkUrl}`}}</span>
   </div>
 
 </template>

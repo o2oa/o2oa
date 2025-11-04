@@ -3204,9 +3204,9 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if (this.form.json.attachmentStyle) {
             options = Object.merge(options, this.form.json.attachmentStyle);
         }
-        if(opts){
-            options = Object.merge(options, opts);
-        }
+        // if(opts){
+        //     options = Object.merge(options, opts);
+        // }
 
         this.fireEvent("queryLoadController", [options]);
 

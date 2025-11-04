@@ -87,26 +87,6 @@ public class HighFreqWorkCompleted extends HighFreq {
 				indexCount.get(), deleteCount.get());
 	}
 
-	private void update(List<WorkCompletedEvent> list, AtomicInteger indexCount) {
-		list.stream()
-				.filter(o -> StringUtils.equalsAnyIgnoreCase(o.getType(), WorkCompletedEvent.TYPE_CREATE,
-						WorkCompletedEvent.TYPE_UPDATE))
-				.collect(Collectors.groupingBy(WorkCompletedEvent::getApplication)).entrySet().stream().forEach(o -> {
-					Map<String, String> map = new LinkedHashMap<>();
-					o.getValue().stream().forEach(p -> map.put(p.getJob(), p.getWorkCompleted()));
-					List<Doc> docs = index(map.values().stream().collect(Collectors.toList()),
-							DocFunction.wrapWorkCompleted);
-					try {
-						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-								Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), true));
-						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
-						indexCount.addAndGet(map.entrySet().size());
-					} catch (Exception e) {
-						LOGGER.error(e);
-					}
-				});
-	}
 
 	private void delete(List<WorkCompletedEvent> list, AtomicInteger deleteCount, Query additionalQuery) {
 		list.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getType(), WorkCompletedEvent.TYPE_DELETE))
@@ -123,6 +103,27 @@ public class HighFreqWorkCompleted extends HighFreq {
 						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(jobs,
 								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, null));
 						deleteCount.addAndGet(jobs.size());
+					} catch (Exception e) {
+						LOGGER.error(e);
+					}
+				});
+	}
+
+	private void update(List<WorkCompletedEvent> list, AtomicInteger indexCount) {
+		list.stream()
+				.filter(o -> StringUtils.equalsAnyIgnoreCase(o.getType(), WorkCompletedEvent.TYPE_CREATE,
+						WorkCompletedEvent.TYPE_UPDATE))
+				.collect(Collectors.groupingBy(WorkCompletedEvent::getApplication)).entrySet().stream().forEach(o -> {
+					Map<String, String> map = new LinkedHashMap<>();
+					o.getValue().stream().forEach(p -> map.put(p.getJob(), p.getWorkCompleted()));
+					List<Doc> docs = index(map.values().stream().collect(Collectors.toList()),
+							DocFunction.wrapWorkCompleted);
+					try {
+						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
+								Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), true));
+						ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
+								Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true));
+						indexCount.addAndGet(map.entrySet().size());
 					} catch (Exception e) {
 						LOGGER.error(e);
 					}

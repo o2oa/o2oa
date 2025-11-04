@@ -516,6 +516,53 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             }.bind(this));
         }
     },
+    formatMobileButton: function (node, container) {
+        const setButtonStyle = (button)=>{
+            if( button.tagName === 'button' || button.tagName === 'oo-button' ){
+                button.setStyles(this.css.popupAction);
+            }else{
+                const bs = button.querySelectorAll("button, oo-button");
+                bs.forEach(b=>b.setStyles(this.css.popupAction));
+            }
+        }
+        const visibleButtons = node.getChildren().filter(function (button) {
+            return button.getStyle("display") !== "none";
+        });
+        if( visibleButtons.length === 1 ){
+            setButtonStyle(visibleButtons[0]);
+        }else if( visibleButtons.length > 2 ){
+            const moreNode = new Element("div.moreActionNode", {
+                text: '…',
+                styles: this.css.moreActionNode,
+                events: {
+                    click: function (e) {
+                        if( !moreArea.offsetParent ){
+                            var maskNode = new Element("div.moreMaskNode", {
+                                styles: this.css.moreActionMask,
+                                events: {
+                                    click: function (e) {
+                                        moreArea.setStyle('display', 'none');
+                                        maskNode.destroy();
+                                    }
+                                }
+                            }).inject(moreArea, 'before');
+                        }
+                        moreArea.setStyle('display', moreArea.offsetParent ? 'none' : 'flex');
+                    }.bind(this)
+                }
+            }).inject(node);
+            const moreArea = new Element("div.moreActionArea", {
+                styles: this.css.moreActionArea
+            }).inject(container || document.body);
+            visibleButtons.forEach(function (button, i) {
+                if( i > 1 ){
+                    button.inject(moreArea);
+                    setButtonStyle(button);
+                }
+            }.bind(this));
+
+        }
+    },
     cancel: function (e) {
         this.fireEvent("queryCancel");
         this.close();

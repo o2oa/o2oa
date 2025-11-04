@@ -47,6 +47,10 @@ MWF.xApplication.Forum.Main = new Class({
 
         if (callback)callback();
     },
+    reloadController: function (callback){
+        MWF.xApplication.Forum.ForumSetting = null;
+        this.loadController(callback);
+    },
     reload : function(){
         this.clearContent();
         if( this.explorer ){

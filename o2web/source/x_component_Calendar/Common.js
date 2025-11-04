@@ -42,7 +42,7 @@ MWFCalendar.EventForm = new Class({
         "scrollType": "window"
     },
     open: function (e) {
-        if( this.options.isFull ){
+        if( !layout.mobile && this.options.isFull ){
             this.options.width = "800";
             this.options.height = "630";
         }
@@ -53,7 +53,7 @@ MWFCalendar.EventForm = new Class({
         this.fireEvent("postOpen");
     },
     create: function () {
-        if( this.options.isFull ){
+        if( !layout.mobile && this.options.isFull ){
             this.options.width = "1100";
             this.options.height = "630";
         }
@@ -63,7 +63,7 @@ MWFCalendar.EventForm = new Class({
         this.fireEvent("postCreate");
     },
     edit: function () {
-        if( this.options.isFull ){
+        if( !layout.mobile && this.options.isFull ){
             this.options.width = "1100";
             this.options.height = "630";
         }
@@ -244,20 +244,28 @@ MWFCalendar.EventForm = new Class({
         this.userName = layout.desktop.session.user.distinguishedName;
         this.userId = layout.desktop.session.user.id;
 
-        if( this.options.isFull ){
+        if( layout.mobile ){
             this.formTableContainer.setStyles({
                 "width" : "auto",
-                "padding-left" : "40px",
-                "padding-right" : "40px"
+                "padding-left" : "20px",
+                "padding-right" : "20px"
             });
         }else{
-            this.formTableContainer.setStyle("width","80%");
+            if( this.options.isFull ){
+                this.formTableContainer.setStyles({
+                    "width" : "auto",
+                    "padding-left" : "40px",
+                    "padding-right" : "40px"
+                });
+            }else{
+                this.formTableContainer.setStyle("width","80%");
+            }
         }
 
         if( this.isNew ){
-            this.formTopTextNode.set( "text", this.lp.addEvent );
+            this.formTopTextNode?.set( "text", this.lp.addEvent );
         }else if( this.isEdited ){
-            this.formTopTextNode.set( "text", this.lp.editEvent );
+            this.formTopTextNode?.set( "text", this.lp.editEvent );
             this.options.height = "590";
         }
 
@@ -420,7 +428,7 @@ MWFCalendar.EventForm = new Class({
                         skin : "bootstrapck",
                         "resize_enabled": false,
                         toolbar : [
-                            { name: 'document', items : [ 'Preview' ] },
+                            // { name: 'document', items : [ 'Preview' ] },
                             //{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
                             { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
                             //{ name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock' ] },
@@ -472,8 +480,9 @@ MWFCalendar.EventForm = new Class({
     },
     getHtml : function(){
         var data = this.data || {};
+        var editMode = (this.isEditable( this.data ) && this.isEdited) || this.isNew;
       if( this.options.isFull ){
-          return `<div style='display: flex;gap:2em;'>
+          return `<div style='display: flex;gap:2em;${layout.mobile ? "flex-direction: column;":""}'>
               <div item='baseInforContainer' style='flex: 1;'>
                   <div class='formTable'>
                     <div item='calendarId'></div> 
@@ -486,17 +495,25 @@ MWFCalendar.EventForm = new Class({
                       <div item='endDateInput' style='flex:2;'></div> 
                       <div item='endTimeInput' style='flex:1;'></div>
                     </div>
-                    <div item='isAllDayEvent'></div>
+                    <div item='isAllDayEvent' style="
+                        ${editMode || data.isAllDayEvent === 'true' || data.isAllDayEvent === true ? '' : 'display:none;' }">
+                    </div>
                     <div item='locationName'></div>
                     <div item='remind'></div>
                     <div item='repeat'></div>
                     <div item='repeatWeekArea' class="formLine" style='display:${this.data.repeat === RRule["WEEKLY"] ? "" : "none"};'>
                         <div class="formLabel"></div>
-                        <div class="formValue" item='repeatWeek' style="display: flex;justify-content: space-between;"></div>
+                        <div class="formValue" item='repeatWeek' style="display: flex;
+                            ${layout.mobile ?
+                                'justify-content: flex-start; flex-wrap: wrap; gap: 1rem;':
+                                'justify-content: space-between;'}">
+                        </div>
                     </div>
-                     <div item='repeatUntilArea' class="formLine" style='display:${(!this.data.repeat || this.data.repeat === "") ? "none" : ""};'>
+                     <div item='repeatUntilArea' class="formLine" style='
+                            display:${(!this.data.repeat || this.data.repeat === "") ? "none" : "flex"};
+                            ${layout.mobile ? "flex-direction: column;align-items:normal;":""}'>
                           <div item='repeatUntilAvailable' style="flex: 2"></div>
-                          <div item='repeatUntilDate' style="flex: 1"></div>
+                          <div item='repeatUntilDate' style="flex: 1;${editMode || data.repeatUntilAvailable === 'AVAILABLE' ? '' : 'display:none;' }"></div>
                      </div>
                       <div class="formLine" style="display: ${(this.isEdited || this.isNew) ? 'flex' : 'none'}">
                         <div class="formLabel">${this.lp.color}</div>
@@ -643,7 +660,9 @@ MWFCalendar.EventForm = new Class({
                 text : this.lp.weeks.arr[i],
                 events : {
                     click : function(ev){
-                        this.triggerWeek( ev.target )
+                        if( (this.isEditable( this.data ) && this.isEdited) || this.isNew ){
+                            this.triggerWeek( ev.target );
+                        }
                     }.bind(this)
                 }
             }).inject(container);
@@ -689,7 +708,14 @@ MWFCalendar.EventForm = new Class({
     },
     _createBottomContent : function(){
         var editable = this.isEditable( this.data );
-        var html = `<div style='padding-top: 20px;display: flex;justify-content: center;align-items: center;'>
+        var html = layout.mobile ?
+            `<div style='display:contents'>
+                   <div item='cancelAction' style="display: contents"></div>
+                   <div item='saveAction' style='float:left;display:${( (editable && this.isEdited) || this.isNew) ? "contents" : "none"}'></div>
+                   <div item='editAction' style='float:left;display:${(!editable || (this.isEdited || this.isNew))  ? "none" : "contents"};'></div>
+                   <div item='removeAction' style='float:left;display:${( editable && this.isEdited ) ? "contents" : "none"};'></div>
+            </div>`:
+            `<div style='padding-top: 20px;display: flex;justify-content: center;align-items: center;'>
                    <div item='saveAction' style='float:left;display:${( (editable && this.isEdited) || this.isNew) ? "" : "none"}'></div>
                    <div item='editAction' style='float:left;display:${(!editable || (this.isEdited || this.isNew))  ? "none" : ""};'></div>
                    <div item='removeAction' style='float:left;display:${( editable && this.isEdited ) ? "" : "none"};'></div>
@@ -700,7 +726,7 @@ MWFCalendar.EventForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             var form = new MForm(this.formBottomNode, {}, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10",
+                style : layout.mobile ? "v10_mobile" : "v10",
                 hasColon : true,
                 itemTemplate: {
                     moreInfor : {
@@ -723,6 +749,9 @@ MWFCalendar.EventForm = new Class({
                 }
             }, this.app);
             form.load();
+            if(layout.mobile){
+                this.formatMobileButton(this.formBottomNode.getFirst(), this.formAreaNode);
+            }
         }.bind(this), true);
     },
     openMoreInfor : function(){
@@ -901,13 +930,15 @@ MWFCalendar.EventForm = new Class({
         }.bind(this))
     },
     openDeleteOptionForm : function( callback ){
+        const par = layout.mobile ? {container: document.body}: {};
         this.deleteOptionsForm = new MWFCalendar.DeleteOptionDialog( this, {}, {
+            closeByClickMask: !!layout.mobile,
             onPostOk : function( saveOptions ){
                 if(callback){
                     callback(saveOptions)
                 }
             }.bind(this)
-        }, {});
+        }, par);
         this.deleteOptionsForm.edit();
     },
     save: function(){
@@ -970,13 +1001,15 @@ MWFCalendar.EventForm = new Class({
         }
     },
     openSaveOptionForm : function( callback ){
+        const par = layout.mobile ? {container: document.body}: {};
         this.saveOptionsForm = new MWFCalendar.SaveOptionDialog( this, {}, {
+            closeByClickMask: !!layout.mobile,
             onPostOk : function( saveOptions ){
                 if(callback){
-                    callback(saveOptions)
+                    callback(saveOptions);
                 }
             }.bind(this)
-        }, {});
+        }, par);
         this.saveOptionsForm.edit();
     },
     getSaveData: function(){
@@ -1124,22 +1157,32 @@ MWFCalendar.CalendarForm = new Class({
         var editEnable = this.editEnable = ( !this.isEdited && !this.isNew && this.data.manageable );
         this.userName = ( layout.desktop.session.user || layout.user ).distinguishedName;
         this.userId = ( layout.desktop.session.user || layout.user ).id;
-        if( data.type === "UNIT" ){
-            this.options.height = "650";
+        if( !layout.mobile ){
+            if( data.type === "UNIT" ){
+                this.options.height = "650";
+            }
         }
         if( this.isNew ){
-            this.formTopTextNode.set( "text", this.lp.createCalendar );
+            this.formTopTextNode?.set( "text", this.lp.createCalendar );
         }else if( this.isEdited ){
-            this.formTopTextNode.set( "text", this.lp.editCalendar );
+            this.formTopTextNode?.set( "text", this.lp.editCalendar );
         }else{
-            this.formTopTextNode.set( "text", this.lp.calendar );
+            this.formTopTextNode?.set( "text", this.lp.calendar );
         }
 
         this.formTableArea.set("html", this.getHtml());
 
         debugger;
 
-        this.formTableContainer.setStyle("width","80%");
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                "width" : "auto",
+                "padding-left" : "20px",
+                "padding-right" : "20px"
+            });
+        }else{
+            this.formTableContainer.setStyle("width","80%");
+        }
 
         this.colorItem = this.formTableArea.getElement("[item='color']");
 
@@ -1147,7 +1190,8 @@ MWFCalendar.CalendarForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10", mvcStyle: "v10",
+                style : "v10",
+                mvcStyle: "v10",
                 hasColon : true,
                 itemTemplate: {
                     name: { type:'oo-input', text : this.lp.calendarName, notEmpty : true },
@@ -1192,10 +1236,14 @@ MWFCalendar.CalendarForm = new Class({
                         <div class="formLabel">${this.lp.color}</div>
                         <div class='formValue' item='color' style='overflow: hidden;'></div>
                     </div>
-                    <div style="display: flex;">
-                       <div item='type' style="flex: 1;"></div>
-                       <div item='isPublic' style="flex: 1;"></div>
-                    </div>   
+                    ${
+                        layout.mobile ?
+                            `<div item='type'></div><div item='isPublic'></div>` :
+                            `<div style='display: flex;'>
+                                <div item='type' style="flex: 1;"></div>
+                                <div item='isPublic' style="flex: 1;"></div>
+                            </div>`
+                    }  
                     <div item='description'></div>
                     <div ${targetStyle} item='target'></div>
                     <div ${permissionStyle} item='manageablePersonList'></div>
@@ -1209,8 +1257,12 @@ MWFCalendar.CalendarForm = new Class({
         changeItemName.each( function(name){
             this.formTableArea.getElement("[item='"+name+"']").setStyle("display",type === "UNIT" ? "" : "none");
         }.bind(this));
-        this.options.height = type === "UNIT" ? "650" : "500";
-        this.setFormNodeSize();
+        if( !layout.mobile ){
+            this.options.height = type === "UNIT" ? "650" : "500";
+            this.setFormNodeSize();
+        }else{
+
+        }
     },
     loadColor : function(){
         if( this.isEdited || this.isNew ){
@@ -1256,7 +1308,13 @@ MWFCalendar.CalendarForm = new Class({
         }.bind(this))
     },
     _createBottomContent : function(){
-        var html = `<div style='padding-top: 15px; display:flex; justify-content: center;'>
+        var html = layout.mobile ? `<div style='display:contents'>
+               <div item='cancelAction' style='display:contents'></div>
+               <div item='saveAction' style='float:left;display:${(this.isEdited || this.isNew) ? "contents" : "none"}'></div>
+               <div item='editAction' style='float:left;display:${this.editEnable ? "contents" : "none"};'></div>
+               <div item='removeAction' style='float:left;display:${this.isEdited ? "contents" : "none"};'></div>
+            </div>` :
+            `<div style='padding-top: 15px; display:flex; justify-content: center;'>
                <div item='saveAction' style='float:left;display:${(this.isEdited || this.isNew) ? "" : "none"}'></div>
                <div item='editAction' style='float:left;display:${this.editEnable ? "" : "none"};'></div>
                <div item='removeAction' style='float:left;display:${this.isEdited ? "" : "none"};'></div>
@@ -1266,7 +1324,7 @@ MWFCalendar.CalendarForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             var form = new MForm(this.formBottomNode, {}, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10",
+                style : layout.mobile ? "v10_mobile" : "v10",
                 hasColon : true,
                 itemTemplate: {
                     saveAction : { type : "oo-button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.save, event : {
@@ -1284,6 +1342,9 @@ MWFCalendar.CalendarForm = new Class({
                 }
             }, this.app);
             form.load();
+            if(layout.mobile){
+                this.formatMobileButton(this.formBottomNode.getFirst(), this.formAreaNode);
+            }
         }.bind(this), true);
     },
     deleteCalendar : function( e ){
@@ -1292,7 +1353,7 @@ MWFCalendar.CalendarForm = new Class({
             _self.app.actions.deleteCalendar( _self.data.id, function( json ){
                 _self.close();
                 _self.app.notice( _self.lp.deleteSuccess );
-                _self.app.leftNavi.reload();
+                (_self.view || _self.app.leftNavi).reload();
             }.bind(this));
             this.close();
         }, function(){

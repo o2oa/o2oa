@@ -178,7 +178,13 @@ const openMsg = (msg) => {
     _openImageView(getImFileDownloadUrl(body.fileId))
     // window.open(getImFileDownloadUrl(body.fileId))
   } else if (body.type === "process") {
-    o2.api.form.openWork(body.work, "", "");
+    if (body.work) {
+      o2.api.form.openWork(body.work, "", "");
+    }
+  }  else if (body.type === "cms") {
+    if (body.docId) {
+      o2.api.form.openDocument(body.docId);
+    }
   } else if (body.type === "file") {
     // 有安装 onlyOffice
     if (layout.serviceAddressList["x_onlyofficefile_assemble_control"]
@@ -199,6 +205,10 @@ const openMsg = (msg) => {
   } else if (body.type === "location") {
     const url = getBaiduMapUrl(body.latitude, body.longitude, body.address, body.addressDetail);
     window.open(url);
+  } else if (body.type === "link") {
+    if (body.linkUrl) {
+      window.open(body.linkUrl);
+    }
   }
 }
 // 图片预览 功能

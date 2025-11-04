@@ -1,5 +1,6 @@
 package com.x.correlation.service.processing.jaxrs.correlation;
 
+import com.x.base.core.project.tools.SortTools;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ class ActionListTypeCms extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<Correlation> os = emc.listEqualAndEqual(Correlation.class, Correlation.FROMTYPE_FIELDNAME,
 					Correlation.TYPE_CMS, Correlation.FROMBUNDLE_FIELDNAME, document);
+			SortTools.asc(os, JpaObject.createTime_FIELDNAME, Correlation.orderNumber_FIELDNAME);
 			wos = Wo.copier.copy(os);
 			result.setData(wos);
 			return result;

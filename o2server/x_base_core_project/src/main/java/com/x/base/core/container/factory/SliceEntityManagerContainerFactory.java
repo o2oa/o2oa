@@ -1,5 +1,6 @@
 package com.x.base.core.container.factory;
 
+import com.x.base.core.entity.ApplicationBaseEntity;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -77,11 +78,21 @@ public abstract class SliceEntityManagerContainerFactory {
 			flagMap.put(clz, Collections.unmodifiableList(flagFields));
 			restrictFlagMap.put(clz, Collections.unmodifiableList(restrictFlagFields));
 		}
+
+		clz = (Class<? extends JpaObject>) cl.loadClass(ApplicationBaseEntity.class.getName());
+		checkPersistFieldMap.put(clz, new HashMap<>());
+		checkRemoveFieldMap.put(clz, new HashMap<>());
+		Properties properties = PersistenceXmlHelper.properties(clz.getName(), sliceFeatureEnable);
+		entityManagerFactoryMap.put(clz,
+				OpenJPAPersistence.createEntityManagerFactory(clz.getName(), PERSISTENCE_XML_PATH, properties));
+		flagMap.put(clz, new ArrayList<>());
+		restrictFlagMap.put(clz, new ArrayList<>());
+
 		if (loadDynamicEntityClass) {
 			clz = (Class<? extends JpaObject>) cl.loadClass("com.x.base.core.entity.dynamic.DynamicBaseEntity");
 			checkPersistFieldMap.put(clz, new HashMap<>());
 			checkRemoveFieldMap.put(clz, new HashMap<>());
-			Properties properties = PersistenceXmlHelper.properties(clz.getName(), sliceFeatureEnable);
+			properties = PersistenceXmlHelper.properties(clz.getName(), sliceFeatureEnable);
 			entityManagerFactoryMap.put(clz,
 					OpenJPAPersistence.createEntityManagerFactory(clz.getName(), PERSISTENCE_XML_PATH, properties));
 			flagMap.put(clz, new ArrayList<>());

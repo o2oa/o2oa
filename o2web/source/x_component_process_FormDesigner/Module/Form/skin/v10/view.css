@@ -83,12 +83,12 @@
 }
 
 .page-nav-title-create{
-    font-size:1rem; 
+    font-size:1rem;
     margin: 0 0.625em 0.625em 0.625em;
-    height: auto; 
+    height: auto;
     background-color:transparent;
     color: #ffffff;
-   
+
 }
 
 .page-content-section oo-input,
@@ -214,8 +214,8 @@
 }
 
 .search-item-title{
-    width: 6rem; 
-    min-width:4.3em; 
+    width: 6rem;
+    min-width:4.3em;
     max-width:9em;
     display: flex;
     align-items: center;
@@ -270,6 +270,40 @@
     flex: 0 0 5rem;
     display: grid;
     align-content: center;
+}
+
+/* 关联文档 */
+.MWFADContent {
+}
+.MWFADContent .doc-icon {
+    color: #4590f8;
+    text-align: center;
+}
+.MWFADContent .process-icon {
+    color: #1cc66d;
+    text-align: center;
+}
+.MWFADContent table {
+    border-top: 1px solid rgb(222, 222, 222);
+    /*border-left: 1px solid rgb(222, 222, 222);*/
+    /*border-right: 1px solid rgb(222, 222, 222);*/
+    border-radius: 4px;
+}
+.MWFADContent table td,
+.MWFADContent table th {
+    color: var(--oo-color-text2);
+    border-bottom: 1px solid #dfdfdf !important;
+    transition: background-color 0.3s;
+    height: 30px !important;
+    line-height: 30px !important;
+    padding: 6px 0;
+}
+.MWFADContent table th {
+    text-align: left;
+    /*background-color: #f7f7f7 !important;*/
+}
+.MWFADContent tr:hover > td {
+    background-color: var(--oo-color-hover) !important;
 }
 
 
@@ -598,5 +632,34 @@
     }
     .index-starter-buttons oo-button{
         flex: 1;
+    }
+
+    .MWFADContent {
+        overflow: auto;
+        width: 100%;
+    }
+    .MWFADContent table {
+        width: 100%;
+        border: 0;
+    }
+    .MWFADContent table td,
+    .MWFADContent table th {
+        white-space: nowrap;
+        height: 3.2em !important;
+        padding: 5px;
+    }
+    .MWFADContent table td:last-child {
+        position: sticky;
+        right: -3px;
+        z-index: 10;
+        min-width: 2.5em !important;
+        background-color: #ffffff !important;
+    }
+    .MWFADContent table th:last-child {
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        min-width: 2.5em !important;
+        background-color: #f7f7f7 !important;
     }
 }

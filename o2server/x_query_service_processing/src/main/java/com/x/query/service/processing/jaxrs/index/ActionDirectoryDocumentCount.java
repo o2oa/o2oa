@@ -21,53 +21,53 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDirectoryDocumentCount extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionDirectoryDocumentCount.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDirectoryDocumentCount.class);
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
-        ActionResult<Wo> result = new ActionResult<>();
-        Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-        String category = wi.getCategory();
-        String key = wi.getKey();
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		String category = wi.getCategory();
+		String key = wi.getKey();
 
-        Optional<Directory> optional = Optional.empty();
+		Optional<Directory> optional = Optional.empty();
 
-        if (StringUtils.isAllBlank(category, key)) {
-            optional = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
-        } else {
-            optional = Indexs.directory(category, key, true);
-        }
+		if (StringUtils.isAllBlank(category, key)) {
+			optional = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
+		} else {
+			optional = Indexs.directory(category, key, true);
+		}
 
-        Wo wo = new Wo();
-        if (optional.isPresent()) {
-            try (DirectoryReader reader = DirectoryReader.open(optional.get())) {
-                wo.setCount((long) reader.numDocs());
-            }
-            wo.setCategory(category);
-            wo.setKey(key);
-            wo.setExists(true);
-        } else {
-            wo.setCategory(category);
-            wo.setKey(key);
-            wo.setExists(false);
-            wo.setCount(0L);
-        }
-        result.setData(wo);
-        return result;
-    }
+		Wo wo = new Wo();
+		if (optional.isPresent()) {
+			try (Directory directory = optional.get(); DirectoryReader reader = DirectoryReader.open(directory)) {
+				wo.setCount((long) reader.numDocs());
+			}
+			wo.setCategory(category);
+			wo.setKey(key);
+			wo.setExists(true);
+		} else {
+			wo.setCategory(category);
+			wo.setKey(key);
+			wo.setExists(false);
+			wo.setCount(0L);
+		}
+		result.setData(wo);
+		return result;
+	}
 
-    @Schema(name = "com.x.query.service.processing.jaxrs.index.ActionDirectoryDocumentCount$Wo")
-    public static class Wo extends ActionCountWo {
+	@Schema(name = "com.x.query.service.processing.jaxrs.index.ActionDirectoryDocumentCount$Wo")
+	public static class Wo extends ActionCountWo {
 
-        private static final long serialVersionUID = 902681475422445346L;
+		private static final long serialVersionUID = 902681475422445346L;
 
-    }
+	}
 
-    @Schema(name = "com.x.query.service.processing.jaxrs.index.ActionDirectoryDocumentCount$Wi")
-    public class Wi extends ActionCountWi {
+	@Schema(name = "com.x.query.service.processing.jaxrs.index.ActionDirectoryDocumentCount$Wi")
+	public class Wi extends ActionCountWi {
 
-        private static final long serialVersionUID = -4646809016933808952L;
+		private static final long serialVersionUID = -4646809016933808952L;
 
-    }
+	}
 
 }

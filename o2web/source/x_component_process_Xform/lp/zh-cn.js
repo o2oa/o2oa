@@ -469,8 +469,8 @@ MWF.xApplication.process.Xform.LP = {
     "score": "关联度",
     "updateTime": "更新时间",
 
-    "documentType": "文档类型",
-    "processName": "流程名称",
+    "documentType": "类型",
+    "processName": "流程",
     "draftTime": "拟稿时间",
     "draftPerson": "拟稿人",
     "categoryName": "分类",
@@ -484,6 +484,9 @@ MWF.xApplication.process.Xform.LP = {
     "selectDocNote": "请先选择文档",
     "associatedDocument": "关联文档",
     "docDeleted": "文档已经被删除或您没有权限打开此文档。",
+    "empty": "清空",
+    "associatedCount": "已关联{count}条",
+    "associatedDocumentCompleted": "关联完成",
 
     "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。",
 
