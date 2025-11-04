@@ -1,9 +1,9 @@
 <header>
     <div class="header-title">{{$.lp.title}}</div>
-    <div class="header-create" data-o2-events="click:createEvent;">{{$.lp.addEvent}}</div>
+    <div class="header-create" data-o2-events="click:createMeeting;">{{$.lp.addMeeting}}</div>
     <div class="header-calendar" data-o2-events="click:loadCalendarList;">{{$.lp.calendar}}</div>
 </header>
-<div data-o2-element="calendarArea" class="calendar-area">
+<div class="content">
     <oo-calendar
             mode="date"
             value="{{$.defaultDate}}"
@@ -11,5 +11,5 @@
             data-o2-element="calendar"
             data-o2-events="viewchange:handleViewChange;change:handleDateChange">
     </oo-calendar>
+    <div data-o2-element="meetingArea"></div>
 </div>
-<div data-o2-element="eventArea"></div>

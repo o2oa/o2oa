@@ -56,6 +56,8 @@ MWF.xApplication.Meeting.LP = {
     "rejected": "已拒绝会议邀请",
     "accept": "接受会议邀请",
     "reject": "拒绝会议邀请",
+    "accept1": "接受",
+    "reject1": "拒绝",
     "disagree": "驳回",
     "agree": "同意",
     "countMeetings": "场会议",
@@ -99,7 +101,7 @@ MWF.xApplication.Meeting.LP = {
     "meetingSubject": "会议标题",
     "meetingDescription": "会议描述",
 
-    "externalPerson": "外部参会人员",
+    "externalPerson": "外部人员",
 
 
     "meetingAttachment": "会议材料",
@@ -232,6 +234,12 @@ MWF.xApplication.Meeting.LP = {
 
         },
         "save_success": "会议室保存成功！"
+    },
+    "status": {
+        "wait": "未开始",
+        "processing": "进行中",
+        "apply": "申请中",
+        "completed": "已结束"
     },
     "listNavi": {
         "myApply": "我的会议申请",

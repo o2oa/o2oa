@@ -1,3 +1,9 @@
+:root {
+    --meeting-wait: #51b749;
+    --meeting-processing: #5484ed;
+    --meeting-invite: #f6a623;
+    --meeting-completed: #fbd75b;
+}
 header{
     display: flex;
     gap: 1rem;
@@ -31,10 +37,12 @@ header{
     margin-top: 8em;
     color: red;
 }
-.calendar-area{
+.content{
     font-size: var(--oo-font-size-default);
     border-bottom: 1px solid #ccc;
     margin-bottom: 1em;
+    overflow: auto;
+    height: calc( 100% - 3.5rem );
 }
 oo-calendar{
     width: calc(100% - 1rem);
@@ -57,42 +65,64 @@ oo-calendar{
     line-height: 1.5em;
 }
 
-.item{
-    padding: 1.25em;
-    background-color: #f9f9f9;
+.meeting-item {
     border-radius: var(--oo-default-radius);
+    border: 1px solid #E6E6E6;
     margin-bottom: 1em;
-    cursor: pointer;
+    border-left: 0.5em solid var(--meeting-invite);
 }
-.item-line{
-    font-size: 1rem;
-    display: flex;
+
+.meeting-item-title {
+    background-color: var(--oo-color-hover);
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.meeting-tiem-show {
+    font-family: D-DIN-PRO, D-DIN-PRO;
+    color: var(--oo-color-main);
+    display: flex !important;
+    justify-content: space-between;
     align-items: center;
     gap: 0.5em;
 }
-.item-line-text{
-    flex: 1;
-    font-size: 1.125rem;
+
+.meeting-item-content {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2em;
+    padding: 1em;
 }
-.item-flag {
-    width: 1em;
-    height: 1em;
-    flex: 0 0 1em;
-    border-radius: var(--oo-default-radius);
+
+.meeting-item-content .meeting-content {
+    display: flex !important;
+    gap: 0.8em;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
 }
-.item-time {
-    font-family: D-DIN-PRO, 华文中宋;
-    font-weight: 800;
-    font-size: 1.75em;
-    text-align: left;
-    padding: 0.5em 0;
+.meeting-item-content .ooicon-gprs::before{
+    margin-right: 0.5em;
 }
-.item-status{
-    padding: 0.3em 0.5em;
-    border-radius: var(--oo-default-radius);
-    color: rgb(255, 255, 255);
-    background-color: var(--oo-color-success);
+.meeting-item-content .ooicon-person::before{
+    margin-right: 0.5em;
 }
+.meeting-title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.meeting-text{
+    font-size: 0.875rem;
+    color: var(--oo-color-text2);
+}
+.meeting-action{
+    display: none;
+    gap: 0.8em;
+    flex-direction: column;
+}
+
 
 .calendar .list-title{
     font-size: 1.25em;

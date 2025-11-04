@@ -1,35 +1,53 @@
 <div>
-  {{if $.data.length === 0}}
-  <div class="empty">
-    <div class="ooempty-wuricheng empty-icon"></div>
-    <div>{{$.lp.noEvent}}</div>
-  </div>
-  {{end if}}
+    {{if $.data.length === 0}}
+    <div class="empty">
+        <div class="ooempty-wuricheng empty-icon"></div>
+        <div>{{$.lp.noMeeting}}</div>
+    </div>
+    {{end if}}
 
-  {{if $.data.length > 0}}
+    {{if $.data.length > 0}}
     <div class="info">
         {{layout.session.user.name}}，您好！当日有
         <div class="info-count">{{$.data.length}}</div>
-        个日程！
+        场会议！
     </div>
-    <div>
-      {{each $.data}}
-      <div class="item" data-o2-events="click:handleEventClick">
-        <div class="item-line">
-          <div class="item-flag" style="background-color: {{$.color}}"></div>
-          <div class="item-line-text">{{$.title}}</div>
-        </div>
-        <div style="justify-content: space-between;" class="item-line">
-          <div class="item-time">{{$.range.start}} - {{$.range.end}}</div>
-          <div class="item-status" style="background-color: {{$.statusColor}}">
-            {{$.status}}
+    <div style="padding: 0 1em;">
+        {{each $.data}}
+        <div mwftype="div" style="border-color: var(--meeting-{{$.meetingStatus}});" class="meeting-item"
+            data-o2-events="click:handleMeetingClick">
+          <div mwftype="div" style="padding: 0.5em 1em;" class="meeting-item-title">
+            <div>
+              {{$.startTime.split(' ')[0]}}
+            </div>
+            <div class="meeting-tiem-show">
+              <div>{{ $.startTime.substring($.startTime.indexOf(' '+1), $.startTime.lastIndexOf(':')) }}</div>
+              <div>-</div>
+              <div>{{ $.completedTime.substring($.completedTime.indexOf(' '+1), $.completedTime.lastIndexOf(':')) }}</div>
+            </div>
+          </div>
+          <div style="flex: 3 1 0;" class="meeting-item-content">
+            <div class="meeting-content">
+              <div class="line-text meeting-title">{{$.subject}}</div>
+              <div class="ooicon-gprs meeting-text">{{$.woRoom.name}}</div>
+              <div class="ooicon-person meeting-text">{{$.names}}</div>
+            </div>
+            <div style="flex: 0 0 4em; display: {{$.meetingStatus==='invite'?'flex':'none'}};" class="meeting-action">
+              <oo-button text="{{$._.lp.accept1}}" style="pointer-events: auto;" disabled="false"
+                         data-o2-events="click:accept"
+                         type="default"
+                         skin="bg:var(--oo-color-success); hover-bg:var(--oo-color-success); active-bg:var(--oo-color-success); focus-bg:var(--oo-color-success)">
+              </oo-button>
+
+              <oo-button text="{{$._.lp.reject1}}" style="pointer-events: auto;" disabled="false"
+                         data-o2-events="click:reject"
+                         type="default"
+                         skin="bg:var(--oo-color-error); hover-bg:var(--oo-color-error); active-bg:var(--oo-color-error); focus-bg:var(--oo-color-error)">
+              </oo-button>
+            </div>
           </div>
         </div>
-        <div>
-          <div>{{$.locationName || $._.lp.noAddress}}</div>
-        </div>
-      </div>
-      {{end each}}
+        {{end each}}
     </div>
-  {{end if}}
+    {{end if}}
 </div>

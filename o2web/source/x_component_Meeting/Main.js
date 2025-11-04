@@ -790,7 +790,7 @@ MWF.xApplication.Meeting.MainMobile = new Class({
         this.node = new Element("div", {
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
         }).inject(this.content);
-        this.node.loadCss(`/x_component_Meeting/$Main/${this.options.style}/style.css`)
+        this.node.loadCss(`../x_component_Meeting/$Main/${this.options.style}/style.css`);
         this.loadView();
     },
     reload: function(){
@@ -805,7 +805,7 @@ MWF.xApplication.Meeting.MainMobile = new Class({
     },
     _loadView: function(){
         this.node.loadHtml(
-            `/x_component_Meeting/$Main/${this.options.style}/main.html`,
+            `../x_component_Meeting/$Main/${this.options.style}/main.html`,
             {
                 module: this,
                 bind: {
@@ -816,7 +816,7 @@ MWF.xApplication.Meeting.MainMobile = new Class({
             },
             ()=>{
                 this.loadFlags();
-                this.loadEvents(this.currentDate || this.options.baseDate);
+                this.loadMeetings(this.currentDate || this.options.baseDate);
             }
         );
     },
@@ -838,27 +838,17 @@ MWF.xApplication.Meeting.MainMobile = new Class({
            const data = [];
            result.forEach(json=>data.push(...json.data));
 
-            const first = new Date(range.startTime).clearTime();
-            const last = new Date(range.endTime).clearTime();
-
-            result.forEach((ev) => {
-                const start = new Date(ev.startTime).clearTime();
-                const end = new Date(ev.completedTime).clearTime();
-                let d = (start > first) ? start.clone() : first.clone();
-
-                while (d <= end && d <= last) {
-                    //在日历上标记日程标识
-                    this.setFlag(d.format( O2_MEETING_FORMAT_DATE ));
-                    d.increment('day', 1);
-                }
+            data.forEach((ev) => {
+                const start = new Date(ev.startTime);
+                this.setFlag(start.format( O2_MEETING_FORMAT_DATE ));
             });
 
-        });
+        }.bind(this));
     },
     getMonthRange: function (e) {
         const detail = e ? e.detail : this.calendar.viewStatus;
         const months = [];
-        let date = new Date(`${detail.year}-${detail.month}-01`);
+        let date = new Date(`${detail.year}-${detail.month+1}-01`);
 
         const getObj = (date)=>{
             return {
@@ -885,68 +875,82 @@ MWF.xApplication.Meeting.MainMobile = new Class({
     },
     handleDateChange: function (e){
         this.currentDate = e.detail.value;
-        this.loadEvents(e.detail.value);
+        this.loadMeetings(e.detail.value);
     },
-    loadEvents: function( dateString ){
-        return ;
-
+    loadMeetings: function( dateString ){
         const method = o2.Actions.load('x_meeting_assemble_control').MeetingAction[this._isMeetingViewer ? 'listOnDayAll' : 'listOnDay'];
         const [y, m, d] = dateString.split('-');
+
+        function intersection(arr1, arr2) {
+            return arr1.some(item => arr2.includes(item));
+        }
+
         const p = method(y, m, d).then((json)=>{
+            const now = new Date();
             json.data = json.data.map((d)=>{
-                // const start = new Date(d.startTime);
-                // const end = new Date(d.completedTime);
-                // d.range = {
-                //     start: start.format(O2_MEETING_FORMAT_TIME),
-                //     end: end.format(O2_MEETING_FORMAT_TIME),
-                // };
-                // const now = new Date();
-                // if (start > now) {
-                //     d.statusColor='var(--oo-color-success)';
-                //     d.status = this.lp.status.wait;
-                // }else if (start <= now && now <= end) {
-                //     d.statusColor=='var(--oo-color-main)';
-                //     d.status = this.lp.status.doing;
-                // }else if (end < now) {
-                //     d.statusColor='var(--oo-color-gray-9)';
-                //     d.status = this.lp.status.finish;
-                // }
-                // return d;
+
+                if( o2.typeOf( d.myWaitAccept ) !== "boolean" ){
+                    const {distinguishedName, id} = layout.desktop.session.user;
+                    const user = [distinguishedName, id];
+                    if( intersection(d.invitePersonList, user) ){
+                        d.myWaitAccept = !intersection(d.acceptPersonList, user) && !intersection(d.rejectPersonList, user);
+                    }
+                }
+
+                if (d.status === 'wait' && d.myWaitAccept) {
+                    //会议邀请
+                    d.meetingStatus = 'invite';
+                }else if (d.status === 'wait' && d.myReject) {
+                    //会议拒绝
+                    d.meetingStatus = 'reject';
+                } else {
+                    d.meetingStatus = d.status;
+                }
+
+                const names = o2.name.cns(d.inviteMemberList);
+                if (names.length>4){
+                    const someNames = names.slice(0, 4);
+                    d.names = someNames.join(', ')+ ' 等'+names.length+'人';
+                }else{
+                    d.names = names.join(', ');
+                }
+
+                return d;
             });
             return json;
         });
         p.then( (json) => {
-            this.eventArea.empty();
-            this.eventArea.loadHtml(
-                `/x_component_Meeting/$Main/${this.options.style}/list.html`,
+            this.meetingArea.empty();
+            this.meetingArea.loadHtml(
+                `../x_component_Meeting/$Main/${this.options.style}/list.html`,
                 {
                     module: this,
                     bind: {
+                        date: this.currentDate || this.options.baseDate,
                         lp: this.lp,
                         data: json.data
                     }
                 }
             );
-        })
+        });
     },
-    createEvent: function (e) {
+    createMeeting: function (e) {
         const date = this.currentDate || this.options.baseDate;
-        this.openEvent(e, {}, true, {
+        this.openMeeting(e, {}, true, {
             startTime : Date.parse( date + " 08:00") ,
             endTime : Date.parse( date + " 09:00")
         });
     },
-    handleEventClick: function (e, eventData){
-        this.actions.getEvent( eventData.id, function (json) {
-            this.openEvent(e, json.data, false);
+    handleMeetingClick: function (e, meetingData){
+        this.actions.getMeeting( meetingData.id, function (json) {
+            this.openMeeting(e, json.data, false);
         }.bind(this))
     },
-    openEvent: function (e, eventData, create, options={}){
-        var form = new MWFCalendar.EventForm(this, eventData, {
+    openMeeting: function (e, meetingData, create, options={}){
+        var form = new MWF.xApplication.Meeting.MeetingForm(this, meetingData, {
             ...options,
             style: 'v10_mobile',
             hasTop: false,
-            isFull : true,
             height: '100%',
             width: '100%'
         }, {
@@ -955,20 +959,45 @@ MWF.xApplication.Meeting.MainMobile = new Class({
         });
         form.view = this;
         !!create ?
-            form.create() :
-            (this.isEventEditable() ? form.edit() : form.open());
-    },
-    isEventEditable: function(eventData){
-        if( MWF.AC.isAdministrator() )return true;
-        if( (eventData.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
-        if( eventData.createPerson === layout.desktop.session.user.distinguishedName )return true;
-        return false;
+            form.create() : form.open();
     },
     loadCalendarList: function (e){
         this.node.empty();
         var calendarList = new MWF.xApplication.Calendar.CalendarListMobile(this, this.node);
         calendarList.load();
-    }
+    },
+
+    reject: function(e, data){
+        var _self = this;
+        var text = this.lp.reject_confirm.replace(/{name}/g, data.subject);
+        this.confirm("infor", e, this.lp.reject_confirm_title, text, 300, 120, function(){
+            _self.rejectMeeting(data);
+            this.close();
+        }, function(){
+            this.close();
+        });
+    },
+    rejectMeeting: function(data){
+        this.actions.rejectMeeting(data.id, function(){
+            this.loadMeetings(this.currentDate || this.options.baseDate);
+        }.bind(this))
+    },
+
+    accept: function(e, data){
+        var _self = this;
+        var text = this.lp.accept_confirm.replace(/{name}/g, data.subject);
+        this.confirm("infor", e, this.lp.accept_confirm_title, text, 300, 120, function(){
+            _self.acceptMeeting(data);
+            this.close();
+        }, function(){
+            this.close();
+        });
+    },
+    acceptMeeting: function(data){
+        this.actions.acceptMeeting(data.id, function(){
+            this.loadMeetings(this.currentDate || this.options.baseDate);
+        }.bind(this));
+    },
 });
 
 // MWF.xApplication.Meeting.RoomListMobile = new Class({

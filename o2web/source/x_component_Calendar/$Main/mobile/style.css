@@ -31,14 +31,19 @@ header{
     margin-top: 8em;
     color: red;
 }
-.calendar-area{
+.content{
     font-size: var(--oo-font-size-default);
     border-bottom: 1px solid #ccc;
     margin-bottom: 1em;
+    overflow: auto;
+    height: calc( 100% - 3.5rem );
 }
 oo-calendar{
     width: calc(100% - 1rem);
     box-shadow: none;
+}
+oo-calendar .dateContent table td > div{
+    position: relative;
 }
 
 .info{
