@@ -31,12 +31,13 @@ class V3Pin extends BaseAction {
 			if (effectivePerson.isNotPerson(task.getPerson()) && effectivePerson.isNotManager()) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
+			// orderNumber asc排序
 			emc.beginTransaction(Task.class);
-			if (Objects.isNull(task.getOrderNumber()) || (task.getOrderNumber() < 1L)) {
-				task.setOrderNumber((new Date()).getTime());
+			if (Objects.isNull(task.getOrderNumber())) {
+				task.setOrderNumber(-(new Date()).getTime());
 				wo.setValue(true);
 			} else {
-				task.setOrderNumber(Task.DEFAULT_ORDERNUMBER);
+				task.setOrderNumber(null);
 				wo.setValue(false);
 			}
 			emc.persist(task, CheckPersistType.all);
