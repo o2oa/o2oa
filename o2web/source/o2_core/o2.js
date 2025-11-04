@@ -590,7 +590,7 @@ if (!window.o2) {
                 if (!_loadingModules[key].callbacks) _loadingModules[key].callbacks = [];
                 _loadingModules[key].callbacks.push(callback);
             } else {
-                // _loadingModules[key] = {callbacks: [callback]};
+                if (!_loadingModules[key]) _loadingModules[key] = {callbacks: []};
 
                 var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
                 var s = op.doc.createElement('script');
@@ -606,11 +606,13 @@ if (!window.o2) {
                         _removeListener(s, 'readystatechange', _checkScriptLoaded);
                         _removeListener(s, 'load', _checkScriptLoaded);
                         _removeListener(s, 'error', _checkScriptErrorLoaded);
+
                         if (!isAbort || err) {
                             if (err) {
                                 if (s) head.removeChild(s);
                                 if (callback) callback();
                                 if (_loadingModules[key]){
+                                    debugger;
                                     while (_loadingModules[key].callbacks.length) {
                                         (_loadingModules[key].callbacks.shift())();
                                     }
@@ -622,11 +624,13 @@ if (!window.o2) {
                                 //head.removeChild(s);
                                 if (callback) callback();
                                 if (_loadingModules[key]){
+                                    debugger;
                                     while (_loadingModules[key]?.callbacks.length) {
                                         (_loadingModules[key].callbacks.shift())(scriptObj);
                                     }
+                                    delete _loadingModules[key];
                                 }
-                                delete _loadingModules[key];
+
                                 //if (callback)callback(scriptObj);
                             }
                         }
