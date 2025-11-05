@@ -163,6 +163,28 @@ public class ViewAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "执行view，分页获取数据", action = ActionExecuteWithQueryV2.class)
+	@POST
+	@Path("flag/{flag}/query/{queryFlag}/execute/v2/page/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void executeWithQueryV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("视图标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("查询标识") @PathParam("queryFlag") String queryFlag,
+			@JaxrsParameterDescribe("第几页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页几条") @PathParam("size") Integer size,
+			JsonElement jsonElement) {
+		ActionResult<Plan> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExecuteWithQueryV2().execute(effectivePerson, flag, queryFlag, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "执行view MockPutToPost", action = ActionExecuteWithQuery.class)
 	@POST
 	@Path("flag/{flag}/query/{queryFlag}/execute/mockputtopost")
