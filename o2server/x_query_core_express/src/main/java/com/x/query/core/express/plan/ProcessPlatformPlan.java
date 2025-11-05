@@ -548,7 +548,7 @@ public class ProcessPlatformPlan extends Plan {
             if(ListTools.isEmpty(filterList)){
                 return null;
             }
-            List<Predicate> existsPredicates = new ArrayList<>();
+            Predicate p = null;
             for (FilterEntry f : filterList) {
                 if(StringUtils.isEmpty(f.path)){
                     continue;
@@ -562,9 +562,15 @@ public class ProcessPlatformPlan extends Plan {
                 if (Comparison.isNotEquals(f.comparison)) {
                     existsP = cb.not(existsP);
                 }
-                existsPredicates.add(existsP);
+                if(p == null){
+                    p = existsP;
+                }else if(StringUtils.equalsIgnoreCase("or", f.logic)){
+                    p = cb.or(p, existsP);
+                }else{
+                    p = cb.and(p, existsP);
+                }
             }
-            return cb.and(existsPredicates.toArray(new Predicate[0]));
+            return p;
         }
 
         private Predicate reviewPredicate(CriteriaBuilder cb, Root<Review> root) throws Exception {
