@@ -1000,69 +1000,51 @@ MWF.xApplication.Meeting.MainMobile = new Class({
     },
 });
 
-// MWF.xApplication.Meeting.RoomListMobile = new Class({
-//     Implements: [Options, Events],
-//     options : {
-//         style: 'mobile'
-//     },
-//     initialize: function(app, node, options){
-//         this.setOptions(options);
-//         this.app = app;
-//         this.lp = this.app.lp;
-//         this.node = $(node);
-//     },
-//     load: function(){
-//         this.app.listCalendar((data)=>{
-//             this.node.loadHtml(
-//                 `/x_component_Meeting/$Main/${this.options.style}/calendarList.html`,
-//                 {
-//                     module: this,
-//                     bind: {
-//                         lp: this.lp,
-//                         data: data
-//                     }
-//                 }
-//             );
-//         }, true);
-//     },
-//     reload: function (){
-//         this.node.empty();
-//         this.load();
-//     },
-//     handleItemClick: function (e, calendarData){
-//         this.app.actions.getCalendar( calendarData.id, function( json ){
-//             this.openCalendar(e, json.data, false);
-//         }.bind(this))
-//     },
-//     createCalendar: function (e){
-//         this.openCalendar(e, {}, true);
-//     },
-//     openCalendar: function (e, calendarData, create, options={}){
-//         var form = new MWFCalendar.CalendarForm(this, calendarData, {
-//             ...options,
-//             hasTop: false,
-//             style: 'v10_mobile',
-//             height: '100%',
-//             width: '100%'
-//         }, {
-//             app: this.app,
-//             container: $(document.body)
-//         });
-//         form.view = this;
-//         !!create ?
-//             form.create() :
-//             (this.isCalendarEditable() ? form.edit() : form.open());
-//     },
-//     isCalendarEditable: function (data) {
-//         if( MWF.AC.isAdministrator() )return true;
-//         if( (data.manageablePersonList || []).contains( layout.desktop.session.user.distinguishedName ) )return true;
-//         if( data.createPerson === layout.desktop.session.user.distinguishedName )return true;
-//         return false;
-//     },
-//     toMain: function (){
-//         this.app.reload();
-//     }
-// });
+MWF.xApplication.Meeting.InvitationMobile = new Class({
+    Implements: [Options, Events],
+    options : {
+        style: 'mobile'
+    },
+    initialize: function(app, node, options){
+        this.setOptions(options);
+        this.app = app;
+        this.lp = this.app.lp;
+        this.node = $(node);
+    },
+    load: function(){
+        this.listInvitation((data)=>{
+            this.node.loadHtml(
+                `/x_component_Meeting/$Main/${this.options.style}/invitation.html`,
+                {
+                    module: this,
+                    bind: {
+                        lp: this.lp,
+                        data: data
+                    }
+                }
+            );
+        }, true);
+    },
+    listInvitation: function (callback){
+        return o2.Actions.load('x_meeting_assemble_control').MeetingAction.listInviteMeetingPaging(1, 10, {
+            meetingStatus: 'wait'
+        }, (json)=>{
+            if(callback)callback(json.data);
+        });
+    },
+    reload: function (){
+        this.node.empty();
+        this.load();
+    },
+    handleItemClick: function (e, calendarData){
+        this.app.actions.getCalendar( calendarData.id, function( json ){
+            this.openCalendar(e, json.data, false);
+        }.bind(this))
+    },
+    toMain: function (){
+        this.app.reload();
+    }
+});
 
 if ((layout.mobile || COMMON.Browser.Platform.isMobile)){
     MWF.xApplication.Meeting.Main = MWF.xApplication.Meeting.MainMobile;
