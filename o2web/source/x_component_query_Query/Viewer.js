@@ -421,7 +421,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.actionbar.load();
         }else{ //兼容以前的ExportNode
             this.createExportNode();
-        }
+        }        
     },
     createViewNode: function(data, callback, keepSelected){
         this.viewAreaNode.empty();
@@ -1764,13 +1764,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.viewFulltextSearchAreaNode = new Element("div.search-fulltext-area").inject(this.searchAreaNode, 'top');
             this.fulltextSearchInput = new Element("oo-input");
             this.fulltextSearchInput.setAttribute('left-icon', 'search');
+            this.fulltextSearchInput.setAttribute('type', 'search');
             this.fulltextSearchInput.setAttribute('label-style', 'width: 6rem; min-width:4.3em; max-width:9em');
-            this.fulltextSearchInput.setAttribute('label', '搜索');
+            if (!o2.isMediaMobile()) this.fulltextSearchInput.setAttribute('label', '搜索');
             this.viewFulltextSearchAreaNode.appendChild(this.fulltextSearchInput);
 
             this.fulltextSearchButton = new Element("oo-button");
             this.fulltextSearchButton.setAttribute('type', 'default');
-            this.fulltextSearchButton.setAttribute('left-icon', 'search');
+            if (!o2.isMediaMobile()) this.fulltextSearchButton.setAttribute('left-icon', 'search');
             this.fulltextSearchButton.setAttribute('text', '查询');
             this.viewFulltextSearchAreaNode.appendChild(this.fulltextSearchButton);
 
@@ -1784,7 +1785,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             });
             
             if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
-                var div = new Element('div', {styles: {'font-size': '1.15rem'}});
+                var div = new Element('div.search-fulltext-more', {styles: {'font-size': '1.15rem'}});
                 this.moreSearchButton = new Element("oo-button");
                 this.moreSearchButton.setAttribute('type', 'icon-light');
                 this.moreSearchButton.setAttribute('title', '更多筛选');
@@ -4299,6 +4300,9 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
                         }.bind(this), null);
                     }
                 }
+            }
+            if (!this.toolbarWidget.children || !this.toolbarWidget.children.length){
+                this.node.setStyle('display', 'none');
             }
 
         }.bind(this));

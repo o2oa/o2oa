@@ -56,6 +56,9 @@
 .form-content-view .actionbarAreaNode:empty{
     display: none !important;
 }
+.form-content-view .actionbarAreaNode>div:empty{
+    display: none !important;
+}
 
 .form-content-view .actionbarAreaNode{
     padding: 0;
@@ -68,6 +71,17 @@
 .form-layout .page-content-section div[mwftype='view'] > div{
     gap: 1rem;
 }
+.form-layout .page-content-section div[mwftype='view'] > div.searchAreaNodeV10.showFilter{
+    grid-template-columns: 1fr 3rem;
+    gap: 0;
+}
+.form-layout .page-content-section div[mwftype='view'] > div.searchAreaNodeV10 {
+    overflow: unset !important;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+}
+
 .form-layout .page-content-section div[mwftype='view'] > div > div:nth-child(3) > div{
     padding: 0;
 }
@@ -195,6 +209,7 @@
     flex-wrap: wrap;
     overflow: hidden;
     overflow: auto;
+    align-items: flex-start;
 }
 .search-area.hide{
     display: none !important;
@@ -657,6 +672,16 @@
     .search-area.show{
         position: absolute;
         top: 0;
+        left: 0;
+        z-index: 1000;
+        width: 100%;
+        display: grid !important;
+        padding: 0.5rem !important;
+        box-shadow: 0 0 10px 0 #dedede;
+    }
+    .searchAreaNodeV10.show{
+        position: absolute;
+        top: 0;
         z-index: 1000;
         width: 100%;
         display: grid !important;
@@ -666,7 +691,13 @@
     .search-area.show .page-content-search-fields{
         grid-template-columns: auto !important;
     }
+    .searchAreaNodeV10.show .page-content-search-fields{
+        grid-template-columns: auto !important;
+    }
     .search-area.show .page-content-search-actions{
+        display: flex !important;
+    }
+    .searchAreaNodeV10.show .page-content-search-actions{
         display: flex !important;
     }
     .form-content-view .actionbarAreaNode{
@@ -741,9 +772,19 @@
     .form-content-view .searchAreaNodeV10{
         overflow: unset !important;
         padding: 0;
-        display: none !important;
     }
     .viewAreaNode{
         padding: 0 !important;
+    }
+    .search-fulltext-area{
+        padding: 0;
+        grid-template-columns: 1fr 4rem;
+        gap: 0.5rem;
+    }
+    /* .search-fulltext-area oo-button{
+        display: none;
+    } */
+    .search-fulltext-more{
+        display: none;
     }
 }
