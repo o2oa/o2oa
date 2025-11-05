@@ -291,7 +291,7 @@ function move_commons(){
     console.log(`---------------------------------------------------------------------
   . move commons files to o2server/commons ...
 ---------------------------------------------------------------------`);
-    return gulp.src("o2server/tmp/evn-o2server-commons-9.2-commons/commons/**/*")
+    return gulp.src("o2server/tmp/evn-o2server-commons-9.3-commons/commons/**/*")
         .pipe(gulp.dest("o2server/commons/"));
 }
 function move_jvm(){
@@ -308,7 +308,7 @@ function move_jvm(){
         .pipe(gulp.dest("o2server/jvm/"));
 }
 async function clear_commons_git(cb) {
-    var dest = ['o2server/tmp/evn-o2server-commons-9.2-commons/', 'o2server/commons_git.tar.gz'];
+    var dest = ['o2server/tmp/evn-o2server-commons-9.3-commons/', 'o2server/commons_git.tar.gz'];
     await del(dest, {force: true});
     cb();
 }
