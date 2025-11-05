@@ -782,17 +782,17 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.paging.reload();
         }
     },
-    _initPage: function(){
-        this.count = this.bundleItems.length;
-
-        var i = this.count/this.json.pageSize;
-        this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
-        this.currentPage = this.options.defaultPage || 1;
-        this.options.defaultPage = null;
-
-        this.exportExcelStart = null;
-        this.exportExcelEnd = null;
-    },
+    //_initPage: function(){
+    //    this.count = this.bundleItems.length;
+//
+//     var i = this.count/this.json.pageSize;
+//     this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
+//     this.currentPage = this.options.defaultPage || 1;
+//     this.options.defaultPage = null;
+//
+//     this.exportExcelStart = null;
+//     this.exportExcelEnd = null;
+//     },
     isSortedType: function(value){
         return ['asc', 'desc'].contains(value);
     },
@@ -2750,7 +2750,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
         },
         getExportTotalCount: function(){
-            return ( this.bundleItems || [] ).length;
+                return this.count;
         },
         getExportMaxCount: function(){
             return 2000;
@@ -2924,7 +2924,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             this.loadExportData(start, end, function (dataList) {
                 var rowIndex = 0;
-                dataList.grid.each(function (data, i) {
+                    debugger;
+                    dataList.each(function (data, i) {
                     // data.each(function (d, i) {
                     var d = data.data;
 
@@ -3026,27 +3027,46 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }.bind(this))
         },
         loadExportData: function(start, end, callback){
-
-            var bundleList = this.bundleItems.slice(start-1, end);
-
-            var filterData = this.json.filter ? this.json.filter.clone() : [];
-            if (this.filterItems.length){
-                this.filterItems.each(function(filter){
-                    filterData.push(filter.data);
-                }.bind(this));
+            var body = this.currentFilterData || {};
+            start = start - 1;
+            var differ = end - start;
+            var count;
+            if( differ < 10000 ){
+                count = differ;
+            }else{
+                count = 10000;
             }
-            var data = {"filterList": filterData};
-            if( bundleList )data.bundleList = bundleList;
-            data.key = this.bundleKey;
-
-            var p = o2.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(
-                this.json.viewName,
-                this.json.application,
-                data
-            );
-            Promise.resolve( p ).then(function (json) {
-                callback(json.data);
+            var page = Math.floor( start / count ) + 1;
+            var startIndex = start % count;
+            var endIndex = end % count;
+            var loaded = (page - 1)*count;
+            var list = [];
+            do{
+                var promise = o2.Actions.load('x_query_assemble_surface').ViewAction.executeV2(this.json.id, page, count, body)
+                list.push(promise);
+                loaded = loaded + count;
+                page = page + 1;
+            }while( end > loaded );
+            var result = [];
+            Promise.all( list ).then(function (arr) {
+                arr.each(function (json, i) {
+                    var data = json.data.grid;
+                    var length = json.count;
+                    if( i === 0 && i === list.length - 1 ){
+                        data.splice( 0, startIndex );
+                        if( length > endIndex && endIndex > 0 ){
+                            data.splice( endIndex - startIndex , length - endIndex );
+                        }
+                    }else if( i === 0 ){
+                        data.splice( 0, startIndex );
+                    }else if( i=== list.length - 1 ){
+                        if( length > endIndex && endIndex > 0 )data.splice( endIndex, length - endIndex );
+                    }
+                    result.push(...data);
+                });
+                if( callback )callback(result);
             });
+
         },
         getExportText: function(column, key, data){
             var text = data[key];

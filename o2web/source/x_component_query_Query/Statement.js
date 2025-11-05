@@ -105,6 +105,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         } else {
             this.getView(callback);
         }
+        o2.loadCss('../x_component_process_FormDesigner/Module/Form/skin/v10/view.css');
     },
     loadMacro: function (callback) {
         MWF.require("MWF.xScript.Macro", function () {
