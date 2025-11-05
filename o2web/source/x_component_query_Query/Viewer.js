@@ -242,7 +242,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.loadLayout();
         if( this.options.isloadActionbar )this.createActionbarNode();
         if( this.options.isloadSearchbar )this.createSearchNode();
-        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback);
+        this.currentFilterData = {"filterList": this.json.filter  ? this.json.filter.clone() : null};
+        this.createViewNode(this.currentFilterData, callback);
 
         if (this.options.resizeNode){
             this.setContentHeightFun = this.setContentHeight.bind(this);
@@ -349,7 +350,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
     },
     setContentHeight: function() {
-        debugger;
         var getMarginHeight = (el) => {
             var top = el.getStyle("margin-top").toFloat() || 0;
             var bottom = el.getStyle("margin-bottom").toFloat() || 0;
@@ -829,8 +829,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.requestBody = data;
 
                 this.setOrderList(d);
-
-                debugger; 
                 
                 // this.lookupAction.bundleView(this.json.id, d, function(json){
                     // this.bundleItems = json.data.valueList;
@@ -902,11 +900,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
 
     _initPageV2: function(count){
-        if (!this.pages){
+        // if (!this.pages){
             this.count = count;
             var i = this.count/this.json.pageSize;
             this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
-        }
+        // }
     },
 
     loadCurrentPageData: function(data, callback, noDocument ){
@@ -924,7 +922,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.items = [];
 
         // var p = this.currentPage;
-        var d = data || {};
+        var d = data || this.currentFilterData || {};
         // var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
         // d.bundleList = valueList;
         // d.key = this.bundleKey;
@@ -945,6 +943,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         o2.Actions.load('x_query_assemble_surface').ViewAction.executeV2(this.json.id, this.currentPage, this.json.pageSize, d, function(json){
             this.viewData = json.data;
             if (this.viewData.grid && this.viewData.grid.length){
+
                 this._initPageV2(json.count);
 
                 this.fireEvent("postLoadPageData");
@@ -971,6 +970,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
                 if(callback)callback();
             }else{
+                this.pageloading = false;
                 noDocument?.();
             }
 
@@ -1266,7 +1266,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.closeCustomSearch();
 
         this.viewAreaNode.empty();
-        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, callback, keepSelected);
+        this.currentFilterData = {"filterList": this.json.filter ? this.json.filter.clone() : null};
+        this.createViewNode(this.currentFilterData, callback, keepSelected);
     },
     getFilter: function(){
         var filterData = [];
@@ -1658,7 +1659,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.viewSearchActionArea.addClass("field-count-5");
         }
 
-        const size = this.searchAreaNode.getSize();
+        const size = this.viewSearchAreaNode.getSize();
 
         if (size.x<1366){
             this.viewSearchAreaNode.addClass("column-count-2");
@@ -1721,7 +1722,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             });
             const filterData = this.json.filter ? this.json.filter.clone() : [];
             const filter = [...filterData, ...this.customFilterListData];
-            this.createViewNode({"filterList": filter}, null, true);
+            this.currentPage = 1;
+
+            this.currentFilterData = {"filterList": filter};
+            this.createViewNode(this.currentFilterData, null, true);
         });
         cancelButton.addEventListener("click", (ev)=>{
             this._cancelFilter();
@@ -1731,7 +1735,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.searchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
             node.value = "";
             this.customFilterListData = [];
-            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
+            this.currentPage = 1;
+            this.currentFilterData = {"filterList": this.json.filter ? this.json.filter.clone() : null};
+            this.createViewNode(this.currentFilterData, null, true);
         });
     },
     loadFulltextSearch: function(){
@@ -1744,9 +1750,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
     _fulltextSearch: function(){
         if (this.fulltextSearchInput.value){
-            this.createViewNode({"filterList": null, searchKey: this.fulltextSearchInput.value}, null, true);
+            this.currentPage = 1;
+            this.currentFilterData = {"filterList": null, searchKey: this.fulltextSearchInput.value}
+            this.createViewNode(this.currentFilterData, null, true);
         }else{
-            this.createViewNode({"filterList": null, searchKey: ''}, null, true);
+            this.currentPage = 1;
+            this.currentFilterData = {"filterList": null, searchKey: ''}
+            this.createViewNode(this.currentFilterData, null, true);
         }
     },
     loadFulltextSearchV10: function(){
@@ -1754,6 +1764,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.viewFulltextSearchAreaNode = new Element("div.search-fulltext-area").inject(this.searchAreaNode, 'top');
             this.fulltextSearchInput = new Element("oo-input");
             this.fulltextSearchInput.setAttribute('left-icon', 'search');
+            this.fulltextSearchInput.setAttribute('label-style', 'width: 6rem; min-width:4.3em; max-width:9em');
+            this.fulltextSearchInput.setAttribute('label', '搜索');
             this.viewFulltextSearchAreaNode.appendChild(this.fulltextSearchInput);
 
             this.fulltextSearchButton = new Element("oo-button");
@@ -1772,24 +1784,56 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             });
             
             if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
+                var div = new Element('div', {styles: {'font-size': '1.15rem'}});
                 this.moreSearchButton = new Element("oo-button");
-                this.moreSearchButton.setAttribute('type', 'light');
-                this.moreSearchButton.setAttribute('text', '更多筛选');
+                this.moreSearchButton.setAttribute('type', 'icon-light');
+                this.moreSearchButton.setAttribute('title', '更多筛选');
                 this.moreSearchButton.setAttribute('left-icon', 'jiekoupeizhi2');
-                this.viewFulltextSearchAreaNode.appendChild(this.moreSearchButton);
+                div.appendChild(this.moreSearchButton);
+                this.viewFulltextSearchAreaNode.appendChild(div);
                 
                 this.viewSearchAreaNode?.addClass('hide');
 
                 this.moreSearchButton.addEventListener('click', ()=>{
                     if (this.viewSearchAreaNode?.hasClass('hide')){
-                        this.viewSearchAreaNode?.removeClass('hide');
+                        this._showFilterSearch();
                     }else{
-                        this.viewSearchAreaNode?.addClass('hide');
-                        this._cancelFilter();
+                        this._hideFilterSearch();
                     }
                 })
             }
         }
+    },
+
+    _showFilterSearch: function(){
+        this.moreSearchButton?.setAttribute('title', '全文检索');
+        this.fulltextSearchInput?.addClass('hide');
+        this.fulltextSearchButton?.addClass('hide');
+        this.viewSearchAreaNode?.removeClass('hide');
+        this.moreSearchButton?.setAttribute('left-icon', 'arrow_back');
+
+        this.searchAreaNode.addClass('showFilter');
+        this.viewFulltextSearchAreaNode.addClass('showFilter');
+        this.viewSearchAreaNode.addClass('showFilter');
+        if (this.viewSearchActionArea.getStyle('display')==='grid'){
+            this.viewFulltextSearchAreaNode.addClass('column')
+        }
+        
+        this._cancelFilter();
+    },
+    _hideFilterSearch: function(){
+        this.moreSearchButton?.setAttribute('title', '更多筛选');
+        this.fulltextSearchInput?.removeClass('hide');
+        this.fulltextSearchButton?.removeClass('hide');
+        this.viewSearchAreaNode?.addClass('hide');
+        this.moreSearchButton?.setAttribute('left-icon', 'jiekoupeizhi2');
+
+        this.searchAreaNode.removeClass('showFilter');
+        this.viewFulltextSearchAreaNode.removeClass('showFilter');
+        this.viewSearchAreaNode.removeClass('showFilter');
+        this.viewFulltextSearchAreaNode.removeClass('column')
+
+        this._cancelFilter();
     },
 
     loadFilterSearch: function(){
@@ -1797,6 +1841,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         //     'onSuccess': (json)=>{
                 // this.skinJson = json;
                 if (this.skinJson && this.skinJson.filterSkin==='v10'){
+                    this.searchAreaNode.addClass('searchAreaNodeV10');
                     this.loadFilterSearchNodeV10();
                 }else{
                     this.loadFilterSearchNode();
@@ -1808,7 +1853,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         // });
     },
     searchView: function(){
-        debugger;
         if (this.viewJson.customFilterList) {
             var key = this.viewSearchInputNode.get("value");
             if (key && key !== this.lp.searchKeywork) {
@@ -1847,12 +1891,15 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                         filterData.push(f);
                     })
                 }
-
-                this.createViewNode({"filterList": filterData}, null, true);
+                this.currentPage = 1;
+                this.currentFilterData = {"filterList": filterData};
+                this.createViewNode(this.currentFilterData, null, true);
             }else{
                 this.filterItems = [];
                 var filterData = this.json.filter ? this.json.filter.clone() : [];
-                this.createViewNode( {"filterList": filterData}, null, true );
+                this.currentPage = 1;
+                this.currentFilterData = {"filterList": filterData};
+                this.createViewNode( this.currentFilterData, null, true );
             }
         }
     },
@@ -1863,9 +1910,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 filterData.push(filter.data);
             }.bind(this));
 
-            this.createViewNode({"filterList": filterData}, null, true);
+            this.currentFilterData = {"filterList": filterData};
+            this.createViewNode(this.currentFilterData, null, true);
         }else{
-            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
+            this.currentFilterData = {"filterList": this.json.filter ? this.json.filter.clone() : null};
+            this.createViewNode(this.currentFilterData, null, true);
         }
     },
     loadCustomSearch: function(){
@@ -2135,7 +2184,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this));
             this.lastFilterItems = this.filterItems;
-            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
+            this.currentFilterData = {"filterList": this.json.filter ? this.json.filter.clone() : null}
+            this.createViewNode(this.currentFilterData, null, true);
         }
     },
     viewSearchCustomAddToFilter: function(){
@@ -2517,7 +2567,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if( typeOf( filter ) === "object" )filter = [ filter ];
         this.json.filter = filter;
         if( this.viewAreaNode ){
-            this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback, keepSelected);
+            this.currentFilterData = {"filterList": this.json.filter  ? this.json.filter.clone() : null};
+            this.createViewNode(this.currentFilterData, callback, keepSelected);
         }
     },
     /**
@@ -2731,9 +2782,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
             node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
             node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
-
-
-            debugger;
 
             var dlg = o2.DL.open({
                 "title": this.lp.exportExcel,
@@ -4594,7 +4642,6 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class(
                 lastPage: this.json.lastPageText
             },
             onJumpingPage : function( pageNum, itemNum ){
-                debugger;
                 this.view.currentPage = pageNum;
                 this.fireEvent("jump");
                 this.view.loadCurrentPageData( null, false );

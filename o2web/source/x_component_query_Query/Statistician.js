@@ -1140,7 +1140,6 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
     },
 
     selectAll: function(){
-        debugger;
         if (this.selectedRows.length || this.selectedCols.length){
             this.selectedRows = [];
             this.selectedCols = [];

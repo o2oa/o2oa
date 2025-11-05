@@ -164,7 +164,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
         // this._initPage();
 
-        debugger;
         this.loadParameter(d);
         this.loadFilter(d);
 
@@ -206,7 +205,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         // }.bind(this));
     },
     loadFilter: function (data) {
-        debugger;
         this.filterList = [];
         (data.filterList || []).each(function (d) {
             var pName = d.path.replace(/\./g, "_");
@@ -253,7 +251,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
     },
     loadParameter: function () {
         this.parameter = {};
-        debugger;
         var parameter = this.json.parameter ? Object.clone(this.json.parameter) : {};
         //系统默认的参数
         (this.viewJson.parameterList || []).each(function (f) {
@@ -594,7 +591,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         }
     },
     searchView: function(){
-        debugger;
         if (this.viewJson.customFilterList) {
             var key = this.viewSearchInputNode.get("value");
             if (key && key !== this.lp.searchKeywork) {
@@ -808,7 +804,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
                             return false;
                         }
-                        debugger;
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
                         this._exportView(start, end, filename);

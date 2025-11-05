@@ -213,7 +213,6 @@ MWF.xApplication.query.Query.Main = new Class({
         this.naviContentNode.setStyle("height", ""+y+"px");
     },
     createNavi: function(){
-	    debugger;
 	    var viewLoaded,statLoaded, statementLoaded,importerLoaded;
 	    var callback = function () {
 	        if( this.viewItemSelected || this.statItemSelected || this.statementItemSelected || this.importerItemSelected )return;

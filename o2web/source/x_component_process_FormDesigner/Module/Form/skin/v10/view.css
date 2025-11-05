@@ -38,13 +38,19 @@
 .viewAreaNode{
     padding: 0 1rem;
 }
-.form-content-view .searchAreaNode{
+.form-content-view .searchAreaNodeV10{
     overflow: unset !important;
     padding: 0;
     display: grid;
     gap: 1rem;
 }
-.form-content-view .searchAreaNode:empty{
+.form-content-view .searchAreaNodeV10.showFilter{
+    grid-template-columns: 1fr 3rem;
+    /* align-items: start; */
+    gap: 0;
+}
+
+.form-content-view .searchAreaNodeV10:empty{
     display: none !important;
 }
 .form-content-view .actionbarAreaNode:empty{
@@ -192,6 +198,10 @@
 }
 .search-area.hide{
     display: none !important;
+}
+.search-area.showFilter{
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
 }
 
 .page-content-search-fields{
@@ -502,8 +512,21 @@
 .search-fulltext-area{
     padding: 0 1rem;
     display: grid;
-    grid-template-columns: 1fr 6rem 9rem;
+    grid-template-columns: 1fr 6rem 2rem;
     gap: 1rem;
+    align-items: center;
+}
+.search-fulltext-area.showFilter{
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    gap: 0;
+    padding: 0;
+}
+.search-fulltext-area.column{
+    align-items: start;
+}
+.hide{
+    display: none !important;
 }
 
 /* 手机 */
@@ -715,7 +738,7 @@
         min-width: 2.5em !important;
         background-color: #f7f7f7 !important;
     }
-    .form-content-view .searchAreaNode{
+    .form-content-view .searchAreaNodeV10{
         overflow: unset !important;
         padding: 0;
         display: none !important;

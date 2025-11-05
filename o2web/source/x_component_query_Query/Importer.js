@@ -238,9 +238,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                 this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this, {
                     "onPostShow": function(){
                         this.progressBar.showCheckData();
-
-                        debugger;
-
                         var level = this.getTitleLevel();
                         if( importedData.length >= level ){
                             importedData.splice(0, level);
@@ -1454,7 +1451,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 break;
             case "number":
             case "double":
-                debugger;
                 if( value === 0 ){
                     data = 0;
                 }else{
