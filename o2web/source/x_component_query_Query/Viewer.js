@@ -942,7 +942,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         //this.createLoadding();
         if (!this.currentPage) this.currentPage = this.options.defaultPage || 1;
-        o2.Actions.load('x_query_assemble_surface').ViewAction.executeV2(this.json.name, this.currentPage, this.json.pageSize, d, function(json){
+        o2.Actions.load('x_query_assemble_surface').ViewAction.executeV2(this.json.id, this.currentPage, this.json.pageSize, d, function(json){
             this.viewData = json.data;
             if (this.viewData.grid && this.viewData.grid.length){
                 this._initPageV2(json.count);
@@ -1659,7 +1659,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
 
         const size = this.searchAreaNode.getSize();
-        debugger;
+
         if (size.x<1366){
             this.viewSearchAreaNode.addClass("column-count-2");
         }
@@ -1742,8 +1742,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
 
+    _fulltextSearch: function(){
+        if (this.fulltextSearchInput.value){
+            this.createViewNode({"filterList": null, searchKey: this.fulltextSearchInput.value}, null, true);
+        }else{
+            this.createViewNode({"filterList": null, searchKey: ''}, null, true);
+        }
+    },
     loadFulltextSearchV10: function(){
-        debugger;
         if (this.viewJson.isFulltextSearch==='yes'){
             this.viewFulltextSearchAreaNode = new Element("div.search-fulltext-area").inject(this.searchAreaNode, 'top');
             this.fulltextSearchInput = new Element("oo-input");
@@ -1757,12 +1763,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.viewFulltextSearchAreaNode.appendChild(this.fulltextSearchButton);
 
             this.fulltextSearchButton.addEventListener('click', ()=>{
-                if (this.fulltextSearchInput.value){
-                    this.createViewNode({"filterList": null, searchKey: this.fulltextSearchInput.value}, null, true);
-                }else{
-                    this.createViewNode({"filterList": null, searchKey: ''}, null, true);
+                this._fulltextSearch();
+            });
+            this.fulltextSearchInput.addEventListener('keydown', (e)=>{
+                if (e.keyCode===13){
+                    this._fulltextSearch();
                 }
-            })
+            });
             
             if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
                 this.moreSearchButton = new Element("oo-button");
@@ -1782,12 +1789,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     }
                 })
             }
-            
-            
-            
-            
-
-
         }
     },
 
