@@ -85,6 +85,7 @@ MWF.xApplication.cms.Xform.LP = Object.merge({}, MWF.xApplication.process.Xform.
         "do": "点赞",
         "undo": "取消点赞"
     },
+    "noPermissionOrDocumentNotExisted": "您没有权限或者文档不存在",
     "form": {
         "close":"关闭",
         "closeTitle": "关闭文档",

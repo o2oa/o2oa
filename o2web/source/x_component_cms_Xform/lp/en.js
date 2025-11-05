@@ -274,6 +274,7 @@ MWF.xApplication.cms.Xform.LP={
 	"importTooManyNotice ": " you import {n1} data, allowed to import {n2} data maximum ",
 	"importTooFewNotice ": "you import {n1} data, need to keep at least {n2} data ",
 	"pleaseSelect": "Please Choose",
+	"noPermissionOrDocumentNotExisted": "You do not have permission or the document does not exist",
 	"form": {
 		"close": "Close",
 		"closeTitle": "Close Document",

@@ -339,7 +339,10 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"org_person": "personnel",
 		"org_identity": "identity",
 		"org_role": "role",
-		"org_group": "group"
+		"org_group": "group",
+		"fulltextSearch": "Enable full-text search",
+		"enabled": "enable",
+		"disabled": "disable"
 	},
 	"viewStyle": {
 		"default": "Default",

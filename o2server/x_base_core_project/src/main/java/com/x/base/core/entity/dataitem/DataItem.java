@@ -224,12 +224,18 @@ public abstract class DataItem extends SliceJpaObject {
 		this.setItemPrimitiveType(ItemPrimitiveType.b);
 		this.setItemStringValueType(ItemStringValueType.u);
 		this.setBooleanValue(value);
+		if(value != null) {
+			this.setStringValue(String.valueOf(value));
+		}
 	}
 
 	public void value(Double value) {
 		this.setItemPrimitiveType(ItemPrimitiveType.n);
 		this.setItemStringValueType(ItemStringValueType.u);
 		this.setNumberValue(value);
+		if(value != null) {
+			this.setStringValue(String.valueOf(value));
+		}
 	}
 
 	public void value(String value) throws Exception {

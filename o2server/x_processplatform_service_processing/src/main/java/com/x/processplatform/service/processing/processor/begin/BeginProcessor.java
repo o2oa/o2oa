@@ -1,5 +1,7 @@
 package com.x.processplatform.service.processing.processor.begin;
 
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,6 +46,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 		if (StringUtils.isNotEmpty(person)) {
 			aeiObjects.createReview(new Review(aeiObjects.getWork(), person));
 		}
+		aeiObjects.createReview(new Review(aeiObjects.getWork(), EffectivePerson.CIPHER));
 		return aeiObjects.getWork();
 	}
 

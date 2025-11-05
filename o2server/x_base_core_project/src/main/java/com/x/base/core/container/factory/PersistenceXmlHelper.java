@@ -1,5 +1,8 @@
 package com.x.base.core.container.factory;
 
+import com.x.base.core.entity.ApplicationBaseEntity;
+import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.StorageObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
@@ -158,15 +161,25 @@ public class PersistenceXmlHelper {
 	@SuppressWarnings("unchecked")
 	public static List<String> write(String path, List<String> entities, boolean loadDynamicEntityClass,
 			ClassLoader classLoader) {
-		List<String> names = new ArrayList<>();
-		String name = "";
+        String name = "";
 		try {
-			names.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
+            List<String> names = new ArrayList<>(
+                    (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
 			names = ListTools.includesExcludesWildcard(names, entities, null);
 			Document document = DocumentHelper.createDocument();
 			Element persistence = createPersistenceElement(document);
 			ClassLoader cl = (null == classLoader) ? Thread.currentThread().getContextClassLoader() : classLoader;
+
+			Element appUnit = persistence.addElement("persistence-unit");
+			appUnit.addAttribute("name", ApplicationBaseEntity.class.getName());
+			appUnit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+			Element appProvider = appUnit.addElement("provider");
+			appProvider.addText(PersistenceProviderImpl.class.getName());
+			appUnit.addElement("class").addText(StorageObject.class.getName());
+			appUnit.addElement("class").addText(JpaObject.class.getName());
+			appUnit.addElement("class").addText(SliceJpaObject.class.getName());
 			for (String className : names) {
+				appUnit.addElement("class").addText(className);
 				name = className;
 				Class<? extends JpaObject> clazz = (Class<JpaObject>) cl.loadClass(className);
 				Element unit = persistence.addElement("persistence-unit");

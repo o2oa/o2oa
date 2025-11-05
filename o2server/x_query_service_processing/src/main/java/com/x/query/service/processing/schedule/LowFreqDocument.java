@@ -57,7 +57,7 @@ public class LowFreqDocument extends LowFreq {
                                 docs, Indexs.CATEGORY_CMS, o.getKey(), true));
                         ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(
                                 docs,
-                                Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
+                                Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true));
                     } catch (Exception e) {
                         LOGGER.error(e);
                     }

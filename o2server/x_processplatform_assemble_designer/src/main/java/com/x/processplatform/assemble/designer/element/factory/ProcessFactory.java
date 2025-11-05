@@ -108,8 +108,10 @@ public class ProcessFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
 		Root<Process> root = cq.from(Process.class);
-		Predicate p = cb.equal(root.get(Process_.application), application);
-		p = cb.and(p, cb.equal(root.get(Process_.edition), edition));
+		Predicate p = cb.equal(root.get(Process_.edition), edition);
+		if(StringUtils.isNotBlank(application)) {
+			p = cb.and(p, cb.equal(root.get(Process_.application), application));
+		}
 		p = cb.and(p, cb.isTrue(root.get(Process_.editionEnable)));
 		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
 		List<Process> list = em.createQuery(cq).getResultList();

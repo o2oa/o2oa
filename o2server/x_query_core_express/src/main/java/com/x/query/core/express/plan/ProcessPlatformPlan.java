@@ -2,18 +2,23 @@ package com.x.query.core.express.plan;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.ApplicationBaseEntity;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.cms.core.entity.Document;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Review_;
 import com.x.processplatform.core.entity.element.Process;
@@ -26,17 +31,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
@@ -149,6 +158,63 @@ public class ProcessPlatformPlan extends Plan {
             }
         }
         return processId;
+    }
+
+    @Override
+    public Pair<List<String>, Long> listBundlePaging() throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            EntityManager em = emc.get(ApplicationBaseEntity.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<String> cq = cb.createQuery(String.class);
+            Root<Review> root = cq.from(Review.class);
+            cq.select(root.get(Review_.job))
+                    .where(this.reviewPredicate(emc, cb, root, cq));
+            List<Order> orderList = new TreeList<>();
+            this.joinPagingOrder(orderList, cb, root, cq);
+            if(orderList.isEmpty()) {
+                Order order = cb.desc(root.get(Review_.startTime));
+                orderList.add(order);
+            }
+            cq.orderBy(orderList.toArray(new Order[0]));
+            int startPosition = (this.runtime.page == null || this.runtime.page < 1) ? 0 : (this.runtime.page - 1) * this.runtime.count;
+            long start = System.currentTimeMillis();
+            List<String> docIdList = em.createQuery(cq).setFirstResult(startPosition).setMaxResults(this.runtime.count).getResultList();
+            LOGGER.info("listBundlePaging cost:{}", System.currentTimeMillis() - start);
+
+            CriteriaQuery<Long> cq2 = cb.createQuery(Long.class);
+            Root<Review> root2 = cq2.from(Review.class);
+            cq2.select(cb.count(root2.get(Review_.id)))
+                    .where(this.reviewPredicate(emc, cb, root2, cq2));
+            start = System.currentTimeMillis();
+            Long count = em.createQuery(cq2).getSingleResult();
+            LOGGER.info("listBundlePaging count cost:{}", System.currentTimeMillis() - start);
+            return Pair.of(docIdList, count);
+        }
+    }
+
+    private Predicate reviewPredicate(EntityManagerContainer emc, CriteriaBuilder cb, Root<Review> root,
+            CriteriaQuery<?> cq) throws Exception {
+        Predicate p = this.where.reviewPredicateV2(cb, root, cq, this.runtime, this.filterList);
+        if (BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(
+                this.runtime.person) && !OrganizationDefinition.isSystemUser(this.runtime.person))) {
+            p = cb.and(p, cb.equal(root.get(Review_.person), this.runtime.person));
+            List<FilterEntry> pathList = new ArrayList<>();
+            Stream.concat(this.filterList.stream(), this.runtime.filterList.stream()).filter(
+                    Objects::nonNull).filter(o -> BooleanUtils.isTrue(o.available())).forEach(
+                    pathList::add);
+            Predicate accessPredicate = this.accessPredicate(emc, cb, root, pathList);
+            if (accessPredicate != null) {
+                p = cb.and(p, accessPredicate);
+            }
+        }else{
+            p = cb.and(p, cb.equal(root.get(Review_.person), EffectivePerson.CIPHER));
+        }
+        if (this.where.scope.equals(SCOPE_WORK)) {
+            p = cb.and(p, cb.isFalse(root.get(Review_.completed)));
+        } else if (this.where.scope.equals(SCOPE_WORKCOMPLETED)) {
+            p = cb.and(p, cb.isTrue(root.get(Review_.completed)));
+        }
+        return p;
     }
 
     @Override
@@ -458,6 +524,47 @@ public class ProcessPlatformPlan extends Plan {
 
             public String id;
 
+        }
+
+        private Predicate reviewPredicateV2(CriteriaBuilder cb, Root<Review> root,
+                CriteriaQuery<?> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception {
+            List<Predicate> ps = new TreeList<>();
+            ps.add(this.reviewPredicateProcess(cb, root));
+            ps.add(this.reviewPredicateCreator(cb, root));
+            ps.add(this.reviewPredicateDate(cb, root));
+            ps = ListTools.trim(ps, true, false);
+            if (ps.isEmpty()) {
+                throw new IllegalAccessException("where is empty.");
+            }
+            //业务字段过滤
+            ps.add(this.assembleFilterPredicate(cb, root, cq, runtime, filterList));
+            ps.add(this.assembleFilterPredicate(cb, root, cq, runtime, runtime.filterList));
+            ps = ListTools.trim(ps, true, false);
+            return cb.and(ps.toArray(new Predicate[]{}));
+        }
+
+        private Predicate assembleFilterPredicate(CriteriaBuilder cb, Root<? extends JpaObject> root,
+                CriteriaQuery<?> cq, Runtime runtime, List<FilterEntry> filterList) throws Exception{
+            if(ListTools.isEmpty(filterList)){
+                return null;
+            }
+            List<Predicate> existsPredicates = new ArrayList<>();
+            for (FilterEntry f : filterList) {
+                if(StringUtils.isEmpty(f.path)){
+                    continue;
+                }
+                Subquery<Long> subquery = cq.subquery(Long.class);
+                Root<Item> itemRoot = subquery.from(Item.class);
+                Predicate subPredicate = cb.equal(itemRoot.get(Item_.bundle), root.get(Review.job_FIELDNAME));
+                subPredicate = f.toPredicate(cb, itemRoot, runtime, subPredicate);
+                subquery.select(cb.literal(1L)).where(subPredicate);
+                Predicate existsP = cb.exists(subquery);
+                if (Comparison.isNotEquals(f.comparison)) {
+                    existsP = cb.not(existsP);
+                }
+                existsPredicates.add(existsP);
+            }
+            return cb.and(existsPredicates.toArray(new Predicate[0]));
         }
 
         private Predicate reviewPredicate(CriteriaBuilder cb, Root<Review> root) throws Exception {

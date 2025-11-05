@@ -38,7 +38,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         "isloadSearchbar": true,
         "export": false,
         "lazy": false,
-        "defaultBundles": [],
         "moduleEvents": [
             /**
              * 加载前触发。可通过this.target获取当前对象。
@@ -264,17 +263,20 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          * var node = this.target.view.node;
          */
         this.node = new Element("div.form-content-view", {"styles": this.css.node, mwftype: "view"}).inject(this.container);
-        /**
-         * @summary 操作组件容器
-         * @member {Element}
-         */
-        this.actionbarAreaNode =  new Element("div.actionbarAreaNode", {"styles": this.css.actionbarAreaNode}).inject(this.node);
+        
         //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         /**
          * @summary 搜索界面容器
          * @member {Element}
          */
         this.searchAreaNode = new Element("div.searchAreaNode", {"styles": this.css.searchAreaNode}).inject(this.node);
+
+        /**
+         * @summary 操作组件容器
+         * @member {Element}
+         */
+        this.actionbarAreaNode =  new Element("div.actionbarAreaNode", {"styles": this.css.actionbarAreaNode}).inject(this.node);
+
         /**
          * @summary 表头和条目容器，
          * @member {Element}
@@ -346,33 +348,47 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
 
     },
-    setContentHeight: function(){
+    setContentHeight: function() {
+        debugger;
+        var getMarginHeight = (el) => {
+            var top = el.getStyle("margin-top").toFloat() || 0;
+            var bottom = el.getStyle("margin-bottom").toFloat() || 0;
+            return top + bottom;
+        }
         var size;
         var height = this.node.getStyle("height");
-        if( this.node.offsetParent === null ){
+        if (this.node.offsetParent === null) {
             size = {y: height.toInt()}
-        }else{
+        } else {
             size = this.node.getSize();
-            if( height && height.toString().endsWith('%') ){
-                this.node.setStyle("height", size.y+'px');
+            if (height && height.toString().endsWith('%')) {
+                this.node.setStyle("height", size.y + 'px');
             }
         }
-        var searchSize = this.searchAreaNode.getComputedSize();
-        var h = size.y-searchSize.totalHeight;
+
+        var h = size.y;
+        if (this.searchAreaNode?.offsetParent) {
+            var searchSize = this.searchAreaNode.getComputedSize();
+            h = size.y - searchSize.totalHeight - getMarginHeight(this.searchAreaNode);
+        }
+
         //if (this.exportAreaNode){
         //    var exportSize = this.exportAreaNode.getComputedSize();
         //    h = h-exportSize.totalHeight;
         //}
-        if( this.actionbarAreaNode ){
+        if (this.actionbarAreaNode?.offsetParent) {
             var exportSize = this.actionbarAreaNode.getComputedSize();
-            h = h-exportSize.totalHeight;
+            h = h - exportSize.totalHeight - getMarginHeight(this.actionbarAreaNode);
         }
-        var pageSize = this.viewPageAreaNode.getComputedSize();
-        h = h-pageSize.totalHeight;
+
+        if (this.viewPageAreaNode?.offsetParent){
+            var pageSize = this.viewPageAreaNode.getComputedSize();
+            h = h - pageSize.totalHeight - getMarginHeight(this.viewPageAreaNode);
+        }
 
         var paddingTop = (this.viewAreaNode.getStyle("padding-top") || "0").toInt();
         var paddingBottom = (this.viewAreaNode.getStyle("padding-bottom") || "0").toInt();
-        h = h - paddingTop - paddingBottom;
+        h = h - paddingTop - paddingBottom - getMarginHeight(this.viewAreaNode);
 
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
@@ -386,9 +402,15 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     createActionbarNode : function(){
         this.actionbarAreaNode.empty();
-        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true )return;
+        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true ){
+            // this.actionbarAreaNode.hide();
+            return;
+        }
         if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
-            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
+            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length ){
+                // this.actionbarAreaNode.hide();
+                return;
+            }
             /**
              * @summary 视图的操作条对象.
              * @member {Object}
@@ -808,97 +830,86 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
                 this.setOrderList(d);
 
-                this.lookupAction.bundleView(this.json.id, d, function(json){
-                    this.bundleItems = this.parseBudleItems(json.data.valueList);
-                    this.bundleKey = json.data.key;
+                debugger; 
+                
+                // this.lookupAction.bundleView(this.json.id, d, function(json){
+                    // this.bundleItems = json.data.valueList;
+                    // this.bundleKey = json.data.key;
 
-                    this._initPage();
-                    if (this.bundleItems.length){
-                        if( this.noDataTextNode )this.noDataTextNode.destroy();
-                            if( this.options.defaultBundles.length && !this.isDefaultDataLoaded ){
-                                this.loadDefaultData(function () {
-                                    this.loadCurrentPageData( function () {
-                                        this.fireEvent("postLoad"); //用户配置的事件
-                                        this.lookuping = false;
-                                        if(callback)callback(this);
-                                    }.bind(this));
-                                }.bind(this))
-                            }else{
-                                this.loadCurrentPageData( function () {
-                                    this.fireEvent("postLoad"); //用户配置的事件
-                                    this.lookuping = false;
-                                    if(callback)callback(this);
-                                }.bind(this));
-                            }
-                    }else{
-                        //this._loadPageNode();
-                        this.viewPageAreaNode.empty();
-                        if( this.viewJson.noDataText ){
-                            var noDataTextNodeStyle = this.css.noDataTextNode;
-                            if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
-                                noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
-                            }
-                            this.noDataTextNode = new Element( "div", {
-                                "styles": noDataTextNodeStyle,
-                                "text" : this.viewJson.noDataText
-                            }).inject( this.contentAreaNode );
+                    // this._initPage();
+                this.exportExcelStart = null;
+                this.exportExcelEnd = null;
+
+                this.loadCurrentPageData(data, function () {
+                    this.fireEvent("postLoad"); //用户配置的事件
+                    this.lookuping = false;
+                    if(callback)callback(this);
+                }.bind(this), ()=>{
+                    this.viewPageAreaNode.empty();
+                    if( this.viewJson.noDataText ){
+                        var noDataTextNodeStyle = this.css.noDataTextNode;
+                        if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
+                            noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
                         }
-                        if (this.loadingAreaNode){
-                            this.loadingAreaNode.destroy();
-                            this.loadingAreaNode = null;
-                        }
-                        this.fireEvent("loadView"); //options 传入的事件
-                        this.fireEvent("postLoad"); //用户配置的事件
-                        this.lookuping = false;
-                        if(callback)callback(this);
+                        this.noDataTextNode = new Element( "div", {
+                            "styles": noDataTextNodeStyle,
+                            "text" : this.viewJson.noDataText
+                        }).inject( this.contentAreaNode );
                     }
-                }.bind(this));
+                    if (this.loadingAreaNode){
+                        this.loadingAreaNode.destroy();
+                        this.loadingAreaNode = null;
+                    }
+                    this.fireEvent("loadView"); //options 传入的事件
+                    this.fireEvent("postLoad"); //用户配置的事件
+                    this.lookuping = false;
+                    if(callback)callback(this);
+                });
+
+
+                    // if (this.bundleItems.length){
+                    //     if( this.noDataTextNode )this.noDataTextNode.destroy();
+                    //     this.loadCurrentPageData( function () {
+                    //         this.fireEvent("postLoad"); //用户配置的事件
+                    //         this.lookuping = false;
+                    //         if(callback)callback(this);
+                    //     }.bind(this));
+                    // }else{
+                    //     //this._loadPageNode();
+                    //     this.viewPageAreaNode.empty();
+                    //     if( this.viewJson.noDataText ){
+                    //         var noDataTextNodeStyle = this.css.noDataTextNode;
+                    //         if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
+                    //             noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
+                    //         }
+                    //         this.noDataTextNode = new Element( "div", {
+                    //             "styles": noDataTextNodeStyle,
+                    //             "text" : this.viewJson.noDataText
+                    //         }).inject( this.contentAreaNode );
+                    //     }
+                    //     if (this.loadingAreaNode){
+                    //         this.loadingAreaNode.destroy();
+                    //         this.loadingAreaNode = null;
+                    //     }
+                    //     this.fireEvent("loadView"); //options 传入的事件
+                    //     this.fireEvent("postLoad"); //用户配置的事件
+                    //     this.lookuping = false;
+                    //     if(callback)callback(this);
+                    // }
+                // }.bind(this));
             }
         }.bind(this));
     },
-    parseBudleItems: function (bundleItems) {
-        if(this.options.defaultBundles){
-            var defaultBundles = this.options.defaultBundles;
-            for( var i= defaultBundles.length-1; i>=0; i-- ){
-                var bundle = defaultBundles[i];
-                if( bundleItems.contains(bundle) ){
-                    bundleItems.erase(bundle);
-                    bundleItems.unshift(bundle);
-                }
-            }
+
+    _initPageV2: function(count){
+        if (!this.pages){
+            this.count = count;
+            var i = this.count/this.json.pageSize;
+            this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
         }
-        return bundleItems;
     },
-    loadDefaultData: function( callback ){
-        var d = {};
-        d.bundleList = this.options.defaultBundles;
-        d.key = this.bundleKey;
-        this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            var resultJson, viewData = json.data;
 
-            if (this.viewJson.group.column){
-                resultJson = [];
-                json.data.groupGrid.each(function (g) {
-                    resultJson = resultJson.concat( g.list );
-                })
-            }else{
-                resultJson = json.data.grid;
-            }
-
-            resultJson.each(function (data) {
-                this.selectedItems.push({
-                    data: data
-                })
-            }.bind(this));
-
-            this.isDefaultDataLoaded = true;
-            if(callback)callback();
-        }.bind(this), function () {
-            this.isDefaultDataLoaded = true;
-            if(callback)callback();
-        }, true );
-    },
-    loadCurrentPageData: function( callback, async ){
+    loadCurrentPageData: function(data, callback, noDocument ){
         //是否需要在翻页的时候清空之前的items ?
 
         if( this.pageloading )return;
@@ -912,11 +923,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         this.items = [];
 
-        var p = this.currentPage;
-        var d = {};
-        var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
-        d.bundleList = valueList;
-        d.key = this.bundleKey;
+        // var p = this.currentPage;
+        var d = data || {};
+        // var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
+        // d.bundleList = valueList;
+        // d.key = this.bundleKey;
 
         this.setOrderList(d);
 
@@ -930,155 +941,68 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.contentAreaNode.scrollTo(0, 0);
 
         //this.createLoadding();
+        if (!this.currentPage) this.currentPage = this.options.defaultPage || 1;
+        o2.Actions.load('x_query_assemble_surface').ViewAction.executeV2(this.json.id, this.currentPage, this.json.pageSize, d, function(json){
+            this.viewData = json.data;
+            if (this.viewData.grid && this.viewData.grid.length){
+                this._initPageV2(json.count);
 
-        this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            this.viewData = this.sortData(json.data);
-
-            this.fireEvent("postLoadPageData");
-
-            if (this.viewJson.group.column){
-                this.gridJson = json.data.groupGrid;
-                this.setSelectedableFlag();
-                this.loadGroupData();
-            }else{
-                this.gridJson = json.data.grid;
-                this.setSelectedableFlag();
-                this.loadData();
-            }
-            if (this.gridJson.length) this._loadPageNode();
-            if (this.loadingAreaNode){
-                this.loadingAreaNode.destroy();
-                this.loadingAreaNode = null;
-            }
-
-            this.pageloading = false;
-
-            this.fireEvent("loadView"); //options 传入的事件
-            this.fireEvent("postLoadPage");
-
-            if(callback)callback();
-        }.bind(this), null, async === false ? false : true );
-    },
-    sortData : function(data){
-        var defaultBundles = this.options.defaultBundles;
-        if( !this.viewJson.group.column && defaultBundles && defaultBundles.length > 0 ){
-            data.grid = data.grid.sort(function (a, b) {
-               var indexA = defaultBundles.indexOf(a.bundle);
-               var indexB = defaultBundles.indexOf(b.bundle);
-               if( indexA === -1)indexA = 999999;
-               if( indexB === -1)indexB = 999998;
-               return indexA - indexB;
-           });
-        }
-        return data;
-    },
-    showAssociatedDocumentResult: function(failureList, successList){
-        var fL = [];
-        failureList.each(function( f ){
-            if( f.properties.view === this.json.id )fL.push( f.targetBundle );
-        }.bind(this));
-
-        var sl = [];
-        successList.each(function( f ){
-            if( f.properties.view === this.json.id )sl.push( f.targetBundle );
-        }.bind(this));
-
-        var d = {};
-        d.bundleList = fL.concat( sl );
-        d.key = this.bundleKey;
-
-        if( d.bundleList.length ){
-            this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-                var resultJson, viewData = json.data;
+                this.fireEvent("postLoadPageData");
 
                 if (this.viewJson.group.column){
-                    resultJson = [];
-                    json.data.groupGrid.each(function (g) {
-                        resultJson = resultJson.concat( g.list );
-                    })
+                    this.gridJson = json.data.groupGrid;
+                    this.setSelectedableFlag();
+                    this.loadGroupData();
                 }else{
-                    resultJson = json.data.grid;
+                    this.gridJson = json.data.grid;
+                    this.setSelectedableFlag();
+                    this.loadData();
+                }
+                if (this.gridJson.length) this._loadPageNode();
+                if (this.loadingAreaNode){
+                    this.loadingAreaNode.destroy();
+                    this.loadingAreaNode = null;
                 }
 
-                this._showAssociatedDocumentResult( resultJson, failureList, successList );
+                this.pageloading = false;
 
-            }.bind(this), null, true );
-        }else{
-            this._showAssociatedDocumentResult( [], failureList, successList );
-        }
+                this.fireEvent("loadView"); //options 传入的事件
+                this.fireEvent("postLoadPage");
 
-    },
-    _showAssociatedDocumentResult: function(resultJson, failureList, successList){
-        this.entries.$result = {
-            "id": "$result",
-            "column": "$result",
-            "events": {},
-            "allowOpen": false,
-            "numberOrder": false,
-            "groupEntry": false,
-            "hideColumn": false,
-            "isName": false,
-            "isHtml": false,
-            "path": "$result"
-        };
-
-        var viewStyles = this.viewJson.viewStyles;
-        if (this.options.isloadTitle && this.selectTitleCell){
-            //if (this.json.select==="single" || this.json.select==="multi") {
-            var titleCell = new Element("td.titleCell.associationResult", {
-                "styles": (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode,
-                "text": this.lp.associationResult
-            }).inject(this.viewTitleLine);
-            if (this.json.titleStyles) titleCell.setStyles(this.json.titleStyles);
-        }
-
-        if(this.expandAllNode){
-            this.expandAllNode.hide();
-        }
-
-        while (this.viewTable.rows.length>1){
-            this.viewTable.deleteRow(-1);
-        }
-        if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
-            this.viewTable.deleteRow(0);
-        }
-
-        this.contentAreaNode.scrollTo(0, 0);
-
-        this.gridJson = resultJson.map(function (item) {
-            var flag = true;
-            if( !item.data )item.data = {};
-            failureList.each(function (d) {
-                if( item.bundle === d.bundle ){
-                    item.$failure = true;
-                    item.data.$result = d.$result || this.lp.noPermission;
-                    flag = false;
-                }
-            }.bind(this));
-            if( flag ){
-                item.data.$result = this.lp.associationSuccess;
+                if(callback)callback();
+            }else{
+                noDocument?.();
             }
-            item.$selectedEnable = false;
-            return item;
+
         }.bind(this));
-        //if( this.paging )this.paging.hide();
-        if(this.actionbarAreaNode)this.actionbarAreaNode.hide();
-        if(this.searchAreaNode)this.searchAreaNode.hide();
-        if(this.viewPageAreaNode)this.viewPageAreaNode.hide();
 
-        //this.selectedItems = [];
+        // this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+        //     this.viewData = json.data;
 
-        if(this.selectAllNode){
-            this.clearSelectAllStyle();
-        }
+        //     this.fireEvent("postLoadPageData");
 
-        if (this.gridJson.length){
-            this.gridJson.each(function(line, i){
-                new MWF.xApplication.query.Query.Viewer.AssociatedResultItem(this, line, null, i, null, false);
-            }.bind(this));
-        }else{
-            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
-        }
+        //     if (this.viewJson.group.column){
+        //         this.gridJson = json.data.groupGrid;
+        //         this.setSelectedableFlag();
+        //         this.loadGroupData();
+        //     }else{
+        //         this.gridJson = json.data.grid;
+        //         this.setSelectedableFlag();
+        //         this.loadData();
+        //     }
+        //     if (this.gridJson.length) this._loadPageNode();
+        //     if (this.loadingAreaNode){
+        //         this.loadingAreaNode.destroy();
+        //         this.loadingAreaNode = null;
+        //     }
+
+        //     this.pageloading = false;
+
+        //     this.fireEvent("loadView"); //options 传入的事件
+        //     this.fireEvent("postLoadPage");
+
+        //     if(callback)callback();
+        // }.bind(this));
     },
     setSelectedableFlag : function(){
         this.viewSelectedEnable = false;
@@ -1385,6 +1309,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
         return (filterData.length) ? filterData : null;
     },
+    cancelSelectedAll: function(isFire){
+        while( this.selectedItems.length ){
+            this.selectedItems[0].unSelected(null, isFire)
+        }
+    },
+    cancelSelected: function(bundles, isFire){
+        var array = this.selectedItems.filter((item)=>{
+            return (bundles || []).contains(item.data.bundle);
+        });
+        array.forEach(function(item){
+            item.unSelected(null, isFire);
+        });
+    },
     getData: function(){
         if (this.selectedItems.length){
             var arr = [];
@@ -1438,12 +1375,26 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if( this.viewJson.searchbarHidden === true ){
             return;
         }
-        if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
-            this.searchStatus = "default";
-            this.loadFilterSearch();
-        }else{
-            this.loadSimpleSearch();
+
+        var loadViewSearch = ()=>{
+            if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
+                this.searchStatus = "default";
+                this.loadFilterSearch();
+            }else{
+                this.loadSimpleSearch();
+            }
+            this.loadFulltextSearch();
         }
+        o2.JSON.get(`../x_component_query_ViewDesigner/$View/skin/styles_${this.viewJson.viewStyleType}.json`, {
+            'onSuccess': (json)=>{
+                this.skinJson = json;
+                loadViewSearch()
+            },
+            'onRequestFailure': ()=>{this.loadViewSearch();},
+            'onError': ()=>{this.loadViewSearch();},
+        });
+
+        
     },
     loadSimpleSearch: function(){
         return false;
@@ -1690,7 +1641,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
 
     loadFilterSearchNodeV10: function(){
-        this.viewSearchAreaNode = new Element("div.page-content-section.search-area").inject(this.searchAreaNode);
+        this.viewSearchAreaNode = new Element("div.search-area").inject(this.searchAreaNode);
         this.viewSearchFieldArea = new Element("div.page-content-search-fields").inject(this.viewSearchAreaNode);
         this.viewSearchActionArea = new Element("div.page-content-search-actions").inject(this.viewSearchAreaNode);
         const count = this.viewJson.customFilterList.length;
@@ -1708,7 +1659,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
 
         const size = this.searchAreaNode.getSize();
-        debugger;
+
         if (size.x<1366){
             this.viewSearchAreaNode.addClass("column-count-2");
         }
@@ -1753,7 +1704,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             });
 
         });
-    
+
         const buttonHtml = `
             <oo-button class="button-ok" style="width: 6rem"  text="查询" left-icon="search"></oo-button>
             <oo-button class="button-cancel" type="cancel" text="重置" left-icon="process-cancel"></oo-button>
@@ -1764,8 +1715,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         const cancelButton = this.viewSearchActionArea.querySelector("oo-button.button-cancel");
 
         searchButton.addEventListener("click", (ev)=>{
-            debugger;
-                this.customFilterListData = [];
+            this.customFilterListData = [];
             this.searchAreaNode.querySelectorAll(".search-item").forEach( (node)=>{
                 this.getFilterData(node);
             });
@@ -1774,30 +1724,88 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.createViewNode({"filterList": filter}, null, true);
         });
         cancelButton.addEventListener("click", (ev)=>{
-            this.searchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
-                node.value = "";
-                this.customFilterListData = [];
-                this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
-            });
+            this._cancelFilter();
         });
-
-
-
     },
+    _cancelFilter: function(){
+        this.searchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
+            node.value = "";
+            this.customFilterListData = [];
+            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
+        });
+    },
+    loadFulltextSearch: function(){
+        if (this.skinJson && this.skinJson.filterSkin==='v10'){
+            this.loadFulltextSearchV10();
+        }else{
+
+        }
+    },
+
+    _fulltextSearch: function(){
+        if (this.fulltextSearchInput.value){
+            this.createViewNode({"filterList": null, searchKey: this.fulltextSearchInput.value}, null, true);
+        }else{
+            this.createViewNode({"filterList": null, searchKey: ''}, null, true);
+        }
+    },
+    loadFulltextSearchV10: function(){
+        if (this.viewJson.isFulltextSearch==='yes'){
+            this.viewFulltextSearchAreaNode = new Element("div.search-fulltext-area").inject(this.searchAreaNode, 'top');
+            this.fulltextSearchInput = new Element("oo-input");
+            this.fulltextSearchInput.setAttribute('left-icon', 'search');
+            this.viewFulltextSearchAreaNode.appendChild(this.fulltextSearchInput);
+
+            this.fulltextSearchButton = new Element("oo-button");
+            this.fulltextSearchButton.setAttribute('type', 'default');
+            this.fulltextSearchButton.setAttribute('left-icon', 'search');
+            this.fulltextSearchButton.setAttribute('text', '查询');
+            this.viewFulltextSearchAreaNode.appendChild(this.fulltextSearchButton);
+
+            this.fulltextSearchButton.addEventListener('click', ()=>{
+                this._fulltextSearch();
+            });
+            this.fulltextSearchInput.addEventListener('keydown', (e)=>{
+                if (e.keyCode===13){
+                    this._fulltextSearch();
+                }
+            });
+            
+            if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
+                this.moreSearchButton = new Element("oo-button");
+                this.moreSearchButton.setAttribute('type', 'light');
+                this.moreSearchButton.setAttribute('text', '更多筛选');
+                this.moreSearchButton.setAttribute('left-icon', 'jiekoupeizhi2');
+                this.viewFulltextSearchAreaNode.appendChild(this.moreSearchButton);
+                
+                this.viewSearchAreaNode?.addClass('hide');
+
+                this.moreSearchButton.addEventListener('click', ()=>{
+                    if (this.viewSearchAreaNode?.hasClass('hide')){
+                        this.viewSearchAreaNode?.removeClass('hide');
+                    }else{
+                        this.viewSearchAreaNode?.addClass('hide');
+                        this._cancelFilter();
+                    }
+                })
+            }
+        }
+    },
+
     loadFilterSearch: function(){
-        debugger;
-        o2.JSON.get(`../x_component_query_ViewDesigner/$View/skin/styles_${this.viewJson.viewStyleType}.json`, {
-            'onSuccess': (json)=>{
-                if (json.filterSkin==='v10'){
+        // o2.JSON.get(`../x_component_query_ViewDesigner/$View/skin/styles_${this.viewJson.viewStyleType}.json`, {
+        //     'onSuccess': (json)=>{
+                // this.skinJson = json;
+                if (this.skinJson && this.skinJson.filterSkin==='v10'){
                     this.loadFilterSearchNodeV10();
                 }else{
                     this.loadFilterSearchNode();
                 }
                 this.setContentHeight();
-            },
-            'onRequestFailure': ()=>{this.loadFilterSearchNode();},
-            'onError': ()=>{this.loadFilterSearchNode();},
-        });
+        //     },
+        //     'onRequestFailure': ()=>{this.loadFilterSearchNode();},
+        //     'onError': ()=>{this.loadFilterSearchNode();},
+        // });
     },
     searchView: function(){
         debugger;
@@ -3559,7 +3567,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
      *  item = this.target.items[0];
      *  item.unSelected();
      */
-    unSelected: function( from ){
+    unSelected: function( from, isFire ){
         for(var i=0; i<this.view.selectedItems.length; i++){
             var item = this.view.selectedItems[i];
             if( item.data.bundle === this.data.bundle ){
@@ -3597,11 +3605,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("unselect", [{
-            "selected": false,
-            "item": this,
-            "data": this.data
-        }]); //options 传入的事件
+        if( isFire !== false ){
+            this.view.fireEvent("unselect", [{
+                "selected": false,
+                "item": this,
+                "data": this.data
+            }]); //options 传入的事件
+        }
     },
 
     /**
@@ -4584,6 +4594,7 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class(
                 lastPage: this.json.lastPageText
             },
             onJumpingPage : function( pageNum, itemNum ){
+                debugger;
                 this.view.currentPage = pageNum;
                 this.fireEvent("jump");
                 this.view.loadCurrentPageData( null, false );
@@ -4599,106 +4610,6 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class(
         this.paging.load();
     }
 });
-
-
-MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
-    Extends: MWF.xApplication.query.Query.Viewer.Item,
-    _load: function(){
-        this.loading = true;
-
-        if(!this.node)this.view.fireEvent("queryLoadItemRow", [this]);
-
-        var viewStyles = this.view.viewJson.viewStyles;
-        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
-
-        if(!this.node)this.loadNode();
-
-        //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
-        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
-        this.selectTd.setStyles({"cursor": "default"});
-        if( this.data.$failure ){
-            this.node.removeClass('selectedRow').addClass('successRow');
-            this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + "error" + ".png) center center no-repeat"});
-        }else{
-            this.node.removeClass('selectedRow').addClass('successRow');
-            this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/" + "success" + ".png) center center no-repeat"});
-        }
-
-        //序号
-        var sequence = 1+this.idx;
-        this.data["$sequence"] = sequence;
-        if (this.view.viewJson.isSequence==="yes"){
-            this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-            this.sequenceTd.setStyles({
-                "width": "30px",
-                "text-align": "center"
-            });
-            this.sequenceTd.set("text", sequence);
-        }
-
-        Object.each(this.view.entries, function(c, k){
-            var cell = this.data.data[k];
-            if (cell === undefined) cell = "";
-            //if (cell){
-            if (this.view.hideColumns.indexOf(k)===-1){
-                var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-                //if (k!== this.view.viewJson.group.column){
-                    var v = cell;
-                    if (c.isHtml){
-                        td.set("html", v);
-                    }else{
-                        td.set("text", v);
-                    }
-                    if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                    if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
-                // }else{
-                //     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                // }
-
-                if (this.view.openColumns.indexOf(k)!==-1){
-                    this.setOpenWork(td, c)
-                }
-
-                if (k!== this.view.viewJson.group.column){
-                    Object.each( c.events || {}, function (e , key) {
-                        if(e.code){
-                            if( key === "loadContent" ){
-                                this.view.Macro.fire( e.code,
-                                    {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this});
-                            }else if( key !== "loadTitle" ){
-                                td.addEvent(key, function(event){
-                                    return this.view.Macro.fire(
-                                        e.code,
-                                        {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this},
-                                        event
-                                    );
-                                }.bind(this));
-                            }
-                        }
-                    }.bind(this));
-                }
-            }
-            //}
-        }.bind(this));
-
-        if(this.placeholderTd){
-            this.placeholderTd.destroy();
-            this.placeholderTd = null;
-        }
-
-        //默认选中
-        //判断是不是在selectedItems中，用户手工选择
-
-        this.setEvent();
-
-        this.view.fireEvent("postLoadItemRow", [this]);
-
-        this.loading = false;
-        this.loaded = true;
-    },
-})
 
 
 MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);

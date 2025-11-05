@@ -1905,13 +1905,13 @@ MWF.xScript.Environment = function(ev){
                             </div>
                           </div>`;
         const o = {
-            selectOk: function(){
+            selectOk: function(e){
                 okCallback && okCallback();
                 if( !notCloseOnOK ){
-                    this.selectCancel();
+                    this.selectCancel(e);
                 }
             },
-            selectCancel: function(){
+            selectCancel: function(e){
                 this.contentNode.removeClass('visible');
                 this.contentNode.addClass('invisible');
                 window.setTimeout(()=>{
@@ -1938,10 +1938,10 @@ MWF.xScript.Environment = function(ev){
             o.contentNode.addClass('visible');
         });
         o.contentNode.addEventListener('click', (e)=>{
-            e.stopPropagation();
+            e.stopPropagation(e);
         });
-        node.addEventListener('click', ()=>{
-            o.selectCancel();
+        node.addEventListener('click', (e)=>{
+            o.selectCancel(e);
         });
     }
     this._renderViewContainerMobile = _renderViewContainerMobile;
@@ -3619,19 +3619,6 @@ MWF.xScript.Environment = function(ev){
             }
         },
 
-        /**创建关联当前工作的聊天群。<b>（仅流程表单中可用）</b><br/>
-         * 根据当前工作的关联人员创建聊天群。<br/>
-         * @method startIM
-         * @static
-         * @param {String} [jobId] - 当前工作的jobId<br/>
-         *
-         * @example
-         //带参数，启动创建界面
-         this.form.startIM("jobId");
-         */
-        "startIM": function(jobId){
-            _form.openIMChatStarter(jobId);
-        },
         /**分享当前工作到IM聊天会话中。<b>（仅流程表单中可用）</b><br/>
          * @method shareToIMChat
          * @static

@@ -122,7 +122,7 @@
     </div>
 
 
-    <div class="o2_profile_configNode" data-o2-type="empower"  title="{{$.lp.emPowerConfig}}">
+    <div class="o2_profile_configNode" data-o2-type="empower" data-o2-element="empowerConfigNode" title="{{$.lp.emPowerConfig}}">
         <div class="o2_profile_emPower_content">
             <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPower }}"></div>
             <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPower }}"></div>
@@ -131,7 +131,7 @@
         </div>
     </div>
 
-    <div class="o2_profile_configNode" data-o2-type="password"  title="{{$.lp.passwordConfig}}">
+    <div class="o2_profile_configNode" data-o2-type="password" data-o2-element="passwordConfigNode" title="{{$.lp.passwordConfig}}">
         <div class="o2_profile_passwordConfigArea">
             <div class="o2_profile_inforLine">
                 <div class="o2_profile_inforTitle">{{ $.lp.oldPassword }}</div>
@@ -180,7 +180,7 @@
 
         </div>
     </div>
-    <div class="o2_profile_configNode" title="{{$.lp.ssoConfig}}">
+    <div class="o2_profile_configNode" title="{{$.lp.ssoConfig}}"  data-o2-element="ssoConfigNode">
         <div class="o2_profile_ssoConfigTitle">{{ $.lp.bindOauth }}</div>
         <div class="o2_profile_ssoConfigArea">
             <!--<a class="o2_profile_ssoItemLink" target="_blank" href="../x_desktop/oauth.html?oauth=eachText{encodeURIComponent($.name)}&redirect=&method=oauthBind">{{$.displayName}}</a>-->

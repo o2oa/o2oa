@@ -56,6 +56,11 @@ class ActionBachSave extends BaseAction {
                             StringUtils.isNoneEmpty(process.getEdition()) ? process.getEdition()
                                     : process.getId());
                     appId = process.getApplication();
+                }else{
+                    process = business.process().getEnabledProcess("", wiItemAccess.getItemCategoryId());
+                    if(process != null){
+                        appId = process.getApplication();
+                    }
                 }
                 Application application = emc.find(appId, Application.class);
                 if (null == application) {

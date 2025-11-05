@@ -95,9 +95,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		if (StringTools.utf8Length(this.getRouteName()) > length_255B) {
 			this.routeName = StringTools.utf8SubString(this.getRouteName(), length_255B - 3) + "...";
 		}
-		if (Objects.isNull(this.orderNumber)) {
-			this.orderNumber = DEFAULT_ORDERNUMBER;
-		}
 	}
 
 	@PostLoad

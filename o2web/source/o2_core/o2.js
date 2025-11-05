@@ -590,7 +590,7 @@ if (!window.o2) {
                 if (!_loadingModules[key].callbacks) _loadingModules[key].callbacks = [];
                 _loadingModules[key].callbacks.push(callback);
             } else {
-                // _loadingModules[key] = {callbacks: [callback]};
+                if (!_loadingModules[key]) _loadingModules[key] = {callbacks: []};
 
                 var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
                 var s = op.doc.createElement('script');
@@ -606,6 +606,7 @@ if (!window.o2) {
                         _removeListener(s, 'readystatechange', _checkScriptLoaded);
                         _removeListener(s, 'load', _checkScriptLoaded);
                         _removeListener(s, 'error', _checkScriptErrorLoaded);
+
                         if (!isAbort || err) {
                             if (err) {
                                 if (s) head.removeChild(s);
@@ -616,7 +617,7 @@ if (!window.o2) {
                                     }
                                     delete _loadingModules[key];
                                 }
-                                
+
                                 //if (callback)callback();
                             } else {
                                 //head.removeChild(s);
@@ -625,8 +626,9 @@ if (!window.o2) {
                                     while (_loadingModules[key]?.callbacks.length) {
                                         (_loadingModules[key].callbacks.shift())(scriptObj);
                                     }
+                                    delete _loadingModules[key];
                                 }
-                                delete _loadingModules[key];
+
                                 //if (callback)callback(scriptObj);
                             }
                         }
@@ -2146,7 +2148,7 @@ if (!window.o2) {
                                 // sessionStorage.setItem("o2LayoutSessionTokenExpires", expiresTime.getTime());
                                 window.localStorage?.setItem("o2LayoutSessionTokenExpires", expiresTime ? expiresTime.getTime() : null);
                             }
-                            
+
                             if (xToken) {
                                 if (window.layout) {
                                     if (!layout.session) layout.session = {};
@@ -2171,7 +2173,7 @@ if (!window.o2) {
                             if (xhr && xhr.status === 401){
                                 if (!layout.loginDlg) {
                                     var json = JSON.decode(xhr.responseText);
-                                    
+
                                     const node = new Element("div", {styles: {height: "100%"}});
                                     const iframe = new Element("iframe", {
                                         "src": '../x_desktop/index.html?redirect=../x_desktop/close.html&username='+layout.session.user.name,
@@ -2181,7 +2183,7 @@ if (!window.o2) {
                                         "allowtransparency": "true",
                                         "scrolling": "no"
                                     }).inject(node);
-            
+
                                     layout.loginDlg = $OOUI.dialog(json.message.trim()+o2.LP.desktop.login.loginAgain, node, null, {
                                         buttons: '', width: '80vw', height: '80vh', zIndex: 200000,
                                         'events': {
@@ -2219,7 +2221,7 @@ if (!window.o2) {
                                     }
                                 }else{
                                     if (!layout.holdRequests) layout.holdRequests = [];
-                                    
+
                                     const m = method;
                                     const a = address;
                                     const d = data;
@@ -2254,7 +2256,7 @@ if (!window.o2) {
                                     reject({"xhr": xhr, "text": "", "error": "error"});
                                 }
                             }
-                            
+
                         }.bind(this),
                         onError: function (text, error) {
                             _resGetQueue[_addr] = null;
@@ -2876,7 +2878,7 @@ if (!window.o2) {
         o2.sanitizeHTML = function (html) {
             const template = document.createElement('template');
             template.innerHTML = html;
-        
+
             const sanitizeNode = (node) => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     // Remove script and event handler attributes
@@ -2893,7 +2895,7 @@ if (!window.o2) {
                 // Recursively sanitize child nodes
                 [...node.childNodes].forEach(sanitizeNode);
             };
-        
+
             sanitizeNode(template.content);
             return template.innerHTML;
         }
@@ -3747,7 +3749,7 @@ if (!window.o2) {
         }
 
 
-        
+
 
     })();
     o2.more = true;

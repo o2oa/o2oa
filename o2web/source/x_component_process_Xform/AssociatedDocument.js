@@ -78,6 +78,20 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         //只是为了校验
         this.field = true;
         this.fieldModuleLoaded = false;
+
+        this.MIN_VIEW_CONTENT_HEIGHT = 300;
+        this.MIN_SELECTED_AREA_HEIGHT = this.json.select === 'multi' ? 200 : 140;
+        switch (this.json.mode) {
+            case "text":
+            case "script":
+                this.MIN_SELECTED_AREA_WIDTH = 500;
+                break;
+            case "default":
+            default:
+                if( this.json.style !== 'v10' )this.MIN_SELECTED_AREA_HEIGHT = 130;
+                this.MIN_SELECTED_AREA_WIDTH = this.json.style === 'v10' ?  410 : 400;
+                break;
+        }
     },
 	_loadUserInterface: function(){
 
@@ -115,19 +129,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             this.button.addEvent("click", function(){
                 this.selectedData = null;
                 this.selectView(function(data){
-                    // if(data.length === 0){
-                    //     this.form.notice(MWF.xApplication.process.Xform.LP.selectDocNote, "info");
-                    //     return;
-                    // }
-                    var d = data.map(function (d) {
-                        return {
-                            "type": d.type === "process" ? "processPlatform" : "cms",
-                            "site": this.json.site || this.json.id,
-                            "view": d.view,
-                            "bundle": d.bundle
-                        }
-                    }.bind(this));
-                    this.selectDocument(d);
+                    this.dlg?.close();
+                    // var d = data.map(function (d) {
+                    //     return {
+                    //         "type": d.type === "process" ? "processPlatform" : "cms",
+                    //         "site": this.json.site || this.json.id,
+                    //         "view": d.view,
+                    //         "bundle": d.bundle
+                    //     }
+                    // }.bind(this));
+                    // this.selectDocument(d);
                 }.bind(this));
             }.bind(this));
 
@@ -146,41 +157,92 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
         this.loadAssociatedDocument();
 	},
+    _updateAssociation: function (data, callback, async){
+        var result;
+        var p = o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.updateWithJob(
+            this.getBundle(),
+            this._parseUpdateDate(data),
+            (json)=>{
+                result = json;
+                if(callback)callback(json);
+                return json;
+            },
+            null,
+            async !== false
+        );
+        return async === false ? result : p;
+    },
     _createAssociation: function( data, async ){
-        return o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(
+        var result;
+        var p = o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(
             this.getBundle(),
             { targetList: data },
-            null,
+            (json)=>{
+                result = json;
+                return json;
+            },
             null,
             async !== false
         );
+        return async === false ? result : p;
     },
     _cancelAssociated: function(ids, async){
-        return o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(
+        var result;
+        var p =  o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(
             this.getBundle(),
             { idList: ids },
-            null,
+            (json)=>{
+                result = json;
+                return json;
+            },
             null,
             async !== false
         );
+        return async === false ? result : p;
     },
-    _listAllAssociated: function(async){
-        return o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.listWithJobWithSite(
+    _listAllAssociated: function(async, callback){
+        var result;
+        var p = o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.listWithJobWithSite(
             this.getBundle(),
             this.json.site || this.json.id,
-            null,
+            (json)=>{
+                result = json;
+                if(callback)callback(json);
+                return json;
+            },
             null,
             async !== false
         );
+        return async === false ? result : p;
+    },
+    _parseUpdateDate: function(data){
+          return {
+              siteTargetList: [
+                  {
+                      site: this.json.site || this.json.id,
+                      targetList: this._parseData(data)
+                  }
+              ]
+          };
     },
     _parseData: function(data){
         !data && (data = []);
-        typeOf(data) !== 'array' && (data = [data]);
-        data.each(function(d){
-            !d.type && (d.type = 'processPlatform');
-            d.site = this.json.site || this.json.id;
+        o2.typeOf(data) !== 'array' && (data = [data]);
+        return data.map(function(d){
+            var obj = {
+                "site": this.json.site || this.json.id,
+                "view": d.view,
+                "bundle": d.bundle
+            };
+            if(!d.type){
+                obj.type = 'processPlatform';
+            }else if( ["processPlatform", "cms"].includes(d.type) ){
+                obj.type = d.type;
+            }else{
+                obj.type = d.type === "process" ? "processPlatform" : "cms";
+            }
+            return obj;
         }.bind(this));
-        return data;
     },
     getLp: function(){
         return MWF.xApplication.process.Xform.LP;
@@ -218,25 +280,33 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             if( json.data.failureList && json.data.failureList.length ){
                 this.form.notice(this.getLp().associatedFailureMessage.replace('{count}', json.data.failureList.length), 'error');
             }
-            this.loadAssociatedDocument();
-            this.validationMode();
-            !!callback && callback(json);
+            return this.loadAssociatedDocument(()=>{
+                this.validationMode();
+                !!callback && callback(json);
+                return json;
+            }, async);
         }.bind(this);
         data = this._parseData(data);
         async = async !== false;
         var execute = function(){
             if( async ){
-                return Promise.resolve(
-                    this.cancelAllAssociated( null, true, true )
-                ).then(function(json){
-                    var p = !!data.length ? this._createAssociation(data) : {data: {}};
-                    return Promise.resolve(p).then( after );
-                }.bind(this));
+                // return Promise.resolve(
+                //     this.cancelAllAssociated( null, true, true )
+                // ).then(function(json){
+                //     var p = !!data.length ? this._createAssociation(data) : {data: {}};
+                //     return Promise.resolve(p).then( after );
+                // }.bind(this));
+                var p = this._updateAssociation(data);
+                return Promise.resolve(p).then( (json)=>{
+                    return after(json);
+                });
             }else{
-                this.cancelAllAssociated( null, false, true);
-                var json = !!data.length ? this._createAssociation(data, false) : {data: {}};
-                after(json);
-                return json;
+                // this.cancelAllAssociated( null, false, true);
+                // var json = !!data.length ? this._createAssociation(data, false) : {data: {}};
+                // after(json);
+                // return json;
+                var json = this._updateAssociation(data, callback, false);
+                return after(json);
             }
         }.bind(this);
 
@@ -361,51 +431,51 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     getData: function(){
         return this.documentList;
     },
-    selectDocument: function(data){
-        this.cancelAllAssociated( function () {
-            if( data && data.length ){
-                var p = this._createAssociation(data);
-                p.then(function (json){
-                    this.status = "showResult";
-                    if( this.dlg ){
-                        if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
-                        if( layout.mobile ){
-                            var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
-                            if (okAction) okAction.hide();
-                        }else{
-                            var okNode = this.dlg.button.getFirst();
-                            if(okNode){
-                                okNode.hide();
-                                var cancelButton = okNode.getNext();
-                                if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
-                            }
-                        }
-                    }else if(this.dlg_mobile){
-                        var toolbar = this.dlg_mobile.contentNode.querySelector('.mwf_selectView_action');
-                        if(toolbar){
-                            toolbar.querySelectorAll('oo-button').forEach((btn)=> !btn.hasClass('hide') && btn.addClass('hide'));
-                            toolbar.querySelector('.mwf_selectView_action_close').removeClass('hide');
-                        }
-                    }
-
-                    if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
-                        this.showCreateResult(json.data.failureList, json.data.successList);
-                    }
-                    this.loadAssociatedDocument(function () {
-                        this.fireEvent("afterSelectResult", [this.documentList]);
-                        this.validationMode();
-                    }.bind(this));
-                }.bind(this));
-            }else{
-                this.status = "showResult";
-                this.loadAssociatedDocument(function () {
-                    this.fireEvent("afterSelectResult", [this.documentList]);
-                    this.validationMode();
-                }.bind(this));
-                if( this.dlg )this.dlg.close();
-            }
-        }.bind(this));
-    },
+    // selectDocument: function(data){
+    //     this.cancelAllAssociated( function () {
+    //         if( data && data.length ){
+    //             var p = this._createAssociation(data);
+    //             p.then(function (json){
+    //                 this.status = "showResult";
+    //                 if( this.dlg ){
+    //                     if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
+    //                     if( layout.mobile ){
+    //                         var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
+    //                         if (okAction) okAction.hide();
+    //                     }else{
+    //                         var okNode = this.dlg.button.getFirst();
+    //                         if(okNode){
+    //                             okNode.hide();
+    //                             var cancelButton = okNode.getNext();
+    //                             if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+    //                         }
+    //                     }
+    //                 }else if(this.dlg_mobile){
+    //                     var toolbar = this.dlg_mobile.contentNode.querySelector('.mwf_selectView_action');
+    //                     if(toolbar){
+    //                         toolbar.querySelectorAll('oo-button').forEach((btn)=> !btn.hasClass('hide') && btn.addClass('hide'));
+    //                         toolbar.querySelector('.mwf_selectView_action_close').removeClass('hide');
+    //                     }
+    //                 }
+    //
+    //                 if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
+    //                     this.showCreateResult(json.data.failureList, json.data.successList);
+    //                 }
+    //                 this.loadAssociatedDocument(function () {
+    //                     this.fireEvent("afterSelectResult", [this.documentList]);
+    //                     this.validationMode();
+    //                 }.bind(this));
+    //             }.bind(this));
+    //         }else{
+    //             this.status = "showResult";
+    //             this.loadAssociatedDocument(function () {
+    //                 this.fireEvent("afterSelectResult", [this.documentList]);
+    //                 this.validationMode();
+    //             }.bind(this));
+    //             if( this.dlg )this.dlg.close();
+    //         }
+    //     }.bind(this));
+    // },
     cancelAllAssociated: function( callback, async, force ){
 	    var _self = this;
 	    if( this.documentList.length ){
@@ -434,79 +504,144 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             return Promise.resolve();
         }
     },
-    loadAssociatedDocument: function( callback ){
+    loadAssociatedDocument: function( callback, async ){
         this.documentListNode.empty();
-        var p = this._listAllAssociated();
-        this.listPromise = p;
-	    p.then(function (json) {
+        var doCallback = (json)=>{
             this.documentList = json.data;
             this.showDocumentList();
-            this.listPromise = null;
-            !!callback && callback();
-        }.bind(this));
-    },
-    showCreateResult: function(failureList, successList){
-	    this.viewList.each(function (view) {
-            view.showAssociatedDocumentResult(failureList, successList);
-        })
-    },
-    showDocumentList: function(){
-        this.documentList.each(function(d){
-            if(d.targetCreatorPerson)d.targetCreatorPersonCn = d.targetCreatorPerson.split("@")[0];
-        })
-        this.documentListNode.empty();
-	    switch (this.json.mode) {
-            case "text":
-                this.loadDocumentListText();  break;
-            case "script":
-                this.loadDocumentListScript();  break;
-            case "default":
-            default:
-                this.loadDocumentListDefault();  break;
+            !!this.listPromise && (this.listPromise = null);
+            if( !!callback ){
+                return callback();
+            }
+        };
+        if( async === false ){
+            var json;
+            this._listAllAssociated(false, (result)=>{json=result});
+            return doCallback(json);
+        }else{
+            var p = this._listAllAssociated();
+            this.listPromise = p;
+            return p.then(function (json) {
+                return doCallback(json);
+            }.bind(this));
         }
     },
-    loadDocumentListDefault: function(){
+    // showCreateResult: function(failureList, successList){
+	//     this.viewList.each(function (view) {
+    //         view.showAssociatedDocumentResult(failureList, successList);
+    //     });
+    // },
+    // showDocumentList: function(array){
+    //     this.documentList.each(function(d){
+    //         if(d.targetCreatorPerson)d.targetCreatorPersonCn = d.targetCreatorPerson.split("@")[0];
+    //     })
+    //     this.documentListNode.empty();
+	//     switch (this.json.mode) {
+    //         case "text":
+    //             this.loadDocumentListText();  break;
+    //         case "script":
+    //             this.loadDocumentListScript();  break;
+    //         case "default":
+    //         default:
+    //             this.loadDocumentListDefault();  break;
+    //     }
+    // },
+    showDocumentList: function(array, node, isAdd){
+        if( !array )array = this.documentList;
+        if( o2.typeOf(array) !== 'array' )array = [array];
+        array.each(function(d){
+            if(d.targetCreatorPerson)d.targetCreatorPersonCn = d.targetCreatorPerson.split("@")[0];
+        });
+        switch (this.json.mode) {
+            case "text":
+                this.loadDocumentListText(array, node);  break;
+            case "script":
+                this.loadDocumentListScript(array, node);  break;
+            case "default":
+            default:
+                this.loadDocumentListDefault(array, node, isAdd);  break;
+        }
+    },
+    loadDocumentListDefault: function(array, node, isAdd){
         if( this.json.style === 'v10' ){
-            this.table = new Element('table', {
-                "style": "width: 100%;border-collapse:collapse;",
-                "border": "0",
-                "cellPadding": "2",
-                "cellSpacing": "0"
-            }).inject(this.documentListNode);
+            debugger;
+            var availableIndex = [];
+            if( node && node === this.selectedContentNode ){
+                var size = node.getSize();
+                var arr = [
+                    {width: 700, index:[0, 1, 2, 3, 4, 5, 6]},
+                    {width: 636, index:[0, 1, 3, 4, 5, 6]},
+                    {width: 572, index:[0, 1, 4, 5, 6]},
+                    {width: 476, index:[0, 1, 5, 6]},
+                    {width: 300, index:[0, 1, 6]}
+                ];
+                for( var i = 0; i<arr.length; i++ ) {
+                    if( size.x > arr[i].width ){
+                        availableIndex = arr[i].index;
+                        break;
+                    }
+                }
+            }else{
+                availableIndex = [0, 1, 2, 3, 4, 5, 6 ];
+            }
+
+            if( !isAdd || !this.table ){
+                this.table = new Element('table', {
+                    "style": "width: 100%;border-collapse:collapse;",
+                    "border": "0",
+                    "cellPadding": "2",
+                    "cellSpacing": "0"
+                }).inject(node || this.documentListNode);
+            }
 
             var lp = MWF.xApplication.process.Xform.LP;
 
             var hasCMS = this.documentList.some(function (d) { return d.targetType !== "processPlatform"; });
             var hasProcess = this.documentList.some(function (d) { return d.targetType === "processPlatform"; });
 
-            var headerNode = new Element("tr").inject(this.table);
+            var headerNode = new Element("tr.title");
             var titles = [];
-            var titlesWidth = ['', '', '', '6rem', '6rem', '20rem', ''];
+            var titlesWidth = [];
             if( hasCMS && hasProcess ){
-                titles = ['', lp.title, lp.documentType,
+                titlesWidth = ['', '', '', '4rem', '6rem', '13rem', '2rem'];
+                titles = ['', lp.title,
                     lp.processName+"/"+lp.categoryName,
-                    lp.draftPerson+"/"+lp.publishPerson,
+                    lp.documentType,
+                    lp.creatorPerson,
                     lp.draftTime+"/"+lp.publishTime, '' ];
-            }else if(hasCMS){
-                titles = ['', lp.title, lp.categoryName, lp.documentType, lp.publishPerson, lp.publishTime, '' ];
-            }else if( hasProcess ){
-                titles = ['', lp.title, lp.processName, lp.documentType, lp.draftPerson, lp.draftTime, ''];
+            }else{
+                titlesWidth = ['', '', '', '4rem', '6rem', '13rem', '2rem'];
+                if(hasCMS){
+                    titles = ['', lp.title, lp.categoryName, lp.documentType, lp.publishPerson, lp.publishTime, '' ];
+                }else if( hasProcess ){
+                    titles = ['', lp.title, lp.processName, lp.documentType, lp.draftPerson, lp.draftTime, ''];
+                }
             }
             titles.each(function (title, i){
+                if( !availableIndex.contains(i) )return;
                 var th = new Element("th", {text: title}).inject(headerNode);
                 if( titlesWidth[i] ){
                     th.setStyle('width', titlesWidth[i]);
+                }else if(i > 0){
+                    th.setStyle('min-width', '4rem');
                 }
             })
+            var titleTr = this.table.getElement('.title');
+            if( titleTr ){
+                headerNode.inject(titleTr, 'after');
+                titleTr.destroy();
+            }else{
+                headerNode.inject(this.table);
+            }
 
-            this.documentList.each(function (d) {
-                this.loadDocumentListDefault_V10(d);
+            (array || this.documentList).each(function (d) {
+                this.loadDocumentListDefault_V10(d, node ? node.getElement('table') : this.table, availableIndex);
             }.bind(this));
         }else{
-            this.documentList.each(function (d) {
+            (array || this.documentList).each(function (d) {
                 var itemNode = new Element("div", {
                     styles:  this.form.css.associatedDocumentItem
-                }).inject( this.documentListNode );
+                }).inject( node || this.documentListNode );
                 var iconNode = new Element("div", {
                     styles:  this.form.css[ d.targetType === "processPlatform" ? "associatedDocumentWorkIcon" : "associatedDocumentCmsIcon" ]
                 }).inject( itemNode );
@@ -523,29 +658,30 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     styles:  this.form.css.associatedDocumentText,
                     text: d.targetTitle
                 }).inject( itemNode );
-                this._loadDocument(d, itemNode, deleteNode)
+                this._loadDocument(d, itemNode, deleteNode);
             }.bind(this))
         }
     },
-    loadDocumentListDefault_V10: function (d){
+    loadDocumentListDefault_V10: function (d, node, availableIndex){
         var lp = MWF.xApplication.process.Xform.LP;
-        var itemNode = new Element("tr").inject( this.table );
-        var iconNode, textNode ,typeNode, categoryNode, personNode, timeNode;
+        var itemNode = new Element("tr").inject( node || this.table );
+        itemNode.set('data-o2-bundle', d.targetBundle);
+        //var iconNode, textNode ,typeNode, categoryNode, personNode, timeNode;
 
         if( d.targetType === "processPlatform" ){
-             iconNode = new Element("td.process-icon.ooicon-liucheng").inject(itemNode);
-             textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
-             categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
-             typeNode = new Element("td", {text: lp.work}).inject(itemNode);
-             personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
-             timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
+            availableIndex.contains(0) && new Element("td.process-icon.ooicon-liucheng").inject(itemNode);
+            availableIndex.contains(1) && new Element("td", {text: d.targetTitle}).inject(itemNode);
+            availableIndex.contains(2) && new Element("td", {text: d.targetCategory}).inject(itemNode);
+            availableIndex.contains(3) && new Element("td", {text: lp.work}).inject(itemNode);
+            availableIndex.contains(4) && new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
+            availableIndex.contains(5) && new Element("td", {text: d.targetStartTime}).inject(itemNode);
         }else{
-            iconNode = new Element("td.doc-icon.ooicon-doc-cooperation").inject(itemNode);
-            textNode = new Element("td", {text: d.targetTitle}).inject(itemNode);
-            categoryNode = new Element("td", {text: d.targetCategory}).inject(itemNode);
-            typeNode = new Element("td", {text: lp.document}).inject(itemNode);
-            personNode = new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
-            timeNode = new Element("td", {text: d.targetStartTime}).inject(itemNode);
+            availableIndex.contains(0) && new Element("td.doc-icon.ooicon-doc-cooperation").inject(itemNode);
+            availableIndex.contains(1) && new Element("td", {text: d.targetTitle}).inject(itemNode);
+            availableIndex.contains(2) && new Element("td", {text: d.targetCategory}).inject(itemNode);
+            availableIndex.contains(3) && new Element("td", {text: lp.document}).inject(itemNode);
+            availableIndex.contains(4) && new Element("td", {text: d.targetCreatorPersonCn}).inject(itemNode);
+            availableIndex.contains(5) && new Element("td", {text: d.targetStartTime}).inject(itemNode);
         }
         var deleteNode = new Element("td.ooicon-delete").inject(itemNode);
         if( !this.isReadonly() ){
@@ -562,9 +698,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         itemNode.addEvent('click', function (e) { this.openDoc(e, d); }.bind(this));
         itemNode.addEvent('mouseover', function (e) { itemNode.addClass(); }.bind(this));
     },
-    loadDocumentListText: function(){
+    loadDocumentListText: function(array, node){
         var lp = MWF.xApplication.process.Xform.LP;
-        this.documentList.each(function (d) {
+        (array || this.documentList).each(function (d) {
             var html = this.json.textStyle;
             if (this.json.textStyleScript && this.json.textStyleScript.code) {
                 this.form.Macro.environment.line = d;
@@ -578,19 +714,19 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             var itemNode = new Element("div", {
                 styles:  this.form.css.associatedDocumentItem,
                 html: html
-            }).inject(this.documentListNode);
+            }).inject(node || this.documentListNode);
             var deleteNode = itemNode.getElement("[data-o2-action='delete']");
             if(!layout.mobile)deleteNode.hide();
             this._loadDocument(d, itemNode, deleteNode);
         }.bind(this))
     },
-    loadDocumentListScript: function(){
+    loadDocumentListScript: function(array, node){
         if (this.json.displayScript && this.json.displayScript.code){
             var code = this.json.displayScript.code;
-            this.documentList.each(function(d){
+            (array || this.documentList).each(function(d){
                 var itemNode = new Element("div", {
                     styles:  this.form.css.associatedDocumentItem,
-                }).inject(this.documentListNode);
+                }).inject(node || this.documentListNode);
 
                 this.form.Macro.environment.line = d;
                 var r = this.form.Macro.exec(code, this);
@@ -607,6 +743,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }
     },
     _loadDocument: function(d, itemNode, deleteNode){
+        itemNode.set('data-o2-bundle', d.targetBundle);
 	    if( layout.mobile ){
             itemNode.addEvents({
                 "click": function (e) {
@@ -647,19 +784,38 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     cancelAssociated: function(e, d, itemNode){
         var lp = MWF.xApplication.process.Xform.LP;
         var _self = this;
-        this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
+        var doCancel = (dlg)=>{
             _self.fireEvent("deleteDocument", [d]);
 
             var p = _self._cancelAssociated([d.id]);
             p.then(function (json) {
                 itemNode.destroy();
                 _self.documentList.erase(d);
+                if( _self.selectMode ){
+                    var dom = _self.documentListNode.querySelector('[data-o2-bundle="'+d.targetBundle+'"]');
+                    if(dom)dom.destroy();
+
+                    var vw = _self.viewList.filter((view)=>{
+                        return view.json.id === d.view;
+                    });
+                    if(vw.length){
+                        vw[0].cancelSelected([d.targetBundle], false);
+                    }
+                    _self.refreshSelectedCount();
+                }
                 _self.fireEvent("afterDeleteDocument", [d]);
-                this.close();
+                dlg?.close();
             }.bind(this));
-        }, function () {
-            this.close();
-        }, null, null, this.form.json.confirmStyle);
+        }
+        if( this.selectMode ){
+            doCancel();
+        }else{
+            this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
+                doCancel(this)
+            }, function () {
+                this.close();
+            }, null, null, this.form.json.confirmStyle);
+        }
     },
     createInforNode: function(itemNode, d){
         var lp = MWF.xApplication.process.Xform.LP;
@@ -750,7 +906,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this));
             this.fireEvent("beforeLoadView", [viewDataList]);
 
-            if (layout.mobile && o2.version.dev===10){
+            debugger;
+
+            if (layout.mobile && this.json.style === 'v10'){
                 this.selectViewMobile(callback);
             }else{
                 this.selectViewPc(callback);
@@ -767,10 +925,10 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         this.viewContentNode = new Element('div.tabContentArea').inject(viewNode);
 
         this.tab = new MWF.widget.Tab(this.viewTabArea, {
-            "style": layout.mobile && o2.version.dev === 10 ? 'v10_mobile' : "script"
+            "style": layout.mobile && o2.version.dev === 10 ? 'v10_mobile' : "v10"
         });
         this.tab.load();
-        this.tab.contentNodeContainer.inject(this.viewContentNode)
+        this.tab.contentNodeContainer.inject(this.viewContentNode);
 
         // if( layout.mobile && o2.version.dev === 10 ){
         //     this.viewTabArea.setStyles({
@@ -792,15 +950,36 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
 
                 var selectedBundles = this.selectedBundleMap[ viewJson.viewId ] || [];
-                if( layout.mobile && o2.version.dev === 10 ){
-                    pageViewNode.setStyle("height", '100%');
+
+                if( layout.mobile  ){
+                    if( this.json.style === 'v10' ){
+                        pageViewNode.setStyle("height", '100%');
+                    }else{
+                        var selectedHeight = !!this.selectedArea.offsetParent ? this.selectedArea.getSize().y : 48;
+                        var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - selectedHeight;
+                        pageViewNode.setStyle("height", viewHeight);
+                    }
                 }else{
                     var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
-                    if( o2.version.dev === 10 ){
+                    if( this.json.style === 'v10' ){
                         viewHeight = viewHeight - 24;
+                    }
+                    if(this.selectedAreaDirection === 'vertical' || layout.mobile ){
+                        viewHeight = viewHeight - this.selectedAreaHeight;
+                    }else{
+
+                    }
+                    if( viewHeight < this.MIN_VIEW_CONTENT_HEIGHT ){
+                        viewHeight = this.MIN_VIEW_CONTENT_HEIGHT;
                     }
                     pageViewNode.setStyle("height", viewHeight);
                 }
+
+                viewJson.defaultSelectedScript= function (item){
+                    debugger;
+                    var bundles = this.selectedBundleMap[viewJson.viewId] || [];
+                    return bundles.contains(item.data.bundle);
+                }.bind(this);
 
                 var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
                     "isloadContent": this.status !== "showResult",
@@ -811,11 +990,46 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     "onLoadView": function(){
                         this.fireEvent("loadView");
                     }.bind(this),
-                    "onSelect": function(item){
+                    "onSelect": function(obj){
+                        var bundles = this.documentList.map(function (doc) { return doc.targetBundle } )
+                        var item = obj.item;
+                        if( bundles.includes(item.data.bundle) ){
+                            return;
+                        }
+                        var data = {
+                            "type": item.view.json.type === "process" ? "processPlatform" : "cms",
+                            "view": item.view.json.id,
+                            "site": this.json.site || this.json.id,
+                            "bundle": item.data.bundle
+                        };
+                        var selectFlag = item.view.getSelectFlag();
+                        if( selectFlag === 'single' || this.documentList.length === 0 ){
+                            this.selectedContentNode.empty();
+                            this.set([data], ()=>{
+                                this.refreshSelectedCount();
+                                this.selectedContentNode.empty();
+                                this.showDocumentList(this.documentList, this.selectedContentNode);
+                            }, false);
+                        }else{
+                            this.add([data], false, true, ()=>{
+                                //this.addDocumentInDialog();
+                                this.refreshSelectedCount();
+                                var list = this.documentList.filter(function (doc) {
+                                    return doc.targetBundle === data.bundle;
+                                });
+                                this.showDocumentList(list, this.selectedContentNode, true);
+                            }, false);
+                        }
                         this.fireEvent("select", [item]);
                     }.bind(this),
                     "onUnselect": function(item){
                         selectedBundles.erase( item.data.bundle );
+                        this.cancel([item.data.bundle], ()=>{
+                            //this.cancelDocumentInDialog();
+                            this.refreshSelectedCount();
+                            var dom = this.selectedContentNode.querySelector('[data-o2-bundle="'+item.data.bundle+'"]');
+                            if(dom)dom.destroy();
+                        }, false);
                         this.fireEvent("unselect", [item]);
                     }.bind(this),
                     "onOpenDocument": function(options, item){
@@ -826,9 +1040,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                         this.fireEvent("openViewDocument", [this.openOptions]);
                         this.openOptions = null;
                     }.bind(this)
-                }, this.form.app, this.form.Macro)
+                }, this.form.app, this.form.Macro);
 
-                if( layout.mobile && o2.version.dev === 10 ){
+                if( layout.mobile && this.json.style === 'v10' ){
                     view.addEvent('selectRow', (row)=>{
                         row.node.addClass('selectedRow');
                     });
@@ -860,18 +1074,37 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         // var width = options.width || "850";
         // var height = options.height || "700";
         var width = this.json.DialogWidth || "850";
-        var height = this.json.DialogHeight || "700";
+        var height = this.json.DialogHeight || "900";
 
+        width = width.toInt();
+        height = height.toInt();
+
+        var size = this.form.app.content.getSize();
         if (layout.mobile){
             var size = document.body.getSize();
             width = size.x;
             height = size.y;
             options.style = "viewmobile";
+        }else{
+            debugger;
+            this.selectedAreaDirection = (size.x < width + this.MIN_SELECTED_AREA_WIDTH + 60) ? "vertical" : "horizontal";
+            if (this.selectedAreaDirection === "horizontal") {
+                this.viewWidth = width;
+                var remain = size.x - width;
+                if( remain > 760 ){
+                    width = width + 760;
+                }else{
+                    width = width + remain - 60;
+                }
+            }else if(size.y > height + this.MIN_SELECTED_AREA_HEIGHT){
+                this.selectedAreaHeight = this.MIN_SELECTED_AREA_HEIGHT;
+                height = height + this.MIN_SELECTED_AREA_HEIGHT;
+            }else{
+                this.selectedAreaHeight = this.MIN_SELECTED_AREA_HEIGHT;
+                height = size.y;
+            }
         }
-        width = width.toInt();
-        height = height.toInt();
 
-        var size = this.form.app.content.getSize();
         var x = (size.x-width)/2;
         var y = (size.y-height)/2;
         if (x<0) x = 0;
@@ -882,6 +1115,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }
 
         var _self = this;
+        var lp = MWF.xApplication.process.Xform.LP;
         MWF.require("MWF.xDesktop.Dialog", function(){
             var dlg = new MWF.xDesktop.Dialog({
                 "title": this.json.title || MWF.xApplication.process.Xform.LP.associatedDocument,
@@ -897,7 +1131,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 "container": layout.mobile?$(document.body) : this.form.app.content,
                 "buttonList": [
                     {
-                        "text": MWF.LP.process.button.ok,
+                        "text": lp.associatedDocumentCompleted,
                         "action": function(){
                             //if (callback) callback(_self.view.selectedItems);
 
@@ -905,36 +1139,85 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                             //this.close();
                         }
                     },
-                    {
-                        "text": MWF.LP.process.button.cancel,
-                        "action": function(){this.close();}
-                    }
+                    // {
+                    //     "text": MWF.LP.process.button.cancel,
+                    //     "action": function(){
+                    //         _self.selectMode = false;
+                    //         this.close();
+                    //     }
+                    // }
                 ],
                 "onQueryClose": function () {
+                    this.selectMode = false;
                     this.dlg = null;
                 }.bind(this),
                 "onPostShow": function(){
+                    this.selectedArea = new Element("div.associatedDocumentSelectedArea");
+                    var viewNode;
                     if(layout.mobile){
-                        dlg.node.setStyle("z-index",200);
+                        viewNode = dlg.content;
+                        dlg.node.setStyle("z-index",400);
+                    }else{
+                        viewNode = new Element('div').inject(dlg.content);
+                        dlg.content.setStyle('display', 'flex');
+                        if( this.selectedAreaDirection === 'horizontal' ){
+                            viewNode.setStyles({
+                                'flex-shrink': "0",
+                                'width': this.viewWidth + 'px',
+                                'display': 'flex',
+                                'flex-direction': 'column'
+                            });
+                            this.selectedArea.setStyles({
+                                'flex': 1,
+                                'height': 'calc( 100% - 20px )',
+                                'overflow': 'auto'
+                            });
+                        }else{
+                            dlg.content.setStyles({
+                                'flex-direction': 'column',
+                                'flex-wrap': 'nowrap'
+                            });
+                            viewNode.setStyles({
+                                'display': 'flex',
+                                'flex-direction': 'column'
+                            });
+                            this.selectedArea.setStyles({
+                                'height': this.selectedAreaHeight + 'px',
+                                'overflow': 'auto'
+                            });
+                        }
                     }
-                    this.loadViewers(dlg.content, dlg);
+                    this.loadViewers(viewNode, dlg);
+                    if( layout.mobile ){
+                        this.selectedArea.inject(dlg.content);
+                        this.loadSelectedAreaMobile(this.selectedArea, dlg);
+                    }else{
+                        this.selectedArea.inject(dlg.content);
+                        this.loadSelectedArea(this.selectedArea, dlg);
+                    }
                 }.bind(this)
             });
             this.dlg = dlg;
             dlg.show();
+            this.selectMode = true;
 
             if (layout.mobile){
                 if(dlg.title)dlg.title.addClass("mainColor_color");
                 var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
                 var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-                if (backAction) backAction.addEvent("click", function(e){
-                    dlg.close();
-                }.bind(this));
-                if (okAction) okAction.addEvent("click", function(e){
-                    //if (callback) callback(this.view.getData());
-                    _self.afterSelectView( callback, dlg );
-                    //dlg.close();
-                }.bind(this));
+                if (backAction) {
+                    backAction.set('text', MWF.xApplication.process.Xform.LP.completedEdit );
+                    backAction.addEvent("click", function(e){
+                        _self.afterSelectView( callback, dlg );
+                        dlg.close();
+                    }.bind(this));
+                }
+                if (okAction) {
+                    okAction.hide();
+                    // okAction.addEvent("click", function(e){
+                    //     _self.afterSelectView( callback, dlg );
+                    // }.bind(this));
+                }
             }
         }.bind(this));
     },
@@ -944,22 +1227,118 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         _renderViewContainerMobile(
             this.json.title || MWF.xApplication.process.Xform.LP.associatedDocument,
             (viewNode, o)=>{
-                this.loadViewers(viewNode);
+
+                o._selectCancel = o.selectCancel;
+                o.selectCancel = (e)=>{
+                    if( e.target.tagName.toLowerCase() === 'oo-button'){
+                        o._selectCancel(e);
+                    }else{
+                        if( !this.selectedContentNode.offsetParent ){
+                            o._selectCancel();
+                        }else{
+                            this.selectedContentNode.hide();
+                            this.showSelectedContentNode.show();
+                            this.hideSelectedContentNode.hide();
+                        }
+                    }
+                };
+
+                this.selectMode = true;
+                window.setTimeout(
+                    ()=>{
+                        this.loadViewers(viewNode);
+                    },
+                    200
+                );
+                this.selectedArea = new Element("div.associatedDocumentSelectedArea").inject(viewNode, 'after');
+                this.loadSelectedAreaMobile(this.selectedArea, o);
                 this.dlg_mobile = o;
-                // MWF.xDesktop.requireApp("query.Query", "Viewer", ()=>{
-                //     viewer = new MWF.xApplication.query.Query.Viewer(viewNode, viewJson, viewOptions, _form.app, _form.Macro);
-                //     viewer.addEvent('selectRow', (row)=>{
-                //         row.node.addClass('selectedRow');
-                //     });
-                //     viewer.addEvent('unselectRow', (row)=>{
-                //         row.node.removeClass('selectedRow');
-                //     });
-                // });
+
+                o.contentNode.querySelector('.mwf_selectView_action_cancel').hide();
+                o.contentNode.querySelector('.mwf_selectView_action_ok').set('text', MWF.xApplication.process.Xform.LP.associatedDocumentCompleted);
+
             },
             ()=>{
                 this.afterSelectView( callback );
+                this.selectMode = false;
             },
-            true
+            false
+        );
+    },
+    loadSelectedArea: function(container, dialog){
+        var lp = MWF.xApplication.process.Xform.LP;
+        this.selectedArea.setStyles(this.form.css.associatedDocumentSelectedArea);
+
+        this.selectedTitleNode = new Element("div", {
+            styles: this.form.css.associatedDocumentSelectedTitleNode
+        }).inject(this.selectedArea);
+        this.selectedCountNode = new Element("div", {
+            styles: this.form.css.associatedDocumentSelectedCountNode,
+            text: lp.associatedCount.replace('{count}', this.documentList.length)
+        }).inject(this.selectedTitleNode);
+        this.cancelAllNode = new Element("div", {
+            styles: this.form.css.associatedDocumentSelectedCancelAllNode,
+            text: lp.empty
+        }).inject(this.selectedTitleNode);
+        this.cancelAllNode.addEvent('click', (e)=>{
+            this.selectedContentNode.empty();
+            this.viewList.forEach((view)=>{
+                view.cancelSelectedAll(false);
+            })
+            this.set([], ()=>{
+                this.refreshSelectedCount();
+                this.selectedContentNode.empty();
+                this.showDocumentList(this.documentList, this.selectedContentNode);
+            }, false);
+        })
+
+        this.selectedContentNode = new Element("div.MWFADContent", {}).inject(this.selectedArea);
+        this.showDocumentList(this.documentList, this.selectedContentNode);
+    },
+    loadSelectedAreaMobile: function(container, dialog){
+        var lp = MWF.xApplication.process.Xform.LP;
+        this.selectedArea.setStyles(this.form.css.associatedDocumentSelectedArea);
+
+        this.selectedTitleNode = new Element("div", {
+            styles: this.form.css.associatedDocumentSelectedTitleNode
+        }).inject(this.selectedArea);
+        this.selectedTitleNode.addEvent('click', ()=>{
+            if( !this.selectedContentNode.offsetParent ){
+                this.selectedContentNode.show();
+                // this.selectedMaskNode.show();
+                this.showSelectedContentNode.hide();
+                this.hideSelectedContentNode.show();
+            }else{
+                this.selectedContentNode.hide();
+                this.showSelectedContentNode.show();
+                this.hideSelectedContentNode.hide();
+            }
+        })
+        this.selectedCountNode = new Element("div", {
+            styles: this.form.css.associatedDocumentSelectedCountNode,
+            text: lp.associatedCount.replace('{count}', this.documentList.length)
+        }).inject(this.selectedTitleNode);
+
+        this.showSelectedContentNode = new Element('i.ooicon-icon_arrow_up.mainColor_color').inject(this.selectedTitleNode);
+        this.showSelectedContentNode.setStyles(this.form.css.associatedDocumentSelectedCancelAllNode);
+        this.hideSelectedContentNode = new Element('i.ooicon-drop_down.mainColor_color').inject(this.selectedTitleNode);
+        this.hideSelectedContentNode.setStyles(this.form.css.associatedDocumentSelectedCancelAllNode);
+        this.hideSelectedContentNode.hide();
+
+        this.selectedContentNode = new Element("div.MWFADContent", {}).inject(this.selectedArea);
+        if( this.json.style === 'v10' ){
+            this.selectedContentNode.setStyles(this.form.css.associatedDocumentSelectedContentNodeMobileV10);
+        }else{
+            this.selectedContentNode.setStyles(this.form.css.associatedDocumentSelectedContentNodeMobile);
+        }
+        this.selectedContentNode.hide();
+        this.showDocumentList(this.documentList, this.selectedContentNode);
+    },
+    refreshSelectedCount: function(){
+        var lp = MWF.xApplication.process.Xform.LP;
+        this.selectedCountNode.set(
+            "text",
+           lp.associatedCount.replace('{count}', this.documentList.length)
         );
     },
     afterSelectView: function( callback, dlg ){

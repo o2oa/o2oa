@@ -340,13 +340,19 @@ MWF.xApplication.Profile.Main = new Class({
             this.removeClass("mainColor_border mainColor_color");
         });
 
-        this.ideasSaveAction = this.ideasArea.getNext().addEvent("mouseover",function(){
-            this.addClass("mainColor_bg");
-        }).addEvent("mouseout",function(){
-            this.removeClass("mainColor_bg");
-        });
-        this.ideasSaveDefaultAction = this.ideasSaveAction.getNext() || null;
-
+        if (!this.ideasSaveAction){
+             this.ideasSaveAction = this.ideasArea.getNext();
+        }
+        if (this.ideasSaveAction){
+            this.ideasSaveAction.addEvent("mouseover",function(){
+                this.addClass("mainColor_bg");
+            }).addEvent("mouseout",function(){
+                this.removeClass("mainColor_bg");
+            });
+        }
+        if (!this.ideasSaveDefaultAction){
+             this.ideasSaveDefaultAction = this.ideasSaveAction.getNext() || null;
+        }
 
         if (MWF.AC.isAdministrator()){
             this.ideasSaveDefaultAction.addEvent("mouseover",function(){
@@ -384,6 +390,8 @@ MWF.xApplication.Profile.Main = new Class({
         }.bind(this))
     },
     loadEmPowerConfigAction: function(){
+        if (!this.empowerConfigNode) return '';
+
         var i = (!this.inBrowser && layout.viewMode==="Layout")? 3 : 2;
 
         this.tab.pages[i].contentNode.setStyle("overflow","auto");
@@ -847,18 +855,21 @@ MWF.xApplication.Profile.Main = new Class({
 
 
     loadPasswordConfigActions: function(){
+        if (!this.passwordConfigNode) return '';
 
-        var i = (!this.inBrowser && layout.viewMode==="Layout" )? 4 : 3;
+        // var i = (!this.inBrowser && layout.viewMode==="Layout" )? 4 : 3;
 
-        var passwordRemindNode =  this.tab.pages[i].contentNode.getElement(".o2_profile_passwordRemindNode");
+        // var passwordRemindNode =  this.tab.pages[i].contentNode.getElement(".o2_profile_passwordRemindNode");
+        var passwordRemindNode = this.passwordConfigNode.getElement(".o2_profile_passwordRemindNode");
+
         var paswordRule = layout.config.passwordRegexHint || this.lp.paswordRule;
         passwordRemindNode.set("text",paswordRule);
 
-        var inputs = this.tab.pages[i].contentNode.setStyle("min-height","300px").getElements("input");
+        var inputs = this.passwordConfigNode.setStyle("min-height","300px").getElements("input");
         this.oldPasswordInputNode = inputs[0];
         this.passwordInputNode = inputs[1];
         this.morePasswordInputNode = inputs[2];
-        this.savePasswordAction = this.tab.pages[i].contentNode.getElement(".o2_profile_savePasswordAction");
+        this.savePasswordAction = this.passwordConfigNode.getElement(".o2_profile_savePasswordAction");
 
         this.oldPasswordInputNode.addEvents({
             "blur": function(){this.removeClass("o2_profile_inforContentInput_focus mainColor_border mainColor_color");},
@@ -879,43 +890,59 @@ MWF.xApplication.Profile.Main = new Class({
     },
     loadSSOConfigAction: function(){
         var i = (!this.inBrowser && layout.viewMode==="Layout") ? 5 : 4;
-        this.ssoConfigAreaNode = this.tab.pages[i].contentNode.setStyle("min-height","300px").getElement(".o2_profile_ssoConfigArea");
-        MWF.Actions.get("x_organization_assemble_authentication").listOauthServer(function(json){
-            json.data.each(function(d){
-                var node = new Element("a", {
-                    "class":"mainColor_color",
-                    "styles": {"font-size": "14px", "display": "block", "margin-bottom": "10px"},
-                    "text": d.displayName || d.name,
-                    "target": "_blank",
-                    "href": "../x_desktop/oauth.html?oauth="+encodeURIComponent(d.name)+"&redirect="+"&method=oauthBind"
-                }).inject(this.ssoConfigAreaNode)
+        this.ssoConfigAreaNode = this.tab.pages[i]?.contentNode;
+
+        if (this.ssoConfigAreaNode){
+            this.ssoConfigAreaNode.setStyle("min-height","300px").getElement(".o2_profile_ssoConfigArea");
+            MWF.Actions.get("x_organization_assemble_authentication").listOauthServer(function(json){
+                json.data.each(function(d){
+                    var node = new Element("a", {
+                        "class":"mainColor_color",
+                        "styles": {"font-size": "14px", "display": "block", "margin-bottom": "10px"},
+                        "text": d.displayName || d.name,
+                        "target": "_blank",
+                        "href": "../x_desktop/oauth.html?oauth="+encodeURIComponent(d.name)+"&redirect="+"&method=oauthBind"
+                    }).inject(this.ssoConfigAreaNode)
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        }
+        
     },
 
     changeIcon: function(){
         var options = {};
-        var width = "668";
-        var height = "510";
-        width = width.toInt();
-        height = height.toInt();
-
+        const isMobile = o2.isMediaMobile();
+        var width, height, x, y;
         var size = this.content.getSize();
-        var x = (size.x-width)/2;
-        var y = (size.y-height)/2;
-        if (x<0) x = 0;
-        if (y<0) y = 0;
-        if (layout.mobile){
+
+        if (isMobile){
+            width = size.x;
+            height = size.y;
             x = 20;
             y = 0;
+        }else{
+            width = "668";
+            height = "510";
+            width = width.toInt();
+            height = height.toInt();
+
+            x = (size.x-width)/2;
+            y = (size.y-height)/2;
+            if (x<0) x = 0;
+            if (y<0) y = 0;
+            if (layout.mobile){
+                x = 20;
+                y = 0;
+            }
         }
+        const {x:w, y:h} = this.content.getSize();
 
         var _self = this;
         MWF.require("MWF.xDesktop.Dialog", function() {
             MWF.require("MWF.widget.ImageClipper", function(){
                 var dlg = new MWF.xDesktop.Dialog({
                     "title": this.lp.changePersonIcon,
-                    "style": "image",
+                    "style": isMobile ? "v10_mobile" : "image",
                     "top": y,
                     "left": x - 20,
                     "fromTop": y,
@@ -928,6 +955,7 @@ MWF.xApplication.Profile.Main = new Class({
                     "buttonList": [
                         {
                             "text": MWF.LP.process.button.ok,
+                            type: "ok",
                             "action": function () {
                                 //_self.uploadPersonIcon();
                                 _self.image.uploadImage( function( json ){
@@ -943,6 +971,7 @@ MWF.xApplication.Profile.Main = new Class({
                         },
                         {
                             "text": MWF.LP.process.button.cancel,
+                            "type": "cancel",
                             "action": function () {
                                 _self.image = null;
                                 this.close();
@@ -957,7 +986,9 @@ MWF.xApplication.Profile.Main = new Class({
                     "description" : "",
                     "imageUrl" : this.action.getPersonIcon(),
                     "resetEnable" : false,
+                    "style": isMobile ? "v10_mobile" : "default",
 
+                    "showPreviewer": !isMobile,
                     "data": null,
                     "parameter": null,
                     "action": this.action.action,

@@ -703,7 +703,7 @@
         "background": "#ffffff",
         "border": "2px solid #999",
         "border-radius": "8px",
-        "box-shadow": "0px 0px 10px #666",
+        "box-shadow": "0px 0px 10px #666"
     },
     "handwritingActionNode": {
         "height": "30px",
@@ -1016,7 +1016,7 @@
         "margin-right": "10px"
     },
     "rollbackItemActivityNode_current": {
-        "color": "#ffffff",
+        "color": "#ffffff"
     },
     "rollbackItemTimeNode": {
         "height": "26px",
@@ -1188,7 +1188,7 @@
         "bottom": "50px",
         "z-index": 301,
         "padding": "0px 20px",
-        "border-top": "1px solid #dfdfdf",
+        "border-top": "1px solid #dfdfdf"
     },
     "html5ActionOtherButton": {
         "height": "50px",
@@ -1430,7 +1430,52 @@
     "background-size": "16px 16px",
     "float": "right"
   },
-     "mergedReadOOModule": {
+  "associatedDocumentSelectedArea": {
+    "background-color": "var(--oo-color-bg-white)"
+  },
+  "associatedDocumentSelectedContentNodeMobileV10": {
+      "position": "absolute",
+      "bottom": "8.125rem",
+      "left": "0",
+      "width": "100%",
+      "height": "calc(100% - 8.125rem)",
+      "border-radius": "0.25rem",
+      "background": "#FFF",
+      "z-index": 1003
+    },
+  "associatedDocumentSelectedContentNodeMobile": {
+    "position": "absolute",
+    "bottom": "4rem",
+    "left": "0",
+    "padding": "0.5rem",
+    "width": "calc( 100% - 1rem )",
+    "height": "calc(100% - 5rem)",
+    "border-radius": "0.25rem",
+    "background": "#FFF",
+    "font-size": "1rem",
+    "z-index": 1003
+  },
+  "associatedDocumentSelectedTitleNode": {
+    "height": "3rem",
+    "line-height": "3rem",
+    "background": "#f7f7f7",
+    "display": "flex",
+    "justify-content": "space-between",
+    "align-items": "center",
+    "font-size": "1rem"
+  },
+  "associatedDocumentSelectedCountNode": {
+    "color": "#2D2D33",
+    "font-style": "normal",
+    "margin": "0 1rem"
+  },
+  "associatedDocumentSelectedCancelAllNode": {
+    "color": "var(--oo-color-main)",
+    "line-height": "2.25rem",
+    "margin": "0 1rem",
+    "cursor": "pointer"
+  },
+  "mergedReadOOModule": {
          "display":"flex",
          "align-items": "center",
          "flex": "1 1 46%"
