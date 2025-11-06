@@ -25,6 +25,7 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.ItemAccess;
 import com.x.query.core.entity.Item_;
+import com.x.query.core.express.plan.ProcessPlatformPlan.WhereEntry.ApplicationEntry;
 import com.x.query.core.express.plan.ProcessPlatformPlan.WhereEntry.ProcessEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
@@ -170,7 +172,7 @@ public class ProcessPlatformPlan extends Plan {
             cq.select(root.get(Review_.job))
                     .where(this.reviewPredicate(emc, cb, root, cq));
             List<Order> orderList = new TreeList<>();
-            this.joinPagingOrder(orderList, cb, root, cq);
+            this.joinPagingOrder(orderList, cb, root, cq, Review.job_FIELDNAME);
             if(orderList.isEmpty()) {
                 Order order = cb.desc(root.get(Review_.startTime));
                 orderList.add(order);
@@ -290,12 +292,16 @@ public class ProcessPlatformPlan extends Plan {
                 || ListTools.isEmpty(this.runtime.authList) || this.runtime.isManager) {
             return null;
         }
+        boolean flag = false;
         Predicate p = cb.disjunction();
+        List<String> processIdList = new ArrayList<>();
         for (ProcessEntry processEntry : this.where.processList) {
+            processIdList.add(processEntry.id);
             Predicate predicate = cb.equal(root.get(Review_.process), processEntry.id);
             List<ItemAccess> accessList = new ArrayList<>(
                     this.listItemAccess(emc, processEntry.edition));
             if (ListTools.isNotEmpty(accessList)) {
+                flag = true;
                 SortTools.desc(accessList, ItemAccess.path_FIELDNAME);
                 List<Triple<FilterEntry, Boolean, List<String>>> activityFilterList = this.getPathAccess(accessList, pathList);
 
@@ -306,7 +312,14 @@ public class ProcessPlatformPlan extends Plan {
                     processEntry.id, predicate.toString());
             p = cb.or(p, predicate);
         }
-        return p;
+        if(flag && CollectionUtils.isNotEmpty(this.where.applicationList)){
+            List<String> appIds = ListTools.extractField(this.where.applicationList,
+                    JpaObject.id_FIELDNAME, String.class, true, true);
+            Predicate predicate = root.get(Review_.application).in(appIds);
+            predicate = cb.and(predicate, cb.not(root.get(Review_.process).in(processIdList)));
+            p = cb.or(p, predicate);
+        }
+        return flag ? p : null;
     }
 
     private Predicate dearPathAccess(Predicate predicate,
