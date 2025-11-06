@@ -711,7 +711,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
         this.node = new Element("div", {
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
         }).inject(this.content);
-        this.node.loadCss(`/x_component_Calendar/$Main/${this.options.style}/style.css`)
+        this.node.loadCss(`../x_component_Calendar/$Main/${this.options.style}/style.css`)
         this.loadView();
     },
     reload: function(){
@@ -720,7 +720,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
     },
     loadView: function(){
         this.node.loadHtml(
-            `/x_component_Calendar/$Main/${this.options.style}/main.html`,
+            `../x_component_Calendar/$Main/${this.options.style}/main.html`,
             {
                 module: this,
                 bind: {
@@ -816,7 +816,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
                     d.statusColor='var(--oo-color-success)';
                     d.status = this.lp.status.wait;
                 }else if (start <= now && now <= end) {
-                    d.statusColor=='var(--oo-color-main)';
+                    d.statusColor='var(--oo-color-main)';
                     d.status = this.lp.status.doing;
                 }else if (end < now) {
                     d.statusColor='var(--oo-color-gray-9)';
@@ -829,7 +829,7 @@ MWF.xApplication.Calendar.MainMobile = new Class({
         p.then( (json) => {
             this.eventArea.empty();
             this.eventArea.loadHtml(
-                `/x_component_Calendar/$Main/${this.options.style}/list.html`,
+                `../x_component_Calendar/$Main/${this.options.style}/list.html`,
                 {
                     module: this,
                     bind: {
@@ -896,7 +896,7 @@ MWF.xApplication.Calendar.CalendarListMobile = new Class({
     load: function(){
         this.app.listCalendar((data)=>{
             this.node.loadHtml(
-                `/x_component_Calendar/$Main/${this.options.style}/calendarList.html`,
+                `../x_component_Calendar/$Main/${this.options.style}/calendarList.html`,
                 {
                     module: this,
                     bind: {

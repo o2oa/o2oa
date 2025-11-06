@@ -1,7 +1,7 @@
 <header>
     <div class="header-title">{{$.lp.calendar}}</div>
-    <div class="header-create" data-o2-events="click:createCalendar;">{{$.lp.createCalendar}}</div>
-    <div class="header-calendar" data-o2-events="click:toMain;">{{$.lp.title}}</div>
+    <i class="header-create ooicon-add-circle" data-o2-events="click:createCalendar;"></i>
+    <i class="header-calendar ooicon-calendar" data-o2-events="click:toMain;"></i>
 </header>
 <div data-o2-element="calendarList" class="calendar">
     {{if $.data.myCalendars.length>0}}

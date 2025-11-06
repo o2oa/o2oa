@@ -136,6 +136,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         _createEventFunction: function(methods, k){
             methods["$loadElEvent_"+k.camelCase()] = function(){
                 var flag = true;
+                debugger;
                 if (k==="change"){
                     if(this.json.inputType === "number"  ){
                         if( this.json.resultType === "number" ){
