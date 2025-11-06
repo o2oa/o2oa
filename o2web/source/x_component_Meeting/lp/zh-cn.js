@@ -302,5 +302,7 @@ MWF.xApplication.Meeting.LP = {
     "needSignInPerson" : "签到人员",
     "printQrcode": "打印签到二维码",
     "weeklyViewTitle" : "{month}，第{week}周",
-    "onlineConfigNotJson": "线上会议配置未配置成正确的JSON格式"
+    "onlineConfigNotJson": "线上会议配置未配置成正确的JSON格式",
+    "invitation": "会议邀请",
+    "noInvitation": "当前无会议邀请"
 };

@@ -888,34 +888,7 @@ MWF.xApplication.Meeting.MainMobile = new Class({
         const p = method(y, m, d).then((json)=>{
             const now = new Date();
             json.data = json.data.map((d)=>{
-
-                if( o2.typeOf( d.myWaitAccept ) !== "boolean" ){
-                    const {distinguishedName, id} = layout.desktop.session.user;
-                    const user = [distinguishedName, id];
-                    if( intersection(d.invitePersonList, user) ){
-                        d.myWaitAccept = !intersection(d.acceptPersonList, user) && !intersection(d.rejectPersonList, user);
-                    }
-                }
-
-                if (d.status === 'wait' && d.myWaitAccept) {
-                    //会议邀请
-                    d.meetingStatus = 'invite';
-                }else if (d.status === 'wait' && d.myReject) {
-                    //会议拒绝
-                    d.meetingStatus = 'reject';
-                } else {
-                    d.meetingStatus = d.status;
-                }
-
-                const names = o2.name.cns(d.inviteMemberList);
-                if (names.length>4){
-                    const someNames = names.slice(0, 4);
-                    d.names = someNames.join(', ')+ ' 等'+names.length+'人';
-                }else{
-                    d.names = names.join(', ');
-                }
-
-                return d;
+                return this._parseMeetingData(d);
             });
             return json;
         });
@@ -933,6 +906,35 @@ MWF.xApplication.Meeting.MainMobile = new Class({
                 }
             );
         });
+    },
+    _parseMeetingData: function (d){
+        if( o2.typeOf( d.myWaitAccept ) !== "boolean" ){
+            const {distinguishedName, id} = layout.desktop.session.user;
+            const user = [distinguishedName, id];
+            if( intersection(d.invitePersonList, user) ){
+                d.myWaitAccept = !intersection(d.acceptPersonList, user) && !intersection(d.rejectPersonList, user);
+            }
+        }
+
+        if (d.status === 'wait' && d.myWaitAccept) {
+            //会议邀请
+            d.meetingStatus = 'invite';
+        }else if (d.status === 'wait' && d.myReject) {
+            //会议拒绝
+            d.meetingStatus = 'reject';
+        } else {
+            d.meetingStatus = d.status;
+        }
+
+        const names = o2.name.cns(d.inviteMemberList);
+        if (names.length>4){
+            const someNames = names.slice(0, 4);
+            d.names = someNames.join(', ')+ ' 等'+names.length+'人';
+        }else{
+            d.names = names.join(', ');
+        }
+
+        return d;
     },
     createMeeting: function (e) {
         const date = this.currentDate || this.options.baseDate;
@@ -961,10 +963,10 @@ MWF.xApplication.Meeting.MainMobile = new Class({
         !!create ?
             form.create() : form.open();
     },
-    loadCalendarList: function (e){
+    loadInvitation: function (e){
         this.node.empty();
-        var calendarList = new MWF.xApplication.Calendar.CalendarListMobile(this, this.node);
-        calendarList.load();
+        var invitation = new MWF.xApplication.Meeting.InvitationMobile(this, this.node);
+        invitation.load();
     },
 
     reject: function(e, data){
@@ -1029,6 +1031,9 @@ MWF.xApplication.Meeting.InvitationMobile = new Class({
         return o2.Actions.load('x_meeting_assemble_control').MeetingAction.listInviteMeetingPaging(1, 10, {
             meetingStatus: 'wait'
         }, (json)=>{
+            json.data = json.data.map((d)=>{
+                return this.app._parseMeetingData(d);
+            })
             if(callback)callback(json.data);
         });
     },
