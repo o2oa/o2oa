@@ -2,7 +2,7 @@
     <div class="header-title">{{$.lp.invitation}}</div>
     <i class="header-calendar ooicon-calendar" data-o2-events="click:toMain;"></i>
 </header>
-<div>
+<div class="content invitation">
     {{if $.data.length === 0}}
     <div class="empty">
         <div class="ooempty-wuricheng empty-icon"></div>
@@ -11,7 +11,7 @@
     {{end if}}
 
     {{if $.data.length > 0}}
-    <div style="padding: 0 1em;">
+    <div style="padding: 1em;">
         {{each $.data}}
         <div mwftype="div" style="border-color: var(--meeting-{{$.meetingStatus}});" class="meeting-item"
              data-o2-events="click:handleMeetingClick">

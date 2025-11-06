@@ -969,35 +969,39 @@ MWF.xApplication.Meeting.MainMobile = new Class({
         invitation.load();
     },
 
-    reject: function(e, data){
+    reject: function(e, data, callback){
         var _self = this;
         var text = this.lp.reject_confirm.replace(/{name}/g, data.subject);
         this.confirm("infor", e, this.lp.reject_confirm_title, text, 300, 120, function(){
-            _self.rejectMeeting(data);
+            _self.rejectMeeting(data, callback);
             this.close();
         }, function(){
             this.close();
         });
     },
-    rejectMeeting: function(data){
+    rejectMeeting: function(data, callback){
         this.actions.rejectMeeting(data.id, function(){
-            this.loadMeetings(this.currentDate || this.options.baseDate);
-        }.bind(this))
+            !!callback ?
+                callback() :
+                this.loadMeetings(this.currentDate || this.options.baseDate);
+        }.bind(this));
     },
 
-    accept: function(e, data){
+    accept: function(e, data, callback){
         var _self = this;
         var text = this.lp.accept_confirm.replace(/{name}/g, data.subject);
         this.confirm("infor", e, this.lp.accept_confirm_title, text, 300, 120, function(){
-            _self.acceptMeeting(data);
+            _self.acceptMeeting(data, callback);
             this.close();
         }, function(){
             this.close();
         });
     },
-    acceptMeeting: function(data){
+    acceptMeeting: function(data, callback){
         this.actions.acceptMeeting(data.id, function(){
-            this.loadMeetings(this.currentDate || this.options.baseDate);
+            !!callback ?
+                callback() :
+                this.loadMeetings(this.currentDate || this.options.baseDate);
         }.bind(this));
     },
 });
@@ -1028,9 +1032,7 @@ MWF.xApplication.Meeting.InvitationMobile = new Class({
         }, true);
     },
     listInvitation: function (callback){
-        return o2.Actions.load('x_meeting_assemble_control').MeetingAction.listInviteMeetingPaging(1, 10, {
-            meetingStatus: 'wait'
-        }, (json)=>{
+        return o2.Actions.load('x_meeting_assemble_control').MeetingAction.listWaitAccept( (json)=>{
             json.data = json.data.map((d)=>{
                 return this.app._parseMeetingData(d);
             })
@@ -1048,7 +1050,17 @@ MWF.xApplication.Meeting.InvitationMobile = new Class({
     },
     toMain: function (){
         this.app.reload();
-    }
+    },
+    reject: function(e, data){
+        this.app.reject(e, data, ()=>{
+            this.reload();
+        })
+    },
+    accept: function(e, data){
+        this.app.accept(e, data, ()=>{
+            this.reload();
+        })
+    },
 });
 
 if ((layout.mobile || COMMON.Browser.Platform.isMobile)){

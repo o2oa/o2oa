@@ -146,8 +146,11 @@ oo-calendar{
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding-top: 2rem;
+    height: calc( 100% - 400px );
     color: var(--oo-color-gray1);
+}
+.invitation .empty{
+    height: 100%;
 }
 .empty-icon{
     font-style: normal;
