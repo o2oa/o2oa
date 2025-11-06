@@ -177,30 +177,41 @@
      * @static
      * @param {String} callback 操作按钮点击执行函数
      * @param {String} iconClassName 操作按钮 icon className
+     * @param {[object]} menuList 操作按钮列表 [{"title": "菜单名称", "callback": "回调函数名称"}]
      * @example
      * window.o2m.portalLoaded('callbackName'); //添加操作按钮
      */
-    this.o2m.portalLoaded = function (callback, iconClassName) {
-        if (!callback) {
+    this.o2m.portalLoaded = function (callback, iconClassName, menuList) {
+        if (!callback && !menuList) {
+            console.error('参数不正确，callback 和 menuList 为空')
             return;
         }
-        if (!window.o2f) {
-            console.error('没有正确加载 o2f , 确定是在 App 环境中吗？')
-            return;
-        }
-        window.o2f.addReady(()=> {
-            const body = {
-                type: 'portalLoaded',
-                data: {
-                    rightActionCallback: callback
-                }
-            };
-            if (iconClassName) {
-                body.data.rightActionIcon = iconClassName;
+        const body = {
+            type: 'portalLoaded',
+            data: {
+                rightActionCallback: callback
             }
+        };
+        if (iconClassName) {
+            body.data.rightActionIcon = iconClassName;
+        }
+        if (menuList) {
+            body.data.menuList = menuList;
+        }
+        if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+            window.flutter_inappwebview.callHandler('o2android', JSON.stringify(body));
+            console.debug('flutter_inappwebview portalLoaded loaded =============== ');
+        } else if (window.o2f) {
+            window.o2f.addReady(()=> {
+                window.o2android.postMessage(JSON.stringify(body));
+                console.debug('o2f portalLoaded loaded =============== ');
+            });
+        } else if (window.o2android && window.o2android.postMessage) {
             window.o2android.postMessage(JSON.stringify(body));
-            console.debug('portalLoaded loaded =============== ');
-        });
+            console.debug('o2android portalLoaded loaded =============== ');
+        } else {
+            console.error('portalLoaded 执行失败，环境读取失败')
+        }
     }
 
     /** ***** BEGIN NOTIFICATION BLOCK *****
