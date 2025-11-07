@@ -135,7 +135,7 @@
     display: table-cell;
 }
 .layout_content_taskbar_area {
-    height: 70px;
+    min-height: 70px;
     line-height: 70px;
     background-color: #ffffff;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.25);
@@ -242,7 +242,7 @@
 }
 
 .layout_content_taskbar_area_tabs {
-    height: 70px;
+    min-height: 70px;
     overflow: hidden;
     user-select: none;
     -ms-user-select: none;
@@ -256,7 +256,7 @@
     float: right;
 }
 .layout_content_taskbar_area_tabs_contentArea {
-    height: 28px;
+    min-height: 28px;
     margin: 21px 20px;
     overflow: hidden;
 }
