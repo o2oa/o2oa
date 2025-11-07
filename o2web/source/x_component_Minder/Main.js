@@ -1,7 +1,7 @@
 //MWF.xDesktop.requireApp("Minder", "Actions.RestActions", null, false);
 
 MWF.require("MWF.widget.Tree", null, false);
-MWF.xApplication.Minder.Main = new Class({
+MWF.xApplication.Minder.MainPc = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
 
@@ -210,6 +210,67 @@ MWF.xApplication.Minder.Main = new Class({
         return result;
     }
 });
+
+MWF.xApplication.Minder.MainMobile = new Class({
+    Extends: MWF.xApplication.Minder.MainPc,
+    options: {
+        "style": "mobile"
+    },
+    loadApplication: function(callback){
+        this.content.setStyle("overflow", "hidden");
+        this.node = new Element("div", {
+            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+        }).inject(this.content);
+        this.node.loadCss(`../x_component_Minder/$Main/${this.options.style}/style.css`);
+        this.loadView();
+        if (callback) callback();
+    },
+    reload: function(){
+        this.node.empty();
+        this.loadView();
+    },
+    loadView: function(){
+        this.node.loadHtml(
+            `../x_component_Minder/$Main/${this.options.style}/main.html`,
+            {
+                module: this,
+                bind: {
+                    lp: this.lp
+                }
+            },
+            // ()=>{
+            //     this.loadList( "root');
+            // }
+        );
+    },
+    loadList: function(folderId = 'root'){
+        var p = this.actions.listNextMindWithFilter('(0)', 100, {"folderId": folderId});
+        p.then((json)=>{
+            this.node.loadHtml(
+                `../x_component_Minder/$Main/${this.options.style}/list.html`,
+                {
+                    module: this,
+                    bind: {
+                        lp: this.lp,
+                        data: json.data
+                    }
+                },
+                ()=>{}
+            );
+            this.fireEvent("postLoad")
+        });
+    },
+    loadFolder: function (){
+        var p = this.app.restActions.listMyFolder();
+
+    }
+});
+
+if ((layout.mobile || COMMON.Browser.Platform.isMobile)){
+    MWF.xApplication.Minder.Main = MWF.xApplication.Minder.MainMobile;
+}else{
+    MWF.xApplication.Minder.Main = MWF.xApplication.Minder.MainPc;
+}
 
 
 MWF.xApplication.Minder.History = new Class({
