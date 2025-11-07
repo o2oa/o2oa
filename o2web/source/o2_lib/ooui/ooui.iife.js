@@ -2493,7 +2493,6 @@ input:focus, textarea:focus {\r
 }\r
 \r
 .inputContent{\r
-    color: var(--oo-color-text2);\r
     display: flex;\r
     flex-wrap: wrap;\r
     align-items: center;\r
