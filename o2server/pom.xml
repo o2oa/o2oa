@@ -37,6 +37,7 @@
 		<graalvm.version>22.3.4</graalvm.version>
 		<tika.version>2.9.2</tika.version>
 		<pdfbox.version>2.0.31</pdfbox.version>
+		<lucene.version>9.4.2</lucene.version>
 	</properties>
 	<modules>
 		<module>x_base_core_project</module>
@@ -430,6 +431,10 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-grouping</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-facet</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -941,27 +946,32 @@
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-core</artifactId>
-				<version>9.4.1</version>
+				<version>${lucene.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-queryparser</artifactId>
-				<version>9.4.2</version>
+				<version>${lucene.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-highlighter</artifactId>
-				<version>9.4.2</version>
+				<version>${lucene.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-grouping</artifactId>
-				<version>9.4.2</version>
+				<version>${lucene.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-facet</artifactId>
+				<version>${lucene.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-luke</artifactId>
-				<version>9.4.1</version>
+				<version>${lucene.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.vandermeer</groupId>

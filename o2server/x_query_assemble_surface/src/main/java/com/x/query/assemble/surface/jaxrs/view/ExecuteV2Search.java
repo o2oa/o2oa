@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -69,7 +70,13 @@ public class ExecuteV2Search extends BaseAction {
 				DirectoryReader reader = DirectoryReader.open(directory)) {
 			IndexSearcher searcher = new IndexSearcher(reader);
 
-			Query permissionFilter = termInSet(Indexs.FIELD_READERS, runtime.authList);
+			// 加入cms任意人员可见标志
+			List<String> auths = new ArrayList<>();
+			if (Objects.nonNull(runtime.authList)) {
+				auths.addAll(runtime.authList);
+			}
+			auths.add("*");
+			Query permissionFilter = termInSet(Indexs.FIELD_READERS, auths);
 			Query scopeFilter = scopeFilter(view, runtime);
 			Query bodyQuery = bodyQuery(search, analyzer);
 			Query attachmentQuery = attachmentQuery(search, analyzer);
