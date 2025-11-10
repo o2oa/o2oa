@@ -1126,6 +1126,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 "fromLeft": x-20,
                 "width": width,
                 "height": height,
+                "isClose": !layout.mobile,
                 "html": "",
                 "maskNode": layout.mobile?$(document.body) : this.form.app.content,
                 "container": layout.mobile?$(document.body) : this.form.app.content,
