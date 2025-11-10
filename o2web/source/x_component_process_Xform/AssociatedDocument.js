@@ -750,7 +750,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             }.bind(this));
             this.fireEvent("beforeLoadView", [viewDataList]);
 
-            if (layout.mobile && o2.version.dev===10){
+            if (layout.mobile && this.json.style === 'v10'){
                 this.selectViewMobile(callback);
             }else{
                 this.selectViewPc(callback);
@@ -792,8 +792,13 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
 
                 var selectedBundles = this.selectedBundleMap[ viewJson.viewId ] || [];
-                if( layout.mobile && o2.version.dev === 10 ){
-                    pageViewNode.setStyle("height", '100%');
+                if( layout.mobile  ){
+                    if( this.json.style === 'v10' ){
+                        pageViewNode.setStyle("height", '100%');
+                    }else{
+                       var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+                       pageViewNode.setStyle("height", viewHeight);
+                    }
                 }else{
                     var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y - 1;
                     if( o2.version.dev === 10 ){
@@ -828,7 +833,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     }.bind(this)
                 }, this.form.app, this.form.Macro)
 
-                if( layout.mobile && o2.version.dev === 10 ){
+                if( layout.mobile && this.json.style === 'v10' ){
                     view.addEvent('selectRow', (row)=>{
                         row.node.addClass('selectedRow');
                     });
