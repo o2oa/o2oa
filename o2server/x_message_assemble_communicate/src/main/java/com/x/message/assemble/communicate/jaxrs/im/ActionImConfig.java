@@ -45,6 +45,8 @@ public class ActionImConfig extends BaseAction {
 
 		private static final long serialVersionUID = 6217331123000062134L;
 
+		@FieldDescribe("是否开启群成员自主退出的功能.")
+		private Boolean enableGroupMemberQuitSelf;
 		@FieldDescribe("是否开启清空聊天记录的功能.")
 		private Boolean enableClearMsg;
 		@FieldDescribe("是否开启撤回聊天消息的功能.")
@@ -59,6 +61,14 @@ public class ActionImConfig extends BaseAction {
 		private int versionNo;
 		@FieldDescribe("更新内容.")
 		private String changelog;
+
+		public Boolean getEnableGroupMemberQuitSelf() {
+			return enableGroupMemberQuitSelf;
+		}
+
+		public void setEnableGroupMemberQuitSelf(Boolean enableGroupMemberQuitSelf) {
+			this.enableGroupMemberQuitSelf = enableGroupMemberQuitSelf;
+		}
 
 		public Boolean getEnableOnlyOfficePreview() {
 			return enableOnlyOfficePreview;
