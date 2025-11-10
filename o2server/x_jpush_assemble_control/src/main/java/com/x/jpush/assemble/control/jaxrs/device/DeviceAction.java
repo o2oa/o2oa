@@ -93,6 +93,26 @@ public class DeviceAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "设备解除绑定", action = ActionRemoveBindAll.class)
+	@POST
+	@Path("admin/unbind/all/person")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void unbindByAdmin(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("绑定设备的对象") JsonElement jsonElement) {
+
+		ActionResult<ActionRemoveBindAll.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionRemoveBindAll().execute(this.effectivePerson(request), jsonElement);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new IllegalArgumentException("设备解除绑定时发生异常！", e);
+			result.error(exception);
+			logger.error(e, this.effectivePerson(request), request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "设备解除绑定", action = ActionRemoveBind.class)
 	@DELETE
 	@Path("unbind/{deviceName}/{deviceType}")
