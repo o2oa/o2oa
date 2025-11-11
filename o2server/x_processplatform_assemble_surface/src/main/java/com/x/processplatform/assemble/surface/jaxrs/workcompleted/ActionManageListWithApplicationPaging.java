@@ -90,7 +90,11 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 				}
 			} else {
 				// 有管理权限直接检索应用
-				this.fetch(business, this.adjustPage(page), this.adjustSize(size), p, workCriteria, List.of(), result);
+				List<String> processes = wi.getProcessList();
+				if (ListTools.isNotEmpty(processes) && BooleanUtils.isTrue(wi.getRelateEditionProcess())) {
+					processes = business.process().listEditionProcess(processes);
+				}
+				this.fetch(business, this.adjustPage(page), this.adjustSize(size), p, workCriteria, processes, result);
 			}
 			return result;
 		}
