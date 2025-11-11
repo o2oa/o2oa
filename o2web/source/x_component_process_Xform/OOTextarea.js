@@ -192,11 +192,17 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
     },
 
     notValidationMode: function (text) {
-        this.validationText = text;
-        this.node.checkValidity();
+        if(!this.isNotValidationMode){
+            this.isNotValidationMode = true;
+            this.validationText = text;
+            this.node.checkValidity();
+        }
     },
     validationMode: function () {
-        this.validationText = '';
-        this.node.unInvalidStyle();
+        if(this.isNotValidationMode){
+            this.isNotValidationMode = false;
+            this.validationText = '';
+            this.node.unInvalidStyle();
+        }
     }
 });
