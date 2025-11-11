@@ -20,6 +20,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.Task_;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -50,7 +51,7 @@ class V2ListPaging extends V2Base {
 		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
 		Root<Task> root = cq.from(Task.class);
 		cq.select(root).where(predicate).orderBy(cb.asc(root.get(Task.orderNumber_FIELDNAME)),
-				cb.desc(root.get(JpaObject.sequence_FIELDNAME)));
+				cb.desc(root.get(Task_.startTime)));
 		return em.createQuery(cq).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
 	}
 
