@@ -389,6 +389,7 @@ MWF.xApplication.process.Xform.DatatableMobile$Title = new Class({
 			this.node.empty();
 
 			var lineheight = this.node.getStyle("line-height") || "28px";
+			if( lineheight === 'normal' )lineheight = '1em';
 			this.wrapNode = new Element("div", {
 				"styles": {
 					"display": "flex",
