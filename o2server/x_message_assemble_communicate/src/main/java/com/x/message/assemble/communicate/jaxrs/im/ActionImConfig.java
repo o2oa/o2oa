@@ -35,8 +35,8 @@ public class ActionImConfig extends BaseAction {
 		if (wo.getRevokeOutMinute() == null || wo.getRevokeOutMinute() <= 0) {
 			wo.setRevokeOutMinute(2); // 默认2分钟
 		}
-		wo.setVersionNo(300);
-		wo.setChangelog("新增转发、收藏等功能！");
+		wo.setVersionNo(310);
+		wo.setChangelog("新增群成员自主退出等功能！");
 		result.setData(wo);
 		return result;
 	}

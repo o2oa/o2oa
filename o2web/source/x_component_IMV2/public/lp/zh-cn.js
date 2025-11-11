@@ -106,6 +106,7 @@ MWF.xApplication.IMV2.LP = {
 
 
     "settingsClearMsg": "是否开启会话删除功能",
+    "settingsGroupMemberQuitSelf": "是否开启群聊成员退出功能",
     "settingsRevokeMsg": "是否开启聊天消息撤回功能",
     "settingsRevokeOutMinuteMsg": "撤回时效(分钟数)， 回车保存数据",
     "settingsConversationCheckInvokeMsg": "会话创建、更新的检查接口，回车保存数据",
@@ -120,8 +121,10 @@ MWF.xApplication.IMV2.LP = {
 
     "messageXadminNotSupport": "xadmin用户无法使用聊聊，请切换正常的用户登录！",
 
+    "quitGroup": "退出群聊",
+    "messageQuitGroupAlert": "确定要退出当前群聊会话吗？",
+
     "deleteChat": "删除聊天",
     "messageDeleteSingleConversationAlert": "确定要删除当前会话吗，删除后将看不到以前的聊天记录？",
-
     "messageDeleteGroupConversationAlert": "确定要删除当前会话吗，这会解散当前群聊并删除聊天记录？"
 }
