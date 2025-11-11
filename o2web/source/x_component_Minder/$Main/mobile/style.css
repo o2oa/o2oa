@@ -38,13 +38,7 @@ header{
     overflow: auto;
     height: calc( 100% - 3.5rem );
 }
-oo-calendar{
-    width: calc(100% - 1rem);
-    box-shadow: none;
-}
-oo-calendar .dateContent table td > div{
-    position: relative;
-}
+
 
 .info{
     padding: 0 1em 1em;

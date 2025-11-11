@@ -238,10 +238,37 @@ MWF.xApplication.Minder.MainMobile = new Class({
                     lp: this.lp
                 }
             },
-            // ()=>{
-            //     this.loadList( "root');
-            // }
+            ()=>{
+                this.loadFolder();
+            }
         );
+    },
+    loadFolder: function (){
+        var setProperty = (tree)=>{
+            tree.text = tree.name;
+            tree.selectable = 'yes';
+            tree.icon = 'folder-open';
+            tree.expanded = true;
+            tree.children?.forEach( (child)=>{
+                setProperty(child);
+            });
+            return tree;
+        };
+        var p = o2.Actions.load('x_mind_assemble_control').MindFolderInfoAction.treeMyFolder();
+        p.then((json)=>{
+            var rootData = {
+                id : "root",
+                name : "根目录",
+                orderNumber : "1",
+                description : "",
+                children: json.data
+            };
+            var tree = setProperty(rootData);
+            this.nav.setMenu([tree]);
+        });
+        // this.nav.addEvent('select', (e)=>{
+        //     console.log(e.detail.data)
+        // })
     },
     loadList: function(folderId = 'root'){
         var p = this.actions.listNextMindWithFilter('(0)', 100, {"folderId": folderId});
@@ -259,10 +286,6 @@ MWF.xApplication.Minder.MainMobile = new Class({
             );
             this.fireEvent("postLoad")
         });
-    },
-    loadFolder: function (){
-        var p = this.app.restActions.listMyFolder();
-
     }
 });
 
