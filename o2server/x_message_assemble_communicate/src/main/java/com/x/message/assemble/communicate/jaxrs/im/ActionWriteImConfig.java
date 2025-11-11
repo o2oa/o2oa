@@ -106,6 +106,16 @@ public class ActionWriteImConfig extends BaseAction {
 		private String conversationCheckInvoke;
 		@FieldDescribe("是否使用onlyOffice预览文件(需要先安装onlyOffice扩展应用).")
 		private Boolean enableOnlyOfficePreview;
+		@FieldDescribe("是否开启群成员自主退出的功能.")
+		private Boolean enableGroupMemberQuitSelf;
+
+		public Boolean getEnableGroupMemberQuitSelf() {
+			return enableGroupMemberQuitSelf;
+		}
+
+		public void setEnableGroupMemberQuitSelf(Boolean enableGroupMemberQuitSelf) {
+			this.enableGroupMemberQuitSelf = enableGroupMemberQuitSelf;
+		}
 
 		public Boolean getEnableOnlyOfficePreview() {
 			return enableOnlyOfficePreview;

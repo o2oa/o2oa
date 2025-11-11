@@ -315,6 +315,23 @@ public class ImAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "退出群聊会话(需开启配置).", action = ActionConversationMemberQuitSelf.class)
+	@GET
+	@Path("conversation/{id}/group/quit/self")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void quitGroupSelf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("会话ID") @PathParam("id") String id) {
+		ActionResult<ActionConversationMemberQuitSelf.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionConversationMemberQuitSelf().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "查询会话列表，管理员使用.", action = ActionPersonConversationList.class)
 	@POST
 	@Path("conversation/list/with/person")
