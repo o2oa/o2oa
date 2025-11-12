@@ -307,6 +307,11 @@ MWF.xApplication.Minder.MainMobile = new Class({
             );
             this.fireEvent("postLoad")
         });
+    },
+    showItemAction: function(e, data){
+        debugger;
+        this.actionSelect.removeClass('hide').addClass('invisibility');
+        this.actionSelect._elements.box.click();
     }
 });
 

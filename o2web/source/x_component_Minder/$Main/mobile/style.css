@@ -97,6 +97,11 @@ footer{
 .hide{
     display: none;
 }
+.invisibility{
+    position: absolute;
+    left: -1000px;
+    top: -1000px;
+}
 
 div[data-o2-binddataid]{
     display: contents;
@@ -128,7 +133,7 @@ div[data-o2-binddataid]{
     max-width: 100%;
     max-height: 7.375em;
 }
-.item-title{
+.item-bottom{
     height: 1em;
     padding-top: 2px;
     text-align: center;
@@ -136,6 +141,13 @@ div[data-o2-binddataid]{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.item-title{
+    flex: 1
+}
+.item-action{
+    width: 1em;
+    font-size: 1em;
 }
 
 .calendar .list-title{

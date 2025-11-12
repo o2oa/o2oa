@@ -12,8 +12,15 @@
     <div class="item-img-area">
       <img src="{{ MWF.xDesktop.getImageSrc($.icon)}}" class="item-img"></img>
     </div>
-    <div class="item-title">{{$.name}}</div>
+    <div class="item-bottom">
+      <div class="item-title">{{$.name}}</div>
+      <div class="item-action ooicon-point3" data-o2-events="click:showItemAction"></div>
+    </div>
   </div>
   {{end each}}
 </div>
 {{end if}}
+<oo-select class="hide" data-o2-element="actionSelect" data-o2-events="change:handleItemAction">
+  <oo-option value="rename" icon="rename">{{$.lp.rename}}</oo-option>
+  <oo-option value="delete" icon="delete">{{$.lp.delete}}</oo-option>
+</oo-select>
