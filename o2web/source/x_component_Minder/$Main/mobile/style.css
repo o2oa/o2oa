@@ -160,7 +160,7 @@ div[data-o2-binddataid]{
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100% - 400px);
+    height: 100%;
     color: var(--oo-color-gray1);
 }
 .empty-icon{

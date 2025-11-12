@@ -54,6 +54,7 @@ MWF.xApplication.Minder.LP = {
 	"createTime" : "创建时间",
 	"updateTime" : "修改时间",
 	"fileVersion" : "版本",
+	"noMinder": "当前目录还没有脑图",
 
 	"tool": {
 		"createMinder": "新建脑图",
