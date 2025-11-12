@@ -261,19 +261,40 @@ MWF.xApplication.Minder.MainMobile = new Class({
                 name : "根目录",
                 orderNumber : "1",
                 description : "",
+                selected: true,
                 children: json.data
             };
             var tree = setProperty(rootData);
             this.nav.setMenu([tree]);
         });
-        // this.nav.addEvent('select', (e)=>{
-        //     console.log(e.detail.data)
-        // })
+        this.nav.addEventListener('select', (e)=>{
+            var {text, id} = e.detail.data;
+            this.closeFolder();
+            this.folderName.set('text', text);
+            this.loadList(id);
+        });
+    },
+    switchFolder: function(e){
+        if( this.folderArea.offsetParent ){
+            this.folderArea.addClass('hide');
+            this.mask.addClass('hide');
+            this.arrow.addClass('up');
+        }else{
+            this.folderArea.removeClass('hide');
+            this.mask.removeClass('hide');
+            this.arrow.removeClass('up');
+        }
+    },
+    closeFolder: function(e){
+        this.folderArea.addClass('hide');
+        this.mask.addClass('hide');
+        this.arrow.addClass('up');
     },
     loadList: function(folderId = 'root'){
-        var p = this.actions.listNextMindWithFilter('(0)', 100, {"folderId": folderId});
+        this.listArea.empty();
+        var p = o2.Actions.load('x_mind_assemble_control').MindInfoAction.listNextWithFilter('(0)', 100, {"folderId": folderId});
         p.then((json)=>{
-            this.node.loadHtml(
+            this.listArea.loadHtml(
                 `../x_component_Minder/$Main/${this.options.style}/list.html`,
                 {
                     module: this,

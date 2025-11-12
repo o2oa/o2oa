@@ -6,27 +6,13 @@
 {{end if}}
 
 {{if $.data.length > 0}}
-<div class="info">
-  {{layout.session.user.name}}，您好！当日有
-  <div class="info-count">{{$.data.length}}</div>
-  个日程！
-</div>
-<div>
+<div class="list">
   {{each $.data}}
   <div class="item" data-o2-events="click:handleEventClick">
-    <div class="item-line">
-      <div class="item-flag" style="background-color: {{$.color}}"></div>
-      <div class="item-line-text">{{$.title}}</div>
+    <div class="item-img-area">
+      <img src="{{ MWF.xDesktop.getImageSrc($.icon)}}" class="item-img"></img>
     </div>
-    <div style="justify-content: space-between;" class="item-line">
-      <div class="item-time">{{$.range.start}} - {{$.range.end}}</div>
-      <div class="item-status" style="background-color: {{$.statusColor}}">
-        {{$.status}}
-      </div>
-    </div>
-    <div>
-      <div>{{$.locationName || $._.lp.noAddress}}</div>
-    </div>
+    <div class="item-title">{{$.name}}</div>
   </div>
   {{end each}}
 </div>

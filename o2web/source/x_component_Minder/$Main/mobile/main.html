@@ -1,10 +1,17 @@
-<header>
-    <div class="header-title">{{$.lp.title}}</div>
-    <i class="header-create ooicon-add-circle" data-o2-events="click:createEvent;"></i>
-    <i class="header-calendar ooicon-list-alt" data-o2-events="click:loadCalendarList;"></i>
-</header>
-<div data-o2-element="content" class="content">
-    <oo-nav key="id" data-o2-element="nav">
-    </oo-nav>
-    <div data-o2-element="eventArea" style="display: contents"></div>
+<div class="wrap">
+    <header>
+        <div class="header-title">{{$.lp.title}}</div>
+        <i class="header-create ooicon-add-circle" data-o2-events="click:createEvent;"></i>
+    </header>
+    <main data-o2-element="listArea">
+    </main>
+    <footer data-o2-element="footer" data-o2-events="click:switchFolder;">
+        <i class="folder-icon ooicon-folder-open"></i>
+        <div class="folder-name" data-o2-element="folderName"></div>
+        <i class="arrow up ooicon-drop_down mainColor_color" data-o2-element="arrow"></i>
+    </footer>
+</div>
+<div class="mask hide" data-o2-element="mask" data-o2-events="click:closeFolder;"></div>
+<div class="popup hide" data-o2-element="folderArea">
+    <oo-nav key="id" data-o2-element="nav"></oo-nav>
 </div>
