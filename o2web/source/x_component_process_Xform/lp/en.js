@@ -310,6 +310,7 @@ MWF.xApplication.process.Xform.LP={
 		"resumeTitle": "Resume the task from pending",
 		"downloadAll": "Download",
 		"downloadAllTitle": "Download the form and all attachments",
+		"downloadAllText": "The form needs to be saved first. Do you want to continue?",
 		"monitor": "Process Monitor",
 		"monitorTitle": "Process Monitor",
 		"addTask": "Add Task",

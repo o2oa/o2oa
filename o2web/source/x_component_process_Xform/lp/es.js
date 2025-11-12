@@ -309,6 +309,7 @@ MWF.xApplication.process.Xform.LP={
 		"resumeTitle": "Reanudar desde el estado suspendido",
 		"downloadAll": "Descargar todo",
 		"downloadAllTitle": "Descargar todo",
+		"downloadAllText": "Primero debe guardar el formulario. ¿Desea continuar?",
 		"monitor": "Monitor de proceso",
 		"monitorTitle": "Monitor de proceso",
 		"addTask": "Agregar asignación",
