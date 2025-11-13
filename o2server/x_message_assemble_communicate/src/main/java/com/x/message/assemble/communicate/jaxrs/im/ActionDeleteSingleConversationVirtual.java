@@ -49,8 +49,10 @@ public class ActionDeleteSingleConversationVirtual  extends BaseAction {
             if (ext == null) {
                 throw new ExceptionEmptyBusinessObject(conversationId+ "-" + effectivePerson.getDistinguishedName());
             }
+            Date now = new Date();
             ext.setIsDeleted(true);
-            ext.setLastDeleteTime(new Date());
+            ext.setLastDeleteTime(now);
+            ext.setLastReadTime(now);
             emc.beginTransaction(IMConversationExt.class);
             emc.persist(ext, CheckPersistType.all);
             emc.commit();
