@@ -1,6 +1,6 @@
 {{if $.data.length === 0}}
 <div class="empty">
-  <div class="ooempty-wuricheng empty-icon"></div>
+  <div class="ooempty-wuwenjian empty-icon"></div>
   <div>{{$.lp.noMinder}}</div>
 </div>
 {{end if}}
@@ -10,7 +10,9 @@
   {{each $.data}}
   <div class="item" data-o2-events="click:handleEventClick">
     <div class="item-img-area">
-      <img src="{{ MWF.xDesktop.getImageSrc($.icon)}}" class="item-img"></img>
+      {{if !!$.icon}}
+      <img src="{{ MWF.xDesktop.getImageSrc($.icon)}}" class="item-img"/>
+      {{end if}}
     </div>
     <div class="item-bottom">
       <div class="item-title">{{$.name}}</div>
@@ -20,7 +22,7 @@
   {{end each}}
 </div>
 {{end if}}
-<oo-select class="hide" data-o2-element="actionSelect" data-o2-events="change:handleItemAction">
+<oo-select class="hide" allow-input="true" data-o2-element="actionSelect" data-o2-events="change:handleItemAction">
   <oo-option value="rename" icon="rename">{{$.lp.rename}}</oo-option>
   <oo-option value="delete" icon="delete">{{$.lp.delete}}</oo-option>
 </oo-select>

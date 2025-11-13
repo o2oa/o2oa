@@ -1,0 +1,230 @@
+{
+  "toolItemGroup": {
+    "float": "left",
+    "overflow": "hidden"
+  },
+  "toolItem": {
+    "margin": "15px 3px 10px 3px",
+    "color": "#666",
+    "float": "left",
+    "background-repeat": "no-repeat",
+    "background-position-x": "center",
+    "background-position-y": "top",
+    "padding": "23px 5px 5px 5px",
+    "cursor": "pointer"
+  },
+  "toolItem_over": {
+    "color": "#3C76B7"
+  },
+  "toolItem_disable": {
+    "color": "#999",
+    "cursor": "default"
+  },
+  "separator": {
+    "margin": "17px 2px 10px 2px",
+    "height": "40px",
+    "float": "left",
+    "border-left": "1px solid rgba(0,0,0,0.12)"
+  },
+  "toolItem_horizontal_top": {
+    "margin": "15px 0px 0px 10px",
+    "color": "#666",
+    "float": "left",
+    "background-repeat": "no-repeat",
+    "background-position-y": "2px",
+    "background-position-x": "left",
+    "padding": "0px 5px 5px 23px",
+    "cursor": "pointer"
+  },
+  "toolItem_horizontal_top_over" : {
+    "color": "#3C76B7",
+    "cursor": "pointer"
+  },
+  "toolItem_horizontal_top_disable": {
+    "color": "#999",
+    "cursor": "default"
+  },
+  "toolItem_horizontal_bottom": {
+    "margin": "2px 0px 5px 10px",
+    "color": "#666",
+    "float": "left",
+    "background-repeat": "no-repeat",
+    "background-position-y": "2px",
+    "background-position-x": "left",
+    "padding": "0px 5px 5px 23px",
+    "cursor": "pointer"
+  },
+  "toolItem_horizontal_bottom_over" : {
+    "color": "#3C76B7",
+    "cursor": "pointer"
+  },
+  "toolItem_horizontal_bottom_disable": {
+    "color": "#999",
+    "cursor": "default"
+  },
+  "toolItem_help" : {
+    "margin": "22px 15px 5px 10px",
+    "color": "#666",
+    "float" : "right",
+    "background-repeat": "no-repeat",
+    "background-position-y": "center",
+    "background-position-x": "center",
+    "width": "24px",
+    "height": "24px",
+    "cursor": "pointer"
+  },
+  "toolItem_help_over" : {
+    "color": "#3C76B7",
+    "cursor": "pointer"
+  },
+  "rightToolbarItem_style": {
+    "cursor": "pointer",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/style_normal.png) no-repeat center center",
+    "display": "block",
+    "width": "25px",
+    "height": "25px",
+    "margin": "0 auto"
+  },
+  "rightToolbarItem_style_active": {
+    "cursor": "pointer",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/style_active.png) no-repeat center center",
+    "display": "block",
+    "width": "25px",
+    "height": "25px",
+    "margin": "0 auto"
+  },
+  "rightToolbarItem_resource": {
+    "cursor": "pointer",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/resource_normal.png) no-repeat center center",
+    "display": "block",
+    "width": "25px",
+    "height": "25px",
+    "margin": "0 auto"
+  },
+  "rightToolbarItem_resource_active": {
+    "cursor": "pointer",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/resource_active.png) no-repeat center center",
+    "display": "block",
+    "width": "25px",
+    "height": "25px",
+    "margin": "0 auto"
+  },
+  "rightToolbarItem_note": {
+    "cursor": "pointer",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/note_normal.png) no-repeat center center",
+    "display": "block",
+    "width": "25px",
+    "height": "25px",
+    "margin": "0 auto"
+  },
+  "rightToolbarItem_note_active" : {
+    "cursor": "pointer",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/note_active.png) no-repeat center center",
+    "display": "block",
+    "width": "25px",
+    "height": "25px",
+    "margin": "0 auto"
+  },
+  "tooltipNode": {
+    "height" : "80px",
+    "padding": "10px",
+    "border-radius": "5px",
+    "right": "40px",
+    "top": "0px",
+    "font-size": "14px",
+    "position": "absolute",
+    "min-width": "240px",
+    "max-width": "500px",
+    "box-shadow": "0px 0px 8px 0px #999999",
+    "background-color": "rgb(255, 255, 255)"
+  },
+  "arrowNode": {
+    "background-image": "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAlCAYAAACgc9J8AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP9JREFUeNq01oENhCAMBdCWuIgTuP8WOoGj9GhSDaeUfjiuCSEm+iKFVllESGNdVzrPk55xHIfewHnItm1MrVDMG/u+i0aeyWZp3R9CJRaBIWRB5YUHItAL80AEqmI1EIFcrAQ1rwjUxEoQgULsAue+2ayc/W83p5+z6RXggOO1WQGhrsFXP/Oip58tAaQTZ4QMbEbyEB2GCKEBdtpmru4NsC4aHg8PLJ/3lim2xDv02jYDz1kNQsGEQgiYeqAQBPuZQF1jFKqBYTn1RLK1D4+v3E3NGfgNkJlfdKi0XrUZgc1OWyt0Dwz/z37tGhA20s+WR4t+1iBbzTJyaD8CDAB7WgNSzh/AnwAAAABJRU5ErkJggg==')",
+    "background-repeat": "no-repeat",
+    "background-position": "-11px 0px",
+    "left": "auto",
+    "top": "7px",
+    "width": "9px",
+    "height": "17px",
+    "right": "-8px",
+    "bottom": "auto",
+    "position": "absolute"
+  },
+  "fontToolbarItemSelector" : {
+    "height" : "30px",
+    "margin" : "5px",
+    "color": "#666",
+    "float": "left"
+  },
+  "fontToolbarItemSelector_over": {
+    "color": "#3C76B7"
+  },
+  "fontToolbarItemSelector_disable": {
+    "color": "#999",
+    "cursor": "default"
+  },
+  "fontToolbarItem": {
+    "color": "#666",
+    "float": "left",
+    "width" : "30px",
+    "height" : "30px",
+    "margin" : "5px",
+    "background-repeat": "no-repeat",
+    "background-position-x": "center",
+    "background-position-y": "top",
+    "cursor": "pointer"
+  },
+  "fontToolbarItem_over": {
+    "color": "#3C76B7"
+  },
+  "fontToolbarItem_disable": {
+    "color": "#999",
+    "cursor": "default"
+  },
+  "tooltipNode_resource": {
+    "height" : "160px",
+    "padding": "10px 0px 10px 10px",
+    "border-radius": "5px",
+    "right": "40px",
+    "top": "110px",
+    "font-size": "14px",
+    "position": "absolute",
+    "min-width": "262px",
+    "max-width": "500px",
+    "box-shadow": "0px 0px 8px 0px #999999",
+    "background-color": "rgb(255, 255, 255)"
+  },
+  "resourceToolbarItem" : {
+    "margin" : "5px",
+    "color": "#666"
+  },
+  "tooltipNode_note": {
+    "height" : "360px",
+    "padding": "0px",
+    "border-radius": "5px",
+    "right": "40px",
+    "top": "300px",
+    "font-size": "14px",
+    "position": "absolute",
+    "min-width": "272px",
+    "max-width": "500px",
+    "box-shadow": "0px 0px 8px 0px #999999",
+    "background-color": "rgb(255, 255, 255)"
+  },
+  "noteToolbarItem" : {
+    "height" : "100%",
+    "overflow" : "hidden",
+    "color": "#666"
+  },
+  "closeNode" : {
+    "position" : "absolute",
+    "top" : "1px",
+    "right" : "1px",
+    "width" : "16px",
+    "height" : "16px",
+    "background-image": "url(../x_component_MinderEditor/$Main/default/icon/icon_off.png)",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "cursor" : "pointer"
+  }
+}

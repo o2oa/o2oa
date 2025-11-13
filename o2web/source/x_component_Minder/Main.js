@@ -271,7 +271,7 @@ MWF.xApplication.Minder.MainMobile = new Class({
             var {text, id} = e.detail.data;
             this.closeFolder();
             this.folderName.set('text', text);
-            this.loadList(id);
+            this.loadList(id, e.detail.data);
         });
     },
     switchFolder: function(e){
@@ -290,7 +290,9 @@ MWF.xApplication.Minder.MainMobile = new Class({
         this.mask.addClass('hide');
         this.arrow.addClass('up');
     },
-    loadList: function(folderId = 'root'){
+    loadList: function(folderId = 'root', folderData){
+        this.currentFolderData = folderData;
+        this.currentFolderId = folderId;
         this.listArea.empty();
         var p = o2.Actions.load('x_mind_assemble_control').MindInfoAction.listNextWithFilter('(0)', 100, {"folderId": folderId});
         p.then((json)=>{
@@ -305,13 +307,108 @@ MWF.xApplication.Minder.MainMobile = new Class({
                 },
                 ()=>{}
             );
-            this.fireEvent("postLoad")
+            this.fireEvent("postLoad");
         });
     },
+    getCurrentFolderData: function (){
+        return this.currentFolderData;
+    },
     showItemAction: function(e, data){
-        debugger;
         this.actionSelect.removeClass('hide').addClass('invisibility');
         this.actionSelect._elements.box.click();
+        this.currentItemData = data;
+    },
+    handleItemAction: function (e){
+        switch(this.actionSelect.value){
+            case "rename":
+                this.rename(this.currentItemData);
+                this.actionSelect.value = '';
+                this.actionSelect._inputValue();
+                break;
+            case "delete":
+                this.remove(this.currentItemData);
+                this.actionSelect.value = '';
+                this.actionSelect._inputValue();
+                break;
+        }
+        this.currentItemData = null;
+    },
+    rename : function(data){
+        MWF.xDesktop.requireApp("Minder", "Common", null, false);
+        if( !data )return;
+        var form = new MWF.xApplication.Minder.ReNameForm(this, {
+            name : data.name
+        }, {
+            id : data.id,
+            onSave: ()=>{
+                this.loadList();
+            }
+        }, {
+            app: this
+        });
+        form.edit();
+    },
+    remove : function(data){
+        if( !data )return;
+        var _self = this;
+
+        var p = MWF.getCenterPosition(this.content, 300, 150);
+        var event = {
+            "event": {
+                "x": p.x,
+                "y": p.y - 200,
+                "clientX": p.x,
+                "clientY": p.y - 200
+            }
+        };
+
+        this.confirm("warn", event, "删除文件确认", `是否删除文件：${data.name}。`, 350, 120, function () {
+            o2.Actions.load('x_mind_assemble_control').MindInfoAction.destoryFromNormal(data.id, ()=> {
+                _self.notice("成功删除文件。");
+                _self.loadList();
+            });
+            this.close();
+        }, function () {
+            this.close();
+        });
+    },
+    createMinder: function(){
+        MWF.xDesktop.requireApp("Minder", "Common", null, false);
+        var form = new MWF.xApplication.Minder.NewNameForm(this, {
+        }, {
+            onSave: ()=>{
+                this.loadList();
+            }
+        }, {
+            app: this
+        });
+        form.edit();
+    },
+    createFolder: function(){
+        MWF.xDesktop.requireApp("Minder", "Common", null, false);
+        var form = new MWF.xApplication.Minder.FolderForm(this, {
+        }, {}, {
+            app: this
+        });
+        form.create();
+    },
+    handleEventClick: function (e, data){
+        this.openMinder(e, data);
+    },
+    openMinder: function(e, data){
+        var appId = "MinderEditor"+data.id;
+        var app = this.desktop.apps[appId];
+        if (app){
+            app.setCurrent();
+        }else {
+            this.desktop.openApplication(null, "MinderEditor", {
+                "appId" : appId,
+                "folderId" : data.folderId,
+                "id" : data.id,
+                "isEdited" : true,
+                "isNew" : false
+            });
+        }
     }
 });
 

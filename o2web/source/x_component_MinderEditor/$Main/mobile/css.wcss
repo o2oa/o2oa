@@ -1,0 +1,76 @@
+{
+  "topToolbar": {
+    "font-size": "14px",
+    "color": "#666",
+    "overflow": "hidden",
+    "margin-bottom": "3px",
+    "height": "70px",
+    "background-color": "#F8F8F8",
+    "box-shadow": "0 1px 3px 0 rgba(0,0,0,0.25)"
+  },
+  "rightToolbar": {
+    "position": "absolute",
+    "width": "30px",
+    "height": "80px",
+    "padding": "5px 0px",
+    "right": "10px",
+    "top": "78px",
+    "background": "#FEFEFE",
+    "color": "#fff",
+    "border-radius": "4px",
+    "border": "1px solid #CCCCCC",
+    //"z-index": "10",
+    "box-shadow": "0px 0px 8px 0px #999999",
+    "transition": "-webkit-transform 0.7s 0.1s ease",
+    "transition": "transform .7s 0.1s ease"
+  },
+  "selectorListNode" : {
+    "margin-bottom" : "5px"
+  },
+  "selectorListItemNode":{
+    "height" : "30px",
+    "line-height" : "30px",
+    "width":"100%",
+    "text-indent":"10px",
+    "background-color" : "#fff",
+    "font-size" : "14px",
+    "color" : "#333"
+  },
+  "selectorListItemNode_over" : {
+      "width":"100%",
+      "text-indent":"10px",
+      "background-color" : "#3d77c1",
+      "color" : "#fff"
+    },
+  "progressBarNode": {
+    "height": "60px",
+    "width": "400px",
+    "background-color": "#EEE",
+    "overflow": "hidden",
+    "border": "3px solid #666",
+    "border-radius": "10px",
+    "box-shadow": "0px 0px 15px #666",
+    "position": "absolute",
+    "z-index":101
+  },
+  "progressBarTextNode": {
+    "height": "20px",
+    "line-height": "20px",
+    "color": "#555",
+    "width": "360px",
+    "margin": "10px auto 5px auto"
+  },
+  "progressBar": {
+    "height": "8px",
+    "width": "358px",
+    "border": "1px solid #666",
+    "background-color": "#FFF",
+    "border-radius": "3px",
+    "margin": "0px 20px"
+  },
+  "progressBarPercent": {
+    "height": "8px",
+    "width": "0px",
+    "background-color": "#4c6b87"
+  }
+}
