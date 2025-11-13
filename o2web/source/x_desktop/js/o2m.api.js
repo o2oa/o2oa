@@ -177,7 +177,7 @@
      * @static
      * @param {String} callback 操作按钮点击执行函数
      * @param {String} iconClassName 操作按钮 icon className
-     * @param {[object]} menuList 操作按钮列表 [{"title": "菜单名称", "callback": "回调函数名称"}]
+     * @param {Object[]} menuList 操作按钮列表 [{"title": "菜单名称", "callback": "回调函数名称"}]
      * @example
      * window.o2m.portalLoaded('callbackName'); //添加操作按钮
      */
