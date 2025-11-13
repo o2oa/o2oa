@@ -1,5 +1,6 @@
 package com.x.organization.assemble.personal.jaxrs;
 
+import com.x.organization.assemble.personal.jaxrs.signature.SignatureAction;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
@@ -29,5 +30,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(EmpowerAction.class);
 		classes.add(EmpowerLogAction.class);
 		classes.add(ExmailAction.class);
+		classes.add(SignatureAction.class);
 	}
 }

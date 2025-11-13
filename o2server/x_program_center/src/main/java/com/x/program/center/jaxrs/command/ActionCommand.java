@@ -29,7 +29,7 @@ import org.apache.commons.lang3.BooleanUtils;
 /*执行服务器命令*/
 public class ActionCommand extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionCommand.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
@@ -40,40 +40,23 @@ public class ActionCommand extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String ctl = wi.getCtl();
 		String nodeName = wi.getNodeName();
-		Wo wo = null;
-		if (nodeName.equalsIgnoreCase("*")) {
+		Wo wo;
+		String logInfo = "{} executeCommand {} on node {}";
+		if (nodeName.equals("*")) {
 			Nodes nodes = Config.nodes();
-			if (ctl.indexOf("create encrypt") > -1) {
-				// 生成key文件
-				wo = executeCommand(ctl, Config.node(), nodes.get(Config.node()).nodeAgentPort());
-				// 同步key文件
-				for (String node : nodes.keySet()) {
-					// 其他服务器
-					if (!node.equalsIgnoreCase(Config.node())) {
-						if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
-							boolean Syncflag = executeSyncFile("config/public.key", node,
-									nodes.get(node).nodeAgentPort());
-							Syncflag = executeSyncFile("config/private.key", node, nodes.get(node).nodeAgentPort());
-							Syncflag = executeSyncFile("servers/webServer/x_desktop/res/config/config.json", node,
-									nodes.get(node).nodeAgentPort());
-						}
-					}
+			// 先其他服务器再当前服务器
+			for (String node : nodes.keySet()) {
+				if (!node.equalsIgnoreCase(Config.node())) {
+					logger.info(logInfo, effectivePerson.getDistinguishedName(), ctl,
+							node);
+					executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
 				}
-			} else {
-				// 先其他服务器再当前服务器
-				for (String node : nodes.keySet()) {
-					if (!node.equalsIgnoreCase(Config.node())) {
-						logger.print("{} executeCommand {} on node {}", effectivePerson.getDistinguishedName(), ctl,
-								node);
-						wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
-					}
-				}
-				logger.print("{} executeCommand {} on node {}", effectivePerson.getDistinguishedName(), ctl,
-						Config.node());
-				wo = executeCommand(ctl, Config.node(), nodes.get(Config.node()).nodeAgentPort());
 			}
+			logger.info(logInfo, effectivePerson.getDistinguishedName(), ctl,
+					Config.node());
+			wo = executeCommand(ctl, Config.node(), nodes.get(Config.node()).nodeAgentPort());
 		} else {
-			logger.print("{} executeCommand {} on node {}", effectivePerson.getDistinguishedName(), ctl, nodeName);
+			logger.info(logInfo, effectivePerson.getDistinguishedName(), ctl, nodeName);
 			wo = executeCommand(ctl, nodeName, Integer.parseInt(wi.getNodePort()));
 		}
 
@@ -81,7 +64,7 @@ public class ActionCommand extends BaseAction {
 		return result;
 	}
 
-	synchronized private Wo executeCommand(String ctl, String nodeName, int nodePort) throws Exception {
+	private synchronized Wo executeCommand(String ctl, String nodeName, int nodePort) {
 		Wo wo = new Wo();
 		wo.setNode(nodeName);
 		wo.setStatus("success");
@@ -96,7 +79,7 @@ public class ActionCommand extends BaseAction {
 				dos.writeUTF(XGsonBuilder.toJson(commandObject));
 				dos.flush();
 
-				if (ctl.indexOf("create encrypt") > -1) {
+				if (ctl.contains("create encrypt")) {
 					String createEncrypt = dis.readUTF();
 					logger.info(createEncrypt);
 				}
@@ -108,48 +91,6 @@ public class ActionCommand extends BaseAction {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		wo.setTime(df.format(new Date()));
 		return wo;
-	}
-
-	private boolean executeSyncFile(String syncFilePath, String nodeName, int nodePort) {
-		boolean syncFileFlag = false;
-		File syncFile;
-
-		try (Socket socket = new Socket(nodeName, nodePort)) {
-
-			syncFile = new File(Config.base(), syncFilePath);
-
-			socket.setKeepAlive(true);
-			socket.setSoTimeout(5000);
-			try (InputStream fileInputStream = new FileInputStream(syncFile);
-					DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-					DataInputStream dis = new DataInputStream(socket.getInputStream());) {
-
-				Map<String, Object> commandObject = new HashMap<>();
-				commandObject.put("command", "syncFile:" + syncFilePath);
-				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
-				dos.writeUTF(XGsonBuilder.toJson(commandObject));
-				dos.flush();
-
-				dos.writeUTF(syncFilePath);
-				dos.flush();
-
-				logger.info("同步文件starting.......");
-				byte[] bytes = new byte[1024];
-				int length = 0;
-				while ((length = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
-					dos.write(bytes, 0, length);
-					dos.flush();
-				}
-				logger.info("同步文件end.......");
-
-			}
-
-			syncFileFlag = true;
-		} catch (Exception ex) {
-			logger.error(ex);
-			syncFileFlag = false;
-		}
-		return syncFileFlag;
 	}
 
 	public static class Wi extends GsonPropertyObject {
