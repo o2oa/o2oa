@@ -1,14 +1,14 @@
 package com.x.server.console.action;
 
-import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Host;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import com.x.server.console.ResourceFactory;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -17,11 +17,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.server.console.ResourceFactory;
 
 /*
 @author zhourui
@@ -36,7 +31,6 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_HD = "hd";
 	private static final String CMD_TD = "td";
 	private static final String CMD_EC = "ec";
-	private static final String CMD_DD = "dd";
 	private static final String CMD_RD = "rd";
 	private static final String CMD_CLH2 = "clh2";
 	private static final String CMD_UF = "uf";
@@ -68,8 +62,6 @@ public class ActionControl extends ActionBase {
 				td(cmd);
 			} else if (cmd.hasOption(CMD_EC)) {
 				ec(cmd);
-			} else if (cmd.hasOption(CMD_DD)) {
-				dd(cmd);
 			} else if (cmd.hasOption(CMD_RD)) {
 				rd(cmd);
 			} else if (cmd.hasOption(CMD_CLH2)) {
@@ -112,7 +104,6 @@ public class ActionControl extends ActionBase {
 		options.addOption(hdOption());
 		options.addOption(tdOption());
 		options.addOption(ecOption());
-		options.addOption(ddOption());
 		options.addOption(rdOption());
 		options.addOption(clh2Option());
 		options.addOption(ufOption());
@@ -136,7 +127,6 @@ public class ActionControl extends ActionBase {
 		displayOptions.addOption(hdOption());
 		displayOptions.addOption(tdOption());
 		displayOptions.addOption(ecOption());
-		displayOptions.addOption(ddOption());
 		displayOptions.addOption(rdOption());
 		displayOptions.addOption(clh2Option());
 		displayOptions.addOption(ufOption());
@@ -174,11 +164,6 @@ public class ActionControl extends ActionBase {
 
 	private static Option clh2Option() {
 		return Option.builder(CMD_CLH2).longOpt("compactLocalH2").desc("压缩本地H2数据库.").build();
-	}
-
-	private static Option ddOption() {
-		return Option.builder(CMD_DD).longOpt("dumpData").argName("path").hasArg().optionalArg(true)
-				.desc("导出数据库服务器的数据转换成json格式保存到本地文件.").build();
 	}
 
 	private static Option rdOption() {
@@ -281,12 +266,6 @@ public class ActionControl extends ActionBase {
 	private void clh2(CommandLine cmd) throws Exception {
 		CompactLocalH2 compactLocalH2 = new CompactLocalH2();
 		compactLocalH2.execute();
-	}
-
-	private void dd(CommandLine cmd) throws Exception {
-		String path = Objects.toString(cmd.getOptionValue(CMD_DD), "");
-		DumpData dumpData = new DumpData();
-		dumpData.execute(path);
 	}
 
 	private void rd(CommandLine cmd) throws Exception {

@@ -86,11 +86,10 @@ public class Host {
 			sb.append(macAddress);
 
 			// 2. 获取其他系统信息
-			String osName = System.getProperty("os.name");
 			String osArch = System.getProperty("os.arch");
 			String userName = System.getProperty("user.name");
 
-			sb.append("#").append(osName).append("#").append(osArch).append("#").append(userName);
+			sb.append("#").append(osArch).append("#").append(userName);
 
 			// 3. 生成MD5哈希作为机器码
 			logger.debug("机器码信息: {}", sb.toString());
