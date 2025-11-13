@@ -3255,7 +3255,7 @@ div.text{\r
 			<slot name="label"></slot>\r
 		</div>\r
 		<div class="body" style="width: 100%; height: 100%;">\r
-			<div style="display: flex; align-items: center; height: 100%;">\r
+			<div style="display: flex; align-items: center;">\r
 				<div class="box">\r
 					<slot name="before-inner-before"></slot>\r
 					<div class="prefix"></div>\r
