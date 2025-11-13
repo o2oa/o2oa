@@ -469,16 +469,33 @@ public abstract class Plan extends GsonPropertyObject {
 				continue;
 			}
 			String[] paths = StringUtils.split(selectEntry.path, XGsonBuilder.PATH_DOT);
-			Subquery<String> sortSubquery = cq.subquery(String.class);
-			Root<Item> sortRoot = sortSubquery.from(Item.class);
-			Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME), root.get(bundleAtt));
-			for (int i = 0; i < paths.length; i++) {
-				if(StringUtils.isNotBlank(paths[i]) && !FilterEntry.WILDCARD.equals(paths[i])) {
-					p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));
+			Order order;
+			if(BooleanUtils.isTrue(selectEntry.numberOrder)){
+				Subquery<Double> sortSubquery = cq.subquery(Double.class);
+				Root<Item> sortRoot = sortSubquery.from(Item.class);
+				Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME), root.get(bundleAtt));
+				for (int i = 0; i < paths.length; i++) {
+					if(StringUtils.isNotBlank(paths[i]) && !FilterEntry.WILDCARD.equals(paths[i])) {
+						p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));
+					}
 				}
+				sortSubquery.select(sortRoot.get(DataItem.numberValue_FIELDNAME)).where(p);
+				order = StringUtils.equals(SelectEntry.ORDER_ASC, selectEntry.orderType) ? cb.asc(sortSubquery) : cb.desc(sortSubquery);
+			}else {
+				Subquery<String> sortSubquery = cq.subquery(String.class);
+				Root<Item> sortRoot = sortSubquery.from(Item.class);
+				Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME),
+						root.get(bundleAtt));
+				for (int i = 0; i < paths.length; i++) {
+					if (StringUtils.isNotBlank(paths[i]) && !FilterEntry.WILDCARD.equals(
+							paths[i])) {
+						p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));
+					}
+				}
+				sortSubquery.select(sortRoot.get(DataItem.stringShortValue_FIELDNAME)).where(p);
+				order = StringUtils.equals(SelectEntry.ORDER_ASC, selectEntry.orderType) ? cb.asc(
+								sortSubquery) : cb.desc(sortSubquery);
 			}
-			sortSubquery.select(sortRoot.get(DataItem.stringShortValue_FIELDNAME)).where(p);
-			Order order = StringUtils.equals(SelectEntry.ORDER_ASC, selectEntry.orderType) ? cb.asc(sortSubquery) : cb.desc(sortSubquery);
 			orderList.add(order);
 		}
 	}
