@@ -35,7 +35,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.zip.ZipOutputStream;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -60,7 +59,7 @@ public class DumpData {
 			dir = Paths.get(Config.base(), "local", "dump", "dumpData_" + DateTools.compact(start));
 		} else {
 			dir = Paths.get(path);
-			if (dir.startsWith(Paths.get(Config.base()))) {
+			if (!dir.startsWith(Config.path_webroot(true)) && dir.startsWith(Paths.get(Config.base()))) {
 				LOGGER.warn("path can not in base directory.");
 				return false;
 			}
@@ -127,7 +126,8 @@ public class DumpData {
 				});
 				Files.write(dir.resolve("catalog.json"),
 						pureGsonDateFormated.toJson(catalog).getBytes(StandardCharsets.UTF_8));
-				try (OutputStream out = Files.newOutputStream(dir.getParent().resolve(dir.toFile().getName() + ".zip"))) {
+				Path zipFile = dir.getParent().resolve(dir.toFile().getName() + ".zip");
+				try (OutputStream out = Files.newOutputStream(zipFile)) {
 					ZipTools.toZip(dir.toFile(), out, new ArrayList<>());
 				}
 				LOGGER.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.toString(),
