@@ -90,6 +90,9 @@ public class ActionConversationUpdate extends BaseAction {
                 IMConversationExt conversationExt = new IMConversationExt();
                 conversationExt.setConversationId(conversation.getId());
                 conversationExt.setPerson(person);
+                Date now = new Date();
+                conversationExt.setLastDeleteTime(now);
+                conversationExt.setLastReadTime(now);
                 emc.beginTransaction(IMConversationExt.class);
                 emc.persist(conversationExt, CheckPersistType.all);
                 emc.commit();

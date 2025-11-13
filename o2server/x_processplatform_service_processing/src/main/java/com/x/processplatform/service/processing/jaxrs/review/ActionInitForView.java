@@ -41,7 +41,7 @@ class ActionInitForView extends BaseAction {
 			}
 
 			List<Work> list2 = emc.fetchAll(Work.class, List.of(JpaObject.id_FIELDNAME));
-			LOGGER.info("init workCompleted to review count:{}.", list2.size());
+			LOGGER.info("init work to review count:{}.", list2.size());
 			for (Work wo : list2) {
 				Work work = emc.find(wo.getId(), Work.class);
 				Long count = emc.countEqualAndEqual(Review.class, Review.job_FIELDNAME, work.getJob(),
@@ -53,6 +53,7 @@ class ActionInitForView extends BaseAction {
 					emc.commit();
 				}
 			}
+			LOGGER.info("init review completed.");
 		}
 
 		Wo wo = new Wo();

@@ -255,7 +255,18 @@ public abstract class DataItem extends SliceJpaObject {
 				Date time = DateTools.parse(value, DateTools.format_HHmmss);
 				this.setItemStringValueType(ItemStringValueType.t);
 				this.setTimeValue(time);
+			}else{
+				this.setNumberValue(convertToDouble(value));
 			}
+		}
+	}
+
+	private Double convertToDouble(String str) {
+		if (str == null) return null;
+		try {
+			return Double.parseDouble(str.trim());
+		} catch (NumberFormatException e) {
+			return null;
 		}
 	}
 

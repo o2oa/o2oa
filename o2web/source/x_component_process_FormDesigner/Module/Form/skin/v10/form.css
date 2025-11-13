@@ -421,7 +421,7 @@
 }
 .form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(3) > div {
     overflow: auto !important;
-    padding: 1em;
+    /*padding: 1em;*/
     font-size: 1rem !important;
 }
 

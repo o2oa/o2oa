@@ -1,0 +1,15 @@
+<header>
+    <div class="header-title">{{$.lp.title}}</div>
+    <i class="header-create ooicon-add-circle" data-o2-events="click:createMeeting;"></i>
+    <i class="header-calendar ooicon-mail" data-o2-events="click:loadInvitation;"></i>
+</header>
+<div class="content">
+    <oo-calendar
+            mode="date"
+            value="{{$.defaultDate}}"
+            week-begin="{{$.weekBegin}}"
+            data-o2-element="calendar"
+            data-o2-events="viewchange:handleViewChange;change:handleDateChange">
+    </oo-calendar>
+    <div data-o2-element="meetingArea" style="display: contents;"></div>
+</div>

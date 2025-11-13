@@ -1,0 +1,163 @@
+:root {
+    --meeting-wait: #51b749;
+    --meeting-processing: #5484ed;
+    --meeting-invite: #f6a623;
+    --meeting-completed: #fbd75b;
+}
+header{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    height: 3.5rem;
+    background-color: var(--oo-color-main);
+    color: var(--oo-color-text-white);
+    box-shadow: var(--oo-menu-shadow);
+}
+.header-title{
+    font-size: var(--oo-font-size-larger);
+    flex: 1;
+    padding-left: 1rem;
+}
+.calendar-header-title{
+    font-size: var(--oo-font-size-larger);
+    flex: 1;
+    text-align: center;
+}
+.header-create{
+    font-size: var(--oo-font-size-large);
+    padding-right: 1rem;
+}
+.header-calendar{
+    font-size: var(--oo-font-size-large);
+    padding-right: 1rem;
+}
+.ooicon-pentagram_fill {
+    position: absolute;
+    font-size: 0.3rem;
+    margin-top: 8em;
+    color: red;
+}
+.content{
+    font-size: var(--oo-font-size-default);
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1em;
+    overflow: auto;
+    height: calc( 100% - 3.5rem );
+}
+oo-calendar{
+    width: calc(100% - 1rem);
+    box-shadow: none;
+}
+
+.info{
+    padding: 0 1em 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+.info-count{
+    height: 1.5em;
+    width: 1.5em;
+    background-color: var(--oo-color-highlight);
+    color: #ffffff;
+    text-align: center;
+    border-radius: 100%;
+    line-height: 1.5em;
+}
+
+.meeting-item {
+    border-radius: var(--oo-default-radius);
+    border: 1px solid #E6E6E6;
+    margin-bottom: 1em;
+    border-left: 0.5em solid var(--meeting-invite);
+}
+
+.meeting-item-title {
+    background-color: var(--oo-color-hover);
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.meeting-tiem-show {
+    font-family: D-DIN-PRO, D-DIN-PRO;
+    color: var(--oo-color-main);
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.meeting-item-content {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2em;
+    padding: 1em;
+}
+
+.meeting-item-content .meeting-content {
+    display: flex !important;
+    gap: 0.8em;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+}
+.meeting-item-content .ooicon-gprs::before{
+    margin-right: 0.5em;
+}
+.meeting-item-content .ooicon-person::before{
+    margin-right: 0.5em;
+}
+.meeting-title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.meeting-text{
+    font-size: 0.875rem;
+    color: var(--oo-color-text2);
+}
+.meeting-action{
+    display: none;
+    gap: 0.8em;
+    flex-direction: column;
+}
+
+
+.calendar .list-title{
+    font-size: 1.25em;
+    padding: 1.5em 1em 0.5em 1em;
+    color: #666;
+}
+.calendar .list-title i{
+    padding-right: 0.5em;
+}
+.calendar .list-item{
+    margin-bottom: 0;
+    margin-left: 2em;
+    background-color: transparent;
+    padding: 0.626em;
+}
+
+
+.empty{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc( 100% - 400px );
+    color: var(--oo-color-gray1);
+}
+.invitation .empty{
+    height: 100%;
+}
+.empty-icon{
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    font-size: 6em;
+    line-height: 1;
+    color: var(--oo-color-gray-e);
+}

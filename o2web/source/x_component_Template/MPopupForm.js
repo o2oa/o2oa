@@ -531,21 +531,25 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         if( visibleButtons.length === 1 ){
             setButtonStyle(visibleButtons[0]);
         }else if( visibleButtons.length > 2 ){
-            const moreNode = new Element("div.moreActionNode", {
+
+            var maskNode;
+            new Element("div.moreActionNode", {
                 text: '…',
                 styles: this.css.moreActionNode,
                 events: {
                     click: function (e) {
                         if( !moreArea.offsetParent ){
-                            var maskNode = new Element("div.moreMaskNode", {
+                            maskNode = new Element("div.moreMaskNode", {
                                 styles: this.css.moreActionMask,
                                 events: {
                                     click: function (e) {
                                         moreArea.setStyle('display', 'none');
-                                        maskNode.destroy();
+                                        maskNode?.destroy();
                                     }
                                 }
                             }).inject(moreArea, 'before');
+                        }else if(!!maskNode){
+                            maskNode.destroy();
                         }
                         moreArea.setStyle('display', moreArea.offsetParent ? 'none' : 'flex');
                     }.bind(this)

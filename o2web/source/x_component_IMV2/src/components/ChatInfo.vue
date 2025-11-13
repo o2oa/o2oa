@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, onUnmounted, watch, inject} from 'vue'
+import {ref, onMounted, onUnmounted, inject} from 'vue'
 import {lp, o2} from "@o2oa/component";
 import {getAvatarUrl, imAction, conversationIconUrl} from "../utils/actions.js";
 import {formatPersonName} from "../utils/common.js";
@@ -12,7 +12,8 @@ const {conversation} = defineProps(['conversation'])
 
 const emit = defineEmits(['closeChatInfo'])
 
-const quiteChatShow = ref(false)
+const quitChatShow = ref(false)
+const quitGroupByNormal = ref(false) // 普通成员退出群聊
 const isGroupAdmin = ref(false)
 const isGroup = ref(false)
 const memberList = ref([])
@@ -32,10 +33,11 @@ onMounted(()=> {
   isGroupAdmin.value = conversation.adminPerson === layout.session.user.distinguishedName
   form.value.title = conversation.title
   form.value.note = conversation.note
-  quiteChatShow.value = imConfigInstance.enableClearMsg
-  if (quiteChatShow.value && isGroup.value && !isGroupAdmin.value) {
-    quiteChatShow.value = false
+  quitChatShow.value = imConfigInstance.enableClearMsg
+  if (quitChatShow.value && isGroup.value && !isGroupAdmin.value) {
+    quitChatShow.value = false
   }
+  quitGroupByNormal.value = (imConfigInstance.enableGroupMemberQuitSelf && isGroup.value && !isGroupAdmin.value)
 })
 onUnmounted(()=> {
   console.debug(' =====> onUnmounted ChatInfo')
@@ -204,12 +206,13 @@ const clickQuit = () => {
   $OOUI.confirm.warn(lp.alert, msg).then((result) => {
     if (result.status === 'ok') {
       result.dlg.close()
-      quiteChat()
+      quitChat()
     }
   })
 }
 
-const quiteChat = async () => {
+// 单聊删除会话、群聊管理员删除会话
+const quitChat = async () => {
   if (isGroup.value && isGroupAdmin.value) {
     const result = await imAction('deleteGroupConversation', conversation.id)
     if (result) {
@@ -223,6 +226,25 @@ const quiteChat = async () => {
       updateOrDeleteConversation(null)
     }
   }
+}
+
+const clickQuitGroup = () => {
+  $OOUI.confirm.warn(lp.alert, lp.messageQuitGroupAlert).then((result) => {
+    if (result.status === 'ok') {
+      result.dlg.close()
+      quitGroup()
+    }
+  })
+}
+// 普通成员 退出群聊
+const quitGroup = async () => {
+   if (isGroup.value && !isGroupAdmin.value) { // 群聊并且不是管理员
+     const result = await imAction('quitGroupSelf', conversation.id)
+     if (result) {
+       console.info(`普通成员退出群聊成功 `, result)
+       updateOrDeleteConversation(null)
+     }
+   }
 }
 
 
@@ -331,10 +353,18 @@ const quiteChat = async () => {
 <!--      </div>-->
 
       <!--        退出-->
-      <div  v-if="quiteChatShow">
+      <div  v-if="quitChatShow">
         <div class="im-divider-v margin-top-10 margin-bottom-10"></div>
         <div class="im-chat-info-item" @click="clickQuit">
           <div class="danger pointer">{{ lp.deleteChat }}</div>
+        </div>
+        <div class="im-divider-v"></div>
+      </div>
+      <!--   退出群聊 普通成员   -->
+      <div  v-if="quitGroupByNormal">
+        <div class="im-divider-v margin-top-10 margin-bottom-10"></div>
+        <div class="im-chat-info-item" @click="clickQuitGroup">
+          <div class="danger pointer">{{ lp.quitGroup }}</div>
         </div>
         <div class="im-divider-v"></div>
       </div>

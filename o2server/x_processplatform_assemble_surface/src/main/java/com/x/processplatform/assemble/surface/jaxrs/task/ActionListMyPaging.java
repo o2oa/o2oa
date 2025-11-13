@@ -56,7 +56,7 @@ class ActionListMyPaging extends BaseAction {
 		Root<Task> root = cq.from(Task.class);
 		Predicate p = cb.equal(root.get(Task_.person), effectivePerson.getDistinguishedName());
 		cq.select(root).where(p).orderBy(cb.asc(root.get(Task.orderNumber_FIELDNAME)),
-				cb.desc(root.get(JpaObject.sequence_FIELDNAME)));
+				cb.desc(root.get(Task_.startTime)));
 		return em.createQuery(cq).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
 	}
 

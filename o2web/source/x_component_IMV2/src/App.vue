@@ -130,6 +130,7 @@ const updateOrDeleteConversation = ( conv ) => {
   currentConversation.value = conv
   eventBus.publish( EventName.refreshMyConversation ) // 刷新列表
 }
+
 provide('im-app', {
   openConversation,
   updateOrDeleteConversation

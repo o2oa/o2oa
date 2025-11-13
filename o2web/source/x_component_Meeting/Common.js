@@ -24,7 +24,7 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
     },
     _createTableContent: function () {
         this.formAreaNode.setStyle('z-index', '100');
-        this.formTopTextNode.set( "text", this.lp.editBuilding );
+        this.formTopTextNode?.set( "text", this.lp.editBuilding );
         var html = `<div class='formTable'>
             <div item='name'></div>
             <div item='address'></div>
@@ -515,33 +515,45 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     },
     _createTableContent: function () {
         var _self = this;
-        this.formTableContainer.setStyle("padding-top", "20px");
+        if( layout.mobile ){
+            this.formTableContainer.setStyles({
+                "width" : "auto",
+                "padding-left" : "20px",
+                "padding-right" : "20px"
+            });
+        }else{
+            this.formTableContainer.setStyle("padding-top", "20px");
+        }
         var user = layout.desktop.session.user;
         this.userName = user.distinguishedName;
         this.userId = user.id;
-        if( this.isNew ){
-            this.formTopTextNode.set( "text", this.lp.addMeeting );
-        }else if( this.isEdited ){
-            this.formTopTextNode.set( "text", this.lp.editMeeting );
-            this.options.height = this.isShowInviteDelPersonList() ? 900 : 810;
-            if( this.data.inviteDelPersonList && this.data.inviteDelPersonList.length )this.options.height += 40;
-        }else{
-            this.formTopTextNode.set( "text", this.lp.metting );
-            this.options.height = 730;
+        if( !layout.mobile ){
+            if( this.isNew ){
+                this.formTopTextNode?.set( "text", this.lp.addMeeting );
+            }else if( this.isEdited ){
+                this.formTopTextNode?.set( "text", this.lp.editMeeting );
+                this.options.height = this.isShowInviteDelPersonList() ? 900 : 810;
+                if( this.data.inviteDelPersonList && this.data.inviteDelPersonList.length )this.options.height += 40;
+            }else{
+                this.formTopTextNode?.set( "text", this.lp.metting );
+                this.options.height = 730;
+            }
+            if( this.data.acceptPersonList && this.data.acceptPersonList.length )this.options.height += 40;
+            if( this.data.rejectPersonList && this.data.rejectPersonList.length )this.options.height += 40;
         }
-        if( this.data.acceptPersonList && this.data.acceptPersonList.length )this.options.height += 40;
-        if( this.data.rejectPersonList && this.data.rejectPersonList.length )this.options.height += 40;
 
         if( this.isNew && !this.data.mode){
             this.data.mode = this.app.isAutoCreateOnlineRoom() ? "online" : "offline";
         }
         debugger;
-        if(this.isEdited || this.isNew){
-            if( this.data.mode === "online" )this.options.height += 80;
-        }else{
-            if( this.data.mode === "online" )this.options.height += 40;
+        if( !layout.mobile ){
+            if(this.isEdited || this.isNew){
+                if( this.data.mode === "online" )this.options.height += 80;
+            }else{
+                if( this.data.mode === "online" )this.options.height += 40;
+            }
+            this.options.height = ""+this.options.height;
         }
-        this.options.height = ""+this.options.height;
 
         var defaultDate, defaultBeginTime, date1, defaultEndTime;
         if( this.options.date || this.options.minute ){
@@ -655,7 +667,8 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, data, {
                 isEdited: this.isEdited || this.isNew,
-                style : "v10", mvcStyle: "v10",
+                style : layout.mobile ? "v10_mobile" : "v10",
+                mvcStyle: "v10",
                 itemTemplate: {
                     applicant : {  label: lp.applyPerson, type : "oo-org", orgType : "person", isEdited : false,
                         defaultValue : this.userName
@@ -695,7 +708,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     endTimeInput: {
                         required: true,
                         type: "oo-datetime",  isEdited : isEditing, label: lp.to,
-                        defaultValue: defaultEndTime, attr : {'mode': 'time'},
+                        defaultValue: defaultEndTime, attr : {'mode': 'time', 'label-style':''},
                         event : {
                             change : function( item, ev ){
                                 this.clearRoom();
@@ -802,7 +815,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             // }
             if( this.data.id )this.loadAttachment();
 
-            if(  isEditer && !this.isNew && !this.isEdited && data.mode !== "online"){
+            if( !layout.mobile && isEditer && !this.isNew && !this.isEdited && data.mode !== "online"){
                 this.loadQrCode();
             }else{
                 this.qrCodeArea.destroy();
@@ -823,7 +836,15 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var editEnable = this.editEnable;
         var startImmediatelyEnable = this.startImmediatelyEnable;
         var finishImmediatelyEnable = this.finishImmediatelyEnable;
-        var html = "<div style='display:flex; justify-content: center;'>" +
+        var html = layout.mobile ?
+            "<div style='display:contents;'>" +
+            "       <div item='cancelAction' style='display:contents;'></div>"+
+            "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "contents" : "none") +";'></div>"+
+            "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "contents" : "none") +";'></div>"+
+            "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "contents" : "none") +";'></div>"+
+            "       <div item='finishImmediatelyAction' style='float:left;display:"+ ( finishImmediatelyEnable ? "contents" : "none") +";'></div>"+
+            "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "contents" : "none") +";'></div>"+
+            "   </div>" : "<div style='display:flex; justify-content: center;'>" +
             "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
             "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
             "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "" : "none") +";'></div>"+
@@ -835,7 +856,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.actionForm = new MForm(this.formBottomNode, {}, {
                 isEdited: this.isEdited || this.isNew,
-                style: "v10",
+                style: layout.mobile ? "v10_mobile" : "v10",
                 itemTemplate: {
                     saveAction: {
                         type: "oo-button", className: "inputOkButton", clazz: "mainColor_bg", value: this.lp.save, event: {
@@ -882,6 +903,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 }
             }, this.app);
             this.actionForm.load();
+            if(layout.mobile){
+                this.formatMobileButton(this.formBottomNode.getFirst(), this.formAreaNode);
+            }
         }.bind(this))
     },
 

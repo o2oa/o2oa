@@ -462,7 +462,7 @@ public abstract class Plan extends GsonPropertyObject {
 		}
 	}
 
-	protected void joinPagingOrder(List<Order> orderList, CriteriaBuilder cb, Root<? extends JpaObject> root, CriteriaQuery<?> cq){
+	protected void joinPagingOrder(List<Order> orderList, CriteriaBuilder cb, Root<? extends JpaObject> root, CriteriaQuery<?> cq, String bundleAtt){
 		this.orderList = this.listOrderSelectEntry();
 		for (SelectEntry selectEntry : this.orderList) {
 			if (StringUtils.isBlank(selectEntry.path)) {
@@ -471,7 +471,7 @@ public abstract class Plan extends GsonPropertyObject {
 			String[] paths = StringUtils.split(selectEntry.path, XGsonBuilder.PATH_DOT);
 			Subquery<String> sortSubquery = cq.subquery(String.class);
 			Root<Item> sortRoot = sortSubquery.from(Item.class);
-			Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME), root.get(JpaObject.id_FIELDNAME));
+			Predicate p = cb.equal(sortRoot.get(DataItem.bundle_FIELDNAME), root.get(bundleAtt));
 			for (int i = 0; i < paths.length; i++) {
 				if(StringUtils.isNotBlank(paths[i]) && !FilterEntry.WILDCARD.equals(paths[i])) {
 					p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));

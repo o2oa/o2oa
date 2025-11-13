@@ -114,7 +114,7 @@ public class CmsPlan extends Plan {
             cq.select(root.get(Document_.id))
                     .where(this.where.documentPredicateV2(cb, root, cq, this.runtime, this.filterList));
             List<Order> orderList = new TreeList<>();
-            this.joinPagingOrder(orderList, cb, root, cq);
+            this.joinPagingOrder(orderList, cb, root, cq, JpaObject.id_FIELDNAME);
             if(orderList.isEmpty()) {
                 Order order = cb.desc(root.get(Document_.publishTime));
                 if (BooleanUtils.isTrue(where.draft)) {

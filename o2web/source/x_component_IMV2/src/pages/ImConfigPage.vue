@@ -19,6 +19,7 @@ const imConfigRef = ref({
   enableClearMsg: false,
   enableRevokeMsg: false,
   enableOnlyOfficePreview: false,
+  enableGroupMemberQuitSelf: false,
   revokeOutMinute: 2,
   conversationCheckInvoke: '',
 })
@@ -28,6 +29,7 @@ const loadConfig = async () => {
     enableClearMsg: imConfigInstance.enableClearMsg,
     enableRevokeMsg: imConfigInstance.enableRevokeMsg,
     enableOnlyOfficePreview: imConfigInstance.enableOnlyOfficePreview,
+    enableGroupMemberQuitSelf: imConfigInstance.enableGroupMemberQuitSelf,
     revokeOutMinute: imConfigInstance.revokeOutMinute,
     conversationCheckInvoke: imConfigInstance.conversationCheckInvoke,
   }
@@ -35,8 +37,18 @@ const loadConfig = async () => {
   enableClearMsg.value = imConfigRef.value.enableClearMsg ?? false
   enableRevokeMsg.value = imConfigRef.value.enableRevokeMsg ?? false
   enableOnlyOfficePreview.value = imConfigRef.value.enableOnlyOfficePreview ?? false
+  enableGroupMemberQuitSelf.value = imConfigRef.value.enableGroupMemberQuitSelf ?? false
   revokeOutMinute.value = imConfigRef.value.revokeOutMinute ?? 2
   conversationCheckInvoke.value = imConfigRef.value.conversationCheckInvoke ?? ''
+}
+// 清除消息
+const enableGroupMemberQuitSelf = ref(false)
+const changeEnableGroupMemberQuitSelf = (e) => {
+  if (e && e.target) {
+    enableGroupMemberQuitSelf.value = e.target.booleanValue
+    imConfigRef.value.enableGroupMemberQuitSelf = enableGroupMemberQuitSelf.value
+    saveConfig(imConfigRef.value)
+  }
 }
 // 清除消息
 const enableClearMsg = ref(false)
@@ -98,33 +110,30 @@ const saveConfig = async (config) => {
 }
 const styleCalc = () => {
   if (windowStateInstance.isMobile) {
-    return 'width: calc( '+windowStateInstance.windowWidth+'px - 3em )!important;'
+    return 'width: calc( ' + windowStateInstance.windowWidth + 'px - 3em )!important;'
   }
   return undefined
 }
 </script>
 
 <template>
-  <div class="im-config-dialog" :style=" styleCalc() " >
+  <div class="im-config-dialog" :style=" styleCalc() ">
     <div class="im-config-form-line">
       <div class="left">{{ lp.settingsClearMsg }}</div>
-<!--      <div class="im-chat-msg-select right" @click="clickEnableClearMsg">-->
-<!--        <i :class=" enableClearMsg ? 'ooicon-checkbox-checked mainColor_color icon':'ooicon-checkbox-unchecked icon' "></i>-->
-<!--      </div>-->
       <oo-switch :value="enableClearMsg" @change="changeEnableClearMsg"></oo-switch>
     </div>
+
+    <div class="im-config-form-line">
+      <div class="left">{{ lp.settingsGroupMemberQuitSelf }}</div>
+      <oo-switch :value="enableGroupMemberQuitSelf" @change="changeEnableGroupMemberQuitSelf"></oo-switch>
+    </div>
+
     <div class="im-config-form-line">
       <div class="left">{{ lp.settingsRevokeMsg }}</div>
-<!--      <div class="im-chat-msg-select right" @click="clickEnableRevokeMsg">-->
-<!--        <i :class=" enableRevokeMsg ? 'ooicon-checkbox-checked mainColor_color icon':'ooicon-checkbox-unchecked icon' "></i>-->
-<!--      </div>-->
       <oo-switch :value="enableRevokeMsg" @change="changeEnableRevokeMsg"></oo-switch>
     </div>
     <div class="im-config-form-line">
       <div class="left">{{ lp.settingsEnableOnlyOfficePreviewMsg }}</div>
-<!--      <div class="im-chat-msg-select right" @click="clickEnableOnlyOfficePreview">-->
-<!--        <i :class=" enableOnlyOfficePreview ? 'ooicon-checkbox-checked mainColor_color icon':'ooicon-checkbox-unchecked icon' "></i>-->
-<!--      </div>-->
       <oo-switch :value="enableOnlyOfficePreview" @change="changeEnableOnlyOfficePreview"></oo-switch>
     </div>
     <div class="im-config-form-label">
@@ -132,10 +141,6 @@ const styleCalc = () => {
     </div>
     <div class="im-config-form-line2">
       <oo-input style="width: 100%;" type="number" :value="revokeOutMinute" @keydown="inputRevokeOutMinute"></oo-input>
-      <!--      <div v-else style=" margin-right: 0.7rem;">{{revokeOutMinute}}</div>-->
-      <!--      <oo-button  v-if="!revokeOutMinuteEdit" class="mainColor_bg" style=" margin-left: 0.7rem;" @click="revokeOutMinuteEdit = true">{{lp.update}}</oo-button>-->
-      <!--      <oo-button  v-if="revokeOutMinuteEdit" class="mainColor_bg" style=" margin-left: 0.7rem;" @click="clickSaveRevokeOutMinuteEdit">{{lp.ok}}</oo-button>-->
-      <!--      <oo-button  v-if="revokeOutMinuteEdit" type="cancel" style=" margin-left: 0.7rem;" @click="clickCancelRevokeOutMinuteEdit">{{lp.cancel}}</oo-button>-->
     </div>
     <div class="im-config-form-label">
       <span>{{ lp.settingsConversationCheckInvokeMsg }}</span>
@@ -143,10 +148,6 @@ const styleCalc = () => {
     <div class="im-config-form-line2">
       <oo-input style="width: 100%;" type="text" :value="conversationCheckInvoke"
                 @keydown="inputConversationCheckInvoke"></oo-input>
-      <!--      <div v-else style=" margin-right: 0.7rem;">{{conversationCheckInvoke}}</div>-->
-      <!--      <oo-button  v-if="!conversationCheckInvokeEdit" class="mainColor_bg" style=" margin-left: 0.7rem;" @click="conversationCheckInvokeEdit = true">{{lp.update}}</oo-button>-->
-      <!--      <oo-button  v-if="conversationCheckInvokeEdit" class="mainColor_bg" style=" margin-left: 0.7rem;" @click="clickSaveConversationCheckInvokeEdit">{{lp.ok}}</oo-button>-->
-      <!--      <oo-button  v-if="conversationCheckInvokeEdit" type="cancel" style=" margin-left: 0.7rem;" @click="clickCancelConversationCheckInvokeEdit">{{lp.cancel}}</oo-button>-->
     </div>
 
   </div>

@@ -1,38 +1,5 @@
 package com.x.server.console.action;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.file.PathUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.OpenJPAPersistence;
-
 import com.google.gson.Gson;
 import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
@@ -50,6 +17,36 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.ZipTools;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.file.PathUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.OpenJPAPersistence;
 
 public class DumpData {
 
@@ -62,7 +59,7 @@ public class DumpData {
 			dir = Paths.get(Config.base(), "local", "dump", "dumpData_" + DateTools.compact(start));
 		} else {
 			dir = Paths.get(path);
-			if (dir.startsWith(Paths.get(Config.base()))) {
+			if (!dir.startsWith(Config.path_webroot(true)) && dir.startsWith(Paths.get(Config.base()))) {
 				LOGGER.warn("path can not in base directory.");
 				return false;
 			}
@@ -129,6 +126,10 @@ public class DumpData {
 				});
 				Files.write(dir.resolve("catalog.json"),
 						pureGsonDateFormated.toJson(catalog).getBytes(StandardCharsets.UTF_8));
+				Path zipFile = dir.getParent().resolve(dir.toFile().getName() + ".zip");
+				try (OutputStream out = Files.newOutputStream(zipFile)) {
+					ZipTools.toZip(dir.toFile(), out, new ArrayList<>());
+				}
 				LOGGER.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.toString(),
 						count(), (System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 			} catch (Exception e) {

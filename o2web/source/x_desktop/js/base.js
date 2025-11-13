@@ -289,13 +289,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
         };
 
         var _openPortal = function (appNames, options, statusObj) {
-            if (window.o2m) {
-                o2m.util.navigation.openInnerApp({
-                    appKey : 'portal',
-                    portalFlag: options.portalId,
-                    portalPage: options.pageId,
-                });
-            } else if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+            if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
                 const body = {
                     type: "navigation.openInnerApp",
                     data: {

@@ -19,6 +19,7 @@ import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -123,6 +124,9 @@ public class ActionConversationCreate extends BaseAction {
                 IMConversationExt conversationExt = new IMConversationExt();
                 conversationExt.setConversationId(conversation.getId());
                 conversationExt.setPerson(person);
+                Date now = new Date();
+                conversationExt.setLastDeleteTime(now);
+                conversationExt.setLastReadTime(now);
                 emc.beginTransaction(IMConversationExt.class);
                 emc.persist(conversationExt, CheckPersistType.all);
                 emc.commit();
