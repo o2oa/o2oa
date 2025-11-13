@@ -65,7 +65,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
             appendChild: {
                 icon: "insert_sub",
                 modle : ["edit"],
-                locale: "插入下级主题",
+                locale: layout.mobile ? "下级" : "插入下级主题",
                 key: ["Tab", "Insert"],
                 isDefaultKey: true,
                 disable: function () {
@@ -78,7 +78,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
             appendParent: {
                 icon: "insert_par",
                 modle : ["edit"],
-                locale: "插入上级主题",
+                locale: layout.mobile ? "上级" : "插入上级主题",
                 key: "Shit + Tab",
                 disable: function () {
                     return this.minder.queryCommandState('AppendParentNode') === -1;
@@ -90,7 +90,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
             appendSibling: {
                 icon: "insert_sibling",
                 modle : ["edit"],
-                locale: "插入同级主题",
+                locale: layout.mobile ? "同级" : "插入同级主题",
                 key: "Enter",
                 isDefaultKey: true,
                 disable: function () {

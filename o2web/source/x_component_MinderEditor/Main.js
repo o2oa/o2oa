@@ -660,6 +660,7 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
         }
         if( this.options.isEdited ){
             MWF.xDesktop.requireApp("MinderEditor", "RuntimeInEditMode", null, false);
+            MWF.xDesktop.requireApp("MinderEditor", "WidgetInEditMode", null, false);
             MWF.xDesktop.requireApp("MinderEditor", "ToolbarInMobile", null, false);
         }
         this.createNode();
@@ -684,7 +685,7 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
             this.commands.load();
 
             if( this.options.isEdited ){
-                this.topToolbar = new MWF.xApplication.MinderEditor.ToolbarInMobile( this, this.toolbarNode );
+                this.topToolbar = new MWF.xApplication.MinderEditor.ToolbarInMobile( this, this.topToolbarNode );
                 this.topToolbar.load();
 
                 this.input = new MWF.xApplication.MinderEditor.Input(this);
@@ -701,11 +702,39 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
         this.contentNode = new Element("div.contentNode").inject(this.node);
         this.contentNode.classList.add("km-editor");
 
-        this.toolbarNode = new Element("div.toolbarNode", {
-            styles: {height: '40px', 'width': '100%'}
+        this.topToolbarNode = new Element("div.toolbarNode", {
+            styles: {
+                "margin-top": "10px",
+                'display':'flex',
+                'white-space':'nowrap',
+                'align-items': 'center',
+                'height':'60px',
+                'padding': '0 10px',
+                'overflow-x':'auto',
+                'box-shadow': '0 -10px 10px -10px #ccc'
+            }
         }).inject(this.node);
 
-        this.Content_Offset_Top = 0; //this.contentNode.getCoordinates( this.node).top;
+        this.saveAction = new Element("div.saveAction.ooicon-save", {
+            styles: {
+                background: "#fff",
+                "font-size": "32px",
+                bottom: "80px",
+                color: '#666',
+                right: "20px",
+                cursor: "pointer",
+                width:"32px",
+                height:"32px",
+                position:"absolute"
+            },
+            events: {
+                click: ()=>{
+                    this.save();
+                }
+            }
+        }).inject(this.node);
+
+        this.Content_Offset_Top = 70; //this.contentNode.getCoordinates( this.node).top;
 
 
 

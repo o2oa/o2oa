@@ -8,8 +8,8 @@
 {{if $.data.length > 0}}
 <div class="list">
   {{each $.data}}
-  <div class="item" data-o2-events="click:handleEventClick">
-    <div class="item-img-area">
+  <div class="item">
+    <div class="item-img-area" data-o2-events="click:handleEventClick">
       {{if !!$.icon}}
       <img src="{{ MWF.xDesktop.getImageSrc($.icon)}}" class="item-img"/>
       {{end if}}

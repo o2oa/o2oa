@@ -4,13 +4,12 @@
     "overflow": "hidden"
   },
   "toolItem": {
-    "margin": "15px 3px 10px 3px",
     "color": "#666",
     "float": "left",
     "background-repeat": "no-repeat",
-    "background-position-x": "center",
-    "background-position-y": "top",
-    "padding": "23px 5px 5px 5px",
+    "background-position-x": "left",
+    "background-position-y": "center",
+    "padding": "0 10px 0 20px",
     "cursor": "pointer"
   },
   "toolItem_over": {
@@ -21,7 +20,7 @@
     "cursor": "default"
   },
   "separator": {
-    "margin": "17px 2px 10px 2px",
+//    "margin": "17px 2px 10px 2px",
     "height": "40px",
     "float": "left",
     "border-left": "1px solid rgba(0,0,0,0.12)"

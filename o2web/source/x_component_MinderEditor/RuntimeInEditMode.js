@@ -440,7 +440,7 @@ MWF.xApplication.MinderEditor.Input = new Class({
 // let the receiver follow the current selected node position
     setupReciverElement: function () {
         if (this.debug.flaged) {
-            this.receiverElement.classList.add('debug');
+            // this.receiverElement.classList.add('debug');
         }
 
         this.receiverElement.onmousedown = function(e) {
