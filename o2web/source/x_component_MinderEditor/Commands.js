@@ -24,7 +24,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
         if( !editor.key ){
             this.editor.key = new MWF.xApplication.MinderEditor.Key();
         }
-        if( !editor.receiver ){
+        if( !editor.receiver && !layout.mobile ){
             this.editor.receiver = new MWF.xApplication.MinderEditor.Receiver(this.editor);
         }
         this.fsm = this.editor.fsm;
@@ -1200,9 +1200,9 @@ MWF.xApplication.MinderEditor.Commands = new Class({
         this.resourceCheckbox.push(checkbox);
     },
     editNode: function () {
-        this.receiver.element.innerText = this.minder.queryCommandValue('text') || "";
+        if(this.receiver)this.receiver.element.innerText = this.minder.queryCommandValue('text') || "";
         this.fsm.jump('input', 'input-request');
-        this.receiver.selectAll();
+        if(this.receiver)this.receiver.selectAll();
     },
     openHyperLinkForm: function (command) {
         var form = new MWF.xApplication.MinderEditor.HyperLinkForm(this, {}, {}, {

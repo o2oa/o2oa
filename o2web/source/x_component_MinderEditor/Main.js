@@ -248,6 +248,7 @@ MWF.xApplication.MinderEditor.MainPc = new Class({
         this.isMovingCenter = true;
         // 创建 km 实例
         /* global kityminder */
+        debugger;
         var km = this.minder = new kityminder.Minder();
         //var target = document.querySelector('#minder-view');
         km.renderTo(this.contentNode);
@@ -676,7 +677,7 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
         this.loadResource(function () {
             this.loadKityMinder(this.data.content);
 
-            this.debug = new MWF.xApplication.MinderEditor.Debug(true);
+            this.debug = new MWF.xApplication.MinderEditor.Debug(false);
             this.key = new MWF.xApplication.MinderEditor.Key();
             this.fsm = new MWF.xApplication.MinderEditor.FSM('normal');
             this.receiver = new MWF.xApplication.MinderEditor.Receiver(this);
@@ -688,12 +689,12 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
                 this.topToolbar = new MWF.xApplication.MinderEditor.ToolbarInMobile( this, this.topToolbarNode );
                 this.topToolbar.load();
 
-                this.input = new MWF.xApplication.MinderEditor.Input(this);
+               this.input = new MWF.xApplication.MinderEditor.Input(this);
             }
 
 
-            this.drag = new MWF.xApplication.MinderEditor.Drag(this);
-            MWF.xApplication.MinderEditor.JumpingInEditMode(this);
+            // this.drag = new MWF.xApplication.MinderEditor.Drag(this);
+            // MWF.xApplication.MinderEditor.JumpingInEditMode(this);
         }.bind(this));
     },
     _createNode : function(){
@@ -738,8 +739,8 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
 
 
 
-        this.resizeContentFun = this.resizeContent.bind(this);
-        this.addEvent("resize", this.resizeContentFun);
+        // this.resizeContentFun = this.resizeContent.bind(this);
+        // this.addEvent("resize", this.resizeContentFun);
         this.resizeContent();
     },
 });

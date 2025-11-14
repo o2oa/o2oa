@@ -10,13 +10,11 @@
   {{each $.data}}
   <div class="item">
     <div class="item-img-area" data-o2-events="click:handleEventClick">
-      {{if !!$.icon}}
-      <img src="{{ MWF.xDesktop.getImageSrc($.icon)}}" class="item-img"/>
-      {{end if}}
+      <img src="{{ !!$.icon ? MWF.xDesktop.getImageSrc($.icon) : '../x_component_Minder/$Main/default/icon/default_thumbnail.png' }}" class="item-img"/>
     </div>
-    <div class="item-bottom">
+    <div class="item-bottom" data-o2-events="click:showItemAction">
       <div class="item-title">{{$.name}}</div>
-      <div class="item-action ooicon-point3" data-o2-events="click:showItemAction"></div>
+      <div class="item-action ooicon-point3"></div>
     </div>
   </div>
   {{end each}}

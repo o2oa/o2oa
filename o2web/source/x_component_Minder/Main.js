@@ -275,20 +275,32 @@ MWF.xApplication.Minder.MainMobile = new Class({
         });
     },
     switchFolder: function(e){
-        if( this.folderArea.offsetParent ){
-            this.folderArea.addClass('hide');
+        if( this.folderArea.hasClass('visible') ){
+            this.hideFolderArea();
             this.mask.addClass('hide');
             this.arrow.addClass('up');
         }else{
-            this.folderArea.removeClass('hide');
+            this.showFolderArea();
             this.mask.removeClass('hide');
             this.arrow.removeClass('up');
         }
     },
     closeFolder: function(e){
-        this.folderArea.addClass('hide');
+        this.hideFolderArea();
         this.mask.addClass('hide');
         this.arrow.addClass('up');
+    },
+    showFolderArea: function(){
+        window.setTimeout(()=>{
+            this.folderArea.removeClass('invisible');
+            this.folderArea.addClass('visible');
+        }, 10);
+    },
+    hideFolderArea: function(){
+        window.setTimeout(()=>{
+            this.folderArea.addClass('invisible');
+            this.folderArea.removeClass('visible');
+        }, 10);
     },
     loadList: function(folderId = 'root', folderData){
         this.currentFolderData = folderData;
@@ -376,6 +388,9 @@ MWF.xApplication.Minder.MainMobile = new Class({
         MWF.xDesktop.requireApp("Minder", "Common", null, false);
         var form = new MWF.xApplication.Minder.NewNameForm(this, {
         }, {
+            style: 'v10_mobile',
+            height: '100%',
+            width: '100%',
             onSave: ()=>{
                 this.loadList();
             }

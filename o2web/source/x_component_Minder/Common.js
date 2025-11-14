@@ -12,7 +12,7 @@ MWF.xApplication.Minder.FolderSelector = new Class({
         style : "", //如果有style，就加载 style/css.wcss
         axis: "y",      //箭头在x轴还是y轴上展现
         position : { //node 固定的位置
-            x : "right", //x轴上left center right,  auto 系统自动计算
+            x : "left", //x轴上left center right,  auto 系统自动计算
             y : "auto" //y 轴上top middle bottom, auto 系统自动计算
         },
         event : "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
@@ -431,27 +431,25 @@ MWF.xApplication.Minder.NewNameForm = new Class({
 
         var currentFolderData = this.explorer.getCurrentFolderData ? this.explorer.getCurrentFolderData() : {};
 
-        var html = layout.mobile ? "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            "<tr><td styles='formTableTitle' width='25%'></td>" +
-            `    <td styles='formTableValue14' colspan='3'>在${currentFolderData.name}下创建脑图</td></tr>` +
-            "<tr><td styles='formTableTitle' lable='name' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
-            "</table>" : "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            "<tr><td styles='formTableTitle' lable='folder' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='folder' colspan='3'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='name' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+        var html = layout.mobile ?
+            "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+            `<tr><td styles='formTableValue14' colspan='3'>在${currentFolderData.name}下创建脑图</td></tr>` +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+            "</table>" :
+            "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+            "<tr><td styles='formTableValue14' item='folder' colspan='3'></td></tr>" +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
         this.folderId = currentFolderData.id || "root";
         this.form = new MForm(this.formTableArea, this.data || {}, {
             isEdited: true,
-            style : "minder",
+            style : "v10", mvcStyle: "v10",
             hasColon : true,
             itemTemplate: {
-                folder: { text : "文件夹",  notEmpty : true, attr : { readonly : true }, defaultValue : currentFolderData.name || "根目录" },
-                name: { text : "名称", notEmpty : true }
+                folder: { type: 'oo-input', text : "文件夹",  notEmpty : true, attr : { readonly : true }, defaultValue : currentFolderData.name || "根目录" },
+                name: { type: 'oo-input', text : "名称", notEmpty : true }
             }
         }, this.app);
         this.form.load();
@@ -511,13 +509,19 @@ MWF.xApplication.Minder.NewNameForm = new Class({
         }
     },
     loadFolderSelect: function() {
-        this.folderSelect =  new MWF.xApplication.Minder.FolderSelector( this.app.content, this.form.getItem("folder").getElements()[0], this.app, {}, {
-            defaultNode : this.folderId,
-            onSelect : function( folderData ){
-                this.form.getItem("folder").setValue( folderData.name );
-                this.folderId = folderData.id;
-            }.bind(this)
-        } );
+        this.folderSelect =  new MWF.xApplication.Minder.FolderSelector(
+            this.app.content,
+            this.form.getItem("folder").getElements()[0],
+            this.app,
+            {},
+            {
+                defaultNode : this.folderId,
+                onSelect : function( folderData ){
+                    this.form.getItem("folder").setValue( folderData.name );
+                    this.folderId = folderData.id;
+                }.bind(this)
+            }
+        );
 
     }
 });

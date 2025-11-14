@@ -76,23 +76,30 @@ footer{
     left: 0;
 }
 .popup{
-    height: calc(85% - 5em);
     bottom: 5em;
     width: 100%;
     overflow: hidden;
-    position: absolute;
-    z-index: 1001;
+    height: calc(85% - 5em);
     display: flex;
     flex-direction: column;
     border-radius: 0.25rem;
     box-shadow: 0 0 0 1px var(--oo-color-gray-d);
-    transform-origin: center bottom;
-    transition: height 0.2s, opacity 0.2s, transform 0.2s;
-    transform: scale(1);
     opacity: 1;
     background: var(--oo-color-bg-white);
     padding-top: 1em;
     font-size: var(--oo-font-size-default);
+    position: absolute;
+    z-index: 1001;
+    transform-origin: bottom;
+    transition: height 0.3s, opacity 0.3s, transform 0.3s;
+}
+.popup.visible{
+    transform: scale(1);
+    opacity: 1;
+}
+.popup.invisible{
+    transform: scale(1, 0);
+    opacity: 0;
 }
 .hide{
     display: none;
