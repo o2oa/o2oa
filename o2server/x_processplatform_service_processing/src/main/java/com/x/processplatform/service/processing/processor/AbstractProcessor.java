@@ -212,6 +212,8 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 						work.getActivity());
 			}
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
+			// 如果是撤回到达这个环节会跳过arrive环节,所以这里要再次给activityUnique进行赋值
+			work.setActivityUnique(aeiObjects.getActivity().getUnique());
 			aeiObjects.getUpdateWorks().add(work);
 			// 如果是调度路由,需要重新设置froceRoute
 			if (BooleanUtils.isNotTrue(work.getBeforeExecuted())) {

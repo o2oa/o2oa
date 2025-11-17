@@ -1264,6 +1264,16 @@ public class AeiObjects extends GsonPropertyObject {
 								Optional<Review> existOptional = this.getReviews().stream()
 										.filter(p -> StringUtils.equals(o.getJob(), p.getJob())
 												&& StringUtils.equals(o.getPerson(), p.getPerson()))
+										.sorted(Comparator
+												.comparing(Review::getPermissionWrite,
+														Comparator.nullsFirst(Boolean::compareTo).reversed())
+												.thenComparing(
+														Comparator
+																.comparing(Review::getCreateTime,
+																		Comparator.nullsFirst(Date::compareTo))
+																.reversed()
+																.thenComparing(Comparator.comparing(Review::getId,
+																		Comparator.nullsLast(String::compareTo)))))
 										.findFirst();
 								if (existOptional.isEmpty()) {
 									this.business.entityManagerContainer().persist(o, CheckPersistType.all);
