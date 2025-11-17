@@ -4760,7 +4760,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "container": layout.mobile ? $(document.body) : this.app.content,
             "maskNode": layout.mobile ? $(document.body) : this.app.content,
             "onQueryClose": function(){
-
+                monitor.closeWorkLog();
             }.bind(this),
             "buttonList": [
                 {

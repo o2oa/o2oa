@@ -780,6 +780,12 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
         return {"x": x, "y": y};
     },
+    closeWorkLog: function (){
+        if(this.currentWorklogNode){
+            this.currentWorklogNode.destroy();
+            this.currentWorklogNode = null;
+        }
+    },
     showWorklog: function(activity, offset, psize, event){
         this.hideCurrentWorklog();
 
@@ -790,6 +796,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         this.setWorkLogPosition(activity, activity.worklogNode, offset, psize, event);
     },
     setWorkLogPosition: function(activity, logNode, offset, psize, event){
+        debugger;
         if( !logNode )logNode = activity.worklogNode;
         if( layout.mobile ){
             var pSize = this.paperNode.getSize();
@@ -821,21 +828,27 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             }
 
              // if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
+            var bottomY;
+            if( this.inDialog() ){
+                var dialogContent = this.getDialogContent();
+                bottomY = bodySize.y - dialogContent.getSize().y;
+            }else{
                 var mobileActionNode = document.body.getElement(".o2_form_mobile_actions");
-                logNode.inject( $(document.body) );
-                var bottomY = mobileActionNode ? mobileActionNode.getSize().y+1 : 1;
-                logNode.setStyles({
-                    "display": "block",
-                    "position": "absolute",
-                    "width": "calc( 100% - 4px )",
-                    "max-width": "500px",
-                    "max-height": "calc( 90% - "+bottomY+"px )",
-                    "overflow": "auto",
-                    "bottom": bottomY+"px",
-                    "left": "0px",
-                    "z-index": this.getZindex()
-                });
-                logNode.setStyle("left", 0);
+                bottomY = mobileActionNode ? mobileActionNode.getSize().y+1 : 1;
+            }
+            logNode.inject( $(document.body) );
+            logNode.setStyles({
+                "display": "block",
+                "position": "absolute",
+                "width": "calc( 100% - 4px )",
+                "max-width": "500px",
+                "max-height": "calc( 90% - "+bottomY+"px )",
+                "overflow": "auto",
+                "bottom": bottomY+"px",
+                "left": "0px",
+                "z-index": this.getZindex()
+            });
+            logNode.setStyle("left", 0);
                 //logNode.setStyle("left", (bodySize.x - logNode.getSize().x)/2 + "px");
             // }else{
             //     logNode.inject( this.paperNode );
@@ -858,22 +871,25 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }
         this.fireEvent('showWorklog', [logNode]);
     },
-    inDialog: function (){
+    getDialogContent: function(){
         var parent = this.paperNode;
         while (parent){
             if( parent.hasClass('MWF_dialod_content') ){
-                return true;
+                return parent;
             }
             parent = parent.getParent();
         }
-        return false;
+        return null;
+    },
+    inDialog: function (){
+        return !!this.getDialogContent();
     },
     getZindex: function () {
         var parent = this.paperNode;
         var zindex = 1;
         while (parent){
             var zIndex = parent.getStyle('z-index');
-            if( zIndex ){
+            if( zIndex && parseFloat(zIndex).toString() !== "NaN" ){
                 zindex = Math.max(zindex, zIndex.toFloat()+1);
             }
             parent = parent.getParent();
