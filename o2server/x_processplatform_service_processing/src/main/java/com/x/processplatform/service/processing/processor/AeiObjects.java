@@ -1265,7 +1265,7 @@ public class AeiObjects extends GsonPropertyObject {
 										.filter(p -> StringUtils.equals(o.getJob(), p.getJob())
 												&& StringUtils.equals(o.getPerson(), p.getPerson()))
 										.findFirst();
-								if (!existOptional.isPresent()) {
+								if (existOptional.isEmpty()) {
 									this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 								} else {
 									// 如果逻辑上相同的已阅已经存在,覆盖内容.
@@ -1273,6 +1273,7 @@ public class AeiObjects extends GsonPropertyObject {
 											.isTrue(existOptional.get().getPermissionWrite())
 											|| BooleanUtils.isTrue(o.getPermissionWrite());
 									o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
+									existOptional.get().setActivityUnique(o.getActivityUnique());
 									existOptional.get().setPermissionWrite(permissionWrite);
 								}
 							} catch (Exception e) {
