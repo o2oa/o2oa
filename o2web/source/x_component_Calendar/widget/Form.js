@@ -456,7 +456,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
-        this.checkDatatableClass();
+
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
@@ -510,24 +510,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             this.container.loadCss(this.json.cssUrl, null, function(){resolve()});
                         }.bind(this)));
                     }
-
-                    if (this.json.cssScript){
-                        const actions = {
-                            'portal': o2.Actions.load("x_portal_assemble_surface").ScriptAction,
-                             'process': o2.Actions.load("x_processplatform_assemble_surface").ScriptAction,
-                            'cms': o2.Actions.load("x_cms_assemble_control").ScriptAction,
-                            'service': o2.Actions.load("x_program_center").ScriptAction
-                        }
-
-                        this.json.cssScript.forEach((s)=>{
-                            var action = actions[s.appType];
-                                var p = s.appType === 'process' ? action.getImported(s.id, s.application || s.appId) : action.get(s.id);
-                                p.then((json)=>{
-                                this.container.loadCssText(json.data.text);
-                            });
-                        });
-                    } 
-
                     if (this.json.cssLink){
                         cssPromise.push(new Promise(function(resolve){
                             this.container.loadCss(this.json.cssLink, null, function(){resolve()});
@@ -568,13 +550,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             }.bind(this));
         }.bind(this));
-    },
-    checkDatatableClass: function (){
-        if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
-            MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = MWF.xApplication.process.Xform.DatatableV10;
-            MWF.xApplication.process.Xform.Datatable$Title = MWF.APPDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
-            MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
-        }
     },
     loadLanguage: function(callback){
         if (this.json.languageType!=="script" && this.json.languageType!=="default" && this.json.languageType!=="lib" && this.json.languageType!=="dict"){
@@ -764,6 +739,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this._loadMobileActions(node, callback);
             } else {
                 if (callback) callback();
+                //console.log("没有找到移动端底部操作栏！")
             }
         } else {
             if (callback) callback();
@@ -779,6 +755,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         if (!this.isAllSubformLoaded) return;
         if (this.isLoaded)return;
+        //console.log( "checkSubformLoaded this.subformCount="+ this.subformCount + " this.subformLoadedCount="+this.subformLoadedCount );
         if ((!this.subformCount || this.subformCount === this.subformLoadedCount) &&
             (!this.subpageCount || this.subpageCount === this.subpageLoadedCount) &&
             (!this.widgetCount || this.widgetCount === this.widgetLoadedCount)
@@ -811,6 +788,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (callback) callback();
         } else {
             this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
+                debugger;
                 tools = json.filter( function (d) { return !d.hidden; } );
                 // this.json.multiTools = tools;
                 this.json.defaultTools = tools;
@@ -1394,7 +1372,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             jsons.push( json );
 
             var module = this._loadModule(json, node, beforeLoadModule, replace);
-
             this.modules.push(module);
             modules.push( module );
         }.bind(this));
@@ -1402,8 +1379,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     _loadModule: function (json, node, beforeLoad, replace) {
         if( !json )return null;
+        //console.log( json.id );
         if (json.type === "Subform" || json.moduleName === "subform") this.subformCount++;
-
+        //if( json.type === "Subform" || json.moduleName === "subform" ){
+        //    console.log( "add subformcount ， this.subformCount = " + this.subformCount );
+        //}
         if (json.type === "Subpage" || json.moduleName === "subpage") this.subpageCount++;
         if (json.type === "Widget" || json.moduleName === "widget") this.widgetCount++;
         if (!MWF["APP" + json.type]) {
@@ -1749,9 +1729,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
-    isDraftWork: function (){
-      return !this.businessData.work.startTime;
-    },
+
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);
@@ -1782,9 +1760,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     this.businessData.originalData = null;
                     this.businessData.originalData = copyData;
                     if(callback)callback();
-
-                    this._postWindowMessage('onAfterSave', this.app.work.id);
-
                     this.saving = false;
                 }.bind(this), failure, this.businessData.work.id, this.modifedData);
             }.bind(this));
@@ -1796,29 +1771,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if(callback)callback();
             }.bind(this), failure, this.businessData.work.id, this.modifedData);
         }
-    },
-    saveFormDataDraftSync: function(){
-        this.saving = true;
-        if (this.officeList) {
-            this.officeList.each(function (module) {
-                module.save(history);
-            });
-        }
-        var data = data || this.getData();
-        var draft = {
-            "data": data,
-            "work": this.businessData.work,
-            "identity": this.businessData.work.creatorIdentityDn
-        }
-        var copyData = Object.clone(data);
-        this.workAction.saveDraft(draft, function (json) {
-            this.app.options.draftId = json.data.id;
-            this.businessData.originalData = null;
-            this.businessData.originalData = copyData;
-            this.businessData.work.id = json.data.id;
-        }.bind(this), null, false);
-
-
     },
     saveFormDataDraft: function (callback, failure, history, data, issubmit, isstart) {
         this.saving = true;
@@ -1858,10 +1810,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         layout.desktop.apps = {};
                     }
                     layout.desktop.apps[this.app.appId] = this.app;
+
                     if (callback) callback();
-
-                    this._postWindowMessage('onAfterSave', this.app.work.id);
-
                     this.saving = false;
 
                     if (!isstart) this.app.reload();
@@ -2225,12 +2175,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var modules = this.modules;
         for (var i = 0; i < modules.length; i++) {
             var module = modules[i];
-            if( module && module.json ){
-                 var moduleName = module.json.moduleName;
-                 if (!moduleName) moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
-                 if (moduleName === "org") {
-                    check(module)
-                }
+            var moduleName = module.json.moduleName;
+            if (!moduleName) moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            if (moduleName === "org") {
+                check(module)
             }
         }
         if (processorOrgList && processorOrgList.length > 0) {
@@ -2404,24 +2352,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
 
-    _postWindowMessage: function(type, id){
-        if (!this.postWindowMessageFun) this.postWindowMessageFun = {};
-        if (this.postWindowMessageFun[type]){
-            window.clearTimeout(this.postWindowMessageFun[type])
-            this.postWindowMessageFun[type] = null;
-        }
-        this.postWindowMessageFun[type] = window.setTimeout(()=>{
-            var o = window.opener ?? layout;
-            o.postMessage({
-                type, id
-            }, window.location.origin);
-            if (this.postWindowMessageFun) this.postWindowMessageFun[type] = null;
-        }, 1000);
-    },
 
     finishOnFlow: function(type, data, notCloseWindow){
-        this._postWindowMessage('onAfterProcess', this.app.work.id);
-
         if (this.closeImmediatelyOnProcess && !notCloseWindow) {
             this.app.close();
         } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
@@ -2645,8 +2577,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 //     if (layout.app) layout.app.$openWithSelf = true;
                 //     layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
                 // }
-                // this.app.options.action = action || "processTask";
-                this.app.options.action = action || "flowTask";
+                this.app.options.action = action || "processTask";
                 this.app.reload();
 
                 //this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
@@ -3866,7 +3797,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     selectButton.addEvent("click", function () {
                         var value = input.get("value");
                         MWF.xDesktop.requireApp("Selector", "package", function () {
-                            var options = {
+                            new o2.O2Selector(_self.app.content, {
                                 "type": "",
                                 "count": 0,
                                 "values": (value) ? value.split(o2.splitStr) : [],
@@ -3878,11 +3809,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                     });
                                     input.set("value", v.join(", "));
                                 }
-                            };
-                            if( _self.json.selectorStyle ){
-                                options = Object.assign({}, _self.json.selectorStyle, options);
-                            }
-                            new o2.O2Selector(_self.app.content, options);
+                            });
                         }.bind(this));
                         //_self.selectSplitUnit(this);
                     }.bind(this));
@@ -4637,6 +4564,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             });
         }
     },
+
     downloadAll: function (){
         if( this.options.readonly || this.json.isReadonly ){
             this._downloadAll();
@@ -4703,7 +4631,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         };
         var _self = this;
-        this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.downloadAllTitle, MWF.xApplication.process.Xform.LP.downloadAllText, 300, 120, function () {
+        this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.downloadAllTitle, "需要先保存表单，是否继续？", 300, 120, function () {
             _self.saveFormData(
                 function(json){
                     openFormInIframe();
@@ -4743,24 +4671,23 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         window.open(downloadUrl);
     },
     monitor: function () {
+
         var node = new Element("div");
         var container = new Element("div").inject(node);
         var monitor;
         var monitorDlg = o2.DL.open({
-            "style":  this.json.dialogStyle || "user",
             "title": MWF.xApplication.process.Xform.LP.monitor,
-            "width": layout.mobile ? "100%" : "1100",
-            "isResize" : !layout.mobile,
-            "height" : layout.mobile ? "100%" : "720px",
-            "maxHeightPercent" : layout.mobile ? "100%" : "98%",
+            "width": "1100",
+            "isResize" : true,
+            "height" : "720px",
+            "maxHeightPercent" : "98%",
             "mask": true,
-            "isTitle": !layout.mobile,
-            "isMax" : !layout.mobile,
+            "isMax" : true,
             "content": node,
-            "container": layout.mobile ? $(document.body) : this.app.content,
-            "maskNode": layout.mobile ? $(document.body) : this.app.content,
+            "container": this.app.content,
+            "maskNode": this.app.content,
             "onQueryClose": function(){
-                monitor.closeWorkLog();
+
             }.bind(this),
             "buttonList": [
                 {
@@ -4798,40 +4725,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 monitor = new MWF.xApplication.process.Xform.widget.Monitor(container, this.businessData.workLogList, this.businessData.recordList,process,{
                     onPostLoad : function(){
-                        if( !layout.mobile ){
-                            monitor.paperNode.setStyles({
-                                "box-shadow":"none",
-                                "margin-bottom" : "0px"
-                            });
-                            var logProcessChartNode =  monitor.logProcessChartNode;
-                            logProcessChartNode.setStyle("border","0px");
 
-                            logProcessChartNode.setStyle("height",(size.y) +"px");
-                            monitor.paperNode.setStyle("height",(size.y-48)+"px");
-                        }
-                    }.bind(this),
-                    onShowWorklog: function(logNode){
-                        if(layout.mobile){
-                            var pSize = this.paperNode.getSize();
-                            var bodySize =  dlg.content.getSize();
-                            if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
-                                dlg.content.setStyle("position", "relative");
-                                logNode.inject( dlg.content );
-                                var left = (dlg.content.getStyle("padding-left") || '0').toFloat();
-                                var right = (dlg.content.getStyle("padding-right") || '0').toFloat();
-                                var widthOffset = left + right + 2;
-                                logNode.setStyles({
-                                    "display": "block",
-                                    "position": "absolute",
-                                    "width": "calc( 100% - "+widthOffset+"px )",
-                                    "max-width": "500px",
-                                    "bottom": "1px",
-                                    "left": "0px"
-                                });
-                                logNode.setStyle("left", (bodySize.x - logNode.getSize().x)/2 + "px");
-                            }
-                        }
-                    }
+                        monitor.paperNode.setStyles({
+                            "box-shadow":"none",
+                            "margin-bottom" : "0px"
+                        });
+                        var logProcessChartNode =  monitor.logProcessChartNode;
+                        logProcessChartNode.setStyle("border","0px");
+
+                        logProcessChartNode.setStyle("height",(size.y) +"px");
+                        monitor.paperNode.setStyle("height",(size.y-48)+"px");
+
+                    }.bind(this)
                 });
 
             }.bind(this)
@@ -4967,9 +4872,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if( exclude ){
             options.exclude = exclude;
         }
-        if( this.json.selectorStyle ){
-            options = Object.assign({}, this.json.selectorStyle, options);
-        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -4992,9 +4894,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 dlg.identityList = identityList;
             }.bind(this)
         };
-        if( this.json.selectorStyle ){
-            options = Object.assign({}, this.json.selectorStyle, options);
-        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -5159,7 +5058,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             // if (window.confirm(MWF.xApplication.process.Xform.LP.retractText)) {
 
             var p = MWF.getCenterPosition(document.body, 300, 150);
-
+            console.log("position x:" + p.x + " , y:" + p.y);
             var x = p.x;
             if (p.x < 20) {
                 x = 20;
@@ -5247,9 +5146,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
-
-                        _self._postWindowMessage('onAfterRetract', _self.app.work.id);
-
                         _self.app.reload();
                         //}, null, _self.businessData.work.id);
                         this.close();
@@ -5416,9 +5312,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 dlg.identityList = identityList;
             }.bind(this)
         };
-        if( this.json.selectorStyle ){
-            options = Object.assign({}, this.json.selectorStyle, options);
-        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -5521,7 +5414,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     addRerouteMessage: function (data) {
-        this._postWindowMessage('onAfterReroute', this.app.work.id);
+
         if (layout.desktop.message) {
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.workReroute,
@@ -5540,7 +5433,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var _self = this;
         if (this.json.mode === "Mobile") {
             var p = MWF.getCenterPosition(document.body, 300, 150);
-
+            console.log("position x:" + p.x + " , y:" + p.y);
             var x = p.x;
             if (p.x < 20) {
                 x = 20;
@@ -5776,45 +5669,29 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     //    }
     //    window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     //},
-    printWork: function (app, form, editMode) {
-        // var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
-        // var form = form;
-
+    printWork: function (app, form) {
+        var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
+        var form = form;
         if (!form || form === "none") {
-            if (this.json.printForm && this.json.printForm!=="none" ){
-                form = this.json.printForm;
-            }
+            form = this.json.id;
+            if (this.json.printForm && this.json.printForm!=="none" ) form = this.json.printForm;
         }
-
-        if( form ){
-            this._printWork(app, form, editMode);
-        }else{
-            var _self = this;
-            var lp = o2.xApplication.process.Xform.LP.form;
-            this.app.alert("infor", "center", lp.printWork, lp.printWorkInfo, 450, 120, function () {
-                _self._printWork(app, _self.json.id, editMode);
-                //this.close();
-            });
-        }
-    },
-    _printWork: function (app, form, editMode) {
-        var editPar = !editMode ? '&readonly=true' : '';
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form + editPar);
+            var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
-            window.open(url, '_blank');
+            window.open(url);
         } else {
             var application = app || this.businessData.work.application;
-            var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form + editPar);
+            var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
-            window.open(url, '_blank');
+            window.open(url);
         }
     },
     /**
@@ -6099,165 +5976,44 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         // app端 分享到聊天
         if (window.o2android && window.o2android.postMessage) {
             var body = {
-                type: "shareToIM",
+                type: "shareToIMChat",
             }
             window.o2android.postMessage(JSON.stringify(body));
         } else {
-            this._shareToIMOnPc()
-        }
-    },
-    // 把当前工作分享到聊天会话中
-    _shareToIMOnPc: async function () {
-        let workOrWorkcompleted;
-        if (this.businessData.workCompleted) {
-            workOrWorkcompleted = this.businessData.workCompleted
-        } else {
-            workOrWorkcompleted = this.businessData.work
-        }
-        if (!workOrWorkcompleted) {
-            console.error('工作对象不存在！！！！！！')
-            this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "warn");
-            return
-        }
-        const jsonBody = {
-            type: 'process',
-            work: workOrWorkcompleted.id,
-            job: workOrWorkcompleted.job,
-            processName: workOrWorkcompleted.processName,
-            application: workOrWorkcompleted.application,
-            applicationName: workOrWorkcompleted.applicationName,
-            process: workOrWorkcompleted.process,
-            title: workOrWorkcompleted.title,
-            body: JSON.stringify(workOrWorkcompleted)
-        };
-        console.log('发送的消息体', jsonBody)
-        this._imSendMessage(jsonBody);
-
-    },
-    _imSendMessage: function(jsonBody) {
-        this._imConversationPicker((conv) => {
-            console.debug('选择了', conv)
-            if (conv) {
-                const date = new Date();
-                const pad = (n) => n.toString().padStart(2, '0');
-                const time = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-                const shareMessage = {
-                    conversationId: conv.id,
-                    body: JSON.stringify(jsonBody),
-                    createPerson: layout.session.user.distinguishedName,
-                    createTime: time,
-                    sendStatus: 1,
+            var imJson = {}
+            if (this.businessData.workCompleted) {
+                imJson = {
+                    type: "process",
+                    title: this.businessData.workCompleted.title,
+                    work: this.businessData.workCompleted.id,
+                    process: this.businessData.workCompleted.process,
+                    processName: this.businessData.workCompleted.processName,
+                    application: this.businessData.workCompleted.application,
+                    applicationName: this.businessData.workCompleted.applicationName,
+                    job: this.businessData.workCompleted.job,
                 }
-                console.debug('发送消息', shareMessage)
-                o2.Actions.load('x_message_assemble_communicate').ImAction.msgCreate(shareMessage,   (json) =>{
-                    console.log('发送消息成功', json);
-                    this._imDialogOpen()
-                }, (err) => {
-                    console.error('发送消息失败', err)
-                });
+            } else if (this.businessData.work) {
+                imJson = {
+                    type: "process",
+                    title: this.businessData.work.title,
+                    work: this.businessData.work.id,
+                    process: this.businessData.work.process,
+                    processName: this.businessData.work.processName,
+                    application: this.businessData.work.application,
+                    applicationName: this.businessData.work.applicationName,
+                    job: this.businessData.work.job,
+                }
+            } else {
+                this.app.notice(o2.txt(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted), "error")
+                return
             }
-        })
-    },
-    _imDialogOpen: function() {
-        var dialog = o2.DL.open({
-            "style" : "o2",
-            "title": "提示",
-            "width": "400",
-            "height" : "200",
-            "isMax": false,
-            "isClose": true,
-            "isResize": true,
-            "isMove": true,
-            "isTitle": true,
-            "offset": {"x":-200, "y": -100},
-            "mask": true,
-            "text": "是否要打开聊天窗口？",
-            "container": this.app.content,
-            "duration": 200,
-            "buttonList": [
-                {
-                    "text": "确定",
-                    "action": function(){
-                        layout.openApplication(null, 'IMV2')
-                        dialog.close();
-                    }.bind(this)
-                },
-                {
-                    "text": "取消",
-                    "action": function(){
-                        dialog.close();
-                    }.bind(this)
-                }
-            ],
-        })
-    },
-    // 选择会话
-    _imConversationPicker: async function(callback) {
-        const json = await o2.Actions.load('x_message_assemble_communicate').ImAction.myConversationList();
-        console.log('myConversationList', json);
-        debugger;
-        if (json && json.data) {
-            let dataArr = [];
-            for (let i = 0; i < json.data.length; i++) {
-                const conv = json.data[i];
-                let dataBody = {};
-                dataBody.data = conv;
-                dataBody.isItem = true;
-                dataBody.id = conv.id;
-                if (conv.type === "single" && conv.personList) {
-                    const p = conv.personList.find((s) => s !== layout.session.user.distinguishedName)
-                    dataBody.name = p.split("@")[0]
-                } else {
-                    dataBody.name = conv.title
-                }
-                dataArr.push(dataBody);
-            }
-            console.debug('dddd', dataArr)
-            // 选择会话
-            MWF.xDesktop.requireApp("Template", "Selector.Custom", null, false); //加载资源
-            //第一个参数是选择器的父DOM对象
-            const selector = new MWF.xApplication.Template.Selector.Custom(this.app.content, {
-                "style": "v10", //选择框样式
-                "count": 1, //允许选择个数
-                "title": "会话选择", //选择框标题
-                "hasLetter" : false, //是否点击字母搜索
-                "hasTop" : true, //可选、已选的标题
-                "level1Indent" : 0, //第一层的缩进
-                "indent" : 36, //第二层及以上的缩进
-                "width" : "500px", //选中框宽度
-                "height" :"400px", //选中框高度
-                "values": [], //默认选中的项目
-                "category": true, //按分类选择
-                "expand": true, //默认是否展开
-                "hasShuttle" : false, //是否有穿梭按钮，blue_flat下才有效
-                "noSelectedContainer" : true, //是否隐藏右侧已选区域
-                "categorySelectable" : true, //分类是否可以被选择，如果可以被选择那么执行的是item的事件
-                "uniqueFlag" : "id", //项目匹配（是否选中）关键字
-                "defaultExpandLevel" : 1, //默认展开项目，0表示折叠所有分类
-                "onComplete" : function( selectedItemList ){
-                    //selectedItemList为选中的item对象，下面的selectedDataList为选中的数据
-                    console.log('onComplete', selectedItemList);
-                    if (selectedItemList.length > 0) {
-                        const conv = selectedItemList[0].data;
-                        if (conv) {
-                            callback(conv)
-                            return
-                        }
-                    }
-                    callback();
-                },
-                "onSelectItem" : function(item){
-                    //选择项目事件, item 为 项目对象, this为选择器
-                    //如果可以被选择那么执行的是item的事件，如果不能被选择下面的代码放在onSelectCategory中
-                    console.log('onSelectItem', item);
-                },
-                "selectableItems": dataArr //
-            });
-            selector.load();
-        } else {
-            callback();
+            MWF.xDesktop.requireApp("IMV2", "Starter", function () {
+                var share = new MWF.xApplication.IMV2.ShareToConversation({
+                    msgBody: imJson
+                }, this.app);
+                share.load();
+            }.bind(this));
         }
-
     },
 
     //移动端页面 工作处理完成后
@@ -6436,9 +6192,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 opt.identityList = identityList;
             }.bind(this)
         };
-        if( this.json.selectorStyle ){
-            options = Object.assign({}, this.json.selectorStyle, options);
-        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -6560,9 +6313,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 opt.personList = personList;
             }.bind(this)
         };
-        if( this.json.selectorStyle ){
-            options = Object.assign({}, this.json.selectorStyle, options);
-        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));

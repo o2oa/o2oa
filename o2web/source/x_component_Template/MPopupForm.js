@@ -155,6 +155,8 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.fireEvent("postEdit");
     },
     _open: function () {
+        debugger;
+
         this.fireEvent("queryLoad");
         if(this._queryLoad)this._queryLoad();
 
@@ -192,6 +194,9 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.formAreaNode = new Element("div.formAreaNode", {
             "styles": this.css.formAreaNode
         });
+        if(layout.mobile && this.css.invisible){
+            this.formAreaNode.setStyles(this.css.invisible);
+        }
 
         this.createFormNode();
 
@@ -200,16 +205,18 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         }else{
             this.formAreaNode.inject( this.container || this.app.content );
         }
-        if (this.options.ifFade){
-            this.formAreaNode.fade("in");
-        }else{
-            this.formAreaNode.setStyle("opacity", 1);
-        }
-
 
         this.setFormNodeSize();
         this.setFormNodeSizeFun = this.setFormNodeSize.bind(this);
         if( this.app && this.app.addEvent )this.app.addEvent("resize", this.setFormNodeSizeFun);
+
+        if(layout.mobile && this.css.visible){
+            this.formAreaNode.setStyles(this.css.visible);
+        }else if (this.options.ifFade){
+            this.formAreaNode.fade("in");
+        }else{
+            this.formAreaNode.setStyle("opacity", 1);
+        }
 
         if (this.options.draggable && this.formTopNode) {
             var size = (this.container || this.app.content).getSize();
@@ -678,6 +685,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.fireEvent("afterResize");
     },
     setSize: function(width, height){
+        debugger;
         if( width )this.options.width = width;
         if( height )this.options.height = height;
         this.setFormNodeSize(width, height);

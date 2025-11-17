@@ -13,7 +13,17 @@
     "border-radius": "4px",
     "opacity": 0,
     "top": "0px",
-    "font-size": "16px"
+    "font-size": "16px",
+    "transform-origin": "bottom",
+    "transition": "height 0.3s, opacity 0.3s, transform 0.3s"
+  },
+  "visible": {
+    "transform": "scale(1)",
+    "opacity": 1
+  },
+  "invisible": {
+    "transform": "scale(1, 0)",
+    "opacity": 0
   },
   "formNode": {
     "background-color": "#fff",
@@ -115,7 +125,7 @@
     "position": "relative"
   },
   "formTableContainer": {
-    "width": "700px",
+    "width": "auto",
     "margin": "0px auto 20px auto",
     "padding-top": "20px",
     "positon": "static"

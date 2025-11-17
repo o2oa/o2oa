@@ -429,11 +429,17 @@ MWF.xApplication.Minder.NewNameForm = new Class({
     },
     _createTableContent: function () {
 
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                'margin-left': "20px", 'margin-right': '20px'
+            })
+        }
+
         var currentFolderData = this.explorer.getCurrentFolderData ? this.explorer.getCurrentFolderData() : {};
 
         var html = layout.mobile ?
-            "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            `<tr><td styles='formTableValue14' colspan='3'>在${currentFolderData.name}下创建脑图</td></tr>` +
+            "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+            `<tr><td styles='formTableValue14' colspan='3' style='color:#999999;'>在“${currentFolderData.name}”下创建脑图：</td></tr>` +
             "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
             "</table>" :
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
@@ -461,7 +467,7 @@ MWF.xApplication.Minder.NewNameForm = new Class({
 
         if (this.isNew || this.isEdited) {
 
-            this.okActionNode = new Element("button.inputOkButton", {
+            this.okActionNode = new Element("oo-button.inputOkButton", {
                 "styles": this.css.inputOkButton,
                 "text": "确定"
             }).inject(this.formBottomNode);
@@ -471,13 +477,14 @@ MWF.xApplication.Minder.NewNameForm = new Class({
             }.bind(this));
 
             if( layout.mobile ) {
-                this.okActionNode.setStyle('width', 'calc(50% - 50px)');
+                this.okActionNode.setStyles({'width': '50%', 'height': '36px'});
             }
         }
 
-        this.cancelActionNode = new Element("button.inputCancelButton", {
+        this.cancelActionNode = new Element("oo-button.inputCancelButton", {
             "styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-            "text": "关闭"
+            "text": "关闭",
+            'type':'cancel'
         }).inject(this.formBottomNode);
 
         this.cancelActionNode.addEvent("click", function (e) {
@@ -485,7 +492,12 @@ MWF.xApplication.Minder.NewNameForm = new Class({
         }.bind(this));
 
         if( layout.mobile ) {
-            this.cancelActionNode.setStyle('width', 'calc(50% - 50px)');
+            this.cancelActionNode.setStyles({'width': '50%', 'height': '36px'});
+            this.cancelActionNode.inject(this.okActionNode, 'before');
+        }
+
+        if( layout.mobile ) {
+            this.formatMobileButton(this.formBottomNode, this.formAreaNode);
         }
 
     },
@@ -541,18 +553,28 @@ MWF.xApplication.Minder.FolderForm = new Class({
     },
     _createTableContent: function () {
 
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            "<tr><td styles='formTableTitle' lable='name' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                'margin-left': "20px", 'margin-right': '20px'
+            })
+        }
+
+        var currentFolderData = this.explorer.getCurrentFolderData ? this.explorer.getCurrentFolderData() : {};
+
+        var html = layout.mobile ? "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+            `<tr><td styles='formTableValue14' colspan='3' style='color:#999999;'>在“${currentFolderData.name}”下创建目录：</td></tr>` +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+            "</table>" : "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
         this.form = new MForm(this.formTableArea, this.data || {}, {
             isEdited: true,
-            style : "minder",
+            style : "v10", mvcStyle: "v10",
             hasColon : true,
             itemTemplate: {
-                name: { text : "名称", notEmpty : true }
+                name: { type: 'oo-input', text : "名称", notEmpty : true }
             }
         }, this.app);
         this.form.load();
@@ -562,7 +584,7 @@ MWF.xApplication.Minder.FolderForm = new Class({
 
         if (this.isNew || this.isEdited) {
 
-            this.okActionNode = new Element("button.inputOkButton", {
+            this.okActionNode = new Element("oo-button.inputOkButton", {
                 "styles": this.css.inputOkButton,
                 "text": "确定"
             }).inject(this.formBottomNode);
@@ -570,16 +592,30 @@ MWF.xApplication.Minder.FolderForm = new Class({
             this.okActionNode.addEvent("click", function (e) {
                 this.save(e);
             }.bind(this));
+
+            if( layout.mobile ) {
+                this.okActionNode.setStyles({'width': '50%', 'height': '36px'});
+            }
         }
 
-        this.cancelActionNode = new Element("button.inputCancelButton", {
+        this.cancelActionNode = new Element("oo-button.inputCancelButton", {
             "styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-            "text": "关闭"
+            "text": "关闭",
+            'type':'cancel'
         }).inject(this.formBottomNode);
 
         this.cancelActionNode.addEvent("click", function (e) {
             this.close(e);
         }.bind(this));
+
+        if( layout.mobile ) {
+            this.cancelActionNode.setStyles({'width': '50%', 'height': '36px'});
+            this.cancelActionNode.inject(this.okActionNode, 'before');
+        }
+
+        if( layout.mobile ) {
+            this.formatMobileButton(this.formBottomNode, this.formAreaNode);
+        }
 
     },
     save: function(){
@@ -587,7 +623,8 @@ MWF.xApplication.Minder.FolderForm = new Class({
         if( data ){
             if( this.isNew )data.parentId = this.explorer.getCurrentFolderId();
             this.app.restActions.saveFolder( data, function( json ){
-                this.explorer.tree.reload();
+                this.explorer?.tree?.reload();
+                this.fireEvent('save');
                 this.close();
             }.bind(this));
         }

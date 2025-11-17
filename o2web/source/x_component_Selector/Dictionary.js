@@ -32,23 +32,23 @@ MWF.xApplication.Selector.Dictionary = new Class({
             // }
             switch (type) {
                 case "process":
-                    action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
+                    action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging(1, 1000, {});
                     break;
                 case "cms":
-                    action = o2.Actions.load("x_cms_assemble_control").AppDictDesignAction.listPaging;
+                    action = o2.Actions.load("x_cms_assemble_control").AppDictDesignAction.listPaging(1, 1000, {});
                     break;
                 case "portal":
-                    action = o2.Actions.load("x_portal_assemble_designer").DictAction.listPaging;
+                    action = o2.Actions.load("x_portal_assemble_designer").DictAction.listPaging(1, 1000, {});
                     break;
                 case "service":
-                    action = o2.Actions.load("x_program_center").DictAction.listPaging;
+                    action = o2.Actions.load("x_program_center").DictAction.list();
                     break;
 
             }
 
             var json = {};
             var array = [];
-            action(1, 1000, {}, function( dictionaryJson ) {
+            action.then(function( dictionaryJson ) {
                 dictionaryJson.data.each(function (dictionary) {
                     var appName, appId, appAlias;
                     if( type === "service" ){
@@ -76,7 +76,7 @@ MWF.xApplication.Selector.Dictionary = new Class({
                     dictionary.appAlias = appAlias;
                     dictionary.appType = type;
                     dictionary.type = "dictionary";
-                    json[appId].dictionaryList.push(dictionary)
+                    json[appId].dictionaryList.push(dictionary);
                 }.bind(this));
                 for (var application in json) {
                     if (json[application].dictionaryList && json[application].dictionaryList.length) {
@@ -105,7 +105,7 @@ MWF.xApplication.Selector.Dictionary = new Class({
                         var category = this._newItemCategory({
                             name: MWF.xApplication.Selector.LP.appType[type],
                             id: type,
-                            dictionaryList: array[0].dictionaryList
+                            dictionaryList: array.length > 0 ? array[0].dictionaryList : []
                         }, this, container);
                     }else{
                         var category = this._newItemCategory({

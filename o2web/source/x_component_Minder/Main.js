@@ -322,6 +322,9 @@ MWF.xApplication.Minder.MainMobile = new Class({
             this.fireEvent("postLoad");
         });
     },
+    getCurrentFolderId: function (data){
+        return this.currentFolderData.id;
+    },
     getCurrentFolderData: function (){
         return this.currentFolderData;
     },
@@ -389,8 +392,12 @@ MWF.xApplication.Minder.MainMobile = new Class({
         var form = new MWF.xApplication.Minder.NewNameForm(this, {
         }, {
             style: 'v10_mobile',
-            height: '100%',
+            hasTop: false,
+            bottom: 0,
+            height: '50%',
+            'minHeight': 400,
             width: '100%',
+            "closeByClickMask" : true,
             onSave: ()=>{
                 this.loadList();
             }
@@ -402,7 +409,18 @@ MWF.xApplication.Minder.MainMobile = new Class({
     createFolder: function(){
         MWF.xDesktop.requireApp("Minder", "Common", null, false);
         var form = new MWF.xApplication.Minder.FolderForm(this, {
-        }, {}, {
+        }, {
+            style: 'v10_mobile',
+            hasTop: false,
+            bottom: 0,
+            height: '50%',
+            'minHeight': 400,
+            width: '100%',
+            "closeByClickMask" : true,
+            onSave: ()=>{
+                this.loadList();
+            }
+        }, {
             app: this
         });
         form.create();
