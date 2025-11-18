@@ -726,7 +726,7 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
                 right: "20px",
                 cursor: "pointer",
                 width:"32px",
-                height:"32px",
+                height:"32px" ,
                 position:"absolute"
             },
             events: {
