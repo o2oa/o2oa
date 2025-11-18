@@ -1297,7 +1297,9 @@ MWF.xScript.CMSEnvironment = function(ev){
         //         row.node.removeClass('selectedRow');
         //     });
         // });
-         viewerGenerator(o.viewNode, o);
+        window.setTimeout(()=>{
+            viewerGenerator(o.viewNode, o);
+        }, 200);
 
         requestAnimationFrame(()=>{
             o.contentNode.removeClass('invisible');
