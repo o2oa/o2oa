@@ -89,35 +89,38 @@ MWF.xApplication.MinderEditor.ToolbarInMobile = new Class({
             cursor: "pointer",
             width: "50px",
             height:"16px",
-            'padding-right': '10px'
+            'padding-right': '10px',
+            display: 'flex',
+            'align-items': 'center'
         };
+
+        new Element("div", {text: "|", style:"padding-right:10px;color:#999;"}).inject(this.container, 'top');
 
         var zoomInAction = new Element("div", {
             styles: buttonStyles,
-            text: '放大',
             events: {
                 click: ()=>{
                     this.minder.execCommand('zoomIn');
                 }
             }
         }).inject(this.container, 'top');
-        new Element("i.ooicon-zoom_in", {style:'font-size:16px;padding-right:4px;'}).inject(zoomInAction, 'top');
+        new Element("i.ooicon-zoom_in", {style:'font-size:16px;padding-right:4px;'}).inject(zoomInAction);
+        new Element("div", {text: '放大'}).inject(zoomInAction);
 
         var zoomOutAction = new Element("div", {
             styles: buttonStyles,
-            text: '缩小',
             events: {
                 click: ()=>{
                     this.minder.execCommand('zoomOut');
                 }
             }
         }).inject(this.container, 'top');
-        new Element("i.ooicon-zoom_out", {style:'font-size:16px;padding-right:4px;'}).inject(zoomOutAction, 'top');
+        new Element("i.ooicon-zoom_out", {style:'font-size:16px;padding-right:4px;'}).inject(zoomOutAction);
+        new Element("div", {text: '缩小'}).inject(zoomOutAction);
 
         var handFlag = false;
         var handAction = new Element("div", {
             styles: buttonStyles,
-            text: '拖拽',
             events: {
                 click: ()=>{
                     !handFlag ? handAction.addClass('mainColor_color') : handAction.removeClass('mainColor_color');
@@ -126,7 +129,8 @@ MWF.xApplication.MinderEditor.ToolbarInMobile = new Class({
                 }
             }
         }).inject(this.container, 'top');
-        new Element("i.ooicon-finger2", {style:'font-size:16px;padding-right:4px;'}).inject(handAction, 'top');
+        new Element("i.ooicon-finger2", {style:'font-size:16px;padding-right:4px;'}).inject(handAction);
+        new Element("div", {text: '拖拽'}).inject(handAction);
 
         this.container.getElements("[styles]").each(function (el) {
             if (!el.get("item")) {
