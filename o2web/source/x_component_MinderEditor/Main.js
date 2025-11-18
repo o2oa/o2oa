@@ -738,8 +738,6 @@ MWF.xApplication.MinderEditor.MainMobile = new Class({
 
         this.Content_Offset_Top = 70; //this.contentNode.getCoordinates( this.node).top;
 
-
-
         // this.resizeContentFun = this.resizeContent.bind(this);
         // this.addEvent("resize", this.resizeContentFun);
         this.resizeContent();
