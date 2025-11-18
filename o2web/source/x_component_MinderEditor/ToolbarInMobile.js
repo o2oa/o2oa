@@ -82,7 +82,51 @@ MWF.xApplication.MinderEditor.ToolbarInMobile = new Class({
 
         this.container.set("html", html);
 
-        debugger;
+        var buttonStyles = {
+            background: "#fff",
+            "font-size": "14px",
+            color: '#666',
+            cursor: "pointer",
+            width: "50px",
+            height:"16px",
+            'padding-right': '10px'
+        };
+
+        var zoomInAction = new Element("div", {
+            styles: buttonStyles,
+            text: '放大',
+            events: {
+                click: ()=>{
+                    this.minder.execCommand('zoomIn');
+                }
+            }
+        }).inject(this.container, 'top');
+        new Element("i.ooicon-zoom_in", {style:'font-size:16px;padding-right:4px;'}).inject(zoomInAction, 'top');
+
+        var zoomOutAction = new Element("div", {
+            styles: buttonStyles,
+            text: '缩小',
+            events: {
+                click: ()=>{
+                    this.minder.execCommand('zoomOut');
+                }
+            }
+        }).inject(this.container, 'top');
+        new Element("i.ooicon-zoom_out", {style:'font-size:16px;padding-right:4px;'}).inject(zoomOutAction, 'top');
+
+        var handFlag = false;
+        var handAction = new Element("div", {
+            styles: buttonStyles,
+            text: '拖拽',
+            events: {
+                click: ()=>{
+                    !handFlag ? handAction.addClass('mainColor_color') : handAction.removeClass('mainColor_color');
+                    handFlag = !handFlag;
+                    this.minder.execCommand('hand');
+                }
+            }
+        }).inject(this.container, 'top');
+        new Element("i.ooicon-finger2", {style:'font-size:16px;padding-right:4px;'}).inject(handAction, 'top');
 
         this.container.getElements("[styles]").each(function (el) {
             if (!el.get("item")) {
