@@ -145,6 +145,7 @@ MWF.xApplication.MinderEditor.MainPc = new Class({
         }
     },
     createNode: function () {
+        if(layout.mobile)this.content.setStyle('height', '100%');
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div.node", {
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}

@@ -245,6 +245,14 @@ MWF.xApplication.MinderEditor.PriorityImage.Tootips = new Class({
             "styles":this.css.listNode
         }).inject(_selector.listContentNode);
 
+        if(layout.mobile){
+            _selector.listNode.setStyles({
+                "display": "grid",
+                "grid-template-columns": "1fr 1fr 1fr 1fr 1fr",
+                "justify-items": "center"
+            });
+        }
+
         _selector.setScrollBar(_selector.listNode);
 
         data.each(function(d, i){
@@ -265,7 +273,7 @@ MWF.xApplication.MinderEditor.PriorityImage.Tootips = new Class({
             });
         }
         var background = layout.mobile ?
-            "url(../x_component_MinderEditor/$Main/mobile/icon/priority"+(index+1)+".png) no-repeat":
+            "url(../x_component_MinderEditor/$Main/mobile/icon/priority"+(index)+".png) no-repeat center center":
             "url("+ _selector.path + _selector.options.style + "/icon/priority.png) no-repeat "+ data.position;
         listItemNode.setStyles({
             "background": background
@@ -420,6 +428,14 @@ MWF.xApplication.MinderEditor.ProgressImage.Tootips = new Class({
         hasArrow : true
     },
     _customNode : function( node, contentNode ){
+        if( layout.mobile ){
+            this.options.position.y = 'top';
+            this.node.setStyles({
+                'max-width': 'calc(100% - 5px)',
+                'min-width': 'calc(100% - 5px)',
+                'width': 'calc(100% - 5px)'
+            });
+        }
         //var width = ( parseInt( this.selector.options.width )  )+ "px";
         //node.setStyles({
         //    "width": width,
@@ -443,21 +459,39 @@ MWF.xApplication.MinderEditor.ProgressImage.Tootips = new Class({
         _selector.listNode = new Element("div.listNode",{
             "styles":this.css.listNode
         }).inject(_selector.listContentNode);
+
+        if(layout.mobile){
+            _selector.listNode.setStyles({
+                "display": "grid",
+                "grid-template-columns": "1fr 1fr 1fr 1fr 1fr",
+                "justify-items": "center"
+            });
+        }
+
         _selector.setScrollBar(_selector.listNode);
 
-        data.each(function(d){
-            this.createItem( d );
+        data.each(function(d, i){
+            this.createItem( d, i );
         }.bind(this));
 
     },
-    createItem: function( data ){
+    createItem: function( data, index ){
         var _selector = this.selector;
         var listItemNode = new Element("div.listItemNode",{
             "styles":this.css.listItemNode,
             "title" : data.title
         }).inject(_selector.listNode);
+        if( layout.mobile ){
+            listItemNode.setStyles({
+                "width" : '20%',
+                'padding': '1em'
+            });
+        }
+        var background = layout.mobile ?
+            "url(../x_component_MinderEditor/$Main/mobile/icon/progress"+(index)+".png) no-repeat center center":
+            "url("+ _selector.path + _selector.options.style + "/icon/progress.png) no-repeat "+ data.position;
         listItemNode.setStyles({
-            "background": "url("+ _selector.path + _selector.options.style + "/icon/progress.png) no-repeat "+ data.position
+            "background": background
         });
 
         if(data)listItemNode.store("data",data);

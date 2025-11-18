@@ -172,7 +172,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
                     return this.minder.queryCommandState('Image') === -1
                 }.bind(this),
                 action: function () {
-                    this.minder.queryCommandState('Image') === -1 || this.openImageForm("image");
+                    this.minder.queryCommandState('Image') === -1 || layout.mobile ? this.uploadImage() : this.openImageForm("image");
                 }.bind(this)
             },
             note: {
@@ -1218,6 +1218,55 @@ MWF.xApplication.MinderEditor.Commands = new Class({
             app: this.app
         });
         form.edit();
+        this.fireEvent("postExecCommand", [this, command])
+    },
+    uploadImage: function (command) {
+        o2.imageClipperCallback = function( str ){
+            var data = JSON.parse( str );
+            this.minder.execCommand('image', MWF.xDesktop.getImageSrc( data.fileId ), '', data.fileId );
+            o2.imageClipperCallback = null;
+        }.bind(this);
+        var imageBody = {
+            "mwfId" : this.app.data.id || "1111",
+            "callback" : "o2.imageClipperCallback",
+            "referencetype": this.app.data.id || "1111",
+            "reference": "mindInfo"
+        };
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "uploadImage2FileStorage",
+                data: imageBody
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if( window.o2android && window.o2android.uploadImage2FileStorage ){
+            window.o2android.uploadImage2FileStorage(JSON.stringify(imageBody));
+        }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadImage2FileStorage){
+            window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(JSON.stringify(imageBody));
+        }else {
+            var fileNode = new Element("input.file", {
+                "type" : "file",
+                "accept":"image/*"
+            });
+            fileNode.addEvent("change", function(event){
+                var file= fileNode.files[0];
+                var formData = new FormData();
+                formData.append('file', file, file.name);
+                o2.xDesktop.uploadImageByScale(
+                    this.app.data.id || "1111",
+                    "mindInfo",
+                    800,
+                    formData,
+                    file,
+                    function(json){
+                        this.minder.execCommand('image', MWF.xDesktop.getImageSrc( json.id ), file.name || '', json.id );
+                        fileNode.destroy();
+                    }.bind(this),
+                    function(json) {}.bind(this)
+                )
+            }.bind(this));
+            fileNode.click();
+        }
+
         this.fireEvent("postExecCommand", [this, command])
     },
     openImageForm: function (command) {
