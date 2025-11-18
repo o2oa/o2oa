@@ -1778,8 +1778,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			return true;
 		},
 		validation: function(routeName, opinion){
-			if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
-			
 			if (this.isEdit){
 				if (!this.editValidation()){
 					return false;
@@ -2482,7 +2480,6 @@ MWF.xApplication.process.Xform.DatagridPC$Title =  new Class({
 MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 	Extends: MWF.APP$Module,
 	_afterLoaded: function(){
-		debugger;
 		//this.form._loadModules(this.node);
 		this.dataGrid = this.node.retrieve("dataGrid");
 

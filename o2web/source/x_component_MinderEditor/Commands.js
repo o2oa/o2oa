@@ -1205,7 +1205,16 @@ MWF.xApplication.MinderEditor.Commands = new Class({
         if(this.receiver)this.receiver.selectAll();
     },
     openHyperLinkForm: function (command) {
-        var form = new MWF.xApplication.MinderEditor.HyperLinkForm(this, {}, {}, {
+        var opt = layout.mobile ? {
+            style: 'v10_mobile',
+            hasTop: false,
+            bottom: 0,
+            height: '50%',
+            'minHeight': 400,
+            width: '100%',
+            "closeByClickMask": true
+        } : {};
+        var form = new MWF.xApplication.MinderEditor.HyperLinkForm(this, {}, opt, {
             app: this.app
         });
         form.edit();
