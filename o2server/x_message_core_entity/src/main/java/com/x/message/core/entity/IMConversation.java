@@ -104,7 +104,7 @@ public class IMConversation extends SliceJpaObject  {
 
     public static final String note_FIELDNAME = "note";
     @FieldDescribe("群公告")
-    @Column(length = length_255B, name = ColumnNamePrefix + note_FIELDNAME)
+    @Column(length = length_2K, name = ColumnNamePrefix + note_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private String note;
 
