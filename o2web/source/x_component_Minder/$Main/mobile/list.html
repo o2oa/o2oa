@@ -1,0 +1,26 @@
+{{if $.data.length === 0}}
+<div class="empty">
+  <div class="ooempty-wuwenjian empty-icon"></div>
+  <div>{{$.lp.noMinder}}</div>
+</div>
+{{end if}}
+
+{{if $.data.length > 0}}
+<div class="list">
+  {{each $.data}}
+  <div class="item">
+    <div class="item-img-area" data-o2-events="click:handleEventClick">
+      <img src="{{ !!$.icon ? MWF.xDesktop.getImageSrc($.icon) : '../x_component_Minder/$Main/default/icon/default_thumbnail.png' }}" class="item-img"/>
+    </div>
+    <div class="item-bottom" data-o2-events="click:showItemAction">
+      <div class="item-title">{{$.name}}</div>
+      <div class="item-action ooicon-point3"></div>
+    </div>
+  </div>
+  {{end each}}
+</div>
+{{end if}}
+<oo-select class="hide" allow-input="true" data-o2-element="actionSelect" data-o2-events="change:handleItemAction">
+  <oo-option value="rename" icon="rename">{{$.lp.rename}}</oo-option>
+  <oo-option value="delete" icon="delete">{{$.lp.delete}}</oo-option>
+</oo-select>

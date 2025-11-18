@@ -24,7 +24,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
         if( !editor.key ){
             this.editor.key = new MWF.xApplication.MinderEditor.Key();
         }
-        if( !editor.receiver ){
+        if( !editor.receiver && !layout.mobile ){
             this.editor.receiver = new MWF.xApplication.MinderEditor.Receiver(this.editor);
         }
         this.fsm = this.editor.fsm;
@@ -65,7 +65,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
             appendChild: {
                 icon: "insert_sub",
                 modle : ["edit"],
-                locale: "插入下级主题",
+                locale: layout.mobile ? "下级" : "插入下级主题",
                 key: ["Tab", "Insert"],
                 isDefaultKey: true,
                 disable: function () {
@@ -78,7 +78,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
             appendParent: {
                 icon: "insert_par",
                 modle : ["edit"],
-                locale: "插入上级主题",
+                locale: layout.mobile ? "上级" : "插入上级主题",
                 key: "Shit + Tab",
                 disable: function () {
                     return this.minder.queryCommandState('AppendParentNode') === -1;
@@ -90,7 +90,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
             appendSibling: {
                 icon: "insert_sibling",
                 modle : ["edit"],
-                locale: "插入同级主题",
+                locale: layout.mobile ? "同级" : "插入同级主题",
                 key: "Enter",
                 isDefaultKey: true,
                 disable: function () {
@@ -172,7 +172,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
                     return this.minder.queryCommandState('Image') === -1
                 }.bind(this),
                 action: function () {
-                    this.minder.queryCommandState('Image') === -1 || this.openImageForm("image");
+                    this.minder.queryCommandState('Image') === -1 || layout.mobile ? this.uploadImage() : this.openImageForm("image");
                 }.bind(this)
             },
             note: {
@@ -1200,15 +1200,73 @@ MWF.xApplication.MinderEditor.Commands = new Class({
         this.resourceCheckbox.push(checkbox);
     },
     editNode: function () {
-        this.receiver.element.innerText = this.minder.queryCommandValue('text') || "";
+        if(this.receiver)this.receiver.element.innerText = this.minder.queryCommandValue('text') || "";
         this.fsm.jump('input', 'input-request');
-        this.receiver.selectAll();
+        if(this.receiver)this.receiver.selectAll();
     },
     openHyperLinkForm: function (command) {
-        var form = new MWF.xApplication.MinderEditor.HyperLinkForm(this, {}, {}, {
+        var opt = layout.mobile ? {
+            style: 'v10_mobile',
+            hasTop: false,
+            bottom: 0,
+            height: '50%',
+            'minHeight': 400,
+            width: '100%',
+            "closeByClickMask": true
+        } : {};
+        var form = new MWF.xApplication.MinderEditor.HyperLinkForm(this, {}, opt, {
             app: this.app
         });
         form.edit();
+        this.fireEvent("postExecCommand", [this, command])
+    },
+    uploadImage: function (command) {
+        o2.imageClipperCallback = function( str ){
+            var data = JSON.parse( str );
+            this.minder.execCommand('image', MWF.xDesktop.getImageSrc( data.fileId ), '', data.fileId );
+            o2.imageClipperCallback = null;
+        }.bind(this);
+        var imageBody = {
+            "mwfId" : this.app.data.id || "1111",
+            "callback" : "o2.imageClipperCallback",
+            "referencetype": this.app.data.id || "1111",
+            "reference": "mindInfo"
+        };
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "uploadImage2FileStorage",
+                data: imageBody
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if( window.o2android && window.o2android.uploadImage2FileStorage ){
+            window.o2android.uploadImage2FileStorage(JSON.stringify(imageBody));
+        }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadImage2FileStorage){
+            window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(JSON.stringify(imageBody));
+        }else {
+            var fileNode = new Element("input.file", {
+                "type" : "file",
+                "accept":"image/*"
+            });
+            fileNode.addEvent("change", function(event){
+                var file= fileNode.files[0];
+                var formData = new FormData();
+                formData.append('file', file, file.name);
+                o2.xDesktop.uploadImageByScale(
+                    this.app.data.id || "1111",
+                    "mindInfo",
+                    800,
+                    formData,
+                    file,
+                    function(json){
+                        this.minder.execCommand('image', MWF.xDesktop.getImageSrc( json.id ), file.name || '', json.id );
+                        fileNode.destroy();
+                    }.bind(this),
+                    function(json) {}.bind(this)
+                )
+            }.bind(this));
+            fileNode.click();
+        }
+
         this.fireEvent("postExecCommand", [this, command])
     },
     openImageForm: function (command) {

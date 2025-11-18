@@ -3,6 +3,7 @@ MWF.xApplication.Minder = MWF.xApplication.Minder || {};
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xDesktop.requireApp("Template", "MForm", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
 
 MWF.xApplication.Minder.FolderSelector = new Class({
@@ -11,7 +12,7 @@ MWF.xApplication.Minder.FolderSelector = new Class({
         style : "", //如果有style，就加载 style/css.wcss
         axis: "y",      //箭头在x轴还是y轴上展现
         position : { //node 固定的位置
-            x : "right", //x轴上left center right,  auto 系统自动计算
+            x : "left", //x轴上left center right,  auto 系统自动计算
             y : "auto" //y 轴上top middle bottom, auto 系统自动计算
         },
         event : "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
@@ -428,33 +429,45 @@ MWF.xApplication.Minder.NewNameForm = new Class({
     },
     _createTableContent: function () {
 
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            "<tr><td styles='formTableTitle' lable='folder' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='folder' colspan='3'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='name' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                'margin-left': "20px", 'margin-right': '20px'
+            })
+        }
+
+        var currentFolderData = this.explorer.getCurrentFolderData ? this.explorer.getCurrentFolderData() : {};
+
+        var html = layout.mobile ?
+            "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+            `<tr><td styles='formTableValue14' colspan='3' style='color:#999999;'>在“${currentFolderData.name}”下创建脑图：</td></tr>` +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+            "</table>" :
+            "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+            "<tr><td styles='formTableValue14' item='folder' colspan='3'></td></tr>" +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
-        var currentFolderData = this.explorer.getCurrentFolderData ? this.explorer.getCurrentFolderData() : {};
         this.folderId = currentFolderData.id || "root";
         this.form = new MForm(this.formTableArea, this.data || {}, {
             isEdited: true,
-            style : "minder",
+            style : "v10", mvcStyle: "v10",
             hasColon : true,
             itemTemplate: {
-                folder: { text : "选择文件夹",  notEmpty : true, attr : { readonly : true }, defaultValue : currentFolderData.name || "根目录" },
-                name: { text : "脑图名称", notEmpty : true }
+                folder: { type: 'oo-input', text : "文件夹",  notEmpty : true, attr : { readonly : true }, defaultValue : currentFolderData.name || "根目录" },
+                name: { type: 'oo-input', text : "名称", notEmpty : true }
             }
         }, this.app);
         this.form.load();
-        this.loadFolderSelect();
+        if( !layout.mobile ){
+            this.loadFolderSelect();
+        }
     },
     _createBottomContent: function () {
 
         if (this.isNew || this.isEdited) {
 
-            this.okActionNode = new Element("button.inputOkButton", {
+            this.okActionNode = new Element("oo-button.inputOkButton", {
                 "styles": this.css.inputOkButton,
                 "text": "确定"
             }).inject(this.formBottomNode);
@@ -462,16 +475,30 @@ MWF.xApplication.Minder.NewNameForm = new Class({
             this.okActionNode.addEvent("click", function (e) {
                 this.save(e);
             }.bind(this));
+
+            if( layout.mobile ) {
+                this.okActionNode.setStyles({'width': '50%', 'height': '36px'});
+            }
         }
 
-        this.cancelActionNode = new Element("button.inputCancelButton", {
+        this.cancelActionNode = new Element("oo-button.inputCancelButton", {
             "styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-            "text": "关闭"
+            "text": "关闭",
+            'type':'cancel'
         }).inject(this.formBottomNode);
 
         this.cancelActionNode.addEvent("click", function (e) {
             this.close(e);
         }.bind(this));
+
+        if( layout.mobile ) {
+            this.cancelActionNode.setStyles({'width': '50%', 'height': '36px'});
+            this.cancelActionNode.inject(this.okActionNode, 'before');
+        }
+
+        if( layout.mobile ) {
+            this.formatMobileButton(this.formBottomNode, this.formAreaNode);
+        }
 
     },
     save: function(){
@@ -488,18 +515,25 @@ MWF.xApplication.Minder.NewNameForm = new Class({
                     "isNew" : false
                 });
                 if(this.explorer.currentView)this.explorer.currentView.reload();
+                this.fireEvent('save');
                 this.close();
             }.bind(this));
         }
     },
     loadFolderSelect: function() {
-        this.folderSelect =  new MWF.xApplication.Minder.FolderSelector( this.app.content, this.form.getItem("folder").getElements()[0], this.app, {}, {
-            defaultNode : this.folderId,
-            onSelect : function( folderData ){
-                this.form.getItem("folder").setValue( folderData.name );
-                this.folderId = folderData.id;
-            }.bind(this)
-        } );
+        this.folderSelect =  new MWF.xApplication.Minder.FolderSelector(
+            this.app.content,
+            this.form.getItem("folder").getElements()[0],
+            this.app,
+            {},
+            {
+                defaultNode : this.folderId,
+                onSelect : function( folderData ){
+                    this.form.getItem("folder").setValue( folderData.name );
+                    this.folderId = folderData.id;
+                }.bind(this)
+            }
+        );
 
     }
 });
@@ -519,18 +553,28 @@ MWF.xApplication.Minder.FolderForm = new Class({
     },
     _createTableContent: function () {
 
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            "<tr><td styles='formTableTitle' lable='name' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                'margin-left': "20px", 'margin-right': '20px'
+            })
+        }
+
+        var currentFolderData = this.explorer.getCurrentFolderData ? this.explorer.getCurrentFolderData() : {};
+
+        var html = layout.mobile ? "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+            `<tr><td styles='formTableValue14' colspan='3' style='color:#999999;'>在“${currentFolderData.name}”下创建目录：</td></tr>` +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+            "</table>" : "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
         this.form = new MForm(this.formTableArea, this.data || {}, {
             isEdited: true,
-            style : "minder",
+            style : "v10", mvcStyle: "v10",
             hasColon : true,
             itemTemplate: {
-                name: { text : "名称", notEmpty : true }
+                name: { type: 'oo-input', text : "名称", notEmpty : true }
             }
         }, this.app);
         this.form.load();
@@ -540,7 +584,7 @@ MWF.xApplication.Minder.FolderForm = new Class({
 
         if (this.isNew || this.isEdited) {
 
-            this.okActionNode = new Element("button.inputOkButton", {
+            this.okActionNode = new Element("oo-button.inputOkButton", {
                 "styles": this.css.inputOkButton,
                 "text": "确定"
             }).inject(this.formBottomNode);
@@ -548,16 +592,30 @@ MWF.xApplication.Minder.FolderForm = new Class({
             this.okActionNode.addEvent("click", function (e) {
                 this.save(e);
             }.bind(this));
+
+            if( layout.mobile ) {
+                this.okActionNode.setStyles({'width': '50%', 'height': '36px'});
+            }
         }
 
-        this.cancelActionNode = new Element("button.inputCancelButton", {
+        this.cancelActionNode = new Element("oo-button.inputCancelButton", {
             "styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-            "text": "关闭"
+            "text": "关闭",
+            'type':'cancel'
         }).inject(this.formBottomNode);
 
         this.cancelActionNode.addEvent("click", function (e) {
             this.close(e);
         }.bind(this));
+
+        if( layout.mobile ) {
+            this.cancelActionNode.setStyles({'width': '50%', 'height': '36px'});
+            this.cancelActionNode.inject(this.okActionNode, 'before');
+        }
+
+        if( layout.mobile ) {
+            this.formatMobileButton(this.formBottomNode, this.formAreaNode);
+        }
 
     },
     save: function(){
@@ -565,7 +623,8 @@ MWF.xApplication.Minder.FolderForm = new Class({
         if( data ){
             if( this.isNew )data.parentId = this.explorer.getCurrentFolderId();
             this.app.restActions.saveFolder( data, function( json ){
-                this.explorer.tree.reload();
+                this.explorer?.tree?.reload();
+                this.fireEvent('save');
                 this.close();
             }.bind(this));
         }
@@ -614,6 +673,10 @@ MWF.xApplication.Minder.ReNameForm = new Class({
                 "text": "确定"
             }).inject(this.formBottomNode);
 
+            if( layout.mobile ) {
+                this.okActionNode.setStyle('width', 'calc(50% - 50px)');
+            }
+
             this.okActionNode.addEvent("click", function (e) {
                 this.save(e);
             }.bind(this));
@@ -623,6 +686,10 @@ MWF.xApplication.Minder.ReNameForm = new Class({
             "styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
             "text": "关闭"
         }).inject(this.formBottomNode);
+
+        if( layout.mobile ) {
+            this.cancelActionNode.setStyle('width', 'calc(50% - 50px)');
+        }
 
         this.cancelActionNode.addEvent("click", function (e) {
             this.close(e);
@@ -637,7 +704,8 @@ MWF.xApplication.Minder.ReNameForm = new Class({
                 d.name = data.name;
                 this.app.restActions.saveMind( d, function( json ){
                     this.app.notice("重命名成功");
-                    this.explorer.currentView.reload();
+                    this.explorer?.currentView?.reload();
+                    this.fireEvent('save');
                     this.close();
                 }.bind(this));
             }.bind(this))

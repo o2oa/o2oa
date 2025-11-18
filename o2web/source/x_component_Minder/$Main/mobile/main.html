@@ -1,0 +1,18 @@
+<div class="wrap">
+    <header>
+        <div class="header-title">{{$.lp.title}}</div>
+        <i class="header-create ooicon-add-circle" data-o2-events="click:createMinder;"></i>
+        <i class="header-create ooicon-file" data-o2-events="click:createFolder;"></i>
+    </header>
+    <main data-o2-element="listArea">
+    </main>
+    <footer data-o2-element="footer" data-o2-events="click:switchFolder;">
+        <i class="folder-icon ooicon-folder-open"></i>
+        <div class="folder-name" data-o2-element="folderName"></div>
+        <i class="arrow up ooicon-drop_down mainColor_color" data-o2-element="arrow"></i>
+    </footer>
+</div>
+<div class="mask hide" data-o2-element="mask" data-o2-events="click:closeFolder;"></div>
+<div class="popup" data-o2-element="folderArea">
+    <oo-nav key="id" data-o2-element="nav"></oo-nav>
+</div>

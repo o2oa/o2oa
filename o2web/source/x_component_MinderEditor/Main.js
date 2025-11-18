@@ -39,7 +39,7 @@ MWF.xApplication.MinderEditor.options = {
     multitask: true,
     executable: true
 };
-MWF.xApplication.MinderEditor.Main = new Class({
+MWF.xApplication.MinderEditor.MainPc = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
 
@@ -145,6 +145,7 @@ MWF.xApplication.MinderEditor.Main = new Class({
         }
     },
     createNode: function () {
+        if(layout.mobile)this.content.setStyle('height', '100%');
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div.node", {
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
@@ -248,6 +249,7 @@ MWF.xApplication.MinderEditor.Main = new Class({
         this.isMovingCenter = true;
         // 创建 km 实例
         /* global kityminder */
+        debugger;
         var km = this.minder = new kityminder.Minder();
         //var target = document.querySelector('#minder-view');
         km.renderTo(this.contentNode);
@@ -643,6 +645,112 @@ MWF.xApplication.MinderEditor.Main = new Class({
         }.bind(this))
     }
 });
+
+MWF.xApplication.MinderEditor.MainMobile = new Class({
+    Extends: MWF.xApplication.MinderEditor.MainPc,
+    options: {
+        "leftToolbarEnable" : false,
+        "notePreviewerEnable" : false,
+    },
+    loadApplication: function (callback) {
+        this.userName = layout.desktop.session.user.distinguishedName || layout.desktop.session.user.name;
+        this.restActions = MWF.Actions.get("x_mind_assemble_control"); //new MWF.xApplication.Minder.Actions.RestActions();
+        if( this.status ){
+            this.options.isEdited = this.status.isEdited || false;
+            this.options.isNew = this.status.isNew || false;
+            this.options.dataMode = this.status.dataMode;
+        }
+        if( this.options.isEdited ){
+            MWF.xDesktop.requireApp("MinderEditor", "RuntimeInEditMode", null, false);
+            MWF.xDesktop.requireApp("MinderEditor", "WidgetInEditMode", null, false);
+            MWF.xDesktop.requireApp("MinderEditor", "ToolbarInMobile", null, false);
+        }
+        this.createNode();
+        this.getData( function(){
+            var name = this.data.name || this.options.title || "新建脑图";
+            name = name.length > 30 ? name.substr(0,30) : name;
+            this.setTitle( name );
+            this.loadApplicationContent();
+        }.bind(this));
+        if( this.options.noticeText )this.notice( this.options.noticeText , "info");
+    },
+    loadApplicationContent: function () {
+        this.loadResource(function () {
+            this.loadKityMinder(this.data.content);
+
+            this.debug = new MWF.xApplication.MinderEditor.Debug(false);
+            this.key = new MWF.xApplication.MinderEditor.Key();
+            this.fsm = new MWF.xApplication.MinderEditor.FSM('normal');
+            this.receiver = new MWF.xApplication.MinderEditor.Receiver(this);
+
+            this.commands = new MWF.xApplication.MinderEditor.Commands( this );
+            this.commands.load();
+
+            if( this.options.isEdited ){
+                this.topToolbar = new MWF.xApplication.MinderEditor.ToolbarInMobile( this, this.topToolbarNode );
+                this.topToolbar.load();
+
+               this.input = new MWF.xApplication.MinderEditor.Input(this);
+            }
+
+
+            // this.drag = new MWF.xApplication.MinderEditor.Drag(this);
+            // MWF.xApplication.MinderEditor.JumpingInEditMode(this);
+        }.bind(this));
+    },
+    _createNode : function(){
+
+
+        this.contentNode = new Element("div.contentNode").inject(this.node);
+        this.contentNode.classList.add("km-editor");
+
+        this.topToolbarNode = new Element("div.toolbarNode", {
+            styles: {
+                "margin-top": "10px",
+                'display':'flex',
+                'white-space':'nowrap',
+                'align-items': 'center',
+                'height':'60px',
+                'padding': '0 10px',
+                'overflow-x':'auto',
+                'box-shadow': '0 -10px 10px -10px #ccc'
+            }
+        }).inject(this.node);
+
+        this.saveAction = new Element("div.saveAction.ooicon-save", {
+            styles: {
+                background: "#fff",
+                "font-size": "32px",
+                bottom: "80px",
+                color: '#666',
+                right: "20px",
+                cursor: "pointer",
+                width:"32px",
+                height:"32px",
+                position:"absolute"
+            },
+            events: {
+                click: ()=>{
+                    this.save();
+                }
+            }
+        }).inject(this.node);
+
+        this.Content_Offset_Top = 70; //this.contentNode.getCoordinates( this.node).top;
+
+
+
+        // this.resizeContentFun = this.resizeContent.bind(this);
+        // this.addEvent("resize", this.resizeContentFun);
+        this.resizeContent();
+    },
+});
+
+if ((layout.mobile || COMMON.Browser.Platform.isMobile)){
+    MWF.xApplication.MinderEditor.Main = MWF.xApplication.MinderEditor.MainMobile;
+}else{
+    MWF.xApplication.MinderEditor.Main = MWF.xApplication.MinderEditor.MainPc;
+}
 
 MWF.xApplication.MinderEditor.Converter = new Class({
     Implements: [Options, Events],

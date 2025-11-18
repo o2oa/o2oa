@@ -1,7 +1,7 @@
 //MWF.xDesktop.requireApp("Minder", "Actions.RestActions", null, false);
 
 MWF.require("MWF.widget.Tree", null, false);
-MWF.xApplication.Minder.Main = new Class({
+MWF.xApplication.Minder.MainPc = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
 
@@ -210,6 +210,246 @@ MWF.xApplication.Minder.Main = new Class({
         return result;
     }
 });
+
+MWF.xApplication.Minder.MainMobile = new Class({
+    Extends: MWF.xApplication.Minder.MainPc,
+    options: {
+        "style": "mobile"
+    },
+    loadApplication: function(callback){
+        this.content.setStyle("overflow", "hidden");
+        this.node = new Element("div", {
+            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+        }).inject(this.content);
+        this.node.loadCss(`../x_component_Minder/$Main/${this.options.style}/style.css`);
+        this.loadView();
+        if (callback) callback();
+    },
+    reload: function(){
+        this.node.empty();
+        this.loadView();
+    },
+    loadView: function(){
+        this.node.loadHtml(
+            `../x_component_Minder/$Main/${this.options.style}/main.html`,
+            {
+                module: this,
+                bind: {
+                    lp: this.lp
+                }
+            },
+            ()=>{
+                this.loadFolder();
+            }
+        );
+    },
+    loadFolder: function (){
+        var setProperty = (tree)=>{
+            tree.text = tree.name;
+            tree.selectable = 'yes';
+            tree.icon = 'folder-open';
+            tree.expanded = true;
+            tree.children?.forEach( (child)=>{
+                setProperty(child);
+            });
+            return tree;
+        };
+        var p = o2.Actions.load('x_mind_assemble_control').MindFolderInfoAction.treeMyFolder();
+        p.then((json)=>{
+            var rootData = {
+                id : "root",
+                name : "根目录",
+                orderNumber : "1",
+                description : "",
+                selected: true,
+                children: json.data
+            };
+            var tree = setProperty(rootData);
+            this.nav.setMenu([tree]);
+        });
+        this.nav.addEventListener('select', (e)=>{
+            var {text, id} = e.detail.data;
+            this.closeFolder();
+            this.folderName.set('text', text);
+            this.loadList(id, e.detail.data);
+        });
+    },
+    switchFolder: function(e){
+        if( this.folderArea.hasClass('visible') ){
+            this.hideFolderArea();
+            this.mask.addClass('hide');
+            this.arrow.addClass('up');
+        }else{
+            this.showFolderArea();
+            this.mask.removeClass('hide');
+            this.arrow.removeClass('up');
+        }
+    },
+    closeFolder: function(e){
+        this.hideFolderArea();
+        this.mask.addClass('hide');
+        this.arrow.addClass('up');
+    },
+    showFolderArea: function(){
+        window.setTimeout(()=>{
+            this.folderArea.removeClass('invisible');
+            this.folderArea.addClass('visible');
+        }, 10);
+    },
+    hideFolderArea: function(){
+        window.setTimeout(()=>{
+            this.folderArea.addClass('invisible');
+            this.folderArea.removeClass('visible');
+        }, 10);
+    },
+    loadList: function(folderId = 'root', folderData){
+        this.currentFolderData = folderData;
+        this.currentFolderId = folderId;
+        this.listArea.empty();
+        var p = o2.Actions.load('x_mind_assemble_control').MindInfoAction.listNextWithFilter('(0)', 100, {"folderId": folderId});
+        p.then((json)=>{
+            this.listArea.loadHtml(
+                `../x_component_Minder/$Main/${this.options.style}/list.html`,
+                {
+                    module: this,
+                    bind: {
+                        lp: this.lp,
+                        data: json.data
+                    }
+                },
+                ()=>{}
+            );
+            this.fireEvent("postLoad");
+        });
+    },
+    getCurrentFolderId: function (data){
+        return this.currentFolderData.id;
+    },
+    getCurrentFolderData: function (){
+        return this.currentFolderData;
+    },
+    showItemAction: function(e, data){
+        this.actionSelect.removeClass('hide').addClass('invisibility');
+        this.actionSelect._elements.box.click();
+        this.currentItemData = data;
+    },
+    handleItemAction: function (e){
+        switch(this.actionSelect.value){
+            case "rename":
+                this.rename(this.currentItemData);
+                this.actionSelect.value = '';
+                this.actionSelect._inputValue();
+                break;
+            case "delete":
+                this.remove(this.currentItemData);
+                this.actionSelect.value = '';
+                this.actionSelect._inputValue();
+                break;
+        }
+        this.currentItemData = null;
+    },
+    rename : function(data){
+        MWF.xDesktop.requireApp("Minder", "Common", null, false);
+        if( !data )return;
+        var form = new MWF.xApplication.Minder.ReNameForm(this, {
+            name : data.name
+        }, {
+            id : data.id,
+            onSave: ()=>{
+                this.loadList();
+            }
+        }, {
+            app: this
+        });
+        form.edit();
+    },
+    remove : function(data){
+        if( !data )return;
+        var _self = this;
+
+        var p = MWF.getCenterPosition(this.content, 300, 150);
+        var event = {
+            "event": {
+                "x": p.x,
+                "y": p.y - 200,
+                "clientX": p.x,
+                "clientY": p.y - 200
+            }
+        };
+
+        this.confirm("warn", event, "删除文件确认", `是否删除文件：${data.name}。`, 350, 120, function () {
+            o2.Actions.load('x_mind_assemble_control').MindInfoAction.destoryFromNormal(data.id, ()=> {
+                _self.notice("成功删除文件。");
+                _self.loadList();
+            });
+            this.close();
+        }, function () {
+            this.close();
+        });
+    },
+    createMinder: function(){
+        MWF.xDesktop.requireApp("Minder", "Common", null, false);
+        var form = new MWF.xApplication.Minder.NewNameForm(this, {
+        }, {
+            style: 'v10_mobile',
+            hasTop: false,
+            bottom: 0,
+            height: '50%',
+            'minHeight': 400,
+            width: '100%',
+            "closeByClickMask" : true,
+            onSave: ()=>{
+                this.loadList();
+            }
+        }, {
+            app: this
+        });
+        form.edit();
+    },
+    createFolder: function(){
+        MWF.xDesktop.requireApp("Minder", "Common", null, false);
+        var form = new MWF.xApplication.Minder.FolderForm(this, {
+        }, {
+            style: 'v10_mobile',
+            hasTop: false,
+            bottom: 0,
+            height: '50%',
+            'minHeight': 400,
+            width: '100%',
+            "closeByClickMask" : true,
+            onSave: ()=>{
+                this.loadList();
+            }
+        }, {
+            app: this
+        });
+        form.create();
+    },
+    handleEventClick: function (e, data){
+        this.openMinder(e, data);
+    },
+    openMinder: function(e, data){
+        var appId = "MinderEditor"+data.id;
+        var app = this.desktop.apps[appId];
+        if (app){
+            app.setCurrent();
+        }else {
+            this.desktop.openApplication(null, "MinderEditor", {
+                "appId" : appId,
+                "folderId" : data.folderId,
+                "id" : data.id,
+                "isEdited" : true,
+                "isNew" : false
+            });
+        }
+    }
+});
+
+if ((layout.mobile || COMMON.Browser.Platform.isMobile)){
+    MWF.xApplication.Minder.Main = MWF.xApplication.Minder.MainMobile;
+}else{
+    MWF.xApplication.Minder.Main = MWF.xApplication.Minder.MainPc;
+}
 
 
 MWF.xApplication.Minder.History = new Class({

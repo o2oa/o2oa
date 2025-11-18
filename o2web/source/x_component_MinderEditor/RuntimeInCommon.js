@@ -7,7 +7,7 @@ MWF.xApplication.MinderEditor.Drag = new Class({
         this.minder = editor.minder;
         this.popmenu = editor.popmenu;
         this.receiver =  editor.receiver;
-        this.receiverElement = this.receiver.element;
+        this.receiverElement = this.receiver?.element;
         this.setupFsm();
 
         var downX, downY;
@@ -242,15 +242,18 @@ MWF.xApplication.MinderEditor.Receiver = new Class({
          * @Editor: Naixor
          * @Date: 2015.09.14
          */
-        element.setAttribute("tabindex", -1);
+        //element.setAttribute("tabindex", -1);
         element.classList.add('receiver');
-        element.onkeydown = element.onkeypress = element.onkeyup = this.dispatchKeyEvent.bind(this);
+        //if( !layout.mobile ){
+            element.onkeydown = element.onkeypress = element.onkeyup = this.dispatchKeyEvent.bind(this);
+        //}
         this.editor.contentNode.appendChild(element);
 
-        this.selectAll();
 
+        this.selectAll();
         this.minder.on('beforemousedown', this.selectAll.bind(this));
         this.minder.on('receiverfocus', this.selectAll.bind(this));
+
         this.minder.on('readonly', function() {
             // 屏蔽minder的事件接受，删除receiver和popmenu
             this.minder.disable();
@@ -263,6 +266,7 @@ MWF.xApplication.MinderEditor.Receiver = new Class({
 
     },
     selectAll: function() {
+        if(layout.mobile)return;
         // 保证有被选中的
         if (!this.element.innerHTML) this.element.innerHTML = '&nbsp;';
         var range = document.createRange();
@@ -271,8 +275,6 @@ MWF.xApplication.MinderEditor.Receiver = new Class({
         selection.removeAllRanges();
         selection.addRange(range);
         this.element.focus();
-
-
     },
     /**
      * @Desc: 增加enable和disable方法用于解决热核态的输入法屏蔽问题

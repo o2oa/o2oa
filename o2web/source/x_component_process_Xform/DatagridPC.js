@@ -484,7 +484,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 		},
 
 		_createAddLineAction: function(td){
-			var addLineAction = new Element("div", {
+			var addLineAction = new Element("div.addLineAction.ooicon-create", {
 				"styles": this.form.css.addLineAction,
 				"events": {
 					"click": function(e){
@@ -495,7 +495,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			addLineAction.inject(td);
 		},
 		_createDelLineAction: function(td){
-			var delLineAction = new Element("div", {
+			var delLineAction = new Element("div.delLineAction.ooicon-delete", {
 				"styles": this.form.css.delLineAction,
 				"events": {
 					"click": function(e){
@@ -506,7 +506,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			delLineAction.inject(td);
 		},
 		_createCompleteAction: function(td){
-			var completeAction = new Element("div", {
+			var completeAction = new Element("div.completeLineAction.ooicon-checkmark", {
 				"styles": this.form.css.completeLineAction,
 				"events": {
 					"click": function(e){
@@ -517,7 +517,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 			completeAction.inject(td);
 		},
 		_createCancelAction: function(td){
-			var cancelAction = new Element("div", {
+			var cancelAction = new Element("div.cancelLineEditAction.ooicon-process-cancel", {
 				"styles": this.form.css.delLineAction,
 				"events": {
 					"click": function(e){

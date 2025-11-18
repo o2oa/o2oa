@@ -187,7 +187,13 @@ MWF.xApplication.MinderEditor.PriorityImage = new Class({
                     this.status = "hidden";
                 }.bind(this)
             }, this.options.tooltipsOptions );
-            this.contentTooltip = new MWF.xApplication.MinderEditor.PriorityImage.Tootips( this.dropdownContainer || this.app.content, this.node, this.app, data, options );
+            this.contentTooltip = new MWF.xApplication.MinderEditor.PriorityImage.Tootips(
+                this.dropdownContainer || this.app.content,
+                this.node,
+                this.app,
+                data,
+                options
+            );
             this.contentTooltip.selector = this;
         }
     }
@@ -207,6 +213,14 @@ MWF.xApplication.MinderEditor.PriorityImage.Tootips = new Class({
         hasArrow : true
     },
     _customNode : function( node, contentNode ){
+        if( layout.mobile ){
+            this.options.position.y = 'top';
+            this.node.setStyles({
+                'max-width': 'calc(100% - 5px)',
+                'min-width': 'calc(100% - 5px)',
+                'width': 'calc(100% - 5px)'
+            });
+        }
         //var width = ( parseInt( this.selector.options.width )  )+ "px";
         //node.setStyles({
         //    "width": width,
@@ -230,21 +244,39 @@ MWF.xApplication.MinderEditor.PriorityImage.Tootips = new Class({
         _selector.listNode = new Element("div.listNode",{
             "styles":this.css.listNode
         }).inject(_selector.listContentNode);
+
+        if(layout.mobile){
+            _selector.listNode.setStyles({
+                "display": "grid",
+                "grid-template-columns": "1fr 1fr 1fr 1fr 1fr",
+                "justify-items": "center"
+            });
+        }
+
         _selector.setScrollBar(_selector.listNode);
 
-        data.each(function(d){
-            this.createItem( d );
+        data.each(function(d, i){
+            this.createItem( d, i );
         }.bind(this));
 
     },
-    createItem: function( data ){
+    createItem: function( data, index ){
         var _selector = this.selector;
         var listItemNode = new Element("div.listItemNode",{
             "styles":this.css.listItemNode,
             "title" : data.title
         }).inject(_selector.listNode);
+        if( layout.mobile ){
+            listItemNode.setStyles({
+                "width" : '20%',
+                'padding': '1em'
+            });
+        }
+        var background = layout.mobile ?
+            "url(../x_component_MinderEditor/$Main/mobile/icon/priority"+(index)+".png) no-repeat center center":
+            "url("+ _selector.path + _selector.options.style + "/icon/priority.png) no-repeat "+ data.position;
         listItemNode.setStyles({
-            "background": "url("+ _selector.path + _selector.options.style + "/icon/priority.png) no-repeat "+ data.position
+            "background": background
         });
 
         if(data)listItemNode.store("data",data);
@@ -396,6 +428,14 @@ MWF.xApplication.MinderEditor.ProgressImage.Tootips = new Class({
         hasArrow : true
     },
     _customNode : function( node, contentNode ){
+        if( layout.mobile ){
+            this.options.position.y = 'top';
+            this.node.setStyles({
+                'max-width': 'calc(100% - 5px)',
+                'min-width': 'calc(100% - 5px)',
+                'width': 'calc(100% - 5px)'
+            });
+        }
         //var width = ( parseInt( this.selector.options.width )  )+ "px";
         //node.setStyles({
         //    "width": width,
@@ -419,21 +459,39 @@ MWF.xApplication.MinderEditor.ProgressImage.Tootips = new Class({
         _selector.listNode = new Element("div.listNode",{
             "styles":this.css.listNode
         }).inject(_selector.listContentNode);
+
+        if(layout.mobile){
+            _selector.listNode.setStyles({
+                "display": "grid",
+                "grid-template-columns": "1fr 1fr 1fr 1fr 1fr",
+                "justify-items": "center"
+            });
+        }
+
         _selector.setScrollBar(_selector.listNode);
 
-        data.each(function(d){
-            this.createItem( d );
+        data.each(function(d, i){
+            this.createItem( d, i );
         }.bind(this));
 
     },
-    createItem: function( data ){
+    createItem: function( data, index ){
         var _selector = this.selector;
         var listItemNode = new Element("div.listItemNode",{
             "styles":this.css.listItemNode,
             "title" : data.title
         }).inject(_selector.listNode);
+        if( layout.mobile ){
+            listItemNode.setStyles({
+                "width" : '20%',
+                'padding': '1em'
+            });
+        }
+        var background = layout.mobile ?
+            "url(../x_component_MinderEditor/$Main/mobile/icon/progress"+(index)+".png) no-repeat center center":
+            "url("+ _selector.path + _selector.options.style + "/icon/progress.png) no-repeat "+ data.position;
         listItemNode.setStyles({
-            "background": "url("+ _selector.path + _selector.options.style + "/icon/progress.png) no-repeat "+ data.position
+            "background": background
         });
 
         if(data)listItemNode.store("data",data);
@@ -565,11 +623,15 @@ MWF.xApplication.MinderEditor.HyperLinkForm = new Class({
     },
     _createTableContent: function () {
 
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            "<tr><td styles='formTableTitle' lable='url' width='20%'></td>" +
-            "    <td styles='formTableValue14' item='url' colspan='3'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='title'></td>" +
-            "    <td styles='formTableValue14' item='title' colspan='3'></td></tr>" +
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                'margin-left': "20px", 'margin-right': '20px'
+            })
+        }
+
+        var html = `<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='${layout.mobile?"":"margin-top: 20px;"} '>` +
+            "<tr><td styles='formTableValue14' item='url' colspan='3'></td></tr>" +
+            "<tr><td styles='formTableValue14' item='title' colspan='3'></td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
@@ -577,10 +639,10 @@ MWF.xApplication.MinderEditor.HyperLinkForm = new Class({
 
         this.form = new MForm(this.formTableArea, data, {
             isEdited: true,
-            style : "minder",
+            style : "v10", mvcStyle: "v10",
             hasColon : true,
             itemTemplate: {
-                url: { text : "链接地址",  notEmpty : true,
+                url: { type: 'oo-input', text : "链接地址",  notEmpty : true,
                     validRule : { isInvalid : function( value, it ){
                         var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
                         var R_URL = new RegExp(urlRegex, 'i');
@@ -589,7 +651,7 @@ MWF.xApplication.MinderEditor.HyperLinkForm = new Class({
                     validMessage : { isInvalid : "请输入正确的链接" },
                     attr : { placeholder : "必填：以 http(s):// 或 ftp:// 开头" }
                 },
-                title: { text : "提示文本", attr : { placeholder : "选填：鼠标在链接上悬停时提示的文本" } }
+                title: { type: 'oo-input', text : "提示文本", attr : { placeholder : "选填：鼠标在链接上悬停时提示的文本" } }
             }
         }, this.app);
         this.form.load();
@@ -599,7 +661,7 @@ MWF.xApplication.MinderEditor.HyperLinkForm = new Class({
 
         if (this.isNew || this.isEdited) {
 
-            this.okActionNode = new Element("button.inputOkButton", {
+            this.okActionNode = new Element("oo-button.inputOkButton", {
                 "styles": this.css.inputOkButton,
                 "text": "确定"
             }).inject(this.formBottomNode);
@@ -607,25 +669,44 @@ MWF.xApplication.MinderEditor.HyperLinkForm = new Class({
             this.okActionNode.addEvent("click", function (e) {
                 this.save(e);
             }.bind(this));
+
+            if( layout.mobile ) {
+                this.okActionNode.setStyles({'width': '50%', 'height': '36px'});
+            }
         }
 
-        this.removeAction = new Element("button.inputCancelButton", {
+        this.removeAction = new Element("oo-button.inputCancelButton", {
             "styles": this.css.inputCancelButton,
-            "text": "删除链接"
+            "text": "删除链接",
+            'type':'cancel'
         }).inject(this.formBottomNode);
 
         this.removeAction.addEvent("click", function (e) {
             this.remove(e);
         }.bind(this));
 
-        this.cancelActionNode = new Element("button.inputCancelButton", {
+        if( layout.mobile ) {
+            this.removeAction.setStyles({'width': 'calc( 100% - 40px )', 'height': '36px'});
+        }
+
+        this.cancelActionNode = new Element("oo-button.inputCancelButton", {
             "styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-            "text": "关闭"
+            "text": "关闭",
+            'type':'cancel'
         }).inject(this.formBottomNode);
 
         this.cancelActionNode.addEvent("click", function (e) {
             this.close(e);
         }.bind(this));
+
+        if( layout.mobile ) {
+            this.cancelActionNode.setStyles({'width': '50%', 'height': '36px'});
+            this.cancelActionNode.inject(this.okActionNode, 'before');
+        }
+
+        if( layout.mobile ) {
+            this.formatMobileButton(this.formBottomNode, this.formAreaNode);
+        }
 
     },
     save: function(){

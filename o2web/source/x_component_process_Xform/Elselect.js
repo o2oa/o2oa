@@ -492,11 +492,15 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             if( o2.typeOf(opt.then)==="function" ){
                 return Promise.resolve(opt).then(function(options){
                     text = this.__getOptionsText(options, data);
-                    return typeOf(text) === "array" ? text.join(", ") : (text || "");
+                    var result = typeOf(text) === "array" ? text.join(", ") : (text || "");
+                    (!result && this.json.allowCreate) && (result = data || "");
+                    return result;
                 }.bind(this));
             }else{
                 text = this.__getOptionsText(opt, data);
-                return typeOf(text) === "array" ? text.join(", ") : (text || "");
+                var result = typeOf(text) === "array" ? text.join(", ") : (text || "");
+                (!result && this.json.allowCreate) && (result = data || "");
+                return result;
             }
         },
         setExcelData: function(d, type){
@@ -508,6 +512,9 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                     return a.contains("/") ? a.split("/") : a;
                 });
                 var data = type === 'value' ? this.getDataByValue(arr) : this.getDataByText( arr );
+                if( data.length === 0 || !data[0]){
+                    !!this.json.allowCreate && (data = arr);
+                }
                 this.setData( this.json.multiple ? data : data[0], true);
                 this.moduleExcelAG = null;
             }.bind(this))

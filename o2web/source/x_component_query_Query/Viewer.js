@@ -1847,7 +1847,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }else{
                     this.loadFilterSearchNode();
                 }
-                this.setContentHeight();
+                if (this.options.resizeNode) {
+                    this.setContentHeight();
+                }
+
         //     },
         //     'onRequestFailure': ()=>{this.loadFilterSearchNode();},
         //     'onError': ()=>{this.loadFilterSearchNode();},

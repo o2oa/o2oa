@@ -1289,11 +1289,15 @@ _p[14] = {
         var Minder = _p.r(19);
         Minder.registerInitHook(function() {
             this.on("beforemousedown", function(e) {
-                this.focus();
+                if( !window.layout || !window.layout.mobile ) {
+                    this.focus();
+                }
                 e.preventDefault();
             });
             this.on("paperrender", function() {
-                this.focus();
+                if( !window.layout || !window.layout.mobile ) {
+                    this.focus();
+                }
             });
         });
         kity.extendClass(Minder, {
@@ -1480,13 +1484,15 @@ _p[16] = {
                     minder._firePharse(e);
                     e.preventDefault();
                 });
-                this.on("focus", function() {
-                    receiver.select();
-                    receiver.focus();
-                });
-                this.on("blur", function() {
-                    receiver.blur();
-                });
+                if( !window.layout || !window.layout.mobile ){
+                    this.on("focus", function() {
+                        receiver.select();
+                        receiver.focus();
+                    });
+                    this.on("blur", function() {
+                        receiver.blur();
+                    });
+                }
                 if (this.isFocused()) {
                     receiver.select();
                     receiver.focus();

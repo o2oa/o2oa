@@ -79,7 +79,7 @@ var Popmenu = MWF.xApplication.MinderEditor.PopMenu = new Class({
 
         fsm.when('modal -> normal', function(exit, enter, reason, e) {
             if (reason == 'import-text-finish') {
-                this.receiver.element.focus();
+                this.receiver?.element.focus();
             }
         }.bind(this));
     },

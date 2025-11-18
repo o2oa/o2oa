@@ -13,10 +13,10 @@ MWF.xApplication.MinderEditor.JumpingInReadMode = function( editor ) {
     var container = editor.contentNode;
 
     // normal -> *
-    receiver.listen('normal', function(e) {
+    receiver && receiver.listen('normal', function(e) {
         //console.log(  "receiver.listen('normal'" );
         // 为了防止处理进入edit模式而丢失处理的首字母,此时receiver必须为enable
-        receiver.enable();
+        receiver && receiver.enable();
 
         /**
          * check
