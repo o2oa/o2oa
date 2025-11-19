@@ -35,6 +35,7 @@ MWF.xApplication.process.Work.LP = {
     "flowWork": "继续流转",
     "handwriting": "手写",
     "audioRecord": "录音",
+    "collect": "收藏",
 
     "noOpinionNote": "您还没有设置常用意见，点击设置。",
 

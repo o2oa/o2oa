@@ -318,6 +318,25 @@
 .o2flow-handwriting-buttontext {
     display: inline-block;
 }
+.o2flow-handwriting-preview{
+    position: absolute;
+    bottom: 50px;
+    right: 32px;
+    width: 192px;
+    height: 32px;
+    display: none;
+    z-index: 20002;
+    background: #fff;
+    border-radius: var(--oo-default-radius);
+    box-shadow: rgba(0, 0, 0, 0.25) 0 1px 3px 0;
+}
+.o2flow-handwriting-preview.show{
+    display: block;
+}
+.o2flow-handwriting-preview img{
+    width: 100%;
+    border-radius: var(--oo-default-radius);
+}
 .o2flow-opinion-select {
     overflow: auto;
     float: left;
@@ -360,6 +379,13 @@
     overflow: hidden;
     box-shadow: rgba(0, 0, 0, 0.25) 0 0 8px 0;
     display: none;
+}
+.o2flow-handwriting-action{
+    display: flex;
+    align-items: center;
+}
+.o2flow-handwriting-action oo-checkbox-group{
+    color: #666;
 }
 .o2flow-handwriting-saveNode {
     height: 30px;

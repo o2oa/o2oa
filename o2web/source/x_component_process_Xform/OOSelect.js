@@ -271,6 +271,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
             "text": text
         }).inject(this.node);
 		option.setAttribute('value', value || text);
+		option.setAttribute('text', text || value);
 		this.fireEvent("addOption", [text, value])
 	},
 

@@ -162,7 +162,16 @@ var MTooltips = new Class({
         }
         this.fireEvent("postLoad",[this]);
     },
+    hold: function (){
+        this.holding = true;
+    },
+    unhold: function (){
+        this.holding = false;
+    },
     hide: function(){
+        if(this.holding){
+            return;
+        }
         if( this.node ){
             this.node.setStyle("display","none");
             this.status = "hidden";

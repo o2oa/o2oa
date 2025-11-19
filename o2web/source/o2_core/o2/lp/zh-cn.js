@@ -337,6 +337,10 @@ o2.LP.widget = {
     "replace": "替换",
     "select": "选择",
     "selectFromDriver": '从企业网盘选择',
+    "collect": "收藏夹",
+    "noCollect": "收藏夹中还没有文件",
+    "deleteCollectTitle": "删除确认",
+    "deleteCollectInfor": "确定要删除该手写文件？",
 
     "download": "下载",
     "share": "分享",
@@ -441,8 +445,8 @@ o2.LP.widget = {
     "pen": "笔画",
     "thickness" : "粗细",
     "color" : "颜色",
-    "insertImage" : "插入图片",
-    "imageClipper" : "裁剪图片",
+    "insertImage" : "插入",
+    "imageClipper" : "裁剪",
     "fontSize": "字体大小",
     "fontFamily": "字体",
 

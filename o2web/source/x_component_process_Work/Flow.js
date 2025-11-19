@@ -2927,6 +2927,12 @@ MWF.ProcessFlow.widget.Opinion = new Class({
             "edge": "center"
         });
     },
+    showPreview: function(){
+        if(this.handwritingFile)this.handWritingPreviewNode.addClass('show');
+    },
+    hidePreview: function(){
+        if(this.handwritingFile)this.handWritingPreviewNode.removeClass('show');
+    },
     createHandwriting: function () {
         this.handwritingMask.inject( this.flow.node );
         this.handwritingNode.show().inject(this.flow.node, "after");
@@ -2963,6 +2969,24 @@ MWF.ProcessFlow.widget.Opinion = new Class({
     },
     getHandWritingOptions: function(){
         return {
+            "tools" : [
+                "save", "|",
+                "undo",
+                "redo", "|",
+                "eraser", //橡皮
+                "input", //输入法
+                "pen", "|", //笔画
+                "eraserRadius",
+                "size",
+                "color",
+                "fontSize", "|",
+                // "fontFamily",
+                "image",
+                "imageClipper", "|",
+                "collect", "|",
+                "reset",
+                "cancel"
+            ],
             "style": "default",
             "toolHidden": this.options.tabletToolHidden || [],
             "contentWidth": this.options.tabletWidth || 0,
@@ -2971,12 +2995,25 @@ MWF.ProcessFlow.widget.Opinion = new Class({
             "mainColorEnable": this.flow.options.mainColorEnable,
             "onSave": function (base64code, base64Image, imageFile) {
                 if( !this.tablet.isBlank() ){
-                    this.handwritingFile = imageFile;
-                    this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
-                    addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
-                    this.removeRequireStyle();
+                    var callback = ()=>{
+                        this.handwritingFile = imageFile;
+                        this.handWritingPreviewNode.empty();
+                        new Element('img', {
+                            src: base64Image
+                        }).inject(this.handWritingPreviewNode);
+                        this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
+                        addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
+                        this.removeRequireStyle();
+                    }
+                    if( !!this.isCollectNode?.value?.length ){
+                        this.tablet.saveToCollection(callback);
+                        this.isCollectNode.value = [];
+                    }else{
+                        callback();
+                    }
                 }else{
                     this.handwritingFile = null;
+                    this.handWritingPreviewNode.empty();
                     this.handwritingButton.getElement("i").addClass("o2icon-edit2").
                     removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
                 }
@@ -2994,7 +3031,9 @@ MWF.ProcessFlow.widget.Opinion = new Class({
         };
     },
     saveTablet: function () {
-        if (this.tablet) this.tablet.save();
+        if (this.tablet){
+            this.tablet.save();
+        }
     }
 });
 
