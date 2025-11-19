@@ -2928,10 +2928,10 @@ MWF.ProcessFlow.widget.Opinion = new Class({
         });
     },
     showPreview: function(){
-        if(this.handwritingFile)this.handWritingPreviewNode.addClass('show');
+        if(this.handwritingFile)this.handWritingPreviewNode?.addClass('show');
     },
     hidePreview: function(){
-        if(this.handwritingFile)this.handWritingPreviewNode.removeClass('show');
+        if(this.handwritingFile)this.handWritingPreviewNode?.removeClass('show');
     },
     createHandwriting: function () {
         this.handwritingMask.inject( this.flow.node );
@@ -2997,10 +2997,12 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 if( !this.tablet.isBlank() ){
                     var callback = ()=>{
                         this.handwritingFile = imageFile;
-                        this.handWritingPreviewNode.empty();
-                        new Element('img', {
-                            src: base64Image
-                        }).inject(this.handWritingPreviewNode);
+                        if(this.handWritingPreviewNode){
+                            this.handWritingPreviewNode.empty();
+                            new Element('img', {
+                                src: base64Image
+                            }).inject(this.handWritingPreviewNode);
+                        }
                         this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
                         addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
                         this.removeRequireStyle();
