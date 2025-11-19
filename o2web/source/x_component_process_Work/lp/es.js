@@ -30,6 +30,7 @@ MWF.xApplication.process.Work.LP={
 	"process": "Continuar el flujo de trabajo",
 	"flowWork": "manejar trabajo",
 	"handwriting": "Escribir",
+	"collect": "Cobrar",
 	"audioRecord": "Grabación de audio",
 	"noOpinionNote": "Aún no has establecido opiniones comunes, haz clic para establecerlas.",
 	"noAppendTaskIdentityConfig": "No se ha configurado un responsable para la transferencia, por favor contacte al administrador",

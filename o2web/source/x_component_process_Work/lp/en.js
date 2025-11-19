@@ -30,6 +30,7 @@ MWF.xApplication.process.Work.LP={
 	"process": "Flow",
 	"flowWork": "Process Work",
 	"handwriting": "Write",
+	"collect": "Collect",
 	"audioRecord": "Record",
 	"noOpinionNote": "You have not set common opinions yet, click to set them.",
 	"noAppendTaskIdentityConfig": "No transferor is configured, please contact the administrator",

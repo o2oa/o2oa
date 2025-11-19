@@ -466,7 +466,9 @@ o2.LP={
 		"unit": "organization",
 		"duty": "post",
 		"selectIdentity": "Choose Identity",
-		"selectFromDriver": "Choose from enterprise cloud storage"
+		"selectFromDriver": "Choose from enterprise cloud storage",
+		"collect": "Collect",
+		"noCollect": "No files are currently in the Favorites folder"
 	},
 	"authentication": {
 		"LoginFormTitle": "Welcome",

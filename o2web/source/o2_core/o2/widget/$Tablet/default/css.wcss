@@ -229,7 +229,7 @@
         "left": "0px",
         "width": "calc( 100% - 2px )",
         "min-height": "calc( 100% - 2px )",
-        "background": "transparent",
+        "background": "transparent"
         // "z-index": 1003
     },
     "inputEditarea": {
@@ -345,5 +345,14 @@
         "position": "absolute",
         "width":"16px",
         "height": "24px"
+    },
+    "emptyNode": {
+        "display": "flex",
+        "flex-direction": "column",
+        "align-items": "center",
+        "justify-content": "center",
+        "width": "100%",
+        "height": "10em",
+        "color": "var(--oo-color-gray1)"
     }
 }

@@ -11,16 +11,16 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "iconfontEnable": false,
         "mainColorEnable": false,
 
-        "contentWidth" : 0, //绘图区域宽度，不制定则基础 this.node的宽度
-        "contentHeight" : 0, //绘图区域高度，不制定则基础 this.node的高度 - 操作条高度
+        "contentWidth": 0, //绘图区域宽度，不制定则基础 this.node的宽度
+        "contentHeight": 0, //绘图区域高度，不制定则基础 this.node的高度 - 操作条高度
 
-        "lineWidth" : 1, //铅笔粗细
+        "lineWidth": 1, //铅笔粗细
         "eraserRadiusSize": 20, //橡皮大小
-        "color" : "#000000", //画笔颜色
+        "color": "#000000", //画笔颜色
 
         "zIndex": 20003,
 
-        tools : [
+        tools: [
             "save", "|",
             "undo",
             "redo", "|",
@@ -34,26 +34,27 @@ o2.widget.Tablet = o2.Tablet = new Class({
             // "fontFamily",
             "image",
             "imageClipper", "|",
+            //"collect", "|",
             "reset",
             "cancel"
         ],
 
         "toolHidden": [],
-        "description" : "", //描述文字
+        "description": "", //描述文字
         "imageSrc": "",
 
         "eraserEnable": true,
         "inputEnable": false,
 
 
-        "action" : null, //uploadImage方法的上传服务，可选，如果不设置，使用公共图片服务
+        "action": null, //uploadImage方法的上传服务，可选，如果不设置，使用公共图片服务
         "method": "", //使用action 的方法
         "parameter": {}, //action 时的url参数
 
         "data": null, //formdata 的data
         "reference": "",  //uploadImage方法的使用 使用公共图片服务上传时的参数
-        "referenceType" : "", //使用公共图片服务上传时的参数, 目前支持 processPlatformJob, processPlatformForm, portalPage, cmsDocument, forumDocument
-        "resultMaxSize" : 0, //使用 reference 时有效
+        "referenceType": "", //使用公共图片服务上传时的参数, 目前支持 processPlatformJob, processPlatformForm, portalPage, cmsDocument, forumDocument
+        "resultMaxSize": 0, //使用 reference 时有效
 
         "rotateWithMobile": true,
         "toolsScale": 1
@@ -88,21 +89,23 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.inMobileDevice = COMMON && COMMON.Browser && COMMON.Browser.Platform.isMobile;
 
         this.lp = {
-            "save" : o2.LP.widget.save,
-            "reset" : o2.LP.widget.empty,
-            "undo" : o2.LP.widget.undo,
-            "redo" : o2.LP.widget.redo,
+            "save": o2.LP.widget.save,
+            "reset": o2.LP.widget.empty,
+            "undo": o2.LP.widget.undo,
+            "redo": o2.LP.widget.redo,
             "eraser": o2.LP.widget.eraser,
             "input": o2.LP.widget.input,
             "fontSize": o2.LP.widget.fontSize,
             "fontFamily": o2.LP.widget.fontFamily,
             "pen": o2.LP.widget.pen,
             "eraserRadius": o2.LP.widget.eraserRadius,
-            "size" : o2.LP.widget.thickness,
-            "color" : o2.LP.widget.color,
-            "image" : o2.LP.widget.insertImage,
-            "imageClipper" : o2.LP.widget.imageClipper,
-            "cancel": o2.LP.widget.cancel
+            "size": o2.LP.widget.thickness,
+            "color": o2.LP.widget.color,
+            "image": o2.LP.widget.insertImage,
+            "imageClipper": o2.LP.widget.imageClipper,
+            "cancel": o2.LP.widget.cancel,
+            "collect": o2.LP.widget.collect,
+            "noCollect": o2.LP.widget.noCollect
         };
 
         this._loadCss();
@@ -131,7 +134,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.currentFontSize = "16px";
 
         this.container = new Element("div.container", {
-            styles :  this.css.container
+            styles:  this.css.container
         }).inject(this.node);
 
         if( this.rotate ){ //强制横屏显示
@@ -140,7 +143,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         this.loadToolBar();
 
-        this.contentNode = new Element("div.contentNode", { styles :  this.css.contentNode}).inject(this.container);
+        this.contentNode = new Element("div.contentNode", { styles:  this.css.contentNode}).inject(this.container);
         this.contentNode.addEvent("selectstart", function(e){
             if( this.mode !== "inputing" ){
                 e.preventDefault();
@@ -159,7 +162,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         //this.imageNode = new Element("img",{
         //}).inject(this.contentNode);
         //this.imageNode.setStyles({
-        //    "display" : "none"
+        //    "display": "none"
         //});
 
         if( this.app ){
@@ -168,7 +171,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
 
     },
-    loadDescription : function(){
+    loadDescription: function(){
         if( this.options.description ){
             this.descriptionNode = new Element("div",{
                 "styles": this.css.descriptionNode,
@@ -176,15 +179,15 @@ o2.widget.Tablet = o2.Tablet = new Class({
             }).inject( this.container )
         }
     },
-    setContentSize : function(){
+    setContentSize: function(){
         this.computeContentSize();
         this.contentNode.setStyle("width", this.contentWidth );
         this.contentNode.setStyle("height", this.contentHeight );
 
         if(this.canvasWrap){
             this.canvasWrap.setStyles({
-                width : this.contentWidth+"px",
-                height : this.contentHeight+"px"
+                width: this.contentWidth+"px",
+                height: this.contentHeight+"px"
             });
         }
 
@@ -205,8 +208,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
             if( this.options.contentWidth ){
                 this.contentHeight = this.options.contentWidth;
             }else{
-                toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : { x : 0, y : 0 };
-                descriptionSize = this.descriptionNode ? this.descriptionNode.getSize() : { x : 0, y : 0 };
+                toolbarSize = this.toolbarNode ? this.toolbarNode.getSize(): { x: 0, y: 0 };
+                descriptionSize = this.descriptionNode ? this.descriptionNode.getSize(): { x: 0, y: 0 };
                 m1 = this.getOffsetX(this.toolbarNode);
                 m2 = this.getOffsetX(this.descriptionNode);
                 m3 = this.getOffsetX(this.contentNode);
@@ -221,8 +224,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
             if( this.options.contentHeight ){
                 this.contentHeight = this.options.contentHeight;
             }else{
-                toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : { x : 0, y : 0 };
-                descriptionSize = this.descriptionNode ? this.descriptionNode.getSize() : { x : 0, y : 0 };
+                toolbarSize = this.toolbarNode ? this.toolbarNode.getSize(): { x: 0, y: 0 };
+                descriptionSize = this.descriptionNode ? this.descriptionNode.getSize(): { x: 0, y: 0 };
                 m1 = this.getOffsetY(this.toolbarNode);
                 m2 = this.getOffsetY(this.descriptionNode);
                 m3 = this.getOffsetY(this.contentNode);
@@ -231,7 +234,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             if( this.contentHeight < 150 )this.contentHeight = 150;
         }
     },
-    getOffsetY : function(node){
+    getOffsetY: function(node){
         if( !node )return 0;
         return (node.getStyle("margin-top").toInt() || 0 ) +
             (node.getStyle("margin-bottom").toInt() || 0 ) +
@@ -240,7 +243,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             (node.getStyle("border-top-width").toInt() || 0 ) +
             (node.getStyle("border-bottom-width").toInt() || 0 );
     },
-    getOffsetX : function(node){
+    getOffsetX: function(node){
         if( !node )return 0;
         return (node.getStyle("margin-left").toInt() || 0 ) +
             (node.getStyle("margin-right").toInt() || 0 ) +
@@ -255,20 +258,20 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.toolbar.load();
         }else{
             this.toolbarNode = new Element("div.toolbar", {
-                "styles" : this.css.toolbar
+                "styles": this.css.toolbar
             }).inject(this.container);
 
             this.toolbar = new o2.widget.Tablet.Toolbar( this , this.toolbarNode  );
             this.toolbar.load();
         }
     },
-    storeToPreArray : function(preData){
+    storeToPreArray: function(preData){
         //当前绘图表面状态
         if(!preData)preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
         //当前绘图表面进栈
         this.preDrawAry.push(preData);
     },
-    storeToMiddleArray : function( preData ){
+    storeToMiddleArray: function( preData ){
         //当前绘图表面状态
         if( !preData )preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
         if( this.nextDrawAry.length==0){
@@ -287,21 +290,21 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.toolbar.enableItem("reset");
         }
     },
-    loadContent : function( ){
+    loadContent: function( ){
         var _self = this;
 
-        this.canvasWrap = new Element("div.canvasWrap", { styles :  this.css.canvasWrap}).inject(this.contentNode);
+        this.canvasWrap = new Element("div.canvasWrap", { styles:  this.css.canvasWrap}).inject(this.contentNode);
         this.canvasWrap.setStyles({
-            width : this.contentWidth+"px",
-            height : this.contentHeight+"px"
+            width: this.contentWidth+"px",
+            height: this.contentHeight+"px"
         });
         if( !this.rotate ){
             this.canvasWrap.setStyle("position", "relative");
         }
 
         this.canvas = new Element("canvas", {
-            width : this.contentWidth,
-            height : this.contentHeight
+            width: this.contentWidth,
+            height: this.contentHeight
         }).inject( this.canvasWrap );
 
         this.ctx = this.canvas.getContext("2d");
@@ -365,7 +368,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.currentInput = new o2.widget.Tablet.Input( this, this.canvasWrap , {
             top: y,
             left: x,
-            onPostDraw : function( image ){
+            onPostDraw: function( image ){
                 Promise.resolve(image).then(function () {
                     var input = this;
                     var globalCompositeOperation = _self.ctx.globalCompositeOperation;
@@ -441,8 +444,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         var x , y;
         if(this.rotate && _self.transform > 0){
-            var clientY = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientY : ev.clientY;
-            var clientX = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientX : ev.clientX;
+            var clientY = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientY: ev.clientY;
+            var clientX = ev.type.indexOf('touch') !== -1 ? ev.touches[0].clientX: ev.clientX;
             var newX = clientY;
             var newY = _self.canvas.height - clientX; //y轴旋转偏移 // - parseInt(_self.transformOrigin)
         }else{
@@ -549,7 +552,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         Promise.resolve( image ).then(function(image){
             if( image ){
                 if( this.options.action ){
-                    this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(this.options.action).action : this.options.action;
+                    this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(this.options.action).action: this.options.action;
                     this.action.invoke({
                         "name": this.options.method,
                         "async": true,
@@ -577,7 +580,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             }
         })
     },
-    getFormData : function( image ){
+    getFormData: function( image ){
         if( !image )image = this.getImage();
         return Promise.resolve( image ).then(function(){
             var formData = new FormData();
@@ -590,7 +593,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             return formData;
         }.bind(this));
     },
-    getImage : function( base64Code, ignoreResultSize ){
+    getImage: function( base64Code, ignoreResultSize ){
         var src = base64Code || this.getBase64Code( ignoreResultSize);
         return Promise.resolve( src ).then(function( src ){
             src=window.atob(src);
@@ -612,7 +615,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         }.bind(this));
     },
-    getBase64Code : function( ignoreResultSize ){
+    getBase64Code: function( ignoreResultSize ){
         if( !ignoreResultSize && this.options.resultMaxSize ){
             return Promise.resolve( this.drawInput() ).then(function() {
                 var src = this.canvas.toDataURL(this.fileType);
@@ -628,8 +631,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 height = (width / this.contentWidth) * this.contentHeight;
 
                 var tmpCanvas = new Element("canvas", {
-                    width : width,
-                    height : height
+                    width: width,
+                    height: height
                 }).inject( this.contentNode );
                 var tmpCtx = tmpCanvas.getContext("2d");
 
@@ -678,16 +681,20 @@ o2.widget.Tablet = o2.Tablet = new Class({
             return "";
         }
     },
-    close : function(){
+    close: function(){
         if( this.inputList ){
             this.inputList.each(function (input) {
                 input.close( true );
             })
         }
+        if(this.imageMover){
+            this.imageMover.close();
+            this.imageMover = null;
+        }
         this.container.destroy();
         delete this;
     },
-    checkBroswer : function(){
+    checkBroswer: function(){
         if( window.Uint8Array && window.HTMLCanvasElement && window.atob && window.Blob){
             this.available = true;
             return true;
@@ -700,15 +707,15 @@ o2.widget.Tablet = o2.Tablet = new Class({
     isBlank: function(){
         var canvas = this.canvas;
         var blank = new Element("canvas", {
-            width : canvas.width,
-            height : canvas.height
+            width: canvas.width,
+            height: canvas.height
         });
         // var blank = document.createElement('canvas');//系统获取一个空canvas对象
         // blank.width = canvas.width;
         // blank.height = canvas.height;
         return canvas.toDataURL() == blank.toDataURL(); //比较值相等则为空
     },
-    save : function(){
+    save: function(){
         var _slef = this;
         Promise.resolve( this.getBase64Code() ).then(function ( base64code ) {
             _slef.getImage( base64code ).then(function( imageFile ){
@@ -722,7 +729,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
         // var base64Image = this.getBase64Image( base64code );
         // this.fireEvent("save", [ base64code, base64Image, imageFile]);
     },
-    reset : function( itemNode ){
+    reset: function( itemNode ){
+        if(this.imageMover){
+            this.imageMover.close();
+            this.imageMover = null;
+        }
         this.fileName = "untitled.png";
         this.fileType = "image/png";
         if( this.ctx ){
@@ -737,7 +748,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
         this.fireEvent("reset");
     },
-    undo : function( itemNode ){
+    undo: function( itemNode ){
         if(this.preDrawAry.length>0){
             var popData=this.preDrawAry.pop();
             var midData=this.middleAry[this.preDrawAry.length+1];
@@ -747,7 +758,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         this.toolbar.setAllItemsStatus();
     },
-    redo : function( itemNode ){
+    redo: function( itemNode ){
         if(this.nextDrawAry.length){
             var popData=this.nextDrawAry.pop();
             var midData=this.middleAry[this.middleAry.length-this.nextDrawAry.length-2];
@@ -756,9 +767,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
         this.toolbar.setAllItemsStatus();
     },
-    size : function( itemNode ){
+    size: function( itemNode ){
         if( !this.sizeSelector ){
-            var container = this.inMobileDevice ? $(document.body) : this.container;
+            var container = this.inMobileDevice ? $(document.body): this.container;
             this.sizeSelector = new o2.widget.Tablet.SizePicker(container, itemNode, null, {}, {
                 "onSelect": function (width) {
                     this.currentWidth = width;
@@ -766,15 +777,15 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 "onHide": function () {
                     itemNode.fireEvent("mouseout");
                 },
-                "event" : this.inMobileDevice ? "click" : "mouseenter",
+                "event": this.inMobileDevice ? "click": "mouseenter",
                 "hasMask": false,
                 "zoom":  this.options.toolsScale || 1
             });
         }
     },
-    eraserRadius : function( itemNode ){
+    eraserRadius: function( itemNode ){
         if( !this.eraserRadiusSelector ){
-            var container = this.inMobileDevice ? $(document.body) : this.container;
+            var container = this.inMobileDevice ? $(document.body): this.container;
             this.eraserRadiusSelector = new o2.widget.Tablet.EraserRadiusPicker(container, itemNode, null, {}, {
                 "onSelect": function (width) {
                     this.currentEraserRadius = width;
@@ -782,17 +793,17 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 "onHide": function () {
                     itemNode.fireEvent("mouseout");
                 },
-                "event" : this.inMobileDevice ? "click" : "mouseenter",
+                "event": this.inMobileDevice ? "click": "mouseenter",
                 "hasMask": false,
                 "zoom":  this.options.toolsScale || 1
             });
         }
     },
-    color : function( itemNode ){
+    color: function( itemNode ){
         if( !this.colorSelector ){
-            var container = this.inMobileDevice ? $(document.body) : this.container;
+            var container = this.inMobileDevice ? $(document.body): this.container;
             this.colorSelector = new o2.xApplication.Template.widget.ColorPicker( container, itemNode, null, {}, {
-                "lineWidth" : 1,
+                "lineWidth": 1,
                 "onSelect": function (color) {
                     this.currentColor = color;
                     if( this.currentInput ){
@@ -802,7 +813,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 "onHide": function () {
                     itemNode.fireEvent("mouseout");
                 },
-                "event" : this.inMobileDevice ? "click" : "mouseenter",
+                "event": this.inMobileDevice ? "click": "mouseenter",
                 "hasMask": false,
                 "zoom":  this.options.toolsScale || 1
             });
@@ -810,7 +821,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
     },
     fontFamily: function (itemNode) {
         if( !this.fontfamilySelector ){
-            var container = this.inMobileDevice ? $(document.body) : this.container;
+            var container = this.inMobileDevice ? $(document.body): this.container;
             this.fontfamilySelector = new o2.widget.Tablet.FontFamily(itemNode, {
                 "onSelectItem": function (node, d) {
                     this.currentFontFamily = d.val;
@@ -822,7 +833,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                     "onHide": function () {
                         itemNode.fireEvent("mouseout");
                     },
-                    "event" : this.inMobileDevice ? "click" : "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+                    "event": this.inMobileDevice ? "click": "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
                     "hasMask": false,
                     "zoom":  this.options.toolsScale || 1
                 }
@@ -832,7 +843,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
     },
     fontSize: function (itemNode) {
         if( !this.fontsizeSelector ){
-            var container = this.inMobileDevice ? $(document.body) : this.container;
+            var container = this.inMobileDevice ? $(document.body): this.container;
             this.fontsizeSelector = new o2.widget.Tablet.FontSize(itemNode, {
                 "onSelectItem": function (node, d) {
                     this.currentFontSize = d.value +"px";
@@ -844,7 +855,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                     "onHide": function () {
                         itemNode.fireEvent("mouseout");
                     },
-                    "event" : this.inMobileDevice ? "click" : "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+                    "event": this.inMobileDevice ? "click": "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
                     "hasMask": false,
                     "zoom":  this.options.toolsScale || 1
                 }
@@ -852,20 +863,50 @@ o2.widget.Tablet = o2.Tablet = new Class({
             this.fontsizeSelector.load();
         }
     },
-    getImageSize : function(naturalWidth, naturalHeight ){
+    collect: function (itemNode) {
+        if( !this.collectSelector ){
+            var container = this.inMobileDevice ? $(document.body): this.container;
+            this.collectSelector = new o2.widget.Tablet.Collect(container, itemNode, null, {}, {
+                "onPostCreate": function (){
+                    this.collectSelector.node.setStyles({
+                        'height': this.contentNode.getSize().y,
+                        'overflow': 'auto'
+                    })
+                }.bind(this),
+                "onSelect": function (d) {
+                    this.reset();
+                    this.globalCompositeOperation = this.ctx.globalCompositeOperation;
+                    this.ctx.globalCompositeOperation = "source-over";
+                    var src = 'data:' + this.fileType + ';base64,' + d.data;
+                    this.parseFileToImage(src);
+                }.bind(this),
+                "onHide": function () {
+                    itemNode.fireEvent("mouseout");
+                },
+                "event": this.inMobileDevice ? "click": "mouseenter",
+                "hasMask": false,
+            });
+            this.collectSelector.tablet = this;
+        }
+    },
+    getImageSize: function(naturalWidth, naturalHeight ){
         var ratio = naturalWidth / naturalHeight;
         var ww = this.contentWidth,
             wh = this.contentHeight;
         var flag = ( naturalWidth / parseInt(ww) ) > ( naturalHeight / parseInt(wh) );
         if( flag ){
             var width = Math.min( naturalWidth, parseInt( ww )  );
-            return { width : width,  height : width / ratio }
+            return { width: width,  height: width / ratio }
         }else{
             var height = Math.min( naturalHeight, parseInt( wh )  );
-            return { width : height * ratio,  height : height }
+            return { width: height * ratio,  height: height }
         }
     },
-    parseFileToImage : function( file, callback ){
+    parseFileToImage: function( file, callback ){
+        if( this.imageMover ){
+            this.imageMover.close();
+            this.imageMover = null;
+        }
         var imageNode = new Element("img");
 
         var onImageLoad = function(){
@@ -884,12 +925,12 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 nw = imageNode.naturalWidth;
             var size = this.getImageSize( nw, nh );
             imageNode.setStyles({
-                width : size.width,
-                height : size.height
+                width: size.width,
+                height: size.height
             });
 
             var mover = new o2.widget.Tablet.ImageMover( this, imageNode, this.canvasWrap , {
-                onPostOk : function(){
+                onPostOk: function(){
                     var coordinate =  mover.getCoordinates();
                     this.storeToPreArray();
                     this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
@@ -904,20 +945,26 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 }.bind(this),
             });
             mover.load();
+            this.imageMover = mover;
 
 
             if( callback )callback();
         }.bind(this);
 
-        var reader=new FileReader();
-        reader.onload=function(){
-            imageNode.src=reader.result;
-            reader = null;
+        if( o2.typeOf(file) === 'string' ){
+            imageNode.src = file;
             onImageLoad();
-        }.bind(this);
-        reader.readAsDataURL(file);
+        }else{
+            var reader=new FileReader();
+            reader.onload=function(){
+                imageNode.src=reader.result;
+                reader = null;
+                onImageLoad();
+            }.bind(this);
+            reader.readAsDataURL(file);
+        }
     },
-    image : function( itemNode ){
+    image: function( itemNode ){
         var uploadFileAreaNode = new Element("div");
         var html = "<input name=\"file\" type=\"file\" />"; //accept=\"images/*\"
 
@@ -934,11 +981,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }.bind(this));
         fileUploadNode.click();
     },
-    imageClipper : function( itemNode ){
+    imageClipper: function( itemNode ){
         var clipper = new o2.widget.Tablet.ImageClipper(this.app, {
             "style": "default",
-            "aspectRatio" : 0,
-            "onOk" : function( img ){
+            "aspectRatio": 0,
+            "onOk": function( img ){
                 this.globalCompositeOperation = this.ctx.globalCompositeOperation;
                 this.ctx.globalCompositeOperation = "source-over";
                 this.parseFileToImage( img );
@@ -960,7 +1007,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
     eraseInput: function(input){
         this.inputList.erase(input);
     },
-    eraser : function( itemNode ){
+    eraser: function( itemNode ){
         this.mode = "erasing";
         this.toolbar.enableItem("pen");
         this.toolbar.activeItem("eraser");
@@ -971,7 +1018,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.toolbar.hideItem("fontFamily");
         this.toolbar.enableItem("input");
     },
-    pen : function( itemNode ){
+    pen: function( itemNode ){
         this.mode = "writing";
         this.toolbar.activeItem("pen");
         this.toolbar.enableItem("input");
@@ -1000,6 +1047,31 @@ o2.widget.Tablet = o2.Tablet = new Class({
             })
         }
         this.fireEvent("cancel");
+    },
+    saveToCollection: function(callback){
+        var _slef = this;
+        if( this.isBlank() ){
+            if(callback)callback();
+            return;
+        }
+        return Promise.resolve( this.getBase64Code() ).then(function ( base64code ) {
+            return _slef.getImage( base64code ).then(function( imageFile ){
+                var formData = new FormData();
+                formData.append("file", imageFile );
+                var action = o2.Actions.load("x_organization_assemble_personal");
+                return action.SignatureAction.upload(
+                    formData,
+                    imageFile,
+                    function( json ){
+                        if( _slef.collectSelector ){
+                            _slef.collectSelector.reload();
+                        }
+                        if(callback)callback(json);
+                    }.bind(this)
+                );
+
+            });
+        });
     }
 });
 
@@ -1015,59 +1087,62 @@ o2.widget.Tablet.Toolbar = new Class({
         this.items = {};
 
         this.itemsEnableFun = {
-            save : {
-                enable : function(){ return true }
+            save: {
+                enable: function(){ return true }
             },
-            reset : {
-                enable : function(){ return this.tablet.preDrawAry.length > 0}.bind(this)
+            reset: {
+                enable: function(){ return this.tablet.preDrawAry.length > 0}.bind(this)
             },
-            undo : {
-                enable : function(){ return this.tablet.preDrawAry.length > 0 }.bind(this)
+            undo: {
+                enable: function(){ return this.tablet.preDrawAry.length > 0 }.bind(this)
             },
-            redo : {
-                enable : function(){ return this.tablet.nextDrawAry.length > 0 }.bind(this)
+            redo: {
+                enable: function(){ return this.tablet.nextDrawAry.length > 0 }.bind(this)
             },
-            eraser : {
-                enable : function(){ return true },
-                active : function(){ return this.tablet.mode === "erasing" }.bind(this)
+            eraser: {
+                enable: function(){ return true },
+                active: function(){ return this.tablet.mode === "erasing" }.bind(this)
             },
             eraserRadius: {
-                enable : function(){ return true },
-                show : function(){ return this.tablet.mode === "erasing" }.bind(this)
+                enable: function(){ return true },
+                show: function(){ return this.tablet.mode === "erasing" }.bind(this)
             },
             input: {
-                enable : function(){ return true },
-                active : function(){ return this.tablet.mode === "inputing" }.bind(this)
+                enable: function(){ return true },
+                active: function(){ return this.tablet.mode === "inputing" }.bind(this)
             },
             pen: {
-                enable : function(){ return true },
-                active : function(){ return this.tablet.mode === "writing" }.bind(this)
+                enable: function(){ return true },
+                active: function(){ return this.tablet.mode === "writing" }.bind(this)
             },
-            size : {
-                enable : function(){ return true },
-                show : function(){ return this.tablet.mode === "writing" }.bind(this)
+            size: {
+                enable: function(){ return true },
+                show: function(){ return this.tablet.mode === "writing" }.bind(this)
             },
-            fontSize : {
-                enable : function(){ return true },
-                show : function(){ return this.tablet.mode === "inputing" }.bind(this)
+            fontSize: {
+                enable: function(){ return true },
+                show: function(){ return this.tablet.mode === "inputing" }.bind(this)
             },
-            fontFamily : {
-                enable : function(){ return true },
-                show : function(){ return this.tablet.mode === "inputing" }.bind(this)
+            fontFamily: {
+                enable: function(){ return true },
+                show: function(){ return this.tablet.mode === "inputing" }.bind(this)
             },
-            color : {
-                enable : function(){ return true },
-                show : function(){ return this.tablet.mode === "writing" || this.tablet.mode === "inputing" }.bind(this)
+            color: {
+                enable: function(){ return true },
+                show: function(){ return this.tablet.mode === "writing" || this.tablet.mode === "inputing" }.bind(this)
             },
-            image : {
-                enable : function(){ return true }
+            image: {
+                enable: function(){ return true }
             },
-            imageClipper : {
-                enable : function(){ return true }
+            imageClipper: {
+                enable: function(){ return true }
+            },
+            collect: {
+                enable: function(){ return true }
             }
         }
     },
-    getHtml : function(){
+    getHtml: function(){
         var items;
         var tools = this.tablet.options.tools;
         if( tools ){
@@ -1087,7 +1162,8 @@ o2.widget.Tablet.Toolbar = new Class({
                 "fontSize", "|",
                 "fontFamily", "|",
                 "image", "|",
-                "imageClipper"
+                "imageClipper", "|",
+                "collect"
             ];
         }
 
@@ -1115,56 +1191,59 @@ o2.widget.Tablet.Toolbar = new Class({
         items = items.clean();
 
         var html = "";
-        var style = this.tablet.options.iconfontEnable ? "toolItemIconfont" : "toolItem";
-        var styleRight = this.tablet.options.iconfontEnable ? "toolRightItemIconfont" : "toolRightItem";
+        var style = this.tablet.options.iconfontEnable ? "toolItemIconfont": "toolItem";
+        var styleRight = this.tablet.options.iconfontEnable ? "toolRightItemIconfont": "toolRightItem";
         items.each( function( item ){
             switch( item ){
                 case "|":
                     html +=  "<div styles='" + "separator" + "'></div>";
                     break;
-                case "save" :
+                case "save":
                     html +=  "<div item='save' styles='" + style + "'>"+ this.lp.save +"</div>";
                     break;
-                case "reset" :
+                case "reset":
                     html +=  "<div item='reset' styles='" + style + "'>"+ this.lp.reset  +"</div>";
                     break;
-                case "undo" :
+                case "undo":
                     html +=  "<div item='undo' styles='" + style + "'>"+ this.lp.undo  +"</div>";
                     break;
-                case "redo" :
+                case "redo":
                     html +=  "<div item='redo' styles='" + style + "'>"+ this.lp.redo  +"</div>";
                     break;
-                case "eraser" :
+                case "eraser":
                     html +=  "<div item='eraser' styles='" + style + "'>"+ this.lp.eraser  +"</div>";
                     break;
-                case "eraserRadius" :
+                case "eraserRadius":
                     html +=  "<div item='eraserRadius' styles='" + style + "'>"+ this.lp.eraserRadius  +"</div>";
                     break;
-                case "input" :
+                case "input":
                     html +=  "<div item='input' styles='" + style + "'>"+ this.lp.input  +"</div>";
                     break;
-                case "pen" :
+                case "pen":
                     html +=  "<div item='pen' styles='" + style + "'>"+ this.lp.pen  +"</div>";
                     break;
-                case "size" :
+                case "size":
                     html +=  "<div item='size' styles='" + style + "'>"+ this.lp.size  +"</div>";
                     break;
-                case "color" :
+                case "color":
                     html +=  "<div item='color' styles='" + style + "'>"+ this.lp.color  +"</div>";
                     break;
-                case "fontSize" :
+                case "fontSize":
                     html +=  "<div item='fontSize' style='float: left;margin-top:20px;margin-left: 5px;'></div>";
                     break;
-                case "fontFamily" :
+                case "fontFamily":
                     html +=  "<div item='fontFamily' style='float: left;margin-top:20px;margin-left: 5px;'></div>";
                     break;
-                case "image" :
+                case "image":
                     html +=  "<div item='image' styles='" + style + "'>"+ this.lp.image  +"</div>";
                     break;
-                case "imageClipper" :
+                case "imageClipper":
                     html +=  "<div item='imageClipper' styles='" + style + "'>"+ this.lp.imageClipper  +"</div>";
                     break;
-                case "cancel" :
+                case "collect":
+                    html +=  "<div item='collect' styles='" + style + "'>"+ this.lp.collect  +"</div>";
+                    break;
+                case "cancel":
                     html +=  "<div item='cancel' styles='"+ styleRight +"'>"+ this.lp.cancel  +"</div>";
                     break;
 
@@ -1187,27 +1266,28 @@ o2.widget.Tablet.Toolbar = new Class({
                 if( _self.tablet.options.iconfontEnable ){
                     var text = el.get("text");
                     el.set("text", "");
-                    new Element("i.o2icon-"+item, {styles: this.css.toolItemIconfont_icon}).inject( el, "top" );
+                    var className = item === 'collect' ? `ooicon-pentagram_fill`: `o2icon-${item}`;
+                    new Element("i."+className, {styles: this.css.toolItemIconfont_icon}).inject( el, "top" );
                     new Element("div", {text: text, styles: this.css.toolItemIconfont_text}).inject( el );
                 }else{
                     el.setStyle("background-image","url("+ imagePath + item +"_normal.png)");
                 }
                 el.addEvents({
-                    mouseover : function(){
+                    mouseover: function(){
                         _self._setItemNodeActive(this.el);
-                    }.bind({ item : item, el : el }),
-                    mouseout : function(){
+                    }.bind({ item: item, el: el }),
+                    mouseout: function(){
                         var active = false;
                         if( _self.itemsEnableFun[item] && _self.itemsEnableFun[item].active ){
                             active = _self.itemsEnableFun[item].active();
                         }
                         if(!active)_self._setItemNodeNormal(this.el);
-                    }.bind({ item : item, el : el }),
-                    click : function( ev ){
+                    }.bind({ item: item, el: el }),
+                    click: function( ev ){
                         if( _self["tablet"][this.item] )_self["tablet"][this.item]( this.el );
-                    }.bind({ item : item, el : el })
+                    }.bind({ item: item, el: el })
                 });
-                if( item == "color" || item == "size" || item == "eraserRadius" ){
+                if( item == "color" || item == "size" || item == "eraserRadius" || item == "collect" ){
                     if( _self["tablet"][item] )_self["tablet"][item]( el );
                 }
             }
@@ -1229,7 +1309,7 @@ o2.widget.Tablet.Toolbar = new Class({
         this.setAllItemsShow();
         this.setAllItemsActive();
     },
-    setAllItemsShow : function(){
+    setAllItemsShow: function(){
         for( var item in this.items ){
             var node = this.items[item];
             if( this.itemsEnableFun[item] && this.itemsEnableFun[item].show ){
@@ -1239,7 +1319,7 @@ o2.widget.Tablet.Toolbar = new Class({
             }
         }
     },
-    setAllItemsActive : function(){
+    setAllItemsActive: function(){
         for( var item in this.items ){
             var node = this.items[item];
             if( this.itemsEnableFun[item] && this.itemsEnableFun[item].active ){
@@ -1249,7 +1329,7 @@ o2.widget.Tablet.Toolbar = new Class({
             }
         }
     },
-    setAllItemsStatus : function(){
+    setAllItemsStatus: function(){
         for( var item in this.items ){
             var node = this.items[item];
             if( this.itemsEnableFun[item] ){
@@ -1269,14 +1349,14 @@ o2.widget.Tablet.Toolbar = new Class({
         var itemNode =  this.items[ itemName ];
         if(itemNode)itemNode.hide();
     },
-    disableItem : function( itemName ){
+    disableItem: function( itemName ){
         var itemNode =  this.items[ itemName ];
         if(itemNode){
             itemNode.store("status", "disable");
             this._setItemNodeDisable( itemNode, itemName );
         }
     },
-    enableItem : function( itemName ){
+    enableItem: function( itemName ){
         var itemNode =  this.items[ itemName ];
         if(itemNode) {
             itemNode.store("status", "enable");
@@ -1290,7 +1370,7 @@ o2.widget.Tablet.Toolbar = new Class({
             this._setItemNodeActive(itemNode, itemName);
         }
     },
-    _setItemNodeDisable : function( itemNode, itemName ){
+    _setItemNodeDisable: function( itemNode, itemName ){
         var item = itemNode.get("item");
         if(item){
             if( ["fontSize","fontFamily"].contains( itemName ) ){
@@ -1369,7 +1449,7 @@ o2.widget.Tablet.ToolbarMobile = new Class({
             "name": "reset"
         }], function (item) {
             this.items[item.name] = new Element("div",{
-                styles : this.css[item.name+"_mobile"],
+                styles: this.css[item.name+"_mobile"],
                 events: {
                     click: function () {
                         if( this.tablet[item.name] )this.tablet[item.name]( this.items[item.name] );
@@ -1381,7 +1461,7 @@ o2.widget.Tablet.ToolbarMobile = new Class({
         }.bind(this));
         this.setAllItemsStatus();
     },
-    _setItemNodeDisable : function( itemNode, itemName ){
+    _setItemNodeDisable: function( itemNode, itemName ){
         var item = itemNode.get("item");
         itemNode.setStyles( this.css[itemName+"_mobile_disable"] );
     },
@@ -1399,23 +1479,24 @@ o2.widget.Tablet.ToolbarMobile = new Class({
 });
 
 o2.xDesktop.requireApp("Template", "MTooltips", null, false);
-o2.widget.Tablet.SizePicker = new Class({
+
+o2.widget.Tablet.Collect = new Class({
     Implements: [Options, Events],
     Extends: MTooltips,
     options: {
-        style : "default",
+        style: "default",
         axis: "y",      //箭头在x轴还是y轴上展现
-        position : { //node 固定的位置
-            x : "auto", //x 轴上left center right, auto 系统自动计算
-            y : "auto" //y轴上top middle bottom,  auto 系统自动计算
+        position: { //node 固定的位置
+            x: "auto", //x 轴上left center right, auto 系统自动计算
+            y: "auto" //y轴上top middle bottom,  auto 系统自动计算
         },
-        //event : "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
-        nodeStyles : {
-            "min-width" : "260px"
-        },
-        lineWidth : 1
+        //event: "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+        nodeStyles: {
+            "min-width": "180px",
+            "max-width": "180px"
+        }
     },
-    initialize : function( container, target, app, data, options, targetCoordinates ){
+    initialize: function( container, target, app, data, options, targetCoordinates ){
         //可以传入target 或者 targetCoordinates，两种选一
         //传入target,表示触发tooltip的节点，本类根据 this.options.event 自动绑定target的事件
         //传入targetCoordinates，表示 出发tooltip的位置，本类不绑定触发事件
@@ -1433,7 +1514,141 @@ o2.widget.Tablet.SizePicker = new Class({
             this.setTargetEvents();
         }
     },
-    _customNode : function( node ){
+    reload: function (){
+        this.contentNode.empty();
+        this._customNode();
+    },
+    _customNode: function(){
+        var p = o2.Actions.load('x_organization_assemble_personal').SignatureAction.list();
+        p.then((json)=>{
+            this._loadContent(json.data);
+        });
+    },
+    _loadContent: function(data){
+        if( !data.length ){
+            var emptyNode = new Element("div",{
+                styles: this.tablet.css.emptyNode
+            }).inject(this.contentNode);
+            new Element('div.ooempty-wushuju', {
+                styles: {
+                    'font-size': '32px',
+                },
+            }).inject(emptyNode);
+            new Element('div', {
+                text: this.tablet.lp.noCollect
+            }).inject(emptyNode);
+        }else{
+            data.sort(function(a, b){
+                return new Date(b.createTime) - new Date(a.createTime);
+            })
+            data.forEach((item) => {
+                var src = 'data:' + this.tablet.fileType + ';base64,' + item.data;
+                var node = new Element('div', {
+                    styles: {
+                        'position': 'relative',
+                        'border-bottom': "1px solid #ddd",
+                    },
+                    events:{
+                        mouseover: ()=> {
+                            closeNode.fade("in");;
+                        },
+                        mouseout: ()=> {
+                            closeNode.fade("out");;
+                        }
+                    }
+                }).inject(this.contentNode);
+                new Element("img", {
+                    src: src,
+                    styles: {
+                        'cursor': 'pointer',
+                        'width': '180px',
+                    },
+                    events: {
+                        click: ()=> {
+                            this.fireEvent('select', item);
+                        }
+                    }
+                }).inject(node);
+                var closeNode = new Element('i.ooicon-close', {
+                    styles: {
+                        'position': 'absolute',
+                        'right': '0',
+                        'top': '5px',
+                        'width': '14px',
+                        'height': '14px',
+                        'font-size': '14px',
+                        'cursor': 'pointer',
+                        'color': "#999",
+                        'opacity': 0,
+                    },
+                    events: {
+                        click: (e)=> {
+                            this.hold();
+                            this.deleteItem(e, item, node);
+                            e.stopPropagation();
+                        }
+                    }
+                }).inject(node);
+            });
+        }
+    },
+    deleteItem: function(e, data, node){
+        var _self = this;
+
+        var p = e.target.getPosition();
+        var tmpe = {"event": {"x": p.x+40, "y": p.y}};
+
+        MWF.xDesktop.confirm("warn", tmpe, o2.LP.widget.delectCollectionTitle, o2.LP.widget.deleteCollectInfor, 300, 120, function(){
+            node.destroy();
+            o2.Actions.load('x_organization_assemble_personal').SignatureAction.delete(data.id);
+            _self.unhold();
+            this.close();
+        }, function(){
+            _self.unhold();
+            this.close();
+        }, function (dlg){
+            dlg.addEvent('postShow', ()=>{
+                dlg.node.setStyle('z-index', 20003)
+            })
+        }, null, "o2");
+    }
+});
+
+o2.widget.Tablet.SizePicker = new Class({
+    Implements: [Options, Events],
+    Extends: MTooltips,
+    options: {
+        style: "default",
+        axis: "y",      //箭头在x轴还是y轴上展现
+        position: { //node 固定的位置
+            x: "auto", //x 轴上left center right, auto 系统自动计算
+            y: "auto" //y轴上top middle bottom,  auto 系统自动计算
+        },
+        //event: "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+        nodeStyles: {
+            "min-width": "260px"
+        },
+        lineWidth: 1
+    },
+    initialize: function( container, target, app, data, options, targetCoordinates ){
+        //可以传入target 或者 targetCoordinates，两种选一
+        //传入target,表示触发tooltip的节点，本类根据 this.options.event 自动绑定target的事件
+        //传入targetCoordinates，表示 出发tooltip的位置，本类不绑定触发事件
+        if( options ){
+            this.setOptions(options);
+        }
+        this.container = container;
+        this.target = target;
+        this.targetCoordinates = targetCoordinates;
+        this.app = app;
+        if(app)this.lp = app.lp;
+        this.data = data;
+
+        if( this.target ){
+            this.setTargetEvents();
+        }
+    },
+    _customNode: function( node ){
         this.range = [1, 30];
         this.ruleList = ["0.1","0.5","1","5","10", "15","20"];
         o2.UD.getDataJson("sizePicker", function(json) {
@@ -1463,61 +1678,61 @@ o2.widget.Tablet.SizePicker = new Class({
     },
     _loadContent: function(json){
         this.rulerContainer = new Element("div",{
-            styles : {
+            styles: {
                 "margin-left": " 23px",
                 "margin-right": " 1px",
-                "width" : "228px"
+                "width": "228px"
             }
         }).inject(this.node);
 
 
         this.rulerTitleContainer = new Element("div",{
-            styles : { "overflow" : "hidden" }
+            styles: { "overflow": "hidden" }
         }).inject( this.rulerContainer );
         this.ruleList.each( function( rule ){
             new Element("div", {
-                text : rule,
-                styles : {
-                    width : "32px",
-                    float : "left",
-                    "text-align" : "center"
+                text: rule,
+                styles: {
+                    width: "32px",
+                    float: "left",
+                    "text-align": "center"
                 }
             }).inject( this.rulerTitleContainer )
         }.bind(this));
 
         this.rulerContentContainer = new Element("div",{
-            styles : { "overflow" : "hidden" }
+            styles: { "overflow": "hidden" }
         }).inject( this.rulerContainer );
         new Element("div", {
-            styles : {
-                width : "14px",
-                height : "10px",
-                "text-align" : "center",
-                float : "left",
-                "border-right" : "1px solid #aaa"
+            styles: {
+                width: "14px",
+                height: "10px",
+                "text-align": "center",
+                float: "left",
+                "border-right": "1px solid #aaa"
             }
         }).inject( this.rulerContentContainer );
         this.ruleList.each( function( rule, i ){
             if( i == this.ruleList.length - 1 )return;
             new Element("div", {
-                styles : {
-                    width : "32px",
-                    height : "10px",
-                    "text-align" : "center",
-                    float : "left",
-                    "border-right" : "1px solid #aaa"
+                styles: {
+                    width: "32px",
+                    height: "10px",
+                    "text-align": "center",
+                    float: "left",
+                    "border-right": "1px solid #aaa"
                 }
             }).inject( this.rulerContentContainer )
         }.bind(this));
 
 
         this.silderContainer = new Element("div", {
-            "height" : "25px",
-            "line-height" : "25px",
-            "margin-top" : "4px"
+            "height": "25px",
+            "line-height": "25px",
+            "margin-top": "4px"
         }).inject( this.node );
 
-        this.sliderArea = new Element("div", {styles : {
+        this.sliderArea = new Element("div", {styles: {
                 "margin-top": "2px",
                 "margin-bottom": "10px",
                 "height": "10px",
@@ -1529,9 +1744,9 @@ o2.widget.Tablet.SizePicker = new Class({
                 "border-bottom": "1px solid #E1E1E1",
                 "border-right": "1px solid #E1E1E1",
                 "background-color": "#EEE",
-                "width" : "200px"
+                "width": "200px"
             }}).inject( this.silderContainer );
-        this.sliderKnob = new Element("div", {styles : {
+        this.sliderKnob = new Element("div", {styles: {
                 "height": "8px",
                 "width": " 8px",
                 "background-color": "#999",
@@ -1552,44 +1767,44 @@ o2.widget.Tablet.SizePicker = new Class({
         });
 
         var previewContainer = new Element("div").inject(this.node);
-        new Element("div",{ text : o2.LP.widget.preview, styles : {
-                "float" : "left",
-                "margin-top" : "5px",
-                "width" : "30px"
+        new Element("div",{ text: o2.LP.widget.preview, styles: {
+                "float": "left",
+                "margin-top": "5px",
+                "width": "30px"
             }}).inject(this.silderContainer);
         this.previewNode = new Element("div", {
-            styles : {
-                "margin" : "0px 0px 0px 37px",
-                "width" : "200px"
+            styles: {
+                "margin": "0px 0px 0px 37px",
+                "width": "200px"
             }
         }).inject( this.node );
         this.canvas = new Element("canvas", {
-            width : 200,
-            height : 30
+            width: 200,
+            height: 30
         }).inject( this.previewNode );
         this.ctx = this.canvas.getContext("2d");
         this.drawPreview();
 
         new Element("button", {
-            text : o2.LP.widget.reset,
-            type : "button",
-            styles :{
-                "margin-left" : "40px",
-                "font-size" : "12px",
-                "border-radius" : "3px",
-                "cursor" : "pointer" ,
-                "border" : "1px solid #ccc",
-                "padding" : "5px 10px",
-                "background-color" : "#f7f7f7"
+            text: o2.LP.widget.reset,
+            type: "button",
+            styles:{
+                "margin-left": "40px",
+                "font-size": "12px",
+                "border-radius": "3px",
+                "cursor": "pointer" ,
+                "border": "1px solid #ccc",
+                "padding": "5px 10px",
+                "background-color": "#f7f7f7"
             },
-            events : {
-                click : function(){
+            events: {
+                click: function(){
                     this.reset();
                 }.bind(this)
             }
         }).inject( this.node );
     },
-    drawPreview : function( lineWidth ){
+    drawPreview: function( lineWidth ){
         if( !lineWidth )lineWidth = this.options.lineWidth || 1;
         var canvas = this.canvas;
         var ctx = this.ctx;
@@ -1614,68 +1829,68 @@ o2.widget.Tablet.SizePicker = new Class({
 o2.widget.Tablet.EraserRadiusPicker = new Class({
     Extends: o2.widget.Tablet.SizePicker,
     options: {
-        lineWidth : 20,
-        nodeStyles : {
-            "min-width" : "260px"
+        lineWidth: 20,
+        nodeStyles: {
+            "min-width": "260px"
         },
     },
     _loadContent: function(json){
         this.rulerContainer = new Element("div",{
-            styles : {
+            styles: {
                 "margin-left": " 23px",
                 "margin-right": " 1px",
-                "width" : "228px"
+                "width": "228px"
             }
         }).inject(this.node);
 
 
         this.rulerTitleContainer = new Element("div",{
-            styles : { "overflow" : "hidden" }
+            styles: { "overflow": "hidden" }
         }).inject( this.rulerContainer );
         this.ruleList.each( function( rule ){
             new Element("div", {
-                text : rule,
-                styles : {
-                    width : "24px",
-                    float : "left",
-                    "text-align" : "center"
+                text: rule,
+                styles: {
+                    width: "24px",
+                    float: "left",
+                    "text-align": "center"
                 }
             }).inject( this.rulerTitleContainer )
         }.bind(this));
 
         this.rulerContentContainer = new Element("div",{
-            styles : { "overflow" : "hidden" }
+            styles: { "overflow": "hidden" }
         }).inject( this.rulerContainer );
         new Element("div", {
-            styles : {
-                width : "14px",
-                height : "10px",
-                "text-align" : "center",
-                float : "left",
-                "border-right" : "1px solid #aaa"
+            styles: {
+                width: "14px",
+                height: "10px",
+                "text-align": "center",
+                float: "left",
+                "border-right": "1px solid #aaa"
             }
         }).inject( this.rulerContentContainer );
         this.ruleList.each( function( rule, i ){
             if( i == this.ruleList.length - 1 )return;
             new Element("div", {
-                styles : {
-                    width : "24px",
-                    height : "10px",
-                    "text-align" : "center",
-                    float : "left",
-                    "border-right" : "1px solid #aaa"
+                styles: {
+                    width: "24px",
+                    height: "10px",
+                    "text-align": "center",
+                    float: "left",
+                    "border-right": "1px solid #aaa"
                 }
             }).inject( this.rulerContentContainer )
         }.bind(this));
 
 
         this.silderContainer = new Element("div", {
-            "height" : "25px",
-            "line-height" : "25px",
-            "margin-top" : "4px"
+            "height": "25px",
+            "line-height": "25px",
+            "margin-top": "4px"
         }).inject( this.node );
 
-        this.sliderArea = new Element("div", {styles : {
+        this.sliderArea = new Element("div", {styles: {
                 "margin-top": "2px",
                 "margin-bottom": "10px",
                 "height": "10px",
@@ -1687,9 +1902,9 @@ o2.widget.Tablet.EraserRadiusPicker = new Class({
                 "border-bottom": "1px solid #E1E1E1",
                 "border-right": "1px solid #E1E1E1",
                 "background-color": "#EEE",
-                "width" : "200px"
+                "width": "200px"
             }}).inject( this.silderContainer );
-        this.sliderKnob = new Element("div", {styles : {
+        this.sliderKnob = new Element("div", {styles: {
                 "height": "8px",
                 "width": " 8px",
                 "background-color": "#999",
@@ -1710,46 +1925,46 @@ o2.widget.Tablet.EraserRadiusPicker = new Class({
         });
 
         var previewContainer = new Element("div", {"style":"overflow:hidden;"}).inject(this.node);
-        new Element("div",{ text : o2.LP.widget.preview, styles : {
-                "float" : "left",
-                "margin-top" : "15px",
-                "width" : "30px"
+        new Element("div",{ text: o2.LP.widget.preview, styles: {
+                "float": "left",
+                "margin-top": "15px",
+                "width": "30px"
             }}).inject(this.silderContainer);
         this.previewNode = new Element("div", {
-            styles : {
-                "float" : "left",
-                "margin" : "0px 0px 0px 37px",
-                "width" : "100px"
+            styles: {
+                "float": "left",
+                "margin": "0px 0px 0px 37px",
+                "width": "100px"
             }
         }).inject( this.node );
         this.canvas = new Element("canvas", {
-            width : 200,
-            height : 60
+            width: 200,
+            height: 60
         }).inject( this.previewNode );
         this.ctx = this.canvas.getContext("2d");
         this.drawPreview();
 
         new Element("button", {
-            text : o2.LP.widget.reset,
-            type : "button",
-            styles :{
-                "float" : "left",
-                "margin-top" : "10px",
-                "font-size" : "12px",
-                "border-radius" : "3px",
-                "cursor" : "pointer" ,
-                "border" : "1px solid #ccc",
-                "padding" : "5px 10px",
-                "background-color" : "#f7f7f7"
+            text: o2.LP.widget.reset,
+            type: "button",
+            styles:{
+                "float": "left",
+                "margin-top": "10px",
+                "font-size": "12px",
+                "border-radius": "3px",
+                "cursor": "pointer" ,
+                "border": "1px solid #ccc",
+                "padding": "5px 10px",
+                "background-color": "#f7f7f7"
             },
-            events : {
-                click : function(){
+            events: {
+                click: function(){
                     this.reset();
                 }.bind(this)
             }
         }).inject( this.node );
     },
-    _customNode : function( node ){
+    _customNode: function( node ){
         this.range = [1, 40];
         this.ruleList = ["1","5","10", "15","20","25","30","35","40"];
         o2.UD.getDataJson("eraserRadiusPicker", function(json) {
@@ -1768,7 +1983,7 @@ o2.widget.Tablet.EraserRadiusPicker = new Class({
         this.drawPreview( this.lineWidth );
         this.fireEvent("select", this.lineWidth )
     },
-    drawPreview : function( lineWidth ){
+    drawPreview: function( lineWidth ){
         if( !lineWidth )lineWidth = this.options.lineWidth || 20;
         var canvas = this.canvas;
         var ctx = this.ctx;
@@ -1798,9 +2013,9 @@ o2.widget.Tablet.ImageClipper = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
-        "imageUrl" : "",
-        "resultMaxSize" : 700,
-        "description" : "",
+        "imageUrl": "",
+        "resultMaxSize": 700,
+        "description": "",
         "title": o2.LP.widget.imageClipper,
         "style": "default",
         "aspectRatio": 0
@@ -1846,8 +2061,8 @@ o2.widget.Tablet.ImageClipper = new Class({
                 "width": width,
                 "height": height,
                 "html": "<div></div>",
-                "maskNode": this.app ? this.app.content : $(document.body),
-                "container": this.app ? this.app.content : $(document.body),
+                "maskNode": this.app ? this.app.content: $(document.body),
+                "container": this.app ? this.app.content: $(document.body),
                 "buttonList": [
                     {
                         "text": MWF.LP.process.button.ok,
@@ -1864,7 +2079,7 @@ o2.widget.Tablet.ImageClipper = new Class({
                         }
                     }
                 ],
-                "onPostShow" : function(){
+                "onPostShow": function(){
                     //this.node.setStyle("z-index",1003);
                     this.content.setStyle("margin-left","20px");
                 }
@@ -1872,8 +2087,8 @@ o2.widget.Tablet.ImageClipper = new Class({
             dlg.show();
 
             this.image = new MWF.widget.ImageClipper(dlg.content.getFirst(), {
-                "description" : this.options.description,
-                "resetEnable" : true
+                "description": this.options.description,
+                "resetEnable": true
             });
             this.image.load(this.data);
         }.bind(this))
@@ -1884,7 +2099,7 @@ o2.widget.Tablet.ImageClipper = new Class({
 o2.widget.Tablet.ImageMover = new Class({
     Implements: [Options, Events],
     options: {
-        imageMinSize : 100
+        imageMinSize: 100
     },
     initialize: function(tablet, imageNode, relativeNode, options){
         this.setOptions(options);
@@ -1896,29 +2111,29 @@ o2.widget.Tablet.ImageMover = new Class({
     },
     load: function(){
         this.maskNode = new Element("div.maskNode",{
-            styles : this.css.imageMoveMaskNode
+            styles: this.css.imageMoveMaskNode
         }).inject($(document.body));
 
         var coordinates = this.relativeNode.getCoordinates();
 
         this.node = new Element( "div", {
-            styles : {
-                "width" : coordinates.width,
-                "height" : coordinates.height,
-                "position" : "absolute",
-                "top" : coordinates.top,
-                "left" : coordinates.left,
-                "background" : "rgba(255,255,255,0.5)",
-                "z-index" : this.tablet.options.zIndex + 3,
+            styles: {
+                "width": coordinates.width,
+                "height": coordinates.height,
+                "position": "absolute",
+                "top": coordinates.top,
+                "left": coordinates.left,
+                "background": "rgba(255,255,255,0.5)",
+                "z-index": this.tablet.options.zIndex + 3,
                 "-webkit-user-select": "none",
                 "-moz-user-select": "none",
-                "user-select" : "none"
+                "user-select": "none"
             }
         }).inject($(document.body));
 
         this.dragNode = new Element("div",{
-            styles : {
-                "cursor" : "move"
+            styles: {
+                "cursor": "move"
             }
         }).inject( this.node );
 
@@ -1936,14 +2151,14 @@ o2.widget.Tablet.ImageMover = new Class({
 
         this.originalImageSize = this.imageNode.getSize();
         this.dragNode.setStyles({
-            width : this.originalImageSize.x,
-            height : this.originalImageSize.y
+            width: this.originalImageSize.x,
+            height: this.originalImageSize.y
         });
 
         this.okNode = new Element("div",{
-            styles : this.css.imageMoveOkNode,
-            events : {
-                click : function(){
+            styles: this.css.imageMoveOkNode,
+            events: {
+                click: function(){
                     this.ok();
                     this.close();
                 }.bind(this)
@@ -1951,9 +2166,9 @@ o2.widget.Tablet.ImageMover = new Class({
         }).inject(this.dragNode);
 
         this.cancelNode = new Element("div",{
-            styles : this.css.imageMoveCancelNode,
-            events : {
-                click : function(){
+            styles: this.css.imageMoveCancelNode,
+            events: {
+                click: function(){
                     this.fireEvent("postCancel");
                     this.close();
                 }.bind(this)
@@ -1961,18 +2176,18 @@ o2.widget.Tablet.ImageMover = new Class({
         }).inject(this.dragNode);
 
         this.drag = this.dragNode.makeDraggable({
-            "container" : this.node,
+            "container": this.node,
             "handle": this.dragNode
         });
 
 
         this.resizeNode = new Element("div.resizeNode",{
-            styles : this.css.imageMoveResizeNode
+            styles: this.css.imageMoveResizeNode
         }).inject(this.dragNode);
 
         this.docBody = window.document.body;
         this.resizeNode.addEvents({
-            "touchstart" : function(ev){
+            "touchstart": function(ev){
                 this.drag.detach();
                 this.dragNode.setStyle("cursor", "nw-resize" );
                 this.docBody.setStyle("cursor", "nw-resize" );
@@ -1980,7 +2195,7 @@ o2.widget.Tablet.ImageMover = new Class({
                 this.getOffset(ev);
                 ev.stopPropagation();
             }.bind(this),
-            "mousedown" : function(ev){
+            "mousedown": function(ev){
                 this.drag.detach();
                 this.dragNode.setStyle("cursor", "nw-resize" );
                 this.docBody.setStyle("cursor", "nw-resize" );
@@ -1988,19 +2203,19 @@ o2.widget.Tablet.ImageMover = new Class({
                 this.getOffset(ev);
                 ev.stopPropagation();
             }.bind(this),
-            "touchmove" : function(ev){
+            "touchmove": function(ev){
                 if(!this.lastPoint)return;
                 var offset= this.getOffset(ev);
                 this.resizeDragNode( offset );
                 ev.stopPropagation();
             }.bind(this),
-            "mousemove" : function(ev){
+            "mousemove": function(ev){
                 if(!this.lastPoint)return;
                 var offset= this.getOffset(ev);
                 this.resizeDragNode( offset );
                 ev.stopPropagation();
             }.bind(this),
-            "touchend" : function(ev){
+            "touchend": function(ev){
                 this.drag.attach();
                 this.dragNode.setStyle("cursor", "move" );
                 this.docBody.setStyle("cursor", "default" );
@@ -2008,7 +2223,7 @@ o2.widget.Tablet.ImageMover = new Class({
                 this.lastPoint=null;
                 ev.stopPropagation();
             }.bind(this),
-            "mouseup" : function(ev){
+            "mouseup": function(ev){
                 this.drag.attach();
                 this.dragNode.setStyle("cursor", "move" );
                 this.docBody.setStyle("cursor", "default" );
@@ -2042,7 +2257,7 @@ o2.widget.Tablet.ImageMover = new Class({
             this.resizeMode = false;
         }
     },
-    resizeDragNode : function(offset){
+    resizeDragNode: function(offset){
         var x=offset.x;
         if( x == 0 )return;
 
@@ -2139,13 +2354,13 @@ o2.widget.Tablet.ImageMover = new Class({
         };
         return offset;
     },
-    getCoordinates : function(){
+    getCoordinates: function(){
         return this.imageNode.getCoordinates( this.node );
     },
-    ok : function(){
+    ok: function(){
         this.fireEvent("postOk")
     },
-    close : function(){
+    close: function(){
         this.docBody.removeEvent("touchmove",this.bodyMouseMoveFun);
         this.docBody.removeEvent("mousemove",this.bodyMouseMoveFun);
         this.docBody.removeEvent("touchend",this.bodyMouseEndFun);
@@ -2215,22 +2430,22 @@ o2.widget.Tablet.Input = new Class({
         if( layout.mobile ){
             var width = (24/this.options.scale);
             if(this.cancelNode)this.cancelNode.setStyles({
-                "width" : width+"px",
-                "height" : width +"px",
+                "width": width+"px",
+                "height": width +"px",
                 "top": "-"+(width/2)+"px",
                 "right": "-"+(width/2)+"px",
                 "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
             });
             if(this.dragNode)this.dragNode.setStyles({
-                "width" : width+"px",
-                "height" : width +"px",
+                "width": width+"px",
+                "height": width +"px",
                 "top": "-"+(width/2)+"px",
                 "left": "-"+(width/2)+"px",
                 "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
             });
             if(this.resizeNode)this.resizeNode.setStyles({
-                "width" : width+"px",
-                "height" : width +"px",
+                "width": width+"px",
+                "height": width +"px",
                 "bottom": "-"+(width/2)+"px",
                 "right": "-"+(width/2)+"px",
                 "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
@@ -2254,7 +2469,7 @@ o2.widget.Tablet.Input = new Class({
         return uri.toString();
     },
     getToken: function(){
-        var token = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+        var token = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken"): "";
         if (!token) {
             if (layout.session && (layout.session.user || layout.session.token)) {
                 token = layout.session.token;
@@ -2271,7 +2486,7 @@ o2.widget.Tablet.Input = new Class({
             var editareaSize = this.scaleSize(this.editarea.getSize());
             var nodeSize = this.scaleSize(this.node.getSize());
             var size = {
-                x : Math.max(editareaSize.x, nodeSize.x),
+                x: Math.max(editareaSize.x, nodeSize.x),
                 y: Math.max(editareaSize.y, nodeSize.y)
             }
             var div = new Element("div", {
@@ -2362,17 +2577,17 @@ o2.widget.Tablet.Input = new Class({
         }
 
         this.node = new Element( "div", {
-            styles : {
-                "width" : width+"px",
-                "min-height" : height+"px",
-                "position" : "absolute",
-                "top" : top+"px",
-                "left" : left+"px",
-                "background" : "rgba(255,255,255,0.5)",
-                // "z-index" : 1003,
+            styles: {
+                "width": width+"px",
+                "min-height": height+"px",
+                "position": "absolute",
+                "top": top+"px",
+                "left": left+"px",
+                "background": "rgba(255,255,255,0.5)",
+                // "z-index": 1003,
                 "-webkit-user-select": "none",
                 "-moz-user-select": "none",
-                "user-select" : "none"
+                "user-select": "none"
             },
             events:{
                 "touchstart": function (ev) {
@@ -2422,9 +2637,9 @@ o2.widget.Tablet.Input = new Class({
 
         if( this.options.editable ){
             this.cancelNode = new Element("div",{
-                styles :  this.css[ layout.mobile? "inputCancelNode_mobile" : "inputCancelNode"],
-                events : {
-                    click : function(){
+                styles:  this.css[ layout.mobile? "inputCancelNode_mobile": "inputCancelNode"],
+                events: {
+                    click: function(){
                         this.fireEvent("postCancel");
                         this.tablet.currentInput = null;
                         this.close();
@@ -2434,8 +2649,8 @@ o2.widget.Tablet.Input = new Class({
             if( layout.mobile ){
                 var width = (24/this.options.scale);
                 this.cancelNode.setStyles({
-                    "width" : width+"px",
-                    "height" : width +"px",
+                    "width": width+"px",
+                    "height": width +"px",
                     "top": "-"+(width/2)+"px",
                     "right": "-"+(width/2)+"px",
                     "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
@@ -2457,13 +2672,13 @@ o2.widget.Tablet.Input = new Class({
     },
     loadDragNode: function(){
         this.dragNode = new Element("div.dragNode",{
-            styles : this.css[ layout.mobile? "inputDragNode_mobile" : "inputDragNode"]
+            styles: this.css[ layout.mobile? "inputDragNode_mobile": "inputDragNode"]
         }).inject(this.editareaWrap);
         if( layout.mobile ){
             var width = (24/this.options.scale);
             this.dragNode.setStyles({
-                "width" : width+"px",
-                "height" : width +"px",
+                "width": width+"px",
+                "height": width +"px",
                 "top": "-"+(width/2)+"px",
                 "left": "-"+(width/2)+"px",
                 "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
@@ -2496,12 +2711,12 @@ o2.widget.Tablet.Input = new Class({
         }.bind(this);
 
         this.dragNode.addEvents({
-            "touchstart" : startFun,
-            "mousedown" : startFun,
-            "touchmove" : moveFun,
-            "mousemove" : moveFun,
-            "touchend" : endFun,
-            "mouseup" : endFun
+            "touchstart": startFun,
+            "mousedown": startFun,
+            "touchmove": moveFun,
+            "mousemove": moveFun,
+            "touchend": endFun,
+            "mouseup": endFun
         });
 
         this.bodyDragMoveFun = this.bodyDragMove.bind(this);
@@ -2513,7 +2728,7 @@ o2.widget.Tablet.Input = new Class({
         this.dragBody.addEvent("mouseup", this.bodyDragEndFun);
 
         // this.drag = this.node.makeDraggable({
-        //     "container" : this.relativeNode,
+        //     "container": this.relativeNode,
         //     "handle": this.dragNode,
         //     "onStart": function(el, e){
         //         this.draging = true;
@@ -2542,7 +2757,7 @@ o2.widget.Tablet.Input = new Class({
             this.dragMode = false;
         }
     },
-    drag : function(lastPoint){
+    drag: function(lastPoint){
         var x=lastPoint.x;
         var	y=lastPoint.y;
 
@@ -2584,13 +2799,13 @@ o2.widget.Tablet.Input = new Class({
 
     loadResizeNode: function(){
         this.resizeNode = new Element("div.resizeNode",{
-            styles :  this.css[ layout.mobile? "inputResizeNode_mobile" : "inputResizeNode"]
+            styles:  this.css[ layout.mobile? "inputResizeNode_mobile": "inputResizeNode"]
         }).inject(this.editareaWrap);
         if( layout.mobile ){
             var width = (24/this.options.scale);
             this.resizeNode.setStyles({
-                "width" : width+"px",
-                "height" : width +"px",
+                "width": width+"px",
+                "height": width +"px",
                 "bottom": "-"+(width/2)+"px",
                 "right": "-"+(width/2)+"px",
                 "background-size": (16/this.options.scale)+"px " + (16/this.options.scale)+"px"
@@ -2627,12 +2842,12 @@ o2.widget.Tablet.Input = new Class({
         }.bind(this);
 
         this.resizeNode.addEvents({
-            "touchstart" : startFun,
-            "mousedown" : startFun,
-            "touchmove" : moveFun,
-            "mousemove" : moveFun,
-            "touchend" : endFun,
-            "mouseup" : endFun
+            "touchstart": startFun,
+            "mousedown": startFun,
+            "touchmove": moveFun,
+            "mousemove": moveFun,
+            "touchend": endFun,
+            "mouseup": endFun
         });
 
         this.bodyMouseMoveFun = this.bodyMouseMove.bind(this);
@@ -2659,7 +2874,7 @@ o2.widget.Tablet.Input = new Class({
             this.resizeMode = false;
         }
     },
-    resize : function(lastPoint){
+    resize: function(lastPoint){
         var x=lastPoint.x;
         if( x == 0 )return;
 
@@ -2739,7 +2954,7 @@ o2.widget.Tablet.Input = new Class({
     getCoordinates: function(){
         return this.editarea.getCoordinates( this.relativeNode );
     },
-    getDrawImageCoordinates : function(){
+    getDrawImageCoordinates: function(){
         var size = this.scaleSize(this.editarea.getSize());
         var coordinates = this.scaleSize(this.node.getCoordinates( this.relativeNode ));
         coordinates.width  = Math.max(coordinates.width, size.x);
@@ -2748,10 +2963,10 @@ o2.widget.Tablet.Input = new Class({
         coordinates.left = coordinates.left - 7; //后台服务的偏差
         return coordinates;
     },
-    ok : function(){
+    ok: function(){
         this.fireEvent("postOk")
     },
-    close : function( flag ){
+    close: function( flag ){
         if(!flag)this.tablet.eraseInput(this);
 
         this.docBody.removeEvent("touchmove",this.bodyMouseMoveFun);
@@ -2780,7 +2995,7 @@ o2.widget.Tablet.Input = new Class({
         //     coordinates = this.node.getCoordinates( this.relativeNode );
         // }
         return {
-            coordinates : this.scaleSize( this.node.getCoordinates( this.relativeNode ) ), //coordinates
+            coordinates: this.scaleSize( this.node.getCoordinates( this.relativeNode ) ), //coordinates
             styles: {
                 "color": this.color,
                 "font-family": this.fontFamily,
@@ -2814,27 +3029,27 @@ o2.widget.Tablet.Input = new Class({
 
 o2.widget.Tablet.FontFamily = new Class({
     Extends: MSelector,
-    options : {
+    options: {
         "containerIsTarget": false,
         "style": "minderFont",
         "width": "120px",
         "height": "28px",
-        "defaultOptionLp" : "字体",
-        "textField" : "name",
-        "valueField" : "val",
-        "event" : "mouseenter",
-        "isSetSelectedValue" : true,
-        "isChangeOptionStyle" : true,
-        "emptyOptionEnable" : false,
+        "defaultOptionLp": "字体",
+        "textField": "name",
+        "valueField": "val",
+        "event": "mouseenter",
+        "isSetSelectedValue": true,
+        "isChangeOptionStyle": true,
+        "emptyOptionEnable": false,
         "tooltipsOptions": {
-            "displayDelay" : 300,
+            "displayDelay": 300,
             "event": "mouseenter" //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
         }
     },
-    _selectItem : function( itemNode, itemData ){
+    _selectItem: function( itemNode, itemData ){
 
     },
-    _loadData : function( callback ){
+    _loadData: function( callback ){
         var fontFamilyList = [{
             name: '宋体',
             val: '宋体,SimSun'
@@ -2877,43 +3092,43 @@ o2.widget.Tablet.FontFamily = new Class({
     _postCreateItem: function( itemNode, data ){
         itemNode.setStyles( {
             "font-family": data.val,
-            "font-size" : "13px",
-            "min-height" : "30px",
-            "line-height" : "30px"
+            "font-size": "13px",
+            "min-height": "30px",
+            "line-height": "30px"
         } );
     }
 });
 
 o2.widget.Tablet.FontSize = new Class({
     Extends: MSelector,
-    options : {
+    options: {
         "containerIsTarget": false,
         "style": "minderFont",
         "width": "60px",
         "height": "28px",
-        "defaultOptionLp" : "16",
+        "defaultOptionLp": "16",
         "defaultVaue": "16",
-        "isSetSelectedValue" : true,
-        "isChangeOptionStyle" : true,
-        "emptyOptionEnable" : false,
-        "event" : "mouseenter",
+        "isSetSelectedValue": true,
+        "isChangeOptionStyle": true,
+        "emptyOptionEnable": false,
+        "event": "mouseenter",
         "tooltipsOptions": {
-            "displayDelay" : 300,
+            "displayDelay": 300,
             "event": "mouseenter" //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
         }
     },
-    _selectItem : function( itemNode, itemData ){
+    _selectItem: function( itemNode, itemData ){
 
     },
-    _loadData : function( callback ){
+    _loadData: function( callback ){
         var fontSizeList = ["10", "12", "14", "16", "18", "24", "32", "48"];
         if(callback)callback( fontSizeList );
     },
     _postCreateItem: function( itemNode, data ){
         itemNode.setStyles( {
-            "font-size" :  "13px" //data.value +"px"
-            // "min-height" : ( parseInt(data.value) + 6) +"px",
-            // "line-height" : ( parseInt(data.value) + 6) +"px"
+            "font-size":  "13px" //data.value +"px"
+            // "min-height": ( parseInt(data.value) + 6) +"px",
+            // "line-height": ( parseInt(data.value) + 6) +"px"
         } );
     }
 });

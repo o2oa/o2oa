@@ -3,10 +3,12 @@
     <div class="o2flow-section-content o2flow-opinion-content">
         <div class="o2flow-opinion-textareawrap">
             <textarea class="o2flow-opinion-textarea" data-o2-element="opinionTextarea" placeholder="{{$.lp.inputOpinionNote}}">{{$.opinion}}</textarea>
-            <div class="o2flow-handwriting-button" data-o2-element="handwritingButton" data-o2-events="click:handwriting">
+            <div class="o2flow-handwriting-button" data-o2-element="handwritingButton"
+                 data-o2-events="click:handwriting;mouseover:showPreview;mouseout:hidePreview">
                 <i class="o2icon-edit2"></i>
                 <div class="o2flow-handwriting-buttontext">{{$.lp.handwriting}}</div>
             </div>
+            <div class="o2flow-handwriting-preview" data-o2-element="handWritingPreviewNode"></div>
         </div>
         <div class="o2flow-opinion-select">
             {{if $.opinionList.length}}
@@ -28,5 +30,10 @@
 <div class="o2flow-handwriting-mask" data-o2-element="handwritingMask"></div>
 <div class="o2flow-handwriting-node" data-o2-element="handwritingNode">
     <div class="o2flow-handwriting-area" data-o2-element="handwritingAreaNode"></div>
-    <div class="o2flow-handwriting-saveNode" data-o2-element="handwritingSaveNode" data-o2-events="click:saveTablet">{{$.lp.saveWrite}}</div>
+    <div class="o2flow-handwriting-action">
+        <div class="o2flow-handwriting-saveNode" data-o2-element="handwritingSaveNode" data-o2-events="click:saveTablet">{{$.lp.saveWrite}}</div>
+        <oo-checkbox-group data-o2-element="isCollectNode">
+            <oo-checkbox text="{{$.lp.collect}}" value="yes"></oo-checkbox>
+        </oo-checkbox-group>
+    </div>
 </div>
