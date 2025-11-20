@@ -647,18 +647,23 @@ MWF.xApplication.Minder.ReNameForm = new Class({
     },
     _createTableContent: function () {
 
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
-            "<tr><td styles='formTableTitle' lable='name' width='25%'></td>" +
-            "    <td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
+        if(layout.mobile){
+            this.formTableContainer.setStyles({
+                'margin-left': "20px", 'margin-right': '20px'
+            })
+        }
+
+        var html = `<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='${layout.mobile?"":"margin-top: 20px;"}'>` +
+            "<tr><td styles='formTableValue14' item='name' colspan='3'></td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
         this.form = new MForm(this.formTableArea, this.data || {}, {
             isEdited: true,
-            style : "minder",
+            style : "v10", mvcStyle: "v10",
             hasColon : true,
             itemTemplate: {
-                name: { text : "名称", notEmpty : true }
+                name: { type: 'oo-input', text : "名称", notEmpty : true }
             }
         }, this.app);
         this.form.load();
@@ -668,33 +673,38 @@ MWF.xApplication.Minder.ReNameForm = new Class({
 
         if (this.isNew || this.isEdited) {
 
-            this.okActionNode = new Element("button.inputOkButton", {
+            this.okActionNode = new Element("oo-button.inputOkButton", {
                 "styles": this.css.inputOkButton,
                 "text": "确定"
             }).inject(this.formBottomNode);
 
-            if( layout.mobile ) {
-                this.okActionNode.setStyle('width', 'calc(50% - 50px)');
-            }
-
             this.okActionNode.addEvent("click", function (e) {
                 this.save(e);
             }.bind(this));
+
+            if( layout.mobile ) {
+                this.okActionNode.setStyles({'width': '50%', 'height': '36px'});
+            }
         }
 
-        this.cancelActionNode = new Element("button.inputCancelButton", {
+        this.cancelActionNode = new Element("oo-button.inputCancelButton", {
             "styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-            "text": "关闭"
+            "text": "关闭",
+            'type':'cancel'
         }).inject(this.formBottomNode);
-
-        if( layout.mobile ) {
-            this.cancelActionNode.setStyle('width', 'calc(50% - 50px)');
-        }
 
         this.cancelActionNode.addEvent("click", function (e) {
             this.close(e);
         }.bind(this));
 
+        if( layout.mobile ) {
+            this.cancelActionNode.setStyles({'width': '50%', 'height': '36px'});
+            this.cancelActionNode.inject(this.okActionNode, 'before');
+        }
+
+        if( layout.mobile ) {
+            this.formatMobileButton(this.formBottomNode, this.formAreaNode);
+        }
     },
     save: function(){
         var data = this.form.getResult(true,null,true,false,true);

@@ -217,6 +217,7 @@ MWF.xApplication.Minder.MainMobile = new Class({
         "style": "mobile"
     },
     loadApplication: function(callback){
+        this.content.setStyle('height', '100%');
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div", {
             "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
@@ -302,9 +303,13 @@ MWF.xApplication.Minder.MainMobile = new Class({
             this.folderArea.removeClass('visible');
         }, 10);
     },
-    loadList: function(folderId = 'root', folderData){
-        this.currentFolderData = folderData;
-        this.currentFolderId = folderId;
+    loadList: function(folderId, folderData){
+        if(folderData){
+            this.currentFolderData = folderData;
+        }
+        if(folderId){
+            this.currentFolderId = folderId;
+        }
         this.listArea.empty();
         var p = o2.Actions.load('x_mind_assemble_control').MindInfoAction.listNextWithFilter('(0)', 100, {"folderId": folderId});
         p.then((json)=>{
@@ -348,21 +353,6 @@ MWF.xApplication.Minder.MainMobile = new Class({
         }
         this.currentItemData = null;
     },
-    rename : function(data){
-        MWF.xDesktop.requireApp("Minder", "Common", null, false);
-        if( !data )return;
-        var form = new MWF.xApplication.Minder.ReNameForm(this, {
-            name : data.name
-        }, {
-            id : data.id,
-            onSave: ()=>{
-                this.loadList();
-            }
-        }, {
-            app: this
-        });
-        form.edit();
-    },
     remove : function(data){
         if( !data )return;
         var _self = this;
@@ -386,6 +376,28 @@ MWF.xApplication.Minder.MainMobile = new Class({
         }, function () {
             this.close();
         });
+    },
+    rename : function(data){
+        MWF.xDesktop.requireApp("Minder", "Common", null, false);
+        if( !data )return;
+        var form = new MWF.xApplication.Minder.ReNameForm(this, {
+            name : data.name
+        }, {
+            style: 'v10_mobile',
+            hasTop: false,
+            bottom: 0,
+            height: '50%',
+            'minHeight': 400,
+            width: '100%',
+            "closeByClickMask" : true,
+            id : data.id,
+            onSave: ()=>{
+                this.loadList();
+            }
+        }, {
+            app: this
+        });
+        form.edit();
     },
     createMinder: function(){
         MWF.xDesktop.requireApp("Minder", "Common", null, false);
