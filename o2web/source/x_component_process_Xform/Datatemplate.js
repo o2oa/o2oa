@@ -245,8 +245,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if(iconNode)iconNode.destroy();
 
 			// this.editModules = [];
-			this.node.setStyle("overflow-x", "auto");
-			this.node.setStyle("overflow-y", "hidden");
+			// this.node.setStyle("overflow-x", "auto");
+			// this.node.setStyle("overflow-y", "hidden");
 
 			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
 			if( this.isMergeRead )this.editable = false;
