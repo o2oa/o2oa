@@ -773,8 +773,6 @@ MWF.xApplication.Meeting.MainPc = new Class({
     }
 });
 const O2_MEETING_FORMAT_DATE = '%Y-%m-%d';
-const O2_MEETING_FORMAT_MONTH = '%Y-%m';
-const O2_MEETING_FORMAT_TIME = '%H:%M';
 MWF.xApplication.Meeting.MainMobile = new Class({
     Extends: MWF.xApplication.Meeting.MainPc,
     options: {
@@ -783,6 +781,8 @@ MWF.xApplication.Meeting.MainMobile = new Class({
     },
     createNode: function (){},
     loadLayout: function(){
+        this.content.setStyle('height', '100%');
+
         if( !this.options.baseDate ){
             this.options.baseDate = new Date().format(O2_MEETING_FORMAT_DATE);
         }

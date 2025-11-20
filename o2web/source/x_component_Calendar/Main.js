@@ -704,6 +704,8 @@ MWF.xApplication.Calendar.MainMobile = new Class({
     },
     createNode: function (){},
     loadLayout: function(){
+        this.content.setStyle('height', '100%');
+
         if( !this.options.baseDate ){
             this.options.baseDate = new Date().format(O2_CALENDAR_FORMAT_DATE);
         }
