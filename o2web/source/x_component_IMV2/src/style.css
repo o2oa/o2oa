@@ -826,6 +826,7 @@ button:focus-visible {
     background: 0 0;
     border: 0;
     outline: none;
+    color: var(--oo-color-text);
 }
 
 .im-chat-footer-input-bottom {
