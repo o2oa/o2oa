@@ -108,6 +108,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
             this.validation();
             this._setBusinessData(v);
             // this.fireEvent('change');
+            this.checkDisplayText();
         }.bind(this));
 
         this.node.addEventListener('validity', (e) => {
@@ -142,6 +143,23 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         }
     },
     createModelNode: function () {
+    },
+
+    checkDisplayText: function () {
+        const script = this.json.displayTextScript;
+        if(script && script.code){
+            var orgList = this.node?.shadowRoot?.querySelectorAll('oo-org');
+            (orgList || []).forEach((node)=>{
+                this.currentData = node.value;
+                var displayName = this.form.Macro.exec(script.code, this);
+                if( !!displayName ){
+                    Promise.resolve(displayName).then((text)=>{
+                        node.setAttribute('text', text);
+                    });
+                }
+                this.currentData = null;
+            });
+        }
     },
 
 
@@ -251,6 +269,8 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         this.node.value = data;
         if (fireChange && old!==data){
             this.fireEvent("change");
+        }else{
+            this.checkDisplayText();
         }
         this.moduleValueAG = null;
     },
@@ -259,6 +279,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         this._setBusinessData(value);
         // this.node.set('value', value || '');
         this.node.value = value.map(v => (v.distinguishedName || v)).join(', ');
+        this.checkDisplayText();
         this.fieldModuleLoaded = true;
         return value;
     },

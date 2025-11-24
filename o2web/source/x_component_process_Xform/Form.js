@@ -701,8 +701,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.loadContent(callback);
     },
     loadExtendStyle: function (callback) {
-        if (!this.json.styleConfig || !this.json.styleConfig.extendFile) {
+        var cb = ()=>{
+            if( layout.mobile && this.json.selectorStyle ){
+                this.json.selectorStyle.style === "v10" && (this.json.selectorStyle.style = "v10_mobile");
+                this.json.selectorStyle.tabStyle === "v10" && (this.json.selectorStyle.tabStyle = "v10_mobile");
+            }
             if (callback) callback();
+        }
+        if (!this.json.styleConfig || !this.json.styleConfig.extendFile) {
+            cb();
             return;
         }
         // if (this.json["$version"] == "5.2") {
@@ -715,13 +722,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     if (responseJSON && responseJSON.form) {
                         this.json = Object.merge(this.json, responseJSON.form);
                     }
-                    if (callback) callback();
+                    cb();
                 }.bind(this),
                 "onRequestFailure": function () {
-                    if (callback) callback();
+                    cb();
                 }.bind(this),
                 "onError": function () {
-                    if (callback) callback();
+                    cb();
                 }.bind(this)
             }
         );
