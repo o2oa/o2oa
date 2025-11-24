@@ -2325,12 +2325,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return false;
 			}
 			return true;
-
-
-
 		},
 		validation: function(routeName, opinion){
-			if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+			if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 
 			const flag = this._validation(routeName, opinion);
 			this.fireEvent("validation", [flag]);

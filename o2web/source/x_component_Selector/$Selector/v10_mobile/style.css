@@ -244,8 +244,9 @@
 }
 
 .MWF_selector_itemNode, .MWF_selector_categoryNode, .MWF_selector_categoryitemNode{
-  height: 3.125rem;
-  padding: 0 1rem;
+  height: auto;
+  min-height: 3.125rem;
+  padding: 0.2rem 1rem;
   display: flex;
   align-items: center;
   cursor: pointer;
