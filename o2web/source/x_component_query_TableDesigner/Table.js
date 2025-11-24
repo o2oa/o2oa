@@ -880,7 +880,9 @@ MWF.xApplication.query.TableDesigner.Table.Column = new Class({
 
         try{
             this.node.scrollIntoView(false);
-            this.listNode.scrollIntoView(false);
+            if( !this.listNode.isIntoView() ) {
+                this.listNode.scrollIntoView(false);
+            }
         }catch (e) {
 
         }

@@ -1691,7 +1691,9 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         // new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
         try{
             this.node.scrollIntoView(false);
-            this.listNode.scrollIntoView(false);
+            if( !this.listNode.isIntoView() ) {
+                this.listNode.scrollIntoView(false);
+            }
         }catch (e) {
 
         }
