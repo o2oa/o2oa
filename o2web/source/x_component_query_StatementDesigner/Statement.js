@@ -1781,6 +1781,11 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
     loadViewNodes: function(){
         this.viewAreaNode = new Element("div#viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.areaNode);
+        this.viewAreaNode.setStyles({
+            'width': 'fit-content',
+            'min-width': '100%'
+        });
+
         this.viewTitleNode = new Element("div#viewTitleNode", {"styles": this.css.viewTitleNode}).inject(this.viewAreaNode);
 
         this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
@@ -2125,22 +2130,22 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
     setViewWidth: function () {
         if (!this.viewAreaNode) return;
-        this.viewAreaNode.setStyle("width", "auto");
-        this.viewTitleNode.setStyle("width", "auto");
-
-        var s1 = this.viewTitleTableNode.getSize();
-        var s2 = this.refreshNode.getSize();
-        var s3 = this.addColumnNode.getSize();
-        var width = s1.x + s2.x + s2.x;
-        var size = this.areaNode.getSize();
-
-        if (width > size.x) {
-            this.viewTitleNode.setStyle("width", "" + (width - 2) + "px");
-            this.viewAreaNode.setStyle("width", "" + (width - 2) + "px");
-        } else {
-            this.viewTitleNode.setStyle("width", "" + (size.x - 2) + "px");
-            this.viewAreaNode.setStyle("width", "" + (size.x - 2) + "px");
-        }
+        // this.viewAreaNode.setStyle("width", "auto");
+        // this.viewTitleNode.setStyle("width", "auto");
+        //
+        // var s1 = this.viewTitleTableNode.getSize();
+        // var s2 = this.refreshNode.getSize();
+        // var s3 = this.addColumnNode.getSize();
+        // var width = s1.x + s2.x + s2.x;
+        // var size = this.areaNode.getSize();
+        //
+        // if (width > size.x) {
+        //     this.viewTitleNode.setStyle("width", "" + (width - 2) + "px");
+        //     this.viewAreaNode.setStyle("width", "" + (width - 2) + "px");
+        // } else {
+        //     this.viewTitleNode.setStyle("width", "" + (size.x - 2) + "px");
+        //     this.viewAreaNode.setStyle("width", "" + (size.x - 2) + "px");
+        // }
         this.setContentColumnWidth();
         this.setContentHeight();
     },
@@ -2518,7 +2523,9 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
 
         try{
             this.node.scrollIntoView(false);
-            this.listNode.scrollIntoView(false);
+            if( !this.listNode.isIntoView() ){
+                this.listNode.scrollIntoView(false);
+            }
         }catch (e) {
 
         }
