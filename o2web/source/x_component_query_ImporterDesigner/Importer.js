@@ -63,6 +63,10 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     loadViewNodes: function(){
         debugger;
         this.viewAreaNode = new Element("div#viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.areaNode);
+        this.viewAreaNode.setStyles({
+            'width': 'fit-content',
+            'min-width': '100%'
+        });
 
         this.viewTitleNode = new Element("div#viewTitleNode", {"styles": this.css.viewTitleNode}).inject(this.viewAreaNode);
 
@@ -385,26 +389,26 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
     setViewWidth: function(){
         // window.setTimeout(function() {
             if (!this.viewAreaNode) return;
-            this.viewAreaNode.setStyle("width", "auto");
-            this.viewTitleNode.setStyle("width", "auto");
-
-            var s1 = this.viewTitleTableNode.getSize();
-
-            var m1 = this.viewTitleNode.getStyle("margin-left");
-            var m2 = this.viewTitleNode.getStyle("margin-right");
-
-            var s2 = this.addColumnLeftNode.getSize();
-            var s3 = this.addColumnNode.getSize();
-            var width = s1.x + s2.x + s2.x - m1.toFloat() - m2.toFloat();
-            var size = this.areaNode.getSize();
-
-            if (width > size.x) {
-                this.viewTitleNode.setStyle("width", "" + width + "px");
-                this.viewAreaNode.setStyle("width", "" + width + "px");
-            } else {
-                this.viewTitleNode.setStyle("width", "" + size.x + "px");
-                this.viewAreaNode.setStyle("width", "" + size.x + "px");
-            }
+            // this.viewAreaNode.setStyle("width", "auto");
+            // this.viewTitleNode.setStyle("width", "auto");
+            //
+            // var s1 = this.viewTitleTableNode.getSize();
+            //
+            // var m1 = this.viewTitleNode.getStyle("margin-left");
+            // var m2 = this.viewTitleNode.getStyle("margin-right");
+            //
+            // var s2 = this.addColumnLeftNode.getSize();
+            // var s3 = this.addColumnNode.getSize();
+            // var width = s1.x + s2.x + s2.x - m1.toFloat() - m2.toFloat();
+            // var size = this.areaNode.getSize();
+            //
+            // if (width > size.x) {
+            //     this.viewTitleNode.setStyle("width", "" + width + "px");
+            //     this.viewAreaNode.setStyle("width", "" + width + "px");
+            // } else {
+            //     this.viewTitleNode.setStyle("width", "" + size.x + "px");
+            //     this.viewAreaNode.setStyle("width", "" + size.x + "px");
+            // }
             this.setContentColumnWidth();
             this.setContentHeight();
         // }.bind(this), 10);

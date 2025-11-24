@@ -460,6 +460,11 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
     loadViewNodes: function(){
         this.viewAreaNode = new Element("div#viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.areaNode);
+        this.viewAreaNode.setStyles({
+            'width': 'fit-content',
+            'min-width': '100%'
+        });
+
         this.viewTitleNode = new Element("div#viewTitleNode", {"styles": this.css.viewTitleNode}).inject(this.viewAreaNode);
 
         this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
@@ -604,22 +609,22 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     },
     setViewWidth: function(){
         if( !this.viewAreaNode )return;
-        this.viewAreaNode.setStyle("width", "auto");
-        this.viewTitleNode.setStyle("width", "auto");
+        // this.viewAreaNode.setStyle("width", "auto");
+        // this.viewTitleNode.setStyle("width", "auto");
 
-        var s1 = this.viewTitleTableNode.getSize();
-        var s2 = this.refreshNode.getSize();
-        var s3 = this.addColumnNode.getSize();
-        var width = s1.x+s2.x+s2.x;
-        var size = this.areaNode.getSize();
+        // var s1 = this.viewTitleTableNode.getSize();
+        // var s2 = this.refreshNode.getSize();
+        // var s3 = this.addColumnNode.getSize();
+        // var width = s1.x+s2.x+s2.x;
+        // var size = this.areaNode.getSize();
 
-        if (width>size.x){
-            this.viewTitleNode.setStyle("width", ""+width+"px");
-            this.viewAreaNode.setStyle("width", ""+width+"px");
-        }else{
-            this.viewTitleNode.setStyle("width", ""+size.x+"px");
-            this.viewAreaNode.setStyle("width", ""+size.x+"px");
-        }
+        // if (width>size.x){
+        //     this.viewTitleNode.setStyle("width", ""+width+"px");
+        //     this.viewAreaNode.setStyle("width", ""+width+"px");
+        // }else{
+        //     this.viewTitleNode.setStyle("width", ""+size.x+"px");
+        //     this.viewAreaNode.setStyle("width", ""+size.x+"px");
+        // }
         this.setContentColumnWidth();
         this.setContentHeight();
     },
@@ -1905,12 +1910,18 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         this.view.items.erase(this);
         if (this.view.property) this.view.property.loadStatColumnSelect();
 
+        // var preNode = this.areaNode.previousElementSibling;
+
         this.areaNode.destroy();
         this.view.selected();
 
         this.view.setViewWidth();
 
         this._destroy();
+
+        // if(preNode ){
+        //     preNode.scrollIntoView(false);
+        // }
 
         MWF.release(this);
         delete this;

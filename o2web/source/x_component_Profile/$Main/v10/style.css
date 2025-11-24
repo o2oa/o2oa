@@ -145,6 +145,7 @@
     overflow-y: hidden;
     outline:none;
     padding-left: 8px;
+    resize: none;
 }
 .o2_profile_signature:focus {
     border: 1px solid #4A90E2;
