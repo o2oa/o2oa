@@ -623,5 +623,8 @@
       "margin" : "5px",
       "display": "inline-block"
     }
+  },
+  "datatemplate": {
+    "template": "default"
   }
 }

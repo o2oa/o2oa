@@ -193,7 +193,11 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		}.bind(this));
 	},
 	getModulesTemplateUrl: function(){
-		return "../x_component_process_FormDesigner/Module/Datatemplate/modulesTemplate.json";
+		if( this.form.templateStyles?.datatemplate?.template === 'v10' ){
+			return "../x_component_process_FormDesigner/Module/Datatemplate/modulesTemplate_v10.json";
+		}else{
+			return "../x_component_process_FormDesigner/Module/Datatemplate/modulesTemplate.json";
+		}
 	},
 	appendModules: function( relativeNode, position, wrapDiv ){
 		MWF.getJSON(this.getModulesTemplateUrl(), function(responseJSON, responseText){
@@ -350,12 +354,14 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		// return nodes;
 	// },
 	clearTemplateStyles: function(styles){
+		this.json.template = "";
 		if (styles){
 			if (styles.styles) this.removeStyles(styles.styles, "styles");
 			if (styles.properties) this.removeStyles(styles.properties, "properties");
 		}
 	},
 	setTemplateStyles: function(styles){
+		this.json.template = styles.template;
 		if (styles.styles) this.copyStyles(styles.styles, "styles");
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
 	},

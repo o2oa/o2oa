@@ -264,5 +264,8 @@
     "tableContentCellStyles_title": {
       "font-size": "14px"
     }
+  },
+  "datatemplate": {
+    "template": "default"
   }
 }
