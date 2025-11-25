@@ -1,0 +1,1244 @@
+{
+  "data": {
+    "json": {
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "isSaved": true,
+          "preprocessing": "y",
+          "moduleName": "div",
+          "recoveryStyles": {
+            "background": "#fff"
+          },
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div",
+          "hideCannotRead": "inherit"
+        },
+        "datatemplate": {
+          "id": "datatemplate",
+          "type": "Datatemplate",
+          "sequence": "yes",
+          "section": "no",
+          "sectionBy": "person",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "initialized": "yes",
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538datatemplate",
+          "impexpType": "none",
+          "preprocessing": "y",
+          "addActionId": "button_add",
+          "deleteActionId": "button_delete",
+          "sequenceId": "label_sequence",
+          "outerAddActionId": "./button_add_total",
+          "outerDeleteActionId": "./button_delete_total",
+          "selectorId": "checkbox_selected",
+          "defaultCount": "1",
+          "maxCount": "5",
+          "moduleName": "datatemplate",
+          "outerSelectAllId": "./checkbox_selectAll",
+          "editableScript": {
+            "code": "return true;"
+          },
+          "outerSelectAllSelectedValue": "yes",
+          "selectorSelectedValue": "yes",
+          "validationConfig": [],
+          "excelFieldConfig": [
+            {
+              "field": "textfield",
+              "title": ""
+            },
+            {
+              "field": "textarea",
+              "title": ""
+            }
+          ],
+          "importActionId": "button_dt_import",
+          "exportActionId": "button_dt_export",
+          "excelTitle": "string",
+          "impExpTableStyles": {
+            "background-color": "#FFF",
+            "margin": "10px 0px"
+          },
+          "impExpTableTitleStyles": {
+            "background-color": "#fff",
+            "color": "#333",
+            "font-weight": "bold",
+            "height": "30px",
+            "line-height": "30px",
+            "text-align": "center"
+          },
+          "impExpTableContentStyles": {
+            "background-color": "#FFFFFF",
+            "color": "#333"
+          },
+          "impExpTableProperties": {
+            "width": "100%",
+            "border": "0",
+            "cellpadding": "3",
+            "cellspacing": "5",
+            "align": "center"
+          },
+          "minCount": "1",
+          "excelName": {
+            "code": "return \"数据模板.xls\""
+          },
+          "showSectionKey": true,
+          "keyContentSeparator": "：",
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default",
+          "showAllSection": false,
+          "showSectionBy": true,
+          "sequenceBy": "section",
+          "keyContentSeparatorSectionBy": "："
+        },
+        "div_dt_1": {
+          "id": "div_dt_1",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "overflow": "hidden"
+          },
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_1",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_2": {
+          "id": "div_dt_2",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "display": "inline-grid",
+            "grid-template-columns": "auto auto auto",
+            "gap": "0.5rem",
+            "float": "right",
+            "align-items": "center"
+          },
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_2",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_3": {
+          "id": "div_dt_3",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "margin-top": "1em"
+          },
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_3",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_4": {
+          "id": "div_dt_4",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "overflow": "hidden",
+            "display": "flex",
+            "justify-content": "space-between",
+            "align-items": "center"
+          },
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_4",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_5": {
+          "id": "div_dt_5",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "float": "left",
+            "color": "#666"
+          },
+          "isSaved": true,
+          "pid": "PCeb9fa857-955c-4a3a-99c5-b5a2a48c3896div_1",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "label_dt": {
+          "id": "label_dt",
+          "type": "Label",
+          "valueType": "text",
+          "text": "项目:",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538label_dt",
+          "preprocessing": "y",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "float": "left",
+            "font-weight": "bold",
+            "font-size": "1em",
+            "border-left": "3px solid var(--oo-color-main)",
+            "padding-left": "5px"
+          },
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_6": {
+          "id": "div_dt_6",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "display": "inline-grid",
+            "grid-template-columns": "auto auto auto",
+            "gap": "0.5em",
+            "font-size": "1em",
+            "align-items": "center"
+          },
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_6",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "label_sequence": {
+          "id": "label_sequence",
+          "type": "Label",
+          "valueType": "text",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538label_sequence",
+          "moduleName": "label",
+          "preprocessing": "y",
+          "recoveryStyles": {
+            "float": "left",
+            "font-weight": "bold",
+            "font-size": "1em"
+          },
+          "hideCannotRead": "inherit"
+        },
+        "div_1": {
+          "id": "div_1",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "class": "form-content-area"
+          },
+          "moduleGroup": "default",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_1",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "OOInput": {
+          "id": "OOInput",
+          "type": "OOInput",
+          "dataType": "text",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "label": "标　　题",
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PC5c5a3349-b1b0-4795-8137-d1879da992f3OOInput",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "preprocessing": "y",
+          "moduleName": "OOInput"
+        },
+        "OOInput_1": {
+          "id": "OOInput_1",
+          "type": "OOInput",
+          "dataType": "text",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "label": "说　　明",
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PC5c5a3349-b1b0-4795-8137-d1879da992f3OOInput_1",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "preprocessing": "y",
+          "moduleName": "OOInput"
+        },
+        "checkbox_selectAll": {
+          "id": "checkbox_selectAll",
+          "type": "OOCheckGroup",
+          "itemType": "values",
+          "itemValues": [
+            "全选|yes"
+          ],
+          "countPerline": "0",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538checkbox_selectAll",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "firstOptionEnable": false,
+          "dictUseCache": true,
+          "section": "no",
+          "sectionBy": "person",
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default",
+          "isReadonly": false,
+          "preprocessing": "y",
+          "moduleName": "OOCheckGroup",
+          "_appType": "currentForm",
+          "events": {
+            "load": {
+              "code": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');",
+              "html": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');"
+            }
+          }
+        },
+        "button_delete_total": {
+          "id": "button_delete_total",
+          "name": "删除选中项",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_delete_total",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "moduleName": "OOButton",
+          "preprocessing": "y",
+          "_appType": "currentForm"
+        },
+        "button_add_total": {
+          "id": "button_add_total",
+          "name": "添加项目",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_add_total",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "OOButton"
+        },
+        "checkbox_selected": {
+          "id": "checkbox_selected",
+          "type": "OOCheckGroup",
+          "itemType": "values",
+          "itemValues": [
+            "选中|yes"
+          ],
+          "countPerline": "0",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538checkbox_selected",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "firstOptionEnable": false,
+          "dictUseCache": true,
+          "section": "no",
+          "sectionBy": "person",
+          "isReadonly": false,
+          "preprocessing": "y",
+          "moduleName": "OOCheckGroup",
+          "_appType": "currentForm",
+          "events": {
+            "load": {
+              "code": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');",
+              "html": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');"
+            }
+          }
+        },
+        "button_delete": {
+          "id": "button_delete",
+          "name": "删除",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_delete",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "OOButton"
+        },
+        "button_add": {
+          "id": "button_add",
+          "name": "添加",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_add",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "OOButton"
+        },
+        "OOTextarea_1": {
+          "id": "OOTextarea_1",
+          "type": "OOTextarea",
+          "dataType": "text",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "label": "内　　容",
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "recoveryStyles": {
+            "flex": "100%"
+          },
+          "isSaved": true,
+          "pid": "PC5c5a3349-b1b0-4795-8137-d1879da992f3OOTextarea",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "autoSize": "yes",
+          "preprocessing": "y",
+          "moduleName": "OOTextarea"
+        }
+      }
+    },
+    "html": "<div mwftype=\"div\" id=\"div_dt_1\" style=\"overflow: hidden;\"><div mwftype=\"div\" id=\"div_dt_2\" style=\"display: inline-grid; grid-template-columns: auto auto auto; gap: 0.5rem; float: right; align-items: center;\"><div mwftype=\"OOCheckGroup\" id=\"checkbox_selectAll\" style=\"border: 1px dashed rgb(204, 204, 204); border-radius: 0.2857em; cursor: pointer; overflow: hidden; margin: 3px; user-select: none; position: relative; top: auto; left: auto; min-width: 120px; opacity: 1; background: rgb(255, 255, 255); display: inline-grid; grid-template-columns: auto 1fr; align-items: center; min-height: 1.5em;\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\"><oo-checkbox-group label=\"\" style=\"float: left;\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\"></oo-checkbox-group><div style=\"display: flex; align-items: center; gap: 0.25em; padding: 0px 0.2em;\"><div style=\"width: 1em; height: 1em; border-radius: 2px; border: 1px solid rgb(153, 153, 153); float: left;\"></div><div style=\"white-space: nowrap; color: rgb(153, 153, 153); font-family: Verdana, Geneva, sans-serif; text-overflow: ellipsis; padding: 2px;\">checkbox_selectAll</div></div></div><oo-button mwftype=\"OOButton\" id=\"button_delete_total\" text=\"删除选中项\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button><oo-button mwftype=\"OOButton\" id=\"button_add_total\" text=\"添加项目\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button></div></div><div mwftype=\"datatemplate\" id=\"datatemplate\" style=\"\"><div o2icon=\"datatemplate\" style=\"width: 104px; height: 16px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: 0px; border-bottom: 1px solid rgb(204, 204, 204); border-right: 1px solid rgb(204, 204, 204);\"><div style=\"width: 19px; height: 16px; background: url(&quot;../x_component_process_FormDesigner/Module/Datatemplate/default/icon/datatemplate.png&quot;) 0px center no-repeat; float: left;\"></div><div style=\"line-height: 16px; height: 16px; width: 80px; float: right;\">Datatemplate</div></div><div mwftype=\"div\" id=\"div_dt_3\" style=\"margin-top: 1em;\"><div mwftype=\"div\" id=\"div_dt_4\" style=\"overflow: hidden; display: flex; justify-content: space-between; align-items: center;\"><div mwftype=\"div\" id=\"div_dt_5\" style=\"float: left; color: rgb(102, 102, 102);\"><div mwftype=\"label\" id=\"label_dt\" style=\"float: left; font-weight: bold; font-size: 1em; border-left: 3px solid var(--oo-color-main); padding-left: 5px;\">项目:</div><div mwftype=\"label\" id=\"label_sequence\" style=\"float: left; font-weight: bold; font-size: 1em;\"></div></div><div mwftype=\"div\" id=\"div_dt_6\" style=\"display: inline-grid; grid-template-columns: auto auto auto; gap: 0.5em; font-size: 1em; align-items: center;\"><div mwftype=\"OOCheckGroup\" id=\"checkbox_selected\" style=\"border: 1px dashed rgb(204, 204, 204); border-radius: 0.2857em; cursor: pointer; overflow: hidden; margin: 3px; user-select: none; position: relative; top: auto; left: auto; min-width: 120px; opacity: 1; background: rgb(255, 255, 255); display: inline-grid; grid-template-columns: auto 1fr; align-items: center; min-height: 1.5em;\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\"><oo-checkbox-group label=\"\" style=\"float: left;\"></oo-checkbox-group><div style=\"display: flex; align-items: center; gap: 0.25em; padding: 0px 0.2em;\"><div style=\"width: 1em; height: 1em; border-radius: 2px; border: 1px solid rgb(153, 153, 153); float: left;\"></div><div style=\"white-space: nowrap; color: rgb(153, 153, 153); font-family: Verdana, Geneva, sans-serif; text-overflow: ellipsis; padding: 2px;\">checkbox_selected</div></div></div><oo-button mwftype=\"OOButton\" id=\"button_delete\" text=\"删除\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button><oo-button mwftype=\"OOButton\" id=\"button_add\" text=\"添加\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button></div></div><div mwftype=\"div\" id=\"div_1\" style=\"\" class=\"form-content-area\"><oo-input mwftype=\"OOInput\" id=\"OOInput\" placeholder=\"OOInput\" style=\"\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" readmode=\"false\" type=\"text\" label=\"标　　题\" readonly=\"true\"></oo-input><oo-input mwftype=\"OOInput\" id=\"OOInput_1\" placeholder=\"OOInput_1\" style=\"\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" readmode=\"false\" type=\"text\" label=\"说　　明\" readonly=\"true\"></oo-input><oo-textarea mwftype=\"OOTextarea\" id=\"OOTextarea_1\" placeholder=\"OOTextarea_1\" style=\"flex: 1 1 100%;\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" readmode=\"false\" label=\"内　　容\" readonly=\"true\"><div style=\"background: url(&quot;../x_component_process_FormDesigner/Module/Textfield/default/icon/inputtext.png&quot;) center center no-repeat; width: 18px; height: 18px; float: right;\"></div><div style=\"white-space: nowrap; margin-right: 18px; overflow: hidden; margin-left: 2px; line-height: 18px; color: rgb(119, 119, 119); font-family: Verdana, Geneva, sans-serif; font-size: 12px; text-overflow: ellipsis;\">OOTextarea_1</div></oo-textarea></div></div></div>"
+  },
+  "mobileData": {
+    "json": {
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "isSaved": true,
+          "preprocessing": "y",
+          "moduleName": "div",
+          "recoveryStyles": {
+            "background": "#fff"
+          },
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div",
+          "hideCannotRead": "inherit"
+        },
+        "datatemplate": {
+          "id": "datatemplate",
+          "type": "Datatemplate",
+          "sequence": "yes",
+          "section": "no",
+          "sectionBy": "person",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "initialized": "yes",
+          "pid": "Mobileb37758f9-c06b-48a1-a4b1-fea5b52c1538datatemplate",
+          "impexpType": "none",
+          "preprocessing": "y",
+          "addActionId": "button_add",
+          "deleteActionId": "button_delete",
+          "sequenceId": "label_sequence",
+          "outerAddActionId": "./button_add_total",
+          "outerDeleteActionId": "./button_delete_total",
+          "selectorId": "checkbox_selected",
+          "defaultCount": "1",
+          "maxCount": "5",
+          "moduleName": "datatemplate",
+          "outerSelectAllId": "./checkbox_selectAll",
+          "editableScript": {
+            "code": "return true;"
+          },
+          "outerSelectAllSelectedValue": "yes",
+          "selectorSelectedValue": "yes",
+          "validationConfig": [],
+          "excelFieldConfig": [
+            {
+              "field": "textfield",
+              "title": ""
+            },
+            {
+              "field": "textarea",
+              "title": ""
+            }
+          ],
+          "importActionId": "button_dt_import",
+          "exportActionId": "button_dt_export",
+          "excelTitle": "string",
+          "impExpTableStyles": {
+            "background-color": "#FFF",
+            "margin": "10px 0px"
+          },
+          "impExpTableTitleStyles": {
+            "background-color": "#fff",
+            "color": "#333",
+            "font-weight": "bold",
+            "height": "30px",
+            "line-height": "30px",
+            "text-align": "center"
+          },
+          "impExpTableContentStyles": {
+            "background-color": "#FFFFFF",
+            "color": "#333"
+          },
+          "impExpTableProperties": {
+            "width": "100%",
+            "border": "0",
+            "cellpadding": "3",
+            "cellspacing": "5",
+            "align": "center"
+          },
+          "minCount": "1",
+          "excelName": {
+            "code": "return \"数据模板.xls\""
+          },
+          "showSectionKey": true,
+          "keyContentSeparator": "：",
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default",
+          "showAllSection": false,
+          "showSectionBy": true,
+          "sequenceBy": "section",
+          "keyContentSeparatorSectionBy": "："
+        },
+        "div_dt_1": {
+          "id": "div_dt_1",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "overflow": "hidden"
+          },
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_1",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_2": {
+          "id": "div_dt_2",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "display": "inline-grid",
+            "grid-template-columns": "auto auto auto",
+            "gap": "0.5rem",
+            "float": "right",
+            "align-items": "center"
+          },
+          "isSaved": true,
+          "pid": "Mobileb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_2",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_3": {
+          "id": "div_dt_3",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "margin-top": "1em"
+          },
+          "isSaved": true,
+          "pid": "Mobileb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_3",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_4": {
+          "id": "div_dt_4",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "overflow": "hidden",
+            "display": "flex",
+            "justify-content": "space-between",
+            "align-items": "center"
+          },
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_4",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_5": {
+          "id": "div_dt_5",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "float": "left",
+            "color": "#666"
+          },
+          "isSaved": true,
+          "pid": "PCeb9fa857-955c-4a3a-99c5-b5a2a48c3896div_1",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "label_dt": {
+          "id": "label_dt",
+          "type": "Label",
+          "valueType": "text",
+          "text": "项目:",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538label_dt",
+          "preprocessing": "y",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "float": "left",
+            "font-weight": "bold",
+            "font-size": "1em",
+            "border-left": "3px solid var(--oo-color-main)",
+            "padding-left": "5px"
+          },
+          "hideCannotRead": "inherit"
+        },
+        "div_dt_6": {
+          "id": "div_dt_6",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "display": "inline-grid",
+            "grid-template-columns": "auto auto auto",
+            "gap": "0.5em",
+            "font-size": "1em",
+            "align-items": "center"
+          },
+          "isSaved": true,
+          "pid": "Mobileb37758f9-c06b-48a1-a4b1-fea5b52c1538div_dt_6",
+          "preprocessing": "y",
+          "moduleName": "div",
+          "hideCannotRead": "inherit"
+        },
+        "label_sequence": {
+          "id": "label_sequence",
+          "type": "Label",
+          "valueType": "text",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538label_sequence",
+          "moduleName": "label",
+          "preprocessing": "y",
+          "recoveryStyles": {
+            "float": "left",
+            "font-weight": "bold",
+            "font-size": "1em"
+          },
+          "hideCannotRead": "inherit"
+        },
+        "div_1": {
+          "id": "div_1",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "class": "form-content-area"
+          },
+          "moduleGroup": "default",
+          "isSaved": true,
+          "pid": "Mobileb37758f9-c06b-48a1-a4b1-fea5b52c1538div_1",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "div"
+        },
+        "OOInput": {
+          "id": "OOInput",
+          "type": "OOInput",
+          "dataType": "text",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "label": "标　　题",
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PC5c5a3349-b1b0-4795-8137-d1879da992f3OOInput",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "preprocessing": "y",
+          "moduleName": "OOInput"
+        },
+        "OOInput_1": {
+          "id": "OOInput_1",
+          "type": "OOInput",
+          "dataType": "text",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "label": "说　　明",
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PC5c5a3349-b1b0-4795-8137-d1879da992f3OOInput_1",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "preprocessing": "y",
+          "moduleName": "OOInput"
+        },
+        "checkbox_selectAll": {
+          "id": "checkbox_selectAll",
+          "type": "OOCheckGroup",
+          "itemType": "values",
+          "itemValues": [
+            "全选|yes"
+          ],
+          "countPerline": "0",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "properties": {
+            "label-style": "display:none !important;",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "Mobileb37758f9-c06b-48a1-a4b1-fea5b52c1538checkbox_selectAll",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "firstOptionEnable": false,
+          "dictUseCache": true,
+          "section": "no",
+          "sectionBy": "person",
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default",
+          "isReadonly": false,
+          "preprocessing": "y",
+          "moduleName": "OOCheckGroup",
+          "_appType": "currentForm",
+          "events": {
+            "load": {
+              "code": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');",
+              "html": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');"
+            }
+          }
+        },
+        "button_delete_total": {
+          "id": "button_delete_total",
+          "name": "删除选中项",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_delete_total",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "moduleName": "OOButton",
+          "preprocessing": "y",
+          "_appType": "currentForm"
+        },
+        "button_add_total": {
+          "id": "button_add_total",
+          "name": "添加项目",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_add_total",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "OOButton"
+        },
+        "checkbox_selected": {
+          "id": "checkbox_selected",
+          "type": "OOCheckGroup",
+          "itemType": "values",
+          "itemValues": [
+            "选中|yes"
+          ],
+          "countPerline": "0",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "Mobileb37758f9-c06b-48a1-a4b1-fea5b52c1538checkbox_selected",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "firstOptionEnable": false,
+          "dictUseCache": true,
+          "section": "no",
+          "sectionBy": "person",
+          "isReadonly": false,
+          "preprocessing": "y",
+          "moduleName": "OOCheckGroup",
+          "_appType": "currentForm",
+          "events": {
+            "load": {
+              "code": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');",
+              "html": "var label = this.target.node?.shadowRoot?.querySelector('.label');\r\nlabel && label.style.setProperty('display', 'none', 'important');\r\n\r\nvar itemsContent = this.target.node?.shadowRoot?.querySelector('.itemsContent');\r\nitemsContent && itemsContent.style.setProperty('box-shadow', 'unset', 'important');\r\n\r\nvar checkbox = this.target.node?.querySelector('oo-checkbox');\r\ncheckbox && checkbox.style.setProperty('padding', '0', 'important');"
+            }
+          },
+          "properties": {
+            "label-style": "display:none;"
+          }
+        },
+        "button_delete": {
+          "id": "button_delete",
+          "name": "删除",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_delete",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "OOButton"
+        },
+        "button_add": {
+          "id": "button_add",
+          "name": "添加",
+          "type": "OOButton",
+          "dataType": "text",
+          "disabled": false,
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "isSaved": true,
+          "pid": "PCb37758f9-c06b-48a1-a4b1-fea5b52c1538button_add",
+          "appearance": "light",
+          "hideCannotRead": "inherit",
+          "preprocessing": "y",
+          "moduleName": "OOButton"
+        },
+        "OOTextarea_1": {
+          "id": "OOTextarea_1",
+          "type": "OOTextarea",
+          "dataType": "text",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "label": "内　　容",
+          "showIcon": "no",
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "properties": {
+            "label-style": "width:6.2vw; min-width:4.3em; max-width:9em",
+            "label-Align": "right",
+            "view-style": "background-color:#f7f7f7"
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleGroup": "O2OA UI",
+          "recoveryStyles": {
+            "flex": "100%"
+          },
+          "isSaved": true,
+          "pid": "PC5c5a3349-b1b0-4795-8137-d1879da992f3OOTextarea",
+          "showMode": "editable",
+          "required": false,
+          "readModeEvents": "no",
+          "autoSize": "yes",
+          "preprocessing": "y",
+          "moduleName": "OOTextarea"
+        }
+      }
+    },
+    "html": "<div mwftype=\"div\" id=\"div_dt_1\" style=\"overflow: hidden;\"><div mwftype=\"div\" id=\"div_dt_2\" style=\"display: inline-grid; grid-template-columns: auto auto auto; gap: 0.5rem; float: right; align-items: center;\"><div mwftype=\"OOCheckGroup\" id=\"checkbox_selectAll\" style=\"border: 1px dashed rgb(204, 204, 204); border-radius: 0.2857em; cursor: pointer; overflow: hidden; margin: 3px; user-select: none; position: relative; top: auto; left: auto; min-width: 120px; opacity: 1; background: rgb(255, 255, 255); display: inline-grid; grid-template-columns: auto 1fr; align-items: center; min-height: 1.5em;\" label-style=\"display:none !important;\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" skin-mode=\"mobile\"><oo-checkbox-group label=\"\" style=\"float: left;\" label-style=\"display:none !important;\" label-align=\"right\" view-style=\"background-color:#f7f7f7\"></oo-checkbox-group><div style=\"display: flex; align-items: center; gap: 0.25em; padding: 0px 0.2em;\"><div style=\"width: 1em; height: 1em; border-radius: 2px; border: 1px solid rgb(153, 153, 153); float: left;\"></div><div style=\"white-space: nowrap; color: rgb(153, 153, 153); font-family: Verdana, Geneva, sans-serif; text-overflow: ellipsis; padding: 2px;\">checkbox_selectAll</div></div></div><oo-button mwftype=\"OOButton\" id=\"button_delete_total\" text=\"删除选中项\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button><oo-button mwftype=\"OOButton\" id=\"button_add_total\" text=\"添加项目\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button></div></div><div mwftype=\"datatemplate\" id=\"datatemplate\" style=\"\"><div o2icon=\"datatemplate\" style=\"width: 104px; height: 16px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: 0px; border-bottom: 1px solid rgb(204, 204, 204); border-right: 1px solid rgb(204, 204, 204);\"><div style=\"width: 19px; height: 16px; background: url(&quot;../x_component_process_FormDesigner/Module/Datatemplate/default/icon/datatemplate.png&quot;) 0px center no-repeat; float: left;\"></div><div style=\"line-height: 16px; height: 16px; width: 80px; float: right;\">Datatemplate</div></div><div mwftype=\"div\" id=\"div_dt_3\" style=\"margin-top: 1em;\"><div mwftype=\"div\" id=\"div_dt_4\" style=\"overflow: hidden; display: flex; justify-content: space-between; align-items: center;\"><div mwftype=\"div\" id=\"div_dt_5\" style=\"float: left; color: rgb(102, 102, 102);\"><div mwftype=\"label\" id=\"label_dt\" style=\"float: left; font-weight: bold; font-size: 1em; border-left: 3px solid var(--oo-color-main); padding-left: 5px;\">项目:</div><div mwftype=\"label\" id=\"label_sequence\" style=\"float: left; font-weight: bold; font-size: 1em;\"></div></div><div mwftype=\"div\" id=\"div_dt_6\" style=\"display: inline-grid; grid-template-columns: auto auto auto; gap: 0.5em; font-size: 1em; align-items: center;\"><div mwftype=\"OOCheckGroup\" id=\"checkbox_selected\" style=\"border: 1px dashed rgb(204, 204, 204); border-radius: 0.2857em; cursor: pointer; overflow: hidden; margin: 3px; user-select: none; position: relative; top: auto; left: auto; min-width: 120px; opacity: 1; background: rgb(255, 255, 255); display: inline-grid; grid-template-columns: auto 1fr; align-items: center; min-height: 1.5em;\" label-style=\"display:none;\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" skin-mode=\"mobile\"><oo-checkbox-group label=\"\" style=\"float: left;\" label-style=\"display:none;\"></oo-checkbox-group><div style=\"display: flex; align-items: center; gap: 0.25em; padding: 0px 0.2em;\"><div style=\"width: 1em; height: 1em; border-radius: 2px; border: 1px solid rgb(153, 153, 153); float: left;\"></div><div style=\"white-space: nowrap; color: rgb(153, 153, 153); font-family: Verdana, Geneva, sans-serif; text-overflow: ellipsis; padding: 2px;\">checkbox_selected</div></div></div><oo-button mwftype=\"OOButton\" id=\"button_delete\" text=\"删除\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button><oo-button mwftype=\"OOButton\" id=\"button_add\" text=\"添加\" style=\"pointer-events: auto;\" disabled=\"false\" type=\"light\"></oo-button></div></div><div mwftype=\"div\" id=\"div_1\" style=\"\" class=\"form-content-area\"><oo-input mwftype=\"OOInput\" id=\"OOInput\" placeholder=\"OOInput\" style=\"\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" readmode=\"false\" type=\"text\" label=\"标　　题\" readonly=\"true\" skin-mode=\"mobile\"></oo-input><oo-input mwftype=\"OOInput\" id=\"OOInput_1\" placeholder=\"OOInput_1\" style=\"\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" readmode=\"false\" type=\"text\" label=\"说　　明\" readonly=\"true\" skin-mode=\"mobile\"></oo-input><oo-textarea mwftype=\"OOTextarea\" id=\"OOTextarea_1\" placeholder=\"OOTextarea_1\" style=\"flex: 1 1 100%;\" label-style=\"width:6.2vw; min-width:4.3em; max-width:9em\" label-align=\"right\" view-style=\"background-color:#f7f7f7\" readmode=\"false\" label=\"内　　容\" readonly=\"true\" skin-mode=\"mobile\"><div style=\"background: url(&quot;../x_component_process_FormDesigner/Module/Textfield/default/icon/inputtext.png&quot;) center center no-repeat; width: 18px; height: 18px; float: right;\"></div><div style=\"white-space: nowrap; margin-right: 18px; overflow: hidden; margin-left: 2px; line-height: 18px; color: rgb(119, 119, 119); font-family: Verdana, Geneva, sans-serif; font-size: 12px; text-overflow: ellipsis;\">OOTextarea_1</div></oo-textarea></div></div></div>"
+  }
+}
+
+
+

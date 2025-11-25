@@ -430,7 +430,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.selectAllList.each( function (module) {
 				// module.setData(""); //默认不选中
 				var addEvent = function (){
-					!module._isDtEventAdded && module.node.addEvents({"click": function(e){
+					!module._isDtEventAdded && module.node.addEvents({"change": function(e){
+						debugger;
 						this._checkSelectAll(e);
 					}.bind(this)});
 					module._isDtEventAdded = true;
@@ -2308,10 +2309,12 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 						}.bind(this))
 					}else if( json.type==="Datatemplate" ){
 						this.subDatatemplateModuleList.push(module);
-					}else if( module.field && json.type!=="Datatable" ){
-						module.addEvent("change", function(){
-							this.saveDataById();
-						});
+					}else if( module.field && json.type!=="Datatable" ) {
+						if (module.json.originialId !== this.template.selectorId){
+							module.addEvent("change", function () {
+								this.saveDataById();
+							});
+						}
 					}
 
 					this.form.modules.push(module);
@@ -2491,7 +2494,13 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	},
 	select: function(){
 		this.selected = true;
-		if(this.selector)this.selector.setData(this.template.json.selectorSelectedValue);
+		if(this.selector){
+			if( ["OOCheckGroup", "Checkbox", "Elcheckbox"].contains(this.selector.json.type)){
+				this.selector.setData([this.template.json.selectorSelectedValue]);
+			}else{
+				this.selector.setData(this.template.json.selectorSelectedValue);
+			}
+		}
 	},
 	unselect: function(){
 		this.selected = false;
