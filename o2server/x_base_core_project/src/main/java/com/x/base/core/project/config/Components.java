@@ -37,14 +37,13 @@ public class Components extends ConfigObject {
     public static final String NAME_FORUM = "Forum";
     public static final String NAME_MINDER = "Minder";
     public static final String NAME_CALENDAR = "Calendar";
-    public static final String NAME_ANN = "ANN";
     public static final String NAME_FTSEARCH = "ftsearch";
     public static final String NAME_IM = "IMV2";
 
     public static final List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SYSTEMCONFIG, NAME_ORG, NAME_CMSMANAGER,
             NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPSTORE,
             NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_WORKCENTER, NAME_HOMEPAGE,
-            NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR, NAME_ANN,
+            NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR,
             NAME_FTSEARCH, NAME_IM);
 
     public static final String APPICON_PNG = "appicon.png";
@@ -101,8 +100,6 @@ public class Components extends ConfigObject {
                 return new Component(NAME_MINDER, NAME_MINDER, "脑图编辑器", APPICON_PNG, 22, Component.TYPE_SYSTEM);
             case NAME_CALENDAR:
                 return new Component(NAME_CALENDAR, NAME_CALENDAR, "日程安排", APPICON_PNG, 23, Component.TYPE_SYSTEM);
-            case NAME_ANN:
-                return new Component(NAME_ANN, NAME_ANN, "神经网络", APPICON_PNG, 24, Component.TYPE_SYSTEM);
             case NAME_FTSEARCH:
                 return new Component(NAME_FTSEARCH, NAME_FTSEARCH, "搜索", APPICON_PNG, 25, Component.TYPE_SYSTEM);
             case NAME_IM:
@@ -135,7 +132,6 @@ public class Components extends ConfigObject {
         this.systems.add(systemComponent(NAME_FORUM));
         this.systems.add(systemComponent(NAME_MINDER));
         this.systems.add(systemComponent(NAME_CALENDAR));
-        this.systems.add(systemComponent(NAME_ANN));
         this.systems.add(systemComponent(NAME_FTSEARCH));
         this.systems.add(systemComponent(NAME_IM));
     }
