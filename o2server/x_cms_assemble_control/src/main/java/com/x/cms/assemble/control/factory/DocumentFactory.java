@@ -476,9 +476,9 @@ public class DocumentFactory extends AbstractFactory {
 
 		if(BooleanUtils.isNotTrue(isAdmin)){
 			if(BooleanUtils.isNotTrue(isAuthor)) {
-				Subquery<Review> subQuery = cq.subquery(Review.class);
+				Subquery<Long> subQuery = cq.subquery(Long.class);
 				Root<Review> root1 = subQuery.from(em1.getMetamodel().entity(Review.class));
-				subQuery.select(root1);
+				subQuery.select(cb.literal(1L));
 				Predicate p_permission = cb1.equal(root1.get(Review_.permissionObj), personName);
 				p_permission = cb1.and(p_permission, cb1.equal(root1.get(Review_.docId), root.get(Document_.id)));
 				subQuery.where(p_permission);
@@ -525,10 +525,10 @@ public class DocumentFactory extends AbstractFactory {
 		if(StringUtils.isNotBlank(readFlag)) {
 			EntityManager em2 = this.entityManagerContainer().get(DocumentViewRecord.class);
 			CriteriaBuilder cb2 = em2.getCriteriaBuilder();
-			Subquery<DocumentViewRecord> subQuery2 = cq.subquery(DocumentViewRecord.class);
+			Subquery<Long> subQuery2 = cq.subquery(Long.class);
 			Root<DocumentViewRecord> root2 = subQuery2.from(
 					em2.getMetamodel().entity(DocumentViewRecord.class));
-			subQuery2.select(root2);
+			subQuery2.select(cb.literal(1L));
 			Predicate p2 = cb2.equal(root2.get(DocumentViewRecord_.viewerName), personName);
 			p2 = cb2.and(p2, cb2.equal(root2.get(DocumentViewRecord_.documentId),
 					root.get(Document_.id)));
@@ -598,9 +598,9 @@ public class DocumentFactory extends AbstractFactory {
 
 		if(BooleanUtils.isNotTrue(isAdmin)){
 			if(BooleanUtils.isNotTrue(isAuthor)) {
-				Subquery<Review> subquery = cq.subquery(Review.class);
+				Subquery<Long> subquery = cq.subquery(Long.class);
 				Root<Review> root1 = subquery.from(em1.getMetamodel().entity(Review.class));
-				subquery.select(root1);
+				subquery.select(cb.literal(1L));
 				Predicate p_permission = cb1.equal(root1.get(Review_.permissionObj), personName);
 				p_permission = cb1.and(p_permission, cb1.equal(root1.get(Review_.docId), root.get(Document_.id)));
 				subquery.where(p_permission);
@@ -647,10 +647,10 @@ public class DocumentFactory extends AbstractFactory {
 		if(StringUtils.isNotBlank(readFlag)) {
 			EntityManager em2 = this.entityManagerContainer().get(DocumentViewRecord.class);
 			CriteriaBuilder cb2 = em2.getCriteriaBuilder();
-			Subquery<DocumentViewRecord> subQuery2 = cq.subquery(DocumentViewRecord.class);
+			Subquery<Long> subQuery2 = cq.subquery(Long.class);
 			Root<DocumentViewRecord> root2 = subQuery2.from(
 					em2.getMetamodel().entity(DocumentViewRecord.class));
-			subQuery2.select(root2);
+			subQuery2.select(cb.literal(1L));
 			Predicate p2 = cb2.equal(root2.get(DocumentViewRecord_.viewerName), personName);
 			p2 = cb2.and(p2, cb2.equal(root2.get(DocumentViewRecord_.documentId),
 					root.get(Document_.id)));
