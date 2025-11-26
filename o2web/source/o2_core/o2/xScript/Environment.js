@@ -2111,7 +2111,7 @@ MWF.xScript.Environment = function(ev){
                     });
                 },
                 ()=>{
-                    if(callback)callback(viewer.getData());
+                    if(okCallback)okCallback(viewer.getData());
                 }
             );
     };

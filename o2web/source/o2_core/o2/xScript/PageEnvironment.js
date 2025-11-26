@@ -1484,7 +1484,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     });
                 },
                 ()=>{
-                    if(callback)callback(viewer.getData());
+                    if(okCallback)okCallback(viewer.getData());
                 }
             );
         };
