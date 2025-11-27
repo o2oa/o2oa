@@ -121,6 +121,17 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	_loadNodeCustomStyles: function(){
 		this.setCustomStyles();
 	},
+	_hasPowerSetting: function(){
+		let flag = (this.json.readByActivity || this.json.readByOrg || this.json.readByScript)
+		|| (this.json.readByActivityValue && this.json.readByActivityValue.length)
+		|| (this.json.readByOrgValue && this.json.readByOrgValue.length)
+		|| 	(this.json.readByScriptValue && this.json.readByScriptValue.code)
+		|| (this.json.editByActivityValue && this.json.editByActivityValue.length)
+		|| (this.json.editByOrgValue && this.json.editByOrgValue.length)
+		|| 	(this.json.editByScriptValue && this.json.editByScriptValue.length);
+
+		return flag; 
+	},
 	_loadTreeNode: function(parent){
 		var title = this.json.name || this.json.id;
 		var text = "";
@@ -128,6 +139,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			text = this.json.tagName+"(Common)";
 		}else{
 			text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
+		}
+
+		if (this._hasPowerSetting()){
+			title = title + '<span style="color: red; margin-left: 5px; font-size: 14px;" class="ooicon-config"></span>'
 		}
 		var o = {
 			"expand": true,
