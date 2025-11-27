@@ -41,17 +41,19 @@ layout.addReady(function(){
         };
 
 
-        _load();
+        // _load();
 
-        // if (layout.session && layout.session.user){
-        //     _load();
-        // }else{
-        //     if (layout.sessionPromise){
-        //         layout.sessionPromise.then(function(){
-        //             _load();
-        //         },function(){});
-        //     }
-        // }
+        if (layout.session && layout.session.user){
+            _load();
+        }else{
+            if (layout.sessionPromise){
+                Promise.resolve(layout.sessionPromise).then(function(json){
+                    _load();
+                },function(){});
+            }else{
+                _load();
+            }
+        }
 
         // if(!o2.portalPopstate)o2.portalPopstate = function (event) {
         //     uri = new URI(document.location.href);
