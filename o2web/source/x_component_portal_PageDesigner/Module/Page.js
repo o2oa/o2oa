@@ -1233,7 +1233,10 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		if (cssText){
 
 			//删除注释
-			cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+			//cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+
+			cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除多行注释
+				.replace(/\\n/g, '');             // 移除\n
 
 			cssText = this.parseCSS(cssText);
 			var rex = new RegExp("(.+)(?=\\{)", "g");
