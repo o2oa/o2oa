@@ -186,17 +186,23 @@ function create_license(cb){
     request.post({ url: url, json: data, timeout: 30000 }, function(err, res, respBody){
         if (err) {
             gutil.log(gutil.colors.red("license request error:"), err);
-            return cb();
+            throw err;
         }
         if (respBody.type === "error") {
             gutil.log(gutil.colors.red("license request error:"), respBody.message);
         }
         try {
-            fs.writeFileSync(path.resolve(process.cwd(), "target/config/o2.license"), respBody.data.license, "utf8");
-            fs.writeFileSync(path.resolve(process.cwd(), "target/config/o2license.key"), respBody.data.licenseKey, "utf8");
+            const licenseDir = path.resolve(process.cwd(), "target/o2server/config");
+    
+            // 递归创建目录
+            fs.mkdirSync(licenseDir, { recursive: true });
+
+            fs.writeFileSync(path.resolve(process.cwd(), licenseDir+"/o2.license"), respBody.data.license, "utf8");
+            fs.writeFileSync(path.resolve(process.cwd(), licenseDir+"/o2license.key"), respBody.data.licenseKey, "utf8");
             gutil.log(gutil.colors.green("Created files: o2.license, o2license.key"));
         } catch(e){
             gutil.log(gutil.colors.red("write file error:"), e);
+            throw e;
         }
         cb();
     });
