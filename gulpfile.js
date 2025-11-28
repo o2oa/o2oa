@@ -69,9 +69,13 @@ var scripts = {
     "sw": ["o2server/*sw*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"]
 };
 
-var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
-    string: ["e", "lp", "w", "m", "d"]
+// var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
+//     string: ["e", "lp", "w", "m", "d"]
+// });
+var o_options = minimist(process.argv.slice(2), {
+    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec"]
 });
+
 var options = {};
 options.ev = o_options.e || "all";
 options.lp = o_options.lp || "zh-cn";
@@ -161,6 +165,42 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
     //    }
     //});
 }
+
+function create_license(cb){
+    const url = "http://collect.o2oa.net:20080/o2_collect_assemble/jaxrs/customer/create";
+
+    var data = {
+        effectiveDate: o_options.efd || 30,
+        isItai: !!o_options.itai,
+        secret: !o_options.sec,
+        name: o_options.name,
+        unitName: o_options.uname,
+        email: o_options.email,
+        contactMobile: o_options.cmobile,
+        contactName: o_options.cname,
+        version: o_options.ver
+    };
+
+    request.post({ url: url, json: data, timeout: 30000 }, function(err, res, respBody){
+        if (err) {
+            gutil.log(gutil.colors.red("license request error:"), err);
+            return cb();
+        }
+        if (respBody.type === "error") {
+            gutil.log(gutil.colors.red("license request error:"), respBody.message);
+        }
+        try {
+            fs.writeFileSync(path.resolve(process.cwd(), "target/config/o2.license"), respBody.data.license, "utf8");
+            fs.writeFileSync(path.resolve(process.cwd(), "target/config/o2license.key"), respBody.data.licenseKey, "utf8");
+            gutil.log(gutil.colors.green("Created files: o2.license, o2license.key"));
+        } catch(e){
+            gutil.log(gutil.colors.red("write file error:"), e);
+        }
+        cb();
+    });
+}
+exports.create_license = create_license;
+
 function downloadFile(path, filename, headcb, progresscb, cb){
     var dest = `o2server/${filename}`;
 
