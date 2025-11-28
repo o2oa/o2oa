@@ -106,7 +106,15 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.prefix}}:</td>
                     <td class="editTableValue">
-                        <input type="text" name="prefix" value="text{$.prefix}" class="editTableInput"/>
+                        <div style="display: flex;">
+                        <input type="radio" name="isPrefix" value="true" onclick="if (this.checked){
+                             $('text{$.pid}prefix').setStyle('display', 'block');
+                        }" text{($.isPrefix!==false)?'checked':''}/>{{$.lp.enable}}
+                        <input type="radio" name="isPrefix" value="false" onclick="if (this.checked){
+                             $('text{$.pid}prefix').setStyle('display', 'none');
+                        }" text{($.isPrefix===false)?'checked':''}/>{{$.lp.disable}}
+                        <input type="text" name="prefix" value="text{$.prefix}" class="editTableInputNoWidth" id="text{$.pid}prefix" style="margin-left:5px; width: 100px; display: text{($.isPrefix!==false)?'block':'none'};"/>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -118,7 +126,15 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.thousands}}:</td>
                     <td class="editTableValue">
-                        <input type="text" name="thousands" value="text{$.thousands}" class="editTableInput"/>
+                        <div style="display: flex;">
+                        <input type="radio" name="isThousands" value="true" onclick="if (this.checked){
+                             $('text{$.pid}thousands').setStyle('display', 'block');
+                        }" text{($.isThousands!==false)?'checked':''}/>{{$.lp.enable}}
+                        <input type="radio" name="isThousands" value="false" onclick="if (this.checked){
+                             $('text{$.pid}thousands').setStyle('display', 'none');
+                        }" text{($.isThousands===false)?'checked':''}/>{{$.lp.disable}}
+                        <input type="text" name="thousands" value="text{$.thousands}" class="editTableInputNoWidth" id="text{$.pid}thousands" style="margin-left:5px; width: 100px; display: text{($.isThousands!==false)?'block':'none'};"/>
+                        </div>
                     </td>
                 </tr>
                 <tr>

@@ -54,7 +54,7 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
         node.setStyles( this.json.recoveryStyles || {} );
         input.inject(node);
 
-        if( this.json.currencySymbol ){
+        if( this.json.currencySymbol && this.json.isCurrencySymbol !== false ){
             var symbole = new Element("span.MWFCurrencySymbol", {
                 text: this.json.currencySymbol
             });
@@ -171,13 +171,15 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
         return value;
     },
     loadSymboleRead: function () {
-        var symbole = new Element("span.MWFCurrencySymbol", {
-            text: this.json.currencySymbol,
-            styles: this.json.symbolStyles || {}
-        }).inject(this.node, "top");
-        var paddingRight = symbole.getStyle("padding-right");
-        if( typeOf(paddingRight) === "string" && parseInt(paddingRight) === 0 ){
-            symbole.setStyle("padding-right", "5px");
+        if( this.json.isCurrencySymbol !== false ){
+            var symbole = new Element("span.MWFCurrencySymbol", {
+                text: this.json.currencySymbol,
+                styles: this.json.symbolStyles || {}
+            }).inject(this.node, "top");
+            var paddingRight = symbole.getStyle("padding-right");
+            if( typeOf(paddingRight) === "string" && parseInt(paddingRight) === 0 ){
+                symbole.setStyle("padding-right", "5px");
+            }
         }
     }
 });
