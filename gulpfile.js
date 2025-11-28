@@ -172,7 +172,7 @@ function create_license(cb){
     var data = {
         effectiveDate: o_options.efd || 30,
         isItai: !!o_options.itai,
-        secret: !o_options.sec,
+        secret: o_options.sec,
         name: o_options.name,
         unitName: o_options.uname,
         email: o_options.email,
@@ -180,6 +180,8 @@ function create_license(cb){
         contactName: o_options.cname,
         version: o_options.ver
     };
+
+    console.log("Creating license with data:", data);
 
     request.post({ url: url, json: data, timeout: 30000 }, function(err, res, respBody){
         if (err) {
