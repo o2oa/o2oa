@@ -41,7 +41,13 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.currencySymbol}}:</td>
                 <td class="editTableValue">
-                    <input name="currencySymbol" value="text{$.currencySymbol}" class="editTableInput"/>
+                    <input type="radio" name="isCurrencySymbol" value="true" onclick="if (this.checked){
+                         $('text{$.pid}currencySymbol').setStyle('display', 'block');
+                    }" text{($.isCurrencySymbol!==false)?'checked':''}/>{{$.lp.enable}}
+                    <input type="radio" name="isCurrencySymbol" value="false" onclick="if (this.checked){
+                         $('text{$.pid}currencySymbol').setStyle('display', 'none');
+                    }" text{($.isCurrencySymbol===false)?'checked':''}/>{{$.lp.disable}}
+                    <input id="text{$.pid}currencySymbol" name="currencySymbol" value="text{$.currencySymbol}" class="editTableInput" style="display: text{($.isCurrencySymbol!==false)?'block':'none'};"/>
                 </td>
             </tr>
             <tr>
