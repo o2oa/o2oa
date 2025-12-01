@@ -378,6 +378,14 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             return value;
         },
 
+        getTextData: function() {
+            var text = this.getText();
+            var value = this.getData();
+            if (typeOf(text) !== 'array') text = [text || ''];
+            if (typeOf(value) !== 'array') value = [value || ''];
+            return {"value": value, "text": text};
+        },
+
         /**
          * @summary 获取选中项的text。
          * @return {Array} 返回选中项的text数组
