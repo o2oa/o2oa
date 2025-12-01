@@ -163,9 +163,15 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
             }
             removeAttribute('currency');
             removeAttribute('prefixuse');
+
+            if(this.json.isPrefix === false)this.json.prefix = '';
             checkAttribute("prefix");
+
             checkAttribute("suffix");
+
+            if(this.json.isThousands === false)this.json.thousands = '';
             checkAttribute('thousands');
+
             checkAttribute('decimal');
         }
 

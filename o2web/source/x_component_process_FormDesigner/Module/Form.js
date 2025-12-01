@@ -607,6 +607,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}.bind(this), false);
 			return module;
 		}else if( MWF["FC"+json.type] ){
+			debugger;
 			var module;
 			var className = json.type.capitalize();
 			this.getTemplateData(className, function(data){
@@ -1052,6 +1053,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 
 	_getFormData: function(callback){
+		debugger;
     	this.fireEvent("queryGetFormData");
 
     	this._preprocessingModuleData();

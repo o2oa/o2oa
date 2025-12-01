@@ -688,7 +688,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 
 				column.td.set("text", this.formatSeparate( json, total ) );
-				if( json.currencySymbol ){
+				if( json.currencySymbol && json.isCurrencySymbol !== false ){
 					new Element("span", {"text": json.currencySymbol, "style":"padding-right:5px"}).inject( column.td, "top" );
 				}
 			}
@@ -700,10 +700,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				opt.currency = json.currency;
 				opt.prefixuse = json.prefixuse;
 			}else{
-				opt.prefix = json.prefix || '';
+				opt.prefix = (json.isPrefix!==false && json.prefix ) || '';
 				opt.suffix = json.suffix|| '';
-				opt.thousands = json.thousands || '';
-				opt.decimal = json.decimal || '';
+				opt.thousands = (json.isThousands!==false && json.thousands ) || '';
+				opt.decimal = json.decimal || '.';
 			}
 			opt.precision = json.hasOwnProperty('precision') ? json.precision : 2;
 			['allowblank','disablenegative', 'round'].forEach(function(key){
