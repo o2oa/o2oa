@@ -88,7 +88,7 @@ o2.widget.JavascriptEditor = new Class({
         }
     },
     setMonacoLayout: function(){
-	    if (this.editor && this.node){
+	    if (this.editor && this.node && this.node.isConnected){
 	        if (this.focusEditor) {
                 var size = this.node.getSize();
                 var osize = this.node.retrieve("nodeSize");
