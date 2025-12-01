@@ -354,8 +354,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             //cssText = cssText.replace(/\/\*[\s\S]*?\*\/|(?<!:)\/\/.*/g, '').replace(/\\n/, '');
 
-            cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除多行注释
-                .replace(/\/\/.*/g, '')           // 移除单行注释
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除注释
                 .replace(/\\n/g, '');             // 移除\n
 
             cssText = this.parseCSS(cssText);

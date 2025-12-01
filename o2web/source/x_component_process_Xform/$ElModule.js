@@ -267,8 +267,8 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         var popperClass = this._getPopperClass();
         var styleNode = $("style" + popperClass);
         if (!styleNode && cssText) {
+
             cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除多行注释
-                .replace(/\/\/.*/g, '')           // 移除单行注释
                 .replace(/\\n/g, '');             // 移除\n
 
             cssText = this.form.parseCSS(cssText);
