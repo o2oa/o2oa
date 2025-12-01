@@ -42,6 +42,7 @@ function check_language_pack(token){
 
 var downloadHost = "g.o2oa.net";
 var protocol = "https";
+https://g.o2oa.net/o2oa/o2oa-ee/evn-o-2-server-commons/-/archive/9.3/evn-o-2-server-commons-9.3.tar.gz
 var commonUrl = "/o2oa/o2oa-ee/evn-o2server-commons/-/archive/9.3/evn-o2server-commons-9.3.tar.gz?path=commons";
 var jvmUrls = {
     "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
@@ -80,7 +81,7 @@ var options = {};
 options.ev = o_options.e || "all";
 options.lp = o_options.lp || "zh-cn";
 options.webSite = o_options.w || "https://www.o2oa.net";
-options.mirrorSite = o_options.m || "http://mirror1.o2oa.net";
+options.mirrorSite = o_options.m || "https://mirror1.o2oa.net";
 options.downloadSite = o_options.d || "https://download.o2oa.net";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
