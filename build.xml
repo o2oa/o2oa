@@ -250,6 +250,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -271,6 +272,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -293,6 +295,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -313,6 +316,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -333,6 +337,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -353,6 +358,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -373,6 +379,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
@@ -393,6 +400,7 @@
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<exclude name="commons/ext/" />
+				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
 				<include name="servers/"/>
