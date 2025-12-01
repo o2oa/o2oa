@@ -2401,7 +2401,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }.bind(this))
     },
-    uploadMedia(formData, file){
+    uploadMedia: function(formData, file){
         return new Promise(function(resolve){
             this.workAction.uploadAttachment(this.businessData.work.id, formData, file, function(json){
                 // mediaIds.push(json.data.id);
