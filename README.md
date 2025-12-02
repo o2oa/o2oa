@@ -136,7 +136,6 @@ Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 
 6.自动完成后打开浏览器访问http://127.0.0.1。
 
-7.输入用户名xadmin密码o2oa@2022登陆系统。
 
 ## linux
 
@@ -155,8 +154,6 @@ Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 7.启动服务,等待相关服务自动完成。
 
 8.自动完成后打开浏览器访问http://127.0.0.1。
-
-9.输入用户名xadmin密码o2oa@2022登陆系统。
 
 
 
