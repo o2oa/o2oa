@@ -14,6 +14,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddSplitWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class V2List extends V2BaseListAction {
 
@@ -31,6 +34,12 @@ class V2List extends V2BaseListAction {
 		}
 		result.setData(wos);
 		return result;
+	}
+
+	public static class Wi extends V2BaseListAction.Wi {
+
+		private static final long serialVersionUID = 640684790367035036L;
+
 	}
 
 }
