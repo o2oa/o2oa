@@ -321,7 +321,8 @@
         "width": "64px",
         "height": "64px",
         "background-repeat": "no-repeat",
-        "background-position": "center center"
+        "background-position": "center center",
+        "border-radius": "100%"
     },
     "columnItemMiddleNode": {
         "padding-left" : "20px",
