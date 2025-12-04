@@ -1317,7 +1317,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
 
-    saveDataById: function(id, data){
+    saveDataById: function(fieldId, data){
         var appName = this.form.app.options.name;
         if( !['process.Work', 'cms.Document'].includes(appName) ){
             return;
@@ -1326,7 +1326,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             return;
         }
         var originalData = this.form.businessData.originalData || {};
-        var thisId = id || this.json.id;
+        var thisId = fieldId || this.json.id;
         if(o2.typeOf(data) === "null"){
             data = this.getBusinessDataById();
         }
@@ -1366,7 +1366,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _saveDataByPath: function(paths, data, success){
         if (paths.length > 8) {
-            throw new Error(`路径层级超过限制(8级)，当前: ${paths.length}`);
+            throw new Error(`路径"${paths.join('/')}"层级超过限制(8级)，当前: ${paths.length}`);
         }
         var hasPath = paths.length > 0;
         var action, methodName, args;
