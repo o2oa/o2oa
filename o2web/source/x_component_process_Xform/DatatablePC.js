@@ -616,7 +616,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_getTotalTr: function(){
 			return this.totalTr;
 		},
-		_loadTotal: function(){
+		_loadTotal: function( saveChanged ){
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
 			if (!this._getTotalTr())this._loadTotalTr();
@@ -640,6 +640,28 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var total = this._loadColumnTotal( column, data );
 				if( typeOf(total) !== "null" )totalData[json.id] = total;
 			}.bind(this));
+
+			if( !!saveChanged ){
+				var isChanged = false;
+				var old = data.total || {};
+				if( Object.keys(totalData).length !== Object.keys(old).length ){
+					isChanged = true;
+				}
+				if( !isChanged ){
+					for( var key in totalData ){
+						if( totalData[key] !== old[key] ){
+							isChanged = true;
+							break;
+						}
+					}
+				}
+				if( isChanged ){
+					var path = !!this.sectionBy ?
+						`${this.json.id}..${this.sectionBy}..total` :
+						`${this.json.id}..total`;
+					this.saveDataById( path, totalData);
+				}
+			}
 			data.total = totalData;
 			return totalData;
 		},
@@ -1478,8 +1500,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			line.computeModuleData("save");
 			line.originalData = Object.clone(line.data);
 			line.changeEditMode(false);
-			this._loadTotal();
-			if( line.sectionLine )line.sectionLine._loadTotal();
+			this._loadTotal( true );
+			if( line.sectionLine )line.sectionLine._loadTotal( true );
 			if(line.attachmentChangeFlag && !ignoerSave){
 				this.saveFormData();
 				line.attachmentChangeFlag = false;
@@ -2794,7 +2816,7 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 	_getTotalTr: function(){
 		return this.totalTr;
 	},
-	_loadTotal: function(){
+	_loadTotal: function( saveChanged ){
 		var totalData = {};
 		if( !this.datatable.totalFlag )return totalData;
 		if (!this._getTotalTr())this._loadTotalTr();
@@ -2813,8 +2835,36 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 			var total = this.datatable._loadColumnTotal( column, data );
             if( typeOf(total) !== "null" )totalData[json.id] = total;
 		}.bind(this));
+		if( !!saveChanged && !this.options.isMergeRead ){
+			var isChanged = false;
+			var old = data.total || {};
+			if( Object.keys(totalData).length !== Object.keys(old).length ){
+				isChanged = true;
+			}
+			if( !isChanged ){
+				for( var key in totalData ){
+					if( totalData[key] !== old[key] ){
+						isChanged = true;
+						break;
+					}
+				}
+			}
+			if( isChanged ){
+				this.datatable.saveDataById( this.getTotalPath(), totalData);
+			}
+		}
 		data.total = totalData;
 		return totalData;
+	},
+	getTotalPath: function(){
+		var sectionKey = this.sectionKey || this.datatable.sectionBy;
+		if( this.datatable.isShowAllSection ){
+			return this.datatable.json.id + ".." + sectionKey + "..total";
+		}else if( sectionKey ){
+			return this.datatable.json.id + ".." + sectionKey + "..total";
+		}else{
+			return this.datatable.json.id + "..total";
+		}
 	},
 	isTotalNumberModule: function( id ){
 		return this.totalNumberModuleIds.contains(id)
@@ -2855,7 +2905,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		// 	this.originalData = Object.clone(data);
 		// }
 
-		this.init()
+		this.init();
 
 	},
 	init: function(){
@@ -3113,8 +3163,8 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					if(this.datatable.multiEditMode && this.isTotalNumberModule(templateJsonId)){
 						//module
 						module.addEvent("change", function(){
-							this.datatable._loadTotal();
-							if( this.sectionLine )this.sectionLine._loadTotal();
+							this.datatable._loadTotal( true );
+							if( this.sectionLine )this.sectionLine._loadTotal( true );
 						}.bind(this))
 					}
 				}
