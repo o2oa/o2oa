@@ -135,10 +135,13 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             }.bind(this));
         },
         loadMacro: function (callback) {
-            MWF.require("MWF.xScript.Macro", function () {
-                this.Macro = new MWF.Macro.ViewContext(this);
-                if (callback) callback();
-            }.bind(this));
+            return new Promise((resolve) => {
+                MWF.require("MWF.xScript.Macro", function () {
+                    this.Macro = new MWF.Macro.ViewContext(this);
+                    if (callback) callback();
+                    resolve();
+                }.bind(this));
+            })
         },
         createLoadding: function(){
             this.loadingAreaNode = new Element("div", {"styles": this.css.viewLoadingAreaNode}).inject(this.contentAreaNode);
@@ -149,28 +152,33 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             loadingTextNode.set("text", "loading...");
         },
         getImporterJSON: function(callback){
-            if( this.importerJson && this.json ){
-                if (callback) callback();
-            }else{
-                if (this.json.name){
-                    this.lookupAction.getImportModel(this.json.name, this.json.application, function(json){
-                        this.importerId = json.data.id;
-                        this.importerJson = JSON.decode(json.data.data);
-                        json.data.data = this.importerJson;
-                        this.json = Object.merge(this.json, json.data);
-                        if (callback) callback();
-                    }.bind(this));
+            return new Promise( (resolve, reject)=> {
+                if( this.importerJson && this.json ){
+                    resolve(this.json);
+                    if (callback) callback();
                 }else{
-                    this.lookupAction.getImportModelById(this.json.id, function(json){
-                        this.importerId = json.data.id;
-                        this.importerJson = JSON.decode(json.data.data);
-                        json.data.data = this.importerJson;
-                        this.json.application = json.data.query;
-                        this.json = Object.merge(this.json, json.data);
-                        if (callback) callback();
-                    }.bind(this));
+                    if (this.json.name){
+                        this.lookupAction.getImportModel(this.json.name, this.json.application, function(json){
+                            this.importerId = json.data.id;
+                            this.importerJson = JSON.decode(json.data.data);
+                            json.data.data = this.importerJson;
+                            this.json = Object.merge(this.json, json.data);
+                            resolve(this.json);
+                            if (callback) callback();
+                        }.bind(this));
+                    }else{
+                        this.lookupAction.getImportModelById(this.json.id, function(json){
+                            this.importerId = json.data.id;
+                            this.importerJson = JSON.decode(json.data.data);
+                            json.data.data = this.importerJson;
+                            this.json.application = json.data.query;
+                            this.json = Object.merge(this.json, json.data);
+                            resolve(this.json);
+                            if (callback) callback();
+                        }.bind(this));
+                    }
                 }
-            }
+            });
         },
         _loadModuleEvents : function(){
             Object.each(this.json.data.events, function(e, key){
@@ -889,9 +897,11 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextList = [];
         var errorTextListExcel = [];
 
+        var excelUtils = MWF.ExcelUtilsV2 || this.importer.excelUtils;
+
         this.importer.json.data.columnList.each( function (columnJson, i) {
 
-            var colName = this.importer.excelUtils.index2ColName( i );
+            var colName = excelUtils.index2ColName( i );
             var colInfor = columnText.replace( "{n}", (i+1)+"("+colName+")" );
             var colInforExcel = columnTextExcel.replace( "{n}", colName );
 
@@ -1067,8 +1077,10 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         var errorTextList = [];
         var errorTextListExcel = [];
 
+        var excelUtils = MWF.ExcelUtilsV2 || this.importer.excelUtils;
+
         this.importer.json.data.columnList.each( function (columnJson, i) {
-            var colName = this.importer.excelUtils.index2ColName( i );
+            var colName = excelUtils.index2ColName( i );
             var colInfor = columnText.replace( "{n}", (i+1)+"("+colName+")" );
             var colInforExcel = columnTextExcel.replace( "{n}", colName );
 
@@ -1120,11 +1132,12 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
     },
     getCol: function(key, isExcel){
         var text, lp = this.lp;
+        var excelUtils = MWF.ExcelUtilsV2 || this.importer.excelUtils;
         if( this.pathIndexMap && typeOf(this.pathIndexMap[key]) === "number"){
             var i = this.pathIndexMap[key];
             if( isExcel ){
                 text = lp.importValidationColumnTextExcel;
-                return text.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
+                return text.replace( "{n}", excelUtils.index2ColName( i ) );
             }else{
                 text =  lp.importValidationColumnText;
                 return text.replace( "{n}", i+1 );
