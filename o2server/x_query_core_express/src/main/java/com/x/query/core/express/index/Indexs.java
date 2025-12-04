@@ -20,6 +20,8 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -579,22 +581,22 @@ public class Indexs {
 		return ListTools.trim(woFields, true, true);
 	}
 
-//	/**
-//	 * 根据directory对象获取reader
-//	 *
-//	 * @param dirs
-//	 * @return
-//	 */
-//	public static IndexReader[] indexReaders(List<com.x.query.core.express.index.Directory> dirs) {
-//		return dirs.stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true)).filter(Optional::isPresent)
-//				.map(Optional::get).map(o -> {
-//					try {
-//						return DirectoryReader.open(o);
-//					} catch (IOException e) {
-//						LOGGER.error(e);
-//					}
-//					return null;
-//				}).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
-//	}
+	/**
+	 * 根据directory对象获取reader
+	 *
+	 * @param dirs
+	 * @return
+	 */
+	public static IndexReader[] indexReaders(List<com.x.query.core.express.index.Directory> dirs) {
+		return dirs.stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true)).filter(Optional::isPresent)
+				.map(Optional::get).map(o -> {
+					try {
+						return DirectoryReader.open(o);
+					} catch (IOException e) {
+						LOGGER.error(e);
+					}
+					return null;
+				}).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
+	}
 
 }
