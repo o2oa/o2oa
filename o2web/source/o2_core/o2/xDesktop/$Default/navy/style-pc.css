@@ -490,6 +490,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    border-radius: 100%;
 }
 .layout_start_item_icon_flat {
     width: 40px;
