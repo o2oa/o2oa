@@ -468,7 +468,9 @@ o2.LP={
 		"selectIdentity": "Choose Identity",
 		"selectFromDriver": "Choose from enterprise cloud storage",
 		"collect": "Collect",
-		"noCollect": "No files are currently in the Favorites folder"
+		"noCollect": "No files are currently in the Favorites folder",
+		"deleteCollectTitle": "Delete Confirmation",
+		"deleteCollectInfor": "Are you sure you want to delete this handwritten file?"
 	},
 	"authentication": {
 		"LoginFormTitle": "Welcome",

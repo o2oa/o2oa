@@ -468,7 +468,9 @@ o2.LP={
 		"selectIdentity": "Elegir identidad",
 		"selectFromDriver": "Selección del disco de red de la empresa",
 		"collect": "recolectar",
-		"noCollect": "Actualmente no hay archivos en la carpeta Favoritos"
+		"noCollect": "Actualmente no hay archivos en la carpeta Favoritos",
+		"deleteCollectTitle": "Eliminar confirmación",
+		"deleteCollectInfor": "¿¿ estás seguro de que quieres eliminar el archivo escrito a mano?"
 	},
 	"authentication": {
 		"LoginFormTitle": "Bienvenido al inicio de sesión",
