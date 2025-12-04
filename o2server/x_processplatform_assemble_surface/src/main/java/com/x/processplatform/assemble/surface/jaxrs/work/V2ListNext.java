@@ -29,4 +29,10 @@ class V2ListNext extends V2BaseListAction {
 		}
 	}
 
+	public static class Wi extends V2BaseListAction.Wi {
+
+		private static final long serialVersionUID = 359859519483085406L;
+
+	}
+
 }
