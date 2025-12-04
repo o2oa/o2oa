@@ -186,32 +186,37 @@ MWF.ExcelImporter = new Class({
     options:{
         sheet2JsonOptions: {
             //见https://docs.sheetjs.com/docs/api/utilities/array/#array-output
-            // header: 1,          // 第一行是表头
+            header: 1          // 第一行是表头，返回的数据是每行一个数组，否则返回的数据每行一个对象
             // range: 2,           // 跳过前 2 行
             // defval: null,       // 空单元格填充 null
             // rawNumbers: true,   // 避免科学计数法
             // dateNF: "yyyy-mm-dd" // 日期格式化
         },
-        dateColIndexs: []
+        dateColIndexes: [
+            [], //第一个sheet的日期
+            [] //第二个sheet的日期...
+        ]
     },
     initialize: function( options ){
-       this.setOptions(options);
+        this.setOptions(options);
     },
     execute: function ( callback ) {
-
-        MWF.ExcelUtilsV2.uploadExcelFile(function (file){
-
-            MWF.ExcelUtilsV2.loadXLSX( function(){
-
-                this._readWorkSheetFromFile(file);
-                this._setWorksheetFormate();
-                this._sheet2json( callback );
+        return new Promise((resolve)=>{
+            this.worksheets = [];
+            MWF.ExcelUtilsV2.uploadExcelFile(function (file){
+                this.file = file;
+                MWF.ExcelUtilsV2.loadXLSX( function(){
+                    this._readWorkSheetFromFile(file, ()=>{
+                        this._setWorksheetsFormate();
+                        this._sheet2json( callback );
+                        resolve();
+                    });
+                }.bind(this));
 
             }.bind(this));
-
-        }.bind(this));
+        });
     },
-    _readWorkSheetFromFile( file ){
+    _readWorkSheetFromFile: function( file, callback ){
         var reader = new FileReader();
         var workbook, data;
         reader.onload = function (e) {
@@ -226,26 +231,37 @@ MWF.ExcelImporter = new Class({
                 cellDates:true,
                 dateNF:'yyyy-mm-dd HH:mm:ss'
             });
-            //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
-            //wb.Sheets[Sheet名]获取第一个Sheet的数据
-            var sheetName = workbook.SheetNames[0];
-            if (workbook.Sheets.hasOwnProperty(sheetName)) {
-                this.worksheet = workbook.Sheets[sheetName];
-                if( !this.worksheet ){
-                    throw new Error("Can't get sheet, please check your excel file!");
+
+            // 遍历所有工作表信息（包含隐藏状态）
+            const sheetStates = workbook.Workbook?.Sheets || [];
+            sheetStates.forEach((sheetInfo, index) => {
+                const sheetName = workbook.SheetNames[index];
+                const isHidden = sheetInfo.state === "hidden";
+                if( !sheetName.endsWith('O2Validation') && !isHidden ){
+                    const worksheet = workbook.Sheets[sheetName];
+                    this.worksheets.push(worksheet);
                 }
-            }
+            });
+
+            if(callback)callback();
         }.bind(this);
         reader.readAsBinaryString(file);
     },
-    _setWorksheetFormate: function (){
-        var dateColArray = ( this.options.dateColIndexs || [] ).map( function (idx) {
-            return MWF.ExcelUtilsV2.index2ColName( idx );
-        }.bind(this));
+    _setWorksheetsFormate: function(){
+        this.worksheets.forEach((worksheet, i)=>{
+
+            var dateColIndexes = this.options.dateColIndexes || [];
+
+            var dateColArray = ( dateColIndexes[i] || [] ).map( function (idx) {
+                return MWF.ExcelUtilsV2.index2ColName( idx );
+            }.bind(this));
+
+            this._setWorksheetFormate(worksheet, dateColArray);
+        })
+    },
+    _setWorksheetFormate: function (worksheet, dateColArray){
 
         if( !dateColArray.length )return;
-
-        var worksheet = this.worksheet;
 
         var rowCount;
         if( worksheet['!range'] ){
@@ -276,13 +292,97 @@ MWF.ExcelImporter = new Class({
         opt.raw = false;
         opt.dateNF = 'yyyy-mm-dd HH:mm:ss'; //'yyyy-mm-dd';
 
-        var json = window.XLSX.utils.sheet_to_json( this.worksheet, opt );
-        if(callback)callback(json);
+        var result = [];
+        this.worksheets.forEach((worksheet)=>{
+            var json = window.XLSX.utils.sheet_to_json( worksheet, opt );
+            result.push(json);
+        });
+        if(callback)callback(result);
 
     }
 });
 
 MWF.ExcelExporter = new Class({
+    Implements: [Options, Events],
+    options:{
+        fileName: "",
+        worksheet: [{
+            'isTemplate': false,
+            'hasTitle': true,
+            'headText': '',
+            'headStyle': {
+                font: { name: '宋体', family: 4, size: 20, bold: true },
+                alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
+            },
+            'columnTitleStyle': {
+                font: { name: '宋体', family: 4, size: 12, bold: true },
+                alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
+            },
+            'columnContentStyle': {
+                font: { name: '宋体', family: 4, size: 12, bold: false },
+                alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
+            },
+            sheetName: "",
+            colWidthArr: [],
+            dateIndexArray: [],
+            numberIndexArray: [],
+            offsetRowIndex: 0,
+            offsetColumnIndex: 0,
+            startAddress: '' //如 H12
+        }]
+    },
+    initialize: function( options ){
+        if( !MWF.xApplication.Template.LP ){
+            MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+        }
+
+        this.setOptions(options);
+    },
+    execute: function(data, callback){
+        // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
+        // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
+        // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
+        // this.exportToExcel(array, "导出数据"+(new Date).format("db"));
+
+        return new Promise((resolve)=>{
+            MWF.ExcelUtilsV2.loadExcelJS(function (){
+                this.workbook = new ExcelJS.Workbook();
+                this.worksheets = [];
+                this.sheetExporters = [];
+
+                var ps = this.options.worksheet.map((config, i)=>{
+                    if( !config.sheetName ){
+                        config.sheetName = 'Sheet'+i;
+                    }
+
+                    var worksheet = this.workbook.worksheets[i];
+
+                    if( !worksheet )worksheet = this.workbook.addWorksheet(config.sheetName);
+                    this.worksheets.push(worksheet);
+
+                    var exporter = new MWF.ExcelExporter.Sheet(worksheet, config);
+                    this.sheetExporters.push(exporter);
+                    return exporter.execute(data[i]);
+                });
+                Promise.all(ps).then(()=>{
+                    this.fireEvent('beforeDownload', [this]);
+                    this.downloadExcel(callback);
+                    resolve();
+                });
+            }.bind(this));
+        });
+
+
+    },
+    downloadExcel: function(callback){
+        this.workbook.xlsx.writeBuffer().then(function(buffer){
+            var blob = new Blob([buffer]);
+            MWF.ExcelUtilsV2.openDownloadDialog(blob, this.options.fileName + ".xlsx", callback);
+        }.bind(this));
+    }
+});
+
+MWF.ExcelExporter.Sheet = new Class({
     Implements: [Options, Events],
     options:{
         'isTemplate': false,
@@ -300,7 +400,7 @@ MWF.ExcelExporter = new Class({
             font: { name: '宋体', family: 4, size: 12, bold: false },
             alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
         },
-        fileName: "",
+        sheetName: "Sheet1",
         colWidthArr: [],
         dateIndexArray: [],
         numberIndexArray: [],
@@ -308,10 +408,13 @@ MWF.ExcelExporter = new Class({
         offsetColumnIndex: 0,
         startAddress: '' //如 H12
     },
-    initialize: function( options ){
+    initialize: function( worksheet, options ){
         if( !MWF.xApplication.Template.LP ){
             MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
         }
+
+        this.worksheet = worksheet;
+        this.workbook = worksheet.workbook;
 
         this.setOptions(options);
 
@@ -334,25 +437,17 @@ MWF.ExcelExporter = new Class({
         // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
         // this.exportToExcel(array, "导出数据"+(new Date).format("db"));
 
-        MWF.ExcelUtilsV2.loadExcelJS(function (){
-            this.workbook = new ExcelJS.Workbook();
+        this.fireEvent('beforeAppendData', [this]);
 
-            this.worksheet = this.workbook.worksheets[0];
-            if( !this.worksheet )this.worksheet = this.workbook.addWorksheet('Sheet1');
+        if( this.options.hasTitle ){
+            this.titleArray = data.shift();
+        }
 
-            this.fireEvent('beforeAppendData', [this]);
+        this.contentArray = data;
 
-            if( this.options.hasTitle ){
-                this.titleArray = data.shift();
-            }
+        this.startRowIndex = this.options.offsetRowIndex;
 
-            this.contentArray = data;
-
-            this.startRowIndex = this.options.offsetRowIndex;
-
-            this._execute( callback );
-
-        }.bind(this));
+        return this._execute( callback );
     },
     _execute: function ( callback ){
 
@@ -369,24 +464,18 @@ MWF.ExcelExporter = new Class({
             return null;
         });
         if(hasValidation){
-            Promise.all(ps).then(function(args){
+            return Promise.all(ps).then(function(args){
                 for( var i=0; i<args.length; i++ ){
                     if(args[i])this.titleArray[i].optionsValue = args[i];
                 }
                 this.setDataValidation();
-                this.fireEvent('beforeDownload', [this]);
-                this.downloadExcel(callback);
+                if(callback)callback();
+                return this.worksheet;
             }.bind(this));
         }else{
-            this.fireEvent('beforeDownload', [this]);
-            this.downloadExcel(callback);
+            if(callback)callback();
+            return this.worksheet;
         }
-    },
-    downloadExcel: function(callback){
-        this.workbook.xlsx.writeBuffer().then(function(buffer){
-            var blob = new Blob([buffer]);
-            MWF.ExcelUtilsV2.openDownloadDialog(blob, this.options.fileName + ".xlsx", callback);
-        }.bind(this));
     },
     _setColsWidth: function (){
         var colWidthArr = this.options.colWidthArr;
@@ -606,7 +695,8 @@ MWF.ExcelExporter = new Class({
 
     },
     setDataValidation: function (){
-        var validationSheet = this.workbook.addWorksheet('Validation');
+        var validationSheetName = this.options.sheetName.replaceAll('-', '_')+'O2Validation';
+        var validationSheet = this.workbook.addWorksheet(validationSheetName);
         validationSheet.state = 'hidden'; //hidden 隐藏   veryHidden 从“隐藏/取消隐藏”对话框中隐藏工作表
 
         var colIndex = 0;
@@ -628,7 +718,7 @@ MWF.ExcelExporter = new Class({
                 allowBlank: true,
                 showErrorMessage: true,
                 showInputMessage: false,
-                formulae: ['=Validation!$'+colName+'$1:$'+colName+'$'+optionsArray.length], // 这里引用Validation Sheet的内容 '=Validation!A1:A3'
+                formulae: ['='+validationSheetName+'!$'+colName+'$1:$'+colName+'$'+optionsArray.length], // 这里引用Validation Sheet的内容 '=Validation!A1:A3'
                 //formulae: ['"'+optionsArray.join(",")+'"'],
                 promptTitle: lp.promptTitle,
                 prompt: lp.prompt,
