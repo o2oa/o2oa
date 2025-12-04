@@ -31,4 +31,10 @@ class V2ListPrev extends V2BaseListAction {
 		}
 	}
 
+	public static class Wi extends V2BaseListAction.Wi {
+
+		private static final long serialVersionUID = -3371379840182522282L;
+
+	}
+
 }

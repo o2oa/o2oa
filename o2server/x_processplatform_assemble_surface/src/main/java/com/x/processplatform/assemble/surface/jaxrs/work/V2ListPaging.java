@@ -37,4 +37,10 @@ class V2ListPaging extends V2BaseListAction {
 		}
 	}
 
+	public static class Wi extends V2BaseListAction.Wi {
+
+		private static final long serialVersionUID = 9213036056739387709L;
+
+	}
+
 }
