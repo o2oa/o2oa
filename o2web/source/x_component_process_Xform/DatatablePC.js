@@ -1253,6 +1253,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return line;
 		},
 		_insertLine: function(ev, beforeLine){
+			debugger;
 			if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);

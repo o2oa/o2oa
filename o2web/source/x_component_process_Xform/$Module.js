@@ -1318,6 +1318,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     saveDataById: function(fieldId, data){
+        var clone = function (data){
+            switch(o2.typeOf(data)){
+                case "object": return Object.clone(data);
+                case "array": return Array.clone(data);
+                default: return data;
+            }
+        };
         var appName = this.form.app.options.name;
         if( !['process.Work', 'cms.Document'].includes(appName) ){
             return;
@@ -1332,7 +1339,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
         if(thisId.indexOf("..") < 1){
             this._saveDataByPath([thisId], data, ()=>{
-                originalData[thisId] = data;
+                originalData[thisId] = clone( data );
             });
         }else{
             var idList = thisId.split("..");
@@ -1350,12 +1357,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                     var paths = idList.slice(0, i+1);
                     var pathData = this.getBusinessDataById(null, paths.join('..'));
                     this._saveDataByPath(paths, pathData, ()=>{
-                        !!preOriginalData && (preOriginalData[idList[i]] = pathData);
+                        !!preOriginalData && (preOriginalData[idList[i]] = clone(pathData));
                     });
                     return;
                 }else if( i === lastIndex ) {
                     this._saveDataByPath(idList, data, ()=>{
-                        originalData[id] = data;
+                        originalData[id] = clone(data);
                     });
                 }else{
                     preOriginalData = originalData;
