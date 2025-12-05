@@ -1339,7 +1339,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
             var lastIndex = idList.length - 1;
-            var preOriginalData;
+            var preOriginalData = originalData;
 
             for(var i=0; i<=lastIndex; i++){
                 var id = idList[i];
@@ -1347,10 +1347,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
                 var exist = originalData && originalData.hasOwnProperty(id);
                 if( !exist || i === 8 ) { //originalData不包含中间路径，且路径长多最多支持8，多余的获取后续整体数据进行保存
-                    var paths = idList.slice(0, i);
+                    var paths = idList.slice(0, i+1);
                     var pathData = this.getBusinessDataById(null, paths.join('..'));
                     this._saveDataByPath(paths, pathData, ()=>{
-                        !!preOriginalData && (preOriginalData[idList[i-1]] = pathData);
+                        !!preOriginalData && (preOriginalData[idList[i]] = pathData);
                     });
                     return;
                 }else if( i === lastIndex ) {
