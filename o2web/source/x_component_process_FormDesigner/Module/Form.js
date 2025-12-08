@@ -1022,6 +1022,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 							}
 							break;
 						case "boolean":
+						case "number":
 							data[k] = initial[k];
 							break;
 						default :
