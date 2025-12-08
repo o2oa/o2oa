@@ -1,4 +1,5 @@
 this.include({'type':'service', name:'o2ExcelUtilsV2'});
+this.include({'type':'service', name:'o2PathDataUtils'});
 MWF.xDesktop.requireApp("query.Query", "Importer", null, false);
 /** @classdesc Importer 数据中心的导入模型。
  * @class
@@ -99,6 +100,16 @@ MWF.QMultiImporter = new Class(
             return mainImpoter.json.type === 'cms' ?
                 mainImpoter.json.data.category :
                 mainImpoter.json.data.process;
+        },
+        getDataPathHandle: function () {
+            if(this.dathDataHandler){
+                return this.dathDataHandler;
+            }
+            this.dathDataHandler = MWF.PathDataHandler({
+                type: this.getTargetType(),
+                processIdUse: 'job'
+            });
+            return this.dathDataHandler;
         },
         createLoadding: function(){
             this.loadingAreaNode = new Element("div", {"styles": this.css.viewLoadingAreaNode}).inject(this.contentAreaNode);

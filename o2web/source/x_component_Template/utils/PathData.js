@@ -2,62 +2,51 @@ MWF.PathData = new Class({
     Implements: [Options, Events],
     options: {
         'type': 'cms', //process
-        'bundle': ''
+        'processIdUse': 'job'  // 'job', 'work', 'workCompleted'
     },
     initialize: function (options) {
         this.setOptions(options);
-        this.sheet2JsonOptions = {};
+
+        var isCMS = this.options.type === 'cms';
+
+        this.action = isCMS ?
+            o2.Actions.load('x_cms_assemble_control').DataAction :
+            o2.Actions.load('x_process_assemble_surface').DataAction;
+
+        var key = this.options.processIdUse.charAt(0).toUpperCase() + this.options.processIdUse.slice(1);
+
+        this.methodMap = {
+            create: isCMS ? 'createWithDocument' : `createWith${key}`,
+            update: isCMS ? 'updateWithDocument' : `updateWith${key}`,
+            get: isCMS ? 'getWithDocument' : `getWith${key}`,
+            delete: isCMS ? 'deleteWithDocument' : `deleteWith${key}`
+        };
     },
     get: (id, pathList, ...args) => {
         return this._execute('get', id, pathList, ...args);
     },
-
     create: (id, pathList, data, ...args) => {
         if (data === undefined) {
             throw new Error('创建操作必须提供data参数');
         }
         return this._execute('create', id, pathList, data, ...args);
     },
-
     update: (id, pathList, data, ...args) => {
         if (data === undefined) {
             throw new Error('更新操作必须提供data参数');
         }
         return this._execute('update', id, pathList, data, ...args);
     },
-
     delete: (id, pathList, ...args) => {
         return this._execute('delete', id, pathList, ...args);
     },
-
-    deleteDatatableLineField: (id, datatableName, index, fieldId) => {
-        if (typeof fieldId !== 'string' || !fieldId.trim()) {
-            throw new Error('字段ID必须是有效字符串');
-        }
-        return this.delete( id, [datatableName, "data", index.toString(), fieldId], null, null, false);
-    },
-
-    updateDatatableLineField: (id, datatableName, index, fieldId, data) => {
-        if (typeof fieldId !== 'string' || !fieldId.trim()) {
-            throw new Error('字段ID必须是有效字符串');
-        }
-        return this.update(id, [datatableName, "data", index.toString(), fieldId], data, null, null, false);
-    },
-
-    updateDatatableLine: (id, datatableName, index, data) => {
-        return this.update(id, [datatableName, "data", index.toString()], data, null, null, false);
-    },
-
-    createDatatableLine: (id, datatableName, data) => {
-        return this.create(id, [datatableName, "data"], data, null, null, false);
-    },
-    _safeDynamicCall: function(action, methodName, args){ // 私有方法：动态调用安全封装
-        if (typeof action[methodName] !== 'function') {
-            var availableMethods = Object.keys(action).filter(k => typeof action[k] === 'function');
+    _safeDynamicCall: function(methodName, args){ // 私有方法：动态调用安全封装
+        if (typeof this.action[methodName] !== 'function') {
+            var availableMethods = Object.keys(this.action).filter(k => typeof this.action[k] === 'function');
             throw new Error(`调用的方法不存在: ${methodName} (可用方法: ${availableMethods.join(', ')})`);
         }
         try {
-            return action[methodName](...args);
+            return this.action[methodName](...args);
         } catch (e) {
             throw new Error(`调用${methodName}失败: ${e.message}`);
         }
@@ -88,20 +77,10 @@ MWF.PathData = new Class({
                 throw new Error(`路径层级超过限制(8级)，当前: ${paths.length}`);
             }
 
-            // 4. 获取Action实例
-            var action = o2.Actions.load('x_cms_assemble_control').DataAction;
 
-            // 5. 方法选择逻辑
-            var methodMap = {
-                create: 'createWithDocument',
-                update: 'updateWithDocument',
-                get: 'getWithDocument',
-                delete: 'deleteWithDocument'
-            };
-
-            var baseMethod = methodMap[type];
+            var baseMethod = this.methodMap[type];
             if (!baseMethod) {
-                throw new Error(`不支持的操作类型: ${type} (支持: ${Object.keys(methodMap).join(', ')})`);
+                throw new Error(`不支持的操作类型: ${type} (支持: ${Object.keys(this.methodMap).join(', ')})`);
             }
 
             // 6. 动态方法处理
@@ -116,7 +95,7 @@ MWF.PathData = new Class({
             callArgs.push(...args);
 
             // 8. 安全调用
-            return safeDynamicCall(action, methodName, callArgs);
+            return this._safeDynamicCall(methodName, callArgs);
 
         } catch (error) {
             console.error(`PathData操作失败[${type}]`, {
