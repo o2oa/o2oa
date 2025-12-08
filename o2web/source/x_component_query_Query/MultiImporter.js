@@ -317,12 +317,14 @@ MWF.QMultiImporter = new Class(
 
         },
         parseData: function(resultList){
+            console.log('resultList', resultList);
             resultList.forEach((result)=>{
                 if( result.importer.json.dataType !== 'master' ){
                     result.masterDataMap = this.toMasterDataMap(result);
                 }
             });
 
+            //处理主数据
             var masters = resultList.filter((r)=>{return r.importer.json.dataType === 'master';});
             var master = masters[0] || null;
             if(master){
@@ -348,6 +350,26 @@ MWF.QMultiImporter = new Class(
                 });
                 master.masterData = masterData;
             }
+
+            //处理没有主数据的从数据
+            resultList.forEach((result)=>{
+                if( result.importer.json.dataType !== 'master' ){
+                    var importer = result.importer;
+                    var matchMasterKeys = importer.json.matchMasterKeys;
+                    var masterBusinessData = [];
+                    Object.each(result.masterDataMap, (d, key)=>{
+                        if( d.list && d.list.length > 0 ){
+                            var data = {};
+                            matchMasterKeys.forEach((obj)=>{
+                                data[obj.master] = d.list[0][obj.slave];
+                            });
+                            this.setDataWithPath(data, d.path, d.list);
+                            masterBusinessData.push(data);
+                        }
+                    });
+                    result.masterBusinessData = masterBusinessData;
+                }
+            });
         },
         toMasterDataMap: function(slaveResult){
             var r = slaveResult.importer;
@@ -375,22 +397,26 @@ MWF.QMultiImporter = new Class(
             if( !matchKeys.length ){
                 return;
             }
-            debugger;
+            var allList = [];
             var matchObjList = matchKeys.map((key)=>{
                 var list = [];
                 if( result.importer.json.dataType === 'master' ){
                     list = result.masterData.map((data)=>{
                         return this.getDataWithPath(data.docData || data.data || data.srcData, key);
-                    }).unique();
+                    });
                 }else{
                     Object.each(result.masterDataMap, (data, key1)=>{
                         data.list.forEach((d)=>{
                             list.push( this.getDataWithPath(d, key));
-                        }).unique();
+                            allList = allList.concat(list);
+                        });
                     });
                 }
-                return {key: key, list: list};
+                return {key: key, list: list.unique()};
             });
+            if( !allList.length ){
+                return;
+            }
             return Promise.resolve(this.matchViewJson).then((viewJson)=>{
                 viewJson.filter = matchObjList.map((matchObj)=>{
                     return {
@@ -404,7 +430,6 @@ MWF.QMultiImporter = new Class(
                 return o2.api.view.lookup(viewJson).then((data)=>{
                     //data 为返回的数据。
                     var map = {};
-                    debugger;
                     data.grid.forEach((row)=>{
                         var mapKey = matchKeys.map(key=>{
                             return row.data[key];
@@ -420,13 +445,32 @@ MWF.QMultiImporter = new Class(
                             map[mapKey] && (data.id = map[mapKey]);
                         });
                     }else{
-                        if( result.masterDataMap ){
-                            Object.each(result.masterDataMap, (data, key1)=>{
-                                map[key1] && (data.id = map[key1]);
-                            });
-                        }
+                        result.masterBusinessData.forEach((data)=>{
+                            var mapKey = matchKeys.map(key=>{
+                                return this.getDataWithPath(data, key);
+                            }).join('_');
+                            map[mapKey] && (data.id = map[mapKey]);
+                        });
+                        // if( result.masterDataMap ){
+                        //     Object.each(result.masterDataMap, (data, key1)=>{
+                        //         map[key1] && (data.id = map[key1]);
+                        //     });
+                        // }
                     }
                 });
+            });
+        },
+        parseOperation: function(resultList){
+            resultList.forEach((result)=>{
+                if( result.importer.json.dataType === 'master' ){
+                    result.operationPaths = resultList.filter(item=>{
+                        return item.importer.hasOperation();
+                    }).map((item)=>{
+                        return item.importer.json.path;
+                    });
+                }else if( result.importer.hasOperation() ){
+                    result.operationPaths = [result.importer.json.path];
+                }
             });
         },
         doImportData: function(resultList){
@@ -445,6 +489,8 @@ MWF.QMultiImporter = new Class(
             var date = new Date();
 
             this.parseData(resultList);
+
+            this.parseOperation(resultList);
 
             //总导入主文档数
             this.totalCount = 0;
@@ -480,54 +526,78 @@ MWF.QMultiImporter = new Class(
                             var promise;
                             switch (this.getTargetType()) {
                                 case 'cms':
-                                    promise = !!d.id ? this.updateDocument(result, d) : this.createDocument(result, d);
-                                    break;
+                                    promise = !!d.id ? this.updateDocument(result, d) : this.createDocument(result, d); break;
                                 case 'process':
-                                    promise = !!d.id ? this.updateWork(result, d) : this.createWork(result, d);
-                                    break;
+                                    promise = !!d.id ? this.updateWork(result, d) : this.createWork(result, d); break;
                             }
                             actionPromises.push(promise);
                         })
                     }else{
-                        Object.each(result.masterDataMap, (d)=>{
+                        result.masterBusinessData.forEach((d)=>{
                             if(!d.id){
-                                this.logFailure(result.importer, d, '根据关键字未在系统和主表中匹配到主数据。');
+                                this.logFailure(result, d, '根据关键字未在系统和主表中匹配到主数据。');
                             }else{
-
+                                var promise;
+                                switch (this.getTargetType()) {
+                                    case 'cms':
+                                        promise = this.updateDocumentPartData(result, d); break;
+                                    case 'process':
+                                        promise = this.updateWorkPartData(result, d); break;
+                                }
+                                actionPromises.push(promise);
                             }
                         })
+                        // Object.each(result.masterDataMap, (d)=>{
+                        //     debugger;
+                        //     if(!d.id){
+                        //         this.logFailure(result, d, '根据关键字未在系统和主表中匹配到主数据。');
+                        //     }else{
+                        //         var promise;
+                        //         switch (this.getTargetType()) {
+                        //             case 'cms':
+                        //                 promise = this.updateDocument(result, d); break;
+                        //             case 'process':
+                        //                 promise = this.updateWork(result, d); break;
+                        //         }
+                        //         actionPromises.push(promise);
+                        //     }
+                        // });
                     }
 
                     checkAllCompleted();
                 })
             });
-
-            return;
-
-
-
-            this.lookupAction.executImportModel(this.json.id, {
-                "recordId": this.recordId,
-                "data" : data
-            }, function () {
-                this.progressBar.showImporting( this.recordId, function( data ){
-                    data.data = data;
-                    data.rowList = this.rowList;
-                    this.fireEvent("afterImport", data);
-                    resolve({status: 'success', importer: this, data:data});
-                    return data;
-                }.bind(this), date);
-
-            }.bind(this), function (xhr) {
-                var requestJson = JSON.parse(xhr.responseText);
-                this.app.notice(requestJson.message, "error");
-                resolve({status: 'failure', importer: this, data:data});
-                this.progressBar.close();
-            }.bind(this));
         },
         getErrorText: function (xhr) {
             var responseJSON = JSON.parse( (err.xhr || err).responseText || '' );
             return responseJSON.message; //message为错误提示文本
+        },
+        handleOperation: function (result, data) {
+            var operationPaths = result.operationPaths;
+            if( !operationPaths || !operationPaths.length ){
+                return;
+            }
+            //var method = this.getTargetType() === 'cms' ? o2.Actions. : '';
+            //处理从数据中带操作的 $operation 包含覆盖/新增
+            var d = data.docData || data.data || data.srcData || data;
+            operationPaths.forEach( (operationPath)=>{
+                var pathData = this.getDataWithPath(d, operationPath) || [];
+                var hasCover = pathData.some(item=>{
+                    return item.$operation === '覆盖';
+                });
+                if( !hasCover ){
+
+                }
+            });
+        },
+        updateDocumentPartData: function(result, data){
+            const method = o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument;
+            return method(data.id, data, (json)=>{
+                return this.logSuccess(result, data, '修改数据');
+            }, (xhr)=>{
+                this.logFailure(result, data, this.getErrorText(xhr));
+                return true;
+            });
         },
         updateDocument: function(result, data){
             const method = o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument;
@@ -548,6 +618,15 @@ MWF.QMultiImporter = new Class(
                 return true;
             });
         },
+        updateWorkPartData: function(result, data){
+            const method = o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob;
+            return method(data.id, data, (json)=>{
+                return this.logSuccess(result, data, '修改数据');
+            }, (xhr)=>{
+                this.logFailure(result, data, this.getErrorText(xhr))
+                return true;
+            })
+        },
         updateWork: function(result, data){
             const method = o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob;
             return method(data.id, data.data, (json)=>{
@@ -559,8 +638,8 @@ MWF.QMultiImporter = new Class(
         },
         createWork: function(result, data){
             const method = o2.Actions.load('x_processplatform_assemble_surface').WorkAction.create;
-            return method(data, (json)=>{
-                data.id = json.data.job;
+            return method(this.getTarget().id, data, (json)=>{
+                data.id = json.data[0].job;
                 return this.logSuccess(result, data, '发起流程');
             }, (xhr)=>{
                 this.logFailure(result, data, this.getErrorText(xhr));
@@ -574,7 +653,6 @@ MWF.QMultiImporter = new Class(
             return this._addlog(result, data, operationType);
         },
         _addlog: function(result, data, operationType, errorText, saveFlag){
-            debugger;
             var importer = result.importer;
             var mainImpoter = this.getMainImporter();
             if(!this.log){
@@ -590,18 +668,17 @@ MWF.QMultiImporter = new Class(
                     "targetName": this.getTarget().name,
                     "targetId": this.getTarget().id,
                 }
-                !errorText ? this.log.successCount++ : this.log.errorCount++;
+                !errorText ? this.log.successCount++ : this.log.failureCount++;
 
                 mainImpoter.progressBar.showImporting(this.log);
 
                 this.logTable = new o2.api.Table('o2ExcelMultipleImportLog');
-                this.logPromise = this.logTable.addRow(this.log, (json)=>{
+                this.logTable.addRow(this.log, (json)=>{
                     this.log.id = json.data.id;
                     return importer.saveLog(this.log, data, operationType, errorText);
-                });
-                return this.logPromise;
+                }, null, false);
             }else{
-                !errorText ? this.log.successCount++ : this.log.errorCount++;
+                !errorText ? this.log.successCount++ : this.log.failureCount++;
 
                 mainImpoter.progressBar.showImporting(this.log);
 
@@ -610,9 +687,8 @@ MWF.QMultiImporter = new Class(
             }
         },
         _saveLog: function(){
-            debugger;
             if(this.log && this.logTable){
-                return this.logTable.updateRow(this.log.id, this.log);
+                return this.logTable.updateRow(this.log.id, this.log, null, null, false);
             }
         },
         getDataWithPath: function(obj, path){
@@ -801,13 +877,17 @@ MWF.QMultiImporter.Importer = new Class({
             return this;
         });
     },
+    hasOperation: function(){
+        return this.json.data.columnList.some((column)=>{
+            return column.path === "$operation";
+        });
+    },
     getSampleData: function (d){
-        debugger;
         var data;
         switch(this.multiImporter.getTargetType()){
-            case 'cms': data = d.docData; break;
-            case 'process': data = d.data; break;
-            default: data = d.srcData; break;
+            case 'cms': data = d.docData || d; break;
+            case 'process': data = d.data || d; break;
+            default: data = d.srcData || d; break;
         }
         var sampleData = [];
         var mainImporter = this.multiImporter.getMainImporter();
@@ -816,7 +896,7 @@ MWF.QMultiImporter.Importer = new Class({
             var column = columnList[i];
             sampleData.push({
                 t: column.displayName,
-                v: this.multiImporter.getDataWithPath(data, column.path)
+                v: this.multiImporter.getDataWithPath(data, column.path) || ''
             });
         }
         return sampleData;
@@ -851,7 +931,7 @@ MWF.QMultiImporter.Importer = new Class({
             mainLogId: mainLog.id,
             operationType: operationType
         }
-        delete data.id;
+        delete log.id;
         return this.logTable.addRow(log);
     },
     importFromExcel: function (importedData, progressDialog, callback){
@@ -1169,7 +1249,6 @@ MWF.QMultiImporter.ProgressBar = new Class({
         this.contentNode.hide();
     },
     showImporting: function( log, callback ){
-        debugger;
         // this.node.show();
         this.setContentHtml();
         if( !this.currentDate )this.currentDate = new Date();
@@ -1252,12 +1331,12 @@ MWF.QMultiImporter.ProgressBar = new Class({
             speed = speed.round(2);
 
             this.setMessageTitle( lp.importPartSuccessTitle );
-            var text = lp.importPartSuccessContent.replace("{total}",size).replace("{speed}",speed).replace("{errorCount}",data.failureCount).replace("{timeStr}",timeStr);
+            var text = lp.importPartSuccessContent.replace("{total}",size).replace("{speed}",speed).replace("{errorCount}",log.failureCount).replace("{timeStr}",timeStr);
             this.setMessageText( text );
         }else{ //导入失败
-            var size = data.totalCount;
+            var size = log.totalCount;
             this.setMessageTitle( lp.importFailTitle );
-            var text = lp.importFailContent.replace("{errorInfo}",data.distribution || "").replace("{total}",size).replace("{timeStr}",timeStr);
+            var text = lp.importFailContent.replace("{errorInfo}",log.distribution || "").replace("{total}",size).replace("{timeStr}",timeStr);
             this.setMessageText( text );
         }
         this.clearMessageProgress();
