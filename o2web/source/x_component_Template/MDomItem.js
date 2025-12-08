@@ -2929,6 +2929,33 @@ MDomItem.Rtf = new Class({
                         }
                     }
                 }
+
+                var htmlFilter = e.editor.dataProcessor.htmlFilter;
+
+                htmlFilter.addRules({
+                    a: function(element) {
+                        var href = element.attributes.href;
+                        if (href) {
+                            // 正则匹配：以javascript:开头（不区分大小写）
+                            var jsProtocolReg = /^javascript:/i;
+                            if (jsProtocolReg.test(href)) {
+                                delete element.attributes.href; // 移除危险href属性
+                                // 若需更严格，可直接移除<a>标签：element.remove();
+                            }
+                        }
+                    }
+                });
+
+                // 额外处理：源码模式下的内容过滤（可选，增强防护）
+                editor.on('beforeSetData', function(evt) {
+                    evt.data.dataValue = evt.data.dataValue.replace(
+                        /<a\s+[^>]*href\s*=\s*(["']?)javascript:.*?\1[^>]*>/gi,
+                        function(match) {
+                            // 移除href属性或修改标签内容
+                            return match.replace(/href\s*=\s*(["']?)javascript:.*?\1/gi, '');
+                        }
+                    );
+                });
             });
             this.items.push(this.editor);
         }.bind(this));
