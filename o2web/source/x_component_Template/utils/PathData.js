@@ -1,19 +1,24 @@
-MWF.PathData = new Class({
+MWF.PathDataHandler = new Class({
     Implements: [Options, Events],
     options: {
         'type': 'cms', //process
-        'processIdUse': 'job'  // 'job', 'work', 'workCompleted'
+        'processIdType': 'job'  // 'job', 'work', 'workCompleted'
     },
     initialize: function (options) {
         this.setOptions(options);
 
+        this.action = this.options.type === 'cms' ?
+            o2.Actions.load('x_cms_assemble_control').DataAction :
+            o2.Actions.load('x_processplatform_assemble_surface').DataAction;
+
+        this.setProcessIdType(this.options.processIdType);
+    },
+    setProcessIdType: function(type){
+        this.options.processIdType = type;
+
         var isCMS = this.options.type === 'cms';
 
-        this.action = isCMS ?
-            o2.Actions.load('x_cms_assemble_control').DataAction :
-            o2.Actions.load('x_process_assemble_surface').DataAction;
-
-        var key = this.options.processIdUse.charAt(0).toUpperCase() + this.options.processIdUse.slice(1);
+        var key = this.options.processIdType.charAt(0).toUpperCase() + this.options.processIdType.slice(1);
 
         this.methodMap = {
             create: isCMS ? 'createWithDocument' : `createWith${key}`,
@@ -22,22 +27,22 @@ MWF.PathData = new Class({
             delete: isCMS ? 'deleteWithDocument' : `deleteWith${key}`
         };
     },
-    get: (id, pathList, ...args) => {
+    get: function(id, pathList, ...args){
         return this._execute('get', id, pathList, ...args);
     },
-    create: (id, pathList, data, ...args) => {
+    create: function(id, pathList, data, ...args){
         if (data === undefined) {
             throw new Error('创建操作必须提供data参数');
         }
         return this._execute('create', id, pathList, data, ...args);
     },
-    update: (id, pathList, data, ...args) => {
+    update: function(id, pathList, data, ...args){
         if (data === undefined) {
             throw new Error('更新操作必须提供data参数');
         }
         return this._execute('update', id, pathList, data, ...args);
     },
-    delete: (id, pathList, ...args) => {
+    delete: function(id, pathList, ...args){
         return this._execute('delete', id, pathList, ...args);
     },
     _safeDynamicCall: function(methodName, args){ // 私有方法：动态调用安全封装
@@ -61,7 +66,7 @@ MWF.PathData = new Class({
             throw new Error('路径元素必须是字符串或数字');
         }
     },
-    _execute: (type, id, paths = [], ...args) => {
+    _execute: function (type, id, paths = [], ...args){
         try {
             if( typeof paths === "string" ){
                 paths = [paths];
@@ -85,9 +90,12 @@ MWF.PathData = new Class({
 
             // 6. 动态方法处理
             var hasPath = paths.length > 0;
-            var methodName = hasPath
-                ? `${baseMethod}WithPath${paths.length-1}`
-                : baseMethod;
+
+            var pathMethod = this.options.type === 'cms' ?
+                `${baseMethod}WithPath${paths.length-1}` :
+                `${baseMethod}Path${paths.length-1}`;
+
+            var methodName = hasPath ? pathMethod : baseMethod;
 
             // 7. 准备调用参数
             var callArgs = [id];
