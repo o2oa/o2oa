@@ -20,27 +20,34 @@ MWF.QMultiImporter = new Class(
         },
         initialize: function(container, json, options, app, parentMacro){
             //json格式
-            // {
-            //      name: '', //下载的文件
-            //     "importers": [
-            //         {
-            //             application: '', //导入模型应用名称
-            //             name: '', //导入模型
-            //             dataType: 'master', //master或slave, master表示主文档数据，slave下层数据
-            //             matchKeys: ['employee'] //和数据库中匹配的字段，判断导入的文档是否已经存在，进一步执行修改还是新增操作。
-            //         },
-            //         {
-            //             application: '', //导入模型应用名称
-            //             name: '', //导入模型
-            //             dataType: 'slave', //master或slave, master表示主文档数据，slave下层数据
-            //             path: 'datatable.data', //数据路径，数据表格id+data
-            //             matchMasterKeys: [{ //关联字段
-            //                 master: 'employee', //主文档的字段
-            //                 slave: 'employee', //下层数据的字段
-            //             }]
-            //         }
-            //     ]
-            // }
+            // var json = {
+            //     name: '合同信息', //下载的文件
+            //     importers: [{ //使用哪些导入模型
+            //         application: app, //导入模型所在应用
+            //         name: '项目基本信息', //导入模型名称
+            //         dataType: 'master', //主文档
+            //         matchKeys: ['subject'] //和数据库中匹配的字段，判断导入的文档是否已经存在，进一步执行修改还是新增操作。
+            //     }, {
+            //         application: app,
+            //         name: '单一地区',
+            //         dataType: 'slave', //下层数据
+            //         keepOldDataKeys: ['textfield_9_0'], //如果有这个配置，则保留原有数据，否则置空。根据这个字段匹配导入的数据，匹配到的修改，否则新增。如果没有这个字段，则完全覆盖。
+            //         path: 'datatemplate_9_0', //数据路径，数据表格:id.data，数据模板写id
+            //         matchMasterKeys: [{ //和主文档的关联字段
+            //             master: 'subject', //主文档的字段
+            //             slave: 'subject', //下层数据的字段
+            //         }], //和主文档关联的字段名称
+            //     }, {
+            //         application: app,
+            //         name: '付款信息',
+            //         dataType: 'slave', //下层数据
+            //         path: 'datatable_9.data', //数据路径，数据表格:id.data，数据模板写id
+            //         matchMasterKeys: [{ //和主文档的关联字段
+            //             master: 'subject', //主文档的字段
+            //             slave: 'subject', //下层数据的字段
+            //         }], //和主文档关联的字段名称
+            //     }]
+            // };
 
             this.setOptions(options);
 
@@ -81,12 +88,67 @@ MWF.QMultiImporter = new Class(
                 });
             });
         },
+        checkImporters: function(){
+            for( var i=1; i<this.importerList.length; i++ ){
+                var impoter = this.importerList[i];
+                if( !impoter.json.application ){
+                    throw new Error(`存在未设置导入模型应用的配置（application）`);
+                }
+                if( !impoter.json.name ){
+                    throw new Error(`存在未设置导入模型名称的配置（name）`);
+                }
+                if( !impoter.json.dataType ){
+                    throw new Error(`存在未设置导入模型类型的配置（dataType）`);
+                }
+                if( !['master', 'slave'].includes(impoter.json.dataType) ){
+                    throw new Error(`存在未设置导入模型类型的配置（dataType的值应该限定为"master"和"slave"）`);
+                }
+            }
+
+            var mainType = this.getTargetType();
+            var mainTarget = this.getTarget();
+
+            var masters = this.importerList.filter((importer)=>{
+                return importer.isMaster();
+            });
+
+            if(masters.length > 1){
+                for( var i=1; i<masters.length; i++ ){
+                    var impoter = masters[i];
+                    if( mainType !== impoter.json.type ){
+                        throw new Error(`主文档的导入类型（导入目标为内容管理或流程）不唯一`);
+                    }
+                    var target = impoter.json.type === 'cms' ? impoter.json.data.category : impoter.json.data.process;
+                    if( mainTarget.id !== target.id ){
+                        throw new Error(`主文档的导入目标不一致（${mainTarget.name}，${target.name}）`);
+                    }
+                    if( !impoter.json.matchMasterKeys || impoter.json.matchMasterKeys.length === 0 ){
+                        throw new Error(`第二主文档（master）未设置和主文档的匹配关系（matchMasterKeys）`);
+                    }
+                }
+            }
+
+            var slaves = this.importerList.filter((importer)=>{
+                return !importer.isMaster();
+            });
+            if(slaves.length > 0){
+                for( var i=1; i<slaves.length; i++ ){
+                    var impoter = slaves[i];
+                    if( !impoter.json.path ){
+                        throw new Error(`从文档（slave）未设置路径（path）`);
+                    }
+                    if( !impoter.json.matchMasterKeys || impoter.json.matchMasterKeys.length === 0 ){
+                        throw new Error(`从文档（slave）未设置和主文档的匹配关系（matchMasterKeys）`);
+                    }
+                }
+            }
+        },
         getMainImporter: function(){
             if( this.mainImporter ){
                 return this.mainImporter;
             }
             var masters = this.importerList.filter((importer)=>{
-                return importer.json.dataType === 'master';
+                return importer.isMaster();
             });
             this.mainImporter = masters.length ? masters[0] : this.importerList[0];
             return this.mainImporter;
@@ -101,15 +163,11 @@ MWF.QMultiImporter = new Class(
                 mainImpoter.json.data.category :
                 mainImpoter.json.data.process;
         },
-        getDataPathHandle: function () {
-            if(this.dathDataHandler){
-                return this.dathDataHandler;
-            }
-            this.dathDataHandler = MWF.PathDataHandler({
+        getPathDataHandler: function (data) {
+            return new MWF.PathDataHandler({
                 type: this.getTargetType(),
-                processIdUse: 'job'
+                processIdUse: (data.workCompletedId && 'workCompleted') || (data.workId && 'work') || 'job'
             });
-            return this.dathDataHandler;
         },
         createLoadding: function(){
             this.loadingAreaNode = new Element("div", {"styles": this.css.viewLoadingAreaNode}).inject(this.contentAreaNode);
@@ -166,9 +224,9 @@ MWF.QMultiImporter = new Class(
             }).flat(Infinity).unique();
         },
         getMatchKeysWithImporter: function(importer){
-            if( importer.json.dataType === 'master' ){
+            if( importer.json.matchKeys ){
                 return importer.json.matchKeys || [];
-            }else{
+            }else if(importer.json.matchMasterKeys){
                 return (importer.json.matchMasterKeys || []).map((matchKey)=>{
                     return matchKey.master;
                 });
@@ -180,14 +238,23 @@ MWF.QMultiImporter = new Class(
             });
         },
         importFromExcel: function(){
-            var masters = this.json.importers.filter((importer)=>{return importer.dataType === 'master';});
-            if(masters.length > 1){
-                this.notice('导入失败，有两个以上导入模型同时为主数据模型，请联系管理员！', 'error');
-                return;
-            }
+            // var masters = this.json.importers.filter((importer)=>{return importer.dataType === 'master';});
+            // if(masters.length > 1){
+            //     this.notice('导入失败，有两个以上导入模型同时为主数据模型，请联系管理员！', 'error');
+            //     return;
+            // }
 
             var p = !this.importerList ? this.load() : null;
             Promise.resolve(p).then(()=>{
+                try{
+                    this.checkImporters();
+                }catch (e) {
+                    this.app.notice(e.message, 'error');
+                    console.error(e);
+                    return;
+                }
+
+
                 this.copyView();
 
                 this.excelImporter = new MWF.QMultiImporter.ExcelImporter({
@@ -215,7 +282,7 @@ MWF.QMultiImporter = new Class(
                         hasError ? this.openErrorDlg(arr) : this.doImportData(arr);
                     });
                 }.bind(this));
-            })
+            });
         },
         objectToString: function (obj, type) {
             if(!obj)return "";
@@ -327,73 +394,114 @@ MWF.QMultiImporter = new Class(
             });
 
         },
+        getBusinessData : function(importer, d){
+            var data;
+            switch(importer.json.type){
+                case 'cms': data = d.docData; break;
+                case 'process': data = d.data; break;
+                default: data = d.srcData; break;
+            }
+            return data;
+        },
         parseData: function(resultList){
             console.log('resultList', resultList);
+
+            var masters = resultList.filter((r)=>{return r.importer.isMaster();});
+            var mainResult = masters[0] || null;
+
             resultList.forEach((result)=>{
-                if( result.importer.json.dataType !== 'master' ){
-                    result.masterDataMap = this.toMasterDataMap(result);
+                if( result !== mainResult ){
+                    if( result.importer.isMaster() ){
+                        result.masterDataMap = this.masterToMasterDataMap(result);
+                    }else{
+                        result.masterDataMap = this.slaveToMasterDataMap(result);
+                    }
                 }
             });
 
             //处理主数据
-            var masters = resultList.filter((r)=>{return r.importer.json.dataType === 'master';});
-            var master = masters[0] || null;
-            if(master){
-                var r = master.importer;
+            if(mainResult){
+                var r = mainResult.importer;
                 var masterData = r.getData();
                 resultList.forEach((result)=>{
-                    if( result.importer.json.dataType !== 'master' ){
-                        var matchMasterKeys = result.importer.json.matchMasterKeys;
-                        masterData.forEach((d)=>{
-                            var data;
-                            switch(r.json.type){
-                                case 'cms': data = d.docData; break;
-                                case 'process': data = d.data; break;
-                                default: data = d.srcData; break;
-                            }
-                            var key = matchMasterKeys.map((obj)=>{ return data[obj.master]; }).join('_');
-                            if( result.masterDataMap[key] ){
-                                this.setDataWithPath(data, result.importer.json.path, result.masterDataMap[key].list);
-                                delete result.masterDataMap[key];
-                            }
-                        });
+                    if( result === mainResult ){
+                        return;
                     }
+                    var matchMasterKeys = result.importer.json.matchMasterKeys;
+                    masterData.forEach((d)=>{
+                        var data = this.getBusinessData(r, d);
+                        var key = matchMasterKeys.map((obj)=>{ return data[obj.master]; }).join('_');
+                        if( result.masterDataMap[key] ){
+                            if(result.importer.isMaster()){
+                                var doc = result.masterDataMap[key].doc;
+                                for( var fieldName in doc ){
+                                    if( !data.hasOwnProperty( fieldName ) ){
+                                        data[fieldName] = doc[ fieldName ];
+                                    }
+                                }
+                            }else{
+                                this.setDataWithPath(data, result.importer.json.path, result.masterDataMap[key].list);
+                            }
+                            delete result.masterDataMap[key];
+                        }
+                    });
                 });
-                master.masterData = masterData;
+                mainResult.masterData = masterData;
             }
 
             //处理没有主数据的从数据
             resultList.forEach((result)=>{
-                if( result.importer.json.dataType !== 'master' ){
-                    var importer = result.importer;
-                    var matchMasterKeys = importer.json.matchMasterKeys;
-                    var masterBusinessData = [];
-                    Object.each(result.masterDataMap, (d, key)=>{
+                if( result === mainResult ){
+                    return;
+                }
+                var importer = result.importer;
+                var matchMasterKeys = importer.json.matchMasterKeys;
+                var masterBusinessData = [];
+                Object.each(result.masterDataMap, (d, key)=>{
+                    var data;
+                    if( result.importer.isMaster() ){
+                        if( d.doc ){
+                            data = d.doc;
+                            matchMasterKeys.forEach((obj)=>{
+                                if( obj.master !== obj.slave ){
+                                    data[obj.master] = data[obj.slave];
+                                }
+                            });
+                            masterBusinessData.push(data);
+                        }
+                    }else{
                         if( d.list && d.list.length > 0 ){
-                            var data = {};
+                            data = {};
                             matchMasterKeys.forEach((obj)=>{
                                 data[obj.master] = d.list[0][obj.slave];
                             });
                             this.setDataWithPath(data, d.path, d.list);
                             masterBusinessData.push(data);
                         }
-                    });
-                    result.masterBusinessData = masterBusinessData;
-                }
+                    }
+                });
+                result.masterBusinessData = masterBusinessData;
             });
         },
-        toMasterDataMap: function(slaveResult){
+        masterToMasterDataMap: function (secondMasterResult){
+            var r = secondMasterResult.importer;
+            var slaveDataList = r.getData();
+            var map = {};
+            var matchMasterKeys = r.json.matchMasterKeys;
+            slaveDataList.forEach((d)=>{
+                var data = this.getBusinessData(r, d);
+                var key = matchMasterKeys.map((obj)=>{ return data[obj.slave]; }).join('_');
+                !map[key] && (map[key] = {key: key, path:r.json.path, doc: data});
+            });
+            return map;
+        },
+        slaveToMasterDataMap: function(slaveResult){
             var r = slaveResult.importer;
             var slaveDataList = r.getData();
             var map = {};
             var matchMasterKeys = r.json.matchMasterKeys;
             slaveDataList.forEach((d)=>{
-                var data;
-                switch(r.json.type){
-                    case 'cms': data = d.docData; break;
-                    case 'process': data = d.data; break;
-                    default: data = d.srcData; break;
-                }
+                var data = this.getBusinessData(r, d);
                 var key = matchMasterKeys.map((obj)=>{ return data[obj.slave]; }).join('_');
                 !map[key] && (map[key] = {key: key, path:r.json.path, list: []});
                 map[key].list.push(data);
@@ -411,19 +519,25 @@ MWF.QMultiImporter = new Class(
             var allList = [];
             var matchObjList = matchKeys.map((key)=>{
                 var list = [];
-                if( result.importer.json.dataType === 'master' ){
+                if( result.masterData ){
                     list = result.masterData.map((data)=>{
                         return this.getDataWithPath(data.docData || data.data || data.srcData, key);
                     });
-                }else{
+                    allList = allList.concat(list);
+                }else if(result.masterDataMap){
                     Object.each(result.masterDataMap, (data, key1)=>{
-                        data.list.forEach((d)=>{
-                            list.push( this.getDataWithPath(d, key));
+                        if( data.list ){
+                            data.list.forEach((d)=>{
+                                list.push( this.getDataWithPath(d, key));
+                                allList = allList.concat(list);
+                            });
+                        }else if(data.doc){
+                            list.push( this.getDataWithPath(data.doc, key));
                             allList = allList.concat(list);
-                        });
+                        }
                     });
                 }
-                return {key: key, list: list.unique()};
+                return {key: key, list: list.filter((d)=>{ return !!d; }).unique()};
             });
             if( !allList.length ){
                 return;
@@ -445,35 +559,37 @@ MWF.QMultiImporter = new Class(
                         var mapKey = matchKeys.map(key=>{
                             return row.data[key];
                         }).join('_');
-                        map[mapKey] = row.bundle;
+                        map[mapKey] = row;
                     });
 
-                    if( result.importer.json.dataType === 'master' ){
+                    if( result.masterData ){
                         result.masterData.forEach((data)=>{
                             var mapKey = matchKeys.map(key=>{
                                 return this.getDataWithPath(data.docData || data.data || data.srcData, key);
                             }).join('_');
-                            map[mapKey] && (data.id = map[mapKey]);
+                            !!map[mapKey] && this._setDataWithViewData(map[mapKey], data);
                         });
-                    }else{
+                    }else if(result.masterBusinessData){
                         result.masterBusinessData.forEach((data)=>{
                             var mapKey = matchKeys.map(key=>{
                                 return this.getDataWithPath(data, key);
                             }).join('_');
-                            map[mapKey] && (data.id = map[mapKey]);
+                            !!map[mapKey] && this._setDataWithViewData(map[mapKey], data);
                         });
-                        // if( result.masterDataMap ){
-                        //     Object.each(result.masterDataMap, (data, key1)=>{
-                        //         map[key1] && (data.id = map[key1]);
-                        //     });
-                        // }
                     }
                 });
             });
         },
+        _setDataWithViewData: function (viewData, data){
+            data.id = viewData.bundle;
+            !!viewData.data.workId && (data.workId = viewData.data.workId);
+            !!viewData.data.workCompletedId && (data.workCompletedId = viewData.data.workCompletedId);
+            !!viewData.data.completed && (data.completed = viewData.data.completed);
+        },
         parseOperation: function(resultList){
+            var mainImporter = this.getMainImporter();
             resultList.forEach((result)=>{
-                if( result.importer.json.dataType === 'master' ){
+                if( result.importer === mainImporter ){
                     result.operationPaths = resultList.filter(item=>{
                         return item.importer.hasOperation();
                     }).map((item)=>{
@@ -485,6 +601,8 @@ MWF.QMultiImporter = new Class(
             });
         },
         doImportData: function(resultList){
+
+            debugger;
 
             resultList.forEach((r)=>{
                 if( r.importer !== this.getMainImporter() ){
@@ -506,10 +624,10 @@ MWF.QMultiImporter = new Class(
             //总导入主文档数
             this.totalCount = 0;
             resultList.forEach( (result)=>{
-                if( result.importer.json.dataType === 'master' ) {
+                if( result.masterData ) {
                     result.totalCount = result.masterData.length;
                     this.totalCount += result.totalCount;
-                }else{
+                }else if(result.masterDataMap){
                     result.totalCount = Object.keys(result.masterDataMap).length;
                     this.totalCount += result.totalCount;
                 }
@@ -522,7 +640,7 @@ MWF.QMultiImporter = new Class(
                 if( resultList.length === completedCount ){
                     Promise.allSettled(actionPromises).then(() => {
                         this._saveLog();
-                    })
+                    });
                 }
             }
             //保存主数据
@@ -530,9 +648,9 @@ MWF.QMultiImporter = new Class(
                 var p = this.matchDoc(result);
                 Promise.resolve(p).then(()=>{
 
-                    console.log(result.masterData || result.masterDataMap);
+                    console.log(result.masterData || result.masterBusinessData);
 
-                    if( result.importer.json.dataType === 'master' ){
+                    if( result.masterData ){
                         result.masterData.forEach((d)=>{
                             var promise;
                             switch (this.getTargetType()) {
@@ -542,8 +660,9 @@ MWF.QMultiImporter = new Class(
                                     promise = !!d.id ? this.updateWork(result, d) : this.createWork(result, d); break;
                             }
                             actionPromises.push(promise);
-                        })
+                        });
                     }else{
+                        var isMaster = result.importer.isMaster();
                         result.masterBusinessData.forEach((d)=>{
                             if(!d.id){
                                 this.logFailure(result, d, '根据关键字未在系统和主表中匹配到主数据。');
@@ -551,28 +670,13 @@ MWF.QMultiImporter = new Class(
                                 var promise;
                                 switch (this.getTargetType()) {
                                     case 'cms':
-                                        promise = this.updateDocumentPartData(result, d); break;
+                                        promise = isMaster ? this.updateDocument(result, d) : this.updateDocumentPartData(result, d); break;
                                     case 'process':
-                                        promise = this.updateWorkPartData(result, d); break;
+                                        promise = isMaster ? this.updateWork(result, d) : this.updateWorkPartData(result, d); break;
                                 }
                                 actionPromises.push(promise);
                             }
-                        })
-                        // Object.each(result.masterDataMap, (d)=>{
-                        //     debugger;
-                        //     if(!d.id){
-                        //         this.logFailure(result, d, '根据关键字未在系统和主表中匹配到主数据。');
-                        //     }else{
-                        //         var promise;
-                        //         switch (this.getTargetType()) {
-                        //             case 'cms':
-                        //                 promise = this.updateDocument(result, d); break;
-                        //             case 'process':
-                        //                 promise = this.updateWork(result, d); break;
-                        //         }
-                        //         actionPromises.push(promise);
-                        //     }
-                        // });
+                        });
                     }
 
                     checkAllCompleted();
@@ -583,41 +687,112 @@ MWF.QMultiImporter = new Class(
             var responseJSON = JSON.parse( (err.xhr || err).responseText || '' );
             return responseJSON.message; //message为错误提示文本
         },
+        getKeepOldDataConfigs: function(data){
+            if(this.keepOldDataConfig)return this.keepOldDataConfig;
+            this.keepOldDataConfig = this.json.importers.filter((importer)=>{
+                return importer.keepOldDataKeys && importer.keepOldDataKeys.length > 0;
+            });
+            return this.keepOldDataConfig;
+        },
+        getPathDataMatchId: function (data){
+            return this.getTargetType() === 'process' ?
+                data.workCompletedId || data.workId || data.id :
+                data.id;
+        },
+        handleKeepOldData: function (result, data){
+            var configs = this.getKeepOldDataConfigs();
+            var d = data.docData || data.data || data.srcData || data;
+            return configs.map(config => {
+                var pathData = this.getDataWithPath(d, config.path) || [];
+                if( pathData.length ){
+
+                    var handler = this.getPathDataHandler( data );
+                    var id = this.getPathDataMatchId(data);
+                    var p = handler.get(id, config.path.split('.')) || [];
+                    p.then(function(json){
+                        var oldData = json.data || [];
+                        var needPushData = [];
+                        pathData.forEach(newObj=>{
+                            oldData.forEach(oldObj=>{
+                                var isMatch = true;
+                                for( var i=0; i<config.keepOldDataKeys.length; i++ ){
+                                    var key = config.keepOldDataKeys[i];
+                                    if( !newObj[key] || newObj[key] !== oldObj[key] ){
+                                        isMatch = false;
+                                    }
+                                }
+                                if( isMatch ){
+                                    for(var key in newObj){
+                                        oldObj[key] = newObj[key];
+                                    }
+                                }else{
+                                    needPushData.push(newObj);
+                                }
+                            });
+                        });
+                        if(needPushData.length > 0){
+                            oldData.push(...needPushData);
+                        }
+                        this.setDataWithPath(d, config.path, oldData);
+                    });
+                    return p;
+                }
+            });
+        },
         handleOperation: function (result, data) {
             var operationPaths = result.operationPaths;
             if( !operationPaths || !operationPaths.length ){
-                return;
+                return [];
             }
-            //var method = this.getTargetType() === 'cms' ? o2.Actions. : '';
             //处理从数据中带操作的 $operation 包含覆盖/新增
             var d = data.docData || data.data || data.srcData || data;
-            operationPaths.forEach( (operationPath)=>{
+            return operationPaths.map( (operationPath)=>{
                 var pathData = this.getDataWithPath(d, operationPath) || [];
                 var hasCover = pathData.some(item=>{
                     return item.$operation === '覆盖';
                 });
                 if( !hasCover ){
-
+                    var handler = this.getPathDataHandler( data );
+                    var id = this.getPathDataMatchId(data);
+                    var p = handler.get(id, operationPath.split('.')) || [];
+                    p.then((json)=>{
+                        var oldData = json.data || [];
+                        oldData = oldData.concat(pathData);
+                        this.setDataWithPath(d, operationPath, oldData);
+                    });
+                    return p;
                 }
             });
         },
         updateDocumentPartData: function(result, data){
-            const method = o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument;
-            return method(data.id, data, (json)=>{
-                return this.logSuccess(result, data, '修改数据');
-            }, (xhr)=>{
-                this.logFailure(result, data, this.getErrorText(xhr));
-                return true;
-            });
+            var ps1 = this.handleOperation(result, data);
+            return Promise.all(ps1).then(() => {
+                var ps2 = this.handleKeepOldData(result, data);
+                return Promise.all(ps2).then(()=> {
+                    const method = o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument;
+                    return method(data.id, data, (json) => {
+                        return this.logSuccess(result, data, '修改数据');
+                    }, (xhr) => {
+                        this.logFailure(result, data, this.getErrorText(xhr));
+                        return true;
+                    });
+                });
+            })
         },
         updateDocument: function(result, data){
-            const method = o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument;
-            return method(data.id, data.docData, (json)=>{
-                return this.logSuccess(result, data, '修改数据');
-            }, (xhr)=>{
-                this.logFailure(result, data, this.getErrorText(xhr));
-                return true;
-            });
+            var ps1 = this.handleOperation(result, data);
+            return Promise.all(ps1).then(() => {
+                var ps2 = this.handleKeepOldData(result, data);
+                return Promise.all(ps2).then(()=>{
+                    const method = o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument;
+                    return method(data.id, data.docData, (json)=>{
+                        return this.logSuccess(result, data, '修改数据');
+                    }, (xhr)=>{
+                        this.logFailure(result, data, this.getErrorText(xhr));
+                        return true;
+                    });
+                });
+            })
         },
         createDocument: function(result, data){
             const method = o2.Actions.load('x_cms_assemble_control').DocumentAction.persist_publishContent;
@@ -630,21 +805,33 @@ MWF.QMultiImporter = new Class(
             });
         },
         updateWorkPartData: function(result, data){
-            const method = o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob;
-            return method(data.id, data, (json)=>{
-                return this.logSuccess(result, data, '修改数据');
-            }, (xhr)=>{
-                this.logFailure(result, data, this.getErrorText(xhr))
-                return true;
+            var ps1 = this.handleOperation(result, data);
+            return Promise.all(ps1).then(() => {
+                var ps2 = this.handleKeepOldData(result, data);
+                return Promise.all(ps2).then(()=> {
+                    const method = o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob;
+                    return method(data.id, data, (json) => {
+                        return this.logSuccess(result, data, '修改数据');
+                    }, (xhr) => {
+                        this.logFailure(result, data, this.getErrorText(xhr))
+                        return true;
+                    })
+                });
             })
         },
         updateWork: function(result, data){
-            const method = o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob;
-            return method(data.id, data.data, (json)=>{
-                return this.logSuccess(result, data, '修改数据');
-            }, (xhr)=>{
-                this.logFailure(result, data, this.getErrorText(xhr))
-                return true;
+            var ps1 = this.handleOperation(result, data);
+            return Promise.all(ps1).then(() => {
+                var ps2 = this.handleKeepOldData(result, data);
+                return Promise.all(ps2).then(()=> {
+                    const method = o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob;
+                    return method(data.id, data.data, (json) => {
+                        return this.logSuccess(result, data, '修改数据');
+                    }, (xhr) => {
+                        this.logFailure(result, data, this.getErrorText(xhr))
+                        return true;
+                    })
+                });
             })
         },
         createWork: function(result, data){
@@ -823,6 +1010,14 @@ MWF.QMultiImporter = new Class(
             var p = !this.importerList ? this.load() : null;
 
             return Promise.resolve(p).then(()=>{
+                try{
+                    this.checkImporters();
+                }catch (e) {
+                    this.app.notice(e.message, 'error');
+                    console.error(e);
+                    return;
+                }
+
                 var args = this.importerList.map((importer)=>{
                     return {
                         data : [importer.getTitleArray()],
@@ -888,20 +1083,21 @@ MWF.QMultiImporter.Importer = new Class({
             return this;
         });
     },
+    isMaster: function (){
+        return this.json.dataType === 'master';
+    },
     hasOperation: function(){
+        if( this.isMaster() ){
+            return false;
+        }
         return this.json.data.columnList.some((column)=>{
             return column.path === "$operation";
         });
     },
     getSampleData: function (d){
-        var data;
-        switch(this.multiImporter.getTargetType()){
-            case 'cms': data = d.docData || d; break;
-            case 'process': data = d.data || d; break;
-            default: data = d.srcData || d; break;
-        }
-        var sampleData = [];
         var mainImporter = this.multiImporter.getMainImporter();
+        var data = this.multiImporter.getBusinessData(mainImporter, d) || d;
+        var sampleData = [];
         var columnList = mainImporter.json.data.columnList;
         for( var i=0; i<columnList.length && i<10; i++ ){
             var column = columnList[i];
@@ -1034,7 +1230,7 @@ MWF.QMultiImporter.Importer = new Class({
 MWF.QMultiImporter.Row = new Class({
     Extends: MWF.QImporter.Row,
     checkCMS : function( notCheckName ){
-        if( this.importer.json.dataType !== 'master' ){
+        if( !this.importer.isMaster() ){
             return;
         }
 
@@ -1088,7 +1284,7 @@ MWF.QMultiImporter.Row = new Class({
     },
     checkProcess : function( notCheckName ){
 
-        if( this.importer.json.dataType !== 'master' ){
+        if( this.importer.isMaster() ){
             return;
         }
 
