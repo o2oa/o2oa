@@ -195,21 +195,22 @@ MWF.ExcelImporter = new Class({
         dateColIndexes: [
             [], //第一个sheet的日期
             [] //第二个sheet的日期...
-        ]
+        ],
+        needSheetName: false
     },
     initialize: function( options ){
         this.setOptions(options);
     },
     execute: function ( callback ) {
         return new Promise((resolve)=>{
-            this.worksheets = [];
+            this.sheets = [];
             MWF.ExcelUtilsV2.uploadExcelFile(function (file){
                 this.file = file;
                 MWF.ExcelUtilsV2.loadXLSX( function(){
                     this._readWorkSheetFromFile(file, ()=>{
                         this._setWorksheetsFormate();
-                        this._sheet2json( callback );
-                        resolve();
+                        var result = this._sheet2json( callback );
+                        resolve(result);
                     });
                 }.bind(this));
 
@@ -239,7 +240,10 @@ MWF.ExcelImporter = new Class({
                 const isHidden = sheetInfo.state === "hidden";
                 if( !sheetName.endsWith('O2Validation') && !isHidden ){
                     const worksheet = workbook.Sheets[sheetName];
-                    this.worksheets.push(worksheet);
+                    this.sheets.push({
+                        name: sheetName,
+                        worksheet: worksheet
+                    });
                 }
             });
 
@@ -248,7 +252,7 @@ MWF.ExcelImporter = new Class({
         reader.readAsBinaryString(file);
     },
     _setWorksheetsFormate: function(){
-        this.worksheets.forEach((worksheet, i)=>{
+        this.sheets.forEach((sheet, i)=>{
 
             var dateColIndexes = this.options.dateColIndexes || [];
 
@@ -256,10 +260,11 @@ MWF.ExcelImporter = new Class({
                 return MWF.ExcelUtilsV2.index2ColName( idx );
             }.bind(this));
 
-            this._setWorksheetFormate(worksheet, dateColArray);
+            this._setWorksheetFormate(sheet, dateColArray);
         })
     },
-    _setWorksheetFormate: function (worksheet, dateColArray){
+    _setWorksheetFormate: function (sheet, dateColArray){
+        var worksheet = sheet.worksheet;
 
         if( !dateColArray.length )return;
 
@@ -293,12 +298,15 @@ MWF.ExcelImporter = new Class({
         opt.dateNF = 'yyyy-mm-dd HH:mm:ss'; //'yyyy-mm-dd';
 
         var result = [];
-        this.worksheets.forEach((worksheet)=>{
-            var json = window.XLSX.utils.sheet_to_json( worksheet, opt );
-            result.push(json);
+        this.sheets.forEach((sheet)=>{
+            var json = window.XLSX.utils.sheet_to_json( sheet.worksheet, opt );
+            this.options.needSheetName ?
+                result.push({name: sheet.name, data: json}) :
+                result.push(json);
         });
         if(callback)callback(result);
 
+        return result;
     }
 });
 

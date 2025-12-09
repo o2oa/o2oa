@@ -101,7 +101,7 @@ MWF.QMultiImporter = new Class(
                     throw new Error(`存在未设置导入模型类型的配置（dataType）`);
                 }
                 if( !['master', 'slave'].includes(impoter.json.dataType) ){
-                    throw new Error(`存在未设置导入模型类型的配置（dataType的值应该限定为"master"和"slave"）`);
+                    throw new Error(`数据类型超过了限制（dataType的值应该限定为"master"和"slave"）`);
                 }
             }
 
@@ -258,7 +258,8 @@ MWF.QMultiImporter = new Class(
                 this.copyView();
 
                 this.excelImporter = new MWF.QMultiImporter.ExcelImporter({
-                    dateColIndexes: this.getDateColIndexArray()
+                    dateColIndexes: this.getDateColIndexArray(),
+                    needSheetName: true
                 });
 
                 this.progressDialog = new MWF.QMultiImporter.ProgressDialog(this);
@@ -266,14 +267,41 @@ MWF.QMultiImporter = new Class(
 
                 var ps = [], count=0;
                 this.excelImporter.execute( function (importedDataList) {
-                    importedDataList.forEach((importedData, i)=>{
-                        var p = this.importerList[i].importFromExcel(importedData, this.progressDialog, ()=>{
-                            count++;
-                            if( this.importerList.length === count ){
-                                this.progressDialog.openDlg();
-                            }
+                    console.log(importedDataList)
+
+                    this.importerList.forEach((importer)=>{
+                        var dataExisted = importedDataList.some((imp)=>{
+                            return imp.name === importer.json.name;
                         });
-                        ps.push(p);
+                        if(!dataExisted){
+                            var errorText = `导入模型"${importer.json.name}"在导入的Excel文件中未找到同名的sheet表。
+                            请重新下载模板再填写数据重复此操作。`;
+                            this.app.notice(errorText, 'error');
+                            throw new Error(errorText);
+                        }
+                    });
+
+                    var checkOpenDlg = ()=>{
+                        count++;
+                        if( importedDataList.length === count ){
+                            this.progressDialog.openDlg();
+                        }
+                    }
+
+                    importedDataList.forEach((importedData, i)=>{
+                        var {name, data} = importedData;
+                        var importer = this.importerList.find((imp)=>{
+                            return imp.json.name === name;
+                        });
+                        if( !importer ){
+                            console.warn(`未找到名称为${name}的导入模型，跳过该sheet表的数据导入。`);
+                            checkOpenDlg();
+                        }else{
+                            var p = importer.importFromExcel(data, this.progressDialog, ()=>{
+                                checkOpenDlg();
+                            });
+                            ps.push(p);
+                        }
                     });
                     Promise.all(ps).then((arr)=>{
                         var hasError = arr.some((result)=>{
@@ -423,6 +451,9 @@ MWF.QMultiImporter = new Class(
             if(mainResult){
                 var r = mainResult.importer;
                 var masterData = r.getData();
+                masterData.forEach((d)=>{
+                    d.sheetNames = [r.json.name];
+                });
                 resultList.forEach((result)=>{
                     if( result === mainResult ){
                         return;
@@ -432,6 +463,7 @@ MWF.QMultiImporter = new Class(
                         var data = this.getBusinessData(r, d);
                         var key = matchMasterKeys.map((obj)=>{ return data[obj.master]; }).join('_');
                         if( result.masterDataMap[key] ){
+                            d.sheetNames.push(result.importer.json.name);
                             if(result.importer.isMaster()){
                                 var doc = result.masterDataMap[key].doc;
                                 for( var fieldName in doc ){
@@ -670,9 +702,9 @@ MWF.QMultiImporter = new Class(
                                 var promise;
                                 switch (this.getTargetType()) {
                                     case 'cms':
-                                        promise = isMaster ? this.updateDocument(result, d) : this.updateDocumentPartData(result, d); break;
+                                        promise = isMaster ? this.updateDocument(result, d, true) : this.updateDocumentPartData(result, d); break;
                                     case 'process':
-                                        promise = isMaster ? this.updateWork(result, d) : this.updateWorkPartData(result, d); break;
+                                        promise = isMaster ? this.updateWork(result, d, true) : this.updateWorkPartData(result, d); break;
                                 }
                                 actionPromises.push(promise);
                             }
@@ -709,11 +741,11 @@ MWF.QMultiImporter = new Class(
                     var handler = this.getPathDataHandler( data );
                     var id = this.getPathDataMatchId(data);
                     var p = handler.get(id, config.path.split('.')) || [];
-                    p.then(function(json){
+                    p.then((json)=>{
                         var oldData = json.data || [];
                         var needPushData = [];
                         pathData.forEach(newObj=>{
-                            oldData.forEach(oldObj=>{
+                            var matchOldObj = oldData.find(oldObj=>{
                                 var isMatch = true;
                                 for( var i=0; i<config.keepOldDataKeys.length; i++ ){
                                     var key = config.keepOldDataKeys[i];
@@ -721,14 +753,15 @@ MWF.QMultiImporter = new Class(
                                         isMatch = false;
                                     }
                                 }
-                                if( isMatch ){
-                                    for(var key in newObj){
-                                        oldObj[key] = newObj[key];
-                                    }
-                                }else{
-                                    needPushData.push(newObj);
-                                }
+                                return isMatch;
                             });
+                            if( matchOldObj ){
+                                for(var key in newObj){
+                                    matchOldObj[key] = newObj[key];
+                                }
+                            }else{
+                                needPushData.push(newObj);
+                            }
                         });
                         if(needPushData.length > 0){
                             oldData.push(...needPushData);
@@ -779,13 +812,13 @@ MWF.QMultiImporter = new Class(
                 });
             })
         },
-        updateDocument: function(result, data){
+        updateDocument: function(result, data, partFlag){
             var ps1 = this.handleOperation(result, data);
             return Promise.all(ps1).then(() => {
                 var ps2 = this.handleKeepOldData(result, data);
                 return Promise.all(ps2).then(()=>{
                     const method = o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument;
-                    return method(data.id, data.docData, (json)=>{
+                    return method(data.id, partFlag ? data : data.docData, (json)=>{
                         return this.logSuccess(result, data, '修改数据');
                     }, (xhr)=>{
                         this.logFailure(result, data, this.getErrorText(xhr));
@@ -819,13 +852,13 @@ MWF.QMultiImporter = new Class(
                 });
             })
         },
-        updateWork: function(result, data){
+        updateWork: function(result, data, partFlag){
             var ps1 = this.handleOperation(result, data);
             return Promise.all(ps1).then(() => {
                 var ps2 = this.handleKeepOldData(result, data);
                 return Promise.all(ps2).then(()=> {
                     const method = o2.Actions.load('x_processplatform_assemble_surface').DataAction.updateWithJob;
-                    return method(data.id, data.data, (json) => {
+                    return method(data.id, partFlag ? data : data.data, (json) => {
                         return this.logSuccess(result, data, '修改数据');
                     }, (xhr) => {
                         this.logFailure(result, data, this.getErrorText(xhr))
@@ -1010,13 +1043,6 @@ MWF.QMultiImporter = new Class(
             var p = !this.importerList ? this.load() : null;
 
             return Promise.resolve(p).then(()=>{
-                try{
-                    this.checkImporters();
-                }catch (e) {
-                    this.app.notice(e.message, 'error');
-                    console.error(e);
-                    return;
-                }
 
                 var args = this.importerList.map((importer)=>{
                     return {
@@ -1127,7 +1153,7 @@ MWF.QMultiImporter.Importer = new Class({
         // }
         var log = {
             ...mainLog,
-            sheetName: this.json.name,
+            sheetName: data.sheetNames?.length ? data.sheetNames.join(', ') : this.json.name,
             status: !errorText ? 'success' : 'failure',
             errorText: errorText || '',
             importerName: this.json.name,

@@ -92,7 +92,7 @@ MWF.PathDataHandler = new Class({
             var hasPath = paths.length > 0;
 
             var pathMethod = this.options.type === 'cms' ?
-                `${baseMethod}WithPath${paths.length-1}` :
+                `${baseMethod}${(paths.length===1 && type==='get')?'':'With'}Path${paths.length-1}` :
                 `${baseMethod}Path${paths.length-1}`;
 
             var methodName = hasPath ? pathMethod : baseMethod;
