@@ -91,16 +91,16 @@ MWF.QMultiImporter = new Class(
         checkImporters: function(){
             for( var i=1; i<this.importerList.length; i++ ){
                 var impoter = this.importerList[i];
-                if( !impoter.application ){
+                if( !impoter.json.application ){
                     throw new Error(`存在未设置导入模型应用的配置（application）`);
                 }
-                if( !impoter.name ){
+                if( !impoter.json.name ){
                     throw new Error(`存在未设置导入模型名称的配置（name）`);
                 }
-                if( !impoter.dataType ){
+                if( !impoter.json.dataType ){
                     throw new Error(`存在未设置导入模型类型的配置（dataType）`);
                 }
-                if( !['master', 'slave'].includes(impoter.dataType) ){
+                if( !['master', 'slave'].includes(impoter.json.dataType) ){
                     throw new Error(`存在未设置导入模型类型的配置（dataType的值应该限定为"master"和"slave"）`);
                 }
             }
@@ -412,9 +412,9 @@ MWF.QMultiImporter = new Class(
             resultList.forEach((result)=>{
                 if( result !== mainResult ){
                     if( result.importer.isMaster() ){
-                        result.masterDataMap = this.slaveToMasterDataMap(result);
-                    }else{
                         result.masterDataMap = this.masterToMasterDataMap(result);
+                    }else{
+                        result.masterDataMap = this.slaveToMasterDataMap(result);
                     }
                 }
             });
@@ -484,7 +484,7 @@ MWF.QMultiImporter = new Class(
             });
         },
         masterToMasterDataMap: function (secondMasterResult){
-            var r = slaveResult.importer;
+            var r = secondMasterResult.importer;
             var slaveDataList = r.getData();
             var map = {};
             var matchMasterKeys = r.json.matchMasterKeys;
@@ -602,6 +602,8 @@ MWF.QMultiImporter = new Class(
         },
         doImportData: function(resultList){
 
+            debugger;
+
             resultList.forEach((r)=>{
                 if( r.importer !== this.getMainImporter() ){
                     r.importer.progressBar.hide();
@@ -687,9 +689,10 @@ MWF.QMultiImporter = new Class(
         },
         getKeepOldDataConfigs: function(data){
             if(this.keepOldDataConfig)return this.keepOldDataConfig;
-            this.keepOldDataConfig = this.options.importers.filter((importer)=>{
+            this.keepOldDataConfig = this.json.importers.filter((importer)=>{
                 return importer.keepOldDataKeys && importer.keepOldDataKeys.length > 0;
             });
+            return this.keepOldDataConfig;
         },
         getPathDataMatchId: function (data){
             return this.getTargetType() === 'process' ?
