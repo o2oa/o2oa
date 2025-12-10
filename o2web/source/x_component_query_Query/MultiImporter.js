@@ -394,7 +394,7 @@ MWF.QMultiImporter = new Class(
 
             var _self = this;
 
-            var div = new Element("div", { style : "flex:1;height: 520px;" });
+            var div = new Element("div", { style : "flex:1;height: calc( 100% - 30px );" });
             var dlg = o2.DL.open({
                 "style" : "user",
                 "title": '导入详情',
