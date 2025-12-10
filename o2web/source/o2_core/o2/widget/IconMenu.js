@@ -4,6 +4,7 @@ MWF.widget.IconMenu = new Class({
     Implements: [Options, Events],
     Extends: o2.widget.Common,
     options: {
+        "zIndex": '',
         "iconType": "font",
         "pngIconPath": "../x_component_process_FormDesigner/widget/$ActionsEditor/default/tools/{index}.png",
         'pngIconCount': 136
@@ -13,6 +14,7 @@ MWF.widget.IconMenu = new Class({
     },
     load: function(target, container){
         var input;
+        var _self = this;
         const iconMenu = new MWF.widget.Menu(target, {
             "event": "click",
             "style": "actionbarIcon",
@@ -22,6 +24,9 @@ MWF.widget.IconMenu = new Class({
                     'max-height': '98%',
                     'overflow': 'auto'
                 });
+                if(_self.options.zIndex){
+                    this.node.setStyle( 'z-index', _self.options.zIndex);
+                }
                 ev.stopPropagation();
             },
             "onPostHide": function(){
@@ -33,6 +38,7 @@ MWF.widget.IconMenu = new Class({
                 }
             }
         });
+        this.iconMenu = iconMenu;
         iconMenu.load();
         var _self = this;
         if (this.options.iconType==='font'){
@@ -73,7 +79,7 @@ MWF.widget.IconMenu = new Class({
                     item.item.setStyles({
                         "text-align": "center",
                         "line-height": "28px",
-                        "font-size": "14px"
+                        "font-size": "16px"
                     });
                     item.item.set('title', i.name);
                     item.item.iconName = i.font_class;
@@ -90,6 +96,11 @@ MWF.widget.IconMenu = new Class({
                 }, icon);
                 item.iconName = i+".png";
             }
+        }
+    },
+    hide: function(){
+        if(this.iconMenu){
+            this.iconMenu.hide();
         }
     }
 });

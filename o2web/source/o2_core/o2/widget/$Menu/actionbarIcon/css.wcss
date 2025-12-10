@@ -13,7 +13,7 @@
 		"opacity": 0,
 		"position": "absolute",
 		"float": "left",
-		"width": "300px",
+		"width": "500px",
 		"box-shadow": "3px 3px 10px #AAA", 
 		"cursor": "default"
 	},
