@@ -3,6 +3,7 @@ MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner ||
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 MWF.require("MWF.widget.ScriptArea", null, false);
 MWF.require("MWF.widget.Maplist", null, false);
+MWF.require("MWF.widget.IconMenu", null, false);
 MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
 	Implements: [Options, Events],
 	Extends: MWF.widget.Common,
@@ -381,62 +382,36 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
         return this.data.action || this.data.text;
     },
     setEvent: function(){
-        this.iconMenu = new MWF.widget.Menu(this.iconNode, {
-            "event": "click",
-            "style": "actionbarIcon",
-            "onPostShow" : function (ev) {
-                ev.stopPropagation();
-            }
+        var iconMenu = new MWF.widget.IconMenu({
+            iconType: this.editor.options.iconType || '',
+            pngIconPath: this.editor.path+this.editor.options.style+"/tools/{index}.png",
+            pngIconCount: 136
         });
-        this.iconMenu.load();
-        var _self = this;
-        if (this.editor.options.iconType==='font'){
-            o2.JSON.get("/x_desktop/css/v10/ooicon.json", function(json){
-                const icons = json.glyphs;
-
-                icons.forEach(function(i){
-                    var item = this.iconMenu.addMenuItem("", "click", function(ev){
-                        var icon = this.item.iconName;
-                        _self.iconNode.set("class", "ooicon-"+icon);
-                        _self.data.icon = icon;
-                        _self.iconNode.setStyle("background-image", "none");
-                        _self.editor.fireEvent("change", [{
-                            compareName: "."+icon + ".icon"
-                        }]);
-                        ev.stopPropagation();
-                    });
-                    item.item.addClass("ooicon-"+i.font_class);
-                    item.item.setStyles({
-                        "text-align": "center",
-                        "line-height": "28px",
-                        "font-size": "14px"
-                    });
-                    item.item.iconName = i.font_class;
-
-                }.bind(this));
-            }.bind(this));
-        }else{
-            for (var i=1; i<=136; i++){
-                var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
-                var item = this.iconMenu.addMenuItem("", "click", function(ev){
-                    var src = this.item.getElement("img").get("src");
-                    _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
-                    _self.data.customImg = true;
-                    if(_self.data.icon){
-                        if(_self.iconNode.hasClass(_self.data.icon)){
-                            _self.iconNode.removeClass(_self.data.icon);
-                        }
-                        delete _self.data.icon;
+        iconMenu.load(this.iconNode);
+        iconMenu.addEvent('click', (ev, icon) => {
+            if (this.editor.options.iconType === 'font'){
+                this.iconNode.set("class", "ooicon-" + icon);
+                this.data.icon = icon;
+                this.iconNode.setStyle("background-image", "none");
+                this.editor.fireEvent("change", [{
+                    compareName: "." + icon + ".icon"
+                }]);
+            }else{
+                this.data.img = icon.substr(icon.lastIndexOf("/")+1, icon.length);
+                this.data.customImg = true;
+                if(this.data.icon){
+                    if(this.iconNode.hasClass(this.data.icon)){
+                        this.iconNode.removeClass(this.data.icon);
                     }
-                    _self.iconNode.setStyle("background-image", "url("+src+")");
-                    _self.editor.fireEvent("change", [{
-                        compareName: "."+_self.getName() + ".img"
-                    }]);
-                    ev.stopPropagation();
-                }, icon);
-                item.iconName = i+".png";
+                    delete this.data.icon;
+                }
+                this.iconNode.setStyle("background-image", "url("+icon+")");
+                this.editor.fireEvent("change", [{
+                    compareName: "."+this.getName() + ".img"
+                }]);
             }
-        }
+            ev.stopPropagation();
+        });
 
         this.upButton.addEvent("click", function(e){
             var actions = this.editor.actions;
