@@ -20,34 +20,45 @@ MWF.QMultiImporter = new Class(
         },
         initialize: function(container, json, options, app, parentMacro){
             //json格式
-            // var json = {
-            //     name: '合同信息', //下载的文件
-            //     importers: [{ //使用哪些导入模型
-            //         application: app, //导入模型所在应用
-            //         name: '项目基本信息', //导入模型名称
-            //         dataType: 'master', //主文档
-            //         matchKeys: ['subject'] //和数据库中匹配的字段，判断导入的文档是否已经存在，进一步执行修改还是新增操作。
-            //     }, {
-            //         application: app,
-            //         name: '单一地区',
-            //         dataType: 'slave', //下层数据
-            //         keepOldDataKeys: ['textfield_9_0'], //如果有这个配置，则保留原有数据，否则置空。根据这个字段匹配导入的数据，匹配到的修改，否则新增。如果没有这个字段，则完全覆盖。
-            //         path: 'datatemplate_9_0', //数据路径，数据表格:id.data，数据模板写id
-            //         matchMasterKeys: [{ //和主文档的关联字段
-            //             master: 'subject', //主文档的字段
-            //             slave: 'subject', //下层数据的字段
-            //         }], //和主文档关联的字段名称
-            //     }, {
-            //         application: app,
-            //         name: '付款信息',
-            //         dataType: 'slave', //下层数据
-            //         path: 'datatable_9.data', //数据路径，数据表格:id.data，数据模板写id
-            //         matchMasterKeys: [{ //和主文档的关联字段
-            //             master: 'subject', //主文档的字段
-            //             slave: 'subject', //下层数据的字段
-            //         }], //和主文档关联的字段名称
-            //     }]
-            // };
+            // var json = {  //使用哪些导入模型
+            //         name: '合同信息', //下载的文件
+            //         importers: [{ //使用哪些导入模型
+            //             application: app, //导入模型所在应用
+            //             name: '项目基本信息', //导入模型名称
+            //             dataType: 'master', //第一主文档，多个master按顺序，第一个为第一主文档
+            //             matchKeys: ['subject'] //和数据库中匹配的字段，判断导入的文档是否已经存在，进一步执行修改还是新增操作。
+            //         },
+            //         {
+            //             application: app, //导入模型所在应用
+            //             name: '外包信息', //导入模型名称
+            //             dataType: 'master', //第二主文档
+            //             matchMasterKeys: [{ //和主文档的关联字段
+            //                 master: 'subject', //第一主文档的字段
+            //                 slave: 'subject', //本表的字段
+            //             }], //和主文档关联的字段名称
+            //         },
+            //          {
+            //             application: app,
+            //             name: '单一地区',
+            //             dataType: 'slave', //下层数据
+            //             keepOldDataKeys: ['textfield_9_0'], //dataType为slave时有效。如果有这个配置，则保留原有数据，否则置空。根据这个字段匹配导入的数据，匹配到的修改，否则新增。如果没有这个字段，则完全覆盖。
+            //             path: 'datatemplate_9_0', //数据路径，数据表格:id.data，数据模板写id
+            //             matchMasterKeys: [{ //和主文档的关联字段
+            //                 master: 'subject', //主文档的字段
+            //                 slave: 'subject', //本表的字段
+            //             }], //和主文档关联的字段名称
+            //         }, {
+            //             application: app,
+            //             name: '付款信息',
+            //             dataType: 'slave', //下层数据
+            //             clearWithEmpty: false, //修改的时候，在主文档中有数据，是否要清空本表对应的字段
+            //             path: 'datatable_9.data', //数据路径，数据表格:id.data，数据模板写id
+            //             matchMasterKeys: [{ //和主文档的关联字段
+            //                 master: 'subject', //主文档的字段
+            //                 slave: 'subject', //本表的字段
+            //             }], //和主文档关联的字段名称
+            //         }]
+            //     };
 
             this.setOptions(options);
 
@@ -267,7 +278,6 @@ MWF.QMultiImporter = new Class(
 
                 var ps = [], count=0;
                 this.excelImporter.execute( function (importedDataList) {
-                    console.log(importedDataList)
 
                     this.importerList.forEach((importer)=>{
                         var dataExisted = importedDataList.some((imp)=>{
@@ -286,7 +296,7 @@ MWF.QMultiImporter = new Class(
                         if( importedDataList.length === count ){
                             this.progressDialog.openDlg();
                         }
-                    }
+                    };
 
                     importedDataList.forEach((importedData, i)=>{
                         var {name, data} = importedData;
@@ -391,8 +401,8 @@ MWF.QMultiImporter = new Class(
                 "content": div,
                 "offset": {"y": 0},
                 "isMax": true,
-                "width": 1200,
-                "height": 700,
+                "width": '90%',
+                "height": '90%',
                 "buttonList": [
                     {
                         "type": "cancel",
@@ -466,15 +476,18 @@ MWF.QMultiImporter = new Class(
                             d.sheetNames.push(result.importer.json.name);
                             if(result.importer.isMaster()){
                                 var doc = result.masterDataMap[key].doc;
-                                for( var fieldName in doc ){
-                                    if( !data.hasOwnProperty( fieldName ) ){
-                                        data[fieldName] = doc[ fieldName ];
-                                    }
-                                }
+                                this._mergeObject(data, doc);
                             }else{
                                 this.setDataWithPath(data, result.importer.json.path, result.masterDataMap[key].list);
                             }
                             delete result.masterDataMap[key];
+                        }else if(result.importer.json.clearWithEmpty){
+                            if(result.importer.isMaster()){
+                                var emptyData = result.importer.getEmptyData();
+                                this._mergeObject(data, emptyData);
+                            }else{
+                                this.setDataWithPath(data, result.importer.json.path, []);
+                            }
                         }
                     });
                 });
@@ -514,6 +527,13 @@ MWF.QMultiImporter = new Class(
                 });
                 result.masterBusinessData = masterBusinessData;
             });
+        },
+        _mergeObject : function(oldObj, newObj){
+            for( var fieldName in newObj ){
+                if( !oldObj.hasOwnProperty( fieldName ) ){
+                    oldObj[fieldName] = newObj[ fieldName ];
+                }
+            }
         },
         masterToMasterDataMap: function (secondMasterResult){
             var r = secondMasterResult.importer;
@@ -781,6 +801,10 @@ MWF.QMultiImporter = new Class(
             var d = data.docData || data.data || data.srcData || data;
             return operationPaths.map( (operationPath)=>{
                 var pathData = this.getDataWithPath(d, operationPath) || [];
+                var pathImporter = this._getImporterWithPath(operationPath);
+                if( !pathData.length && pathImporter?.json.clearWithEmpty ){
+                    return;
+                }
                 var hasCover = pathData.some(item=>{
                     return item.$operation === '覆盖';
                 });
@@ -795,6 +819,11 @@ MWF.QMultiImporter = new Class(
                     });
                     return p;
                 }
+            });
+        },
+        _getImporterWithPath: function (path){
+            return this.importerList.find(function(importer){
+                return importer.json.path === path;
             });
         },
         updateDocumentPartData: function(result, data){
@@ -1120,6 +1149,46 @@ MWF.QMultiImporter.Importer = new Class({
             return column.path === "$operation";
         });
     },
+    getEmptyData: function(){
+        var data = {};
+        this.json.data.columnList.each( function (columnJson, i) {
+            var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+            var value;
+            switch ( dataType ) {
+                case "string":
+                    value = ''; break;
+                case "stringList":
+                    value = []; break;
+                case "number":
+                case "integer":
+                case "long":
+                case "double":
+                    value = ''; break;
+                case "numberList":
+                case "integerList":
+                case "longList":
+                case "doubleList":
+                    value = []; break;
+                case "date":
+                case "dateTime":
+                    value = ''; break;
+                case "dateList":
+                case "dateTimeList":
+                    value = []; break;
+                case "boolean":
+                    value = ''; break;
+                case "booleanList":
+                    value = []; break;
+                case "json":
+                case "stringMap":
+                    value = ''; break;
+                default:
+                    value = ''; break;
+            }
+            this.multiImporter.setDataWithPath(data, columnJson.path, value);
+        }.bind(this));
+        return data;
+    },
     getSampleData: function (d){
         var mainImporter = this.multiImporter.getMainImporter();
         var data = this.multiImporter.getBusinessData(mainImporter, d) || d;
@@ -1250,7 +1319,305 @@ MWF.QMultiImporter.Importer = new Class({
         }.bind(this));
 
         if(callback)callback();
-    }
+    },
+    //**适配老版本，新版本中已修改 start
+    loadMacro: function (callback) {
+        return new Promise((resolve) => {
+            MWF.require("MWF.xScript.Macro", function () {
+                this.Macro = new MWF.Macro.ViewContext(this);
+                if (callback) callback();
+                resolve();
+            }.bind(this));
+        })
+    },
+    getImporterJSON: function(callback){
+        return new Promise( (resolve, reject)=> {
+            if( this.importerJson && this.json ){
+                resolve(this.json);
+                if (callback) callback();
+            }else{
+                if (this.json.name){
+                    this.lookupAction.getImportModel(this.json.name, this.json.application, function(json){
+                        this.importerId = json.data.id;
+                        this.importerJson = JSON.decode(json.data.data);
+                        json.data.data = this.importerJson;
+                        this.json = Object.merge(this.json, json.data);
+                        resolve(this.json);
+                        if (callback) callback();
+                    }.bind(this));
+                }else{
+                    this.lookupAction.getImportModelById(this.json.id, function(json){
+                        this.importerId = json.data.id;
+                        this.importerJson = JSON.decode(json.data.data);
+                        json.data.data = this.importerJson;
+                        this.json.application = json.data.query;
+                        this.json = Object.merge(this.json, json.data);
+                        resolve(this.json);
+                        if (callback) callback();
+                    }.bind(this));
+                }
+            }
+        });
+    },
+    checkValid : function(){
+
+        var lp = this.lp;
+
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
+
+        var excelUtils = MWF.ExcelUtilsV2 || this.importer.excelUtils;
+
+        this.importer.json.data.columnList.each( function (columnJson, i) {
+
+            var colName = excelUtils.index2ColName( i );
+            var colInfor = columnText.replace( "{n}", (i+1)+"("+colName+")" );
+            var colInforExcel = columnTextExcel.replace( "{n}", colName );
+
+            var value = this.importedData[i] || "";
+
+            var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+
+            if( !columnJson.allowEmpty && !value ){
+                errorTextList.push( colInfor + lp.canNotBeEmpty + lp.fullstop );
+                errorTextListExcel.push( colInforExcel + lp.canNotBeEmpty + lp.fullstop );
+            }
+
+            if( columnJson.validInOption && columnJson.optionScript && value ){
+                var options = this.importer.Macro.exec(columnJson.optionScript, this);
+                if( !options.contains(value) ){
+                    errorTextList.push( colInfor + lp.notInOptions +":"+ options.join(",") + lp.fullstop );
+                    errorTextListExcel.push( colInforExcel + lp.notInOptions +":"+ options.join(",") + lp.fullstop );
+                }
+            }
+
+            if( columnJson.validFieldType !== false && value ){
+
+                switch ( dataType ) {
+                    case "string":
+                    case "stringList":
+                        if( columnJson.isName ){
+                            var arr = this.stringToArray(value);
+                            arr.each( function(d, idx){
+                                var obj = this.importer.getOrgData( d );
+                                if( obj.errorText ){
+                                    errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+                                    errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+                                }
+                            }.bind(this));
+                        }
+                        break;
+                    case "number":
+                    case "integer":
+                    case "long":
+                    case "double":
+                        value = value.replace(/&#10;/g,"");
+                        if (isNaN(value)){
+                            errorTextList.push( colInfor + value + lp.notValidNumber + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidNumber + lp.fullstop );
+                        }
+                        break;
+                    case "numberList":
+                    case "integerList":
+                    case "longList":
+                    case "doubleList":
+                        var arr = this.stringToArray(value);
+                        arr.each( function(d, idx){
+                            if (isNaN(d)){
+                                errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
+                            }
+                        }.bind(this));
+                        break;
+                    case "date":
+                    case "dateTime":
+                        value = value.replace(/&#10;/g,"");
+                        if( !( new Date(value).isValid() )){
+                            errorTextList.push(colInfor + value + lp.notValidDate + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidDate + lp.fullstop );
+                        }
+                        break;
+                    case "dateList":
+                    case "dateTimeList":
+                        var arr = this.stringToArray(value);
+                        arr.each( function(d, idx){
+                            if( !( new Date(d).isValid() )){
+                                errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+                            }
+                        }.bind(this));
+                        break;
+                    case "boolean":
+                        value = value.replace(/&#10;/g,"");
+                        if( !["true","false"].contains(value.trim().toLowerCase()) ){
+                            errorTextList.push(colInfor + value + lp.notValidBoolean + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidBoolean + lp.fullstop );
+                        }
+                        break;
+                    case "booleanList":
+                        var  arr = this.stringToArray(value);
+                        arr.each( function(d, idx){
+                            if( !["true","false"].contains(d.trim().toLowerCase())){
+                                errorTextList.push(colInfor + d + lp.notValidBoolean + lp.fullstop );
+                                errorTextListExcel.push( colInforExcel + d + lp.notValidBoolean + lp.fullstop );
+                            }
+                        }.bind(this));
+                        break;
+                    case "json":
+                    case "stringMap":
+                        value = value.replace(/&#10;/g,"");
+                        try{
+                            var d = JSON.parse(value);
+                        }catch (e) {
+                            errorTextList.push(colInfor + value + lp.notValidJson + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidJson + lp.fullstop );
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }.bind(this));
+
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if(this.errorTextList.length>0){
+            return false;
+        }
+
+        var p = this.createData();
+
+        return Promise.resolve( p ).then(function (flag) {
+
+            this.importer.json.data.calculateFieldList.each( function (fieldJson, i) {
+                if( !fieldJson.path )return;
+                if( fieldJson.isName ){
+                    var sourceData = this.calculateFieldDataMap[fieldJson.path];
+                    var arr = typeOf( sourceData ) === "array" ? sourceData : [sourceData];
+                    arr = typeOf( arr ) === "array" ? arr : [arr];
+                    arr.each(function (d, idx) {
+                        if( !d )return d;
+                        var a;
+                        switch (typeOf( d )) {
+                            case "string":
+                                a = d; break;
+                            case "object":
+                                a = d.distinguishedName || d.unique || d.employee; break;
+                        }
+                        if( !a )return d;
+                        var obj = this.importer.getOrgData( a );
+                        if( obj.errorText ){
+                            var errorText = (fieldJson.displayName || fieldJson.path) + ":" + obj.errorText + lp.fullstop;
+                            errorTextList.push( errorText );
+                            errorTextListExcel.push( errorText );
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
+
+            this.errorTextList = this.errorTextList.concat( errorTextList );
+            this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+            if( this.errorTextList.length > 0 )return false;
+
+
+            if( this.importer.json.type === "cms" ){
+                this.checkCMS( true );
+            }else if( this.importer.json.type === "process" ){
+                this.checkProcess( true );
+            }
+
+            if(this.errorTextList.length>0){
+                return false;
+            }
+
+            return true;
+
+        }.bind(this));
+    },
+    checkNecessary: function(){
+
+        var lp = this.lp;
+
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
+
+        var excelUtils = MWF.ExcelUtilsV2 || this.importer.excelUtils;
+
+        this.importer.json.data.columnList.each( function (columnJson, i) {
+            var colName = excelUtils.index2ColName( i );
+            var colInfor = columnText.replace( "{n}", (i+1)+"("+colName+")" );
+            var colInforExcel = columnTextExcel.replace( "{n}", colName );
+
+            var value = this.importedData[i] || "";
+
+            var dataType = this.importer.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+
+            if( columnJson.validFieldType !== false && value ){
+
+                switch ( dataType ) {
+                    case "json":
+                    case "stringMap":
+                        value = value.replace(/&#10;/g,"");
+                        try{
+                            var d = JSON.parse(value);
+                        }catch (e) {
+                            errorTextList.push(colInfor + value + lp.notValidJson + lp.fullstop );
+                            errorTextListExcel.push( colInforExcel + value + lp.notValidJson + lp.fullstop );
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }.bind(this));
+
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if(this.errorTextList.length>0){
+            return false;
+        }
+
+        var p = this.createData();
+
+        return Promise.resolve(p).then(function () {
+            if( this.importer.json.type === "cms" ){
+                this.checkCMS();
+            }else if( this.importer.json.type === "process" ){
+                this.checkProcess();
+            }
+
+            if(this.errorTextList.length>0){
+                return false;
+            }
+
+            return true;
+        }.bind(this))
+    },
+    getCol: function(key, isExcel){
+        var text, lp = this.lp;
+        var excelUtils = MWF.ExcelUtilsV2 || this.importer.excelUtils;
+        if( this.pathIndexMap && typeOf(this.pathIndexMap[key]) === "number"){
+            var i = this.pathIndexMap[key];
+            if( isExcel ){
+                text = lp.importValidationColumnTextExcel;
+                return text.replace( "{n}", excelUtils.index2ColName( i ) );
+            }else{
+                text =  lp.importValidationColumnText;
+                return text.replace( "{n}", i+1 );
+            }
+        }
+        return "";
+    },
+    //**适配老版本，新版本中已修改 end
 });
 
 MWF.QMultiImporter.Row = new Class({
