@@ -53,6 +53,10 @@
 .form-content-view .searchAreaNodeV10:empty{
     display: none !important;
 }
+.form-content-view .searchAreaNode:empty{
+    display: none !important;
+}
+
 .form-content-view .actionbarAreaNode:empty{
     display: none !important;
 }
@@ -632,7 +636,7 @@
         padding: 0;
     }
     .form-layout .page-content-section div[mwftype='statement'] div.viewAreaNode>div.contentAreaNode{
-        padding: 0 1rem;
+        padding: 0 !important;
     }
     .page-content-area .page-content-section-search{
         display: none !important;
@@ -654,7 +658,7 @@
         overflow: visible;
     }
     .page-content-area > div, .page-content-section {
-        padding: 0.6rem !important;
+        padding: 0rem !important;
         margin: 0 !important;
         left: 0;
     }
