@@ -1,7 +1,7 @@
 /* 所有表单和页面的主容器 */
 .form-layout {
     height: 100%;
-    overflow: auto;
+    /* overflow: auto; */
     grid-template-rows: 3.8em 1fr;
     background-color: #f7f7f7;
     display: flex;
