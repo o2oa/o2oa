@@ -3330,10 +3330,10 @@ const view = {
      *   //......
      *});
      */
-    "lookup": function(view, callback){
+    "lookup": function(view, callback, person){
         const filterList = {"filterList": (view.filter || null)};
 
-        const json = Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(encodeURIComponent(view.view), encodeURIComponent(view.application), filterList);
+        const json = Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(encodeURIComponent(view.view), encodeURIComponent(view.application), filterList, null, null, person);
 
         const data = {
             "grid": json.data.grid || json.data.groupGrid,

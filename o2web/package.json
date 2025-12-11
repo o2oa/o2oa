@@ -5,7 +5,8 @@
     "main": "o2.js",
     "scripts": {
         "build": "gulp",
-        "test": "karma start source/x_test/karma.FindDesigner.js --auto-watch"
+        "test": "karma start source/x_test/karma.FindDesigner.js --auto-watch",
+        "xform": "gulp x_component_process_Xform --ev devp"
     },
     "repository": {
         "type": "git",
@@ -29,6 +30,7 @@
     "devDependencies": {
         "@o2oa/language-tools": "^1.0.15",
         "@o2oa/tidy-jsdoc-o2": "latest",
+        "del": "5.1.0",
         "glob": "^10.3.10",
         "gulp": "^4.0.0",
         "gulp-changed": "^3.2.0",
@@ -58,7 +60,7 @@
         "merge-stream": "^1.0.1",
         "minimist": "^1.2.0",
         "readline-sync": "^1.4.10",
-        "through2": "^4.0.2",
-        "del": "5.1.0"
+        "ssh2-streams": "^0.4.10",
+        "through2": "^4.0.2"
     }
 }

@@ -135,6 +135,25 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
                 e.target.setCustomValidity(this.validationText);
             }
         });
+        this.node.addEventListener('invalid', (e)=>{
+            if (this.node._props.validity){
+                e.target.setCustomValidity(this.node._props.validity);
+            }else{
+                var label = this.json.label ? `“${this.json.label.replace(/　/g, '')}”` :  MWF.xApplication.process.Xform.LP.requiredHintField;
+                const o = {
+                    valueMissing: MWF.xApplication.process.Xform.LP.requiredHint.replace('{label}', label),
+                }
+                //通过 e.detail 获取 验证有效性状态对象：ValidityState
+                for (const k in o){
+                    if (e.detail[k]){
+                        if (o[k]){
+                            
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     },
     checkCurrencyAttribute: function (){
         var checkAttribute = function (name) {
@@ -207,21 +226,21 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
         return this.node.value;
     },
 
-    notValidationMode: function (text) {
-        if(!this.isNotValidationMode){
-            this.isNotValidationMode = true;
-            this.validationText = text;
-            this.node.checkValidity();
+    // notValidationMode: function (text) {
+    //     if(!this.isNotValidationMode){
+    //         this.isNotValidationMode = true;
+    //         this.validationText = text;
+    //         this.node.checkValidity();
 
-            if ( this.node && !this.node.isIntoView()) this.node.scrollIntoView({ behavior: "smooth", block: "center" });
+    //         if ( this.node && !this.node.isIntoView()) this.node.scrollIntoView({ behavior: "smooth", block: "center" });
 
-        }
-    },
-    validationMode: function () {
-        if(this.isNotValidationMode){
-            this.isNotValidationMode = false;
-            this.validationText = '';
-            this.node.unInvalidStyle();
-        }
-    }
+    //     }
+    // },
+    // validationMode: function () {
+    //     if(this.isNotValidationMode){
+    //         this.isNotValidationMode = false;
+    //         this.validationText = '';
+    //         this.node.unInvalidStyle();
+    //     }
+    // }
 });

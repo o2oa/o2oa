@@ -419,6 +419,9 @@ MWF.xApplication.process.Xform.LP={
 	"requiredHintField": "Esto",
 	"editDatatable": "Editar tabla de datos",
 	"editOk": "Edición completada",
-	"associatedFailureMessage": "Hubo una asociación de documentos fallida."
+	"associatedFailureMessage": "Hubo una asociación de documentos fallida.",
+	"empty": "vaciar",
+	"associatedCount": "Se han asociado las entradas de la cuenta",
+	"associatedDocumentCompleted": "Se completa la asociación"
 }
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP

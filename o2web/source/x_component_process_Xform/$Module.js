@@ -619,8 +619,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return typeof str === "string" && /^-?\d+$/.test(str);
     },
 
-    _getActivityId: function(){
-        if (this.form.businessData.review){
+    _getActivityId: function(review=true){
+        if (review && this.form.businessData.review){
             return {uid: this.form.businessData.review.activityUnique}
         }else{
             return {uid: this.form.businessData.activity?.unique, aid: this.form.businessData.activity?.id}
@@ -685,7 +685,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
             if (hasByActivity || hasByOrg || hasByScript){
                 if (hasByActivity){
-                    let {uid, aid} = this._getActivityId();
+                    let {uid, aid} = this._getActivityId(false);
                     // let uid = this.form.businessData.activity && this.form.businessData.activity.unique;
                     // let aid = this.form.businessData.activity && this.form.businessData.activity.id;
                     if (!uid){
