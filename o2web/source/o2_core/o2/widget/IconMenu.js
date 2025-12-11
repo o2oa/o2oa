@@ -81,7 +81,7 @@ MWF.widget.IconMenu = new Class({
                         "line-height": "28px",
                         "font-size": "16px"
                     });
-                    item.item.set('title', i.name);
+                    item.item.set('title', i.font_class);
                     item.item.iconName = i.font_class;
 
                 }.bind(this));
