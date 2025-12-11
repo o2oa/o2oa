@@ -1317,7 +1317,14 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
 
-    saveDataById: function(id, data){
+    saveDataById: function(fieldId, data){
+        var clone = function (data){
+            switch(o2.typeOf(data)){
+                case "object": return Object.clone(data);
+                case "array": return Array.clone(data);
+                default: return data;
+            }
+        };
         var appName = this.form.app.options.name;
         if( !['process.Work', 'cms.Document'].includes(appName) ){
             return;
@@ -1326,20 +1333,20 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             return;
         }
         var originalData = this.form.businessData.originalData || {};
-        var thisId = id || this.json.id;
+        var thisId = fieldId || this.json.id;
         if(o2.typeOf(data) === "null"){
             data = this.getBusinessDataById();
         }
         if(thisId.indexOf("..") < 1){
             this._saveDataByPath([thisId], data, ()=>{
-                originalData[thisId] = data;
+                originalData[thisId] = clone( data );
             });
         }else{
             var idList = thisId.split("..");
             idList = idList.map( function(d){ return d.test(/^\d+$/) ? d.toInt() : d; });
 
             var lastIndex = idList.length - 1;
-            var preOriginalData;
+            var preOriginalData = originalData;
 
             for(var i=0; i<=lastIndex; i++){
                 var id = idList[i];
@@ -1347,15 +1354,15 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
 
                 var exist = originalData && originalData.hasOwnProperty(id);
                 if( !exist || i === 8 ) { //originalData不包含中间路径，且路径长多最多支持8，多余的获取后续整体数据进行保存
-                    var paths = idList.slice(0, i);
+                    var paths = idList.slice(0, i+1);
                     var pathData = this.getBusinessDataById(null, paths.join('..'));
                     this._saveDataByPath(paths, pathData, ()=>{
-                        !!preOriginalData && (preOriginalData[idList[i-1]] = pathData);
+                        !!preOriginalData && (preOriginalData[idList[i]] = clone(pathData));
                     });
                     return;
                 }else if( i === lastIndex ) {
                     this._saveDataByPath(idList, data, ()=>{
-                        originalData[id] = data;
+                        originalData[id] = clone(data);
                     });
                 }else{
                     preOriginalData = originalData;
@@ -1366,7 +1373,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     _saveDataByPath: function(paths, data, success){
         if (paths.length > 8) {
-            throw new Error(`路径层级超过限制(8级)，当前: ${paths.length}`);
+            throw new Error(`路径"${paths.join('/')}"层级超过限制(8级)，当前: ${paths.length}`);
         }
         var hasPath = paths.length > 0;
         var action, methodName, args;

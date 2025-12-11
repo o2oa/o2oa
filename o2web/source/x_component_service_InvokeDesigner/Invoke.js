@@ -274,7 +274,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
             if(this.designer.propertyTokenNode){
                 this.designer.propertyTokenNode.getElements("option").each(function ( opt ) {
-                    if( data.simulaToken === opt.value )opt.selected = true;
+                    if( data.simulaToken === opt.value && (!data.simulaTokenName || data.simulaTokenName === opt.text) )opt.selected = true;
                 });
             }
         }
@@ -385,11 +385,12 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 requireBodyScript = this.designer.propertyRequireBodyScriptArea.toJson().code;
             }
 
-            var simulaToken = "";
+            var simulaToken = "", simulaTokenName = "";
             if(this.designer.propertyTokenNode){
                 this.designer.propertyTokenNode.getElements("option").each( function(option){
                     if( option.selected ){
                         simulaToken =  option.value;
+                        simulaTokenName = option.text;
                     }
                 });
             }
@@ -414,7 +415,8 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             this.data.enableAnonymous = enableAnonymous;
             this.data.data = JSON.stringify({
                 requireBodyScript: requireBodyScript,
-                simulaToken: simulaToken
+                simulaToken: simulaToken,
+                simulaTokenName: simulaTokenName,
             });
 
             this.isSave = true;

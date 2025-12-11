@@ -141,7 +141,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 				}
 
 				this.loadTemplateStyles(this.stylesList[formStyleType].file, this.stylesList[formStyleType].extendFile, function (templateStyles) {
-					//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 					this._load(templateStyles, oldStyleValue);
 				}.bind(this));
 			}
@@ -175,7 +174,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.loadDomModules();
 
 		if (this.json.formStyleType && this.templateStyles && this.templateStyles["form"]){
-			this.setTemplateStyles(this.templateStyles["form"]);
+			//this.setTemplateStyles(this.templateStyles["form"]);
 		}
 
 		this.setCustomStyles();
@@ -1022,6 +1021,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 							}
 							break;
 						case "boolean":
+						case "number":
 							data[k] = initial[k];
 							break;
 						default :

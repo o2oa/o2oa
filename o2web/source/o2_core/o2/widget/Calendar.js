@@ -438,39 +438,43 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 	outsideClick: function(e) {
 		if(this.visible) {
-			var elementCoords, targetCoords, page;
-			if ( !layout.inBrowser && layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
-				elementCoords = this.container.getCoordinates( this.options.target );
-				targetCoords  = this.node.getCoordinates( this.options.target );
-				var containerSize = this.options.target.getPosition();
-				page = e.page;
-
-				// elementCoords.left = elementCoords.left * layout.userLayout.scale;
-				// elementCoords.top = elementCoords.top * layout.userLayout.scale;
-				//
-				// targetCoords.left = targetCoords.left * layout.userLayout.scale;
-				// targetCoords.top = targetCoords.top * layout.userLayout.scale;
-				//
-				// containerSize.x = containerSize.x * layout.userLayout.scale;
-				// containerSize.y = containerSize.y * layout.userLayout.scale;
-
-				page.x = page.x / layout.userLayout.scale - containerSize.x;
-				page.y = page.y / layout.userLayout.scale - containerSize.y;
-
-			}else{
-				elementCoords = this.container.getCoordinates();
-				targetCoords  = this.node.getCoordinates();
-				page = e.page;
+			var parent = e.target;
+			while( parent ){
+				if( parent === this.node || parent === this.container ){
+					return;
+				}
+				parent = parent.getParent();
 			}
-
-
-			if(((page.x < elementCoords.left || page.x > (elementCoords.left + elementCoords.width)) ||
-				(page.y < elementCoords.top || page.y > (elementCoords.top + elementCoords.height))) &&
-				((page.x < targetCoords.left || page.x > (targetCoords.left + targetCoords.width)) ||
-					(page.y < targetCoords.top || page.y > (targetCoords.top + targetCoords.height))) ) this.hide();
-
+			this.hide();
 		}
 	},
+
+	// outsideClick: function(e) {
+	// 	if(this.visible) {
+	// 		var elementCoords, targetCoords, page;
+	// 		if ( !layout.inBrowser && layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
+	// 			elementCoords = this.container.getCoordinates( this.options.target );
+	// 			targetCoords  = this.node.getCoordinates( this.options.target );
+	// 			var containerSize = this.options.target.getPosition();
+	// 			page = e.page;
+	//
+	// 			page.x = page.x / layout.userLayout.scale - containerSize.x;
+	// 			page.y = page.y / layout.userLayout.scale - containerSize.y;
+	//
+	// 		}else{
+	// 			elementCoords = this.container.getCoordinates();
+	// 			targetCoords  = this.node.getCoordinates();
+	// 			page = e.page;
+	// 		}
+	//
+	//
+	// 		if(((page.x < elementCoords.left || page.x > (elementCoords.left + elementCoords.width)) ||
+	// 			(page.y < elementCoords.top || page.y > (elementCoords.top + elementCoords.height))) &&
+	// 			((page.x < targetCoords.left || page.x > (targetCoords.left + targetCoords.width)) ||
+	// 				(page.y < targetCoords.top || page.y > (targetCoords.top + targetCoords.height))) ) this.hide();
+	//
+	// 	}
+	// },
 
 	hide: function(){
 		if (this.visible){
