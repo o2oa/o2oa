@@ -778,7 +778,7 @@ if (!window.o2) {
                     try {
                         if (cssText) {
                             op.uuid = uuid;
-                            var style = _loadCssText(cssText, op);
+                            var style = _loadCssText(cssText, op, null, url);
                         }
                         style.id = uid;
                         var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc, "class": uuid};
@@ -851,7 +851,7 @@ if (!window.o2) {
             }
         };
 
-        var _loadCssText = function (cssText, options, callback) {
+        var _loadCssText = function (cssText, options, callback, url) {
             var op = (_typeOf(options) === "object") ? _getCssOptions(options) : _getCssOptions(null);
             var cb = (_typeOf(options) === "function") ? options : callback;
             var uuid = options.uuid || "css" + _uuid();
@@ -901,6 +901,7 @@ if (!window.o2) {
                 var style = op.doc.createElement("style");
                 style.setAttribute("type", "text/css");
                 style.setAttribute("id", uuid);
+                style.setAttribute("data-url", url);
                 if (!op.notInject) {
                     var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
                     head.appendChild(style);
