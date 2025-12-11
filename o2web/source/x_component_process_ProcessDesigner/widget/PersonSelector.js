@@ -262,7 +262,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
             var selecteds = [];
             this.identitys.each(function(id){selecteds.push(id.data)});
             var types = ( this.options.types && this.options.types.length ) ? this.options.types : "";
-            var type = ( this.options.types && this.options.types.length ) ? "" : ((this.options.type.toLowerCase()==="dutyname") ? "duty" : this.options.type)
+            var type = ( this.options.types && this.options.types.length ) ? "" : this.options.type;
             var options = {
                 "types": types,
                 "type": type,
@@ -347,6 +347,8 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                                         break;
                                     case "dutyname":
                                         this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
+                                        break;
+                                    case "duty":
                                         break;
                                     case "portalfile":
                                     case "processfile":
