@@ -1,0 +1,50 @@
+[
+    {
+      "id": "f827b000-fddd-4ba7-b6b0-35381b3f3393",
+      "name": "通义千问qwen3-max",
+      "type": "ali",
+      "model": "qwen3-max",
+      "completionUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "apiKey": "",
+      "enable": true,
+      "asDefault": false,
+      "desc": "该模型是阿里推出的万亿参数MoE大模型，在推理、编程、数学和智能体任务上全球领先。",
+      "proxyEnable": false
+    },
+    {
+      "id": "88e5062e-765c-4354-b770-f5f218eb2a99",
+      "name": "通义千问3-VL-Plus",
+      "type": "ali",
+      "model": "qwen3-vl-plus",
+      "completionUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "apiKey": "",
+      "enable": true,
+      "asDefault": false,
+      "desc": "该模型是通义千问3系列多模态模型，支持图像理解、视觉推理与跨模态生成，性能达国际先进水平。",
+      "proxyEnable": false
+    },
+    {
+      "id": "ed9afc12-7604-4ea1-858d-5d48a01792c1",
+      "name": "deepSeek-V3",
+      "type": "deepSeek",
+      "model": "deepseek-chat",
+      "completionUrl": "https://api.deepseek.com/v1/chat/completions",
+      "apiKey": "",
+      "enable": true,
+      "asDefault": false,
+      "desc": "该模型是深度求索的大语言模型，具备强大的文本理解、生成和推理能力，擅长问答、写作、代码、数学等。",
+      "proxyEnable": false
+    },
+    {
+      "id": "6c7fc7c1-93fe-4c92-88cf-01cf5c7c6c76",
+      "name": "内置模型",
+      "type": "local",
+      "model": "内置模型",
+      "completionUrl": "内置模型",
+      "apiKey": "内置模型",
+      "enable": true,
+      "asDefault": true,
+      "desc": "",
+      "proxyEnable": false
+    }
+]
