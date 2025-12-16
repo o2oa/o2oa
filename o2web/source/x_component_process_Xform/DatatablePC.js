@@ -641,8 +641,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if( typeOf(total) !== "null" )totalData[json.id] = total;
 			}.bind(this));
 
+			var isChanged = false;
 			if( !!saveChanged ){
-				var isChanged = false;
 				var old = data.total || {};
 				if( Object.keys(totalData).length !== Object.keys(old).length ){
 					isChanged = true;
@@ -1227,7 +1227,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line = this.sectionLineEdited.lineList[index];
 				line.isNewAdd = true;
 
-				this.saveArrayData('addLine', index, null, changedData, this.sectionBy);
+				if( this.multiEditMode ){
+					this.saveArrayData('addLine', index, null, changedData, this.sectionBy);
+				}else{
+					line.saveArrayArgs = ['addLine', index, null, changedData, this.sectionBy];
+				}
 
 			}else{
 				index = this.lineList.length;
@@ -1241,7 +1245,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line = this.getLine(index);
 				line.isNewAdd = true;
 
-				this.saveArrayData('addLine', index, null, changedData);
+				if( this.multiEditMode ) {
+					this.saveArrayData('addLine', index, null, changedData);
+				}else{
+					line.saveArrayArgs = ['addLine', index, null, changedData];
+				}
 			}
 
 
@@ -1278,7 +1286,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line = this.sectionLineEdited.lineList[index];
 				line.isNewAdd = true;
 
-				this.saveArrayData('insertLine', index, null, {}, this.sectionBy);
+				if( this.multiEditMode ) {
+					this.saveArrayData('insertLine', index, null, {}, this.sectionBy);
+				}else{
+					line.saveArrayArgs = ['insertLine', index, null, {}, this.sectionBy];
+				}
 			}else {
 				index = beforeLine.options.index + 1;
 
@@ -1289,7 +1301,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line = this.getLine(index);
 				line.isNewAdd = true;
 
-				this.saveArrayData('insertLine', index, null, {});
+				if( this.multiEditMode ) {
+					this.saveArrayData('insertLine', index, null, {});
+				}else{
+					line.saveArrayArgs = ['insertLine', index, null, {}];
+				}
 			}
 
 			this.validationMode();
@@ -1321,7 +1337,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line = this.sectionLineEdited.lineList[index];
 				line.isNewAdd = true;
 
-				this.saveArrayData('insertLine', index, null, changedData, this.sectionBy);
+				if(this.multiEditMode){
+					this.saveArrayData('insertLine', index, null, changedData, this.sectionBy);
+				}else{
+					line.saveArrayArgs = ['insertLine', index, null, changedData, this.sectionBy];
+				}
 			}else {
 				//使用数据驱动
 				data = this.getInputData();
@@ -1332,8 +1352,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.setData(data, false, "insertLine");
 				line = this.getLine(index);
 				line.isNewAdd = true;
-
-				this.saveArrayData('insertLine', index, null, changedData);
+				if(this.multiEditMode) {
+					this.saveArrayData('insertLine', index, null, changedData);
+				}else{
+					line.saveArrayArgs = ['insertLine', index, null, changedData];
+				}
 			}
 
 			this.validationMode();
@@ -1496,15 +1519,21 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				dataStr = JSON.stringify(line.data);
 			}
 
+			var saved = false;
+
+			var isNewAdd = line.isNewAdd;
+
 			line.isNewAdd = false;
 			// line.data = line.getData();
 			line.computeModuleData("save");
 			line.originalData = Object.clone(line.data);
 			line.changeEditMode(false);
-			this._loadTotal( true );
+			this._loadTotal( true);
 			if( line.sectionLine )line.sectionLine._loadTotal( true );
+
 			if(line.attachmentChangeFlag && !ignoerSave){
 				this.saveFormData();
+				saved = true;
 				line.attachmentChangeFlag = false;
 			}
 			this.currentEditedLine = null;
@@ -1514,7 +1543,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.fireEvent("change", [{"lines":[line], "type":"editcomplete"}]);
 			}
 
-			this.saveDataById(line.getId() ,line.data);
+			this._checkAllRelated();
+
+			if( !saved && !line.isSaved() ){
+				if( isNewAdd && line.saveArrayArgs ){
+					var args = line.saveArrayArgs;
+					args[3] = line.data;
+					this.saveArrayData(...args);
+				}else{
+					this.saveDataById(line.getId() ,line.data);
+				}
+			}
 
 			return true;
 		},
@@ -2836,8 +2875,9 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 			var total = this.datatable._loadColumnTotal( column, data );
             if( typeOf(total) !== "null" )totalData[json.id] = total;
 		}.bind(this));
+
+		var isChanged = false;
 		if( !!saveChanged && !this.options.isMergeRead ){
-			var isChanged = false;
 			var old = data.total || {};
 			if( Object.keys(totalData).length !== Object.keys(old).length ){
 				isChanged = true;
@@ -3609,6 +3649,46 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			this.data[key] = data[key];
 		}
 		return data;
+	},
+	isSaved: function () {
+		var origData = this.datatable.getOriginalDataById(null, this.getId());
+		return this.isEqual(this.data, origData);
+	},
+	isEqual: function (obj1, obj2, cache = new WeakMap()) {
+		if (obj1 === obj2) return true;
+
+		if (obj1 === null || obj2 === null) return false;
+
+		if (typeof obj1 !== 'object' || typeof obj2 !== 'object') return false;
+
+		// 处理循环引用（避免无限递归）
+		if (cache.has(obj1)) return cache.get(obj1) === obj2;
+		cache.set(obj1, obj2);
+
+		if (Array.isArray(obj1) && Array.isArray(obj2)) {
+			if (obj1.length !== obj2.length) return false;
+			for (let i = 0; i < obj1.length; i++) {
+				if (!this.isEqual(obj1[i], obj2[i], cache)) return false;
+			}
+			return true;
+		}
+
+		if (!Array.isArray(obj1) && !Array.isArray(obj2)) {
+			// 获取所有自有属性（不含原型链）
+			const keys1 = Object.keys(obj1);
+			const keys2 = Object.keys(obj2);
+
+			if (keys1.length !== keys2.length) return false;
+
+			for (const key of keys1) {
+				if (!obj2.hasOwnProperty(key) || !this.isEqual(obj1[key], obj2[key], cache)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		return false;
 	}
 });
 
