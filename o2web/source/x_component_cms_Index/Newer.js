@@ -43,7 +43,12 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     initialize: function (columnData, categoryData, app, view, options) {
 
-        debugger;
+        if(layout.mobile){
+            this.options.style = "mobile";
+            this.options.width = "100%";
+            this.options.height = "90%";
+            this.options.hasTop = false;
+        }
 
         this.path = "../x_component_cms_Index/$Newer/";
         this.cssPath = "../x_component_cms_Index/$Newer/"+this.options.style+"/css.wcss";
@@ -199,6 +204,12 @@ MWF.xApplication.cms.Index.Newer = new Class({
         }
     },
     _createTableContent: function () {
+        if(layout.mobile){
+            this.formTableArea.setStyles({
+                'display':'flex',
+                'flex-direction':'column'
+            })
+        }
         if( this.options.zIndex ){
             this.formMaskNode.setStyle('z-index', this.options.zIndex);
             this.formAreaNode.setStyle('z-index', this.options.zIndex);
@@ -224,7 +235,23 @@ MWF.xApplication.cms.Index.Newer = new Class({
         }
 
         this.inputContainer = new Element("div",{styles:this.css.inputContainer}).inject( this.formTableArea );
-        html = "<table width='100%' height='90%' border='0' cellPadding='0' cellSpacing='0'; >" +
+        if(layout.mobile){
+            this.inputContainer.setStyles({'flex': 1});
+        }
+        html = layout.mobile ? "<table width='100%' height='90%' border='0' cellPadding='0' cellSpacing='0'; >" +
+            "<tr><td colSpan='2' style='height: 60px; line-height: 60px; text-align: center; font-size: 24px; ' id='form_startTitle'>" +
+            this.lp.start+" - "+categoryName+"</td></tr>" +
+            "<tr><td style='height: 38px; line-height: 38px; text-align: left; font-size:16px;color:#333;width: 90px;'>"+this.lp.department+"：</td>" +
+            "<td style='; text-align: left;' id='form_startDepartment'></td></tr>" +
+            "<tr><td style='height: 38px; line-height: 38px;  text-align: left; font-size:16px;color:#333'>"+this.lp.identity+"：</td>" +
+            "<td style='; text-align: left;'><div id='form_startIdentity'></div></td></tr>" +
+            "<tr><td style='height: 38px; line-height: 38px;  text-align: left; font-size:16px;color:#333'>"+this.lp.date+"：</td>" +
+            "<td style='; text-align: left;'><div id='form_startDate'></div></td></tr>" +
+            "<tr><td style='height: 38px; line-height: 38px;  text-align: left; font-size:16px;color:#333'>"+this.lp.subject+"：</td>" +
+            "<td style='; text-align: left;'><input type='text' id='form_startSubject' " +
+            "style='width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;'/></td></tr>" +
+            "</table>" :
+            "<table width='100%' height='90%' border='0' cellPadding='0' cellSpacing='0'; >" +
             "<tr><td colSpan='2' style='height: 60px; line-height: 60px; text-align: center; font-size: 24px; ' id='form_startTitle'>" +
             this.lp.start+" - "+categoryName+"</td></tr>" +
             "<tr><td style='height: 38px; line-height: 38px; text-align: left; font-size:16px;color:#333;min-width: 100px;'>"+this.lp.department+"：</td>" +
@@ -239,11 +266,18 @@ MWF.xApplication.cms.Index.Newer = new Class({
             "<tr><td style='height: 38px; line-height: 38px; text-align: left; font-size:16px;color:#333'></td>" +
             "<td style='text-align: left;' id='form_startAction'></td></tr>" +
             "</table>";
+
         this.inputContainer.set("html", html);
 
         this.setStartFormContent();
 
-        this.startActionContainer = this.inputContainer.getElementById("form_startAction");
+        if(layout.mobile){
+            this.startActionContainer = new Element("div", {
+                styles: this.css.startActionContainer
+            }).inject(this.inputContainer, 'after');
+        }else{
+            this.startActionContainer = this.inputContainer.getElementById("form_startAction");
+        }
         this.startTitleNode = this.inputContainer.getElementById("form_startTitle");
 
         this.startOkActionNode = new Element("div", {
