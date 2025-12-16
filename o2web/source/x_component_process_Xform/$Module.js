@@ -1089,6 +1089,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
         }
 
+        this._checkAllRelated(id);
+    },
+    _checkAllRelated: function(id){
         const mid = (id || this.json.id);
         // const dataId = mid.split('..').map((s)=>{
         //     return /^\d+$/.test(s) ? '*' : s

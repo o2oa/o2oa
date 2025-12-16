@@ -1503,8 +1503,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			line.changeEditMode(false);
 			this._loadTotal( true );
 			if( line.sectionLine )line.sectionLine._loadTotal( true );
+
+			var saved = false;
 			if(line.attachmentChangeFlag && !ignoerSave){
 				this.saveFormData();
+				saved = true;
 				line.attachmentChangeFlag = false;
 			}
 			this.currentEditedLine = null;
@@ -1514,7 +1517,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.fireEvent("change", [{"lines":[line], "type":"editcomplete"}]);
 			}
 
-			this.saveDataById(line.getId() ,line.data);
+			this._checkAllRelated();
+
+			if( !saved )this.saveDataById(line.getId() ,line.data);
 
 			return true;
 		},
