@@ -1,0 +1,17 @@
+package com.x.pan.assemble.control.jaxrs.attachment3;
+
+import com.x.base.core.project.exception.CallbackPromptException;
+
+class ExceptionEmptyExtensionCallback extends CallbackPromptException {
+
+	private static final long serialVersionUID = 4132300948670472899L;
+
+	ExceptionEmptyExtensionCallback(String callbackName,String name) {
+		super(callbackName,"不能上传文件扩展名为空的文件: {}.", name);
+	}
+
+	ExceptionEmptyExtensionCallback(String callbackName, String message, String name) {
+		super(callbackName, message, name);
+	}
+
+}
