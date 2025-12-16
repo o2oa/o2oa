@@ -248,10 +248,16 @@ var MDomItem = new Class({
     //     }
     // },
     reload: function () {
+        this.optionsReady = false;
+        this._ckeckOptions(this.orginalOptions, (options)=>{
+            this.setOptions(options);
+            this.optionsReady = true;
+            this._reload();
+        });
+    },
+    _reload: function (){
         this.mElement.empty();
         this.items = [];
-        this.optionsReady = false;
-        this.checkOptions(this.orginalOptions);
         this.load();
     },
     load: function () {
@@ -400,10 +406,9 @@ var MDomItem = new Class({
         }
         var availTypes = "radio,checkbox,select,multiselect".split(",");
         if (availTypes.contains(this.options.type)) {
-            this.dispose();
             this.options.selectValue = selectValue;
             this.options.selectText = selectText;
-            this.createElement();
+            this._reload();
         }
     },
     reloadItemOptions: function () {
@@ -415,10 +420,12 @@ var MDomItem = new Class({
                 opts[key] = this.orginalOptions[key];
             }
         });
+
+        this.optionsReady = false;
         this._ckeckOptions(opts, (options)=>{
             this.setOptions(options);
-            this.dispose();
-            this.createElement();
+            this.optionsReady = true;
+            this._reload();
         });
     },
     reset: function () {
