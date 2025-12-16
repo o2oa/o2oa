@@ -14,15 +14,23 @@ public class DocIndex extends GsonPropertyObject {
     @FieldDescribe("应用名称.")
     private String catalogName;
     @FieldDescribe("关联文档ID.")
-    private String referenceId;
+    private String id;
+    @FieldDescribe("文号.")
+    private String serial;
+    @FieldDescribe("原文档ID.")
+    private String sourceId;
     private String sourceType = "external";
     @FieldDescribe("文档创建者.")
-    private String referenceCreatorPerson;
-    private String referenceCreatorUnit;
+    private String creatorPerson;
+    private String creatorUnit;
+    private String creatorUnitLevelName;
     @FieldDescribe("文档创建时间.")
-    private Date referenceCreateDateTime;
+    private Date createDateTime;
+    private Date updateDateTime;
     @FieldDescribe("标题.")
     private String title;
+    @FieldDescribe("分类.")
+    private String category;
     private String content;
     private List<String> permissionList;
     private Boolean catalogEnable = true;
@@ -46,13 +54,6 @@ public class DocIndex extends GsonPropertyObject {
         this.catalogName = catalogName;
     }
 
-    public String getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(String referenceId) {
-        this.referenceId = referenceId;
-    }
 
     public String getSourceType() {
         return sourceType;
@@ -60,30 +61,6 @@ public class DocIndex extends GsonPropertyObject {
 
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
-    }
-
-    public String getReferenceCreatorPerson() {
-        return referenceCreatorPerson;
-    }
-
-    public void setReferenceCreatorPerson(String referenceCreatorPerson) {
-        this.referenceCreatorPerson = referenceCreatorPerson;
-    }
-
-    public String getReferenceCreatorUnit() {
-        return referenceCreatorUnit;
-    }
-
-    public void setReferenceCreatorUnit(String referenceCreatorUnit) {
-        this.referenceCreatorUnit = referenceCreatorUnit;
-    }
-
-    public Date getReferenceCreateDateTime() {
-        return referenceCreateDateTime;
-    }
-
-    public void setReferenceCreateDateTime(Date referenceCreateDateTime) {
-        this.referenceCreateDateTime = referenceCreateDateTime;
     }
 
     public String getContent() {
@@ -140,5 +117,77 @@ public class DocIndex extends GsonPropertyObject {
 
     public void setQuestionEnable(Boolean questionEnable) {
         this.questionEnable = questionEnable;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCreatorPerson() {
+        return creatorPerson;
+    }
+
+    public void setCreatorPerson(String creatorPerson) {
+        this.creatorPerson = creatorPerson;
+    }
+
+    public String getCreatorUnit() {
+        return creatorUnit;
+    }
+
+    public void setCreatorUnit(String creatorUnit) {
+        this.creatorUnit = creatorUnit;
+    }
+
+    public Date getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(Date createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public String getCreatorUnitLevelName() {
+        return creatorUnitLevelName;
+    }
+
+    public void setCreatorUnitLevelName(String creatorUnitLevelName) {
+        this.creatorUnitLevelName = creatorUnitLevelName;
+    }
+
+    public Date getUpdateDateTime() {
+        return updateDateTime;
+    }
+
+    public void setUpdateDateTime(Date updateDateTime) {
+        this.updateDateTime = updateDateTime;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
     }
 }

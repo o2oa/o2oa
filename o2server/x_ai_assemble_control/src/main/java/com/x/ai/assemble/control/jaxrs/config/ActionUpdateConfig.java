@@ -5,6 +5,9 @@ import com.google.gson.reflect.TypeToken;
 import com.x.ai.assemble.control.Business;
 import com.x.ai.assemble.control.bean.AiConfig;
 import com.x.ai.assemble.control.bean.McpConfig;
+import com.x.ai.core.entity.AiModel;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.bean.WrapCopier;
@@ -59,10 +62,39 @@ public class ActionUpdateConfig extends BaseAction {
                 Config.url_x_program_center_jaxrs("config", "save"), configWi);
         if(BooleanUtils.isNotTrue(flag)){
             syncMcp(config);
+            syncModel(config);
         }
         wo.setValue(true);
         result.setData(wo);
         return result;
+    }
+
+    private void syncModel(AiConfig aiConfig) throws Exception{
+        if(BooleanUtils.isNotTrue(aiConfig.getO2AiEnable())){
+            return;
+        }
+        String url = aiConfig.getO2AiBaseUrl() + "/ai-gateway-endpoint/list/paging/1/size/1";
+        List<NameValuePair> heads = List.of(
+                new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
+        Map<String, Object> map = new HashMap<>();
+        ActionResponse resp = ConnectionAction.post(url, heads, map);
+        if(resp.getCount()!=null && resp.getCount() > 0){
+            return;
+        }
+       List<AiModel> modelList = listModel();
+        if(ListTools.isNotEmpty(modelList)){
+            ActionUpdateModel updateModel = new ActionUpdateModel();
+            for (AiModel model : modelList){
+                updateModel.saveToO2Ai(model.getName(), model);
+            }
+        }
+
+    }
+
+    private List<AiModel> listModel() throws Exception{
+        try(EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()){
+            return emc.listAll(AiModel.class);
+        }
     }
 
     private void syncMcp(AiConfig aiConfig) throws Exception{
