@@ -4,7 +4,6 @@ import com.x.ai.assemble.control.Business;
 import com.x.ai.assemble.control.bean.AiConfig;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.connection.ConnectionAction;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -29,7 +28,6 @@ class ActionDeleteDocIndex extends BaseAction {
 		List<NameValuePair> heads = List.of(
 				new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
 		String url = aiConfig.getO2AiBaseUrl() + "/index-gateway-doc/delete";
-		ConnectionAction.post(url, heads, gson.toJson(Map.of("referenceIdList",  List.of(id))));
 		ConnectionAction.post(url, heads, gson.toJson(Map.of("idList",  List.of(id))));
 		Wo wo = new Wo();
 		wo.setId(id);

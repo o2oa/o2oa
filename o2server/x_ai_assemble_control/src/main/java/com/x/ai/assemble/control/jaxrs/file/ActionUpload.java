@@ -68,7 +68,7 @@ class ActionUpload extends BaseAction {
 				&& StringUtils.isNotBlank(aiConfig.getO2AiToken())) {
 			List<NameValuePair> heads = List.of(
 					new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
-			String url = aiConfig.getO2AiBaseUrl() + "/ai-gateway-material/create";
+			String url = aiConfig.getO2AiBaseUrl() + "/infra-gateway-material/create";
 			List<FilePart> filePartList = new ArrayList<>();
 			FilePart filePart = new FilePart(f.getName(), bytes, Config.mimeTypes(f.getExtension()), "file");
 			filePartList.add(filePart);

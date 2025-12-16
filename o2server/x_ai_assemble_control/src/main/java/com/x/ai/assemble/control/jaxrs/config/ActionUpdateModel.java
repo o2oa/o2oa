@@ -71,7 +71,7 @@ class ActionUpdateModel extends BaseAction {
 		}
 	}
 
-	private void saveToO2Ai(String name, AiModel aiModel) throws Exception{
+	public void saveToO2Ai(String name, AiModel aiModel) throws Exception{
 		AiConfig aiConfig = Business.getConfig();
 		if(StringUtils.isNotBlank(aiConfig.getO2AiToken()) && StringUtils.isNotBlank(aiConfig.getO2AiBaseUrl())) {
 			List<NameValuePair> heads = List.of(

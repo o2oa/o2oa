@@ -95,7 +95,7 @@ public class LogQueue extends AbstractQueue<NameValuePair> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Calendar threshold = Calendar.getInstance();
 				threshold.add(Calendar.DATE, -7);
-				ids = emc.idsLessThanMax(cls, JpaObject.createTime_FIELDNAME, threshold.getTime(), 500);
+				ids = emc.idsLessThanMax(cls, JpaObject.createTime_FIELDNAME, threshold.getTime(), 50);
 				if (!ids.isEmpty()) {
 					EntityManager em = emc.beginTransaction(cls);
 					Query query = em.createQuery("DELETE FROM " + cls.getName() + " o WHERE o.id IN :ids");

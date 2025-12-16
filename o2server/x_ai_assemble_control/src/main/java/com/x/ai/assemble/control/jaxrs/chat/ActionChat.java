@@ -85,7 +85,7 @@ public class ActionChat extends BaseAction {
                             && StringUtils.isNotBlank(aiConfig.getO2AiToken())) {
                         o2Chat(wi, sse, eventSink, aiConfig);
                     } else {
-                        AiModel model = getActiveModel();
+                        AiModel model = getActiveModel(wi.getEndpointName());
                         if (model != null) {
                             aiChat(wi, sse, eventSink, model);
                         } else {
@@ -107,9 +107,16 @@ public class ActionChat extends BaseAction {
         }
     }
 
-    private AiModel getActiveModel() throws Exception {
+    private AiModel getActiveModel(String name) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            return emc.firstEqual(AiModel.class, AiModel.asDefault_FIELDNAME, true);
+            AiModel model = null;
+            if(StringUtils.isNotBlank(name)){
+                model = emc.firstEqual(AiModel.class, AiModel.name_FIELDNAME, name);
+            }
+            if(model == null){
+                model = emc.firstEqual(AiModel.class, AiModel.asDefault_FIELDNAME, true);
+            }
+            return model;
         }
     }
 
