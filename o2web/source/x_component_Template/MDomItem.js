@@ -165,7 +165,7 @@ var MDomItem = new Class({
     },
     checkOptions: function (opts, callback) {
         this.optionsReady = false;
-        this._ckeckOptions(opts, (options, isSync)=>{
+        this._checkOptions(opts, (options, isSync)=>{
             this.optionsReady = true;
             this.setOptions(options);
             if(isSync){
@@ -176,7 +176,7 @@ var MDomItem = new Class({
             if(callback)callback();
         });
     },
-    _ckeckOptions: function (opts, callback) {
+    _checkOptions: function (opts, callback) {
         var ps = [];
         var keys_ps = [];
         var hasFun = false;
@@ -249,7 +249,7 @@ var MDomItem = new Class({
     // },
     reload: function () {
         this.optionsReady = false;
-        this._ckeckOptions(this.orginalOptions, (options)=>{
+        this._checkOptions(this.orginalOptions, (options)=>{
             this.setOptions(options);
             this.optionsReady = true;
             this._reload();
@@ -422,7 +422,7 @@ var MDomItem = new Class({
         });
 
         this.optionsReady = false;
-        this._ckeckOptions(opts, (options)=>{
+        this._checkOptions(opts, (options)=>{
             this.setOptions(options);
             this.optionsReady = true;
             this._reload();
