@@ -407,10 +407,12 @@ var MDomItem = new Class({
         }
     },
     reloadItemOptions: function () {
+        var availTypes = "radio,checkbox,select,multiselect,oo-radio-group,oo-checkbox-group,oo-select".split(",");
+        if (!availTypes.contains(this.options.type))return;
         var opts = {};
-        ['selectGroup', 'selectOption', 'selectValue', 'selectText'].forEach(function (key) {
-            if( this.originalOptions[key] ) {
-                opts[key] = this.originalOptions[key];
+        ['selectGroup', 'selectOption', 'selectValue', 'selectText'].forEach( (key)=> {
+            if( this.orginalOptions[key] ) {
+                opts[key] = this.orginalOptions[key];
             }
         });
         this._ckeckOptions(opts, (options)=>{
@@ -670,7 +672,7 @@ var MDomItem = new Class({
                             // if (!pNode) pNode = document.body;
                             // pNode.scrollToNode(this.container, "bottom");
                         }
-                        var y = this.container.getSize().y; 
+                        var y = this.container.getSize().y;
                         this.app.notice(msgs.join("\n"), "error", this.container, {"x": "right", "y": "top"}, {
                             x: 10,
                             y: y

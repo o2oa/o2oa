@@ -1076,7 +1076,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     clearRoom : function(){
         // this.roomId = "";
         // debugger;
-        this.form.getItem('room')?.reload();
+        this.form.getItem('room')?.reloadItemOptions();
     },
     loadSelectRoom_read : function(){
         // var roomId = this.data.room || this.options.room;
