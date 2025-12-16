@@ -60,6 +60,9 @@ public class AiModel extends SliceJpaObject {
 		if(asDefault == null){
 			asDefault = false;
 		}
+		if(enable == null){
+			enable = true;
+		}
 		if(StringUtils.isEmpty(name)){
 			this.name = this.type + ":" + this.model;
 		}
@@ -102,6 +105,12 @@ public class AiModel extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String apiKey;
 
+	public static final String enable_FIELDNAME = "enable";
+	@FieldDescribe("是否启用.")
+	@Column(name = ColumnNamePrefix + enable_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean enable;
+
 	public static final String asDefault_FIELDNAME = "asDefault";
 	@FieldDescribe("是否为默认服务模型.")
 	@Column(name = ColumnNamePrefix + asDefault_FIELDNAME)
@@ -122,7 +131,7 @@ public class AiModel extends SliceJpaObject {
 
 	public static final String proxyHost_FIELDNAME = "proxyHost";
 	@FieldDescribe("代理主机.")
-	@Column(length = 500, name = ColumnNamePrefix + proxyHost_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + proxyHost_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String proxyHost;
 
@@ -131,6 +140,18 @@ public class AiModel extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + proxyPort_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer proxyPort;
+
+	public static final String proxyUser_FIELDNAME = "proxyUser";
+	@FieldDescribe("代理认证用户.")
+	@Column(length = length_255B, name = ColumnNamePrefix + proxyUser_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String proxyUser;
+
+	public static final String proxyPass_FIELDNAME = "proxyPass";
+	@FieldDescribe("代理认证密码.")
+	@Column(length = length_255B, name = ColumnNamePrefix + proxyPass_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String proxyPass;
 
 	@FieldDescribe("创建时间.")
 	@Transient
@@ -234,5 +255,29 @@ public class AiModel extends SliceJpaObject {
 
 	public void setProxyPort(Integer proxyPort) {
 		this.proxyPort = proxyPort;
+	}
+
+	public String getProxyUser() {
+		return proxyUser;
+	}
+
+	public void setProxyUser(String proxyUser) {
+		this.proxyUser = proxyUser;
+	}
+
+	public String getProxyPass() {
+		return proxyPass;
+	}
+
+	public void setProxyPass(String proxyPass) {
+		this.proxyPass = proxyPass;
+	}
+
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 }

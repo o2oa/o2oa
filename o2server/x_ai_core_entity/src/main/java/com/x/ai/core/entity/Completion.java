@@ -141,6 +141,10 @@ public class Completion extends SliceJpaObject {
 	@Transient
 	private Map<String, Object> extra;
 
+	@FieldDescribe("工具调用信息列表.")
+	@Transient
+	private List<ToolCall> toolCallList;
+
 	public String getPerson() {
 		return person;
 	}
@@ -211,5 +215,13 @@ public class Completion extends SliceJpaObject {
 
 	public void setExtra(Map<String, Object> extra) {
 		this.extra = extra;
+	}
+
+	public List<ToolCall> getToolCallList() {
+		return toolCallList;
+	}
+
+	public void setToolCallList(List<ToolCall> toolCallList) {
+		this.toolCallList = toolCallList;
 	}
 }

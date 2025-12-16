@@ -16,6 +16,9 @@ public class McpConfig extends GsonPropertyObject {
     @FieldDescribe("名称.")
     private String name;
 
+    @FieldDescribe("显示名称.")
+    private String displayName;
+
     @FieldDescribe("分组.")
     private String category;
 
@@ -59,6 +62,14 @@ public class McpConfig extends GsonPropertyObject {
     private Map<String, Object> extra;
 
     private String type = "http";
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
     public String getName() {
         return name;

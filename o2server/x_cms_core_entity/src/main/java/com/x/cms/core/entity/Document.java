@@ -31,15 +31,16 @@ import java.util.List;
 @Schema(name = "Document", description = "内容管理文档.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Document.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Document.table + JpaObject.IndexNameMiddle
-				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+@Table(name = PersistenceProperties.Document.table, indexes = {
+		@javax.persistence.Index(name = Document.TABLE + JpaObject.IndexNameMiddle + Document.appId_FIELDNAME+"_UN",
+				columnList = JpaObject.ColumnNamePrefix + Document.appId_FIELDNAME+","+
+						JpaObject.ColumnNamePrefix + Document.categoryId_FIELDNAME)
+})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Document extends SliceJpaObject {
 
 	private static final long serialVersionUID = 7668822947307502058L;
-	private static final String TABLE = PersistenceProperties.Document.table;
+	public static final String TABLE = PersistenceProperties.Document.table;
 	public static final int STRING_VALUE_MAX_LENGTH = JpaObject.length_255B;
 	public static final String DOC_STATUS_PUBLISH = "published";
 	public static final String DOCUMENT_TYPE_INFO = "信息";
@@ -94,14 +95,12 @@ public class Document extends SliceJpaObject {
 	public static final String documentType_FIELDNAME = "documentType";
 	@FieldDescribe("文档类型，跟随分类类型，信息 | 数据")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + documentType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + documentType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String documentType = "信息";
 
 	public static final String appId_FIELDNAME = "appId";
 	@FieldDescribe("栏目ID")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + appId_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + appId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String appId;
 
@@ -133,7 +132,6 @@ public class Document extends SliceJpaObject {
 	public static final String categoryAlias_FIELDNAME = "categoryAlias";
 	@FieldDescribe("分类别名")
 	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + categoryAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + categoryAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String categoryAlias;
 
@@ -457,42 +455,36 @@ public class Document extends SliceJpaObject {
 	public static final String stringValue05_FIELDNAME = "stringValue05";
 	@FieldDescribe("业务数据String值05.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue05_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue05_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue05;
 
 	public static final String stringValue06_FIELDNAME = "stringValue06";
 	@FieldDescribe("业务数据String值06.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue06_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue06_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue06;
 
 	public static final String stringValue07_FIELDNAME = "stringValue07";
 	@FieldDescribe("业务数据String值07.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue07_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue07_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue07;
 
 	public static final String stringValue08_FIELDNAME = "stringValue08";
 	@FieldDescribe("业务数据String值08.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue08_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue08_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue08;
 
 	public static final String stringValue09_FIELDNAME = "stringValue09";
 	@FieldDescribe("业务数据String值09.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue09_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue09_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue09;
 
 	public static final String stringValue10_FIELDNAME = "stringValue10";
 	@FieldDescribe("业务数据String值10.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue10_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue10_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue10;
 
@@ -544,7 +536,6 @@ public class Document extends SliceJpaObject {
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值03.")
 	@Column(name = ColumnNamePrefix + dateTimeValue03_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateTimeValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue03;
 
