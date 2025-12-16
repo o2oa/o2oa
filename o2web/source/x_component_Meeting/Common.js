@@ -735,8 +735,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                         required: !this.app.isOnlineAvailable(),
                         type: "oo-select", label: lp.selectRoom, grouplabelKey: 'label', labelKey: 'name', valueKey: 'id', childrenKey: 'roomList',
                         selectGroup:  ()=>{
-                            var result = this.form.getResult(false,null,false,false,true);
-                            var d = result.dateInput, bt = result.beginTimeInput, et = result.endTimeInput;
+                            var d = this.form.getItem('dateInput').getValue();
+                            var bt = this.form.getItem('beginTimeInput').getValue();
+                            var et = this.form.getItem('endTimeInput').getValue();
                             var start = d+" "+bt;
                             var completed = d+" "+et;
                             var p;
@@ -749,10 +750,11 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                                 json.data.each(function(building){
                                     building.label = `${building.name}(${building.address})`
                                     building.roomList.each(function(room, i){
-                                        room.disabled = !(room.available && room.idle);
+                                        room.disabled = !room.available || !room.idle;
                                     }.bind(this));
 
                                 }.bind(this));
+                                console.log(json.data)
                                 return json.data;
                             });
                         }
@@ -1074,7 +1076,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     clearRoom : function(){
         // this.roomId = "";
         // debugger;
-        this.form.getItem('room')?.setValue('');
+        this.form.getItem('room')?.reload();
     },
     loadSelectRoom_read : function(){
         // var roomId = this.data.room || this.options.room;

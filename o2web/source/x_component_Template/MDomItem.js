@@ -163,7 +163,20 @@ var MDomItem = new Class({
 
         // this.setOptionList( options );
     },
-    checkOptions: function (opts) {
+    checkOptions: function (opts, callback) {
+        this.optionsReady = false;
+        this._ckeckOptions(opts, (options, isSync)=>{
+            this.optionsReady = true;
+            this.setOptions(options);
+            if(isSync){
+                if (this.loadFunctionCalled) { //如果外部程序已经执行过load，但是由于options没有设置完成而中断，需要再调用一下load
+                    this.load();
+                }
+            }
+            if(callback)callback();
+        });
+    },
+    _ckeckOptions: function (opts, callback) {
         var ps = [];
         var keys_ps = [];
         var hasFun = false;
@@ -176,8 +189,7 @@ var MDomItem = new Class({
         }
 
         if (!hasFun) {
-            this.optionsReady = true;
-            this.setOptions(opts);
+            if(callback)callback(opts);
         } else {
             var options = Object.merge({}, opts);
             Object.each(options, (o, key) => {
@@ -192,20 +204,14 @@ var MDomItem = new Class({
                 }
             });
             if (ps.length) {
-                this.optionsReady = false;
                 Promise.all(ps).then((arr) => {
                     arr.forEach((v, i) => {
                         options[keys_ps[i]] = v;
                     });
-                    this.optionsReady = true;
-                    this.setOptions(options);
-                    if (this.loadFunctionCalled) { //如果外部程序已经执行过load，但是由于options没有设置完成而中断，需要再调用一下load
-                        this.load();
-                    }
+                    if (callback) callback(options, true);
                 })
             } else {
-                this.optionsReady = true;
-                this.setOptions(options);
+                if (callback) callback(options);
             }
         }
     },
@@ -399,6 +405,19 @@ var MDomItem = new Class({
             this.options.selectText = selectText;
             this.createElement();
         }
+    },
+    reloadItemOptions: function () {
+        var opts = {};
+        ['selectGroup', 'selectOption', 'selectValue', 'selectText'].forEach(function (key) {
+            if( this.originalOptions[key] ) {
+                opts[key] = this.originalOptions[key];
+            }
+        });
+        this._ckeckOptions(opts, (options)=>{
+            this.setOptions(options);
+            this.dispose();
+            this.createElement();
+        });
     },
     reset: function () {
         if (typeOf(this.dom.reset) === "function") {
@@ -3952,7 +3971,7 @@ MDomItem.OORadioGroup = new Class({
                 "text": option[labelKey],
                 "styles": options.buttonStyles || {}
             });
-            if (options.disabled) {
+            if (option.disabled) {
                 optionNode.setAttribute('disabled', true);
             }
             optionNode.inject(input);
@@ -3974,9 +3993,9 @@ MDomItem.OORadioGroup = new Class({
                 "text": selectTexts[i],
                 "styles": options.buttonStyles || {}
             });
-            if (options.disabled) {
-                optionNode.setAttribute('disabled', true);
-            }
+            // if (option.disabled) {
+            //     optionNode.setAttribute('disabled', true);
+            // }
             // optionNode.setAttribute('text', selectTexts[i]);
             optionNode.inject(input);
         }
@@ -4003,13 +4022,6 @@ MDomItem.OOCheckGroup = new Class({
 
 MDomItem.OOSelect = new Class({
     Extends: MDomItem.OOInput,
-    setValue: function (value) {
-        if (this.options.disable) {
-            return;
-        }
-        var item = this.mElement.getElement("[name='" + this.options.name + "']");
-        item.set('value', value || '');
-    },
     createInput: function () {
         var input = new Element('oo-select');
         this.input = input;
@@ -4022,7 +4034,7 @@ MDomItem.OOSelect = new Class({
         return input;
     },
     renderOption: function () {
-        const input = this.input;
+        var input = this.input;
         if (this.options.selectGroup) {
             this._renderGroup(input);
         } else if (this.options.selectOption) {
@@ -4039,7 +4051,7 @@ MDomItem.OOSelect = new Class({
             var optionNode = new Element("oo-option", {
                 "value": option[valueKey]
             });
-            if (options.disabled) {
+            if (option.disabled) {
                 optionNode.setAttribute('disabled', true);
             }
             optionNode.setAttribute('value', option[valueKey]);
@@ -4057,7 +4069,7 @@ MDomItem.OOSelect = new Class({
             var optionNode = new Element("oo-option", {
                 "value": selectValues[i]
             });
-            // if( options.disabled ){
+            // if( option.disabled ){
             //     optionNode.setAttribute('disabled', true);
             // }
             optionNode.setAttribute('value', selectValues[i]);
@@ -4078,7 +4090,7 @@ MDomItem.OOSelect = new Class({
                 var optionNode = new Element("oo-option", {
                     "value": option[valueKey]
                 });
-                if (options.disabled) {
+                if (option.disabled) {
                     optionNode.setAttribute('disabled', true);
                 }
                 optionNode.setAttribute('value', option[valueKey]);
