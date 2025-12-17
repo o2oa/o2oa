@@ -9,7 +9,7 @@ sudo date
 if [ -d ${current_dir}/local/update ]; then
 	for D in commons configSample localSample jvm servers store config local; do
 		if [ ! -d ${current_dir}/$D ]; then
-			mkdir ${current_dir}/commons
+			mkdir ${current_dir}/$D
 		fi
 	done
 	if [ -f ${current_dir}/local/update/o2server/version.o2 ]; then
