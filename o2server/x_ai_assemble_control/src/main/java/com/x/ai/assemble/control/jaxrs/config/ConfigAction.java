@@ -280,4 +280,21 @@ public class ConfigAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取启用的模型列表", action = ActionListEnableModel.class)
+	@GET
+	@Path("list/enable/model")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void listEnableModel(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<List<ActionListEnableModel.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListEnableModel().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
