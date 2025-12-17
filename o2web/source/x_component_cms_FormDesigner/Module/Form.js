@@ -60,11 +60,25 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 
 	// 移动端表单加载工具栏
 	loadMobileActionToos: function() {
-		if (this.options.mode==="Mobile"){
-			if (!this.json.defaultTools){
-				this.json.defaultTools = o2.JSON.get("../x_component_cms_FormDesigner/Module/Form/toolbars.json", null,false);
+		// if (this.options.mode==="Mobile"){
+		// 	if (!this.json.defaultTools){
+		// 		this.json.defaultTools = o2.JSON.get("../x_component_cms_FormDesigner/Module/Form/toolbars.json", null,false);
+		// 	}
+		// 	if (!this.json.tools) this.json.tools=[];
+		// }
+		if (!this.json.multiTools){
+			var tools = [];
+			if( this.json.defaultTools ){
+				tools = this.json.defaultTools;
+			}else{
+				tools = o2.JSON.get("../x_component_cms_FormDesigner/Module/Form/toolbars.json", null,false);
+				tools = tools.filter( function (d) { return !d.hidden; } );
 			}
-			if (!this.json.tools) this.json.tools=[];
+			tools.map( function (d) { d.system = true; return d; });
+			if (this.json.tools){
+				tools = tools.concat( this.json.tools );
+			}
+			this.json.multiTools = tools;
 		}
 	},
 

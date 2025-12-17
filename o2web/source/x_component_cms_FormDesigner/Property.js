@@ -75,7 +75,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
             MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
 
                 var options = {
-                    "iconType": this.data.iconType,
+                    "iconType": this.data.iconType || this.data.actionIconType,
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
                     "target" : node.get("data-target"),
