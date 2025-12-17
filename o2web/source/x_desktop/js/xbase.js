@@ -162,7 +162,11 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument) {
             window.webkit.messageHandlers.openO2CmsDocument.postMessage({ "docId": options.documentId, "docTitle": title, "options": JSON.stringify(options) });
         } else {
-            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
+            if (options && options.documentId && options.readonly === false) {
+                window.location = o2.filterUrl("../x_desktop/cmsdocmobilewithaction.html?id=" + options.documentId + "&" + par + ((layout.debugger) ? "&debugger" : ""));
+            } else {
+                window.location = o2.filterUrl("../x_desktop/cmsdocMobile.html?id=" + options.documentId + "&" + par + ((layout.debugger) ? "&debugger" : ""));
+            }
         }
     };
     var _openCms = function (appNames, options, statusObj) {
