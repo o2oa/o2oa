@@ -24,6 +24,7 @@ MWF.xApplication.cms.Index.Main = new Class({
 		this.lp = MWF.xApplication.cms.Index.LP;
 	},
 	loadApplication: function(callback){
+		if(layout.inBrowser)this.content.setStyle('height', '100%');
 		this.columns = [];
 		this.restActions = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Index.Actions.RestActions();
 		this.createNode();
