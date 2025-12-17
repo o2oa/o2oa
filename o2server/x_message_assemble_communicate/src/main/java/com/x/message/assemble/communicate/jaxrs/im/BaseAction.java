@@ -1,7 +1,5 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
-import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_GROUP;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -16,20 +14,16 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.x_jpush_assemble_control;
 import com.x.base.core.project.x_organization_assemble_control;
-import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.assemble.communicate.jaxrs.im.ActionImConfig.Wo;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
 import com.x.message.core.entity.Message;
-import com.x.organization.core.entity.Person;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -61,10 +55,10 @@ abstract class BaseAction extends StandardJaxrsAction {
      * 随机获取列表的一部分
      *
      * @param originalList 原列表
-     * @param cutSize 截取列表大小
+     * @param cutSize      截取列表大小
      * @return 截取后的列表
      */
-    private  <T> List<T> randomCutList(List<T> originalList, int cutSize) {
+    private <T> List<T> randomCutList(List<T> originalList, int cutSize) {
         // 创建一个新的列表以避免修改原始列表
         List<T> copyList = new ArrayList<>(originalList);
         // 打乱列表顺序
@@ -74,11 +68,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 
     /**
      * 生成群聊的9宫格拼接头像
+     *
      * @param conversationId 会话 id
      */
     protected void generateConversationIcon(String conversationId) {
         Thread thread = new Thread(() -> {
-            try  {
+            try {
                 try (EntityManagerContainer emc = EntityManagerContainerFactory.instance()
                         .create()) {
                     IMConversation conversation = emc.find(conversationId, IMConversation.class);
@@ -97,17 +92,18 @@ abstract class BaseAction extends StandardJaxrsAction {
                     List<String> personListForIcon = randomCutList(conversation.getPersonList(), 9);
                     List<String> personIconList = new ArrayList<>(personListForIcon.size());
                     for (String personDN : personListForIcon) {
-                        Person person = ThisApplication.context().applications()
-                                .getQuery(false, app, "person/" + URLEncoder.encode(personDN,
-                                        DefaultCharset.name))
-                                .getData(Person.class);
-                        if (person == null) {
-                            continue;
-                        }
-                        if (person.getIconLdpi() != null) {
-                            personIconList.add(person.getIconLdpi());
-                        } else {
-                            personIconList.add(ICON_UNKOWN);
+                        try {
+                            byte[] personIcon = ThisApplication.context().applications()
+                                    .getQueryBinary(false, app, "person/" + URLEncoder.encode(personDN,
+                                            DefaultCharset.name) + "/icon");
+                            if (personIcon == null) {
+                                continue;
+                            }
+                            var base64 = Base64.getEncoder()
+                                    .encodeToString(personIcon);
+                            personIconList.add(base64);
+                        } catch (Exception e) {
+                            LOGGER.error(e);
                         }
                     }
                     emc.beginTransaction(IMConversation.class);
@@ -118,7 +114,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     CacheManager.notify(IMConversation.class);
                 }
             } catch (Exception e) {
-                LOGGER.error(e);
+                LOGGER.error( e);
             }
         });
         thread.start();
@@ -166,9 +162,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ImageIO.write(mergedImage, "jpg", outputStream);
             byte[] imageBytes = outputStream.toByteArray();
-            var base64 = Base64.getEncoder().encodeToString(imageBytes);
-            LOGGER.info("合并图片成功，base64: {}", base64);
-            return base64;
+            return Base64.getEncoder().encodeToString(imageBytes);
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -210,7 +204,8 @@ abstract class BaseAction extends StandardJaxrsAction {
     }
 
 
-    protected ConversationInvokeValue checkConversationInvoke(EffectivePerson effectivePerson, String operateType,
+    protected ConversationInvokeValue checkConversationInvoke(EffectivePerson effectivePerson,
+            String operateType,
             String type, List<String> newMembers, List<String> oldMembers, String newTitle,
             String newNote) throws Exception {
         // 是否有配置检查脚本
@@ -244,7 +239,8 @@ abstract class BaseAction extends StandardJaxrsAction {
             ActionResponse response = CipherConnectionAction.post(false, 4000, 8000,
                     Config.url_x_program_center_jaxrs("invoke", script, "execute"), wi);
             ConversationInvokeWo result = response.getData(ConversationInvokeWo.class);
-            value.setResult( result == null || result.value == null || !BooleanUtils.isFalse(result.value.result) );
+            value.setResult(result == null || result.value == null || !BooleanUtils.isFalse(
+                    result.value.result));
             String msg = "";
             if (result != null && result.value != null) {
                 msg = result.value.msg;
@@ -297,7 +293,8 @@ abstract class BaseAction extends StandardJaxrsAction {
                 LOGGER.error(e);
             }
             // 发送聊天消息时候 如果没有在线 发送app推送消息
-            if (!person.equals(effectivePerson.getDistinguishedName()) && MessageConnector.TYPE_IM_CREATE.equals(messageType)) {
+            if (!person.equals(effectivePerson.getDistinguishedName())
+                && MessageConnector.TYPE_IM_CREATE.equals(messageType)) {
                 try {
                     if (!ThisApplication.wsClients().containsValue(person)) {
                         LOGGER.info("向app 推送im消息， person: " + person);
@@ -354,7 +351,9 @@ abstract class BaseAction extends StandardJaxrsAction {
             this.value = value;
         }
     }
+
     public static class ConversationInvokeValue extends GsonPropertyObject {
+
         @FieldDescribe("返回结果.")
         private Boolean result;
         @FieldDescribe("消息.")
@@ -376,6 +375,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             this.msg = msg;
         }
     }
+
     public static class ConversationInvokeWi extends GsonPropertyObject {
 
         @FieldDescribe("当前操作人.")

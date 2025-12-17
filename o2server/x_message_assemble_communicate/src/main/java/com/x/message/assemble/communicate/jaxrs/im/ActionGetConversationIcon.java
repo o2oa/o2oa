@@ -15,13 +15,13 @@ import com.x.base.core.project.x_organization_assemble_control;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.IMConversation;
-import com.x.organization.core.entity.Person;
 import java.net.URLEncoder;
 import java.util.Optional;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 public class ActionGetConversationIcon extends BaseAction {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetConversationIcon.class);
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, String conversationId)
@@ -59,15 +59,19 @@ public class ActionGetConversationIcon extends BaseAction {
             var otherPerson = conversation.getPersonList().stream()
                     .filter(p -> !p.equals(effectivePerson.getDistinguishedName())).findFirst();
             if (otherPerson.isPresent()) {
-                var dn = otherPerson.get();
-                dn = URLEncoder.encode(dn, DefaultCharset.name);
-                Application app = ThisApplication.context().applications()
-                        .randomWithWeight(x_organization_assemble_control.class.getName());
-                Person person = ThisApplication.context().applications()
-                        .getQuery(false, app, "person/" + dn)
-                        .getData(Person.class);
-                if (person != null) {
-                    base64 = person.getIconMdpi();
+                try {
+                    var dn = otherPerson.get();
+                    dn = URLEncoder.encode(dn, DefaultCharset.name);
+                    Application app = ThisApplication.context().applications()
+                            .randomWithWeight(x_organization_assemble_control.class.getName());
+                    byte[] personIcon =  ThisApplication.context().applications()
+                            .getQueryBinary(false, app, "person/" + dn + "/icon");
+                    if (personIcon != null) {
+                        return new Wo(personIcon, this.contentType(false, "icon.png"),
+                                this.contentDisposition(false, "icon.png"));
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
                 }
             }
         }
