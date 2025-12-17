@@ -58,7 +58,7 @@ class ActionGetIcon extends BaseAction {
 			}
 			base64 = person.getIcon();
 			if (StringUtils.isEmpty(base64)) {
-				base64 = this.generate(person.getName(), 20, new Color(0x2E82F7), Color.WHITE);
+				base64 = this.generate(person.getName(), 20, new Color(0xE6E6E6),new Color(0x666666));
 //				if (Objects.equals(GenderType.m, person.getGenderType())) {
 //					base64 = com.x.base.core.project.config.Person.ICON_MALE;
 //				} else if (Objects.equals(GenderType.f, person.getGenderType())) {
