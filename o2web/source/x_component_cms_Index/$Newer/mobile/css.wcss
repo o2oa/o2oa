@@ -349,8 +349,7 @@
   },
   "columnItemNode": {
 	"overflow": "hidden",
-	"height": "60px",
-	"line-height": "60px",
+	"min-height": "60px",
 	"padding-left": "20px",
 	"background-color": "#f7f7f7",
 	"color": "#333",
@@ -396,12 +395,14 @@
   "categoryItemNode": {
 	"border-left": "4px solid #fff",
 	"overflow": "hidden",
-	"height": "40px",
-	"line-height": "40px",
+	"min-height": "40px",
+	"line-height": "22px",
 	"padding-left": "10px",
 	"background-color": "#fff",
 	"color": "#666",
-	"cursor": "pointer"
+	"cursor": "pointer",
+	  "display": "flex",
+	  "align-items": "center"
   },
   "categoryItemNode_over": {
 	"border-left": "4px solid #fff",
