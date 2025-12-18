@@ -1176,7 +1176,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (flag) {
             flag = true;
             if (tool.control) {
-                flag = this.form.businessData.control[tool.control]
+                flag = this.businessData.control[tool.control]
             }
             if (tool.condition) {
                 var hideFlag = this.Macro.exec(tool.condition, this);

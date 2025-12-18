@@ -155,6 +155,7 @@ var MDomItem = new Class({
         this.mElement = this.container;	//容器
         this.node = this.container;
         this.items = [];
+        this.optionFuns = {};
 
         this.orginalOptions = options;
 
@@ -162,7 +163,20 @@ var MDomItem = new Class({
 
         // this.setOptionList( options );
     },
-    checkOptions: function (opts) {
+    checkOptions: function (opts, callback) {
+        this.optionsReady = false;
+        this._checkOptions(opts, (options, isSync)=>{
+            this.optionsReady = true;
+            this.setOptions(options);
+            if(isSync){
+                if (this.loadFunctionCalled) { //如果外部程序已经执行过load，但是由于options没有设置完成而中断，需要再调用一下load
+                    this.load();
+                }
+            }
+            if(callback)callback();
+        });
+    },
+    _checkOptions: function (opts, callback) {
         var ps = [];
         var keys_ps = [];
         var hasFun = false;
@@ -175,8 +189,7 @@ var MDomItem = new Class({
         }
 
         if (!hasFun) {
-            this.optionsReady = true;
-            this.setOptions(opts);
+            if(callback)callback(opts);
         } else {
             var options = Object.merge({}, opts);
             Object.each(options, (o, key) => {
@@ -191,20 +204,14 @@ var MDomItem = new Class({
                 }
             });
             if (ps.length) {
-                this.optionsReady = false;
                 Promise.all(ps).then((arr) => {
                     arr.forEach((v, i) => {
                         options[keys_ps[i]] = v;
                     });
-                    this.optionsReady = true;
-                    this.setOptions(options);
-                    if (this.loadFunctionCalled) { //如果外部程序已经执行过load，但是由于options没有设置完成而中断，需要再调用一下load
-                        this.load();
-                    }
+                    if (callback) callback(options, true);
                 })
             } else {
-                this.optionsReady = true;
-                this.setOptions(options);
+                if (callback) callback(options);
             }
         }
     },
@@ -241,10 +248,16 @@ var MDomItem = new Class({
     //     }
     // },
     reload: function () {
+        this.optionsReady = false;
+        this._checkOptions(this.orginalOptions, (options)=>{
+            this.setOptions(options);
+            this.optionsReady = true;
+            this._reload();
+        });
+    },
+    _reload: function (){
         this.mElement.empty();
         this.items = [];
-        this.optionsReady = false;
-        this.checkOptions(this.orginalOptions);
         this.load();
     },
     load: function () {
@@ -392,11 +405,28 @@ var MDomItem = new Class({
             }
         }
         var availTypes = "radio,checkbox,select,multiselect".split(",");
-        if (!availTypes.contains(this.options.type)) return;
-        this.dispose();
-        this.options.selectValue = selectValue;
-        this.options.selectText = selectText;
-        this.createElement();
+        if (availTypes.contains(this.options.type)) {
+            this.options.selectValue = selectValue;
+            this.options.selectText = selectText;
+            this._reload();
+        }
+    },
+    reloadItemOptions: function () {
+        var availTypes = "radio,checkbox,select,multiselect,oo-radio-group,oo-checkbox-group,oo-select".split(",");
+        if (!availTypes.contains(this.options.type))return;
+        var opts = {};
+        ['selectGroup', 'selectOption', 'selectValue', 'selectText'].forEach( (key)=> {
+            if( this.orginalOptions[key] ) {
+                opts[key] = this.orginalOptions[key];
+            }
+        });
+
+        this.optionsReady = false;
+        this._checkOptions(opts, (options)=>{
+            this.setOptions(options);
+            this.optionsReady = true;
+            this._reload();
+        });
     },
     reset: function () {
         if (typeOf(this.dom.reset) === "function") {
@@ -649,7 +679,7 @@ var MDomItem = new Class({
                             // if (!pNode) pNode = document.body;
                             // pNode.scrollToNode(this.container, "bottom");
                         }
-                        var y = this.container.getSize().y; 
+                        var y = this.container.getSize().y;
                         this.app.notice(msgs.join("\n"), "error", this.container, {"x": "right", "y": "top"}, {
                             x: 10,
                             y: y
@@ -2947,7 +2977,7 @@ MDomItem.Rtf = new Class({
                 });
 
                 // 额外处理：源码模式下的内容过滤（可选，增强防护）
-                editor.on('beforeSetData', function(evt) {
+                e.editor.on('beforeSetData', function(evt) {
                     evt.data.dataValue = evt.data.dataValue.replace(
                         /<a\s+[^>]*href\s*=\s*(["']?)javascript:.*?\1[^>]*>/gi,
                         function(match) {
@@ -3919,11 +3949,10 @@ MDomItem.OORadioGroup = new Class({
     createInput: function () {
         var input = new Element('oo-radio-group');
         this.itemTag = 'oo-radio';
-        if (this.options.selectOption) {
-            this.renderOption(input);
-        } else {
-            this.renderOption2(input);
-        }
+        this.input = input;
+
+        this.renderOption();
+
         if (this.css?.OORadioGroup) input.setStyles(this.css.OORadioGroup);
 
         var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OORadioGroupProperties3' : 'OORadioGroupProperties';
@@ -3931,7 +3960,15 @@ MDomItem.OORadioGroup = new Class({
 
         return input;
     },
-    renderOption: function (input) {
+    renderOption: function () {
+        if (this.options.selectOption) {
+            this._renderOption();
+        } else {
+            this._renderOption2();
+        }
+    },
+    _renderOption: function () {
+        var input = this.input;
         var options = this.options;
         var valueKey = options.valueKey || 'value';
         var labelKey = options.labelKey || 'label';
@@ -3943,13 +3980,14 @@ MDomItem.OORadioGroup = new Class({
                 "text": option[labelKey],
                 "styles": options.buttonStyles || {}
             });
-            if (options.disabled) {
+            if (option.disabled) {
                 optionNode.setAttribute('disabled', true);
             }
             optionNode.inject(input);
         });
     },
-    renderOption2: function (input) {
+    _renderOption2: function () {
+        var input = this.input;
         var options = this.options;
         var selectValue = this.options.selectValue || this.options.selectText;
         var selectText = this.options.selectText || this.options.selectValue;
@@ -3964,9 +4002,9 @@ MDomItem.OORadioGroup = new Class({
                 "text": selectTexts[i],
                 "styles": options.buttonStyles || {}
             });
-            if (options.disabled) {
-                optionNode.setAttribute('disabled', true);
-            }
+            // if (option.disabled) {
+            //     optionNode.setAttribute('disabled', true);
+            // }
             // optionNode.setAttribute('text', selectTexts[i]);
             optionNode.inject(input);
         }
@@ -3978,11 +4016,10 @@ MDomItem.OOCheckGroup = new Class({
     createInput: function () {
         var input = new Element('oo-checkbox-group');
         this.itemTag = 'oo-checkbox';
-        if (this.options.selectOption) {
-            this.renderOption(input);
-        } else {
-            this.renderOption2(input);
-        }
+        this.input = input;
+
+        this.renderOption();
+
         if (this.css?.OOCheckGroup) input.setStyles(this.css.OOCheckGroup);
 
         var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOCheckGroupProperties3' : 'OOCheckGroupProperties';
@@ -3996,13 +4033,8 @@ MDomItem.OOSelect = new Class({
     Extends: MDomItem.OOInput,
     createInput: function () {
         var input = new Element('oo-select');
-        if (this.options.selectGroup) {
-            this.renderGroup(input);
-        } else if (this.options.selectOption) {
-            this.renderOption(input);
-        } else {
-            this.renderOption2(input);
-        }
+        this.input = input;
+        this.renderOption(input);
         if (this.css?.OOSelect) input.setStyles(this.css.OOSelect);
 
         var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOSelectProperties3' : 'OOSelectProperties';
@@ -4010,7 +4042,17 @@ MDomItem.OOSelect = new Class({
 
         return input;
     },
-    renderOption: function (input) {
+    renderOption: function () {
+        var input = this.input;
+        if (this.options.selectGroup) {
+            this._renderGroup(input);
+        } else if (this.options.selectOption) {
+            this._renderOption(input);
+        } else {
+            this._renderOption2(input);
+        }
+    },
+    _renderOption: function (input) {
         var options = this.options;
         var valueKey = options.valueKey || 'value';
         var labelKey = options.labelKey || 'label';
@@ -4018,7 +4060,7 @@ MDomItem.OOSelect = new Class({
             var optionNode = new Element("oo-option", {
                 "value": option[valueKey]
             });
-            if (options.disabled) {
+            if (option.disabled) {
                 optionNode.setAttribute('disabled', true);
             }
             optionNode.setAttribute('value', option[valueKey]);
@@ -4026,7 +4068,7 @@ MDomItem.OOSelect = new Class({
             optionNode.inject(input);
         });
     },
-    renderOption2: function (input) {
+    _renderOption2: function (input) {
         var selectValue = this.options.selectValue || this.options.selectText;
         var selectText = this.options.selectText || this.options.selectValue;
         var selectValues = typeOf(selectValue) === "array" ? selectValue : selectValue.split(this.valSeparator);
@@ -4036,7 +4078,7 @@ MDomItem.OOSelect = new Class({
             var optionNode = new Element("oo-option", {
                 "value": selectValues[i]
             });
-            // if( options.disabled ){
+            // if( option.disabled ){
             //     optionNode.setAttribute('disabled', true);
             // }
             optionNode.setAttribute('value', selectValues[i]);
@@ -4044,7 +4086,7 @@ MDomItem.OOSelect = new Class({
             optionNode.inject(input);
         }
     },
-    renderGroup: function (input) {
+    _renderGroup: function (input) {
         var options = this.options;
         var groupLabelKey = options.grouplabelKey || 'label';
         var valueKey = options.valueKey || 'value';
@@ -4057,7 +4099,7 @@ MDomItem.OOSelect = new Class({
                 var optionNode = new Element("oo-option", {
                     "value": option[valueKey]
                 });
-                if (options.disabled) {
+                if (option.disabled) {
                     optionNode.setAttribute('disabled', true);
                 }
                 optionNode.setAttribute('value', option[valueKey]);

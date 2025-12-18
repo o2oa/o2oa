@@ -7,7 +7,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
         if (!this.options.noCreate) this.loadCreateActionButton();
 
 		this.data = data;
-        if ( !this.data || typeOf(this.data)!="array") this.data = [];
+        if ( !this.data || typeOf(this.data)!=="array") this.data = [];
         this.loadRestoreActionButton();
 
         this.data.each(function(actionData, idx){
@@ -20,7 +20,8 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
     listRemovedSystemTool : function(){
         var list = [];
         if( !this.defaultTools ){
-            MWF.getJSON( "../x_component_cms_FormDesigner/Module/Actionbar/toolbars.json", function(tools){
+            var url = this.options.systemToolsAddress || "../x_component_cms_FormDesigner/Module/Actionbar/toolbars.json";
+            MWF.getJSON( url, function(tools){
                 this.defaultTools = tools;
             }.bind(this), false);
         }
@@ -80,7 +81,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
             "selectableItems" : selectableItems,
             "values": [],
             "onComplete": function( array ){
-                if( !array || array.length == 0 )return;
+                if( !array || array.length === 0 )return;
                 var actionNameList = [];
                 array.each( function(tool){
                     for( var i=0; i<list.length; i++ ){
@@ -195,7 +196,9 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             this.scriptNode = new Element("div", {"styles": this.css.actionScriptNode}).inject(this.node);
             this.scriptArea = new MWF.widget.ScriptArea(this.scriptNode, {
                 "title": this.editor.designer.lp.actionbar.editScript,
-                "maxObj": this.editor.designer.formContentNode,
+                "isbind": false,
+                "maxObj": this.editor.options.scriptMaxObj ||this.editor.designer.formContentNode,
+                "key": "actionScript",
                 "onChange": function () {
                     this.data.actionScript = this.scriptArea.editor.getValue();
                     this.editor.fireEvent("change", [{
@@ -255,72 +258,37 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
         //this.setEditNode();
     },
     setEvent: function(){
-        this.iconMenu = new MWF.widget.Menu(this.iconNode, {
-            "event": "click",
-            "style": "actionbarIcon",
-            "onPostShow" : function (ev) {
-                ev.stopPropagation();
-            }
+        var iconMenu = new MWF.widget.IconMenu({
+            iconType: this.editor.options.iconType || '',
+            pngIconPath: this.editor.path+this.editor.options.style+"/tools/{index}.png",
+            pngIconStartIndex: 1,
+            pngIconEndIndex: 136
         });
-        this.iconMenu.load();
-        var _self = this;
-        if (this.editor.options.iconType==='font'){
-            o2.JSON.get("/x_desktop/css/v10/ooicon.json", function(json){
-                const icons = json.glyphs;
-
-                icons.forEach(function(i){
-                    var item = this.iconMenu.addMenuItem("", "click", function(ev){
-                        var icon = this.item.iconName;
-                        _self.iconNode.set("class", "ooicon-"+icon);
-                        _self.data.icon = icon;
-                        _self.editor.fireEvent("change", [{
-                            compareName: "."+icon + ".icon"
-                        }]);
-                        ev.stopPropagation();
-                    });
-                    item.item.addClass("ooicon-"+i.font_class);
-                    item.item.setStyles({
-                        "text-align": "center",
-                        "line-height": "28px",
-                        "font-size": "14px"
-                    });
-                    item.item.iconName = i.font_class;
-
-                }.bind(this));
-            }.bind(this));
-        }else{
-            for (var i=-6; i<0; i++){
-                //var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
-                var icon = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
-                var item = this.iconMenu.addMenuItem("", "click", function(ev){
-                    var src = this.item.getElement("img").get("src");
-                    _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
-                    _self.data.customImg = true;
-                    _self.iconNode.setStyle("background-image", "url("+src+")");
-                    _self.editor.fireEvent("change", [{
-                        compareName: "."+_self.getName() + ".img"
-                    }]);
-                    ev.stopPropagation();
-                }, icon);
-                item.iconName = i+".png";
+        iconMenu.load(this.iconNode);
+        iconMenu.addEvent('click', (ev, icon) => {
+            if (this.editor.options.iconType === 'font'){
+                this.iconNode.set("class", "ooicon-" + icon);
+                this.data.icon = icon;
+                this.iconNode.setStyle("background-image", "none");
+                this.editor.fireEvent("change", [{
+                    compareName: "." + icon + ".icon"
+                }]);
+            }else{
+                this.data.img = icon.substr(icon.lastIndexOf("/")+1, icon.length);
+                this.data.customImg = true;
+                if(this.data.icon){
+                    if(this.iconNode.hasClass(this.data.icon)){
+                        this.iconNode.removeClass(this.data.icon);
+                    }
+                    delete this.data.icon;
+                }
+                this.iconNode.setStyle("background-image", "url("+icon+")");
+                this.editor.fireEvent("change", [{
+                    compareName: "."+this.getName() + ".img"
+                }]);
             }
-            for (var i=1; i<=136; i++){
-                //var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
-                var icon = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
-                var item = this.iconMenu.addMenuItem("", "click", function(ev){
-                    var src = this.item.getElement("img").get("src");
-                    _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
-                    _self.data.customImg = true;
-                    _self.iconNode.setStyle("background-image", "url("+src+")");
-                    _self.editor.fireEvent("change", [{
-                        compareName: "."+_self.getName() + ".img"
-                    }]);
-                    ev.stopPropagation();
-                }, icon);
-                item.iconName = i+".png";
-            }
-        }
-
+            ev.stopPropagation();
+        });
 
         this.upButton.addEvent("click", function(e){
             var actions = this.editor.actions;

@@ -47,6 +47,7 @@ class ActionListAll extends BaseAction {
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
 		List<Unit> os = em.createQuery(cq.select(root)).getResultList();
+		os = business.unit().sort(os);
 		List<String> list = ListTools.extractProperty(os, "distinguishedName", String.class, true, true);
 		Wo wo = new Wo();
 		wo.getUnitList().addAll(list);

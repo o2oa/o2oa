@@ -104,9 +104,11 @@
         <div class="MWFScriptArea" name="validationPublish" title="{{$.lp.validationPublish}} (S)"></div>
 
 	</div>
-    <div title="{{$.lp.action}}"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
-        <div class="MWFDefaultActionArea" name="defaultTools" data-target="mobileForm"></div>
-        <div class="MWFActionArea" name="tools"></div>
+    <div title="{{$.lp.action}}"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'block'}">
+<!--        <div class="MWFDefaultActionArea" name="defaultTools" data-target="mobileForm"></div>-->
+<!--        <div class="MWFActionArea" name="tools"></div>-->
+        <div style="padding: 5px;color:#999;">{{$.lp.formActionNotice}}</div>
+        <div class="MWFMultiActionArea" name="multiTools" data-systemToolsAddress="../x_component_cms_FormDesigner/Module/Form/toolbars.json"></div>
     </div>
 	<div title="{{$.lp.event}}"  class="MWFTab">
         <div style="padding: 5px;color:#999;">{{$.lp.noEventInfo}}</div>

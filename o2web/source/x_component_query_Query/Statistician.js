@@ -238,6 +238,9 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
         this.reloadChart();
     },
     toFloat: function(value){
+        if( o2.typeOf(value) === 'number' ){
+            return value;
+        }
         if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
         value = value.replace(/,/g, "");
         value = value.replace(/\s/g, "");
@@ -258,6 +261,9 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
             //this.bar.addBar("value");
             this.bar.addBar(function(d){
                 var value = d.value;
+                if( o2.typeOf(value) === 'number' ){
+                    return value;
+                }
                 if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
                 value = value.replace(/,/g, "");
                 value = value.replace(/\s/g, "");
@@ -319,6 +325,9 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
             //this.bar.addBar("value");
             this.bar.addBar(function(d){
                 var value = d.value;
+                if( o2.typeOf(value) === 'number' ){
+                    return value;
+                }
                 if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
                 value = value.replace(/,/g, "");
                 value = value.replace(/\s/g, "");
@@ -382,6 +391,30 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
             }
         }
         MWF.release(this);
+    },
+    reloadChart: function(){
+        if (this.json.isChart && this.charts.length > 0 ){
+            if (this.bar) this.bar.destroy();
+            this.bar = null;
+            if (this.chartFlagNode){
+                this.chartFlagNode.destroy();
+                this.chartFlagNode = null;
+            }
+            if (this.chartNode)this.chartNode.empty();
+            switch (this.currentChart){
+                case "bar":
+                    this.loadChartBar();
+                    break;
+                case "pie":
+                    this.loadChartPie();
+                    break;
+                case "line":
+                    this.loadChartLine();
+                    break;
+                default:
+                    this.loadChartBar();
+            }
+        }
     }
 });
 MWF.xApplication.query.Query.Statistician.GroupStat = new Class({

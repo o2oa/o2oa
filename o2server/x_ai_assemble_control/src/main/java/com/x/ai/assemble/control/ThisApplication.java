@@ -3,6 +3,7 @@ package com.x.ai.assemble.control;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.x.ai.assemble.control.quartz.CmsDocumentIndexTask;
+import com.x.ai.assemble.control.quartz.InitConfigTask;
 import com.x.ai.assemble.control.queue.QueueDocumentIndex;
 import com.x.ai.core.entity.AiModel;
 import com.x.base.core.container.EntityManagerContainer;
@@ -37,6 +38,7 @@ public class ThisApplication {
 	public static void init() throws Exception {
 		context().startQueue(queueDocumentIndex);
 		context.schedule(CmsDocumentIndexTask.class, "0 0 1,12 * * ?");
+		context.schedule(InitConfigTask.class, "0 0/5 * * * ?");
 		initModel();
 	}
 

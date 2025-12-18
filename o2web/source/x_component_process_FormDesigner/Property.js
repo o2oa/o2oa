@@ -150,6 +150,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadStatementFilterWithTemplate();
                     this.loadDocumentTempleteSelect();
                     this.loadFieldConfig();
+                    this.loadOOIconInput();
 
                     this.loadElSelectIcon();
                     this.loadVueElementUI();
@@ -1149,6 +1150,41 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }, data);
                     filedConfigurator.load()
                 }.bind(this));
+            }.bind(this));
+        }
+    },
+    loadOOIconInput: function(){
+        var nodes = this.propertyContent.getElements(".MWFOOIconInput");
+        if (nodes.length){
+            nodes.each(function(node){
+                var name = node.get("name");
+                var oldValue = this.data[name] || '';
+
+                var setIcon = (ev, iconClass)=>{
+                    node.value = iconClass;
+                    this.data[name] = iconClass;
+                    this.checkHistory(name, oldValue, iconClass);
+                    oldValue = iconClass;
+                    node.fireEvent('change', ev);
+                };
+
+                let iconMenu;
+                o2.require("o2.widget.IconMenu", ()=>{
+                    iconMenu = new o2.widget.IconMenu({
+                        zIndex: 500001,
+                        onClick: (ev, iconClass)=>{
+                            setIcon(ev, iconClass);
+                        }
+                    });
+                    iconMenu.load(node, this.designer.content);
+                }, false);
+
+                new Element('span.ooicon-reset', {
+                    style: 'cursor:pointer;padding-left:6px;',
+                    events: {
+                        click: (ev)=>{ setIcon(ev, ''); }
+                    }
+                }).inject(node, 'after');
             }.bind(this));
         }
     },
@@ -3053,7 +3089,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
     loadActionArea: function(){
 	    var multiActionArea = this.propertyContent.getElements(".MWFMultiActionArea");
-        debugger;
         multiActionArea.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];

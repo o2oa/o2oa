@@ -583,6 +583,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         activityId: '活动ID',
         splitValue: '拆分值',
 
+        formActionNotice: "注：当作为移动端表单展现时有效。",
+
         enableSectionMerge: '区段合并',
         showSectionKey: '显示区段值',
         editByMerge: '合并编辑(删除区段值)',
