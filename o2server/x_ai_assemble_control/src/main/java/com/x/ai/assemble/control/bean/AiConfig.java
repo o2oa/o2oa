@@ -15,6 +15,8 @@ public class AiConfig extends GsonPropertyObject {
 
     private static final long serialVersionUID = -6774808981486330113L;
 
+    public static final String DEFAULT_O2_AI_URL = "http://127.0.0.1:7080/x-app/api";
+
     public static final String appName_FIELD = "appName";
     @FieldDescribe("应用名称.")
     private String appName = "O2OA";
@@ -32,17 +34,17 @@ public class AiConfig extends GsonPropertyObject {
     private String desc = "";
 
     @FieldDescribe("知识库索引应用列表.")
-    private List<String> knowledgeIndexAppList = new ArrayList<>();
+    private List<String> knowledgeIndexAppList = List.of("dc45465e-e12e-4767-a404-b3ef9e7260d7|知识库");
 
     @FieldDescribe("问答库库索引应用列表.")
-    private List<String> questionsIndexAppList = new ArrayList<>();
+    private List<String> questionsIndexAppList = List.of("02b8190c-4815-4126-b715-a149618c8002|问答");
 
     @FieldDescribe("o2智能体附件解析支持的文件类型.")
     private List<String> o2AiFileList = List.of("pdf", "docx", "doc", "txt", "md", "pptx", "ppt", "xlsx", "xls");
 
     public static final String o2AiBaseUrl_FIELD = "o2AiBaseUrl";
     @FieldDescribe("o2智能体服务地址.")
-    private String o2AiBaseUrl = "http://172.16.91.60:7080/x-app/api";
+    private String o2AiBaseUrl = DEFAULT_O2_AI_URL;
 
     public static final String o2AiToken_FIELD = "o2AiToken";
     @FieldDescribe("o2智能体服务认证秘钥.")
