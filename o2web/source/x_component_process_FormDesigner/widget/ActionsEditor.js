@@ -385,7 +385,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
         var iconMenu = new MWF.widget.IconMenu({
             iconType: this.editor.options.iconType || '',
             pngIconPath: this.editor.path+this.editor.options.style+"/tools/{index}.png",
-            pngIconCount: 136
+            pngIconEndIndex: 136
         });
         iconMenu.load(this.iconNode);
         iconMenu.addEvent('click', (ev, icon) => {
