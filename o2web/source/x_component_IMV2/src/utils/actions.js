@@ -60,7 +60,7 @@ function personAction(method, ...args) {
 }
 
 /**
- * 个人 API
+ * 个人 API PersonAction
  * x_organization_assemble_personal
  * @param {*} method
  * @param  {...any} args
@@ -68,6 +68,38 @@ function personAction(method, ...args) {
  */
 function personalAction(method, ...args) {
     return doAction('x_organization_assemble_personal', 'PersonAction', method, args);
+}
+
+/**
+ * UnitAction
+ * x_organization_assemble_control
+ * @param method
+ * @param args
+ * @returns {Promise<*>}
+ */
+function orgUnitAction(method, ...args) {
+    return doAction('x_organization_assemble_control', 'UnitAction', method, args);
+}
+/**
+ * IdentityAction
+ * x_organization_assemble_control
+ * @param method
+ * @param args
+ * @returns {Promise<*>}
+ */
+function orgIdentityAction(method, ...args) {
+    return doAction('x_organization_assemble_control', 'IdentityAction', method, args);
+}
+
+/**
+ * UnitAction
+ * x_organization_assemble_express
+ * @param method
+ * @param args
+ * @returns {Promise<*>}
+ */
+function orgExpressUnitAction(method, ...args) {
+    return doAction('x_organization_assemble_express', 'UnitAction', method, args);
 }
 
 /**
@@ -235,6 +267,9 @@ const getBaiduMapUrl = (lat, longt, address, content) => {
 export {
     doAction,
     doActionBackResult,
+    orgUnitAction,
+    orgExpressUnitAction,
+    orgIdentityAction,
     getPublicData,
     putPublicData,
     personAction,

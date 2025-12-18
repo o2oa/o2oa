@@ -2,6 +2,17 @@ import {dom, exec} from "@o2oa/util";
 import { lp } from "@o2oa/component";
 import {EventName} from "./eventBus.js";
 
+// 防抖
+const debounce = (fn, delay = 300) => {
+  let timer = null
+  return (...args) => {
+    if (timer) clearTimeout(timer)
+    timer = window.setTimeout(() => {
+      fn(...args)
+    }, delay)
+  }
+}
+
 /**
  * 是否是正确的 url
  * @param input
@@ -627,5 +638,6 @@ export {
   conversationPicker,
   fileExtIcon,
   canUseWebP,
-  isHttpUrl
+  isHttpUrl,
+  debounce
 };
