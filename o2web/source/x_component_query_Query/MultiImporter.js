@@ -685,6 +685,11 @@ MWF.QMultiImporter = new Class(
                 }
             })
 
+            if(this.totalCount === 0){
+                if(this.progressDialog)this.progressDialog.close();
+                this.notice('从Excel文件中未获取到需要导入的数据，导入结束', 'error')
+            }
+
             var actionPromises = [];
             var completedCount = 0;
             var checkAllCompleted = ()=>{
@@ -1359,6 +1364,190 @@ MWF.QMultiImporter.Importer = new Class({
             }
         });
     },
+    _getErrorHeadHtml: function () {
+            var htmlArray = [];
+                var titleStyle = this.objectToString( this.css.titleStyles, "style" );
+                var vaildTitleStyles = this.objectToString( this.css.vaildTitleStyles, "style" );
+                htmlArray.push( "<tr>" );
+                this.json.data.columnList.each( function (columnJson, i) {
+                    htmlArray.push( "<th style='"+titleStyle+"'>"+o2.txt(columnJson.displayName)+"</th>" );
+                });
+                htmlArray.push( "<th style='"+vaildTitleStyles+"'> "+this.lp.validationInfor +"</th>" );
+                htmlArray.push( "</tr>" );
+        return htmlArray.join("");
+    },
+    _getErrorContentHtml: function (){
+        var htmlArray = [];
+                var contentStyles = Object.clone( this.css.contentStyles );
+                if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
+                var contentStyle = this.objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
+
+                var validContentStyles = this.objectToString( this.css.validContentStyles, "style" );
+
+                this.rowList.each( function( row, lineIndex ){
+
+                    var lineData = row.importedData;
+
+                    htmlArray.push( "<tr>" );
+                    this.json.data.columnList.each( function (columnJson, i) {
+                        var d = lineData[ i ];
+                        var text = typeOf(d) === "string" ? ( d || '' ).replace(/&#10;/g,"<br/>") : d;
+                        htmlArray.push( "<td style='"+contentStyle+"'>"+ o2.txt(text) +"</td>" ); //换行符&#10;
+                    });
+                    htmlArray.push( "<td style='"+validContentStyles+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
+                    htmlArray.push( "</tr>" );
+
+                }.bind(this));
+        return htmlArray.join("");
+    },
+    getTitleData: function (){
+        var titleDataParsed = [];
+        this.getTitleArray().each(function (title, i){
+            var text = o2.typeOf(title) === 'object' ? title.text : title;
+            var texts = ( text || " " ).split('\\');
+            titleDataParsed.push( texts );
+        });
+        return titleDataParsed;
+    },
+    getTitleLevel: function (){
+        var maxTitleLevel = 1;
+        this.getTitleArray().each(function (title, i){
+            var text = o2.typeOf(title) === 'object' ? title.text : title;
+            var texts = ( text || " " ).split('\\');
+            maxTitleLevel = Math.max( maxTitleLevel, texts.length );
+        });
+        return maxTitleLevel;
+    },
+    getTitleArray: function(){
+        return this.json.data.columnList.map( function (columnJson, i) {
+            var obj = {
+                text: columnJson.displayName
+            };
+            if( columnJson.optionScript ){
+                obj.options = this.Macro.exec(columnJson.optionScript, this);
+            }
+            return obj;
+        }.bind(this));
+    }
+    //**适配老版本，新版本中已修改 end
+});
+
+
+
+MWF.QMultiImporter.Row = new Class({
+    Extends: MWF.QImporter.Row,
+    checkCMS : function( notCheckName ){
+        if( !this.importer.isMaster() ){
+            return;
+        }
+
+        var lp = this.lp;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
+
+        var data = this.document.identity;
+        if(!data){
+
+            errorTextList.push( this.getCol("identity", false) + lp.noDrafter + lp.fullstop );
+            errorTextListExcel.push( this.getCol("identity", true) + lp.noDrafter + lp.fullstop );
+
+        }else if(data.split("@").getLast().toLowerCase() !== "i"){
+
+            errorTextList.push( this.getCol("identity", false) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+            errorTextListExcel.push(  this.getCol("identity", true) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+
+        }
+
+        data = this.document.publishTime;
+        if(!data){
+            errorTextList.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
+            errorTextListExcel.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
+        }else if( ! new Date(data).isValid() ){
+            errorTextList.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
+            errorTextListExcel.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
+        }
+
+        data = this.document.title;
+        if( data && data.length > 70){
+            errorTextList.push(this.getCol("title", false) + '"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
+            errorTextListExcel.push(this.getCol("title", false) + '"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
+        }
+
+        data = this.document.summary;
+        if( data && data.length > 70 ){
+            errorTextList.push(this.getCol("summary", false) + '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+            errorTextListExcel.push( this.getCol("summary", false) + '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
+        }
+
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if(errorTextList.length > 0){
+            return false;
+        }
+
+        return true;
+    },
+    checkProcess : function( notCheckName ){
+
+        if( this.importer.isMaster() ){
+            return;
+        }
+
+        var lp = this.lp;
+        var json = this.importer.json;
+
+        var columnText =  lp.importValidationColumnText;
+        var columnTextExcel = lp.importValidationColumnTextExcel;
+
+        var errorTextList = [];
+        var errorTextListExcel = [];
+
+        var data = this.work.identity;
+        if(!data){
+            errorTextList.push( this.getCol("identity", false) + lp.noDrafter + lp.fullstop );
+            errorTextListExcel.push( this.getCol("identity", true) + lp.noDrafter + lp.fullstop );
+        }else if(data.split("@").getLast().toLowerCase() !== "i"){
+            errorTextList.push( this.getCol("identity", false) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+            errorTextListExcel.push(  this.getCol("identity", true) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
+        }
+
+        if( json.data.processStatus === "completed" ){
+            if(!this.work.form){
+                errorTextList.push( lp.noForm + lp.fullstop );
+                errorTextListExcel.push( lp.noForm + lp.fullstop );
+            }
+
+            data = this.work.startTime;
+            if(!data){
+                errorTextList.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
+                errorTextListExcel.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
+            }else if( ! new Date(data).isValid() ){
+                errorTextList.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
+                errorTextListExcel.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
+            }
+
+            data = this.work.completeTime;
+            if(!data){
+                errorTextList.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
+                errorTextListExcel.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
+            }else if( ! new Date(data).isValid() ){
+                errorTextList.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
+                errorTextListExcel.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
+            }
+        }
+
+        this.errorTextList = this.errorTextList.concat( errorTextList );
+        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+        if(errorTextList.length > 0){
+            return false;
+        }
+
+        return true;
+    },
+    //适配老版本，新版本中已修改 start
     checkValid : function(){
 
         var lp = this.lp;
@@ -1616,123 +1805,8 @@ MWF.QMultiImporter.Importer = new Class({
             }
         }
         return "";
-    },
-    //**适配老版本，新版本中已修改 end
-});
-
-MWF.QMultiImporter.Row = new Class({
-    Extends: MWF.QImporter.Row,
-    checkCMS : function( notCheckName ){
-        if( !this.importer.isMaster() ){
-            return;
-        }
-
-        var lp = this.lp;
-
-        var errorTextList = [];
-        var errorTextListExcel = [];
-
-        var data = this.document.identity;
-        if(!data){
-
-            errorTextList.push( this.getCol("identity", false) + lp.noDrafter + lp.fullstop );
-            errorTextListExcel.push( this.getCol("identity", true) + lp.noDrafter + lp.fullstop );
-
-        }else if(data.split("@").getLast().toLowerCase() !== "i"){
-
-            errorTextList.push( this.getCol("identity", false) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
-            errorTextListExcel.push(  this.getCol("identity", true) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
-
-        }
-
-        data = this.document.publishTime;
-        if(!data){
-            errorTextList.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
-            errorTextListExcel.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
-        }else if( ! new Date(data).isValid() ){
-            errorTextList.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
-            errorTextListExcel.push(this.getCol("publishTime", false) + '"'+ data +'"'+ lp.publishTimeFormatError + lp.fullstop );
-        }
-
-        data = this.document.title;
-        if( data && data.length > 70){
-            errorTextList.push(this.getCol("title", false) + '"'+ data +'"'+ lp.cmsTitleLengthInfor + lp.fullstop );
-            errorTextListExcel.push(this.getCol("title", false) + '"'+ data +'"'+ + lp.cmsTitleLengthInfor + lp.fullstop );
-        }
-
-        data = this.document.summary;
-        if( data && data.length > 70 ){
-            errorTextList.push(this.getCol("summary", false) + '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
-            errorTextListExcel.push( this.getCol("summary", false) + '"'+ data +'"'+ lp.cmsSummaryLengthInfor + lp.fullstop );
-        }
-
-        this.errorTextList = this.errorTextList.concat( errorTextList );
-        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
-
-        if(errorTextList.length > 0){
-            return false;
-        }
-
-        return true;
-    },
-    checkProcess : function( notCheckName ){
-
-        if( this.importer.isMaster() ){
-            return;
-        }
-
-        var lp = this.lp;
-        var json = this.importer.json;
-
-        var columnText =  lp.importValidationColumnText;
-        var columnTextExcel = lp.importValidationColumnTextExcel;
-
-        var errorTextList = [];
-        var errorTextListExcel = [];
-
-        var data = this.work.identity;
-        if(!data){
-            errorTextList.push( this.getCol("identity", false) + lp.noDrafter + lp.fullstop );
-            errorTextListExcel.push( this.getCol("identity", true) + lp.noDrafter + lp.fullstop );
-        }else if(data.split("@").getLast().toLowerCase() !== "i"){
-            errorTextList.push( this.getCol("identity", false) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
-            errorTextListExcel.push(  this.getCol("identity", true) + '"'+ data +'"'+ lp.drafterIsNotIdentity + lp.fullstop );
-        }
-
-        if( json.data.processStatus === "completed" ){
-            if(!this.work.form){
-                errorTextList.push( lp.noForm + lp.fullstop );
-                errorTextListExcel.push( lp.noForm + lp.fullstop );
-            }
-
-            data = this.work.startTime;
-            if(!data){
-                errorTextList.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
-                errorTextListExcel.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
-            }else if( ! new Date(data).isValid() ){
-                errorTextList.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
-                errorTextListExcel.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
-            }
-
-            data = this.work.completeTime;
-            if(!data){
-                errorTextList.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
-                errorTextListExcel.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
-            }else if( ! new Date(data).isValid() ){
-                errorTextList.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
-                errorTextListExcel.push(this.getCol("completeTime", false) + '"'+ data +'"'+ lp.endTimeFormatError + lp.fullstop );
-            }
-        }
-
-        this.errorTextList = this.errorTextList.concat( errorTextList );
-        this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
-
-        if(errorTextList.length > 0){
-            return false;
-        }
-
-        return true;
-    },
+    }
+    //适配老版本，新版本中已修改 end
 });
 
 //MWF.xDesktop.requireApp("Template", "utils.ExcelUtilsV2", null, false);
