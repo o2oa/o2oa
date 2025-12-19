@@ -249,6 +249,7 @@ MWF.xApplication.Common.Main = new Class({
         // shadow.appendChild(this.content);
 
         this.window.node = this.windowNode || new Element("div.layout_component_node").inject(layout.desktop.contentNode);
+		this.window.node.addClass('content-box');
 		this.window.content = new Element("div.layout_component_content").inject(this.window.node);
 		this.content = this.window.content;
 
