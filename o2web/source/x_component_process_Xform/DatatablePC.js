@@ -3162,7 +3162,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 							_self.attachmentChangeFlag = true;
 						}
 					}.bind(this));
-				}else if( this.datatable.multiEditMode && module.field ){
+				}else if( this.datatable.multiEditMode && module.field && json.type!=="OOFiles" ){
 					module.addEvent("change", function(){
 						this.saveDataById();
 					});

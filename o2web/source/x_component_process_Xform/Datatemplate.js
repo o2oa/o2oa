@@ -2309,7 +2309,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 						}.bind(this))
 					}else if( json.type==="Datatemplate" ){
 						this.subDatatemplateModuleList.push(module);
-					}else if( module.field && json.type!=="Datatable" ) {
+					}else if( module.field && !["Datatable", "OOFiles"].contains(json.type) ) {
 						if (module.json.originialId !== this.template.selectorId){
 							module.addEvent("change", function () {
 								this.saveDataById();
