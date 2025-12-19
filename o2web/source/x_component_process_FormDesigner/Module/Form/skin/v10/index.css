@@ -13,6 +13,14 @@
 .form-layout * {
     box-sizing: border-box !important;
 }
+
+.content-box{
+	box-sizing: content-box!important;
+}
+.content-box *{
+	box-sizing: content-box!important;
+}
+
 .form-layout .start-process-area {
     box-sizing: content-box !important;
 }

@@ -9,7 +9,7 @@
   "contentContainerNode" : {
     "overflow-x" : "hidden",
     //"margin-right": "10px",
-    "overflow-y" : "scroll"
+    "overflow-y" : "auto"
   },
   "rightContentNode": {
     "height": "100%",

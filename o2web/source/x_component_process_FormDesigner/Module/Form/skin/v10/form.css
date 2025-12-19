@@ -515,6 +515,21 @@
     box-sizing: border-box !important;
 }
 
+.content-box .selector-area {
+    box-sizing: content-box !important;
+}
+.content-box .selector-area * {
+    box-sizing: content-box !important;
+}
+
+.content-box .form-layout .selector-area {
+    box-sizing: border-box !important;
+}
+
+.content-box .form-layout .selector-area * {
+    box-sizing: border-box !important;
+}
+
 .form-layout .page-content-section div[mwftype='view'] .pagingBar > div,
 .form-layout .page-content-section div[mwftype='statement'] .pagingBar > div {
     border-radius: var(--oo-default-radius) !important;
@@ -600,6 +615,39 @@
 .hide {
     display: none !important;
 }
+
+.cms-comment>div[mwftype="log"]{
+    flex: 1;
+}
+.cms-comment>div[mwftype="log"]>div:first-child{
+    border: 0 !important;
+}
+.cms-comment>div[mwftype="log"] .contentConainer{
+    background-color: transparent !important;
+}
+
+.cms-comment>div[mwftype="log"]>div:first-child>div:first-child{
+    display: none;
+}
+
+.cms-commend>div{
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.cms-commend>div button{
+    width: 2rem !important;
+    height: 2rem !important;
+    cursor: pointer !important;
+}
+.cms-commend>div span{
+    display: block;
+    height: unset !important;
+    line-height: unset !important;
+    font-size: 1rem !important;
+}
+
+
 
 /* 手机 */
 @media only screen and (max-width: 767px) {

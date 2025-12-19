@@ -31,6 +31,7 @@ body {
 .layout_main *{
 	box-sizing: content-box!important;
 }
+
 .o2_vue{
 	box-sizing: border-box!important;
 }
