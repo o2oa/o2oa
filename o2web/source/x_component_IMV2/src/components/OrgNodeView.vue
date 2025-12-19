@@ -6,11 +6,16 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['toggle'])
+const emit = defineEmits(['toggle', 'clickPersonIdentity'])
 
 function toggle() {
   debugger
   emit('toggle', props.node)
+}
+
+function clickIdentity(identity) {
+  console.debug('clickIdentity====>', identity)
+  emit('clickPersonIdentity', identity)
 }
 </script>
 
@@ -30,10 +35,9 @@ function toggle() {
           v-for="p in node.persons"
           :key="p.id"
           class="person"
+          @click="clickIdentity(p)"
       >
-      <span class="arrow">
-        <i class="ooicon-person"></i>
-      </span>
+        <span class="arrow"><i class="ooicon-person"></i></span>
         <span class="name">{{ p.name }}</span>
       </div>
 
@@ -43,13 +47,14 @@ function toggle() {
           :key="child.unique"
           :node="child"
           @toggle="$emit('toggle', $event)"
+          @clickPersonIdentity="clickIdentity"
       />
     </div>
   </div>
 </template>
 
 <style scoped>
-.org-title,.person {
+.org-title, .person {
   cursor: pointer;
   user-select: none;
   display: flex;

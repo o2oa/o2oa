@@ -81,6 +81,16 @@ function orgUnitAction(method, ...args) {
     return doAction('x_organization_assemble_control', 'UnitAction', method, args);
 }
 /**
+ * PersonAction
+ * x_organization_assemble_control
+ * @param method
+ * @param args
+ * @returns {Promise<*>}
+ */
+function orgPersonAction(method, ...args) {
+    return doAction('x_organization_assemble_control', 'PersonAction', method, args);
+}
+/**
  * IdentityAction
  * x_organization_assemble_control
  * @param method
@@ -268,6 +278,7 @@ export {
     doAction,
     doActionBackResult,
     orgUnitAction,
+    orgPersonAction,
     orgExpressUnitAction,
     orgIdentityAction,
     getPublicData,

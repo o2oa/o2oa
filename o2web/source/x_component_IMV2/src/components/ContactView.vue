@@ -1,7 +1,7 @@
 <script setup>
 import {lp} from "@o2oa/component";
 import {ref, onMounted} from "vue";
-import {orgExpressUnitAction, orgIdentityAction, orgUnitAction} from "../utils/actions.js";
+import {orgExpressUnitAction, orgIdentityAction, orgPersonAction, orgUnitAction} from "../utils/actions.js";
 import OrgNodeView from "./OrgNodeView.vue";
 import {debounce} from "../utils/common.js";
 
@@ -58,7 +58,15 @@ onMounted(async () => {
   }
 })
 
-
+const clickPersonIdentity = async (identity) => {
+  console.debug('contactView clickPersonIdentity ====>', identity)
+  if (identity && identity.person) {
+    const person = await orgPersonAction('get', identity.person)
+    console.debug(person)
+  } else {
+    console.error('错误的对象', identity)
+  }
+}
 // 点击展开
 const handleToggle = async (node) => {
   node.expanded = !node.expanded
@@ -143,6 +151,7 @@ const personListByUnit = async (unit) => {
             :key="node.unique"
             :node="node"
             @toggle="handleToggle"
+            @clickPersonIdentity="clickPersonIdentity"
         />
       </div>
     </div>
