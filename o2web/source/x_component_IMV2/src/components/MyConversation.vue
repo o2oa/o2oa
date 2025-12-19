@@ -1,48 +1,56 @@
 <script setup>
 import {ref, onMounted, onUnmounted, inject,} from 'vue'
-import { lp } from '@o2oa/component'
+import {lp} from '@o2oa/component'
 import {imAction, conversationIconUrl} from "../utils/actions.js"
 import {formatPersonName, friendlyTime, toDate} from "../utils/common.js";
 import {EventName} from "../utils/eventBus.js";
+import {imGlobalOptions} from "../store.js";
 
-const emit = defineEmits([ "closeChooseConversation" ]);
+const emit = defineEmits(["closeChooseConversation", "showContact"]);
 const {openConversation} = inject('im-app')
 // eventBus
 const eventBus = inject('eventBus')
 
+const imGlobalOptionsInstance = imGlobalOptions();
+
 onMounted(() => {
+  console.debug('myConversation mounted', eventBus)
   loadMyConversation()
   if (!chooseMode) {
-    eventBus.subscribe(EventName.initOpenedConversation, (conv) => {
-      console.debug("initOpenedConversation", conv)
-      if (conv) {
-        clickConversation(conv)
-      }
-    })
-    eventBus.subscribe(EventName.refreshMyConversation, () => {
-      console.debug("refreshMyConversation")
-      loadMyConversation()
-    })
-    eventBus.subscribe(EventName.addConversationToList, (data) => {
-      console.debug("addConversationToList")
-      if (data) {
-        const index = myConversationList.value.findIndex((item)=> item.id === data.id)
-        if (index < 0) { // 会话不存在 添加
-          myConversationList.value.unshift(data)
-        }
-        currentConversation.value = data
-      }
-    })
+    eventBus.subscribe(EventName.initOpenedConversation, initOpenedConversationEventFun)
+    eventBus.subscribe(EventName.refreshMyConversation, refreshMyConversationEventFun)
+    eventBus.subscribe(EventName.addConversationToList, addConversationToListEventFun)
   }
-
 })
-onUnmounted( ()=> {
+onUnmounted(() => {
+  console.debug('myConversation unmounted', eventBus)
   if (!chooseMode) {
     eventBus.unsubscribe(EventName.initOpenedConversation)
     eventBus.unsubscribe(EventName.refreshMyConversation)
     eventBus.unsubscribe(EventName.addConversationToList)
   }
 })
+
+const initOpenedConversationEventFun = (conv) => {
+  console.debug("initOpenedConversation", conv)
+  if (conv) {
+    clickConversation(conv)
+  }
+}
+const refreshMyConversationEventFun = () => {
+  console.debug("refreshMyConversation")
+  loadMyConversation()
+}
+const addConversationToListEventFun = (data) => {
+  console.debug("addConversationToList")
+  if (data) {
+    const index = myConversationList.value.findIndex((item) => item.id === data.id)
+    if (index < 0) { // 会话不存在 添加
+      myConversationList.value.unshift(data)
+    }
+    currentConversation.value = data
+  }
+}
 
 // ref
 const {chooseMode} = defineProps(['chooseMode']) // 选择模式
@@ -66,6 +74,10 @@ const loadMyConversation = async () => {
         openConversation(null)
       }
     }
+    if (imGlobalOptionsInstance.firstOpenConversation && list.length <= 0) {
+      emit('showContact')
+      imGlobalOptionsInstance.loadedConversation()
+    }
   }
 }
 
@@ -74,7 +86,7 @@ const inputSearch = (e) => {
     e.preventDefault()
     searchContent.value = e.target.value
     console.debug('搜索', searchContent.value)
-    _searchConversation( e.target.value )
+    _searchConversation(e.target.value)
   }
 }
 
@@ -85,7 +97,7 @@ const _searchConversation = (content) => {
   }
   const list = myConversationList.value
   searchMode.value = true
-  searchConversationResultList.value = list.filter((item)=>  item.title.includes(content) || item.personList.filter((p) => p.includes(content)).length > 0)
+  searchConversationResultList.value = list.filter((item) => item.title.includes(content) || item.personList.filter((p) => p.includes(content)).length > 0)
 }
 const _clearSearch = () => {
   searchContent.value = ''
@@ -112,7 +124,7 @@ const conversationName = (conversation) => {
 }
 const conversationLastMessageTime = (conversation) => {
   if (conversation.lastMessage && conversation.lastMessage.createTime) {
-    return  friendlyTime( toDate(conversation.lastMessage.createTime) );
+    return friendlyTime(toDate(conversation.lastMessage.createTime));
   }
   return ''
 }
@@ -158,23 +170,26 @@ const clickConversation = (conversation) => {
 <template>
   <div class="im-conversation-view">
     <div class="im-conversation-search">
-      <oo-input style="width: 100%;" type="text" leftIcon="search" :value="searchContent" :placeholder="lp.conversationSearchPlaceholder"
+      <oo-input style="width: 100%;" type="text" leftIcon="search" :value="searchContent"
+                :placeholder="lp.conversationSearchPlaceholder"
                 @keydown="inputSearch"></oo-input>
     </div>
     <!--      会话列表 -->
     <div class="im-conversation-list" v-if=" !searchMode ">
-      <div v-for="item in myConversationList" :key="item.id" :class=" item.id === currentConversation?.id ? 'im-conv-item active': 'im-conv-item' " @click="clickConversation(item)">
+      <div v-for="item in myConversationList" :key="item.id"
+           :class=" item.id === currentConversation?.id ? 'im-conv-item active': 'im-conv-item' "
+           @click="clickConversation(item)">
         <div class="avatar">
           <img :src="conversationIconUrl(item.id)" alt="avatar">
         </div>
         <div class="body">
           <div class="body-line">
             <div class="title"> {{ conversationName(item) }}</div>
-            <div class="time">{{ conversationLastMessageTime(item)}}</div>
+            <div class="time">{{ conversationLastMessageTime(item) }}</div>
           </div>
           <div class="body-line margin-top-10">
             <div class="msg">
-              {{conversationLastMessage(item)}}
+              {{ conversationLastMessage(item) }}
             </div>
           </div>
         </div>
@@ -182,18 +197,20 @@ const clickConversation = (conversation) => {
     </div>
     <!--      搜索结果 -->
     <div class="im-conversation-list" v-if=" searchMode ">
-      <div v-for="item in searchConversationResultList" :key="item.id" :class=" item.id === currentConversation?.id ? 'im-conv-item active': 'im-conv-item' " @click="clickConversation(item)">
+      <div v-for="item in searchConversationResultList" :key="item.id"
+           :class=" item.id === currentConversation?.id ? 'im-conv-item active': 'im-conv-item' "
+           @click="clickConversation(item)">
         <div class="avatar">
           <img :src="conversationIconUrl(item.id)" alt="avatar">
         </div>
         <div class="body">
           <div class="body-line">
             <div class="title"> {{ conversationName(item) }}</div>
-            <div class="time">{{ conversationLastMessageTime(item)}}</div>
+            <div class="time">{{ conversationLastMessageTime(item) }}</div>
           </div>
           <div class="body-line margin-top-10">
             <div class="msg">
-              {{conversationLastMessage(item)}}
+              {{ conversationLastMessage(item) }}
             </div>
           </div>
         </div>

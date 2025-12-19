@@ -36,6 +36,10 @@ export const useLoadingStore = defineStore('loading', {
     }
 });
 
+export const firstOpen = defineStore('firstOpen', {
+    state: () => ({})
+})
+
 export const imConfig = defineStore('imConfig', {
     state: () => ({
         enableClearMsg: false,
@@ -60,10 +64,14 @@ export const imConfig = defineStore('imConfig', {
 export const imGlobalOptions = defineStore('imGlobalOptions', {
     state: () => ({
         hideSide: false,
+        firstOpenConversation: true,
     }),
     actions: {
         setOptions(options)  {
             this.hideSide = options.hideSide ?? false
+        },
+        loadedConversation() {
+            this.firstOpenConversation = false
         }
     }
 })

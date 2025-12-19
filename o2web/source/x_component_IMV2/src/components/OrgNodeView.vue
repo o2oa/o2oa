@@ -9,7 +9,6 @@ const props = defineProps({
 const emit = defineEmits(['toggle', 'clickPersonIdentity'])
 
 function toggle() {
-  debugger
   emit('toggle', props.node)
 }
 

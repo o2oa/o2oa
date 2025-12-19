@@ -82,6 +82,19 @@ const toggleTab = (tab) => {
   }
 }
 
+const chatWithPerson =  (personDn) => {
+  if (!personDn || personDn === layout.session.user.distinguishedName) {
+    console.error('传入参数错误', personDn)
+    return
+  }
+  toggleTab(0) // 切换到聊天列表
+  newConversation([personDn],"single")
+}
+
+const showContact = () => {
+  toggleTab(1) // 切换到通讯录
+}
+
 </script>
 
 <template>
@@ -107,10 +120,10 @@ const toggleTab = (tab) => {
       </div>
       <!-- 会话列表 -->
       <div class="im-conversation-content">
-        <MyConversation />
+        <MyConversation @showContact="showContact"/>
       </div>
     </div>
-    <ContactView  v-if="currentTab === 1" />
+    <ContactView  v-if="currentTab === 1" @chatWithPerson="chatWithPerson"/>
   </div>
 </template>
 

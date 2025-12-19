@@ -5,6 +5,8 @@ import {orgExpressUnitAction, orgIdentityAction, orgPersonAction, orgUnitAction}
 import OrgNodeView from "./OrgNodeView.vue";
 import {debounce} from "../utils/common.js";
 
+const emit = defineEmits(['chatWithPerson'])
+
 const searchContent = ref('')
 const searchMode = ref(false)
 const searchPersonList = ref([])
@@ -63,6 +65,9 @@ const clickPersonIdentity = async (identity) => {
   if (identity && identity.person) {
     const person = await orgPersonAction('get', identity.person)
     console.debug(person)
+    if (person &&  person.distinguishedName) {
+      emit('chatWithPerson', person.distinguishedName)
+    }
   } else {
     console.error('错误的对象', identity)
   }
@@ -134,6 +139,7 @@ const personListByUnit = async (unit) => {
               v-for="p in searchPersonList"
               :key="p.id"
               class="person"
+              @click="clickPersonIdentity(p)"
           >
           <span class="arrow">
             <i class="ooicon-person"></i>

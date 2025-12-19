@@ -390,6 +390,9 @@ MWF.xDesktop.WebSocket = new Class({
     /// im消息处理
     receiveIMMessage: function(data){
         var imBody = data.body;
+        if (!imBody) {
+            return;
+        }
         // 更新会话或删除会话
         if (data.type === "im_conv_update" || data.type === "im_conv_delete") {
             // 执行im callback 刷新页面信息
@@ -409,7 +412,7 @@ MWF.xDesktop.WebSocket = new Class({
         // im_create 暂时不变
         if (data.type === "im_create") {
             // 系统消息提示
-            if (layout.desktop.message) {
+            if (layout.desktop.message && imBody.createPerson !== layout.session.user.distinguishedName) {
                 var jsonBody = imBody.body;
                 var conversationId = imBody.conversationId;
                 var body = JSON.parse(jsonBody);
