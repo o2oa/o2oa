@@ -25,7 +25,7 @@ MWFCalendar.EventForm = new Class({
     options: {
         "style": "v10",
         "okClass": "mainColor_bg",
-        "width": "800",
+        "width": "1000",
         "height": "475",
         "hasTop": true,
         "hasIcon": false,
@@ -43,7 +43,7 @@ MWFCalendar.EventForm = new Class({
     },
     open: function (e) {
         if( !layout.mobile && this.options.isFull ){
-            this.options.width = "800";
+            this.options.width = "1000";
             this.options.height = "630";
         }
         this.fireEvent("queryOpen");

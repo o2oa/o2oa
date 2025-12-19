@@ -8,7 +8,7 @@ then
 	do
 		if [ ! -d ${current_dir}/$D ]
 		then
-			mkdir ${current_dir}/commons
+			mkdir ${current_dir}/$D
 		fi
 	done
 	if [ -f ${current_dir}/local/update/o2server/version.o2 ]

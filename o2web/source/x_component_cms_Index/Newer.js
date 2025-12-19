@@ -43,7 +43,15 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     initialize: function (columnData, categoryData, app, view, options) {
 
-        debugger;
+        if(layout.mobile){
+            this.options.style = "mobile";
+            this.options.width = "100%";
+            this.options.height = "90%";
+            this.options.bottom = 0;
+            this.options.left = 0;
+            this.options.hasTop = false;
+            this.options.closeByClickMask = true;
+        }
 
         this.path = "../x_component_cms_Index/$Newer/";
         this.cssPath = "../x_component_cms_Index/$Newer/"+this.options.style+"/css.wcss";
@@ -151,6 +159,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
         }
     },
     _load : function(){
+        debugger;
         if( this.categoryData && this.isIgnoreTitle() && this.identityList.length == 1 ) { //信息需要输入标题，数据不需要输入标题
             this.okStart();
         }else{
@@ -165,7 +174,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
         }
     },
     openSel : function(){
-        this.formTopTextNode.set("text", this.lp.selCategory);
+        this.formTopTextNode?.set("text", this.lp.selCategory);
         if( this.sel ){
             this.sel.load();
         }else{
@@ -199,6 +208,13 @@ MWF.xApplication.cms.Index.Newer = new Class({
         }
     },
     _createTableContent: function () {
+        if(layout.mobile){
+            this.formTableArea.setStyles({
+                'display':'flex',
+                'flex-direction':'column',
+                'height':'100%'
+            })
+        }
         if( this.options.zIndex ){
             this.formMaskNode.setStyle('z-index', this.options.zIndex);
             this.formAreaNode.setStyle('z-index', this.options.zIndex);
@@ -217,14 +233,32 @@ MWF.xApplication.cms.Index.Newer = new Class({
             //"<td style='text-align: left;' id='form_startCategory'></td>" +
             //"</tr>" +
             //"</table>"
-            html = "<div id='form_startColumn' style='float:left'></div><div id='form_startCategory' style='float:left'></div>";
+            html = layout.mobile ?
+                "<div id='form_startColumn'></div><div id='form_startCategory' style='display: none;'></div>" :
+                "<div id='form_startColumn' style='float:left'></div><div id='form_startCategory' style='float:left'></div>";
             this.selectContainer.set("html", html);
 
             this.setSelectContent();
         }
 
         this.inputContainer = new Element("div",{styles:this.css.inputContainer}).inject( this.formTableArea );
-        html = "<table width='100%' height='90%' border='0' cellPadding='0' cellSpacing='0'; >" +
+        if(layout.mobile){
+            this.inputContainer.setStyles({'flex': 1});
+        }
+        html = layout.mobile ? "<table width='100%' border='0' cellPadding='0' cellSpacing='0'style='font-size: 16px'>" +
+            "<tr><td colSpan='2' style='height: 60px; line-height: 60px; text-align: center; font-size: 24px; ' id='form_startTitle'>" +
+            this.lp.start+" - "+categoryName+"</td></tr>" +
+            "<tr><td style='height: 42px; line-height: 42px; text-align: left; font-size:16px;color:#333;width: 90px;'>"+this.lp.department+"：</td>" +
+            "<td style='; text-align: left;' id='form_startDepartment'></td></tr>" +
+            "<tr><td style='height: 42px; line-height: 42px;  text-align: left; font-size:16px;color:#333'>"+this.lp.identity+"：</td>" +
+            "<td style='; text-align: left;'><div id='form_startIdentity'></div></td></tr>" +
+            "<tr><td style='height: 42px; line-height: 42px;  text-align: left; font-size:16px;color:#333'>"+this.lp.date+"：</td>" +
+            "<td style='; text-align: left;'><div id='form_startDate'></div></td></tr>" +
+            "<tr><td style='height: 42px; line-height: 42px;  text-align: left; font-size:16px;color:#333'>"+this.lp.subject+"：</td>" +
+            "<td style='; text-align: left;'><input type='text' id='form_startSubject' " +
+            "style='width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 30px;font-size:16px;'/></td></tr>" +
+            "</table>" :
+            "<table width='100%' height='90%' border='0' cellPadding='0' cellSpacing='0'; >" +
             "<tr><td colSpan='2' style='height: 60px; line-height: 60px; text-align: center; font-size: 24px; ' id='form_startTitle'>" +
             this.lp.start+" - "+categoryName+"</td></tr>" +
             "<tr><td style='height: 38px; line-height: 38px; text-align: left; font-size:16px;color:#333;min-width: 100px;'>"+this.lp.department+"：</td>" +
@@ -239,11 +273,18 @@ MWF.xApplication.cms.Index.Newer = new Class({
             "<tr><td style='height: 38px; line-height: 38px; text-align: left; font-size:16px;color:#333'></td>" +
             "<td style='text-align: left;' id='form_startAction'></td></tr>" +
             "</table>";
+
         this.inputContainer.set("html", html);
 
         this.setStartFormContent();
 
-        this.startActionContainer = this.inputContainer.getElementById("form_startAction");
+        if(layout.mobile){
+            this.startActionContainer = new Element("div", {
+                styles: this.css.startActionContainer
+            }).inject(this.inputContainer, 'after');
+        }else{
+            this.startActionContainer = this.inputContainer.getElementById("form_startAction");
+        }
         this.startTitleNode = this.inputContainer.getElementById("form_startTitle");
 
         this.startOkActionNode = new Element("div", {
@@ -257,6 +298,9 @@ MWF.xApplication.cms.Index.Newer = new Class({
             "styles": this.css.cancelActionNode,
             "text": this.lp.cancel
         }).inject(this.startActionContainer);
+        if(layout.mobile){
+            this.cancelActionNode.inject(this.startOkActionNode, 'before');
+        }
 
         this.cancelActionNode.addEvent("click", function(e){
             this.cancelStart(e);
@@ -363,7 +407,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
                     }
                     this.columnTextNode.set("text", this.columnData.appName);
 
-                    this.formTopTextNode.set("text", this.lp.createDocument);
+                    this.formTopTextNode?.set("text", this.lp.createDocument);
                     this.categoryData = category.data;
                     this.checkSubject();
                     this.categoryTextNode.set("text", this.categoryData.categoryName);
@@ -831,24 +875,29 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
         }
         if (this.areaNode) this.areaNode.fade("out");
     },
+    _setMobileSearchEvent: function(searchInput, clearSearch){
+        let isComposing = false; // 标记是否处于输入法输入中
 
+        //输入法开始输入事件
+        searchInput.addEventListener('compositionstart', () => { isComposing = true; });
+
+        //输入法结束输入事件
+        searchInput.addEventListener('compositionend', (e) => {
+            isComposing = false;
+            this.searchCategory();
+        });
+
+        //常规的input事件
+        searchInput.addEventListener('input', (e) => {
+            !isComposing && this.searchCategory();
+        });
+
+        clearSearch.addEventListener('click', (e)=>{
+            searchInput.setAttribute('value', '');
+            this.searchCategory();
+        });
+    },
     createArea: function(){
-        if( this.newer.options.searchEnable ){
-            this.searchNode = new Element("div").inject( this.newer.formTopContentNode );
-            this.searchInputNode = new Element("input", {
-                "styles": this.css.formTopSearchInputNode,
-                "placeholder": this.lp.searchPlacholder,
-                "events": {
-                    "keydown": function(e){ if (e.code===13) this.searchCategory(); }.bind(this)
-                }
-            }).inject( this.searchNode );
-            this.searchActionNode = new Element("div", {
-                "styles": this.css.formTopSearchActionNode,
-                "events": {
-                    "click": function(e){ this.searchCategory(); }.bind(this)
-                }
-            }).inject( this.searchNode );
-        }
 
 
         this.areaNode = new Element("div.categorySelAreaNode", {"styles": this.css.categorySelAreaNode}).inject(this.node );
@@ -856,12 +905,48 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
             //this.closeArea();
         }.bind(this));
 
-        this.columnContainer = new Element("div", {"styles": this.css.selColumnAreaNode}).inject( this.areaNode );
+        if( this.newer.options.searchEnable ){
+            if( layout.mobile ) {
+                this.searchNode = new Element("div", {styles: this.css.searchNode}).inject(this.areaNode);
+                this.searchInputNode = new Element("oo-input", {
+                    "styles": this.css.searchInputNode,
+                    "right-icon": "search",
+                    "placeholder": this.lp.searchPlacholder
+                }).inject(this.searchNode);
+                this.clearSearchNode = new Element("div.ooicon-close", {
+                    styles: this.css.clearSearchNode,
+                    slot: "after-inner-before"
+                }).inject(this.searchInputNode);
+                this._setMobileSearchEvent(this.searchInputNode, this.clearSearchNode);
+            } else {
+                this.searchNode = new Element("div").inject(this.newer.formTopContentNode);
+                this.searchInputNode = new Element("input", {
+                    "styles": this.css.formTopSearchInputNode,
+                    "placeholder": this.lp.searchPlacholder,
+                    "events": {
+                        "keydown": function(e){ if (e.code===13) this.searchCategory(); }.bind(this)
+                    }
+                }).inject( this.searchNode );
+                this.searchActionNode = new Element("div", {
+                    "styles": this.css.formTopSearchActionNode,
+                    "events": {
+                        "click": function(e){ this.searchCategory(); }.bind(this)
+                    }
+                }).inject( this.searchNode );
+            }
+        }
+
+
+        if(layout.mobile){
+            this.selContentWrap = new Element("div.categorySelAreaNode", {"styles": this.css.selContentWrap}).inject(this.areaNode );
+        }
+
+        this.columnContainer = new Element("div", {"styles": this.css.selColumnAreaNode}).inject( this.selContentWrap || this.areaNode );
         this.columnScrollNode = new Element("div.columnScrollNode", {"styles": this.css.selColumnScrollNode}).inject(this.columnContainer);
         this.setScrollBar( this.columnScrollNode );
         this.columnContentNode = new Element("div.selColumnContentNode", {"styles": this.css.selColumnContentNode}).inject(this.columnScrollNode);
 
-        this.categoryContainer = new Element("div", {"styles": this.css.selCategoryAreaNode}).inject( this.areaNode );
+        this.categoryContainer = new Element("div", {"styles": this.css.selCategoryAreaNode}).inject( this.selContentWrap || this.areaNode );
         this.categoryScrollNode = new Element("div", {"styles": this.css.selCategoryScrollNode}).inject(this.categoryContainer);
         this.setScrollBar( this.categoryScrollNode );
         this.categoryContentNode = new Element("div", {"styles": this.css.selCategoryContentNode}).inject(this.categoryScrollNode);
@@ -881,6 +966,7 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
     searchCategory: function(){
         var value = this.searchInputNode.get("value");
         if( value ){
+            if( this.clearSearchNode ) this.clearSearchNode.show();
             ( this.newer.categoryList || [] ).each(function(category){
                 if (category.data.categoryName.indexOf(value)!==-1){
                     category.node.show();
@@ -889,6 +975,7 @@ MWF.xApplication.cms.Index.Newer.CategorySel = new Class({
                 }
             })
         }else{
+            if( this.clearSearchNode ) this.clearSearchNode.hide();
             ( this.newer.categoryList || [] ).each(function(category){
                 category.node.show();
             })

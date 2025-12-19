@@ -7,7 +7,8 @@ MWF.widget.IconMenu = new Class({
         "zIndex": '',
         "iconType": "font",
         "pngIconPath": "../x_component_process_FormDesigner/widget/$ActionsEditor/default/tools/{index}.png",
-        'pngIconCount': 136
+        'pngIconStartIndex': 1,
+        "pngIconEndIndex": 136
     },
     initialize: function(options){
         this.setOptions(options);
@@ -87,7 +88,7 @@ MWF.widget.IconMenu = new Class({
                 }.bind(this));
             }.bind(this));
         }else{
-            for (var i=1; i<=this.options.pngIconCount; i++){
+            for (var i=this.options.pngIconStartIndex; i<=this.options.pngIconEndIndex; i++){
                 var icon = this.options.pngIconPath.replace('{index}', i);
                 var item = iconMenu.addMenuItem("", "click", function(ev){
                     var src = this.item.getElement("img").get("src");
