@@ -67,16 +67,22 @@ const loadMyConversation = async () => {
   const list = await imAction('myConversationList')
   if (list) {
     myConversationList.value = list
-    if (!chooseMode) { // 被踢出群之类的特殊情况
+    if (!chooseMode) {
+      // 被踢出群之类的特殊情况
       if (currentConversation.value && list.findIndex(item => item.id === currentConversation.value.id) < 0) {
         currentConversation.value = null
-        // eventBus.publish(EventName.openConversation, null)
         openConversation(null)
       }
-    }
-    if (imGlobalOptionsInstance.firstOpenConversation && list.length <= 0) {
-      emit('showContact')
-      imGlobalOptionsInstance.loadedConversation()
+      // 第一次打开？ 默认选中
+      // else if (currentConversation.value == null && list.length > 0) {
+      //
+      //   currentConversation.value = list[0]
+      //   openConversation(list[0])
+      // }
+      if (imGlobalOptionsInstance.firstOpenConversation && list.length <= 0) {
+        emit('showContact')
+        imGlobalOptionsInstance.loadedConversation()
+      }
     }
   }
 }
