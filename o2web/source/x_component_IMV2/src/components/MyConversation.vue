@@ -82,24 +82,20 @@ const loadMyConversation = async () => {
 }
 
 const inputSearch = (e) => {
-  if (e.keyCode === 13) {
-    e.preventDefault()
-    searchContent.value = e.target.value
-    console.debug('搜索', searchContent.value)
-    _searchConversation(e.target.value)
-  }
+  searchContent.value = e.target.value
+  _searchConversation(e.target.value)
 }
 
 const _searchConversation = (content) => {
   if (!content) {
-    _clearSearch()
+    clearSearch()
     return
   }
   const list = myConversationList.value
   searchMode.value = true
   searchConversationResultList.value = list.filter((item) => item.title.includes(content) || item.personList.filter((p) => p.includes(content)).length > 0)
 }
-const _clearSearch = () => {
+const clearSearch = () => {
   searchContent.value = ''
   searchMode.value = false
   searchConversationResultList.value = []
@@ -154,7 +150,7 @@ const conversationLastMessage = (conversation) => {
 }
 const clickConversation = (conversation) => {
   if (searchMode.value) {
-    _clearSearch()
+    clearSearch()
   }
   if (chooseMode) {
     emit('closeChooseConversation', conversation)
@@ -172,7 +168,9 @@ const clickConversation = (conversation) => {
     <div class="im-conversation-search">
       <oo-input style="width: 100%;" type="text" leftIcon="search" :value="searchContent"
                 :placeholder="lp.conversationSearchPlaceholder"
-                @keydown="inputSearch"></oo-input>
+                @input="inputSearch">
+        <span v-if="searchContent!==''" class="arrow" slot="after-inner-after" @click="clearSearch"><i class="ooicon-error"></i></span>
+      </oo-input>
     </div>
     <!--      会话列表 -->
     <div class="im-conversation-list" v-if=" !searchMode ">
@@ -221,5 +219,8 @@ const clickConversation = (conversation) => {
 </template>
 
 <style scoped>
-
+.arrow {
+  width: 2rem;
+  text-align: center;
+}
 </style>
