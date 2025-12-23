@@ -4391,7 +4391,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							workData[fieldName] = (fieldType === "object" ? JSON.parse(fieldValue) : fieldValue);
 
 							if(fieldType === "number"){
-								workData[fieldName] = parseInt(fieldValue);
+								workData[fieldName] = parseFloat(fieldValue);
 							}
 
 							_self = this;
