@@ -354,6 +354,16 @@
     width: 24px;
     margin-left: 10px;
 }
+.pageInfor{
+    float: right;
+    height: 26px;
+    line-height: 26px;
+    padding: 0px 10px;
+}
+.pageInfor span{
+    color:#4a90e2;
+}
+
 .contentTitleArea {
     overflow: hidden;
 }
