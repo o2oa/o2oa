@@ -648,7 +648,7 @@
     .page-content-area .page-content-section-search.show{
         display: grid !important;
         height: auto;
-        padding: 0.6rem;
+        padding: 0.6rem !important;
         position: absolute;
         top: 0;
         z-index: 1000;
