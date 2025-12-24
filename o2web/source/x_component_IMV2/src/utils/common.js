@@ -2,6 +2,17 @@ import {dom, exec} from "@o2oa/util";
 import { lp } from "@o2oa/component";
 import {EventName} from "./eventBus.js";
 
+// 防抖
+const debounce = (fn, delay = 300) => {
+  let timer = null
+  return (...args) => {
+    if (timer) clearTimeout(timer)
+    timer = window.setTimeout(() => {
+      fn(...args)
+    }, delay)
+  }
+}
+
 /**
  * 是否是正确的 url
  * @param input
@@ -274,7 +285,7 @@ const chatMsgShowTimeFormat = (date) => {
     } else if (now.getFullYear() === input.getFullYear()) {
       return `${month}-${d} ${hour}:${m}`
     } else {
-      return `${now.getFullYear()}-${month}-${d} ${hour}:${m}`
+      return `${input.getFullYear()}-${month}-${d} ${hour}:${m}`
     }
   }
 }
@@ -627,5 +638,6 @@ export {
   conversationPicker,
   fileExtIcon,
   canUseWebP,
-  isHttpUrl
+  isHttpUrl,
+  debounce
 };

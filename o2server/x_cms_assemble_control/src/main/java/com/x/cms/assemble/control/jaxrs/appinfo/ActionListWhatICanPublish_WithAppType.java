@@ -46,7 +46,7 @@ public class ActionListWhatICanPublish_WithAppType extends BaseAction {
 		} else {
 			if (check) {
 				try {
-					wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null, appType, "全部", isXAdmin, 1000 );
+					wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null,"全部", appType, isXAdmin, 1000 );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);

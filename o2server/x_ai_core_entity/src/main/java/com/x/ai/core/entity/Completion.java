@@ -117,16 +117,16 @@ public class Completion extends SliceJpaObject {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + content_FIELDNAME)
 	private String content;
 
-	public static final String materialIdList_FIELDNAME = "materialIdList";
+	public static final String referenceIdList_FIELDNAME = "referenceIdList";
 	@FieldDescribe("关联素材ID列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + materialIdList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + materialIdList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + materialIdList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + materialIdList_FIELDNAME + ElementIndexNameSuffix)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + referenceIdList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + referenceIdList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + referenceIdList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + referenceIdList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
-	private List<String> materialIdList;
+	private List<String> referenceIdList;
 
 	@FieldDescribe("创建时间.")
 	@Transient
@@ -193,12 +193,12 @@ public class Completion extends SliceJpaObject {
 		this.updateDateTime = updateDateTime;
 	}
 
-	public List<String> getMaterialIdList() {
-		return materialIdList;
+	public List<String> getReferenceIdList() {
+		return referenceIdList;
 	}
 
-	public void setMaterialIdList(List<String> materialIdList) {
-		this.materialIdList = materialIdList;
+	public void setReferenceIdList(List<String> referenceIdList) {
+		this.referenceIdList = referenceIdList;
 	}
 
 	public String getGenerateType() {

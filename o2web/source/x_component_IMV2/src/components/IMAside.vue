@@ -2,6 +2,7 @@
 import {ref, inject } from 'vue'
 import { lp,o2 } from '@o2oa/component'
 import MyConversation from "./MyConversation.vue";
+import ContactView from "./ContactView.vue";
 import {imAction} from "../utils/actions.js";
 import {EventName} from "../utils/eventBus.js";
 import { useLoadingStore } from '../store.js';
@@ -68,22 +69,47 @@ const newConversation = async (personList, type) => {
     // 打开添加到会话列表
     eventBus.publish(EventName.addConversationToList, res)
     // 打开会话
-    // eventBus.publish(EventName.openConversation, res)
     openConversation(res)
   }
+}
+
+const currentTab = ref(0)
+const toggleTab = (tab) => {
+  if (tab !== 0 && tab !== 1) {
+    currentTab.value = currentTab.value === 0 ? 1 : 0
+  } else {
+    currentTab.value = tab
+  }
+}
+
+const chatWithPerson =  (personDn) => {
+  if (!personDn || personDn === layout.session.user.distinguishedName) {
+    console.error('传入参数错误', personDn)
+    return
+  }
+  toggleTab(0) // 切换到聊天列表
+  newConversation([personDn],"single")
+}
+
+const showContact = () => {
+  toggleTab(1) // 切换到通讯录
 }
 
 </script>
 
 <template>
   <div class="im-conversation">
+      <div class="im-conversation-tab">
+        <div :class="currentTab === 0 ? 'im-conversation-tab-item active' : 'im-conversation-tab-item'" @click="toggleTab"><i class="ooicon-chat"></i></div>
+        <div :class="currentTab === 1 ? 'im-conversation-tab-item active' : 'im-conversation-tab-item'" @click="toggleTab"><i class="ooicon-personnel"></i></div>
+      </div>
+    <div class="im-conversation-container" v-if="currentTab === 0">
       <div class="im-conversation-header">
         <div class="im-conversation-header-menus">
           <div class="menu-icon " >
             <i class="ooicon-create"></i>
           </div>
           <div class="menu" @click="clickChoosePersonCreateChat">{{ lp.choosePersonCreate }}</div>
-<!--          <div class="menu" @click="clickMyCollectionPage">{{ lp.msgCollectionTitle }}</div>-->
         </div>
         <div class="im-btn-icon " @click="clickMyCollectionPage">
           <i class="ooicon-pentagram"></i>
@@ -92,9 +118,12 @@ const newConversation = async (personList, type) => {
           <i class="ooicon-config"></i>
         </div>
       </div>
+      <!-- 会话列表 -->
       <div class="im-conversation-content">
-        <MyConversation />
+        <MyConversation @showContact="showContact"/>
       </div>
+    </div>
+    <ContactView  v-if="currentTab === 1" @chatWithPerson="chatWithPerson"/>
   </div>
 </template>
 
