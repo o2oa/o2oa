@@ -1604,7 +1604,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"unreadActivity": "Unreadable activity",
 		"unreadOrg": "Unreadable organization",
 		"uneditActivity": "Non editable activity",
-		"uneditOrg": "Non editable organization"
+		"uneditOrg": "Non editable organization",
+		"formActionNotice": "Note: Valid when presented as a mobile form."
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

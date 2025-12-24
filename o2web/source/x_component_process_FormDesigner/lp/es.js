@@ -1603,7 +1603,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"unreadActivity": "Actividad ilegible",
 		"unreadOrg": "Organización ilegible",
 		"uneditActivity": "Actividades no editables",
-		"uneditOrg": "Organización no editable"
+		"uneditOrg": "Organización no editable",
+		"formActionNotice": "Nota: válido cuando se muestra como un formulario móvil."
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
