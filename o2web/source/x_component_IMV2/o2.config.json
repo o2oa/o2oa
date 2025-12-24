@@ -1,6 +1,6 @@
 {
   "devServer": {
-    "host": "devp.o2oa.net",
+    "host": "qywx.o2oa.net",
     "port": "443",
     "https": true
   }

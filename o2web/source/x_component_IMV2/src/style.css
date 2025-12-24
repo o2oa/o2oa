@@ -193,6 +193,48 @@ button:focus-visible {
     flex-direction: column;
     background-color: var(--oo-im-color-bg-primary);
     border-radius: var(--oo-default-radius);
+    overflow: auto;
+}
+
+.im-conversation-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.im-conversation-tab {
+    height: 2.5rem;
+    margin: 0.8rem 0.8rem 0 0.8rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.im-conversation-tab .im-conversation-tab-item {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--oo-color-text2);
+    background-color: var(--oo-im-color-bg-primary);
+    border: 1px solid var(--oo-im-color-bg-divider);
+    cursor: pointer;
+}
+.im-conversation-tab .im-conversation-tab-item:first-child {
+    border-radius: var(--oo-default-radius) 0 0 var(--oo-default-radius);
+    border-right: none;
+}
+.im-conversation-tab .im-conversation-tab-item:last-child {
+    border-radius:   0 var(--oo-default-radius) var(--oo-default-radius) 0 ;
+    border-left: none;
+}
+.im-conversation-tab .active {
+    background-color: var(--oo-color-main)!important;
+    color: white;
+    border-color: var(--oo-color-main);
 }
 
 .im-conversation-header {
@@ -249,7 +291,8 @@ button:focus-visible {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    flex: 1;
+    overflow: auto;
 }
 .im-conversation-search {
     height: 2.5rem;
