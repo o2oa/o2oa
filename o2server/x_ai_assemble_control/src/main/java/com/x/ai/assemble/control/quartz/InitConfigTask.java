@@ -32,7 +32,7 @@ public class InitConfigTask extends AbstractJob {
     public void schedule(JobExecutionContext jobExecutionContext) {
         try {
             AiConfig config = Business.getConfig();
-            if (BooleanUtils.isNotTrue(config.getO2AiEnable())) {
+            if (BooleanUtils.isNotTrue(config.getO2AiEnable()) && !"no".equals(config.getO2AiBaseUrl())) {
                 LOGGER.info("检测到o2ai未配置，尝试检测并配置.");
                 HttpConnectionResponse response = HttpConnection.get(
                         AiConfig.DEFAULT_O2_AI_URL + "/infra-auth/who", null);
