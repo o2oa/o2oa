@@ -84,7 +84,7 @@ public class HttpConnection {
             readResultString(connection, response);
         } catch (Exception e) {
             response.setMessage(e.getMessage());
-            LOGGER.error(e);
+            LOGGER.warn("http connect to {} error:{}", address, e.getMessage());
         } finally {
             if (null != connection) {
                 connection.disconnect();
@@ -182,7 +182,7 @@ public class HttpConnection {
             readResultString(connection, response);
         } catch (Exception e) {
             response.setMessage(e.getMessage());
-            LOGGER.error(e);
+            LOGGER.warn("http connect to {} error:{}", address, e.getMessage());
         } finally {
             if (null != connection) {
                 connection.disconnect();
