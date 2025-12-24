@@ -35,7 +35,7 @@
 		<project.reporting.outputEncoding>UTF-8
 		</project.reporting.outputEncoding>
 		<graalvm.version>22.3.4</graalvm.version>
-		<tika.version>2.9.2</tika.version>
+		<tika.version>3.2.3</tika.version>
 		<pdfbox.version>2.0.31</pdfbox.version>
 		<lucene.version>9.4.2</lucene.version>
 	</properties>
@@ -654,7 +654,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.16.0</version>
+				<version>3.20.0</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-cli</groupId>
@@ -664,7 +664,7 @@
 			<dependency>
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
-				<version>1.9.4</version>
+				<version>1.11.0</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-net</groupId>
@@ -730,32 +730,32 @@
 			<dependency>
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
-				<version>1.5</version>
+				<version>1.6.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-server</artifactId>
-				<version>9.4.56.v20240826</version>
+				<version>9.4.58.v20250814</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-deploy</artifactId>
-				<version>9.4.56.v20240826</version>
+				<version>9.4.58.v20250814</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-annotations</artifactId>
-				<version>9.4.56.v20240826</version>
+				<version>9.4.58.v20250814</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-quickstart</artifactId>
-				<version>9.4.56.v20240826</version>
+				<version>9.4.58.v20250814</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-proxy</artifactId>
-				<version>9.4.56.v20240826</version>
+				<version>9.4.58.v20250814</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.zxing</groupId>
@@ -775,47 +775,47 @@
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-core</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-jaxws</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-simple</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-wsdl</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-databinding-jaxb</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-transports-http</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-bindings-soap</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-bindings-xml</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-ws-addr</artifactId>
-				<version>3.6.4</version>
+				<version>4.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.woodstox</groupId>
@@ -835,17 +835,17 @@
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
-				<version>5.2.3</version>
+				<version>5.5.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
-				<version>5.2.3</version>
+				<version>5.5.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-scratchpad</artifactId>
-				<version>5.2.3</version>
+				<version>5.5.1</version>
 			</dependency>
 			<dependency>
 				<groupId>fr.opensagres.xdocreport</groupId>
@@ -860,7 +860,7 @@
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers-standard-package</artifactId>
-				<version>2.9.3</version>
+				<version>3.2.3</version>
 				<exclusions>
 					<exclusion>
 						<groupId>xerces</groupId><!--排除xml-apis-->
@@ -1207,7 +1207,7 @@
 			<dependency>
 				<groupId>net.lingala.zip4j</groupId>
 				<artifactId>zip4j</artifactId>
-				<version>2.3.2</version>
+				<version>2.11.5</version>
 			</dependency>
 			<dependency>
 				<groupId>com.microsoft.playwright</groupId>
