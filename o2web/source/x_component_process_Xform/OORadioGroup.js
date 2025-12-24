@@ -200,14 +200,17 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
         this.fieldModuleLoaded = true;
     },
     getTextData: function () {
-        return {"value": this.node.value , "text": this.node.text};
+        return {"value": this.node.value , "text": this.getText()};
     },
     _getInputTextData: function(){
-        return {"value": this.node.value , "text": this.node.text};
+        return {"value": this.node.value , "text": this.getText()};
     },
-
     getText: function(){
-        return this.node.text || '';
+        if( this.fieldModuleLoaded ){
+            return this.node.text || '';
+        }else{
+            return this.getBusinessDataById(null, `${this.json.id}$text`) || '';
+        }
     },
     getInputData: function(){
         return this.node.value;
