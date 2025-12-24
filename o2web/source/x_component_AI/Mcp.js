@@ -104,11 +104,11 @@ MWF.xApplication.AI.Mcp = new Class({
             const file = e.target.files[0];
             document.body.removeChild(fileInput);
             if (!file) {
-                $OOUI.notice.warn(this.lp.common.tip, this.lp.common.unselectfile);
+                $OOUI.notice.warn(_this.lp.common.tip, this.lp.common.unselectfile);
                 return;
             }
             if (file.type !== 'application/json') {
-                $OOUI.notice.warn(this.lp.common.tip, `The file type is incorrect; expected application/json, but got ${file.type}`);
+                $OOUI.notice.warn(_this.lp.common.tip, `The file type is incorrect; expected application/json, but got ${file.type}`);
                 return;
             }
             const reader = new FileReader();
@@ -116,7 +116,7 @@ MWF.xApplication.AI.Mcp = new Class({
                 try {
                     const jsonData = JSON.parse(e.target.result);
                     _this.action.ConfigAction.updateMcpConfig(jsonData.id,jsonData, function( json ){
-                        $OOUI.notice.success(this.lp.common.tip, "success");
+                        $OOUI.notice.success(_this.lp.common.tip, "success");
                         _this.reload();
                     });
                 } catch (error) {
@@ -124,7 +124,7 @@ MWF.xApplication.AI.Mcp = new Class({
                 }
             };
             reader.onerror = function() {
-                $OOUI.notice.warn(this.lp.common.tip, `File Read Error: ${reader.error.message}`);
+                $OOUI.notice.warn(_this.lp.common.tip, `File Read Error: ${reader.error.message}`);
             };
             reader.readAsText(file);
         });
@@ -211,6 +211,7 @@ MWF.xApplication.AI.Mcp = new Class({
                         "text": this.lp.common.save,
                         "action": function () {
                             const name = node.querySelector("[name='name']");
+                            const displayName = node.querySelector("[name='displayName']");
                             const category = node.querySelector("[name='category']");
                             const desc = node.querySelector("[name='desc']");
                             const enable = node.querySelector("[name='enable']");
@@ -252,6 +253,7 @@ MWF.xApplication.AI.Mcp = new Class({
                             })
                             let newData = {
                                 "name" : name.get("value"),
+                                "displayName" : displayName.get("value"),
                                 "category" : category.get("value"),
                                 "desc" : desc.get("value"),
                                 "enable" :enable.get("value"),
