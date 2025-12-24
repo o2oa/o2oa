@@ -66,7 +66,7 @@ MWF.xApplication.process.Application.LP = {
 	"allFile" : "全部文件",
 
 
-
+	"pageInfo" : "共<span>{total}</span>条数据，每页<span>{perPage}</span>条，共<span>{totalPage}</span>页",
 	"firstPage": "第一页",
 	"lastPage": "最后一页",
 

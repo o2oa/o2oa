@@ -579,6 +579,7 @@ MWF.xApplication.process.Application.List = new Class({
 		}
 	},
 	refresh: function(){
+		this.page = 1;
 		this.hide();
 		this.load();
 		this.app.loadCount();
@@ -619,6 +620,14 @@ MWF.xApplication.process.Application.List = new Class({
 			}).inject(this.pageNode);
 			if (i==this.page) node.addClass("mainColor_bg");
 		}
+
+		var pageInfo = this.lp.pageInfo;
+		pageInfo = pageInfo
+			.replace("{total}", this.total)
+			.replace("{perPage}",this.size)
+			.replace("{totalPage}", this.pageCount);
+
+		this.pageInfoNode.set("html",pageInfo);
 	},
 	nextPage: function(){
 		this.page++;
@@ -4382,7 +4391,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							workData[fieldName] = (fieldType === "object" ? JSON.parse(fieldValue) : fieldValue);
 
 							if(fieldType === "number"){
-								workData[fieldName] = parseInt(fieldValue);
+								workData[fieldName] = parseFloat(fieldValue);
 							}
 
 							_self = this;

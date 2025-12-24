@@ -63,6 +63,9 @@ MWF.xApplication.process.Application.LP={
 	"idea": "opinion",
 	"editIdea": "Comment modification",
 	"allFile": "All files",
+
+	"pageInfo" : "Total <span>{total}</span> items, <span>{perPage}</span> items per page, <span>{totalPage}</span> pages in total",
+
 	"firstPage": "First Page",
 	"lastPage": "Last Page",
 	"reroute": "Scheduling",

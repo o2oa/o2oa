@@ -318,10 +318,14 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		return null;
 	},
 	_getInputTextData: function(){
-		return {"value": this.node.value , "text": this.node.text};
+		return {"value": this.node.value , "text": this.getText()};
 	},
 	getText: function(){
-		return this.node.text || '';
+		if( this.fieldModuleLoaded ){
+			return this.node.text || '';
+		}else{
+			return this.getBusinessDataById(null, `${this.json.id}$text`) || '';
+		}
 	},
     getInputData: function(){
 		return this.node.value;
