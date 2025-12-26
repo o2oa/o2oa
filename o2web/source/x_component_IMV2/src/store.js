@@ -36,10 +36,6 @@ export const useLoadingStore = defineStore('loading', {
     }
 });
 
-export const firstOpen = defineStore('firstOpen', {
-    state: () => ({})
-})
-
 export const imConfig = defineStore('imConfig', {
     state: () => ({
         enableClearMsg: false,
