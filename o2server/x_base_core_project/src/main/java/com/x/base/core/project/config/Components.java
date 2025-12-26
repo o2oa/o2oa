@@ -39,12 +39,13 @@ public class Components extends ConfigObject {
     public static final String NAME_CALENDAR = "Calendar";
     public static final String NAME_FTSEARCH = "ftsearch";
     public static final String NAME_IM = "IMV2";
+    public static final String NAME_AI = "AI";
 
     public static final List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SYSTEMCONFIG, NAME_ORG, NAME_CMSMANAGER,
             NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPSTORE,
             NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_WORKCENTER, NAME_HOMEPAGE,
             NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR,
-            NAME_FTSEARCH, NAME_IM);
+            NAME_FTSEARCH, NAME_IM, NAME_AI);
 
     public static final String APPICON_PNG = "appicon.png";
 
@@ -104,6 +105,8 @@ public class Components extends ConfigObject {
                 return new Component(NAME_FTSEARCH, NAME_FTSEARCH, "搜索", APPICON_PNG, 25, Component.TYPE_SYSTEM);
             case NAME_IM:
                 return new Component(NAME_IM, NAME_IM, "聊聊", APPICON_PNG, 26, Component.TYPE_SYSTEM);
+            case NAME_AI:
+                return new Component(NAME_AI, NAME_AI, "AI助手", APPICON_PNG, 27, Component.TYPE_SYSTEM);
             default:
                 return null;
         }
@@ -134,6 +137,7 @@ public class Components extends ConfigObject {
         this.systems.add(systemComponent(NAME_CALENDAR));
         this.systems.add(systemComponent(NAME_FTSEARCH));
         this.systems.add(systemComponent(NAME_IM));
+        this.systems.add(systemComponent(NAME_AI));
     }
 
     public static Components defaultInstance() {
