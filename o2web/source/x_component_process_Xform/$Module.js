@@ -506,7 +506,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      * this.form.get("fieldId").show(); //显示组件
      */
     show: function(){
-        var dsp = this.node.retrieve("mwf_display", "block");
+        var dsp = this.node.retrieve("mwf_display");
         this.node.setStyle("display", dsp);
         if (this.iconNode) this.iconNode.setStyle("display", "block");
     },
