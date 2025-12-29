@@ -10,6 +10,15 @@
                       label-Align="right">
             </oo-input>
             <oo-input required="true"
+                      label="{{$.lp.mcp.displayName}}"
+                      value="{{$.data.displayName}}"
+                      style="width:100%"
+                      name="displayName"
+                      label-style="width:8.2vw;"
+                      label-Align="right">
+            </oo-input>
+
+            <oo-input required="true"
                       label="{{$.lp.mcp.category}}"
                       value="{{$.data.category}}"
                       style="width:100%"
@@ -17,14 +26,6 @@
                       label-style="width:8.2vw;"
                       label-Align="right">
             </oo-input>
-            <oo-textarea required="true"
-                         label="{{$.lp.mcp.desc}}"
-                         value="{{$.data.desc}}"
-                         style="flex:100%"
-                         name="desc"
-                         label-style="width:8.2vw;"
-                         label-Align="right">
-            </oo-textarea>
             <oo-radio-group name="enable"
                             label="{{$.lp.mcp.enable}}"
                             value="{{$.data.enable}}"
@@ -33,6 +34,15 @@
                 <oo-radio text="{{$.lp.common.yes}}" value="true"></oo-radio>
                 <oo-radio text="{{$.lp.common.no}}" value="false"></oo-radio>
             </oo-radio-group>
+            <oo-textarea required="true"
+                         label="{{$.lp.mcp.desc}}"
+                         value="{{$.data.desc}}"
+                         style="flex:100%"
+                         name="desc"
+                         label-style="width:8.2vw;"
+                         label-Align="right">
+            </oo-textarea>
+
             <oo-input required="true"
                       label="{{$.lp.mcp.url}}"
                       value="{{$.data.httpOption.url}}"

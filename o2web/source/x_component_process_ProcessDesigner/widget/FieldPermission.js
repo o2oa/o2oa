@@ -22,7 +22,7 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
             css: [this.path+"style.css"]
         }, {bind: {lp: this.app.designer.lp}, module: this}, () => {
             this.initEvents();
-            // this.loadPermission();
+            this.loadPermission();
         });
     },
     reload: function(){
@@ -53,6 +53,9 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
 
     _addPath: function(data, isNew=true){
         if (this.pathData[data.path]) return false;
+        if(this.emptyNode){
+            this.emptyNode.hide();
+        }
         data.readList = (data.readActivityList?.map((a)=>{
             const {unique, id, name, type, process} = a;
             return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
@@ -101,6 +104,8 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
                 if (!json.data.length){
                     this.bodyNode.appendChild(this.emptyNode);
                     this.emptyNode.lastElementChild.textContent = this.app.designer.lp.noFieldPermissions.replace('{process}', this.currentProcess.name);
+                }else if(this.emptyNode){
+                    this.emptyNode.hide();
                 }
                 json.data.forEach((d)=>{
                     const {unique, id, name, alias, type, process} = d;

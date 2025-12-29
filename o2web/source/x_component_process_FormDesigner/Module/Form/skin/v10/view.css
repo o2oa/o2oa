@@ -303,6 +303,14 @@
 .column-count-2 .page-content-search-fields{
     grid-template-columns: 1fr 1fr;
 }
+.column-count-2 .page-content-search-fields.field-count-1{
+    grid-template-columns: 1fr;
+}
+
+.column-count-2 .page-content-search-actions.field-count-1{
+    flex: 0 0 12.5rem;
+    display: flex;
+}
 .column-count-2 .page-content-search-actions.field-count-2{
     flex: 0 0 12.5rem;
     display: flex;
@@ -323,8 +331,57 @@
     align-content: center;
 }
 
+.column-count-3 .page-content-search-fields{
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.column-count-3 .page-content-search-fields.field-count-1{
+    grid-template-columns: 1fr;
+}
+.column-count-3 .page-content-search-fields.field-count-2{
+    grid-template-columns: 1fr 1fr;
+}
+.column-count-3 .page-content-search-actions.field-count-1{
+    flex: 0 0 12.5rem;
+    display: flex;
+}
+.column-count-3 .page-content-search-actions.field-count-2{
+    flex: 0 0 12.5rem;
+    display: flex;
+}
+.column-count-3 .page-content-search-actions.field-count-3{
+    flex: 0 0 12.5rem;
+    display: flex;
+}
+.column-count-3 .page-content-search-actions.field-count-4{
+    flex: 0 0 5rem;
+    display: grid;
+    align-content: center;
+}
+.column-count-3 .page-content-search-actions.field-count-5{
+    flex: 0 0 5rem;
+    display: grid;
+    align-content: center;
+}
+
+
 .column-count-4 .page-content-search-fields{
     grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.column-count-4 .page-content-search-fields{
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.column-count-4 .page-content-search-fields.field-count-1{
+    grid-template-columns: 1fr;
+}
+.column-count-4 .page-content-search-fields.field-count-2{
+    grid-template-columns: 1fr 1fr;
+}
+.column-count-4 .page-content-search-fields.field-count-3{
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.column-count-4 .page-content-search-actions.field-count-1{
+    flex: 0 0 12.5rem;
+    display: flex;
 }
 .column-count-4 .page-content-search-actions.field-count-2{
     flex: 0 0 12.5rem;

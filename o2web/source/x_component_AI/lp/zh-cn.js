@@ -10,11 +10,11 @@ MWF.xApplication.AI.LP = {
 		"aiModel" : "模型名称",
 		"knowledge": "知识库",
 		"questions" : "问答",
-		"o2AiEnable": "是否启用O2智能体",
-		"o2AiBaseUrl": "o2智能体服务地址",
-		"o2AiToken": "o2智能体服务认证秘钥"
+		"o2AiEnable": "是否启用智能体",
+		"o2AiBaseUrl": "智能体服务地址",
+		"o2AiToken": "智能体服务认证秘钥"
 	},
-	"o2AiEnableTip" : "请先启用O2智能体",
+	"o2AiEnableTip" : "请先启用智能体",
 	"common" : {
 		"yes" : "是",
 		"close" : "关闭",
@@ -71,17 +71,22 @@ MWF.xApplication.AI.LP = {
 		"desc" : "模型描述",
 		"company" : "模型服务商",
 		"ali" : "阿里通义千问",
-		"local" : "本地模型",
+		"local" : "内置模型",
+		"llama" : "私有化模型",
+		"enable" : "是否启用",
 		"version" : "模型版本",
 		"completionUrl" : "模型服务地址",
 		"apiKey" :"模型秘钥",
 		"asDefault" : "是否默认",
 		"proxyHost" : "代理主机",
 		"proxyPort" : "代理端口",
-		"proxyEnable" : "是否启用代理"
+		"proxyEnable" : "是否启用代理",
+		"proxyUser" : "代理认证用户",
+		"proxyPass" : "代理认证密码"
 	},
 	"mcp" : {
 		"name" : "名称",
+		"displayName" : "显示名称",
 		"category" : "分组",
 		"desc" : "说明",
 		"enable" : "是否启用",

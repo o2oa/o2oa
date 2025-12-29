@@ -27,7 +27,7 @@
     </div>
     <div class="layout-right" data-o2-element="rightNode">
         <div class="page">
-            <div class="chat-top" data-o2-element="titleNode">{{$.lp.navi.mcp}}</div>
+            <div class="chat-top" data-o2-element="titleNode">{{$.lp.navi.setting}}</div>
             <div class="form-layout" style="background: #fff;">
                 <div class="form-content">
                     <div class="form-content-area">
@@ -73,7 +73,7 @@
                             <oo-radio value="true" data-o2-events="click:setAiEnable" >{{$.lp.common.yes}}</oo-radio>
                             <oo-radio value="false" data-o2-events="click:setAiEnable" >{{$.lp.common.no}}</oo-radio>
                         </oo-radio-group>
-                        <div data-o2-element="aiEnableNode" style="{{if !$.config.o2AiEnable}}display:none{{end if }}">
+                        <div data-o2-element="aiEnableNode" style="width:100%;flex:100%;{{if !$.config.o2AiEnable}}display:none{{end if }}">
                             <div class="content-item"  style="width:100%;flex:100%;flex-wrap: wrap;gap: 1em 2em;display: flex;">
                                 <oo-input required="true"
                                           label="{{$.lp.config.o2AiBaseUrl}}"
@@ -91,7 +91,7 @@
                                           label-style="width:6.2vw;"
                                           label-Align="right">
                                 </oo-input>
-                                <oo-input data-o2-events="click:selectCMS"
+                                <oo-input class="hide" data-o2-events="click:selectCMS"
                                           v="{{$.config.knowledgeIndexAppValue}}"
                                           required="true"
                                           label="{{$.lp.config.knowledge}}"
@@ -102,7 +102,7 @@
                                           label-style="width:6.2vw;"
                                           label-Align="right">
                                 </oo-input>
-                                <oo-input data-o2-events="click:selectCMS"
+                                <oo-input class="hide" data-o2-events="click:selectCMS"
                                           v="{{$.config.questionsIndexAppValue}}"
                                           required="true"
                                           label="{{$.lp.config.questions}}"

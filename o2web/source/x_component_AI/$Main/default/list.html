@@ -1,6 +1,11 @@
 <div class="page">
-    <div class="chat-top" data-o2-element="titleNode">
-        {{$.lp.newChat}}
+    <div class="chat-top" >
+        <div class="chat-ai-type" data-o2-events="click:showAiType;">
+            <div data-o2-element="currentAiNode" >{{$.aiType}}</div>
+            <div class="ooicon-drop_down"></div>
+        </div>
+        <div class="chat-top-title" data-o2-element="titleNode">{{$.lp.newChat}}</div>
+
     </div>
     <div class="chat-list-wrap" data-o2-element="chatListWrapNode">
         <div class="chat-list" data-o2-element="chatListNode">
@@ -26,7 +31,7 @@
                 case "mcp":
                 icon = "renwu"
                 break
-                case "rag":
+                case "searchKnowledgeBase":
                 icon = "canyue"
                 break
                 }
@@ -41,7 +46,7 @@
                     return $.lp.types.chat;
                     case "mcp":
                     return $.lp.types.task;
-                    case "rag":
+                    case "searchKnowledgeBase":
                     return $.lp.types.knowledge;
                     }
                     }()}}
@@ -55,11 +60,14 @@
                             return $.lp.types.chat_text;
                         case "mcp":
                             return $.lp.types.task_text;
-                        case "rag":
+                        case "searchKnowledgeBase":
                             return $.lp.types.knowledge_text;
                     }
 
                     }()}}</div>
+                <div class="chat-think hide" data-o2-events="click:setThinking" data-o2-element="thinkingNode">
+                    <div class="ooicon-clock "></div><div>深度思考</div>
+                </div>
             </div>
             {{if $.config.o2AiEnable}}
             <div class="ooicon-fujian" style="width: 2.3rem;font-size: 1.8rem;cursor: pointer;"

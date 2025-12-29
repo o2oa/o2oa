@@ -1353,6 +1353,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
 		//activityData.id = this.designer.actions.getUUID();
         this.designer.actions.getUUID(function(id){activityData.id = id;});
+		activityData.unique = '';
 
 		activityData.process = this.process.id;
 

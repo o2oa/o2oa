@@ -1,5 +1,6 @@
 <div style="display: flex;
             min-width: 800px;
+            max-width: 800px;
             gap: .5em;
             min-height: 300px;
             flex-direction: column;">
@@ -12,48 +13,54 @@
               label-Align="right">
     </oo-input>
     <oo-textarea required="true"
-              label="{{$.lp.module.desc}}"
-              value="{{$.data.desc}}"
-              style="width:100%"
-              name="desc"
-              label-style="width:6.2vw;"
-              label-Align="right">
+                 label="{{$.lp.module.desc}}"
+                 value="{{$.data.desc}}"
+                 style="width:100%"
+                 name="desc"
+                 label-style="width:6.2vw;"
+                 label-Align="right">
     </oo-textarea>
     <oo-radio-group name="type"
                     label="{{$.lp.module.company}}"
                     value="{{$.data.type}}"
                     label-style="width:6.2vw;"
                     label-Align="right"
-                    data-o2-element="modelsNode">
-        <oo-radio title="{{$.lp.module.ali}}"  value="ali">
+                    data-o2-element="modelsNode" disabled="true">
+        <oo-radio title="{{$.lp.module.ali}}" value="ali">
 
             <div style="display: flex;gap: .3em;align-items: center;margin-left: .5em;justify-content: center;">
                 <img style="width:1.2em;" src="../x_component_AI/$Main/default/icons/ali.png">
                 <span>{{$.lp.module.ali}}</span>
             </div>
         </oo-radio>
-        <oo-radio title="deepseek"  value="deepSeek">
+        <oo-radio title="deepseek" value="deepSeek">
             <div style="display: flex;gap: .3em;align-items: center;margin-left: .5em;justify-content: center;">
-                <img style="width:1.2em;"  src="../x_component_AI/$Main/default/icons/deepSeek.png">
+                <img style="width:1.2em;" src="../x_component_AI/$Main/default/icons/deepSeek.png">
                 <span>deepSeek</span>
             </div>
         </oo-radio>
-        <oo-radio title="{{$.lp.module.local}}"  value="openAi">
+        <oo-radio title="openAI" value="openAi">
             <div style="display: flex;gap: .3em;align-items: center;margin-left: .5em;justify-content: center;">
-                <img style="width:1.2em;"  src="../x_component_AI/$Main/default/icons/openAi.png">
+                <img style="width:1.2em;" src="../x_component_AI/$Main/default/icons/openAi.png">
+                <span>openAI</span>
+            </div>
+        </oo-radio>
+        <oo-radio title="{{$.lp.module.local}}" value="local">
+            <div style="display: flex;gap: .3em;align-items: center;margin-left: .5em;justify-content: center;">
+                <img style="width:1.2em;" src="../x_component_AI/$Main/default/icons/local.png">
                 <span>{{$.lp.module.local}}</span>
             </div>
-
         </oo-radio>
+        <oo-radio title="{{$.lp.module.llama}}" value="llama">
+            <div style="display: flex;gap: .3em;align-items: center;margin-left: .5em;justify-content: center;">
+                <img style="width:1.2em;" src="../x_component_AI/$Main/default/icons/llama.png">
+                <span>{{$.lp.module.llama}}</span>
+            </div>
+        </oo-radio>
+
+
     </oo-radio-group>
-    <oo-input required="true"
-              label="{{$.lp.module.version}}"
-              value="{{$.data.model}}"
-              style="width:100%"
-              name="model"
-              label-style="width:6.2vw;"
-              label-Align="right">
-    </oo-input>
+
 
     <oo-input required="true"
               label="{{$.lp.module.completionUrl}}"
@@ -63,6 +70,16 @@
               label-style="width:6.2vw;"
               label-Align="right">
     </oo-input>
+
+    <oo-input
+            label="{{$.lp.module.version}}"
+            value="{{$.data.model}}"
+            style="width:100%"
+            name="model"
+            label-style="width:6.2vw;"
+            label-Align="right">
+    </oo-input>
+
     <oo-input required="true"
               label="{{$.lp.module.apiKey}}"
               value="{{$.data.apiKey}}"
@@ -77,32 +94,65 @@
                     label-style="width:6.2vw;"
                     label-Align="right"
                     data-o2-element="asDefault">
-        <oo-radio text="{{$.lp.common.yes}}"  value="true"></oo-radio>
-        <oo-radio text="{{$.lp.common.no}}"  value="false"></oo-radio>
+        <oo-radio text="{{$.lp.common.yes}}" value="true"></oo-radio>
+        <oo-radio text="{{$.lp.common.no}}" value="false"></oo-radio>
     </oo-radio-group>
-    <oo-input required="true"
-              label="{{$.lp.module.proxyHost}}"
-              value="{{$.data.proxyHost}}"
-              style="width:100%"
-              name="proxyHost"
-              label-style="width:6.2vw;"
-              label-Align="right">
-    </oo-input>
-    <oo-input required="true"
-              label="{{$.lp.module.proxyPort}}"
-              value="{{$.data.proxyPort}}"
-              style="width:100%"
-              name="proxyPort"
-              label-style="width:6.2vw;"
-              label-Align="right">
-    </oo-input>
-    <oo-radio-group name="proxyEnable"
+
+    <oo-radio-group name="enable"
+                    label="{{$.lp.module.enable}}"
+                    value="{{$.data.enable}}"
+                    label-style="width:6.2vw;"
+                    label-Align="right"
+                    data-o2-element="enable">
+        <oo-radio text="{{$.lp.common.yes}}" value="true"></oo-radio>
+        <oo-radio text="{{$.lp.common.no}}" value="false"></oo-radio>
+    </oo-radio-group>
+
+    <oo-radio-group  name="proxyEnable"
                     label="{{$.lp.module.proxyEnable}}"
                     value="{{$.data.proxyEnable}}"
                     label-style="width:6.2vw;"
                     label-Align="right"
                     data-o2-element="asDefault">
-        <oo-radio text="{{$.lp.common.yes}}"  value="true"></oo-radio>
-        <oo-radio text="{{$.lp.common.no}}"  value="false"></oo-radio>
+        <oo-radio text="{{$.lp.common.yes}}" value="true" data-o2-events="click:setProxy:true"></oo-radio>
+        <oo-radio text="{{$.lp.common.no}}" value="false" data-o2-events="click:setProxy:false"></oo-radio>
     </oo-radio-group>
+    <div style="{{if !$.data.proxyEnable}}display:none{{end if}}" data-o2-element="proxyNode">
+        <div style="display: flex">
+            <oo-input
+                    label="{{$.lp.module.proxyHost}}"
+                    value="{{$.data.proxyHost}}"
+                    style="min-width:20em"
+                    name="proxyHost"
+                    label-style="width:6.2vw;"
+                    label-Align="right">
+            </oo-input>
+            <oo-input
+                    label="{{$.lp.module.proxyPort}}"
+                    value="{{$.data.proxyPort}}"
+                    style="width:100%"
+                    name="proxyPort"
+                    label-style="width:100%;"
+                    label-Align="right">
+            </oo-input>
+
+            <oo-input
+                    label="{{$.lp.module.proxyUser}}"
+                    value="{{$.data.proxyUser}}"
+                    style="width:100%"
+                    name="proxyUser"
+                    label-style="width:100%;"
+                    label-Align="right">
+            </oo-input>
+
+            <oo-input
+                    label="{{$.lp.module.proxyPass}}"
+                    value="{{$.data.proxyPass}}"
+                    style="width:100%"
+                    name="proxyPass"
+                    label-style="width:100%;"
+                    label-Align="right">
+            </oo-input>
+        </div>
+    </div>
 </div>

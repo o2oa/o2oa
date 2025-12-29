@@ -1,5 +1,8 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import {windowState} from "../store.js";
+
+const windowStateInstance = windowState();
 
 onMounted(()=> {
   loadEmojiJson()
@@ -55,7 +58,7 @@ const clickChooseEmojiType = (e, emojiType) => {
 
 <template>
   <div class="im-chat-emoji-mask" @click="closeEmojiPicker">
-  <div class="im-chat-emoji" @click="clickStopClose">
+  <div class="im-chat-emoji" :class="windowStateInstance.isMobile ? 'im-chat-emoji-s':'' " @click="clickStopClose">
     <div class="im-chat-emoji-triangle"></div>
     <div class="im-chat-emoji-container">
       <div class="im-chat-emoji-type-container">

@@ -506,8 +506,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      * this.form.get("fieldId").show(); //显示组件
      */
     show: function(){
-        var dsp = this.node.retrieve("mwf_display", "block");
-        this.node.setStyle("display", dsp);
+        var dsp = this.node.retrieve("mwf_display");
+        this.node.setStyle("display", dsp || '');
         if (this.iconNode) this.iconNode.setStyle("display", "block");
     },
     load: function(){
@@ -1375,6 +1375,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     _saveDataByPath: function(paths, data, success){
+        if(o2.typeOf(data) === "null"){
+            data = '';
+        }
         if (paths.length > 8) {
             throw new Error(`路径"${paths.join('/')}"层级超过限制(8级)，当前: ${paths.length}`);
         }
