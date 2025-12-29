@@ -35,9 +35,6 @@ class ActionListMcpPaging extends BaseAction {
             throws Exception {
         logger.debug(effectivePerson.getDistinguishedName());
         ActionResult<List<Wo>> result = new ActionResult<>();
-        if (effectivePerson.isNotManager()) {
-            throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-        }
         AiConfig aiConfig = Business.getConfig();
         if (BooleanUtils.isNotTrue(aiConfig.getO2AiEnable())
                 || StringUtils.isBlank(aiConfig.getO2AiToken()) && StringUtils.isBlank(
