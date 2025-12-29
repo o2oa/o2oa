@@ -23,13 +23,19 @@ MWF.xApplication.AI.Main = new Class({
 
             return;
         }
-
+        this.isThinking = false;
         this.generateType = "auto";
         this.sessionId = "";
         this.action = o2.Actions.load("x_ai_assemble_control");
         this.isComposing = false;
         this.selectedFiles = {};
         o2.loadCss("../x_component_process_FormDesigner/Module/Form/skin/v10/form.css");
+
+
+        const aiTypeList = await this.action.ConfigAction.listEnableModel();
+        this.aiTypeList = aiTypeList.data;
+
+        this.aiType = this.aiTypeList.find(model => model.asDefault)?.name;
 
         const config = await this.action.ConfigAction.getBaseConfig();
         this.config = config.data;
@@ -43,10 +49,32 @@ MWF.xApplication.AI.Main = new Class({
             }.bind(this));
         }.bind(this));
     },
+    setThinking : function (){
+        if(this.isThinking){
+
+            this.isThinking = false;
+            this.thinkingNode.removeClass("chat-think-cur");
+        }else{
+
+            this.isThinking = true;
+            this.thinkingNode.addClass("chat-think-cur");
+        }
+    },
+    expandReasoning : function (){
+        if(this.reasoningTool.getFirst().hasClass("ooicon-zhankai")){
+            this.reasoningTool.getFirst().removeClass("ooicon-zhankai");
+            this.reasoningTool.getFirst().addClass("ooicon-zhedie");
+            this.reasoningContentNode.hide();
+        }else {
+            this.reasoningTool.getFirst().addClass("ooicon-zhankai");
+            this.reasoningTool.getFirst().removeClass("ooicon-zhedie");
+            this.reasoningContentNode.show();
+        }
+    },
     loadNew : function (){
         this.sessionId = "";
         this.rightNode.empty();
-        this.rightNode.loadHtml(this.path + this.options.style + "/new.html", {"bind": {"lp": this.lp,"config":this.config}, "module": this}, function () {
+        this.rightNode.loadHtml(this.path + this.options.style + "/new.html", {"bind": {"lp": this.lp,"config":this.config,"aiType" : this.aiType}, "module": this}, function () {
             this.bindEvent();
         }.bind(this));
     },
@@ -141,7 +169,7 @@ MWF.xApplication.AI.Main = new Class({
         p.then((json) => {
             const categories = this.categorizeDates(json.data);
             if (json.data.length === 0) {
-                this.chatListNode.empty();
+                //this.chatListNode.empty();
             }
             const renderCategory = (category, title) => {
                 if (category.length > 0) {
@@ -189,7 +217,7 @@ MWF.xApplication.AI.Main = new Class({
     getMcpExtra : function (flag){
         let data = {};
         this.action.ConfigAction.getMcpExt(flag, function( json ){
-                data = json.data.extra;
+            data = json.data.extra;
         }.bind(this),null,false);
         return data;
     },
@@ -210,7 +238,7 @@ MWF.xApplication.AI.Main = new Class({
         const _this = this;
 
         this.rightNode.empty();
-        this.rightNode.loadHtml(this.path + this.options.style + "/list.html", {"bind": {"lp": this.lp,"generateType":this.generateType,"config":this.config}, "module": this}, function () {
+        this.rightNode.loadHtml(this.path + this.options.style + "/list.html", {"bind": {"lp": this.lp,"generateType":this.generateType,"config":this.config,"aiType" : this.aiType}, "module": this}, function () {
 
             this.bindEvent(true);
 
@@ -222,9 +250,9 @@ MWF.xApplication.AI.Main = new Class({
                 json.data.forEach((msg) => {
                     let html;
                     let el;
-                    if(msg.materialIdList){
+                    if(msg.referenceIdList){
                         const chatListAttNode = new Element("div.chat-list-att").inject(_this.chatListNode);
-                        msg.materialIdList.each(function (fileId){
+                        msg.referenceIdList.each(function (fileId){
                             _this.action.FileAction.get(fileId,function (json){
                                 const attItem = new Element("div.chat-att-item").inject(chatListAttNode);
                                 const file = json.data;
@@ -256,7 +284,7 @@ MWF.xApplication.AI.Main = new Class({
                     msg.icon = _this.getIcon(msg.generateType);
                     msg.typeName = _this.getTypeName(msg.generateType);
 
-                    if ( msg.content.indexOf("$$mcp$$")>-1) {
+                    if ( msg.toolCallList.length>0 && msg.content.indexOf("output")>-1) {
                         let mcpData;
                         let mcpExtra;
                         try{
@@ -277,7 +305,6 @@ MWF.xApplication.AI.Main = new Class({
         
                                 <div><img src="${_this.config.appIconUrl}" class="imgicon"></div>
                                 <div style="display: flex;">
-                                    <div class="aitype"><i class = "ooicon-${msg.icon}"> </i></div>
                                     <div class="markdown-body">
                                         ${marked.parse(template)}
                                     </div>
@@ -307,7 +334,6 @@ MWF.xApplication.AI.Main = new Class({
         
                                 <div><img src="${_this.config.appIconUrl}" class="imgicon"></div>
                                 <div style="display: flex;">
-                                    <div class="aitype"><i class = "ooicon-${msg.icon}"> </i></div>
                                     <div class="markdown-body">
                                         ${msg.content}
                                     </div>
@@ -327,7 +353,7 @@ MWF.xApplication.AI.Main = new Class({
     sendNew : function (){
         const msg = this.chatNode.get("value");
         this.rightNode.empty();
-        this.rightNode.loadHtml(this.path + this.options.style + "/list.html", {"bind": {"lp": this.lp,"generateType":this.generateType,"config":this.config}, "module": this}, function () {
+        this.rightNode.loadHtml(this.path + this.options.style + "/list.html", {"bind": {"lp": this.lp,"generateType":this.generateType,"config":this.config,"aiType" : this.aiType}, "module": this}, function () {
             this.bindEvent(true);
             this.chatListNode.empty();
             this.titleNode.set("text",msg.length>30?msg.substring(0,30):msg);
@@ -427,9 +453,10 @@ MWF.xApplication.AI.Main = new Class({
             <div>
               <img src="${_this.config.appIconUrl}" class="imgicon">
             </div>
-            <div style="display: flex">
+            <div style="display: flex;flex-direction: column;">
+
               <div class="loading-container">
-                <div style="display:flex; align-items: center; justify-content: center;">
+                <div style="display:flex; align-items: center;">
                   <img src="../x_component_AI/$Main/default/loadding.gif" style="height:1.6rem;margin-top: .8em;">
                   <span class="shining-animation">
                     <span>${_this.lp.thinking}</span>
@@ -441,6 +468,10 @@ MWF.xApplication.AI.Main = new Class({
               </div>
               <div class="aitype"></div>
               <div class="msg-container">
+                  <div class="reasoning">
+                    <div class="reasoning-tool" ><i class="ooicon-zhankai"></i><span>深度思考</span> </div>
+                    <div class="reasoning-content"></div>
+                   </div>
                   <div class="markdown-body"></div>
                   <div class="tools-container">
                     <div class="tools">
@@ -457,10 +488,24 @@ MWF.xApplication.AI.Main = new Class({
         const msgNode = el.getElement(".msg-container");
         const answerNode = el.getElement(".markdown-body");
 
+        const reasoningContentNode = el.getElement(".reasoning-content");
+        this.reasoningContentNode = reasoningContentNode;
+
+        const reasoningNode = el.getElement(".reasoning");
+        reasoningNode.hide();
+
         const loadingNode = el.getElement(".loading-container");
         const toolNode = el.getElement(".tools-container");
         const copyNode = el.getElement(".ooicon-window-max");
         const aitypeNode = el.getElement(".aitype");
+        aitypeNode.hide();
+
+        const reasoningTool = el.getElement(".reasoning-tool");
+        this.reasoningTool = reasoningTool;
+
+        reasoningTool.addEvent("click",function(){
+            this.expandReasoning();
+        }.bind(this));
 
 
         this.toolNode = toolNode;
@@ -503,7 +548,8 @@ MWF.xApplication.AI.Main = new Class({
                 "input": msg,
                 "clueId": _this.sessionId,
                 "generateType": _this.generateType,
-                "materialIdList":_this.attId
+                "endpointName" : _this.aiType,
+                "referenceIdList":_this.attId
             });
 
             fetch(requestOptions.url, requestOptions)
@@ -524,6 +570,7 @@ MWF.xApplication.AI.Main = new Class({
         async function processStandardStream(reader) {
             const decoder = new TextDecoder();
             let fullResponse = "";
+            let fullReasoningResponse = "";
 
             while (true) {
                 const {done, value} = await reader.read();
@@ -532,10 +579,17 @@ MWF.xApplication.AI.Main = new Class({
                 const chunk = decoder.decode(value, {stream: true});
                 const lines = chunk.split('\n').filter(l => l.trim());
 
+                let messageType = "message";
                 for (const line of lines) {
-                    if(line.startsWith("event: status")){
-                        loadingNode.hide();
+
+                    if(line.startsWith("event: ")){
+                        messageType = line.replace("event: ","");
                     }
+
+                    // if(line.startsWith("event: status")){
+                    //     loadingNode.hide();
+                    // }
+
                     if (line.startsWith('data:')) {
                         try {
                             const message = line.replace(/^data: /, '').trim();
@@ -546,41 +600,70 @@ MWF.xApplication.AI.Main = new Class({
 
                             const parsed = JSON.parse(message);
 
-                            if (parsed.choices?.[0]?.delta || parsed.choices?.[0]?.message) {
+                            if(messageType === "status" && parsed.id){
+                                _this.completionId = parsed.id;
+                                _this.sessionId = parsed.clueId;
+                                _this.loadHistory();
+                            }
+
+
+                            if(messageType === "toolCall"){
+
+                                loadingNode.getElement(".shining-animation").getFirst().set("text","正在调用工具" + parsed.name)
+                                loadingNode.show();
+
+
+                            }else if(messageType === "output"){
+
+                                answerNode.set("id",_this.completionId);
+                                const mcpData = parsed;
+
+                                mcpExtra = _this.getMcpExtra(mcpData.name);
+
+                                const template = _this.renderTemplate(mcpExtra.template,mcpData.data);
+
+                                answerNode.set("html", marked.parse(template));
+
+                                if(mcpExtra.script){
+                                    eval("(function(node,data) { " + (mcpExtra.script + " }.bind(_this))(answerNode,mcpData.data)"));
+                                }
+                                _this.done(fullResponse);
+                                autoScroll();
+
+                                loadingNode.hide();
+                                return;
+                            }else if (parsed.choices?.[0]?.delta || parsed.choices?.[0]?.message) {
 
                                 const content = parsed.choices[0].delta ? parsed.choices[0].delta.content : parsed.choices[0].message.content;
 
+                                const reasoning_content = parsed.choices[0].delta ? parsed.choices[0].delta.reasoning_content : parsed.choices[0].message.reasoning_content;
                                 if (content) {
-
-                                    if (content.indexOf("$$mcp$$")>-1){
-                                        const mcpData = JSON.parse(JSON.parse(content));
-
-                                        console.log(mcpData)
-                                        mcpExtra = _this.getMcpExtra(mcpData.name);
-
-                                        const template = _this.renderTemplate(mcpExtra.template,mcpData.data);
-
-                                        answerNode.set("html", marked.parse(template));
-
-                                        if(mcpExtra.script){
-                                            eval("(function(node,data) { " + (mcpExtra.script + " }.bind(_this))(answerNode,mcpData.data)"));
-                                        }
-                                        _this.done(fullResponse);
-                                        autoScroll();
-                                        return;
-                                    }
 
                                     fullResponse += content;
                                     answerNode.set("html", marked.parse(fullResponse));
+                                }
 
+                                if(reasoning_content){
+
+                                    loadingNode.getElement(".shining-animation").getFirst().set("text","深度思考中")
+                                    loadingNode.show();
+
+                                    reasoningNode.show();
+
+                                    fullReasoningResponse += reasoning_content;
+                                    reasoningContentNode.set("html", marked.parse(fullReasoningResponse));
                                 }
+                                loadingNode.hide();
                             } else {
-                                if (_this.sessionId === "") {
-                                    if (parsed.generateType && parsed.clueId) {
-                                        _this.sessionId = parsed.clueId;
-                                        _this.loadHistory();
-                                    }
-                                }
+                                // if (_this.sessionId === "") {
+                                //     if (parsed.clueId) {
+                                //         _this.sessionId = parsed.clueId;
+                                //
+                                //         _this.loadHistory();
+                                //     }
+                                // }
+
+
                                 if (parsed.generateType){
                                     aitypeNode.set("html",`<div class = "ooicon-${_this.getIcon(parsed.generateType)}"></div>`);
                                     answerNode.set("id",parsed.id);
@@ -621,6 +704,24 @@ MWF.xApplication.AI.Main = new Class({
             new MWF.xApplication.AI.Setting(this, this.content);
         }.bind(this));
     },
+    quickChat : function (type){
+        let msg = '';
+        switch (type) {
+            case "process":
+                msg = "发起一个请假流程,类型为事假，生病了，明天一天"
+                break
+            case "task":
+                msg = "查询我的待办"
+                break
+            case "meeting":
+                msg = "预定一个明天上午8点到9点的会议，一号会议室"
+                break
+            case "attendance":
+                msg = "我的考勤"
+                break
+        }
+        this.chatNode.set("value",msg);
+    },
     getIcon : function (type){
         let icon ;
         switch (type) {
@@ -633,7 +734,7 @@ MWF.xApplication.AI.Main = new Class({
             case "mcp":
                 icon = "renwu"
                 break
-            case "rag":
+            case "searchKnowledgeBase":
                 icon = "canyue"
                 break
         }
@@ -651,22 +752,57 @@ MWF.xApplication.AI.Main = new Class({
             case "mcp":
                 name = this.lp.types.task
                 break
-            case "rag":
+            case "searchKnowledgeBase":
                 name = this.lp.types.knowledge
                 break
         }
         return name;
+    },
+    showAiType : function (ev){
+        ev.stopPropagation();
+
+        this.action.ConfigAction.listEnableModel(function( json ){
+            data = json.data;
+
+            const node = ev.target.getParent(".chat-ai-type")?ev.target.getParent(".chat-ai-type"):ev.target;
+            let options = [];
+            if (node.menu) return;
+
+            json.data.each(function(d){
+                options.push({
+                    "label" : d.name,
+                    "title" : d.desc
+                })
+            })
+            node.menu = new $OOUI.Menu(node, {
+                area: this.content,
+                styles: {},
+                items: options.map(option => ({
+                    icon: option.icon,
+                    label: option.label,
+                    command: () => this.setAiType(option.label)
+                }))
+            });
+            node.menu.show();
+
+        }.bind(this));
+
+    },
+    setAiType : function (aiType){
+        this.aiType = aiType;
+        this.currentAiNode.set("text",aiType);
     },
     showGenerateType: function(ev) {
         ev.stopPropagation();
         if(!this.config.o2AiEnable) return;
         const node = ev.target;
         if (node.menu) return;
+        // { icon: 'message', label: this.lp.types.chat + " ｜ "+this.lp.types.chat_text, type: "chat", text1: this.lp.types.chat, text2: this.lp.types.chat_text },
+        // { icon: 'renwu', label: this.lp.types.task + " ｜ " + this.lp.types.task_text, type: "mcp", text1: this.lp.types.task, text2: this.lp.types.task_text },
+
         const options = [
             { icon: 'networking_click', label: this.lp.types.auto + " ｜ " + this.lp.types.auto_text, type: "auto", text1: this.lp.types.auto, text2: this.lp.types.auto_text },
-            { icon: 'message', label: this.lp.types.chat + " ｜ "+this.lp.types.chat_text, type: "chat", text1: this.lp.types.chat, text2: this.lp.types.chat_text },
-            { icon: 'renwu', label: this.lp.types.task + " ｜ " + this.lp.types.task_text, type: "mcp", text1: this.lp.types.task, text2: this.lp.types.task_text },
-            { icon: 'canyue', label: this.lp.types.knowledge + " ｜ " + this.lp.types.knowledge_text, type: "rag", text1: this.lp.types.knowledge, text2: this.lp.types.knowledge_text }
+            { icon: 'canyue', label: this.lp.types.knowledge + " ｜ " + this.lp.types.knowledge_text, type: "searchKnowledgeBase", text1: this.lp.types.knowledge, text2: this.lp.types.knowledge_text }
         ];
         node.menu = new $OOUI.Menu(node, {
             area: this.content,

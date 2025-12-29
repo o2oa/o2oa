@@ -210,10 +210,10 @@ MWF.xApplication.AI.Chat = new Class({
             { icon: 'networking_click', label: this.lp.types.auto + " ｜ " + this.lp.types.auto_text, type: "auto", text1: this.lp.types.auto, text2: this.lp.types.auto_text },
             { icon: 'message', label: this.lp.types.chat + " ｜ "+this.lp.types.chat_text, type: "chat", text1: this.lp.types.chat, text2: this.lp.types.chat_text },
             { icon: 'renwu', label: this.lp.types.task + " ｜ " + this.lp.types.task_text, type: "mcp", text1: this.lp.types.task, text2: this.lp.types.task_text },
-            { icon: 'canyue', label: this.lp.types.knowledge + " ｜ " + this.lp.types.knowledge_text, type: "rag", text1: this.lp.types.knowledge, text2: this.lp.types.knowledge_text }
+            { icon: 'canyue', label: this.lp.types.knowledge + " ｜ " + this.lp.types.knowledge_text, type: "searchKnowledgeBase", text1: this.lp.types.knowledge, text2: this.lp.types.knowledge_text }
         ];
         new MWF.xApplication.AI.O2Select({
-            selectValueList: ["auto","chat","mcp","rag"],
+            selectValueList: ["auto","chat","mcp","searchKnowledgeBase"],
             selectTextList: [this.lp.types.auto,this.lp.types.chat,this.lp.types.task,this.lp.types.knowledge],
             onChange : function(value){
 
