@@ -162,7 +162,11 @@ button:focus-visible {
     margin-right: 0 !important;
     margin-left: 0 !important;
 }
-
+.im-app-s {
+    height: 100%!important;
+    width: 100%!important;
+    padding: 0!important;
+}
 .im-app {
     background-color: var(--oo-im-color-bg-app);
     height: calc(100% - 2.28rem);
@@ -177,6 +181,7 @@ button:focus-visible {
 }
 
 .im-aside {
+    height: 100%;
     width: 21rem;
     margin-right: 0.86rem;
 }
@@ -200,6 +205,8 @@ button:focus-visible {
     flex: 1;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    overflow: auto;
 }
 
 .im-conversation-tab {
@@ -968,10 +975,14 @@ button:focus-visible {
     left: 1rem;
     width: 30rem;
     height: 30rem;
-    padding: var(--oo-im-margin-top);
+    padding: 0.7rem;
     background-color: white;
     box-shadow: var(--oo-dialog-shadow);
     border-radius: var(--oo-area-radius);
+}
+.im-chat-emoji-s {
+    left: 0!important;
+    width: calc(100% - 1.4rem)!important;
 }
 
 .im-chat-emoji-triangle {

@@ -1,5 +1,5 @@
 import {dom, exec} from "@o2oa/util";
-import { lp } from "@o2oa/component";
+import {lp} from "@o2oa/component";
 import {EventName} from "./eventBus.js";
 
 // 防抖
@@ -41,7 +41,7 @@ function isEmpty(data) {
     return true;
   }
   if (typeof data == "string") {
-    return data === "" || data.replace(/(^s*)|(s*$)/g, "").length == 0;
+    return data === "" || data.replace(/(^s*)|(s*$)/g, "").length === 0;
   } else {
     return false;
   }
@@ -53,24 +53,16 @@ function isEmpty(data) {
  * @returns
  */
 function isInt(inputData) {
-  if (isPositiveInt(inputData) || isNegtiveInt(inputData)) {
-    return true;
-  } else {
-    return false;
-  }
+  return isPositiveInt(inputData) || isNegativeInt(inputData);
 }
 /**
  * 是否负整数 包含0
  * @param {*} inputData
  * @returns
  */
-function isNegtiveInt(inputData) {
+function isNegativeInt(inputData) {
   const regNeg = /^\-[1-9][0-9]*$/; // 负整数
-  if (regNeg.test(inputData)) {
-    return true;
-  } else {
-    return false;
-  }
+  return regNeg.test(inputData);
 }
 /**
  * 是否正整数
@@ -79,11 +71,7 @@ function isNegtiveInt(inputData) {
  */
 function isPositiveInt(inputData) {
   const regPos = /^\d+$/; // 正整数
-  if (regPos.test(inputData)) {
-    return true;
-  } else {
-    return false;
-  }
+  return regPos.test(inputData);
 }
 
 /**
@@ -113,18 +101,18 @@ function lpFormat(lp, key, options) {
  * @returns
  */
 function setJSONValue(key, v, data) {
-  var idList = key.split(".");
+  let idList = key.split(".");
   idList = idList.map(function (d) {
     return d.test(/^\d+$/) ? d.toInt() : d;
   });
-  var lastIndex = idList.length - 1;
-  for (var i = 0; i <= lastIndex; i++) {
-    var id = idList[i];
+  let lastIndex = idList.length - 1;
+  for (let i = 0; i <= lastIndex; i++) {
+    let id = idList[i];
     if (!id && id !== 0) return;
     if (i === lastIndex) {
       data[id] = v;
     } else {
-      var nexId = idList[i + 1];
+      let nexId = idList[i + 1];
       if (o2.typeOf(nexId) === "number") {
         //下一个ID是数字
         if (!data[id] && o2.typeOf(data[id]) !== "array") {
@@ -367,9 +355,8 @@ const getAllDatesInMonth = (inputDate) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   // 确定月份的第一天
-  const firstDayOfMonth = new Date(year, month, 1);
   // 从第一天开始，递增日期直到月份变化
-  let currentDateInMonth = firstDayOfMonth;
+  let currentDateInMonth = new Date(year, month, 1);
   while (currentDateInMonth.getMonth() === month) {
     result.push(new Date(currentDateInMonth));
     currentDateInMonth.setDate(currentDateInMonth.getDate() + 1);
@@ -592,12 +579,9 @@ const fileExtIcon = (ext) => {
       return new URL( "../assets/file_icons/icon_file_psd.png", import.meta.url).href;
     } else if (ext === "tmp") {
       return new URL( "../assets/file_icons/icon_file_tmp.png", import.meta.url).href;
-    } else {
-      return new URL( "../assets/file_icons/icon_file_unkown.png", import.meta.url).href;
     }
-  } else {
-    return new URL( "../assets/file_icons/icon_file_unkown.png", import.meta.url).href;
   }
+  return new URL( "../assets/file_icons/icon_file_unkown.png", import.meta.url).href;
 }
 
 
@@ -616,7 +600,7 @@ export {
   setJSONValue,
   lpFormat,
   isInt,
-  isNegtiveInt,
+  isNegativeInt,
   isPositiveInt,
   isEmpty,
   toDate,
