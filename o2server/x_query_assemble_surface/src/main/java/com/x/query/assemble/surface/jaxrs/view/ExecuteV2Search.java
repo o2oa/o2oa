@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -70,14 +71,16 @@ public class ExecuteV2Search extends BaseAction {
 				DirectoryReader reader = DirectoryReader.open(directory)) {
 			IndexSearcher searcher = new IndexSearcher(reader);
 
-			// 加入cms任意人员可见标志
-			List<String> auths = new ArrayList<>();
-			if (Objects.nonNull(runtime.authList)) {
-				auths.addAll(runtime.authList);
+			CmsPlan cmsPlan = null;
+			ProcessPlatformPlan processPlatformPlan = null;
+			// 后续要用到plan中的具体内容,这里先生成,避免后续多次生成
+			if (View.TYPE_CMS.equals(view.getType())) {
+				cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+			} else {
+				processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
 			}
-			auths.add("*");
-			Query permissionFilter = termInSet(Indexs.FIELD_READERS, auths);
-			Query scopeFilter = scopeFilter(view, runtime);
+
+			Query scopeFilter = scopeFilter(view, cmsPlan, processPlatformPlan, runtime);
 			Query bodyQuery = bodyQuery(search, analyzer);
 			Query attachmentQuery = attachmentQuery(search, analyzer);
 			Query itemQuery = this.itemQuery(search);
@@ -92,8 +95,16 @@ public class ExecuteV2Search extends BaseAction {
 
 			// 2) 外层 Query：权限/范围做 FILTER，关键词子查询做 MUST，时间加分做 SHOULD
 			BooleanQuery.Builder qb = new BooleanQuery.Builder();
-			qb.add(permissionFilter, BooleanClause.Occur.FILTER); // 不计分
 			qb.add(scopeFilter, BooleanClause.Occur.FILTER); // 不计分
+			if (this.accessible(view, cmsPlan, processPlatformPlan)) {// 根据view的设置是否忽略权限来判断是否要加入权限判断
+				List<String> auths = new ArrayList<>();
+				if (Objects.nonNull(runtime.authList)) {
+					auths.addAll(runtime.authList);
+				}
+				auths.add("*"); // 加入cms任意人员可见标志
+				Query permissionFilter = termInSet(Indexs.FIELD_READERS, auths);
+				qb.add(permissionFilter, BooleanClause.Occur.FILTER); // 不计分
+			}
 			qb.add(keywordShoulds.build(), BooleanClause.Occur.MUST); // 👈 必须至少有一个关键词命中
 			qb.add(recencyQuery, BooleanClause.Occur.SHOULD); // 👈 只加分，不影响是否命中
 
@@ -117,16 +128,17 @@ public class ExecuteV2Search extends BaseAction {
 		return Pair.of(list, 0L);
 	}
 
-	private Query scopeFilter(View view, Runtime runtime) throws Exception {
+	private Query scopeFilter(View view, CmsPlan cmsPlan, ProcessPlatformPlan processPlatformPlan, Runtime runtime)
+			throws Exception {
 		if (View.TYPE_CMS.equals(view.getType())) {
-			return this.cmsScopeFilter(view).orElseThrow(() -> new ExceptionAccessDenied(runtime.person));
+			return this.cmsScopeFilter(cmsPlan).orElseThrow(() -> new ExceptionAccessDenied(runtime.person));
 		} else {
-			return this.processPlatformScopeFilter(view).orElseThrow(() -> new ExceptionAccessDenied(runtime.person));
+			return this.processPlatformScopeFilter(processPlatformPlan)
+					.orElseThrow(() -> new ExceptionAccessDenied(runtime.person));
 		}
 	}
 
-	private Optional<Query> cmsScopeFilter(View view) {
-		CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+	private Optional<Query> cmsScopeFilter(CmsPlan cmsPlan) {
 		final List<String> appInfoList = new ArrayList<>();
 		final List<String> categoryInfoList = new ArrayList<>();
 		cmsPlan.where.appInfoList.stream().forEach(o -> appInfoList.add(o.id));
@@ -147,8 +159,7 @@ public class ExecuteV2Search extends BaseAction {
 		}
 	}
 
-	private Optional<Query> processPlatformScopeFilter(View view) throws Exception {
-		ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+	private Optional<Query> processPlatformScopeFilter(ProcessPlatformPlan processPlatformPlan) throws Exception {
 		this.setProcessEdition(processPlatformPlan);
 		final List<String> processIdList = new ArrayList<>();
 		processPlatformPlan.where.processList.stream().forEach(o -> processIdList.add(o.id));
@@ -156,6 +167,14 @@ public class ExecuteV2Search extends BaseAction {
 			return Optional.empty();
 		}
 		return Optional.of(termInSet(Indexs.FIELD_PROCESS, processIdList));
+	}
+
+	private boolean accessible(View view, CmsPlan cmsPlan, ProcessPlatformPlan processPlatformPlan) {
+		if (View.TYPE_CMS.equals(view.getType())) {
+			return BooleanUtils.isTrue(cmsPlan.where.accessible);
+		} else {
+			return BooleanUtils.isTrue(processPlatformPlan.where.accessible);
+		}
 	}
 
 	/**
