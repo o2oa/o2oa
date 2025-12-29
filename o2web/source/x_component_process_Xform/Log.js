@@ -1793,7 +1793,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         var html;
         var company = "";
         var atts = [];
-        if (!isTask || true){
+        if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             var html = this.json.textStyle;
             if (task.processingType=="empower") html = MWF.xApplication.process.Xform.LP.empowerToHtml;
@@ -1883,7 +1883,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             }
         }else{
             //company = task.unitList[task.unitList.length-1];
-            html = task.person.substring(0, task.person.indexOf("@"))+"("+task.unit.substring(0, task.unit.indexOf("@"))+")" + MWF.xApplication.process.Xform.LP.processing+", "+
+            html = task.person.substring(0, task.person.indexOf("@"))+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+o2.txt(task.activityName)+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
                 MWF.xApplication.process.Xform.LP.comeTime + ": " + task.startTime;
             textNode.set("html", html);
             if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
