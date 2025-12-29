@@ -1646,17 +1646,25 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.viewSearchFieldArea = new Element("div.page-content-search-fields").inject(this.viewSearchAreaNode);
         this.viewSearchActionArea = new Element("div.page-content-search-actions").inject(this.viewSearchAreaNode);
         const count = this.viewJson.customFilterList.length;
-        if (count<3){
+        if (count<2){
+            this.viewSearchActionArea.addClass("field-count-1");
+            this.viewSearchFieldArea.addClass("field-count-1");
+        }
+        if (count===2){
             this.viewSearchActionArea.addClass("field-count-2");
+            this.viewSearchFieldArea.addClass("field-count-2");
         }
         if (count===3){
             this.viewSearchActionArea.addClass("field-count-3");
+            this.viewSearchFieldArea.addClass("field-count-3");
         }
         if (count===4){
             this.viewSearchActionArea.addClass("field-count-4");
+            this.viewSearchFieldArea.addClass("field-count-4");
         }
         if (count>4){
             this.viewSearchActionArea.addClass("field-count-5");
+            this.viewSearchFieldArea.addClass("field-count-5");
         }
 
         const size = this.viewSearchAreaNode.getSize();
@@ -1717,7 +1725,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         searchButton.addEventListener("click", (ev)=>{
             this.customFilterListData = [];
-            this.searchAreaNode.querySelectorAll(".search-item").forEach( (node)=>{
+            this.viewSearchAreaNode.querySelectorAll(".search-item").forEach( (node)=>{
                 this.getFilterData(node);
             });
             const filterData = this.json.filter ? this.json.filter.clone() : [];
@@ -1732,7 +1740,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         });
     },
     _cancelFilter: function(){
-        this.searchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
+        this.viewSearchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
             node.value = "";
             this.customFilterListData = [];
             this.currentPage = 1;
