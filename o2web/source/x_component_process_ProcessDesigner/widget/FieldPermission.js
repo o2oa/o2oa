@@ -53,6 +53,9 @@ MWF.xApplication.process.ProcessDesigner.widget.FieldPermission = new Class({
 
     _addPath: function(data, isNew=true){
         if (this.pathData[data.path]) return false;
+        if(this.emptyNode){
+            this.emptyNode.hide();
+        }
         data.readList = (data.readActivityList?.map((a)=>{
             const {unique, id, name, type, process} = a;
             return name+'@'+id+'@'+unique+'@'+process+'@'+type+'@A';
