@@ -1505,16 +1505,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         const title = new Element("div.search-item-title");
         title.textContent = filter.title;
-        const dateTimeInputL = new Element("oo-datetime");
-        const toNode = new Element("div.search-item-flag");
-        toNode.textContent = '-';
-        const dateTimeInputU = new Element("oo-datetime");
-        if (mode){
-            dateTimeInputL.setAttribute('mode', mode);
-            dateTimeInputU.setAttribute('mode', mode);
-        }
-
-        div.append(title, dateTimeInputL, toNode, dateTimeInputU)
+        const dateTimeInput = new Element("oo-datetime");
+        dateTimeInput.setAttribute('mode', `${mode||'datetime'}range`);
+        div.append(title, dateTimeInput);
+        // const dateTimeInputL = new Element("oo-datetime");
+        // const toNode = new Element("div.search-item-flag");
+        // toNode.textContent = '-';
+        // const dateTimeInputU = new Element("oo-datetime");
+        // if (mode){
+        //     dateTimeInputL.setAttribute('mode', mode);
+        //     dateTimeInputU.setAttribute('mode', mode);
+        // }
+        //
+        // div.append(title, dateTimeInputL, toNode, dateTimeInputU)
         return div;
     },
     createSearchNumberNode: function(filter){
@@ -1612,8 +1615,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 case "dateTimeValue":
                 case "dateValue":
                 case "timeValue":
+                    const value = node.querySelector("oo-datetime")?.value;
+                    if(value && value[0]){
+                        this._filterData(data, value[0], 'greaterThanOrEqualTo')
+                    }
+                    if (value && value[1]){
+                        this._filterData(data, value[1], 'lessThanOrEqualTo')
+                    }
+                    break;
                 case "numberValue":
-                    const inputs = node.querySelectorAll("oo-datetime, oo-input");
+                    const inputs = node.querySelectorAll("oo-input");
                     const inputL = inputs[0];
                     const inputU = inputs[1];
                     if (inputL && inputL.value){

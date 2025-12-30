@@ -77,7 +77,7 @@ MWF.xApplication.process.FormDesigner.Module.OODatetime = MWF.FCOODatetime = new
 					this.node.setAttribute('mode', 'week');
 					break;
 				default:
-					this.node.setAttribute('mode', this.json.dataType || 'datetime');
+					this.node.setAttribute('mode', (this.json.dataType || 'datetime').toLowerCase());
 			}
 		}
 	},

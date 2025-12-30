@@ -145,7 +145,7 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
                     this.node.setAttribute('mode', 'week');
                     break;
                 default:
-                    this.node.setAttribute('mode', this.json.dataType || 'datetime');
+                    this.node.setAttribute('mode', (this.json.dataType || 'datetime').toLowerCase());
             }
             // if (this.json.dataType !== 'dateTime') {
             //     this.node.setAttribute(this.json.dataType, true);
