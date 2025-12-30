@@ -39,7 +39,8 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
 	private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
 	private static final String DEFAULT_HTTP_WHITE = "*";
-	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
+	private static final List<String> DEFAULT_HTTPWHITELIST = List.of(DEFAULT_HTTP_WHITE);
+	private static final List<String> DEFAULT_TRUSTPROXYIPLIST = List.of("127.0.0.1");
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
 	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 0;
 	private static final Map<String, String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN", "简体中文", "en", "English");
@@ -70,6 +71,7 @@ public class General extends ConfigObject {
 		o.graalvmEvalAsPromise = DEFAULT_GRAALVMEVALASPROMISE;
 		o.accessDenyUris = DEFAULT_ACCESSDENYURIS;
 		o.disableExportEnable = false;
+		o.trustProxyIpList = DEFAULT_TRUSTPROXYIPLIST;
 		return o;
 	}
 
@@ -144,6 +146,13 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("是否启用x_query_assemble_surface模块中listRowSelect,rowCountWhere接口")
 	private Boolean tableRowSelectEnable = DEFAULT_TABLEROWSELECTENABLE;
+
+	@FieldDescribe("可信任的代理服务器ip列表，比如访问o2server通过nginx转发的填写nginx的ip.")
+	private List<String> trustProxyIpList;
+
+	public List<String> getTrustProxyIpList() {
+		return trustProxyIpList;
+	}
 
 	public Boolean getDisableExportEnable() {
 		return disableExportEnable != null && disableExportEnable;
