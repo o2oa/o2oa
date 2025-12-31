@@ -49,7 +49,7 @@ import com.x.organization.core.entity.Unit_;
  */
 public class ActionExportAll extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionExportAll.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionExportAll.class);
 	List<Unit> allUnitList = new ArrayList<>();
 	List<String> allUnitAttributeList = new ArrayList<>();
 	List<Person> allPersonList = new ArrayList<>();
@@ -57,12 +57,10 @@ public class ActionExportAll extends BaseAction {
 	List<Identity> allIdentityList = new ArrayList<>();
 	List<UnitDuty> allDutyList = new ArrayList<>();
 	List<Group> allGroupList = new ArrayList<>();
-	//Workbook wb = new HSSFWorkbook();
 	Workbook wb = new XSSFWorkbook();
 
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, Boolean stream ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		//Workbook wb = null;
 		Wo wo = null;
 		String fileName = null;
 		Business business = null;
@@ -257,7 +255,7 @@ public class ActionExportAll extends BaseAction {
 				row.createCell(0).setCellValue(unit.getName());
 				row.createCell(1).setCellValue(unit.getUnique());
 				if(ListTools.isNotEmpty(unit.getTypeList())){
-					row.createCell(2).setCellValue(unit.getTypeList().get(0));
+					row.createCell(2).setCellValue(StringUtils.join(unit.getTypeList(), ","));
 				}else{
 					row.createCell(2).setCellValue("");
 				}

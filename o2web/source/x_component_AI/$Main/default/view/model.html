@@ -36,12 +36,18 @@
 
                     {{each $.modelList}}
                     <div  class="model-item {{if $.asDefault}} model-item-cur {{end if}}">
-                        <div class="model-item-1"><img src="../x_component_AI/$Main/default/icons/{{$.type}}.png"></div>
+                        <div class="model-item-1">
+                            <div><img src="../x_component_AI/$Main/default/icons/{{$.type}}.png"></div>
+                        </div>
                         <div class="model-item-2" data-o2-events="click:newModel:edit:{{$.id}}">
-                            <div class="model-item-2-1">{{$.name}}{{if $.asDefault}}(当前启用){{end if}}</div>
+                            <div class="model-item-2-1">
+
+                                {{$.name}}{{if $.enable}}(已启用){{end if}}{{if !$.enable}}(未启用){{end if}}</div>
                             <div class="model-item-2-2">{{$.desc}}</div>
                         </div>
+                        {{if $.type === "llama"}}
                         <div class="model-item-3"><i class="ooicon-delete" data-o2-events="click:removeModel:{{$.id}}" ></i></div>
+                        {{end if}}
                     </div>
                     {{end each}}
                 </div>

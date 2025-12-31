@@ -1373,6 +1373,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         var tables = this.node.getElements("table");
         if( indexList.length && tables.length ){
             tables.each(function (table, tableIndex) {
+                if( table.getParent()?.getParent()?.hasClass('totalDiv') )return;
                 table.getElements("tr").each(function (tr, trIndex) {
                     if( indexList.contains(trIndex) ){
                         tr.getElements("td").getLast().set("text", tableIndex);

@@ -40,6 +40,16 @@ MWF.xApplication.AI.Model = new Class({
             }
         });
     },
+    setProxy : function (flag,ev){
+
+        ev.stopPropagation();
+        if(flag === "true"){
+            this.proxyNode.show();
+        }else{
+            this.proxyNode.hide();
+        }
+
+    },
     newModel : function (type,id){
 
         const node = new Element("div");
@@ -52,6 +62,11 @@ MWF.xApplication.AI.Model = new Class({
             this.action.ConfigAction.getModel(id, function( json ){
                 data = json.data;
             }.bind(this),null,false);
+        }else{
+            data.type = "llama";
+            data.enable = true;
+            data.proxyEnable = false;
+            data.asDefault = false;
         }
 
         node.loadHtml(url, {"bind": {"lp": _self.lp,"data" : data||{}}, "module": this}, function () {
@@ -67,10 +82,15 @@ MWF.xApplication.AI.Model = new Class({
                         const completionUrl = node.querySelector("[name='completionUrl']");
                         const apiKey = node.querySelector("[name='apiKey']");
                         const asDefault = node.querySelector("[name='asDefault']");
+                        const enable = node.querySelector("[name='enable']");
 
                         const proxyEnable = node.querySelector("[name='proxyEnable']");
                         const proxyHost = node.querySelector("[name='proxyHost']");
                         const proxyPort = node.querySelector("[name='proxyPort']");
+
+                        const proxyPass = node.querySelector("[name='proxyPass']");
+                        const proxyUser = node.querySelector("[name='proxyUser']");
+
 
                         let newData = {
                             "name" : name.get("value"),
@@ -80,9 +100,16 @@ MWF.xApplication.AI.Model = new Class({
                             "apiKey" : apiKey.get("value"),
                             "desc" : desc.get("value"),
                             "asDefault" :asDefault.get("value"),
+                            "enable" :enable.get("value"),
+
                             "proxyEnable" :proxyEnable.get("value"),
                             "proxyHost" :proxyHost.get("value"),
                             "proxyPort" :proxyPort.get("value"),
+
+                            "proxyUser" :proxyUser.get("value"),
+                            "proxyPass" :proxyPass.get("value"),
+
+
 
                         }
 
