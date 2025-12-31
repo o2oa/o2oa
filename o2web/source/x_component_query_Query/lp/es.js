@@ -231,6 +231,12 @@ MWF.xApplication.query.Query.LP={
 	"associationSuccess": "Asociación exitosa.",
 	"associationResult": "Resultado de la asociación",
 	"total": "Total",
-	"notInOptions": "No en valores opcionales"
+	"notInOptions": "No en valores opcionales",
+	"beginDate": "hora de inicio",
+	"endDate": "hora de finalización",
+	"begin": "Empezar",
+	"end": "terminar",
+	"max": "Máximo",
+	"min": "Mínimo"
 }
 MWF.xApplication.query.Query["lp."+o2.language] = MWF.xApplication.query.Query.LP
