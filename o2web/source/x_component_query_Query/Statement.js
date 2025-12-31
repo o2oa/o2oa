@@ -371,11 +371,13 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             "parameter": this.parameter
         };
 
-        while (this.viewTable.rows.length > 1) {
-            this.viewTable.deleteRow(-1);
-        }
-        if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
-            this.viewTable.deleteRow(0);
+        if(this.viewTable){
+            while (this.viewTable.rows.length > 1) {
+                this.viewTable.deleteRow(-1);
+            }
+            if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
+                this.viewTable.deleteRow(0);
+            }
         }
 
         this.contentAreaNode.scrollTo(0, 0);
@@ -436,8 +438,22 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             }.bind(this)
         );
     },
-
+    loadDataMobile: function(){
+        if (this.gridJson.length) {
+            this.totalMap = {};
+            this.gridJson.each(function (line, i) {
+                this.items.push(new MWF.xApplication.query.Query.Statement.MobileItem(this, line, null, i, null, this.options.lazy));
+            }.bind(this));
+        } else {
+            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
+        }
+    },
     loadData: function () {
+        if (o2.isMediaMobile() && this.viewJson.mobileTemplate && this.viewJson.mobileTemplate.trim()!==""){
+            this.loadDataMobile();
+            return;
+        }
+
         if (this.getSelectFlag() === "multi" && this.viewJson.allowSelectAll) {
             if (this.selectTitleCell && this.selectTitleCell.retrieve("selectAllLoaded")) {
                 this.setUnSelectAllStyle();
@@ -1167,9 +1183,6 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
         this.css = this.view.css;
         this.isSelected = false;
 
-        /**
-         * @ignore
-         */
         this.category = category;
         this.prev = prev;
         this.idx = i;
@@ -1504,6 +1517,235 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
                 });
             }.bind(this)
         })
+        if (column.clickCode) {
+            if (!this.view.Macro) {
+                MWF.require("MWF.xScript.Macro", function () {
+                    this.view.businessData = {};
+                    this.view.Macro = new MWF.Macro.ViewContext(this.view);
+                }.bind(this), false);
+            }
+            td.addEvent("click", function (ev) {
+                var result = this.view.Macro.fire(column.clickCode, this, ev);
+                ev.stopPropagation();
+                return result;
+            }.bind(this));
+        } else if (this.view.statementJson.entityCategory === "official" && column.idPath) {
+            var id = this.getDataByPath(this.data, column.idPath);
+            if (id) {
+                if (this.view.statementJson.entityClassName === "com.x.cms.core.entity.Document") {
+                    td.addEvent("click", function (ev) {
+                        this.openCms(ev, id);
+                        ev.stopPropagation();
+                    }.bind(this));
+                } else {
+                    td.addEvent("click", function (ev) {
+                        this.openWork(ev, id);
+                        ev.stopPropagation();
+                    }.bind(this));
+                }
+            }
+        }
+    },
+    openCms: function (e, id) {
+        var options = {"documentId": id};
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        layout.desktop.openApplication(e, "cms.Document", options);
+    },
+    openWork: function (e, id) {
+        var options = {"workId": id};
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        layout.desktop.openApplication(e, "process.Work", options);
+    }
+});
+
+MWF.xApplication.query.Query.Statement.MobileItem = new Class({
+    Extends: MWF.xApplication.query.Query.Viewer.MobileItem,
+    initialize: function (view, data, prev, i, category, lazy) {
+        this.view = view;
+        this.data = data;
+        this.dataString = JSON.stringify(data);
+        this.css = this.view.css;
+        this.isSelected = false;
+
+        this.category = category;
+        this.prev = prev;
+        this.idx = i;
+        this.clazzType = "item";
+        this.lazy = lazy;
+        this.odd = this.view.items.length % 2 === 1;
+
+        this.contentAreaNode = this.view.contentAreaNode;
+        this.load();
+    },
+    _load: function () {
+        this.loading = true;
+
+        const html = this.view.viewJson.mobileTemplate;
+        const cols = this.view.viewJson.selectList;
+
+        this.node = new Element('div.mobile-view-item');
+        this.selectNode = new Element('div.mobile-view-item-select').inject(this.node);
+        this.contentNode = new Element('label.mobile-view-item-content').inject(this.node);
+        this.flagNode = new Element('div.mobile-view-item-flag.ooicon-arrow_forward').inject(this.node);
+
+        const itemHtml = cols.reduce( (html, col)=>{
+            return html
+                .replace(new RegExp(`\{${col.idPath}\}`, 'g'), this.getDataByPath(this.data, col.idPath) || '')
+                .replace(new RegExp(`\{${col.displayName}\}`, 'g'), this.getDataByPath(this.data, col.idPath) || '');
+        }, html);
+        this.contentNode.set('html', itemHtml);
+
+        this.contentAreaNode.appendChild(this.node);
+
+        const flag = this.view.isSelectTdHidden() ? 'no' : this.view.getSelectFlag();
+
+        switch( flag ){
+            case 'single':
+                this._createSelectNode('radio');
+                break;
+            case 'multi':
+                this._createSelectNode('checkbox');
+                break;
+            default:
+                this.selectNode.hide();
+                break;
+        }
+
+        // ((flag === 'single' || flag === 'multi') ? this.flagNode : this.node).addEventListener('click', (ev)=>{
+        //     if (this.view.json.type==="cms"){
+        //         this.openCms(ev)
+        //     }else{
+        //         //this.openWorkAndCompleted(ev)
+        //         this.openWork(ev, id);
+        //     }
+        //     ev.stopPropagation();
+        // });
+
+        this.loading = false;
+        this.loaded = true;
+    },
+    _createSelectNode: function(name){
+        const node = new Element('oo-'+name).inject(this.selectNode);
+        this.view.tmpCheckId = this.view.tmpCheckId || (this.view.tmpCheckId = o2.uuid());
+        node.setAttribute('name', `mobile-view-`+name+this.view.tmpCheckId);
+        node.setAttribute('value', this.data.bundle);
+        node.setAttribute('id', 'item'+this.data.bundle);
+
+        node.addEventListener('change', (ev)=>{
+            this.select();
+            ev.stopPropagation();
+        });
+
+        this.contentNode.addEventListener('click', (ev)=>{
+            node._elements.input.click();
+            ev.stopPropagation();
+        });
+
+        this._checkSelected();
+    },
+    selected: function( from ){
+        for(var i=0; i<this.view.selectedItems.length; i++){
+            var item = this.view.selectedItems[i];
+            if( item.dataString === this.dataString ){
+                this.view.selectedItems.erase(item);
+                break;
+            }
+        }
+        this.view.selectedItems.push(this);
+
+        this.isSelected = true;
+
+        this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
+    },
+    unSelected: function( from ){
+        for(var i=0; i<this.view.selectedItems.length; i++){
+            var item = this.view.selectedItems[i];
+            if( item.dataString === this.dataString ){
+                this.view.selectedItems.erase(item);
+                break;
+            }
+        }
+
+        this.isSelected = false;
+
+        this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("unselect", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
+    },
+    getDataByPath: function (obj, path) {
+        var pathList = path.split(".");
+        for (var i = 0; i < pathList.length; i++) {
+            var p = pathList[i];
+            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+            if (obj[p]) {
+                obj = obj[p];
+            } else if(obj[p] === undefined || obj[p] === null) {
+                obj = "";
+                break;
+            } else {
+                obj = obj[p];
+                break;
+            }
+        }
+        return obj
+    },
+    getText: function (c, k, td) {
+        var path = c.path, code = c.code, obj = this.data;
+        if (!path) {
+            var co = code && code.trim();
+            if( !co )return "";
+            obj = "";
+        } else if (path === "$all") {
+        } else {
+            obj = this.getDataByPath(obj, path);
+        }
+
+        if (code && code.trim()) obj = this.view.Macro.exec(code, {
+            "value": obj,
+            "data": this.data,
+            "entry": c,
+            "node": td,
+            "json": c,
+            "row": this
+        });
+
+        var toName = function (value) {
+            if (typeOf(value) === "array") {
+                Array.each(value, function (v, idx) {
+                    value[idx] = toName(v)
+                })
+            } else if (typeOf(value) === "object") {
+                Object.each(value, function (v, key) {
+                    value[key] = toName(v);
+                })
+            } else if (typeOf(value) === "string") {
+                value = o2.name.cn(value)
+            }
+            return value;
+        };
+
+        var d;
+        if (obj != undefined && obj != null) {
+            if (typeOf(obj) === "array") {
+                d = c.isName ? JSON.stringify(toName(Array.clone(obj))) : JSON.stringify(obj);
+            } else if (typeOf(obj) === "object") {
+                d = c.isName ? JSON.stringify(toName(Object.clone(obj))) : JSON.stringify(obj);
+            } else {
+                d = c.isName ? o2.name.cn(obj.toString()) : obj;
+            }
+        }
+
+        return d;
+    },
+    setOpenWork: function (td, column) {
         if (column.clickCode) {
             if (!this.view.Macro) {
                 MWF.require("MWF.xScript.Macro", function () {
