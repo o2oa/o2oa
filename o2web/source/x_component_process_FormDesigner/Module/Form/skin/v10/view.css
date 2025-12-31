@@ -658,7 +658,7 @@
 }
 
 .form-layout .page-content-section div[mwftype='view']>div.actionbarAreaNode{
-    flex: auto;
+    /* flex: auto; */
 }
 .form-layout .page-content-section div[mwftype='view']>div.viewAreaNode{
     flex: 1;
@@ -930,7 +930,11 @@
         transition: background-color 0.3s;
     }
     .mobile-view-item:hover{
-        background-color: var(--oo-color-over);
+        background-color: var(--oo-color-over) !important;
+    }
+
+    .mobile-view-item:nth-child(odd){
+        background-color: var(--oo-color-hover);
     }
 
     .mobile-view-item-select{

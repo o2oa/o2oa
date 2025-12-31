@@ -1156,30 +1156,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         })
         if (this.gridJson.length){
             this.gridJson.each(function(line, i){
-
                 this.items.push(new MWF.xApplication.query.Query.Viewer.MobileItem(this, line));
-
-                // const div = new Element('div');
-                // const itemHtml = cols.reduce( (html, col)=>{
-                //     return html.replace(new RegExp(`\{${col.id}\}`, 'g'), line.data[col.id] || '').replace(new RegExp(`\{${col.name}\}`, 'g'), line.data[col.id] || '');
-                // }, html);
-                // div.set('html', itemHtml);
-
-                // if( !this.view.isSelectTdHidden() ){
-                //     const flag = this.getSelectFlag();
-                    
-                // }
-
-                // this.contentAreaNode.appendChild(div);
-                
-                // div.addEventListener('click', (ev)=>{
-                //     if (this.json.type==="cms"){
-                //         this.openCms(ev, line)
-                //     }else{
-                //         this.openWorkAndCompleted(ev, line)
-                //     }
-                //     ev.stopPropagation();
-                // });
             }.bind(this));
         }else{
             if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
