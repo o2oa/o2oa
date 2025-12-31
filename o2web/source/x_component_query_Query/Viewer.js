@@ -1615,7 +1615,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 case "dateTimeValue":
                 case "dateValue":
                 case "timeValue":
-                    const value = node.querySelector("oo-datetime")?.value;
+                    value = node.querySelector("oo-datetime")?.value;
                     if(value && value[0]){
                         this._filterData(data, value[0], 'greaterThanOrEqualTo')
                     }
