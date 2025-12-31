@@ -198,6 +198,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "org":"组织对象",
         "htmlValue":"HTML值",
         "showScript":"显示脚本",
+        "mobileTemplate":"移动端模板",
+        "mobileCss": "移动端CSS",
         "titleStyles":"标题单元格样式",
         "titleProperties":"标题单元格属性",
         "contentStyles":"内容单元格样式",

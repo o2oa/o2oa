@@ -88,6 +88,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadStylesList();
                     this.loadMaplist();
                     this.loadHtmlEditorArea();
+                    this.loadCssArea();
                 }
             }.bind(this));
         } else {
@@ -369,28 +370,73 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             }.bind(this));
         }
     },
+    loadCssArea: function(style){
+        var cssAreas = this.propertyContent.getElements(".MWFCssArea");
+        cssAreas.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var names = name.split(".");
+
+            var cssContent = this.data;
+            Array.each(names, function (n) {
+                if (cssContent) cssContent = cssContent[n];
+            });
+
+            o2.require("o2.widget.CssArea", function(){
+                var cssArea = new o2.widget.CssArea(node, {
+                    "title": title,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                        var scriptObj = this.data;
+                        Array.each(names, function (n, idx) {
+                            if( idx === names.length -1 )return;
+                            if (scriptObj) scriptObj = scriptObj[n];
+                        });
+
+                        scriptObj[names[names.length -1]] = cssArea.toJson().code;
+                    }.bind(this),
+                    "onBlur": function(){
+                        if (cssArea.isChanged){
+                            this.changeData(name, node, "");
+                            cssArea.isChanged = false;
+                        }
+
+                    }.bind(this),
+                    "onSave": function(){
+                        this.designer.saveForm();
+                    }.bind(this),
+                    "style": style || "default"
+                });
+                cssArea.load(cssContent);
+            }.bind(this));
+        }.bind(this));
+    },
     loadHtmlEditorArea: function(){
         var htmlAreas = this.propertyContent.getElements(".MWFHtmlEditorArea");
         htmlAreas.each(function(node){
             var title = node.get("title");
             var name = node.get("name");
-            var scriptContent = this.data[name];
+            var names = name.split(".");
+
+            var scriptContent = this.data;
+            Array.each(names, function (n) {
+                if (scriptContent) scriptContent = scriptContent[n];
+            });
+
             MWF.require("MWF.widget.HtmlEditorArea", function(){
                 var htmlArea = new MWF.widget.HtmlEditorArea(node, {
                     "title": title,
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.editContentNode || this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
-                        this.data[name] = htmlArea.getValue();
-                        this.changeData(name);
-                        htmlArea.isChanged = true;
+                        var scriptObj = this.data;
+                        Array.each(names, function (n, idx) {
+                            if( idx === names.length -1 )return;
+                            if (scriptObj) scriptObj = scriptObj[n];
+                        });
+
+                        scriptObj[names[names.length -1]] = htmlArea.toJson().code;
                     }.bind(this),
-                    // "onBlur": function(){
-                    //     if (htmlArea.isChanged){
-                    //         this.changeData(name, node, "");
-                    //         htmlArea.isChanged = false;
-                    //     }
-                    // }.bind(this),
                     "onSave": function(){
                         this.designer.saveView();
                     }.bind(this)
@@ -400,6 +446,41 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
 
         }.bind(this));
     },
+    // loadHtmlEditorArea: function(){
+    //     var htmlAreas = this.propertyContent.getElements(".MWFHtmlEditorArea");
+    //     htmlAreas.each(function(node){
+    //         var title = node.get("title");
+    //         var name = node.get("name");
+    //         var scriptContent = this.data[name];
+    //         MWF.require("MWF.widget.HtmlEditorArea", function(){
+    //             var htmlArea = new MWF.widget.HtmlEditorArea(node, {
+    //                 "title": title,
+    //                 //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+    //                 "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+    //                 "onChange": function(){
+    //                     var oldValue = this.data[name];
+    //                     this.data[name] = htmlArea.getValue();
+    //                     this.changeData(name, null, oldValue);
+    //                     htmlArea.isChanged = true;
+    //                 }.bind(this),
+    //                 // "onBlur": function(){
+    //                 //     if (htmlArea.isChanged){
+    //                 //         this.changeData(name, node, "");
+    //                 //         htmlArea.isChanged = false;
+    //                 //     }
+    //                 // }.bind(this),
+    //                 "onSave": function(){
+    //                     this.designer.saveForm();
+    //                 }.bind(this)
+    //             });
+    //             var htmlContentData = {"code": scriptContent};
+    //             htmlArea.htmlContentData = htmlContentData;
+    //             htmlArea.load(htmlContentData);
+    //             node.htmlArea = htmlArea;
+    //         }.bind(this));
+
+    //     }.bind(this));
+    // },
     loadScriptArea: function () {
         var scriptAreas = this.propertyContent.getElements(".MWFScriptArea");
         var formulaAreas = this.propertyContent.getElements(".MWFFormulaArea");
