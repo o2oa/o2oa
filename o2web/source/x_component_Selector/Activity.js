@@ -146,6 +146,9 @@ MWF.xApplication.Selector.Activity.Item = new Class({
 
 MWF.xApplication.Selector.Activity.ItemSelected = new Class({
 	Extends: MWF.xApplication.Selector.Person.ItemSelected,
+    _getTtiteText: function(){
+        return this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
+    },
     _getShowName: function(){
         var name =  this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
         return this.data.processName + ' - '+name;
