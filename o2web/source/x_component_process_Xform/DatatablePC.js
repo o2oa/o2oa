@@ -4579,7 +4579,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 		this.datatable.fireEvent("import", [data] );
 
-		this.datatable.setData( { "data" : data } );
+		this.datatable.setData( { "data" : data }, null, 'import' );
 
 		this.datatable.fireEvent("afterImport", [data] );
 
