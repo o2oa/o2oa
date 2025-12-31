@@ -1752,7 +1752,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     },
     _cancelFilter: function(){
         this.viewSearchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
-            node.value = "";
+            node.value = '';
             this.customFilterListData = [];
             this.currentPage = 1;
             this.currentFilterData = {"filterList": this.json.filter ? this.json.filter.clone() : null};
