@@ -378,6 +378,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
                 this.viewTable.deleteRow(0);
             }
+        }else{
+            this.contentAreaNode.empty();
         }
 
         this.contentAreaNode.scrollTo(0, 0);
@@ -1577,8 +1579,10 @@ MWF.xApplication.query.Query.Statement.MobileItem = new Class({
         this.contentAreaNode = this.view.contentAreaNode;
         this.load();
     },
-    _load: function () {
+    load: function () {
         this.loading = true;
+
+        this.view.fireEvent("queryLoadItemRow", [null, this]);
 
         const html = this.view.viewJson.mobileTemplate;
         const cols = this.view.viewJson.selectList;
@@ -1589,9 +1593,11 @@ MWF.xApplication.query.Query.Statement.MobileItem = new Class({
         this.flagNode = new Element('div.mobile-view-item-flag.ooicon-arrow_forward').inject(this.node);
 
         const itemHtml = cols.reduce( (html, col)=>{
+            var text = this.getText(col);
+            if (text === undefined || text === null) text = "";
             return html
-                .replace(new RegExp(`\{${col.idPath}\}`, 'g'), this.getDataByPath(this.data, col.idPath) || '')
-                .replace(new RegExp(`\{${col.displayName}\}`, 'g'), this.getDataByPath(this.data, col.idPath) || '');
+                .replace(new RegExp(`\{${col.column}\}`, 'g'), text)
+                .replace(new RegExp(`\{${col.displayName}\}`, 'g'), text);
         }, html);
         this.contentNode.set('html', itemHtml);
 
@@ -1611,15 +1617,9 @@ MWF.xApplication.query.Query.Statement.MobileItem = new Class({
                 break;
         }
 
-        // ((flag === 'single' || flag === 'multi') ? this.flagNode : this.node).addEventListener('click', (ev)=>{
-        //     if (this.view.json.type==="cms"){
-        //         this.openCms(ev)
-        //     }else{
-        //         //this.openWorkAndCompleted(ev)
-        //         this.openWork(ev, id);
-        //     }
-        //     ev.stopPropagation();
-        // });
+        this.setOpenWork((flag === 'single' || flag === 'multi') ? this.flagNode : this.node);
+
+        this.view.fireEvent("postLoadItemRow", [null, this]);
 
         this.loading = false;
         this.loaded = true;
@@ -1745,35 +1745,43 @@ MWF.xApplication.query.Query.Statement.MobileItem = new Class({
 
         return d;
     },
-    setOpenWork: function (td, column) {
-        if (column.clickCode) {
-            if (!this.view.Macro) {
-                MWF.require("MWF.xScript.Macro", function () {
-                    this.view.businessData = {};
-                    this.view.Macro = new MWF.Macro.ViewContext(this.view);
-                }.bind(this), false);
-            }
-            td.addEvent("click", function (ev) {
-                var result = this.view.Macro.fire(column.clickCode, this, ev);
-                ev.stopPropagation();
-                return result;
-            }.bind(this));
-        } else if (this.view.statementJson.entityCategory === "official" && column.idPath) {
-            var id = this.getDataByPath(this.data, column.idPath);
-            if (id) {
-                if (this.view.statementJson.entityClassName === "com.x.cms.core.entity.Document") {
-                    td.addEvent("click", function (ev) {
-                        this.openCms(ev, id);
-                        ev.stopPropagation();
-                    }.bind(this));
-                } else {
-                    td.addEvent("click", function (ev) {
-                        this.openWork(ev, id);
-                        ev.stopPropagation();
-                    }.bind(this));
+    setOpenWork: function (node){
+        debugger;
+        const clickColumn = this.view.viewJson.selectList.find((col)=>{ return !!col.clickCode });
+        if(clickColumn){
+            this._setOpenWork(node, clickColumn);
+        }else if (this.view.statementJson.entityCategory === "official") {
+            var columnWithId = this.view.viewJson.selectList.find((col)=>{ return !!col.idPath; });
+            if(columnWithId){
+                var id = this.getDataByPath(this.data, columnWithId.idPath);
+                if (id) {
+                    if (this.view.statementJson.entityClassName === "com.x.cms.core.entity.Document") {
+                        node.addEvent("click", function (ev) {
+                            this.openCms(ev, id);
+                            ev.stopPropagation();
+                        }.bind(this));
+                    } else {
+                        node.addEvent("click", function (ev) {
+                            this.openWork(ev, id);
+                            ev.stopPropagation();
+                        }.bind(this));
+                    }
                 }
             }
         }
+    },
+    _setOpenWork: function (node, column) {
+        if (!this.view.Macro) {
+            MWF.require("MWF.xScript.Macro", function () {
+                this.view.businessData = {};
+                this.view.Macro = new MWF.Macro.ViewContext(this.view);
+            }.bind(this), false);
+        }
+        node.addEvent("click", function (ev) {
+            var result = this.view.Macro.fire(column.clickCode, this, ev);
+            ev.stopPropagation();
+            return result;
+        }.bind(this));
     },
     openCms: function (e, id) {
         var options = {"documentId": id};

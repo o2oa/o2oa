@@ -264,7 +264,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          * var node = this.target.view.node;
          */
         this.node = new Element("div.form-content-view", {"styles": this.css.node, mwftype: "view"}).inject(this.container);
-        
+
         //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         /**
          * @summary 搜索界面容器
@@ -421,7 +421,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.actionbar.load();
         }else{ //兼容以前的ExportNode
             this.createExportNode();
-        }        
+        }
     },
     createViewNodeMobile: function(data, callback, keepSelected){
         const css = this.viewJson.mobileCss;
@@ -852,7 +852,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.requestBody = data;
 
                 this.setOrderList(d);
-                
+
                 // this.lookupAction.bundleView(this.json.id, d, function(json){
                     // this.bundleItems = json.data.valueList;
                     // this.bundleKey = json.data.key;
@@ -933,7 +933,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     loadSearchFilterItemAreaNode: function(data){
         if (this.viewSearchFilterItemAreaNode){
              this.viewSearchFilterItemAreaNode.empty();
-            if (data.filterList && data.filterList.length){
+            if (data && data.filterList && data.filterList.length){
                 data.filterList.each(function(filter){
                     if (filter.value==="") return;
                     const filterItem = new Element('div.filter-item', {
@@ -984,6 +984,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
                 this.viewTable.deleteRow(0);
             }
+        }else{
+            this.contentAreaNode.empty();
         }
 
         this.contentAreaNode.scrollTo(0, 0);
@@ -1478,7 +1480,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             'onError': ()=>{this.loadViewSearch();},
         });
 
-        
+
     },
     loadSimpleSearch: function(){
         return false;
@@ -1600,7 +1602,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             title.textContent = filter.title;
             div.append(title)
         }
-        
+
         const dateTimeInputL = new Element("oo-datetime");
         dateTimeInputL.setAttribute('placeholder', filter.title+this.lp.begin);
 
@@ -1645,7 +1647,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         const booleanSelect = new Element("oo-select");
         booleanSelect.setAttribute('data-filter', '');
-        
+
         if (!o2.isMediaMobile()){
             booleanSelect.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
             booleanSelect.setAttribute('label', filter.title);
@@ -1916,7 +1918,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     this._fulltextSearch();
                 }
             });
-            
+
             if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
                 var div = new Element('div.search-fulltext-more', {styles: {'font-size': '1.15rem'}});
                 this.moreSearchButton = new Element("oo-button");
@@ -1925,7 +1927,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.moreSearchButton.setAttribute('left-icon', 'jiekoupeizhi2');
                 div.appendChild(this.moreSearchButton);
                 this.viewFulltextSearchAreaNode.appendChild(div);
-                
+
                 this.viewSearchAreaNode?.addClass('hide');
 
                 this.moreSearchButton.addEventListener('click', ()=>{
@@ -1952,7 +1954,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if (this.viewSearchActionArea.getStyle('display')==='grid'){
             this.viewFulltextSearchAreaNode.addClass('column')
         }
-        
+
         this._cancelFilter();
     },
     _hideFilterSearch: function(){
@@ -3460,7 +3462,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         //     }
         // }
 
-        
+
 
         // Object.each(this.data.data, function(cell, k){
         //     if (this.view.hideColumns.indexOf(k)===-1){
@@ -3511,7 +3513,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                 }
             }
         }
-       
+
         if( selectedFlag ){
             if( selectedFlag === "multi" || selectedFlag === "single" ){
                 this.select( selectedFlag );
@@ -3957,9 +3959,12 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
         this.load();
     },
     load: function(){
+        this.loading = true;
+        this.view.fireEvent("queryLoadItemRow", [this]);
+
         const html = this.view.viewJson.mobileTemplate;
         const cols = this.view.viewJson.selectList;
-        
+
         this.node = new Element('div.mobile-view-item');
         this.selectNode = new Element('div.mobile-view-item-select').inject(this.node);
         this.contentNode = new Element('label.mobile-view-item-content').inject(this.node);
@@ -3994,6 +3999,11 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
             }
             ev.stopPropagation();
         });
+
+        this.view.fireEvent("postLoadItemRow", [this]);
+
+        this.loading = false;
+        this.loaded = true;
     },
     _createSelectNode: function(name){
         const node = new Element('oo-'+name).inject(this.selectNode);
@@ -4023,7 +4033,7 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
             }
         }
         this.view.selectedItems.push(this);
-        
+
         this.isSelected = true;
 
         this.view.fireEvent("selectRow", [this]);
@@ -4041,9 +4051,9 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
                 break;
             }
         }
-        
+
         this.isSelected = false;
-        
+
         this.view.fireEvent("unselectRow", [this]);
         if( isFire !== false ){
             this.view.fireEvent("unselect", [{
@@ -4069,7 +4079,7 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
     unSelectedSingle: function(){
         this.view.selectedItems = [];
         this.view.currentSelectedItem = null;
-        
+
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
         this.view.fireEvent("unselect", [{
