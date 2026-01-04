@@ -137,6 +137,10 @@
                 <td class="editTableTitle">{{$.lp.format}}:</td>
                 <td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.step}}:</td>
+                <td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
+            </tr>
         </table>
 
         <div id="text{$.pid}rangeProperties" style="display: text{(['datetimerange','timerange','daterange','yearrange','monthrange'].includes($.dataType))?'':'none'};">
