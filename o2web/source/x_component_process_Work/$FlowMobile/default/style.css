@@ -297,7 +297,7 @@
     height: 180px;
 }
 .o2flow-opinion-select-item {
-    height: 24px;
+    min-height: 24px;
     line-height: 24px;
     cursor: pointer;
     color: #666;
