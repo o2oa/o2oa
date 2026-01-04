@@ -2900,12 +2900,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             var lp = this.lp.viewExport;
             var node = this.exportExcelDlgNode = new Element("div");
-            var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.fileName + "：" +
-                "   <input class='filename' value='' style='margin-left: 14px;width: 350px;'><span>"+
+            var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
+                `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
                 "</div>";
-            html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
-                "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
-                "   <input class='end' value='"+ ( this.exportExcelEnd || Math.min( total, max ) ) +"' ><span>"+lp.item+"</span>" +
+            html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
+                `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
+                `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input><span>${lp.item}</span>` +
                 "</div>";
             html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
             node.set("html", html);
@@ -2924,11 +2924,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             var dlg = o2.DL.open({
                 "title": this.lp.exportExcel,
-                "style": "user",
+                "style": layout.mobile ? 'v10_mobile' : "user",
                 "isResize": false,
                 "content": node,
-                "width": 600,
-                "height" : 260,
+                "width": layout.mobile ? '100%' : 600,
+                "height" : layout.mobile ? '100%' : 260,
                 "buttonList": [
                     {
                         "type": "ok",
