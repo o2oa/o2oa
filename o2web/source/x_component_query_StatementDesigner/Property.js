@@ -38,6 +38,8 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
                     this.loadStylesList();
                     this.loadMaplist();
                     this.loadDataPathSelect();
+                    this.loadHtmlEditorArea();
+                    this.loadCssArea();
                 }
             }.bind(this));
         } else {
