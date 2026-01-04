@@ -46,7 +46,9 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"deleteEvent": "¿Está seguro de que desea eliminar el evento actual?",
 		"selectProcess": "Seleccione una aplicación o flujo de trabajo",
 		"selectCMS": "Seleccione una categoría o clasificación de gestión de contenido",
-		"selectDateRange": "El tipo de período es un rango. Seleccione una fecha de inicio y una fecha de finalización."
+		"selectDateRange": "El tipo de período es un rango. Seleccione una fecha de inicio y una fecha de finalización.",
+		"columnNameExist": "La lista ya existe",
+		"columnNameRepeat": "El nombre de la columna no se puede repetir: ',' columna '."
 	},
 	"actionbar": {
 		"readhide": "Establecer si se muestra al leer",
@@ -321,7 +323,21 @@ MWF.xApplication.query.StatementDesigner.LP={
 		"headText": "Texto de la cabecera",
 		"headStyle": "Estilo de encabezado",
 		"columnTitleStyle": "Estilo de título de columna",
-		"columnContentStyle": "Estilo de contenido de columna"
+		"columnContentStyle": "Estilo de contenido de columna",
+		"switchOrder": "Permitir hacer clic para cambiar el orden",
+		"switchOrderByCurrent": "Después de hacer clic, solo se ordena por la vanguardia actual.",
+		"firstOrder": "Primer clic",
+		"mobileTemplate": "Plantilla móvil",
+		"mobileCss": "CSS móvil",
+		"fulltextSearch": "Recuperación de texto completo",
+		"enabled": "Habilitar",
+		"disabled": "Desactivado",
+		"orgRange": "Rango de selección",
+		"org_unit": "organización",
+		"org_person": "personal",
+		"org_identity": "Identidad",
+		"org_role": "rol",
+		"org_group": "Grupo"
 	},
 	"viewStyle": {
 		"default": "Estilo predeterminado",
