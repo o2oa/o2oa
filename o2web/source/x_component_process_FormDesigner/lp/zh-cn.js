@@ -1458,6 +1458,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         min: '最小值',
         step: '步长',
         step_strictly: '只允许输入步长的倍数',
+        stepNote: '包含时间时有效，只允许选择步长的倍数。（允许选择秒，对秒生效，否则对分钟生效）',
         precision: '数值精度',
         precision2: '小数点位数',
         controls: '控制按钮',

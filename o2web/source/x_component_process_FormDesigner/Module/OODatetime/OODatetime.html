@@ -139,7 +139,10 @@
             </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.step}}:</td>
-                <td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>
+                <td class="editTableValue">
+                    <div style="color: #999;padding: 5px;">{{$.lp.stepNote}}</div>
+                    <input type="number" name="step" value="text{$.step || '1'}" class="editTableInput"/>
+                </td>
             </tr>
         </table>
 

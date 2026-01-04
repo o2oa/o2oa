@@ -159,6 +159,8 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
 
         this.node.setAttribute('week-begin', this.json.weekBegin || 1);
 
+        this.node.setAttribute('step', this.json.step || 1);
+
         if (this.json.format) this.node.setAttribute('format', this.json.format);
 
         this.node.addEvent(
