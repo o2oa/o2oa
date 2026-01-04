@@ -481,6 +481,17 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
     },
+    loadFilterSearch: function(){
+        // if (this.skinJson && this.skinJson.filterSkin==='v10'){
+        //     this.searchAreaNode.addClass('searchAreaNodeV10');
+        //     this.loadFilterSearchNodeV10();
+        // }else{
+            this.loadFilterSearchNode();
+        // }
+        if (this.options.resizeNode) {
+            this.setContentHeight();
+        }
+    },
     createSearchNode: function(){
         if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
             this.searchStatus = "default";
@@ -488,7 +499,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 
             this.originalSearchContainerWidth = this.searchContainer.getSize().x;
 
-            this.viewSearchCustomActionNode.addEvents({
+            !!this.viewSearchCustomActionNode && this.viewSearchCustomActionNode.addEvents({
                 "click": function(){
                     var parent = this.searchContainer.getParent();
                     if( parent ){

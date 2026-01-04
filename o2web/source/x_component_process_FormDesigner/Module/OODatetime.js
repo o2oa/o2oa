@@ -54,6 +54,32 @@ MWF.xApplication.process.FormDesigner.Module.OODatetime = MWF.FCOODatetime = new
 				this.node.setAttribute("skin-mode", 'mobile');
 			}
 		}
+
+		if(name==='separator'){
+			this.node.setAttribute("separator", this.json.separator || this.form.designer.lp.propertyTemplate.to);
+		}
+
+		if(name==='dataType'){
+			switch (this.json.dataType) {
+				case 'date-only':
+					this.node.setAttribute('mode', 'date');
+					break;
+				case 'month-only':
+					this.node.setAttribute('mode', 'month');
+					break;
+				case 'year-only':
+					this.node.setAttribute('mode', 'year');
+					break;
+				case 'time-only':
+					this.node.setAttribute('mode', 'time');
+					break;
+				case 'week-only':
+					this.node.setAttribute('mode', 'week');
+					break;
+				default:
+					this.node.setAttribute('mode', (this.json.dataType || 'datetime').toLowerCase());
+			}
+		}
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("oo-datetime", {

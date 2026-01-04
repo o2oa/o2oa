@@ -180,6 +180,37 @@ oo-calendar[mode='time'][second-enable='false'] {
 }
 
 
+oo-calendar-range{
+    width: 40em;
+    height: 24em;
+    display: block;
+    padding: 0.5em;
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0px 1px var(--oo-color-gray-d);
+}
+
+oo-calendar-range[mode='year'],
+oo-calendar-range[mode='years'],
+oo-calendar-range[mode='month'],
+oo-calendar-range[mode='months'],
+oo-calendar-range[mode='date'],
+oo-calendar-range[mode='dates'] {
+    width: 20em;
+}
+
+/*oo-calendar-range[mode='week'] {*/
+/*    width: 21em;*/
+/*}*/
+
+oo-calendar-range[mode='time'] {
+    width: 24em;
+}
+
+oo-calendar-range[mode='time'][second-enable='false'] {
+    width: 16rem;
+}
+
+
 oo-menu-item {
     display: contents;
 }

@@ -119,6 +119,14 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
             this.node.setAttribute('view', this.json.defaultView);
         }
 
+        if(this.json.separator){
+            this.node.setAttribute("separator", this.json.separator);
+        }
+
+        if(this.json.endPlaceholder){
+            this.node.setAttribute("end-placeholder", this.json.endPlaceholder);
+        }
+
         if (this.json.dataType) {
             switch (this.json.dataType) {
                 case 'date-only':
@@ -137,6 +145,7 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
                     this.node.setAttribute('mode', 'week');
                     break;
                 default:
+                    this.node.setAttribute('mode', (this.json.dataType || 'datetime').toLowerCase());
             }
             // if (this.json.dataType !== 'dateTime') {
             //     this.node.setAttribute(this.json.dataType, true);
@@ -149,6 +158,8 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         }
 
         this.node.setAttribute('week-begin', this.json.weekBegin || 1);
+
+        this.node.setAttribute('step', this.json.step || 1);
 
         if (this.json.format) this.node.setAttribute('format', this.json.format);
 
@@ -208,14 +219,14 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
         this._setBusinessData(data);
 
         
-        this.node.value = data;
+        this.node.value = o2.typeOf(data) === 'array' ? JSON.stringify(data) : (data || '');
         if (fireChange && old !== data) this.fireEvent('change');
         this.moduleValueAG = null;
     },
     __setValue: function (value) {
         this.moduleValueAG = null;
         this._setBusinessData(value);
-        this.node.set('value', value || '');
+        this.node.set('value', o2.typeOf(value) === 'array' ? JSON.stringify(value) : (value || ''));
         this.fieldModuleLoaded = true;
         return value;
     },
