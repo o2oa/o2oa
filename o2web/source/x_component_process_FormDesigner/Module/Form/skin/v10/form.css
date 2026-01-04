@@ -413,23 +413,25 @@
     flex-direction: column;
 }
 
-.form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(3) {
+.form-layout .page-content-section div[mwftype='statement'] > div > div.viewAreaNode {
     height: auto !important;
     flex: 1;
+    padding: 0;
     /* overflow: auto !important;
     padding: 1em; */
 }
-.form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(3) > div {
+.form-layout .page-content-section div[mwftype='statement'] > div > div.viewAreaNode > div {
     overflow: auto !important;
     /*padding: 1em;*/
+    padding: 0 1em 1em 1em;
     font-size: 1rem !important;
 }
 
-.form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(4) > div {
+.form-layout .page-content-section div[mwftype='statement'] > div > div.viewPageAreaNode > div {
     height: 3em !important;
     margin-top: 0.5em !important;
 }
-.form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(4) > div > div {
+.form-layout .page-content-section div[mwftype='statement'] > div > div.viewPageAreaNode > div > div {
     margin-top: 0.5em !important;
 }
 .form-layout .page-content-section div[mwftype='statement'] table td {
@@ -472,21 +474,22 @@
     flex-direction: column;
 }
 
-.form-layout .page-content-section div[mwftype='view'] > div > div:nth-child(3) {
+.form-layout .page-content-section div[mwftype='view'] > div > div.viewAreaNode {
     height: auto !important;
     flex: 1;
+    padding: 0;
     /* overflow: auto !important;
     padding: 1em; */
 }
-.form-layout .page-content-section div[mwftype='view'] > div > div:nth-child(3) > div {
+.form-layout .page-content-section div[mwftype='view'] > div > div.viewAreaNode > div {
     overflow: auto !important;
-    padding: 1em;
+    padding: 0 1em 1em 1em;
 }
 
-.form-layout .page-content-section div[mwftype='view'] > div > div:nth-child(4) > div {
+.form-layout .page-content-section div[mwftype='view'] > div > div.viewPageAreaNode > div {
     height: 3em !important;
 }
-.form-layout .page-content-section div[mwftype='view'] > div > div:nth-child(4) > div > div {
+.form-layout .page-content-section div[mwftype='view'] > div > div.viewPageAreaNode> div > div {
     margin-top: 0.5em !important;
 }
 .form-layout .page-content-section div[mwftype='view'] table td {
@@ -1158,7 +1161,7 @@
         z-index: 100;
         bottom: 0;
         width: 100%;
-        height: 85%;
+        height: 100%;
         transform-origin: bottom;
         transition: height 0.2s, opacity 0.2s, transform 0.2s;
         display: grid;
@@ -1285,11 +1288,14 @@
         font-size: 1rem;
         background-color: transparent !important;
     }
+    .mwf_selectView_view .form-content-view {
+        padding-top: 0 !important;
+    }
     .mwf_selectView_node .mwf_selectView_view .contentAreaNode {
-        font-size: 1rem !important;
+        /* font-size: 1rem !important; */
     }
     .mwf_selectView_node .mwf_selectView_view .viewAreaNode {
-        padding: 0.5em 1em !important;
+        padding: 0.5em 0 !important;
         height: unset !important;
     }
     .mwf_selectView_node .mwf_selectView_view table tr:first-child > td {
@@ -1722,7 +1728,7 @@
         height: 100%;
     }
 
-    .form-layout .page-content-section div[mwftype='statement'] > div > div:nth-child(4) > div {
+    .form-layout .page-content-section div[mwftype='statement'] > div > div.viewPageAreaNode > div {
         height: 2em !important;
         margin-top: 1em !important;
         margin-bottom: 1rem;

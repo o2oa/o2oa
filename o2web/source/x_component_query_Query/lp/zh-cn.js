@@ -20,6 +20,12 @@ MWF.xApplication.query.Query.LP = {
     "or": "或者",
     "searchNavTitle": "请输入关键字搜索",
     "searchNavPlaceholder": "请输入关键字搜索",
+    "beginDate": "开始时间",
+    "endDate": "结束时间",
+    "begin": "开始",
+    "end": "结束",
+    "max": "最大",
+    "min": "最小",
     "form": {
         "exportExcel": "导出Excel"
     },

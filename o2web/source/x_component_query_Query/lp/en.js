@@ -231,6 +231,12 @@ MWF.xApplication.query.Query.LP={
 		"2": "Import failed"
 	},
 	"total": "total",
-	"notInOptions": "Not in optional values"
+	"notInOptions": "Not in optional values",
+	"beginDate": "Start time",
+	"endDate": "End time",
+	"begin": "start",
+	"end": "end",
+	"max": "maximum",
+	"min": "minimum"
 }
 MWF.xApplication.query.Query["lp."+o2.language] = MWF.xApplication.query.Query.LP

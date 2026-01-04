@@ -1346,8 +1346,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             if(!viewOptions)viewOptions = {"style": "select"};
 
             var options =  dlalogOptions || {};
-            var width = options.width || viewJson.width || "700";
-            var height = options.height || viewJson.height || "400";
+            var width = options.width || viewJson.width || "972";
+            var height = options.height || viewJson.height || "672";
             var style = options.style || "v10_view";
             if (layout.mobile){
                 var size = document.body.getSize();
@@ -1493,8 +1493,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             if(!statementOptions)statementOptions = {"style": "select"};
 
             var options =  dialogOptions || {};
-            var width = options.width || statementJson.width || "700";
-            var height = options.height || statementJson.height || "400";
+            var width = options.width || statementJson.width || "972";
+            var height = options.height || statementJson.height || "672";
             var style = options.style || "v10_view";
 
             if (layout.mobile) {

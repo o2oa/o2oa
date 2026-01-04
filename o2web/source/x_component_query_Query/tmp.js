@@ -264,7 +264,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
          * var node = this.target.view.node;
          */
         this.node = new Element("div.form-content-view", {"styles": this.css.node, mwftype: "view"}).inject(this.container);
-
+        
         //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         /**
          * @summary 搜索界面容器
@@ -421,7 +421,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.actionbar.load();
         }else{ //兼容以前的ExportNode
             this.createExportNode();
-        }
+        }        
     },
     createViewNodeMobile: function(data, callback, keepSelected){
         const css = this.viewJson.mobileCss;
@@ -852,7 +852,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.requestBody = data;
 
                 this.setOrderList(d);
-
+                
                 // this.lookupAction.bundleView(this.json.id, d, function(json){
                     // this.bundleItems = json.data.valueList;
                     // this.bundleKey = json.data.key;
@@ -933,7 +933,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     loadSearchFilterItemAreaNode: function(data){
         if (this.viewSearchFilterItemAreaNode){
              this.viewSearchFilterItemAreaNode.empty();
-            if (data && data.filterList && data.filterList.length){
+            if (data.filterList && data.filterList.length){
                 data.filterList.each(function(filter){
                     if (filter.value==="") return;
                     const filterItem = new Element('div.filter-item', {
@@ -984,8 +984,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             if( this.viewTable.rows.length>0 && !this.viewTable.rows[0].hasClass("viewTitleLine") ){
                 this.viewTable.deleteRow(0);
             }
-        }else{
-            this.contentAreaNode.empty();
         }
 
         this.contentAreaNode.scrollTo(0, 0);
@@ -1158,7 +1156,30 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         })
         if (this.gridJson.length){
             this.gridJson.each(function(line, i){
+
                 this.items.push(new MWF.xApplication.query.Query.Viewer.MobileItem(this, line));
+
+                // const div = new Element('div');
+                // const itemHtml = cols.reduce( (html, col)=>{
+                //     return html.replace(new RegExp(`\{${col.id}\}`, 'g'), line.data[col.id] || '').replace(new RegExp(`\{${col.name}\}`, 'g'), line.data[col.id] || '');
+                // }, html);
+                // div.set('html', itemHtml);
+
+                // if( !this.view.isSelectTdHidden() ){
+                //     const flag = this.getSelectFlag();
+                    
+                // }
+
+                // this.contentAreaNode.appendChild(div);
+                
+                // div.addEventListener('click', (ev)=>{
+                //     if (this.json.type==="cms"){
+                //         this.openCms(ev, line)
+                //     }else{
+                //         this.openWorkAndCompleted(ev, line)
+                //     }
+                //     ev.stopPropagation();
+                // });
             }.bind(this));
         }else{
             if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
@@ -1480,7 +1501,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             'onError': ()=>{this.loadViewSearch();},
         });
 
-
+        
     },
     loadSimpleSearch: function(){
         return false;
@@ -1556,11 +1577,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 const result = this.Macro.exec(filter.valueScript.code, this);
                 const arr = typeOf( result ) === "array" ? result : [result];
                 const node = new Element("oo-select");
-                if (!o2.isMediaMobile()){
-                    node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-                    node.setAttribute('label', filter.title);
-                }
-                node.setAttribute('placeholder', filter.title);
+                node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+                node.setAttribute('label', filter.title);
                 arr.forEach( (item)=>{
                     const v = item.split(/\s*\|\s*/);
                     const option = new Element("oo-option");
@@ -1576,20 +1594,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             const node = new Element("oo-selector");
             node.setAttribute('right-icon', "person");
             node.setAttribute('data-select-types', filter.orgTypes.join(','));
-            if (!o2.isMediaMobile()){
-                node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-                node.setAttribute('label', filter.title);
-            }
-            node.setAttribute('placeholder', filter.title);
+            node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+            node.setAttribute('label', filter.title);
             div.appendChild(node);
             return div;
         }
         const input = new Element("oo-input");
-        if (!o2.isMediaMobile()){
-            input.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-            input.setAttribute('label', filter.title);
-        }
-        input.setAttribute('placeholder', filter.title);
+        input.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+        input.setAttribute('label', filter.title);
         div.appendChild(input);
         return div;
     },
@@ -1597,49 +1609,35 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     createSearchDatetimeNode: function(filter, mode){
         const div = new Element("div.search-item");
 
-        if (!o2.isMediaMobile()){
-            const title = new Element("div.search-item-title");
-            title.textContent = filter.title;
-            div.append(title)
-        }
-
+        const title = new Element("div.search-item-title");
+        title.textContent = filter.title;
         const dateTimeInputL = new Element("oo-datetime");
-        dateTimeInputL.setAttribute('placeholder', filter.title+this.lp.begin);
-
         const toNode = new Element("div.search-item-flag");
         toNode.textContent = '-';
-
         const dateTimeInputU = new Element("oo-datetime");
-        dateTimeInputU.setAttribute('placeholder', filter.title+this.lp.end);
-
         if (mode){
             dateTimeInputL.setAttribute('mode', mode);
             dateTimeInputU.setAttribute('mode', mode);
         }
 
-        div.append(dateTimeInputL, toNode, dateTimeInputU)
+        div.append(title, dateTimeInputL, toNode, dateTimeInputU)
         return div;
     },
     createSearchNumberNode: function(filter){
         const div = new Element("div.search-item");
 
-        if (!o2.isMediaMobile()){
-            const title = new Element("div.search-item-title");
-            title.textContent = filter.title;
-            div.append(title)
-        }
-
+        const title = new Element("div.search-item-title");
+        title.textContent = filter.title;
         const numberL = new Element("oo-input");
+
         const toNode = new Element("div.search-item-flag");
         toNode.textContent = '-';
+
         const numberU = new Element("oo-input");
         numberL.setAttribute('type', "number");
         numberU.setAttribute('type', "number");
 
-        numberL.setAttribute('placeholder', filter.title+this.lp.min);
-        numberU.setAttribute('placeholder', filter.title+this.lp.max);
-
-        div.append(numberL, toNode, numberU)
+        div.append(title, numberL, toNode, numberU)
         return div;
     },
     createSearchBooleanNode: function(filter){
@@ -1647,12 +1645,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         const booleanSelect = new Element("oo-select");
         booleanSelect.setAttribute('data-filter', '');
-
-        if (!o2.isMediaMobile()){
-            booleanSelect.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-            booleanSelect.setAttribute('label', filter.title);
-        }
-        booleanSelect.setAttribute('placeholder', filter.title);
+        booleanSelect.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+        booleanSelect.setAttribute('label', filter.title);
 
         booleanSelect.innerHTML = `
             <oo-option value="" text=""></oo-option>
@@ -1887,13 +1881,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if (this.viewJson.isFulltextSearch==='yes'){
             this.viewFulltextSearchAreaNode = new Element("div.search-fulltext-area").inject(this.searchAreaNode, 'top');
             this.fulltextSearchInput = new Element("oo-input");
-            // if (!o2.isMediaMobile()){
-                this.fulltextSearchInput.setAttribute('left-icon', 'search');
-            // }else{
-            //     this.fulltextSearchInput.setAttribute('right-icon', 'search');
-            // }
-
-            this.fulltextSearchInput.setAttribute('placeholder', this.lp.searchNavPlaceholder);
+            this.fulltextSearchInput.setAttribute('left-icon', 'search');
             this.fulltextSearchInput.setAttribute('type', 'search');
             this.fulltextSearchInput.setAttribute('label-style', 'width: 6rem; min-width:4.3em; max-width:9em');
             // if (!o2.isMediaMobile()) this.fulltextSearchInput.setAttribute('label', '搜索');
@@ -1918,7 +1906,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     this._fulltextSearch();
                 }
             });
-
+            
             if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
                 var div = new Element('div.search-fulltext-more', {styles: {'font-size': '1.15rem'}});
                 this.moreSearchButton = new Element("oo-button");
@@ -1927,7 +1915,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.moreSearchButton.setAttribute('left-icon', 'jiekoupeizhi2');
                 div.appendChild(this.moreSearchButton);
                 this.viewFulltextSearchAreaNode.appendChild(div);
-
+                
                 this.viewSearchAreaNode?.addClass('hide');
 
                 this.moreSearchButton.addEventListener('click', ()=>{
@@ -1954,7 +1942,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if (this.viewSearchActionArea.getStyle('display')==='grid'){
             this.viewFulltextSearchAreaNode.addClass('column')
         }
-
+        
         this._cancelFilter();
     },
     _hideFilterSearch: function(){
@@ -2900,12 +2888,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             var lp = this.lp.viewExport;
             var node = this.exportExcelDlgNode = new Element("div");
-            var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
-                `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
+            var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.fileName + "：" +
+                "   <input class='filename' value='' style='margin-left: 14px;width: 350px;'><span>"+
                 "</div>";
-            html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
-                `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
-                `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input><span>${lp.item}</span>` +
+            html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
+                "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
+                "   <input class='end' value='"+ ( this.exportExcelEnd || Math.min( total, max ) ) +"' ><span>"+lp.item+"</span>" +
                 "</div>";
             html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
             node.set("html", html);
@@ -2924,11 +2912,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             var dlg = o2.DL.open({
                 "title": this.lp.exportExcel,
-                "style": layout.mobile ? 'v10_mobile' : "user",
+                "style": "user",
                 "isResize": false,
                 "content": node,
-                "width": layout.mobile ? '100%' : 600,
-                "height" : layout.mobile ? '100%' : 260,
+                "width": 600,
+                "height" : 260,
                 "buttonList": [
                     {
                         "type": "ok",
@@ -3434,8 +3422,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }
 
         //默认选中
-        this._checkSelected();
-        // var selectedFlag;
+        var selectedFlag = this._checkSelected();
         // var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
         // if( !this.isSelected && defaultSelectedScript ){
         //     // var flag = this.view.json.select || this.view.viewJson.select ||  "none";
@@ -3462,7 +3449,16 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         //     }
         // }
 
-
+        if( selectedFlag ){
+            if( selectedFlag === "multi" || selectedFlag === "single" ){
+                this.select( selectedFlag );
+            }else if( selectedFlag.toString() === "true" ){
+                var f = this.view.json.select || this.view.viewJson.select ||  "none";
+                if ( f ==="single" || f==="multi"){
+                    this.select();
+                }
+            }
+        }
 
         // Object.each(this.data.data, function(cell, k){
         //     if (this.view.hideColumns.indexOf(k)===-1){
@@ -3513,17 +3509,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                 }
             }
         }
-
-        if( selectedFlag ){
-            if( selectedFlag === "multi" || selectedFlag === "single" ){
-                this.select( selectedFlag );
-            }else if( selectedFlag.toString() === "true" ){
-                var f = this.view.json.select || this.view.viewJson.select ||  "none";
-                if ( f ==="single" || f==="multi"){
-                    this.select();
-                }
-            }
-        }
+        return selectedFlag;
     },
 
     setOpenWork: function(td, column){
@@ -3959,136 +3945,31 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
         this.load();
     },
     load: function(){
-        this.loading = true;
-        this.view.fireEvent("queryLoadItemRow", [this]);
-
         const html = this.view.viewJson.mobileTemplate;
         const cols = this.view.viewJson.selectList;
-
-        this.node = new Element('div.mobile-view-item');
-        this.selectNode = new Element('div.mobile-view-item-select').inject(this.node);
-        this.contentNode = new Element('label.mobile-view-item-content').inject(this.node);
-        this.flagNode = new Element('div.mobile-view-item-flag.ooicon-arrow_forward').inject(this.node);
-
+        
+        this.node = new Element('div');
         const itemHtml = cols.reduce( (html, col)=>{
-            return html.replace(new RegExp(`\{${col.column}\}`, 'g'), this.data.data[col.column] || '').replace(new RegExp(`\{${col.displayName}\}`, 'g'), this.data.data[col.column] || '');
+            return html.replace(new RegExp(`\{${col.id}\}`, 'g'), this.data.data[col.id] || '').replace(new RegExp(`\{${col.displayName}\}`, 'g'), this.data.data[col.id] || '');
         }, html);
-        this.contentNode.set('html', itemHtml);
+        this.node.set('html', itemHtml);
 
         this.contentAreaNode.appendChild(this.node);
 
-        const flag = this.view.isSelectTdHidden() ? 'no' : this.view.getSelectFlag();
-
-        switch( flag ){
-            case 'single':
-                this._createSelectNode('radio');
-                break;
-            case 'multi':
-                this._createSelectNode('checkbox');
-                break;
-            default:
-                this.selectNode.hide();
-                break;
+        if( !this.view.isSelectTdHidden() ){
+            const flag = this.getSelectFlag();
+            
         }
 
-        ((flag === 'single' || flag === 'multi') ? this.flagNode : this.node).addEventListener('click', (ev)=>{
-            if (this.view.json.type==="cms"){
+        this.node.addEventListener('click', (ev)=>{
+            if (this.json.type==="cms"){
                 this.openCms(ev)
             }else{
                 this.openWorkAndCompleted(ev)
             }
             ev.stopPropagation();
         });
-
-        this.view.fireEvent("postLoadItemRow", [this]);
-
-        this.loading = false;
-        this.loaded = true;
     },
-    _createSelectNode: function(name){
-        const node = new Element('oo-'+name).inject(this.selectNode);
-        this.view.tmpCheckId = this.view.tmpCheckId || (this.view.tmpCheckId = o2.uuid());
-        node.setAttribute('name', `mobile-view-`+name+this.view.tmpCheckId);
-        node.setAttribute('value', this.data.bundle);
-        node.setAttribute('id', 'item'+this.data.bundle);
-
-        node.addEventListener('change', (ev)=>{
-            this.select();
-            ev.stopPropagation();
-        });
-
-        this.contentNode.addEventListener('click', (ev)=>{
-            node._elements.input.click();
-            ev.stopPropagation();
-        });
-
-        this._checkSelected();
-    },
-    selected: function( from ){
-        for(var i=0; i<this.view.selectedItems.length; i++){
-            var item = this.view.selectedItems[i];
-            if( item.data.bundle === this.data.bundle ){
-                this.view.selectedItems.erase(item);
-                break;
-            }
-        }
-        this.view.selectedItems.push(this);
-
-        this.isSelected = true;
-
-        this.view.fireEvent("selectRow", [this]);
-        this.view.fireEvent("select", [{
-            "selected": true,
-            "item": this,
-            "data": this.data
-        }]); //options 传入的事件
-    },
-    unSelected: function( from, isFire ){
-        for(var i=0; i<this.view.selectedItems.length; i++){
-            var item = this.view.selectedItems[i];
-            if( item.data.bundle === this.data.bundle ){
-                this.view.selectedItems.erase(item);
-                break;
-            }
-        }
-
-        this.isSelected = false;
-
-        this.view.fireEvent("unselectRow", [this]);
-        if( isFire !== false ){
-            this.view.fireEvent("unselect", [{
-                "selected": false,
-                "item": this,
-                "data": this.data
-            }]); //options 传入的事件
-        }
-    },
-
-    selectedSingle: function(){
-        if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
-        this.view.selectedItems = [this];
-        this.view.currentSelectedItem = this;
-        this.isSelected = true;
-        this.view.fireEvent("selectRow", [this]);
-        this.view.fireEvent("select", [{
-            "selected": true,
-            "item": this,
-            "data": this.data
-        }]); //options 传入的事件
-    },
-    unSelectedSingle: function(){
-        this.view.selectedItems = [];
-        this.view.currentSelectedItem = null;
-
-        this.isSelected = false;
-        this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("unselect", [{
-            "selected": false,
-            "item": this,
-            "data": this.data
-        }]); //options 传入的事件
-    }
-
 })
 
 

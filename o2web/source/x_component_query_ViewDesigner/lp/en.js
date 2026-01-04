@@ -342,7 +342,9 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"org_group": "group",
 		"fulltextSearch": "Enable full-text search",
 		"enabled": "enable",
-		"disabled": "disable"
+		"disabled": "disable",
+		"mobileTemplate": "Mobile Template",
+		"mobileCss": "Mobile CSS"
 	},
 	"viewStyle": {
 		"default": "Default",

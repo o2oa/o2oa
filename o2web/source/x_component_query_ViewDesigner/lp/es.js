@@ -339,7 +339,9 @@ MWF.xApplication.query.ViewDesigner.LP={
 		"org_group": "Grupo",
 		"fulltextSearch": "Activar la recuperación de texto completo",
 		"enabled": "Habilitar",
-		"disabled": "Desactivado"
+		"disabled": "Desactivado",
+		"mobileTemplate": "Plantilla móvil",
+		"mobileCss": "CSS móvil"
 	},
 	"viewStyle": {
 		"default": "Estilo predeterminado",
