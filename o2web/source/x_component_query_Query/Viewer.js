@@ -4685,6 +4685,12 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
                     var hideFlag = this.form.Macro.exec(tool.condition, this);
                     flag = !hideFlag;
                 }
+                if( tool.pcHide === true && !o2.isMediaMobile()){
+                    flag = false;
+                }
+                if( tool.mobileHide === true && o2.isMediaMobile()){
+                    flag = false;
+                }
                 if (flag){
                     var actionNode = new Element("div", {
                         "id": tool.id,
@@ -4725,6 +4731,16 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
             flag = flag && (!hideFlag);
         }
         if (readonly) if (!tool.read) flag = false;
+
+        if( tool.pcHide === true && !o2.isMediaMobile()){
+            flag = false;
+        }
+
+        if( tool.mobileHide === true && o2.isMediaMobile()){
+            flag = false;
+        }
+
+
 
         var imgUrl, overImgUrl;
         if( tool.customImg ){
