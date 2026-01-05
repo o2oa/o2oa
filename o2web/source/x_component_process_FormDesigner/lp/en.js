@@ -712,6 +712,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"allowUpload": "Allow Upload",
 		"allowFromPan": "Allow selection from network disk",
 		"allowPreview": "Allow Preview",
+		"allowAI": "Allow AI",
 		"allowDownload": "Allow Download",
 		"allowDownloadBatch": "Allow Download Batch",
 		"allowEdit": "Allow Edit",

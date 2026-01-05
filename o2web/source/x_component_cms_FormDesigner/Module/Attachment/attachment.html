@@ -186,6 +186,16 @@
                     <input class="editTableRadio" name="isDownload" text{($.isDownload=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
                 </td>
             </tr>
+
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowAI}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isAIAtt" text{($.isAIAtt!=='n' && $.isAIAtt!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isAIAtt" text{($.isAIAtt=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isAIAtt" text{($.isAIAtt=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                </td>
+            </tr>
+
             <tr style="text{($.$inDatatable)?'display:none':''}">
                 <td class="editTableTitle">{{$.lp.allowDownloadBatch}}:</td>
                 <td class="editTableValue">
@@ -320,7 +330,7 @@
         <!-- 可阅读配置 -->
         <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.readConfig}}</div>
         <div style="padding: 5px; color: #999999; ">{{$.lp.readConfigInfo}}</div>
-        
+
         <div style="padding: 5px; border-top: 1px solid #999; font-weight: bold; background-color: #f9f9f9;">
             <label><input name="readByActivity" type="checkbox" value="true" onclick="if (this.checked){
                 $('text{$.pid}readByActivityArea').setStyle('display', 'block');
@@ -377,7 +387,7 @@
                 </tr>
             </table>
         </div>
-        
+
         <!-- 可编辑配置 -->
         <div style="height:26px; text-align: center; line-height: 26px; background-color: #EEE; border-top: 1px solid #999; border-bottom: 1px solid #999; font-weight:bold;">{{$.lp.editConfig}}</div>
         <div style="padding: 5px; color: #999999; ">{{$.lp.editConfigInfo}}</div>
