@@ -1,0 +1,93 @@
+<div class="calendar">
+    <div class="mobile-statistic">
+        <!-- 出勤 -->
+        <div class="mobile-statistic-block-item">
+            <div class="statistic-number">{{$.statistic.attendance}}</div>
+            <div class="row-box  margin-top">
+                <div class="item-record-status record-status-normal"></div>
+                <div class="statistic-label">{{$.lp.myStatistic.attendance}}</div>
+            </div>
+        </div>
+
+        <!-- 缺卡 -->
+        <div class="mobile-statistic-block-item">
+            <div class="statistic-number">{{$.statistic.absenceTimes}}</div>
+            <div class="row-box  margin-top">
+                <div class="item-record-status record-status-nosign"></div>
+                <div class="statistic-label">{{$.lp.myStatistic.nosignTimes}}</div>
+            </div>
+        </div>
+
+        <!-- 迟到 -->
+        <div class="mobile-statistic-block-item">
+            <div class="statistic-number">{{$.statistic.lateTimes}}</div>
+            <div class="row-box  margin-top">
+                <div class="item-record-status record-status-late"></div>
+                <div class="statistic-label">{{$.lp.myStatistic.lateTimes}}</div>
+            </div>
+        </div>
+
+        <!-- 早退 -->
+        <div class="mobile-statistic-block-item">
+            <div class="statistic-number">{{$.statistic.leaveEarlierTimes}}</div>
+            <div class="row-box  margin-top">
+                <div class="item-record-status record-status-early"></div>
+                <div class="statistic-label">{{$.lp.myStatistic.leaveEarlierTimes}}</div>
+            </div>
+        </div>
+
+        <!-- 请假 -->
+        <div class="mobile-statistic-block-item">
+            <div class="statistic-number">{{$.statistic.leaveDays}}</div>
+            <div class="row-box margin-top">
+                <div class="item-record-status record-status-leave"></div>
+                <div class="statistic-label">{{$.lp.myStatistic.leaveDays}}</div>
+            </div>
+        </div>
+
+        <!-- 旷工 -->
+        <div class="mobile-statistic-block-item">
+            <div class="statistic-number">{{$.statistic.absenteeismDays}}</div>
+            <div class="row-box  margin-top">
+                <div class="item-record-status record-status-absenteeism"></div>
+                <div class="statistic-label">{{$.lp.myStatistic.absenteeismDays}}</div>
+            </div>
+        </div>
+
+        <!-- 外勤 -->
+<!--        <div class="mobile-statistic-block-item">-->
+<!--            <div class="statistic-number">{{$.statistic.fieldWorkTimes}}</div>-->
+<!--            <div class="row-box  margin-top">-->
+<!--                <div class="item-record-status record-status-fieldwork"></div>-->
+<!--                <div class="statistic-label">{{$.lp.myStatistic.fieldWorkTimes}}</div>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+    <oo-calendar
+            class="mobile-calendar"
+            mode="date"
+            value="{{$.defaultDate}}"
+            id="mobileAttendanceCalendar"
+            @viewchange="handleViewChange"
+            @change="handleDateChange"
+            >
+    </oo-calendar>
+
+    <div style="margin-top: 1em;">
+        <div oo-each="$.recordList" oo-item="record">
+            <div  style="display: flex; gap: 1rem; justify-content: space-between;" class="page-widget-attendance-item">
+                <div  class="calendar-item-title calendar-item-line">
+                    <div   style="width: 1em; height: 1em;" class="{{$m.formatRecordResultClass(record.value)}}"></div>
+                    <div  class="calendar-item-time">{{record.value.recordDate.substring(11, 16)}}</div>
+                    <div   style="flex: 1 1 0%; font-size: 1.125rem;"  class="line-text">{{ $m.formatRecordResult(record.value) }} {{ $m.formatAppealStatus(record.value.appealData) }} </div>
+                </div>
+                <div  style="justify-content: space-between;" class="calendar-item-line">
+                    <div oo-if="record.value.checkInResult === 'Normal'" style="padding: 0.3em 0.5em; border-radius: var(--oo-default-radius); color: rgb(255, 255, 255)"></div>
+                    <div oo-else-if="record.value.appealData && record.value.appealData.jobId" @click="this.openJob(record.value.appealData.jobId, record.value.appealData.id)" style="padding: 0.3em 0.5em; border-radius: var(--oo-default-radius); color: rgb(255, 255, 255); background-color: var(--oo-color-success); cursor: pointer;"  >查看申诉</div>
+                    <div oo-else-if="$.appealEnable && record.value.appealData.status === 0"  style="padding: 0.3em 0.5em; border-radius: var(--oo-default-radius); color: rgb(255, 255, 255); background-color: var(--oo-color-main); cursor: pointer;"  @click="this.startProcess(record.value.appealData)">发起申诉</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

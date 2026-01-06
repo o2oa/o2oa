@@ -1,0 +1,337 @@
+.theme-default {
+    --main-bg-color: #ffffff;
+    --second-bg-color: #eeeeee;
+    --font-primary-color: #333333;
+    --font-second-color: #666666;
+    --font-hint-color: #999999;
+}
+
+.theme-dark {
+    --main-bg-color: #121212;
+    --second-bg-color: #1e1e1e;
+    --font-primary-color: #ffffff;
+    --font-second-color: #ffffff;
+    --font-hint-color: #efefef;
+}
+
+
+.mobile-page {
+    --att-danger-color: #fb4747;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+@supports (-webkit-touch-callout: none) {
+    .mobile-page {
+        height: -webkit-fill-available;
+    }
+}
+
+.mobile-page .primary_color {
+    color: var(--oo-color-main) !important;
+}
+
+.mobile-100 {
+    width: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.mobile-main-header {
+    font-size: 1rem;
+    background-color: var(--oo-color-main);
+    height: 3rem;
+    line-height: 3rem;
+    margin: 0;
+    padding: 0 20px;
+    color: #ffffff;
+    border-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.mobile-main-header .mobile-main-title {
+    flex: 100%;
+    text-align: center;
+}
+
+.mobile-main-menu {
+    height: 18rem;
+    width: 100%;
+    border-bottom: 1px solid #dedede;
+    box-shadow: 0 0 16px 0 #cccccc;
+    background-color: #ffffff;
+    overflow: hidden;
+    position: absolute;
+    z-index: 1000;
+    scale: 0 0;
+    transform-origin: top left;
+}
+
+.mobile-main-menu.transition {
+    transition: scale 0.2s ease-in-out;
+}
+
+.mobile-main-menu.show {
+    scale: 1 1;
+}
+
+.mobile-main-menu .menu-item {
+    height: 40px;
+    cursor: pointer;
+}
+
+.mobile-main-body {
+    flex: 1;
+    background-color: var(--main-bg-color);
+    width: 100%;
+}
+
+.mobile-statistic {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* 行列间距 */
+    padding: 0.7rem;
+}
+
+.mobile-statistic-block-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 calc((100% - 32px) / 3);
+}
+
+.mobile-statistic-block-item .row-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.item-record-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    margin-right: 5px;
+    background-color: var(--att-record-status-normal-color);
+}
+
+.item-record-status-tag {
+    padding: 0 8px;
+    height: 20px;
+    border-radius: 15px;
+    color: #FFFFFF;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+}
+
+.mobile-statistic-block-item .statistic-label {
+    font-size: 14px;
+    color: #666666;
+    line-height: 20px;
+}
+
+.mobile-statistic-block-item .statistic-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333333;
+    line-height: 32px;
+}
+
+.mobile-calendar {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    box-shadow: 0 0 0 0;
+}
+
+.mobile-calendar .calendar-point {
+    color: var(--att-danger-color);
+    position: absolute;
+    font-size: 0.3rem;
+    margin-top: 8em;
+}
+
+.page-widget-attendance-item {
+    padding: 0.1em 1.25em;
+    background-color: #f9f9f9;
+    border-radius: var(--oo-default-radius);
+    margin-bottom: 1em;
+    cursor: pointer;
+}
+
+.calendar-item-title {
+    font-size: 1rem;
+}
+
+.calendar-item-line {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.calendar-item-flag {
+    width: 1em;
+    height: 1em;
+    flex: 0 0 1em;
+    border-radius: var(--oo-default-radius);
+}
+
+/* 正常 */
+.record-status-normal {
+    background-color: var(--att-record-status-normal-color) !important;
+}
+
+/* 早退 */
+.record-status-early {
+    background-color: var(--att-record-status-early-color) !important;
+}
+
+/* 迟到 */
+.record-status-late {
+    background-color: var(--att-record-status-late-color) !important;
+}
+
+/* 严重迟到 */
+.record-status-serilate {
+    background-color: var(--att-record-status-serilate-color) !important;
+}
+
+/* 未打卡 */
+.record-status-nosign {
+    background-color: var(--att-record-status-nosign-color) !important;
+}
+
+/* 外勤打卡 */
+.record-status-fieldwork {
+    background-color: var(--att-record-status-fieldwork-color) !important;
+}
+
+/* 申诉 */
+.record-status-appeal {
+    background-color: var(--att-record-status-appeal-color) !important;
+}
+
+/* 请假 */
+.record-status-leave {
+    background-color: var(--att-record-status-leave-color) !important;
+}
+
+/* 旷工 */
+.record-status-absenteeism {
+    background-color: var(--att-record-status-absenteeism-color) !important;
+}
+
+.bgcolor-fieldWork {
+    background-color: var(--att-record-status-fieldwork-color);
+}
+
+.bgcolor-normal {
+    background-color: var(--att-record-status-normal-color);
+}
+
+.bgcolor-early {
+    background-color: var(--att-record-status-early-color);
+}
+
+.bgcolor-late {
+    background-color: var(--att-record-status-late-color);
+}
+
+.bgcolor-serilate {
+    background-color: var(--att-record-status-serilate-color);
+}
+
+.bgcolor-nosign {
+    background-color: var(--att-record-status-nosign-color);
+}
+
+.bgcolor-appeal {
+    background-color: var(--att-record-status-appeal-color);
+}
+
+.bgcolor-holiday {
+    background-color: var(--att-record-status-leave-color);
+}
+
+.bgcolor-absenteeism {
+    background-color: var(--att-record-status-absenteeism-color);
+}
+
+.bgcolor-leave {
+    background-color: var(--att-record-status-leave-color);
+}
+
+.calendar-item-time {
+    font-family: D-DIN-PRO, 华文中宋;
+    font-weight: 800;
+    font-size: 1.75em;
+    text-align: left;
+    padding: 0.5em 0;
+}
+
+
+.mobile-page-header {
+    height: 48px;
+    background-color: var(--main-bg-color);
+    width: 100%;
+}
+
+.mobile-page-header .page-title {
+    margin: 10px;
+    line-height: 28px;
+    font-size: 16px;
+    color: var(--font-primary-color);
+}
+
+.mobile-page-body {
+    flex: 1;
+    background-color: var(--second-bg-color);
+    width: 100%;
+}
+
+.mobile-page-footer {
+    height: 64px;
+    background-color: var(--main-bg-color);
+    display: flex;
+    width: 100%;
+}
+
+.mobile-page-footer .menu-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    cursor: pointer;
+}
+
+.mobile-page-footer .menu-item .menu-title {
+    font-size: 14px;
+    color: var(--font-hint-color);
+}
+
+.o2-icon-24 {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    color: var(--font-hint-color);
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+
+.o2-icon-14 {
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    color: var(--font-hint-color);
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
