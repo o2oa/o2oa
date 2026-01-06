@@ -158,7 +158,7 @@ const load = ()=>{
   });
 
   loadPortals().then((data)=>{
-    const o = {}
+    const o = {"":""};
     data.forEach((d)=>{
       o[d.id] = d.name
     });
@@ -166,7 +166,7 @@ const load = ()=>{
   });
 
   loadInvokes().then((data)=>{
-    const o = {}
+    const o = {"":""};
     data.forEach((d)=>{
       o[d.id] = d.name
     });
