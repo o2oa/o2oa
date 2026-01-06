@@ -86,7 +86,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.path = this.options.path || (o2.session.path+"/widget/$Tablet/");
         this.cssPath = this.path + this.options.style+"/css.wcss";
 
-        this.inMobileDevice = COMMON && COMMON.Browser && COMMON.Browser.Platform.isMobile;
+        this.inMobileDevice = o2.isMediaMobile();
+        //this.inMobileDevice = COMMON && COMMON.Browser && COMMON.Browser.Platform.isMobile;
 
         this.lp = {
             "save": o2.LP.widget.save,
@@ -864,42 +865,118 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
     },
     collect: function (itemNode) {
+        debugger;
+         const postShow = ()=>{
+            if(layout.mobile){
+                this.collectSelector.node.setStyles({
+                    bottom: '80px',
+                    left: '0px',
+                    right: '0px',
+                    top: '0px',
+                    width: '100%',
+                    'min-width': "100%",
+                    'max-width': "100%",
+                    height: 'calc(100% - 80px)',
+                    'min-height': "calc(100% - 80px)",
+                    'max-height': "calc(100% - 80px)",
+                });
+            }
+        }
         if( !this.collectSelector ){
-            var container = this.inMobileDevice ? $(document.body): this.container;
+            var container = this.container;
             this.collectSelector = new o2.widget.Tablet.Collect(container, itemNode, null, {}, {
                 "onPostCreate": function (){
                     this.collectSelector.node.setStyles({
                         'height': this.contentNode.getSize().y,
                         'overflow': 'auto'
                     })
+                    postShow();
+                }.bind(this),
+                "onShow": function (){
+                    postShow();
                 }.bind(this),
                 "onSelect": function (d) {
                     this.reset();
-                    this.globalCompositeOperation = this.ctx.globalCompositeOperation;
-                    this.ctx.globalCompositeOperation = "source-over";
                     var src = 'data:' + this.fileType + ';base64,' + d.data;
-                    this.parseFileToImage(src);
+                    if(layout.mobile){
+                        this.useCollect(src, ()=>{
+                            this.collectSelector.hide();
+                        });
+                    }else{
+                        this.globalCompositeOperation = this.ctx.globalCompositeOperation;
+                        this.ctx.globalCompositeOperation = "source-over";
+                        this.parseFileToImage(src);
+                    }
                 }.bind(this),
                 "onHide": function () {
                     itemNode.fireEvent("mouseout");
                 },
                 "event": this.inMobileDevice ? "click": "mouseenter",
+                // "isAutoShow": this.inMobileDevice ? true : false,
                 "hasMask": false,
             });
             this.collectSelector.tablet = this;
+            if(layout.mobile){
+                this.collectSelector.load();
+            }
         }
     },
     getImageSize: function(naturalWidth, naturalHeight ){
         var ratio = naturalWidth / naturalHeight;
         var ww = this.contentWidth,
-            wh = this.contentHeight;
+            wh = this.contentHeight, width, height;
         var flag = ( naturalWidth / parseInt(ww) ) > ( naturalHeight / parseInt(wh) );
         if( flag ){
-            var width = Math.min( naturalWidth, parseInt( ww )  );
-            return { width: width,  height: width / ratio }
+            width = Math.min( naturalWidth, parseInt( ww )  );
+            height = width / ratio;
         }else{
-            var height = Math.min( naturalHeight, parseInt( wh )  );
-            return { width: height * ratio,  height: height }
+            height = Math.min( naturalHeight, parseInt( wh )  );
+            width = height * ratio
+        }
+        return { width: width,  height: height, left: (ww - width) / 2, top: (wh - height) / 2 };
+    },
+    useCollect: function(file, callback){
+        if( this.imageMover ){
+            this.imageMover.close();
+            this.imageMover = null;
+        }
+        var imageNode = new Element("img");
+
+        var onImageLoad = function(){
+            var nh = imageNode.naturalHeight,
+                nw = imageNode.naturalWidth;
+            if( isNaN(nh) || isNaN(nw) || nh == 0 || nw == 0 ){
+                setTimeout( function(){ onImageLoad(); }.bind(this), 100 );
+            }else{
+                _onImageLoad();
+            }
+        };
+
+        var _onImageLoad = function(){
+
+            var nh = imageNode.naturalHeight,
+                nw = imageNode.naturalWidth;
+            var size = this.getImageSize( nw, nh );
+            this.storeToPreArray();
+            this.ctx.drawImage(imageNode, size.left, size.top, size.width, size.height);
+            this.storeToMiddleArray();
+
+            imageNode.destroy();
+
+            if( callback )callback();
+        }.bind(this);
+
+        if( o2.typeOf(file) === 'string' ){
+            imageNode.src = file;
+            onImageLoad();
+        }else{
+            var reader=new FileReader();
+            reader.onload=function(){
+                imageNode.src=reader.result;
+                reader = null;
+                onImageLoad();
+            }.bind(this);
+            reader.readAsDataURL(file);
         }
     },
     parseFileToImage: function( file, callback ){
@@ -1447,6 +1524,8 @@ o2.widget.Tablet.ToolbarMobile = new Class({
             "name": "redo"
         },{
             "name": "reset"
+        },{
+            "name": "collect"
         }], function (item) {
             this.items[item.name] = new Element("div",{
                 styles: this.css[item.name+"_mobile"],
@@ -1538,48 +1617,69 @@ o2.widget.Tablet.Collect = new Class({
                 text: this.tablet.lp.noCollect
             }).inject(emptyNode);
         }else{
+            if(layout.mobile){
+                this.contentNode.setStyles({
+                    display: 'flex',
+                    'flex-wrap': 'wrap',
+                    'gap': '16px',
+                    'padding': '12px'
+                })
+            }
             data.sort(function(a, b){
                 return new Date(b.createTime) - new Date(a.createTime);
             })
             data.forEach((item) => {
                 var src = 'data:' + this.tablet.fileType + ';base64,' + item.data;
-                var node = new Element('div', {
-                    styles: {
+                var node = new Element('div').inject(this.contentNode);
+                if(layout.mobile){
+                    node.setStyles({
+                        'position': 'relative',
+                        "border": "1px solid rgb(221, 221, 221)",
+                        "width": "calc(33.33% - 12px)",
+                        "height": "140px",
+                        "display": "flex",
+                        "justify-content": "center",
+                        "align-items": "center",
+                        "align-content": "flex-start"
+                    })
+                }else{
+                    node.setStyles({
                         'position': 'relative',
                         'border-bottom': "1px solid #ddd",
-                    },
-                    events:{
+                    })
+                    node.addEvents({
                         mouseover: ()=> {
                             closeNode.fade("in");;
                         },
                         mouseout: ()=> {
                             closeNode.fade("out");;
                         }
-                    }
-                }).inject(this.contentNode);
-                new Element("img", {
+                    })
+                }
+                var img = new Element("img", {
                     src: src,
-                    styles: {
-                        'cursor': 'pointer',
-                        'width': '180px',
-                    },
                     events: {
                         click: ()=> {
                             this.fireEvent('select', item);
                         }
                     }
                 }).inject(node);
+                if(layout.mobile){
+                    img.setStyles({"height": "80%", "max-width": "100%"});
+                }else{
+                    img.setStyles({ 'cursor': 'pointer', 'width': '180px' })
+                }
                 var closeNode = new Element('i.ooicon-close', {
                     styles: {
                         'position': 'absolute',
-                        'right': '0',
-                        'top': '5px',
+                        'right': layout.mobile ? '10px' : '0',
+                        'top': layout.mobile ? '10px' : '5px',
                         'width': '14px',
                         'height': '14px',
                         'font-size': '14px',
                         'cursor': 'pointer',
                         'color': "#999",
-                        'opacity': 0,
+                        'opacity': layout.mobile ? 1 : 0,
                     },
                     events: {
                         click: (e)=> {

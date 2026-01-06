@@ -180,6 +180,19 @@
     "reset_mobile_disable": {
         "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/reset_disable.png) no-repeat center center"
     },
+    "collect_mobile": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/collect_normal.png) no-repeat center center",
+        "width": "36px",
+        "height": "36px",
+        "border-radius": "18px",
+        "box-shadow": "5px 4px 5px #ccc",
+        "position": "absolute",
+        "bottom": "20px",
+        "right": "180px"
+    },
+    "collect_mobile_disable": {
+        "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/collect_disable.png) no-repeat center center"
+    },
 
     "imageMoveMaskNode": {
         "width": "100%",
