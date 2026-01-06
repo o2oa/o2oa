@@ -474,6 +474,8 @@ MWF.xApplication.Common.Main = new Class({
         } else {
             this.fireAppEvent("current");
         }
+		debugger;
+		this.fireAppEvent('resize');
 	},
 	setUncurrent: function () {
 		if (this.desktop.currentApp == this) {
@@ -559,7 +561,8 @@ MWF.xApplication.Common.Main = new Class({
 				if (this.resizeFun) layout.desktop.removeEvent("resize", this.resizeFun);
 				this.desktop.closeApp(this, hasTaskitem);
 				this.fireAppEvent("postClose");
-
+				debugger;
+				this.desktop.currentApp?.fireAppEvent('resize');
 				o2.release(this);
 			}.bind(this));
 		}
