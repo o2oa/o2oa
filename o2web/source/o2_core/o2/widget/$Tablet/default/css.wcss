@@ -141,6 +141,15 @@
         "top": "20px",
         "right": "30px"
     },
+    "isCollect_mobile": {
+        "color": "#4A90E2",
+        "font-size": "16px",
+        "width": "80px",
+        "height": "36px",
+        "position": "absolute",
+        "top": "14px",
+        "right": "70px"
+    },
     "undo_mobile": {
         "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/undo_normal.png) no-repeat center center",
         "width": "36px",

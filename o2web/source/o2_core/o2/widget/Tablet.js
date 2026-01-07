@@ -514,7 +514,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         //    ctx.closePath();
         //}
     },
-    detectOrient: function(){
+    detectOrient: function( node ){
         // 利用 CSS3 旋转 对根容器逆时针旋转 90 度
         var size = $(document.body).getSize();
         var width = size.x,
@@ -546,7 +546,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 "transform-origin": ( this.transformOrigin + "px " + this.transformOrigin + "px")
             }
         }
-        this.container.setStyles(styles);
+        (node || this.container).setStyles(styles);
     },
     uploadImage: function(  success, failure  ){
         var image = this.getImage( null, true );
@@ -716,7 +716,21 @@ o2.widget.Tablet = o2.Tablet = new Class({
         // blank.height = canvas.height;
         return canvas.toDataURL() == blank.toDataURL(); //比较值相等则为空
     },
-    save: function(){
+    save: function (){
+        if(layout.mobile){
+            if( !!this.toolbar.isCollectNode?.value?.length ){
+                this.saveToCollection(()=>{
+                    this._save();
+                });
+                this.toolbar.isCollectNode.value = [];
+            }else{
+                this._save();
+            }
+        }else{
+            this._save();
+        }
+    },
+    _save: function(){
         var _slef = this;
         Promise.resolve( this.getBase64Code() ).then(function ( base64code ) {
             _slef.getImage( base64code ).then(function( imageFile ){
@@ -865,25 +879,23 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
     },
     collect: function (itemNode) {
-        debugger;
          const postShow = ()=>{
             if(layout.mobile){
                 this.collectSelector.node.setStyles({
-                    bottom: '80px',
+                    // bottom: '80px',
                     left: '0px',
                     right: '0px',
                     top: '0px',
-                    width: '100%',
-                    'min-width': "100%",
-                    'max-width': "100%",
-                    height: 'calc(100% - 80px)',
-                    'min-height': "calc(100% - 80px)",
-                    'max-height': "calc(100% - 80px)",
+                    'min-width': "auto",
+                    'max-width': "auto",
+                    'min-height': "auto",
+                    'max-height': "auto",
+                    'z-index': "1000"
                 });
             }
         }
         if( !this.collectSelector ){
-            var container = this.container;
+            var container = layout.mobile ? $(document.body) : this.container;
             this.collectSelector = new o2.widget.Tablet.Collect(container, itemNode, null, {}, {
                 "onPostCreate": function (){
                     this.collectSelector.node.setStyles({
@@ -891,6 +903,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
                         'overflow': 'auto'
                     })
                     postShow();
+                    if(layout.mobile){
+                        this.detectOrient(this.collectSelector.node)
+                    }
                 }.bind(this),
                 "onShow": function (){
                     postShow();
@@ -912,8 +927,12 @@ o2.widget.Tablet = o2.Tablet = new Class({
                     itemNode.fireEvent("mouseout");
                 },
                 "event": this.inMobileDevice ? "click": "mouseenter",
-                // "isAutoShow": this.inMobileDevice ? true : false,
                 "hasMask": false,
+                "hasArrow": !layout.mobile,
+                nodeStyles: {
+                    "min-width": layout.mobile ? "auto" : "180px",
+                    "max-width": layout.mobile ? "auto" : "180px",
+                }
             });
             this.collectSelector.tablet = this;
             if(layout.mobile){
@@ -1537,6 +1556,12 @@ o2.widget.Tablet.ToolbarMobile = new Class({
             }).inject(this.tablet.container);
             if(item.text)this.items[item.name].set("text", item.text);
             if( item.name === "save" )this.items[item.name].addClass("mainColor_color");
+            if( item.name === "collect" ){
+                this.isCollectNode = new Element('oo-checkbox-group', {styles: this.css["isCollect_mobile"]}).inject(this.tablet.container);
+                new Element('oo-checkbox',{
+                    text: '收藏', value: 'yes'
+                }).inject(this.isCollectNode);
+            }
         }.bind(this));
         this.setAllItemsStatus();
     },
@@ -1570,10 +1595,7 @@ o2.widget.Tablet.Collect = new Class({
             y: "auto" //y轴上top middle bottom,  auto 系统自动计算
         },
         //event: "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
-        nodeStyles: {
-            "min-width": "180px",
-            "max-width": "180px"
-        }
+
     },
     initialize: function( container, target, app, data, options, targetCoordinates ){
         //可以传入target 或者 targetCoordinates，两种选一
@@ -1604,10 +1626,42 @@ o2.widget.Tablet.Collect = new Class({
         });
     },
     _loadContent: function(data){
+        var contentNode;
+        if( layout.mobile ){
+            this.contentNode.setStyles({
+                // display: 'flex',
+                // 'flex-wrap': 'wrap',
+                // 'align-content': 'flex-start',
+                // 'gap': '10px',
+                // "display": "grid",
+                // "grid-template-columns": "repeat(auto-fill, minmax(14rem, 1fr))",
+                "gap": "1rem",
+            })
+            contentNode = new Element("div", {
+                style: 'overflow:auto; height: calc(100% - 36px); width: 100%; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 1rem;'
+            }).inject(this.contentNode);
+            var toolNode = new Element("div", {style: 'height:36px;width: 100%;display:flex;justify-content: flex-end;'}).inject(this.contentNode);
+            new Element("div", {
+                text: this.tablet.lp.cancel,
+                styles: {
+                    "color": "#333",
+                    "font-size": "16px",
+                    "width": "40px",
+                    "line-height": "36px",
+                    "height": "36px",
+                    "font-weight": "bold",
+                },
+                events: {
+                    click: function () {this.hide();}.bind(this)
+                }
+            }).inject(toolNode);
+        }else{
+            contentNode = this.contentNode;
+        }
         if( !data.length ){
             var emptyNode = new Element("div",{
                 styles: this.tablet.css.emptyNode
-            }).inject(this.contentNode);
+            }).inject(contentNode);
             new Element('div.ooempty-wushuju', {
                 styles: {
                     'font-size': '32px',
@@ -1617,26 +1671,23 @@ o2.widget.Tablet.Collect = new Class({
                 text: this.tablet.lp.noCollect
             }).inject(emptyNode);
         }else{
-            if(layout.mobile){
-                this.contentNode.setStyles({
-                    display: 'flex',
-                    'flex-wrap': 'wrap',
-                    'gap': '16px',
-                    'padding': '12px'
-                })
-            }
             data.sort(function(a, b){
                 return new Date(b.createTime) - new Date(a.createTime);
             })
             data.forEach((item) => {
                 var src = 'data:' + this.tablet.fileType + ';base64,' + item.data;
-                var node = new Element('div').inject(this.contentNode);
+                var node = new Element('div').inject(contentNode);
                 if(layout.mobile){
                     node.setStyles({
                         'position': 'relative',
-                        "border": "1px solid rgb(221, 221, 221)",
-                        "width": "calc(33.33% - 12px)",
-                        "height": "140px",
+                        'border-radius': 'var(--oo-default-radius)',
+                        'overflow': 'hidden',
+                        'box-shadow': 'var(--oo-menu-shadow)',
+                        'background': 'white',
+                        'transition': 'all 0.3s',
+                        'cursor': 'pointer',
+                        "width": "calc(33.33% - 1em)",
+                        "height": "10em",
                         "display": "flex",
                         "justify-content": "center",
                         "align-items": "center",
@@ -1674,8 +1725,9 @@ o2.widget.Tablet.Collect = new Class({
                         'position': 'absolute',
                         'right': layout.mobile ? '10px' : '0',
                         'top': layout.mobile ? '10px' : '5px',
-                        'width': '14px',
-                        'height': '14px',
+                        'width': layout.mobile ? '36px' : '14px',
+                        'height': layout.mobile ? '36px' : '14px',
+                        'text-align': layout.mobile ? 'right' : 'center',
                         'font-size': '14px',
                         'cursor': 'pointer',
                         'color': "#999",
@@ -1710,6 +1762,28 @@ o2.widget.Tablet.Collect = new Class({
             dlg.addEvent('postShow', ()=>{
                 dlg.node.setStyle('z-index', 20003)
             })
+            if(layout.mobile){
+                var size = $(document.body).getSize();
+                var width = size.x, height = size.y, styles = {};
+                if( width >= height ){ // 横屏
+                    styles = {
+                        "webkit-transform": "rotate(0)",
+                        "transform": "rotate(0)",
+                        "webkit-transform-origin": "0 0",
+                        "transform-origin": "0 0"
+                    }
+                }
+                else{ // 竖屏
+                    //var transformOrigin = dlg.node.getSize().x / 2;
+                    styles = {
+                        "webkit-transform": "rotate(90deg)",
+                        "transform": "rotate(90deg)",
+                        // "webkit-transform-origin": ( transformOrigin + "px " + transformOrigin + "px"),
+                        // "transform-origin": ( transformOrigin + "px " + transformOrigin + "px")
+                    }
+                }
+                dlg.node.setStyles(styles);
+            }
         }, null, "o2");
     }
 });
