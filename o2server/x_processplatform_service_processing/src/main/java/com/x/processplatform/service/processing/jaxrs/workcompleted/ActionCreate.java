@@ -133,8 +133,11 @@ class ActionCreate extends BaseAction {
                 List<Item> adds = converter.disassemble(gson.toJsonTree(data));
                 for (Item o : adds) {
                     fill(o, workCompleted);
-                    business.entityManagerContainer().persist(o);
+                    emc.persist(o);
                 }
+                emc.beginTransaction(Review.class);
+                Review review = new Review(workCompleted, EffectivePerson.CIPHER);
+                emc.persist(review);
                 emc.commit();
 
                 Wo wo = new Wo();

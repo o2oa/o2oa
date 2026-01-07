@@ -23,7 +23,6 @@ class ActionUpload extends BaseAction {
 		File file;
 		Wo wo = new Wo();
 		ActionResult<Wo> result = new ActionResult<>();
-
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
 				ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(File.class);
@@ -78,4 +77,5 @@ class ActionUpload extends BaseAction {
 			this.fileName = fileName;
 		}
 	}
+
 }
