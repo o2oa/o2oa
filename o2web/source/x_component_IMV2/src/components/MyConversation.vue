@@ -172,7 +172,7 @@ const clickConversation = (conversation) => {
 <template>
   <div class="im-conversation-view">
     <div class="im-conversation-search">
-      <oo-input style="width: 100%;" type="text" leftIcon="search" :value="searchContent"
+      <oo-input style="flex: 1;" type="text" leftIcon="search" :value="searchContent"
                 :placeholder="lp.conversationSearchPlaceholder"
                 @input="inputSearch">
         <span v-if="searchContent!==''" class="arrow" slot="after-inner-after" @click="clearSearch"><i class="ooicon-error"></i></span>
