@@ -18,7 +18,10 @@ import java.util.Date;
 @Schema(name = "AttendanceV2AppealInfo", description = "考勤申诉信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceV2AppealInfo.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2AppealInfo.table
+@Table(name = PersistenceProperties.AttendanceV2AppealInfo.table, indexes = {
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2AppealInfo.table + JpaObject.IndexNameMiddle + AttendanceV2AppealInfo.userId_FIELDNAME + "_IDX",
+                columnList = JpaObject.ColumnNamePrefix + AttendanceV2AppealInfo.userId_FIELDNAME + "," + JpaObject.ColumnNamePrefix + AttendanceV2AppealInfo.recordDateString_FIELDNAME),
+}, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2AppealInfo.table
         + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
         JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

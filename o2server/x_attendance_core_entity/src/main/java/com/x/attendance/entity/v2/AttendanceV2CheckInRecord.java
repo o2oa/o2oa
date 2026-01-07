@@ -23,7 +23,10 @@ import java.util.Date;
 @Schema(name = "AttendanceV2CheckInRecord", description = "打卡考勤记录.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceV2CheckInRecord.table, uniqueConstraints = {
+@Table(name = PersistenceProperties.AttendanceV2CheckInRecord.table, indexes = {
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle + AttendanceV2CheckInRecord.userId_FIELDNAME + "_IDX",
+                columnList = JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.userId_FIELDNAME + "," + JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.recordDateString_FIELDNAME),
+}, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
                 JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN})})
