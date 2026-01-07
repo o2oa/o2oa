@@ -721,8 +721,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
             if( !!this.toolbar.isCollectNode?.value?.length ){
                 this.saveToCollection(()=>{
                     this._save();
+                    this.toolbar.isCollectNode.value = [];
                 });
-                this.toolbar.isCollectNode.value = [];
             }else{
                 this._save();
             }
