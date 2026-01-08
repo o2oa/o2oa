@@ -578,6 +578,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var td = new Element("td", {"html": "<span>&nbsp;</span>", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
 				if (this.json.amountStyles) td.setStyles(this.json.amountStyles);
 
+				if(!th.offsetParent){
+					td.setStyle('display', 'none');
+				}
+
 				var json = this.form._getDomjson(th);
 				if (json){
 					if( json.isShow === false ){
@@ -2817,6 +2821,10 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		ths.each(function(th, index){
 			var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
 			if (this.datatable.json.sectionAmountStyles) td.setStyles(this.datatable.json.sectionAmountStyles);
+
+			if(!th.offsetParent){
+				td.setStyle('display', 'none');
+			}
 
 			var json = this.form._getDomjson(th);
 			if (json){
