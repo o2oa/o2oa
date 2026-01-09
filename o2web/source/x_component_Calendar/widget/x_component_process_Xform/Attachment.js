@@ -3168,7 +3168,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
 });
 MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
     Extends: MWF.APPAttachment,
-    loadAttachmentController: function (opts) {
+    loadAttachmentController: function () {
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
@@ -3204,9 +3204,9 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if (this.form.json.attachmentStyle) {
             options = Object.merge(options, this.form.json.attachmentStyle);
         }
-        if(o2.typeOf(opts)==='object'){
-            options = Object.merge(options, opts);
-        }
+        // if(opts){
+        //     options = Object.merge(options, opts);
+        // }
 
         this.fireEvent("queryLoadController", [options]);
 
@@ -3225,7 +3225,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if(this.json.ignoreSite) {
             ( this._getBusinessData() || [] ).each(function (att) {
                 var flag = this.form.businessData.attachmentList.some(function (attData) {
-                    var isMatch = (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
+                    var isMatch =  (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
                     if( isMatch && att.id !== attData.id ){
                         att.id = attData.id;
                     }
