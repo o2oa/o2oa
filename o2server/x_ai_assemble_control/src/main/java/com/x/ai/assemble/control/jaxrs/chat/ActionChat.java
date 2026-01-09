@@ -58,7 +58,7 @@ public class ActionChat extends BaseAction {
     private static final String END_SSE = "[DONE]";
     private static final String EVENT_NAME_MESSAGE = "message";
     private static final String CHAT_SYSTEM_MESSAGE =
-            "你是一个专业且友好的助手，擅长以清晰、有条理的方式回答问题。当前与你对话的用户的身份标识为：%s，请在处理用户请求时将此标识作为上下文参考。"
+            "你是一个专业且友好的助手，擅长以清晰、有条理的方式回答问题。当前与你对话的用户为：%s，请友好与他(她)对话。"
                     + "无论回答什么问题，请始终使用 Markdown 格式组织你的回复，遵循以下规则："
                     + "1.使用标题（## 或 ###）来组织主要内容或分段。"
                     + "2.使用项目符号（- 或 *）或编号（1. 2. 3.）列出列表项。"
@@ -87,7 +87,7 @@ public class ActionChat extends BaseAction {
                     } else {
                         AiModel model = getActiveModel(wi.getEndpointName());
                         if (model != null) {
-                            aiChat(wi, sse, eventSink, model);
+                            aiChat(wi, sse, eventSink, model, effectivePerson);
                         } else {
                             logger.warn("未配置可用的模型");
                             actionResult.setMessage("请联系管理员配置可用的模型");
@@ -172,7 +172,7 @@ public class ActionChat extends BaseAction {
         }
     }
 
-    private void aiChat(Wi wi, Sse sse, SseEventSink eventSink, AiModel model) throws Exception {
+    private void aiChat(Wi wi, Sse sse, SseEventSink eventSink, AiModel model, EffectivePerson effectivePerson) throws Exception {
         logger.info("chat to {} model:{} input:{}", model.getType(), model.getModel(),
                 StringTools.utf8SubString(wi.getInput(), 20) + "...");
         Map<String, Object> data = new HashMap<>();
@@ -181,7 +181,7 @@ public class ActionChat extends BaseAction {
         List<Map<String, String>> messages = new ArrayList<>();
         final String contentKey = "content";
         final String roleKey = "role";
-        messages.add(Map.of(roleKey, "system", contentKey, CHAT_SYSTEM_MESSAGE));
+        messages.add(Map.of(roleKey, "system", contentKey, String.format(CHAT_SYSTEM_MESSAGE, effectivePerson.getName())));
         if (StringUtils.isNotBlank(wi.getClueId())) {
             List<Completion> completions = listCompletion(wi.getClueId());
             completions.stream().sorted(Comparator.comparing(Completion::getCreateTime))
