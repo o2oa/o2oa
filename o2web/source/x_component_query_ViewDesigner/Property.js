@@ -1170,6 +1170,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "checkMedia": true,
                     "iconType": this.data.iconType,
                     "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement.parentElement,
                     "scriptMaxObj": this.designer.editContentNode,
@@ -1206,6 +1207,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 // actionEditor.load(this.module.defaultToolBarsData);
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "checkMedia": true,
                     "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement,
                     "scriptMaxObj": this.designer.editContentNode,
                     "noEditShow": true,
@@ -1227,6 +1229,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function () {
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "checkMedia": true,
                     "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement,
                     "scriptMaxObj": this.designer.editContentNode,
                     "isSystemTool": true,

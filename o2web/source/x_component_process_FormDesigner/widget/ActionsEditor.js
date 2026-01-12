@@ -15,7 +15,8 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         "noDelete": false,
         "noCode": false,
         "noHide": false,
-        "systemToolsAddress" : "../x_component_process_FormDesigner/Module/Actionbar/toolbars.json"
+        "systemToolsAddress" : "../x_component_process_FormDesigner/Module/Actionbar/toolbars.json",
+        "checkMedia": false
 	},
 	initialize: function(node, designer, module, options){
 		this.setOptions(options);
@@ -300,6 +301,22 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             }
         }
 
+        if(this.editor.options.checkMedia){
+            this.pcButton = new Element("div.ooicon-desktop_mac", {"styles": this.css.actionPCButtonNode, "title": this.editor.designer.lp.actionbar.pchide}).inject(this.titleNode);
+            if (this.data.pcHide){
+                this.pcButton.setStyle("color", "#999");
+            }else{
+                this.pcButton.setStyle("color", "#d35400");
+            }
+
+            this.mobileButton = new Element("div.ooicon-phone", {"styles": this.css.actionMobileButtonNode, "title": this.editor.designer.lp.actionbar.mobilehide}).inject(this.titleNode);
+            if (this.data.mobileHide){
+                this.mobileButton.setStyle("color", "#999");
+            }else{
+                this.mobileButton.setStyle("color", "#d35400");
+            }
+        }
+
         if (this.editor.options.iconType==='font'){
             this.iconNode.addClass("ooicon-"+this.data.icon);
             this.iconNode.setStyles({
@@ -491,6 +508,34 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             }
             this.editor.fireEvent("change", [{
                 compareName: "."+this.getName() + ".readShow"
+            }]);
+            e.stopPropagation();
+        }.bind(this));
+
+        if (this.pcButton) this.pcButton.addEvent("click", function(e){
+            if (this.data.pcHide){
+                this.pcButton.setStyle("color", "#d35400");
+                this.data.pcHide = false;
+            }else{
+                this.pcButton.setStyle("color", "#999");
+                this.data.pcHide = true;
+            }
+            this.editor.fireEvent("change", [{
+                compareName: "."+this.getName() + ".pcHide"
+            }]);
+            e.stopPropagation();
+        }.bind(this));
+
+        if (this.mobileButton) this.mobileButton.addEvent("click", function(e){
+            if (this.data.mobileHide){
+                this.mobileButton.setStyle("color", "#d35400");
+                this.data.mobileHide = false;
+            }else{
+                this.mobileButton.setStyle("color", "#999");
+                this.data.mobileHide = true;
+            }
+            this.editor.fireEvent("change", [{
+                compareName: "."+this.getName() + ".mobileHide"
             }]);
             e.stopPropagation();
         }.bind(this));
