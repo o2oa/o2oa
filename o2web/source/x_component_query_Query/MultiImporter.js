@@ -177,7 +177,7 @@ MWF.QMultiImporter = new Class(
         getPathDataHandler: function (data) {
             return new MWF.PathDataHandler({
                 type: this.getTargetType(),
-                processIdUse: (data.workCompletedId && 'workCompleted') || (data.workId && 'work') || 'job'
+                processIdType: (data.workCompletedId && 'workCompleted') || (data.workId && 'work') || 'job'
             });
         },
         createLoadding: function(){
@@ -902,6 +902,24 @@ MWF.QMultiImporter = new Class(
             })
         },
         createWork: function(result, data){
+            var mainImpoter = this.getMainImporter();
+            if( mainImpoter.json.data.processStatus === "completed" ){
+                this._createWorkCompleted(result, data);
+            }else{
+                this._createWork(result, data);
+            }
+        },
+        _createWorkCompleted: function(result, data){
+            const method = o2.Actions.load('x_processplatform_assemble_surface').WorkCompletedAction.create;
+            return method(this.getTarget().id, data, (json)=>{
+                data.id = json.data.id;
+                return this.logSuccess(result, data, '发起流程(结束)');
+            }, (xhr)=>{
+                this.logFailure(result, data, this.getErrorText(xhr));
+                return true;
+            });
+        },
+        _createWork: function(result, data){
             const method = o2.Actions.load('x_processplatform_assemble_surface').WorkAction.create;
             return method(this.getTarget().id, data, (json)=>{
                 data.id = json.data[0].job;

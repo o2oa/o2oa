@@ -1557,8 +1557,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 const arr = typeOf( result ) === "array" ? result : [result];
                 const node = new Element("oo-select");
                 if (!o2.isMediaMobile()){
-                    node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-                    node.setAttribute('label', filter.title);
+                    const title = new Element("div.search-item-title");
+                    title.textContent = filter.title;
+                    div.append(title)
+                    // node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+                    // node.setAttribute('label', filter.title);
                 }
                 node.setAttribute('placeholder', filter.title);
                 arr.forEach( (item)=>{
@@ -1577,8 +1580,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             node.setAttribute('right-icon', "person");
             node.setAttribute('data-select-types', filter.orgTypes.join(','));
             if (!o2.isMediaMobile()){
-                node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-                node.setAttribute('label', filter.title);
+                const title = new Element("div.search-item-title");
+                title.textContent = filter.title;
+                div.append(title)
+                // node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+                // node.setAttribute('label', filter.title);
             }
             node.setAttribute('placeholder', filter.title);
             div.appendChild(node);
@@ -1586,8 +1592,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
         const input = new Element("oo-input");
         if (!o2.isMediaMobile()){
-            input.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-            input.setAttribute('label', filter.title);
+            const title = new Element("div.search-item-title");
+            title.textContent = filter.title;
+            div.append(title)
+            // input.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+            // input.setAttribute('label', filter.title);
         }
         input.setAttribute('placeholder', filter.title);
         div.appendChild(input);
@@ -1649,8 +1658,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         booleanSelect.setAttribute('data-filter', '');
 
         if (!o2.isMediaMobile()){
-            booleanSelect.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-            booleanSelect.setAttribute('label', filter.title);
+            const title = new Element("div.search-item-title");
+            title.textContent = filter.title;
+            div.append(title)
+            // booleanSelect.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+            // booleanSelect.setAttribute('label', filter.title);
         }
         booleanSelect.setAttribute('placeholder', filter.title);
 

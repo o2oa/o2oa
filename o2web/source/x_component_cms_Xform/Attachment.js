@@ -792,7 +792,11 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
         if(this.json.ignoreSite) {
             ( this._getBusinessData() || [] ).each(function (att) {
                 var flag = this.form.businessData.attachmentList.some(function (attData) {
-                    return (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
+                    var isMatch =  (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
+                    if( isMatch && att.id !== attData.id ){
+                        att.id = attData.id;
+                    }
+                    return isMatch;
                 }.bind(this));
                 if(flag)this.attachmentController.addAttachment(att);
             }.bind(this));
