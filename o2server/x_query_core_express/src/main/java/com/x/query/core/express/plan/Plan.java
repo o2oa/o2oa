@@ -709,7 +709,8 @@ public abstract class Plan extends GsonPropertyObject {
 		} else if (object instanceof Date) {
 			str = DateTools.format((Date) object);
 		} else if (object instanceof List) {
-			str = StringUtils.join((List<?>) object, ",");
+			str = XGsonBuilder.toJson(object);
+			str = StringUtils.replaceChars(str.substring(1, str.length() - 1), "\"", "");
 		} else {
 			str = object.toString();
 		}

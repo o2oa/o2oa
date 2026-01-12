@@ -61,10 +61,12 @@ class ActionListCompletionPaging extends BaseAction {
                 Predicate p = cb.equal(root.get(Completion_.clueId), clueId);
                 List<Wo> wos = emc.fetchDescPaging(
                         Completion.class, Wo.copier, p, page, size, JpaObject.createTime_FIELDNAME);
-                wos.forEach(wo -> {
+                for (Wo wo : wos){
+                    Completion completion = emc.find(wo.getId(), Completion.class);
+                    wo.setReferenceIdList(completion.getReferenceIdList());
                     wo.setCreateDateTime(wo.getCreateTime());
                     wo.setUpdateDateTime(wo.getUpdateTime());
-                });
+                }
                 result.setData(wos);
                 result.setCount(emc.count(Completion.class, p));
             }
@@ -78,7 +80,7 @@ class ActionListCompletionPaging extends BaseAction {
         static WrapCopier<Completion, Wo> copier = WrapCopierFactory.wo(Completion.class, Wo.class,
                 null,
                 ListTools.toList(JpaObject.FieldsInvisible, "createDateTime", "updateDateTime",
-                        Completion.referenceIdList_FIELDNAME, Completion.extra_FIELDNAME));
+                        Completion.referenceIdList_FIELDNAME, Completion.extra_FIELDNAME, "toolCallList"));
     }
 
 }
