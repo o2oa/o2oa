@@ -3721,10 +3721,9 @@ MDomItem.OODatetime = new Class({
     Extends: MDomItem.OOInput,
     createInput: function () {
         var input = new Element("oo-datetime");
-        input.setAttribute('mode', 'datetime');
 
         var options = this.options;
-        if (options.mode && options.mode !== "datetime") {
+        if (options.mode) {
             input.setAttribute('mode', options.mode);
         }
         if(options.view){
