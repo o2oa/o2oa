@@ -62,6 +62,9 @@ public class FileInfo extends StorageObject {
 		if (StringTools.utf8Length(this.getProperties().getName()) > length_255B) {
 			this.name = StringTools.utf8FileNameSubString(this.getProperties().getName(), length_255B);
 		}
+		if(StringUtils.isBlank(this.businessId)){
+			this.businessId = createId();
+		}
 	}
 
 	@PostLoad
@@ -130,6 +133,12 @@ public class FileInfo extends StorageObject {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + site_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String site;
+
+	public static final String businessId_FIELDNAME = "businessId";
+	@FieldDescribe("附件业务ID，需要和document一起来确定唯一的ID.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + businessId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String businessId;
 
 	public static final String PROPERTIES_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -688,5 +697,13 @@ public class FileInfo extends StorageObject {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
 	}
 }

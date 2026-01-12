@@ -107,6 +107,24 @@ public class FileAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "压缩后下载文件.", action = ActionDownloadScale.class)
+	@GET
+	@Path("{id}/download/scale")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadScale(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("文件标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("是否以流模式下载") @QueryParam("stream") Boolean stream) {
+		ActionResult<ActionDownloadScale.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadScale().execute(effectivePerson, id, BooleanUtils.isTrue(stream));
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "分页查找文件.", action = ActionListPaging.class)
 	@POST
 	@Path("list/paging/{page}/size/{size}")

@@ -3015,7 +3015,7 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                     }
                 }else{
                     this.handwritingFile = null;
-                    this.handWritingPreviewNode.empty();
+                    this.handWritingPreviewNode?.empty();
                     this.handwritingButton.getElement("i").addClass("o2icon-edit2").
                     removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
                 }

@@ -726,7 +726,11 @@ if (!window.o2) {
         var _loadSingleCss = function (module, callback, op, uuid) {
             var url = module;
             var uid = _uuid();
-            if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uid : url + "?v=" + uid;
+            if (op.noCache) {
+                url = (url.indexOf("?") !== -1) ? url + "&v=" + uid : url + "?v=" + uid;
+            }else{
+                url = (url.indexOf("?") !== -1) ? url + "&v=" + o2.version.v : url + "?v=" + o2.version.v;
+            }
 
             var key = encodeURIComponent(url + op.doc.unid);
             if (_loadCssRunning[key]) {
@@ -1028,7 +1032,11 @@ if (!window.o2) {
         _loadSingleHtml = function (module, callback, op) {
             var url = module;
             var uid = _uuid();
-            if (op.noCache) url = (url.indexOf("?") !== -1) ? url + "&v=" + uid : url + "?v=" + uid;
+            if (op.noCache) {
+                url = (url.indexOf("?") !== -1) ? url + "&v=" + uid : url + "?v=" + uid;
+            }else{
+                url = (url.indexOf("?") !== -1) ? url + "&v=" + o2.version.v : url + "?v=" + o2.version.v;
+            }
             var key = encodeURIComponent(url + op.doc.unid);
             if (!op.reload) if (_loadedHtml[key]) {
                 Promise.resolve(_loadedHtml[key]).then(function(html){

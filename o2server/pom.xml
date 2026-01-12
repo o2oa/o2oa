@@ -36,7 +36,7 @@
 		</project.reporting.outputEncoding>
 		<graalvm.version>22.3.4</graalvm.version>
 		<tika.version>3.2.3</tika.version>
-		<pdfbox.version>2.0.31</pdfbox.version>
+		<pdfbox.version>3.0.6</pdfbox.version>
 		<lucene.version>9.4.2</lucene.version>
 	</properties>
 	<modules>
@@ -873,12 +873,12 @@
 			<dependency>
 				<groupId>org.apache.pdfbox</groupId>
 				<artifactId>pdfbox</artifactId>
-				<version>${pdfbox.version}</version> <!-- 强制使用pdfbox2-->
+				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.pdfbox</groupId>
 				<artifactId>pdfbox-tools</artifactId>
-				<version>${pdfbox.version}</version> <!-- 强制使用pdfbox2 -->
+				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge.tess4j</groupId>

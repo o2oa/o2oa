@@ -107,6 +107,7 @@
   },
   "size": "max", //max, min
   "isSizeChange": "y",
+  "isAIAtt" : "hidden",
   "attachmentCount": "0",
   "resize": "n",
   "listStyle": "icon", //list, icon, preview

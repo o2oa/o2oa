@@ -1,0 +1,17 @@
+<div  id="mobile-attendance-v2" class="{{ $.isDarkTheme ? 'mobile-page theme-dark': 'mobile-page theme-default' }}">
+    <div class="mobile-100">
+        <div class="mobile-main-header">
+<!--            <div class="ooicon-menu" @click="openMenu"></div>-->
+            <div class="mobile-main-title">
+                {{ $.lp.mobile.myTitle }}
+            </div>
+        </div>
+        <div class="mobile-main-menu transition">
+            <div class="menu-item">{{$.lp.menu.myStatistic}}</div>
+        </div>
+    </div>
+
+    <div class="mobile-main-body">
+        <app-container></app-container>
+    </div>
+</div>

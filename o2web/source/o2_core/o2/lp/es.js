@@ -340,6 +340,7 @@ o2.LP={
 		"delete": "Eliminar",
 		"previewAtt": "Previsualización",
 		"editAtt": "Editar",
+		"aiAtt": "IA",
 		"replace": "Reemplazar",
 		"select": "Seleccionar",
 		"download": "Descargar",

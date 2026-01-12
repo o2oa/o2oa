@@ -1,30 +1,28 @@
 MWF.PathDataHandler = new Class({
     Implements: [Options, Events],
     options: {
-        'type': 'cms', //process
-        'processIdType': 'job'  // 'job', 'work', 'workCompleted'
+        'type': 'cms' //'job', 'work', 'workCompleted', 'cms'
     },
-    initialize: function (options) {
-        this.setOptions(options);
+    initialize: function (type) {
+        this.setType(type);
+    },
+    setType: function(type){
+        this.options.type = type;
 
         this.action = this.options.type === 'cms' ?
             o2.Actions.load('x_cms_assemble_control').DataAction :
             o2.Actions.load('x_processplatform_assemble_surface').DataAction;
 
-        this.setProcessIdType(this.options.processIdType);
-    },
-    setProcessIdType: function(type){
-        this.options.processIdType = type;
 
         var isCMS = this.options.type === 'cms';
 
-        var key = this.options.processIdType.charAt(0).toUpperCase() + this.options.processIdType.slice(1);
+        var processKey = isCMS ? '' : (this.options.type.charAt(0).toUpperCase() + this.options.type.slice(1));
 
         this.methodMap = {
-            create: isCMS ? 'createWithDocument' : `createWith${key}`,
-            update: isCMS ? 'updateWithDocument' : `updateWith${key}`,
-            get: isCMS ? 'getWithDocument' : `getWith${key}`,
-            delete: isCMS ? 'deleteWithDocument' : `deleteWith${key}`
+            create: isCMS ? 'createWithDocument' : `createWith${processKey}`,
+            update: isCMS ? 'updateWithDocument' : `updateWith${processKey}`,
+            get: isCMS ? 'getWithDocument' : `getWith${processKey}`,
+            delete: isCMS ? 'deleteWithDocument' : `deleteWith${processKey}`
         };
     },
     get: function(id, pathList, ...args){

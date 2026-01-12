@@ -5,22 +5,28 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.ai.assemble.control.Business;
+import com.x.ai.assemble.control.ThisApplication;
 import com.x.ai.assemble.control.bean.AiConfig;
 import com.x.ai.assemble.control.bean.ChartWi;
 import com.x.ai.core.entity.AiModel;
 import com.x.ai.core.entity.Clue;
 import com.x.ai.core.entity.Completion;
 import com.x.ai.core.entity.Completion_;
+import com.x.ai.core.entity.File;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -40,8 +46,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.media.sse.EventInput;
@@ -58,7 +66,7 @@ public class ActionChat extends BaseAction {
     private static final String END_SSE = "[DONE]";
     private static final String EVENT_NAME_MESSAGE = "message";
     private static final String CHAT_SYSTEM_MESSAGE =
-            "你是一个专业且友好的助手，擅长以清晰、有条理的方式回答问题。当前与你对话的用户的身份标识为：%s，请在处理用户请求时将此标识作为上下文参考。"
+            "你是一个专业且友好的助手，擅长以清晰、有条理的方式回答问题。当前与你对话的用户为：%s，请友好与他(她)对话。"
                     + "无论回答什么问题，请始终使用 Markdown 格式组织你的回复，遵循以下规则："
                     + "1.使用标题（## 或 ###）来组织主要内容或分段。"
                     + "2.使用项目符号（- 或 *）或编号（1. 2. 3.）列出列表项。"
@@ -87,7 +95,7 @@ public class ActionChat extends BaseAction {
                     } else {
                         AiModel model = getActiveModel(wi.getEndpointName());
                         if (model != null) {
-                            aiChat(wi, sse, eventSink, model);
+                            aiChat(wi, sse, eventSink, model, effectivePerson);
                         } else {
                             logger.warn("未配置可用的模型");
                             actionResult.setMessage("请联系管理员配置可用的模型");
@@ -172,16 +180,16 @@ public class ActionChat extends BaseAction {
         }
     }
 
-    private void aiChat(Wi wi, Sse sse, SseEventSink eventSink, AiModel model) throws Exception {
+    private void aiChat(Wi wi, Sse sse, SseEventSink eventSink, AiModel model, EffectivePerson effectivePerson) throws Exception {
         logger.info("chat to {} model:{} input:{}", model.getType(), model.getModel(),
                 StringTools.utf8SubString(wi.getInput(), 20) + "...");
         Map<String, Object> data = new HashMap<>();
         data.put("model", model.getModel());
         data.put("stream", true);
-        List<Map<String, String>> messages = new ArrayList<>();
+        List<Map<String, Object>> messages = new ArrayList<>();
         final String contentKey = "content";
         final String roleKey = "role";
-        messages.add(Map.of(roleKey, "system", contentKey, CHAT_SYSTEM_MESSAGE));
+        messages.add(Map.of(roleKey, "system", contentKey, String.format(CHAT_SYSTEM_MESSAGE, effectivePerson.getName())));
         if (StringUtils.isNotBlank(wi.getClueId())) {
             List<Completion> completions = listCompletion(wi.getClueId());
             completions.stream().sorted(Comparator.comparing(Completion::getCreateTime))
@@ -190,7 +198,7 @@ public class ActionChat extends BaseAction {
                         messages.add(Map.of(roleKey, "assistant", contentKey, o.getContent()));
                     });
         }
-        messages.add(Map.of(roleKey, "user", contentKey, wi.getInput()));
+        messages.add(this.joinContent(wi, roleKey, contentKey));
         data.put("messages", messages);
         String json = gson.toJson(data);
         ClientConfig config = new ClientConfig().register(SseFeature.class);
@@ -236,6 +244,57 @@ public class ActionChat extends BaseAction {
         this.saveChart(wi);
     }
 
+    private Map<String, Object> joinContent(Wi wi, String roleKey, String contentKey) throws  Exception{
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put(roleKey, "user");
+        if(ListTools.isEmpty(wi.getReferenceIdList())){
+            msgMap.put(contentKey, wi.getInput());
+        }else{
+            msgMap.put(roleKey, "user");
+            List<Map<String, Object>> contentList = new ArrayList<>();
+            msgMap.put(contentKey, contentList);
+            try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Tika tika = new Tika();
+                String imageType = "image_url";
+                for (String referenceId : wi.getReferenceIdList()){
+                    File file = emc.find(referenceId, File.class);
+                    if(file != null){
+                        Map<String, Object> contentMap = new HashMap<>();
+                        contentMap.put("type","text");
+                        StorageMapping mapping = ThisApplication.context().storageMappings()
+                                .get(File.class, file.getStorage());
+                        byte[] bytes = file.readContent(mapping);
+                        switch (file.getExtension()) {
+                            case "png":
+                                contentMap.put("type",imageType);
+                                contentMap.put(imageType, Map.of("url","data:image/png;base64,"+ Base64.encodeBase64String(bytes)));
+                                break;
+                            case "jpg":
+                            case "jpeg":
+                                contentMap.put("type",imageType);
+                                contentMap.put(imageType, Map.of("url","data:image/jpeg;base64,"+ Base64.encodeBase64String(bytes)));
+                                break;
+                            default:
+                                StringBuilder builder = new StringBuilder();
+                                try (InputStream input = new ByteArrayInputStream(bytes)){
+                                    builder.append(tika.parseToString(input));
+                                }
+                                logger.info("file length: {}, content: {}", bytes.length, builder);
+                                contentMap.put("text", builder.toString());
+                                break;
+                        }
+                        contentList.add(contentMap);
+                    }
+                }
+            }
+            Map<String, Object> contentMap = new HashMap<>();
+            contentMap.put("type","text");
+            contentMap.put("text", wi.getInput());
+            contentList.add(contentMap);
+        }
+        return msgMap;
+    }
+
     private void sendMsg(Sse sse, SseEventSink eventSink, String eventName, String eventData) {
         final OutboundSseEvent sseEvent = sse.newEventBuilder()
                 .name(eventName)
@@ -274,6 +333,7 @@ public class ActionChat extends BaseAction {
             }
             Completion completion = new Completion(wi.getPerson(), clue.getId(), wi.getInput(),
                     wi.getContent());
+            completion.setReferenceIdList(wi.getReferenceIdList());
             emc.beginTransaction(Completion.class);
             emc.persist(completion);
             emc.commit();

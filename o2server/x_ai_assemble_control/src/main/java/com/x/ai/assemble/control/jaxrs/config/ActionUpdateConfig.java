@@ -78,10 +78,12 @@ public class ActionUpdateConfig extends BaseAction {
                 new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
         Map<String, Object> map = new HashMap<>();
         ActionResponse resp = ConnectionAction.post(url, heads, map);
+
         if(resp.getCount()!=null && resp.getCount() > 0){
             return;
         }
-       List<AiModel> modelList = listModel();
+        logger.info("同步ai大模型配置到ai服务");
+        List<AiModel> modelList = listModel();
         if(ListTools.isNotEmpty(modelList)){
             ActionUpdateModel updateModel = new ActionUpdateModel();
             for (AiModel model : modelList){
@@ -109,6 +111,7 @@ public class ActionUpdateConfig extends BaseAction {
         if(resp.getCount()!=null && resp.getCount() > 0){
             return;
         }
+        logger.info("同步ai MCP配置到ai服务");
         URL jsonUrl = Thread.currentThread().getContextClassLoader().getResource("InitMcp.json");
         if(jsonUrl != null){
             File file = new File(jsonUrl.toURI());

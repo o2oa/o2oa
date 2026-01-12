@@ -32,8 +32,6 @@ import com.x.correlation.core.express.service.processing.jaxrs.correlation.Actio
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionListTypeProcessPlatformWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
 import com.x.processplatform.core.entity.content.Attachment;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -243,8 +241,6 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				Attachment attachment = null;
 				StorageMapping mapping_attachment = null;
 				StorageMapping mapping_fileInfo = null;
-				InputStream input = null;
-				byte[] attachment_content = null;
 				for (String attachmentId : wi.getWf_attachmentIds()) {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						document = emc.find(document.getId(), Document.class, ExceptionWhen.not_found);
@@ -255,29 +251,22 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class,
 									attachment.getStorage());
-							attachment_content = attachment.readContent(mapping_attachment);
+							byte[] bs = attachment.readContent(mapping_attachment);
 
 							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
 							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document,
 									mapping_fileInfo, attachment.getName(), attachment.getSite());
-							input = new ByteArrayInputStream(attachment_content);
-							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName(),
+							fileInfo.saveContent(mapping_fileInfo, bs, attachment.getName(),
 									Config.general().getStorageEncrypt());
 							if(attachment.getOrderNumber()!=null) {
 								fileInfo.setSeqNumber(attachment.getOrderNumber());
 							}
 							fileInfo.setName(attachment.getName());
+							fileInfo.setBusinessId(attachment.getBusinessId());
 							emc.check(document, CheckPersistType.all);
 							emc.persist(fileInfo, CheckPersistType.all);
 
 							emc.commit();
-						}
-					} catch (Throwable th) {
-						th.printStackTrace();
-						result.error(th);
-					} finally {
-						if (input != null) {
-							input.close();
 						}
 					}
 				}

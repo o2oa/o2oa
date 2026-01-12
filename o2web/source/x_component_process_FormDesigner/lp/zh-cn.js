@@ -35,8 +35,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 	"selectDataPath": "选择数据路径",
 	"selectPermissions": "选择数据权限",
 
-    "noFieldPermissions": "“{process}”还没有数据路径权限配置", 
-	"FieldPermissionsSelectProcess": "请先选择要配置权限的流程", 
+    "noFieldPermissions": "“{process}”还没有数据路径权限配置",
+	"FieldPermissionsSelectProcess": "请先选择要配置权限的流程",
 
     "formPermissionsDefaultDesc": "默认数据权限配置仅应用于表单，它不会控制数据的服务段查询权限，您通过视图或进行数据导出时不应用此设置。如果您想控制数据的服务端权限，请添加对应的流程数据权限。",
     "formPermissionsDefault": "默认数据权限配置",
@@ -44,7 +44,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "addFormPermissionsProcess": "添加流程数据权限配置",
 
     "formPermissionsProcesstDesc": "为流程“{process}”配置数据权限，",
-    
+
 
     button: {
         ok: '确定',
@@ -857,6 +857,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         allowUpload: '允许上载',
         allowFromPan: '允许从网盘选择',
         allowPreview: '允许预览',
+        allowAI: '允许AI分析',
         allowDownload: '允许下载',
         allowDownloadBatch: '允许批量下载',
         allowEdit: '允许编辑',

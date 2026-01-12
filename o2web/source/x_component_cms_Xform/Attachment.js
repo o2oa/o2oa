@@ -148,6 +148,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
+            "isAIAtt": this.getFlagDefaultFalse("isAIAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
@@ -752,6 +753,7 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
+            "isAIAtt" :  this.getFlagDefaultFalse("isAIAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
@@ -790,7 +792,11 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
         if(this.json.ignoreSite) {
             ( this._getBusinessData() || [] ).each(function (att) {
                 var flag = this.form.businessData.attachmentList.some(function (attData) {
-                    return (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
+                    var isMatch =  (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
+                    if( isMatch && att.id !== attData.id ){
+                        att.id = attData.id;
+                    }
+                    return isMatch;
                 }.bind(this));
                 if(flag)this.attachmentController.addAttachment(att);
             }.bind(this));

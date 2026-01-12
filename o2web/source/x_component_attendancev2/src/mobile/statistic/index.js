@@ -13,7 +13,8 @@ export default content({
         return {
             lp,
             year: 2023,
-            month: 3
+            month: 3,
+            statistic: {}
         };
     },
     afterRender() {
@@ -26,6 +27,8 @@ export default content({
         const currentMonth = today.getMonth();
         // 获取当前年份
         const currentYear = today.getFullYear();
+        this.bind.year = currentYear;
+        this.bind.month = (currentMonth + 1);
         // 获取当月的天数
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         const startDate = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-01`;
