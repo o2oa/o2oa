@@ -214,6 +214,49 @@
         }
     }
 
+    this.o2m._uploadFileCallback = function (result) {
+        console.log("o2m _uploadFileCallback ", result);
+    };
+
+    /**
+     * 上传文件，并返回文件 id
+     * @method uploadFile
+     * @memberOf o2m
+     * @static
+     * @param {Object} args 传入对象
+     * <pre><code class='language-js'>{
+     *  "callback": function,  // 上传结果返回函数
+     *  "onlyTakePhoto": false // 只能拍照
+     * }</code></pre>
+     * @example
+     * o2m.uploadFile({
+     *  callback : function(result) {//callback将在点击button之后回调}
+     * });
+     *
+     */
+    this.o2m.uploadFile = function (args) {
+        if (!args) {
+            console.error("o2m.uploadFile， 参数错误！")
+            return;
+        }
+        const callback = args.callback ? args.callback : null;
+        if (callback && typeof callback === "function") {
+            o2m._uploadFileCallback  = callback;
+        } else {
+            console.error("o2m.uploadFile 缺少参数 callback")
+            return;
+        }
+        const onlyTakePhoto = args.onlyTakePhoto || false;
+        const body = {
+            type: "uploadFile",
+            data: {
+                callback: "o2m._uploadFileCallback",
+                onlyTakePhoto: onlyTakePhoto
+            }
+        };
+        window.o2android.postMessage(JSON.stringify(body));
+    }
+
     /** ***** BEGIN NOTIFICATION BLOCK *****
      @ignore
      @summary notification 模块
