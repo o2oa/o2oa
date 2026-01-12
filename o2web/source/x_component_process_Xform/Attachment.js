@@ -4,6 +4,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     Extends: MWF.widget.ATTER,
     "options": {
         "officeFiles": ["doc", "docx", "dotx", "dot", "xls", "xlsx", "xlsm", "xlt", "xltx", "pptx", "ppt", "pot", "potx", "potm", "pdf"],
+        "allowAIExtension": ["jpeg", "png", "gif", "bmp", "webp", "doc", "docx", "wps", "ppt", "pptx", "pub", "vsd", "xls", "xlsx", "html", "htm", "txt", "md", "pdf", "ofd"],
         "allowPreviewExtension" : ["zip","pdf", "ofd", "png", "jpg", "bmp", "jpeg", "gif", "js", "css", "java", "json", "xml", "php", "html", "htm", "xhtml", "log", "md", "txt"],
         "checkTextEnable": true
     },
@@ -185,7 +186,38 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             }
         }
     },
+    checkAIAttAction: function () {
 
+        if (this.options.isAIAtt === "hidden" ){
+            this.setActionHidden(this.aiAttAction);
+            this.setActionHidden(this.min_aiAttAction);
+        } else if (!this.options.isAIAtt){
+            this.setActionDisabled(this.aiAttAction);
+            this.setActionDisabled(this.min_aiAttAction);
+
+        }else{
+            if (this.selectedAttachments.length){
+                var flag = false;
+                for (var i = 0; i < this.selectedAttachments.length; i++) {
+                    var att = this.selectedAttachments[i];
+                    if (this.options.allowAIExtension.contains(att.data.extension)) {
+                        flag = true;
+                        break;
+                    }
+
+                }
+                if(flag){
+                    this.setActionEnabled(this.aiAttAction);
+                    this.setActionEnabled(this.min_aiAttAction);
+                    //this.setActionEnabled(this.min_downloadAction);
+                }
+
+            }else{
+                this.setActionDisabled(this.aiAttAction);
+                this.setActionDisabled(this.min_aiAttAction);
+            }
+        }
+    },
     checkPreviewAttAction: function () {
         // if(layout.mobile){
         //     this.setActionDisabled(this.previewAttAction);
@@ -539,6 +571,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         this.checkEditAttAction();
 
+        this.checkAIAttAction();
+
         //this.checkOfficeAction();
         this.checkDownloadAction();
         this.checkDownloadBatchAction();
@@ -719,6 +753,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             }.bind(this));
         }
 
+        if(!layout.mobile){
+            this.aiAttAction = this.createAction(this.editActionsGroupNode, "aiAtt", o2.LP.widget["aiAtt"], function (e, node) {
+                this.aiAttachment(e, node);
+            }.bind(this));
+        }
+
 
         if (!this.options.isReplaceHidden) {
             this.replaceAction = this.createAction(this.editActionsGroupNode, "replace", o2.LP.widget.replace, function (e, node) {
@@ -813,6 +853,13 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 }.bind(this));
 
             //}
+
+            if(!layout.mobile){
+            this.min_aiAttAction = this.createAction(this.minActionAreaNode, "aiAtt", o2.LP.widget["aiAtt"], function (e, node) {
+                this.aiAttachment(e, node);
+            }.bind(this));
+
+            }
 
         }
         if (!hiddenGroup.contains("config")) {
@@ -1664,7 +1711,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.fieldModuleLoaded = true;
         }
 
-       
+
     },
     /** @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
      * @memberof MWF.xApplication.process.Xform.Attachment
@@ -1737,6 +1784,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
+            "isAIAtt": this.getFlagDefaultFalse("isAIAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
@@ -1786,12 +1834,12 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
             }.bind(this));
             this.setAttachmentBusinessData();
-    
+
             this.addEvent("change", function () {
                 if(this.validationMode)this.validationMode();
             }.bind(this))
         }
-        
+
 
         //}.bind(this));
     },
@@ -2174,6 +2222,26 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         var att = attachments[0];
         new MWF.xApplication.process.Xform.AttachmenPreview(att,this);
     },
+
+    aiAttachment: function (attachments) {
+        const att = attachments[0];
+        let jars ;
+        if(att.data.activity){
+            jars = "processPlatform";
+        }
+        if(att.data.categoryId){
+            jars = "cms";
+        }
+        const options = {
+            "attId": att.data.id,
+            "attName" : att.data.name,
+            "msg" : "总结分析下该文件",
+            "jars" : jars,
+            "appId":  "AI" + att.data.id
+        };
+        layout.openApplication(null, "AI", options);
+    },
+
     deleteAttachment: function (attachment) {
         this.fireEvent("delete", [attachment.data]);
         var id = attachment.data.id;
@@ -2607,7 +2675,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     createErrorNode: function (text) {
         node = new Element("div", {styles:{
-            "margin-top": "0.3em"  
+            "margin-top": "0.3em"
         }});
         var iconNode = new Element("div.ooicon-error", {
             "styles": {
@@ -3185,6 +3253,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDownloadBatch": "hidden", //this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
+            "isAIAtt": this.getFlagDefaultFalse("isAIAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
