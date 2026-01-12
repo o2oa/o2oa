@@ -1,10 +1,10 @@
-import {loadComponent, component } from '@o2oa/component';
+import {loadComponent } from '@o2oa/component';
 import index from './app/index';
-import mobile from './mobile/index';
+import mobile from './mobile/main';
 
 loadComponent('attendancev2', (d, cb)=>{
     // 移动端页面
-    if (component.options && component.options.route && component.options.route === 'mobile') {
+    if ((layout.mobile || o2.session.isMobile)){
         mobile.render(d).then( () =>{
             cb();
         });

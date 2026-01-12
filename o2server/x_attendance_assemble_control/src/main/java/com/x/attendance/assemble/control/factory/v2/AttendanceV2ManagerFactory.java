@@ -498,9 +498,6 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 
      * @param adjustPage
      * @param adjustPageSize
-     * @param users
-     * @param startDate
-     * @param endDate
      * @return
      * @throws Exception
      */
