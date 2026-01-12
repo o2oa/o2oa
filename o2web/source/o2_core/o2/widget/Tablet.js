@@ -86,7 +86,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.path = this.options.path || (o2.session.path+"/widget/$Tablet/");
         this.cssPath = this.path + this.options.style+"/css.wcss";
 
-        this.inMobileDevice = COMMON && COMMON.Browser && COMMON.Browser.Platform.isMobile;
+        this.inMobileDevice = o2.isMediaMobile();
+        //this.inMobileDevice = COMMON && COMMON.Browser && COMMON.Browser.Platform.isMobile;
 
         this.lp = {
             "save": o2.LP.widget.save,
@@ -513,7 +514,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         //    ctx.closePath();
         //}
     },
-    detectOrient: function(){
+    detectOrient: function( node ){
         // 利用 CSS3 旋转 对根容器逆时针旋转 90 度
         var size = $(document.body).getSize();
         var width = size.x,
@@ -545,7 +546,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 "transform-origin": ( this.transformOrigin + "px " + this.transformOrigin + "px")
             }
         }
-        this.container.setStyles(styles);
+        (node || this.container).setStyles(styles);
     },
     uploadImage: function(  success, failure  ){
         var image = this.getImage( null, true );
@@ -715,7 +716,21 @@ o2.widget.Tablet = o2.Tablet = new Class({
         // blank.height = canvas.height;
         return canvas.toDataURL() == blank.toDataURL(); //比较值相等则为空
     },
-    save: function(){
+    save: function (){
+        if(layout.mobile){
+            if( !!this.toolbar.isCollectNode?.value?.length ){
+                this.saveToCollection(()=>{
+                    this._save();
+                    this.toolbar.isCollectNode.value = [];
+                });
+            }else{
+                this._save();
+            }
+        }else{
+            this._save();
+        }
+    },
+    _save: function(){
         var _slef = this;
         Promise.resolve( this.getBase64Code() ).then(function ( base64code ) {
             _slef.getImage( base64code ).then(function( imageFile ){
@@ -864,42 +879,123 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
     },
     collect: function (itemNode) {
+         const postShow = ()=>{
+            if(layout.mobile){
+                this.collectSelector.node.setStyles({
+                    // bottom: '80px',
+                    left: '0px',
+                    right: '0px',
+                    top: '0px',
+                    'min-width': "auto",
+                    'max-width': "auto",
+                    'min-height': "auto",
+                    'max-height': "auto",
+                    'z-index': "1000"
+                });
+            }
+        }
         if( !this.collectSelector ){
-            var container = this.inMobileDevice ? $(document.body): this.container;
+            var container = layout.mobile ? $(document.body) : this.container;
             this.collectSelector = new o2.widget.Tablet.Collect(container, itemNode, null, {}, {
                 "onPostCreate": function (){
                     this.collectSelector.node.setStyles({
                         'height': this.contentNode.getSize().y,
                         'overflow': 'auto'
                     })
+                    postShow();
+                    if(layout.mobile){
+                        this.detectOrient(this.collectSelector.node)
+                    }
+                }.bind(this),
+                "onShow": function (){
+                    postShow();
                 }.bind(this),
                 "onSelect": function (d) {
                     this.reset();
-                    this.globalCompositeOperation = this.ctx.globalCompositeOperation;
-                    this.ctx.globalCompositeOperation = "source-over";
                     var src = 'data:' + this.fileType + ';base64,' + d.data;
-                    this.parseFileToImage(src);
+                    if(layout.mobile){
+                        this.useCollect(src, ()=>{
+                            this.collectSelector.hide();
+                        });
+                    }else{
+                        this.globalCompositeOperation = this.ctx.globalCompositeOperation;
+                        this.ctx.globalCompositeOperation = "source-over";
+                        this.parseFileToImage(src);
+                    }
                 }.bind(this),
                 "onHide": function () {
                     itemNode.fireEvent("mouseout");
                 },
                 "event": this.inMobileDevice ? "click": "mouseenter",
                 "hasMask": false,
+                "hasArrow": !layout.mobile,
+                nodeStyles: {
+                    "min-width": layout.mobile ? "auto" : "180px",
+                    "max-width": layout.mobile ? "auto" : "180px",
+                }
             });
             this.collectSelector.tablet = this;
+            if(layout.mobile){
+                this.collectSelector.load();
+            }
         }
     },
     getImageSize: function(naturalWidth, naturalHeight ){
         var ratio = naturalWidth / naturalHeight;
         var ww = this.contentWidth,
-            wh = this.contentHeight;
+            wh = this.contentHeight, width, height;
         var flag = ( naturalWidth / parseInt(ww) ) > ( naturalHeight / parseInt(wh) );
         if( flag ){
-            var width = Math.min( naturalWidth, parseInt( ww )  );
-            return { width: width,  height: width / ratio }
+            width = Math.min( naturalWidth, parseInt( ww )  );
+            height = width / ratio;
         }else{
-            var height = Math.min( naturalHeight, parseInt( wh )  );
-            return { width: height * ratio,  height: height }
+            height = Math.min( naturalHeight, parseInt( wh )  );
+            width = height * ratio
+        }
+        return { width: width,  height: height, left: (ww - width) / 2, top: (wh - height) / 2 };
+    },
+    useCollect: function(file, callback){
+        if( this.imageMover ){
+            this.imageMover.close();
+            this.imageMover = null;
+        }
+        var imageNode = new Element("img");
+
+        var onImageLoad = function(){
+            var nh = imageNode.naturalHeight,
+                nw = imageNode.naturalWidth;
+            if( isNaN(nh) || isNaN(nw) || nh == 0 || nw == 0 ){
+                setTimeout( function(){ onImageLoad(); }.bind(this), 100 );
+            }else{
+                _onImageLoad();
+            }
+        };
+
+        var _onImageLoad = function(){
+
+            var nh = imageNode.naturalHeight,
+                nw = imageNode.naturalWidth;
+            var size = this.getImageSize( nw, nh );
+            this.storeToPreArray();
+            this.ctx.drawImage(imageNode, size.left, size.top, size.width, size.height);
+            this.storeToMiddleArray();
+
+            imageNode.destroy();
+
+            if( callback )callback();
+        }.bind(this);
+
+        if( o2.typeOf(file) === 'string' ){
+            imageNode.src = file;
+            onImageLoad();
+        }else{
+            var reader=new FileReader();
+            reader.onload=function(){
+                imageNode.src=reader.result;
+                reader = null;
+                onImageLoad();
+            }.bind(this);
+            reader.readAsDataURL(file);
         }
     },
     parseFileToImage: function( file, callback ){
@@ -1447,6 +1543,8 @@ o2.widget.Tablet.ToolbarMobile = new Class({
             "name": "redo"
         },{
             "name": "reset"
+        },{
+            "name": "collect"
         }], function (item) {
             this.items[item.name] = new Element("div",{
                 styles: this.css[item.name+"_mobile"],
@@ -1458,6 +1556,12 @@ o2.widget.Tablet.ToolbarMobile = new Class({
             }).inject(this.tablet.container);
             if(item.text)this.items[item.name].set("text", item.text);
             if( item.name === "save" )this.items[item.name].addClass("mainColor_color");
+            if( item.name === "collect" ){
+                this.isCollectNode = new Element('oo-checkbox-group', {styles: this.css["isCollect_mobile"]}).inject(this.tablet.container);
+                new Element('oo-checkbox',{
+                    text: '收藏', value: 'yes'
+                }).inject(this.isCollectNode);
+            }
         }.bind(this));
         this.setAllItemsStatus();
     },
@@ -1491,10 +1595,7 @@ o2.widget.Tablet.Collect = new Class({
             y: "auto" //y轴上top middle bottom,  auto 系统自动计算
         },
         //event: "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
-        nodeStyles: {
-            "min-width": "180px",
-            "max-width": "180px"
-        }
+
     },
     initialize: function( container, target, app, data, options, targetCoordinates ){
         //可以传入target 或者 targetCoordinates，两种选一
@@ -1525,10 +1626,42 @@ o2.widget.Tablet.Collect = new Class({
         });
     },
     _loadContent: function(data){
+        var contentNode;
+        if( layout.mobile ){
+            this.contentNode.setStyles({
+                // display: 'flex',
+                // 'flex-wrap': 'wrap',
+                // 'align-content': 'flex-start',
+                // 'gap': '10px',
+                // "display": "grid",
+                // "grid-template-columns": "repeat(auto-fill, minmax(14rem, 1fr))",
+                "gap": "1rem",
+            })
+            contentNode = new Element("div", {
+                style: 'overflow:auto; height: calc(100% - 36px); width: 100%; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 1rem;'
+            }).inject(this.contentNode);
+            var toolNode = new Element("div", {style: 'height:36px;width: 100%;display:flex;justify-content: flex-end;'}).inject(this.contentNode);
+            new Element("div", {
+                text: this.tablet.lp.cancel,
+                styles: {
+                    "color": "#333",
+                    "font-size": "16px",
+                    "width": "40px",
+                    "line-height": "36px",
+                    "height": "36px",
+                    "font-weight": "bold",
+                },
+                events: {
+                    click: function () {this.hide();}.bind(this)
+                }
+            }).inject(toolNode);
+        }else{
+            contentNode = this.contentNode;
+        }
         if( !data.length ){
             var emptyNode = new Element("div",{
                 styles: this.tablet.css.emptyNode
-            }).inject(this.contentNode);
+            }).inject(contentNode);
             new Element('div.ooempty-wushuju', {
                 styles: {
                     'font-size': '32px',
@@ -1543,43 +1676,62 @@ o2.widget.Tablet.Collect = new Class({
             })
             data.forEach((item) => {
                 var src = 'data:' + this.tablet.fileType + ';base64,' + item.data;
-                var node = new Element('div', {
-                    styles: {
+                var node = new Element('div').inject(contentNode);
+                if(layout.mobile){
+                    node.setStyles({
+                        'position': 'relative',
+                        'border-radius': 'var(--oo-default-radius)',
+                        'overflow': 'hidden',
+                        'box-shadow': 'var(--oo-menu-shadow)',
+                        'background': 'white',
+                        'transition': 'all 0.3s',
+                        'cursor': 'pointer',
+                        "width": "calc(33.33% - 1em)",
+                        "height": "10em",
+                        "display": "flex",
+                        "justify-content": "center",
+                        "align-items": "center",
+                        "align-content": "flex-start"
+                    })
+                }else{
+                    node.setStyles({
                         'position': 'relative',
                         'border-bottom': "1px solid #ddd",
-                    },
-                    events:{
+                    })
+                    node.addEvents({
                         mouseover: ()=> {
                             closeNode.fade("in");;
                         },
                         mouseout: ()=> {
                             closeNode.fade("out");;
                         }
-                    }
-                }).inject(this.contentNode);
-                new Element("img", {
+                    })
+                }
+                var img = new Element("img", {
                     src: src,
-                    styles: {
-                        'cursor': 'pointer',
-                        'width': '180px',
-                    },
                     events: {
                         click: ()=> {
                             this.fireEvent('select', item);
                         }
                     }
                 }).inject(node);
+                if(layout.mobile){
+                    img.setStyles({"height": "80%", "max-width": "100%"});
+                }else{
+                    img.setStyles({ 'cursor': 'pointer', 'width': '180px' })
+                }
                 var closeNode = new Element('i.ooicon-close', {
                     styles: {
                         'position': 'absolute',
-                        'right': '0',
-                        'top': '5px',
-                        'width': '14px',
-                        'height': '14px',
+                        'right': layout.mobile ? '10px' : '0',
+                        'top': layout.mobile ? '10px' : '5px',
+                        'width': layout.mobile ? '36px' : '14px',
+                        'height': layout.mobile ? '36px' : '14px',
+                        'text-align': layout.mobile ? 'right' : 'center',
                         'font-size': '14px',
                         'cursor': 'pointer',
                         'color': "#999",
-                        'opacity': 0,
+                        'opacity': layout.mobile ? 1 : 0,
                     },
                     events: {
                         click: (e)=> {
@@ -1610,6 +1762,28 @@ o2.widget.Tablet.Collect = new Class({
             dlg.addEvent('postShow', ()=>{
                 dlg.node.setStyle('z-index', 20003)
             })
+            if(layout.mobile){
+                var size = $(document.body).getSize();
+                var width = size.x, height = size.y, styles = {};
+                if( width >= height ){ // 横屏
+                    styles = {
+                        "webkit-transform": "rotate(0)",
+                        "transform": "rotate(0)",
+                        "webkit-transform-origin": "0 0",
+                        "transform-origin": "0 0"
+                    }
+                }
+                else{ // 竖屏
+                    //var transformOrigin = dlg.node.getSize().x / 2;
+                    styles = {
+                        "webkit-transform": "rotate(90deg)",
+                        "transform": "rotate(90deg)",
+                        // "webkit-transform-origin": ( transformOrigin + "px " + transformOrigin + "px"),
+                        // "transform-origin": ( transformOrigin + "px " + transformOrigin + "px")
+                    }
+                }
+                dlg.node.setStyles(styles);
+            }
         }, null, "o2");
     }
 });
