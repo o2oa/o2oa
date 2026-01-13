@@ -4,6 +4,7 @@ import {EventName} from "../utils/eventBus.js";
 import ChatMsg from "../components/ChatMsg.vue";
 import {imAction} from "../utils/actions.js";
 import {windowState} from "../store.js";
+import {needClickMsg} from "../utils/common.js";
 
 const {msg} = defineProps(['msg'])
 // eventBus
@@ -31,6 +32,9 @@ const loadMsgList = async () => {
 // 打开消息
 const clickOpenMsg = (msg) => {
   console.debug('open msg  ==== msgHistory', msg)
+  if (!needClickMsg(msg)) {
+    return;
+  }
   // 打开消息
   eventBus.publish(EventName.openMsg, msg)
 }
