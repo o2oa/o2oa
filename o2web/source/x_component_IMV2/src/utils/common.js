@@ -33,8 +33,21 @@ const isHttpUrl = (input) => {
  * @returns {boolean}
  */
 const containsUrl = (text) => {
-    return /(https?:\/\/|www\.)[^\s]+/.test(text);
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return urlRegex.test(text);
 }
+/**
+ * 超链接转化成 markdown 格式
+ * @param text
+ * @returns {*}
+ */
+const convertUrlToMarkdown = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, (url) => {
+        return `[${url}](${url})`;
+    });
+}
+
 /**
  * 判断当前消息是否需要处理点击事件
  * @param msg
@@ -47,14 +60,6 @@ const needClickMsg = (msg) => {
     const body = JSON.parse(msg.body);
     return !(!body.type || body.type === 'text');
 
-}
-
-const convertUrlToMarkdown = (text) => {
-    const regex = /(https?:\/\/|www\.)[^\s]+/g;
-    return text.replace(regex, (url) => {
-        const href = url.startsWith("http") ? url : `https://${url}`;
-        return `[${url}](${href})`;
-    });
 }
 
 /**
