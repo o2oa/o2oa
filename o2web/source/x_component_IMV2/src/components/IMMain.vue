@@ -2,14 +2,15 @@
 import {ref, watch, nextTick, useTemplateRef, onMounted, onUnmounted, inject} from 'vue';
 import {lp} from '@o2oa/component';
 import {
-  chooseSingleFile,
-  conversationPicker,
+  chooseSingleFile, containsUrl,
+  conversationPicker, convertUrlToMarkdown,
   createContextMenu,
   formatPersonName,
-  isHttpUrl,
+  needClickMsg,
   toDate,
   ymdhms
 } from '../utils/common.js';
+import { marked } from "../utils/marked.esm.js";
 import {imAction} from '../utils/actions.js';
 import ChatMsg from './ChatMsg.vue';
 import ChatInfo from './ChatInfo.vue';
@@ -100,6 +101,21 @@ watch(
       initMainPage();
     },
 );
+
+const quoteDescRef = useTemplateRef('quoteDescRef');
+
+watch(quoteMessage, async () =>  {
+  await nextTick() // 等待DOM 更新完成
+  const links = quoteDescRef.value?.querySelectorAll('a')
+  if (links && links.length) {
+    links.forEach(link => {
+      if (!link.hasAttribute('target')) {
+        link.setAttribute('target', '_blank')
+        link.setAttribute('rel', 'noopener noreferrer')
+      }
+    })
+  }
+});
 
 // 事件组合
 const eventMap = {
@@ -288,12 +304,7 @@ const clickSendMsg = () => {
     return;
   }
   const time = ymdhms(new Date());
-  let body;
-  if (isHttpUrl(text)) {
-    body = {body: lp.msgTypeLink, type: 'link', title: text, linkUrl: text};
-  } else {
-    body = {body: text, type: 'text'};
-  }
+  const body = {body: text, type: 'text'};
   const bodyJson = JSON.stringify(body);
 
   const textMessage = {
@@ -410,20 +421,20 @@ const quoteMsgContent = (quoteMessage) => {
   let name = formatPersonName(quoteMessage.createPerson);
   name += ': ';
   let lastMessage = msgBody.body;
-  if (msgBody.type) {
-    // convData.lastMessageType = mBody.type;
-    if (msgBody.type === 'process') {
-      let title = msgBody.title;
-      if (!title) {
-        title = '【' + msgBody.processName + '】- ' + lp.noTitle;
-      }
-      lastMessage = title;
-    } else if (msgBody.type === 'cms') {
-      lastMessage = msgBody.title || '';
+  if (msgBody.type === 'process') {
+    let title = msgBody.title;
+    if (!title) {
+      title = '【' + msgBody.processName + '】- ' + lp.noTitle;
     }
-  }
-  if (msgBody.type !== 'emoji' && msgBody.type !== 'image') {
-    name += contentEscapeBackToSymbol(lastMessage);
+    name +=  title;
+  } else if (msgBody.type === 'cms') {
+    name +=  msgBody.title || '';
+  } else  if (msgBody.type !== 'emoji' && msgBody.type !== 'image') { // 表情和图片不需要再加内容，只需要 name:
+    let quoteDesc = contentEscapeBackToSymbol(lastMessage);
+    if (containsUrl(quoteDesc)) {
+      quoteDesc = marked.parse(convertUrlToMarkdown(quoteDesc))
+    }
+    name += quoteDesc
     if (msgBody.type === 'file') {
       name += ' ' + msgBody.fileName;
     }
@@ -447,6 +458,9 @@ const clickOpenMsg = (msg) => {
     clickSelectMsg(msg);
   } else {
     // 打开消息
+    if (!needClickMsg(msg)) {
+      return;
+    }
     eventBus.publish(EventName.openMsg, msg);
   }
 };
@@ -800,7 +814,7 @@ const showImChat = () => {
           <div class="im-chat-footer-input-bottom">
             <div class="quote-msg">
               <div class="im-chat-quote-message-box" v-if="quoteMessage">
-                <div class="im-chat-quote-message-desc">{{ quoteMsgContent(quoteMessage) }}</div>
+                <div class="im-chat-quote-message-desc" ref="quoteDescRef" v-html="quoteMsgContent(quoteMessage)"></div>
                 <div class="im-icon-btn" @click="deleteQuoteMessage">
                   <i class="ooicon-close icon"></i>
                 </div>
