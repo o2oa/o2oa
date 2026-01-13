@@ -173,7 +173,7 @@ o2.widget.ScriptArea = new Class({
             var _self = this;
             inforNode.addEvent("click", function(){
                 this.remove();
-                _self.loadEditor(content);
+                _self.loadEditor(this.contentCode || content);
                 _self.inforNode = null;
             });
             this.inforNode = inforNode;
@@ -218,11 +218,13 @@ o2.widget.ScriptArea = new Class({
         if (this.jsEditor){
             this.jsEditor.setValue(data.code || data);
         }else if( isLoad ){
-            this.loadEditor(this.contentCode, function (){
-                this.inforNode && this.inforNode.remove();
-                this.inforNode = null;
-                this.jsEditor.setValue(data.code || data);
-            }.bind(this));
+            if(this.contentNode.offsetParent){
+                this.loadEditor(this.contentCode, function (){
+                    this.inforNode && this.inforNode.remove();
+                    this.inforNode = null;
+                    this.jsEditor.setValue(data.code || data);
+                }.bind(this));
+            }
         }
     },
     loadEditor: function(content, callback){
