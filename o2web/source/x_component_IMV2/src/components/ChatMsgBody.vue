@@ -1,18 +1,35 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
 import {lp} from '@o2oa/component'
+import { marked } from "../utils/marked.esm.js";
 import {getImFileDownloadUrl, getImFileUrlWithWH} from "../utils/actions.js";
 import {contentEscapeBackToSymbol} from "../utils/escapeSymbol.js";
-import {fileExtIcon} from "../utils/common.js";
+import {containsUrl, convertUrlToMarkdown, fileExtIcon} from "../utils/common.js";
 
 const {msg} = defineProps(['msg'])
+
+const textSpanContentRef = useTemplateRef('textSpanContentRef')
+
 const msgBody = ref(null)
+
 onMounted(() => {
   if (msg && msg.body) {
     msgBody.value = JSON.parse(msg.body)
   }
 })
 
+watch(msgBody, async () =>  {
+  await nextTick() // 等待DOM 更新完成
+  const links = textSpanContentRef.value?.querySelectorAll('a')
+  if (links && links.length) {
+    links.forEach(link => {
+      if (!link.hasAttribute('target')) {
+        link.setAttribute('target', '_blank')
+        link.setAttribute('rel', 'noopener noreferrer')
+      }
+    })
+  }
+})
 
 const imageUrl = (msgBody) => {
   if (!msgBody) {
@@ -37,9 +54,15 @@ const fileIconUrl = (msgBody) => {
 const locationUrl = (msgBody) => {
   return `https://api.map.baidu.com/marker?location=${msgBody.latitude},${msgBody.longitude}&title=${msgBody.address}&content=${msgBody.address}&output=html&src=net.o2oa.map`
 }
+
 const escapeSymbol = (content) => {
-  return contentEscapeBackToSymbol(content)
+  let text  = contentEscapeBackToSymbol(content)
+  if (containsUrl(text)) {
+    text = marked.parse(convertUrlToMarkdown(text))
+  }
+  return text
 }
+
 const locationPng = () => {
  return new URL( "../assets/location.png", import.meta.url).href
 }
@@ -120,7 +143,7 @@ const cmsAppTitle = (msgBody) => {
       </div>
     </div>
     <!-- text -->
-    <span style="word-break: break-all;" v-if="msgBody.type === 'text'">{{ escapeSymbol(msgBody.body) }}</span>
+    <span style="word-break: break-all;" ref="textSpanContentRef" v-if="msgBody.type === 'text'" v-html="escapeSymbol(msgBody.body)"></span>
     <!--    link-->
     <span style="word-break: break-all;text-decoration: underline; font-weight: 500;" v-if="msgBody.type === 'link'">{{ msgBody.title === msgBody.linkUrl ? msgBody.linkUrl :  `[${msgBody.title}]${msgBody.linkUrl}`}}</span>
   </div>

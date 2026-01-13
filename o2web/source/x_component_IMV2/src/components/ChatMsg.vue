@@ -1,7 +1,14 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
 import {lp} from '@o2oa/component'
-import {chatMsgShowTimeFormat, formatPersonName} from "../utils/common.js";
+import {
+  chatMsgShowTimeFormat,
+  containsUrl,
+  convertUrlToMarkdown,
+  formatPersonName,
+  needClickMsg
+} from "../utils/common.js";
+import { marked } from "../utils/marked.esm.js";
 import {getAvatarUrl, getImFileDownloadUrl, getImFileUrlWithWH} from "../utils/actions.js";
 import {contentEscapeBackToSymbol} from "../utils/escapeSymbol.js";
 import ChatMsgBody from "./ChatMsgBody.vue";
@@ -31,11 +38,17 @@ const emit = defineEmits([ "clickOpenMsg", "clickOpenQuoteMsg" ]);
 
 const clickOpenMsg = (msg) => {
   console.debug('open msg', msg)
+  if (!needClickMsg(msg)) {
+    return;
+  }
   emit('clickOpenMsg', msg)
 }
 
 const clickOpenQuoteMsg = (msg) => {
   console.debug('open quote msg', msg)
+  if (!needClickMsg(msg)) {
+    return;
+  }
   emit('clickOpenQuoteMsg', msg)
 }
 
@@ -50,6 +63,22 @@ const fileUrl = (msgBody) => {
   return url
 }
 
+
+const quoteDescRef = useTemplateRef('quoteDescRef');
+
+watch(quoteMessageBody, async () =>  {
+  await nextTick() // 等待DOM 更新完成
+  const links = quoteDescRef.value?.querySelectorAll('a')
+  if (links && links.length) {
+    links.forEach(link => {
+      if (!link.hasAttribute('target')) {
+        link.setAttribute('target', '_blank')
+        link.setAttribute('rel', 'noopener noreferrer')
+      }
+    })
+  }
+});
+
 const quoteMsgContent = (quoteMessage, msgBody) => {
   if (!msgBody) {
     return
@@ -57,25 +86,24 @@ const quoteMsgContent = (quoteMessage, msgBody) => {
   let name = formatPersonName(quoteMessage.createPerson)
   name += ": ";
   let lastMessage = msgBody.body;
-  if (msgBody.type) {
-    // convData.lastMessageType = mBody.type;
-    if (msgBody.type === "process") {
-      let title = msgBody.title;
-      if (!title) {
-        title = "【" + msgBody.processName + "】- " + lp.noTitle;
-      }
-      lastMessage = title;
-    } else if (msgBody.type === "cms") {
-      lastMessage = msgBody.title || "";
+  if (msgBody.type === "process") {
+    let title = msgBody.title;
+    if (!title) {
+      title = "【" + msgBody.processName + "】- " + lp.noTitle;
     }
-  }
-  if (msgBody.type !== "emoji" && msgBody.type !== "image") {
-    name += contentEscapeBackToSymbol(lastMessage)
+    name += title;
+  } else if (msgBody.type === "cms") {
+    name += msgBody.title || "";
+  } else if (msgBody.type !== "emoji" && msgBody.type !== "image") {
+    let quoteDesc = contentEscapeBackToSymbol(lastMessage);
+    if (containsUrl(quoteDesc)) {
+      quoteDesc = marked.parse(convertUrlToMarkdown(quoteDesc))
+    }
+    name += quoteDesc
     if (msgBody.type === "file") {
       name += " " + msgBody.fileName;
     }
   }
-
   return name
 }
 
@@ -114,7 +142,7 @@ const receiverBoxClass = () => {
 
       <div class="im-chat-quote-message-box chat-sender-quote-msg" v-if="msg.quoteMessage"
            @click="clickOpenQuoteMsg(msg.quoteMessage)">
-        <div class="im-chat-quote-message-desc">{{ quoteMsgContent(msg.quoteMessage, quoteMessageBody) }}</div>
+        <div class="im-chat-quote-message-desc" ref="quoteDescRef"  v-html="quoteMsgContent(msg.quoteMessage, quoteMessageBody)"></div>
         <div class="im-chat-quote-message-image" v-if=" quoteMessageBody && quoteMessageBody.type === 'image' ">
           <img :src="fileUrl(quoteMessageBody)" alt="图片">
         </div>
@@ -136,7 +164,7 @@ const receiverBoxClass = () => {
       </div>
       <div class="im-chat-quote-message-box chat-receiver-quote-msg" v-if="msg.quoteMessage"
            @click="clickOpenQuoteMsg(msg.quoteMessage)">
-        <div class="im-chat-quote-message-desc">{{ quoteMsgContent(msg.quoteMessage, quoteMessageBody) }}</div>
+        <div class="im-chat-quote-message-desc" ref="quoteDescRef" v-html="quoteMsgContent(msg.quoteMessage, quoteMessageBody)"></div>
         <div class="im-chat-quote-message-image" v-if=" quoteMessageBody && quoteMessageBody.type === 'image' ">
           <img :src="fileUrl(quoteMessageBody)" alt="图片">
         </div>

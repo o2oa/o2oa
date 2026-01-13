@@ -5,6 +5,7 @@ import ChatMsg from "../components/ChatMsg.vue";
 import {imAction} from "../utils/actions.js";
 import {lp} from "@o2oa/component";
 import {windowState} from "../store.js";
+import {needClickMsg} from "../utils/common.js";
 
 const windowStateInstance = windowState();
 // eventBus
@@ -69,6 +70,9 @@ const clickOpenMsg = (msg) => {
       clickSelectCollection(collection)
     }
   } else {
+    if (!needClickMsg(msg)) {
+      return;
+    }
     // 打开消息
     eventBus.publish(EventName.openMsg, msg)
   }

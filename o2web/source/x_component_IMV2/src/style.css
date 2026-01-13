@@ -153,20 +153,24 @@ button:focus-visible {
 .flex-1 {
     flex: 1;
 }
+
 /* 小屏幕时隐藏侧边栏 */
 .hidden {
     display: none;
 }
+
 .w100 {
-    width: 100%!important;
+    width: 100% !important;
     margin-right: 0 !important;
     margin-left: 0 !important;
 }
+
 .im-app-s {
-    height: 100%!important;
-    width: 100%!important;
-    padding: 0!important;
+    height: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
 }
+
 .im-app {
     background-color: var(--oo-im-color-bg-app);
     height: calc(100% - 2.28rem);
@@ -230,16 +234,19 @@ button:focus-visible {
     border: 1px solid var(--oo-im-color-bg-divider);
     cursor: pointer;
 }
+
 .im-conversation-tab .im-conversation-tab-item:first-child {
     border-radius: var(--oo-default-radius) 0 0 var(--oo-default-radius);
     border-right: none;
 }
+
 .im-conversation-tab .im-conversation-tab-item:last-child {
-    border-radius:   0 var(--oo-default-radius) var(--oo-default-radius) 0 ;
+    border-radius: 0 var(--oo-default-radius) var(--oo-default-radius) 0;
     border-left: none;
 }
+
 .im-conversation-tab .active {
-    background-color: var(--oo-color-main)!important;
+    background-color: var(--oo-color-main) !important;
     color: white;
     border-color: var(--oo-color-main);
 }
@@ -301,18 +308,21 @@ button:focus-visible {
     flex: 1;
     overflow: auto;
 }
+
 .im-conversation-search {
     height: 2.5rem;
     padding: 0.7rem 0.7rem 0.7rem 0.7rem;
     display: flex;
     align-items: center;
 }
+
 .im-conversation-list {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
+
 .im-conversation-list .active {
     background-color: var(--oo-color-main);
     color: white !important;
@@ -408,13 +418,15 @@ button:focus-visible {
 }
 
 .im-chat-progress {
-    position: absolute;top: 4.28rem;
+    position: absolute;
+    top: 4.28rem;
     left: 0;
     right: 0;
     background-color: rgba(0, 0, 0, 0.5);
     padding-bottom: 5px;
     z-index: 9;
 }
+
 .im-chat-progress-bar-container {
     width: 100%;
     height: 30px;
@@ -422,6 +434,7 @@ button:focus-visible {
     overflow: hidden;
     position: relative;
 }
+
 .im-chat-progress-bar-label {
     font-size: var(--oo-font-size-small);
     color: white;
@@ -433,12 +446,13 @@ button:focus-visible {
     width: 100%;
     height: 100%;
 }
+
 .im-chat-progress-bar {
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
-    background-color: var(--oo-color-main);  /* 半透明进度条颜色 */
+    background-color: var(--oo-color-main); /* 半透明进度条颜色 */
     transition: width 0.3s ease;
 }
 
@@ -601,9 +615,14 @@ button:focus-visible {
     background-color: white;
     color: var(--oo-color-text);
 }
+
 .chat-receiver-box-bg-f7 {
-  background-color: var(--oo-im-color-bg-app);
-  color: var(--oo-color-text);
+    background-color: var(--oo-im-color-bg-app);
+    color: var(--oo-color-text);
+}
+
+.chat-receiver-box-bg a {
+    text-decoration: underline;
 }
 
 .chat-receiver-quote-msg {
@@ -654,6 +673,11 @@ button:focus-visible {
 .chat-sender-box-bg {
     background-color: var(--oo-color-main);
     color: white;
+}
+
+.chat-sender-box-bg a {
+    color: white;
+    text-decoration: underline;
 }
 
 .chat-sender-box-bg-white {
@@ -730,7 +754,7 @@ button:focus-visible {
     vertical-align: middle;
 }
 
-.img-chat img,video {
+.img-chat img, video {
     max-width: 100%;
     max-height: 100%;
     display: block;
@@ -980,9 +1004,10 @@ button:focus-visible {
     box-shadow: var(--oo-dialog-shadow);
     border-radius: var(--oo-area-radius);
 }
+
 .im-chat-emoji-s {
-    left: 0!important;
-    width: calc(100% - 1.4rem)!important;
+    left: 0 !important;
+    width: calc(100% - 1.4rem) !important;
 }
 
 .im-chat-emoji-triangle {
@@ -1042,14 +1067,17 @@ button:focus-visible {
     width: 42rem;
     font-size: var(--oo-font-size-default);
 }
+
 .im-config-form-label {
     color: var(--oo-color-text3);
     margin-top: 0.7rem;
 }
+
 .im-config-form-line2 {
     margin-top: 0.7rem;
     padding-bottom: 0.7rem;
 }
+
 .im-config-form-line {
     display: flex;
     justify-content: space-between;
@@ -1058,9 +1086,11 @@ button:focus-visible {
     align-items: center;
     border-bottom: 1px solid var(--oo-im-color-bg-divider);
 }
+
 .im-config-form-line .left {
-   text-align: left;
+    text-align: left;
 }
+
 .im-config-form-line .right {
     text-align: right;
 }
