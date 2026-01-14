@@ -474,7 +474,12 @@ MWF.xApplication.query.Query.ViewItem = new Class({
         return this.app.naviViewContentNode;
     },
     getViewContentNode: function(){
-        return this.app.contentNode;
+        const node =  this.app.contentNode;
+        node.addClass("borderbox-node");
+        node.setStyles({
+            "padding": "1rem"
+        });
+        return node; 
     },
     load: function(){
         this.node = new Element("div", {

@@ -195,6 +195,13 @@
     display: flex;
     align-items: center;
 }
+.listItemIconProcess{
+    height: 59px;
+    width: 210px;
+    float: left;
+    display: none;
+    align-items: center;
+}
 .selectFlag{
     float: left;
     width: 20px;
@@ -1294,6 +1301,15 @@
         float: none;
         grid-column: 1 / 3;
         grid-row: 2 / 3;
+        display: none;
+    }
+    .listItemIconProcess{
+        height: unset;
+        width: unset;
+        float: none;
+        grid-column: 1 / 3;
+        grid-row: 2 / 3;
+        display: flex;
     }
     .listItemApplicationIcon {
         width: 32px;

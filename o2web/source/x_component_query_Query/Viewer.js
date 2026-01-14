@@ -440,7 +440,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
     },
     createViewNode: function(data, callback, keepSelected){
-        debugger;
         this.viewAreaNode.empty();
 
         if( !keepSelected )this.selectedItems = [];
