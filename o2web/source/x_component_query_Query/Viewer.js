@@ -1554,24 +1554,40 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             if( filter.valueScript && filter.valueScript.code ){
                 const result = this.Macro.exec(filter.valueScript.code, this);
                 const arr = typeOf( result ) === "array" ? result : [result];
-                const node = new Element("oo-select");
-                if (!o2.isMediaMobile()){
-                    const title = new Element("div.search-item-title");
-                    title.textContent = filter.title;
-                    div.append(title)
-                    // node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-                    // node.setAttribute('label', filter.title);
+                if (arr && arr.length){
+                    const node = new Element("oo-select");
+                    if (!o2.isMediaMobile()){
+                        const title = new Element("div.search-item-title");
+                        title.textContent = filter.title;
+                        div.append(title)
+                        // node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
+                        // node.setAttribute('label', filter.title);
+                    }
+                    node.setAttribute('placeholder', filter.title);
+                
+                    arr.forEach( (item)=>{
+                        const v = item.split(/\s*\|\s*/);
+                        const option = new Element("oo-option");
+                        option.setAttribute('value', v[1] || v[0]);
+                        option.setAttribute('text', v[0]);
+                        node.appendChild(option);
+                    });
+
+                    div.appendChild(node);
+                    return div;
+                }else{
+                    const node = new Element("oo-input");
+                    if (!o2.isMediaMobile()){
+                        const title = new Element("div.search-item-title");
+                        title.textContent = filter.title;
+                        div.append(title)
+                    }
+                    node.setAttribute('placeholder', filter.title);
+                    div.appendChild(node);
+
+                    div.appendChild(node);
+                    return div;
                 }
-                node.setAttribute('placeholder', filter.title);
-                arr.forEach( (item)=>{
-                    const v = item.split(/\s*\|\s*/);
-                    const option = new Element("oo-option");
-                    option.setAttribute('value', v[1] || v[0]);
-                    option.setAttribute('text', v[0]);
-                    node.appendChild(option);
-                });
-                div.appendChild(node);
-                return div;
             }
         }
         if (filter.valueType==='org'){
@@ -1582,8 +1598,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 const title = new Element("div.search-item-title");
                 title.textContent = filter.title;
                 div.append(title)
-                // node.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-                // node.setAttribute('label', filter.title);
             }
             node.setAttribute('placeholder', filter.title);
             div.appendChild(node);
@@ -1594,8 +1608,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             const title = new Element("div.search-item-title");
             title.textContent = filter.title;
             div.append(title)
-            // input.setAttribute('label-style', "width: 6rem; min-width:4.3em; max-width:9em");
-            // input.setAttribute('label', filter.title);
         }
         input.setAttribute('placeholder', filter.title);
         div.appendChild(input);
