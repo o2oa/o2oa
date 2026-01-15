@@ -40,6 +40,8 @@ public class ThisApplication {
 	public static final QueueDocumentViewCountUpdate queueDocumentViewCountUpdate = new QueueDocumentViewCountUpdate();
 	// 执行数据库中的批处理操作
 	public static final QueueBatchOperation queueBatchOperation = new QueueBatchOperation();
+	// 执行文档权限的批处理操作
+	public static final QueueDocumentOperation queueDocumentOperation = new QueueDocumentOperation();
 	// Document发布时，向所有阅读者推送通知
 	public static final QueueSendDocumentNotify queueSendDocumentNotify = new QueueSendDocumentNotify();
 	// 执行文档的数据映射
@@ -58,6 +60,7 @@ public class ThisApplication {
 		CacheManager.init(context.clazz().getSimpleName());
 		MessageConnector.start(context());
 		context().startQueue(queueBatchOperation);
+		context().startQueue(queueDocumentOperation);
 		context().startQueue(queueDocumentDelete);
 		context().startQueue(queueDocumentUpdate);
 		context().startQueue(queueDocumentViewCountUpdate);

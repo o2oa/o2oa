@@ -46,7 +46,7 @@ import com.x.query.core.entity.Item;
 
 /**
  * 对文档信息进行持久化服务类
- * 
+ *
  * @author sword
  */
 public class DocumentPersistService {
@@ -54,6 +54,7 @@ public class DocumentPersistService {
 	private static ReentrantLock lock = new ReentrantLock();
 	private DocumentInfoService documentInfoService = new DocumentInfoService();
 	private PermissionOperateService permissionService = new PermissionOperateService();
+	private CmsBatchOperationPersistService batchOperationPersistService = new CmsBatchOperationPersistService();
 
 	public Document save(Document document, JsonElement jsonElement, String projection) throws Exception {
 		if (document == null) {
@@ -127,7 +128,7 @@ public class DocumentPersistService {
 
 	/**
 	 * 根据文档信息更新数据内容中的文档信息内容
-	 * 
+	 *
 	 * @param document
 	 * @return
 	 * @throws Exception
@@ -160,7 +161,7 @@ public class DocumentPersistService {
 
 	/**
 	 * 变更一个文档的分类信息
-	 * 
+	 *
 	 * @param document
 	 * @param categoryInfo
 	 * @throws Exception
@@ -333,7 +334,7 @@ public class DocumentPersistService {
 
 	/**
 	 * 删除指定ID的文档
-	 * 
+	 *
 	 * @param docId
 	 * @throws Exception
 	 */
@@ -350,7 +351,7 @@ public class DocumentPersistService {
 
 	/**
 	 * 根据读者作者列表更新文档所有的权限信息
-	 * 
+	 *
 	 * @param docId
 	 * @param readerList
 	 * @param authorList
@@ -363,7 +364,7 @@ public class DocumentPersistService {
 		}
 		Document document = permissionService.refreshDocumentPermission(docId, readerList, authorList);
 
-		new CmsBatchOperationPersistService().addOperation(CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
+		batchOperationPersistService.addDocumentOperation(CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 				CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, docId, docId, "刷新文档权限：ID=" + docId);
 
 		return document;
@@ -371,7 +372,7 @@ public class DocumentPersistService {
 
 	/**
 	 * 根据组织好的权限信息列表更新指定文档的权限信息
-	 * 
+	 *
 	 * @param docId
 	 * @param permissionList
 	 * @throws Exception
