@@ -2081,7 +2081,9 @@ MWF.xScript.Environment = function(ev){
                         viewJson[key] = view[key];
                     }
                 }
-                if (layout.mobile && o2.version.dev===10){
+                //if (layout.mobile && o2.version.dev===10){
+                var styleType = _form.json?.formStyleType || _form.viewJson?.viewStyleType;
+                if (layout.mobile && styleType === 'v10') {
                     selectViewMobile(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
                 }else{
                     selectViewPc(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
@@ -2311,7 +2313,9 @@ MWF.xScript.Environment = function(ev){
                         statementJson[key] = statement[key];
                     }
                 }
-                if (layout.mobile && o2.version.dev === 10) {
+                //if (layout.mobile && o2.version.dev === 10) {
+                var styleType = _form.json?.formStyleType || _form.viewJson?.viewStyleType;
+                if (layout.mobile && styleType === 'v10') {
                     selectStatementMobile(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
                 } else {
                     selectStatementPc(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
