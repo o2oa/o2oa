@@ -29,7 +29,7 @@ footer{
     padding: 0 1em 2em 1em;
 }
 .header-title{
-    font-size: var(--oo-font-size-larger);
+    font-size: var(--oo-font-size-large);
     flex: 1;
     padding-left: 1rem;
 }
