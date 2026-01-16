@@ -15,10 +15,10 @@ import com.x.cms.core.entity.Document;
 
 /**
  * 对批处理操作信息持久化服务类利用Service完成事务控制
- * 
+ *
  */
 public class CmsBatchOperationPersistService {
-	
+
 	CmsBatchOperationService cmsBatchOperationService = new CmsBatchOperationService();
 	/**
 	 * 保存批处理信息对象
@@ -44,17 +44,17 @@ public class CmsBatchOperationPersistService {
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			emc.beginTransaction( CmsBatchOperation.class );
-			emc.persist( cmsBatchOperation, CheckPersistType.all ); 
+			emc.persist( cmsBatchOperation, CheckPersistType.all );
 			emc.commit();
 		}
 		//将批量操作信息压入队列
 		ThisApplication.queueBatchOperation.send( cmsBatchOperation );
 		return cmsBatchOperation;
 	}
-	
+
 	/**
 	 * 保存批处理信息对象
-	 * 
+	 *
 	 * @param objType 对象类别
 	 * @param optType 操作类别
 	 * @param bundle 绑定的ID
@@ -74,7 +74,25 @@ public class CmsBatchOperationPersistService {
 		cmsBatchOperation.setOldInfo( oldInfo );
 		return addOperation( cmsBatchOperation ) ;
 	}
-	
+
+	public void addDocumentOperation( String objType, String optType, String bundle, String oldInfo, String description ) throws Exception {
+		CmsBatchOperation cmsBatchOperation = new CmsBatchOperation();
+		cmsBatchOperation.setOptType(optType);
+		cmsBatchOperation.setObjType(objType);
+		cmsBatchOperation.setBundle(bundle);
+		cmsBatchOperation.setDescription(description);
+		cmsBatchOperation.setErrorCount( 0 );
+		cmsBatchOperation.setIsRunning( false );
+		cmsBatchOperation.setOldInfo( oldInfo );
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			emc.beginTransaction( CmsBatchOperation.class );
+			emc.persist( cmsBatchOperation, CheckPersistType.all );
+			emc.commit();
+		}
+		//将批量操作信息压入队列
+		ThisApplication.queueDocumentOperation.send( cmsBatchOperation );
+	}
+
 	/**
 	 * 删除批处理信息对象
 	 * @param id
@@ -91,11 +109,11 @@ public class CmsBatchOperationPersistService {
 				throw new Exception("Entity for CmsBatchOperation not exists with id:" + id );
 			}
 			emc.beginTransaction( CmsBatchOperation.class );
-			emc.remove( cmsBatchOperation, CheckRemoveType.all ); 
+			emc.remove( cmsBatchOperation, CheckRemoveType.all );
 			emc.commit();
 		} catch ( Exception e ) {
 			throw e;
-		}		
+		}
 	}
 
 	public void addErrorTime(CmsBatchOperation operation, int i ) throws Exception {
@@ -106,13 +124,13 @@ public class CmsBatchOperationPersistService {
 			}
 			cmsBatchOperation.addErrorCount(1);
 			emc.beginTransaction( CmsBatchOperation.class );
-			emc.check( cmsBatchOperation, CheckPersistType.all ); 
+			emc.check( cmsBatchOperation, CheckPersistType.all );
 			emc.commit();
 		} catch ( Exception e ) {
 			throw e;
-		}	
+		}
 	}
-	
+
 	public void initOperationRunning() throws Exception {
 		List<CmsBatchOperation> operations = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -121,10 +139,10 @@ public class CmsBatchOperationPersistService {
 				emc.beginTransaction( CmsBatchOperation.class );
 				for( CmsBatchOperation operation : operations ) {
 					operation.setIsRunning( false );
-					emc.check( operation, CheckPersistType.all ); 
+					emc.check( operation, CheckPersistType.all );
 				}
-				emc.commit();				
-			}			
+				emc.commit();
+			}
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -135,14 +153,14 @@ public class CmsBatchOperationPersistService {
 	 * 比如因为更新导致文档Review未生成，文档无法被看到的情况
 	 */
 	public void checkDocumentReviewStatus() {
-		DocumentInfoService documentInfoService = new DocumentInfoService();				
+		DocumentInfoService documentInfoService = new DocumentInfoService();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<String> ids = documentInfoService.listUnReviewIds(emc, 5000);
 			if( ListTools.isNotEmpty( ids )) {
 				CmsBatchOperationPersistService cmsBatchOperationPersistService = new CmsBatchOperationPersistService();
 				for( String docId : ids ) {
-					cmsBatchOperationPersistService.addOperation( 
-							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+					cmsBatchOperationPersistService.addOperation(
+							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
 							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  docId,  docId, "刷新文档权限：ID=" +  docId );
 				}
 			}
