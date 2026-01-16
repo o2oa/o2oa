@@ -1321,8 +1321,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     saveDataById: function(fieldId, data){
-        var complete = !!(this.businessData.work || this.businessData.workCompleted).completedTime;
-        if(complete){
+        if(this.form.isCompletedWork()){
             return;
         }
         var clone = function (data){
