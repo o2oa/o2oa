@@ -3598,7 +3598,7 @@ label {\r
 }\r
 .readmode .viewText {\r
     display: block;\r
-    white-space: pre;\r
+    white-space: pre-wrap;\r
 }\r
 \r
 /* 移动端，标签在上，输入框下划线 skin-mode='mobile' */\r
@@ -3625,7 +3625,7 @@ label {\r
     padding: 0.5em 0.35em;\r
     font-size: 1.125em;\r
     background-color: transparent !important;\r
-    white-space: pre;\r
+    white-space: pre-wrap;\r
 }\r
 /* ---------------------------------------------- */`,Ei=class Ei extends i2{constructor(){super();d(this,U5);c(this,U5,M0).call(this),this._init("oo-textarea"),this._useCss(s8)}_init(t){this._initialize(t,Ei,n8,H3)}_setEvent(){super._setEvent(),this._elements.input.addEventListener("input",()=>{this.setHeight()}),i.toggleClass(this._elements.input,"autosize",this._props.autoSize),this.setHeight()}setHeight(){if(this._props.autoSize){this._elements.input.style.height="auto";const t=this._elements.input.scrollHeight;this._elements.input.style.height=t+"px"}}};U5=new WeakSet,M0=function(){this._setPropMap=Object.assign(this._setPropMap,{autoSize:()=>{i.toggleClass(this._elements.input,"autosize",this._props.autoSize),this.setHeight()},value:()=>{try{this._elements.input.value=this._props.value}catch{}this._props.value?this._elements.viewText.textContent=this._props.value:this._elements.viewText.innerHTML="-",window.setTimeout(()=>{this.setHeight()},10)}})};let pi=Ei;const i8=`.content{\r
     --item-color: var(--oo-color-text2);\r
