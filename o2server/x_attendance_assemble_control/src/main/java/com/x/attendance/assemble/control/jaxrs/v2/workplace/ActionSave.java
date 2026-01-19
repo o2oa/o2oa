@@ -44,10 +44,6 @@ public class ActionSave extends BaseAction {
 		if (StringUtils.isBlank(wrapIn.getLongitude())) {
 			throw new ExceptionLongitudeEmpty();
 		}
-		// 默认百度地图
-		if (StringUtils.isBlank(wrapIn.getPositionType())) {
-			wrapIn.setPositionType(AttendanceV2WorkPlace.POSITION_TYPE_BAIDU);
-		}
 		// 转化 gps 坐标
 		Double dLat = Double.valueOf(wrapIn.getLatitude());
 		Double dLng = Double.valueOf(wrapIn.getLongitude());
@@ -56,10 +52,13 @@ public class ActionSave extends BaseAction {
 			TransformPosition tp = BaiduLocationTransformHelper.gcj02towgs84(dLng, dLat);
 			wrapIn.setGpsLng(String.valueOf(tp.getLng()));
 			wrapIn.setGpsLat(String.valueOf(tp.getLat()));
-		} else { // 百度地图
+		} else if (AttendanceV2WorkPlace.POSITION_TYPE_BAIDU.equals(wrapIn.getPositionType())) { // 百度地图
 			TransformPosition tp = BaiduLocationTransformHelper.bd09towgs84(dLng, dLat);
 			wrapIn.setGpsLng(String.valueOf(tp.getLng()));
 			wrapIn.setGpsLat(String.valueOf(tp.getLat()));
+		} else {
+			wrapIn.setGpsLng(wrapIn.getLongitude());
+			wrapIn.setGpsLat(wrapIn.getLatitude());
 		}
 		if (StringUtils.isBlank(wrapIn.getPlaceAlias())) {
 			wrapIn.setPlaceAlias(wrapIn.getPlaceName());

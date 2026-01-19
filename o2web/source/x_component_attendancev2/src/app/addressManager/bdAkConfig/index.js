@@ -14,12 +14,15 @@ export default content({
         return {
             lp,
             mapConfig: {
-                mapType: "baidu", //  amap baidu 
+                mapType: "", //  amap baidu
                 baiduAccountKey: "",
                 aMapAccountKey: "",
             },
             mapTypeList: [
                 {
+                    name: "无",
+                    key: ""
+                },{
                     name: "百度地图",
                     key: "baidu"
                 },

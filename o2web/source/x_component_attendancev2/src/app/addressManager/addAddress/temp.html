@@ -6,17 +6,26 @@
             <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
         </div>
         <div class="o2-form-content">
-            <div oo-if="!$.form.isView" style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i
+            <div oo-if="!$.form.isView && $.form.positionType !== ''" style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i
                     class="o2icon-icon_tishi" style="color: #fb4747;margin-right: 5px;"></i>{{$.lp.workAddressForm.locationCoordinateInfo}}</div>
             <!-- 地图 -->
             <baidu-map :form="$.form" oo-if="$.form.positionType == 'baidu'" ></baidu-map>
             <amap :form="$.form" oo-if="$.form.positionType == 'amap'" ></amap> 
             
-            <div class="form-item-line">
+            <div class="form-item-line" oo-if="$.form.isView || $.form.positionType !== ''">
                 <div class="form-item-line-label"><span class="required">*</span>{{$.lp.workAddressForm.locationCoordinateLabel}}</div>
                 <div class="form-item-line-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude :
                     ''}}</div>
             </div>
+            <div oo-else>
+                <o-input
+                         oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.longitude, 'placeholder': $.lp.workAddressForm.longitudePlaceholder , 'value': $.form.longitude}"
+                         oo-model="form.longitude"></o-input>
+                <o-input
+                         oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.latitude, 'placeholder': $.lp.workAddressForm.latitudePlaceholder , 'value': $.form.latitude}"
+                         oo-model="form.latitude"></o-input>
+            </div>
+
             <div class="form-item-line" oo-if="$.form.isView">
                 <div class="form-item-line-label"><span class="required">*</span>{{$.lp.workAddressForm.title}}</div>
                 <div class="form-item-line-content">{{$.form.placeName}}</div>
