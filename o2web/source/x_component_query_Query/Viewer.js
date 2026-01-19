@@ -3003,6 +3003,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     filterData.push(filter.data);
                 }.bind(this));
             }
+            if(this.customFilterListData?.length){
+                this.customFilterListData.each(function(filter){
+                    filterData.push(filter);
+                }.bind(this));
+            }
             var data = {"filterList": filterData};
             data.excelName = filename || this.json.name;
             action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
