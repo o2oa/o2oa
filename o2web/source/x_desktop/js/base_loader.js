@@ -135,11 +135,12 @@ if (!layout.isReady) {
             var recordUserData = (data, cb)=>{
                 layout.user = data;
                 layout.session = layout.session || {};
-                layout.session.user = data;
-                layout.session.token = data.token;
-                layout.desktop.session = layout.session;
 
-                o2.Actions.load("x_organization_assemble_express").PersonAction.detail(layout.session.user.distinguishedName, null, function (json) {
+                o2.Actions.load("x_organization_assemble_express").PersonAction.detail(data.distinguishedName, null, function (json) {
+                    layout.session.user = data;
+                    layout.session.token = data.token;
+                    layout.desktop.session = layout.session;
+
                     layout.session.userDetail = json.data;
                     layout.session.userDetail.list = [].concat(
                         layout.session.userDetail.groupList || [], 

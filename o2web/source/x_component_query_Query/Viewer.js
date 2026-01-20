@@ -3003,6 +3003,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     filterData.push(filter.data);
                 }.bind(this));
             }
+            if(this.customFilterListData?.length){
+                this.customFilterListData.each(function(filter){
+                    filterData.push(filter);
+                }.bind(this));
+            }
             var data = {"filterList": filterData};
             data.excelName = filename || this.json.name;
             action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
@@ -3994,7 +3999,8 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
         this.flagNode = new Element('div.mobile-view-item-flag.ooicon-arrow_forward').inject(this.node);
 
         const itemHtml = cols.reduce( (html, col)=>{
-            return html.replace(new RegExp(`\{${col.column}\}`, 'g'), this.data.data[col.column] || '').replace(new RegExp(`\{${col.displayName}\}`, 'g'), this.data.data[col.column] || '');
+            return html.replace(new RegExp(`\{${col.column}\}`, 'g'), this.data.data[col.column] || '')
+                .replace(new RegExp(`\{${col.displayName}\}`, 'g'), this.data.data[col.column] || '');
         }, html);
         this.contentNode.set('html', itemHtml);
 
@@ -4014,14 +4020,7 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
                 break;
         }
 
-        ((flag === 'single' || flag === 'multi') ? this.flagNode : this.node).addEventListener('click', (ev)=>{
-            if (this.view.json.type==="cms"){
-                this.openCms(ev)
-            }else{
-                this.openWorkAndCompleted(ev)
-            }
-            ev.stopPropagation();
-        });
+        this.setOpenWork((flag === 'single' || flag === 'multi') ? this.flagNode : this.node);
 
         this.view.fireEvent("postLoadItemRow", [this]);
 
@@ -4110,6 +4109,28 @@ MWF.xApplication.query.Query.Viewer.MobileItem = new Class({
             "item": this,
             "data": this.data
         }]); //options 传入的事件
+    },
+    setOpenWork:function (node){
+        const clickColumn = this.view.viewJson.selectList.find((col)=>{ return !!col.clickCode });
+        if(clickColumn){
+            this._setOpenWork(node, clickColumn);
+        }else{
+            node.addEventListener('click', (ev)=>{
+                if (this.view.json.type==="cms"){
+                    this.openCms(ev)
+                }else{
+                    this.openWorkAndCompleted(ev)
+                }
+                ev.stopPropagation();
+            });
+        }
+    },
+    _setOpenWork(node, clickColumn){
+        node.addEvent("click", function( ev ){
+            var result = this.view.Macro.fire(clickColumn.clickCode, this, ev);
+            ev.stopPropagation();
+            return result;
+        }.bind(this));
     }
 
 })

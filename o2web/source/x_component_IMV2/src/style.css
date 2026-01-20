@@ -478,7 +478,7 @@ button:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--oo-font-size-larger);
+    font-size: var(--oo-font-size-large);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

@@ -1,0 +1,107 @@
+pipeline {
+    agent {label 'o2oaee'}
+    stages {
+        stage('ClearBuild'){
+            steps {
+                sh "rm -rf *"
+            }
+        }
+		stage('Git') {
+            steps {
+                git branch: 'develop', changelog: false, credentialsId: '331a42ab-5096-48bf-a568-fadeb71325a0', url: 'https://g.o2oa.net/o2oa/o2oa-ee/o2oa-ee.git'
+            }
+        }
+		stage('Init') {
+		    parallel {
+		        stage('npm install') {
+                    steps {
+                        sh 'npm cache clean --force'
+                        sh 'npm install'
+                    }
+                }
+                stage('get env') {
+                    steps {
+        				sh  "cat /dev/null > gitTag.txt "
+                        sh  "git describe --tags  >> gitTag.txt"
+                        script {
+                    	    json_file = "gitTag.txt"
+        	                file_contents = readFile json_file
+                            echo file_contents
+
+                            env.encodedUserName = java.net.URLEncoder.encode(env.userName, "UTF-8")
+                            echo "Encoded: ${env.encodedUserName}"
+
+                            env.tag = file_contents.trim();
+                        }
+                    }
+                }
+		    }
+        }
+        
+        stage('License') {
+            steps {
+                sh 'npm run build_lic -- --efd '+env.effectiveDate+' --itai '+env.isItai+' --name "'+env.userName+'" --uname "'+env.unitName+'" --email "'+env.email+'" --cmobile "'+env.contactMobile+'" --cname "'+env.contactName+'" --ver "'+env.tag+'" --sec "'+env.secret+'"'
+            }
+        }
+
+        stage('Build') {
+            parallel {
+                stage('Dependency') {
+                    steps {
+                        sh 'npm run preperation'
+                    }
+                }
+                stage('build server') {
+                    steps {
+                        sh 'id'
+                        sh 'npm run build_server_deploy'
+                    }
+                }
+
+                stage('build web') {
+                    steps {
+                        sh 'npm run build_web'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            parallel {
+                stage('deploy api') {
+                    steps {
+                        sh 'npm run build_api'
+                    }
+                }
+                stage('deploy server') {
+                    steps {
+                        sh 'npm run deploy'
+                        sh 'chmod 777 -R target/o2server/jvm'
+                        sh 'chmod 777 -R target/o2server/commons'
+                        sh 'chmod 777 target/o2server/*.sh'
+                    }
+                }
+            }
+        }
+        stage('Pack') {
+            steps {
+                sh 'ant  -DVERSION='+env.tag+' -DpreName=o2server-ee-'+env.userName
+            }
+        }
+        stage('Upload') {
+            steps {
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'soft.o2oa.net', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/download.zoneland.net/o2oaee', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'o2server-ee-'+env.userName+'-'+env.tag+'*.zip')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            }
+        }
+        
+        stage('Notice') {
+            steps{
+                script {
+                    env.messageNotice="%e5%ae%8c%e6%88%90ssh%e6%9c%8d%e5%8a%a1%e5%99%a8%3dsoft.o2oa.net,%e5%89%8d%e7%bc%80%3do2server-ee-"+env.encodedUserName+",tag%e7%89%88%e6%9c%ac%3d"+env.tag+"%e7%9a%84%e7%89%88%e6%9c%ac%e6%89%93%e5%8c%85%ef%bc%8c%e8%af%b7%e6%a0%b8%e5%ae%9e"
+                    env.messageNotice=messageNotice+",https://soft.o2oa.net/o2oaee/"
+                }
+                echo 'env.messageNotice='+env.messageNotice
+                httpRequest httpMode: 'POST', requestBody: 'fromqq=3256956076&togroup=516207025&text='+env.messageNotice, responseHandle: 'NONE', url:  'http://172.16.89.54:5700//sendgroupmsg', wrapAsMultipart: false
+            }
+		}
+	}
+}

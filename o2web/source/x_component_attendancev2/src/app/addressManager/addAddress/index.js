@@ -27,7 +27,7 @@ export default content({
                 description: "",
                 status: "a", // a 新增 ，u 更新， v 查看
                 isView: false,
-                positionType: "amap" // baidu amap
+                positionType: "amap" // baidu amap 如果为空需要输入经纬度
             },
         };
     },
@@ -49,7 +49,15 @@ export default content({
     async submitAdd() {
         let myForm = this.bind.form;
         if (isEmpty(myForm.longitude) || isEmpty(myForm.latitude)) {
-            o2.api.page.notice(lp.workAddressForm.lnglatNotEmpty, 'error');
+            if (myForm.positionType === "") {
+                o2.api.page.notice(lp.workAddressForm.lnglatInputNotEmpty, 'error');
+            } else {
+                o2.api.page.notice(lp.workAddressForm.lnglatNotEmpty, 'error');
+            }
+            return;
+        }
+        if (!this.isValidCoords(myForm.longitude, myForm.latitude)) {
+            o2.api.page.notice(lp.workAddressForm.lnglatValidateError, 'error');
             return;
         }
         if (isEmpty(myForm.placeName)) {
@@ -69,5 +77,12 @@ export default content({
         o2.api.page.notice(lp.workAddressForm.success, 'success');
         this.close();
     },
+    // 简单判断经纬度是否正确
+    isValidCoords(lng, lat) {
+        const regLng = /^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+        const regLat = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/;
+
+        return regLng.test(lng) && regLat.test(lat);
+    }
 
 });

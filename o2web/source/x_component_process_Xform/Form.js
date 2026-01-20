@@ -1755,8 +1755,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
+    isReadonly: function (){
+        return this.options.readonly || this.json.isReadonly;
+    },
     isDraftWork: function (){
-      return !this.businessData.work.startTime;
+        return !this.businessData.work.startTime;
+    },
+    isCompletedWork: function (){
+        return !!this.businessData.work.completedTime;
     },
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {

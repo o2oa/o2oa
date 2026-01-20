@@ -330,6 +330,10 @@ function categoryInfoAction(method, ...args) {
 }
 
 
+async function getLicense() {
+    const json = await o2.Actions.load('x_program_center').ConfigAction.getLicenseInfo();
+    return json.data;
+}
 
 export {
     getConfig,
@@ -385,5 +389,6 @@ export {
     doAppPackAction,
     doMPWeixinMenuAction,
     processAction,
-    categoryInfoAction
+    categoryInfoAction,
+    getLicense
 };

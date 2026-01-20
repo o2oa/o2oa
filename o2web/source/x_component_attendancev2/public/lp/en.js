@@ -155,6 +155,12 @@ MWF.xApplication.attendancev2.LP={
 	"workAddressBDSecretTitlePlaceholder": "Enter the secret key (AK) of the Map application",
 	"workAddressForm": {
 		"lnglatNotEmpty": "Please select a workplace on the map first!",
+		"lnglatInputNotEmpty": "Please fill in the correct latitude and longitude first！",
+		"lnglatValidateError": "The latitude and longitude format is incorrect！",
+		"longitude": "longitude",
+		"longitudePlaceholder": "Please enter the geographic location longitude",
+		"latitude": "latitude",
+		"latitudePlaceholder": "Please enter geographic location latitude",
 		"title": "Place Name",
 		"titlePlaceholder": "Enter Place Name",
 		"titleNotEmpty": "Place Name cannot be empty!",

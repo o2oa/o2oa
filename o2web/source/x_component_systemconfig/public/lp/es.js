@@ -140,7 +140,10 @@ MWF.xApplication.systemconfig.LP={
 		"supportedLanguages": "Entorno lingüístico",
 		"supportedLanguagesInfo": "Entorno lingüístico apoyado por el sistema",
 		"supportedLanguagesInfo2": "Agregue más soporte de entorno lingüístico, instale el paquete de idiomas desde el mercado de aplicaciones.",
-		"supportedLanguagesSetup": "Abrir el mercado de aplicaciones"
+		"supportedLanguagesSetup": "Abrir el mercado de aplicaciones",
+		"license": "Información autorizada",
+		"licenseTo": "Autorización a:",
+		"licenseInfo": "Información actual de autorización del sistema"
 	},
 	"operation": {
 		"edit": "Editar ",

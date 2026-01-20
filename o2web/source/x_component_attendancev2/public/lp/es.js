@@ -155,6 +155,12 @@ MWF.xApplication.attendancev2.LP={
 	"workAddressBDSecretTitlePlaceholder": "Ingresa la clave (AK) de la aplicación de mapas",
 	"workAddressForm": {
 		"lnglatNotEmpty": "¡Selecciona un lugar de trabajo en el mapa primero!",
+		"lnglatInputNotEmpty": "Por favor, complete primero la latitud y longitud correctas！",
+		"lnglatValidateError": "Formato de latitud y longitud incorrecto！",
+		"longitude": "longitud",
+		"longitudePlaceholder": "Por favor ingrese la ubicación geográfica (longitud)!",
+		"latitude": "latitud",
+		"latitudePlaceholder": "Por favor ingrese la latitud y longitud de la ubicación geográfica!",
 		"title": "Nombre del lugar",
 		"titlePlaceholder": "Ingresa el nombre del lugar",
 		"titleNotEmpty": "¡El nombre del lugar no puede estar vacío!",

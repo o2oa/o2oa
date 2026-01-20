@@ -44,8 +44,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class GraalvmScriptingFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraalvmScriptingFactory.class);
-
-	private static Gson gson = XGsonBuilder.instance();
+	private static final List<String> denyClassList = List.of("com.x.base.core.project.scripting.GraalvmScriptingFactory",
+			"com.x.base.core.project.config.Config");
+	private static final Gson gson = XGsonBuilder.instance();
 
 	private GraalvmScriptingFactory() {
 
@@ -140,7 +141,12 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static boolean allowClass(String className) {
-		return className.startsWith("com.x.base") || className.startsWith("com.x.organization")
+		if(denyClassList.contains(className)){
+			return false;
+		}
+		return className.startsWith("com.x.base.core.project.tools")
+				|| className.startsWith("com.x.base.core.project.connection")
+				|| className.startsWith("com.x.organization")
 				|| getScriptingAllowedClasses().contains(className);
 	}
 
@@ -232,6 +238,8 @@ public class GraalvmScriptingFactory {
 			scriptingAllowedClasses = new HashSet<>();
 			LOCK.lock();
 			try {
+				scriptingAllowedClasses.add("com.x.base.core.project.Application");
+				scriptingAllowedClasses.add("com.x.base.core.project.Applications");
 				scriptingAllowedClasses.addAll(Config.general().getScriptingAllowedClasses());
 			} catch (Exception e) {
 				LOGGER.error(e);

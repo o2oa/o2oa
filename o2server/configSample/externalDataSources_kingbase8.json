@@ -5,6 +5,7 @@
 		"password": "krms",
 		"includes": [],
 		"excludes": [],
+		"logLevel": "DefaultLevel=FATAL",
 		"enable": true,
 		"statEnable": false,
 		"statFilter": false
