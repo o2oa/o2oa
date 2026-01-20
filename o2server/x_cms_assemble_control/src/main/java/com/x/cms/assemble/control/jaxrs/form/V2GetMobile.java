@@ -48,13 +48,12 @@ class V2GetMobile extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Form.class);
 			}
 			Wo wo = new Wo();
-			final FormProperties properties = form.getProperties();
 			final List<String> list = new CopyOnWriteArrayList<>();
 			wo.setForm(new RelatedForm(form, form.getMobileDataOrData()));
 			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(form,
 					list);
 			CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
-					.getRelatedScriptFuture(properties, list);
+					.getRelatedScriptFuture(form, list);
 			wo.setRelatedFormMap(getRelatedFormFuture.get(10, TimeUnit.SECONDS));
 			wo.setRelatedScriptMap(getRelatedScriptFuture.get(10, TimeUnit.SECONDS));
 			if (StringUtils.isNotBlank(tag)) {
@@ -94,27 +93,42 @@ class V2GetMobile extends BaseAction {
 		}, ThisApplication.forkJoinPool());
 	}
 
-	private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(FormProperties properties,
+	private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(Form form,
 			final List<String> list) {
+		final FormProperties properties = form.getProperties();
 		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedScript> map = new TreeMap<>();
-			if ((null != properties.getMobileRelatedScriptMap())
-					&& (properties.getMobileRelatedScriptMap().size() > 0)) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					map = convertScript(business, properties, list);
-				} catch (Exception e) {
-					LOGGER.error(e);
+			if (BooleanUtils.isTrue(form.getHasMobile())) {
+				if ((null != properties.getMobileRelatedScriptMap())
+						&& (!properties.getMobileRelatedScriptMap().isEmpty())) {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						Business business = new Business(emc);
+						map = convertScript(business, form, list);
+					} catch (Exception e) {
+						LOGGER.error(e);
+					}
+				}
+			} else {
+				if ((null != properties.getRelatedScriptMap())
+						&& (!properties.getRelatedScriptMap().isEmpty())) {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						Business business = new Business(emc);
+						map = convertScript(business, form, list);
+					} catch (Exception e) {
+						LOGGER.error(e);
+					}
 				}
 			}
 			return map;
 		}, ThisApplication.forkJoinPool());
 	}
 
-	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties, final List<String> list)
+	private Map<String, RelatedScript> convertScript(Business bus, Form form, final List<String> list)
 			throws Exception {
 		Map<String, RelatedScript> map = new TreeMap<>();
-		for (Entry<String, String> entry : properties.getMobileRelatedScriptMap().entrySet()) {
+		for (Entry<String, String> entry : BooleanUtils.isTrue(form.getHasMobile())
+				? form.getProperties().getMobileRelatedScriptMap().entrySet()
+				: form.getProperties().getRelatedScriptMap().entrySet()) {
 			switch (entry.getValue()) {
 			case RelatedScript.TYPE_PROCESS_PLATFORM:
 				com.x.processplatform.core.entity.element.Script pp = bus.process().script().pick(entry.getKey());
