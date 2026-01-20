@@ -67,6 +67,11 @@ o2.xApplication.systemconfig.LP = {
         "systemSubTitleInfo": "您的系统副标题，它将会显示在您的登录页面下方",
         "systemVersion": "当前系统版本",
         "systemVersionInfo": "当前系统版本",
+
+        "license": "授权信息",
+        "licenseTo": "授权给：",
+        "licenseInfo": "当前系统授权信息",
+
         "baseInfo": "基本信息",
         "systemStatus": "系统状态",
         "moduleStatus": "模块运行状态",

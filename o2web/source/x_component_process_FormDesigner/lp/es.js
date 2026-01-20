@@ -711,7 +711,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"allowUpload": "Permitir cargar",
 		"allowFromPan": "Permitir selección desde disco de red",
 		"allowPreview": "Permitir previsualización",
-		"allowAI": 'PermitirIA',
+		"allowAI": "PermitirIA",
 		"allowDownload": "Permitir descarga",
 		"allowDownloadBatch": "Permitir descargas por lotes",
 		"allowEdit": "Permitir edición",
@@ -1605,7 +1605,15 @@ MWF.xApplication.process.FormDesigner.LP={
 		"unreadOrg": "Organización ilegible",
 		"uneditActivity": "Actividades no editables",
 		"uneditOrg": "Organización no editable",
-		"formActionNotice": "Nota: válido cuando se muestra como un formulario móvil."
+		"formActionNotice": "Nota: válido cuando se muestra como un formulario móvil.",
+		"multimonth": "Varios meses",
+		"multiyear": "Varios años",
+		"datetimeRange": "Rango de fecha y hora",
+		"dateRange": "Rango de fechas",
+		"timeRange": "Rango de tiempo",
+		"monthRange": "Rango mensual",
+		"yearRange": "Alcance del año",
+		"stepNote": "Válido al incluir el tiempo, solo se permite seleccionar múltiplos del paso. (se permite seleccionar segundos, válidos para segundos, de lo contrario válidos para minutos)"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",

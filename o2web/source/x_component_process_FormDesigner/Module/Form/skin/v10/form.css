@@ -483,7 +483,7 @@
 }
 .form-layout .page-content-section div[mwftype='view'] > div > div.viewAreaNode > div {
     overflow: auto !important;
-    padding: 0 1em 1em 1em;
+    padding: 0 1em 1em 1em !important;
 }
 
 .form-layout .page-content-section div[mwftype='view'] > div > div.viewPageAreaNode > div {
@@ -1453,6 +1453,11 @@
     }
     .o2flow-handwriting-node {
         z-index: 501 !important;
+    }
+
+    .form-layout .page-content-section div[mwftype='view'] > div > div.viewAreaNode > div {
+        overflow: auto !important;
+        padding: 0 !important;
     }
 
     /* 继续流转界面 **/

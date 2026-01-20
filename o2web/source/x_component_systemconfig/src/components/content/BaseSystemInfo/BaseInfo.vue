@@ -16,6 +16,8 @@
     <div class="item_info">{{lp._systemInfo.supportedLanguagesInfo2}} <span @click="openAppstore" class="mainColor_color" style="cursor: pointer; text-decoration: underline;">{{lp._systemInfo.supportedLanguagesSetup}}</span></div>
 
     <BaseItem name="systemVersion" :config="systemVersion" :allowEditor="false"/>
+
+    <BaseItem name="license" :config="license" :allowEditor="false"/>
   </div>
 </template>
 
@@ -24,7 +26,7 @@ import {ref} from 'vue';
 import {o2, lp, layout} from '@o2oa/component';
 import BaseItem from '@/components/item/BaseItem.vue';
 import BaseSelect from '@/components/item/BaseSelect.vue';
-import {getConfigData, getConfig, saveConfig} from '@/util/acrions';
+import {getConfigData, getConfig, saveConfig, getLicense} from '@/util/acrions';
 
 const systemVersion = layout.config.version;
 const supportedLanguages = Object.values(layout.config.supportedLanguages).join(", ");
@@ -32,6 +34,7 @@ const supportedLanguages = Object.values(layout.config.supportedLanguages).join(
 const systemName = ref('');
 const systemSubTitle = ref('');
 const language = ref('zh-CN');
+const license = ref('');
 
 const load = async () => {
   getConfigData('collect').then((data)=>{
@@ -41,7 +44,14 @@ const load = async () => {
 
   getConfigData('person').then((data)=>{
     language.value = data.language || 'zh-CN';
-  })
+  });
+  getLicense().then((data)=>{
+    if (data.name){
+      license.value = `${lp._systemInfo.licenseTo}${data.name}（${data.expireTime}）`;
+    }else{
+      license.value = data.version;
+    }
+  });
 }
 
 load();
