@@ -3021,12 +3021,24 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         }
     },
     previewPdf : function(){
+        // this.app.getAttachmentUrl(this.att, function (url) {
+        //     if(layout.mobile){
+        //         location.href = "../o2_lib/pdfjs/web/viewer.html?file=" + url;
+        //     }else{
+        //         window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
+        //     }
+        // });
+        var att = this.att;
         this.app.getAttachmentUrl(this.att, function (url) {
-            if(layout.mobile){
-                location.href = "../o2_lib/pdfjs/web/viewer.html?file=" + url;
-            }else{
-                window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
-            }        });
+            const fileUrl = "../o2_lib/pdfjs/web/viewer.html?file=" + url;
+            const options = {
+                "fileUrl": fileUrl,
+                "fileName" : att.data.name,
+                "appId": "PdfViewer" + att.data.id
+            };
+            layout.openApplication(null, "PdfViewer", options);
+        });
+
     },
     previewOffice : function(){
 
