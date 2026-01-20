@@ -17,7 +17,7 @@ export default content({
       workAddressList: [],
       // 地图配置
       mapConfig: {
-        mapType: "baidu", //  amap baidu
+        mapType: "", //  amap baidu
         baiduAccountKey: "",
         aMapAccountKey: "",
       },

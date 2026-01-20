@@ -165,6 +165,12 @@ MWF.xApplication.attendancev2.LP = {
   workAddressBDSecretTitlePlaceholder: "请输入地图应用的密钥(AK)",
   workAddressForm: {
     lnglatNotEmpty: "请先在地图上选择工作场所！",
+    lnglatInputNotEmpty: "请先填写正确的经纬度！",
+    lnglatValidateError: "经纬度格式不正确！",
+    longitude: "经度",
+    longitudePlaceholder: "请输入地理位置经度",
+    latitude: "纬度",
+    latitudePlaceholder: "请输入地理位置纬度",
     title: "场所名称",
     titlePlaceholder: "请输入场所名称",
     titleNotEmpty: "场所名称不能为空！",
