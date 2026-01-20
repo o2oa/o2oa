@@ -1,0 +1,14 @@
+<div class="o2_empty_content deepColor_bg" data-o2-element="contentNode">
+    <div class="o2_empty_div1" data-o2-element="myNode" data-o2-events="click:loadTask;mouseover:tabover;mouseout:tabout">
+        <div class="o2_empty_div2">{{$.lp.title}}</div>
+        <div class="o2_empty_div2">{{$.data.type}}</div>
+    </div>
+
+    <div data-o2-element="eachNode">
+    {{each ($.data.data)}}
+    <div data-o2-events="click:clickNode">{{$.title}}</div>
+    {{end each}}
+    </div>
+
+
+</div>
