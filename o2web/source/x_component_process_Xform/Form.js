@@ -1755,6 +1755,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
+    isReadonly: function (){
+        return this.options.readonly || this.json.isReadonly;
+    },
     isDraftWork: function (){
         return !this.businessData.work.startTime;
     },
