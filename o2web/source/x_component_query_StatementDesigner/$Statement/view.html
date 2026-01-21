@@ -180,6 +180,16 @@
         <div class="MWFViewFilter">
             <div class="inputAreaNode_vf">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable restrictViewFilterTable_vf" style="table-layout: fixed;">
+                    <tr id="text{$.id}customFilterTypeTr">
+                        <td class="editTableTitle">{{$.lp.filterType}}:</td>
+                        <td class="editTableValue">
+                            <select class="customFilterTypeSelect_vf">
+                                <option value="filter">{{$.lp.asFilter}}</option>
+                                <option value="parameter">{{$.lp.asParameter}}</option>
+                            </select>
+                            <div style="line-height: 20px;color:#999; white-space: pre-wrap;">{{$.lp.filterTypeNote}}</div>
+                        </td>
+                    </tr>
                     <tr id="text{$.id}pathInputSelectTr">
                         <td class="editTableTitle">{{$.lp.select}}:</td>
                         <td class="editTableValue">
@@ -250,27 +260,12 @@
                     <tr>
                         <td class="editTableTitle"></td>
                         <td class="editTableValue">
-                            <input type="radio" class="restrictParameterInput_vf" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){
-                                debugger;
-                                $('text{$.id}viewParameterRestrict').setStyle('display', 'block');
-                                $('text{$.id}parameterInputTr').setStyle('display', 'table-row');
-                                // $('text{$.id}parameterInputSelectTr').setStyle('display', 'table-row');
-                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
-                                $('text{$.id}pathInputTr').setStyle('display', 'none');
-                                $('text{$.id}pathInputSelectTr').setStyle('display', 'none');
-                            }"/>{{$.lp.filterRestrict}}<br>
-                            <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
-                                $('text{$.id}viewParameterRestrict').setStyle('display', 'none');
-                                $('text{$.id}parameterInputTr').setStyle('display', 'none');
-                                // $('text{$.id}parameterInputSelectTr').setStyle('display', 'none');
-                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
-                                $('text{$.id}pathInputTr').setStyle('display', 'table-row');
-                                $('text{$.id}pathInputSelectTr').setStyle('display', 'table-row');
-                            }" checked/>{{$.lp.customFilterRestrict}}
+                            <input type="radio" class="restrictParameterInput_vf" value="restrict" name="text{$.id}viewFilterType"/>{{$.lp.filterRestrict}}<br>
+                            <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" checked/>{{$.lp.customFilterRestrict}}
                         </td>
                     </tr>
                 </table>
-                 <div id="text{$.id}viewParameterRestrict"  style="display: none">
+                 <div id="text{$.id}viewParameterRestrict" class="viewParameterRestrict" style="display: none">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
                             <td class="editTableTitle" id="text{$.id}viewParameterValueTitleArea">{{$.lp.value}}:</td>
@@ -369,7 +364,7 @@
                 </div>
 
 
-                <div id="text{$.id}viewCustomFilterRestrict"  style="display: block">
+                <div id="text{$.id}viewCustomFilterRestrict" class="viewCustomFilterRestrict" style="display: block">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
                             <td class="editTableTitle">{{$.lp.value}}:</td>

@@ -350,6 +350,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
     },
     setContentHeight: function() {
+        debugger;
         var getMarginHeight = (el) => {
             var top = el.getStyle("margin-top").toFloat() || 0;
             var bottom = el.getStyle("margin-bottom").toFloat() || 0;
@@ -1336,7 +1337,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
      */
     reload: function( callback, keepSelected ){
         if( this.lookuping || this.pageloading )return;
-        this.node.setStyle("display", "block");
+        this.node.setStyle("display", "");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
 
         // this.filterItems.each(function(filter){
@@ -1828,7 +1829,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     "values": ev.target.value,
                     "types": types,
                     "style": "v10",
-                    "count": 0,
+                    "tabStyle": 'v10',
+                    "count": 1,
                     "onComplete": function (items) {
                         if (items.length) {
                             ev.target.value = items.map(i => i.data.distinguishedName)
@@ -1840,7 +1842,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 if (types.length > 1) {
                     options.types = types
                 }else{
-                    options.type = types[0]
+                    options.type = types[0];
+                    options.types = null;
                 }
                 MWF.xDesktop.requireApp("Selector", "package", ()=>{
                     new o2.O2Selector(this.app.content, options);
@@ -2750,7 +2753,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         //     "isExpand": "no",
         //     "filter": filter
         // }
-        this.node.setStyle("display", "block");
+        this.node.setStyle("display", "");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
 
         this.searchMorph = null;

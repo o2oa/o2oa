@@ -179,13 +179,52 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.pathNote.hide();
         }
 
+        this.customFilterTypeSelect = this.inputAreaNode.getElement(".customFilterTypeSelect_vf");
+        this.customFilterTypeSelect?.addEvent("change", function (e) {
+            var v = this.customFilterTypeSelect.value;
+            if( v === 'filter' ){
+                this.pathInputSelect?.getParent('tr').setStyle('display', '');
+                this.pathInput?.getParent('tr').setStyle('display', '');
+                this.parameterInput?.getParent('tr').setStyle('display', 'none');
+            }else if( v === 'parameter' ){
+                this.pathInputSelect?.getParent('tr').setStyle('display', 'none');
+                this.pathInput?.getParent('tr').setStyle('display', 'none');
+                this.parameterInput?.getParent('tr').setStyle('display', '');
+            }
+        }.bind(this));
+
         this.pathInputSelect = this.inputAreaNode.getElement(".pathInputSelect_vf");
         this.parameterInput = this.inputAreaNode.getElement(".parameterInput_vf");
         // this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
 
         this.restrictParameterInput = this.inputAreaNode.getElement(".restrictParameterInput_vf");
+        if(!this.restrictParameterInput.onclick){
+            this.restrictParameterInput.addEventListener("click", function (e) {
+                if (this.restrictParameterInput.checked){
+                    this.inputAreaNode.getElement('.viewParameterRestrict')?.setStyle('display', '');
+                    this.inputAreaNode.getElement('.viewCustomFilterRestrict')?.setStyle('display', 'none');
+                    this.customFilterTypeSelect.getParent('tr').setStyle('display', 'none');
+                    this.parameterInput?.getParent('tr').setStyle('display', '');
+                    this.pathInputSelect?.getParent('tr').setStyle('display', 'none');
+                    this.pathInput?.getParent('tr').setStyle('display', 'none');
+                }
+            }.bind(this))
+        }
         this.customFilterInput = this.inputAreaNode.getElement(".customFilterInput_vf");
+        if(!this.customFilterInput.onclick){
+            this.customFilterInput.addEventListener("click", function (e) {
+                if (this.customFilterInput.checked){
+                    this.inputAreaNode.getElement('.viewParameterRestrict')?.setStyle('display', 'none');
+                    this.inputAreaNode.getElement('.viewCustomFilterRestrict')?.setStyle('display', '');
+                    this.customFilterTypeSelect.getParent('tr').setStyle('display', '');
+                    var type = this.customFilterTypeSelect.value;
+                    this.parameterInput?.getParent('tr').setStyle('display', type === 'parameter' ? '' : 'none');
+                    this.pathInputSelect?.getParent('tr').setStyle('display', type === 'parameter' ? 'none' : '');
+                    this.pathInput?.getParent('tr').setStyle('display', type === 'parameter' ? 'none' : '');
+                }
+            }.bind(this))
+        }
 
         this.restrictFilterInput = this.inputAreaNode.getElement(".restrictFilterInput_vf");
         this.restrictParameterInput_form = this.inputAreaNode.getElement(".restrictParameterInput_form_vf");
@@ -779,33 +818,40 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             });
             return false;
         }
-        if (!data.path || ( !["sql", "sqlScript"].contains(this.statementData.format) && data.path.indexOf(".")<1 ) ) {
-            this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
-            var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
-            new Element("div", {
-                "styles": this.css.verificationTextNode,
-                "text": text
-            }).inject(this.verificationNode);
-            this.pathInput.focus();
-            this.pathInput.setStyle("background-color", "#fbe8e8");
+        if( this.customFilterTypeSelect.value === 'parameter' ){
+            if( !this.verificationData(data) ) {
+                return false;
+            }
+        }else{
+            if (!data.path || ( !["sql", "sqlScript"].contains(this.statementData.format) && data.path.indexOf(".")<1 ) ) {
+                this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
+                var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
+                new Element("div", {
+                    "styles": this.css.verificationTextNode,
+                    "text": text
+                }).inject(this.verificationNode);
+                this.pathInput.focus();
+                this.pathInput.setStyle("background-color", "#fbe8e8");
 
-            this.pathInput.addEvents({
-                "keydown": function () {
-                    if (this.verificationNode) {
-                        this.verificationNode.destroy();
-                        this.verificationNode = null;
-                        this.pathInput.setStyle("background-color", "#FFF");
-                    }
-                }.bind(this),
-                "click": function () {
-                    if (this.verificationNode) {
-                        this.verificationNode.destroy();
-                        this.verificationNode = null;
-                    }
-                }.bind(this)
-            });
-            return false;
+                this.pathInput.addEvents({
+                    "keydown": function () {
+                        if (this.verificationNode) {
+                            this.verificationNode.destroy();
+                            this.verificationNode = null;
+                            this.pathInput.setStyle("background-color", "#FFF");
+                        }
+                    }.bind(this),
+                    "click": function () {
+                        if (this.verificationNode) {
+                            this.verificationNode.destroy();
+                            this.verificationNode = null;
+                        }
+                    }.bind(this)
+                });
+                return false;
+            }
         }
+
         return true;
     },
     verificationDataWithForm: function (data) {
@@ -1012,6 +1058,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 // "logic": "and",
                 "path": path,
                 "title": title,
+                "filterType": this.customFilterTypeSelect?.value || 'filter',
+                "parameter": parameter,
                 "type": type,
                 // "comparison": comparison,
                 "formatType": formatType,
@@ -1117,6 +1165,13 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         }
 
         if (data.type === "custom") {
+            this.customFilterTypeSelect.set("value", data.filterType || 'filter');
+            this.customFilterTypeSelect.fireEvent("change");
+
+            if(data.parameter){
+                this.parameterInput.set('value', data.parameter);
+            }
+
             this.customFilterValueTypes.each(function (radio) {
                 if (data.valueType) {
                     if (data.valueType === radio.get("value")) radio.set("checked", true);
@@ -1322,7 +1377,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemCustom = new Clas
     },
     getText: function () {
         var lp = MWF.APPDSMD.LP.filter;
-        return this.data.title + "(" + this.data.path + ")";
+        var d = this.data;
+        return d.title + "(" + (d.filterType || 'filter') + ":" + (d.filterType==="parameter" ? d.parameter : d.path) + ")";
     },
 });
 

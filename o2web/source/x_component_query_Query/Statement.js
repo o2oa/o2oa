@@ -207,7 +207,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
     },
     loadFilter: function (data) {
         this.filterList = [];
-        (data.filterList || []).each(function (d) {
+        const list = (data.filterList || []).filter( function(d){ return d.filterType !== "parameter" });
+        list.each(function (d) {
             var pName = d.path.replace(/\./g, "_");
 
             var parameterName = pName;
@@ -217,32 +218,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 suffix++;
             }
 
-            var value = d.value;
-            // if( d.code && d.code.code ){
-            //     value = this.Macro.exec( d.code.code, this);
-            // }
-            if (d.comparison === "like" || d.comparison === "notLike") {
-                if (value.substr(0, 1) !== "%") value = "%" + value;
-                if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
-                this.parameter[parameterName] = value; //"%"+value+"%";
-            } else {
-                if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
-                    if (d.formatType === "numberValue"){
-                        value = parseFloat(value);
-                    }
-                }else{
-                    if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
-                        value = "{ts '" + value + "'}"
-                    } else if (d.formatType === "dateValue") {
-                        value = "{d '" + value + "'}"
-                    } else if (d.formatType === "timeValue") {
-                        value = "{t '" + value + "'}"
-                    } else if (d.formatType === "numberValue"){
-                        value = parseFloat(value);
-                    }
-                }
-                this.parameter[parameterName] = value;
-            }
+            this.parameter[parameterName] = this._parseFilterValue(d);
+
             d.value = parameterName;
 
             if( !d.logic )d.logic = "and";
@@ -250,7 +227,32 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             this.filterList.push(d);
         }.bind(this))
     },
-    loadParameter: function () {
+    _parseFilterValue: function (d, ignoreLike) {
+        var value = d.value;
+        if (!ignoreLike && (d.comparison === "like" || d.comparison === "notLike")) {
+            if (value.substr(0, 1) !== "%") value = "%" + value;
+            if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
+            return value; //"%"+value+"%";
+        } else {
+            if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
+                if (d.formatType === "numberValue"){
+                    value = parseFloat(value);
+                }
+            }else{
+                if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                    value = "{ts '" + value + "'}";
+                } else if (d.formatType === "dateValue") {
+                    value = "{d '" + value + "'}";
+                } else if (d.formatType === "timeValue") {
+                    value = "{t '" + value + "'}";
+                } else if (d.formatType === "numberValue"){
+                    value = parseFloat(value);
+                }
+            }
+            return value;
+        }
+    },
+    loadParameter: function (data) {
         this.parameter = {};
         var parameter = this.json.parameter ? Object.clone(this.json.parameter) : {};
         //系统默认的参数
@@ -278,11 +280,20 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                     if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
                         value = value.format("db");
                     }else{
-                        value = "{ts '" + value.format("db") + "'}"
+                        value = "{ts '" + value.format("db") + "'}";
                     }
                 }
             }
             this.parameter[p] = value;
+        }
+        //用户输入的自定义参数
+        if(data.filterList && data.filterList.length){
+            const parameterList = data.filterList.filter( function(d){ return d.filterType === "parameter"; });
+            if(parameterList && parameterList.length){
+                parameterList.forEach( (d)=>{
+                    this.parameter[d.parameter] = this._parseFilterValue(d, true);
+                });
+            }
         }
     },
     parseParameterValue: function( f, value ){
@@ -536,6 +547,50 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         }
         return (filterData.length) ? filterData : null;
     },
+
+    //v10的搜索
+    _filterData: function(data, value, comparison, logic='and'){
+        const filterData = value ? {
+            "filterType": data.filterType,
+            "parameter": data.parameter,
+            "logic": logic,
+            "path": data.path,
+            "title": data.title,
+            "comparison": comparison,
+            "comparisonTitle": '',
+            "value": value,
+            "formatType": (data.formatType=="datetimeValue") ? "dateTimeValue": data.formatType
+        } : null;
+        if (filterData) this.customFilterListData.push(filterData);
+    },
+    createSearchDatetimeNode: function(filter, mode){
+        const div = new Element("div.search-item");
+
+        if (!o2.isMediaMobile()){
+            const title = new Element("div.search-item-title");
+            title.textContent = filter.title;
+            div.append(title);
+        }
+
+        const isParameter = filter.filterType !== 'parameter';
+
+        const dateTimeInputL = new Element("oo-datetime");
+        dateTimeInputL.setAttribute('placeholder', filter.title+ (isParameter ? '' : this.lp.begin));
+        mode && dateTimeInputL.setAttribute('mode', mode);
+        div.append(dateTimeInputL);
+
+        if( !isParameter ){
+            const toNode = new Element("div.search-item-flag");
+            toNode.textContent = '-';
+
+            const dateTimeInputU = new Element("oo-datetime");
+            dateTimeInputU.setAttribute('placeholder', filter.title+this.lp.end);
+            mode && dateTimeInputU.setAttribute('mode', mode);
+            div.append(toNode, dateTimeInputU);
+        }
+        return div;
+    },
+
     viewSearchCustomAddToFilter: function () {
         var pathIdx = this.viewSearchCustomPathListNode.selectedIndex;
         var comparisonIdx = this.viewSearchCustomComparisonListNode.selectedIndex;

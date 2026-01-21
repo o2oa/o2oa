@@ -116,6 +116,10 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "disAllowed": "不允许",
         "executePerson": "执行人",
         "executeUnit": "执行组织",
+        "filterType": "过滤类型",
+        "asFilter": "通过路径过滤(filter)",
+        "asParameter": "通过参数过滤(parameter)",
+        "filterTypeNote": "参数过滤仅在视图样式为‘v10’的时候中有效",
 
         "hidden": "隐藏",
         "orderNumber":"排序号",
