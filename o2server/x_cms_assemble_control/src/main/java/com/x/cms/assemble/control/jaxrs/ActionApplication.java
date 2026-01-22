@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.jaxrs;
 
+import com.x.cms.assemble.control.jaxrs.appdict.AppDictAnonymousAction;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -77,6 +78,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(InputAction.class);
 		this.classes.add(OutputAction.class);
 
+		this.classes.add(AppDictAnonymousAction.class);
 		this.classes.add(DocumentAnonymousAction.class);
 		this.classes.add(FileInfoAnonymousAction.class);
 		this.classes.add(FormAnonymousAction.class);
