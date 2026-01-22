@@ -1,24 +1,22 @@
 package com.x.query.core.express.statement;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.update.Update;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
-
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.insert.Insert;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.update.Update;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 public class ExecuteTarget {
 
@@ -27,9 +25,9 @@ public class ExecuteTarget {
     public static final Pattern QUESTMARK_PARAMETER_REGEX = Pattern.compile("(\\?\\d+)");
     public static final Pattern NAMED_PARAMETER_REGEX = Pattern.compile("(:(\\w+))");
 
-    private String sql;
-    private Map<String, Object> questionMarkParam = new LinkedHashMap<>();
-    private Map<String, Object> namedParam = new LinkedHashMap<>();
+    private final String sql;
+    private final Map<String, Object> questionMarkParam = new LinkedHashMap<>();
+    private final Map<String, Object> namedParam = new LinkedHashMap<>();
     private net.sf.jsqlparser.statement.Statement parsedStatement;
 
     public String getSql() {
@@ -58,13 +56,13 @@ public class ExecuteTarget {
         try {
             this.parsedStatement = CCJSqlParserUtil.parse(this.sql);
         } catch (JSQLParserException e) {
-            if(sql.toLowerCase().indexOf(Select.class.getSimpleName().toLowerCase()) > -1) {
+            if(sql.toLowerCase().contains(Select.class.getSimpleName().toLowerCase())) {
                 this.parsedStatement = new Select();
-            }else if(sql.toLowerCase().indexOf(Update.class.getSimpleName().toLowerCase()) > -1) {
+            }else if(sql.toLowerCase().contains(Update.class.getSimpleName().toLowerCase())) {
                 this.parsedStatement = new Update();
-            }else if(sql.toLowerCase().indexOf(Delete.class.getSimpleName().toLowerCase()) > -1) {
+            }else if(sql.toLowerCase().contains(Delete.class.getSimpleName().toLowerCase())) {
                 this.parsedStatement = new Delete();
-            }else if(sql.toLowerCase().indexOf(Insert.class.getSimpleName().toLowerCase()) > -1) {
+            }else if(sql.toLowerCase().contains(Insert.class.getSimpleName().toLowerCase())) {
                 this.parsedStatement = new Insert();
             }
         }
@@ -127,22 +125,22 @@ public class ExecuteTarget {
     private Object getParameterFromBuiltInParameterThenRuntime(EffectivePerson effectivePerson,
             Organization organization, String name,
             Runtime runtime) throws Exception {
-        if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_PERSON)) {
+        if (Strings.CI.equals(name, Runtime.PARAMETER_PERSON)) {
             return effectivePerson.getDistinguishedName();
         }
-        if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_IDENTITYLIST)) {
+        if (Strings.CI.equals(name, Runtime.PARAMETER_IDENTITYLIST)) {
             return organization.identity().listWithPerson(effectivePerson);
         }
-        if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_UNITLIST)) {
+        if (Strings.CI.equals(name, Runtime.PARAMETER_UNITLIST)) {
             return organization.unit().listWithPerson(effectivePerson);
         }
-        if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_UNITALLLIST)) {
+        if (Strings.CI.equals(name, Runtime.PARAMETER_UNITALLLIST)) {
             return organization.unit().listWithPersonSupNested(effectivePerson);
         }
-        if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_GROUPLIST)) {
+        if (Strings.CI.equals(name, Runtime.PARAMETER_GROUPLIST)) {
             return organization.group().listWithPerson(effectivePerson);
         }
-        if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_ROLELIST)) {
+        if (Strings.CI.equals(name, Runtime.PARAMETER_ROLELIST)) {
             return organization.role().listWithPerson(effectivePerson);
         }
         if (runtime.hasParameter(name)) {
@@ -153,9 +151,10 @@ public class ExecuteTarget {
 
     private String usableQuestionMark(Map<String, Object> map) {
         int p = 1;
-        while (map.keySet().contains("?" + p)) {
+        while (map.containsKey("?" + p)) {
             p++;
         }
         return "?" + p;
     }
+
 }
