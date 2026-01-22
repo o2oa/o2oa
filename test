@@ -51,11 +51,6 @@ pipeline {
                         sh 'npm run preperation'
                     }
                 }
-                stage('Dump Application Data') {
-                    steps {
-                        sh 'npm run dump_application_data'
-                    }
-                }
                 stage('build server') {
                     steps {
                         sh 'id'
