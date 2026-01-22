@@ -1065,7 +1065,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			_self.fireEvent("change", [{"lines":lines, "type":"deletelines"}]);
 
-			if(saveFlag)this.form.saveFormData();
+			if(saveFlag)this.saveFormData();
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
@@ -1109,7 +1109,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
 
-			if(saveFlag)this.form.saveFormData();
+			if(saveFlag)this.saveFormData();
 		},
 		_checkSelectAll: function () {
 			var selectData = this.selectAllSelector.getData();
@@ -1890,6 +1890,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					}
 				}, null, false
 			);
+		},
+		saveFormData: function(){
+			var appName = this.form.app.options.name;
+			if( ['process.Work', 'cms.Document'].includes(appName) ){
+				this.form.saveFormData();
+			}
 		}
 	});
 
@@ -2305,7 +2311,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 					if( json.type==="Attachment" || json.type==="AttachmentDg" ){
 						module.addEvent("change", function(){
-							_self.form.saveFormData();
+							_self.template.saveFormData();
 						}.bind(this))
 					}else if( json.type==="Datatemplate" ){
 						this.subDatatemplateModuleList.push(module);
