@@ -3,9 +3,11 @@ package com.x.processplatform.service.processing.processor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
@@ -13,6 +15,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.reflect.TypeToken;
+import com.oracle.truffle.js.runtime.Strings;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -26,6 +29,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -632,7 +636,6 @@ public class AeiObjects extends GsonPropertyObject {
 	}
 
 	public void commit() throws Exception {
-		this.modify();
 		try {
 			this.executeProjection();
 			this.executeMapping();
@@ -647,6 +650,7 @@ public class AeiObjects extends GsonPropertyObject {
 		this.commitRead();
 		this.commitReadCompleted();
 		/* review必须在task,taskCompleted,read,readCompleted之后提交,需要创建新的review */
+		this.modify();
 		this.commitReview();
 		this.commitDocumentVersion();
 		this.commitDocSign();
@@ -713,14 +717,33 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void modifyReview() {
-		for (Review o : this.getCreateReviews()) {
-			o.setCurrentActivityName(this.getWork().getActivityName());
+	private void modifyReview() throws Exception {
+		Set<Work> all = new LinkedHashSet<>();
+		all.addAll(this.getCreateWorks());
+		all.addAll(this.getUpdateWorks());
+		all.addAll(this.getWorks());
+		all.removeAll(this.getDeleteWorks());
+
+		String currentActivityNames = all.stream().map(Work::getActivityName).collect(Collectors.joining(","));
+
+		if (StringTools.utf8Length(currentActivityNames) > JpaObject.length_255B) {
+			currentActivityNames = StringTools.utf8SubString(currentActivityNames, JpaObject.length_255B - 5) + "...";
+		}
+
+		for (Review o : this.getReviews()) {
+			o.setCurrentActivityName(currentActivityNames);
 			o.setTitle(this.getWork().getTitle());
 			o.setSerial(this.getWork().getSerial());
 		}
+
+		for (Review o : this.getCreateReviews()) {
+			o.setCurrentActivityName(currentActivityNames);
+			o.setTitle(this.getWork().getTitle());
+			o.setSerial(this.getWork().getSerial());
+		}
+
 		for (Review o : this.getUpdateReviews()) {
-			o.setCurrentActivityName(this.getWork().getActivityName());
+			o.setCurrentActivityName(currentActivityNames);
 			o.setTitle(this.getWork().getTitle());
 			o.setSerial(this.getWork().getSerial());
 		}
