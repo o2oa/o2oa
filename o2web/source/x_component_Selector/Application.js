@@ -47,7 +47,7 @@ MWF.xApplication.Selector.Application = new Class({
         return false;
     },
     _getItem: function(callback, failure, id, async){
-        this.processAction.getApplications(function(json){
+        this.processAction.getApplication(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.id), async);
     },
