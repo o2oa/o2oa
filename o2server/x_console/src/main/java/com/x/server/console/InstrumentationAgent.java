@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.jar.JarFile;
@@ -22,24 +23,17 @@ public class InstrumentationAgent {
 	private static final String CFG = "manifest.cfg";
 	private static final String GIT = ".gitignore";
 	private static final String CUSTOM_JARS = "custom/jars";
-	// private static final String DYNAMIC_JARS = "dynamic/jars";
+	private static final String CONFIG_INIT_DIR = "configInit";
+	private static final String CONFIG_DIR = "config";
 	private static final String STORE_JARS = "store/jars";
 	private static final String STORE_JARS_BASE_CORE_PROJECT = STORE_JARS + "/" + "x_base_core_project.jar";
 	private static final String COMMONS_EXT = "commons/ext";
 
 	public static String JAVAVERSION = "java8";
 
-	public static String OS = "windows";
-
 	public static final String JAVAVERSION_JAVA8 = "java8";
 	public static final String JAVAVERSION_JAVA11 = "java11";
 
-	public static final String OS_WINDOWS = "windows";
-	public static final String OS_LINUX = "linux";
-	public static final String OS_MACOS = "macos";
-	public static final String OS_RASPI = "raspi";
-	public static final String OS_ARM = "arm";
-	public static final String OS_MIPS = "mips";
 
 	public static final String INSTRUMENTATIONTYPESHADOW = "shadow";
 
@@ -53,19 +47,34 @@ public class InstrumentationAgent {
 		INST = inst;
 		try {
 			Path base = getBasePath();
+			copyInitConfig(base);
 			if (Files.exists(base.resolve(CUSTOM_JARS))) {
 				load(base, CUSTOM_JARS);
 			}
-//			if (Files.exists(base.resolve(DYNAMIC_JARS))) {
-//				load(base, DYNAMIC_JARS);
-//			}
 			setLog4j2(base, args);
 			checkStoreJarWithCfg(base);
 			loadBaseCoreProject(base);
-			// loadWithCfg(base, STORE_JARS);
 			loadWithCfg(base, ext());
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static void copyInitConfig(Path base) throws IOException {
+		final Path config = base.resolve(CONFIG_DIR);
+		final Path configInit = base.resolve(CONFIG_INIT_DIR);
+		if(!Files.exists(config) && Files.exists(configInit)){
+			Files.createDirectory(config);
+			try (Stream<Path> stream = Files.list(configInit)) {
+				stream.filter(Files::isRegularFile).forEach(o -> {
+					try {
+						Path filePath = config.resolve(o.getFileName());
+						Files.copy(o, filePath, StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
+			}
 		}
 	}
 
