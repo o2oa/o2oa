@@ -15,7 +15,7 @@ public class AiConfig extends GsonPropertyObject {
 
     private static final long serialVersionUID = -6774808981486330113L;
 
-    public static final String DEFAULT_O2_AI_URL = "http://127.0.0.1:7080/x-app/api";
+    public static final String DEFAULT_O2_AI_URL = "http://127.0.0.1:7080/app/api";
 
     public static final String appName_FIELD = "appName";
     @FieldDescribe("应用名称.")
