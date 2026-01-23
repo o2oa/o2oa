@@ -178,14 +178,14 @@ public class ProcessPlatformPlan extends Plan {
 			long start = System.currentTimeMillis();
 			List<String> docIdList = em.createQuery(cq).setFirstResult(startPosition).setMaxResults(this.runtime.count)
 					.getResultList();
-			LOGGER.info("listBundlePaging cost:{}", System.currentTimeMillis() - start);
+			LOGGER.debug("listBundlePaging cost:{}", System.currentTimeMillis() - start);
 
 			CriteriaQuery<Long> cq2 = cb.createQuery(Long.class);
 			Root<Review> root2 = cq2.from(Review.class);
 			cq2.select(cb.count(root2.get(Review_.id))).where(this.reviewPredicate(emc, cb, root2, cq2));
 			start = System.currentTimeMillis();
 			Long count = em.createQuery(cq2).getSingleResult();
-			LOGGER.info("listBundlePaging count cost:{}", System.currentTimeMillis() - start);
+			LOGGER.debug("listBundlePaging count cost:{}", System.currentTimeMillis() - start);
 			return Pair.of(docIdList, count);
 		}
 	}
@@ -271,7 +271,7 @@ public class ProcessPlatformPlan extends Plan {
 	/**
 	 * 过滤字段权限列表，返回有权限的活动列表 一个流程中存在一个字段不可查，则限制这个流程查询
 	 * 一个流程中多个限制字段的活动列表取交集，取交集后值为空则限制这个字段查询 多个流程之间字段权限互不干扰
-	 * 
+	 *
 	 * @param emc
 	 * @param root
 	 * @param pathList

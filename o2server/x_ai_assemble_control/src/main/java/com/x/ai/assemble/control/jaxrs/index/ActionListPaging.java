@@ -42,7 +42,7 @@ class ActionListPaging extends BaseAction {
         }
         page = this.adjustPage(page);
         size = this.adjustSize(size);
-        String url = aiConfig.getO2AiBaseUrl() + "/index-gateway-doc/list/paging/" + page + "/size/" + size;
+        String url = aiConfig.getO2AiBaseUrl() + "/idx-gateway-doc/list/paging/" + page + "/size/" + size;
         List<NameValuePair> heads = List.of(
                 new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
         ActionResponse resp = ConnectionAction.post(url, heads, wi);
