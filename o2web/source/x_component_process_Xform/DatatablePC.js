@@ -1753,7 +1753,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.form.workAction.deleteAttachment(attId, this.form.businessData.work.id);
 		},
 		saveFormData: function(){
-			this.form.saveFormData();
+			var appName = this.form.app.options.name;
+			if( ['process.Work', 'cms.Document'].includes(appName) ){
+				this.form.saveFormData();
+			}
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
 			//return;
