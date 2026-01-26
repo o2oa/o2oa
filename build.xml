@@ -253,7 +253,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
@@ -264,6 +264,14 @@
 				<include name="start_windows_debug.bat"/>
 				<include name="console_windows.bat"/>
 				<include name="stop_windows.bat"/>
+				<include name="servers/aiagent/commons"/>
+				<include name="servers/aiagent/jvm/windows-x64"/>
+				<include name="servers/aiagent/lib"/>
+				<include name="servers/aiagent/resources"/>
+				<include name="servers/aiagent/webapps"/>
+				<include name="servers/aiagent/boot.jar"/>
+				<include name="servers/aiagent/start-windows-x64.bat"/>
+				<include name="servers/aiagent/version.o2"/>
 			</zipfileset>
 		</zip>
 	</target>
@@ -275,7 +283,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
@@ -287,6 +295,15 @@
 				<include name="console_linux.sh"/>
 				<include name="stop_linux.sh"/>
 				<include name="service_linux.sh"/>
+				<include name="servers/aiagent/commons"/>
+				<include name="servers/aiagent/jvm/linux-x64"/>
+				<include name="servers/aiagent/lib"/>
+				<include name="servers/aiagent/resources"/>
+				<include name="servers/aiagent/webapps"/>
+				<include name="servers/aiagent/boot.jar"/>
+				<include name="servers/aiagent/start-linux-x64.sh"/>
+				<include name="servers/aiagent/stop-linux-x64.sh"/>
+				<include name="servers/aiagent/version.o2"/>
 			</zipfileset>
 		</zip>
 	</target>
@@ -298,7 +315,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
@@ -319,7 +336,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
@@ -340,7 +357,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
@@ -361,7 +378,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
@@ -382,7 +399,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
@@ -403,7 +420,7 @@
 				<include name="config/"/>
 				<include name="configSample/"/>
 				<include name="localSample/"/>
-				<include name="servers/"/>
+				<include name="servers/webserver"/>
 				<include name="store/"/>
 				<include name="console.jar"/>
 				<include name="index.html"/>
