@@ -1,5 +1,7 @@
 package com.x.query.assemble.designer.jaxrs.query;
 
+import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.schema.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +33,15 @@ class ActionListAll extends BaseAction {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = this.list(business, effectivePerson);
-			List<String> ids = ListTools.extractProperty(wos, Query.id_FIELDNAME, String.class, true, true);
+			List<String> ids = ListTools.extractProperty(wos, JpaObject.id_FIELDNAME, String.class, true, true);
 			List<WoView> woViews = emc.fetchIn(View.class, WoView.copier, View.query_FIELDNAME, ids);
-			List<WoStat> woStats = emc.fetchIn(Stat.class, WoStat.copier, View.query_FIELDNAME, ids);
-			ListTools.groupStick(wos, woViews, Query.id_FIELDNAME, View.query_FIELDNAME, "viewList");
-			ListTools.groupStick(wos, woStats, Query.id_FIELDNAME, Stat.query_FIELDNAME, "statList");
+			List<WoStat> woStats = emc.fetchIn(Stat.class, WoStat.copier, Stat.query_FIELDNAME, ids);
+			List<WoTable> woTables = emc.fetchIn(Table.class, WoTable.copier, Table.QUERY_FIELDNAME, ids);
+			List<WoStatement> woStatements = emc.fetchIn(Statement.class, WoStatement.copier, Statement.QUERY_FIELDNAME, ids);
+			ListTools.groupStick(wos, woViews, JpaObject.id_FIELDNAME, View.query_FIELDNAME, "viewList");
+			ListTools.groupStick(wos, woStats, JpaObject.id_FIELDNAME, Stat.query_FIELDNAME, "statList");
+			ListTools.groupStick(wos, woTables, JpaObject.id_FIELDNAME, Table.QUERY_FIELDNAME, "tableList");
+			ListTools.groupStick(wos, woStatements, JpaObject.id_FIELDNAME, Statement.QUERY_FIELDNAME, "statementList");
 			wos = business.query().sort(wos);
 			result.setData(wos);
 			return result;
@@ -67,6 +73,8 @@ class ActionListAll extends BaseAction {
 		private List<WoView> viewList = new ArrayList<>();
 
 		private List<WoStat> statList = new ArrayList<>();
+		private List<WoTable> tableList = new ArrayList<>();
+		private List<WoStatement> statementList = new ArrayList<>();
 
 		public List<WoView> getViewList() {
 			return viewList;
@@ -84,6 +92,23 @@ class ActionListAll extends BaseAction {
 			this.statList = statList;
 		}
 
+		public List<WoStatement> getStatementList() {
+			return statementList;
+		}
+
+		public void setStatementList(
+				List<WoStatement> statementList) {
+			this.statementList = statementList;
+		}
+
+		public List<WoTable> getTableList() {
+			return tableList;
+		}
+
+		public void setTableList(
+				List<WoTable> tableList) {
+			this.tableList = tableList;
+		}
 	}
 
 	public static class WoView extends View {
@@ -91,7 +116,7 @@ class ActionListAll extends BaseAction {
 		private static final long serialVersionUID = 1439909268641168987L;
 
 		static WrapCopier<View, WoView> copier = WrapCopierFactory.wo(View.class, WoView.class, ListTools
-				.toList(View.id_FIELDNAME, View.name_FIELDNAME, View.query_FIELDNAME, View.updateTime_FIELDNAME), null);
+				.toList(JpaObject.id_FIELDNAME, View.name_FIELDNAME, View.query_FIELDNAME, JpaObject.updateTime_FIELDNAME), null);
 
 	}
 
@@ -100,6 +125,26 @@ class ActionListAll extends BaseAction {
 		private static final long serialVersionUID = 1513668573527819003L;
 
 		static WrapCopier<Stat, WoStat> copier = WrapCopierFactory.wo(Stat.class, WoStat.class, ListTools
-				.toList(Stat.id_FIELDNAME, Stat.name_FIELDNAME, Stat.query_FIELDNAME, Stat.updateTime_FIELDNAME), null);
+				.toList(JpaObject.id_FIELDNAME, Stat.name_FIELDNAME, Stat.query_FIELDNAME, JpaObject.updateTime_FIELDNAME), null);
+	}
+
+	public static class WoTable extends Table {
+
+		private static final long serialVersionUID = -5755898083219447939L;
+
+		static WrapCopier<Table, WoTable> copier = WrapCopierFactory.wo(Table.class, WoTable.class,
+				ListTools
+						.toList(JpaObject.id_FIELDNAME, Table.NAME_FIELDNAME, Table.QUERY_FIELDNAME, JpaObject.updateTime_FIELDNAME),
+				null);
+	}
+
+	public static class WoStatement extends Statement {
+
+		private static final long serialVersionUID = -5755898083219447939L;
+
+		static WrapCopier<Statement, WoStatement> copier = WrapCopierFactory.wo(Statement.class, WoStatement.class,
+				ListTools
+						.toList(JpaObject.id_FIELDNAME, Statement.NAME_FIELDNAME, Statement.QUERY_FIELDNAME, JpaObject.updateTime_FIELDNAME),
+				null);
 	}
 }
