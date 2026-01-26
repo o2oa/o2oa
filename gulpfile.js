@@ -119,7 +119,7 @@ function ProgressBar(description, bar_length){
     };
 }
 
-function downloadFile_progress(path, filename, headcb, progresscb, cb){
+function downloadFile_progress(path, filename, headcb, progresscb, cb, url){
     var dest = `o2server/${filename}`;
 
     let stream = fs.createWriteStream(dest);
@@ -156,16 +156,54 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
             });
             request.get(options).pipe(str).pipe(stream);
         } else {
-            downloadFile(path, filename, headcb, progresscb, cb)
+            // downloadFile(path, filename, headcb, progresscb, cb);
+            downloadFile(path, filename, headcb, progresscb, cb, url);
         }
     })
     req.on('error', (e) => {
-        downloadFile(path, filename, headcb, progresscb, cb)
+        // downloadFile(path, filename, headcb, progresscb, cb);
+        downloadFile(path, filename, headcb, progresscb, cb, url);
     });
     req.end();
     //    }
     //});
 }
+
+function dump_product_data(cb){
+    const url = 'https://product.o2oa.net/x_package_assemble_control/jaxrs/pack/dump/data/sec/o2oa-pro-2025';
+    var downloader = new Promise((resolve, reject) => {
+        downloadFile_progress("", "initData.zip", (length)=>{
+            commonsLength = +length;
+            initProgress();
+        }, (progress)=>{
+            commonsCurrentLength = progress.transferred;
+            currentLength = +commonsCurrentLength+jvmCurrentLength;
+        }, ()=>{
+            resolve();
+        }, url);
+    });
+    downloader.then(()=>{
+        gutil.log(gutil.colors.green("dump Product Data completed"));
+        cb();
+    });
+}
+
+function move_product_data(){
+    console.log(`---------------------------------------------------------------------
+  . move product data to o2server/localSample ...
+---------------------------------------------------------------------`);
+    return gulp.src("o2server/initData.zip")
+        .pipe(gulp.dest("o2server/localSample/"));
+}
+
+async function clear_product_data(cb) {
+    var dest = ['o2server/initData.zip'];
+    await del(dest, {force: true});
+    cb();
+}
+
+exports.dump_application_data = gulp.series(dump_product_data, move_product_data, clear_product_data);
+
 
 function create_license(cb){
     const url = "http://collect.o2oa.net:20080/o2_collect_assemble/jaxrs/customer/create";
@@ -181,8 +219,6 @@ function create_license(cb){
         contactName: o_options.cname,
         version: o_options.ver
     };
-
-    console.log("Creating license with data:", data);
 
     request.post({ url: url, json: data, timeout: 30000 }, function(err, res, respBody){
         if (err) {
@@ -210,7 +246,8 @@ function create_license(cb){
 }
 exports.create_license = create_license;
 
-function downloadFile(path, filename, headcb, progresscb, cb){
+// function downloadFile(path, filename, headcb, progresscb, cb){
+function downloadFile(path, filename, headcb, progresscb, cb, url){
     var dest = `o2server/${filename}`;
 
     const spinner = ora({
@@ -222,7 +259,8 @@ function downloadFile(path, filename, headcb, progresscb, cb){
     }).start();
 
     let stream = fs.createWriteStream(dest);
-    var options = { url:protocol+"://"+downloadHost+path };
+    // var options = { url:protocol+"://"+downloadHost+path };
+    var options = url ? {url} : { url:protocol+"://"+downloadHost+path };
     var fileHost = downloadHost;
     var filePath =  path;
     stream.on('finish', () => {
