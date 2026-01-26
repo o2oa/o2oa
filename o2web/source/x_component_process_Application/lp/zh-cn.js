@@ -102,6 +102,14 @@ MWF.xApplication.process.Application.LP = {
 	"editAction" : "维护",
 	"unnamed" : "无标题",
 
+	"processStarted": "文件已启动",
+	"taskProcessed": "文件已提交",
+	"taskProcessedMessage": "您处理了一个待办任务：",
+	"nextActivity": "下一个活动：",
+	"nextUser": "处理人：",
+	"processStartedMessage": "您启动了一个新的工作：",
+	"deal": "处理",
+
 	"fieldName" : "字段名",
 	"op" : "操作",
 	"dataRecordView" : {
