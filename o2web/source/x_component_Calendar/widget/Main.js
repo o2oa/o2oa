@@ -9,8 +9,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		"name": "process.workcenter",
 		"mvcStyle": "style.css",
 		"icon": "icon.png",
-		"title": MWF.xApplication.process.workcenter.LP.title,
-		"startProcess": false
+		"title": MWF.xApplication.process.workcenter.LP.title
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.workcenter.LP;
@@ -22,12 +21,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			this.setLayout();
 			this.loadCount();
 			var list = (this.status) ? (this.status.navi || "task") : "task";
-			this.loadList(list, null, function(){
-				if (callback) callback();
-				if( this.options.startProcess || this.status?.startProcess ){
-					this.startProcess();
-				}
-			}.bind(this));
+			this.loadList(list, null, callback);
 			// if (callback) callback();
 		}.bind(this));
 	},
@@ -63,26 +57,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			};
 			MWF.defineProperties(this.countData, o);
 		}
-	},
-	selectAll: function(e) {
-
-		var iconNode = e.currentTarget.getElement(".selectFlagIcon");
-		var isSelected = iconNode.hasClass("mainColor_color");
-		if (isSelected) {
-			iconNode.removeClass("o2icon-xuanzhong selectFlagIcon_select mainColor_color");
-		} else {
-			iconNode.addClass("o2icon-xuanzhong selectFlagIcon_select mainColor_color");
-		}
-		var flag = !isSelected;
-		this.currentList.node.getElements(".selectFlagArea").each(function(item) {
-			var itemIconNode = item.getElement(".selectFlagIcon");
-			if (flag && !itemIconNode.hasClass("mainColor_color")) {
-				item.click();
-			}
-			else if (!flag && itemIconNode.hasClass("mainColor_color")) {
-				item.click();
-			}
-		});
 	},
 	loadCount: function(){
 		this.createCountData();
@@ -120,9 +94,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.showSkeleton();
 		this._loadListContent(type, callback);
 		this.loadCount();
-		this.hideMobileMenu();
-
-		if (o2.isMediaMobile()) this.menuTitleTextNode.textContent = this.lp[type];
+		//if (this.currentList) this.currentList.loadPage();
 	},
 	showSkeleton: function(){
 		if (this.skeletonNode) this.skeletonNode.inject(this.listContentNode);
@@ -139,11 +111,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		list.init();
 		list.load(callback);
 		this.currentList = list;
-		if(type === "read"){
-			this.selectAllNode.show();
-		}else {
-			this.selectAllNode.hide();
-		}
 	},
 	setMenuItemStyleDefault: function(node){
 		node.removeClass("mainColor_bg_opacity");
@@ -203,6 +170,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		}
 	},
 	showFilter: function(e){
+		//console.log(this.filterDlg);
 		if (this.filterDlg) return;
 		var node = e.target;
 		var p = node.getPosition(this.content);
@@ -211,7 +179,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var x = p.x-600+size.x;
 		var fx = p.x+size.x;
 
-		var filterContent = new Element("div.ft_filterContent");
+		var filterContent = new Element("div");
 		var url = this.path+this.options.style+"/view/dlg/filter.html";
 		this.getFilterData().then(function(data){
 			if (data.completedList) {
@@ -228,8 +196,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var closeFilterDlg = function(){
 			_self.filterDlg.close();
 		}
-
-		var isMobile = o2.isMediaMobile();
 		this.filterDlg = o2.DL.open({
 			"container": this.content,
 			"mask": false,
@@ -244,8 +210,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			"left": x,
 			"fromTop": y,
 			"fromLeft": fx,
-			"width": isMobile ? '100%' : 600,
-			"height": isMobile ? '100%' : 550,
+			"width": 600,
+			"height": 550,
 			"duration": 100,
 			// "onQueryClose": function(){
 			// 	document.body.removeEvent("mousedown", closeFilterDlg);
@@ -339,25 +305,21 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.appNode.show();
 	},
 	startProcess: function(){
-		if (o2.isMediaMobile()){
-			layout.startProcess();
-			return;
-		}
 		var startContent = new Element("div.st_area");
 		var url = this.path+this.options.style+"/view/dlg/start.html";
 		this.getStartData().then(function(data){
 
 			var map = {}, mapById = {};
 			data[0].each(function (d) {
-				if (d.processList && d.processList.length){
-					var type = d.applicationCategory || "未分类";
-					if( !map[type] )map[type] = [];
-					map[type].push(d);
+                if (d.processList && d.processList.length){
+                    var type = d.applicationCategory || "未分类";
+                    if( !map[type] )map[type] = [];
+                    map[type].push(d);
 
 					d.processList.each(function (process) {
 						mapById[ process.id ] = process;
 					});
-				}
+                }
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
@@ -661,7 +623,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
-				if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
+                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
@@ -696,7 +658,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		if(!layout.inBrowser){
 			options.onPostClose = function(){
 				try{
-					if (this.currentList.refresh) this.currentList.refresh();
+				if (this.currentList.refresh) this.currentList.refresh();
 				}catch (e) {
 
 				}
@@ -717,7 +679,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			if(!layout.inBrowser){
 				options.onPostClose = function(){
 					try{
-						if (this.currentList.refresh) this.currentList.refresh();
+					if (this.currentList.refresh) this.currentList.refresh();
 					}catch (e) {
 
 					}
@@ -773,7 +735,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			if(!layout.inBrowser){
 				options.onPostClose = function(){
 					try{
-						if (_self.currentList.refresh) _self.currentList.refresh();
+					if (_self.currentList.refresh) _self.currentList.refresh();
 					}catch (e) {
 
 					}
@@ -785,28 +747,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	recordStatus: function(){
 		return {"navi": this.currentList.options.type};
 	},
-
-	checkMobileMenuTransition: function(cb){
-		if (!this.menuItemAreaNode.hasClass("transition")){
-			this.menuItemAreaNode.addClass("transition");
-			window.setTimeout(cb,10);
-		}else{
-			cb?.();
-		}
-	},
-	showMobileMenu: function(){
-		this.checkMobileMenuTransition(()=>{
-			if (this.menuItemAreaNode.hasClass("show")){
-				this.menuItemAreaNode.removeClass("show");
-				return;
-			}
-			this.menuItemAreaNode.addClass("show");
-		});
-	},
-	hideMobileMenu: function(){
-		this.menuItemAreaNode.removeClass("show");
-	}
-
 });
 
 MWF.xApplication.process.workcenter.List = new Class({
@@ -829,14 +769,12 @@ MWF.xApplication.process.workcenter.List = new Class({
 		//this.load();
 	},
 	init: function(){
+		this.listHeight = this.content.getSize().y;
+		this.size = (this.listHeight/this.options.itemHeight).toInt()
 		this.page = 1;
 		this.totalCount = this.app.countData.task;
 		this.filterList = {};
 		this.filterNameList = {};
-	},
-	initSize: function(){
-		this.listHeight = this.content.getSize().y;
-		this.size = (this.listHeight/this.options.itemHeight).toInt()
 	},
 	startProcess: function(){
 		this.app.startProcess();
@@ -844,21 +782,18 @@ MWF.xApplication.process.workcenter.List = new Class({
 	setLayout: function(){
 
 	},
-	load: function(callback, notHide){
-		window.setTimeout(()=>{
-			this.initSize();
-			this.total = null;
-			var _self = this;
-			this.loadFilterFlag();
-			this.app.filterActionNode.show();
-			this.selectedTaskList = [];
-			this.loadData().then(function(data){
-				if (!notHide) _self.hide();
-				_self.loadPage();
-				_self.loadItems(data);
-				if(callback)callback();
-			});
-		}, 10);
+	load: function(callback){
+		this.total = null;
+		var _self = this;
+		this.loadFilterFlag();
+		this.app.filterActionNode.show();
+		this.selectedTaskList = [];
+		this.loadData().then(function(data){
+			_self.hide();
+			_self.loadPage();
+			_self.loadItems(data);
+			if(callback)callback();
+		});
 	},
 	refresh: function(){
 		this.hide();
@@ -905,10 +840,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 		}
 	},
 	hide: function(){
-		// if (this.node) this.node.destroy();
-		this.content?.empty();
+		if (this.node) this.node.destroy();
 	},
-
 	loadPage: function(){
 		var totalCount = this.total || this.app.countData[this.options.type];
 		var pages = totalCount/this.size;
@@ -916,9 +849,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 		if (pages !== pageCount) pageCount = pageCount+1;
 		this.pageCount = pageCount;
 
-		var isMobile = o2.isMediaMobile();
 		var size = this.bottomNode.getSize();
-		var maxPageSize = size.x*(isMobile ? 0.9 : 0.8);
+		var maxPageSize = size.x*0.8;
 		maxPageSize = maxPageSize - 80*2-24*2-10*3;
 		var maxPageCount = (maxPageSize/34).toInt();
 
@@ -944,10 +876,10 @@ MWF.xApplication.process.workcenter.List = new Class({
 			if (i==this.page) node.addClass("mainColor_bg");
 		}
 	},
-	nextPage: function(notHide){
+	nextPage: function(){
 		this.page++;
 		if (this.page>this.pageCount) this.page = this.pageCount;
-		this.gotoPage(this.page, notHide);
+		this.gotoPage(this.page);
 	},
 	prevPage: function(){
 		this.page--;
@@ -960,11 +892,11 @@ MWF.xApplication.process.workcenter.List = new Class({
 	lastPage: function(){
 		this.gotoPage(this.pageCount);
 	},
-	gotoPage: function(page, notHide){
+	gotoPage: function(page){
 		this.page = page;
-		if (!notHide) this.hide();
+		this.hide();
 		this.app.showSkeleton();
-		this.load(null, notHide);
+		this.load();
 		//this.loadPage();
 	},
 
@@ -981,33 +913,8 @@ MWF.xApplication.process.workcenter.List = new Class({
 		var url = this.app.path+this.app.options.style+"/view/"+this.options.view;
 		this.content.loadHtml(url, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this}, function(){
 			this.node = this.content.getFirst();
-			if (o2.isMediaMobile()){
-				this.mobile_loadCheckFun = this.mobile_loadCheck.bind(this);
-				this.app.listContentNode.addEvent("scroll", ()=>{
-					o2.defer(this.mobile_loadCheckFun)	
-				});
-				// this.mobile_loadCheck();
-			}
-			
 		}.bind(this));
 	},
-
-	mobile_loadCheck: function(){
-		const size = this.app.listContentNode.getSize();
-		const scroll = this.app.listContentNode.getScroll();
-		const scrollSize = this.app.listContentNode.getScrollSize();
-		if (scrollSize.y - scroll.y - size.y < 40){
-			if (this.page<this.pageCount){
-				//载入下一页
-				this.mobile_loadNextPage();
-			}
-		}
-	},
-	mobile_loadNextPage: function(){
-		this.nextPage(true);
-	},
-
-
 
 	overTaskItem: function(e){
 		e.currentTarget.addClass("listItem_over");
@@ -1025,7 +932,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 			}catch (e) {
 
 			}
-		}.bind(this)
+			}.bind(this)
 		o2.api.form.openWork(data.work, "", data.title, options);
 	},
 	loadItemIcon: function(application, e){
@@ -1329,6 +1236,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 			// }
 		}
 	},
+
 	selectTask: function(e, data){
 		if (e.currentTarget.get("disabled").toString()!="true"){
 			var itemNode = e.currentTarget.getParent(".listItem");
@@ -1656,38 +1564,31 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		});
 	},
 	openWorkInfo: function(e, data){
+		// var p = e.target.getPosition(this.app.content);
+		var infoContent = new Element("div");
+		var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
 
-		if (o2.isMediaMobile()){
-			debugger;
-			o2.api.form.openJob(data.job);
-		}else{
-			// var p = e.target.getPosition(this.app.content);
-			var infoContent = new Element("div");
-			var url = this.app.path+this.app.options.style+"/view/dlg/processInfo.html";
-
-			var _self = this;
-			this.getReference(data).then(function(data){
-				//data.workLog = json.data;
-				infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
-			});
-			this.infoDlg = o2.DL.open({
-				// "top": p.y,
-				// "left": p.x,
-				"container": this.app.content,
-				"title": this.lp.processInfo,
-				"style": "user",
-				"isResize": true,
-				"content": infoContent,
-				"maskNode": this.app.content,
-				"width": 800,
-				"height": 720
-			});
-		}
-		
+		var _self = this;
+		this.getReference(data).then(function(data){
+			//data.workLog = json.data;
+			infoContent.loadHtml(url, {"bind": {"lp": _self.lp, "type": _self.options.type, "data": data}, "module": _self});
+		});
+		this.infoDlg = o2.DL.open({
+			// "top": p.y,
+			// "left": p.x,
+			"container": this.app.content,
+			"title": this.lp.processInfo,
+			"style": "user",
+			"isResize": true,
+			"content": infoContent,
+			"maskNode": this.app.content,
+			"width": 800,
+			"height": 720
+		});
 	},
 	attachShowPersonLog: function(e, data){
 		var inforNode = new Element("div.pf_workLogInfor");
-		var html = "<div>"+o2.txt(o2.name.cn(data.person))+"</div>";
+		var html = "<div>"+o2.name.cn(data.person)+"</div>";
 		if (data.completedTime){
 			html += "<div>"+this.lp.opinion+": "+o2.txt(data.opinion || data.routeName)+"</div>";
 			html += "<div>"+this.lp.time+": "+data.completedTime.substring(0,16)+"</div>";
@@ -1717,6 +1618,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		o2.api.form.openWork(data.id, "", data.title);
 	},
 	openJob: function(e, data){
+		debugger;
 		o2.api.form.openJob(data.item.job);
 	},
 	closeMoerLogPanel: function(logNode){
@@ -1847,7 +1749,7 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 		if(!layout.inBrowser){
 			options.onPostClose = function(){
 				try{
-					if (this.refresh) this.refresh();
+				if (this.refresh) this.refresh();
 				}catch (e) {
 
 				}
@@ -1876,7 +1778,7 @@ MWF.xApplication.process.workcenter.ReviewList = new Class({
 		o2.api.form.openWork(data.work, "", data.title, layout.inBrowser ? {} : {
 			"onPostClose": function(){
 				try{
-					if (this.refresh) this.refresh();
+				if (this.refresh) this.refresh();
 				}catch (e) {}
 			}.bind(this)
 		});
@@ -1920,7 +1822,7 @@ MWF.xApplication.process.workcenter.MyCreatedList = new Class({
 		o2.api.form.openWork(data.work, "", data.title, layout.inBrowser ? {} : {
 			"onPostClose": function(){
 				try {
-					if (this.refresh) this.refresh();
+				if (this.refresh) this.refresh();
 				}catch (e) {}
 			}.bind(this)
 		});
