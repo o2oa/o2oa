@@ -1661,19 +1661,19 @@ MWF.xApplication.Calendar.Config = new Class({
                 "<div>"+
                 "   <div style='"+ viewStyle +"'>" +
                 "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toMonth" ) ? "checked" : "")+" value='toMonth'>"+this.lp.month+
-                "<input type='text' name='toMonthViewName' value='" + (d.toMonthViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
+                "<input type='text' name='toMonthViewName' value='" + o2.txt(d.toMonthViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
                 "   </div>" +
                 "   <div style='"+ viewStyle +"'>" +
                 "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toWeek" ) ? "checked" : "")+" value='toWeek'>"+this.lp.week+
-                "<input type='text' name='toWeekViewName' value='" + (d.toWeekViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
+                "<input type='text' name='toWeekViewName' value='" + o2.txt(d.toWeekViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
                 "   </div>" +
                 "   <div style='"+ viewStyle +"'>" +
                 "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toDay" ) ? "checked" : "")+" value='toDay'>"+this.lp.day+
-                "<input type='text' name='toDayViewName' value='" + (d.toDayViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
+                "<input type='text' name='toDayViewName' value='" + o2.txt(d.toDayViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
                 "   </div>" +
                 "   <div style='"+ viewStyle +"'>" +
                 "<input type='checkbox' name='configAvailableView' "+( !d.disableViewList.contains( "toList" ) ? "checked" : "")+" value='toList'>"+this.lp.list+
-                "<input type='text' name='toListViewName' value='" + (d.toListViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
+                "<input type='text' name='toListViewName' value='" + o2.txt(d.toListViewName || "") + "' style='"+ inputTextStyle +"' placeholder='"+ this.lp.config.viewCustomName +"' >"+
                 "   </div>" +
 
                 "</div>" +
