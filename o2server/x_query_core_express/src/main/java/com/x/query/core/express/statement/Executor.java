@@ -1,5 +1,6 @@
 package com.x.query.core.express.statement;
 
+import com.x.base.core.entity.ApplicationBaseEntity;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -135,8 +136,7 @@ public class Executor {
                     && executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
                 em = emc.get(DynamicBaseEntity.class);
             } else {
-
-                em = emc.get(cls);
+                em = emc.get(ApplicationBaseEntity.class);
             }
             LOGGER.debug("executeDataJpql:{}, param:{}.", executeTarget::getSql, executeTarget::getQuestionMarkParam);
             Query query = em.createQuery(executeTarget.getSql());
@@ -260,13 +260,12 @@ public class Executor {
 
     private static Long executeCountJpql(Statement statement, ExecuteTarget executeTarget) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
             if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
                     && executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
                 em = emc.get(DynamicBaseEntity.class);
             } else {
-                em = emc.get(cls);
+                em = emc.get(ApplicationBaseEntity.class);
             }
             LOGGER.debug("executeCountJpql:{}, param:{}.", executeTarget::getSql, executeTarget::getQuestionMarkParam);
             Query query = em.createQuery(executeTarget.getSql());

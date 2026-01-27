@@ -70,6 +70,9 @@ class ActionCreate extends BaseAction {
 			if (null == genderType) {
 				genderType = GenderType.d;
 			}
+			if(StringUtils.isBlank(codeAnswer) || codeAnswer.length() > 6){
+				throw new ExceptionInvalidCode();
+			}
 			if (StringUtils.equals(com.x.base.core.project.config.Person.REGISTER_TYPE_CODE,
 					Config.person().getRegister())) {
 				if (BooleanUtils.isNotTrue(business.instrument().code().validate(mobile, codeAnswer))) {

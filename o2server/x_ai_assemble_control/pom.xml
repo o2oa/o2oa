@@ -41,16 +41,6 @@
 			<artifactId>x_ai_core_entity</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.aliyun</groupId>
-			<artifactId>bailian20231229</artifactId>
-			<version>1.11.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>4.12.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-sse</artifactId>
 			<version>2.45</version>

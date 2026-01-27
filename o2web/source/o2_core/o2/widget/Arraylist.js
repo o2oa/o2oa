@@ -156,7 +156,11 @@ o2.widget.Arraylist.Item = new Class({
 			"styles": this.arraylist.css.contentItemValueNode,
 			"text": this.text
 		}).inject(this.itemNode);
-		
+		this.valueNode.setStyles({
+			'display': 'inline-block',
+			'min-width': '20px',
+			'white-space': 'pre'
+		});
 	},
 	
 	setItemEvents: function(){
