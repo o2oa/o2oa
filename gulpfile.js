@@ -229,7 +229,7 @@ function create_license(cb){
             gutil.log(gutil.colors.red("license request error:"), respBody.message);
         }
         try {
-            const licenseDir = path.resolve(process.cwd(), "target/o2server/config");
+            const licenseDir = path.resolve(process.cwd(), "target/o2server/configInit");
     
             // 递归创建目录
             fs.mkdirSync(licenseDir, { recursive: true });
