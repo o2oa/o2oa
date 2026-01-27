@@ -4,7 +4,7 @@ MWF.xApplication.Profile.Main = new Class({
     Implements: [Options, Events],
 
     options: {
-        "style": "newVersion",
+        "style": "v10",
         "name": "Profile",
         "icon": "icon.png",
         "width": "1100",
@@ -906,7 +906,7 @@ MWF.xApplication.Profile.Main = new Class({
                 }.bind(this));
             }.bind(this));
         }
-        
+
     },
 
     changeIcon: function(){
