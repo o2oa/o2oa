@@ -10,15 +10,13 @@ import java.util.List;
  * @date 2025/04/11 17:43
  **/
 public class DocIndex extends GsonPropertyObject {
-    private String catalogId;
+    private String processId;
     @FieldDescribe("应用名称.")
-    private String catalogName;
+    private String processName;
     @FieldDescribe("关联文档ID.")
     private String id;
     @FieldDescribe("文号.")
     private String serial;
-    @FieldDescribe("原文档ID.")
-    private String sourceId;
     private String sourceType = "external";
     @FieldDescribe("文档创建者.")
     private String creatorPerson;
@@ -38,22 +36,21 @@ public class DocIndex extends GsonPropertyObject {
     private Boolean embedEnable = true;
     private Boolean questionEnable = false;
 
-    public String getCatalogId() {
-        return catalogId;
+    public String getProcessId() {
+        return processId;
     }
 
-    public void setCatalogId(String catalogId) {
-        this.catalogId = catalogId;
+    public void setProcessId(String processId) {
+        this.processId = processId;
     }
 
-    public String getCatalogName() {
-        return catalogName;
+    public String getProcessName() {
+        return processName;
     }
 
-    public void setCatalogName(String catalogName) {
-        this.catalogName = catalogName;
+    public void setProcessName(String processName) {
+        this.processName = processName;
     }
-
 
     public String getSourceType() {
         return sourceType;
@@ -181,13 +178,5 @@ public class DocIndex extends GsonPropertyObject {
 
     public void setSerial(String serial) {
         this.serial = serial;
-    }
-
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
     }
 }
