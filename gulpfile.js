@@ -193,7 +193,7 @@ function move_product_data(){
   . move product data to o2server/localSample ...
 ---------------------------------------------------------------------`);
     return gulp.src("o2server/initData.zip")
-        .pipe(gulp.dest("o2server/localSample/"));
+        .pipe(gulp.dest("target/o2server/localSample/"));
 }
 
 async function clear_product_data(cb) {
