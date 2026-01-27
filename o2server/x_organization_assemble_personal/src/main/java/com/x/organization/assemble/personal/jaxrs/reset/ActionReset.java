@@ -38,11 +38,14 @@ class ActionReset extends BaseAction {
 			if (StringUtils.isBlank(credential)) {
 				throw new ExceptionCredentialEmpty();
 			}
+			if (StringUtils.isBlank(password)) {
+				throw new ExceptionPasswordEmpty();
+			}
 			if (StringUtils.isBlank(codeAnswer)) {
 				throw new ExceptionCodeEmpty();
 			}
-			if (StringUtils.isBlank(password)) {
-				throw new ExceptionPasswordEmpty();
+			if(codeAnswer.length() > 6){
+				throw new ExceptionCredentialEmpty();
 			}
 			credential =  BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(credential, Config.privateKey()) : credential;
 			password =  BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(password, Config.privateKey()) : password;
