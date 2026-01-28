@@ -177,7 +177,6 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         });
 
         Object.each(json, function (moduleJson) {
-            debugger;
             if((classNames && !classNames.includes(moduleJson.type) && moduleJson.type.indexOf("$") === -1)) {
                 moduleJson.type = 'Div';
             }
