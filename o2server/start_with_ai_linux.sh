@@ -4,6 +4,13 @@
 current_dir="$(cd "$(dirname "$0")" && pwd)"
 cd "${current_dir}" || exit 1
 
+if LC_ALL=C printf '%s' "$current_dir" | grep -q '[^ -~]'; then
+  echo "❌ 检测到当前目录包含非 ASCII 字符(如中文/表情)"
+  echo "   请将程序放到纯英文路径下运行"
+  echo "   当前目录：$current_dir"
+  exit 1
+fi
+
 # aiServer：不需要日志 -> 丢弃输出，后台启动
 bash "${current_dir}/servers/aiagent/start-linux-x64.sh" </dev/null >/dev/null 2>&1 &
 
