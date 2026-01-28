@@ -4,7 +4,6 @@ rem Copyright (c) http://www.o2oa.net/
 setlocal EnableExtensions EnableDelayedExpansion
 
 set "current_dir=%~dp0"
-cd /d "%current_dir%"
 
 rem ---- 校验：目录必须为纯 ASCII（英文/数字/常见符号），否则退出 ----
 rem 原理：若路径含中文等非 ASCII，通常其 8.3 短路径会出现 ~1 形式且与原路径不同
@@ -30,6 +29,8 @@ if /I not "!short_dir!"=="!long_dir!" (
   echo    当前目录：%current_dir%
   exit /b 1
 )
+
+cd /d "%current_dir%"
 
 rem -----------------------------
 rem 1) aiServer: 后台启动 + 丢弃输出
