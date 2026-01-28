@@ -8,7 +8,7 @@
     box-sizing: border-box !important;
     display: grid !important;
     /* align-items: start; */
-    gap: 1em;
+    gap: 2em;
     padding: 1em;
 }
 

@@ -411,6 +411,8 @@
 .form-layout .page-content-section div[mwftype='statement'] > div {
     display: flex;
     flex-direction: column;
+    background-color: #f3f3f3 !important;
+    gap: 1rem !important;
 }
 
 .form-layout .page-content-section div[mwftype='statement'] > div > div.viewAreaNode {
@@ -468,6 +470,8 @@
     box-sizing: border-box !important;
     height: 100%;
     overflow: hidden;
+    background-color: #f3f3f3 !important;
+    gap: 1rem !important;
 }
 .form-layout .page-content-section div[mwftype='view'] > div {
     display: flex;
@@ -703,9 +707,24 @@
         max-width: unset !important;
     }
     .form-content-area {
-        padding: 1em 1em !important;
+        padding: 1em 0.5em !important;
         position: static !important;
     }
+    div[mwftype="itmleditor"] img{
+        width: auto !important;
+        height: auto !important;
+    }
+    div[styles="itemLeftNode"]{
+        display: none !important;
+    }
+    div[styles="commentRightNode"]{
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+    div.viewConainer div[styles="itemLeftNode"]{
+        display: block !important;
+    }
+    
     .form-description {
         margin: 0;
     }
@@ -1459,7 +1478,7 @@
         overflow: auto !important;
         padding: 0 !important;
     }
-
+    
     /* 继续流转界面 **/
     .flowNode_mobile div.o2flow-quick-select {
         border-radius: var(--oo-default-radius);
