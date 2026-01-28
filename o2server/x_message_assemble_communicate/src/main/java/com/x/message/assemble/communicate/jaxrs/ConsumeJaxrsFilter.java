@@ -1,10 +1,9 @@
 package com.x.message.assemble.communicate.jaxrs;
 
+import com.x.base.core.project.jaxrs.CipherManagerUserJaxrsFilter;
 import javax.servlet.annotation.WebFilter;
 
-import com.x.base.core.project.jaxrs.AnonymousCipherManagerUserJaxrsFilter;
-
 @WebFilter(urlPatterns = "/jaxrs/consume/*", asyncSupported = true)
-public class ConsumeJaxrsFilter extends AnonymousCipherManagerUserJaxrsFilter {
+public class ConsumeJaxrsFilter extends CipherManagerUserJaxrsFilter {
 
 }

@@ -58,8 +58,8 @@ public class QueueDocumentIndex extends AbstractQueue<String> {
 				docIndex.setTitle(document.getTitle());
 				docIndex.setContent(content);
 				docIndex.setId(document.getId());
-				docIndex.setCatalogId(document.getAppId());
-				docIndex.setCatalogName(document.getAppName());
+				docIndex.setProcessId(document.getAppId());
+				docIndex.setProcessName(document.getAppName());
 				docIndex.setCreateDateTime(document.getCreateTime());
 				docIndex.setUpdateDateTime(document.getUpdateTime());
 				docIndex.setCreatorPerson(document.getCreatorPerson());
@@ -81,7 +81,7 @@ public class QueueDocumentIndex extends AbstractQueue<String> {
 					permissionList.addAll(set);
 				}
 				docIndex.setPermissionList(permissionList);
-				String url = aiConfig.getO2AiBaseUrl() + "/index-gateway-doc/update";
+				String url = aiConfig.getO2AiBaseUrl() + "/idx-gateway-doc/update";
 				List<NameValuePair> heads = List.of(new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
 				ActionResponse response = ConnectionAction.post(url, heads, docIndex);
 				uploadFile(emc, document, aiConfig);

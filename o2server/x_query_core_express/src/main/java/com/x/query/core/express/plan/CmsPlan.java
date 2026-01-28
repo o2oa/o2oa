@@ -5,10 +5,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.ApplicationBaseEntity;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -20,7 +18,6 @@ import com.x.cms.core.entity.Review_;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.ItemAccess;
 import com.x.query.core.entity.Item_;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +123,7 @@ public class CmsPlan extends Plan {
             int startPosition = (this.runtime.page == null || this.runtime.page < 1) ? 0 : (this.runtime.page - 1) * this.runtime.count;
             long start = System.currentTimeMillis();
             List<String> docIdList = em.createQuery(cq).setFirstResult(startPosition).setMaxResults(this.runtime.count).getResultList();
-            logger.info("listBundlePaging cost:{}", System.currentTimeMillis() - start);
+            logger.debug("listBundlePaging cost:{}", System.currentTimeMillis() - start);
 
             CriteriaQuery<Long> cq2 = cb.createQuery(Long.class);
             Root<Document> root2 = cq2.from(Document.class);
@@ -134,7 +131,7 @@ public class CmsPlan extends Plan {
                     .where(this.where.documentPredicateV2(cb, root2, cq2, this.runtime, this.filterList));
             start = System.currentTimeMillis();
             Long count = em.createQuery(cq2).getSingleResult();
-            logger.info("listBundlePaging count cost:{}", System.currentTimeMillis() - start);
+            logger.debug("listBundlePaging count cost:{}", System.currentTimeMillis() - start);
             return Pair.of(docIdList, count);
         }
     }

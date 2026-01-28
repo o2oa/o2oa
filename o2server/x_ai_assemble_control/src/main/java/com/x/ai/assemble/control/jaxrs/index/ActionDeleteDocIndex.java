@@ -27,7 +27,7 @@ class ActionDeleteDocIndex extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<NameValuePair> heads = List.of(
 				new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
-		String url = aiConfig.getO2AiBaseUrl() + "/index-gateway-doc/delete";
+		String url = aiConfig.getO2AiBaseUrl() + "/idx-gateway-doc/delete";
 		ConnectionAction.post(url, heads, gson.toJson(Map.of("idList",  List.of(id))));
 		Wo wo = new Wo();
 		wo.setId(id);

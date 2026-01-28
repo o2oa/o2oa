@@ -49,6 +49,9 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	@FieldDescribe( "栏目ID" )
 	private String appId;
 
+	@FieldDescribe( "栏目名称" )
+	private String appName;
+
 	@FieldDescribe( "分类ID" )
 	private String categoryId;
 
@@ -326,6 +329,14 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 
 	public Map<?, ?> getData() {
