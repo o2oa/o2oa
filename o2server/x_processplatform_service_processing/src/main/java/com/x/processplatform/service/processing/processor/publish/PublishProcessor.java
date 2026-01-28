@@ -194,7 +194,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 			List<Review> reviewList = aeiObjects.getReviews();
 			list.addAll(ListTools.extractField(reviewList, Review.person_FIELDNAME, String.class, true, true));
 		}
-		list.stream().forEach(s -> {
+		list.forEach(s -> {
 			CmsPermission cmsPermission = new CmsPermission();
 			cmsPermission.setPermissionObjectName(s);
 			readerList.add(cmsPermission);
@@ -202,8 +202,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		cmsDocument.setReaderList(readerList);
 		List<CmsPermission> authorList = new ArrayList<>();
 		list = this.findPathData(data, publish.getAuthorDataPathList(), true);
-		list.add(aeiObjects.getWork().getCreatorPerson());
-		list.stream().forEach(s -> {
+		list.forEach(s -> {
 			CmsPermission cmsPermission = new CmsPermission();
 			cmsPermission.setPermissionObjectName(s);
 			authorList.add(cmsPermission);
