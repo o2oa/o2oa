@@ -28,6 +28,17 @@ MWF.xApplication.Selector.Group = new Class({
             this.loadSelectItemsByCondition();
         }
     },
+    _scrollEvent: function(y){
+        if( this.options.include && this.options.include.length ){
+        }else if (!this.options.groups.length && !this.options.roles.length){
+            var scrollSize = this.itemAreaScrollNode.getScrollSize();
+            var clientSize = this.itemAreaScrollNode.getSize();
+            var scrollHeight = scrollSize.y-clientSize.y;
+            if (y+30>scrollHeight) {
+                if (!this.isItemLoaded) this.loadSelectItems();
+            }
+        }
+    },
 
     loadInclude: function(){
         if( !this.options.include || this.options.include.length === 0 )return;
