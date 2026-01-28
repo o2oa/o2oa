@@ -177,8 +177,12 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         });
 
         Object.each(json, function (moduleJson) {
-            if(classNames && !classNames.includes(moduleJson.type)) {
+            debugger;
+            if((classNames && !classNames.includes(moduleJson.type) && moduleJson.type.indexOf("$") === -1)) {
                 moduleJson.type = 'Div';
+            }
+            if(moduleJson.preprocessing){
+                delete moduleJson.preprocessing;
             }
             var oid = moduleJson.id;
             var id = moduleJson.id;

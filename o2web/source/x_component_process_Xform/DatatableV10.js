@@ -39,8 +39,8 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
         // });
         // this.node.insertAdjacentElement('afterend', buttonNode);
 
-        this.node.addEventListener('click', () => {
-            if (this.datatableMode === 'mobile_default') {
+        this.node.addEventListener('click', (e) => {
+            if (this.datatableMode === 'mobile_default' && this.editable) {
                 this.datatableMode = 'mobile_edit';
 
                 // const size = document.body.getSize();
@@ -84,6 +84,7 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
                     });
                 });
             }
+            e.stopPropagation();
         });
 
         //编辑完成后的处理
