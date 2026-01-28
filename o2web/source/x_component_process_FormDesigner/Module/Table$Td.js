@@ -212,7 +212,6 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		}.bind(this));
 	},
 	_preprocessingModuleData: function(){
-		debugger;
 		this.node.clearStyles();
 		var addStyles = {};
 		if (this.json.cellType==="title") addStyles = this.table.json.titleTdStyles;
