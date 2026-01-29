@@ -168,12 +168,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             }
         }
     },
-    _pasteModule: function(){
+    _pasteModule: function(classNames){
         var datatemplateJsons = [];
         var idMap = {};
         var html = MWF.clipboard.data.data.html;
         var json = Object.clone(MWF.clipboard.data.data.json);
-        var tmpNode = Element("div", {
+        var tmpNode = new Element("div", {
             "styles": {"display": "none"},
             "html": html
         }).inject(this.content);
@@ -184,6 +184,9 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         });
 
         Object.each(json, function (moduleJson) {
+            if((classNames && !classNames.includes(moduleJson.type) && moduleJson.type.indexOf("$") === -1)) {
+                moduleJson.type = 'Div';
+            }
             var oid = moduleJson.id;
             var id = moduleJson.id;
             var idx = 1;

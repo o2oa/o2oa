@@ -900,6 +900,9 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 	},
 	_getPageData: function(callback){
 		this.fireEvent("queryGetPageData");
+
+		//this._preprocessingModuleData();
+
 		var copy = this.node.clone(true, true);
 		copy.clearStyles(true);
 		this.fireEvent("postGetPageData");
@@ -924,8 +927,22 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			);
 		}
 
+		//this._recoveryModuleData();
+
 		return this.data;
 	},
+	// _preprocessingModuleData: function(){
+	// 	this.moduleList.each(function(module){
+	// 		if(module._preprocessingModuleData)module._preprocessingModuleData();
+	// 	});
+	// },
+	// _recoveryModuleData: function(){
+	// 	this.moduleList.each(function(module){
+	// 		if(module.setCustomStyles)module.setCustomStyles();
+	// 		if (module.setCustomInputStyles) module.setCustomInputStyles();
+	// 	});
+	// },
+
 	preview: function(){
 		if( this.designer.currentDesignerMode === "Mobile" ){
 			var url = "../x_desktop/portalmobile.html?id="+this.json.application+"&page="+this.json.id;
