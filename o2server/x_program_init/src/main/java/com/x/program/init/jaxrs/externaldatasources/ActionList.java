@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -30,8 +31,7 @@ class ActionList extends BaseAction {
 
 	public static final Pattern EXTERNALDATASOURCES_PATTERN = Pattern.compile("^externalDataSources_(.*).json$",
 			Pattern.CASE_INSENSITIVE);
-	private static final Map<String, String> DB_MAP = Map.of("dm", "达梦数据库", "gbase", "南大通用", "gbasemysql", "南大通用mysql版",
-			"kingbase", "金仓数据库", "kingbase8", "金仓数据库V8", "oscar", "万里数据库", "vastbase","神通数据库");
+	private static final Map<String, String> DB_MAP = new HashMap<>();
 
 	public ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
