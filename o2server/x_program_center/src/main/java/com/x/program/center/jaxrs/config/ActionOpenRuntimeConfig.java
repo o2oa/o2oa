@@ -1,10 +1,5 @@
 package com.x.program.center.jaxrs.config;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
@@ -15,6 +10,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.StringTools;
+import java.io.File;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 获取运行中的配置文件
@@ -24,6 +23,7 @@ public class ActionOpenRuntimeConfig extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOpenRuntimeConfig.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson,JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
@@ -34,16 +34,17 @@ public class ActionOpenRuntimeConfig extends BaseAction {
 		if(!StringTools.isFileName(fileName)){
 			throw new ExceptionIllegalFileName(fileName);
 		}
-
+		result.setData(wo);
+		if(fileName.equals("externalDataSources.json") && (CollectionUtils.isEmpty(Config.externalDataSources()))){
+			return result;
+		}
 		File file = new File(Config.base(),"config/"+fileName);
-
 		if(file.exists() && file.isFile()) {
 			String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 			if(StringUtils.isNotBlank(json)) {
 				wo.setFileContent(json);
 			}
 		}
-		result.setData(wo);
 		return result;
 	}
 
