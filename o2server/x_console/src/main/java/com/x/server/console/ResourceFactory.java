@@ -192,6 +192,55 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
 	}
 
+	private static void external() throws Exception {
+		dataSources.addAll(externalDruidC3p0());
+	}
+
+	private static List<DruidDataSourceC3P0Adapter> externalDruidC3p0() throws Exception {
+		List<DruidDataSourceC3P0Adapter> list = new ArrayList<>();
+		for (ExternalDataSource ds : Config.externalDataSources()) {
+			if (BooleanUtils.isNotTrue(ds.getEnable())) {
+				continue;
+			}
+			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
+			dataSource.setJdbcUrl(ds.getUrl());
+			dataSource.setDriverClass(ds.getDriverClassName());
+			// dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
+			dataSource.setUser(ds.getUsername());
+			dataSource.setPassword(ds.getPassword());
+			dataSource.setMaxPoolSize(ds.getMaxTotal());
+			dataSource.setMinPoolSize(ds.getMaxIdle());
+			// 增加校验
+			// dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
+			// dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
+			dataSource.setMaxIdleTime(ds.getMaxIdleTime());
+			dataSource.setAcquireIncrement(2);
+			DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
+			druidDataSource.setTestWhileIdle(false);
+			druidDataSource.setTestOnBorrow(false);
+			druidDataSource.setTestOnReturn(false);
+			if (BooleanUtils.isTrue(ds.getStatEnable())) {
+				dataSource.setFilters(ds.getStatFilter());
+				if (BooleanUtils.isTrue(ds.getSlowSqlEnable())) {
+					Properties properties = new Properties();
+					properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlThreshold().toString());
+					properties.setProperty("druid.stat.logSlowSql", "true");
+					dataSource.setProperties(properties);
+				}
+				if (BooleanUtils.isTrue(ds.getLogStatEnable())) {
+					druidDataSource.setStatLogger(new DruidStatLogger());
+					druidDataSource.setTimeBetweenLogStatsMillis(60000L * ds.getLogStatInterval());
+				}
+			}
+			// 增加autoCommit设置
+			dataSource.setAutoCommitOnClose(ds.getAutoCommit());
+			String name = Config.externalDataSources().name(ds);
+			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
+			list.add(dataSource);
+		}
+		return list;
+	}
+
 	/**
 	 * internal 使用的是H2 server,在执行close dataserver已经完成了数据库关闭,dataSource无法destory.
 	 *
