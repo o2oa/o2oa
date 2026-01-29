@@ -6,22 +6,12 @@ set "current_dir=%~dp0"
 
 set "cur_dir_no_slash=%current_dir:~0,-1%"
 
-for %%I in ("%cur_dir_no_slash%") do (
-  set "short_dir=%%~sI"
-  set "long_dir=%%~fI"
-)
+set "P=%cur_dir_no_slash%"
+powershell -NoProfile -Command ^
+  "if ($env:P -match '[\u4E00-\u9FFF]') { exit 1 } else { exit 0 }"
 
-if not defined short_dir (
-  echo    "Unable to get the short path (8.3). The volume may have 8.3 short-name generation disabled, so we cannot reliably validate paths containing Chinese characters."
-  echo    "Please run the program from an ASCII-only directory."
-  echo    "Current directory: %current_dir%"
-  exit /b 1
-)
-
-if /I not "!short_dir!"=="!long_dir!" (
+if errorlevel 1 (
   echo    "The current directory may contain non-ASCII characters (e.g., Chinese/emoji/special symbols)."
-  echo    "Please move the program to an ASCII-only directory and run it again."
-  echo    "Current directory: %current_dir%"
   exit /b 1
 )
 
