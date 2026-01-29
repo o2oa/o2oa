@@ -39,7 +39,7 @@ const initOpenedConversationEventFun = (conv) => {
 }
 const refreshMyConversationEventFun = () => {
   console.debug("refreshMyConversation")
-  loadMyConversation()
+  loadMyConversation(true)
 }
 const addConversationToListEventFun = (data) => {
   console.debug("addConversationToList")
@@ -63,13 +63,13 @@ const searchConversationResultList = ref([])
 
 // function
 
-const loadMyConversation = async () => {
+const loadMyConversation = async (isCheckNull) => {
   const list = await imAction('myConversationList')
   if (list) {
     myConversationList.value = list
     if (!chooseMode) {
       // 被踢出群之类的特殊情况
-      if (currentConversation.value && list.findIndex(item => item.id === currentConversation.value.id) < 0) {
+      if (isCheckNull && currentConversation.value && list.findIndex(item => item.id === currentConversation.value.id) < 0) {
         currentConversation.value = null
         openConversation(null)
       }
