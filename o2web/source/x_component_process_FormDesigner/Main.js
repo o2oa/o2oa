@@ -140,84 +140,97 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             }
         }
     },
-    pasteModule: function(){
-        if (this.shortcut) {
-            if (this.form) {
-                if (MWF.clipboard.data) {
-                    if (MWF.clipboard.data.type == "form") {
-                        var datatemplateJsons = [];
-                        var idMap = {};
-                        var html = MWF.clipboard.data.data.html;
-                        var json = Object.clone(MWF.clipboard.data.data.json);
-                        var tmpNode = new Element("div", {
-                            "styles": {"display": "none"},
-                            "html": html
-                        }).inject(this.content);
-
-                        var originalIds = {};
-                        Object.each(json, function (moduleJson){
-                            originalIds[moduleJson.id] = true;
-                        });
-
-                        Object.each(json, function (moduleJson) {
-                            var oid = moduleJson.id;
-                            var id = moduleJson.id;
-                            var idx = 1;
-                            while (this.form.json.moduleList[id] || ( originalIds[id] && idx > 1 ) ) {
-                                id = oid + "_" + idx;
-                                idx++;
-                            }
-
-                            if (oid != id) {
-                                idMap[oid] = id;
-                                moduleJson.id = id;
-                                var moduleNode = tmpNode.getElementById(oid);
-                                if (moduleNode) moduleNode.set("id", id);
-                            }
-                            if( moduleJson.type === "Datatemplate" )datatemplateJsons.push(moduleJson);
-                            this.form.json.moduleList[moduleJson.id] = moduleJson;
-                        }.bind(this));
-                        json = null;
-
-                        datatemplateJsons.each(function (json) {
-                            this.checkDatatemplateRelativeId(json, idMap);
-                        }.bind(this));
-
-                        var injectNode = this.form.node;
-                        var where = "bottom";
-                        var parent = this.form;
-                        if (this.form.currentSelectedModule) {
-                            var toModule = this.form.currentSelectedModule;
-                            injectNode = toModule.node;
-                            parent = toModule;
-
-                            if (toModule.moduleType != "container" && toModule.moduleType != "form") {
-                                where = "after";
-                                parent = toModule.parentContainer;
-                            }
-                        }
-
-                        var moduleList = [];
-                        var copyModuleNode = tmpNode.getFirst();
-                        while (copyModuleNode) {
-                            copyModuleNode.inject(injectNode, where);
-                            var copyModuleJson = this.form.getDomjson(copyModuleNode);
-                            var module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
-                            module._setEditStyle_custom("id");
-                            module.selected();
-                            moduleList.push( module );
-
-                            copyModuleNode = tmpNode.getFirst();
-                        }
-                        tmpNode.destroy();
-                        tmpNode = null;
-
-                        if( this.form.history && moduleList.length){
-                            moduleList[0].addHistoryLog("paste", moduleList);
-                        }
+    pasteModule: function() {
+        if (this.shortcut && this.form && MWF.clipboard.data) {
+            if (MWF.clipboard.data.type === "form") {
+                this._pasteModule();
+            }else if(MWF.clipboard.data.type === "page"){
+                MWF.getJSON('../x_component_process_FormDesigner/$Main/default/tools.json',
+                    {
+                        "onSuccess": function(responseJSON){
+                            const classNames = Object.values(responseJSON).map((obj)=>{
+                                return obj.className;
+                            });
+                            this._pasteModule(classNames);
+                        }.bind(this)
                     }
-                }
+                );
             }
+        }
+    },
+    _pasteModule: function(classNames){
+        var datatemplateJsons = [];
+        var idMap = {};
+        var html = MWF.clipboard.data.data.html;
+        var json = Object.clone(MWF.clipboard.data.data.json);
+        var tmpNode = new Element("div", {
+            "styles": {"display": "none"},
+            "html": html
+        }).inject(this.content);
+
+        var originalIds = {};
+        Object.each(json, function (moduleJson){
+            originalIds[moduleJson.id] = true;
+        });
+
+        Object.each(json, function (moduleJson) {
+            if((classNames && !classNames.includes(moduleJson.type) && moduleJson.type.indexOf("$") === -1)) {
+                moduleJson.type = 'Div';
+            }
+            var oid = moduleJson.id;
+            var id = moduleJson.id;
+            var idx = 1;
+            while (this.form.json.moduleList[id] || ( originalIds[id] && idx > 1 ) ) {
+                id = oid + "_" + idx;
+                idx++;
+            }
+
+            if (oid != id) {
+                idMap[oid] = id;
+                moduleJson.id = id;
+                var moduleNode = tmpNode.getElementById(oid);
+                if (moduleNode) moduleNode.set("id", id);
+            }
+            if( moduleJson.type === "Datatemplate" )datatemplateJsons.push(moduleJson);
+            this.form.json.moduleList[moduleJson.id] = moduleJson;
+        }.bind(this));
+        json = null;
+
+        datatemplateJsons.each(function (json) {
+            this.checkDatatemplateRelativeId(json, idMap);
+        }.bind(this));
+
+        var injectNode = this.form.node;
+        var where = "bottom";
+        var parent = this.form;
+        if (this.form.currentSelectedModule) {
+            var toModule = this.form.currentSelectedModule;
+            injectNode = toModule.node;
+            parent = toModule;
+
+            if (toModule.moduleType != "container" && toModule.moduleType != "form") {
+                where = "after";
+                parent = toModule.parentContainer;
+            }
+        }
+
+        var moduleList = [];
+        var copyModuleNode = tmpNode.getFirst();
+        while (copyModuleNode) {
+            copyModuleNode.inject(injectNode, where);
+            var copyModuleJson = this.form.getDomjson(copyModuleNode);
+            var module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
+            module._setEditStyle_custom("id");
+            module.selected();
+            moduleList.push( module );
+
+            copyModuleNode = tmpNode.getFirst();
+        }
+        tmpNode.destroy();
+        tmpNode = null;
+
+        if( this.form.history && moduleList.length){
+            moduleList[0].addHistoryLog("paste", moduleList);
         }
     },
 	createNode: function(){
