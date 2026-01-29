@@ -205,6 +205,26 @@ public class Calendar_EventAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "管理员根据条件查询日历事件信息列表(返回简单列表)", action = ActionSimpleListWithConditionManager.class)
+	@POST
+	@Path("list/filter/sample/manager")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithFilterSampleManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("查询条件") JsonElement jsonElement) {
+		ActionResult<List<ActionSimpleListWithConditionManager.Wo>> result;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSimpleListWithConditionManager().execute(request, effectivePerson, jsonElement);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionEventProcess(e, "根据条件查询日历事件信息列表！");
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "创建一个新的日历事件信息", action = ActionCreate.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
