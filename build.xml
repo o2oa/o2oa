@@ -273,7 +273,6 @@
 				<include name="console_windows.bat" />
 				<include name="stop_windows.bat" />
 				<include name="start_with_ai_windows.bat" />
-				<include name="stop_with_ai_windows.bat" />
 				<include name="servers/aiagent/commons/" />
 				<include name="servers/aiagent/jvm/windows-x64/" />
 				<include name="servers/aiagent/lib/" />
