@@ -1,5 +1,24 @@
 package com.x.server.console;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
+import com.google.gson.JsonElement;
+import com.x.base.core.container.factory.SlicePropertiesBuilder;
+import com.x.base.core.entity.Storage;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DataServer;
+import com.x.base.core.project.tools.ClassLoaderTools;
+import com.x.base.core.project.tools.H2Tools;
+import com.x.base.core.project.tools.JarTools;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.PathTools;
+import com.x.server.console.node.EventQueueExecutor;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,9 +33,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.naming.NamingException;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
@@ -26,30 +43,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
-import com.google.gson.JsonElement;
-import com.x.base.core.container.factory.SlicePropertiesBuilder;
-import com.x.base.core.entity.Storage;
-import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.config.CenterServer;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataServer;
-import com.x.base.core.project.config.ExternalDataSource;
-import com.x.base.core.project.tools.ClassLoaderTools;
-import com.x.base.core.project.tools.H2Tools;
-import com.x.base.core.project.tools.JarTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.PathTools;
-import com.x.server.console.node.EventQueueExecutor;
-
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
-
 /**
- * 
+ *
  * @author ray
  *
  */
@@ -82,15 +77,11 @@ public class ResourceFactory {
 
 	/**
 	 * 生成DataSources并绑定到jndi
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private static void initDataSources() throws Exception {
-		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
-			external();
-		} else {
-			internal();
-		}
+		internal();
 	}
 
 	/**
@@ -108,7 +99,7 @@ public class ResourceFactory {
 	/**
 	 * 需要将custom模块中的entity加入到扫描目录中,
 	 * 所以需要对custom中的web-inf/classes目录下的实体类进行扫描,先把war解压到临时目录然后读取classes目录下的类
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -176,58 +167,9 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
 	}
 
-	private static void external() throws Exception {
-		dataSources.addAll(externalDruidC3p0());
-	}
-
-	private static List<DruidDataSourceC3P0Adapter> externalDruidC3p0() throws Exception {
-		List<DruidDataSourceC3P0Adapter> list = new ArrayList<>();
-		for (ExternalDataSource ds : Config.externalDataSources()) {
-			if (BooleanUtils.isNotTrue(ds.getEnable())) {
-				continue;
-			}
-			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
-			dataSource.setJdbcUrl(ds.getUrl());
-			dataSource.setDriverClass(ds.getDriverClassName());
-			// dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
-			dataSource.setUser(ds.getUsername());
-			dataSource.setPassword(ds.getPassword());
-			dataSource.setMaxPoolSize(ds.getMaxTotal());
-			dataSource.setMinPoolSize(ds.getMaxIdle());
-			// 增加校验
-			// dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
-			// dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
-			dataSource.setMaxIdleTime(ds.getMaxIdleTime());
-			dataSource.setAcquireIncrement(2);
-			DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
-			druidDataSource.setTestWhileIdle(false);
-			druidDataSource.setTestOnBorrow(false);
-			druidDataSource.setTestOnReturn(false);
-			if (BooleanUtils.isTrue(ds.getStatEnable())) {
-				dataSource.setFilters(ds.getStatFilter());
-				if (BooleanUtils.isTrue(ds.getSlowSqlEnable())) {
-					Properties properties = new Properties();
-					properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlThreshold().toString());
-					properties.setProperty("druid.stat.logSlowSql", "true");
-					dataSource.setProperties(properties);
-				}
-				if (BooleanUtils.isTrue(ds.getLogStatEnable())) {
-					druidDataSource.setStatLogger(new DruidStatLogger());
-					druidDataSource.setTimeBetweenLogStatsMillis(60000L * ds.getLogStatInterval());
-				}
-			}
-			// 增加autoCommit设置
-			dataSource.setAutoCommitOnClose(ds.getAutoCommit());
-			String name = Config.externalDataSources().name(ds);
-			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
-			list.add(dataSource);
-		}
-		return list;
-	}
-
 	/**
 	 * internal 使用的是H2 server,在执行close dataserver已经完成了数据库关闭,dataSource无法destory.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private static void internal() throws Exception {
