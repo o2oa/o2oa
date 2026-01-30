@@ -220,7 +220,7 @@
 
         if (!fieldList){
             dataTypes = {
-                "string": ["htmledit", "radio", "select", "textarea", "textfield","imageclipper","htmleditor","tinymceeditor","ooinput","ootextarea","ooselect","ooradioGroup"],
+                "string": ["htmledit", "radio", "select", "textarea", "textfield","imageclipper","htmleditor","tinymceeditor","ooinput","ootextarea","ooselect","oocascade","ooradioGroup"],
                 "person": ["personfield","orgfield","org","ooorg"],
                 "date": ["calender","oodatetime"],
                 "number": ["number","currency","oocurrency"],

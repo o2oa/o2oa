@@ -420,6 +420,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         oo_radioGroup: '单选',
         oo_checkGroup: '复选',
         oo_select: '下拉框',
+        oo_cascade: '级联选择',
         oo_textarea: '多行文本',
         oo_calendar: '日历',
         oo_datetime: '日期框',
