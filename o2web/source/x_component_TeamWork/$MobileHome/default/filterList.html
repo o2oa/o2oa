@@ -1,0 +1,19 @@
+
+{{each $.data.data}}
+    <div class="tw-home-tab-filter-item" data-o2-events="click:openFilter:{{$.value}};">
+        <div>{{$.name}}</div>
+        <div class="{{
+            (function(){
+                var res="";
+                var type = $._.data.type || "";
+                if(type == $.value){
+                    res = 'o2-tw-dagou'
+                }
+                return res
+            })()
+        }}"></div>
+    </div>
+
+{{end each}}
+
+

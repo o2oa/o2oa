@@ -1,0 +1,47 @@
+<div class="tw-tasks-base-attachment-title">附件</div>
+{{each $.data}}
+    <div class="tw-tasks-base-attachment-item">
+        <div class="tw-tasks-base-attachment-item-icon {{
+            (function(){
+                var _class = 'o2-tw-fujian';
+                var ex = $.extension.toLowerCase();
+
+                if(ex == "zip" || ex == "rar" || ex == "7z"){
+                    _class = 'o2-tw-yasuobao';
+                }else if(ex == "xls" || ex == "xlsx"){
+                    _class = 'o2-tw-excel';
+                }else if(ex == "doc" || ex == "docx"){
+                    _class = 'o2-tw-word';
+                }else if(ex == "ppt" || ex == "pptx"){
+                    _class = 'o2-tw-ppt';
+                }else if(ex == "pdf"){
+                    _class = 'o2-tw-pdf';
+                }else if(ex == "png" || ex == "jpg" || ex == "jpeg" || ex == "bmp" || ex == "gif"){
+                    _class = 'o2-tw-tupian';
+                }else if(ex == "mp3"){
+                    _class = 'o2-tw-yinpin';
+                }else if(ex == "mp4"){
+                    _class = 'o2-tw-shipin';
+                }
+                return _class
+            })()
+        }}"></div>
+        <div class="tw-tasks-base-attachment-item-name" data-o2-events="click:downloadAttachment:{{$.id}}">{{$.name}}</div>
+        <div class="tw-tasks-base-attachment-item-size">
+            {{
+                (function(){
+                    var size = $.length.toFloat(); 
+                    if(size<1024) size = "1k";
+                    else if(size<1024*1024) size = Math.floor(size/1024) + "K";
+                    else if(size<1024*1024*1024) size = Math.floor(size/1024/1024) + "MB";
+                    return size
+                })()
+            }} 
+        </div>
+        <div class="tw-tasks-base-attachment-item-remove o2-tw-shanchu" data-o2-events="click:removeAttachment:{{$.id}}"></div>
+    </div>
+
+{{end each}}
+
+
+

@@ -1,0 +1,32 @@
+
+.table {
+    width : 100%;
+    table-layout: fixed;
+}
+.table tr:hover{
+    overflow: hidden;
+    background-color: rgb(247, 247, 247);
+    min-height: 29px;
+    color: rgb(102, 102, 102);
+    font-family: "Microsoft YaHei";
+    font-size: 14px;
+    cursor: pointer;
+}
+.table th {
+    background-color: rgb(247, 247, 247);
+    text-align: center;
+    line-height: 24px;
+    font-size: 15px;
+    padding: 8px 0px;
+    font-weight: normal;
+    border-top: 1px solid rgb(255, 255, 255);
+    border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.table td {
+    height: 39px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid rgb(230, 230, 230);
+    cursor: pointer;
+}

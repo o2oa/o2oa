@@ -1,0 +1,39 @@
+
+<div class="taskView_Layout">
+    <div class="taskView_filterLayout">
+        <div class="taskView_filterLeft">
+            <div class="taskView_filterItem">
+                <div class="taskView_title">{{$.lp.name}}</div>
+                <div class="taskView_titleIn"><input type="text" data-o2-element="taskName" value="" /></div>
+                <div class="taskView_title">{{$.lp.executor}}</div>
+                <div class="taskView_person" data-o2-element="taskExecutor" data-o2-events="click:selectExecutor;"></div>
+            </div>
+            <div class="taskView_filterItem">
+                <div class="taskView_filterItemContent">
+                    <div class="taskView_title">{{$.lp.status}}</div>
+                    <div class="taskView_value" data-o2-element="workStatus" data-o2-events="click:loadSelect:workStatus;"></div>
+                </div>
+                <div class="taskView_filterItemContent">
+                    <div class="taskView_title">{{$.lp.important}}</div>
+                    <div class="taskView_value" data-o2-element="important" data-o2-events="click:loadSelect:important;"></div>
+                </div>
+                <div class="taskView_filterItemContent">
+                    <div class="taskView_title">{{$.lp.urgency}}</div>
+                    <div class="taskView_value" data-o2-element="urgency" data-o2-events="click:loadSelect:urgency;"></div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="taskView_filterRight">
+            <div class="taskView_filterItem">
+                <div class="taskView_action" data-o2-events="click:filterSearch">{{$.lp.search}}</div>
+                <div class="taskView_action" data-o2-events="click:filterReset">{{$.lp.reset}}</div>
+                <div class="taskView_action" data-o2-events="click:filterExport">{{$.lp.export}}</div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="taskView_contentLayout" data-o2-element="taskViewContent">
+
+    </div>
+</div>

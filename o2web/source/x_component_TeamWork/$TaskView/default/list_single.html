@@ -1,0 +1,47 @@
+
+{{each $.data}}
+    <tr data-o2-events="click:openTask:{{$.id}}">
+            {{if $._.projectId != ""}}
+            <td><div>{{$.serialNumber}}</div></td>
+            {{end if}}
+            <td>
+                <div>{{$.projectName||''}}</div>
+            </td>
+            <td class="taskList_td_name">
+                <div>{{$.name}}</div>
+            </td>
+            <td>
+                <div>{{$.important}}</div>
+            </td>
+            <td>
+                <div>{{$.urgency}}</div>
+            </td>
+            <td>
+                <div>{{
+                    (function(){
+                        var endTime_str = $.endTime;
+                        return endTime_str.split(" ")[0]
+                    })()
+                }}
+                </div>
+            </td>
+            <td>
+                <div>{{$.executor.split("@")[0]}}</div>
+            </td>
+            <!-- <td><div>{{$.detail}}</div></td> -->
+            <td>
+                <div>{{$.progress +'%'}}</div>
+            </td>
+            <td>
+                <div>{{(function(){
+                    var status = $.workStatus;
+                    var res = $._.lp.processing;
+                    if(status == 'delay') res = $._.lp.delay;
+                    else if(status == 'completed') res = $._.lp.completed;
+                    else if(status == 'canceled') res = $._.lp.canceled;
+                    return res
+                })()}}</div>
+            </td>
+    </tr>
+{{end each}}
+

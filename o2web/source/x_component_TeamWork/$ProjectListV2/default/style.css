@@ -1,0 +1,295 @@
+/* block */
+.blockLayout{
+    display:flex;
+    flex-wrap: wrap;
+}
+
+/* .blockItem{
+    width:220px;
+    height:120px;
+    border-radius:4px;
+    box-shadow: #dfdfdf 0px 0px 0px;
+    margin:10px;
+    position:relative;
+    cursor:pointer;
+    background: url('../x_component_TeamWork/$ProjectListV2/default/icon/pic_morentu_220.png') no-repeat center;
+    background-size:cover;
+}
+.blockItem::after{
+    content:"";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(1px); 
+    z-index: -1;
+} */
+
+
+.blockItem{
+    width:220px;
+    height:120px;
+    border-radius:4px;
+    box-shadow: #dfdfdf 0px 0px 0px;
+    margin:10px;
+    position:relative;
+    cursor:pointer;
+}
+
+
+/* .blockItem{
+    width:220px;
+    height:120px;
+    border-radius:4px;
+    box-shadow: #dfdfdf 0px 0px 0px;
+    margin:10px;
+    background:url("../x_component_TeamWork/$ProjectListV2/default/icon/pic_morentu_220.png") no-repeat center;
+    background-size:cover;
+    position:relative;
+    cursor:pointer;
+} */
+
+.blockItem:hover{
+    box-shadow:0px 0px 10px #4a90e2;
+}
+.blockItemImg{
+    max-height:100%;
+    max-width:100%;
+    filter:blur(1.5px);
+}
+.blockCover{
+    /* background-color:#000000;
+    opacity:0.3; */
+    background-color:rgba(0,0,0,0.5);
+    inset: 0px;
+    position:absolute;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.blockContent{
+    position:absolute;
+    inset: 0px;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+}
+.blockAction{
+    height:36px;
+    padding:0px 10px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+}
+.blockActionEndTime{
+    font-size:12px;
+    color:#ffffff;
+}
+.blockActionImg{
+    display:flex;
+    align-items:center;
+    flex-direction: row-reverse;
+}
+.blockActionImg img{
+    width:16px;
+    height:16px;
+    cursor:pointer;
+    margin:0px 5px;
+}
+.blockName{
+    color:#ffffff;
+    font-size:14px;
+    width:190px;
+    height:calc(100% - 63px);
+    margin:0px auto 0px auto;
+    overflow:hidden;
+}
+.blockNumber{
+    width:100%;
+    height:26px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color:#ffffff;
+}
+.blockNumber div{
+    width:20%;
+    height:100%;
+    font-size:12px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.blockNumber div span:nth-child(2){
+    display:none;
+}
+.blockNumber div:hover span:nth-child(1){
+    display:none;
+}
+.blockNumber div:hover span:nth-child(2){
+    display:block;
+}
+
+.blockNumberTotal{
+    background-color:rgba(74, 144, 226,0.8);
+}
+
+.blockNumberCompleted{
+    background-color:rgba(0, 0, 0,0.4);
+}
+.blockNumberCompleted:hover{
+    background-color:rgba(0, 0, 0,0.8);
+}
+.blockNumberFlow{
+    background-color:rgba(0, 0, 0,0.2);
+}
+.blockNumberFlow:hover{
+    background-color:rgba(0, 0, 0,0.8);
+}
+.blockNumberDelay{
+    background-color:rgba(0, 0, 0,0.4);
+}
+.blockNumberDelay:hover{
+    background-color:rgba(0, 0, 0,0.8);
+}
+.blockNumberCancel{
+    background-color:rgba(0, 0, 0,0.2);
+}
+.blockNumberCancel:hover{
+    background-color:rgba(0, 0, 0,0.8);
+}
+
+.blockItemNew{
+    float:left;
+    width:220px;
+    height:120px;
+    border-radius:4px;
+    box-shadow: #dfdfdf 0px 0px 0px;
+    margin:10px;
+    background-color:#f5f5f5;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content: center;
+}
+.blockItemNew img{
+    width:20px;
+    height:20px;
+    margin-bottom:10px;
+}
+.blockItemNew span{
+    color:#999999;
+}
+.blockItemNew:hover{
+    box-shadow:0px 0px 10px #4a90e2;
+}
+
+/* list */
+.listLayout{
+    display:flex;
+    flex-wrap: wrap;
+    margin-right:40px;
+}
+.listLayout div{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.listLayout > div{
+    width:100%;
+}
+.listItem{
+    height:80px;
+    width:100%;
+    border-bottom:1px solid #e6e6e6;
+    cursor:pointer;
+}
+.listItem:hover{
+    background-color:#f2f5f7;
+}
+.listContent{
+    height:100%;
+    width:calc(100% - 340px);
+}
+.listImg{
+    width:50px;
+    height:40px;
+    background:url('../x_component_TeamWork/$ProjectListV2/default/icon/pic_morentu_220.png') no-repeat center;
+    background-size:cover;
+    border-radius:4px;
+    margin-right:10px;
+}
+.listName{
+    font-size:15px;
+    color:#333333;
+}
+.listItemContent{
+    width:100px;
+    padding:10px 0px;
+    font-size:12px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.listItemContent div{
+    height:30px;
+}
+.listDate{
+    width:120px;
+    padding:10px 0px;
+    font-size:12px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.listDate div{
+    height:30px;
+}
+.listCount{
+    width:50px;
+    height:100%;
+    font-size:12px;
+    display:flex;
+    justify-content: center !important;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.listCountItem{
+    width:100%;
+    height:60px;
+    display:flex;
+    justify-content: space-between !important;
+    margin:0px 0px 0px 0px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.listCountItem span{
+    width:100%;
+    display:block;
+    text-align:center;
+}
+.listAction{
+    width:60px;
+    height:100%;
+    flex-direction: row-reverse;
+}
+.listAction img{
+    width:16px;
+    height:16px;
+    cursor:pointer;
+    margin:0px 5px;
+}
+.listItemNewImg{
+    width:40px;
+    height:40px;
+    background:url('../x_component_TeamWork/$ProjectListV2/default/icon/icon_cjxxm.png') no-repeat center;
+    background-size:contain;
+    margin-right:10px;
+}
+.listItemNewImg span{
+    color:#999999;
+    font-size:15px;
+}

@@ -1,0 +1,24 @@
+{
+	tips:{
+	    nodeStyles:{
+	        "font-size" : "12px",
+            "position" : "absolute",
+            "max-width" : "500px",
+            "min-width" : "50px",
+            "z-index" : "11",
+            "background-color" : "#000000",
+            "color":"#ffffff",
+            "padding" : "2px",
+            "border-radius" : "8px",
+            "box-shadow": "0 0 5px 0 #999999",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text"
+	    }
+	},
+	loading:{
+	    "margin-top":"10px",
+	    "margin-bottom":"10px",
+	    "width":"100px",
+	    "height":"20px"
+	}
+}

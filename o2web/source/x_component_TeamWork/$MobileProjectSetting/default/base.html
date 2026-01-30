@@ -1,0 +1,58 @@
+
+    <div class="tw-ps-base-item">
+        <div class="tw-ps-base-item-title">项目名称</div>
+        <div class="tw-ps-base-item-value">
+            <div>
+                <input type="text" data-o2-element="projectName" readonly="readonly" value="{{$.data.title}}" />
+            </div>
+            <div class="tw-ps-base-item-value-icon"></div>
+        </div>
+    </div>
+    <div class="tw-ps-base-item">
+        <div class="tw-ps-base-item-title">项目周期</div>
+        <div class="tw-ps-base-item-value">
+            <div class="tw-ps-base-item-time">
+                <input type="text" placeholder="开始时间" readonly="readonly" data-o2-element="projectStartTime" value="{{$.data.startTime.split(" ")[0]}}" />
+                 - 
+                <input type="text" placeholder="结束时间" readonly="readonly" data-o2-element="projectEndTime" value="{{$.data.endTime.split(" ")[0]}}" />
+            </div>
+            <div class="tw-ps-base-item-value-icon o2-tw-riqi" style="font-size:20px;"></div>
+        </div>
+    </div>
+    <div class="tw-ps-base-item">
+        <div class="tw-ps-base-item-title">项目负责人</div>
+        <div class="tw-ps-base-item-value">
+            <div data-o2-element="projectExecutor"></div>
+            <div class="tw-ps-base-item-value-icon o2-tw-user-plus"  style="color:#4A90E2;font-size:18px;"></div>
+        </div>
+    </div>
+    <div class="tw-ps-base-item" style="height:auto;">
+        <div class="tw-ps-base-item-title">项目参与者</div>
+        <div class="tw-ps-base-item-value">
+            <div data-o2-element="projectParticipant" style="flex-wrap: wrap;"></div>
+            <div class="tw-ps-base-item-value-icon o2-tw-user-plus" style="color:#4A90E2;font-size:18px;"></div>
+        </div>
+    </div>
+    <div class="tw-ps-base-item">
+        <div class="tw-ps-base-item-title">项目来源</div>
+        <div class="tw-ps-base-item-value">
+            <div><input type="text" data-o2-element="projectSource" readonly="readonly" value="{{$.data.source}}" /></div>
+            <div class="tw-ps-base-item-value-icon"></div>
+        </div>
+    </div>
+    <div class="tw-ps-base-item-mult">
+        <div class="tw-ps-base-item-title-mult">项目目标</div>
+        <div class="tw-ps-base-item-value-mult">
+            <textarea data-o2-element="projectObjective" placeholder="填写项目目标">{{$.data.objective}}</textarea>
+        </div>
+    </div>
+    <div class="tw-ps-base-item-mult">
+        <div class="tw-ps-base-item-title-mult">项目背景与问题</div>
+        <div class="tw-ps-base-item-value-mult">
+            <textarea data-o2-element="projectDescription" placeholder="填写项目背景与问题">{{$.data.description}}</textarea>
+        </div>
+    </div>
+
+    <div class="tw-ps-base-action" data-o2-element="projectSave" data-o2-events="click:save;">确 定</div>
+
+

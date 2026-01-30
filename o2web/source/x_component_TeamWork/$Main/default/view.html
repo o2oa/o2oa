@@ -1,0 +1,93 @@
+<div class="layout">
+    <div class="navi" data-o2-element="navi_layout">
+        <div class="title">{{ $.lp.title }}</div>
+        <div class="naviContent">
+            <div class="item taskall" data-o2-events="click:openTaskView:all;click:clickNavi:taskall;">
+                <div class="itemName">{{$.lp.taskAll}}</div>
+                <div class="count">
+                    <span class="countText"></span>
+                </div>
+            </div>
+            <div class="item taskmy" data-o2-element="taskmy" data-o2-events="click:openTaskView:my;click:clickNavi:taskmy;">
+                <div class="icon"></div>
+                <div class="itemName">{{$.lp.taskMy}}</div>
+                <div class="count">
+                    <span class="countText"></span>
+                </div>
+            </div>
+            <div class="item taskflow" data-o2-events="click:openTaskView:flow;click:clickNavi:taskflow;">
+                <div class="icon"></div>
+                <div class="itemName">{{$.lp.taskFlow}}</div>
+                <div class="count">
+                    <span class="countText"></span>
+                </div>
+            </div>
+            <div class="item taskdelay" data-o2-events="click:openTaskView:delay;click:clickNavi:taskdelay;">
+                <div class="icon"></div>
+                <div class="itemName">{{$.lp.taskDelay}}</div>
+                <div class="count">
+                    <span class="countText"></span>
+                </div>
+            </div>
+            <div class="item taskcanceled" data-o2-events="click:openTaskView:canceled;click:clickNavi:taskcanceled;">
+                <div class="icon"></div>
+                <div class="itemName">{{$.lp.taskCanceled}}</div>
+                <div class="count">
+                    <span class="countText"></span>
+                </div>
+            </div>
+            <div class="item taskcompleted" data-o2-events="click:openTaskView:completed;click:clickNavi:taskcompleted;">
+                <div class="icon"></div>
+                <div class="itemName">{{$.lp.taskCompleted}}</div>
+                <div class="count">
+                    <span class="countText"></span>
+                </div>
+            </div>
+        </div>
+        <div class="naviContent">
+            <div class="item itemall" data-o2-element="itemall" data-o2-events="click:openNavi:all;click:clickNavi:itemall;">
+                <div>{{ $.lp.projectAll }}<span class="countText" data-o2-element="countAll">(-)</span></div>
+                <div class="add" data-o2-element="add" data-o2-events="click:createProject;"></div>
+            </div>
+            <div class="item itemstar" data-o2-element="itemstar" data-o2-events="click:openNavi:star;click:clickNavi:itemstar;">
+                <div class="icon"></div>
+                <div class="itemName">{{ $.lp.projectStar }}</div>
+                <div class="count">
+                    <span class="countText" data-o2-element="countStar">(-)</span>
+                    <img src="../x_component_TeamWork/$Main/default/icon/icon_wdxx_click.png" />
+                </div>
+            </div>
+            <div class="item itemmy" data-o2-element="itemmy" data-o2-events="click:openNavi:my;click:clickNavi:itemmy;">
+                <div class="icon"></div>
+                <div class="itemName">{{ $.lp.projectMy }}</div>
+                <div class="count">
+                    <span class="countText" data-o2-element="countMy">-</span>
+                </div>
+            </div>
+            <div class="item itemdelay" data-o2-element="itemdelay" data-o2-events="click:openNavi:delay;click:clickNavi:itemdelay;">
+                <div class="icon"></div>
+                <div class="itemName">{{ $.lp.projectDelay }}</div>
+                <div class="count">
+                    <span class="countText" data-o2-element="countDelay">-</span>
+                </div>
+            </div>
+            <div class="item itemcompleted" data-o2-element="itemcompleted" data-o2-events="click:openNavi:completed;click:clickNavi:itemcompleted;">
+                <div class="icon"></div>
+                <div class="itemName">{{ $.lp.projectCompleted }}</div>
+                <div class="count">
+                    <span class="countText" data-o2-element="countCompleted">-</span>
+                </div>
+            </div>
+            <div class="item itemarchived" data-o2-element="itemarchived" data-o2-events="click:openNavi:archived;click:clickNavi:itemarchived;">
+                <div class="icon"></div>
+                <div class="itemName">{{ $.lp.projectArchived }}</div>
+                <div class="count">
+                    <span class="countText" data-o2-element="countArchived">-</span>
+                </div>
+            </div>
+        </div>
+        <div class="item taskStat" data-o2-events="click:openStat;click:clickNavi:taskStat;">{{ $.lp.taskStat }}</div>
+    </div>
+    <div class="projectContent" data-o2-element="projectContent"></div>
+</div>
+

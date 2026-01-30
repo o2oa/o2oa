@@ -1,0 +1,19 @@
+img{
+    max-width: 100%;
+}
+
+h2{
+    border-bottom: 1px solid #ddd;
+    margin: 1em 0;
+    padding-bottom: 0.5rem;
+    color: #666;
+}
+
+ul{
+    margin: 1em 0;
+}
+
+li{
+    display: list-item;
+    line-height: 30px;
+}

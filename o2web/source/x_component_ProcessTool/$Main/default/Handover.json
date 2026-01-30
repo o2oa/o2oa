@@ -1,0 +1,157 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "mousedownStyles": "documentNode_down",
+    "holdMouseDownStyles" : true,
+    //    "action": "open"
+  },
+  "items": [
+    {
+      "name": "$checkbox",
+      "head": {
+        "html": "<th styles='normalThNode'></th>",
+        "width": "30"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'></td>"
+      }
+    },
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode' lable='data_title'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='58%' item='title'></td>",
+        "items": {
+          "title": {
+            "value":"function(d){ return d.title===''?'无标题':d.title }",
+            "action" : "open"
+
+          }
+        }
+      }
+    },
+    {
+      "name": "person",
+      "head": {
+        "html": "<th styles='normalThNode'>用户</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='person'></td>",
+        "items": { "person" : {} }
+      }
+    },
+    {
+      "name": "targetIdentity",
+      "head": {
+        "html": "<th styles='normalThNode' >目标用户身份</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='targetIdentity'></td>",
+        "items": { "applicationName" : {} }
+      }
+    },
+    {
+      "name": "type",
+      "head": {
+        "html": "<th styles='normalThNode'>类型</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='type'></td>",
+        "items": { "type" : {} }
+      }
+    },
+    {
+      "name": "scheme",
+      "head": {
+        "html": "<th styles='normalThNode'>权限交接方案</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='scheme'></td>",
+        "items": {
+          "scheme": {"value" : "function(d){ return d.creatorPerson.split('@')[0] }"}
+        }
+      }
+    },
+    {
+      "name": "status",
+      "head": {
+        "html": "<th styles='normalThNode'>状态</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='status'></td>",
+        "items": {
+          "status": {"value" : "function(d){ return d.status }"}
+        }
+      }
+    },
+    {
+      "name": "creator",
+      "head": {
+        "html": "<th styles='normalThNode'>创建用户</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='creator'></td>",
+        "items": {
+          "creator": {"value" : "function(d){ return d.creator.split('@')[0] }"}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='data_createTime'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='createTime'></td>",
+        "items": { "createTime" : {} }
+      }
+    },
+    {
+      "name": "actionList",
+      "head": {
+        "html": "<th styles='normalThNode' lable='data_op'></th>",
+        "width": "100"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'><div styles='downloadAction' item='downloadAction'></div><div styles='restoreAction' item='restoreAction'></div><div styles='removeAction' item='removeAction'></div></td>",
+        "items": {
+          "downloadAction": {
+            "title": "download",
+            "action": "download",
+            "styles" : "downloadAction",
+            "mouseoverStyles": "downloadAction_over"
+          },
+          "restoreAction": {
+            "title": "restore",
+            "action": "restore",
+            "styles" : "restoreAction",
+            "mouseoverStyles": "restoreAction_over"
+          },
+          "removeAction": {
+            "title": "remove",
+            "action": "remove",
+            "styles" : "removeAction",
+            "mouseoverStyles": "removeAction_over"
+          }
+        }
+      }
+    }
+  ]
+}

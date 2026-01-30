@@ -1,0 +1,104 @@
+/* layout */
+.layoutNavi{
+    width:300px;
+    height:100%;
+    background-color:#ffffff;
+    border-right:1px solid #cccccc;
+    color:#333333;
+    font-size:14px;
+}
+.layoutFolder{
+    width:12px;
+    height:100%;
+}
+.layoutContent{
+    width:calc(100% - 313px)
+}
+.naviSearchContainer{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin:20px auto;
+}
+.naviSearchContainer input{
+    width:260px;
+    height:36px;
+    border:1px solid #dedede;
+    border-radius:10px;
+}
+.naviTaskContainer{
+    width:100%;
+    border-bottom:1px solid #e6e6e6;
+}
+.naviTaskItemTitle{
+    width:260px;
+    height:40px;
+    font-size:16px;
+    margin:0px auto;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+.naviTaskItemTitle img{
+    cursor:pointer;
+}
+.naviTaskItem{
+    padding-left:30px;
+    display:flex;
+    height:50px;
+    display:flex;
+    align-items: center;
+    cursor:pointer;
+}
+.naviTaskItem:hover{
+    background-color:#f2f5f7;
+}
+.naviGroupItem{
+    height:70px;
+    padding-left:30px;
+}
+.naviGroupItem:hover{
+    background-color:#f2f5f7;
+}
+.naviGroupText{
+    height:40px;
+    line-height:40px;
+}
+.naviGrouplineContainer{
+    height:30px;
+}
+.naviGrouplineCompleted{
+    height:100%;
+    background-color:#73bf4d;
+}
+.naviGrouplineOvertime{
+    height:100%;
+    background-color:#73bf4d;
+}
+.naviGroupLine{
+    width:250px;
+    height:6px;
+    border-radius:6px;
+    background-color:#4a90e2;
+}
+
+.naviViewContainer{
+    padding-top:20px;
+    width:100%;
+}
+.naviViewItemTitle{
+    padding-left:20px;
+    font-size:16px;
+    height:40px;
+}
+.naviViewItem{
+    height:50px;
+    padding-left:30px;
+    display:flex;
+    align-items: center;
+    cursor:pointer;
+}
+.naviViewItem:hover{
+    background-color:#f2f5f7;
+}

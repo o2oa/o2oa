@@ -1,0 +1,35 @@
+
+{{each $.data}}
+    <div class="tw-home-tasklist-item" data-o2-events="click:openTask:{{$.id}};">
+        <div class="tw-home-tasklist-item-icon o2-tw-renwu"></div>
+        <div class="tw-home-tasklist-item-content">
+            <div>{{$.name}}</div>
+            <div>
+                {{
+                    (function(){
+                        var res = "";
+                        var date = $.endTime || "";
+                        if(date!=""){
+                            res = date.split(" ")[0]
+                        }
+                        return res
+                    })()
+                }} 
+            </div>
+        </div>
+        <div class="tw-home-tasklist-item-person">
+            <div>
+                {{
+                    (function(){
+                        var f = $.executor.split("@")[0];
+    
+                        return f.substr(0,1)
+                    })()
+                }}
+            </div>
+        </div>
+    </div>
+
+{{end each}}
+
+

@@ -1,0 +1,60 @@
+{{each $.data}}
+    <div class="tw-tasks-dy-item">
+        <div class="tw-tasks-dy-item-icon {{
+            (function(){
+                var res = "abc";
+                var optType = $.optType.toUpperCase();
+                var objectType = $.objectType.toUpperCase();
+                if(objectType == "CHAT"){
+                    res = "o2-tw-chat"
+                }else if(objectType == "ATTACHMENT"){
+                    if(optType == "DELETE"){  //UPLOAD、DOWNLOAD、DELETE
+                        res = "o2-tw-shanchu"
+                    }else{
+                        res = "o2-tw-fujian"
+                    }
+                }else if(objectType == "TASK"){
+                    if(optType=="SPLIT"){
+                        res = "o2-tw-zirenwu"
+                    }else if(optType=="DELETE_SUBTASK"){
+                        res = "o2-tw-shanchu"
+                    }else if(optType=="UPDATE_EXECUTOR"){
+                        res = "o2-tw-user"
+                    }else if(optType=="UPDATE_NAME"){
+                        res = "o2-tw-bianji"
+                    }else if(optType=="UPDATE_WORKSTATUS"){
+                        res = "o2-tw-zhuangtai"
+                    }else if(optType=="UPDATE_WORKDATE"){
+                        res = "o2-tw-shijian"
+                    }else if(optType=="UPDATE_DESCRIPTION"){
+                        res = "o2-tw-bianji"
+                    }else if(optType=="ADD_PARTICIPANTS" || optType == "REMOVE_PARTICIPANTS"){
+                        res = "o2-tw-duoren"
+                    }else if(optType=="CREATE"){
+                        res = "o2-tw-xinzeng"
+                    }else{
+                        res = "o2-tw-bianji"
+                    }
+        
+                }else if(objectType=="TASK_TAG"){
+                    if(optType=="REMOVE"){
+                        res = "o2-tw-shanchu"
+                    }else{
+                        res = "o2-tw-bianji"
+                    }
+                }
+                return res;
+            })()
+
+
+        }}"></div>
+        <div class="tw-tasks-dy-item-content">
+            <div class="tw-tasks-dy-item-user">{{$.operator.split("@")[0]}}</div>
+            <div class="tw-tasks-dy-item-value">{{$.description}}</div>
+            <div class="tw-tasks-dy-item-time">{{$.createTime}}</div>
+        </div>
+    </div>  
+
+{{end each}}
+
+

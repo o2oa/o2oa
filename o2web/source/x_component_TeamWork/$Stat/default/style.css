@@ -1,0 +1,124 @@
+.stat_filter_content{
+    width:calc(100% - 50px);
+    height:100px;
+    padding-left:50px;
+    padding-top:10px;
+    padding-bottom:10px;
+    border-bottom:1px solid #dddddd;
+    font-size:16px;
+}
+.stat_filter_content > div{
+    width:100%;
+    height:50px;
+    display:flex;
+    align-items: center;
+}
+.stat_filter_item{
+    margin:0px 0px;
+    display:flex;
+    align-items: center;
+}
+.stat_filter_item_title{
+    margin-right:10px;
+    width:80px;
+}
+.stat_filter_item_value{
+    display:flex;
+    align-items: center;
+    font-size:14px;
+}
+.stat_filter_item_date{
+    border:1px solid #dedede;
+    border-radius:4px;
+    width:120px;
+    height:30px;
+    line-height:30px;
+    text-align:center;
+    margin:0px 10px;
+    cursor:pointer;
+}
+.stat_filter_item_project{
+    border:1px solid #dedede;
+    border-radius:4px;
+    min-width:120px;
+    max-width:800px;
+    min-height:26px;
+    max-height:64px;
+    overflow-y:auto;
+    padding:4px;
+    margin:0px 10px;
+    cursor:pointer;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+.stat_filter_item_button{
+    background-color:#4a90e2;
+    color:#ffffff;
+    width:80px;
+    height:36px;
+    line-height:36px;
+    border-radius:6px;
+    text-align:center;
+    margin:0px 10px;
+    opacity:0.9;
+    cursor:pointer;
+}
+.stat_filter_item_button:hover{
+    opacity:1;
+}
+.stat_filter_item_project_select{
+    width:40px;
+    height:25px;
+    line-height:25px;
+    padding:0px 6px;
+    cursor:pointer;
+    border-radius:6px;
+    background-color:#4a90e2;
+    color:#ffffff;
+    text-align:center;
+}
+
+.stat_table_content{
+    width:calc(100% - 100px);
+    padding:50px 50px;
+}
+.stat_table{
+    border:2px solid #ffffff;
+    width:100%;
+    font-size:16px;
+}
+.stat_table tr{
+    
+}
+.stat_table th{
+    color:#ffffff;
+    height:50px;
+    text-align:center;
+    padding:10px 10px;
+    background-color:#6096E6;
+}
+.stat_table td{
+    color:#000000;
+    height:50px;
+    text-align: center;
+    padding:10px 10px;
+    background-color:#D2DDF5;
+}
+
+.stat_ps_item{
+    width:100%;
+    height:40px;
+    display:flex;
+    align-items: center;
+    border-bottom:1px solid #dedede;
+}
+.stat_ps_item:hover{
+    background-color:#dedede;
+}
+
+.stat_chat_content{
+    width:calc(100% - 100px);
+    height:auto;
+    padding:0px 50px 50px 50px;
+}

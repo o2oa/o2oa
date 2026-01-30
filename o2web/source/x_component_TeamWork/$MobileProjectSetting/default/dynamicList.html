@@ -1,0 +1,13 @@
+{{each $.data}}
+    <div class="tw-ps-dy-item">
+        <div class="tw-ps-dy-item-icon"><div>{{$.operator.substring(0,1)}}</div></div>
+        <div class="tw-ps-dy-item-content">
+            <div class="tw-ps-dy-item-user">{{$.operator.split("@")[0]}}</div>
+            <div class="tw-ps-dy-item-value">{{$.description}}</div>
+            <div class="tw-ps-dy-item-time">{{$.createTime}}</div>
+        </div>
+    </div>  
+
+{{end each}}
+
+

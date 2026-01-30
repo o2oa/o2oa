@@ -1,0 +1,34 @@
+<div class="tableBody">
+    {{if $.data.length}}
+    <table>
+        <colgroup><col width="100"></colgroup>
+        <tbody>
+
+        {{each $.data}}
+
+        <tr class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; o2load:loadItemFlag">
+
+            <td style="text-align: left;" data-o2-events="click:open:{{$.id}}">
+                <div class="listItemTitle" style="display: flex" >
+                    <div class="listItemTitleIcon">
+                        <img src="../x_component_Drive/$Main/default/filetype/folder.png" class="{{$.id}}">
+                    </div>
+                    <div class="listItemTitleSubject">
+                        {{$.name}}
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {{end each}}
+        </tbody>
+    </table>
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            移动到该文件夹
+        </div>
+    </div>
+    {{end if}}
+</div>
