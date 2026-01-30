@@ -63,6 +63,7 @@
 		<module>x_pan_core_entity</module>
 		<module>x_custom_index_core_entity</module>
 		<module>x_onlyofficefile_core_entity</module>
+		<module>x_teamwork_core_entity</module>
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
@@ -99,6 +100,7 @@
 		<module>x_query_service_processing</module>
 		<module>x_custom_index_assemble_control</module>
 		<module>x_onlyofficefile_assemble_control</module>
+		<module>x_teamwork_assemble_control</module>
 		<module>x_program_center</module>
 		<module>x_program_init</module>
 		<module>x_console</module>
@@ -1203,6 +1205,11 @@
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_onlyofficefile_core_entity</artifactId>
+				<version>10.0-ee</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_teamwork_core_entity</artifactId>
 				<version>10.0-ee</version>
 			</dependency>
 			<dependency>

@@ -12,9 +12,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_onlyofficefile_assemble_control;
 import com.x.onlyofficefile.assemble.control.ThisApplication;
 import com.x.onlyofficefile.assemble.control.jaxrs.onlyoffice.utility.ConfigManager;
-import com.x.onlyofficefile.assemble.control.x_onlyofficefile_assemble_control;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -43,7 +43,8 @@ public class ActionUpdateConfig extends BaseAction {
                 Config.url_x_program_center_jaxrs("config", "save"), configWi);
 
         //刷新配置文件
-        List<Application> apps = ThisApplication.context().applications().get(x_onlyofficefile_assemble_control.class);
+        List<Application> apps = ThisApplication.context().applications().get(
+                x_onlyofficefile_assemble_control.class);
         if (ListTools.isNotEmpty(apps)) {
             apps.stream().forEach(o -> {
                 String url = o.getUrlJaxrsRoot() + "onlyofficeconfig/refresh?timestamp=" + System.currentTimeMillis();

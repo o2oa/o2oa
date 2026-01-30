@@ -17,10 +17,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_onlyofficefile_assemble_control;
 import com.x.onlyofficefile.assemble.control.Business;
 import com.x.onlyofficefile.assemble.control.ThisApplication;
 import com.x.onlyofficefile.assemble.control.jaxrs.onlyoffice.entities.FileModel;
-import com.x.onlyofficefile.assemble.control.x_onlyofficefile_assemble_control;
 import com.x.onlyofficefile.core.entity.OnlyOfficeFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +59,8 @@ public class ActionCreateForO2 extends BaseAction {
         wi.setDocId(wi.getWorkId());
         logger.info("{}在线编辑创建附件：{} 到应用：{} 的文档：{}", effectivePerson.getDistinguishedName(), wi.getFileName(), wi.getAppToken(), wi.getWorkId());
 
-        String appUr = ThisApplication.context().applications().randomWithWeight(x_onlyofficefile_assemble_control.class.getName()).getUrlJaxrsRoot();
+        String appUr = ThisApplication.context().applications().randomWithWeight(
+                x_onlyofficefile_assemble_control.class.getName()).getUrlJaxrsRoot();
         String fileUrl = StringUtils.substringBeforeLast(appUr, "jaxrs") + "template/blank." + ext;
         if(StringUtils.isNotBlank(wi.getTempId())){
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
