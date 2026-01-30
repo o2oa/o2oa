@@ -1754,7 +1754,7 @@
 
     .form-layout .page-content-section div[mwftype='statement'] > div > div.viewPageAreaNode > div {
         height: 2em !important;
-        margin-top: 1em !important;
+        margin-top: 0 !important;
         margin-bottom: 1rem;
     }
 
