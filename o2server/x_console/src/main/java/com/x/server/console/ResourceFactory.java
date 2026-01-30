@@ -10,9 +10,6 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
-import com.x.base.core.project.config.ExternalDataSource;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.H2Tools;
 import com.x.base.core.project.tools.JarTools;
@@ -44,7 +41,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 
 /**
@@ -53,8 +49,6 @@ import org.eclipse.jetty.plus.jndi.Resource;
  *
  */
 public class ResourceFactory {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFactory.class);
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
@@ -87,26 +81,7 @@ public class ResourceFactory {
 	 * @throws Exception
 	 */
 	private static void initDataSources() throws Exception {
-		if (!checkLicense()) {
-			LOGGER.print(Config.LICENSE_TIP);
-			return;
-		}
-		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
-			external();
-		} else {
-			internal();
-		}
-	}
-
-	private static boolean checkLicense() {
-		try {
-			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
-			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
-			return BooleanUtils.isTrue(result);
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return false;
+		internal();
 	}
 
 	/**

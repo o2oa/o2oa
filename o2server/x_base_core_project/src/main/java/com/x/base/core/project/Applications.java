@@ -58,6 +58,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			x_custom_index_assemble_control.class.getName(), x_onlyofficefile_assemble_control.class.getName(),
 			x_teamwork_assemble_control.class.getName()));
 
+
 	private static final long serialVersionUID = -2416559829493154858L;
 
 	private volatile String token = UUID.randomUUID().toString();

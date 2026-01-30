@@ -1182,12 +1182,20 @@
         grid-template-rows: 3rem calc(100% - 3rem);
         grid-template-columns: 100%;
     }
+    .o2_thirdparty_mobile_browser .appNode{
+        grid-template-rows: calc(100% - 3rem) 3rem;
+    }
     .menuArea{
         width: 100%;
         max-width: unset;
         min-width: unset;
         color: #ffffff;
     }
+    .o2_thirdparty_mobile_browser .menuArea{
+        grid-row: 2 / 3;
+        color: var(--oo-color-text2);
+    }
+            
     .menuTitle{
         font-size: 1rem;
         margin: 0;
@@ -1200,6 +1208,15 @@
         display: flex;
         align-items: center;
     }
+    .o2_thirdparty_mobile_browser .menuTitle{
+        color: var(--oo-color-text2);
+        background-color: #f0f0f0;
+        font-size: 1.5rem;
+        padding: 0 2rem;
+        gap: 1rem;
+    }
+
+
     .appContent{
         height: 100%;
     }
@@ -1207,15 +1224,20 @@
         flex: 100%;
         text-align: center;
     }
+    .o2_thirdparty_mobile_browser .menuTitleText{
+        visibility: hidden;
+    }
+
     .menuTitleAction {
         text-align: right;
         width: unset;
         float: none;
         cursor: pointer;
         flex: 2rem;
-        color: #ffffff;
         height: 3rem;
     }
+
+
     .o2icon-zengjia.mainColor_color{
         color: #ffffff !important;
         font-family: 'ooicon' !important;
@@ -1227,6 +1249,11 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+    .o2_thirdparty_mobile_browser .o2icon-zengjia.mainColor_color{
+        color: var(--oo-color-text2) !important;
+    }
+
+
     .o2icon-zengjia.mainColor_color::before {
         content: "\e6a8";
     }
@@ -1255,6 +1282,16 @@
         scale: 0 0;
         transform-origin: top left;
         /* opacity: 0; */
+    }
+
+    .o2_thirdparty_mobile_browser .menuItemArea{
+        bottom: 3rem;
+        height: calc(100vh - 3rem);
+        padding: 1rem 0;
+        box-sizing: border-box !important;
+        scale: 1 0;
+        transform-origin: bottom center;
+        box-shadow: none;
     }
     .menuItemArea.transition{
         transition: scale 0.2s ease-in-out; 

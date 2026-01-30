@@ -100,8 +100,8 @@ const showContact = () => {
 <template>
   <div class="im-conversation">
       <div class="im-conversation-tab">
-        <div :class="currentTab === 0 ? 'im-conversation-tab-item active' : 'im-conversation-tab-item'" @click="toggleTab"><i class="ooicon-chat"></i></div>
-        <div :class="currentTab === 1 ? 'im-conversation-tab-item active' : 'im-conversation-tab-item'" @click="toggleTab"><i class="ooicon-personnel"></i></div>
+        <div :class="currentTab === 0 ? 'im-conversation-tab-item active' : 'im-conversation-tab-item'" @click="toggleTab" :title="lp.title"><i class="ooicon-chat"></i></div>
+        <div :class="currentTab === 1 ? 'im-conversation-tab-item active' : 'im-conversation-tab-item'" @click="toggleTab" :title="lp.choosePerson"><i class="ooicon-personnel"></i></div>
       </div>
     <div class="im-conversation-container" v-if="currentTab === 0">
       <div class="im-conversation-header">
@@ -111,10 +111,10 @@ const showContact = () => {
           </div>
           <div class="menu" @click="clickChoosePersonCreateChat">{{ lp.choosePersonCreate }}</div>
         </div>
-        <div class="im-btn-icon " @click="clickMyCollectionPage">
+        <div class="im-btn-icon " @click="clickMyCollectionPage"  :title="lp.msgCollectionTitle">
           <i class="ooicon-pentagram"></i>
         </div>
-        <div class="im-btn-icon " @click="clickImConfig" v-if="isAdmin">
+        <div class="im-btn-icon " @click="clickImConfig" v-if="isAdmin" :title="lp.setting">
           <i class="ooicon-config"></i>
         </div>
       </div>

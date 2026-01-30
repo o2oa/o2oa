@@ -16,6 +16,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.H2Tools;
 import com.x.server.console.server.Servers;
+import org.apache.commons.lang3.reflect.MethodUtils;
 
 public class StartCommand {
 
@@ -30,6 +31,10 @@ public class StartCommand {
 
 	private static final Consumer<Matcher> consumer = matcher -> {
 		try {
+			if (!checkLicense()) {
+				LOGGER.print(Config.LICENSE_TIP);
+				return;
+			}
 			String arg = matcher.group(1);
 			if (!StringUtils.endsWithIgnoreCase(arg, "skipInit")
 					&& (StringUtils.equalsIgnoreCase(arg, "init") || ifInitServerNecessary())) {
@@ -55,6 +60,17 @@ public class StartCommand {
 			LOGGER.error(e);
 		}
 	};
+
+	private static boolean checkLicense() {
+		try {
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
+			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
+			return BooleanUtils.isTrue(result);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
+	}
 
 	private static boolean ifInitServerNecessary() {
 		// 密码为空且数据库文件不存在
