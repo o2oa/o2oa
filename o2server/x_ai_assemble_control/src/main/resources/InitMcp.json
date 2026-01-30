@@ -1,543 +1,7 @@
 [
   {
-    "name": "startProcess_apply",
-    "category": "流程",
-    "desc": "为用户提供加班请假流程，创建请假申请流程",
-    "enable": true,
-    "id": "1iu13b0oa-7b98df1b-7387-4f5c-9d60-1a7819751b21-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_startProcess/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "startTime": "${beginTime}",
-        "endTime": "${endTime}",
-        "explain": "${reason}",
-        "person": "${person}",
-        "process": "f924a80e-e809-41ae-98de-ef656c918ed7",
-        "number": "${overtime}",
-        "routeName": "送审批",
-        "opinion": "请审核",
-        "mcp": "startProcess_apply",
-        "type": "${type}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "reason",
-        "desc": "请假事由",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "beginTime",
-        "desc": "请假开始时间, 格式为 2025-01-01",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "endTime",
-        "desc": "请假结束时间, 格式为 2025-01-01",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "overtime",
-        "desc": "请假时长，自动根据开始时间结束时间计算出来天数",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "person",
-        "desc": "当前用户标识",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "type",
-        "desc": "请假类型，从事假  病假  年休假  婚假  产假  陪产假  其他 选一个",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-18 16:43:55",
-    "updateDateTime": "2025-06-18 16:51:08",
-    "extra": {
-      "template": "已经为您提交好请假申请流程，点击查看：",
-      "script": "\nvar item \u003d new Element(\"a\",{\"text\":data.title}).inject(node);\nitem.addEvent(\"click\",function(){\n    var options \u003d {\n        \"workId\": data.work, \"appId\": \"process.Work\"+data.work\n    };\n    layout.openApplication(null, \"process.Work\", options);\n})"
-    },
-    "type": "http"
-  },
-  {
-    "name": "sendMail",
-    "category": "邮件",
-    "desc": "发送邮件，给用户发送邮件，帮用户发邮件",
-    "enable": true,
-    "id": "1itjguucc-e2b70d5b-c0c5-47b9-8f9a-dc02ff433516-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_SendMail/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "person": "${person}",
-        "sendTo": "${sendTo}",
-        "subject": "${subject}",
-        "content": "${content}",
-        "mcp": "sendMail"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "person",
-        "desc": "当前用户标识",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "subject",
-        "desc": "邮件标题",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "content",
-        "desc": "邮件内容",
-        "type": "string",
-        "required": false
-      },
-      {
-        "name": "sendTo",
-        "desc": "收件人",
-        "type": "array",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-13 10:12:37",
-    "updateDateTime": "2025-06-18 15:08:26",
-    "extra": {
-      "template": "邮件发送成功,点击查看邮件。",
-      "script": "node.addEvent(\"click\",function(){\r\n    layout.desktop.openApplication(null, \"portal.Portal\", {\r\n        \"portalId\": \"mail\",\r\n        \"pageId\": \"0b0709c2-02ba-4576-b442-617377882bb6\",\r\n        \"parameters\": {\r\n            \"documentId\" : data.id\r\n        },\r\n        \"appId\": \"portal.Portal\" + data.id\r\n    })\r\n\r\n})\r\n"
-    },
-    "type": "http"
-  },
-  {
-    "name": "queryPerformance",
-    "category": "",
-    "desc": "我的绩效",
-    "enable": false,
-    "id": "1itflcjos-221f11fc-3883-4eab-8364-790a1b344194-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/startProcess/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {},
-      "internalEnable": true
-    },
-    "mcpParameterList": [],
-    "createDateTime": "2025-06-11 22:13:01",
-    "updateDateTime": "2025-06-13 09:46:44",
-    "extra": {},
-    "type": "http"
-  },
-  {
-    "name": "queryMail",
-    "category": "邮件",
-    "desc": "个人邮件，我的邮件，未读邮件，邮件查询",
-    "enable": true,
-    "id": "1itfk4pqn-7a168b15-9c24-4fa5-b658-35fae5f3b899-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_queryMail/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "person": "${person}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "person",
-        "desc": "当前用户标识",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-11 21:51:17",
-    "updateDateTime": "2025-06-18 15:05:42",
-    "extra": {
-      "template": "未读邮件列表:",
-      "script": "dataList \u003d data;\nconst ul \u003d new Element(\"ul\", { \"style\": \"cursor:pointer;\" }).inject(node);\ndataList.each(function (d) {\n    var item \u003d new Element(\"li\", { \"text\": d.subject + \"[\" + d.mailFrom + \"]\" + \"--\" + d.publishTime }).inject(ul);\n    item.addEvent(\"click\", function () {\n        var options \u003d {\n            \"portalId\": \"408de14b-41cf-4327-954d-99c8ad5e225e\",\n            \"pageId\": \"0b0709c2-02ba-4576-b442-617377882bb6\",\n            \"parameters\": {\n                \"documentId\": d.documentId\n            },\n            \"appId\": \"app\u003dportal.Portal\" + d.documentId\n        };\n        layout.openApplication(null, \"portal.Portal\", options);\n    })\n})\n"
-    },
-    "type": "http"
-  },
-  {
-    "name": "statProcess",
-    "category": "流程",
-    "desc": "统计一下本月发文，本季度发文",
-    "enable": true,
-    "id": "1itctcju5-bc94bf24-f528-4c97-bb48-1df10c5cad7b-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/statProcess/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "beginTime": "${beginTime}",
-        "endTime": "${endTime}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "beginTime",
-        "desc": "统计开始时间",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "endTime",
-        "desc": "统计结束时间",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-10 20:35:07",
-    "updateDateTime": "2025-06-23 09:30:38",
-    "extra": {
-      "template": "公文统计：",
-      "script": "o2.load(\u0027/o2_lib/echarts5/echarts.js\u0027, () \u003d\u003e {\n    node.setStyle(\"height\", \"20rem\");\n    node.setStyle(\"width\", \"30rem\");\n    const chart \u003d echarts.init(node);\n\n    const option \u003d {\n        title: {\n            text: \u0027公文数量统计\u0027\n        },\n        tooltip: {},\n        legend: {\n            data: [\u0027部门A\u0027, \u0027部门B\u0027]\n        },\n        xAxis: {\n            type: \u0027category\u0027,\n            data: [\u0027发文\u0027, \u0027收文\u0027, \u0027会议纪要\u0027]\n        },\n        yAxis: {\n            type: \u0027value\u0027\n        },\n        series: [\n            {\n                name: \u0027部门A\u0027,\n                data: [120, 200, 150],\n                type: \u0027bar\u0027\n            },\n            {\n                name: \u0027部门B\u0027,\n                data: [110, 20, 250],\n                type: \u0027bar\u0027\n            }\n        ]\n    };\n\n    chart.setOption(option);\n});"
-    },
-    "type": "http"
-  },
-  {
-    "name": "queryAttendance",
-    "category": "考勤",
-    "desc": "我的考勤，考勤记录，考勤异常记录，本月考勤",
-    "enable": false,
-    "id": "1itchmp90-815600f1-7def-478b-a206-765f9babf7bf-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/queryAttendance/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "person": "${person}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "beginTime",
-        "desc": "开始时间",
-        "type": "string",
-        "required": false
-      },
-      {
-        "name": "endTime",
-        "desc": "结束时间",
-        "type": "string",
-        "required": false
-      }
-    ],
-    "createDateTime": "2025-06-10 17:10:57",
-    "updateDateTime": "2025-06-18 15:13:53",
-    "extra": {
-      "template": "",
-      "script": ""
-    },
-    "type": "http"
-  },
-  {
-    "name": "queryHr",
-    "category": "人力",
-    "desc": "个人查询，通讯录查询，员工档案查询，员工个人信息查询",
-    "enable": true,
-    "id": "1itchilf0-85148c7c-1322-46e0-8944-8bba01897a02-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_queryHr/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "name": "${name}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "name",
-        "desc": "输入要查询的员工姓名或手机号码等信息",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-10 17:08:42",
-    "updateDateTime": "2025-06-14 10:39:12",
-    "extra": {
-      "template": "\u003cdiv style\u003d\"border:1px solid #ddd; border-radius:10px; padding:20px; width:320px; font-family:Arial, sans-serif;\"\u003e\n  \u003ch3 style\u003d\"margin:0; color:#333;\"\u003e${name}\u003c/h3\u003e\n  \u003cp style\u003d\"color:#666; margin:5px 0;\"\u003eID: ${id}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e性别:\u003c/strong\u003e ${genderType\u003d\u003d\"m\"?\"男\":\"女\"} \u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e员工编号:\u003c/strong\u003e ${employee}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e唯一标识:\u003c/strong\u003e ${unique}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e手机号码:\u003c/strong\u003e ${mobile}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e办公电话:\u003c/strong\u003e ${officePhone}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e邮箱:\u003c/strong\u003e ${mail}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e微信:\u003c/strong\u003e ${weixin}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003eQQ:\u003c/strong\u003e ${qq}\u003c/p\u003e\n  \u003cdiv style\u003d\"margin-top:15px; font-size:0.9em; color:#999;\"\u003e—— 企业内部通讯录 ——\u003c/div\u003e\n\u003c/div\u003e",
-      "script": ""
-    },
-    "type": "http"
-  },
-  {
-    "name": "querySalary",
-    "category": "",
-    "desc": "工资查询，员工个人工资查询，我的工资条，工资条，查询指定月份工资，本月工资",
-    "enable": true,
-    "id": "1itch4k4f-aa34ca69-2532-48ab-82f3-5f0a6d9d34d5-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/querySalary/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {},
-      "internalEnable": true
-    },
-    "mcpParameterList": [],
-    "createDateTime": "2025-06-10 17:01:02",
-    "updateDateTime": "2025-06-23 09:33:53",
-    "extra": {
-      "template": "# 工资条 (Pay Slip)\n\n**姓名:** xxx\n**部门:** 技术部  \n**职位:** 软件工程师  \n**发放日期:** 2025年6月10日  \n\n## 工资明细\n\n| 项目             | 金额         |\n|------------------|--------------|\n| 基本工资         | ¥10,000.00   |\n| 绩效奖金         | ¥2,000.00    |\n| 加班费           | ¥800.00      |\n| 其他补贴         | ¥500.00      |\n| **总收入**       | **¥13,300.00** |\n| 社保             | ¥1,200.00    |\n| 公积金           | ¥1,000.00    |\n| 个人所得税       | ¥900.00      |\n| 迟到扣款         | ¥100.00      |\n| **总扣除**       | **¥3,200.00**  |\n| **实发工资**     | **¥10,100.00** |\n\n---",
-      "script": ""
-    },
-    "type": "http"
-  },
-  {
-    "name": "queryCalendar",
-    "category": "日程",
-    "desc": "查询日程安排，查用户日程，我的日程安排",
-    "enable": true,
-    "id": "1itcgr9u1-514d4262-fb76-4b65-8a86-aec57a60e1b2-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_queryCalendar/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "person": "${person}",
-        "startTime": "${startTime}",
-        "endTime": "${endTime}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "person",
-        "desc": "当前用户标识",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "startTime",
-        "desc": "日程开始时间",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "endTime",
-        "desc": "日程结束时间",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-10 16:55:57",
-    "updateDateTime": "2025-06-18 15:38:25",
-    "extra": {
-      "template": "",
-      "script": "            dataList \u003d data;\n            if(dataList.length \u003d\u003d 0 ){\n                new Element(\"div\",{\"text\":\"暂无日程安排\"}).inject(node);\n                return;\n            }\n            const ul \u003d new Element(\"ul\",{\"style\":\"cursor:pointer;\"}).inject(node);\n            dataList.each(function(d){\n                var item \u003d new Element(\"li\", {\"text\": d.startTime + \"~\" + d.endTime + \":\" + d.title}).inject(ul);\n                item.addEvent(\"click\",function(){\n                    const options \u003d {\n                        \"eventId\": d.id,\n                        \"appId\":  \"Calendar\"\n                    };\n                    layout.openApplication(null, \"Calendar\", options);\n                })\n            })"
-    },
-    "type": "http"
-  },
-  {
-    "name": "queryMeeting",
-    "category": "会议",
-    "desc": "查询会议，查询某个时间段会议",
-    "enable": false,
-    "id": "1itcgqd7d-88b10bb2-65f7-4697-a313-1e6959839bee-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/startProcess/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {},
-      "internalEnable": true
-    },
-    "mcpParameterList": [],
-    "createDateTime": "2025-06-10 16:55:27",
-    "updateDateTime": "2025-06-10 16:55:27",
-    "extra": {},
-    "type": "http"
-  },
-  {
-    "name": "createCalendar",
-    "category": "日程",
-    "desc": "创建日程,用户创建日程安排",
-    "enable": true,
-    "id": "1itcc42rp-eb2c1e62-ed68-4254-94f1-a7f57fb2b988-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_createCalendar/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "person": "${person}",
-        "beginTime": "${beginTime}",
-        "endTime": "${endTime}",
-        "subject": "${subject}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "beginTime",
-        "desc": "日程开始时间",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "endTime",
-        "desc": "日程结束时间",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "subject",
-        "desc": "日程内容",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "person",
-        "desc": "当前用户标识",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-10 15:33:21",
-    "updateDateTime": "2025-06-18 15:50:31",
-    "extra": {
-      "template": "已经为您创建好日程，点击查看：",
-      "script": "        const btn \u003d new Element(\"oo-button\",{\"text\":\"查看日程\"}).inject(node);\n        btn.addEvent(\"click\",function (){\n            const options \u003d {\n                \"eventId\": data.id,\n                \"appId\":  \"Calendar\"\n            };\n            layout.openApplication(null, \"Calendar\", options);\n\n        })      "
-    },
-    "type": "http"
-  },
-  {
-    "name": "queryTask",
-    "category": "流程",
-    "desc": "查询用户待办，查询当前用户待办,我的待办",
-    "enable": true,
-    "id": "1it9u99cg-d45aed76-48ba-4b9d-a1db-1e0138c95c5a-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_queryTask/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "person": "${person}"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "person",
-        "desc": "当前用户标识",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-09 16:53:03",
-    "updateDateTime": "2025-06-18 14:29:07",
-    "extra": {
-      "template": "",
-      "script": "dataList \u003d data;\nconst ul \u003d new Element(\"ul\", { \"style\": \"cursor:pointer;\" }).inject(node);\ndataList.each(function (d) {\n    var item \u003d new Element(\"li\", { \"text\": d.title + \"[\" + d.processName + \"]\" }).inject(ul);\n    item.addEvent(\"click\", function () {\n        var options \u003d {\n            \"workId\": d.work, \"appId\": \"process.Work\" + d.work\n        };\n        layout.openApplication(null, \"process.Work\", options);\n    })\n})"
-    },
-    "type": "http"
-  },
-  {
-    "name": "startProcess_overtime",
-    "category": "流程",
-    "desc": "为用户提供加班申请流程，创建加班申请流程",
-    "enable": true,
-    "id": "1it9ic33m-57afb8da-e512-4463-8e97-757a631805aa-Mcp",
-    "httpOption": {
-      "url": "/x_program_center/jaxrs/invoke/MCP_startProcess/execute",
-      "method": "post",
-      "headerMap": {
-        "Content-Type": "application/json"
-      },
-      "bodyMap": {
-        "beginTime": "${beginTime}",
-        "endTime": "${endTime}",
-        "reason": "${reason}",
-        "person": "${person}",
-        "process": "e8a25af5-dafb-484a-a87e-7de1befb2d64",
-        "overtime": "${overtime}",
-        "routeName": "送审批",
-        "opinion": "请审核",
-        "mcp": "startProcess_overtime"
-      },
-      "internalEnable": true
-    },
-    "mcpParameterList": [
-      {
-        "name": "reason",
-        "desc": "加班事由",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "beginTime",
-        "desc": "加班开始时间, 格式为 2025-01-01 12:00:00",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "endTime",
-        "desc": "加班结束时间, 格式为 2025-01-01 12:00:00",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "overtime",
-        "desc": "加班时长，小时，根据开始时间结束时间计算出来",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "person",
-        "desc": "当前用户标识",
-        "type": "string",
-        "required": true
-      }
-    ],
-    "createDateTime": "2025-06-09 13:24:52",
-    "updateDateTime": "2025-06-14 11:02:08",
-    "extra": {
-      "template": "已经为您提交好加班申请流程，点击查看：",
-      "script": "\r\nvar item \u003d new Element(\"a\",{\"text\":data.title}).inject(node);\r\nitem.addEvent(\"click\",function(){\r\n    var options \u003d {\r\n        \"workId\": data.work, \"appId\": \"process.Work\"+data.work\r\n    };\r\n    layout.openApplication(null, \"process.Work\", options);\r\n})"
-    },
-    "type": "http"
-  },
-  {
     "name": "createMeeting",
+    "displayName": "申请会议",
     "category": "会议",
     "desc": "为当前用户创建会议以及会议室预定",
     "enable": true,
@@ -589,11 +53,400 @@
         "required": false
       }
     ],
-    "createDateTime": "2025-06-06 15:27:24",
-    "updateDateTime": "2025-06-19 10:27:58",
+    "createDateTime": "2026-01-28 09:04:46",
+    "updateDateTime": "2026-01-28 15:43:55",
     "extra": {
       "template": "\u003ch2 id\u003d\"-\"\u003e请确认会议信息\u003c/h2\u003e\n\u003ctable\u003e\n  \u003cthead\u003e\n    \u003ctr\u003e\n      \u003cth\u003e项目\u003c/th\u003e\n      \u003cth\u003e详情\u003c/th\u003e\n    \u003c/tr\u003e\n  \u003c/thead\u003e\n  \u003ctbody\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e会议主题\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${subject}\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e会议地点\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${room } \u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e开始时间\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${startTime}\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e结束时间\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${completedTime }\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e\u003cstrong\u003e受邀人员\u003c/strong\u003e\u003c/td\u003e\n      \u003ctd\u003e${inviteList.join(\", \")}\u003c/td\u003e\n    \u003c/tr\u003e\n  \u003c/tbody\u003e\n\u003c/table\u003e\n\u003coo-button\u003e确认预定\u003c/oo-button\u003e",
-      "script": "\n            const msgId \u003d node.get(\"id\");\n            const okNode \u003d node.getElement(\"oo-button\");\n            debugger\n            if(data.extra \u0026\u0026 data.extra.meetingId){\n                const btn \u003d new Element(\"oo-button\",{\"text\":\"查看会议\"}).inject(okNode,\"after\");\n                okNode.hide();\n                btn.addEvent(\"click\",function (){\n                    const options \u003d {\n                        \"meeting\": data.extra.meetingId,\n                        \"appId\":  \"Meeting\"\n                    };\n                    layout.openApplication(null, \"Meeting\", options);\n\n                })       \n                return;\n            }\n            \n            okNode.addEvent(\"click\",function(){\n            const meeting \u003d {\n                    \"subject\": data.subject,\n                    \"room\": data.roomObj.id,\n                    \"startTime\": data.startTime ,\n                    \"completedTime\": data.completedTime,\n                    \"applicant\":layout.user.distinguishedName,\n                    \"invitePersonList\" : data.inviteObjList\n                };\n\n                const action \u003d o2.Actions.load(\"x_meeting_assemble_control\");\n                action.MeetingAction.post(meeting,function( json ){\n                    const btn \u003d new Element(\"oo-button\",{\"text\":\"查看会议\"}).inject(okNode,\"after\");\n\n                    btn.addEvent(\"click\",function (){\n                        debugger\n                        const options \u003d {\n                            \"meeting\": json.data.id,\n                            \"appId\":  \"Meeting\"\n                        };\n                        layout.openApplication(null, \"Meeting\", options);\n\n                    })\n                    okNode.hide();\n                    $OOUI.notice.success(\"提示\", \"会议创建成功\");\n\n\n                    o2.Actions.load(\"x_ai_assemble_control\").ChatAction.writeCompletionExtra({\n                        \"id\" : msgId,\n                        \"extra\" : {\"meetingId\":json.data.id}\n                    },function(){ \n\n                    });\n\n                });\n            })"
+      "indexDesc": "快速申请会议",
+      "indexEnable": "true",
+      "icon": "meeting-room",
+      "script": "\n            const msgId \u003d node.get(\"id\");\n            const okNode \u003d node.getElement(\"oo-button\");\n            debugger\n            if(data.extra \u0026\u0026 data.extra.meetingId){\n                const btn \u003d new Element(\"oo-button\",{\"text\":\"查看会议\"}).inject(okNode,\"after\");\n                okNode.hide();\n                btn.addEvent(\"click\",function (){\n                    const options \u003d {\n                        \"meeting\": data.extra.meetingId,\n                        \"appId\":  \"Meeting\"\n                    };\n                    layout.openApplication(null, \"Meeting\", options);\n\n                })       \n                return;\n            }\n            \n            okNode.addEvent(\"click\",function(){\n            const meeting \u003d {\n                    \"subject\": data.subject,\n                    \"room\": data.roomObj.id,\n                    \"startTime\": data.startTime ,\n                    \"completedTime\": data.completedTime,\n                    \"applicant\":layout.user.distinguishedName,\n                    \"invitePersonList\" : data.inviteObjList\n                };\n\n                const action \u003d o2.Actions.load(\"x_meeting_assemble_control\");\n                action.MeetingAction.post(meeting,function( json ){\n                    const btn \u003d new Element(\"oo-button\",{\"text\":\"查看会议\"}).inject(okNode,\"after\");\n\n                    btn.addEvent(\"click\",function (){\n                        debugger\n                        const options \u003d {\n                            \"meeting\": json.data.id,\n                            \"appId\":  \"Meeting\"\n                        };\n                        layout.openApplication(null, \"Meeting\", options);\n\n                    })\n                    okNode.hide();\n                    $OOUI.notice.success(\"提示\", \"会议创建成功\");\n\n\n                    o2.Actions.load(\"x_ai_assemble_control\").ChatAction.writeCompletionExtra({\n                        \"id\" : msgId,\n                        \"extra\" : {\"meetingId\":json.data.id}\n                    },function(){ \n\n                    });\n\n                });\n            })",
+      "indexPrompt": "帮我创建一个一号会议室会议，时间明天，参会人沈红"
+    },
+    "type": "http"
+  },
+  {
+    "name": "startProcess_overtime",
+    "displayName": "加班申请",
+    "category": "流程",
+    "desc": "为用户提供加班申请流程，创建加班申请流程",
+    "enable": true,
+    "id": "1it9ic33m-57afb8da-e512-4463-8e97-757a631805aa-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_startProcess/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "beginTime": "${beginTime}",
+        "endTime": "${endTime}",
+        "reason": "${reason}",
+        "process": "e8a25af5-dafb-484a-a87e-7de1befb2d64",
+        "overtime": "${overtime}",
+        "routeName": "送审批",
+        "opinion": "请审核",
+        "mcp": "startProcess_overtime",
+        "tmptitle": "的加班申请"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "reason",
+        "desc": "加班事由",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "beginTime",
+        "desc": "加班开始时间, 格式为 2025-01-01 12:00:00",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "加班结束时间, 格式为 2025-01-01 12:00:00",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "overtime",
+        "desc": "加班时长，小时，根据开始时间结束时间计算出来",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2026-01-28 09:04:46",
+    "updateDateTime": "2026-01-28 14:49:08",
+    "extra": {
+      "template": "已经为您提交好加班申请流程，点击查看：",
+      "indexDesc": "快速发起加班申请流程",
+      "indexEnable": "true",
+      "icon": "working_hours",
+      "script": "\r\nvar item \u003d new Element(\"a\",{\"text\":data.title}).inject(node);\r\nitem.addEvent(\"click\",function(){\r\n    var options \u003d {\r\n        \"workId\": data.work, \"appId\": \"process.Work\"+data.work\r\n    };\r\n    layout.openApplication(null, \"process.Work\", options);\r\n})",
+      "indexPrompt": "提交一个加班申请流程，加班事由：项目上线，加班时间晚上八点到九点"
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryTask",
+    "displayName": "待办查询",
+    "category": "流程",
+    "desc": "查询用户待办，查询当前用户待办,我的待办",
+    "enable": true,
+    "id": "1it9u99cg-d45aed76-48ba-4b9d-a1db-1e0138c95c5a-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryTask/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {},
+      "internalEnable": true
+    },
+    "mcpParameterList": [],
+    "createDateTime": "2026-01-28 09:04:46",
+    "updateDateTime": "2026-01-30 14:52:51",
+    "extra": {
+      "template": "",
+      "css": "/*待办*/\n/* 待办列表容器 */\n.todo-container {\n    max-width: 400px;\n    background: white;\n    border-radius: 0.571em;\n    border: 0.071em solid #e5e7eb;\n    overflow: hidden;\n}\n\n/* 待办列表头部 */\n.todo-header {\n    background: #3b82f6;\n    color: white;\n    padding: 1.143em 1.429em;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.todo-header-title {\n    font-size: 1.286em;\n    font-weight: 600;\n    margin: 0;\n}\n\n.todo-header-count {\n    font-size: 0.857em;\n    opacity: 0.9;\n    background: rgba(255, 255, 255, 0.2);\n    padding: 0.357em 0.714em;\n    border-radius: 1em;\n    cursor:pointer;\n}\n\n/* 待办列表内容 */\n.todo-list {\n    padding: 0;\n}\n\n.todo-item {\n    display: flex;\n    align-items: flex-start;\n    padding: 1.143em 1.429em;\n    border-bottom: 0.071em solid #f1f5f9;\n    transition: all 0.2s ease;\n    cursor: pointer;\n}\n\n.todo-item:hover {\n    background-color: #f8fafc;\n}\n\n.todo-item:last-child {\n    border-bottom: none;\n}\n\n/* 待办内容区域 */\n.todo-content {\n    flex: 1;\n    min-width: 0;\n}\n\n/* 标题 */\n.todo-title {\n    font-size: 1.143em;\n    font-weight: 600;\n    color: #1e293b;\n    margin: 0 0 0.357em 0;\n    line-height: 1.4;\n    display: -webkit-box;\n    -webkit-line-clamp: 2;\n    -webkit-box-orient: vertical;\n    overflow: hidden;\n}\n\n/* 元信息区域 */\n.todo-meta {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: 0.714em;\n    margin-top: 0.714em;\n}\n\n.todo-process {\n    font-size: 0.857em;\n    padding: 0.286em 0.714em;\n    border-radius: 0.357em;\n    font-weight: 500;\n    background-color: #f3f4f6;\n    color: #4b5563;\n}\n\n/* 时间 */\n.todo-time {\n    font-size: 0.857em;\n    color: #6b7280;\n    display: flex;\n    align-items: center;\n    gap: 0.357em;\n}\n\n/* 状态指示器 */\n.todo-indicator {\n    width: 0.571em;\n    height: 0.571em;\n    border-radius: 50%;\n    background-color: #3b82f6;\n    margin-right: 0.857em;\n    flex-shrink: 0;\n    margin-top: 0.571em;\n}\n\n.todo-indicator-urgent {\n    background-color: #ef4444;\n}\n\n/* 空状态 */\n.todo-empty {\n    text-align: center;\n    padding: 3.571em 1.429em;\n    color: #9ca3af;\n}\n\n.todo-empty-icon {\n    font-size: 2.857em;\n    margin-bottom: 0.714em;\n    opacity: 0.5;\n}\n\n.todo-empty-text {\n    font-size: 1em;\n    margin: 0;\n}\n",
+      "indexDesc": "快速查询OA中未处理待办",
+      "indexEnable": "true",
+      "icon": "daiban",
+      "script": "\nconst todoData \u003d data.dataList;\nconst total \u003d data.total;\n\n// 生成待办列表HTML\nfunction generateTodoHTML(data) {\n    \n\n    // 如果没有待办事项\n    if (total \u003d\u003d\u003d 0) {\n        return `\n                    \u003cdiv class\u003d\"todo-container\"\u003e\n                        \u003cdiv class\u003d\"todo-header\"\u003e\n                            \u003cspan class\u003d\"todo-header-title\"\u003e待处理事项\u003c/span\u003e\n                            \u003cspan class\u003d\"todo-header-count\"\u003e0项\u003c/span\u003e\n                        \u003c/div\u003e\n                        \u003cdiv class\u003d\"todo-empty\"\u003e\n                            \u003cdiv class\u003d\"todo-empty-icon\"\u003e📋\u003c/div\u003e\n                            \u003cp class\u003d\"todo-empty-text\"\u003e暂无待处理事项\u003c/p\u003e\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                `;\n    }\n\n    let html \u003d `\n                \u003cdiv class\u003d\"todo-container\"\u003e\n                    \u003cdiv class\u003d\"todo-header\"\u003e\n                        \u003cspan class\u003d\"todo-header-title\"\u003e待处理事项\u003c/span\u003e\n                        \u003cspan class\u003d\"todo-header-count\"\u003e${total}项\u003c/span\u003e\n                    \u003c/div\u003e\n                    \u003cdiv class\u003d\"todo-list\"\u003e\n            `;\n\n    // 添加待办事项\n    data.forEach(item \u003d\u003e {\n        // 格式化时间显示\n        const timeStr \u003d formatTimeDisplay(item.time);\n        const indicatorClass \u003d item.urgent ? \u0027todo-indicator todo-indicator-urgent\u0027 : \u0027todo-indicator\u0027;\n\n        html +\u003d `\n                    \u003cdiv class\u003d\"todo-item\" work\u003d\"${item.work}\"\u003e\n                        \u003cdiv class\u003d\"${indicatorClass}\"\u003e\u003c/div\u003e\n                        \u003cdiv class\u003d\"todo-content\"\u003e\n                            \u003cdiv class\u003d\"todo-title\"\u003e${item.title}\u003c/div\u003e\n                            \u003cdiv class\u003d\"todo-meta\"\u003e\n                                \u003cspan class\u003d\"todo-process\"\u003e${item.process}\u003c/span\u003e\n                                \u003cspan class\u003d\"todo-time\"\u003e\n                                    \u003cspan\u003e🕒\u003c/span\u003e\n                                    ${timeStr}\n                                \u003c/span\u003e\n                            \u003c/div\u003e\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                `;\n    });\n\n    html +\u003d `\n                    \u003c/div\u003e\n                \u003c/div\u003e\n            `;\n\n    return html;\n}\n\n// 格式化时间显示\nfunction formatTimeDisplay(timeStr) {\n    return timeStr;\n    const now \u003d new Date();\n    const itemTime \u003d new Date(timeStr);\n\n    // 处理无效日期\n    if (isNaN(itemTime.getTime())) {\n        return \"时间未知\";\n    }\n\n    const diffMs \u003d now - itemTime;\n    const diffHours \u003d diffMs / (1000 * 60 * 60);\n\n    if (diffHours \u003c 1) {\n        const diffMins \u003d Math.floor(diffMs / (1000 * 60));\n        return diffMins \u003c 1 ? \u0027刚刚\u0027 : `${diffMins}分钟前`;\n    } else if (diffHours \u003c 24) {\n        return `${Math.floor(diffHours)}小时前`;\n    } else if (diffHours \u003c 48) {\n        return \u0027昨天\u0027;\n    } else {\n        // 显示具体日期\n        const month \u003d itemTime.getMonth() + 1;\n        const day \u003d itemTime.getDate();\n        const hours \u003d itemTime.getHours().toString().padStart(2, \u00270\u0027);\n        const minutes \u003d itemTime.getMinutes().toString().padStart(2, \u00270\u0027);\n        return `${month}月${day}日 ${hours}:${minutes}`;\n    }\n}\n\n// 初始化\nconst todoHTML \u003d generateTodoHTML(todoData);\nnode.innerHTML \u003d todoHTML;\n\nnode.getElements(\".todo-item\").addEvent(\"click\",function(ev){\n    const el \u003d ev.target.getParent(\".todo-item\")?ev.target.getParent(\".todo-item\"):ev.target;\n    const work \u003d el.get(\"work\");\n        var options \u003d {\n            \"workId\": work, \"appId\": \"process.Work\" + work\n        };\n        layout.openApplication(null, \"process.Work\", options);\n});\nnode.getElement(\".todo-header-count\").addEvent(\"click\",function(){\n    layout.openApplication(null, \"process.workcenter\");\n})",
+      "indexPrompt": "查询下我的待办"
+    },
+    "type": "http"
+  },
+  {
+    "name": "createCalendar",
+    "displayName": "日程安排",
+    "category": "日程",
+    "desc": "创建日程,用户创建日程安排",
+    "enable": true,
+    "id": "1itcc42rp-eb2c1e62-ed68-4254-94f1-a7f57fb2b988-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_createCalendar/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "beginTime": "${beginTime}",
+        "endTime": "${endTime}",
+        "subject": "${subject}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "beginTime",
+        "desc": "日程开始时间",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "日程结束时间",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "subject",
+        "desc": "日程内容",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2026-01-28 09:04:46",
+    "updateDateTime": "2026-01-30 14:55:43",
+    "extra": {
+      "template": "已经为您创建好日程，点击查看：",
+      "css": "",
+      "indexDesc": "快速创建日程",
+      "indexEnable": "true",
+      "icon": "calendar",
+      "script": "        const btn \u003d new Element(\"oo-button\",{\"text\":\"查看日程\"}).inject(node);\n        btn.addEvent(\"click\",function (){\n            const options \u003d {\n                \"eventId\": data.id,\n                \"appId\":  \"Calendar\"\n            };\n            layout.openApplication(null, \"Calendar\", options);\n\n        })      ",
+      "indexPrompt": "创建个 下午三点到五点的 项目讨论日程"
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryCalendar",
+    "displayName": "我的日程",
+    "category": "日程",
+    "desc": "查询日程安排，查用户日程，我的日程安排",
+    "enable": true,
+    "id": "1itcgr9u1-514d4262-fb76-4b65-8a86-aec57a60e1b2-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryCalendar/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "person": "${person}",
+        "startTime": "${startTime}",
+        "endTime": "${endTime}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "person",
+        "desc": "当前用户标识",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "startTime",
+        "desc": "日程开始时间，格式：2026-01-29 10:53:19",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "日程结束时间 格式：2026-01-29 10:53:32",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2026-01-28 09:04:46",
+    "updateDateTime": "2026-01-30 14:38:01",
+    "extra": {
+      "template": "",
+      "css": "/* 日程安排begin */\n.schedule-compact {\n    font-family: -apple-system, BlinkMacSystemFont, \u0027Segoe UI\u0027, system-ui, sans-serif;\n    max-width: 100%;\n    background: white;\n    border-radius: 8px;\n    padding: 16px;\n    border: 1px solid #e5e7eb;\n    box-sizing: border-box;\n}\n\n.date-section {\n    margin-bottom: 20px;\n}\n\n.date-section:last-child {\n    margin-bottom: 0;\n}\n\n.date-header {\n    font-weight: 600;\n    color: #111827;\n    margin-bottom: 10px;\n    padding-bottom: 6px;\n    border-bottom: 1px solid #e5e7eb;\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    font-size: 15px;\n}\n\n.date-day {\n    font-weight: 600;\n}\n\n.date-text {\n    color: #6b7280;\n    font-weight: 500;\n    font-size: 14px;\n}\n\n.schedule-item {\n    display: flex;\n    align-items: center;\n    padding: 10px 12px;\n    margin-bottom: 6px;\n    border-radius: 6px;\n    background: #f9fafb;\n    transition: background 0.2s;\n}\n\n.schedule-item:hover {\n    background: #f3f4f6;\n}\n\n.schedule-item:last-child {\n    margin-bottom: 0;\n}\n\n.time-column {\n    min-width: 130px;\n    font-size: 14px;\n    color: #374151;\n    font-weight: 500;\n    display: flex;\n    align-items: center;\n    gap: 6px;\n}\n\n.time-icon {\n    color: #9ca3af;\n    font-size: 12px;\n}\n\n.details-column {\n    flex: 1;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.event-title {\n    font-size: 14px;\n    font-weight: 500;\n    color: #111827;\n}\n\n.event-category {\n    font-size: 12px;\n    padding: 4px 10px;\n    border-radius: 12px;\n    font-weight: 500;\n    margin-left: 10px;\n}\n\n.all-day-badge {\n    background: #d1fae5;\n    color: #065f46;\n    border-left: 3px solid #10b981;\n}\n\n.normal-event-badge {\n    background: #dbeafe;\n    color: #1e40af;\n    border-left: 3px solid #3b82f6;\n}\n\n.personal-event-badge {\n    background: #fce7f3;\n    color: #9d174d;\n    border-left: 3px solid #ec4899;\n}\n\n.event-color-indicator {\n    display: inline-block;\n    width: 12px;\n    height: 12px;\n    border-radius: 50%;\n    margin-left: 8px;\n}\n\n/* 响应式调整 */\n@media (max-width: 768px) {\n    .time-column {\n        min-width: 110px;\n    }\n}\n/* 日程安排end */",
+      "indexDesc": "查询下我的日程",
+      "indexEnable": "true",
+      "icon": "shitupeizhi3",
+      "script": "\nif (data.length \u003d\u003d 0) {\n    new Element(\"div\", { \"text\": \"暂无日程安排\" }).inject(node);\n    return;\n}\n\nconst scheduleData \u003d data;\n\n// 星期映射\nconst weekDays \u003d [\u0027周日\u0027, \u0027周一\u0027, \u0027周二\u0027, \u0027周三\u0027, \u0027周四\u0027, \u0027周五\u0027, \u0027周六\u0027];\n\n// 格式化日期函数\nfunction formatDate(dateStr) {\n    const date \u003d new Date(dateStr);\n    const year \u003d date.getFullYear();\n    const month \u003d date.getMonth() + 1;\n    const day \u003d date.getDate();\n    const weekDay \u003d weekDays[date.getDay()];\n\n    return {\n        dateText: `${year}年${month}月${day}日`,\n        weekDay: weekDay,\n        dateObj: date\n    };\n}\n\n// 格式化时间函数\nfunction formatTime(dateStr) {\n    const date \u003d new Date(dateStr);\n    const hours \u003d date.getHours().toString().padStart(2, \u00270\u0027);\n    const minutes \u003d date.getMinutes().toString().padStart(2, \u00270\u0027);\n\n    return `${hours}:${minutes}`;\n}\n\n// 获取事件类别\nfunction getEventCategory(event) {\n    if (event.isAllDayEvent) {\n        return \"all-day-badge\";\n    } else if (event.source \u003d\u003d\u003d \"PERSONAL\") {\n        return \"personal-event-badge\";\n    } else {\n        return \"normal-event-badge\";\n    }\n}\n\n// 获取事件类别文本\nfunction getEventCategoryText(event) {\n    if (event.isAllDayEvent) {\n        return \"全天\";\n    } else if (event.source \u003d\u003d\u003d \"PERSONAL\") {\n        return \"个人\";\n    } else {\n        return \"日程\";\n    }\n}\n\n// 获取时间显示文本\nfunction getTimeDisplay(event) {\n    if (event.isAllDayEvent) {\n        return \"全天\";\n    } else {\n        const startTime \u003d formatTime(event.startTimeStr);\n        const endTime \u003d formatTime(event.endTimeStr);\n        return `${startTime} - ${endTime}`;\n    }\n}\n\n// 按日期分组事件\nfunction groupEventsByDate(events) {\n    const grouped \u003d {};\n\n    events.forEach(event \u003d\u003e {\n        // 使用startTime作为日期键\n        const dateKey \u003d event.startTime.split(\u0027 \u0027)[0]; // 只取日期部分\n\n        if (!grouped[dateKey]) {\n            grouped[dateKey] \u003d [];\n        }\n\n        grouped[dateKey].push(event);\n    });\n\n    return grouped;\n}\n\n// 对同一天的事件进行排序（全天事件在前，然后按开始时间排序）\nfunction sortEvents(events) {\n    return events.sort((a, b) \u003d\u003e {\n        // 全天事件排在最前\n        if (a.isAllDayEvent \u0026\u0026 !b.isAllDayEvent) return -1;\n        if (!a.isAllDayEvent \u0026\u0026 b.isAllDayEvent) return 1;\n\n        // 非全天事件按开始时间排序\n        if (!a.isAllDayEvent \u0026\u0026 !b.isAllDayEvent) {\n            return new Date(a.startTimeStr) - new Date(b.startTimeStr);\n        }\n\n        return 0;\n    });\n}\n\n// 生成HTML\nfunction generateScheduleHTML(events) {\n    // 按日期分组\n    const groupedEvents \u003d groupEventsByDate(events);\n\n    // 获取所有日期并排序\n    const dates \u003d Object.keys(groupedEvents).sort();\n\n    let html \u003d \u0027\u003cdiv class\u003d\"schedule-compact\"\u003e\u0027;\n\n    dates.forEach(dateKey \u003d\u003e {\n        const dateInfo \u003d formatDate(dateKey);\n        const dayEvents \u003d groupedEvents[dateKey];\n\n        // 对当天事件进行排序\n        const sortedEvents \u003d sortEvents(dayEvents);\n\n        html +\u003d `\n                \u003cdiv class\u003d\"date-section\"\u003e\n                    \u003cdiv class\u003d\"date-header\"\u003e\n                        \u003cspan class\u003d\"date-day\"\u003e${dateInfo.weekDay}\u003c/span\u003e\n                        \u003cspan class\u003d\"date-text\"\u003e${dateInfo.dateText}\u003c/span\u003e\n                    \u003c/div\u003e`;\n\n        sortedEvents.forEach(event \u003d\u003e {\n            const timeDisplay \u003d getTimeDisplay(event);\n            const eventCategory \u003d getEventCategory(event);\n            const categoryText \u003d getEventCategoryText(event);\n\n            html +\u003d `\n                    \u003cdiv class\u003d\"schedule-item\"\u003e\n                        \u003cdiv class\u003d\"time-column\"\u003e\n                            \u003cspan class\u003d\"time-icon\"\u003e${event.isAllDayEvent ? \u0027📅\u0027 : \u0027⏰\u0027}\u003c/span\u003e\n                            ${timeDisplay}\n                        \u003c/div\u003e\n                        \u003cdiv class\u003d\"details-column\"\u003e\n                            \u003cdiv class\u003d\"event-title\"\u003e\n                                ${event.title}\n                                \u003cspan class\u003d\"event-color-indicator\" style\u003d\"background-color: ${event.color};\"\u003e\u003c/span\u003e\n                            \u003c/div\u003e\n                            \u003cdiv class\u003d\"event-category ${eventCategory}\"\u003e${categoryText}\u003c/div\u003e\n                        \u003c/div\u003e\n                    \u003c/div\u003e`;\n        });\n\n        html +\u003d `\u003c/div\u003e`;\n    });\n\n    html +\u003d \u0027\u003c/div\u003e\u0027;\n\n    return html;\n}\n\nconst scheduleHTML \u003d generateScheduleHTML(scheduleData);\nnode.set(\"html\", scheduleHTML)",
+      "indexPrompt": "查询我的日程"
+    },
+    "type": "http"
+  },
+  {
+    "name": "querySalary",
+    "displayName": "工资查询",
+    "category": "人力",
+    "desc": "工资查询，员工个人工资查询，我的工资条，工资条，查询指定月份工资，本月工资",
+    "enable": true,
+    "id": "1itch4k4f-aa34ca69-2532-48ab-82f3-5f0a6d9d34d5-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_querySalary/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "month": "${month}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "month",
+        "desc": "获取用户查询的工资月份格式化为 2026-01",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2026-01-28 09:04:46",
+    "updateDateTime": "2026-01-30 14:49:19",
+    "extra": {
+      "template": "",
+      "css": "/* 工资条 */\n.salary-payslip {\n    max-width: 400px;\n    background: white;\n    border-radius: 0.571em;\n    border: 0.071em solid #e5e7eb;\n    overflow: hidden;\n}\n\n/* 头部 */\n.salary-header {\n    background: #3b82f6;\n    color: white;\n    padding: 1.143em;\n}\n\n.salary-title {\n    font-size: 1.286em;\n    font-weight: 600;\n    margin: 0 0 0.286em 0;\n}\n\n.salary-subtitle {\n    font-size: 1em;\n    opacity: 0.9;\n    margin: 0;\n}\n\n/* 基本信息 */\n.salary-info-grid {\n    display: grid;\n    grid-template-columns: repeat(2, 1fr);\n    gap: 0.857em;\n    padding: 1.143em;\n    background: #f8fafc;\n    border-bottom: 0.071em solid #e5e7eb;\n}\n\n.salary-info-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.salary-label {\n    font-size: 0.857em;\n    color: #64748b;\n    margin-bottom: 0.286em;\n}\n\n.salary-value {\n    font-size: 1em;\n    color: #1e293b;\n    font-weight: 500;\n}\n\n/* 金额明细 */\n.salary-details {\n    padding: 1.143em;\n}\n\n.salary-section {\n    margin-bottom: 1.143em;\n}\n\n.salary-section-title {\n    font-size: 1em;\n    font-weight: 600;\n    color: #1e293b;\n    margin: 0 0 0.571em 0;\n    padding-bottom: 0.429em;\n    border-bottom: 0.071em solid #e5e7eb;\n}\n\n.salary-item-row {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    padding: 0.571em 0;\n    border-bottom: 0.071em solid #f1f5f9;\n}\n\n.salary-item-row:last-child {\n    border-bottom: none;\n}\n\n.salary-item-name {\n    font-size: 1em;\n    color: #475569;\n}\n\n.salary-item-amount {\n    font-size: 1em;\n    font-weight: 500;\n}\n\n.salary-positive {\n    color: #10b981;\n}\n\n.salary-negative {\n    color: #ef4444;\n}\n\n/* 总计 */\n.salary-total {\n    padding: 1.143em;\n    background: #f8fafc;\n    border-top: 0.143em solid #e5e7eb;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.salary-total-label {\n    font-size: 1.143em;\n    font-weight: 600;\n    color: #1e293b;\n}\n\n.salary-total-amount {\n    font-size: 1.429em;\n    font-weight: 700;\n    color: #3b82f6;\n}\n\n/* 底部 */\n.salary-footer {\n    padding: 0.857em 1.143em;\n    border-top: 0.071em solid #e5e7eb;\n    font-size: 0.857em;\n    color: #64748b;\n    text-align: center;\n}\n/*工资end*/",
+      "indexDesc": "",
+      "indexEnable": "true",
+      "icon": "asset",
+      "script": "console.log(data)\n\n// 格式化金额\nfunction formatCurrency(amount) {\n    return amount.toLocaleString(\u0027zh-CN\u0027, {\n        minimumFractionDigits: 2,\n        maximumFractionDigits: 2\n    });\n}\n\n// 生成工资条HTML\nfunction generateSalaryHTML(data) {\n    // 计算应发总额\n    const totalEarnings \u003d data.earnings.reduce((sum, item) \u003d\u003e sum + item.amount, 0);\n\n    // 计算扣款总额\n    const totalDeductions \u003d data.deductions.reduce((sum, item) \u003d\u003e sum + item.amount, 0);\n\n    // 计算实发工资\n    const netPay \u003d totalEarnings - totalDeductions;\n\n    let html \u003d `\n                \u003cdiv class\u003d\"salary-payslip\"\u003e\n                    \u003c!-- 头部 --\u003e\n                    \u003cdiv class\u003d\"salary-header\"\u003e\n                        \u003cdiv class\u003d\"salary-title\"\u003e工资条\u003c/div\u003e\n                        \u003cdiv class\u003d\"salary-subtitle\"\u003e${data.period}\u003c/div\u003e\n                    \u003c/div\u003e\n                    \n                    \u003c!-- 员工信息 --\u003e\n                    \u003cdiv class\u003d\"salary-info-grid\"\u003e\n                        \u003cdiv class\u003d\"salary-info-item\"\u003e\n                            \u003cspan class\u003d\"salary-label\"\u003e姓名\u003c/span\u003e\n                            \u003cspan class\u003d\"salary-value\"\u003e${data.name}\u003c/span\u003e\n                        \u003c/div\u003e\n                        \u003cdiv class\u003d\"salary-info-item\"\u003e\n                            \u003cspan class\u003d\"salary-label\"\u003e工号\u003c/span\u003e\n                            \u003cspan class\u003d\"salary-value\"\u003e${data.employeeId}\u003c/span\u003e\n                        \u003c/div\u003e\n                        \u003cdiv class\u003d\"salary-info-item\"\u003e\n                            \u003cspan class\u003d\"salary-label\"\u003e部门\u003c/span\u003e\n                            \u003cspan class\u003d\"salary-value\"\u003e${data.department}\u003c/span\u003e\n                        \u003c/div\u003e\n                        \u003cdiv class\u003d\"salary-info-item\"\u003e\n                            \u003cspan class\u003d\"salary-label\"\u003e发放日期\u003c/span\u003e\n                            \u003cspan class\u003d\"salary-value\"\u003e${data.payDate}\u003c/span\u003e\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                    \n                    \u003c!-- 金额明细 --\u003e\n                    \u003cdiv class\u003d\"salary-details\"\u003e\n                        \u003c!-- 应发项目 --\u003e\n                        \u003cdiv class\u003d\"salary-section\"\u003e\n                            \u003ch3 class\u003d\"salary-section-title\"\u003e应发项目 (合计: ¥${formatCurrency(totalEarnings)})\u003c/h3\u003e\n            `;\n\n    // 添加应发项目\n    data.earnings.forEach(item \u003d\u003e {\n        html +\u003d `\n                    \u003cdiv class\u003d\"salary-item-row\"\u003e\n                        \u003cspan class\u003d\"salary-item-name\"\u003e${item.name}\u003c/span\u003e\n                        \u003cspan class\u003d\"salary-item-amount salary-positive\"\u003e${formatCurrency(item.amount)}\u003c/span\u003e\n                    \u003c/div\u003e\n                `;\n    });\n\n    html +\u003d `\n                        \u003c/div\u003e\n                        \n                        \u003c!-- 扣款项目 --\u003e\n                        \u003cdiv class\u003d\"salary-section\"\u003e\n                            \u003ch3 class\u003d\"salary-section-title\"\u003e扣款项目 (合计: ¥${formatCurrency(totalDeductions)})\u003c/h3\u003e\n            `;\n\n    // 添加扣款项目\n    data.deductions.forEach(item \u003d\u003e {\n        html +\u003d `\n                    \u003cdiv class\u003d\"salary-item-row\"\u003e\n                        \u003cspan class\u003d\"salary-item-name\"\u003e${item.name}\u003c/span\u003e\n                        \u003cspan class\u003d\"salary-item-amount salary-negative\"\u003e-${formatCurrency(item.amount)}\u003c/span\u003e\n                    \u003c/div\u003e\n                `;\n    });\n\n    html +\u003d `\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                    \n                    \u003c!-- 总计 --\u003e\n                    \u003cdiv class\u003d\"salary-total\"\u003e\n                        \u003cspan class\u003d\"salary-total-label\"\u003e实发工资\u003c/span\u003e\n                        \u003cspan class\u003d\"salary-total-amount\"\u003e¥${formatCurrency(netPay)}\u003c/span\u003e\n                    \u003c/div\u003e\n                    \n                    \u003c!-- 底部 --\u003e\n                    \u003cdiv class\u003d\"salary-footer\"\u003e\n                        ${data.footerNote}\n                    \u003c/div\u003e\n                \u003c/div\u003e\n            `;\n\n    return html;\n}\n\n\n\nconst salaryHTML \u003d generateSalaryHTML(data);\nnode.innerHTML \u003d salaryHTML;\n",
+      "indexPrompt": ""
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryHr",
+    "displayName": "通讯录查询",
+    "category": "人力",
+    "desc": "个人查询，通讯录查询，员工档案查询，员工个人信息查询",
+    "enable": true,
+    "id": "1itchilf0-85148c7c-1322-46e0-8944-8bba01897a02-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryHr/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "name": "${name}"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "name",
+        "desc": "输入要查询的员工姓名或手机号码等信息",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2026-01-28 09:04:45",
+    "updateDateTime": "2026-01-30 14:55:55",
+    "extra": {
+      "template": "\u003cdiv style\u003d\"border:1px solid #ddd; border-radius:10px; padding:20px; width:320px; font-family:Arial, sans-serif;\"\u003e\n  \u003ch3 style\u003d\"margin:0; color:#333;\"\u003e${name}\u003c/h3\u003e\n  \u003cp style\u003d\"color:#666; margin:5px 0;\"\u003eID: ${id}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e性别:\u003c/strong\u003e ${genderType\u003d\u003d\"m\"?\"男\":\"女\"} \u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e员工编号:\u003c/strong\u003e ${employee}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e唯一标识:\u003c/strong\u003e ${unique}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e手机号码:\u003c/strong\u003e ${mobile}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e办公电话:\u003c/strong\u003e ${officePhone}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e邮箱:\u003c/strong\u003e ${mail}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003e微信:\u003c/strong\u003e ${weixin}\u003c/p\u003e\n  \u003cp style\u003d\"margin:5px 0;\"\u003e\u003cstrong\u003eQQ:\u003c/strong\u003e ${qq}\u003c/p\u003e\n  \u003cdiv style\u003d\"margin-top:15px; font-size:0.9em; color:#999;\"\u003e—— 企业内部通讯录 ——\u003c/div\u003e\n\u003c/div\u003e",
+      "css": "",
+      "indexDesc": "查询企业内部通讯录",
+      "indexEnable": "true",
+      "icon": "gongzuolianxidan",
+      "script": "",
+      "indexPrompt": "查询【某某】手机号"
+    },
+    "type": "http"
+  },
+  {
+    "name": "queryMail",
+    "displayName": "查询邮件",
+    "category": "邮件",
+    "desc": "个人邮件，我的邮件，未读邮件，邮件查询",
+    "enable": true,
+    "id": "1itfk4pqn-7a168b15-9c24-4fa5-b658-35fae5f3b899-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_queryMail/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {},
+      "internalEnable": true
+    },
+    "mcpParameterList": [],
+    "createDateTime": "2026-01-28 09:04:45",
+    "updateDateTime": "2026-01-30 14:55:58",
+    "extra": {
+      "template": "",
+      "css": "\n/* 邮件列表容器 */\n.email-container {\n    font-family: -apple-system, BlinkMacSystemFont, \u0027Segoe UI\u0027, system-ui, sans-serif;\n    max-width: 400px;\n    background: white;\n    border-radius: 0.571em;\n    border: 0.071em solid #e5e7eb;\n    overflow: hidden;\n}\n\n/* 邮件列表头部 */\n.email-header {\n    background: #3b82f6;\n    color: white;\n    padding: 1.143em 1.429em;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n}\n\n.email-title {\n    font-size: 1.286em;\n    font-weight: 600;\n    margin: 0;\n}\n\n.email-count {\n    font-size: 0.857em;\n    opacity: 0.9;\n    background: rgba(255, 255, 255, 0.2);\n    padding: 0.357em 0.714em;\n    border-radius: 1em;\n}\n\n/* 邮件列表内容 */\n.email-list {\n    padding: 0;\n}\n\n.email-item {\n    display: flex;\n    align-items: flex-start;\n    padding: 1em;\n    border-bottom: 0.071em solid #f1f5f9;\n    transition: all 0.2s ease;\n    cursor: pointer;\n}\n\n.email-item:hover {\n    background-color: #f8fafc;\n}\n\n.email-item:last-child {\n    border-bottom: none;\n}\n\n/* 邮件内容区域 */\n.email-content {\n    flex: 1;\n    min-width: 0;\n}\n\n/* 邮件标题 */\n.email-subject {\n    color: #1e293b;\n    margin: 0 0 0.714em 0;\n    line-height: 1;\n    display: -webkit-box;\n    -webkit-line-clamp: 2;\n    -webkit-box-orient: vertical;\n    overflow: hidden;\n}\n\n/* 发件人和时间行 */\n.email-info {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: 0.5em;\n}\n\n/* 发件人 */\n.email-sender {\n    font-size: 0.857em;\n    color: #4b5563;\n    display: -webkit-box;\n    -webkit-line-clamp: 1;\n    -webkit-box-orient: vertical;\n    overflow: hidden;\n    flex: 1;\n    min-width: 0;\n}\n\n/* 时间 */\n.email-time {\n    font-size: 0.857em;\n    color: #6b7280;\n    display: flex;\n    align-items: center;\n    gap: 0.357em;\n    flex-shrink: 0;\n}\n\n/* 状态指示器 */\n.email-indicator {\n    width: 0.571em;\n    height: 0.571em;\n    border-radius: 50%;\n    background-color: #3b82f6;\n    margin-right: 0.857em;\n    flex-shrink: 0;\n    margin-top: 0.571em;\n}\n\n/* 空状态 */\n.email-empty {\n    text-align: center;\n    padding: 3.571em 1.429em;\n    color: #9ca3af;\n}\n\n.email-empty-icon {\n    font-size: 2.857em;\n    margin-bottom: 0.714em;\n    opacity: 0.5;\n}\n\n.email-empty-text {\n    font-size: 1em;\n    margin: 0;\n}\n",
+      "indexDesc": "查询个人邮件",
+      "indexEnable": "true",
+      "icon": "mail2",
+      "script": "// dataList \u003d data;\n// const ul \u003d new Element(\"ul\", { \"style\": \"cursor:pointer;\" }).inject(node);\n// dataList.each(function (d) {\n//     var item \u003d new Element(\"li\", { \"text\": d.subject + \"[\" + d.mailFrom + \"]\" + \"--\" + d.publishTime }).inject(ul);\n//     item.addEvent(\"click\", function () {\n//         var options \u003d {\n//             \"portalId\": \"408de14b-41cf-4327-954d-99c8ad5e225e\",\n//             \"pageId\": \"0b0709c2-02ba-4576-b442-617377882bb6\",\n//             \"parameters\": {\n//                 \"documentId\": d.documentId\n//             },\n//             \"appId\": \"app\u003dportal.Portal\" + d.documentId\n//         };\n//         layout.openApplication(null, \"portal.Portal\", options);\n//     })\n// })\n\n\n// 生成邮件列表HTML\nfunction generateEmailHTML(data) {\n    const total \u003d data.length;\n\n    if (total \u003d\u003d\u003d 0) {\n        return `\n                    \u003cdiv class\u003d\"email-container\"\u003e\n                        \u003cdiv class\u003d\"email-header\"\u003e\n                            \u003cspan class\u003d\"email-title\"\u003e我的邮件\u003c/span\u003e\n                        \u003c/div\u003e\n                        \u003cdiv class\u003d\"email-empty\"\u003e\n                            \u003cdiv class\u003d\"email-empty-icon\"\u003e📧\u003c/div\u003e\n                            \u003cp class\u003d\"email-empty-text\"\u003e暂无未读邮件\u003c/p\u003e\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                `;\n    }\n\n    let html \u003d `\n                \u003cdiv class\u003d\"email-container\"\u003e\n                    \u003cdiv class\u003d\"email-header\"\u003e\n                        \u003cspan class\u003d\"email-title\"\u003e我的邮件\u003c/span\u003e\n                    \u003c/div\u003e\n                    \u003cdiv class\u003d\"email-list\"\u003e\n            `;\n\n    data.forEach(item \u003d\u003e {\n        const timeStr \u003d formatTimeDisplay(item.time);\n\n        html +\u003d `\n                    \u003cdiv class\u003d\"email-item\" docid\u003d\"${item.id}\"\u003e\n                        \u003cdiv class\u003d\"email-indicator\" ${!item.unread ? \u0027style\u003d\"background-color: #9ca3af;\"\u0027 : \u0027\u0027}\u003e\u003c/div\u003e\n                        \u003cdiv class\u003d\"email-content\"\u003e\n                            \u003cdiv class\u003d\"email-subject\"\u003e${item.subject}\u003c/div\u003e\n                            \u003cdiv class\u003d\"email-info\"\u003e\n                                \u003cspan class\u003d\"email-sender\"\u003e${item.sender}\u003c/span\u003e\n                                \u003cspan class\u003d\"email-time\"\u003e${timeStr}\u003c/span\u003e\n                            \u003c/div\u003e\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                `;\n    });\n\n    html +\u003d `\n                    \u003c/div\u003e\n                \u003c/div\u003e\n            `;\n\n    return html;\n}\n\n// 格式化时间显示\nfunction formatTimeDisplay(timeStr) {\n    const now \u003d new Date();\n    const itemTime \u003d new Date(timeStr);\n\n    if (isNaN(itemTime.getTime())) {\n        return \"时间未知\";\n    }\n\n    const diffMs \u003d now - itemTime;\n    const diffHours \u003d diffMs / (1000 * 60 * 60);\n\n    if (diffHours \u003c 1) {\n        const diffMins \u003d Math.floor(diffMs / (1000 * 60));\n        return diffMins \u003c 1 ? \u0027刚刚\u0027 : `${diffMins}分钟前`;\n    } else if (diffHours \u003c 24) {\n        return `${Math.floor(diffHours)}小时前`;\n    } else if (diffHours \u003c 48) {\n        return \u0027昨天\u0027;\n    } else {\n        const month \u003d itemTime.getMonth() + 1;\n        const day \u003d itemTime.getDate();\n        return `${month}月${day}日`;\n    }\n}\n\n\nconst emailHTML \u003d generateEmailHTML(data);\nnode.innerHTML \u003d emailHTML;\n\nnode.getElements(\".email-item\").addEvent(\"click\", function (ev) {\n    const el \u003d ev.target.getParent(\".email-item\") ? ev.target.getParent(\".email-item\") : ev.target;\n    const docid \u003d el.get(\"docid\");\n    if (layout.mobile) {\n        window.location \u003d \"../x_desktop/cmsdocmobilewithaction.html?id\u003d\" + docid + \"\u0026readonly\u003dtrue\"\n    } else {\n        var options \u003d {\n            \"documentId\": docid,\n            \"appId\": \"cms.Document\" + docid\n        };\n        layout.openApplication(null, \"cms.Document\", options);\n    }\n});",
+      "indexPrompt": "我的邮件"
+    },
+    "type": "http"
+  },
+  {
+    "name": "startProcess_apply",
+    "displayName": "请假申请",
+    "category": "流程",
+    "desc": "为用户提供加班请假流程，创建请假申请流程",
+    "enable": true,
+    "id": "1iu13b0oa-7b98df1b-7387-4f5c-9d60-1a7819751b21-Mcp",
+    "httpOption": {
+      "url": "/x_program_center/jaxrs/invoke/MCP_startProcess/execute",
+      "method": "post",
+      "headerMap": {
+        "Content-Type": "application/json"
+      },
+      "bodyMap": {
+        "startTime": "${beginTime}",
+        "endTime": "${endTime}",
+        "explain": "${reason}",
+        "process": "f924a80e-e809-41ae-98de-ef656c918ed7",
+        "number": "${overtime}",
+        "routeName": "送审批",
+        "opinion": "请审核",
+        "mcp": "startProcess_apply",
+        "type": "${type}",
+        "tmptitle": "的加班申请单"
+      },
+      "internalEnable": true
+    },
+    "mcpParameterList": [
+      {
+        "name": "reason",
+        "desc": "请假事由",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "beginTime",
+        "desc": "请假开始时间, 格式为 2025-01-01",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "desc": "请假结束时间, 格式为 2025-01-01",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "overtime",
+        "desc": "请假时长，自动根据开始时间结束时间计算出来天数",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "type",
+        "desc": "请假类型，从事假  病假  年休假  婚假  产假  陪产假  其他 选一个",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "createDateTime": "2026-01-28 09:04:45",
+    "updateDateTime": "2026-01-29 13:14:30",
+    "extra": {
+      "template": "已经为您提交好请假申请流程，点击查看：",
+      "indexDesc": "快速发起请假申请",
+      "indexEnable": "true",
+      "icon": "qingjia",
+      "script": "\nvar item \u003d new Element(\"a\",{\"text\":data.title}).inject(node);\nitem.addEvent(\"click\",function(){\n    var options \u003d {\n        \"workId\": data.work, \"appId\": \"process.Work\"+data.work\n    };\n    layout.openApplication(null, \"process.Work\", options);\n})",
+      "indexPrompt": "提交个事假请假单，家里有事，明天请假一天"
     },
     "type": "http"
   }
