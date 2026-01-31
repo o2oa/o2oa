@@ -7,7 +7,9 @@ layout.addReady(function(){
         var widget = uri.getData("widget");
         var parameters = uri.getData("parameters");
         var statusObj = null;
-        var options = {"portalId": id, "pageId": page, "parameters": parameters, "widgetId":widget };
+        var parData = (parameters) ? JSON.parse(parameters) : {};
+        var options = Object.assign(parData, {"portalId": id, "pageId": page, "parameters": parameters ? JSON.parse(parameters): {}, "widgetId":widget });
+
 
         var _load = function(){
             //o2.require("MWF.xDesktop.MessageMobile", function(){
