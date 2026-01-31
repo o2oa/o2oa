@@ -76,12 +76,41 @@
                 }" name="itemType" text{($.itemType=='dict')?'checked':''} type="radio" value="dict"/>{{$.lp.dict}}
 		    </td>
 		  </tr>
-
 		</table>
 
         <div id="text{$.pid}selectEditItemScript" style="display: text{(!$.itemType || $.itemType=='script')?'block':'none'}" >
             <div class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
-            <div style="padding: 5px">{{$.lp.selectItemScriptInfo}}</div>
+            <div style="padding: 5px;color:dodgerblue;cursor: pointer;" onclick="this.nextElementSibling.showModal()">{{$.lp.selectItemScriptInfo}}。也可以直接使用动态加载选项。</div>
+            <dialog style="border: 1px solid #ccc;border-radius: 8px;box-shadow: 0 2px 10px rgba(0,0,0,0.1);margin: auto;">
+                <h3>使用脚本选项说明</h3>
+                <p>返回一个可选值数组列表，如下：</p>
+                <pre>return [{
+    text: "商品",     //选项文本
+    value: "goods",  //选项值
+    children: [{     //子选项，如果没有children表示叶子节点
+        text: "床上用品",
+        value: "bedding",
+        //子选项也可以使用动态加载的函数，字符串为该函数名。
+        children: "getSubOptions"
+    }]
+}]</pre>
+                <hr>
+                <p>返回一个resolve了可选值数组的Promise对象，如下：</p>
+                <pre>return new Promise((resolve)=>{
+    window.setTimeout(()=>{
+        let items = [{
+            text: "商品",
+            value: "goods",
+            children: [{
+                text: "床上用品",
+                value: "bedding"
+            }]
+        }]
+        resolve(items) //返回选项数据
+    }, 500)
+})</pre>
+                <button onclick="this.parentElement.close()">关闭</button>
+            </dialog>
         </div>
 
         <div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictionaryItemContainer">
@@ -107,6 +136,55 @@
                     </td>
                 </tr>
             </table>
+        </div>
+
+        <div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.lazy}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" onclick="if (this.checked){ this.getParent('div').getNext().show();}" name="lazy" value="true" text{($.lazy===true)?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" onclick="if (this.checked){ this.getParent('div').getNext().hide();}" name="lazy" value="false" text{($.lazy!==true)?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="display: text{($.lazy===true) ? 'block' : 'none'}">
+            <div class="MWFScriptArea" name="lazyLoadScript" title="{{$.lp.lazyLoadScript}} (S)"></div>
+            <div style="padding: 5px; color:dodgerblue;cursor: pointer;" onclick="this.nextElementSibling.showModal()">{{$.lp.description}}</div>
+            <dialog style="border: 1px solid #ccc;border-radius: 8px;box-shadow: 0 2px 10px rgba(0,0,0,0.1);margin: auto;">
+                <h3>动态加载选项说明</h3>
+                <p>需返回一个带名称的函数，该函数返回一个Promise，如下：</p>
+                <p>value为选项值路径，如：['商品','床上用品'，'枕头']。根节点路径为空数组[]。</p>
+                <p>e为触发事件对象，可以通过e.target获取触发的Dom节点。</p>
+                <pre>return function getSubOptions(value, e){
+    return new Promise((resolve)=>{
+        window.setTimeout(()=>{
+            let items;
+            const v = value.at(-1); //返回最后一项
+            if( !v ){ //空，为根节点
+                items = [{
+                    text: "商品", //选项文本
+                    value: "goods",//选项值
+                    //子选项，和返回的方法同名。表示展开该节点继续调用本函数。
+                    children: getSubOptions
+                }]
+            }else if(v === 'goods'){
+                items = [{
+                    text: "床上用品",
+                    value: "bedding",
+                    children: [{
+                        text: "枕头",
+                        value: "pillow"
+                    }]
+                }]
+            }
+            resolve(items) //返回选项数据
+        }, 500)
+    })
+}</pre>
+                <button onclick="this.parentElement.close()">关闭</button>
+            </dialog>
         </div>
 
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
