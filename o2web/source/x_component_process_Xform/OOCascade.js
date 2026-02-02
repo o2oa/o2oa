@@ -85,7 +85,7 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 		if (this.json.showAllLevels) {
 			this.node.setAttribute('show-all-levels', 'true');
 		}else{
-			this.node.removeAttribute('show-all-levels');
+			this.node.setAttribute('show-all-levels', 'false');
 		}
 
 		if (this.json.checkStrictly) {
