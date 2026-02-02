@@ -388,6 +388,10 @@
         gap: 0.5em !important;
     }
 
+    .form-layout .page-widget-text-item-activity {
+        display: none !important;
+    }
+
     .form-layout .page-widget-text-item > .line-text.processName,
     .form-layout .page-widget-text-item > .line-text.activityName,
     .form-layout .page-widget-text-item .line-text.orderNumber {

@@ -300,7 +300,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         appKey: 'portal',
                         portalFlag: options.portalId,
                         portalPage: options.pageId,
-                        parameters: options.parameters,
+                        parameters: options.parameters || {}
                     }
                 }
                 window.flutter_inappwebview.callHandler('o2mUtil', JSON.stringify(body));
@@ -311,7 +311,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         appKey: 'portal',
                         portalFlag: options.portalId,
                         portalPage: options.pageId,
-                        parameters: options.parameters,
+                        parameters: options.parameters || {}
                     }
                 }
                 window.o2mUtil.postMessage(JSON.stringify(body));
