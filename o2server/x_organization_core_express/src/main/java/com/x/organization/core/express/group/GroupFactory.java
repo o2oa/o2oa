@@ -110,17 +110,17 @@ public class GroupFactory {
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(List<String> values) throws Exception {
-		return listWithPersonReference(values, true, false, false);
+		return listWithPersonReference(values, true, true, true);
 	}
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(String... values) throws Exception {
-		return listWithPersonReference(Arrays.asList(values), true, true, false);
+		return listWithPersonReference(Arrays.asList(values), true, true, true);
 	}
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(EffectivePerson effectivePerson) throws Exception {
-		return listWithPersonReference(ListTools.toList(effectivePerson.getDistinguishedName()), true, false, false);
+		return listWithPersonReference(ListTools.toList(effectivePerson.getDistinguishedName()), true, true, true);
 	}
 
 	/**
