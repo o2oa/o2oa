@@ -58,6 +58,7 @@ public class QueueDocumentIndex extends AbstractQueue<String> {
 				docIndex.setTitle(document.getTitle());
 				docIndex.setContent(content);
 				docIndex.setId(document.getId());
+				docIndex.setSourceId(document.getId());
 				docIndex.setProcessId(document.getAppId());
 				docIndex.setProcessName(document.getAppName());
 				docIndex.setCreateDateTime(document.getCreateTime());
