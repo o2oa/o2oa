@@ -185,7 +185,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		if (this.json.multiple) {
 			this.node.setAttribute('multiple', 'true');
 		}else{
-			this.node.removeAttribute('multiple');
+			this.node.setAttribute('multiple', 'false');
 		}
 
 		if (this.json.innerHTML){
