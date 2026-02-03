@@ -339,6 +339,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                     _openCalendar(appNames, options, statusObj);
                     break;
                 case "process.TaskCenter":
+                case "process.workcenter":
                     _openTaskCenter(appNames, options, statusObj);
                     break;
                 case "portal.Portal":

@@ -290,6 +290,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 _openCalendar(appNames, options, statusObj);
                 break;
             case "process.TaskCenter":
+            case "process.workcenter":
                 _openTaskCenter(appNames, options, statusObj);
                 break;
             case "portal.Portal":

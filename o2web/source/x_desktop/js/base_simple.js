@@ -506,6 +506,7 @@ o2.addReady(function () {
                 _openCalendar(appNames, options, statusObj);
                 break;
             case "process.TaskCenter":
+            case "process.workcenter":
                 _openTaskCenter(appNames, options, statusObj);
                 break;
             case "portal.Portal":
