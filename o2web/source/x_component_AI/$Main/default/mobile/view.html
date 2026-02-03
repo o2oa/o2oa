@@ -11,6 +11,24 @@
                 <div>{{$.config.title}}</div>
             </div>
             <div class="chat-desc">{{$.config.desc}}</div>
+            <div class="chat-hot {{if !$.config.o2AiEnable}} hide {{end if}}">
+
+                <div class="chat-hot-r">
+
+                    {{each $.mcpList}}
+                    <div class="chat-hot-item" data-o2-events="click:quickChat:{{$.extra.indexPrompt}};">
+                        <div class="chat-hot-item-title">
+                            <i class="ooicon-{{$.extra.icon}}"></i>
+                            <span>{{$.displayName}}</span>
+                        </div>
+                        <div class="chat-hot-item-desc">{{$.extra.indexDesc}}
+                        </div>
+                    </div>
+                    {{end each}}
+
+
+                </div>
+            </div>
         </div>
         <div class="chat-list" data-o2-element="chatListNode">
         </div>

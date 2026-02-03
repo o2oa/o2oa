@@ -81,7 +81,6 @@ MWF.xApplication.AI.AttachmenPreview = new Class({
         var att = this.att;
         var jars ;
         jars = "x_ai_assemble_control";
-debugger
         var xtoken = layout.session.token;
 
         var options = {

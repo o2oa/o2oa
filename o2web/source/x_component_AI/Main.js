@@ -8,6 +8,11 @@ MWF.xApplication.AI.Main = new Class({
         "name": "AI",
         "mvcStyle": "style.css",
         "icon": "icon.png",
+        "mode" : "pc",
+        "msg" : "",
+        "initMsg" : "",
+        "attId" : "",
+        "jars" : "",
         "title": MWF.xApplication.AI.LP.title
     },
     onQueryLoad:  function () {
@@ -16,9 +21,9 @@ MWF.xApplication.AI.Main = new Class({
     loadApplication: async function (callback) {
         this.lp = MWF.xApplication.AI.LP;
 
-        if(layout.mobile){
+        if(layout.mobile || this.options.mode === "simple"){
             o2.requireApp("AI", "Chat", function(){
-                new MWF.xApplication.AI.Chat(this, this.content);
+                new MWF.xApplication.AI.Chat(this, this.content,this.options);
             }.bind(this));
 
             return;
@@ -43,6 +48,17 @@ MWF.xApplication.AI.Main = new Class({
         this.config.appName = this.config.appName || "O2OA";
         this.config.title = this.config.title || this.lp.config.title;
         this.config.desc = this.config.desc || this.lp.config.desc;
+
+        if(this.config.o2AiEnable){
+            const mcpList = await this.action.ConfigAction.listMcpConfigPaging(1,100);
+            this.mcpList = mcpList.data
+                .filter(item => item.extra && item.extra.indexEnable === "true")
+                .slice(0, 20);
+
+            console.log(this.mcpList)
+        }
+
+
         var url = this.path + this.options.style + "/view.html";
         o2.load("../o2_lib/marked/lib/marked.js", function () {
             this.content.loadHtml(url, {"bind": {"lp": this.lp,"config":this.config,"user":layout.user}, "module": this}, function () {
@@ -72,12 +88,38 @@ MWF.xApplication.AI.Main = new Class({
         }
     },
     loadNew : function (){
+debugger
+        if(this.options.jars!==""){
+            this.initMsg();
+            return;
+        }
+
         this.sessionId = "";
         this.rightNode.empty();
-        this.rightNode.loadHtml(this.path + this.options.style + "/new.html", {"bind": {"lp": this.lp,"config":this.config,"aiType" : this.aiType}, "module": this}, function () {
+        this.rightNode.loadHtml(this.path + this.options.style + "/new.html", {"bind": {"lp": this.lp,"config":this.config,"aiType" : this.aiType,"mcpList":this.mcpList}, "module": this}, function () {
             this.bindEvent();
+            if(this.options.initMsg!==""){
+                this.chatNode.set("text",this.options.initMsg);
+            }
         }.bind(this));
     },
+
+    initMsg : function (){
+        const msg = this.options.msg;
+
+        this.selectedFiles[this.options.attName] = {
+            "id" : this.options.attId,
+            "name" : this.options.attName
+        }
+        this.rightNode.empty();
+        this.rightNode.loadHtml(this.path + this.options.style + "/list.html", {"bind": {"lp": this.lp,"generateType":this.generateType,"config":this.config,"aiType" : this.aiType}, "module": this}, function () {
+            this.bindEvent(true);
+            this.chatListNode.empty();
+            this.titleNode.set("text",msg.length>30?msg.substring(0,30):msg);
+            this.send(msg);
+        }.bind(this));
+    },
+
     copyToClipboard: function (text) {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(text)
@@ -108,7 +150,27 @@ MWF.xApplication.AI.Main = new Class({
             }
         }
     },
+
     bindEvent: function (flag) {
+
+        this.chatNode.addEventListener('paste', function (e) {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            // 检查是否包含图片
+            const items = clipboardData.items;
+            let hasImage = false;
+
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    hasImage = true;
+                    break;
+                }
+            }
+
+            if (hasImage) {
+                e.preventDefault(); // 阻止默认粘贴行为
+                this.addAtt("paste",clipboardData);
+            }
+        }.bind(this));
 
         this.chatNode.addEventListener('compositionstart', function (event) {
             this.isComposing = true;
@@ -254,15 +316,26 @@ MWF.xApplication.AI.Main = new Class({
                         const chatListAttNode = new Element("div.chat-list-att").inject(_this.chatListNode);
                         msg.referenceIdList.each(function (fileId){
                             _this.action.FileAction.get(fileId,function (json){
-                                const attItem = new Element("div.chat-att-item").inject(chatListAttNode);
+                                let attItem;
                                 const file = json.data;
-                                const atthtml = `
+
+                                const fileType = _this.getFileIcon(file.name);
+
+                                let atthtml;
+                                if("picture" === fileType){
+                                    attItem = new Element("div.chat-att-img").inject(chatListAttNode);
+                                    atthtml = `<img src="../x_ai_assemble_control/jaxrs/file/${file.id}/download/scale">`;
+                                }else{
+                                    attItem = new Element("div.chat-att-item").inject(chatListAttNode);
+                                    atthtml = `
                                     <div class="chat-att-item-icon ooicon-${_this.getFileIcon(file.name)}"></div>
                                     <div class="chat-att-item-content">
                                         <div class="chat-att-item-title">${file.name}</div>
                                         <div class="chat-att-item-size">${_this.formatBytes(file.length)}</div>
                                     </div>
-                                `
+                                `;
+                                }
+
                                 attItem.set("html",atthtml);
                                 attItem.addEvent("click",function(){
                                     new MWF.xApplication.AI.AttachmenPreview(file,this);
@@ -284,7 +357,7 @@ MWF.xApplication.AI.Main = new Class({
                     msg.icon = _this.getIcon(msg.generateType);
                     msg.typeName = _this.getTypeName(msg.generateType);
 
-                    if ( msg.toolCallList.length>0 && msg.content.indexOf("output")>-1) {
+                    if ( msg.toolCallList && msg.toolCallList.length>0 && msg.content.indexOf("output")>-1) {
                         let mcpData;
                         let mcpExtra;
                         try{
@@ -318,6 +391,9 @@ MWF.xApplication.AI.Main = new Class({
 
                         markdownBody = answerNode.getElement(".markdown-body");
 
+                        if(mcpExtra.css){
+                            answerNode.loadCssText(mcpExtra.css);
+                        }
                         if(mcpExtra.script){
                             debugger
                             eval("(function(node,data) { " + (mcpExtra.script + " }.bind(_this))(markdownBody,mcpData.data)"));
@@ -361,7 +437,7 @@ MWF.xApplication.AI.Main = new Class({
         }.bind(this));
     },
     send: function (text) {
-
+        this.options.initMsg = "";
         let msg = this.chatNode.get("value");
         const _this = this;
         if (text) msg = text;
@@ -370,30 +446,56 @@ MWF.xApplication.AI.Main = new Class({
         this.attId = [];
         if(Object.keys(this.selectedFiles).length>0){
             Object.keys(this.selectedFiles).each(function(key,index) {
-                const formData = new FormData();
-                formData.append("file", this.selectedFiles[key]);
-                formData.append("fileName", key);
 
-                this.action.FileAction.upload(formData,{},function (json){
+                if(this.selectedFiles[key]  instanceof File){
+                    const formData = new FormData();
+                    formData.append("file", this.selectedFiles[key]);
+                    formData.append("fileName", key);
 
-                    this.attId.push(json.data.id);
+                    this.action.FileAction.upload(formData,{},function (json){
 
-                }.bind(this),null,false);
+                        this.attId.push(json.data.id);
+
+                    }.bind(this),null,false);
+                }else {
+
+                    this.action.FileAction.copyFile({
+                        "id":this.selectedFiles[key].id,
+                        "name":this.selectedFiles[key].name,
+                        "copyFrom" : this.options.jars!==""?this.options.jars:"x_pan_assemble_control"
+                    },function (json){
+
+                        this.attId.push(json.data.id);
+
+                    }.bind(this),null,false);
+
+                }
+
             }.bind(this));
 
 
             const chatListAttNode = new Element("div.chat-list-att").inject(_this.chatListNode);
             this.attId.each(function (fileId){
                 _this.action.FileAction.get(fileId,function (json){
-                    const attItem = new Element("div.chat-att-item").inject(chatListAttNode);
+                    let attItem ;
                     const file = json.data;
-                    const atthtml = `
+
+                    const fileType = _this.getFileIcon(file.name);
+                    let atthtml;
+                    if("picture" === fileType){
+                        attItem = new Element("div.chat-att-img").inject(chatListAttNode);
+                        atthtml = `<img src="../x_ai_assemble_control/jaxrs/file/${file.id}/download/scale">`;
+                    }else{
+                        attItem = new Element("div.chat-att-item").inject(chatListAttNode);
+                        atthtml = `
                                     <div class="chat-att-item-icon ooicon-${_this.getFileIcon(file.name)}"></div>
                                     <div class="chat-att-item-content">
                                         <div class="chat-att-item-title">${file.name}</div>
                                         <div class="chat-att-item-size">${_this.formatBytes(file.length)}</div>
                                     </div>
-                                `
+                                `;
+                    }
+
                     attItem.set("html",atthtml);
 
                     attItem.addEvent("click",function(){
@@ -407,6 +509,7 @@ MWF.xApplication.AI.Main = new Class({
 
         this.attUplodListNode.empty();
         this.selectedFiles = {};
+        this.options.jars = "";
 
         const html = `
             <div class="chat-list-r">
@@ -600,7 +703,7 @@ MWF.xApplication.AI.Main = new Class({
 
                             const parsed = JSON.parse(message);
 
-                            if(messageType === "status" && parsed.id){
+                            if(messageType === "status" && parsed.clueId){
                                 _this.completionId = parsed.id;
                                 _this.sessionId = parsed.clueId;
                                 _this.loadHistory();
@@ -623,7 +726,9 @@ MWF.xApplication.AI.Main = new Class({
                                 const template = _this.renderTemplate(mcpExtra.template,mcpData.data);
 
                                 answerNode.set("html", marked.parse(template));
-
+                                if(mcpExtra.css){
+                                    answerNode.loadCssText(mcpExtra.css);
+                                }
                                 if(mcpExtra.script){
                                     eval("(function(node,data) { " + (mcpExtra.script + " }.bind(_this))(answerNode,mcpData.data)"));
                                 }
@@ -638,7 +743,7 @@ MWF.xApplication.AI.Main = new Class({
 
                                 const reasoning_content = parsed.choices[0].delta ? parsed.choices[0].delta.reasoning_content : parsed.choices[0].message.reasoning_content;
                                 if (content) {
-
+                                    loadingNode.hide();
                                     fullResponse += content;
                                     answerNode.set("html", marked.parse(fullResponse));
                                 }
@@ -653,7 +758,7 @@ MWF.xApplication.AI.Main = new Class({
                                     fullReasoningResponse += reasoning_content;
                                     reasoningContentNode.set("html", marked.parse(fullReasoningResponse));
                                 }
-                                loadingNode.hide();
+
                             } else {
                                 // if (_this.sessionId === "") {
                                 //     if (parsed.clueId) {
@@ -704,22 +809,8 @@ MWF.xApplication.AI.Main = new Class({
             new MWF.xApplication.AI.Setting(this, this.content);
         }.bind(this));
     },
-    quickChat : function (type){
-        let msg = '';
-        switch (type) {
-            case "process":
-                msg = "发起一个请假流程,类型为事假，生病了，明天一天"
-                break
-            case "task":
-                msg = "查询我的待办"
-                break
-            case "meeting":
-                msg = "预定一个明天上午8点到9点的会议，一号会议室"
-                break
-            case "attendance":
-                msg = "我的考勤"
-                break
-        }
+    quickChat : function (msg){
+
         this.chatNode.set("value",msg);
     },
     getIcon : function (type){
@@ -821,7 +912,8 @@ MWF.xApplication.AI.Main = new Class({
         this.tool2Node.set("text", text1);
         this.tool3Node.set("text", text2);
     },
-    addAtt : function (){
+
+    addAtt : function (type,clipboardData){
         const _this = this;
         const fileDisplay = this.attUplodListNode;
         const fileInputs = [];
@@ -862,7 +954,7 @@ MWF.xApplication.AI.Main = new Class({
                 <div class="chat-att-item-icon ooicon-${_this.getFileIcon(file.name)}"></div>
                 <div class="chat-att-item-content">
                     <div class="chat-att-item-title">${file.name}</div>
-                    <div class="chat-att-item-size">${_this.formatBytes(file.size)}</div>
+                    <div class="chat-att-item-size">${_this.formatBytes(file.size ? file.size : file.length)}</div>
                 </div>
                 <div class="chat-att-item-action ooicon-close"></div>
             `;
@@ -881,9 +973,38 @@ MWF.xApplication.AI.Main = new Class({
                 delete _this.selectedFiles[fileName];
             }
         }
+        if(type === "paste"){
+            const items = clipboardData.items;
 
-        const fileInput = createFileInput();
-        fileInput.click();
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const blob = items[i].getAsFile();
+                    if (blob) {
+                        handleFileSelection([blob]);
+                    }
+
+                }
+            }
+        } else if(type==="drive"){
+            o2.xDesktop.requireApp('Selector', 'package', function () {
+
+                new MWF.O2Selector( layout.mobile ? $(document.body) : this.content, Object.assign( {
+                    title: "",
+                    type: 'PanFile',
+                    onComplete: function ( selectedItemList ) {
+                        files = selectedItemList.map( function(item){
+                            return item.data;
+                        });
+                        console.log(files)
+                        handleFileSelection(files)
+                    }.bind(this)
+                },  {}));
+            }.bind(this));
+        }else {
+            const fileInput = createFileInput();
+            fileInput.click();
+        }
+
     },
     formatBytes : function (bytes){
         if (bytes === 0) return '0 B';
@@ -894,7 +1015,7 @@ MWF.xApplication.AI.Main = new Class({
     },
     getFileIcon : function(filename){
         const getFileExt = (filename) => filename.split('.').pop() || '';
-        const type = getFileExt(filename);
+        const type = getFileExt(filename).toLowerCase();
         if(["docx","doc"].contains(type)){
             return "word"
         }
