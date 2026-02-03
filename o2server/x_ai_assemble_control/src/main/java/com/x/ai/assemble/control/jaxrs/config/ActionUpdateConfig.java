@@ -133,6 +133,9 @@ public class ActionUpdateConfig extends BaseAction {
                 }
             }
             for (McpConfig mcp : mcpList){
+                if(mcp.getHttpOption()!=null){
+                    mcp.getHttpOption().setInternalEnable(false);
+                }
                 mcp.getHttpOption().setUrl(buffer + mcp.getHttpOption().getUrl());
                 updateMcp.saveOrUpdate(mcp, aiConfig);
             }
