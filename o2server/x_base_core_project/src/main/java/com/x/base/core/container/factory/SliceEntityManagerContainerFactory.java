@@ -163,6 +163,8 @@ public abstract class SliceEntityManagerContainerFactory {
 			reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
 			reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			// 3. ⭐ 禁止外部 DTD（修复漏洞的关键）
+			reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 			Document document = reader.read(file);
 			for (Element unit : document.getRootElement().elements("persistence-unit")) {
 				classes.add((Class<JpaObject>) Thread.currentThread().getContextClassLoader()

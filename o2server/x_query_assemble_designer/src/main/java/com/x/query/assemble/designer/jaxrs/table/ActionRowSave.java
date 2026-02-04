@@ -12,11 +12,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapInteger;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Table;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionRowSave extends BaseAction {
 
@@ -38,49 +37,38 @@ class ActionRowSave extends BaseAction {
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(dynamicEntity.className());
-			List<Object> os = new ArrayList<>();
+			int size = 1;
+			emc.beginTransaction(cls);
 			if (jsonElement.isJsonArray()) {
-				jsonElement.getAsJsonArray().forEach(o -> {
+				for (JsonElement o : jsonElement.getAsJsonArray()){
 					JpaObject jo = gson.fromJson(o, cls);
+					if(StringUtils.isBlank(jo.getId())){
+						jo.setId(StringTools.uniqueToken());
+					}
 					if(o.getAsJsonObject().has("id")) {
-						try {
-							JpaObject oldjo = emc.find(jo.getId(), cls);
-							if (oldjo != null) {
-								jo.copyTo(oldjo, JpaObject.FieldsUnmodify);
-								return;
-							}
-						} catch (Exception e) {
+						JpaObject oldJo = emc.find(jo.getId(), cls);
+						if (oldJo != null) {
+							jo.copyTo(oldJo, JpaObject.FieldsUnmodify);
+							continue;
 						}
 					}
-					os.add(jo);
-				});
+					emc.persist(jo, CheckPersistType.all);
+				}
+				size = jsonElement.getAsJsonArray().size();
 			} else if (jsonElement.isJsonObject()) {
 				JpaObject jo = gson.fromJson(jsonElement, cls);
-				try {
-					JpaObject oldjo = emc.find(jo.getId(), cls);
-					if (oldjo != null) {
-						jo.copyTo(oldjo, JpaObject.FieldsUnmodify);
-						jo = oldjo;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+				if(StringUtils.isBlank(jo.getId())){
+					jo.setId(StringTools.uniqueToken());
 				}
-				os.add(jo);
-			}
-			int size = 0;
-			try {
-				for(List<Object> subOs : ListTools.batch(os, 200)) {
-					emc.beginTransaction(cls);
-					for (Object o : subOs) {
-						emc.persist((JpaObject) o, CheckPersistType.all);
-					}
-					emc.commit();
-					size = size + subOs.size();
-					LOGGER.info("has insert {}/{} rows into table:{}.", size, os.size(), table.getName());
+				JpaObject oldJo = emc.find(jo.getId(), cls);
+				if (oldJo != null) {
+					jo.copyTo(oldJo, JpaObject.FieldsUnmodify);
+				}else{
+					emc.persist(jo, CheckPersistType.all);
 				}
-			} catch (Exception e) {
-				LOGGER.error(e);
 			}
+			emc.commit();
+
 			Wo wo = new Wo();
 			wo.setValue(size);
 			result.setData(wo);

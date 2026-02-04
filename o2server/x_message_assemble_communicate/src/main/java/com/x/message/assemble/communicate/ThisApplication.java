@@ -75,7 +75,9 @@ public class ThisApplication {
 			CacheManager.init(context.clazz().getSimpleName());
 			MessageConnector.start(context());
 			startQueue();
-			context().schedule(Clean.class, Config.messages().clean().getCron());
+			if(BooleanUtils.isTrue(Config.messages().clean().getEnable())) {
+				context().schedule(Clean.class, Config.messages().clean().getCron());
+			}
 			context().schedule(TriggerMessageConsumeQueue.class, "20 20 * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();

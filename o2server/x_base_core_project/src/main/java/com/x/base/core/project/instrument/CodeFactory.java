@@ -4,6 +4,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.jaxrs.WrapString;
+import org.apache.commons.lang3.StringUtils;
 
 public class CodeFactory {
 
@@ -17,6 +18,9 @@ public class CodeFactory {
 	}
 
 	public Boolean validate(String mobile, String answer) throws Exception {
+		if(StringUtils.isBlank(answer) || answer.length() > 6){
+			return false;
+		}
 		try {
 			String url = Config.url_x_program_center_jaxrs("code", "validate", "mobile", mobile, "answer", answer);
 			WrapOutBoolean wrap = CipherConnectionAction.get(false, url).getData(WrapOutBoolean.class);
@@ -27,6 +31,9 @@ public class CodeFactory {
 	}
 
 	public Boolean validateCascade(String mobile, String answer) throws Exception {
+		if(StringUtils.isBlank(answer) || answer.length() > 6){
+			return false;
+		}
 		try {
 			Boolean value = this.validate(mobile, answer);
 			if (value == false) {

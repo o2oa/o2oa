@@ -1,8 +1,5 @@
 package com.x.correlation.service.processing.jaxrs.correlation;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,6 +14,8 @@ import com.x.correlation.core.express.service.processing.jaxrs.correlation.Actio
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeCmsWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWo;
 import com.x.correlation.service.processing.Business;
+import java.util.List;
+import java.util.Map;
 
 class ActionCreateTypeCms extends BaseAction {
 
@@ -51,6 +50,7 @@ class ActionCreateTypeCms extends BaseAction {
 								v.setTargetTitle(o.getTargetTitle());
 								v.setSite(o.getSite());
 								v.setView(o.getView());
+								v.setOrderNumber(o.getOrderNumber());
 								emc.check(v, CheckPersistType.all);
 							}
 						} catch (Exception e) {

@@ -44,8 +44,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class GraalvmScriptingFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraalvmScriptingFactory.class);
-
-	private static Gson gson = XGsonBuilder.instance();
+	private static final List<String> denyClassList = List.of("com.x.base.core.project.scripting.GraalvmScriptingFactory",
+			"com.x.base.core.project.config.Config");
+	private static final Gson gson = XGsonBuilder.instance();
 
 	private GraalvmScriptingFactory() {
 
@@ -59,6 +60,7 @@ public class GraalvmScriptingFactory {
 
 	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();
 	private static Source commonScriptSource;
+	private static String database;
 	private static Set<String> scriptingAllowedClasses;
 
 	private static Type stringsType = new TypeToken<ArrayList<String>>() {
@@ -83,6 +85,7 @@ public class GraalvmScriptingFactory {
 			Value bind = context.getBindings(LANGUAGE_ID_JS);
 			Map<String, Class<?>> dataAssignDataEmbedDataClasses = new HashMap<>();
 			if (null != bindings) {
+				bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_DATABASE, getDatabase());
 				dataAssignDataEmbedDataClasses = Stream.of(BINDING_NAME_EMBEDDATA, BINDING_NAME_DATA)
 						.filter(bindings::containsKey).filter(o -> Objects.nonNull(bindings.get(o)))
 						.collect(Collectors.toMap(Function.identity(), o -> bindings.get(o).getClass()));
@@ -140,7 +143,12 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static boolean allowClass(String className) {
-		return className.startsWith("com.x.base") || className.startsWith("com.x.organization")
+		if(denyClassList.contains(className)){
+			return false;
+		}
+		return className.startsWith("com.x.base.core.project.tools")
+				|| className.startsWith("com.x.base.core.project.connection")
+				|| className.startsWith("com.x.organization")
 				|| getScriptingAllowedClasses().contains(className);
 	}
 
@@ -256,6 +264,25 @@ public class GraalvmScriptingFactory {
 		return commonScriptSource;
 	}
 
+	private static String getDatabase() {
+		if (null == database) {
+			LOCK.lock();
+			try {
+				if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
+					String jdbcUrl = Config.externalDataSources().get(0).getUrl();
+					database = StringUtils.substringBefore(StringUtils.substringAfter(jdbcUrl, ":"), ":");
+				}else{
+					database = "h2";
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			} finally {
+				LOCK.unlock();
+			}
+		}
+		return database;
+	}
+
 	public static final String BINDING_NAME_RESOURCES = "java_resources";
 
 	public static final String BINDING_NAME_WORKCONTEXT = "java_workContext";
@@ -275,6 +302,7 @@ public class GraalvmScriptingFactory {
 	public static final String BINDING_NAME_EMBEDDATA = "java_embedData";
 	public static final String BINDING_NAME_SERIAL = "serial";
 	public static final String BINDING_NAME_PROCESS = "process";
+	public static final String BINDING_NAME_DATABASE = "database";
 
 	public static final String BINDING_NAME_SERVICE_RESOURCES = "java_resources";
 	public static final String BINDING_NAME_SERVICE_EFFECTIVEPERSON = "java_effectivePerson";
@@ -294,7 +322,7 @@ public class GraalvmScriptingFactory {
 					BINDING_NAME_EFFECTIVEPERSON, BINDING_NAME_DATA, BINDING_NAME_EMBEDDATA, BINDING_NAME_SERIAL,
 					BINDING_NAME_PROCESS, BINDING_NAME_SERVICE_RESOURCES, BINDING_NAME_SERVICE_EFFECTIVEPERSON,
 					BINDING_NAME_SERVICE_CUSTOMRESPONSE, BINDING_NAME_SERVICE_REQUESTTEXT, BINDING_NAME_SERVICE_REQUEST,
-					BINDING_NAME_SERVICE_PARAMETERS, BINDING_NAME_SERVICE_MESSAGE, BINDING_NAME_SERVICE_PERSON)
+					BINDING_NAME_SERVICE_PARAMETERS, BINDING_NAME_SERVICE_MESSAGE, BINDING_NAME_SERVICE_PERSON, BINDING_NAME_DATABASE)
 			.collect(Collectors.toList());
 
 	public static Source functionalization(String text) {

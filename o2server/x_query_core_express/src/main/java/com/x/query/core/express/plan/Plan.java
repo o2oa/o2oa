@@ -11,6 +11,7 @@ import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -682,7 +683,8 @@ public abstract class Plan extends GsonPropertyObject {
 		} else if (object instanceof Date) {
 			str = DateTools.format((Date) object);
 		} else if (object instanceof List) {
-			str = StringUtils.join((List<?>) object, ",");
+			str = XGsonBuilder.toJson(object);
+			str = StringUtils.replaceChars(str.substring(1, str.length() - 1), "\"", "");
 		} else {
 			str = object.toString();
 		}

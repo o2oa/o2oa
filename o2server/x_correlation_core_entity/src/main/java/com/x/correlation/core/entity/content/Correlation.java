@@ -2,8 +2,15 @@ package com.x.correlation.core.entity.content;
 
 import static com.x.base.core.entity.StorageType.processPlatform;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.Storage;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.correlation.core.entity.PersistenceProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,20 +20,9 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
 import org.apache.openjpa.persistence.jdbc.Strategy;
-
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.Storage;
-import com.x.base.core.entity.annotation.CheckPersist;
-import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.correlation.core.entity.PersistenceProperties;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "Correlation", description = "关联内容.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -198,6 +194,11 @@ public class Correlation extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + SITE_FIELDNAME)
 	private String site;
 
+	public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,升序排列,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	private Integer orderNumber;
+
 	public static final String PROPERTIES_FIELDNAME = "properties";
 	@Schema(description = "属性存储字段.")
 	@FieldDescribe("属性存储字段.")
@@ -255,4 +256,11 @@ public class Correlation extends SliceJpaObject {
 		this.person = person;
 	}
 
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 }

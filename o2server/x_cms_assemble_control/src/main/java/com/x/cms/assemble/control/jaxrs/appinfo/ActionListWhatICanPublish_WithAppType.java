@@ -1,11 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
@@ -14,6 +8,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 public class ActionListWhatICanPublish_WithAppType extends BaseAction {
 
@@ -46,7 +44,7 @@ public class ActionListWhatICanPublish_WithAppType extends BaseAction {
 		} else {
 			if (check) {
 				try {
-					wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null, appType, "全部", isXAdmin, 1000 );
+					wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null,"全部", appType, isXAdmin, 1000 );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);

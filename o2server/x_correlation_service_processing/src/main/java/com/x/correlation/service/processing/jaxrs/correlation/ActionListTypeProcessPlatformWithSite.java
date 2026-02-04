@@ -1,8 +1,5 @@
 package com.x.correlation.service.processing.jaxrs.correlation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -12,8 +9,11 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.SortTools;
 import com.x.correlation.core.entity.content.Correlation;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionListTypeProcessPlatformWithSiteWo;
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionListTypeProcessPlatformWithSite extends BaseAction {
 
@@ -31,6 +31,7 @@ class ActionListTypeProcessPlatformWithSite extends BaseAction {
 			List<Correlation> os = emc.listEqualAndEqualAndEqual(Correlation.class, Correlation.FROMTYPE_FIELDNAME,
 					Correlation.TYPE_PROCESSPLATFORM, Correlation.FROMBUNDLE_FIELDNAME, job, Correlation.SITE_FIELDNAME,
 					site);
+			SortTools.asc(os, JpaObject.createTime_FIELDNAME, Correlation.orderNumber_FIELDNAME);
 			wos = Wo.copier.copy(os);
 			result.setData(wos);
 			return result;

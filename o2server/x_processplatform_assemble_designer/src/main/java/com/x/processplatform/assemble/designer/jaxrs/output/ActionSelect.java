@@ -27,6 +27,7 @@ import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.wrap.*;
+import org.apache.commons.lang3.BooleanUtils;
 
 class ActionSelect extends BaseAction {
 
@@ -126,8 +127,12 @@ class ActionSelect extends BaseAction {
 			wo.setRouteList(WrapRoute.outCopier.copy(business.entityManagerContainer().listEqual(Route.class,
 					Route.process_FIELDNAME, process.getId())));
 
-			wo.setItemAccessList(WrapItemAccess.outCopier.copy(business.entityManagerContainer().listEqual(
-					ItemAccess.class, ItemAccess.itemCategoryId_FIELDNAME, process.getEdition())));
+			if(BooleanUtils.isNotFalse(process.getEditionEnable())) {
+				wo.setItemAccessList(
+						WrapItemAccess.outCopier.copy(business.entityManagerContainer().listEqual(
+								ItemAccess.class, ItemAccess.itemCategoryId_FIELDNAME,
+								process.getEdition())));
+			}
 			wos.add(wo);
 		}
 		return wos;

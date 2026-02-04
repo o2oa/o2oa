@@ -1,42 +1,16 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import com.x.base.core.project.cache.CacheManager;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.x.organization.assemble.authentication.ThisApplication;
-import com.x.organization.core.entity.enums.PersonStatusEnum;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.graalvm.polyglot.Source;
-
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.OauthClient;
 import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
@@ -52,9 +26,33 @@ import com.x.base.core.project.tools.LdapTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.organization.assemble.authentication.Business;
+import com.x.organization.assemble.authentication.ThisApplication;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
+import com.x.organization.core.entity.enums.PersonStatusEnum;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -122,12 +120,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
 				HttpToken.getClient(request), Config.token().getCipher(), Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
-			if (!isMoaTerminal(request)) {
-				String clientIp = HttpToken.remoteAddress(request);
-				LOGGER.debug("{} client ip is : {}", person.getDistinguishedName(), clientIp);
-				if (!this.checkIp(clientIp, person.getIpAddress())) {
-					throw new ExceptionInvalidIpAddress(clientIp);
-				}
+			if (!isMoaTerminal(request) && StringUtils.isNotBlank(person.getIpAddress())) {
+				this.checkIp(request, person.getIpAddress());
 			}
 			httpToken.setToken(request, response, effectivePerson);
 		}
@@ -486,26 +480,32 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected boolean checkIp(String clientIp, String ipAddress) {
+	protected void checkIp(HttpServletRequest request, String ipAddress) throws PromptException {
 		boolean returnValue = true;
-		if (StringUtils.isNotEmpty(clientIp) && StringUtils.isNotEmpty(ipAddress)) {
-			try {
-				String[] ipAddressArr = StringUtils.split(ipAddress, ",");
-				for (String regIp : ipAddressArr) {
-					if (StringUtils.isNotEmpty(regIp)) {
-						Pattern pattern = Pattern.compile(regIp.trim());
-						Matcher matcher = pattern.matcher(clientIp);
-						returnValue = matcher.find();
-						if (returnValue) {
-							break;
-						}
+		String xff = request.getHeader("X-Forwarded-For");
+		if(StringUtils.isNotBlank(xff) && (!Config.general().getTrustProxyIpList().contains(request.getRemoteAddr()))){
+			throw new ExceptionInvalidServerAddress(request.getRemoteAddr());
+		}
+		String clientIp = HttpToken.remoteAddress(request);
+		try {
+			String[] ipAddressArr = StringUtils.split(ipAddress, ",");
+			for (String regIp : ipAddressArr) {
+				if (StringUtils.isNotEmpty(regIp)) {
+					Pattern pattern = Pattern.compile(regIp.trim());
+					Matcher matcher = pattern.matcher(clientIp);
+					returnValue = matcher.find();
+					if (returnValue) {
+						break;
 					}
 				}
-			} catch (Exception e) {
-				LOGGER.error(e);
 			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
-		return returnValue;
+		LOGGER.info("check ip:{}, proxy ip:{}, person ip:{}.", clientIp, request.getRemoteAddr(), ipAddress);
+		if(!returnValue){
+			throw new ExceptionInvalidIpAddress(clientIp);
+		}
 	}
 
 	protected boolean isMoaTerminal(HttpServletRequest request) {

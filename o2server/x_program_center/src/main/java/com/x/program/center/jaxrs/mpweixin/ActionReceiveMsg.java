@@ -1,16 +1,5 @@
 package com.x.program.center.jaxrs.mpweixin;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -20,6 +9,15 @@ import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.core.entity.MPWeixinMenu;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 /**
  * 微信公众号接收到消息的处理
@@ -209,21 +207,32 @@ public class ActionReceiveMsg extends BaseAction {
         if (ins == null) {
             return map;
         }
-        SAXReader reader = new SAXReader();
-        reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        Document doc = reader.read(ins);
 
-        Element root = doc.getRootElement();
+        try {
+            SAXReader reader = new SAXReader();
+            // 1. 禁止 DOCTYPE
+            reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // 2. 禁止实体
+            reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            // 3. ⭐ 禁止外部 DTD（修复漏洞的关键）
+            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
-        List<Element> list = root.elements();
+            Document doc = reader.read(ins);
 
-        for (Element e : list) {
-            map.put(e.getName(), e.getText());
+            Element root = doc.getRootElement();
+
+            List<Element> list = root.elements();
+
+            for (Element e : list) {
+                map.put(e.getName(), e.getText());
+            }
+            ins.close();
+            return map;
+        } catch (Exception e) {
+            logger.error(e);
+            return map;
         }
-        ins.close();
-        return map;
     }
 
     public static class Wo extends WoText {

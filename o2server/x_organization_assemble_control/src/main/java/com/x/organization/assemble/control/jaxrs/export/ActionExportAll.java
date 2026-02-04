@@ -1,28 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.export;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -31,6 +10,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_organization_assemble_control;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
 import com.x.organization.core.entity.Group;
@@ -43,13 +23,30 @@ import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 import com.x.organization.core.entity.Unit_;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * 导入的文件没有用到文件存储器，是直接放在数据库中的BLOB列
  */
 public class ActionExportAll extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionExportAll.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionExportAll.class);
 	List<Unit> allUnitList = new ArrayList<>();
 	List<String> allUnitAttributeList = new ArrayList<>();
 	List<Person> allPersonList = new ArrayList<>();
@@ -57,12 +54,10 @@ public class ActionExportAll extends BaseAction {
 	List<Identity> allIdentityList = new ArrayList<>();
 	List<UnitDuty> allDutyList = new ArrayList<>();
 	List<Group> allGroupList = new ArrayList<>();
-	//Workbook wb = new HSSFWorkbook();
 	Workbook wb = new XSSFWorkbook();
 
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, Boolean stream ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		//Workbook wb = null;
 		Wo wo = null;
 		String fileName = null;
 		Business business = null;
@@ -257,7 +252,7 @@ public class ActionExportAll extends BaseAction {
 				row.createCell(0).setCellValue(unit.getName());
 				row.createCell(1).setCellValue(unit.getUnique());
 				if(ListTools.isNotEmpty(unit.getTypeList())){
-					row.createCell(2).setCellValue(unit.getTypeList().get(0));
+					row.createCell(2).setCellValue(StringUtils.join(unit.getTypeList(), ","));
 				}else{
 					row.createCell(2).setCellValue("");
 				}

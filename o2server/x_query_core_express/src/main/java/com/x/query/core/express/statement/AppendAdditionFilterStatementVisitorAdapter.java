@@ -1,20 +1,20 @@
 package com.x.query.core.express.statement;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.core.express.plan.FilterEntry;
-
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
+import org.apache.commons.lang3.StringUtils;
 
 public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisitorAdapter {
 
@@ -24,7 +24,7 @@ public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisito
     private static final String TEXT_RIGHTPARENTHESIS = ")";
     private static final String TEXT_COLON = ":";
 
-    private Runtime runtime;
+    private final Runtime runtime;
 
     AppendAdditionFilterStatementVisitorAdapter(Runtime runtime) {
         this.runtime = runtime;
@@ -36,16 +36,29 @@ public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisito
     public void visit(Select select) {
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
         Expression where = plainSelect.getWhere();
-        String fromAlias = "";
-        Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
-        if ((null != table) && (null != table.getAlias())) {
-            fromAlias = table.getAlias().getName();
-        }
+        String fromAlias = getFromAlias(plainSelect);
         try {
             selectAppendWhere(runtime, plainSelect, where, fromAlias);
         } catch (JSQLParserException e) {
             LOGGER.error(e);
         }
+    }
+
+    private static String getFromAlias(PlainSelect plainSelect) {
+        String fromAlias = "";
+        FromItem fromItem = plainSelect.getFromItem();
+        if(fromItem instanceof Table){
+            Table table = (Table) plainSelect.getFromItem();
+            if ((null != table) && (null != table.getAlias())) {
+                fromAlias = table.getAlias().getName();
+            }
+        }else{
+            SubSelect subSelect = (SubSelect) plainSelect.getFromItem();
+            if ((null != subSelect) && (null != subSelect.getAlias())) {
+                fromAlias = subSelect.getAlias().getName();
+            }
+        }
+        return fromAlias;
     }
 
     @Override

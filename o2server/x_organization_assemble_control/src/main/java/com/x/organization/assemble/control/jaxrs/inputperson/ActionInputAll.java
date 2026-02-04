@@ -1,37 +1,9 @@
 package com.x.organization.assemble.control.jaxrs.inputperson;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellUtil;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.type.GenderType;
-import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
@@ -44,6 +16,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.UnitAttribute;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_organization_assemble_control;
 import com.x.general.core.entity.GeneralFile;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
@@ -56,22 +29,43 @@ import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellUtil;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 class ActionInputAll extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionInputAll.class);
-	private static ReentrantLock lock = new ReentrantLock();
+	private static final Logger logger = LoggerFactory.getLogger(ActionInputAll.class);
+	private static final ReentrantLock lock = new ReentrantLock();
 
 	private boolean wholeFlag = false;
-
-//	private static Map<String, String> dutyMap = new HashMap<String, String>();
-//	private static Map<String, String> dutyDescriptionMap = new HashMap<String, String>();
 
 	List<UnitItem> unit = new ArrayList<>();
 	List<PersonItem> person = new ArrayList<>();
 	List<IdentityItem> identity = new ArrayList<>();
 	List<DutyItem> duty = new ArrayList<>();
-	List<UnitDuty> editduty = new ArrayList<>();
 	List<GroupItem> group = new ArrayList<>();
 	UnitSheetConfigurator configuratorUnit = null;
 	PersonSheetConfigurator configuratorPerson = null;
@@ -116,7 +110,6 @@ class ActionInputAll extends BaseAction {
 		unit = this.scanUnitList(configuratorUnit, sheet);
 		wholeFlag = this.checkUnit(business, workbook, configuratorUnit, unit);
 		if (wholeFlag) {
-			// this.persistUnit(workbook, configurator, unit);
 			this.scanPerson(business, workbook);
 		}
 	}
@@ -203,7 +196,6 @@ class ActionInputAll extends BaseAction {
 			if (null != row) {
 				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
 				UnitItem unitItem = new UnitItem();
-				// if (StringUtils.isNotEmpty(name)) {
 				unitItem.setRow(i);
 				name = StringUtils.trimToEmpty(name);
 				unitItem.setName(name);
@@ -217,7 +209,7 @@ class ActionInputAll extends BaseAction {
 					typeList = StringUtils.trimToEmpty(typeList);
 					List<String> typeListStr = new ArrayList<>();
 					if (StringUtils.isNotEmpty(typeList)) {
-						typeListStr.add(typeList);
+						typeListStr = Arrays.asList(typeList.split(","));
 					}
 					unitItem.setTypeList(typeListStr);
 				}
@@ -263,32 +255,21 @@ class ActionInputAll extends BaseAction {
 		if (null == configurator.getNameColumn()) {
 			throw new ExceptionNameColumnEmpty();
 		}
-		/*
-		 * if (null == configurator.getUniqueColumn()) { throw new
-		 * ExceptionUniqueColumnEmpty(); }
-		 */
 		if (null == configurator.getEmployeeColumn()) {
 			throw new ExceptionEmployeeColumnEmpty();
 		}
 		if (null == configurator.getMobileColumn()) {
 			throw new ExceptionMobileColumnEmpty();
 		}
-		// System.out.println(configurator.getAttributes().get(""));
-		/*
-		 * if (configurator.getAttributes().isEmpty()) { throw new
-		 * ExceptionIdNumberColumnEmpty(); }
-		 */
 		List<PersonItem> peoples = new ArrayList<>();
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
 			Row row = sheet.getRow(i);
 			if (null != row) {
 				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
 				String mobile = configurator.getCellStringValue(row.getCell(configurator.getMobileColumn()));
-				// if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
 				PersonItem personItem = new PersonItem();
 				personItem.setRow(i);
 				name = StringUtils.trimToEmpty(name);
-				// mobile = StringUtils.trimToEmpty(mobile);
 				GenderType genderType = GenderType.d;
 				if (null != configurator.getGenderTypeColumn()) {
 					String gender = configurator.getCellStringValue(row.getCell(configurator.getGenderTypeColumn()));
@@ -343,7 +324,6 @@ class ActionInputAll extends BaseAction {
 				}
 				peoples.add(personItem);
 				logger.debug("scan person:{}.", personItem);
-				// }
 			}
 		}
 		return peoples;
@@ -371,7 +351,6 @@ class ActionInputAll extends BaseAction {
 					major = BooleanUtils.toBooleanObject(majorStr);
 				}
 
-				// if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
 				IdentityItem identityItem = new IdentityItem();
 				identityItem.setRow(i);
 				identityItem.setPersonCode(unique);
@@ -412,7 +391,6 @@ class ActionInputAll extends BaseAction {
 					identitys.remove(identityItem);
 				}
 				logger.debug("scan identity:{}.", identityItem);
-				// }
 			}
 		}
 		return identitys;
@@ -433,7 +411,6 @@ class ActionInputAll extends BaseAction {
 				String groupCode = configurator.getCellStringValue(row.getCell(configurator.getGroupCodeColumn()));
 				String description = configurator.getCellStringValue(row.getCell(configurator.getDescriptionColumn()));
 
-				// if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
 				GroupItem groupItem = new GroupItem();
 				groupItem.setRow(i);
 				groupItem.setPersonCode(personCode);
@@ -484,7 +461,6 @@ class ActionInputAll extends BaseAction {
 
 				groups.add(groupItem);
 				logger.debug("scan group:{}.", groupItem);
-				// }
 			}
 		}
 		return groups;
@@ -512,7 +488,6 @@ class ActionInputAll extends BaseAction {
 				DutyItem dutyItem = new DutyItem();
 				dutyItem.setRow(i);
 				dutyItem.setName(dutyNmae);
-				// dutyItem.setUnique(UUID.randomUUID().toString()+unitCode);
 				dutyItem.setDescription(description);
 
 				if (null != configurator.getDutyUniqueColumn()) {
@@ -527,8 +502,7 @@ class ActionInputAll extends BaseAction {
 					if (iUnit != null) {
 						dutyItem.setUnit(iUnit.getId());
 					}
-					List<String> identityList = new ArrayList<>();
-					identityList = this.listIdentityList(business, ipersonCode, iunitCode);
+					List<String> identityList = this.listIdentityList(business, ipersonCode, iunitCode);
 					// 查询对应身份
 					dutyItem.setIdentityList(identityList);
 				}
@@ -569,22 +543,16 @@ class ActionInputAll extends BaseAction {
 								&& StringUtils.equals(o.getUnique(), item.getUnique())) {
 							this.setUnitMemo(workbook, configurator, o, "唯一编码冲突,本次导入中不唯一.");
 							validate = false;
-							continue;
 						}
 					}
 				}
-				/*
-				 * if(!validate){ continue; }
-				 */
 				Unit p = null;
 				p = emc.flag(o.getUnique(), Unit.class);
 				if (null != p) {
 					this.setUnitMemo(workbook, configurator, o,
 							"组织编号: " + o.getUnique() + " 与已经存在组织: " + p.getName() + " 冲突.");
 					validate = false;
-					continue;
 				}
-				// this.setUnitMemo(workbook, configurator, o, "校验通过.");
 			}
 		}
 		return validate;
@@ -602,10 +570,6 @@ class ActionInputAll extends BaseAction {
 				validate = false;
 				continue;
 			}
-			/*
-			 * if (StringUtils.isEmpty(o.getUnique())) { this.setPersonMemo(workbook,
-			 * configurator, o, "人员编号不能为空."); validate = false; continue; }
-			 */
 			if (StringUtils.isEmpty(o.getUnique())) {
 				this.setPersonMemo(workbook, configurator, o, "员工唯一编码不能为空.");
 				validate = false;
@@ -619,14 +583,7 @@ class ActionInputAll extends BaseAction {
 			if (!this.checkMobile(business, o.getMobile())) {
 				this.setPersonMemo(workbook, configurator, o, "手机号码不符合指定规则.");
 				validate = false;
-				continue;
 			}
-			/*
-			 * if(o.getAttributes().isEmpty()||
-			 * StringUtils.isEmpty(o.getAttributes().get("idNumber"))){
-			 * this.setPersonMemo(workbook, configurator, o, "身份证号不能为空."); validate = false;
-			 * continue; }
-			 */
 		}
 		if (validate) {
 			for (PersonItem o : person) {
@@ -642,14 +599,9 @@ class ActionInputAll extends BaseAction {
 								&& StringUtils.equals(o.getMobile(), item.getMobile())) {
 							this.setPersonMemo(workbook, configurator, o, "手机号码冲突,本次导入中不唯一.");
 							validate = false;
-							continue;
 						}
 					}
 				}
-
-				/*
-				 * if(!validate){ continue; }
-				 */
 				Person p = null;
 				p = emc.flag(o.getUnique(), Person.class);
 				if (null != p) {
@@ -666,10 +618,7 @@ class ActionInputAll extends BaseAction {
 					this.setPersonMemo(workbook, configurator, o,
 							"手机号码: " + o.getMobile() + " 与已经存在手机号码: " + pc.getMobile() + " 冲突.");
 					validate = false;
-					continue;
 				}
-
-				// this.setPersonMemo(workbook, configurator, o, "校验通过.");
 			}
 		}
 		return validate;
@@ -743,39 +692,14 @@ class ActionInputAll extends BaseAction {
 				if (!unitcheck) {
 					this.setIdentityMemo(workbook, configurator, identityItem, "系统不存在该组织.");
 					validate = false;
-					continue;
 				}
-
-				// if (validate) {
-				// this.setIdentityMemo(workbook, configurator, identityItem, "校验通过.");
-				// }
-
 			}
 		}
-
-		/*
-		 * if (validate) { for (IdentityItem o : identitys) {
-		 * this.setIdentityMemo(workbook, configurator, o, "校验通过."); } }
-		 */
 		return validate;
 	}
 
-	/*
-	 * private boolean checkDuty(Business business, XSSFWorkbook workbook,
-	 * DutySheetConfigurator configurator,List<DutyItem> duty) throws Exception {
-	 * //校验导入的职务 List<IdentityItem> identitys = new ArrayList<>();
-	 * EntityManagerContainer emc = business.entityManagerContainer(); boolean
-	 * validate = true; for (DutyItem o : duty) { //System.out.println("正在校验组织:{}."+
-	 * o.getName()); if (StringUtils.isEmpty(o.getName())) {
-	 * this.setDutyMemo(workbook, configurator, o, "职务名称不能为空."); validate = false;
-	 * continue; } if (StringUtils.isEmpty(o.getUnique())) {
-	 * this.setDutyMemo(workbook, configurator, o, "职务所在组织唯一编码不能为空."); validate =
-	 * false; continue; } this.setDutyMemo(workbook, configurator, o, "校验通过."); }
-	 * return validate; }
-	 */
 	private boolean checkDuty(Business business, XSSFWorkbook workbook, DutySheetConfigurator configurator)
 			throws Exception {
-		EntityManagerContainer emc = business.entityManagerContainer();
 		Sheet sheet = workbook.getSheetAt(4);
 		boolean validate = true;
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
