@@ -338,6 +338,12 @@
     .page-widget-title > div:first-child > div {
         display: none;
     }
+    .page-widget-title > .page-widget-drag-area{
+        display: none;
+    }
+    .page-widget-title > .page-widget-tab-line{
+        display: none;
+    }
     .page-index-content {
         min-width: 100% !important;
     }

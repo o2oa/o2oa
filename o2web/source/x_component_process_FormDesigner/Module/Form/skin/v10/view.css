@@ -693,6 +693,9 @@
         grid-template-columns: auto !important;
         grid-template-rows: calc(100% - 3rem) 3rem !important;
     }
+    .o2_thirdparty_mobile_browser .page-nav-content.show-navi {
+        grid-template-rows: 3rem calc(100% - 3rem) !important;
+    }
 
     .page-nav-content.show-navi{
         grid-template-rows: 100%;
