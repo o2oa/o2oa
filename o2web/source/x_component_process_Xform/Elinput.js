@@ -205,7 +205,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         if (this.isReadonly()) {
             this.node.set("text", data);
             if( this.json.inputType === "textarea"){
-                this.node.setStyle('white-space', 'pre');
+                this.node.setStyle('white-space', 'pre-wrap');
             }
             if( this.json.elProperties ){
                 this.node.set(this.json.elProperties );

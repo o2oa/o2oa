@@ -1186,7 +1186,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		resetData: function(){
 			// var value = this.getDefaultValue() || [];
 			var value = this.getValue() || [];
-			this.setData(value);
+			this.setData(value, false, 'resetData');
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
@@ -1811,7 +1811,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return flag;
 		},
 		validation: function(routeName, opinion){
-			if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+			if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 			
 			// if (this.isEdit){
 			// 	if (!this.editValidation()){
@@ -2482,7 +2482,13 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	},
 	select: function(){
 		this.selected = true;
-		if(this.selector)this.selector.setData(this.template.json.selectorSelectedValue);
+		if(this.selector){
+			if( ["OOCheckGroup", "Checkbox", "Elcheckbox"].contains(this.selector.json.type)){
+				this.selector.setData([this.template.json.selectorSelectedValue]);
+			}else{
+				this.selector.setData(this.template.json.selectorSelectedValue);
+			}
+		}
 	},
 	unselect: function(){
 		this.selected = false;

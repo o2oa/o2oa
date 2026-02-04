@@ -1793,7 +1793,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         var html;
         var company = "";
         var atts = [];
-        if (!isTask || true){
+        if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             var html = this.json.textStyle;
             if (task.processingType=="empower") html = MWF.xApplication.process.Xform.LP.empowerToHtml;

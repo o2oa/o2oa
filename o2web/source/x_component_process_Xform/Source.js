@@ -44,7 +44,7 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource = new Class(
                 if (this.json.sourceType == 'o2') {
                     if (this.json.path) this._getO2Source();
                 } else {
-                    this._getOtherSource();
+                    if (!this.json.isDelay) this._getOtherSource();
                 }
             }
         },
@@ -219,13 +219,17 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource = new Class(
         // },
 
         active: function () {
-            this._getO2Uri();
-            this._invoke(
-                function () {
-                    this._loadSub(this.node);
-                    this.fireEvent('loadData');
-                }.bind(this),
-            );
+            if (this.json.sourceType === 'o2') {
+                this._getO2Uri();
+                this._invoke(
+                    function () {
+                        this._loadSub(this.node);
+                        this.fireEvent('loadData');
+                    }.bind(this),
+                );
+            } else {
+                this._getOtherSource();
+            }
         },
         _invoke: function (callback) {
             var cb = new MWF.xDesktop.Actions.RestActions.Callback(function (json) {

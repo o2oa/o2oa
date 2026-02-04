@@ -160,7 +160,10 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
             var cssText = this.subformData.json.css.code;
 
             //删除注释
-            cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+            //cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除多行注释
+                .replace(/\\n/g, '');             // 移除\n
 
             cssText = this.form.parseCSS(cssText);
 
