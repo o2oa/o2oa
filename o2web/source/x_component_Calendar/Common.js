@@ -1089,7 +1089,7 @@ MWFCalendar.EventForm = new Class({
                 for (var i=0; i<as.length; i++){
                     var a = as[i];
                     var href =  this.getAttributeValue(a, "href");
-                    if( href.indexOf('javascript:') > -1 ){
+                    if( href.toLowerCase().indexOf('javascript:') > -1 ){
                         var a1 = this.removeAttribute(a, "href");
                         html = html.replace(a, a1);
                     }

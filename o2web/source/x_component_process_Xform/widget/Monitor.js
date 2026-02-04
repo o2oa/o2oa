@@ -780,6 +780,12 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
         return {"x": x, "y": y};
     },
+    closeWorkLog: function (){
+        if(this.currentWorklogNode){
+            this.currentWorklogNode.destroy();
+            this.currentWorklogNode = null;
+        }
+    },
     showWorklog: function(activity, offset, psize, event){
         this.hideCurrentWorklog();
 
@@ -821,9 +827,15 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             }
 
              // if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
+            var bottomY;
+            if( this.inDialog() ){
+                var dialogContent = this.getDialogContent();
+                bottomY = bodySize.y - dialogContent.getSize().y;
+            }else{
                 var mobileActionNode = document.body.getElement(".o2_form_mobile_actions");
+                bottomY = mobileActionNode ? mobileActionNode.getSize().y+1 : 1;
+            }
                 logNode.inject( $(document.body) );
-                var bottomY = mobileActionNode ? mobileActionNode.getSize().y+1 : 1;
                 logNode.setStyles({
                     "display": "block",
                     "position": "absolute",
@@ -858,22 +870,25 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }
         this.fireEvent('showWorklog', [logNode]);
     },
-    inDialog: function (){
+    getDialogContent: function(){
         var parent = this.paperNode;
         while (parent){
             if( parent.hasClass('MWF_dialod_content') ){
-                return true;
+                return parent;
             }
             parent = parent.getParent();
         }
-        return false;
+        return null;
+    },
+    inDialog: function (){
+        return !!this.getDialogContent();
     },
     getZindex: function () {
         var parent = this.paperNode;
         var zindex = 1;
         while (parent){
             var zIndex = parent.getStyle('z-index');
-            if( zIndex ){
+            if( zIndex && parseFloat(zIndex).toString() !== "NaN" ){
                 zindex = Math.max(zindex, zIndex.toFloat()+1);
             }
             parent = parent.getParent();

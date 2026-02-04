@@ -270,6 +270,48 @@ MWF.xApplication.process.Application.Main = new Class({
 	},
 	recordStatus: function(){
 		return { "id": this.options.id};
+	},
+	createStartWorkResault: function(workInfors, title, processName, isopen){
+		var content = "";
+		workInfors.each(function(infor){
+			var users = [];
+			infor.users.each(function(uname){
+				users.push(MWF.name.cn(uname));
+			});
+
+			content += "<div><b>"+this.lp.nextActivity+"<font style=\"color: #ea621f\">"+infor.activity+"</font>, "+this.lp.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b>";
+			if (infor.currentTask && isopen){
+				content += "&nbsp;&nbsp;&nbsp;&nbsp;<span value=\""+infor.currentTask+"\">"+this.lp.deal+"</span></div>";
+			}else{
+				content += "</div>";
+			}
+		}.bind(this));
+
+		var msg = {
+			"subject": this.lp.processStarted,
+			"content": "<div>"+this.lp.processStartedMessage+"“["+processName+"]"+title+"”</div>"+content
+		};
+		var tooltip = layout.desktop.message.addTooltip(msg);
+		var item = layout.desktop.message.addMessage(msg);
+
+		this.setStartWorkResaultAction(tooltip);
+		this.setStartWorkResaultAction(item);
+	},
+	setStartWorkResaultAction: function(item){
+		var node = item.node.getElements("span.dealStartedWorkAction");
+		var _self = this;
+		node.addEvent("click", function(e){
+			var options = {"taskId": this.get("value"), "appId": this.get("value"),
+				"onPostClose": function(){
+					try{
+						if (_self.currentList.refresh) _self.currentList.refresh();
+					}catch (e) {
+
+					}
+				}
+			};
+			_self.app.desktop.openApplication(e, "process.Work", options);
+		});
 	}
 });
 MWF.xApplication.process.Application.List = new Class({

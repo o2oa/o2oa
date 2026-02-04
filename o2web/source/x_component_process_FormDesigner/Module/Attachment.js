@@ -95,6 +95,7 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 				"title": "Attachment",
 				"readonly": true,
 				"size": this.json.size,
+				"isFromDriver": false,
 				"toolbarGroupHidden" : this.json.toolbarGroupHidden || [],
 				"availableListStyles" : this.json.availableListStyles || ["list","seq","icon","preview"]
             });

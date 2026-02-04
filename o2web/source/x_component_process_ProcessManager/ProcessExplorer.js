@@ -75,12 +75,22 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         }
     },
 
-    saveItemAs: function(data, success, failure, cancel){
-        this.app.restActions.listProcess(this.app.options.application.id, function(dJson){
-            var i=1;
-            var someItems = dJson.data.filter(function(d){ return d.id===data.id });
-            if (someItems.length){
-                var someItem = someItems[0];
+    saveItemAs: async function (data, success, failure, cancel) {
+        const action = o2.Actions.load('x_processplatform_assemble_designer').ProcessAction;
+        debugger;
+        let someItem;
+        action.get(data.id, (json) => {
+            someItem = json.data;
+        }, error => {
+            return true;
+        }, false);
+        let dJson;
+        await action.listWithApplication(this.app.options.application.id, (json)=>{
+            dJson = json;
+        }, error => {
+            if(failure)failure();
+        });
+        if (someItem) {
                 var lp = this.app.lp;
                 var _self = this;
 
@@ -97,13 +107,19 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
                     "<div style='color: red; float: right;'>"+((d1<=d2) ? "": lp.copynew)+"</div></div>";
 //                html += "<>"
                 this.app.dlg("inofr", null, this.app.lp.copyConfirmTitle, {"html": html}, 500, 290, [
-                    {
+                data.lastUpdateTime !== someItem.lastUpdateTime ? { //更新时间不同看作来之不同的服务器，否则就是同一个流程
                         "text": lp.copyConfirm_overwrite,
-                        "action": function(){_self.saveItemAsUpdate(someItem, data, success, failure);this.close();}
-                    },
+                    "action": function () {
+                        _self.saveItemAsUpdate(someItem, data, success, failure);
+                        this.close();
+                    }
+                } : null,
                     {
                         "text": lp.copyConfirm_new,
-                        "action": function(){_self.saveItemAsNew(dJson, data, success, failure);this.close();}
+                    "action": function () {
+                        _self.saveItemAsNew(dJson, data, success, failure, true);
+                        this.close();
+                    }
                     },
                     {
                         "text": lp.copyConfirm_skip,
@@ -111,13 +127,58 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
                     },
                     {
                         "text": lp.copyConfirm_cancel,
-                        "action": function(){this.close(); if (cancel) cancel();}
+                    "action": function () {
+                        this.close();
+                        if (cancel) cancel();
                     }
-                ]);
+                }
+            ].clean());
             }else{
-                this.saveItemAsNew(dJson, data, success, failure)
+            this.saveItemAsNew(dJson, data, success, failure);
             }
-        }.bind(this), function(){if (failure) failure();}.bind(this));
+
+//         this.app.restActions.listProcess(this.app.options.application.id, function(dJson){
+//             var i=1;
+//             var someItems = dJson.data.filter(function(d){ return d.id===data.id });
+//             if (someItems.length){
+//                 var someItem = someItems[0];
+//                 var lp = this.app.lp;
+//                 var _self = this;
+//
+//                 var d1 = new Date().parse(data.lastUpdateTime);
+//                 var d2 = new Date().parse(someItem.lastUpdateTime);
+//                 var html = "<div>"+lp.copyConfirmInfor+"</div>";
+//                 html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='font-weight: bold; font-size:14px;'>"+lp.copySource+" "+someItem.name+"</div>";
+//                 html += "<div style='font-size:12px; color: #666666; float: left'>"+someItem.lastUpdateTime+"</div>" +
+//                     "<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(someItem.lastUpdatePerson)+"</div>" +
+//                     "<div style='color: red; float: right;'>"+((d1>=d2) ? "": lp.copynew)+"</div></div>";
+//                 html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='clear: both;font-weight: bold; font-size:14px;'>"+lp.copyTarget+" "+data.name+"</div>";
+//                 html += "<div style='font-size:12px; color: #666666; float: left;'>"+data.lastUpdateTime+"</div>" +
+//                     "<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(data.lastUpdatePerson)+"</div>" +
+//                     "<div style='color: red; float: right;'>"+((d1<=d2) ? "": lp.copynew)+"</div></div>";
+// //                html += "<>"
+//                 this.app.dlg("inofr", null, this.app.lp.copyConfirmTitle, {"html": html}, 500, 290, [
+//                     {
+//                         "text": lp.copyConfirm_overwrite,
+//                         "action": function(){_self.saveItemAsUpdate(someItem, data, success, failure);this.close();}
+//                     },
+//                     {
+//                         "text": lp.copyConfirm_new,
+//                         "action": function(){_self.saveItemAsNew(dJson, data, success, failure);this.close();}
+//                     },
+//                     {
+//                         "text": lp.copyConfirm_skip,
+//                         "action": function(){/*nothing*/ this.close(); if (success) success();}
+//                     },
+//                     {
+//                         "text": lp.copyConfirm_cancel,
+//                         "action": function(){this.close(); if (cancel) cancel();}
+//                     }
+//                 ]);
+//             }else{
+//                 this.saveItemAsNew(dJson, data, success, failure)
+//             }
+//         }.bind(this), function(){if (failure) failure();}.bind(this));
     },
     saveItemAsUpdate: function(someItem, process, success, failure){
 	    debugger;
@@ -163,14 +224,14 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
             if (failure) failure();
         }.bind(this));
     },
-    saveItemAsNew: function(processJson, process, success, failure){
+    saveItemAsNew: function(processJson, process, success, failure, exist){
 	    debugger;
 
         var item = this.app.options.application;
         var id = item.id;
         var name = item.name;
 
-        var isSameApp = process.application === id;
+        var isSameApp = !!exist || process.application === id;
 
         process.alias = "";
         var oldName = process.name;

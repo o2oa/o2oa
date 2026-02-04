@@ -197,7 +197,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.formExplorer.load();
     },
     createViewNode: function(){
-        this.viewAreaNode = new Element("div.viewAreaNode", {
+        this.viewAreaNode = new Element("div.cms_viewAreaNode", {
             "styles": this.css.viewAreaNode
         }).inject(this.rightTopContent);
 
@@ -251,7 +251,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         //    "styles": this.css.viewContainerNode
         //}).inject(this.rightContent);
 
-        this.viewNode = new Element("div.viewNode", {
+        this.viewNode = new Element("div.cms_viewAreaNode", {
             "styles": this.css.viewNode
         }).inject(this.viewAreaNode);
     },

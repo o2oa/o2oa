@@ -95,6 +95,13 @@ MWF.xApplication.process.Application.LP={
 	"readProcess": "Procesar pendiente",
 	"editAction": "Mantenimiento",
 	"unnamed": "Sin título",
+	"processStarted": "Archivo iniciado",
+	"taskProcessed": "Archivo enviado",
+	"taskProcessedMessage": "Has procesado una tarea pendiente:",
+	"nextActivity": "Próxima actividad:",
+	"nextUser": "Procesador:",
+	"processStartedMessage": "Has iniciado un nuevo trabajo:",
+	"deal": "Proceso",
 	"fieldName": "Feild ",
 	"op": "Actividades",
 	"dataRecordView": {

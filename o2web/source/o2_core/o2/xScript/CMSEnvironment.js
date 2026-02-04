@@ -1271,13 +1271,13 @@ MWF.xScript.CMSEnvironment = function(ev){
                             </div>
                           </div>`;
         const o = {
-            selectOk: function(){
+            selectOk: function(e){
                 okCallback && okCallback();
                 if( !notCloseOnOK ){
-                    this.selectCancel();
+                    this.selectCancel(e);
                 }
             },
-            selectCancel: function(){
+            selectCancel: function(e){
                 this.contentNode.removeClass('visible');
                 this.contentNode.addClass('invisible');
                 window.setTimeout(()=>{
@@ -1297,17 +1297,19 @@ MWF.xScript.CMSEnvironment = function(ev){
         //         row.node.removeClass('selectedRow');
         //     });
         // });
-         viewerGenerator(o.viewNode, o);
+        window.setTimeout(()=>{
+            viewerGenerator(o.viewNode, o);
+        }, 200);
 
         requestAnimationFrame(()=>{
             o.contentNode.removeClass('invisible');
             o.contentNode.addClass('visible');
         });
         o.contentNode.addEventListener('click', (e)=>{
-            e.stopPropagation();
+            e.stopPropagation(e);
         });
-        node.addEventListener('click', ()=>{
-            o.selectCancel();
+        node.addEventListener('click', (e)=>{
+            o.selectCancel(e);
         });
     }
     this._renderViewContainerMobile = _renderViewContainerMobile;
@@ -1444,7 +1446,9 @@ MWF.xScript.CMSEnvironment = function(ev){
                         viewJson[key] = view[key];
                     }
                 }
-                if (layout.mobile && o2.version.dev===10){
+                //if (layout.mobile && o2.version.dev===10){
+                var styleType = _form.json?.formStyleType || _form.viewJson?.viewStyleType;
+                if (layout.mobile && styleType === 'v10') {
                     selectViewMobile(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
                 }else{
                     selectViewPc(viewJson, okCallback, dialogOptions, viewOptions, loadedCallback);
@@ -1474,7 +1478,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                 });
             },
             ()=>{
-                if(callback)callback(viewer.getData());
+                    if(okCallback)okCallback(viewer.getData());
             }
         );
     };
@@ -1674,7 +1678,9 @@ MWF.xScript.CMSEnvironment = function(ev){
                         statementJson[key] = statement[key];
                     }
                 }
-                if (layout.mobile && o2.version.dev === 10) {
+                //if (layout.mobile && o2.version.dev === 10) {
+                var styleType = _form.json?.formStyleType || _form.viewJson?.viewStyleType;
+                if (layout.mobile && styleType === 'v10') {
                     selectStatementMobile(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
                 } else {
                     selectStatementPc(statementJson, okCallback, dialogOptions, statementOptions, loadedCallback);
@@ -2232,7 +2238,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                 var len = workData.workList.length + workData.workCompletedList.length;
                 if (len){
                     if (len>1 && choice){
-                        var node = new Element("div", {"styles": {"padding": "20px", "width": "500px"}}).inject(_form.node);
+                        var node = new Element("div", {"styles": {"padding": "20px", "width": "500px"}}).inject(_form.node || _form.app.contentNode);
                         workData.workList.each(function(work){
                             var workNode = new Element("div", {
                                 "styles": {
