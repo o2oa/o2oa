@@ -297,4 +297,11 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
 
         return value ?? '';
     },
+    _afterLoadOONodeDownloading: function (){
+        let value = this.getValue();
+        if(Array.isArray(value)){
+            value = value.map(v=>v.name);
+        }
+        this.downloadingValueNode.set('text', value.join(' ,') || '-');
+    },
 });

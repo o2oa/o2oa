@@ -172,7 +172,14 @@ MWF.xApplication.process.Xform.OOCheckGroup = MWF.APPOOCheckGroup = new Class({
             if (i.checked) items.push(i);
         }
         return items;
-    }
+    },
+    _afterLoadOONodeDownloading: function (){
+        let value = this.getBusinessDataById(null, `${this.json.id}$text`) || '';
+        if(!value){
+            value = this._getBusinessData();
+        }
+        this.downloadingValueNode.set('text', Array.isArray(value) ? value.join(' ,') || '-' : value || '-');
+    },
     // __setData: function(data, fireChange){
     //     this.moduleValueAG = null;
     //     this._setBusinessData(data);

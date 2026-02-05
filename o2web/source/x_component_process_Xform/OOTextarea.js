@@ -12,6 +12,8 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
         // }else{
             if (!this.isReadable && !!this.isHideUnreadable){
                 this.node?.addClass('hide');
+            }else if(this.downloading){
+                this._loadOONodeDownloading();
             }else{
                 this._loadNodeEdit();
             }
@@ -204,5 +206,9 @@ MWF.xApplication.process.Xform.OOTextarea = MWF.APPOOTextarea = new Class({
             this.validationText = '';
             this.node.unInvalidStyle();
         }
-    }
+    },
+    _afterLoadOONodeDownloading: function (){
+        this.downloadingValueNode.set('text', this._getBusinessData() || '-');
+        this.downloadingValueNode.setStyle('white-space', 'pre-wrap');
+    },
 });

@@ -1434,6 +1434,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (replace || !this.forms[json.id]) this.forms[json.id] = module;
         }
         module.readonly = this.options.readonly;
+        module.downloading = this.options.downloading;
         module.load();
         return module;
     },
@@ -4649,17 +4650,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             });
         }
     },
+    //downloadAll: function (){
+        // if( this.options.readonly || this.json.isReadonly ){
+        //     this._downloadAll();
+        // }else{
+        //     this._downloadAllEditMode();
+        // }
+    //},
     downloadAll: function (){
-        if( this.options.readonly || this.json.isReadonly ){
-            this._downloadAll();
-        }else{
-            this._downloadAllEditMode();
-        }
-    },
-    _downloadAllEditMode: function (){
         var iframe;
         var downloadWithIframe = (appForm)=>{
-            var html = appForm.app.content.get('html');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const html = iframeDoc.documentElement.outerHTML;
             setTimeout(()=>{
                 this._downloadAll(html, ()=>{
                     iframe?.destroy();
@@ -4672,7 +4674,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
             iframe = new Element('iframe', {
-                src: `../x_desktop/${layout.mobile?'workmobile.html':'work.html'}?workid=${this.businessData.work.id}&readonly=true`,
+                src: `../x_desktop/work.html?workid=${this.businessData.work.id}&readonly=true&downloading=true`,
                 "width": "100%",
                 "height": "100%",
                 "frameborder": "0px",
@@ -4731,10 +4733,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     _downloadAll: function (htmlString, callback) {
 
         var htmlFormId = "";
-        var html = htmlString || this.app.content.get("html");
+        var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
         var port = layout.port === "" ? "" : ":" + port;
 
         html = html.replace(/\.\.\/(x_|o2_)/g, "http://127.0.0.1" + port + "/$1");
+
+        debugger;
+        console.log(html);
 
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
             "workHtml": encodeURIComponent(html),

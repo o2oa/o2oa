@@ -13,8 +13,10 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
         if (this.json.id==='personAttributeList..data..0..attrName'){
             debugger;
         }
-        if (!this.isReadable && !!this.isHideUnreadable){
+        if (!this.isReadable && !!this.isHideUnreadable) {
             this.node?.addClass('hide');
+        }else if(this.downloading){
+            this._loadOONodeDownloading()
         }else{
             this._loadNodeEdit();
         }
@@ -217,20 +219,7 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
             this.node.unInvalidStyle();
         }
     },
-    _loadNodeDownload: function (){
-        this.node.setStyles('display', 'none');
-        const node = new Element('div.oo-node-download').inject(this.node, 'after');
-
-        if (this.json.styles) {
-            node.setStyles(this.json.styles);
-        }
-
-        if (this.json.label) {
-            const labelNode = new ELement('label.item-label',{
-                text: this.json.label
-            });
-        }
-
-        const valueNode = new Element('');
+    _afterLoadOONodeDownloading: function (){
+        this.downloadingValueNode.set('text', this._getBusinessData() || '-');
     },
 });

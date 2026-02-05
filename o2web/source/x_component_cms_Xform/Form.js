@@ -214,6 +214,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
              * var subjectField = moduleAll["subject"] //获取名称为subject的组件
              */
             this.all = {};
+            this.allForName = {};
             this.forms = {};
 
             //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();

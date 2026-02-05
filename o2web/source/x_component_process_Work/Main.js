@@ -26,6 +26,7 @@ MWF.xApplication.process.Work.Main = new Class({
         "isControl": false,
         "taskObject": null,
         "readonly": false,
+        "downloading": false,
         "worklogType": "record" //record, worklog
 	},
 	onQueryLoad: function(){
@@ -33,9 +34,9 @@ MWF.xApplication.process.Work.Main = new Class({
             "title": MWF.xApplication.process.Work.LP.title
         });
 		this.lp = MWF.xApplication.process.Work.LP;
-        console.log( 'this.status', this.status, 'this.options', this.options );
         if (!this.status) {
             if( this.options.readonly === "true" )this.options.readonly=true;
+            if( this.options.downloading === 'true' )this.options.downloading = true;
         } else {
             this.options.workId = this.status.workId;
             this.options.taskId = this.status.taskId;
@@ -47,9 +48,13 @@ MWF.xApplication.process.Work.Main = new Class({
             this.options.formid = this.status.formid;
             if( this.status.form && this.status.form.id )this.options.form = this.status.form;
             this.options.readonly = (this.status.readonly === true || this.status.readonly === "true");
+            //this.options.downloading = (this.status.downloading === true || this.status.downloading === "true");
             this.options.draft = this.status.draft;
             this.options.draftData = this.status.draftData;
         }
+
+        if( this.options.downloading === 'true' )this.options.downloading = true;
+
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},
     loadWorkApplication: function(callback, mask){
@@ -680,7 +685,10 @@ MWF.xApplication.process.Work.Main = new Class({
             var cl = "$all";
             MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
-                this.appForm = new MWF.APPForm(this.formNode, this.form, {"readonly": this.readonly});
+                this.appForm = new MWF.APPForm(this.formNode, this.form, {
+                    "readonly": this.readonly,
+                    "downloading": this.options.downloading
+                });
                 if( !this.currentTask && this.control.allowReset ){
                     this.control.allowReset = false;
                 }
@@ -760,6 +768,7 @@ MWF.xApplication.process.Work.Main = new Class({
             "draftId": this.options.draftId,
             "priorityWork": this.options.priorityWork,
             "readonly": this.readonly,
+            "downloading": this.options.downloading,
             "draft": this.draft,
             "draftData": this.options.draftData
         };

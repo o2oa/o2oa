@@ -1473,5 +1473,86 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this.node.setStyle('padding-right', '0');
             }
         }
+    },
+    _loadOONodeDownloading: function (){
+        debugger;
+        const OODownloadingNodeStyle = {
+            "display": "flex",
+            "align-items": "center",
+            "flex": "1 1 46%",
+            "box-sizing": "border-box"
+        }
+        const OODownloadingLabelNodeStyle = {
+            "width": "6.2vw",
+            "min-width": "4.3em",
+            "max-width": "9em",
+            "padding": "0.5em 0.35em",
+            "margin-right": "0.5em",
+            "display": "flex",
+            "align-items": "flex-end",
+            "height": "100%",
+            "flex": "0 0 6.2vw",
+            "color": "var(--oo-color-text2)",
+            "flex-direction": "column",
+            "justify-content": "center",
+            "box-sizing": "border-box !important",
+            "white-space": "nowrap"
+        }
+        const OODownloadingValueNodeStyle = {
+            "align-items": "center",
+            "display": "flex",
+            "flex": "1 1 0%",
+            "padding": "0.5em 0.6em"
+        }
+        this.node.setStyle('display', 'none');
+        let valueNode, labelNode;
+        const node = new Element('div.oo-node-download', {
+            'id': this.json.id,
+            'MWFType': this.json.type,
+        }).inject(this.node, 'after');
+        node.setStyles(OODownloadingNodeStyle);
+
+        if (this.json.styles) {
+            node.setStyles(this.json.styles);
+        }
+
+        if (this.json.label) {
+            labelNode = new Element('label.item-label',{
+                text: this.json.label
+            }).inject(node);
+        }
+
+        valueNode = new Element('div').inject(node);
+
+        if(this.json.properties){
+            if(labelNode) {
+                if(this.json.properties['label-style']){
+                    labelNode.setAttribute('style', this.json.properties['label-style']);
+                }
+                labelNode.setStyles(OODownloadingLabelNodeStyle);
+                if(this.json.properties['label-Align']){
+                    let justifyContent;
+                    switch (this.json.properties['label-Align']) {
+                        case 'right': justifyContent = 'flex-end'; break;
+                        case 'center': justifyContent = 'center';  break;
+                        default: justifyContent = 'flex-start'; break;
+                    }
+                    labelNode.setStyle('justify-content', justifyContent);
+                }
+            }
+            if(!this.json.inDatatable && this.json.properties['view-style']) {
+                valueNode.setAttribute('style', this.json.properties['view-style']);
+            }
+            valueNode.setStyles(OODownloadingValueNodeStyle);
+
+            this.downloadingNode = node;
+            this.downloadingLabelNode = labelNode;
+            this.downloadingValueNode = valueNode;
+
+            this._afterLoadOONodeDownloading();
+        }
+    },
+    _afterLoadOONodeDownloading: function (){
+
     }
 });

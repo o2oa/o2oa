@@ -9,6 +9,8 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
     _loadNode: function () {
         if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
+        }else if(this.downloading){
+            this._loadOONodeDownloading();
         }else{
             this._loadNodeEdit();
         }
@@ -309,6 +311,14 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
                     }.bind(this));
                 }
                 break;
+        }
+    },
+    _afterLoadOONodeDownloading: function (){
+        let value = this._getBusinessData();
+        if(this.json.dataType && this.json.dataType.endsWith('range')){
+            this.downloadingValueNode.set('text', Array.isArray(value) ? value.map(v=>!v?'-':v).join(this.json.separator || ' 至 ') : value||'-');
+        }else{
+            this.downloadingValueNode.set('text', Array.isArray(value) ? value.filter(v=>!!v).join(this.json.separator || '') : value||'-');
         }
     }
 });
