@@ -104,6 +104,7 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
                 return this.form.Macro.fire(this.json.disabledDate.code, this, date);
             }.bind(this)
         }
+        this._setPopperClass();
     },
     _createElementHtml: function() {
         var html = "<el-date-picker";
@@ -121,6 +122,7 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         html += " :value-format=\"valueFormat\"";
         html += " :format=\"format\"";
         html += " :picker-options=\"pickerOptions\"";
+        html += " :popper-class=\"popperClass\"";
         // html += " :picker-options=\"{" +
             // ":firstDayOfWeek=firstDayOfWeek," +
             // ":disabledDate=\"disabledDateFun\""+

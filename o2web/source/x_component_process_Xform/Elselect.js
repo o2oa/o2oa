@@ -102,6 +102,8 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         if (!this.json.loading) this.json.loading = false;
         if (!this.json.options) this.json.options = [];
 
+        this._setPopperClass();
+
         this._loadOptions();
 
         if (this.json.multiple===true) if (!this.json[this.json.$id] || !this.json[this.json.$id].length) this.json[this.json.$id] = [];
