@@ -136,7 +136,6 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
 
         this.setOptions();
     },
-
     _createOptionItem: function (o, node) {
         var option = new Element('oo-option');
 		option.setAttribute('value', o.name);
