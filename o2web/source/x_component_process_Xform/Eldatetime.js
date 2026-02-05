@@ -95,6 +95,7 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.description) this.json.description = "";
         if (!this.json.arrowControl) this.json.arrowControl = false;
+        if (!this.json.popperClass) this.json.popperClass = "";
         this.json.pickerOptions = {
             firstDayOfWeek: this.json.firstDayOfWeek.toInt()
         }
@@ -103,6 +104,8 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
                 return this.form.Macro.fire(this.json.disabledDate.code, this, date);
             }.bind(this)
         }
+        this._setPopperClass();
+
         // if(this.json.selectableRange && this.json.selectableRange.code){
         //     this.json.pickerOptions.selectableRange = this.form.Macro.fire(this.json.selectableRange.code, this);
         // }

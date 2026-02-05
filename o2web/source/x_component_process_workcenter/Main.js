@@ -684,15 +684,16 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 	startProcessDraft: function(data, title, processName){
 		var work = data.work;
-		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false,
-			"onPostClose": function(){
+		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
+		if(!layout.inBrowser){
+			options.onPostClose = function(){
 				try{
 					if (this.currentList.refresh) this.currentList.refresh();
 				}catch (e) {
 					
 				}
 			}.bind(this)
-		};
+		}
 		this.desktop.openApplication(null, "process.Work", options);
 	},
 	startProcessInstance: function(data, title, processName){
@@ -704,15 +705,16 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		}.bind(this));
 
 		if (currentTask.length===1){
-			var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0],
-				"onPostClose": function(){
+			var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0]};
+			if(!layout.inBrowser){
+				options.onPostClose = function(){
 					try{
 						if (this.currentList.refresh) this.currentList.refresh();
 					}catch (e) {
 						
 					}
 				}.bind(this)
-			};
+			}
 			this.desktop.openApplication(null, "process.Work", options);
 
 			if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, false);
@@ -759,15 +761,16 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var node = item.node.getElements("span.dealStartedWorkAction");
 		var _self = this;
 		node.addEvent("click", function(e){
-			var options = {"taskId": this.get("value"), "appId": this.get("value"),
-				"onPostClose": function(){
+			var options = {"taskId": this.get("value"), "appId": this.get("value")};
+			if(!layout.inBrowser){
+				options.onPostClose = function(){
 					try{
 						if (_self.currentList.refresh) _self.currentList.refresh();
 					}catch (e) {
 						
 					}
 				}
-			};
+			}
 			_self.app.desktop.openApplication(e, "process.Work", options);
 		});
 	},
@@ -950,16 +953,17 @@ MWF.xApplication.process.workcenter.List = new Class({
 		e.currentTarget.removeClass("listItem_over");
 	},
 	openTask: function(e, data){
-		o2.api.form.openWork(data.work, "", data.title, {
-			"taskId": data.id,
-			"onPostClose": function(){
+		var options = {
+			"taskId": data.id
+		};
+		if(!layout.inBrowser)options.onPostClose = function(){
 				try{
 					if (this.refresh) this.refresh();
 				}catch (e) {
 					
 				}
 			}.bind(this)
-		});
+		o2.api.form.openWork(data.work, "", data.title, options);
 	},
 	loadItemIcon: function(application, e){
 		this.app.loadItemIcon(application, e);
@@ -1770,15 +1774,16 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 		}.bind(this));
 	},
 	openTask: function(e, data){
-		var options = {"draftId": data.id, "appId": "process.Work"+data.id,
-			"onPostClose": function(){
+		var options = {"draftId": data.id, "appId": "process.Work"+data.id};
+		if(!layout.inBrowser){
+			options.onPostClose = function(){
 				try{
 					if (this.refresh) this.refresh();
 				}catch (e) {
 					
 				}
 			}.bind(this)
-		};
+		}
 		this.app.desktop.openApplication(e, "process.Work", options);
 	}
 });
@@ -1799,7 +1804,7 @@ MWF.xApplication.process.workcenter.ReviewList = new Class({
 		}.bind(this));
 	},
 	openTask: function(e, data){
-		o2.api.form.openWork(data.work, "", data.title, {
+		o2.api.form.openWork(data.work, "", data.title, layout.inBrowser ? {} : {
 			"onPostClose": function(){
 				try{
 					if (this.refresh) this.refresh();
@@ -1843,7 +1848,7 @@ MWF.xApplication.process.workcenter.MyCreatedList = new Class({
 		}.bind(this));
 	},
 	openTask: function(e, data){
-		o2.api.form.openWork(data.work, "", data.title, {
+		o2.api.form.openWork(data.work, "", data.title, layout.inBrowser ? {} : {
 			"onPostClose": function(){
 				try {
 					if (this.refresh) this.refresh();

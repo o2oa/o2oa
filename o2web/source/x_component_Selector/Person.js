@@ -1215,7 +1215,12 @@ MWF.xApplication.Selector.Person = new Class({
     },
     loadSelectNodeScroll: function(){
         var overflowY = this.itemAreaScrollNode.getStyle("overflow-y");
-        if( typeOf(overflowY)==="string" && (overflowY.toLowerCase() === "auto" || overflowY.toLowerCase() === "scroll") )return;
+        if( typeOf(overflowY)==="string" && (overflowY.toLowerCase() === "auto" || overflowY.toLowerCase() === "scroll") ){
+            this.itemAreaScrollNode.addEvent('scroll', ()=>{
+                this._scrollEvent(this.itemAreaScrollNode.scrollTop);
+            });
+            return;
+        }
         MWF.require("MWF.widget.ScrollBar", function(){
             var _self = this;
             new MWF.widget.ScrollBar(this.itemAreaScrollNode, {

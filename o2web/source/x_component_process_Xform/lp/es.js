@@ -170,6 +170,7 @@ MWF.xApplication.process.Xform.LP={
 	"attachmentOrderTitle": "Ordenación de archivos adjuntos",
 	"attachmentOrderUp": "Mover hacia arriba",
 	"attachmentOrderDown": "Mover hacia abajo",
+	"downloadAllText": "Primero debe guardar el formulario. ¿Desea continuar?",
 	"attachmentOrderInfo": "Arrastre el icono del archivo adjunto o utilice los botones \"mover hacia arriba\" y \"mover hacia abajo\" para ordenar los archivos adjuntos",
 	"autosave": "Guardar automáticamente el documento",
 	"ignore": "Ignorar",

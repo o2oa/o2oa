@@ -8,7 +8,7 @@
     
     {{if ($.isProcess || $.isCms)}}
     <div class="fieldPermissions-body-check">
-        <oo-checkbox checked="{{!!$.data.readByActivity}}" value="true" data-o2-events="change:changeCheck:readByActivity"
+        <oo-checkbox checked="{{!!$.data.readByActivity?.length}}" value="true" data-o2-events="change:changeCheck:readByActivity"
             >{{$.lp.propertyTemplate.readConfig_activity}}</oo-checkbox
         >
     </div>
@@ -47,7 +47,7 @@
     {{end if}}
 
     <div class="fieldPermissions-body-check">
-        <oo-checkbox checked="{{!!$.data.readByOrg}}" data-o2-events="change:changeCheck:readByOrg"
+        <oo-checkbox checked="{{!!$.data.readByOrg?.length}}" data-o2-events="change:changeCheck:readByOrg"
             >{{$.lp.propertyTemplate.readConfig_org}}</oo-checkbox
         >
     </div>
@@ -63,7 +63,7 @@
     </div>
 
     <div class="fieldPermissions-body-check">
-        <oo-checkbox checked="{{!!$.data.readByScript}}" data-o2-events="change:changeCheck:readByScript"
+        <oo-checkbox checked="{{!!$.data.readByScript?.length}}" data-o2-events="change:changeCheck:readByScript"
             >{{$.lp.propertyTemplate.readConfig_script}}</oo-checkbox
         >
     </div>
@@ -90,7 +90,7 @@
 
     {{if ($.isProcess || $.isCms)}}
     <div class="fieldPermissions-body-check">
-        <oo-checkbox checked="{{!!$.data.editByActivity}}" data-o2-events="change:changeCheck:editByActivity"
+        <oo-checkbox checked="{{!!$.data.editByActivity?.length}}" data-o2-events="change:changeCheck:editByActivity"
             >{{$.lp.propertyTemplate.editConfig_activity}}</oo-checkbox
         >
     </div>
@@ -128,7 +128,7 @@
     {{end if}}
 
     <div class="fieldPermissions-body-check">
-        <oo-checkbox checked="{{!!$.data.editByOrg}}" data-o2-events="change:changeCheck:editByOrg"
+        <oo-checkbox checked="{{!!$.data.editByOrg?.length}}" data-o2-events="change:changeCheck:editByOrg"
             >{{$.lp.propertyTemplate.editConfig_org}}</oo-checkbox
         >
     </div>
@@ -139,12 +139,12 @@
             right-icon="create"
             label="{{$.lp.propertyTemplate.editOrg}}"
             item-type="border"
-            value="{{$m.getActivityDn($.data.editByOrgValue)}}"
+            value="{{$.data.editByOrgValue}}"
         ></oo-selector>
     </div>
 
     <div class="fieldPermissions-body-check">
-        <oo-checkbox checked="{{!!$.data.editByScript}}" data-o2-events="change:changeCheck:editByScript"
+        <oo-checkbox checked="{{!!$.data.editByScript?.length}}" data-o2-events="change:changeCheck:editByScript"
             >{{$.lp.propertyTemplate.editConfig_script}}</oo-checkbox
         >
     </div>

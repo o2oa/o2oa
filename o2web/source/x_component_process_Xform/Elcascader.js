@@ -104,6 +104,8 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         if (!this.json.props.disabled) this.json.props.disabled = "disabled";
         if (!this.json.props.leaf) this.json.props.leaf = "leaf";
 
+        this._setPopperClass();
+
         this._loadOptions();
 
         //if (this.json.props.multiple===true) if (!this.json[this.json.id] || !this.json[this.json.id].length) this.json[this.json.id] = [];

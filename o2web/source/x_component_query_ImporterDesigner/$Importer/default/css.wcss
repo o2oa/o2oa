@@ -194,7 +194,7 @@
         "margin-top": "5px"
     },
     "cloumnListNode": {
-        "height": "26px",
+        "min-height": "26px",
         "padding": "0px 5px",
         "line-height": "26px",
         "font-size": "12px",

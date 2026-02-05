@@ -614,7 +614,7 @@ MWF.xApplication.HotArticle.Toolbar = new Class({
 			this.app.confirm("warn", e, this.lp.tip.removeConfirmTitle, this.lp.tip.removeConfirm.replace("{length}",dataList.length), 350, 120, function () {
 				var count = 0;
 				dataList.each( function(data){
-					_self.action.HotPictureInfoAction.delete(data.application, data.infoId , function(){
+					_self.action.HotPictureInfoAction.delete(data.id, function(){
 						count++;
 						if( dataList.length == count ){
 							_self.app.notice(_self.lp.tip.removeSuccess.replace("{count}",count));

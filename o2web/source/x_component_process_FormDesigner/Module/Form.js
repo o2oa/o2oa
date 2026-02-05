@@ -1021,6 +1021,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 							}
 							break;
 						case "boolean":
+						case "number":
 							data[k] = initial[k];
 							break;
 						default :
@@ -1521,8 +1522,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             // cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
 			//cssText = cssText.replace(/\/\*[\s\S]*?\*\/|(?<!:)\/\/.*/g, '').replace(/\\n/, '');
 
-			cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除多行注释
-				.replace(/\/\/.*/g, '')           // 移除单行注释
+			cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除注释
 				.replace(/\\n/g, '');             // 移除\n
 
             cssText = this.parseCSS(cssText);

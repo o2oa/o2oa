@@ -456,6 +456,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
+        this.checkDatatableClass();
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
@@ -567,6 +568,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             }.bind(this));
         }.bind(this));
+    },
+    checkDatatableClass: function (){
+        if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
+            MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = MWF.xApplication.process.Xform.DatatableV10;
+            MWF.xApplication.process.Xform.Datatable$Title = MWF.APPDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
+            MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
+        }
     },
     loadLanguage: function(callback){
         if (this.json.languageType!=="script" && this.json.languageType!=="default" && this.json.languageType!=="lib" && this.json.languageType!=="dict"){
@@ -693,8 +701,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.loadContent(callback);
     },
     loadExtendStyle: function (callback) {
-        if (!this.json.styleConfig || !this.json.styleConfig.extendFile) {
+        var cb = ()=>{
+            if( layout.mobile && this.json.selectorStyle ){
+                this.json.selectorStyle.style === "v10" && (this.json.selectorStyle.style = "v10_mobile");
+                this.json.selectorStyle.tabStyle === "v10" && (this.json.selectorStyle.tabStyle = "v10_mobile");
+            }
             if (callback) callback();
+        }
+        if (!this.json.styleConfig || !this.json.styleConfig.extendFile) {
+            cb();
             return;
         }
         // if (this.json["$version"] == "5.2") {
@@ -707,13 +722,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     if (responseJSON && responseJSON.form) {
                         this.json = Object.merge(this.json, responseJSON.form);
                     }
-                    if (callback) callback();
+                    cb();
                 }.bind(this),
                 "onRequestFailure": function () {
-                    if (callback) callback();
+                    cb();
                 }.bind(this),
                 "onError": function () {
-                    if (callback) callback();
+                    cb();
                 }.bind(this)
             }
         );
@@ -1741,7 +1756,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return true;
     },
-
+    isReadonly: function (){
+        return this.options.readonly || this.json.isReadonly;
+    },
+    isDraftWork: function (){
+      return !this.businessData.work.startTime;
+    },
     saveFormData: function (callback, failure, history, data, issubmit, isstart) {
         if (this.businessData.work.startTime) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);
@@ -4629,9 +4649,88 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     downloadAll: function () {
+        if( this.options.readonly || this.json.isReadonly ){
+            this._downloadAll();
+        }else{
+            this._downloadAllEditMode();
+        }
+    },
+    _downloadAllEditMode: function (){
+        var iframe;
+        var downloadWithIframe = (appForm)=>{
+            var html = appForm.app.content.get('html');
+            setTimeout(()=>{
+                this._downloadAll(html, ()=>{
+                    iframe?.destroy();
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
+                });
+            }, 2000)
+        }
+        var openFormInIframe = ()=>{
+            MWF.require("MWF.widget.Mask", null, false);
+            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+            this.mask.loadNode(this.app.content);
+            iframe = new Element('iframe', {
+                src: `../x_desktop/${layout.mobile?'workmobile.html':'work.html'}?workid=${this.businessData.work.id}&readonly=true`,
+                "width": "100%",
+                "height": "100%",
+                "frameborder": "0px",
+                "scrolling": "auto",
+                "seamless": "seamless",
+                "styles": {
+                    "position": "absolute",
+                    "top": "0px",
+                    "left": "0px",
+                    "z-index": 2,
+                    "background-color": "#fff"
+                }
+            }).inject(this.app.content);
+            iframe.addEventListener('load', ()=>{
+                var checkAppForm = function(){
+                    if( !iframe.contentWindow?.layout?.app?.appForm ){
+                        setTimeout(checkAppForm, 1000)
+                    }else{
+                        var appForm = iframe.contentWindow.layout.app.appForm;
+                        if( appForm.isLoaded ){
+                            downloadWithIframe(appForm)
+                        }else{
+                            appForm.addEvent('afterModulesLoad', ()=>{
+                                downloadWithIframe(appForm)
+                            })
+                        }
+                    }
+                }
+                setTimeout(checkAppForm, 100)
+            });
+        }
+
+        var p = MWF.getCenterPosition(this.app.content, 300, 150);
+        var event = {
+            "event": {
+                "x": p.x,
+                "y": p.y - 200,
+                "clientX": p.x,
+                "clientY": p.y - 200
+            }
+        };
+        var _self = this;
+        this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.downloadAllTitle, MWF.xApplication.process.Xform.LP.downloadAllText, 300, 120, function () {
+            _self.saveFormData(
+                function(json){
+                    openFormInIframe();
+                }.bind(this),
+                function (xhr, text, error) {
+                    if (failure) failure(xhr, text, error);
+                });
+                this.close();
+        }, function () {
+            this.close();
+        }, null, null, this.json.confirmStyle);
+    },
+    _downloadAll: function (htmlString, callback) {
 
         var htmlFormId = "";
-        var html = this.app.content.get("html");
+        var html = htmlString || this.app.content.get("html");
         var port = layout.port === "" ? "" : ":" + port;
 
         html = html.replace(/\.\.\/(x_|o2_)/g, "http://127.0.0.1" + port + "/$1");
@@ -4641,6 +4740,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "pageWidth": 1000
         }, function (json) {
             htmlFormId = json.data.id;
+            if(callback)callback();
         }.bind(this), null, false);
         htmlFormId = htmlFormId.replace("#", "%23");
         var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/" + this.businessData.work.id + "/site/(0)/stream";
@@ -4671,7 +4771,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "container": layout.mobile ? $(document.body) : this.app.content,
             "maskNode": layout.mobile ? $(document.body) : this.app.content,
             "onQueryClose": function(){
-
+                monitor.closeWorkLog();
             }.bind(this),
             "buttonList": [
                 {

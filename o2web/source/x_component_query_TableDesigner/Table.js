@@ -381,22 +381,22 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
     },
     setViewWidth: function(){
         debugger;
-        this.viewAreaNode.setStyle("width", "auto");
-        this.viewTitleNode.setStyle("width", "auto");
-
-        var s1 = this.viewTitleTableNode.getSize();
-        var s2 = this.refreshNode.getSize();
-        var s3 = this.addColumnNode.getSize();
-        var width = s1.x+ (s2.x || 30) + ( s2.x || 30 );
-        var size = this.areaNode.getSize();
-
-        if (width>size.x){
-            this.viewTitleNode.setStyle("width", ""+width+"px");
-            this.viewAreaNode.setStyle("width", ""+width+"px");
-        }else{
-            this.viewTitleNode.setStyle("width", ""+size.x+"px");
-            this.viewAreaNode.setStyle("width", ""+size.x+"px");
-        }
+        // this.viewAreaNode.setStyle("width", "auto");
+        // this.viewTitleNode.setStyle("width", "auto");
+        //
+        // var s1 = this.viewTitleTableNode.getSize();
+        // var s2 = this.refreshNode.getSize();
+        // var s3 = this.addColumnNode.getSize();
+        // var width = s1.x+ (s2.x || 30) + ( s2.x || 30 );
+        // var size = this.areaNode.getSize();
+        //
+        // if (width>size.x){
+        //     this.viewTitleNode.setStyle("width", ""+width+"px");
+        //     this.viewAreaNode.setStyle("width", ""+width+"px");
+        // }else{
+        //     this.viewTitleNode.setStyle("width", ""+size.x+"px");
+        //     this.viewAreaNode.setStyle("width", ""+size.x+"px");
+        // }
         this.setContentColumnWidth();
         this.setContentHeight();
     },

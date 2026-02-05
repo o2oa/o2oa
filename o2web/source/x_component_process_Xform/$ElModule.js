@@ -243,5 +243,87 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     _createElementHtml: function(){
         return "";
     },
-    _afterCreateVueExtend: function (app) {}
+    _afterCreateVueExtend: function (app) {},
+    _setPopperClass: function () {
+        var popperClass = this._getPopperClass();
+        if( !!popperClass ){
+            this.json.popperClass = this.json.popperClass ?
+                (this.json.popperClass + " " + popperClass) :
+                popperClass;
+        }
+        if( !!popperClass ){
+            this._loadVuePopperCss();
+        }
+    },
+    _getPopperClass: function () {
+        if(this.json.vueCss && this.json.vueCss.code){
+            return "css" + this.form.json.id + '_' + this.json.id;
+        }else{
+            return '';
+        }
+    },
+    _loadVuePopperCss: function () {
+        var cssText = this.json.vueCss ? this.json.vueCss.code : "";
+        var popperClass = this._getPopperClass();
+        var styleNode = $("style" + popperClass);
+        if (!styleNode && cssText) {
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '')  // 移除多行注释
+                .replace(/\/\/.*/g, '')           // 移除单行注释
+                .replace(/\\n/g, '');             // 移除\n
+
+            cssText = this.form.parseCSS(cssText);
+
+            var rex = new RegExp("(.+)(?=\\{)", "g");
+            var match;
+            var id = popperClass;
+            var prefix = "."+popperClass + " ";
+
+            while ((match = rex.exec(cssText)) !== null) {
+                var rulesStr = match[0];
+                var startWith = rulesStr.substring(0, 1);
+                if (startWith === "@" || startWith === ":" || rulesStr.indexOf("%") !== -1) {
+
+                }else if (rulesStr.trim()==='from' || rulesStr.trim()==='to'){
+
+                } else {
+                    if (rulesStr.indexOf(",") != -1) {
+                        //var rules = rulesStr.split(/\s*,\s*/g);
+                        var rules = rulesStr.split(/,/g);
+                        rules = rules.map(function (r) {
+                            return prefix + r;
+                        });
+                        var rule = rules.join(",");
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + (prefix.length * rules.length);
+
+                    } else {
+                        var rule = prefix + match[0];
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + prefix.length;
+                    }
+                }
+            }
+
+            styleNode = document.createElement("style");
+            styleNode.setAttribute("type", "text/css");
+            styleNode.id = "style" + popperClass;
+            styleNode.inject(document.head, "bottom");
+
+            if (styleNode.styleSheet) {
+                var setFunc = function () {
+                    styleNode.styleSheet.cssText = cssText;
+                };
+                if (styleNode.styleSheet.disabled) {
+                    setTimeout(setFunc, 10);
+                } else {
+                    setFunc();
+                }
+            } else {
+                var cssTextNode = document.createTextNode(cssText);
+                styleNode.appendChild(cssTextNode);
+            }
+            return "css" + id;
+        }
+        return "css" + popperClass;
+    }
 });

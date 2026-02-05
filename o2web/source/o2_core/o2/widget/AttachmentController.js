@@ -10,7 +10,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "resize": true,
         "attachmentCount": 0,
         "isUpload": true,
-        "isFromDriver": true,
+        "isFromDriver": 'hidden',
         "isDelete": true,
         "isReplace": true,
         "isDownload": true,

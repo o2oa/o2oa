@@ -64,6 +64,8 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
         if (!this.json.description) this.json.description = "";
         if (!this.json.disabled) this.json.disabled = false;
+
+        this._setPopperClass();
     },
     resetOption: function(){
         this.reload();

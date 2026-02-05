@@ -1704,6 +1704,12 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             if(callback)callback();
         }
     },
+    getFlagDefaultHidden: function( key ){
+        if( this.json[key] === "y" || this.json[key] === "true" )return true;
+        if( this.json[key] === "n" || this.json[key] === "false" )return false;
+        if( this.json[key] === "hidden" )return "hidden";
+        return "hidden";
+    },
     getFlagDefaultFalse: function( key ){
         if( this.json[key] === "y" || this.json[key] === "true" )return true;
         if( this.json[key] === "hidden" )return "hidden";
@@ -3162,7 +3168,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
 });
 MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
     Extends: MWF.APPAttachment,
-    loadAttachmentController: function () {
+    loadAttachmentController: function (opts) {
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
             "style": this.json.style || "default",
@@ -3172,7 +3178,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
             "isUpload": this.getFlagDefaultFalse("isUpload"),
-            "isFromDriver": this.getFlagDefaultFalse("isFromDriver"),
+            "isFromDriver": this.getFlagDefaultHidden("isFromDriver"),
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
@@ -3198,7 +3204,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         if (this.form.json.attachmentStyle) {
             options = Object.merge(options, this.form.json.attachmentStyle);
         }
-        if(opts){
+        if(o2.typeOf(opts)==='object'){
             options = Object.merge(options, opts);
         }
 

@@ -460,6 +460,11 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
     loadViewNodes: function(){
         this.viewAreaNode = new Element("div#viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.areaNode);
+        this.viewAreaNode.setStyles({
+            'width': 'fit-content',
+            'min-width': '100%'
+        });
+
         this.viewTitleNode = new Element("div#viewTitleNode", {"styles": this.css.viewTitleNode}).inject(this.viewAreaNode);
 
         this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
@@ -604,22 +609,22 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     },
     setViewWidth: function(){
         if( !this.viewAreaNode )return;
-        this.viewAreaNode.setStyle("width", "auto");
-        this.viewTitleNode.setStyle("width", "auto");
+        // this.viewAreaNode.setStyle("width", "auto");
+        // this.viewTitleNode.setStyle("width", "auto");
 
-        var s1 = this.viewTitleTableNode.getSize();
-        var s2 = this.refreshNode.getSize();
-        var s3 = this.addColumnNode.getSize();
-        var width = s1.x+s2.x+s2.x;
-        var size = this.areaNode.getSize();
+        // var s1 = this.viewTitleTableNode.getSize();
+        // var s2 = this.refreshNode.getSize();
+        // var s3 = this.addColumnNode.getSize();
+        // var width = s1.x+s2.x+s2.x;
+        // var size = this.areaNode.getSize();
 
-        if (width>size.x){
-            this.viewTitleNode.setStyle("width", ""+width+"px");
-            this.viewAreaNode.setStyle("width", ""+width+"px");
-        }else{
-            this.viewTitleNode.setStyle("width", ""+size.x+"px");
-            this.viewAreaNode.setStyle("width", ""+size.x+"px");
-        }
+        // if (width>size.x){
+        //     this.viewTitleNode.setStyle("width", ""+width+"px");
+        //     this.viewAreaNode.setStyle("width", ""+width+"px");
+        // }else{
+        //     this.viewTitleNode.setStyle("width", ""+size.x+"px");
+        //     this.viewAreaNode.setStyle("width", ""+size.x+"px");
+        // }
         this.setContentColumnWidth();
         this.setContentHeight();
     },
@@ -2083,6 +2088,12 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this._load()
         }
     },
+    reload: function(){
+        debugger;
+        this.node.destroy();
+        this.load();
+        if(this.property)this.property.reload();
+    },
     _load : function(){
         this.json.moduleName = this.moduleName;
         this._createNode();
@@ -2119,6 +2130,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.json.customIconOverStyle = styles.customIconOverStyle || "";
         this.json.forceStyles = styles.forceStyles || "";
         this.json.iconType = styles.iconType || "";
+        this.json.styles = styles.styles || "";
     },
     clearTemplateStyles: function(styles){
         this.json.style = "form";
@@ -2128,8 +2140,10 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.json.customIconOverStyle = "";
         this.json.iconType = "";
         this.json.forceStyles = "";
+        this.json.styles = "";
     },
     setAllStyles: function(){
+        this.json.actionStyles = null;
         this._resetActionbar();
         this.destroyProperty();
     },
@@ -2348,18 +2362,29 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         }.bind(this));
     },
     setToolbars: function(tools, node){
-        debugger;
+        var imgUrl, overImgUrl;
+        var path = "";
+        if( this.json.customIconStyle ){
+            path = this.json.customIconStyle+ "/";
+        }
         tools.each(function(tool){
+            if( tool.customImg ){
+                imgUrl =  this.imagePath_custom+""+this.options.customImageStyle +"/custom/"+path+tool.img;
+                overImgUrl = this.imagePath_custom+""+this.options.customImageStyle +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img;
+            }else{
+                imgUrl = this.imagePath_default+""+this.options.style+"/actionbar/"+( this.json.iconStyle || "default" )+"/"+tool.img;
+                overImgUrl = this.imagePath_default+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img;
+            }
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.json.iconType==="font" ? "" : (this.imagePath_default+""+this.options.style+"/actionbar/"+( this.json.iconStyle || "default" )+"/"+tool.img),
+                "MWFButtonImage": this.json.iconType==="font" ? "" : imgUrl,
                 "MWFButtonIcon": tool.icon,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
             }).inject(node);
             if( this.json.iconOverStyle ){
-                actionNode.set("MWFButtonImageOver" , this.imagePath_default+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img );
+                actionNode.set("MWFButtonImageOver" , overImgUrl );
             }
             this.systemTools.push(actionNode);
             if (tool.sub){
