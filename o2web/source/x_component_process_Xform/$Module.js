@@ -1517,7 +1517,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
 
         if (this.json.label) {
-            labelNode = new Element('label.item-label',{
+            labelNode = new Element('div.item-label',{
                 text: this.json.label
             }).inject(node);
         }

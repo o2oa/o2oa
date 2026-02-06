@@ -4658,18 +4658,109 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         // }
     //},
     downloadAll: function (){
-        var iframe;
-        var downloadWithIframe = (appForm)=>{
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            const html = iframeDoc.documentElement.outerHTML;
+        var iframe, iframeDoc;
+        // var _listCssLinks = ()=>{
+        //     const links = [];
+        //     // iframeDoc.querySelectorAll('link').forEach((link)=>{
+        //     //     const href = link.getAttribute('href');
+        //     //     if (href && !(/^(https?:)?\/\//.test(href) || /^(data|blob|javascript|mailto|tel):/.test(href) || href.startsWith('#'))) {
+        //     //         links.push(href);
+        //     //     }
+        //     // });
+        //     if( this.json.formStyleType === 'v10' ){
+        //         // links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/index.css');
+        //         // links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/homepage.css');
+        //         links.push('../x_desktop/css/v10/style.css');
+        //         links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/form.css');
+        //         links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/view.css');
+        //     }
+        //     return links;
+        // }
+
+        // var _replaceLinkHref = ()=>{
+        //     const baseUrl = window.location.href;
+        //     const basePath = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
+        //     const port = layout.port === "" ? "" : ":" + layout.port;
+        //     iframeDoc.querySelectorAll('link').forEach((link)=>{
+        //         const href = link.getAttribute('href');
+        //         if (href && !(/^(https?:)?\/\//.test(href) || /^(data|blob|javascript|mailto|tel):/.test(href) || href.startsWith('#'))) {
+        //             let newHref;
+        //             if (href.startsWith('/')) {
+        //                 newHref = window.location.origin + href; // 从根目录开始
+        //             } else if (href.startsWith('./')) {
+        //                 newHref = basePath + href.substring(2);   // 当前目录
+        //             } else {
+        //                 newHref = basePath + href; // 相对路径
+        //             }
+        //             newHref = newHref.replace(window.location.origin, 'http://127.0.0.1'+port)
+        //             try{
+        //                 link.setAttribute('href', newHref);
+        //             }catch(e){}
+        //         }
+        //     });
+        // }
+        var _replaceV10FontUrl = ()=>{
+            const allStyleList = iframeDoc.querySelectorAll('style');
+
+            //匹配@font-face{}内的所有url(./xxx)
+            const fontReg = /url\(['"]?\.\/([^'")]+)['"]?\)(?=[\s\S]*?\})/g;
+
+            var port = layout.port === "" ? "" : ":" + layout.port;
+            const FONT_BASE_URL = "http://127.0.0.1" + port + "/x_desktop/css/v10/";
+            allStyleList.forEach(styleEl => {
+                console.log(styleEl.dataset.url)
+                if( styleEl.dataset.url && styleEl.dataset.url.includes('css/v10') ){
+                    styleEl.textContent = styleEl.textContent.replace(fontReg, `url("${FONT_BASE_URL}$1")`);
+                }
+            });
+        }
+        var _download = ()=>{
             setTimeout(()=>{
+                const html = iframeDoc.documentElement.outerHTML;
+                //const html = this.app.content.get("html");
                 this._downloadAll(html, ()=>{
                     iframe?.destroy();
                     if (this.mask) { this.mask.hide(); this.mask = null; }
                 });
             }, 2000)
         }
-        var openFormInIframe = ()=>{
+        var _removeEl = (selector)=>{
+            iframeDoc.querySelectorAll(selector).forEach(function (el) { el.destroy(); })
+        }
+        var downloadWithIframe = (appForm)=>{
+            iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            // _removeEl('script');
+            // _removeEl('style');
+            // _removeEl('link');
+
+            if( this.json.formStyleType === 'v10' ) {
+                setTimeout(()=>{
+                    iframeDoc.querySelector('head').empty();
+
+                    _removeEl('script');
+                    _removeEl('style');
+                    _removeEl('link');
+
+                    console.log(iframeDoc.querySelector('head').outerHTML)
+
+                    iframeDoc.body.loadCss([
+                        '../x_desktop/css/v10/style.css',
+                        '../x_component_process_FormDesigner/Module/Form/skin/v10/form.css',
+                        '../x_component_process_FormDesigner/Module/Form/skin/v10/view.css'
+                    ], {}, ()=>{
+                        console.log(iframeDoc.querySelector('head').outerHTML)
+                        _removeEl('template');
+                        _removeEl('.form-side-content');
+                        _replaceV10FontUrl();
+                        _download();
+                    });
+                }, 5000)
+            }else{
+                _download();
+            }
+        }
+        var _openFormInIframe = ()=>{
             MWF.require("MWF.widget.Mask", null, false);
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
@@ -4717,26 +4808,31 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         };
         var _self = this;
-        this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.downloadAllTitle, MWF.xApplication.process.Xform.LP.downloadAllText, 300, 120, function () {
-            _self.saveFormData(
-                function(json){
-                    openFormInIframe();
-                }.bind(this),
-                function (xhr, text, error) {
-                    if (failure) failure(xhr, text, error);
+        if(_self.isReadonly() || _self.isCompletedWork()){
+            _openFormInIframe();
+        }else{
+            this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.form.downloadAllTitle, MWF.xApplication.process.Xform.LP.form.downloadAllText, 300, 120, function () {
+                _self.saveFormData(
+                    function(json){
+                        _openFormInIframe();
+                    }.bind(this),
+                    function (xhr, text, error) {
+                        if (failure) failure(xhr, text, error);
                 });
                 this.close();
-        }, function () {
-            this.close();
-        }, null, null, this.json.confirmStyle);
+            }, function () {
+                this.close();
+            }, null, null, this.json.confirmStyle);
+        }
     },
     _downloadAll: function (htmlString, callback) {
 
         var htmlFormId = "";
         var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
-        var port = layout.port === "" ? "" : ":" + port;
+        var port = layout.port === "" ? "" : ":" + layout.port;
+        var orginUrl = "http://127.0.0.1" + port;
 
-        html = html.replace(/\.\.\/(x_|o2_)/g, "http://127.0.0.1" + port + "/$1");
+        html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
 
         debugger;
         console.log(html);
