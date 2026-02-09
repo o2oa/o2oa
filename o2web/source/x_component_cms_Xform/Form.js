@@ -548,12 +548,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                         }
                     }
                 } else {
-                    // app上用原来的按钮样式
-                    if (window.o2android || window.flutter_inappwebview || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog)) {
-                        if (node) this._createMobileActions(node, tools);
-                    } else {
-                        if (node) this._createMobileActionsDingdingStyle(node, tools);
-                    }
+                    if (node) this._createMobileActionsDingdingStyle(node, tools);
                 }
                 if (callback) callback();
             }.bind(this));
