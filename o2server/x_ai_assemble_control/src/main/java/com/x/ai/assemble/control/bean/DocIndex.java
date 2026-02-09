@@ -18,6 +18,7 @@ public class DocIndex extends GsonPropertyObject {
     @FieldDescribe("文号.")
     private String serial;
     private String sourceType = "external";
+    private String sourceId = "external";
     @FieldDescribe("文档创建者.")
     private String creatorPerson;
     private String creatorUnit;
@@ -35,6 +36,14 @@ public class DocIndex extends GsonPropertyObject {
     private Boolean searchEnable = true;
     private Boolean embedEnable = true;
     private Boolean questionEnable = false;
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
 
     public String getProcessId() {
         return processId;
