@@ -42,6 +42,9 @@ class ActionCreateMcp extends BaseAction {
         if (StringUtils.isEmpty(wi.getName())) {
             throw new ExceptionFieldEmpty("name");
         }
+        if(wi.getHttpOption()!=null){
+            wi.getHttpOption().setInternalEnable(false);
+        }
         wi.setType(McpConfig.TYPE_HTTP);
         String url =
                 aiConfig.getO2AiBaseUrl() + "/ai-gateway-mcp/create";

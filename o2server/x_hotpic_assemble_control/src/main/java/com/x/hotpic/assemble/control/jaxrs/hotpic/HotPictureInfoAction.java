@@ -32,7 +32,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("热点信息管理")
 public class HotPictureInfoAction extends StandardJaxrsAction {
 
-	private Logger logger = LoggerFactory.getLogger(HotPictureInfoAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(HotPictureInfoAction.class);
 
 	@JaxrsMethodDescribe(value = "检查所有的热点新闻还在不在", action = ActionCheck.class)
 	@GET
@@ -111,7 +111,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 
 	/**
 	 * 保存热图信息，登录用户访问
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
@@ -134,7 +134,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 
 	/**
 	 * 修改已经存在的热点图片的标题信息
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
@@ -179,7 +179,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@Path("{application}/{infoId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void deleteWithApplicationAndInfoId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("应用标识") @PathParam("application") String application,
 			@JaxrsParameterDescribe("信息标识") @PathParam("infoId") String infoId) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();

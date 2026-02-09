@@ -178,7 +178,21 @@ MWF.xApplication.AI.Mcp = new Class({
             }.bind(this),null,false);
         }
         node.loadHtml(url, {"bind": {"lp": _self.lp,"data" : data||{}}, "module": this}, function () {
-            let template = "",script = "";
+
+            const icon = this.iconNode;
+            let iconMenu;
+            o2.require("o2.widget.IconMenu", ()=>{
+                iconMenu = new o2.widget.IconMenu({
+                    zIndex: 500001,
+                    onClick: (ev, iconClass)=>{
+                        icon.value = iconClass;
+                        icon.setAttribute('left-icon', iconClass);
+                    }
+                });
+                iconMenu.load(icon, document.body);
+            }, false);
+
+            let template = "",script = "",css = "";
             if(o2.typeOf(data.extra.template) === "object"){
                 template = ""
             }else{
@@ -189,8 +203,15 @@ MWF.xApplication.AI.Mcp = new Class({
             }else{
                 script = data.extra.script;
             }
+            if(o2.typeOf(data.extra.css) === "object"){
+                css = ""
+            }else{
+                css = data.extra.css;
+            }
             const templateEditor = new o2.widget.ScriptArea(this.msgTemplateNode, { "option": { "mode": "markdown" } });
             templateEditor.load({"code":template});
+            const cssEditor = new o2.widget.ScriptArea(this.msgCssNode, { "option": { "mode": "css" } });
+            cssEditor.load({"code":css});
             const scriptEditor = new o2.widget.ScriptArea(this.msgScriptNode, { "option": { "mode": "javascript" } });
             scriptEditor.load({"code":script});
 
@@ -216,6 +237,14 @@ MWF.xApplication.AI.Mcp = new Class({
                             const desc = node.querySelector("[name='desc']");
                             const enable = node.querySelector("[name='enable']");
                             const url = node.querySelector("[name='url']");
+
+                            const indexDesc = node.querySelector("[name='indexDesc']");
+                            const indexEnable = node.querySelector("[name='indexEnable']");
+                            const icon = node.querySelector("[name='icon']");
+                            const indexPrompt = node.querySelector("[name='indexPrompt']");
+
+
+
                             let mcpParameterList = [];
                             let bodyMap = {};
 
@@ -260,7 +289,12 @@ MWF.xApplication.AI.Mcp = new Class({
                                 "httpOption" :httpOption,
                                 "mcpParameterList" :mcpParameterList,
                                 "extra" :{
+                                    "indexDesc" : indexDesc.get("value"),
+                                    "indexEnable" :indexEnable.get("value"),
+                                    "indexPrompt" :indexPrompt.get("value"),
+                                    "icon" :icon.get("value"),
                                     "template" : o2.typeOf(templateEditor.getData()) === "object"?"" : templateEditor.getData(),
+                                    "css" : o2.typeOf(cssEditor.getData()) === "object"?"" : cssEditor.getData(),
                                     "script" : o2.typeOf(scriptEditor.getData()) === "object"?"" : scriptEditor.getData()
                                 }
                             }

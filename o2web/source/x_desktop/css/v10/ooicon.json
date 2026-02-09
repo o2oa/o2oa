@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "45220468",
+      "name": "move",
+      "font_class": "move",
+      "unicode": "e799",
+      "unicode_decimal": 59289
+    },
+    {
       "icon_id": "45220461",
       "name": "finger2",
       "font_class": "finger2",

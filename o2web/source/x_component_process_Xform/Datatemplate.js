@@ -1187,7 +1187,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		resetData: function(){
 			// var value = this.getDefaultValue() || [];
 			var value = this.getValue() || [];
-			this.setData(value);
+			this.setData(value, false, 'resetData');
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
@@ -1256,12 +1256,14 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this._setUnchangedLineMap(data, operation);
 
-			if( !operation ){
+			if( !operation && !this.saving ){
+				this.saving = true;
 				if( this.sectionBy ){
 					this.saveDataById(this.json.id + '..' + this.sectionBy, this._getBusinessData());
 				}else{
 					this.saveDataById();
 				}
+				this.saving = false;
 			}
 
 			this._setBusinessData(data);

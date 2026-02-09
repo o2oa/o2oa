@@ -8,7 +8,7 @@
     box-sizing: border-box !important;
     display: grid !important;
     /* align-items: start; */
-    gap: 2em;
+    gap: 1em;
     padding: 1em;
 }
 
@@ -336,6 +336,12 @@
         flex: 1 1 100%;
     }
     .page-widget-title > div:first-child > div {
+        display: none;
+    }
+    .page-widget-title > .page-widget-drag-area{
+        display: none;
+    }
+    .page-widget-title > .page-widget-tab-line{
         display: none;
     }
     .page-index-content {
