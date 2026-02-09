@@ -1025,8 +1025,12 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                 element.setStyles({"display": "block"});
             },
             "onDrop": function(dragging, droppable, e){
-                if (droppable){
+               // if (droppable){
                     var nextTr = tr.getNext("tr");
+                    if(ntr === nextTr){
+                        _self.cancelDrag(dragging, div, tr, drag);
+                        return;
+                    }
                     if (nextTr){
                         nextData = nextTr.retrieve("data");
                     }else{
@@ -1035,15 +1039,15 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                     if (!nextData) nextData={};
                     moveNode.destroy();
 
-                    droppable.setStyles({"background": "transparent"});
+                    droppable && droppable.setStyles({"background": "transparent"});
                     // tr.setStyles({"background": "transparent "});
                     this.fadeTr(tr);
 
                     this.explorer.actions.orderIdentity(item.data.id, nextData.id || "(0)", function(){});
                     div.setStyle("display", "block");
-                }else{
-                    _self.cancelDrag(dragging, div, tr, drag);
-                }
+                // }else{
+                //     _self.cancelDrag(dragging, div, tr, drag);
+                // }
             }.bind(this),
             "onCancel": function(dragging){
                 _self.cancelDrag(dragging, div, tr, drag);
