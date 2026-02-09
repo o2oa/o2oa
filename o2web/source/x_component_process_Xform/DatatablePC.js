@@ -1454,7 +1454,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
 		},
-		_delLine: function(line){
+		_delLine: function(line, ignore){
 			this.fireEvent("deleteLine", [line]);
 
 			var saveFlag = line.deleteAttachment();
@@ -1466,7 +1466,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if( d && d.data ){
 					var index = line.options.indexInSectionLine;
 					d.data.splice(index, 1);
-					this.saveArrayData('delete', index, null, null, line.sectionLine.sectionKey);
+					if(!ignore)this.saveArrayData('delete', index, null, null, line.sectionLine.sectionKey);
 				}
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
 				this.setAllSectionData( data, false, "deleteLine" );
@@ -1476,11 +1476,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				data.data.splice(index, 1);
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
 				this.setData( data , false, "deleteLine");
-				this.saveArrayData('delete', index);
+				if(!ignore)this.saveArrayData('delete', index);
 			}
 
 			this.validationMode();
-			this.fireEvent("afterDeleteLine");
+			if(!ignore)this.fireEvent("afterDeleteLine");
 
 			this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
 
@@ -1492,7 +1492,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			line.validationMode();
 			if( line.isNewAdd ){
 				// var saveFlag = line.deleteAttachment();
-				this._delLine( line );
+				this._delLine( line, true );
 				this.currentEditedLine = null;
 				// if(saveFlag)this.form.saveFormData();
 			}else{
@@ -1642,7 +1642,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		resetData: function(){
 			//var value = this.getDefaultValue() || {"data": [], "total":{}};
 			var value = this.getValue();
-			this.setData( value , false );
+			this.setData( value , false, 'resetData' );
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
@@ -1719,13 +1719,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.data = data;
 
-			if( !operation ){
+			if( !operation && !this.saving){
+				this.saving = true;
 				//this.saveFormData();
 				if( this.sectionBy ){
 					this.saveDataById(this.json.id + '..' + this.sectionBy, this._getBusinessData());
 				}else{
 					this.saveDataById();
 				}
+				this.saving = false;
 			}
 
             if (this.data){

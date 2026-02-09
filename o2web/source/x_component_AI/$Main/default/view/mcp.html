@@ -42,14 +42,24 @@
                 <div class="model-list" data-o2-element="modelNode">
                     {{each $.modelList}}
                     <div  class="model-item {{if $.asDefault}} model-item-cur {{end if}}" category="{{$.category}}">
-                        <div class="model-item-1"><img src="../x_component_AI/$Main/default/icons/o2logo.png"></div>
+                        <div class="model-item-1">
+                            <div class="model-item-1-icon">
+                                <i class="ooicon-{{$.extra.icon}}"></i>
+                            </div>
+
+
+                            <div class="model-item-1-tool">
+                                <i class="ooicon-export" data-o2-events="click:exportMcp:{{$.id}}" ></i>
+                                <i class="ooicon-delete" data-o2-events="click:removeMcp:{{$.id}}" ></i>
+                            </div>
+
+                        </div>
                         <div class="model-item-2" data-o2-events="click:newMcp:edit:{{$.id}}">
                             <div class="model-item-2-1">{{$.name}}</div>
                             <div class="model-item-2-2">{{$.desc}}</div>
                         </div>
                         <div class="model-item-3">
-                            <i class="ooicon-export" data-o2-events="click:exportMcp:{{$.id}}" ></i>
-                            <i class="ooicon-delete" data-o2-events="click:removeMcp:{{$.id}}" ></i>
+
                         </div>
                     </div>
                     {{end each}}
